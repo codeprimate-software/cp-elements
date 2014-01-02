@@ -38,6 +38,7 @@ import org.cp.elements.lang.ObjectUtils;
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.util.convert.ConversionService
+ * @see org.cp.elements.util.convert.Converter
  * @since 1.0.0
  * @link http://stackoverflow.com/questions/8040362/class-name-of-type-parameters-in-java
  */
@@ -151,8 +152,8 @@ public abstract class AbstractConversionService implements ConversionService {
     }
 
     Assert.notNull(parameterizedType, new IllegalArgumentException(String.format(
-      "The Converter (%1$s) does not directly implement the Converter interface or extend the AbstractConverter or ConverterAdapter class!",
-      converter.getClass().getName())));
+      "The Converter (%1$s) does not directly implement the Converter interface or extend either the AbstractConverter or ConverterAdapter class!",
+        converter.getClass().getName())));
 
     assert parameterizedType != null;
 
@@ -233,7 +234,9 @@ public abstract class AbstractConversionService implements ConversionService {
   public void unregister(final Converter<?, ?> converter) {
     for (ConverterDescriptor descriptor : getRegistry().keySet()) {
       if (descriptor.getConverter().equals(converter)) {
-        getRegistry().remove(descriptor);
+        if (converter.equals(getRegistry().remove(descriptor))) {
+          converter.setConversionService(null);
+        }
       }
     }
   }

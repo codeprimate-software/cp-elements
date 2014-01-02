@@ -41,7 +41,7 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   private ConversionService conversionService;
 
   protected ConversionService getConversionService() {
-    Assert.state(conversionService != null, "The reference to the ConversionService was not properly initialized!");
+    Assert.state(conversionService != null, "The ConversionService reference was not properly initialized!");
     return conversionService;
   }
 

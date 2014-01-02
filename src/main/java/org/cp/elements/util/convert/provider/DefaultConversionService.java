@@ -27,8 +27,9 @@ import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileUtils;
@@ -60,7 +61,7 @@ public class DefaultConversionService extends AbstractConversionService {
 
   private volatile boolean defaultsEnabled = false;
 
-  private final Map<Class, Object> defaultValues = new ConcurrentHashMap<Class, Object>(13, 0.95f);
+  private final Map<Class, Object> defaultValues = Collections.synchronizedMap(new HashMap<Class, Object>(13, 0.95f));
 
   /**
    * Constructs a instance of the DefaultConversionService class to perform type conversions.
@@ -118,6 +119,7 @@ public class DefaultConversionService extends AbstractConversionService {
     defaultValues.put(Boolean.class, false);
     defaultValues.put(Byte.class, (byte) 0);
     defaultValues.put(Calendar.class, new CalendarValueGenerator());
+    defaultValues.put(Character.class, '\0');
     defaultValues.put(Double.class, 0.0d);
     defaultValues.put(Float.class, 0.0f);
     defaultValues.put(Integer.class, 0);
@@ -153,11 +155,28 @@ public class DefaultConversionService extends AbstractConversionService {
    * @param type the Class type to set the default value for.
    * @param defaultValue the default value for the specified Class type.
    * @throws NullPointerException if the Class type is null.
+   * @see #setDefaultValue(Class, org.cp.elements.util.convert.provider.DefaultConversionService.ValueGenerator)
    * @see java.lang.Class
    */
   public <T> void setDefaultValue(final Class<T> type, final T defaultValue) {
     Assert.notNull(type, "The Class type to set the default value for cannot be null!");
     defaultValues.put(type, defaultValue);
+  }
+
+  /**
+   * Sets the default value for the specified Class type using value generation.
+   * <p/>
+   * @param <T> the classification/type of objects represented by the Class.
+   * @param type the Class type to set the default value for.
+   * @param valueGenerator the ValueGenerator used to generate default values for the specified Class type.
+   * @throws NullPointerException if the Class type is null.
+   * @see #setDefaultValue(Class, Object)
+   * @see java.lang.Class
+   * @see org.cp.elements.util.convert.provider.DefaultConversionService.ValueGenerator
+   */
+  public <T> void setDefaultValue(final Class<T> type, final ValueGenerator<T> valueGenerator) {
+    Assert.notNull(type, "The Class type to set the value generator for cannot be null!");
+    defaultValues.put(type, valueGenerator);
   }
 
   /**
@@ -219,7 +238,7 @@ public class DefaultConversionService extends AbstractConversionService {
    */
   @Override
   public <T> T convert(final Object value, final Class<T> toType) {
-    return (useDefault(value, toType) ? getDefaultValue(toType) :  super.convert(value, toType));
+    return (useDefault(value, toType) ? getDefaultValue(toType) : super.convert(value, toType));
   }
 
   /**
