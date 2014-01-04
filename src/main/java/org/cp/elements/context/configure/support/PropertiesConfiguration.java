@@ -53,7 +53,7 @@ public class PropertiesConfiguration extends AbstractConfiguration {
 
   public PropertiesConfiguration(final File propertiesFile, final Configuration parent) throws IOException {
     super(parent);
-    Assert.notNull(propertiesFile, "The file from which to load the properties cannot be null!");
+    Assert.notNull(propertiesFile, "The file to load properties from cannot be null!");
     this.properties = new Properties();
     this.properties.load(new FileInputStream(propertiesFile));
   }
