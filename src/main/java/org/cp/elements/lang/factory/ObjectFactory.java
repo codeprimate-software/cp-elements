@@ -37,12 +37,61 @@ import org.cp.elements.util.convert.ConversionServiceAware;
 @SuppressWarnings("unused")
 public interface ObjectFactory extends ConfigurationAware, ConversionServiceAware {
 
+  /**
+   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments.
+   * The parameter types of the constructor used to construct the object are determined from the arguments.
+   * <p/>
+   * @param <T> the Class type of the created object.
+   * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
+   * @param args an array of Objects used as constructor arguments to initialize the object.
+   * @return a newly created object of the given class type initialized with the specified arguments.
+   * @see #create(String, Class[], Object...)
+   */
   public <T> T create(String objectTypeName, Object... args);
 
+  /**
+   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
+   * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
+   * the object.
+   * <p/>
+   * @param <T> the Class type of the created object.
+   * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
+   * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
+   * the object.
+   * @param args an array of Objects used as constructor arguments to initialize the object.
+   * @return a newly created object of the given class type initialized with the specified arguments.
+   * @see #create(String, Object...)
+   * @see java.lang.Class
+   */
   public <T> T create(String objectTypeName, Class[] parameterTypes, Object... args);
 
+  /**
+   * Creates an object given the class type, initialized with the specified constructor arguments. The parameter types
+   * of the constructor used to construct the object are determined from the arguments.
+   * <p/>
+   * @param <T> the Class type of the created object.
+   * @param objectType the Class type from which the instance is created.
+   * @param args an array of Objects used as constructor arguments to initialize the object.
+   * @return a newly created object of the given class type initialized with the specified arguments.
+   * @see #create(Class, Class[], Object...)
+   * @see java.lang.Class
+   */
   public <T> T create(Class<T> objectType, Object... args);
 
+  /**
+   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
+   * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
+   * the object.
+   * <p/>
+   * @param <T> the Class type of the created object.
+   * @param objectType the Class type from which the instance is created.
+   * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
+   * the object.
+   * @param args an array of Objects used as constructor arguments to initialize the object.
+   * @return a newly created object of the given class type initialized with the specified arguments.
+   * @see #create(Class, Object...)
+   * @see java.lang.Class
+   */
   public <T> T create(Class<T> objectType, Class[] parameterTypes, Object... args);
 
 }
