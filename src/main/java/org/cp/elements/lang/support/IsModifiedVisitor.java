@@ -26,8 +26,8 @@ import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 
 /**
- * The IsModifiedVisitor class is a Visitor implementation that visits an object graph/hierarchy in search of any object
- * that has been modified.
+ * The IsModifiedVisitor class is a Visitor implementation that visits a Vistiable object graph/hierarchy in search of
+ * any Auditable objects that may have been modified.
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.lang.Auditable
@@ -40,10 +40,22 @@ public class IsModifiedVisitor implements Visitor {
 
   private volatile boolean modified = false;
 
+  /**
+   * Determines whether any of the Auditable, Visitable object visited were modified.
+   * <p/>
+   * @return a boolean value indicating whether any of the Auditable, Visitable objects in the object graph hierarchy
+   * were modified.
+   */
   public boolean isModified() {
     return modified;
   }
 
+  /**
+   * Visits all Auditable, Visitable objects in an object graph hierarchy in search of any modified objects.
+   * <p/>
+   * @param visitable the Visitable object visited by this Visitor.
+   * @see org.cp.elements.lang.Auditable#isModified()
+   */
   @Override
   public void visit(final Visitable visitable) {
     if (visitable instanceof Auditable) {

@@ -27,7 +27,7 @@ import org.cp.elements.lang.Visitor;
 
 /**
  * The DestroyableVisitor class is a Visitor implementation calling destroy on Destroyable objects in an object
- * hierarchy/graph.
+ * graph/hierarchy.
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.lang.Destroyable
@@ -38,6 +38,13 @@ import org.cp.elements.lang.Visitor;
 @SuppressWarnings("unused")
 public class DestroyableVisitor implements Visitor {
 
+  /**
+   * Visits all Destroyable objects in a graph invoking the destroy method.
+   * <p/>
+   * @param visitable the Visitable object visited by this Visitor.
+   * @see org.cp.elements.lang.Destroyable#destroy()
+   * @see org.cp.elements.lang.Visitable
+   */
   @Override
   public void visit(final Visitable visitable) {
     if (visitable instanceof Destroyable) {

@@ -27,8 +27,8 @@ import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 
 /**
- * The ConfigurableVisitor class is a Visitor implementation that visits and object graph configuring each object
- * in the hierarchy.
+ * The ConfigurableVisitor class is a Visitor implementation that visits an object graph/hierarchy configuring
+ * each object visited.
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.lang.Configurable
@@ -41,11 +41,24 @@ public class ConfigurableVisitor<T> implements Visitor {
 
   private final T configuration;
 
+  /**
+   * Constructs an instance of the ConfigurableVisitor class initialized with the specified configuration used to
+   * configure objects visited in the graph/hierarchy.
+   * <p/>
+   * @param configuration the Configuration used to configure visited objects.
+   */
   public ConfigurableVisitor(final T configuration) {
     Assert.notNull(configuration, "The configuration object cannot be null!");
     this.configuration = configuration;
   }
 
+  /**
+   * Visits Configurable objects in an object graph/hierarchy in order to apply configuration.
+   * <p/>
+   * @param visitable the Visitable object visited by this Visitor.
+   * @see org.cp.elements.lang.Configurable#configure(Object)
+   * @see org.cp.elements.lang.Visitable
+   */
   @Override
   @SuppressWarnings("unchecked")
   public void visit(final Visitable visitable) {
