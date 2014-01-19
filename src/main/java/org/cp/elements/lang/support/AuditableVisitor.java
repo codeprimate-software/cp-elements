@@ -51,10 +51,27 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
 
   private final USER user;
 
+  /**
+   * Constructs an instance of the AuditableVisitor class initialized with a creating/modifying user and process.
+   * <p/>
+   * @param user the user authorized and responsible for changing the Auditable object.
+   * @param process the process authorized and responsible for changing the Auditable object.
+   * @see #AuditableVisitor(Object, Object, java.util.Calendar)
+   */
   public AuditableVisitor(final USER user, final PROCESS process) {
     this(user, process, Calendar.getInstance());
   }
 
+  /**
+   * Constructs an instance of the AuditableVisitor class initialized with a creating/modifying user and process
+   * as well as the date and time the Auditable object was created or modified.
+   * <p/>
+   * @param user the user authorized and responsible for changing the Auditable object.
+   * @param process the process authorized and responsible for changing the Auditable object.
+   * @param dateTime a Calendar instance indicating the date and time the Auditable object was changed.
+   * @see #AuditableVisitor(Object, Object)
+   * @see java.util.Calendar
+   */
   public AuditableVisitor(final USER user, final PROCESS process, final Calendar dateTime) {
     Assert.notNull(user, "The user cannot be null!");
     Assert.notNull(process, "The process cannot be null!");
@@ -63,26 +80,66 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
     this.dateTime = (dateTime != null ? dateTime : Calendar.getInstance());
   }
 
+  /**
+   * Gets the user authorized and responsible for changing the Auditable object.
+   * <p/>
+   * @return the user authorized and responsible for changing the Auditable object.
+   */
   public USER getUser() {
     return user;
   }
 
+  /**
+   * Gets the process authorized and responsible for changing the Auditable object.
+   * <p/>
+   * @return the process authorized and responsible for changing the Auditable object.
+   */
   public PROCESS getProcess() {
     return process;
   }
 
+  /**
+   * Gets the date and time that the Auditable object was changed.
+   * <p/>
+   * @return a Calendar instance indicating the date and time the Auditable object was changed.
+   * @see java.util.Calendar
+   */
   public Calendar getDateTime() {
     return DateTimeUtils.clone(dateTime);
   }
 
+  /**
+   * Determines whether the created Auditable properties are currently unset, specifically only evaluated the
+   * createdBy and createdDateTime properties.
+   * <p/>
+   * @param auditable the Auditable object being evaluated for unset created properties.
+   * @return a boolean value indicating whether the Auditable object's created properties are currently unset.
+   * @see org.cp.elements.lang.Auditable#getCreatedBy()
+   * @see org.cp.elements.lang.Auditable#getCreatedDateTime()
+   */
   protected boolean isCreatedUnset(final Auditable auditable) {
     return (auditable.getCreatedBy() == null || auditable.getCreatedDateTime() == null);
   }
 
+  /**
+   * Determines whether the specified Auditable object is Identifiable and new.
+   * <p/>
+   * @param auditable the Auditable object being evaluated as an instance of the Identifiable interface and whether
+   * the Auditable object is new.
+   * @return a boolean value indicating whether the Auditable object is Identifiable and new.
+   * @see org.cp.elements.lang.Identifiable#isNew()
+   */
   protected boolean isNew(final Auditable auditable) {
     return (auditable instanceof Identifiable && ((Identifiable) auditable).isNew());
   }
 
+  /**
+   * Visits Auditable objects in an object graph/hierarchy setting auditable information (created/modified
+   * by/date-time/process).
+   * <p/>
+   * @param visitable the Visitable object visited by this Visitor.
+   * @see org.cp.elements.lang.Auditable
+   */
   @Override
   @SuppressWarnings("unchecked")
   public void visit(final Visitable visitable) {

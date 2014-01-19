@@ -45,6 +45,20 @@ public class TestUtils {
     }
   }
 
+  public static void assertEqualDate(final Calendar expectedDate, final Calendar actualDate) {
+    Assert.assertEquals(expectedDate.get(Calendar.YEAR), actualDate.get(Calendar.YEAR));
+    Assert.assertEquals(expectedDate.get(Calendar.MONTH), actualDate.get(Calendar.MONTH));
+    Assert.assertEquals(expectedDate.get(Calendar.DAY_OF_MONTH), actualDate.get(Calendar.DAY_OF_MONTH));
+  }
+
+  public static void assertEqualDateTime(final Calendar expectedDateTime, final Calendar actualDateTime) {
+    assertEqualDate(expectedDateTime, actualDateTime);
+    Assert.assertEquals(expectedDateTime.get(Calendar.HOUR_OF_DAY), actualDateTime.get(Calendar.HOUR_OF_DAY));
+    Assert.assertEquals(expectedDateTime.get(Calendar.MINUTE), actualDateTime.get(Calendar.MINUTE));
+    Assert.assertEquals(expectedDateTime.get(Calendar.SECOND), actualDateTime.get(Calendar.SECOND));
+    Assert.assertEquals(expectedDateTime.get(Calendar.MILLISECOND), actualDateTime.get(Calendar.MILLISECOND));
+  }
+
   public static void assertNegative(final int value) {
     Assert.assertTrue(value < 0);
   }

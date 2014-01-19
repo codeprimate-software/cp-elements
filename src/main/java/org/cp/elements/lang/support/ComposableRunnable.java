@@ -47,6 +47,7 @@ public final class ComposableRunnable implements Runnable {
   private ComposableRunnable(final Runnable leftRunnable, final Runnable rightRunnable) {
     Assert.notNull(leftRunnable, "The left node Runnable object cannot be null!");
     Assert.notNull(rightRunnable, "The right node Runnable object cannot be null!");
+
     this.leftRunnable = leftRunnable;
     this.rightRunnable = rightRunnable;
   }
@@ -76,8 +77,10 @@ public final class ComposableRunnable implements Runnable {
   public static Runnable compose(final Runnable... runnables) {
     Runnable currentRunnable = null;
 
-    for (Runnable runnable : runnables) {
-      currentRunnable = compose(currentRunnable, runnable);
+    if (runnables != null) {
+      for (Runnable runnable : runnables) {
+        currentRunnable = compose(currentRunnable, runnable);
+      }
     }
 
     return currentRunnable;
