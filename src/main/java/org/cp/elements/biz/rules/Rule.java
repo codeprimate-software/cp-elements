@@ -35,6 +35,15 @@ import org.cp.elements.lang.Identifiable;
 public interface Rule<T, ID extends Comparable<ID>> extends Identifiable<ID> {
 
   /**
+   * Determines the outcome expected when evaluating an object with this business rule.  The object is expected to
+   * satisfy or violate the criteria of this business rule when evaluated.
+   * <p/>
+   * @return the outcome expected when evaluating an object with this business rule.
+   * @see #evaluate(Object)
+   */
+  public boolean getExpectedOutcome();
+
+  /**
    * Indicates if this business rule is configured to throw an exception on failure when evaluated.  If the object
    * evaluated by this business rule violates the criteria, then an exception is thrown.
    * <p/>
@@ -43,15 +52,6 @@ public interface Rule<T, ID extends Comparable<ID>> extends Identifiable<ID> {
    * @see #evaluate(Object)
    */
   public boolean isThrowExceptionOnFailure();
-
-  /**
-   * Determines the outcome expected when evaluating an object with this business rule.  The object is expected to
-   * satisfy or violate the criteria of this business rule when evaluated.
-   * <p/>
-   * @return the outcome expected when evaluating an object with this business rule.
-   * @see #evaluate(Object)
-   */
-  public boolean getExpectedOutcome();
 
   /**
    * Evaluates the specified object against the criteria, or requirements of this business rule.

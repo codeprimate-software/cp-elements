@@ -43,41 +43,38 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
 
   private volatile ID id;
 
+  /**
+   * Gets the identifier for this Rule.
+   * <p/>
+   * @return the identifier for this Rule.
+   * @see org.cp.elements.lang.Identifiable#getId()
+   * @throws IllegalStateException if the identifier for this Rule was not properly set.
+   */
   public ID getId() {
-    Assert.state(id != null, "The identifier for Rule ({0}) was not properly initialized!");
+    Assert.state(id != null, "The identifier for Rule ({0}) was not properly initialized!", getClass().getName());
     return id;
   }
 
+  /**
+   * Sets the identifier for this Rule.
+   * <p/>
+   * @param id a value of type T assigned as this object's unique identifier.
+   * @see org.cp.elements.lang.Identifiable#setId(Comparable)
+   * @throws NullPointerException if the identifier for this Rule is null.
+   */
   public final void setId(final ID id) {
     Assert.notNull(id, "The identifier for Rule ({0}) cannot be null!", getClass().getName());
     this.id = id;
   }
 
+  /**
+   * Unsupported operation for this Rule.
+   * <p/>
+   * @return boolean indicating whether this Rule is a newly created object.
+   * @throws UnsupportedOperationException operation not support by the Rule class.
+   */
   public boolean isNew() {
     throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
-  }
-
-  /**
-   * Indicates if this business rule is configured to throw an exception on failure when evaluated.  If the object
-   * evaluated by this business rule violates the criteria, then an exception is thrown.
-   * <p/>
-   * @return a boolean value indicating whether this business rule is configured to throw an exception on failure
-   * when evaluated.
-   * @see #evaluate(Object)
-   */
-  public boolean isThrowExceptionOnFailure() {
-    return throwExceptionOnFailure;
-  }
-
-  /**
-   * Configures this business rule to throw, or not throw an Exception on failure when an Object is evaluated.
-   * <p/>
-   * @param throwExceptionOnFailure a boolean value indicating whether this business rule should throw an Exception
-   * on failure when evaluated.
-   * @see #evaluate(Object)
-   */
-  protected final void setThrowExceptionOnFailure(final boolean throwExceptionOnFailure) {
-    this.throwExceptionOnFailure = throwExceptionOnFailure;
   }
 
   /**
@@ -100,6 +97,29 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    */
   protected final void setExpectedOutcome(final boolean expectedOutcome) {
     this.expectedOutcome = expectedOutcome;
+  }
+
+  /**
+   * Indicates whether this business rule is configured to throw an exception on failure when evaluated.  If the object
+   * evaluated by this business rule violates the criteria, then an exception is thrown.
+   * <p/>
+   * @return a boolean value indicating whether this business rule is configured to throw an exception on failure
+   * when evaluated.
+   * @see #evaluate(Object)
+   */
+  public boolean isThrowExceptionOnFailure() {
+    return throwExceptionOnFailure;
+  }
+
+  /**
+   * Configures this business rule to throw or not throw an Exception on failure when an Object is evaluated.
+   * <p/>
+   * @param throwExceptionOnFailure a boolean value indicating whether this business rule should throw an Exception
+   * on failure when evaluated.
+   * @see #evaluate(Object)
+   */
+  protected final void setThrowExceptionOnFailure(final boolean throwExceptionOnFailure) {
+    this.throwExceptionOnFailure = throwExceptionOnFailure;
   }
 
 }
