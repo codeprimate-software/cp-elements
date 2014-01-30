@@ -23,13 +23,12 @@ package org.cp.elements.util.search;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.List;
 
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
+import org.cp.elements.lang.NumberUtils;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
 /**
@@ -37,32 +36,17 @@ import org.junit.Test;
  * AbstractSearcher class.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.search.AbstractSearcher
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class AbstractSearcherTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class AbstractSearcherTest extends AbstractMockingTestSuite {
 
   @Test
   public void testSetAndGetMatcher() {
     AbstractSearcher searcher = new TestSearcher();
-    Comparator mockMatcher = mockContext.mock(Comparator.class);
+    Matcher mockMatcher = mockContext.mock(Matcher.class);
 
     searcher.setMatcher(mockMatcher);
 
@@ -75,7 +59,7 @@ public class AbstractSearcherTest {
       new TestSearcher().setMatcher(null);
     }
     catch (NullPointerException expected) {
-      assertEquals(String.format("The Comparator used as the matcher for this Searcher (%1$s) cannot be null!",
+      assertEquals(String.format("The Matcher used to match elements in the collection during the search by this Searcher (%1$s) cannot be null!",
         TestSearcher.class.getName()), expected.getMessage());
       throw expected;
     }
@@ -87,7 +71,7 @@ public class AbstractSearcherTest {
       new TestSearcher().getMatcher();
     }
     catch (IllegalStateException expected) {
-      assertEquals(String.format("A reference to the Comparator used as the matcher for this Searcher (%1$s) for searching elements in the collection was not properly configured!",
+      assertEquals(String.format("A reference to the Matcher used by this Searcher (%1$s) for searching and matching elements in the collection was not properly configured!",
         TestSearcher.class.getName()), expected.getMessage());
       throw expected;
     }
@@ -99,6 +83,80 @@ public class AbstractSearcherTest {
 
     assertNull(searcher.search("test", "testing", "tested"));
     assertTrue(searcher.isSearched());
+  }
+
+  @Test
+  public void testSearchForAllInArray() {
+    AbstractSearcher searcher = new TestSearcher();
+
+    searcher.setMatcher(new AbstractMatcher() {
+      int matchIndex = 0;
+      int value = 1;
+      @Override public int match(final Object obj) {
+        value *= -1;
+        return (NumberUtils.isEven(++matchIndex) ? 0 : value);
+      }
+    });
+
+    String[] animals = { "aardvark", "baboon", "cat", "dog", "elephant", "ferret", "giraffe", "horse", "iguana",
+      "jackal", "kangaroo", "lama", "mouse", "newt", "octopus", "porcupine", "quail", "rabbit", "snake", "turtle",
+      "urchin", "viper", "walrus", "x", "yack", "zebra" };
+
+    Iterable<String> searchResults = searcher.searchForAll(animals);
+
+    assertNotNull(searchResults);
+
+    int resultIndex = 1;
+
+    for (String result : searchResults) {
+      assertEquals(animals[resultIndex], result);
+      resultIndex += 2;
+    }
+  }
+
+  @Test
+  public void testSearchForAllInCollection() {
+    AbstractSearcher searcher = new TestSearcher();
+
+    searcher.setMatcher(new AbstractMatcher() {
+      int matchIndex = 0;
+      int value = 1;
+      @Override public int match(final Object obj) {
+        value *= -1;
+        return (NumberUtils.isOdd(++matchIndex) ? 0 : value);
+      }
+    });
+
+    List<String> animals = Arrays.asList("aardvark", "baboon", "cat", "dog", "elephant", "ferret", "giraffe", "horse", "iguana",
+      "jackal", "kangaroo", "lama", "mouse", "newt", "octopus", "porcupine", "quail", "rabbit", "snake", "turtle",
+      "urchin", "viper", "walrus", "x", "yack", "zebra");
+
+    Iterable<String> searchResults = searcher.searchForAll(animals);
+
+    assertNotNull(searchResults);
+
+    int resultIndex = 0;
+
+    for (String result : searchResults) {
+      assertEquals(animals.get(resultIndex), result);
+      resultIndex += 2;
+    }
+  }
+
+  @Test
+  public void testSearchForAllWithNoMatches() {
+    AbstractSearcher searcher = new TestSearcher();
+
+    searcher.setMatcher(new AbstractMatcher() {
+      @Override public int match(final Object obj) {
+        return -1;
+      }
+    });
+
+    Iterable<String> searchResults = searcher.searchForAll("test", "testing", "tested");
+
+    assertNotNull(searchResults);
+    assertFalse(searchResults.iterator().hasNext());
   }
 
   @SuppressWarnings("unused")

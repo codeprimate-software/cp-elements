@@ -19,44 +19,22 @@
  * the EULA @ ...
  */
 
-package org.cp.elements.util.search;
+package org.cp.elements.util.search.support;
 
 import java.util.Collection;
 
+import org.cp.elements.util.search.AbstractSearcher;
+
 /**
- * The Searcher interface defines a contract for implementing classes responsible for searching a collection of objects
- * in order to find a specified match or a collection of matches.
+ * The LinearSearch class is an implementation of the Searcher interface iterating over elements in the collection
+ * in a linear manner in search of the first element satisfying the Matcher's criteria.
  * <p/>
  * @author John J. Blum
- * @see java.util.Collection
  * @see org.cp.elements.util.search.AbstractSearcher
- * @see org.cp.elements.util.search.Matcher
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Searcher {
-
-  /**
-   * Gets the Matcher used to match the element, or elements in the collection.
-   * <p/>
-   * @param <E> the Class type of elements in the collection.
-   * @return the Matcher used to compare and match the element, or elements in the collection during
-   * the search operation.
-   * @see org.cp.elements.util.search.Matcher
-   */
-  public <E> Matcher<E> getMatcher();
-
-  /**
-   * Searches the array of elements in order to find the element or elements matching the criteria defined
-   * by the Matcher.
-   * <p/>
-   * @param <E> the Class type of elements in the array.
-   * @param array the array of elements to search.
-   * @return the element in the array matching the search criteria defined by the Matcher.
-   * @see #getMatcher()
-   * @see #search(java.util.Collection)
-   */
-  public <E> E search(E... array);
+public class LinearSearch extends AbstractSearcher {
 
   /**
    * Searches the Collection of elements in order to find the element or elements matching the criteria defined
@@ -66,8 +44,16 @@ public interface Searcher {
    * @param collection the Collection of elements to search.
    * @return the element in the Collection matching the search criteria defined by the Matcher.
    * @see #getMatcher()
-   * @see #search(Object[])
    */
-  public <E, T extends Collection<E>> E search(T collection);
+  @Override
+  public <E, T extends Collection<E>> E search(final T collection) {
+    for (E element : collection) {
+      if (getMatcher().isMatch(element)) {
+        return element;
+      }
+    }
+
+    return null;
+  }
 
 }
