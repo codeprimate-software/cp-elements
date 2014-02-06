@@ -23,6 +23,7 @@ package org.cp.elements.util.sort;
 
 import java.util.AbstractList;
 import java.util.Comparator;
+import java.util.List;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
@@ -78,6 +79,21 @@ public abstract class AbstractSorter implements Sorter {
   public <E> E[] sort(final E... elements) {
     sort(new SortableArrayList(elements));
     return elements;
+  }
+
+  /**
+   * Swaps elements at 2 different positions (indexes) in the List of elements.
+   * <p/>
+   * @param <E> the Class type of the elements in the List.
+   * @param elements the List of elements to perform an element swap on.
+   * @param index1 the index of the first element to swap.
+   * @param index2 the index of the second element to swap.
+   * @see java.util.List
+   */
+  protected <E> void swap(final List<E> elements, final int index1, final int index2) {
+    E elementFromIndex1 = elements.get(index1);
+    elements.set(index1, elements.get(index2));
+    elements.set(index2, elementFromIndex1);
   }
 
   /**

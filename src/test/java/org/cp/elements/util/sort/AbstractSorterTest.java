@@ -25,13 +25,12 @@ import static org.cp.elements.test.TestUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
 /**
@@ -39,27 +38,12 @@ import org.junit.Test;
  * AbstractSorter class.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.sort.AbstractSorter
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class AbstractSorterTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class AbstractSorterTest extends AbstractMockingTestSuite {
 
   @Test
   public void testSetAndGetOrderBy() {
@@ -82,6 +66,19 @@ public class AbstractSorterTest {
 
     assertSame(elements, sorter.sort(elements));
     assertTrue(sorter.isSorted());
+  }
+
+  @Test
+  public void testSwap() {
+    List<String> elements = new ArrayList<String>(Arrays.asList("zero", "one", "two", "three"));
+
+    assertEquals("one", elements.get(1));
+    assertEquals("two", elements.get(2));
+
+    new TestSorter().swap(elements, 1, 2);
+
+    assertEquals("two", elements.get(1));
+    assertEquals("one", elements.get(2));
   }
 
   @Test
