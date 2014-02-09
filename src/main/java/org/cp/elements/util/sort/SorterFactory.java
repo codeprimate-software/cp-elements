@@ -23,6 +23,7 @@ package org.cp.elements.util.sort;
 
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.util.sort.support.BubbleSort;
+import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
 import org.cp.elements.util.sort.support.InsertionSort;
 import org.cp.elements.util.sort.support.MergeSort;
@@ -37,6 +38,7 @@ import org.cp.elements.util.sort.support.ShellSort;
  * @author John J. Blum
  * @see org.cp.elements.util.sort.SortType
  * @see org.cp.elements.util.sort.support.BubbleSort
+ * @see org.cp.elements.util.sort.support.CombSort
  * @see org.cp.elements.util.sort.support.HeapSort
  * @see org.cp.elements.util.sort.support.InsertionSort
  * @see org.cp.elements.util.sort.support.MergeSort
@@ -62,6 +64,8 @@ public class SorterFactory {
     switch (ObjectUtils.defaultIfNull(type, SortType.UNKONWN)) {
       case BUBBLE_SORT:
         return (T) new BubbleSort();
+      case COMB_SORT:
+        return (T) new CombSort();
       case HEAP_SORT:
         return (T) new HeapSort();
       case INSERTION_SORT:

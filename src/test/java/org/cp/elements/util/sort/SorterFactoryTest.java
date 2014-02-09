@@ -24,6 +24,7 @@ package org.cp.elements.util.sort;
 import static org.junit.Assert.*;
 
 import org.cp.elements.util.sort.support.BubbleSort;
+import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
 import org.cp.elements.util.sort.support.InsertionSort;
 import org.cp.elements.util.sort.support.MergeSort;
@@ -46,6 +47,7 @@ public class SorterFactoryTest {
   @Test
   public void testCreate() {
     assertTrue(SorterFactory.createSorter(SortType.BUBBLE_SORT) instanceof BubbleSort);
+    assertTrue(SorterFactory.createSorter(SortType.COMB_SORT) instanceof CombSort);
     assertTrue(SorterFactory.createSorter(SortType.HEAP_SORT) instanceof HeapSort);
     assertTrue(SorterFactory.createSorter(SortType.INSERTION_SORT) instanceof InsertionSort);
     assertTrue(SorterFactory.createSorter(SortType.MERGE_SORT) instanceof MergeSort);

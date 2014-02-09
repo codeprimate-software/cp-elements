@@ -31,6 +31,7 @@ package org.cp.elements.util.sort;
 @SuppressWarnings("unused")
 public enum SortType {
   BUBBLE_SORT("BUBBLE", "Bubble Sort"),
+  COMB_SORT("COMB", "Comb Sort"),
   HEAP_SORT("HEAP", "Heap Sort"),
   INSERTION_SORT("INSERTION", "Insertion Sort"),
   MERGE_SORT("MERGE", "Merge Sort"),

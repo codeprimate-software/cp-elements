@@ -46,6 +46,7 @@ public class SortTypeTest {
   @Test
   public void testValueOfAbbreviation() {
     assertEquals(SortType.BUBBLE_SORT, SortType.valueOfAbbreviation(SortType.BUBBLE_SORT.getAbbreviation()));
+    assertEquals(SortType.COMB_SORT, SortType.valueOfAbbreviation(SortType.COMB_SORT.getAbbreviation()));
     assertEquals(SortType.HEAP_SORT, SortType.valueOfAbbreviation(SortType.HEAP_SORT.getAbbreviation()));
     assertEquals(SortType.INSERTION_SORT, SortType.valueOfAbbreviation(SortType.INSERTION_SORT.getAbbreviation()));
     assertEquals(SortType.MERGE_SORT, SortType.valueOfAbbreviation(SortType.MERGE_SORT.getAbbreviation()));
@@ -69,6 +70,7 @@ public class SortTypeTest {
   @Test
   public void testValueOfName() {
     assertEquals(SortType.BUBBLE_SORT, SortType.valueOfName(SortType.BUBBLE_SORT.getName()));
+    assertEquals(SortType.COMB_SORT, SortType.valueOfName(SortType.COMB_SORT.getName()));
     assertEquals(SortType.HEAP_SORT, SortType.valueOfName(SortType.HEAP_SORT.getName()));
     assertEquals(SortType.INSERTION_SORT, SortType.valueOfName(SortType.INSERTION_SORT.getName()));
     assertEquals(SortType.MERGE_SORT, SortType.valueOfName(SortType.MERGE_SORT.getName()));
