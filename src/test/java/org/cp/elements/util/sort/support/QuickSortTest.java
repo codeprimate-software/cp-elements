@@ -21,7 +21,9 @@
 
 package org.cp.elements.util.sort.support;
 
-import org.cp.elements.util.sort.Sorter;
+import static org.junit.Assert.*;
+
+import org.junit.Test;
 
 /**
  * The QuickSortTest class is a test suite of test cases testing the contract and functionality of the QuickSort
@@ -36,8 +38,49 @@ import org.cp.elements.util.sort.Sorter;
 public class QuickSortTest extends CommonSortTestSuite {
 
   @Override
-  protected Sorter getSorter() {
+  protected QuickSort getSorter() {
     return new QuickSort();
+  }
+
+  @Test
+  public void testSetAndGetSizeThreshold() {
+    QuickSort sorter = getSorter();
+
+    assertNotNull(sorter);
+    assertEquals(QuickSort.DEFAULT_SIZE_THRESHOLD, sorter.getSizeThreshold());
+
+    sorter.setSizeThreshold(QuickSort.DEFAULT_SIZE_THRESHOLD + 100);
+
+    assertEquals(QuickSort.DEFAULT_SIZE_THRESHOLD + 100, sorter.getSizeThreshold());
+
+    sorter.setSizeThreshold(QuickSort.DEFAULT_SIZE_THRESHOLD - 5);
+
+    assertEquals(QuickSort.DEFAULT_SIZE_THRESHOLD, sorter.getSizeThreshold());
+
+    sorter.setSizeThreshold(QuickSort.DEFAULT_SIZE_THRESHOLD - QuickSort.DEFAULT_SIZE_THRESHOLD - 5);
+
+    assertEquals(QuickSort.DEFAULT_SIZE_THRESHOLD, sorter.getSizeThreshold());
+
+    sorter.setSizeThreshold(QuickSort.DEFAULT_SIZE_THRESHOLD * -2);
+
+    assertEquals(QuickSort.DEFAULT_SIZE_THRESHOLD, sorter.getSizeThreshold());
+  }
+
+  @Test
+  public void testSetAndGetSorter() {
+    QuickSort sorter = getSorter();
+
+    assertNotNull(sorter);
+    assertSame(QuickSort.DEFAULT_SORTER, sorter.getSorter());
+    assertFalse(sorter.getSorter() instanceof HeapSort);
+
+    sorter.setSorter(new HeapSort());
+
+    assertTrue(sorter.getSorter() instanceof HeapSort);
+
+    sorter.setSorter(null);
+
+    assertSame(QuickSort.DEFAULT_SORTER, sorter.getSorter());
   }
 
 }

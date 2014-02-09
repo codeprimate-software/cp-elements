@@ -28,7 +28,7 @@ import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 
 /**
- * The QuickSort class is an implementation of the Quick Sort algorithm and the Sorter inteface.
+ * The QuickSort class is an implementation of the Quick Sort algorithm and the Sorter interface.
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.util.sort.AbstractSorter
@@ -40,9 +40,9 @@ import org.cp.elements.util.sort.Sorter;
 @SuppressWarnings("unused")
 public class QuickSort extends AbstractSorter {
 
-  private static final int DEFAULT_SIZE_THRESHOLD = 7;
+  protected static final int DEFAULT_SIZE_THRESHOLD = 7;
 
-  private static final Sorter DEFAULT_SORTER = new InsertionSort();
+  protected static final Sorter DEFAULT_SORTER = new InsertionSort();
 
   private int sizeThreshold = DEFAULT_SIZE_THRESHOLD;
 
