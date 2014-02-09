@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 import org.junit.After;
@@ -40,13 +41,15 @@ import org.junit.Test;
  * test case to test sort order functionality of the Sorter.
  * <p/>
  * @author John J. Blum
+ * @see java.util.Random
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see org.cp.elements.util.sort.Sorter
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class CommonSortTestSuite {
+public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
   protected static final int DEFAULT_ELEMENT_COUNT_TO_SORT = 10000;
   protected static final int DEFAULT_MAXIMUM_NUMBER_VALUE = 1000000;
@@ -93,6 +96,8 @@ public abstract class CommonSortTestSuite {
 
   @Before
   public void setup() {
+    super.setup();
+
     if (runSetup()) {
       Random numberGenerator = new Random(System.currentTimeMillis());
 
@@ -118,6 +123,7 @@ public abstract class CommonSortTestSuite {
 
   @After
   public void tearDown() {
+    super.tearDown();
     numbers = null;
   }
 

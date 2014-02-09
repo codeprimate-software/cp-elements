@@ -21,7 +21,12 @@
 
 package org.cp.elements.util.sort.support;
 
-import org.cp.elements.util.sort.Sorter;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.jmock.Expectations;
+import org.junit.Test;
 
 /**
  * The ShellSortTest class is a test suite of test cases testing the contract and functionality of the ShellSort
@@ -36,8 +41,22 @@ import org.cp.elements.util.sort.Sorter;
 public class ShellSortTest extends CommonSortTestSuite {
 
   @Override
-  protected Sorter getSorter() {
+  protected ShellSort getSorter() {
     return new ShellSort();
+  }
+
+  @Test
+  public void testGetGap() {
+    final List mockList = mockContext.mock(List.class, "Sortable List");
+
+    mockContext.checking(new Expectations() {{
+      oneOf(mockList).size();
+      will(returnValue(300));
+    }});
+
+    ShellSort sorter = getSorter();
+
+    assertEquals(100, sorter.getGap(mockList));
   }
 
 }
