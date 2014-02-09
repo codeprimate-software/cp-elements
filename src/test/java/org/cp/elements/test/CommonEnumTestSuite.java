@@ -35,11 +35,12 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see java.lang.Enum
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class CommonEnumTestSuite {
+public abstract class CommonEnumTestSuite extends AbstractMockingTestSuite {
 
   protected abstract Enum getEnumType();
 
