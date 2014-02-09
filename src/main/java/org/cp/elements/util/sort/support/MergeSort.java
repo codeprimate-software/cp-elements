@@ -90,7 +90,7 @@ public class MergeSort extends AbstractSorter {
    * @see java.util.List
    */
   // TODO solve the ArrayList allocation (memory resource consumption) problem
-  private <E> List<E> merge(final List<E> leftElements, final List<E> rightElements) {
+  protected <E> List<E> merge(final List<E> leftElements, final List<E> rightElements) {
     int leftIndex = 0;
     int leftSize = leftElements.size();
     int rightIndex = 0;
