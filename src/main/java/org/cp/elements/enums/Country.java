@@ -22,14 +22,15 @@
 package org.cp.elements.enums;
 
 /**
- * The Country enum define constants for all the countries of the world.
+ * The Country enum defines constants (enumerated values) for all the countries of the world.
  * <p/>
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum Country {
-  UNITED_STATES_OF_AMERICA("US", "United States of America");
+  UNITED_STATES_OF_AMERICA("USA", "United States of America");
 
   private final String abbreviation;
   private final String name;
@@ -40,7 +41,7 @@ public enum Country {
   }
 
   public static Country valueOfAbbreviation(final String abbreviation) {
-    for (final Country country : values()) {
+    for (Country country : values()) {
       if (country.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return country;
       }
@@ -50,7 +51,7 @@ public enum Country {
   }
 
   public static Country valueOfName(final String name) {
-    for (final Country country : values()) {
+    for (Country country : values()) {
       if (country.getName().equalsIgnoreCase(name)) {
         return country;
       }

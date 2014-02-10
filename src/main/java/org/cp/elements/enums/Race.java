@@ -22,9 +22,10 @@
 package org.cp.elements.enums;
 
 /**
- * The Race enum defines constants for different ethnicities and nationalities.
+ * The Race enum defines constants (enumerated values) for different ethnicity and nationality.
  * <p/>
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -34,6 +35,7 @@ public enum Race {
   ASIAN("Asian", "Asian"),
   EUROPEAN("European", "European"),
   HISPANIC("Hispanic", "Hispanic"),
+  INDIAN("Indi", "Indian"),
   NATIVE_AMERICAN("Indian", "Native American"),
   WHITE("White", "White");
 
@@ -46,7 +48,7 @@ public enum Race {
   }
 
   public static Race valueOfAbbreviation(final String abbreviation) {
-    for (final Race race : values()) {
+    for (Race race : values()) {
       if (race.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return race;
       }
@@ -56,7 +58,7 @@ public enum Race {
   }
 
   public static Race valueOfName(final String name) {
-    for (final Race race : values()) {
+    for (Race race : values()) {
       if (race.getName().equalsIgnoreCase(name)) {
         return race;
       }

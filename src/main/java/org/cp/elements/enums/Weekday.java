@@ -26,9 +26,10 @@ import static org.cp.elements.lang.OperatorUtils.from;
 import java.util.Calendar;
 
 /**
- * The Weekday enum defines constants for all the days of a week.
+ * The Weekday enum defines constants (enumerated values) for all the days of a week.
  * <p/>
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -55,7 +56,7 @@ public enum Weekday {
   }
 
   public static Weekday valueOfAbbreviation(final String abbreviation) {
-    for (final Weekday day : values()) {
+    for (Weekday day : values()) {
       if (day.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return day;
       }
@@ -65,7 +66,7 @@ public enum Weekday {
   }
 
   public static Weekday valueOfCalendarConstant(final int calendarConstant) {
-    for (final Weekday day : values()) {
+    for (Weekday day : values()) {
       if (day.getCalendarConstant() == calendarConstant) {
         return day;
       }

@@ -21,57 +21,49 @@
 
 package org.cp.elements.enums;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
 /**
- * The Gender enum defines constants (enumerated values) for the two sexes (male and female).
+ * The GenderTest class is a test suite of test cases testing the contract and functionality of the Gender Enum.
  * <p/>
  * @author John J. Blum
- * @see java.lang.Enum
+ * @see org.cp.elements.enums.Gender
+ * @see org.junit.Test
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
-public enum Gender {
-  FEMALE("F", "Female"),
-  MALE("M", "Male");
+public class GenderTest {
 
-  private final String abbreviation;
-  private final String name;
-
-  Gender(final String abbreviation, final String name) {
-    this.abbreviation = abbreviation;
-    this.name = name;
+  @Test
+  public void testValueOf() {
+    for (Gender gender : Gender.values()) {
+      assertEquals(gender, Gender.valueOf(gender.name()));
+    }
   }
 
-  public static Gender valueOfAbbreviation(final String abbreviation) {
-    for (Gender gender : values()) {
-      if (gender.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return gender;
-      }
+  @Test
+  public void testValueOfAbbreviation() {
+    for (Gender gender : Gender.values()) {
+      assertEquals(gender, Gender.valueOfAbbreviation(gender.getAbbreviation()));
     }
 
-    return null;
+    assertEquals(Gender.FEMALE, Gender.valueOfAbbreviation("f"));
+    assertNull(Gender.valueOfAbbreviation("Female"));
+    assertNull(Gender.valueOfAbbreviation("G"));
+    assertNull(Gender.valueOfAbbreviation("W"));
   }
 
-  public static Gender valueOfName(final String name) {
-    for (Gender gender : values()) {
-      if (gender.getName().equalsIgnoreCase(name)) {
-        return gender;
-      }
+  @Test
+  public void testValueOfName() {
+    for (Gender gender : Gender.values()) {
+      assertEquals(gender, Gender.valueOfName(gender.getName()));
     }
 
-    return null;
-  }
-
-  public String getAbbreviation() {
-    return abbreviation;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public String toString() {
-    return this.name;
+    assertEquals(Gender.FEMALE, Gender.valueOfName("female"));
+    assertNull(Gender.valueOfName("F"));
+    assertNull(Gender.valueOfName("Girl"));
+    assertNull(Gender.valueOfName("Woman"));
   }
 
 }

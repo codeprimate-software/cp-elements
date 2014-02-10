@@ -22,9 +22,10 @@
 package org.cp.elements.enums;
 
 /**
- * The State enum defines constants for all 50 of the United States of America.
+ * The State enum defines constants (enumerated values) for all 50 of the United States of America.
  * <p/>
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -89,7 +90,7 @@ public enum State {
   }
 
   public static State valueOfAbbreviation(final String abbreviation) {
-    for (final State state : values()) {
+    for (State state : values()) {
       if (state.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return state;
       }
@@ -99,7 +100,7 @@ public enum State {
   }
 
   public static State valueOfName(final String name) {
-    for (final State state : values()) {
+    for (State state : values()) {
       if (state.getName().equalsIgnoreCase(name)) {
         return state;
       }

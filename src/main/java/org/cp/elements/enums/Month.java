@@ -24,9 +24,10 @@ package org.cp.elements.enums;
 import java.util.Calendar;
 
 /**
- * The Month enum defines constants for Months in the year.
+ * The Month enum defines constants (enumerated values) for Months in the year.
  * <p/>
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

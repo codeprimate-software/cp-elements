@@ -22,9 +22,10 @@
 package org.cp.elements.enums;
 
 /**
- * The TimeUnit enum defines constants for units of time.
+ * The TimeUnit enum defines constants (enumerated values) for units of time.
  * <p/>
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -55,7 +56,7 @@ public enum TimeUnit {
   }
 
   public static TimeUnit valueOfAbbreviation(final String abbreviation) {
-    for (final TimeUnit unit : values()) {
+    for (TimeUnit unit : values()) {
       if (unit.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return unit;
       }
@@ -65,7 +66,7 @@ public enum TimeUnit {
   }
 
   public static TimeUnit valueOfName(final String name) {
-    for (final TimeUnit unit : values()) {
+    for (TimeUnit unit : values()) {
       if (unit.getName().equalsIgnoreCase(name)) {
         return unit;
       }

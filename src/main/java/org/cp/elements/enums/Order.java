@@ -22,7 +22,7 @@
 package org.cp.elements.enums;
 
 /**
- * The Order enumeration defines sort orders.
+ * The Order enum defines constants (enumeration values) for sort order/order by.
  * <p/>
  * @author John J. Blum
  * @since 1.0.0
