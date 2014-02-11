@@ -48,6 +48,28 @@ public class WeekdayTest {
   };
 
   @Test
+  public void testIsWeekday() {
+    assertFalse(Weekday.SUNDAY.isWeekday());
+    assertTrue(Weekday.MONDAY.isWeekday());
+    assertTrue(Weekday.TUESDAY.isWeekday());
+    assertTrue(Weekday.WEDNESDAY.isWeekday());
+    assertTrue(Weekday.THURSDAY.isWeekday());
+    assertTrue(Weekday.FRIDAY.isWeekday());
+    assertFalse(Weekday.SATURDAY.isWeekday());
+  }
+
+  @Test
+  public void testIsWeekend() {
+    assertTrue(Weekday.SUNDAY.isWeekend());
+    assertFalse(Weekday.MONDAY.isWeekend());
+    assertFalse(Weekday.TUESDAY.isWeekend());
+    assertFalse(Weekday.WEDNESDAY.isWeekend());
+    assertFalse(Weekday.THURSDAY.isWeekend());
+    assertFalse(Weekday.FRIDAY.isWeekend());
+    assertTrue(Weekday.SATURDAY.isWeekend());
+  }
+
+  @Test
   public void testValueOf() {
     int position = 1;
 
@@ -112,6 +134,5 @@ public class WeekdayTest {
     assertNull(Weekday.valueOfPosition(8));
     assertNull(Weekday.valueOfPosition(-7));
   }
-
 
 }

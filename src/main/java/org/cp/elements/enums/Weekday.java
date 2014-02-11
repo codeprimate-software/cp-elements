@@ -76,7 +76,7 @@ public enum Weekday {
   }
 
   public static Weekday valueOfName(final String name) {
-    for (final Weekday day : values()) {
+    for (Weekday day : values()) {
       if (day.getName().equalsIgnoreCase(name)) {
         return day;
       }
@@ -86,7 +86,7 @@ public enum Weekday {
   }
 
   public static Weekday valueOfPosition(final int position) {
-    for (final Weekday day : values()) {
+    for (Weekday day : values()) {
       if (day.getPosition() == position) {
         return day;
       }

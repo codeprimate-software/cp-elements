@@ -59,7 +59,7 @@ public enum Month {
   }
 
   public static Month valueOfAbbreviation(final String abbreviation) {
-    for (final Month month : values()) {
+    for (Month month : values()) {
       if (month.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return month;
       }
@@ -69,7 +69,7 @@ public enum Month {
   }
 
   public static Month valueOfCalendarConstant(final int calendarConstant) {
-    for (final Month month : values()) {
+    for (Month month : values()) {
       if (month.getCalendarConstant() == calendarConstant) {
         return month;
       }
@@ -79,7 +79,7 @@ public enum Month {
   }
 
   public static Month valueOfName(final String name) {
-    for (final Month month : values()) {
+    for (Month month : values()) {
       if (month.getName().equalsIgnoreCase(name)) {
         return month;
       }
@@ -89,7 +89,7 @@ public enum Month {
   }
 
   public static Month valueOfPosition(final int position) {
-    for (final Month month : values()) {
+    for (Month month : values()) {
       if (month.getPosition() == position) {
         return month;
       }
