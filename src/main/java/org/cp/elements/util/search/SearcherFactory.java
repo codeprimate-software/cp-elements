@@ -30,6 +30,7 @@ import org.cp.elements.util.search.support.LinearSearch;
  * different searching algorithms.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.util.search.Searcher
  * @see org.cp.elements.util.search.SearchType
  * @see org.cp.elements.util.search.support.BinarySearch
  * @see org.cp.elements.util.search.support.LinearSearch
@@ -57,6 +58,30 @@ public class SearcherFactory {
       default:
         throw new IllegalArgumentException(String.format("The SearchType (%1$s) is not supported by the %2$s!", type,
           SearcherFactory.class.getSimpleName()));
+    }
+  }
+
+  /**
+   * Creates an instance of the Searcher interface implementing the searching algorithm based on the SearchType,
+   * otherwise returns the provided default Searcher implementation if a Searcher based on the specified SearchType
+   * is not available.
+   * <p/>
+   * @param <T> the Class type of the actual Searcher implementation based on the SearchType.
+   * @param type the type of searching algorithm Searcher implementation to create.
+   * @param defaultSearcher the default Searcher implementation to use if a Searcher based on the specified SearchType
+   * is not available.
+   * @return a Searcher implementation subclass that implements the searching algorithm based on the SearchType,
+   * or the provided default Searcher implementation if the Searcher based on the SearchType is not available.
+   * @see #createSearcher(SearchType)
+   * @see org.cp.elements.util.search.Searcher
+   * @see org.cp.elements.util.search.SearchType
+   */
+  public static <T extends Searcher> T createSearcherElseDefault(final SearchType type, final T defaultSearcher) {
+    try {
+      return createSearcher(type);
+    }
+    catch (IllegalArgumentException ignore) {
+      return defaultSearcher;
     }
   }
 

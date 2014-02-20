@@ -31,16 +31,20 @@ import java.util.Collection;
  * @see java.util.Collection
  * @see org.cp.elements.util.search.AbstractSearcher
  * @see org.cp.elements.util.search.Matcher
+ * @see org.cp.elements.util.search.Searchable
+ * @see org.cp.elements.util.search.SearcherFactory
+ * @see org.cp.elements.util.search.SearchType
+ * @see org.cp.elements.util.search.annotation.Searchable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface Searcher {
 
   /**
-   * Gets the Matcher used to match the element, or elements in the collection.
+   * Gets the Matcher used to match and find the desired element or elements in the collection.
    * <p/>
    * @param <E> the Class type of elements in the collection.
-   * @return the Matcher used to compare and match the element, or elements in the collection during
+   * @return the Matcher used to match and find the desired element or elements in the collection during
    * the search operation.
    * @see org.cp.elements.util.search.Matcher
    */
@@ -53,8 +57,9 @@ public interface Searcher {
    * @param <E> the Class type of elements in the array.
    * @param array the array of elements to search.
    * @return the element in the array matching the search criteria defined by the Matcher.
-   * @see #getMatcher()
    * @see #search(java.util.Collection)
+   * @see #search(Searchable)
+   * @see #search(Object)
    */
   public <E> E search(E... array);
 
@@ -65,9 +70,39 @@ public interface Searcher {
    * @param <E> the Class type of elements in the Collection.
    * @param collection the Collection of elements to search.
    * @return the element in the Collection matching the search criteria defined by the Matcher.
-   * @see #getMatcher()
    * @see #search(Object[])
+   * @see #search(Searchable)
+   * @see #search(Object)
+   * @see java.util.Collection
    */
-  public <E, T extends Collection<E>> E search(T collection);
+  public <E> E search(Collection<E> collection);
+
+  /**
+   * Searches the Searchable object in order to find the element or elements matching the criteria defined
+   * by the Matcher.
+   * <p/>
+   * @param <E> the Class type of elements to search in the Searchable object.
+   * @param searchable the Searchable object to search.
+   * @return the element in the Searchable object matching the search criteria defined by the Matcher.
+   * @see #search(Object[])
+   * @see #search(java.util.Collection)
+   * @see #search(Object)
+   * @see org.cp.elements.util.search.Searchable
+   */
+  public <E> E search(Searchable<E> searchable);
+
+  /**
+   * Searches the @Searchable annotated object in order to find the element or elements matching the criteria defined
+   * by the Matcher.
+   * <p/>
+   * @param <E> the Class type of elements to search in the @Searchable annotated object.
+   * @param searchableAnnotatedObject the @Searchable annotated object to search.
+   * @return the element in the @Searchable annotated object matching the search criteria defined by the Matcher.
+   * @see #search(Object[])
+   * @see #search(java.util.Collection)
+   * @see #search(Searchable)
+   * @see org.cp.elements.util.search.annotation.Searchable
+   */
+  public <E> E search(Object searchableAnnotatedObject);
 
 }

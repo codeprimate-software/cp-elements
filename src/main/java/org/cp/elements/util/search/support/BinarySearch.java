@@ -56,10 +56,10 @@ public class BinarySearch extends AbstractSearcher {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public <E, T extends Collection<E>> E search(final T collection) {
+  public <E> E search(final Collection<E> collection) {
     Assert.isInstanceOf(collection, List.class, "The collection {0} must be an instance of java.util.List!",
       ClassUtils.getClassName(collection));
-    return (E) doSearch((List) collection);
+    return (E) doSearch((List<E>) collection);
   }
 
   /**
@@ -75,7 +75,7 @@ public class BinarySearch extends AbstractSearcher {
    * @see #search(java.util.Collection)
    * @see java.util.List
    */
-  protected <E, T extends List<E>> E doSearch(final T list) {
+  protected <E> E doSearch(final List<E> list) {
     if (!list.isEmpty()) {
       int matchIndex = (list.size() / 2);
       E element = list.get(matchIndex);

@@ -21,39 +21,35 @@
 
 package org.cp.elements.util.search;
 
-import org.cp.elements.lang.Filter;
+import java.util.List;
 
 /**
- * The Matcher interface defines a contract for objects that match other objects based on criteria defined
- * by the Matcher.
+ * The Searchable interface defines a contract for objects of implementing classes to provide a means (java.util.List)
+ * by which to search the object.
  * <p/>
  * @author John J. Blum
- * @see org.cp.elements.lang.Filter
+ * @param <T> the Class type of the elements in the List.
  * @see org.cp.elements.util.search.Searcher
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Matcher<T> extends Filter<T> {
+public interface Searchable<T> {
 
   /**
-   * Determines whether the specified object is an exact match to the criteria defined by this Matcher.
+   * Returns a List representation of the implementing object in order to perform the search.
    * <p/>
-   * @param obj the Object being evaluated as a possible match to the criteria of this Matcher.
-   * @return a boolean value indicating whether the specified object is an exact match to the criteria
-   * defined by this Matcher.
-   * @see #match(Object)
+   * @return a List representation of the implementing object used to perform the search.
+   * @see java.util.List
    */
-  public boolean isMatch(T obj);
+  public List<T> asList();
 
   /**
-   * Determines the value of the specified object relative to the criteria defined by this Matcher.
+   * Gets the desired Matcher to use during the search operation performed by the Searcher to match and find elements
+   * in the collection.
    * <p/>
-   * @param obj the Object being evaluated as a possible match to the criteria of this Matcher.
-   * @return an integer indicating the object's relative value to the criteria of this Matcher.  Returns zero for an
-   * exact match, a negative number if the object is undervalued, and a positive number if the object exceeds the value
-   * of the criteria.
-   * @see #isMatch(Object)
+   * @return the desired Matcher to match and find elements in the collection during the search operation.
+   * @see org.cp.elements.util.search.Matcher
    */
-  public int match(T obj);
+  public Matcher<T> getMatcher();
 
 }
