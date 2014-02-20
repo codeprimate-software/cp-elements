@@ -45,9 +45,10 @@ public class SearchTypeTest {
 
   @Test
   public void testValueOfAbbreviation() {
-    assertEquals(SearchType.BINARY_SEARCH, SearchType.valueOfAbbreviation(SearchType.BINARY_SEARCH.getAbbreviation()));
-    assertEquals(SearchType.INDEX_SEARCH, SearchType.valueOfAbbreviation(SearchType.INDEX_SEARCH.getAbbreviation()));
-    assertEquals(SearchType.LINEAR_SEARCH, SearchType.valueOfAbbreviation(SearchType.LINEAR_SEARCH.getAbbreviation()));
+    for (SearchType value : SearchType.values()) {
+      assertEquals(value, SearchType.valueOfAbbreviation(value.getAbbreviation()));
+    }
+
     assertEquals(SearchType.BINARY_SEARCH, SearchType.valueOfAbbreviation("binary"));
     assertEquals(SearchType.INDEX_SEARCH, SearchType.valueOfAbbreviation("Index"));
     assertEquals(SearchType.LINEAR_SEARCH, SearchType.valueOfAbbreviation("LINEAR"));
@@ -58,9 +59,10 @@ public class SearchTypeTest {
 
   @Test
   public void testValueOfName() {
-    assertEquals(SearchType.BINARY_SEARCH, SearchType.valueOfName(SearchType.BINARY_SEARCH.getName()));
-    assertEquals(SearchType.INDEX_SEARCH, SearchType.valueOfName(SearchType.INDEX_SEARCH.getName()));
-    assertEquals(SearchType.LINEAR_SEARCH, SearchType.valueOfName(SearchType.LINEAR_SEARCH.getName()));
+    for (SearchType value : SearchType.values()) {
+      assertEquals(value, SearchType.valueOfName(value.getName()));
+    }
+
     assertEquals(SearchType.BINARY_SEARCH, SearchType.valueOfName("binary search"));
     assertEquals(SearchType.INDEX_SEARCH, SearchType.valueOfName("Index Search"));
     assertEquals(SearchType.LINEAR_SEARCH, SearchType.valueOfName("LINEAR SEARCH"));

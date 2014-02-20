@@ -23,6 +23,7 @@ package org.cp.elements.util.search;
 
 import static org.junit.Assert.*;
 
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.search.support.BinarySearch;
 import org.cp.elements.util.search.support.LinearSearch;
 import org.junit.Test;
@@ -32,11 +33,12 @@ import org.junit.Test;
  * SearcherFactory class.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.search.SearcherFactory
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class SearcherFactoryTest {
+public class SearcherFactoryTest extends AbstractMockingTestSuite {
 
   @Test
   public void testCreateSearcher() {
@@ -54,6 +56,19 @@ public class SearcherFactoryTest {
         SearcherFactory.class.getSimpleName()), expected.getMessage());
       throw expected;
     }
+  }
+
+  @Test
+  public void testCreateSearcherElseDefaultWithKnownSearchAlgorithm() {
+    assertTrue(SearcherFactory.createSearcherElseDefault(SearchType.BINARY_SEARCH, null) instanceof BinarySearch);
+  }
+
+  @Test
+  public void testCreateSearcherElseDefaultWithUnknownSearchAlgorithm() {
+    Searcher mockDefaultSearcher = mockContext.mock(Searcher.class, "testCreateSearcherElseDefaultWithUnknownSearchAlgorithm");
+
+    assertSame(mockDefaultSearcher, SearcherFactory.createSearcherElseDefault(SearchType.INDEX_SEARCH, mockDefaultSearcher));
+    assertNull(SearcherFactory.createSearcherElseDefault(SearchType.UNKNOWN_SEARCH, null));
   }
 
 }

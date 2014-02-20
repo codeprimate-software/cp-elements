@@ -46,7 +46,7 @@ public class LinearSearch extends AbstractSearcher {
    * @see #getMatcher()
    */
   @Override
-  public <E, T extends Collection<E>> E search(final T collection) {
+  public <E> E search(final Collection<E> collection) {
     for (E element : collection) {
       if (getMatcher().isMatch(element)) {
         return element;
