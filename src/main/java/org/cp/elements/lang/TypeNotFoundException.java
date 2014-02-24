@@ -23,7 +23,7 @@ package org.cp.elements.lang;
 
 /**
  * The TypeNotFoundException class is a RuntimeException indicating that a class specified by name cannot be found
- * on the CLASSPATH.  This is the unchecked, runtime equivalent of the checked ClassNotFoundException.
+ * in the CLASSPATH.  This is the unchecked, runtime equivalent of the checked ClassNotFoundException.
  * <p/>
  * @author John J. Blum
  * @see java.lang.Class

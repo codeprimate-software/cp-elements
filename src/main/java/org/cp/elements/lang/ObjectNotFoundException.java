@@ -22,7 +22,8 @@
 package org.cp.elements.lang;
 
 /**
- * The ObjectNotFoundException class is a RuntimeException indicating that a object could not be found.
+ * The ObjectNotFoundException class is a RuntimeException indicating that a object could not be found in Java
+ * heap memory.
  * <p/>
  * @author John J. Blum
  * @see java.lang.Object
