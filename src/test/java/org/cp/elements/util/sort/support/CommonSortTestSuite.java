@@ -29,6 +29,7 @@ import java.util.Random;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractMockingTestSuite;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 import org.junit.After;
@@ -56,7 +57,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
   protected Integer[] numbers;
 
-  protected void assertShuffled(final Integer[] numbers) {
+  protected void assertShuffled(final Iterable<Integer> numbers) {
     Integer previousNumber = Integer.MAX_VALUE;
 
     for (Integer currentNumber : numbers) {
@@ -67,10 +68,10 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
       previousNumber = currentNumber;
     }
 
-    fail(String.format("The array of %1$d numbers is not shuffled!", numbers.length));
+    fail("The array of numbers is not shuffled!");
   }
 
-  protected void assertSorted(final Integer[] numbers) {
+  protected void assertSorted(final Iterable<Integer> numbers) {
     Integer previousNumber = -1;
 
     for (Integer currentNumber : numbers) {
@@ -117,7 +118,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
       Collections.shuffle(numberList, numberGenerator);
 
-      assertShuffled(numbers);
+      assertShuffled(ArrayUtils.iterable(numbers));
     }
   }
 
@@ -137,7 +138,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
     assertNotNull(sortedNumbers);
     assertEquals(getNumberOfElementsToSort(), sortedNumbers.length);
-    assertSorted(sortedNumbers);
+    assertSorted(ArrayUtils.iterable(sortedNumbers));
   }
 
   protected static class TestSorter extends AbstractSorter {
