@@ -57,9 +57,11 @@ public interface Searcher {
    * @param <E> the Class type of elements in the array.
    * @param array the array of elements to search.
    * @return the element in the array matching the search criteria defined by the Matcher.
+   * @see #getMatcher()
    * @see #search(java.util.Collection)
    * @see #search(Searchable)
    * @see #search(Object)
+   * @see #searchForAll(Object[])
    */
   public <E> E search(E... array);
 
@@ -70,9 +72,11 @@ public interface Searcher {
    * @param <E> the Class type of elements in the Collection.
    * @param collection the Collection of elements to search.
    * @return the element in the Collection matching the search criteria defined by the Matcher.
+   * @see #getMatcher()
    * @see #search(Object[])
    * @see #search(Searchable)
    * @see #search(Object)
+   * @see #searchForAll(java.util.Collection)
    * @see java.util.Collection
    */
   public <E> E search(Collection<E> collection);
@@ -84,9 +88,11 @@ public interface Searcher {
    * @param <E> the Class type of elements to search in the Searchable object.
    * @param searchable the Searchable object to search.
    * @return the element in the Searchable object matching the search criteria defined by the Matcher.
+   * @see #getMatcher()
    * @see #search(Object[])
    * @see #search(java.util.Collection)
    * @see #search(Object)
+   * @see #searchForAll(Searchable)
    * @see org.cp.elements.util.search.Searchable
    */
   public <E> E search(Searchable<E> searchable);
@@ -98,11 +104,82 @@ public interface Searcher {
    * @param <E> the Class type of elements to search in the @Searchable annotated object.
    * @param searchableAnnotatedObject the @Searchable annotated object to search.
    * @return the element in the @Searchable annotated object matching the search criteria defined by the Matcher.
+   * @see #getMatcher()
    * @see #search(Object[])
    * @see #search(java.util.Collection)
    * @see #search(Searchable)
+   * @see #searchForAll(Object)
    * @see org.cp.elements.util.search.annotation.Searchable
    */
   public <E> E search(Object searchableAnnotatedObject);
+
+  /**
+   * Searches an array of elements finding all elements in the array matching the criteria defined by the Matcher.
+   * <p/>
+   * @param <E> the Class type of elements in the array.
+   * @param array the array of elements to search.
+   * @return an Iterable object containing all elements in the array that match the criteria defined by the Matcher.
+   * @see #getMatcher()
+   * @see #search(Object[])
+   * @see #searchForAll(java.util.Collection)
+   * @see #searchForAll(Searchable)
+   * @see #searchForAll(Object)
+   * @see java.lang.Iterable
+   */
+  public <E> Iterable<E> searchForAll(E... array);
+
+  /**
+   * Searches a collection of elements finding all elements in the collection matching the criteria defined
+   * by the Matcher.
+   * <p/>
+   * @param <E> the Class type of elements in the collection.
+   * @param collection the collection of elements to search.
+   * @return an Iterable object containing all elements in the collection that match the criteria defined
+   * by the Matcher.
+   * @see #getMatcher()
+   * @see #search(java.util.Collection)
+   * @see #searchForAll(Object[])
+   * @see #searchForAll(Searchable)
+   * @see #searchForAll(Object)
+   * @see java.lang.Iterable
+   * @see java.util.Collection
+   */
+  public <E> Iterable<E> searchForAll(Collection<E> collection);
+
+  /**
+   * Searches the Searchable object finding all elements in the Searchable object matching the criteria
+   * defined by the Matcher.
+   * <p/>
+   * @param <E> the Class type of elements to search in the Searchable object.
+   * @param searchable the Searchable object to search.
+   * @return an Iterable object containing all elements from the Searchable object that match the criteria
+   * defined by the Matcher.
+   * @see #getMatcher()
+   * @see #search(Searchable)
+   * @see #searchForAll(Object[])
+   * @see #searchForAll(java.util.Collection)
+   * @see #searchForAll(Object)
+   * @see java.lang.Iterable
+   * @see org.cp.elements.util.search.Searchable
+   */
+  public <E> Iterable<E> searchForAll(Searchable<E> searchable);
+
+  /**
+   * Searches the @Searchable annotated object finding all elements in the object matching the criteria
+   * defined by the Matcher.
+   * <p/>
+   * @param <E> the Class type of elements to search in the @Searchable annotated object.
+   * @param searchableAnnotatedObject the @Searchable annotated object to search.
+   * @return an Iterable object containing all elements from the @Searchable annotated object matching the criteria
+   * defined by the Matcher.
+   * @throws NullPointerException if the @Searchable annotated object is null!
+   * @see #search(Object)
+   * @see #searchForAll(Object[])
+   * @see #searchForAll(java.util.Collection)
+   * @see #searchForAll(Searchable)
+   * @see java.lang.Iterable
+   * @see org.cp.elements.util.search.annotation.Searchable
+   */
+  public <E> Iterable<E> searchForAll(Object searchableAnnotatedObject);
 
 }
