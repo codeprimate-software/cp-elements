@@ -302,6 +302,51 @@ public class ArrayUtilsTest {
   }
 
   @Test
+  public void testIterable() {
+    final Object[] array = { "test", "testing", "tested" };
+    final Iterable<?> iterable = ArrayUtils.iterable(array);
+
+    assertNotNull(iterable);
+
+    int index = 0;
+
+    for (Object element : iterable) {
+      assertEquals(array[index++], element);
+    }
+
+    assertEquals(array.length, index);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testIterableWithNullArray() {
+    try {
+      ArrayUtils.iterable((Object[]) null);
+    }
+    catch (NullPointerException expected) {
+      assertEquals("The array of elements cannot be null!", expected.getMessage());
+      throw expected;
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testIterableWithNoElements() {
+    Iterable<?> iterable = ArrayUtils.iterable();
+
+    assertNotNull(iterable);
+    assertFalse(iterable.iterator().hasNext());
+  }
+
+  @Test
+  public void testIterableWithSingleElement() {
+    Iterable<String> iterable = ArrayUtils.iterable("test");
+
+    assertNotNull(iterable);
+    assertTrue(iterable.iterator().hasNext());
+    assertEquals("test", iterable.iterator().next());
+  }
+
+  @Test
   public void testIterator() {
     final Object[] array = { "test", "testing", "tested" };
     final Iterator<?> arrayIterator = ArrayUtils.iterator(array);

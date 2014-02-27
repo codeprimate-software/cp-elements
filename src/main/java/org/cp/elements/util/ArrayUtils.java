@@ -244,6 +244,26 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Gets an Iterable over the elements in the specified Object array.
+   * <p/>
+   * @param <T> the Class type of element in the Object array.
+   * @param array the Object array backing the Iterable implementation.
+   * @return an Iterable object over the elements in the array.
+   * @throws NullPointerException if the array is null.
+   * @see #iterator(Object[])
+   * @see java.lang.Iterable
+   */
+  public static <T> Iterable<T> iterable(final T... array) {
+    Assert.notNull(array, "The array of elements cannot be null!");
+
+    return new Iterable<T>() {
+      @Override public Iterator<T> iterator() {
+        return ArrayUtils.iterator(array);
+      }
+    };
+  }
+
+  /**
    * Gets an Iterator to iterate over the elements in the specified Object array.
    * <p/>
    * @param array the Object array backing the Iterator implementation.
