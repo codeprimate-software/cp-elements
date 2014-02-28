@@ -50,7 +50,6 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.util.Collection
  * @see org.cp.elements.util.CollectionUtils
- * @see org.junit.Assert
  * @see org.junit.Test
  * @since 1.0.0
  */
@@ -387,7 +386,30 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testIterable() {
+  public void testIterableForEnumeration() {
+    String[] expectedElements = { "test", "testing", "tested" };
+    Vector<String> vector = new Vector<String>(Arrays.asList(expectedElements));
+    Iterable<String> iterable = CollectionUtils.iterable(vector.elements());
+
+    assertNotNull(iterable);
+    assertNotNull(iterable.iterator());
+
+    int index = 0;
+
+    for (String actualElement : iterable) {
+      assertEquals(expectedElements[index++], actualElement);
+    }
+
+    assertEquals(expectedElements.length, index);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testIterableForEnumerationWithNull() {
+    CollectionUtils.iterable((Enumeration<?>) null);
+  }
+
+  @Test
+  public void testIterableForIterator() {
     final List<?> expectedList = Arrays.asList("test", "testing", "tested");
     final List<Object> actualList = new ArrayList<Object>(3);
 
@@ -401,7 +423,7 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableWithNull() {
+  public void testIterableForIteratorWithNull() {
     CollectionUtils.iterable((Iterator<?>) null);
   }
 

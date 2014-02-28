@@ -84,4 +84,28 @@ public class SorterFactory {
     }
   }
 
+  /**
+   * Creates an instance of the Sorter interface implementing the sorting algorithm based on the SortType,
+   * otherwise returns the provided default Sorter implementation if a Sorter based on the specified SortType
+   * is not available.
+   * <p/>
+   * @param <T> the Class type of the actual Sorter implementation based on the SortType.
+   * @param type the type of sorting algorithm Sorter implementation to create.
+   * @param defaultSorter the default Sorter implementation to use if a Sorter based on the specified SortType
+   * is not available.
+   * @return a Sorter implementation subclass that implements the sorting algorithm based on the SortType,
+   * or the provided default Sorter implementation if the Sorter based on the SortType is not available.
+   * @see #createSorter(SortType)
+   * @see org.cp.elements.util.sort.Sorter
+   * @see org.cp.elements.util.sort.SortType
+   */
+  public static <T extends Sorter> T createSorterElseDefault(final SortType type, final T defaultSorter) {
+    try {
+      return createSorter(type);
+    }
+    catch (IllegalArgumentException ignore) {
+      return defaultSorter;
+    }
+  }
+
 }
