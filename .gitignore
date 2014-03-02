@@ -1,5 +1,6 @@
+.backup/
 .bak/
 etc/
 lib/
 target/
-
+.DS_Store
