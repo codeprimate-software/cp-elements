@@ -21,15 +21,12 @@
 
 package org.cp.elements.util.sort;
 
-import java.lang.reflect.Method;
 import java.util.AbstractList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.util.search.SearchException;
 
 /**
  * The AbstractSorter class is base class encapsulating functionality common to all Sorter implementations.
@@ -41,35 +38,7 @@ import org.cp.elements.util.search.SearchException;
 @SuppressWarnings("unused")
 public abstract class AbstractSorter implements Sorter {
 
-  protected static final boolean DEFAULT_CUSTOM_COMPARATOR_ALLOWED = true;
-
-  private boolean customComparatorAllowed = DEFAULT_CUSTOM_COMPARATOR_ALLOWED;
-
   private Comparator orderBy;
-
-  /**
-   * Determines whether a custom Comparator is allowed by this Sorter when sorting and ordering elements in the
-   * collection to be sorted.
-   * <p/>
-   * @return a boolean value indicating whether a custom Comparator is allowed by this Sorter when sorting and ordering
-   * elements in the collection being sorted.
-   * @see #setCustomComparatorAllowed(boolean)
-   */
-  public boolean isCustomComparatorAllowed() {
-    return customComparatorAllowed;
-  }
-
-  /**
-   * Sets whether a custom Comparator is allowed by this Sorter when sorting and ordering elements in the collection
-   * to be sorted.
-   * <p/>
-   * @param customComparatorAllowed a boolean value indicating whether a custom Comparator is allowed by this Sorter
-   * when sorting and ordering elements in the collection being sorted.
-   * @see #isCustomComparatorAllowed()
-   */
-  public void setCustomComparatorAllowed(final boolean customComparatorAllowed) {
-    this.customComparatorAllowed = customComparatorAllowed;
-  }
 
   /**
    * Gets the Comparator used to order the elements in the collection.
@@ -81,8 +50,7 @@ public abstract class AbstractSorter implements Sorter {
   @Override
   @SuppressWarnings("unchecked")
   public <E> Comparator<E> getOrderBy() {
-    return ObjectUtils.defaultIfNull(ComparatorHolder.get(), ObjectUtils.defaultIfNull(
-      orderBy, ComparableComparator.INSTANCE));
+    return ObjectUtils.defaultIfNull(orderBy, ComparableComparator.INSTANCE);
   }
 
   /**
@@ -114,113 +82,6 @@ public abstract class AbstractSorter implements Sorter {
   }
 
   /**
-   * Sorts the List representation of the Sortable implementing object as defined by the 'orderBy' Comparator, or as
-   * determined by elements in the Sortable collection if the elements are Comparable.
-   * <p/>
-   * @param <E> the Class type of elements in the Sortable.
-   * @param sortable the Sortable implementing object containing the collection of elements to sort.
-   * @return the Sortable implementing object sorted.
-   * @see #configureComparator(Sortable)
-   * @see #getOrderBy()
-   * @see #sort(java.util.List)
-   * @see org.cp.elements.util.sort.Sortable#asList()
-   */
-  @Override
-  public <E> Sortable<E> sort(final Sortable<E> sortable) {
-    try {
-      sort(configureComparator(sortable).asList());
-      return sortable;
-    }
-    finally {
-      ComparatorHolder.unset();
-    }
-  }
-
-  /**
-   * Sorts the List representation of the @Sortable annotated object as defined by the 'orderBy' Comparator, or as
-   * determined by elements in the Sortable collection if the elements are Comparable.
-   * <p/>
-   * @param <T> the Class type of object annotated with the @Sortable annotation.
-   * @param sortableAnnotatedObject the @Sortable annotated object containing the collection of elements to sort.
-   * @return the @Sortable annotated object sorted.
-   * @see #asList(Object, org.cp.elements.util.sort.annotation.Sortable)
-   * @see #configureComparator(org.cp.elements.util.sort.annotation.Sortable)
-   * @see #getSortableMetaData(Object)
-   * @see #getOrderBy()
-   * @see #sort(java.util.List)
-   * @see org.cp.elements.util.sort.annotation.Sortable#listMethod()
-   */
-  @Override
-  public <T> T sort(final T sortableAnnotatedObject) {
-    try {
-      sort(asList(sortableAnnotatedObject, configureComparator(getSortableMetaData(sortableAnnotatedObject))));
-      return sortableAnnotatedObject;
-    }
-    finally {
-      ComparatorHolder.unset();
-    }
-  }
-
-  protected org.cp.elements.util.sort.annotation.Sortable getSortableMetaData(final Object sortableAnnotatedObject) {
-    Assert.notNull(sortableAnnotatedObject, "The @Sortable annotated object cannot be null!");
-
-    org.cp.elements.util.sort.annotation.Sortable sortableMetaData = sortableAnnotatedObject.getClass().getAnnotation(
-      org.cp.elements.util.sort.annotation.Sortable.class);
-
-    Assert.notNull(sortableAnnotatedObject, new SortException(String.format(
-      "To sort an object of type (%1$s), the class must be annotated with the (%2$s) annotation!",
-        sortableAnnotatedObject.getClass().getName(), org.cp.elements.util.sort.annotation.Sortable.class.getName())));
-
-    return sortableMetaData;
-  }
-
-  protected <T> Sortable<T> configureComparator(final Sortable<T> sortable) {
-    if (isCustomComparatorAllowed()) {
-      Comparator<?> comparator = sortable.getOrderBy();
-
-      if (comparator != null) {
-        ComparatorHolder.set(comparator);
-      }
-    }
-
-    return sortable;
-  }
-
-  protected org.cp.elements.util.sort.annotation.Sortable configureComparator(final org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
-    try {
-      if (isCustomComparatorAllowed()) {
-        Class<? extends Comparator> comparatorClass = sortableMetaData.orderBy();
-
-        if (!Comparator.class.equals(comparatorClass)) {
-          ComparatorHolder.set(comparatorClass.newInstance());
-        }
-      }
-
-      return sortableMetaData;
-    }
-    catch (Exception e) {
-      throw new SortException(String.format(
-        "Error occurred creating an instance of Coparator class (%1$s) to be used by this Sorter (%2$s)!"
-          + " The Comparator class (%1$s) must have a public no-arg constructor!",
-            sortableMetaData.orderBy().getName(), this.getClass().getName()), e);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  protected <E> List<E> asList(final Object obj, final org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
-    try {
-      Method asList = obj.getClass().getMethod(sortableMetaData.listMethod());
-      List<E> list = (List<E>) asList.invoke(obj);
-      return ObjectUtils.defaultIfNull(list, Collections.<E>emptyList());
-    }
-    catch (Exception e) {
-      throw new SearchException(String.format(
-        "Error occurred getting the list of elements to sort from the (%1$s) method on object of type (%2$s)!",
-          sortableMetaData.listMethod(), obj.getClass().getName()), e);
-    }
-  }
-
-  /**
    * Swaps elements at 2 different positions (indexes) in the List of elements.
    * <p/>
    * @param <E> the Class type of the elements in the List.
@@ -248,29 +109,6 @@ public abstract class AbstractSorter implements Sorter {
     @Override
     public int compare(final T comparable1, final T comparable2) {
       return comparable1.compareTo(comparable2);
-    }
-  }
-
-  /**
-   * The ComparatorHolder class is a holder of a Comparable for the calling Thread during the sort operation.
-   * <p/>
-   * @see java.lang.ThreadLocal
-   * @see java.util.Comparator
-   */
-  protected static class ComparatorHolder {
-
-    private static final ThreadLocal<Comparator<?>> COMPARATOR_HOLDER = new ThreadLocal<Comparator<?>>();
-
-    public static Comparator<?> get() {
-      return COMPARATOR_HOLDER.get();
-    }
-
-    public static void set(final Comparator<?> comparator) {
-      COMPARATOR_HOLDER.set(comparator);
-    }
-
-    public static void unset() {
-      COMPARATOR_HOLDER.remove();
     }
   }
 

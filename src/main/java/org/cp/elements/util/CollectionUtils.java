@@ -41,6 +41,7 @@ import org.cp.elements.lang.support.ToStringRenderer;
  * and specifically the Collection classes.
  * <p/>
  * @author John J. Blum
+ * @since 1.0.0
  * @see java.lang.Iterable
  * @see java.util.Collection
  * @see java.util.Collections
@@ -164,7 +165,7 @@ public abstract class CollectionUtils {
 
     T matchingElement = null;
 
-    for (T element : collection) {
+    for (final T element : collection) {
       if (filter.accept(element)) {
         matchingElement = element;
         break;
@@ -190,9 +191,9 @@ public abstract class CollectionUtils {
     Assert.notNull(collection, "The Iterable collection from which to find elements cannot be null!");
     Assert.notNull(filter, "The Filter used to find elements from the Iterable collection cannot be null!");
 
-    List<T> matchingElements = new ArrayList<T>();
+    final List<T> matchingElements = new ArrayList<T>();
 
-    for (T element : collection) {
+    for (final T element : collection) {
       if (filter.accept(element)) {
         matchingElements.add(element);
       }
@@ -214,31 +215,10 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Adapts the specified Enumeration into an instance of the Iterable interface.
-   * <p/>
-   * @param <T> the Class type of elements enumerated by the Enumeration.
-   * @param enumeration the Enumeration backing the Iterable implementation.
-   * @return an Iterable implementation backed by the Enumeration.
-   * @throws NullPointerException if the Enumeration is null.
-   * @see #iterator(java.util.Enumeration)
-   * @see java.lang.Iterable
-   * @see java.util.Enumeration
-   */
-  public static <T> Iterable<T> iterable(final Enumeration<T> enumeration) {
-    Assert.notNull(enumeration, "The Enumeration back the Iterable implementation cannot be null!");
-
-    return new Iterable<T>() {
-      @Override public Iterator<T> iterator() {
-        return CollectionUtils.iterator(enumeration);
-      }
-    };
-  }
-
-  /**
    * Adapts the specified Iterator into an instance of the Iterable interface.
    * <p/>
-   * @param <T> the Class type of elements iterated by the Iterator.
    * @param iterator the Iterator backing the Iterable implementation.
+   * @param <T> the Class type of elements iterated by the Iterator.
    * @return an Iterable implementation backed by the Iterator.
    * @throws NullPointerException if the Iterator is null.
    * @see java.lang.Iterable
@@ -319,10 +299,10 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Renderer
    */
   public static <T> String toString(final Iterable<T> collection, final Renderer<T> renderer) {
-    StringBuilder buffer = new StringBuilder("[");
+    final StringBuilder buffer = new StringBuilder("[");
     int count = 0;
 
-    for (T element : collection) {
+    for (final T element : collection) {
       buffer.append(count++ > 0 ? ", " : StringUtils.EMPTY_STRING).append(renderer.render(element));
     }
 

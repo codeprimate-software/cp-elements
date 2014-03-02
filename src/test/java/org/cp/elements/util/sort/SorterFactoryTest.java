@@ -23,7 +23,6 @@ package org.cp.elements.util.sort;
 
 import static org.junit.Assert.*;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.sort.support.BubbleSort;
 import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
@@ -39,12 +38,11 @@ import org.junit.Test;
  * SorterFactory class.
  * <p/>
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.sort.SorterFactory
  * @see org.cp.elements.util.sort.SortType
  * @since 1.0.0
  */
-public class SorterFactoryTest extends AbstractMockingTestSuite {
+public class SorterFactoryTest {
 
   @Test
   public void testCreate() {
@@ -68,19 +66,6 @@ public class SorterFactoryTest extends AbstractMockingTestSuite {
         SorterFactory.class.getSimpleName()), expected.getMessage());
       throw expected;
     }
-  }
-
-  @Test
-  public void testCreateSorterElseDefault() {
-    assertTrue(SorterFactory.createSorterElseDefault(SortType.HEAP_SORT, null) instanceof HeapSort);
-  }
-
-  @Test
-  public void testCreateSorterElseDefaultWithUnknownSortAlgorithm() {
-    Sorter mockDefaultSorter = mockContext.mock(Sorter.class, "testCreateSorterElseDefaultWithUnknownSortAlgorithm");
-
-    assertSame(mockDefaultSorter, SorterFactory.createSorterElseDefault(SortType.UNKONWN, mockDefaultSorter));
-    assertNull(SorterFactory.createSorterElseDefault(SortType.UNKONWN, null));
   }
 
 }

@@ -31,7 +31,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.cp.elements.test.AbstractMockingTestSuite;
-import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -46,26 +45,6 @@ import org.junit.Test;
  */
 public class AbstractSorterTest extends AbstractMockingTestSuite {
 
-  @After
-  public void tearDown() {
-    AbstractSorter.ComparatorHolder.unset();
-  }
-
-  @Test
-  public void testSetAndIsCustomComparatorAllowed() {
-    AbstractSorter sorter = new TestSorter();
-
-    assertEquals(AbstractSorter.DEFAULT_CUSTOM_COMPARATOR_ALLOWED, sorter.isCustomComparatorAllowed());
-
-    sorter.setCustomComparatorAllowed(false);
-
-    assertFalse(sorter.isCustomComparatorAllowed());
-
-    sorter.setCustomComparatorAllowed(true);
-
-    assertTrue(sorter.isCustomComparatorAllowed());
-  }
-
   @Test
   public void testSetAndGetOrderBy() {
     AbstractSorter sorter = new TestSorter();
@@ -76,32 +55,6 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     assertSame(mockOrderBy, sorter.getOrderBy());
 
     sorter.setOrderBy(null);
-
-    assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
-  }
-
-  @Test
-  public void testSetAndGetOrderByOfCallingThread() {
-    AbstractSorter sorter = new TestSorter();
-
-    Comparator mockSorterOrderBy = mockContext.mock(Comparator.class, "testSetAndGetOrderByOfCallingThread.Sorter");
-    Comparator mockThreadOrderBy = mockContext.mock(Comparator.class, "testSetAndGetOrderByOfCallingThread.Thread");
-
-    assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
-
-    sorter.setOrderBy(mockSorterOrderBy);
-
-    assertSame(mockSorterOrderBy, sorter.getOrderBy());
-
-    AbstractSorter.ComparatorHolder.set(mockThreadOrderBy);
-
-    assertSame(mockThreadOrderBy, sorter.getOrderBy());
-
-    sorter.setOrderBy(null);
-
-    assertSame(mockThreadOrderBy, sorter.getOrderBy());
-
-    AbstractSorter.ComparatorHolder.unset();
 
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
   }
