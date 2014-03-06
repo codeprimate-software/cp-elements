@@ -383,6 +383,10 @@ public abstract class AbstractSearcher implements Searcher {
       return MATCHER_HOLDER.get();
     }
 
+    public static boolean isSet() {
+      return (get() != null);
+    }
+
     public static void set(final Matcher<?> matcher) {
       MATCHER_HOLDER.set(matcher);
     }

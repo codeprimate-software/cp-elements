@@ -682,6 +682,24 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     assertTrue(actualList.isEmpty());
   }
 
+  @Test
+  public void testMatcherHolderGetIsSetSetAndUnset() {
+    Matcher<?> mockMatcher = mockContext.mock(Matcher.class, "testMatcherHolderGetIsSetSetAndUnset");
+
+    assertNull(AbstractSearcher.MatcherHolder.get());
+    assertFalse(AbstractSearcher.MatcherHolder.isSet());
+
+    AbstractSearcher.MatcherHolder.set(mockMatcher);
+
+    assertSame(mockMatcher, AbstractSearcher.MatcherHolder.get());
+    assertTrue(AbstractSearcher.MatcherHolder.isSet());
+
+    AbstractSearcher.MatcherHolder.unset();
+
+    assertNull(AbstractSearcher.MatcherHolder.get());
+    assertFalse(AbstractSearcher.MatcherHolder.isSet());
+  }
+
   public static class TestMatcher extends AbstractMatcher<Object> {
 
     private int count = 0;
