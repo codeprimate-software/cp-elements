@@ -68,6 +68,6 @@ public @interface Sortable {
    * @see java.lang.Class
    * @see java.util.Comparator
    */
-  public Class<Comparator> orderBy() default Comparator.class;
+  public Class<? extends Comparator> orderBy() default Comparator.class;
 
 }
