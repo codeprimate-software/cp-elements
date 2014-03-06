@@ -28,16 +28,13 @@ import java.util.Set;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.convert.support.BooleanConverter;
 import org.cp.elements.util.convert.support.CharacterConverter;
 import org.cp.elements.util.convert.support.DoubleConverter;
 import org.cp.elements.util.convert.support.EnumConverter;
 import org.cp.elements.util.convert.support.IntegerConverter;
 import org.cp.elements.util.convert.support.StringConverter;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -45,25 +42,11 @@ import org.junit.Test;
  * AbstractConversionService class.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.convert.AbstractConversionService
- * @see org.jmock.Mockery
  * @see org.junit.Test
  */
-public class AbstractConversionServiceTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
 
   protected static <T> T add(final Set<T> set, T element) {
     if (set.add(element)) {

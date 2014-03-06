@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.convert.AbstractConversionService;
 import org.cp.elements.util.convert.ConversionException;
 import org.cp.elements.util.convert.ConversionService;
@@ -36,8 +37,6 @@ import org.cp.elements.util.convert.Converter;
 import org.cp.elements.util.convert.ConverterAdapter;
 import org.cp.elements.util.convert.provider.DefaultConversionService;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,24 +46,20 @@ import org.junit.Test;
  * AbstractConfiguration class.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.AbstractConfiguration
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.convert.ConversionService
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractConfigurationTest {
-
-  private Mockery mockContext;
+public class AbstractConfigurationTest extends AbstractMockingTestSuite {
 
   private Properties configurationSettings = new Properties();
 
   @Before
   public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
     configurationSettings.setProperty("jdbc.driverClassName", "com.mysql.jdbc.Driver");
     configurationSettings.setProperty("jdbc.url", "jdbc:mysql://localhost:3306/appDataStore");
     configurationSettings.setProperty("jdbc.username", "");
@@ -73,8 +68,6 @@ public class AbstractConfigurationTest {
 
   @After
   public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
     configurationSettings.clear();
     configurationSettings = null;
   }

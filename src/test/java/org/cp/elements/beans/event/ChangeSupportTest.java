@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.cp.elements.lang.DateTimeUtils;
-import org.jmock.Mockery;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,14 +42,11 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.cp.elements.beans.event.ChangeSupport
  * @see org.cp.elements.lang.DateTimeUtils
- * @see org.jmock.Mockery
- * @see org.junit.Assert
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class ChangeSupportTest {
-
-  private final Mockery mockContext = new Mockery();
+public class ChangeSupportTest extends AbstractMockingTestSuite {
 
   private Object source;
 
@@ -63,7 +60,6 @@ public class ChangeSupportTest {
 
   @After
   public void tearDown() {
-    mockContext.assertIsSatisfied();
     source = support = null;
   }
 

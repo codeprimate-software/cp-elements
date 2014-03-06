@@ -23,11 +23,8 @@ package org.cp.elements.lang.support;
 
 import static org.junit.Assert.*;
 
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -37,27 +34,12 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.lang.Runnable
  * @see org.cp.elements.lang.support.ComposableRunnable
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ComposableRunnableTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class ComposableRunnableTest extends AbstractMockingTestSuite {
 
   @Test
   public void testCompose() {

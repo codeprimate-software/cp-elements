@@ -43,14 +43,14 @@ public abstract class AbstractMockingTestSuite {
   protected Mockery mockContext;
 
   @Before
-  public void setup() {
+  public void preTestCaseSetup() {
     mockContext = new Mockery();
     mockContext.setImposteriser(ClassImposteriser.INSTANCE);
     mockContext.setThreadingPolicy(new Synchroniser());
   }
 
   @After
-  public void tearDown() {
+  public void postTestCaseTearDown() {
     mockContext.assertIsSatisfied();
     mockContext = null;
   }

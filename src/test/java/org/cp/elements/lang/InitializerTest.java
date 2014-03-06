@@ -27,10 +27,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -41,24 +39,10 @@ import org.junit.Test;
  * @see org.cp.elements.lang.Initable
  * @see org.cp.elements.lang.Initializer
  * @see org.cp.elements.lang.ParameterizedInitable
- * @see org.jmock.Mockery
- * @see org.junit.Assert
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  */
-public class InitializerTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setUp() {
-    mockContext = new Mockery();
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class InitializerTest extends AbstractMockingTestSuite {
 
   @Test
   public void testInitUsingInitableObject() {

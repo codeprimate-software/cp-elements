@@ -24,9 +24,7 @@ package org.cp.elements.lang.support;
 import static org.junit.Assert.*;
 
 import org.cp.elements.lang.Filter;
-import org.jmock.Mockery;
-import org.junit.After;
-import org.junit.Before;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
 /**
@@ -35,23 +33,10 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.lang.Filter
- * @see org.junit.Assert
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  */
-public class FilterBuilderTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setUp() {
-    mockContext = new Mockery();
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class FilterBuilderTest extends AbstractMockingTestSuite {
 
   @Test
   @SuppressWarnings("unchecked")

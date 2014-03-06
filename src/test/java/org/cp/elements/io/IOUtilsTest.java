@@ -26,11 +26,8 @@ import static org.junit.Assert.*;
 import java.io.Closeable;
 import java.io.IOException;
 
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -39,26 +36,11 @@ import org.junit.Test;
  * @author John J. Blum
  * @since 1.0.0
  * @see org.cp.elements.io.IOUtils
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.easymock.EasyMock
- * @see org.jmock.Mockery
- * @see org.junit.Assert
  * @see org.junit.Test
  */
-public class IOUtilsTest {
-
-  private Mockery mockContext = new Mockery();
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class IOUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testClose() throws Exception {

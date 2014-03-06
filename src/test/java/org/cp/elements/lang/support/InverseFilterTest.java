@@ -24,9 +24,8 @@ package org.cp.elements.lang.support;
 import static org.junit.Assert.*;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -36,19 +35,12 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.support.InverseFilter
- * @see org.jmock.Mockery
- * @see org.junit.Assert
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class InverseFilterTest {
-
-  private final Mockery mockContext = new Mockery();
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-  }
+@SuppressWarnings("unchecked")
+public class InverseFilterTest extends AbstractMockingTestSuite {
 
   @Test
   public void testCreateInverseFilter() {

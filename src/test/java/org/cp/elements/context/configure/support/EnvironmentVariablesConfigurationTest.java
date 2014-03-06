@@ -28,11 +28,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -42,28 +39,13 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.EnvironmentVariablesConfiguration
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class EnvironmentVariablesConfigurationTest {
+public class EnvironmentVariablesConfigurationTest extends AbstractMockingTestSuite {
 
   private final EnvironmentVariablesConfiguration configuration = new EnvironmentVariablesConfiguration();
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
 
   @Test
   public void testIsPresent() {

@@ -242,15 +242,11 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     assertFalse(sorter.isCustomComparatorAllowed());
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
-    final Comparator<?> mockComparator = mockContext.mock(Comparator.class,
-      "testConfigureComparatorWithSortableImplementObjectWhenCustomComparatorIsNotAllowed.Comparator");
-
     final Sortable<?> mockSortable = mockContext.mock(Sortable.class,
       "testConfigureComparatorWithSortableImplementObjectWhenCustomComparatorIsNotAllowed.Sortable");
 
     mockContext.checking(new Expectations() {{
-      oneOf(mockSortable).getOrderBy();
-      will(returnValue(mockComparator));
+      never(mockSortable).getOrderBy();
     }});
 
     assertSame(mockSortable, sorter.configureComparator(mockSortable));

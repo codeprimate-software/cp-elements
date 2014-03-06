@@ -27,10 +27,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.cp.elements.lang.StringUtils;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
 /**
@@ -38,27 +35,13 @@ import org.junit.Test;
  * AbstractConverter class.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.convert.AbstractConverter
- * @see org.jmock.Mockery
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractConverterTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class AbstractConverterTest extends AbstractMockingTestSuite {
 
   @Test
   public void testSetAndGetConversionService() {
@@ -104,7 +87,7 @@ public class AbstractConverterTest {
     }
 
     @Override
-    public <QT extends Object> QT convert(final Object value, final Class<QT> qualifyingType) {
+    public <QT> QT convert(final Object value, final Class<QT> qualifyingType) {
       throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
     }
   }

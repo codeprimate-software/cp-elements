@@ -30,8 +30,8 @@ import java.util.List;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.CollectionUtils;
-import org.jmock.Mockery;
 import org.junit.Test;
 
 /**
@@ -40,14 +40,10 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see ComposableVisitor
- * @see org.jmock.Mockery
- * @see org.junit.Assert
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class ComposableVisitorTest {
-
-  private final Mockery mockContext = new Mockery();
+public class ComposableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testAdd() {

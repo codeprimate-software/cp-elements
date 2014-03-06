@@ -30,11 +30,8 @@ import java.util.Calendar;
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Visitable;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -44,27 +41,12 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.support.AuditableVisitor
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AuditableVisitorTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
-
-  @After
-  public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
-  }
+public class AuditableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testConstructWithUserProcess() {

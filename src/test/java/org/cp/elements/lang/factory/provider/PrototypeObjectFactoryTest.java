@@ -32,11 +32,9 @@ import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ParameterizedInitable;
 import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -45,26 +43,15 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.lang.factory.provider.PrototypeObjectFactory
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class PrototypeObjectFactoryTest {
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
+public class PrototypeObjectFactoryTest extends AbstractMockingTestSuite {
 
   @After
   public void tearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
     ObjectFactoryReferenceHolder.clear();
     assertFalse(ObjectFactoryReferenceHolder.hasReference());
   }

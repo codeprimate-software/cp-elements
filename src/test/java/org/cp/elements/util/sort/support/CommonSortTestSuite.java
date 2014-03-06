@@ -97,8 +97,6 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
   @Before
   public void setup() {
-    super.setup();
-
     if (runSetup()) {
       Random numberGenerator = new Random(System.currentTimeMillis());
 
@@ -124,7 +122,6 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
   @After
   public void tearDown() {
-    super.tearDown();
     numbers = null;
   }
 

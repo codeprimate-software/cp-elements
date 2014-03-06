@@ -32,12 +32,10 @@ import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.convert.ConversionService;
-import org.jmock.Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -46,25 +44,16 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.lang.factory.AbstractObjectFactory
- * @see org.jmock.Mockery
- * @see org.jmock.lib.legacy.ClassImposteriser
+ * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.After
  * @see org.junit.Before
  * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractObjectFactoryTest {
+public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
 
   private TestObjectFactory objectFactory = new TestObjectFactory();
-
-  private Mockery mockContext;
-
-  @Before
-  public void setup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-  }
 
   @After
   public void tearDown() {
@@ -72,8 +61,6 @@ public class AbstractObjectFactoryTest {
     objectFactory.setConversionService(null);
     objectFactory.init();
     assertTrue(objectFactory.isInitialized());
-    mockContext.assertIsSatisfied();
-    mockContext = null;
   }
 
   @Test
