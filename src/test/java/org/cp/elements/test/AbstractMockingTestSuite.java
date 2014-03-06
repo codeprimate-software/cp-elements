@@ -22,6 +22,7 @@
 package org.cp.elements.test;
 
 import org.jmock.Mockery;
+import org.jmock.lib.concurrent.Synchroniser;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
@@ -32,6 +33,7 @@ import org.junit.Before;
  * <p/>
  * @author John J. Blum
  * @see org.jmock.Mockery
+ * @see org.jmock.lib.concurrent.Synchroniser
  * @see org.jmock.lib.legacy.ClassImposteriser
  * @since 1.0.0
  */
@@ -44,6 +46,7 @@ public abstract class AbstractMockingTestSuite {
   public void setup() {
     mockContext = new Mockery();
     mockContext.setImposteriser(ClassImposteriser.INSTANCE);
+    mockContext.setThreadingPolicy(new Synchroniser());
   }
 
   @After
