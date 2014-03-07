@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 
+import org.cp.elements.test.CommonBaseTestSuite;
 import org.easymock.EasyMock;
 import org.junit.Test;
 
@@ -34,10 +35,11 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.io.FileUtils
+ * @see org.cp.elements.test.CommonBaseTestSuite
  * @see org.junit.Assert
  * @see org.junit.Test
  */
-public class FileUtilsTest {
+public class FileUtilsTest extends CommonBaseTestSuite {
 
   @Test
   public void testGetNameWithoutExtension() {
@@ -87,14 +89,16 @@ public class FileUtilsTest {
   @Test
   public void testIsExisting() {
     assertTrue(FileUtils.isExisting(new File(System.getProperty("user.home"))));
-    assertTrue(FileUtils.isExisting(new File(System.getProperty("user.dir"), "classes/org/cp/elements/io/FileUtils.class")));
+    assertTrue(FileUtils.isExisting(new File(getBuildOutputDirectoryAsWorkingDirectory(),
+      "classes/org/cp/elements/io/FileUtils.class")));
     assertFalse(FileUtils.isExisting(new File("/path/to/non_existing/pathname")));
     assertFalse(FileUtils.isExisting(null));
   }
 
   @Test
   public void testIsFile() {
-    assertTrue(FileUtils.isFile(new File(System.getProperty("user.dir"), "classes/org/cp/elements/io/FileUtils.class")));
+    assertTrue(FileUtils.isFile(new File(getBuildOutputDirectoryAsWorkingDirectory(),
+      "classes/org/cp/elements/io/FileUtils.class")));
     assertFalse(FileUtils.isFile(new File(System.getProperty("user.dir"))));
     assertFalse(FileUtils.isFile(new File("/path/to/non_existing/file.ext")));
     assertFalse(FileUtils.isFile(new File("/path/to/non_existing/directory/")));

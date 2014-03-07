@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.cp.elements.test.CommonBaseTestSuite;
 import org.junit.Test;
 
 /**
@@ -34,10 +35,11 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.io.File
  * @see org.cp.elements.io.DirectoryOnlyFilter
+ * @see org.cp.elements.test.CommonBaseTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class DirectoryOnlyFilterTest {
+public class DirectoryOnlyFilterTest extends CommonBaseTestSuite {
 
   private DirectoryOnlyFilter filter = new DirectoryOnlyFilter();
 
@@ -50,7 +52,8 @@ public class DirectoryOnlyFilterTest {
 
   @Test
   public void testAcceptWithFile() {
-    File directoryOnlyFilterClass = new File(System.getProperty("user.dir"), "classes/org/cp/elements/io/DirectoryOnlyFilter.class");
+    File directoryOnlyFilterClass = new File(getBuildOutputDirectoryAsWorkingDirectory(),
+      "classes/org/cp/elements/io/DirectoryOnlyFilter.class");
 
     assertNotNull(directoryOnlyFilterClass);
     assertTrue(directoryOnlyFilterClass.isFile());

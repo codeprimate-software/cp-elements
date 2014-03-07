@@ -26,6 +26,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.test.CommonBaseTestSuite;
 import org.junit.Test;
 
 /**
@@ -34,10 +35,11 @@ import org.junit.Test;
  * <p/>
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
+ * @see org.cp.elements.test.CommonBaseTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class FileExtenstionFilterTest {
+public class FileExtensionFilterTest extends CommonBaseTestSuite {
 
   @Test
   public void testConstructFileExtensionFilter() {
@@ -84,8 +86,11 @@ public class FileExtenstionFilterTest {
   public void testAccept() {
     FileExtensionFilter filter = new FileExtensionFilter(".class");
 
-    File classFile = new File(System.getProperty("user.dir"), "classes/org/cp/elements/io/FileExtensionFilter.class");
-    File javaFile = new File(System.getProperty("user.dir"), "../src/main/java/org/cp/elements/io/FileExtensionFilter.java");
+    File classFile = new File(getBuildOutputDirectoryAsWorkingDirectory(),
+      "classes/org/cp/elements/io/FileExtensionFilter.class");
+
+    File javaFile = new File(getBuildOutputDirectoryAsWorkingDirectory(),
+      "../src/main/java/org/cp/elements/io/FileExtensionFilter.java");
 
     assertNotNull(classFile);
     assertTrue(classFile.isFile());

@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
+import org.cp.elements.test.CommonBaseTestSuite;
 import org.junit.Test;
 
 /**
@@ -34,16 +35,18 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.io.File
  * @see org.cp.elements.io.FileOnlyFilter
+ * @see org.cp.elements.test.CommonBaseTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class FileOnlyFilterTest {
+public class FileOnlyFilterTest extends CommonBaseTestSuite {
 
   private FileOnlyFilter filter = new FileOnlyFilter();
 
   @Test
   public void testAcceptWithFile() {
-    File fileOnlyFilterClass = new File(System.getProperty("user.dir"), "classes/org/cp/elements/io/FileOnlyFilter.class");
+    File fileOnlyFilterClass = new File(getBuildOutputDirectoryAsWorkingDirectory(),
+      "classes/org/cp/elements/io/FileOnlyFilter.class");
 
     assertNotNull(fileOnlyFilterClass);
     assertTrue(fileOnlyFilterClass.isFile());
