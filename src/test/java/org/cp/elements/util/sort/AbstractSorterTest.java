@@ -36,6 +36,9 @@ import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.Test;
 
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
+
 /**
  * The AbstractSorterTest class is a test suite of test cases testing the contract and functionality of the
  * AbstractSorter class.
@@ -43,6 +46,8 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.sort.AbstractSorter
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @see org.junit.Test
  * @since 1.0.0
  */
@@ -391,6 +396,11 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
+  public void testSortUsingSorterConcurrently() throws Throwable {
+    TestFramework.runOnce(new UseSorterConcurrentlyMultithreadedTestCase());
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void testComparableComparatorCompare() {
     assertEquals(0, AbstractSorter.ComparableComparator.INSTANCE.compare("test", "test"));
@@ -494,6 +504,105 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     public <E> List<E> sort(final List<E> elements) {
       sorted = true;
       return elements;
+    }
+  }
+
+  protected static final class UseSorterConcurrentlyMultithreadedTestCase extends MultithreadedTestCase {
+
+    private AbstractSorter sorter;
+
+    @Override
+    public void initialize() {
+      super.initialize();
+
+      sorter = new AbstractSorter() {
+        @Override public <E> List<E> sort(final List<E> elements) {
+          if ("Thread One".equalsIgnoreCase(Thread.currentThread().getName())) {
+            assertNotSame(ComparableComparator.INSTANCE, getOrderBy());
+            waitForTick(2);
+          }
+
+          Collections.sort(elements, getOrderBy());
+
+          return elements;
+        }
+      };
+
+      sorter.setCustomComparatorAllowed(true);
+
+      assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    }
+
+    public void thread1() {
+      Thread.currentThread().setName("Thread One");
+
+      assertTick(0);
+      assertTrue(sorter.isCustomComparatorAllowed());
+      assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
+
+      Sortable<String> sortable = sorter.sort(new Sortable<String>() {
+        private final List<String> elements = new ArrayList<String>(Arrays.asList(ELEMENTS));
+
+        @Override public List<String> asList() {
+          return elements;
+        }
+
+        @Override public Comparator<String> getOrderBy() {
+          return new Comparator<String>() {
+            @Override public int compare(final String value1, final String value2) {
+              return value2.compareTo(value1);
+            }
+          };
+        }
+      });
+
+      assertNotNull(sortable);
+
+      List<String> elements = sortable.asList();
+
+      assertNotNull(elements);
+      assertFalse(elements.isEmpty());
+      assertEquals(3, elements.size());
+      assertEquals("testing", elements.get(0));
+      assertEquals("tested", elements.get(1));
+      assertEquals("test", elements.get(2));
+    }
+
+    public void thread2() {
+      Thread.currentThread().setName("Thread Two");
+
+      waitForTick(1);
+      assertTrue(sorter.isCustomComparatorAllowed());
+      assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
+
+      Sortable<String> sortable = sorter.sort(new Sortable<String>() {
+        private final List<String> elements = new ArrayList<String>(Arrays.asList(ELEMENTS));
+
+        @Override public List<String> asList() {
+          return elements;
+        }
+
+        @Override public Comparator<String> getOrderBy() {
+          return null;
+        }
+      });
+
+      assertNotNull(sortable);
+
+      List<String> elements = sortable.asList();
+
+      assertNotNull(elements);
+      assertFalse(elements.isEmpty());
+      assertEquals(3, elements.size());
+      assertEquals("test", elements.get(0));
+      assertEquals("tested", elements.get(1));
+      assertEquals("testing", elements.get(2));
+    }
+
+    @Override
+    public void finish() {
+      super.finish();
+      sorter = null;
     }
   }
 
