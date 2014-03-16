@@ -31,22 +31,69 @@ package org.cp.elements.data.struct;
 @SuppressWarnings("unused")
 public interface Column<T> {
 
+  /**
+   * Gets the alias, or alternate name of this Column.
+   * <p/>
+   * @return a String value for the alias (alternate name) of this Column.
+   */
   public String getAlias();
 
+  /**
+   * Sets the alias, or alternate name of this Column.
+   * <p/>
+   * @param alias a String value indicating the alias for this Column.
+   */
   public void setAlias(String alias);
 
+  /**
+   * Gets the default value to use when a value is not specified for this Column.
+   * <p/>
+   * @return the default value of this Column when a value is not specified.
+   */
   public T getDefaultValue();
 
+  /**
+   * Sets the default value to use when a value is not specified for this Column.
+   * <p/>
+   * @param defaultValue the default value to use for this Column when a value is not specified.
+   */
   public void setDefaultValue(T defaultValue);
 
+  /**
+   * Gets a description of this Column.
+   * <p/>
+   * @return a String value describing this Column.
+   */
   public String getDescription();
 
+  /**
+   * Sets the description of this Column.
+   * <p/>
+   * @param description a String value describing this Column.
+   */
   public void setDescription(String description);
 
+  /**
+   * Gets the index of this Column in the Table.
+   * <p/>
+   * @return an integer value specifying the index of this Column in the Table.  Returns a -1 if this Column has not
+   * been added to a Table.
+   */
   public int getIndex();
 
+  /**
+   * Gets the name of this Column, which must be unique when adding this Column to a Table.
+   * <p/>
+   * @return a String value indicating the immutable name of this Column.
+   */
   public String getName();
 
+  /**
+   * Gets the Class type for values stored in this Column of the Table.
+   * <p/>
+   * @return the Class type of values in this Column of the Table.
+   * @see java.lang.Class
+   */
   public Class<T> getType();
 
 }

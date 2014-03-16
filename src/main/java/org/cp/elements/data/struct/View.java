@@ -33,32 +33,132 @@ package org.cp.elements.data.struct;
 @SuppressWarnings("unused")
 public interface View extends Iterable<Row> {
 
+  /**
+   * Determines whether this View contains a Column with name.
+   * <p/>
+   * @param columnName a String value indicating the name of the Column in question.
+   * @return a boolean value indicating whether this View contains a Column with the specified name.
+   */
   public boolean contains(String columnName);
 
+  /**
+   * Determines whether this View contains the specified Column.
+   * <p/>
+   * @param column the Column being determined for containment by this View.
+   * @return a boolean value indicating whether this View contains the specified Column.
+   * @see org.cp.elements.data.struct.Column
+   */
   public boolean contains(Column column);
 
+  /**
+   * Gets the Column in this View at the specified index.
+   * <p/>
+   * @param index an integer value specifying the index of the Column in this View to return.
+   * @return the Column in this View at the specified index.
+   * @see org.cp.elements.data.struct.Column
+   */
   public Column<?> getColumn(int index);
 
+  /**
+   * Gets the Column in this View with the specified name.
+   * <p/>
+   * @param name a String value specifying the name of the Column in this View to return.
+   * @return the Column in this View with the specified name.
+   * @see org.cp.elements.data.struct.Column
+   */
   public Column<?> getColumn(String name);
 
+  /**
+   * Gets an Iterable object to iterate over the Columns in this View.
+   * <p/>
+   * @return an Iterable object to iterate over the Columns in this View.
+   * @see java.lang.Iterable
+   * @see org.cp.elements.data.struct.Column
+   */
   public Iterable<Column> getColumns();
 
+  /**
+   * Gets the Row in this View at the specified index.
+   * <p/>
+   * @param index an integer value specifying the index of the Row in this View to return.
+   * @return the Row in this View at the specified index.
+   * @see org.cp.elements.data.struct.Row
+   */
   public Row getRow(int index);
 
+  /**
+   * Gets an Iterable object to iterate over the Rows in this View.
+   * <p/>
+   * @return an Iterable object to iterate over the Rows in this View.
+   * @see java.lang.Iterable
+   * @see org.cp.elements.data.struct.Row
+   */
   public Iterable<Row> getRows();
 
+  /**
+   * Gets the value at the specified row and column index in this View.
+   * <p/>
+   * @param <T> the Class type of the value.
+   * @param rowIndex an integer value indicating the row index of the value to get.
+   * @param columnIndex an integer value indicating the column index of the value to get.
+   * @return the value at the specified row and column index in this View.
+   */
   public <T> T getValue(int rowIndex, int columnIndex);
 
+  /**
+   * Gets the value at the specified row index and named column in this View.
+   * <p/>
+   * @param <T> the Class type of the value.
+   * @param rowIndex an integer value indicating the row index of the value to get.
+   * @param columnName a String value indicating the name of the column from which to get the value.
+   * @return the value at the specified row index and named column in this View.
+   */
   public <T> T getValue(int rowIndex, String columnName);
 
+  /**
+   * Gets the value at the specified row index and Column in this View.
+   * <p/>
+   * @param <T> the Class type of the value.
+   * @param rowIndex an integer value indicating the row index of the value to get.
+   * @param column the Column from which to get the value.
+   * @return the value at the specified row index and Column in this View.
+   * @see org.cp.elements.data.struct.Column
+   */
   public <T> T getValue(int rowIndex, Column column);
 
+  /**
+   * Determines whether a value exists at the specified row and column index in this View.
+   * <p/>
+   * @param rowIndex an integer value indicating the row index.
+   * @param columnIndex an integer value indicating the column index.
+   * @return a boolean value indicating whether a value exists at the specified row and column index in this View.
+   */
   public boolean hasValue(int rowIndex, int columnIndex);
 
+  /**
+   * Determines whether a value exists at the specified row index and named column in this View.
+   * <p/>
+   * @param rowIndex an integer value indicating the row index.
+   * @param columnName a String value indicating the name of the column.
+   * @return a boolean value indicating whether a value exists at the specified row index and named column in this View.
+   */
   public boolean hasValue(int rowIndex, String columnName);
 
+  /**
+   * Determines whether a value exists at the specified row index and Column in this View.
+   * <p/>
+   * @param rowIndex an integer value indicating the row index.
+   * @param column a Column in this View.
+   * @return a boolean value indicating whether a value exists at the specified row index and Column in this View.
+   * @see org.cp.elements.data.struct.Column
+   */
   public boolean hasValue(int rowIndex, Column column);
 
+  /**
+   * Gets the number of Rows in this View.
+   * <p/>
+   * @return an integer value indicating the number of Rows in this View.
+   */
   public int size();
 
 }
