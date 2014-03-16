@@ -34,6 +34,15 @@ package org.cp.elements.data.struct;
 public interface View extends Iterable<Row> {
 
   /**
+   * Gets an Iterable object iterating over the Columns in this View.
+   * <p/>
+   * @return an Iterable object to iterate over the Columns in this View.
+   * @see java.lang.Iterable
+   * @see org.cp.elements.data.struct.Column
+   */
+  public Iterable<Column> columns();
+
+  /**
    * Determines whether this View contains a Column with name.
    * <p/>
    * @param columnName a String value indicating the name of the Column in question.
@@ -69,15 +78,6 @@ public interface View extends Iterable<Row> {
   public Column<?> getColumn(String name);
 
   /**
-   * Gets an Iterable object to iterate over the Columns in this View.
-   * <p/>
-   * @return an Iterable object to iterate over the Columns in this View.
-   * @see java.lang.Iterable
-   * @see org.cp.elements.data.struct.Column
-   */
-  public Iterable<Column> getColumns();
-
-  /**
    * Gets the Row in this View at the specified index.
    * <p/>
    * @param index an integer value specifying the index of the Row in this View to return.
@@ -85,15 +85,6 @@ public interface View extends Iterable<Row> {
    * @see org.cp.elements.data.struct.Row
    */
   public Row getRow(int index);
-
-  /**
-   * Gets an Iterable object to iterate over the Rows in this View.
-   * <p/>
-   * @return an Iterable object to iterate over the Rows in this View.
-   * @see java.lang.Iterable
-   * @see org.cp.elements.data.struct.Row
-   */
-  public Iterable<Row> getRows();
 
   /**
    * Gets the value at the specified row and column index in this View.
@@ -153,6 +144,44 @@ public interface View extends Iterable<Row> {
    * @see org.cp.elements.data.struct.Column
    */
   public boolean hasValue(int rowIndex, Column column);
+
+  /**
+   * Determines the index of the named column in this View.
+   * <p/>
+   * @param columnName a String value indicating the name of the column.
+   * @return an integer value indicating the index of the named column in this View, or -1 if the named column is not
+   * contained in this View.
+   */
+  public int indexOf(String columnName);
+
+  /**
+   * Determines the index of the Column in this View.
+   * <p/>
+   * @param column a Column in this View.
+   * @return an integer value indicating the index of the Column in this View, or -1 if the Column is not contained
+   * in this View.
+   * @see org.cp.elements.data.struct.Column
+   */
+  public int indexOf(Column column);
+
+  /**
+   * Determines the index of the Row in this View.
+   * <p/>
+   * @param row a Row in this View.
+   * @return an integer value indicating the index of the Row in this View, or -1 if the Row is not contained
+   * in this View.
+   * @see org.cp.elements.data.struct.Row
+   */
+  public int indexOf(Row row);
+
+  /**
+   * Gets an Iterable object to iterate over the Rows in this View.
+   * <p/>
+   * @return an Iterable object to iterate over the Rows in this View.
+   * @see java.lang.Iterable
+   * @see org.cp.elements.data.struct.Row
+   */
+  public Iterable<Row> rows();
 
   /**
    * Gets the number of Rows in this View.

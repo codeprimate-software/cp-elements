@@ -25,7 +25,9 @@ package org.cp.elements.data.struct;
  * The Column interface defines a column in a Table data structure.
  * <p/>
  * @author John J. Blum
+ * @see org.cp.elements.data.struct.Row
  * @see org.cp.elements.data.struct.Table
+ * @see org.cp.elements.data.struct.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

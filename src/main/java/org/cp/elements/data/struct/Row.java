@@ -27,6 +27,7 @@ package org.cp.elements.data.struct;
  * @author John J. Blum
  * @see org.cp.elements.data.struct.Column
  * @see org.cp.elements.data.struct.Table
+ * @see org.cp.elements.data.struct.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
