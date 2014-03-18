@@ -34,12 +34,12 @@ package org.cp.elements.data.struct;
 public interface Row extends Iterable<Object> {
 
   /**
-   * Gets the index of this Row in the Table.
+   * Gets the View to which this Row belongs.
    * <p/>
-   * @return an integer value indicating the index of this Row in the Table.  Returns a -1 if this Row has not been
-   * added to a Table.
+   * @return the View to which this Row belongs or null if this Row is not part of any View.
+   * @see org.cp.elements.data.struct.View
    */
-  public int getIndex();
+  public View getView();
 
   /**
    * Determines whether this Row has a value at the given column index.
@@ -107,7 +107,7 @@ public interface Row extends Iterable<Object> {
    * @param value the Object value to set at the given named column in this Row.
    * @return the original Object value at the given named column in this Row.
    */
-  public Object settValue(String columnName, Object value);
+  public Object setValue(String columnName, Object value);
 
   /**
    * Sets the value at the given Column in this Row.
@@ -118,6 +118,14 @@ public interface Row extends Iterable<Object> {
    * @see org.cp.elements.data.struct.Column
    */
   public Object setValue(Column column, Object value);
+
+  /**
+   * Gets the index of this Row in the View.
+   * <p/>
+   * @return an integer value indicating the index of this Row in the View.  Returns a -1 if this Row has not been
+   * added to a View.
+   */
+  public int index();
 
   /**
    * Determines the number of value in this Row (the same as the number of columns in this Row).

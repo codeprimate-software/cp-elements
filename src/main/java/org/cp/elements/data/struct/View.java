@@ -72,7 +72,7 @@ public interface View extends Iterable<Row> {
    * Gets the Column in this View with the specified name.
    * <p/>
    * @param name a String value specifying the name of the Column in this View to return.
-   * @return the Column in this View with the specified name.
+   * @return the Column in this View with the specified name or null if no Column with name exists in this View.
    * @see org.cp.elements.data.struct.Column
    */
   public Column<?> getColumn(String name);

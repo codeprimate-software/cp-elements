@@ -98,4 +98,12 @@ public interface Column<T> {
    */
   public Class<T> getType();
 
+  /**
+   * Gets the View to which this Column belongs.
+   * <p/>
+   * @return the View to which this Column belongs or null if this Column is not part of any View.
+   * @see org.cp.elements.data.struct.View
+   */
+  public View getView();
+
 }
