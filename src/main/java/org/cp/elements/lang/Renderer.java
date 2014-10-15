@@ -40,6 +40,6 @@ public interface Renderer<T> {
    * @return a String representation of the specified Object.
    * @see java.lang.String
    */
-  public String render(T obj);
+  String render(T obj);
 
 }

@@ -40,6 +40,6 @@ public interface Orderable<T extends Comparable<T>> {
    * <p/>
    * @return a Comparable value of type T indicating this object's order of precedence.
    */
-  public T getOrder();
+  T getOrder();
 
 }

@@ -41,7 +41,7 @@ public interface Searchable<T> {
    * @return a List representation of the implementing object used to perform the search.
    * @see java.util.List
    */
-  public List<T> asList();
+  List<T> asList();
 
   /**
    * Gets the desired Matcher to use during the search operation performed by the Searcher to match and find elements
@@ -50,6 +50,6 @@ public interface Searchable<T> {
    * @return the desired Matcher to match and find elements in the collection during the search operation.
    * @see org.cp.elements.util.search.Matcher
    */
-  public Matcher<T> getMatcher();
+  Matcher<T> getMatcher();
 
 }

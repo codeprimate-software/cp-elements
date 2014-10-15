@@ -43,7 +43,7 @@ public interface Sortable<T> {
    * @return a List representation of the implementing object used to perform the sort.
    * @see java.util.List
    */
-  public List<T> asList();
+  List<T> asList();
 
   /**
    * Property defining the Comparator class to use when sorting and ordering the elements in the collection (List).
@@ -51,6 +51,6 @@ public interface Sortable<T> {
    * @return a Comparator class type used to sort and order the elements in the collection (List) during the sort.
    * @see java.util.Comparator
    */
-  public Comparator<T> getOrderBy();
+  Comparator<T> getOrderBy();
 
 }

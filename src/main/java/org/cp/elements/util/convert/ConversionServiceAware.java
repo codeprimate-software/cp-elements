@@ -37,6 +37,6 @@ public interface ConversionServiceAware {
    * <p/>
    * @param conversionService the reference to the ConversionService.
    */
-  public void setConversionService(ConversionService conversionService);
+  void setConversionService(ConversionService conversionService);
 
 }

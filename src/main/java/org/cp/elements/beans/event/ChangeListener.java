@@ -41,6 +41,6 @@ public interface ChangeListener extends EventListener {
    * @param event the ChangeEvent object encapsulating the state change event.
    * @see org.cp.elements.beans.event.ChangeEvent
    */
-  public void stateChanged(ChangeEvent event);
+  void stateChanged(ChangeEvent event);
 
 }

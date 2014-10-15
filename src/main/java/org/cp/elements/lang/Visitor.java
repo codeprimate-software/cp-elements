@@ -37,6 +37,6 @@ public interface Visitor {
    * <p/>
    * @param visitable the Visitable object visited by this Visitor.
    */
-  public void visit(Visitable visitable);
+  void visit(Visitable visitable);
 
 }

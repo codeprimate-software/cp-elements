@@ -37,20 +37,20 @@ public interface Identifiable<T extends Comparable<T>> {
    * <p/>
    * @return the value of type T indicating this object's assigned unique identifier.
    */
-  public T getId();
+  T getId();
 
   /**
    * Sets the identifier uniquely identifying this object.
    * <p/>
    * @param id a value of type T assigned as this object's unique identifier.
    */
-  public void setId(T id);
+  void setId(T id);
 
   /**
    * Determines whether this Identifiable object is new, which is signified by a null identifier.
    * <p/>
    * @return a boolean value indicating whether this Identifiable object is new.
    */
-  public boolean isNew();
+  boolean isNew();
 
 }

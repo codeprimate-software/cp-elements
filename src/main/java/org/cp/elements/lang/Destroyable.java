@@ -38,11 +38,11 @@ public interface Destroyable {
    * <p/>
    * @return a boolean value indicating whether this object has been destroyed or not.
    */
-  public boolean isDestroyed();
+  boolean isDestroyed();
 
   /**
    * Destroys this object and releases any and all resources held by this object.
    */
-  public void destroy();
+  void destroy();
 
 }

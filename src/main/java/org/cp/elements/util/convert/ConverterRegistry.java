@@ -42,7 +42,7 @@ public interface ConverterRegistry extends Iterable<Converter> {
    * @see #unregister(Converter)
    * @see org.cp.elements.util.convert.Converter
    */
-  public void register(Converter<?, ?> converter);
+  void register(Converter<?, ?> converter);
 
   /**
    * Unregisters the Converter from the registry.
@@ -51,6 +51,6 @@ public interface ConverterRegistry extends Iterable<Converter> {
    * @see #register(Converter)
    * @see org.cp.elements.util.convert.Converter
    */
-  public void unregister(Converter<?, ?> converter);
+  void unregister(Converter<?, ?> converter);
 
 }

@@ -44,6 +44,6 @@ public interface Lifecycle<T> extends Configurable<T>, Initable, Runnable, Inter
    * @return a boolean value indicating whether this object is running.
    * @see java.lang.Runnable
    */
-  public boolean isRunning();
+  boolean isRunning();
 
 }

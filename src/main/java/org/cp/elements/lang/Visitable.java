@@ -37,6 +37,6 @@ public interface Visitable {
    * @param visitor an object who's class implements the Visitor interface, walking a graph of objects to perform
    * an evaluation or operation.
    */
-  public void accept(Visitor visitor);
+  void accept(Visitor visitor);
 
 }

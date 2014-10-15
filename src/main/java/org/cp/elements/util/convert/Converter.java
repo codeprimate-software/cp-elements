@@ -45,7 +45,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * into the target Class type.
    * @see org.cp.elements.util.convert.ConversionService#canConvert(Class, Class)
    */
-  public boolean canConvert(Class<?> fromType, Class<?> toType);
+  boolean canConvert(Class<?> fromType, Class<?> toType);
 
   /**
    * Converts a value of type S into a value of type T.
@@ -56,7 +56,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * @see #convert(Object, Class)
    * @see org.cp.elements.util.convert.ConversionService#convert(Object, Class)
    */
-  public T convert(S value);
+  T convert(S value);
 
   /**
    * Converts a value of type S into a value of the qualifying type QT.
@@ -69,6 +69,6 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * @see #convert(Object)
    * @see org.cp.elements.util.convert.ConversionService#convert(Object, Class)
    */
-  public <QT extends T> QT convert(S value, Class<QT> qualifyingType);
+  <QT extends T> QT convert(S value, Class<QT> qualifyingType);
 
 }

@@ -36,13 +36,13 @@ public interface Ordered {
    * <p/>
    * @return a integer value indicating this object's index in the ordered context.
    */
-  public int getIndex();
+  int getIndex();
 
   /**
    * Sets the index of this object in the ordered context.
    * <p/>
    * @param index an integer value indicating this object's index in the ordered context.
    */
-  public void setIndex(int index);
+  void setIndex(int index);
 
 }

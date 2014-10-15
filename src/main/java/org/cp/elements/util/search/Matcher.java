@@ -43,7 +43,7 @@ public interface Matcher<T> extends Filter<T> {
    * defined by this Matcher.
    * @see #match(Object)
    */
-  public boolean isMatch(T obj);
+  boolean isMatch(T obj);
 
   /**
    * Determines the value of the specified object relative to the criteria defined by this Matcher.
@@ -54,6 +54,6 @@ public interface Matcher<T> extends Filter<T> {
    * of the criteria.
    * @see #isMatch(Object)
    */
-  public int match(T obj);
+  int match(T obj);
 
 }

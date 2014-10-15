@@ -37,6 +37,6 @@ public interface ConfigurationAware {
    * <p/>
    * @param configuration the Configuration reference in use by the application.
    */
-  public void setConfiguration(Configuration configuration);
+  void setConfiguration(Configuration configuration);
 
 }

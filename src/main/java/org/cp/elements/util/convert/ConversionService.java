@@ -46,7 +46,7 @@ public interface ConversionService extends ConverterRegistry, ServiceSupport {
    * desired Class type.
    * @see #canConvert(Class, Class)
    */
-  public boolean canConvert(Object value, Class<?> toType);
+  boolean canConvert(Object value, Class<?> toType);
 
   /**
    * Determines whether this ConversionService can convert values from a given Class type into the desired Class type.
@@ -58,7 +58,7 @@ public interface ConversionService extends ConverterRegistry, ServiceSupport {
    * @see #canConvert(Object, Class)
    * @see org.cp.elements.util.convert.Converter#canConvert(Class, Class)
    */
-  public boolean canConvert(Class<?> fromType, Class<?> toType);
+  boolean canConvert(Class<?> fromType, Class<?> toType);
 
   /**
    * Converts the Object value into a value of the target Class type.
@@ -71,6 +71,6 @@ public interface ConversionService extends ConverterRegistry, ServiceSupport {
    * @see java.lang.Class
    * @see org.cp.elements.util.convert.Converter#convert(Object)
    */
-  public <T> T convert(Object value, Class<T> toType);
+  <T> T convert(Object value, Class<T> toType);
 
 }

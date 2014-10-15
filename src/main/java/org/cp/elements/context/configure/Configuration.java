@@ -44,7 +44,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * settings.
    * @see #isSet(String)
    */
-  public boolean isPresent(String propertyName);
+  boolean isPresent(String propertyName);
 
   /**
    * Determines whether the configuration property identified by name is set in the configuration settings, which
@@ -55,7 +55,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * configuration settings.
    * @see #isPresent(String)
    */
-  public boolean isSet(String propertyName);
+  boolean isSet(String propertyName);
 
   /**
    * Gets the value of the configuration property identified by name.  The property is required to be declared
@@ -65,7 +65,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * @return the value of the configuration property identified by name.
    * @throws ConfigurationException if the property value was undeclared or is undefined.
    */
-  public String getPropertyValue(String propertyName);
+  String getPropertyValue(String propertyName);
 
   /**
    * Gets the value of the configuration property identified by name.  The required parameter can be used to indicate
@@ -78,7 +78,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * @throws ConfigurationException if and only if the property is required and the property is either undeclared
    * or undefined.
    */
-  public String getPropertyValue(String propertyName, boolean required);
+  String getPropertyValue(String propertyName, boolean required);
 
   /**
    * Gets the value of the configuration property identified by name.  The defaultPropertyValue parameter effectively
@@ -90,7 +90,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * @return the value of the configuration property identified by name, or the default property value if the property
    * was undeclared or undefined.
    */
-  public String getPropertyValue(String propertyName, String defaultPropertyValue);
+  String getPropertyValue(String propertyName, String defaultPropertyValue);
 
   /**
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
@@ -101,7 +101,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * @return the value of the configuration property identified by name.
    * @throws ConfigurationException if the property value was undeclared or is undefined.
    */
-  public <T> T getPropertyValueAs(String propertyName, Class<T> type);
+  <T> T getPropertyValueAs(String propertyName, Class<T> type);
 
   /**
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
@@ -115,7 +115,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * @throws ConfigurationException if and only if the property is required and the property is either undeclared
    * or undefined.
    */
-  public <T> T getPropertyValueAs(String propertyName, boolean required, Class<T> type);
+  <T> T getPropertyValueAs(String propertyName, boolean required, Class<T> type);
 
   /**
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
@@ -129,6 +129,6 @@ public interface Configuration extends Iterable<String>, Serializable {
    * @return the value of the configuration property identified by name, or the default property value if the property
    * was undeclared or undefined.
    */
-  public <T> T getPropertyValueAs(String propertyName, T defaultPropertyValue, Class<T> type);
+  <T> T getPropertyValueAs(String propertyName, T defaultPropertyValue, Class<T> type);
 
 }

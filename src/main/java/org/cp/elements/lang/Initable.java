@@ -37,11 +37,11 @@ public interface Initable {
    * <p/>
    * @return a boolean value indicating whether this object has been initialized or not.
    */
-  public boolean isInitialized();
+  boolean isInitialized();
 
   /**
    * Initializes this object and prepares any required resources.
    */
-  public void init();
+  void init();
 
 }

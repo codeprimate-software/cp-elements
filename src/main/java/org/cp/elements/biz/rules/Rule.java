@@ -41,7 +41,7 @@ public interface Rule<T, ID extends Comparable<ID>> extends Identifiable<ID> {
    * @return the outcome expected when evaluating an object with this business rule.
    * @see #evaluate(Object)
    */
-  public boolean getExpectedOutcome();
+  boolean getExpectedOutcome();
 
   /**
    * Indicates if this business rule is configured to throw an exception on failure when evaluated.  If the object
@@ -51,7 +51,7 @@ public interface Rule<T, ID extends Comparable<ID>> extends Identifiable<ID> {
    * when evaluated.
    * @see #evaluate(Object)
    */
-  public boolean isThrowExceptionOnFailure();
+  boolean isThrowExceptionOnFailure();
 
   /**
    * Evaluates the specified object against the criteria, or requirements of this business rule.
@@ -61,6 +61,6 @@ public interface Rule<T, ID extends Comparable<ID>> extends Identifiable<ID> {
    * @see #isThrowExceptionOnFailure()
    * @see #getExpectedOutcome()
    */
-  public boolean evaluate(T obj);
+  boolean evaluate(T obj);
 
 }

@@ -35,6 +35,6 @@ public interface Filter<T> {
    * @param obj the Object being evaluated by this Filter.
    * @return a boolean value indicating whether the specified Object satisfies the criteria (rules) of this Filter.
    */
-  public boolean accept(T obj);
+  boolean accept(T obj);
 
 }

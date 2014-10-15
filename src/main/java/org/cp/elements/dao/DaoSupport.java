@@ -39,7 +39,7 @@ public interface DaoSupport<T> {
    * @return the Bean object with information loaded from the data store and corresponding Bean properties set.
    * @see org.cp.elements.lang.Identifiable#getId()
    */
-  public T load(T bean);
+  T load(T bean);
 
   /**
    * Removes the specified Bean from the data store.
@@ -48,7 +48,7 @@ public interface DaoSupport<T> {
    * @return a boolean value indicating whether a Bean with ID was successfully removed from the data store.
    * @see org.cp.elements.lang.Identifiable#getId()
    */
-  public boolean remove(T bean);
+  boolean remove(T bean);
 
   /**
    * Saves the specified Bean to the data store.  If the Bean is new (usually indicated by the absence of an ID),
@@ -60,6 +60,6 @@ public interface DaoSupport<T> {
    * @see org.cp.elements.lang.Auditable#isModified()
    * @see org.cp.elements.lang.Identifiable#isNew()
    */
-  public T save(T bean);
+  T save(T bean);
 
 }

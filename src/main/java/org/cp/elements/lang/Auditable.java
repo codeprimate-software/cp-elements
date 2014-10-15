@@ -42,63 +42,63 @@ public interface Auditable<USER, PROCESS> {
    * <p/>
    * @return an object denoting the user who created this object.
    */
-  public USER getCreatedBy();
+  USER getCreatedBy();
 
   /**
    * Sets the user who is responsible for the creation of this object.
    * <p/>
    * @param user an object denoting the user who created this object.
    */
-  public void setCreatedBy(USER user);
+  void setCreatedBy(USER user);
 
   /**
    * Gets the date and time when this object was created.
    * <p/>
    * @return a Calendar object denoting the date and time when this object was created.
    */
-  public Calendar getCreatedDateTime();
+  Calendar getCreatedDateTime();
 
   /**
    * Sets the date and time when this object was created.
    * <p/>
    * @param dateTime a Calendar object denoting the date and time when this object was created.
    */
-  public void setCreatedDateTime(Calendar dateTime);
+  void setCreatedDateTime(Calendar dateTime);
 
   /**
    * Gets the process (the what) that functionally created this object.
    * <p/>
    * @return an object denoting the process that created this object.
    */
-  public PROCESS getCreatingProcess();
+  PROCESS getCreatingProcess();
 
   /**
    * Sets the process (the what) that functionally created this object.
    * <p/>
    * @param process an object denoting the process that created this object.
    */
-  public void setCreatingProcess(PROCESS process);
+  void setCreatingProcess(PROCESS process);
 
   /**
    * Gets the user who was last responsible for modifying this object.
    * <p/>
    * @return an object denoting the last user responsible for modifying this object.
    */
-  public USER getLastModifiedBy();
+  USER getLastModifiedBy();
 
   /**
    * Gets the last date and time when this object was modified.
    * <p/>
    * @return a Calendar object denoting the date and time when this object was last modified.
    */
-  public Calendar getLastModifiedDateTime();
+  Calendar getLastModifiedDateTime();
 
   /**
    * Gets the process (the what) that was last responsible for modifying this object.
    * <p/>
    * @return an object denoting the last process responsible for modifying this object.
    */
-  public PROCESS getLastModifyingProcess();
+  PROCESS getLastModifyingProcess();
 
   /**
    * Determines whether this Auditable object has been modified.  One particular implementation suggests that
@@ -107,7 +107,7 @@ public interface Auditable<USER, PROCESS> {
    * <p/>
    * @return a boolean value indicating whether this Auditable object has been modified or not.
    */
-  public boolean isModified();
+  boolean isModified();
 
   /**
    * Determines whether the specified property of this Auditable object has been modified.  The property has been
@@ -117,48 +117,48 @@ public interface Auditable<USER, PROCESS> {
    * @return a boolean value indicating whether the specified property of this Auditable object, identified by name,
    * has been modified.
    */
-  public boolean isModified(String propertyName);
+  boolean isModified(String propertyName);
 
   /**
    * Gets the user who is responsible for modifying this object.
    * <p/>
    * @return an object denoting the user who modified this object.
    */
-  public USER getModifiedBy();
+  USER getModifiedBy();
 
   /**
    * Sets the user who is responsible for modifying this object.
    * <p/>
    * @param user an object denoting the user who modified this object.
    */
-  public void setModifiedBy(USER user);
+  void setModifiedBy(USER user);
 
   /**
    * Gets the date and time when this object was modified.
    * <p/>
    * @return a Calendar object denoting the date and time when this object was modified.
    */
-  public Calendar getModifiedDateTime();
+  Calendar getModifiedDateTime();
 
   /**
    * Sets the date and time when this object was modified.
    * <p/>
    * @param dateTime a Calendar object denoting the date and time when this object was modified.
    */
-  public void setModifiedDateTime(Calendar dateTime);
+  void setModifiedDateTime(Calendar dateTime);
 
   /**
    * Gets the process (the what) that functionally modified this object.
    * <p/>
    * @return an object denoting the process that modified this object.
    */
-  public PROCESS getModifyingProcess();
+  PROCESS getModifyingProcess();
 
   /**
    * Sets the process (the what) that functionally modified this object.
    * <p/>
    * @param process an object denoting the process that modified this object.
    */
-  public void setModifyingProcess(PROCESS process);
+  void setModifyingProcess(PROCESS process);
 
 }

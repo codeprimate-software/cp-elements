@@ -48,7 +48,7 @@ public interface Sorter {
    * @see java.lang.Comparable
    * @see java.util.Comparator
    */
-  public <E> Comparator<E> getOrderBy();
+  <E> Comparator<E> getOrderBy();
 
   /**
    * Sorts an array of elements as defined by the 'orderBy' Comparator, or as determined by the elements in the array
@@ -58,7 +58,7 @@ public interface Sorter {
    * @param elements the array of elements to sort.
    * @return the array of elements sorted.
    */
-  public <E> E[] sort(E... elements);
+  <E> E[] sort(E... elements);
 
   /**
    * Sorts a List of elements as defined by the 'orderBy' Comparator, or as determined by the elements in the collection
@@ -69,7 +69,7 @@ public interface Sorter {
    * @return the List of elements sorted.
    * @see java.util.List
    */
-  public <E> List<E> sort(List<E> elements);
+  <E> List<E> sort(List<E> elements);
 
   /**
    * Sorts the List representation of the Sortable implementing object as defined by the 'orderBy' Comparator, or as
@@ -80,7 +80,7 @@ public interface Sorter {
    * @return the Sortable implementing object sorted.
    * @see org.cp.elements.util.sort.Sortable
    */
-  public <E> Sortable<E> sort(Sortable<E> sortable);
+  <E> Sortable<E> sort(Sortable<E> sortable);
 
   /**
    * Sorts the List representation of the @Sortable annotated object as defined by the 'orderBy' Comparator, or as
@@ -91,6 +91,6 @@ public interface Sorter {
    * @return the @Sortable annotated object sorted.
    * @see org.cp.elements.util.sort.annotation.Sortable
    */
-  public <T> T sort(T sortableAnnotatedObject);
+  <T> T sort(T sortableAnnotatedObject);
 
 }

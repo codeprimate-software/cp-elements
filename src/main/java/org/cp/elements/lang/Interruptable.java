@@ -37,12 +37,12 @@ public interface Interruptable {
    * <p/>
    * @return a boolean value indicating whether this object was interrupted.
    */
-  public boolean isInterrupted();
+  boolean isInterrupted();
 
   /**
    * Interrupts the object who's class implements this interface.  The interrupt could be issued from another Thread
    * while this object is performing a complex, long running and intensive computation.
    */
-  public void interrupt();
+  void interrupt();
 
 }

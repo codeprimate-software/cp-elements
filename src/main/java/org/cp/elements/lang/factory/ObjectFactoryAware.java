@@ -36,6 +36,6 @@ public interface ObjectFactoryAware {
    * <p/>
    * @param objectFactory the reference to the ObjectFactory.
    */
-  public void setObjectFactory(ObjectFactory objectFactory);
+  void setObjectFactory(ObjectFactory objectFactory);
 
 }

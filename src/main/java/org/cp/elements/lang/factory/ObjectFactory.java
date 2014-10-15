@@ -47,7 +47,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * @return a newly created object of the given class type initialized with the specified arguments.
    * @see #create(String, Class[], Object...)
    */
-  public <T> T create(String objectTypeName, Object... args);
+  <T> T create(String objectTypeName, Object... args);
 
   /**
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
@@ -63,7 +63,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * @see #create(String, Object...)
    * @see java.lang.Class
    */
-  public <T> T create(String objectTypeName, Class[] parameterTypes, Object... args);
+  <T> T create(String objectTypeName, Class[] parameterTypes, Object... args);
 
   /**
    * Creates an object given the class type, initialized with the specified constructor arguments. The parameter types
@@ -76,7 +76,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * @see #create(Class, Class[], Object...)
    * @see java.lang.Class
    */
-  public <T> T create(Class<T> objectType, Object... args);
+  <T> T create(Class<T> objectType, Object... args);
 
   /**
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
@@ -92,6 +92,6 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * @see #create(Class, Object...)
    * @see java.lang.Class
    */
-  public <T> T create(Class<T> objectType, Class[] parameterTypes, Object... args);
+  <T> T create(Class<T> objectType, Class[] parameterTypes, Object... args);
 
 }

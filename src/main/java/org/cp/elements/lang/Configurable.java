@@ -38,7 +38,7 @@ public interface Configurable<T> {
    * <p/>
    * @return the configuration meta-data used to configure this object.
    */
-  public T getConfiguration();
+  T getConfiguration();
 
   /**
    * Determines whether this object has been properly configured.  An object is configured when it's configure method
@@ -46,13 +46,13 @@ public interface Configurable<T> {
    * <p/>
    * @return a boolean value indicating whether this object has been properly configured.
    */
-  public boolean isConfigured();
+  boolean isConfigured();
 
   /**
    * Configures this object with the given configuration meta-data of type T.
    * <p/>
    * @param configuration the configuration meta-data of type T used to configure this object.
    */
-  public void configure(T configuration);
+  void configure(T configuration);
 
 }

@@ -41,7 +41,7 @@ public interface ParameterizedInitable extends Initable {
    * @see org.cp.elements.lang.Initable#init()
    * @see #init(java.util.Map)
    */
-  public void init(Object... args);
+  void init(Object... args);
 
   /**
    * Initialized this object using the provide parameters, a mapping of key-value pairs.
@@ -51,6 +51,6 @@ public interface ParameterizedInitable extends Initable {
    * @see #init(Object...)
    * @see java.util.Map
    */
-  public void init(Map<?, ?> parameters);
+  void init(Map<?, ?> parameters);
 
 }

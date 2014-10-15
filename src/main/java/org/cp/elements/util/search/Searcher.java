@@ -48,7 +48,7 @@ public interface Searcher {
    * the search operation.
    * @see org.cp.elements.util.search.Matcher
    */
-  public <E> Matcher<E> getMatcher();
+  <E> Matcher<E> getMatcher();
 
   /**
    * Searches the array of elements in order to find the element or elements matching the criteria defined
@@ -63,7 +63,7 @@ public interface Searcher {
    * @see #search(Object)
    * @see #searchForAll(Object[])
    */
-  public <E> E search(E... array);
+  <E> E search(E... array);
 
   /**
    * Searches the Collection of elements in order to find the element or elements matching the criteria defined
@@ -79,7 +79,7 @@ public interface Searcher {
    * @see #searchForAll(java.util.Collection)
    * @see java.util.Collection
    */
-  public <E> E search(Collection<E> collection);
+  <E> E search(Collection<E> collection);
 
   /**
    * Searches the Searchable object in order to find the element or elements matching the criteria defined
@@ -95,7 +95,7 @@ public interface Searcher {
    * @see #searchForAll(Searchable)
    * @see org.cp.elements.util.search.Searchable
    */
-  public <E> E search(Searchable<E> searchable);
+  <E> E search(Searchable<E> searchable);
 
   /**
    * Searches the @Searchable annotated object in order to find the element or elements matching the criteria defined
@@ -111,7 +111,7 @@ public interface Searcher {
    * @see #searchForAll(Object)
    * @see org.cp.elements.util.search.annotation.Searchable
    */
-  public <E> E search(Object searchableAnnotatedObject);
+  <E> E search(Object searchableAnnotatedObject);
 
   /**
    * Searches an array of elements finding all elements in the array matching the criteria defined by the Matcher.
@@ -126,7 +126,7 @@ public interface Searcher {
    * @see #searchForAll(Object)
    * @see java.lang.Iterable
    */
-  public <E> Iterable<E> searchForAll(E... array);
+  <E> Iterable<E> searchForAll(E... array);
 
   /**
    * Searches a collection of elements finding all elements in the collection matching the criteria defined
@@ -144,7 +144,7 @@ public interface Searcher {
    * @see java.lang.Iterable
    * @see java.util.Collection
    */
-  public <E> Iterable<E> searchForAll(Collection<E> collection);
+  <E> Iterable<E> searchForAll(Collection<E> collection);
 
   /**
    * Searches the Searchable object finding all elements in the Searchable object matching the criteria
@@ -162,7 +162,7 @@ public interface Searcher {
    * @see java.lang.Iterable
    * @see org.cp.elements.util.search.Searchable
    */
-  public <E> Iterable<E> searchForAll(Searchable<E> searchable);
+  <E> Iterable<E> searchForAll(Searchable<E> searchable);
 
   /**
    * Searches the @Searchable annotated object finding all elements in the object matching the criteria
@@ -180,6 +180,6 @@ public interface Searcher {
    * @see java.lang.Iterable
    * @see org.cp.elements.util.search.annotation.Searchable
    */
-  public <E> Iterable<E> searchForAll(Object searchableAnnotatedObject);
+  <E> Iterable<E> searchForAll(Object searchableAnnotatedObject);
 
 }
