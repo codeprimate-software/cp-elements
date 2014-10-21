@@ -120,7 +120,7 @@ public abstract class ArrayUtils {
    * @throws NullPointerException if the reference to the Object array is null.
    * @see java.util.Enumeration
    */
-  public static <T>Enumeration<T> enumeration(final T... array) {
+  public static <T> Enumeration<T> enumeration(final T... array) {
     Assert.notNull(array, "The array of elements cannot be null!");
 
     return new Enumeration<T>() {
