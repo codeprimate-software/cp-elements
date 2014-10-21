@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 
 /**
  * The ClassUtils class provides utility methods for working with Class objects.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.lang.Class
  * @see java.lang.Object
@@ -133,6 +133,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredMethod(String, Class[])
    * @see java.lang.reflect.Method
    */
+  @SuppressWarnings("unchecked")
   public static Method getMethod(final Class type, final String methodName) throws NoSuchMethodException {
     try {
       return type.getDeclaredMethod(methodName);

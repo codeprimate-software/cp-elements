@@ -44,6 +44,8 @@ public abstract class StringUtils {
   public static final String NOT_IMPLEMENTED = "Not Implemented!";
   public static final String SINGLE_SPACE = " ";
 
+  public static final char[] EMPTY_CHAR_ARRAY = new char[0];
+
   public static final String[] EMPTY_STRING_ARRAY = new String[0];
 
   public static final String[] SPACES = {
@@ -115,6 +117,7 @@ public abstract class StringUtils {
    * @see #toCharArray(String)
    * @see java.lang.Character#isDigit(char)
    */
+  @NullSafe
   public static boolean containsDigits(final String value) {
     for (char chr : toCharArray(value)) {
       if (Character.isDigit(chr)) {
@@ -133,9 +136,29 @@ public abstract class StringUtils {
    * @see #toCharArray(String)
    * @see java.lang.Character#isLetter(char)
    */
+  @NullSafe
   public static boolean containsLetters(final String value) {
     for (char chr: toCharArray(value)) {
       if (Character.isLetter(chr)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Determines whether the String value contains any whitespace, guarding against null values.
+   *
+   * @param value the String value being evaluated for whitespace containment.
+   * @return a boolean value indicating whether the String value contains any whitespace.
+   * @see #toCharArray(String)
+   * @see java.lang.Character#isWhitespace(char)
+   */
+  @NullSafe
+  public static boolean containsWhitespace(final String value) {
+    for (char chr : toCharArray(value)) {
+      if (Character.isWhitespace(chr)) {
         return true;
       }
     }
@@ -386,7 +409,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static char[] toCharArray(final String value) {
-    return (value == null ? new char[0] : value.toCharArray());
+    return (value == null ? EMPTY_CHAR_ARRAY : value.toCharArray());
   }
 
   /**
@@ -399,7 +422,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String toLowerCase(final String value) {
-    return (value != null ? value.toLowerCase() : value);
+    return (value != null ? value.toLowerCase() : null);
   }
 
   /**
@@ -412,7 +435,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String toUpperCase(final String value) {
-    return (value != null ? value.toUpperCase() : value);
+    return (value != null ? value.toUpperCase() : null);
   }
 
   /**
@@ -424,7 +447,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String trim(final String value) {
-    return (value == null ? null : value.trim());
+    return (value != null ? value.trim() : null);
   }
 
   /**

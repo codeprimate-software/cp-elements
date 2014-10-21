@@ -23,7 +23,7 @@ package org.cp.elements.lang;
 
 /**
  * The ObjectUtils utility class performs various operations on java.lang.Objects.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.lang.Object
  * @since 1.0.0

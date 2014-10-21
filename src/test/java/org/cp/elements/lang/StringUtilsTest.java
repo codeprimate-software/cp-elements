@@ -126,6 +126,27 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void testContainsWhitespace() {
+    assertTrue(StringUtils.containsWhitespace(" "));
+    assertTrue(StringUtils.containsWhitespace("   "));
+    assertTrue(StringUtils.containsWhitespace(" text "));
+    assertTrue(StringUtils.containsWhitespace(" test"));
+    assertTrue(StringUtils.containsWhitespace("test "));
+    assertTrue(StringUtils.containsWhitespace("t e s t"));
+    assertTrue(StringUtils.containsWhitespace("Mc Fly"));
+  }
+
+  @Test
+  public void testContainsNoWhitespace() {
+    assertFalse(StringUtils.containsWhitespace(""));
+    assertFalse(StringUtils.containsWhitespace(" text ".trim()));
+    assertFalse(StringUtils.containsWhitespace(" test".trim()));
+    assertFalse(StringUtils.containsWhitespace("test ".trim()));
+    assertFalse(StringUtils.containsWhitespace("t_e_s_t".trim()));
+    assertFalse(StringUtils.containsWhitespace("McFly".trim()));
+  }
+
+  @Test
   public void testEqualsIgnoreCase() {
     assertTrue(StringUtils.equalsIgnoreCase("test", "test"));
     assertTrue(StringUtils.equalsIgnoreCase("test", "TEST"));
