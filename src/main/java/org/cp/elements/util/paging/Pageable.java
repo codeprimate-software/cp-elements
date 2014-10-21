@@ -24,7 +24,7 @@ package org.cp.elements.util.paging;
 /**
  * The Pageable interface defines a contract for implementing objects that support paging over the contents of the
  * object, such as a Collection.
- * <p/>
+ *
  * @author John J. Blum
  * @param <T> the Class type of the elements or items on the Page at number.
  * @see java.lang.Iterable
@@ -36,19 +36,19 @@ public interface Pageable<T> extends Iterable<Page<T>> {
 
   /**
    * Get the total number of pages in this Pageable object.
-   * <p/>
+   *
    * @return an integer value indicating the total number of pages in this Pageable object.
    */
-  public int count();
+  int count();
 
   /**
    * Gets the Page based on it's number, starting with page one.
-   * <p/>
+   *
    * @param number an integer value indicating the page number of the Page to return.
    * @return the Page with number.
    * @throws PageNotFoundException if a page with number is not found!
    * @see org.cp.elements.util.paging.Page
    */
-  public Page<T> getPage(int number);
+  Page<T> getPage(int number);
 
 }

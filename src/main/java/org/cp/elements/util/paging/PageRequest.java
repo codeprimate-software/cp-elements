@@ -21,30 +21,31 @@
 
 package org.cp.elements.util.paging;
 
+import org.cp.elements.lang.Orderable;
+
 /**
- * The Page interface defines an individual page in a Pageable object.
+ * The PageRequest class...
  *
  * @author John J. Blum
- * @param <T> the Class type of the elements or items on this Page.
- * @see java.lang.Iterable
- * @see org.cp.elements.util.paging.Pageable
+ * @see java.lang.Comparable
+ * @see org.cp.elements.lang.Orderable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Page<T> extends Iterable<T> {
+public interface PageRequest<T extends Comparable<T>> extends Orderable<T> {
 
   /**
-   * Gets the page number in the sequence (collection) of pages.
+   * Gets the requested size for the pages returned in the pageable.
    *
-   * @return an integer value indicating the page number of this Page.
+   * @return an integer value indicated the requested page size.
    */
-  int getNumber();
+  int getPageSize();
 
   /**
-   * Indicates the number of elements or items on this page.
+   * Gets the requested starting page within the pageable.
    *
-   * @return an integer value indicating the number of elements or items on this page.
+   * @return an integer value indicating the page number to start at in the pageable.
    */
-  int size();
+  int getStartingPageNumber();
 
 }
