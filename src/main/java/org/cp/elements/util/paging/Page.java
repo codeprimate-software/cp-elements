@@ -22,7 +22,8 @@
 package org.cp.elements.util.paging;
 
 /**
- * The Page interface defines an individual page in a Pageable object.
+ * The Page interface defines an individual page in a Pageable object and is a collection of elements or items contained
+ * on the page.
  *
  * @author John J. Blum
  * @param <T> the Class type of the elements or items on this Page.
