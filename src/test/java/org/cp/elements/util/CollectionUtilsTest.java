@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -46,7 +46,7 @@ import org.junit.Test;
 /**
  * The CollectionUtilsTest class is a test suite of test cases testing the contract and functionality 
  * of the CollectionUtils class.
- * <p/>
+ * 
  * @author John J. Blum
  * @see java.util.Collection
  * @see org.cp.elements.util.CollectionUtils
@@ -532,6 +532,42 @@ public class CollectionUtilsTest {
     assertEquals(3, CollectionUtils.size(from("test", "testing", "tested").toList()));
     assertEquals(3, CollectionUtils.size(from("test", "testing", "tested").toSet()));
     assertEquals(3, CollectionUtils.size(from("test", "TEST", "Test").toSet()));
+  }
+
+  @Test
+  public void testSubList() {
+    List<Integer> result = CollectionUtils.subList(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 1, 2, 4, 8);
+
+    assertNotNull(result);
+    assertFalse(result.isEmpty());
+    assertEquals(4, result.size());
+    assertTrue(result.containsAll(Arrays.asList(1, 2, 4, 8)));
+  }
+
+  @Test
+  public void testSubListWithEmptyList() {
+    List<Object> result = CollectionUtils.subList(Collections.emptyList());
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void testSubListWithEmptyListAndIndices() {
+    CollectionUtils.subList(Collections.emptyList(), 1, 2, 4, 8);
+  }
+
+  @Test
+  public void testSubListWithNoIndices() {
+    List<String> result = CollectionUtils.subList(Arrays.asList("test", "testing", "tested"));
+
+    assertNotNull(result);
+    assertTrue(result.isEmpty());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testSubListWithNullList() {
+    CollectionUtils.subList(null, 1, 2, 4, 8);
   }
 
   @Test

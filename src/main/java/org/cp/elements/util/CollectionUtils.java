@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -39,7 +39,7 @@ import org.cp.elements.lang.support.ToStringRenderer;
 /**
  * The CollectionUtils class provides utility methods for working with the Java Collections Framework
  * and specifically the Collection classes.
- * <p/>
+ * 
  * @author John J. Blum
  * @see java.lang.Iterable
  * @see java.util.Collection
@@ -58,7 +58,7 @@ public abstract class CollectionUtils {
 
   /**
    * Counts the number of elements from the Iterable collection matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Iterable collection.
    * @param collection the Iterable collection of elements to search and count.
    * @param filter the Filter used to find matching elements from the Iterable collection and tally the count.
@@ -75,7 +75,7 @@ public abstract class CollectionUtils {
 
   /**
    * Gets the List if not null or returns an empty List.
-   * <p/>
+   * 
    * @param list the List reference being tested with a null check.
    * @param <T> the Class type of the List elements.
    * @return the List if not null otherwise return an empty List.
@@ -88,7 +88,7 @@ public abstract class CollectionUtils {
 
   /**
    * Gets the Set if not null or returns an empty Set.
-   * <p/>
+   * 
    * @param set the Set reference being tested with a null check.
    * @param <T> the Class type of the Set elements.
    * @return the Set if not null otherwise return an empty Set.
@@ -101,7 +101,7 @@ public abstract class CollectionUtils {
 
   /**
    * Adapts the specified Iterator into an instance of the Enumeration interface.
-   * <p/>
+   * 
    * @param it the Iterator to adapt into an Enumeration.
    * @param <T> the Class type of the elements to enumerate.
    * @return an Enumeration implementation backed by the specified Iterator.
@@ -127,7 +127,7 @@ public abstract class CollectionUtils {
 
   /**
    * Filters the Collection of elements retaining only those elements matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Collection.
    * @param collection the Collection of elements to filter.
    * @param filter the Filter used to filter the Collection of elements.
@@ -148,7 +148,7 @@ public abstract class CollectionUtils {
 
   /**
    * Searches the Iterable collection for the first element matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Iterable collection.
    * @param collection the Iterable collection of elements to search.
    * @param filter the Filter defining the criteria used to find the first matching element from the Iterable collection.
@@ -176,7 +176,7 @@ public abstract class CollectionUtils {
 
   /**
    * Searches the Iterable collection for elements matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Iterable collection.
    * @param collection the Iterable collection of elements to search.
    * @param filter the Filter defining the criteria used to find matching elements from the Iterable collection.
@@ -204,7 +204,7 @@ public abstract class CollectionUtils {
   /**
    * Determines whether the specified Collection is empty.  A Collection is empty if it contains no elements
    * or the specified Collection object reference is null.
-   * <p/>
+   * 
    * @param collection the Collection being tested as empty.
    * @return a boolean value indicating whether the specified Collection is empty.
    * @see java.util.Collection#isEmpty()
@@ -215,7 +215,7 @@ public abstract class CollectionUtils {
 
   /**
    * Adapts the specified Enumeration into an instance of the Iterable interface.
-   * <p/>
+   * 
    * @param <T> the Class type of elements enumerated by the Enumeration.
    * @param enumeration the Enumeration backing the Iterable implementation.
    * @return an Iterable implementation backed by the Enumeration.
@@ -236,7 +236,7 @@ public abstract class CollectionUtils {
 
   /**
    * Adapts the specified Iterator into an instance of the Iterable interface.
-   * <p/>
+   * 
    * @param <T> the Class type of elements iterated by the Iterator.
    * @param iterator the Iterator backing the Iterable implementation.
    * @return an Iterable implementation backed by the Iterator.
@@ -256,7 +256,7 @@ public abstract class CollectionUtils {
 
   /**
    * Adapts the specified Enumeration into an instance of the Iterator interface.
-   * <p/>
+   * 
    * @param enumeration the Enumeration backing the Iterator implementation.
    * @param <T> the Class type of the elements to iterate.
    * @return an Iterator implementation backed by the specified Enumeration.
@@ -287,7 +287,7 @@ public abstract class CollectionUtils {
   /**
    * Determines the size of the specified Collection.  If the Collection is null or contains no elements, then the
    * size of the Collection is 0, otherwise the size of the Collection is determined by it's size() method.
-   * <p/>
+   * 
    * @param collection the Collection who's size is being determined.
    * @return an integer value specifying the size of the Collection.
    * @see java.util.Collection#size()
@@ -297,8 +297,27 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Creates a sub-list from the given list with the values at the specified indices in the given list.
+   *
+   * @param <T> the Class type of the list elements.
+   * @param list the original List from which to create the sub-List.
+   * @param indices the indices of values from the original list to include in the sub-list.
+   * @return a sub-list from the given list with the values at the specified indices in the given list.
+   * @see java.util.List
+   */
+  public static <T> List<T> subList(final List<T> list, int... indices) {
+    List<T> subList = new ArrayList<T>(indices.length);
+
+    for (int index : indices) {
+      subList.add(list.get(index));
+    }
+
+    return subList;
+  }
+
+  /**
    * Gets a String representation of the Iterable collection.
-   * <p/>
+   * 
    * @param <T> the class type of elements in the Iterable collection.
    * @param collection the Iterable collection of elements to render as a String.
    * @return a String representation of the Iterable collection.
@@ -310,7 +329,7 @@ public abstract class CollectionUtils {
 
   /**
    * Gets a String representation of the Iterable collection using the specified Renderer to render the elements.
-   * <p/>
+   * 
    * @param <T> the class type of elements in the Iterable collection.
    * @param collection the Iterable collection of elements to render as a String.
    * @param renderer the Renderer used to render the elements in the Iterable collection as String.
@@ -334,7 +353,7 @@ public abstract class CollectionUtils {
   /**
    * Gets an anonymous, read-only Iterator implementation wrapping the specified Iterator to prevent modifications
    * through invocations of the Iterator's remove method.
-   * <p/>
+   * 
    * @param iterator the Iterator to wrap in a read-only implementation of the Iterator interface.
    * @param <T> the Class type of the objects for which the Iterator iterates.
    * @return am anonymous, read-only Iterator implementation wrapping the specified Iterator.

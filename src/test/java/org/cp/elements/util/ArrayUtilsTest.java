@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -23,6 +23,7 @@ package org.cp.elements.util;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -37,14 +38,38 @@ import org.junit.Test;
 /**
  * The ArrayUtilsTest class is a test suite of test cases testing the contract and functionality
  * of the ArrayUtils class.
- * <p/>
+ * 
  * @author John J. Blum
- * @since 1.0.0
  * @see org.cp.elements.util.ArrayUtils
  * @see org.junit.Assert
  * @see org.junit.Test
+ * @since 1.0.0
  */
 public class ArrayUtilsTest {
+
+  @Test
+  public void testAdd() {
+    String[] array = ArrayUtils.add("test", new String[0]);
+
+    assertNotNull(array);
+    assertEquals(1, array.length);
+    assertEquals("test", array[0]);
+
+    array = ArrayUtils.add("testing", array);
+
+    assertNotNull(array);
+    assertEquals(2, array.length);
+    assertEquals("test", array[0]);
+    assertEquals("testing", array[1]);
+
+    array = ArrayUtils.add("tested", array);
+
+    assertNotNull(array);
+    assertEquals(3, array.length);
+    assertEquals("test", array[0]);
+    assertEquals("testing", array[1]);
+    assertEquals("tested", array[2]);
+  }
 
   @Test
   public void testAsArray() {
@@ -426,6 +451,65 @@ public class ArrayUtilsTest {
     assertEquals(1, ArrayUtils.length(new Object[] { null }));
     assertEquals(1, ArrayUtils.length(new Object[] { "test" }));
     assertEquals(3, ArrayUtils.length(new Object[] { "test", "testing", "tested" }));
+  }
+
+  @Test
+  public void testPrepend() {
+    String[] array = ArrayUtils.prepend("tested", new String[0]);
+    
+    assertNotNull(array);
+    assertEquals(1, array.length);
+    assertEquals("tested", array[0]);
+
+    array = ArrayUtils.prepend("testing", array);
+
+    assertNotNull(array);
+    assertEquals(2, array.length);
+    assertEquals("testing", array[0]);
+    assertEquals("tested", array[1]);
+
+    array = ArrayUtils.prepend("test", array);
+
+    assertNotNull(array);
+    assertEquals(3, array.length);
+    assertEquals("test", array[0]);
+    assertEquals("testing", array[1]);
+    assertEquals("tested", array[2]);
+  }
+
+  @Test
+  public void testSubArray() {
+    Integer[] result = ArrayUtils.subArray(new Integer[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 1, 2, 4, 8);
+
+    assertNotNull(result);
+    assertEquals(4, result.length);
+    assertTrue(Arrays.asList(result).containsAll(Arrays.asList(1, 2, 4, 8)));
+  }
+
+  @Test
+  public void testSubArrayWithEmptyArray() {
+    Object[] result = ArrayUtils.subArray(new Object[0]);
+
+    assertNotNull(result);
+    assertEquals(0, result.length);
+  }
+
+  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  public void testSubArrayWithEmptyArrayAndIndices() {
+    ArrayUtils.subArray(new Object[0], 1, 2, 4);
+  }
+
+  @Test
+  public void testSubArrayWithNoIndices() {
+    String[] result = ArrayUtils.subArray(new String[] { "test", "testing", "tested" });
+
+    assertNotNull(result);
+    assertEquals(0, result.length);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testSubArrayWithNullArray() {
+    ArrayUtils.subArray(null, 1, 2, 3);
   }
 
   private static final class Person {

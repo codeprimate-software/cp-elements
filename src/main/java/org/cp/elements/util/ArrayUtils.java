@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -29,15 +29,16 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The ArrayUtils class provides utility methods for working with Object arrays.
- * <p/>
+ * The ArrayUtils class encapsulates utility methods for interacting with Object arrays.
+ * 
  * @author John J. Blum
- * @since 1.0.0
  * @see java.lang.reflect.Array
  * @see java.util.ArrayList
  * @see java.util.Enumeration
@@ -45,6 +46,7 @@ import org.cp.elements.lang.StringUtils;
  * @see java.util.List
  * @see org.cp.elements.lang.Filter
  * @since 1.0.0
+ * @version 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class ArrayUtils {
@@ -53,7 +55,7 @@ public abstract class ArrayUtils {
 
   /**
    * Adds (insert) element at the end of the array.
-   * <p/>
+   * 
    * @param <T> the type of elements stored in the array.
    * @param element the element to insert into the array.
    * @param array the array used to insert the element.
@@ -66,7 +68,7 @@ public abstract class ArrayUtils {
 
   /**
    * Convenience method for specifying an array.
-   * <p/>
+   * 
    * @param <T> the type of elements stored in the array.
    * @param array the array.
    * @return the array as itself.
@@ -77,7 +79,7 @@ public abstract class ArrayUtils {
 
   /**
    * Counts the number of elements from the Object array matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Object array.
    * @param array the Object array of elements to search and count.
    * @param filter the Filter used to find matching elements from the Object array and tally the count.
@@ -93,7 +95,7 @@ public abstract class ArrayUtils {
 
   /**
    * Gets an empty Object array (an Object array containing no elements nor buckets for elements).
-   * <p/>
+   * 
    * @return an empty Object array with no capacity for elements.
    */
   public static Object[] emptyArray() {
@@ -102,7 +104,7 @@ public abstract class ArrayUtils {
 
   /**
    * Gets the Object array if not null otherwise returns an empty Object array.
-   * <p/>
+   * 
    * @param array the Object array reference being tested with a null check.
    * @return the Object array if not null otherwise returns an empty Object array.
    * @see #emptyArray()
@@ -113,7 +115,7 @@ public abstract class ArrayUtils {
 
   /**
    * Gets an Enumeration to enumerate over the elements in the specified Object array.
-   * <p/>
+   * 
    * @param array the Object array backing the Enumeration implementation.
    * @param <T> the Class type of the elements in the Object array.
    * @return an Enumeration over the elements in the Object array.
@@ -140,7 +142,7 @@ public abstract class ArrayUtils {
 
   /**
    * Searches the Object array for the first element matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Object array.
    * @param array the Object array of elements to search.
    * @param filter the Filter defining the criteria used to find the first matching element from the Object array.
@@ -168,7 +170,7 @@ public abstract class ArrayUtils {
 
   /**
    * Searches the Object array for elements matching the criteria defined by the Filter.
-   * <p/>
+   * 
    * @param <T> the Class type of the elements in the Object array.
    * @param array the Object array of elements to search.
    * @param filter the Filter defining the criteria used to find and match elements from the Object array.
@@ -197,7 +199,7 @@ public abstract class ArrayUtils {
 
   /**
    * Inserts element into the array at index.
-   * <p/>
+   * 
    * @param <T> the type of elements stored in the array.
    * @param element the element to insert into the array.
    * @param array the array used to insert the element.
@@ -234,7 +236,7 @@ public abstract class ArrayUtils {
   /**
    * Determines whether the specified Object array is empty.  An array of Objects is empty if the Object array
    * reference is null, or Object array contains no elements (length of zero).
-   * <p/>
+   * 
    * @param array the Object array being tested as empty.
    * @return a boolean value indicating whether the specified Object array is empty.
    * @see #length(Object[])
@@ -245,7 +247,7 @@ public abstract class ArrayUtils {
 
   /**
    * Gets an Iterable over the elements in the specified Object array.
-   * <p/>
+   * 
    * @param <T> the Class type of element in the Object array.
    * @param array the Object array backing the Iterable implementation.
    * @return an Iterable object over the elements in the array.
@@ -265,7 +267,7 @@ public abstract class ArrayUtils {
 
   /**
    * Gets an Iterator to iterate over the elements in the specified Object array.
-   * <p/>
+   * 
    * @param array the Object array backing the Iterator implementation.
    * @param <T> the Class type of the elements in the Object array.
    * @return an Iterator over the elements in the Object array.
@@ -296,7 +298,7 @@ public abstract class ArrayUtils {
   /**
    * Determines the length, or size of the Object array.  The size of the Object array is determined by it's length
    * if non-null, otherwise 0 is returned for null Object arrays.
-   * <p/>
+   * 
    * @param array the Object array who's length, or size is being determined.
    * @return an integer value specifying the length, or size of the Object array.
    */
@@ -306,7 +308,7 @@ public abstract class ArrayUtils {
 
   /**
    * Prepends (insert) element at the beginning of the array.
-   * <p/>
+   * 
    * @param <T> the type of elements stored in the array.
    * @param element the element to insert into the array.
    * @param array the array used to insert the element.
@@ -315,6 +317,34 @@ public abstract class ArrayUtils {
    */
   public static <T> T[] prepend(final T element, T[] array) {
     return insert(element, array, 0);
+  }
+
+  /**
+   * Creates a sub-array from the given array with the values at the specified indices in the given array.
+   *
+   * @param <T> the Class type of the array elements.
+   * @param array the original Object array from which to create the sub-array.
+   * @param indices the indices of values from the original array to include in the sub-array.
+   * @return a sub-array from the given array with the values at the specified indices in the given array.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] subArray(final T[] array, int... indices) {
+    List<T> subArray = new ArrayList<T>(indices.length);
+
+    for (int index : indices) {
+      subArray.add(array[index]);
+    }
+
+    return subArray.toArray((T[]) Array.newInstance(getComponentType(array), indices.length));
+  }
+
+  /*
+   * non-Javadoc
+   */
+  @SuppressWarnings("unchecked")
+  private static Class<?> getComponentType(final Object[] array) {
+    Class<?> type = (!isEmpty(array) ? ClassUtils.getClass(array[0]) : null);
+    return ObjectUtils.defaultIfNull(type, Object.class);
   }
 
 }

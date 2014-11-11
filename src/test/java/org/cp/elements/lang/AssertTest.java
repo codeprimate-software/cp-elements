@@ -37,14 +37,13 @@ import org.junit.Test;
 /**
  * The AssertTest class is a test suite of test cases to test the contract and functionality of the Assert class
  * in the org.cp.elements API and Framework.
- * </p>
+ * 
  * @author John J. Blum
- * @since 1.0.0
- * @version 1.0.0
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.test.TestUtils
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @since 1.0.0
+ * @version 1.0.0
  */
 public class AssertTest {
 
@@ -52,7 +51,7 @@ public class AssertTest {
 
   @Test
   public void testArgument() {
-    Assert.argument(true, "The argument is invalid!");
+    Assert.argument(true, "The argument is valid!");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -67,8 +66,21 @@ public class AssertTest {
   }
 
   @Test(expected = AssertionFailedException.class)
-  public void testArgumentInvalidThrowsAssertFailedException() {
+  public void testArgumentInvalidThrowsAssertionFailedException() {
     Assert.argument(false, new AssertionFailedException());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testArgumentInvalidThrowsIllegalArgumentExceptionWithMixedMessage() {
+    try {
+      Assert.argument(false, "The argument (%1$s) is a {1} argument, a %2$s, {1}, %2$s argument, just plain {2}, {3}!",
+        "TEST", "bad", "terrible", "horrible");
+    }
+    catch (IllegalArgumentException expected) {
+      assertEquals("The argument (TEST) is a bad argument, a bad, bad, bad argument, just plain terrible, horrible!",
+        expected.getMessage());
+      throw expected;
+    }
   }
 
   @Test
