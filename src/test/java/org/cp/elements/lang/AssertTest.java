@@ -96,53 +96,53 @@ public class AssertTest {
     Assert.equals("TEST", "TEST", "The Strings are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithUnequalBooleanValues() {
     Assert.equals(Boolean.TRUE, false, "The Boolean values are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithUnequalCalendars() {
     Assert.equals(TestUtils.createCalendar(2011, Calendar.OCTOBER, 4), Calendar.getInstance(),
       "The Calendars are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithUnequalCharacters() {
     Assert.equals('a', 'A', "The Characters are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithUnequalDoubles() {
     Assert.equals(3.14159d, Math.PI, "The Double values are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithUnequalIntegers() {
     Assert.equals(-1, 1, "The Integer values are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithUnequalStrings() {
     Assert.equals("TEST", "test", "The Strings are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithNullValues() {
     Assert.equals(null, null, "Null values are not equal!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsWithOneNullValue() {
     Assert.equals(null, "null", "A 'null' String is not equal to a null value!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = EqualityException.class)
   public void testAssertEqualsFormatsMessage() {
     try {
       Assert.equals(true, false, "Expected ({0}); but was ({1})!", true, false);
     }
-    catch (AssertionFailedException e) {
+    catch (EqualityException e) {
       assertEquals("Expected (true); but was (false)!", e.getMessage());
       throw e;
     }
@@ -532,17 +532,17 @@ public class AssertTest {
     Assert.same(LOCK, LOCK, "The Objects are not the same!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = IdentityException.class)
   public void testAssertSameWithDifferentObjects() {
     Assert.same("test", new String("test"), "The literal String 'test' is not the same as new String 'test'!");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test(expected = IdentityException.class)
   public void testAssetSameUsingMessage() {
     try {
       Assert.same(new Object(), new Object(), "A new {0} is not the same as a new {1}!", "Object", "Object");
     }
-    catch (AssertionFailedException e) {
+    catch (IdentityException e) {
       assertEquals("A new Object is not the same as a new Object!", e.getMessage());
       throw e;
     }

@@ -112,11 +112,11 @@ public final class Assert {
    * @param message a String specifying the message for the AssertionFailedException that is thrown if the
    * assertion fails.
    * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws AssertionFailedException if the two Objects are not equal.
+   * @throws org.cp.elements.lang.EqualityException if the two Objects are not equal.
    * @see java.lang.Object#equals(Object)
    */
   public static void equals(final Object obj1, final Object obj2, final String message, final Object... arguments) {
-    equals(obj1, obj2, new AssertionFailedException(format(message, arguments)));
+    equals(obj1, obj2, new EqualityException(format(message, arguments)));
   }
 
   /**
@@ -461,11 +461,11 @@ public final class Assert {
    * @param message a String specifying the message for the AssertionFailedException that is thrown if the
    * assertion fails.
    * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws AssertionFailedException if the two Objects are not identical.
+   * @throws org.cp.elements.lang.IdentityException if the two Objects are not identical.
    * @see java.lang.Object
    */
   public static void same(final Object obj1, final Object obj2, final String message, final Object... arguments) {
-    same(obj1, obj2, new AssertionFailedException(format(message, arguments)));
+    same(obj1, obj2, new IdentityException(format(message, arguments)));
   }
 
   /**
