@@ -26,14 +26,14 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * The ExceptionUtils class provides methods for working with Throwable objects (Errors and Exceptions).
+ * The ThrowableUtils class provides methods for working with Throwable objects (Errors and Exceptions).
  * 
  * @author John J. Blum
  * @see java.lang.Error
  * @see java.lang.Throwable
  * @since 1.0.0
  */
-public abstract class ExceptionUtils {
+public abstract class ThrowableUtils {
 
   /**
    * Gets the underlying cause of the Throwable object t if t is an instance of InvocationTargetException.

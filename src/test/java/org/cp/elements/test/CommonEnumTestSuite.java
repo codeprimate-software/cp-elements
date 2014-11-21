@@ -26,7 +26,7 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.cp.elements.lang.ExceptionUtils;
+import org.cp.elements.lang.ThrowableUtils;
 import org.junit.Test;
 
 /**
@@ -52,6 +52,7 @@ public abstract class CommonEnumTestSuite extends AbstractMockingTestSuite {
   public void testValueOfName() {
   }
 
+  @SuppressWarnings("unchecked")
   protected Object invoke(final Class type, final String methodName) {
     try {
       Method method = type.getMethod(methodName);
@@ -60,15 +61,15 @@ public abstract class CommonEnumTestSuite extends AbstractMockingTestSuite {
     }
     catch (NoSuchMethodException e) {
       fail(String.format("No method with name (%1$s) exists on Enum type (%2$s)!%n%3$s", methodName, type.getName(),
-        ExceptionUtils.getStackTrace(e)));
+        ThrowableUtils.getStackTrace(e)));
     }
     catch (IllegalAccessException e) {
       fail(String.format("Method with name (%1$s) is not accessible on Enum type (%2$s)!%n%3$s", methodName,
-        type.getName(), ExceptionUtils.getStackTrace(e)));
+        type.getName(), ThrowableUtils.getStackTrace(e)));
     }
     catch (InvocationTargetException e) {
       fail(String.format("Method with name (%1$s) is not accessible on Enum type (%2$s)!%n%3$s", methodName,
-        type.getName(), ExceptionUtils.getStackTrace(e)));
+        type.getName(), ThrowableUtils.getStackTrace(e)));
     }
 
     throw new RuntimeException(String.format("Failed to invoke method (%1$s) on Enum type (%2$s)!",

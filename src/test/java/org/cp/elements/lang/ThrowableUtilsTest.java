@@ -36,11 +36,11 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.lang.Error
  * @see java.lang.Throwable
- * @see org.cp.elements.lang.ExceptionUtils
+ * @see ThrowableUtils
  * @see org.junit.Assert
  * @see org.junit.Test
  */
-public class ExceptionUtilsTest {
+public class ThrowableUtilsTest {
 
   protected String toString(final Throwable t) {
     final StringBuilder buffer = new StringBuilder(t.getClass().getName());
@@ -62,65 +62,65 @@ public class ExceptionUtilsTest {
   @Test
   public void testGetCauseOfInvocationTargetException() {
     final IllegalArgumentException expectedException = new IllegalArgumentException("Illegal Argument!");
-    assertNull(ExceptionUtils.getCauseOfInvocationTargetException(new InvocationTargetException(null)));
+    assertNull(ThrowableUtils.getCauseOfInvocationTargetException(new InvocationTargetException(null)));
     assertEquals(expectedException,
-      ExceptionUtils.getCauseOfInvocationTargetException(new InvocationTargetException(expectedException)));
+      ThrowableUtils.getCauseOfInvocationTargetException(new InvocationTargetException(expectedException)));
   }
 
   @Test
   public void testGetCauseOfInvocationTargetExceptionWithNull() {
-    assertNull(ExceptionUtils.getCauseOfInvocationTargetException(null));
+    assertNull(ThrowableUtils.getCauseOfInvocationTargetException(null));
   }
 
   @Test
   public void testGetCauseOfInvocationTargetExceptionWithRuntimeException() {
     final RuntimeException expectedException = new RuntimeException("test");
-    assertEquals(expectedException, ExceptionUtils.getCauseOfInvocationTargetException(expectedException));
+    assertEquals(expectedException, ThrowableUtils.getCauseOfInvocationTargetException(expectedException));
   }
 
   @Test
   public void testGetMessage() {
-    assertEquals("test", ExceptionUtils.getMessage(new RuntimeException("test")));
+    assertEquals("test", ThrowableUtils.getMessage(new RuntimeException("test")));
   }
 
   @Test
   public void testGetMessageWithNull() {
-    assertNull(ExceptionUtils.getMessage(null));
+    assertNull(ThrowableUtils.getMessage(null));
   }
 
   @Test
   public void testGetRootCause() {
     final IllegalArgumentException expectedException = new IllegalArgumentException("Illegal Argument!");
-    assertEquals(expectedException, ExceptionUtils.getRootCause(new SystemException(expectedException)));
+    assertEquals(expectedException, ThrowableUtils.getRootCause(new SystemException(expectedException)));
   }
 
   @Test
   public void testGetDeeplyRootedCause() {
     final NullPointerException expectedException = new NullPointerException("Null Pointer!");
-    assertEquals(expectedException, ExceptionUtils.getRootCause(new RuntimeException(new SystemException(
+    assertEquals(expectedException, ThrowableUtils.getRootCause(new RuntimeException(new SystemException(
       new IllegalArgumentException(expectedException)))));
   }
 
   @Test
   public void testGetRootCauseWithNull() {
-    assertNull(ExceptionUtils.getRootCause(null));
+    assertNull(ThrowableUtils.getRootCause(null));
   }
 
   @Test
   public void testGetRootCauseWithNullCause() {
     final ApplicationException expectedException = new ApplicationException("No Cause!");
-    assertEquals(expectedException, ExceptionUtils.getRootCause(expectedException));
+    assertEquals(expectedException, ThrowableUtils.getRootCause(expectedException));
   }
 
   @Test
   public void testGetStackTrace() {
     final RuntimeException e = new RuntimeException("test");
-    assertEquals(toString(e), ExceptionUtils.getStackTrace(e));
+    assertEquals(toString(e), ThrowableUtils.getStackTrace(e));
   }
 
   @Test
   public void testGetStackTraceWithNull() {
-    assertNull(ExceptionUtils.getStackTrace(null));
+    assertNull(ThrowableUtils.getStackTrace(null));
   }
 
 }
