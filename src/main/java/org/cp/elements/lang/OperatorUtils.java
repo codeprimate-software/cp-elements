@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * The OperatorUtils class provides methods to write natural language expressions for various conditions, such as 
  * equality comparisons, identity checks, null checks, negation and so on, and operations such as conversion, etc.
- * <p/>
+ * 
  * @author John J. Blum
  * @see org.cp.elements.lang.LogicalOperator
  * @see java.util.Arrays
@@ -44,7 +44,7 @@ public abstract class OperatorUtils {
   /**
    * The from operator performs conversions on the given array and it's elements.  For instance, the array can be
    * converted into an ordered List of elements, or a unique Set of elements originating from the array.
-   * <p/>
+   * 
    * @param <T> the type of the elements in the array.
    * @param array the array of elements all of type T to be converted.
    * @return a From operator to perform the conversions.
@@ -55,14 +55,14 @@ public abstract class OperatorUtils {
 
   /**
    * The From interface defines operations for conversion of an Object array to a List, Set or String.
-   * <p/>
+   * 
    * @param <T> the element type of objects in the List or Set.
    */
   public static interface From<T> {
 
     /**
      * Converts an object array to a List.
-     * <p/>
+     * 
      * @return a List implementation containing all the elements in the given object array to the from operator.
      * @see java.util.List
      */
@@ -70,7 +70,7 @@ public abstract class OperatorUtils {
 
     /**
      * Converts an object array to a Set.
-     * <p/>
+     * 
      * @return a Set implementation containing all the elements of the given object array to the from operator.
      * @see java.util.Set
      */
@@ -79,7 +79,7 @@ public abstract class OperatorUtils {
 
   /**
    * The FromImpl class is an implementation of the From interface, from operator.
-   * <p/>
+   * 
    * @param <T> the element type of items in the List or Set.
    */
   private static final class FromImpl<T> implements From<T> {
@@ -103,7 +103,7 @@ public abstract class OperatorUtils {
 
     @Override
     public String toString() {
-      final StringBuilder buffer = new StringBuilder("[");
+      StringBuilder buffer = new StringBuilder("[");
 
       if (array != null) {
         for (int index = 0; index < array.length; index++) {
@@ -119,7 +119,7 @@ public abstract class OperatorUtils {
   /**
    * The is operator can be used to make logical determinations about an object such as boolean, equality, identity,
    * relational or type comparisons with other objects, and so on.
-   * <p/>
+   * 
    * @param <T> the type of Object as the subject of the is operator.
    * @param obj the Object that is the subject of the operation.
    * @return an instance of the is operator.
@@ -131,14 +131,14 @@ public abstract class OperatorUtils {
   /**
    * The Is interface defines operations to classify a single object based on it's identity, state, type or relationship
    * to another object.
-   * <p/>
+   * 
    * @param <T> the type of Object as the subject of the is operator.
    */
   public static interface Is<T> {
 
     /**
      * Determines whether the Class object provided to the is operator is assignable from the Class type parameter.
-     * <p/>
+     * 
      * @param type the Class type to check for assignment compatibility.
      * @return a boolean value indicating if the Class type parameter is assignable to the Class object provided in
      * this is operator.
@@ -150,7 +150,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
      * considered equal as determined by their compareTo method.  This implies that the objects in the equality
      * comparison must implement the Comparable interface.
-     * <p/>
+     * 
      * @param obj the Object parameter used in the equality comparison.
      * @return a boolean value indicating whether the objects are equal.
      * @see java.lang.Comparable#compareTo(Object)
@@ -161,7 +161,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
      * considered equal when neither is null, both refer to the same object, or both objects have the same value as
      * determined by their equals method.
-     * <p/>
+     * 
      * @param obj the Object parameter used in the equality comparison.
      * @return a boolean value indicating whether the objects are equal.
      * @see java.lang.Object#equals(Object)
@@ -171,7 +171,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value false.  An object
      * is false if and only if the value is actually false and not null or some other value (such as true).
-     * <p/>
+     * 
      * @return a boolean value of true if the object in question is indeed the value false.
      * @see java.lang.Boolean#FALSE
      */
@@ -180,7 +180,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator is greater than the specified value, as determined
      * by the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param lowerBound the lower bound value for which the object must be greater than.
      * @return a boolean value indicating if the object is greater than the specified value.
      * @see java.lang.Comparable#compareTo(Object)
@@ -190,7 +190,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator is greater than some specified lower bound value
      * and also less than some specified upper bound value, as determined by the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param lowerBound the lower bound value for which the object must be greater than.
      * @param upperBound the upper bound value for which the object must be less than.
      * @return a boolean value indicating if the object is greater than the lower bound value and less than the
@@ -203,7 +203,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is greater than some specified lower bound value
      * and also less than or equal to some specified upper bound value, as determined by the Comparable object's
      * compareTo method.
-     * <p/>
+     * 
      * @param lowerBound the lower bound value for which the object must be greater than.
      * @param upperBound the upper bound value for which the object must be less than or equal to.
      * @return a boolean value indicating if the object is greater than the lower bound value and less than or equal to
@@ -215,7 +215,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator is greater than or equal to the specified value,
      * as determined by the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param lowerBound the lower bound value for which the object must be greater than or equal to.
      * @return a boolean value indicating if the object is greater than or equal to the specified value.
      * @see java.lang.Comparable#compareTo(Object)
@@ -226,7 +226,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is greater than or equal to some specified
      * lower bound value and also less than some specified upper bound value, as determined by the Comparable object's
      * compareTo method.
-     * <p/>
+     * 
      * @param lowerBound the lower bound value for which the object must be greater than or equal to.
      * @param upperBound the upper bound value for which the object must be less than.
      * @return a boolean value indicating if the object is greater than or equal to the lower bound value and less than
@@ -239,7 +239,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is greater than or equal to some specified
      * lower bound value and also less than or equal to some specified upper bound value, as determined by
      * the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param lowerBound the lower bound value for which the object must be greater than or equal to.
      * @param upperBound the upper bound value for which the object must be less than or equal to.
      * @return a boolean value indicating if the object is greater than or equal to the lower bound value
@@ -250,7 +250,7 @@ public abstract class OperatorUtils {
 
     /**
      * Determines whether the object provided to the is operator is an instance of the specified class type.
-     * <p/>
+     * 
      * @param type the Class object used in determining if the object in question is an instance of the
      * specified Class.
      * @return a boolean value indicating whether the object in question is an instance of the specified Class.
@@ -260,7 +260,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator is less than the specified value, as determined by
      * the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param upperBound the upper bound value for which the object must be less than.
      * @return a boolean value indicating if the object is less than the specified value.
      * @see java.lang.Comparable#compareTo(Object)
@@ -271,7 +271,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is less than some specified lower upper bound value
      * or greater than some specified upper lower bound value, as determined by the Comparable object's
      * compareTo method.
-     * <p/>
+     * 
      * @param upperBound the upper bound value for which the object must be less than.
      * @param lowerBound the lower bound value for which the object must be greater than.
      * @return a boolean value indicating if the object is less than the upper bound value
@@ -284,7 +284,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is less than some specified lower upper bound value
      * or greater than or equal to some specified upper lower bound value, as determined by the Comparable object's
      * compareTo method.
-     * <p/>
+     * 
      * @param upperBound the upper bound value for which the object must be less than.
      * @param lowerBound the lower bound value for which the object must be greater than or equal to.
      * @return a boolean value indicating if the object is less than the upper bound value or is greater than
@@ -296,7 +296,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator is less than or equal to the specified value,
      * as determined by the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param upperBound the upper bound value for which the object must be less than or equal to.
      * @return a boolean value indicating if the object is less than or equal to the specified value.
      * @see java.lang.Comparable#compareTo(Object)
@@ -307,7 +307,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is less than or equal to some specified
      * lower upper bound value or greater than some specified upper lower bound value, as determined by
      * the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param upperBound the upper bound value for which the object must be less than or equal to.
      * @param lowerBound the lower bound value for which the object must be greater than.
      * @return a boolean value indicating if the object is less than or equal to the upper bound value
@@ -320,7 +320,7 @@ public abstract class OperatorUtils {
      * Determines whether the object provided to the is operator is less than or equal to some specified
      * lower upper bound value or greater than or equal to some specified upper lower bound value, as determined by
      * the Comparable object's compareTo method.
-     * <p/>
+     * 
      * @param upperBound the upper bound value for which the object must be less than or equal to.
      * @param lowerBound the lower bound value for which the object must be greater than or equal to.
      * @return a boolean value indicating if the object is less than or equal to the upper bound value
@@ -331,7 +331,7 @@ public abstract class OperatorUtils {
 
     /**
      * Negates the expected outcome/result of this operator.
-     * <p/>
+     * 
      * @return the instance of this Is operator negated.
      */
     public Is<T> not();
@@ -339,14 +339,14 @@ public abstract class OperatorUtils {
     /**
      * Shortcut method of the not().Null() operation.  Determines whether the object provided to the is operator
      * is not null.
-     * <p/>
+     * 
      * @return a boolean value indicating whether the object in question is not null.
      */
     public boolean notNull();
 
     /**
      * Determines whether the object provided to the is operator is null.
-     * <p/>
+     * 
      * @return a boolean value indicating whether the object in question is null.
      */
     public boolean Null();
@@ -354,7 +354,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator is the same as, or refers to the same object
      * in memory as the given object parameter.
-     * <p/>
+     * 
      * @param obj the Object reference used to determine if the object in question is a reference to the same object
      * in memory.
      * @return a boolean value indicating whether the object in question and object parameter reference refer to
@@ -365,7 +365,7 @@ public abstract class OperatorUtils {
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value true.  An object
      * is true if and only if the value is actually true and not null or some other value (such as false).
-     * <p/>
+     * 
      * @return a boolean value of true if the object in question is indeed the value true
      * @see java.lang.Boolean#TRUE
      */
@@ -376,7 +376,7 @@ public abstract class OperatorUtils {
    * The IsImpl class is an implementation of the Is interface, is operator.  Note, this implementation is Thread-safe,
    * although it is very unlikely that a Thread will share an instance of this class since every invocation of the
    * is() operator factory method will return a new instance of this class, at least for the time being.
-   * <p/>
+   * 
    * @param <T> the Object's type.
    */
   private static final class IsImpl<T> implements Is<T> {

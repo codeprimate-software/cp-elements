@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -23,8 +23,9 @@ package org.cp.elements.lang;
 
 /**
  * The RelationalOperator class defines class representations for the relation operators (==, >, >=, < and <=).
- * <p/>
+ * 
  * @author John J. Blum
+ * @see java.lang.Comparable
  * @see org.cp.elements.lang.LogicalOperator
  * @since 1.0.0
  */
@@ -33,7 +34,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing equality comparisons to determine whether all provided values are equal to
    * the given expected value.
-   * <p/>
+   * 
    * @param value the expected object value of the equality comparison.
    * @param <T> the expected Class type for the object used in the equality comparison.
    * @return a RelationalOperator for the equality comparison.
@@ -45,7 +46,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing greater than comparisons to determine whether all provided values
    * are greater than the given lower bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower bounded value.
    * @param <T> the expected Class type for the object used in the greater than comparison.
    * @return a RelationalOperator for the greater than comparison.
@@ -57,7 +58,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing greater than and less than comparisons to determine whether all provided
    * values are greater than some lower bound value and also less than some upper bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower bounded value.
    * @param upperBound the Comparable upper bounded value.
    * @param <T> the expected Class type for the object used in the greater than and less than comparison.
@@ -70,7 +71,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing greater than and less than equal to comparisons to determine whether all
    * provided values are greater than some lower bound value and also less than equal to some upper bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower bounded value.
    * @param upperBound the Comparable upper bounded value.
    * @param <T> the expected Class type for the object used in the greater than and less than equal to comparison.
@@ -83,7 +84,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing greater than equal to comparisons to determine whether all provided values
    * are greater than equal to the given lower bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower bounded value.
    * @param <T> the expected Class type for the object used in the greater than equal to comparison.
    * @return a RelationalOperator for the greater than equal to comparison.
@@ -95,7 +96,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing greater than equal to and less than comparisons to determine whether all
    * provided values are greater than equal to some lower bound value and also less than some upper bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower bounded value.
    * @param upperBound the Comparable upper bounded value.
    * @param <T> the expected Class type for the object used in the greater than equal to and less than comparison.
@@ -109,7 +110,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * Gets the RelationalOperator performing greater than equal to and less than equal to comparisons to determine
    * whether all provided values are greater than equal to some lower bound value and also less than equal to some
    * upper bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower bounded value.
    * @param upperBound the Comparable upper bounded value.
    * @param <T> the expected Class type for the object used in the greater than equal to and less than equal to
@@ -123,7 +124,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing less than comparisons to determine whether all provided values are less than
    * the given upper bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable upper bounded value.
    * @param <T> the expected Class type for the object used in the less than comparison.
    * @return a RelationalOperator for the less than comparison.
@@ -135,7 +136,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing less than or greater than comparisons to determine whether all provided
    * values are less than some upper bound value or possibly greater than some lower bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable upper bounded value.
    * @param upperBound the Comparable lower bounded value.
    * @param <T> the expected Class type for the object used in the less than or greater than comparison.
@@ -148,7 +149,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing less than or greater than equal to comparisons to determine whether all
    * provided values are less than some upper bound value or possibly greater than equal to some lower bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable lower upper bounded value.
    * @param upperBound the Comparable upper lower bounded value.
    * @param <T> the expected Class type for the object used in the less than or greater than equal to comparison.
@@ -161,7 +162,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing less than equal to comparisons to determine whether all provided values
    * are less than equal to the given upper bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable upper bounded value.
    * @param <T> the expected Class type for the object used in the less than equal to comparison.
    * @return a RelationalOperator for the less than equal to comparison.
@@ -173,7 +174,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Gets the RelationalOperator performing less than equal to or greater than comparisons to determine whether all
    * provided values are less than equal to some upper bound value or possibly greater than some lower bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable upper bounded value.
    * @param upperBound the Comparable lower bounded value.
    * @param <T> the expected Class type for the object used in the less than equal to or greater than comparison.
@@ -187,7 +188,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * Gets the RelationalOperator performing less than equal to or greater than equal to comparisons to determine whether
    * all provided values are less than equal to some upper bound value or possibly greater than equal to some lower
    * bound value.
-   * <p/>
+   * 
    * @param lowerBound the Comparable upper bounded value.
    * @param upperBound the Comparable lower bounded value.
    * @param <T> the expected Class type for the object used in the less than equal to or greater than equal to
@@ -200,14 +201,14 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * Gets a String describing the relational operator, such as 'equal to'.
-   * <p/>
+   * 
    * @return a String value describing the relational operator.
    */
   public abstract String getDescription();
 
   /**
    * Gets the symbolic representation of the relational operator, such as ==, >, >=, <, <= and so on.
-   * <p/>
+   * 
    * @return a String value symbolizing the relational operator.
    */
   public abstract String getSymbol();
@@ -215,7 +216,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * Performs the relational comparison between the actual and expected value(s) provided when the relational operator
    * was instantiated.
-   * <p/>
+   * 
    * @param actualValue the actual Comparable value used in the relational operation to perform the evaluation.
    * @return a boolean value indicating whether the actual Comparable value satisfies the constraints of the
    * relational comparison, with respect to it's expected values.
@@ -224,7 +225,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * Gets a String describing this relational operator.
-   * <p/>
+   * 
    * @return a String value to describe this relational operator.
    * @see org.cp.elements.lang.RelationalOperator#getDescription()
    */
@@ -235,7 +236,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * Common abstract base class for all ReltaionalOperator implementation classes.
-   * <p/>
+   * 
    * @param <T> the Class type of Comparable object expected in the relational comparison.
    * @see org.cp.elements.lang.RelationalOperator.EqualToOperator
    * @see org.cp.elements.lang.RelationalOperator.GreaterThanOperator
@@ -255,7 +256,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * Private constructor used by the ComposableRelationalOperator.  Constructs an instance of the RelationalOperator
      * with a description and symbol for the relational operator.  In this case, the relational operator does not have
      * an expected value since the relational operator is composed of relational operators that do.
-     * <p/>
+     * 
      * @param description a String describing the relational operator.
      * @param symbol a String to symbolically represent the relational operator.
      * @throws IllegalArgumentException if either the description or symbol are not specified.
@@ -271,7 +272,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     /**
      * Constructor to create new instances of the RelationalOperator class given a new and different kind of
      * relational operator.
-     * <p/>
+     * 
      * @param description a String value describing the relational operator.
      * @param symbol a String value to symbolically represent the relational operator.
      * @param expectedValue the Comparable value expected during the evaluation of the relational operation.
@@ -289,7 +290,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Gets a String describing the relational operator, such as 'equal to'.
-     * <p/>
+     * 
      * @return a String describing the relational operator.
      */
     @Override
@@ -299,7 +300,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Gets the expected Comparable value used in the relational comparison to constrain actual values.
-     * <p/>
+     * 
      * @return the expected Comparable value used in the relational comparison to constrain the actual values.
      */
     protected final T getExpectedValue() {
@@ -308,7 +309,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Gets the symbolic representation of the relational operator, such as ==, >, >=, <, <= and so on.
-     * <p/>
+     * 
      * @return a String symbolizing the relational operator.
      */
     @Override
@@ -318,7 +319,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Verifies the validity of the actual Comparable value with the expected Comparable value.
-     * <p/>
+     * 
      * @param actualValue the actual Comparable value in the relational comparison.
      * @throws NullPointerException if the actual Comparable value is null.
      */
@@ -330,7 +331,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   /**
    * The ComposableRelationalOperator class allows various relational operators to be combined into a compound
    * relational operation using a logical operator (such as AND or OR).
-   * <p/>
+   * 
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    * @see org.cp.elements.lang.LogicalOperator
    */
@@ -344,7 +345,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     /**
      * Constructs an instance of the ComposableRelationalOperator class with the specified relational operator operands
      * and combining logical operator.
-     * <p/>
+     * 
      * @param leftOperand a RelationalOperator operand on the left-side of the logical operation.
      * @param operator the LogicalOperator used to the combine the two ReltaionalOperator operands in a compound
      * relational comparison.
@@ -363,7 +364,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Factory method used in composing a compound relational operator comparison, such as > && <, or < || >.
-     * <p/>
+     * 
      * @param leftOperand a RelationalOperator operand on the left-side of the logical operation.
      * @param operator the LogicalOperator used to the combine the two ReltaionalOperator operands in a compound
      * relational comparison.
@@ -383,7 +384,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Gets the left-side operand in the logical operation.
-     * <p/>
+     * 
      * @return the RelationalOperator constituting the operand on the left-side of the logical operation.
      */
     protected RelationalOperator<T> getLeftOperand() {
@@ -393,7 +394,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     /**
      * Gets the logical operator used to combine the two independent RelationaOperator operands into a compound
      * relational comparison.
-     * <p/>
+     * 
      * @return the LogicalOperator used to combine the two RelationalOperators into a compound relational comparison.
      * @see org.cp.elements.lang.LogicalOperator
      */
@@ -403,7 +404,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
     /**
      * Gets the right-side operand in the logical operation.
-     * <p/>
+     * 
      * @return the RelationalOperator constituting the operand on the right-side of the logical operation.
      */
     protected RelationalOperator<T> getRightOperand() {
@@ -413,7 +414,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     /**
      * Performs the relational comparison between the provided actual value and the expected value(s), as determined
      * when the relational operator was instantiated.
-     * <p/>
+     * 
      * @param actualValue the actual Comparable value used in the relational operation to perform the evaluation.
      * @return a boolean value indicating whether the actual Comparable value satisfies the constraints of the
      * relational comparison, with respect to it's expected values.
@@ -426,7 +427,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * The EqualToOperator class implements equality relational comparisons.
-   * <p/>
+   * 
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    */
   private static final class EqualToOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
@@ -445,7 +446,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * The GreaterThanOperator class implements the greater than relational comparison.
-   * <p/>
+   * 
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    */
   private static final class GreaterThanOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
@@ -463,7 +464,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * The GreaterThanEqualToOperator class implements the greater than equal to relational comparison.
-   * <p/>
+   * 
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    */
   private static final class GreaterThanEqualToOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
@@ -481,7 +482,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * The LessThanOperator class implements the less than relational comparison.
-   * <p/>
+   * 
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    */
   private static final class LessThanOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
@@ -499,7 +500,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
 
   /**
    * The LessThanEqualToOperator class implements the less than equal to relational comparison.
-   * <p/>
+   * 
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    */
   private static final class LessThanEqualToOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {

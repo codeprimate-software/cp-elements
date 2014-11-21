@@ -26,25 +26,19 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * The NetworkUtils utility class provides utility methods related to networking.
- * </p>
+ * The NetworkUtils class provides utility methods related to networking.
+ * 
  * @author John J. Blum
- * @since 1.0.0
  * @see java.net.ServerSocket
  * @see java.net.Socket
+ * @since 1.0.0
  */
-public final class NetworkUtils {
-
-  /**
-   * Default private constructor to prevent instantiation and subclassing.
-   */
-  private NetworkUtils() {
-  }
+public abstract class NetworkUtils {
 
   /**
    * Attempts to close the specified ServerSocket returning a boolean value indicating whether the operation
    * was successful or not.
-   * </p>
+   * 
    * @param socket the ServerSocket to be closed.
    * @return a boolean value indicating whether the ServerSocket was successfully closed or not.
    * @see java.net.ServerSocket#close()
@@ -65,7 +59,7 @@ public final class NetworkUtils {
   /**
    * Attempts to close the specified Socket return a boolean value indicating whether the operaton was successful
    * or not.
-   * </p>
+   * 
    * @param socket the Socket to be closed.
    * @return a boolean value indicating whether the Socket was successfully closed or not.
    * @see java.net.Socket#close()

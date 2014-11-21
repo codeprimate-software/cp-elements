@@ -46,7 +46,6 @@ import org.cp.elements.lang.StringUtils;
  * @see java.util.List
  * @see org.cp.elements.lang.Filter
  * @since 1.0.0
- * @version 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class ArrayUtils {
@@ -158,7 +157,7 @@ public abstract class ArrayUtils {
 
     T matchingElement = null;
 
-    for (final T element : array) {
+    for (T element : array) {
       if (filter.accept(element)) {
         matchingElement = element;
         break;
@@ -184,9 +183,9 @@ public abstract class ArrayUtils {
     Assert.notNull(array, "The Object array from which to find elements accepted by the Filter cannot be null!");
     Assert.notNull(filter, "The Filter used to find elements from the Object array cannot be null!");
 
-    final List<T> arrayList = new ArrayList<T>(array.length);
+    List<T> arrayList = new ArrayList<T>(array.length);
 
-    for (final T element : array) {
+    for (T element : array) {
       if (filter.accept(element)) {
         arrayList.add(element);
       }
@@ -218,7 +217,7 @@ public abstract class ArrayUtils {
 
     componentType = (componentType != null ? componentType : element.getClass());
 
-    final T[] newArray = (T[]) Array.newInstance(componentType, array.length + 1);
+    T[] newArray = (T[]) Array.newInstance(componentType, array.length + 1);
 
     if (index > 0) {
       System.arraycopy(array, 0, newArray, 0, index);

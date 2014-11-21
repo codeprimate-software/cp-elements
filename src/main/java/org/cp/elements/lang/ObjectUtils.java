@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -31,13 +31,11 @@ package org.cp.elements.lang;
 @SuppressWarnings("unused")
 public abstract class ObjectUtils {
 
-  // TODO add methods from VMW ObjectUtils class
-
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
   /**
    * Gets the first non-null value in the array of values.
-   * <p/>
+   * 
    * @param values an array of Object values from which the first non-null Object value in the array is returned.
    * @param <T> the Class type of values in the array.
    * @return the first non-null value in the array of Object values.
@@ -45,7 +43,7 @@ public abstract class ObjectUtils {
   @NullSafe
   public static <T> T defaultIfNull(final T... values) {
     if (values != null) {
-      for (final T value : values) {
+      for (T value : values) {
         if (value != null) {
           return value;
         }
@@ -59,7 +57,7 @@ public abstract class ObjectUtils {
    * Determines whether two objects are equal in value as determined by the Object.equals method in addition to
    * guarding against null values.  Both objects are considered equal if and only if both are non-null
    * and obj1.equals(obj2).
-   * <p/>
+   * 
    * @param obj1 the first Object in the equality comparison.
    * @param obj2 the second Object in the equality comparison.
    * @return a boolean value indicating whether the two Objects are equal in value.
@@ -73,7 +71,7 @@ public abstract class ObjectUtils {
   /**
    * Determines whether two objects are equal in value as determined by the Object.equals method.  Both objects are
    * considered equal if and only if both are null or obj1.equals(obj2).
-   * <p/>
+   * 
    * @param obj1 the first Object in the equality comparison.
    * @param obj2 the second Object in the equality comparison.
    * @return a boolean value indicating whether the two Objects are equal in value where two null Object references
@@ -88,7 +86,7 @@ public abstract class ObjectUtils {
   /**
    * Calculates the hash code of an object by invoking Object.hashCode for non-null objects and returning 0 if the
    * object is null.
-   * <p/>
+   * 
    * @param obj the Object who's hash code is computed and returned.
    * @return an integer value with the calculated hash code of the object.
    * @see java.lang.Object#hashCode()
@@ -101,7 +99,7 @@ public abstract class ObjectUtils {
   /**
    * Transforms the object into a String by invoking Object.toString for non-null objects and returning null for
    * null object references.
-   * <p/>
+   * 
    * @param obj the Object who's toString method will be called.
    * @return a String representation of the object.
    * @see java.lang.Object#toString()

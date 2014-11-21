@@ -193,6 +193,20 @@ public class ClassUtilsTest {
   }
 
   @Test
+  public void testIsAnnotation() {
+    assertFalse(ClassUtils.isAnnotation(null));
+    assertFalse(ClassUtils.isAnnotation(Object.class));
+    assertFalse(ClassUtils.isAnnotation(String.class));
+    assertFalse(ClassUtils.isAnnotation(Object[].class));
+    assertFalse(ClassUtils.isAnnotation(int[][].class));
+    assertFalse(ClassUtils.isAnnotation(Class.class));
+    assertFalse(ClassUtils.isAnnotation(Thread.State.class));
+    assertFalse(ClassUtils.isAnnotation(Cloneable.class));
+    assertFalse(ClassUtils.isAnnotation(Integer.TYPE));
+    assertTrue(ClassUtils.isAnnotation(Documented.class));
+  }
+
+  @Test
   public void testIsArray() {
     assertFalse(ClassUtils.isArray(null));
     assertFalse(ClassUtils.isArray(Object.class));

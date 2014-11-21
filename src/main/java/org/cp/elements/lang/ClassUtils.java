@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -43,7 +43,7 @@ public abstract class ClassUtils {
    * Determines whether a given Class type is assignable to a declared Class type.  A given Class type is assignable to
    * a declared Class type if it is in the same Class type hierarchy, i.e. the given Class type is a subclass,
    * or sub-interface of the declared Class type.  Null is also assignable to the declared (to) Class type.
-   * <p/>
+   * 
    * @param fromType the Class type evaluated for assignment compatibility with the declared Class type.
    * @param toType the declared Class type defining the type hierarchy, or bounds on the given Class type for
    * assignment compatibility.
@@ -57,7 +57,7 @@ public abstract class ClassUtils {
 
   /**
    * Get the Class type of the specified Object.  Returns null if the Object reference is null.
-   * <p/>
+   * 
    * @param obj the Object who's Class type is being determined.
    * @return a Class object signifying the type of the specified Object.
    * @see java.lang.Object#getClass()
@@ -70,7 +70,7 @@ public abstract class ClassUtils {
   /**
    * Gets the fully-qualified name of the Class type for the specified Object.  Returns null if the Object reference
    * is null.
-   * <p/>
+   * 
    * @param obj the Object who's class name is determined.
    * @return a String value specifying the fully qualified class name of the Object.
    * @see java.lang.Class#getName()
@@ -84,7 +84,7 @@ public abstract class ClassUtils {
   /**
    * Gets the unqualified, simple name of the Class type for the specified Object.  Returns null if the Object reference
    * is null.
-   * <p/>
+   * 
    * @param obj the Object who's simple class name is determined.
    * @return a String value indicating the simple class name of the Object.
    * @see java.lang.Class#getSimpleName()
@@ -99,7 +99,7 @@ public abstract class ClassUtils {
    * Gets a Field object representing the named field on the specified Class.  This method will recursively search
    * up the class hierarchy of the specified class until the Object class is reached.  If the named field is found
    * then a Field object representing the field is returned otherwise a NoSuchFieldException is thrown.
-   * <p/>
+   * 
    * @param type the Class type to search for the specified field.
    * @param fieldName a String value specifying the name of the field on the Class type.
    * @return a Field objects representing the named field on the specified Class.
@@ -124,7 +124,7 @@ public abstract class ClassUtils {
    * Gets a Method object representing the named method on the specified Class.  This method will recursively search
    * up the class hierarchy of the specified lass until the Object class is reached.  If the named field is found
    * then a Method object representing the method is returned otherwise a NoSuchMethodException is thrown.
-   * <p/>
+   * 
    * @param type the Class type to search for the specified method.
    * @param methodName a String value specifying the name of the method ofn the Class type.
    * @return a Method object representing the named method on the specified Class.
@@ -148,7 +148,7 @@ public abstract class ClassUtils {
 
   /**
    * Gets the fully-qualified name of the Class.
-   * <p/>
+   * 
    * @param type the Class type to return the fully-qualified name of.
    * @return a String value with the fully-qualified name of the Class.
    * @see java.lang.Class#getName()
@@ -160,7 +160,7 @@ public abstract class ClassUtils {
 
   /**
    * Gets the simple name of the Class.
-   * <p/>
+   * 
    * @param type the Class type to return the simple name of.
    * @return a String value with the simple name of the Class.
    * @see java.lang.Class#getSimpleName()
@@ -173,7 +173,7 @@ public abstract class ClassUtils {
   /**
    * Determines whether the given Object is an instance of the specified Class.  Note, an Object cannot be an
    * instance of null, so this method returns false if the Class type is null or the Object is null.
-   * <p/>
+   * 
    * @param obj the Object to test as an instance of the specified Class type.
    * @param type the Class type used in the instanceof operation.
    * @return a boolean value indicating whether the Object is an instance of the Class type.
@@ -185,8 +185,20 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Determines whether the specified Class object represents an annotation type.
+   *
+   * @param type the Class object tested as an annotation type.
+   * @return true iff the Class object is not null and represents an annotation type.
+   * @see java.lang.Class#isAnnotation()
+   */
+  @NullSafe
+  public static boolean isAnnotation(final Class type) {
+    return (type != null && type.isAnnotation());
+  }
+
+  /**
    * Determines whether the specified Class object represents an array type.
-   * <p/>
+   * 
    * @param type the Class object tested as an array type.
    * @return true iff the Class object is not null and represents an array type.
    * @see java.lang.Class#isArray()
@@ -199,7 +211,7 @@ public abstract class ClassUtils {
   /**
    * Determines whether the specified Class object represents an actual class, and not an Annotation, Array, Enum,
    * Interface or Primitive type.
-   * <p/>
+   * 
    * @param type the Class object tested as an actual class.
    * @return true iff the Class object is not null and represents an actual class.
    */
@@ -211,7 +223,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the specified Class object represents an enum type.
-   * <p/>
+   * 
    * @param type the Class object tested as an enum type.
    * @return true iff the Class object is not null and represents an enum type.
    * @see java.lang.Class#isEnum()
@@ -223,7 +235,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the specified Class object represents an interface.
-   * <p/>
+   * 
    * @param type the Class object tested as an interface.
    * @return true iff the Class object is not null and represents an interface.
    * @see java.lang.Class#isInterface()
@@ -235,7 +247,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the specified Class object represents a primitive type.
-   * <p/>
+   * 
    * @param type the Class object tested as a primitive type.
    * @return true iff the Class object is not null and represents a primitive type.
    * @see java.lang.Class#isPrimitive()
@@ -247,7 +259,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the specified class identified by name is available and present on the application classpath.
-   * <p/>
+   * 
    * @param className the fully qualified name of the class to determine the presence of.
    * @return a boolean value indicating whether the class identified by name is in the classpath.
    * @see #loadClass
@@ -265,7 +277,7 @@ public abstract class ClassUtils {
   /**
    * Loads the Class object for the specified, fully qualified class name using the current Thread's context ClassLoader,
    * following by initializing the class.
-   * <p/>
+   * 
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
    * @return a Class object for the specified, fully qualified class name.
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
@@ -280,7 +292,7 @@ public abstract class ClassUtils {
   /**
    * Loads the Class object for the specified, fully qualified class name using the provided ClassLoader and the option
    * to initialize the class (calling any static initializers) once loaded.
-   * <p/>
+   * 
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
    * @param initialize a boolean value indicating whether to initialize the class after loading.
    * @param classLoader the ClassLoader used to load the class.
@@ -305,7 +317,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the Object is an instance of any of the Class types and returns false if it is.
-   * <p/>
+   * 
    * @param obj the Object of the instanceof comparison.
    * @param types an array of Class types used in the instanceof comparison.
    * @return a true boolean value iff the Object is not an instance of any of the Class types.
