@@ -43,6 +43,10 @@ public abstract class AbstractMockingTestSuite extends CommonBaseTestSuite {
 
   protected Mockery mockContext;
 
+  protected <T> T mock(final Class<T> type, final String name) {
+    return mockContext.mock(type, name);
+  }
+
   @Before
   public void preTestCaseSetup() {
     mockContext = new Mockery();
