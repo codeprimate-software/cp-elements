@@ -30,16 +30,16 @@ import java.util.Map;
 
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.support.DefaultFilter;
 import org.junit.Test;
 
 /**
  * The MapUtilsTest class is a test suite of test cases testing the contract and functionality of the MapUtils class.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.util.Map
  * @see org.cp.elements.util.MapUtils
- * @see org.junit.Assert
  * @see org.junit.Test
  * @since 1.0.0
  */
@@ -47,7 +47,7 @@ public class MapUtilsTest {
 
   @Test
   public void testCount() {
-    final Map<String, String> map = new HashMap<String, String>(6);
+    Map<String, String> map = new HashMap<String, String>(6);
 
     map.put("test", "testing");
     map.put(null, null);
@@ -69,7 +69,7 @@ public class MapUtilsTest {
 
   @Test
   public void testCountReturnsSize() {
-    final Map<String, String> map = new HashMap<String, String>(1);
+    Map<String, String> map = new HashMap<String, String>(1);
 
     map.put("key", "value");
 
@@ -79,7 +79,7 @@ public class MapUtilsTest {
 
   @Test
   public void testCountReturnsZero() {
-    final Map<String, String> map = new HashMap<String, String>(1);
+    Map<String, String> map = new HashMap<String, String>(1);
 
     map.put("key", "value");
 
@@ -99,13 +99,13 @@ public class MapUtilsTest {
 
   @Test
   public void testEmptyMap() {
-    final Map<String, String> expectedMap = new HashMap<String, String>(1);
+    Map<String, String> expectedMap = new HashMap<String, String>(1);
 
     expectedMap.put("key", "value");
 
     assertFalse(expectedMap.isEmpty());
 
-    final Map<?, ?> actualMap = MapUtils.emptyMap(expectedMap);
+    Map<?, ?> actualMap = MapUtils.emptyMap(expectedMap);
 
     assertSame(expectedMap, actualMap);
     assertFalse(actualMap.isEmpty());
@@ -113,11 +113,11 @@ public class MapUtilsTest {
 
   @Test
   public void testEmptyMapWithEmptyMap() {
-    final Map<String, String> expectedMap = new HashMap<String, String>(0);
+    Map<String, String> expectedMap = new HashMap<String, String>(0);
 
     assertTrue(expectedMap.isEmpty());
 
-    final Map<?, ?> actualMap = MapUtils.emptyMap(expectedMap);
+    Map<?, ?> actualMap = MapUtils.emptyMap(expectedMap);
 
     assertSame(expectedMap, actualMap);
     assertTrue(actualMap.isEmpty());
@@ -125,7 +125,7 @@ public class MapUtilsTest {
 
   @Test
   public void testEmptyMapWithNullMap() {
-    final Map<?, ?> actualMap = MapUtils.emptyMap(null);
+    Map<?, ?> actualMap = MapUtils.emptyMap(null);
 
     assertNotNull(actualMap);
     assertTrue(actualMap.isEmpty());
@@ -133,7 +133,7 @@ public class MapUtilsTest {
 
   @Test
   public void testFilter() {
-    final Map<String, String> map = new HashMap<String, String>(6);
+    Map<String, String> map = new HashMap<String, String>(6);
 
     map.put("test", "testing");
     map.put(null, null);
@@ -146,7 +146,7 @@ public class MapUtilsTest {
     assertFalse(map.isEmpty());
     assertEquals(6, map.size());
 
-    final Map<String, String> filteredMap = MapUtils.filter(map, new Filter<Map.Entry<String, String>>() {
+    Map<String, String> filteredMap = MapUtils.filter(map, new Filter<Map.Entry<String, String>>() {
       @Override public boolean accept(final Map.Entry<String, String> entry) {
         return (entry.getKey() != null && entry.getValue() != null);
       }
@@ -169,7 +169,7 @@ public class MapUtilsTest {
 
   @Test
   public void testFind() {
-    final Map<String, String> map = new HashMap<String, String>(6);
+    Map<String, String> map = new HashMap<String, String>(6);
 
     map.put("test", "testing");
     map.put(null, null);
@@ -182,7 +182,7 @@ public class MapUtilsTest {
     assertFalse(map.isEmpty());
     assertEquals(6, map.size());
 
-    final Map<String, String> resultMap = MapUtils.find(map, new Filter<Map.Entry<String, String>>() {
+    Map<String, String> resultMap = MapUtils.find(map, new Filter<Map.Entry<String, String>>() {
       @Override public boolean accept(final Map.Entry<String, String> entry) {
         return StringUtils.contains(entry.getKey(), "test");
       }
@@ -219,6 +219,57 @@ public class MapUtilsTest {
     assertEquals(0, MapUtils.size(Collections.emptyMap()));
     assertEquals(1, MapUtils.size(Collections.singletonMap("mySingleKey", "mySingleValue")));
     assertEquals(1, MapUtils.size(Collections.singletonMap(null, null)));
+  }
+
+  @Test
+  public void testTransform() {
+    Map<Integer, String> map = new HashMap<Integer, String>(3);
+
+    map.put(0, "zero");
+    map.put(1, "one");
+    map.put(2, "two");
+
+    Transformer<String> transformer = new Transformer<String>() {
+      @Override public String transform(final String value) {
+        return value.toUpperCase();
+      }
+    };
+
+    Map<Integer, String > actualMap = MapUtils.transform(map, transformer);
+
+    assertSame(map, actualMap);
+    assertFalse(actualMap.isEmpty());
+    assertEquals(3, actualMap.size());
+    assertEquals("ZERO", map.get(0));
+    assertEquals("ONE", map.get(1));
+    assertEquals("TWO", map.get(2));
+  }
+
+  @Test
+  public void testTransformEmptyMap() {
+    Map emptyMap = Collections.emptyMap();
+
+    assertTrue(emptyMap.isEmpty());
+    assertSame(emptyMap, MapUtils.transform(emptyMap, new Transformer() {
+      @Override public Object transform(final Object value) {
+        return null;
+      }
+    }));
+    assertTrue(emptyMap.isEmpty());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testTransformNullMap() {
+    MapUtils.transform(null, new Transformer() {
+      @Override public Object transform(final Object value) {
+        return null;
+      }
+    });
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testTransformWithNullTransformer() {
+    MapUtils.transform(Collections.emptyMap(), null);
   }
 
 }

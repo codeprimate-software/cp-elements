@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.Transformer;
 
 /**
  * The MapUtils class provides utility methods for working with the Java Collections Framework and specifically
@@ -35,9 +36,9 @@ import org.cp.elements.lang.Filter;
  * 
  * @author John J. Blum
  * @see java.util.Collections
- * @see java.util.Iterator
  * @see java.util.Map
  * @see org.cp.elements.lang.Filter
+ * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -87,7 +88,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    * @see org.cp.elements.lang.Filter
    */
-  public static <K, V> Map<K, V> filter(final Map<K, V> map, final Filter<Map.Entry<K, V>> filter) {
+  public static <K, V, M extends Map<K, V>> M filter(final M map, final Filter<Map.Entry<K, V>> filter) {
     Assert.notNull(map, "The Map to filter cannot be null!");
     Assert.notNull(filter, "The Filter used to filter the Map cannot be null!");
 
@@ -149,6 +150,30 @@ public abstract class MapUtils {
    */
   public static int size(final Map map) {
     return (map == null ? 0 : map.size());
+  }
+
+  /**
+   * Transforms the values of the given Map with the specified Transformer.
+   *
+   * @param <K> the Class type of the Map key.
+   * @param <V> the Class type of the Map value.
+   * @param <M> the Class type of the Map.
+   * @param map the Map of key/values to transform.
+   * @param transformer the Transformers used to transform the Map's values.
+   * @return the value of the Map transformed by the specified Transformer.
+   * @throws java.lang.NullPointerException if the Map or Transformer references are null.
+   * @see org.cp.elements.lang.Transformer
+   * @see java.util.Map
+   */
+  public static <K, V, M extends Map<K, V>> M transform(final M map, final Transformer<V> transformer) {
+    Assert.notNull(map, "The Map of values to transform cannot be null!");
+    Assert.notNull(transformer, "The Transformer used to transform the Map's values cannot be null!");
+
+    for (Map.Entry<K, V> mapEntry : map.entrySet()) {
+      map.put(mapEntry.getKey(), transformer.transform(mapEntry.getValue()));
+    }
+
+    return map;
   }
 
 }
