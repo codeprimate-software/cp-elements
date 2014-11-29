@@ -29,8 +29,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.support.DefaultFilter;
 import org.cp.elements.test.TestUtils;
 import org.junit.Test;
@@ -40,8 +43,8 @@ import org.junit.Test;
  * of the ArrayUtils class.
  * 
  * @author John J. Blum
+ * @see java.util.Arrays
  * @see org.cp.elements.util.ArrayUtils
- * @see org.junit.Assert
  * @see org.junit.Test
  * @since 1.0.0
  */
@@ -80,7 +83,7 @@ public class ArrayUtilsTest {
 
   @Test
   public void testCount() {
-    final Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     assertNotNull(array);
     assertEquals(10, array.length);
@@ -93,7 +96,7 @@ public class ArrayUtilsTest {
 
   @Test
   public void testCountReturnsLength() {
-    final Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     assertEquals(array.length, ArrayUtils.count(array, new DefaultFilter<Object>(true)));
   }
@@ -115,12 +118,12 @@ public class ArrayUtilsTest {
 
   @Test
   public void testEmptyArray() {
-    final Object[] emptyArray = ArrayUtils.emptyArray();
+    Object[] emptyArray = ArrayUtils.emptyArray();
 
     assertNotNull(emptyArray);
     assertEquals(0, emptyArray.length);
 
-    final Object[] anotherEmptyArray = ArrayUtils.emptyArray();
+    Object[] anotherEmptyArray = ArrayUtils.emptyArray();
 
     assertNotNull(anotherEmptyArray);
     assertEquals(0, anotherEmptyArray.length);
@@ -129,11 +132,8 @@ public class ArrayUtilsTest {
 
   @Test
   public void testEmptyArrayWithArray() {
-    final Object[] expectedArray = { 0, 1, 2 };
-
-    assertEquals(3, expectedArray.length);
-
-    final Object[] actualArray = ArrayUtils.emptyArray(expectedArray);
+    Object[] expectedArray = { 0, 1, 2 };
+    Object[] actualArray = ArrayUtils.emptyArray(expectedArray);
 
     assertSame(expectedArray, actualArray);
     assertEquals(3, actualArray.length);
@@ -141,19 +141,16 @@ public class ArrayUtilsTest {
 
   @Test
   public void testEmptyArrayWithEmptyArray() {
-    final Object[] expectedArray = { };
+    Object[] expectedArray = { };
+    Object[] actualArray = ArrayUtils.emptyArray(expectedArray);
 
-    assertEquals(0, expectedArray.length);
-
-    final Object[] actualArray = ArrayUtils.emptyArray(expectedArray);
-
-    assertSame(expectedArray, actualArray);
     assertEquals(0, actualArray.length);
+    assertSame(expectedArray, actualArray);
   }
 
   @Test
   public void testEmptyArrayWithNullArray() {
-    final Object[] actualArray = ArrayUtils.emptyArray((Object[]) null);
+    Object[] actualArray = ArrayUtils.emptyArray((Object[]) null);
 
     assertNotNull(actualArray);
     assertEquals(0, actualArray.length);
@@ -161,8 +158,8 @@ public class ArrayUtilsTest {
 
   @Test
   public void testEnumeration() {
-    final Object[] array = { "test", "testing", "tested" };
-    final Enumeration<?> arrayEnumeration = ArrayUtils.enumeration(array);
+    Object[] array = { "test", "testing", "tested" };
+    Enumeration<?> arrayEnumeration = ArrayUtils.enumeration(array);
 
     assertNotNull(arrayEnumeration);
 
@@ -175,22 +172,22 @@ public class ArrayUtilsTest {
     assertEquals(array.length, index);
   }
 
+  @Test
+  public void testEnumerationWithNoElements() {
+    Enumeration<?> noElementEnumeration = ArrayUtils.enumeration(ArrayUtils.emptyArray());
+
+    assertNotNull(noElementEnumeration);
+    assertFalse(noElementEnumeration.hasMoreElements());
+  }
+
   @Test(expected = NullPointerException.class)
   public void testEnumerationWithNullArray() {
     ArrayUtils.enumeration((Object[]) null);
   }
 
   @Test
-  public void testEnumerationWithNoElements() {
-    final Enumeration<?> noElementEnumeration = ArrayUtils.enumeration(ArrayUtils.emptyArray());
-
-    assertNotNull(noElementEnumeration);
-    assertFalse(noElementEnumeration.hasMoreElements());
-  }
-
-  @Test
   public void testEnumerationWithSingleElement() {
-    final Enumeration<?> singleElementEnumeration = ArrayUtils.enumeration("test");
+    Enumeration<?> singleElementEnumeration = ArrayUtils.enumeration("test");
 
     assertNotNull(singleElementEnumeration);
     assertTrue(singleElementEnumeration.hasMoreElements());
@@ -200,7 +197,7 @@ public class ArrayUtilsTest {
 
   @Test(expected = NoSuchElementException.class)
   public void testEnumerationWithExhaustedArray() {
-    final Enumeration<?> enumeration = ArrayUtils.enumeration("test");
+    Enumeration<?> enumeration = ArrayUtils.enumeration("test");
 
     assertNotNull(enumeration);
     assertTrue(enumeration.hasMoreElements());
@@ -211,22 +208,128 @@ public class ArrayUtilsTest {
   }
 
   @Test
+  public void testFilter() {
+    Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    Filter<Integer> oddNumberFilter = new Filter<Integer>() {
+      @Override public boolean accept(final Integer number) {
+        return NumberUtils.isOdd(number);
+      }
+    };
+
+    Integer[] actualNumbers = ArrayUtils.filter(numbers, oddNumberFilter);
+
+    assertSame(numbers, actualNumbers);
+
+    for (int index = 0; index < actualNumbers.length; index++) {
+      if (NumberUtils.isOdd(index)) {
+        assertEquals(index, numbers[index].intValue());
+      }
+      else {
+        assertNull(actualNumbers[index]);
+      }
+    }
+  }
+
+  @Test
+  public void testFilterEmptyArray() {
+    Object[] array = {};
+
+    assertEquals(0, array.length);
+    assertSame(array, ArrayUtils.filter(array, new DefaultFilter<Object>(false)));
+    assertEquals(0, array.length);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testFilterNullArray() {
+    ArrayUtils.filter(null, new DefaultFilter<Object>(true));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testFilterWithNullFilter() {
+    ArrayUtils.filter(new Object[0], null);
+  }
+
+  @Test
+  public void testFilterAndTransform() {
+    String[] array = { "  ", "test", null, "testing", "", "tested" };
+
+    FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
+      @Override public boolean accept(final String value) {
+        return (StringUtils.length(value) > 4);
+      }
+
+      @Override public String transform(final String value) {
+        return value.toUpperCase();
+      }
+    };
+
+    String[] actualArray = ArrayUtils.filterAndTransform(array, filteringTransformer);
+
+    assertNotNull(actualArray);
+    assertNotSame(array, actualArray);
+    assertEquals(2, actualArray.length);
+    assertEquals("TESTING", actualArray[0]);
+    assertEquals("TESTED", actualArray[1]);
+  }
+
+  @Test
+  public void testFilterAndTransformEmptyArray() {
+    String[] array = { "TEST", "TESTING", "TESTED" };
+
+    FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
+      @Override public boolean accept(final String obj) {
+        return false;
+      }
+
+      @Override public String transform(final String value) {
+        return value;
+      }
+    };
+
+    String[] actualArray = ArrayUtils.filterAndTransform(array, filteringTransformer);
+
+    assertNotNull(actualArray);
+    assertNotSame(array, actualArray);
+    assertEquals(0, actualArray.length);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testFilterAndTransformNullArray() {
+    ArrayUtils.filterAndTransform(null, new FilteringTransformer<Object>() {
+      @Override public boolean accept(final Object obj) {
+        return false;
+      }
+
+      @Override public Object transform(final Object value) {
+        return null;
+      }
+    });
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testFilterAndTransformWithNullFilteringTransformer() {
+    ArrayUtils.filterAndTransform(new Object[0], null);
+  }
+
+  @Test
   public void testFind() {
-    final Person janeDoe = new Person("Jane", "Doe");
-    final Person jonDoe = new Person("Jon", "Doe");
-    final Person pieDoe = new Person("Pie", "Doe");
-    final Person jackHandy = new Person("Jack", "Handy");
-    final Person sandyHandy = new Person("Sandy", "Handy");
+    Person cookieDoe = new Person("Cookie", "Doe");
+    Person janeDoe = new Person("Jane", "Doe");
+    Person jonDoe = new Person("Jon", "Doe");
+    Person pieDoe = new Person("Pie", "Doe");
+    Person jackHandy = new Person("Jack", "Handy");
+    Person sandyHandy = new Person("Sandy", "Handy");
 
-    final Person[] people = { jackHandy, jonDoe, janeDoe, sandyHandy, pieDoe };
+    Person[] people = { jackHandy, jonDoe, janeDoe, sandyHandy, pieDoe, cookieDoe };
 
-    final Filter<Person> doeFilter = new Filter<Person>() {
+    Filter<Person> doeFilter = new Filter<Person>() {
       @Override public boolean accept(final Person person) {
         return "Doe".equalsIgnoreCase(person.getLastName());
       }
     };
 
-    final Person actualPerson = ArrayUtils.find(people, doeFilter);
+    Person actualPerson = ArrayUtils.find(people, doeFilter);
 
     assertNotNull(actualPerson);
     assertEquals(jonDoe, actualPerson);
@@ -244,36 +347,37 @@ public class ArrayUtilsTest {
 
   @Test
   public void testFindWithNonMatchingFilter() {
-    final Person janeDoe = new Person("Jane", "Doe");
-    final Person jonDoe = new Person("Jon", "Doe");
-    final Person pieDoe = new Person("Pie", "Doe");
-    final Person jackHandy = new Person("Jack", "Handy");
-    final Person sandyHandy = new Person("Sandy", "Handy");
+    Person cookieDoe = new Person("Cookie", "Doe");
+    Person janeDoe = new Person("Jane", "Doe");
+    Person jonDoe = new Person("Jon", "Doe");
+    Person pieDoe = new Person("Pie", "Doe");
+    Person jackHandy = new Person("Jack", "Handy");
+    Person sandyHandy = new Person("Sandy", "Handy");
 
-    final Person[] people = { jackHandy, jonDoe, janeDoe, sandyHandy, pieDoe };
+    Person[] people = { jackHandy, jonDoe, janeDoe, sandyHandy, pieDoe, cookieDoe };
 
-    final Filter<Person> doeFilter = new Filter<Person>() {
+    Filter<Person> doeFilter = new Filter<Person>() {
       @Override public boolean accept(final Person person) {
         return ("Play".equalsIgnoreCase(person.getFirstName()) && "Doe".equalsIgnoreCase(person.getLastName()));
       }
     };
 
-    final Person actualPerson = ArrayUtils.find(people, doeFilter);
+    Person actualPerson = ArrayUtils.find(people, doeFilter);
 
     assertNull(actualPerson);
   }
 
   @Test
   public void testFindAll() {
-    final Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-    final Filter<Integer> evenNumberFilter = new Filter<Integer>() {
+    Filter<Integer> evenNumberFilter = new Filter<Integer>() {
       public boolean accept(final Integer number) {
         return NumberUtils.isEven(number);
       }
     };
 
-    final Integer[] actualNumbers = ArrayUtils.findAll(numbers, evenNumberFilter);
+    Integer[] actualNumbers = ArrayUtils.findAll(numbers, evenNumberFilter);
 
     assertNotNull(actualNumbers);
     assertNotSame(numbers, actualNumbers);
@@ -284,6 +388,17 @@ public class ArrayUtilsTest {
     }
   }
 
+  @Test
+  public void testFindAllWithNonMatchingFilter() {
+    Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Integer[] actualNumbers = ArrayUtils.findAll(numbers, new DefaultFilter<Integer>(false));
+
+    assertNotNull(actualNumbers);
+    assertNotSame(numbers, actualNumbers);
+    assertEquals(10, numbers.length);
+    assertEquals(0, actualNumbers.length);
+  }
+
   @Test(expected = NullPointerException.class)
   public void testFindAllWithNullArray() {
     ArrayUtils.findAll(null, new DefaultFilter<Object>(true));
@@ -292,17 +407,6 @@ public class ArrayUtilsTest {
   @Test(expected = NullPointerException.class)
   public void testFindAllWithNullFilter() {
     ArrayUtils.findAll(new Object[0], null);
-  }
-
-  @Test
-  public void testFindAllWithNonMatchingFilter() {
-    final Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    final Integer[] actualNumbers = ArrayUtils.findAll(numbers, new DefaultFilter<Integer>(false));
-
-    assertNotNull(actualNumbers);
-    assertNotSame(numbers, actualNumbers);
-    assertEquals(10, numbers.length);
-    assertEquals(0, actualNumbers.length);
   }
 
   @Test
@@ -328,8 +432,8 @@ public class ArrayUtilsTest {
 
   @Test
   public void testIterable() {
-    final Object[] array = { "test", "testing", "tested" };
-    final Iterable<?> iterable = ArrayUtils.iterable(array);
+    Object[] array = { "test", "testing", "tested" };
+    Iterable<?> iterable = ArrayUtils.iterable(array);
 
     assertNotNull(iterable);
 
@@ -340,6 +444,15 @@ public class ArrayUtilsTest {
     }
 
     assertEquals(array.length, index);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testIterableWithNoElements() {
+    Iterable<?> iterable = ArrayUtils.iterable();
+
+    assertNotNull(iterable);
+    assertFalse(iterable.iterator().hasNext());
   }
 
   @Test(expected = NullPointerException.class)
@@ -354,15 +467,6 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void testIterableWithNoElements() {
-    Iterable<?> iterable = ArrayUtils.iterable();
-
-    assertNotNull(iterable);
-    assertFalse(iterable.iterator().hasNext());
-  }
-
-  @Test
   public void testIterableWithSingleElement() {
     Iterable<String> iterable = ArrayUtils.iterable("test");
 
@@ -373,8 +477,8 @@ public class ArrayUtilsTest {
 
   @Test
   public void testIterator() {
-    final Object[] array = { "test", "testing", "tested" };
-    final Iterator<?> arrayIterator = ArrayUtils.iterator(array);
+    Object[] array = { "test", "testing", "tested" };
+    Iterator<?> arrayIterator = ArrayUtils.iterator(array);
 
     assertNotNull(arrayIterator);
 
@@ -387,22 +491,23 @@ public class ArrayUtilsTest {
     assertEquals(array.length, index);
   }
 
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testIteratorWithNoElements() {
+    Iterator<?> noElementsIterator = ArrayUtils.iterator();
+
+    assertNotNull(noElementsIterator);
+    assertFalse(noElementsIterator.hasNext());
+  }
+
   @Test(expected = NullPointerException.class)
   public void testIteratorWithNullArray() {
     ArrayUtils.iterator((Object[]) null);
   }
 
   @Test
-  public void testIteratorWithNoElements() {
-    final Iterator<?> noElementsIterator = ArrayUtils.iterator(new Object[0]);
-
-    assertNotNull(noElementsIterator);
-    assertFalse(noElementsIterator.hasNext());
-  }
-
-  @Test
   public void testIteratorWithSingleElement() {
-    final Iterator<?> singleElementIterator = ArrayUtils.iterator("test");
+    Iterator<?> singleElementIterator = ArrayUtils.iterator("test");
 
     assertNotNull(singleElementIterator);
     assertTrue(singleElementIterator.hasNext());
@@ -412,7 +517,7 @@ public class ArrayUtilsTest {
 
   @Test(expected = NoSuchElementException.class)
   public void testIteratorWithExhaustedArray() {
-    final Iterator<?> iterator = ArrayUtils.iterator("test");
+    Iterator<?> iterator = ArrayUtils.iterator("test");
 
     assertNotNull(iterator);
     assertTrue(iterator.hasNext());
@@ -424,8 +529,8 @@ public class ArrayUtilsTest {
 
   @Test(expected = UnsupportedOperationException.class)
   public void testIteratorModification() {
-    final Object[] array = { "test", "testing", "tested" };
-    final Iterator<?> arrayIterator = ArrayUtils.iterator(array);
+    Object[] array = { "test", "testing", "tested" };
+    Iterator<?> arrayIterator = ArrayUtils.iterator(array);
 
     assertNotNull(arrayIterator);
     assertTrue(arrayIterator.hasNext());
@@ -439,7 +544,6 @@ public class ArrayUtilsTest {
     finally {
       assertEquals(3, array.length);
     }
-
   }
 
   @Test
@@ -510,6 +614,51 @@ public class ArrayUtilsTest {
   @Test(expected = NullPointerException.class)
   public void testSubArrayWithNullArray() {
     ArrayUtils.subArray(null, 1, 2, 3);
+  }
+
+  @Test
+  public void testTransform() {
+    String[] array = { "test", "testing", "tested" };
+
+    Transformer<String> transformer = new Transformer<String>() {
+      @Override public String transform(final String value) {
+        return value.toUpperCase();
+      }
+    };
+
+    String[] actualArray = ArrayUtils.transform(array, transformer);
+
+    assertSame(array, actualArray);
+    assertEquals("TEST", array[0]);
+    assertEquals("TESTING", array[1]);
+    assertEquals("TESTED", array[2]);
+  }
+
+  @Test
+  public void testTransformEmptyArray() {
+    Object[] array = {};
+
+    assertEquals(0, array.length);
+    assertSame(array, ArrayUtils.transform(array, new Transformer<Object>() {
+      @Override public Object transform(final Object value) {
+        return null;
+      }
+    }));
+    assertEquals(0, array.length);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testTransformNullArray() {
+    ArrayUtils.transform(null, new Transformer<Object>() {
+      @Override public Object transform(final Object value) {
+        return null;
+      }
+    });
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testTransformWithNullTransformer() {
+    ArrayUtils.transform(new Object[0], null);
   }
 
   private static final class Person {

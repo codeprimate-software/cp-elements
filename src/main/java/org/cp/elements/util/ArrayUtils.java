@@ -31,20 +31,25 @@ import java.util.NoSuchElementException;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Transformer;
 
 /**
  * The ArrayUtils class encapsulates utility methods for interacting with Object arrays.
  * 
  * @author John J. Blum
+ * @see java.lang.Iterable
  * @see java.lang.reflect.Array
  * @see java.util.ArrayList
  * @see java.util.Enumeration
  * @see java.util.Iterator
  * @see java.util.List
  * @see org.cp.elements.lang.Filter
+ * @see org.cp.elements.lang.FilteringTransformer
+ * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -137,6 +142,60 @@ public abstract class ArrayUtils {
         return array[index++];
       }
     };
+  }
+
+  /**
+   * Filters the elements of the given Object array using the specified Filter.  Any element not accepted by the Filter
+   * is set to null at index in the array.
+   *
+   * @param <T> the Class type of the array elements.
+   * @param array the Object array to filter using the specified Filter.
+   * @param filter the Filter used to filter the array elements.
+   * @return the Object array with the elements filtered.
+   * @throws java.lang.NullPointerException if the Object array or Filter references are null.
+   * @see org.cp.elements.lang.Filter
+   */
+  public static <T> T[] filter(final T[] array, final Filter<T> filter) {
+    Assert.notNull(array, "The Object array to filter cannot be null!");
+    Assert.notNull(filter, "The Filter used to filter the array cannot be null!");
+
+    int index = 0;
+
+    for (T element : array) {
+      if (!filter.accept(element)) {
+        array[index] = null;
+      }
+
+      index++;
+    }
+
+    return array;
+  }
+
+  /**
+   * Filters and transformed the elements of the given array using the FilteringTransformer.
+   *
+   * @param <T> the Class type of the array elements.
+   * @param array the Object array to filter and transform.
+   * @param filteringTransformer the FilteringTransformer used to filter and transform elements in the array.
+   * @return a new array instance of class type T containing filtered elements from the given array transformed.
+   * @throws java.lang.NullPointerException if the Object array or FilteringTransformer references are null.
+   * @see org.cp.elements.lang.FilteringTransformer
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] filterAndTransform(final T[] array, final FilteringTransformer<T> filteringTransformer) {
+    Assert.notNull(array, "The Object array to filter and then transform the elements of cannot be null!");
+    Assert.notNull(filteringTransformer, "The FilteringTransformer used to filter and transform the array elements cannot be null!");
+
+    List<T> arrayList = new ArrayList<T>();
+
+    for (T element : array) {
+      if (filteringTransformer.accept(element)) {
+        arrayList.add(filteringTransformer.transform(element));
+      }
+    }
+
+    return arrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size()));
   }
 
   /**
@@ -344,6 +403,29 @@ public abstract class ArrayUtils {
   private static Class<?> getComponentType(final Object[] array) {
     Class<?> type = (!isEmpty(array) ? ClassUtils.getClass(array[0]) : null);
     return ObjectUtils.defaultIfNull(type, Object.class);
+  }
+
+  /**
+   * Transforms the elements in the given Object array using the specified Transformer.
+   *
+   * @param <T> the Class type of the array elements.
+   * @param array the Object array who's elements will be transformed by the specified Transformer.
+   * @param transformer the Transformer used to transform the elements in the array.
+   * @return the Object array with it's elements transformed.
+   * @throws java.lang.NullPointerException if the Object array or Transformer references are null.
+   * @see org.cp.elements.lang.Transformer
+   */
+  public static <T> T[] transform(final T[] array, final Transformer<T> transformer) {
+    Assert.notNull(array, "The Object array who's elements will be transformed cannot be null!");
+    Assert.notNull(transformer, "The Transformer used to transform the array elements cannot be null!");
+
+    int index = 0;
+
+    for (T element : array) {
+      array[index++] = transformer.transform(element);
+    }
+
+    return array;
   }
 
 }
