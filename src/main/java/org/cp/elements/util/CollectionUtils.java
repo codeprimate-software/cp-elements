@@ -32,8 +32,10 @@ import java.util.Set;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.support.ToStringRenderer;
 
 /**
@@ -49,7 +51,9 @@ import org.cp.elements.lang.support.ToStringRenderer;
  * @see java.util.List
  * @see java.util.Set
  * @see org.cp.elements.lang.Filter
+ * @see org.cp.elements.lang.FilteringTransformer
  * @see org.cp.elements.lang.Renderer
+ * @see org.cp.elements.lang.Transformer
  * @see org.cp.elements.lang.support.ToStringRenderer
  * @since 1.0.0
  */
@@ -129,6 +133,7 @@ public abstract class CollectionUtils {
    * Filters the Collection of elements retaining only those elements matching the criteria defined by the Filter.
    * 
    * @param <T> the Class type of the elements in the Collection.
+   * @param <C> the Class type of the Collection.
    * @param collection the Collection of elements to filter.
    * @param filter the Filter used to filter the Collection of elements.
    * @return the original Collection with only those elements retained that match the criteria defined by the Filter.
@@ -137,13 +142,33 @@ public abstract class CollectionUtils {
    * @see java.util.Collection#retainAll(java.util.Collection)
    * @see org.cp.elements.lang.Filter
    */
-  public static <T> Collection<T> filter(final Collection<T> collection, final Filter<T> filter) {
+  public static <T, C extends Collection<T>> C filter(final C collection, final Filter<T> filter) {
     Assert.notNull(collection, "The Collection of elements to filter cannot be null!");
     Assert.notNull(filter, "The Filter used to filter the Collection of elements cannot be null!");
 
     collection.retainAll(findAll(collection, filter));
 
     return collection;
+  }
+
+  /**
+   * Filters and then transforms the retained, filtered elements in the given Collection using the FilteringTransformer.
+   *
+   * @param <T> the Class type of the Collection elements.
+   * @param <C> the Class type of the Collection.
+   * @param collection the Collection to filter and transform.
+   * @param filteringTransformer the FilteringTransformer used to filter and transform elements of the given Collection.
+   * @return the given Collection with the elements filtered and transformed according to the FilteringTransformer.
+   * @throws java.lang.NullPointerException if the Collection or FilteringTransformer references are null.
+   * @see #filter(java.util.Collection, org.cp.elements.lang.Filter)
+   * @see #transform(java.util.Collection, org.cp.elements.lang.Transformer)
+   * @see org.cp.elements.lang.FilteringTransformer
+   * @see java.util.Collection
+   */
+  public static <T, C extends Collection<T>> C filterAndTransform(final C collection,
+                                                                  final FilteringTransformer<T> filteringTransformer)
+  {
+    return transform(filter(collection, filteringTransformer), filteringTransformer);
   }
 
   /**
@@ -348,6 +373,34 @@ public abstract class CollectionUtils {
     buffer.append("]");
 
     return buffer.toString();
+  }
+
+  /**
+   * Transforms the elements of the given Collection using the specified Transformer.
+   *
+   * @param <T> the Class type of the Collection elements.
+   * @param <C> the Class type of the Collection.
+   * @param collection the Collection of elements to transform.
+   * @param transformer the Transformer used to transform the elements of the Collection.
+   * @return the Collection of elements transformed by the specified Transformer.
+   * @throws java.lang.NullPointerException if the Collection or Transformer references are null.
+   * @see org.cp.elements.lang.Transformer
+   * @see java.util.Collection
+   */
+  public static <T, C extends Collection<T>> C transform(final C collection, final Transformer<T> transformer) {
+    Assert.notNull(collection, "The Collection of elements to transform cannot be null!");
+    Assert.notNull(transformer, "The Transformer used to transform the elements of the Collection cannot be null!");
+
+    List<T> transformedElements = new ArrayList<T>(collection.size());
+
+    for (T element : collection) {
+      transformedElements.add(transformer.transform(element));
+    }
+
+    collection.clear();
+    collection.addAll(transformedElements);
+
+    return collection;
   }
 
   /**
