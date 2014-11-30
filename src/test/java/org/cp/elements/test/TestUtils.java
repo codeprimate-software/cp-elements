@@ -30,6 +30,8 @@ import org.junit.Assert;
 public class TestUtils {
 
   public static <T> void assertEquals(final T[] expected, final T[] actual) {
+    Assert.assertEquals(expected.getClass(), actual.getClass());
+    Assert.assertEquals(expected.getClass().getComponentType(), actual.getClass().getComponentType());
     Assert.assertEquals(expected.length, actual.length);
 
     for (int index = 0; index < expected.length; index++) {

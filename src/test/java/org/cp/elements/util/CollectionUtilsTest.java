@@ -427,17 +427,13 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testIterableForEnumeration() {
+  public void testIterableWithCollection() {
     String[] expectedElements = { "test", "testing", "tested" };
-    Vector<String> vector = new Vector<String>(Arrays.asList(expectedElements));
-    Iterable<String> iterable = CollectionUtils.iterable(vector.elements());
-
-    assertNotNull(iterable);
-    assertNotNull(iterable.iterator());
+    Collection<String> collection = Arrays.asList(expectedElements);
 
     int index = 0;
 
-    for (String actualElement : iterable) {
+    for (String actualElement : CollectionUtils.iterable(collection)) {
       assertEquals(expectedElements[index++], actualElement);
     }
 
@@ -445,26 +441,45 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableForEnumerationWithNull() {
+  public void testIterableWithNullCollection() {
+    CollectionUtils.iterable((Collection<?>) null);
+  }
+
+  @Test
+  public void testIterableWithEnumeration() {
+    String[] expectedElements = { "test", "testing", "tested" };
+    Enumeration<String> enumeration = new Vector<String>(Arrays.asList(expectedElements)).elements();
+
+    int index = 0;
+
+    for (String actualElement : CollectionUtils.iterable(enumeration)) {
+      assertEquals(expectedElements[index++], actualElement);
+    }
+
+    assertEquals(expectedElements.length, index);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testIterableWithNullEnumeration() {
     CollectionUtils.iterable((Enumeration<?>) null);
   }
 
   @Test
-  public void testIterableForIterator() {
-    List<?> expectedList = Arrays.asList("test", "testing", "tested");
-    List<Object> actualList = new ArrayList<Object>(3);
+  public void testIterableWithIterator() {
+    String[] expectedElements = { "test", "testing", "tested" };
+    Iterator<String> iterator = Arrays.asList(expectedElements).iterator();
 
-    for (Object item : CollectionUtils.iterable(expectedList.iterator())) {
-      actualList.add(item);
+    int index = 0;
+
+    for (Object actualElement : CollectionUtils.iterable(iterator)) {
+      assertEquals(expectedElements[index++], actualElement);
     }
 
-    assertFalse(actualList.isEmpty());
-    assertEquals(expectedList.size(), actualList.size());
-    assertTrue(actualList.containsAll(expectedList));
+    assertEquals(expectedElements.length, index);
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableForIteratorWithNull() {
+  public void testIterableWithNullIterator() {
     CollectionUtils.iterable((Iterator<?>) null);
   }
 

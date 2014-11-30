@@ -106,10 +106,11 @@ public abstract class CollectionUtils {
   /**
    * Adapts the specified Iterator into an instance of the Enumeration interface.
    * 
-   * @param it the Iterator to adapt into an Enumeration.
    * @param <T> the Class type of the elements to enumerate.
+   * @param it the Iterator to adapt into an Enumeration.
    * @return an Enumeration implementation backed by the specified Iterator.
    * @throws NullPointerException if the Iterator is null.
+   * @see #iterator(java.util.Enumeration)
    * @see java.util.Enumeration
    * @see java.util.Iterator
    */
@@ -239,24 +240,36 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Adapts the specified Collection into an instance of the Iterable interface.
+   *
+   * @param <T> the Class type of elements contained in the Collection.
+   * @param collection the Collection backing the Iterable implementation.
+   * @return an Iterable implementation backed by the Collection.
+   * @throws NullPointerException if the Collection is null.
+   * @see #iterable(java.util.Iterator)
+   * @see java.lang.Iterable
+   * @see java.util.Collection#iterator()
+   */
+  public static <T> Iterable<T> iterable(final Collection<T> collection) {
+    Assert.notNull(collection, "The Collection backing the Iterable implementation cannot be null!");
+    return iterable(collection.iterator());
+  }
+
+  /**
    * Adapts the specified Enumeration into an instance of the Iterable interface.
    * 
    * @param <T> the Class type of elements enumerated by the Enumeration.
    * @param enumeration the Enumeration backing the Iterable implementation.
    * @return an Iterable implementation backed by the Enumeration.
    * @throws NullPointerException if the Enumeration is null.
+   * @see #iterable(java.util.Iterator)
    * @see #iterator(java.util.Enumeration)
    * @see java.lang.Iterable
    * @see java.util.Enumeration
    */
   public static <T> Iterable<T> iterable(final Enumeration<T> enumeration) {
     Assert.notNull(enumeration, "The Enumeration back the Iterable implementation cannot be null!");
-
-    return new Iterable<T>() {
-      @Override public Iterator<T> iterator() {
-        return CollectionUtils.iterator(enumeration);
-      }
-    };
+    return iterable(iterator(enumeration));
   }
 
   /**
@@ -282,10 +295,11 @@ public abstract class CollectionUtils {
   /**
    * Adapts the specified Enumeration into an instance of the Iterator interface.
    * 
-   * @param enumeration the Enumeration backing the Iterator implementation.
    * @param <T> the Class type of the elements to iterate.
+   * @param enumeration the Enumeration backing the Iterator implementation.
    * @return an Iterator implementation backed by the specified Enumeration.
    * @throws NullPointerException if the Enumeration is null.
+   * @see #enumeration(java.util.Iterator)
    * @see java.util.Enumeration
    * @see java.util.Iterator
    */

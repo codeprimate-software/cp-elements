@@ -32,6 +32,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.StringUtils;
@@ -58,27 +59,51 @@ public abstract class ArrayUtils {
   private static final Object[] EMPTY_ARRAY = new Object[0];
 
   /**
-   * Adds (insert) element at the end of the array.
+   * Adds (inserts) the element at the end of the array.
    * 
    * @param <T> the type of elements stored in the array.
-   * @param element the element to insert into the array.
-   * @param array the array used to insert the element.
+   * @param element the element to insert into the end of the array.
+   * @param array the array in which to insert the element.
    * @return a new array with the element inserted at the end.
    * @see #insert(Object, Object[], int)
    */
-  public static <T> T[] add(final T element, final T[] array) {
+  public static <T> T[] append(final T element, final T[] array) {
     return insert(element, array, length(array));
   }
 
   /**
    * Convenience method for specifying an array.
-   * 
+   *
    * @param <T> the type of elements stored in the array.
    * @param array the array.
    * @return the array as itself.
    */
   public static <T> T[] asArray(T... array) {
     return array;
+  }
+
+  /**
+   * Converts the Iterable object into an array.
+   *
+   * @param <T> the type of elements in the Iterable as well as the resulting array.
+   * @param iterable the Iterable object to convert into an array.
+   * @return an array containing the elements from the Iterable object.  Returns an empty array
+   * if the Iterable object reference is null.
+   * @see java.lang.Iterable
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static <T> T[] asArray(final Iterable<T> iterable, final Class<T> componentType) {
+    List<T> arrayList = new ArrayList<T>();
+
+    if (iterable != null) {
+      for (T element : iterable) {
+        arrayList.add(element);
+      }
+    }
+
+    return arrayList.toArray((T[]) Array.newInstance(ObjectUtils.defaultIfNull(componentType, Object.class),
+      arrayList.size()));
   }
 
   /**
@@ -173,29 +198,30 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Filters and transformed the elements of the given array using the FilteringTransformer.
+   * Filters and transforms the elements of the given array using the FilteringTransformer.
    *
    * @param <T> the Class type of the array elements.
    * @param array the Object array to filter and transform.
    * @param filteringTransformer the FilteringTransformer used to filter and transform elements in the array.
-   * @return a new array instance of class type T containing filtered elements from the given array transformed.
+   * @return the array of elements filtered and transformed.
    * @throws java.lang.NullPointerException if the Object array or FilteringTransformer references are null.
    * @see org.cp.elements.lang.FilteringTransformer
    */
-  @SuppressWarnings("unchecked")
   public static <T> T[] filterAndTransform(final T[] array, final FilteringTransformer<T> filteringTransformer) {
     Assert.notNull(array, "The Object array to filter and then transform the elements of cannot be null!");
     Assert.notNull(filteringTransformer, "The FilteringTransformer used to filter and transform the array elements cannot be null!");
 
-    List<T> arrayList = new ArrayList<T>();
+    int index = 0;
 
     for (T element : array) {
       if (filteringTransformer.accept(element)) {
-        arrayList.add(filteringTransformer.transform(element));
+        array[index] = filteringTransformer.transform(element);
       }
+
+      index++;
     }
 
-    return arrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size()));
+    return array;
   }
 
   /**
@@ -253,6 +279,18 @@ public abstract class ArrayUtils {
     ((ArrayList) arrayList).trimToSize();
 
     return arrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size()));
+  }
+
+  /**
+   * Gets the first element in the array (at position 0).
+   *
+   * @param <T> the Class type of the elements in the array.
+   * @param array the array from which to extract the first element.
+   * @return the first element of the array or null if the array is null or empty.
+   * @see #isEmpty(Object[])
+   */
+  public static <T> T getFirst(final T... array) {
+    return (isEmpty(array) ? null : array[0]);
   }
 
   /**

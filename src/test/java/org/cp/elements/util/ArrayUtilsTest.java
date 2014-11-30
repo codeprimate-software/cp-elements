@@ -51,21 +51,21 @@ import org.junit.Test;
 public class ArrayUtilsTest {
 
   @Test
-  public void testAdd() {
-    String[] array = ArrayUtils.add("test", new String[0]);
+  public void testAppend() {
+    String[] array = ArrayUtils.append("test", new String[0]);
 
     assertNotNull(array);
     assertEquals(1, array.length);
     assertEquals("test", array[0]);
 
-    array = ArrayUtils.add("testing", array);
+    array = ArrayUtils.append("testing", array);
 
     assertNotNull(array);
     assertEquals(2, array.length);
     assertEquals("test", array[0]);
     assertEquals("testing", array[1]);
 
-    array = ArrayUtils.add("tested", array);
+    array = ArrayUtils.append("tested", array);
 
     assertNotNull(array);
     assertEquals(3, array.length);
@@ -75,10 +75,59 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testAsArray() {
-    assertNull(ArrayUtils.asArray((Object[]) null));
+  public void testAsArrayWithArray() {
     TestUtils.assertEquals(new String[] { "test", "testing", "tested" },
       ArrayUtils.asArray("test", "testing", "tested"));
+  }
+
+  @Test
+  public void testAsArrayWithEmptyArray() {
+    TestUtils.assertEquals(new Integer[0], ArrayUtils.<Integer>asArray());
+  }
+
+  @Test
+  public void testAsArrayWithNullArray() {
+    assertNull(ArrayUtils.asArray((Object[]) null));
+  }
+
+  @Test
+  public void testAsArrayWithIterable() {
+    Iterable<Integer> iterable = new Iterable<Integer>() {
+      @Override public Iterator<Integer> iterator() {
+        return Arrays.asList(0, 1, 2).iterator();
+      }
+    };
+
+    Integer[] numbers = ArrayUtils.asArray(iterable, Integer.class);
+
+    assertNotNull(numbers);
+    assertEquals(3, numbers.length);
+
+    for (int index = 0; index < numbers.length; index++) {
+      assertEquals(index, numbers[index].intValue());
+    }
+  }
+
+  @Test
+  public void testAsArrayWithEmptyIterable() {
+    Iterable<String> iterable = new Iterable<String>() {
+      @Override public Iterator<String> iterator() {
+        return Arrays.<String>asList().iterator();
+      }
+    };
+
+    String[] strings = ArrayUtils.asArray(iterable, String.class);
+
+    assertNotNull(strings);
+    assertEquals(0, strings.length);
+  }
+
+  @Test
+  public void testAsArrayWithNullIterable() {
+    Object[] array = ArrayUtils.asArray(null, Object.class);
+
+    assertNotNull(array);
+    assertEquals(0, array.length);
   }
 
   @Test
@@ -266,11 +315,14 @@ public class ArrayUtilsTest {
 
     String[] actualArray = ArrayUtils.filterAndTransform(array, filteringTransformer);
 
-    assertNotNull(actualArray);
-    assertNotSame(array, actualArray);
-    assertEquals(2, actualArray.length);
-    assertEquals("TESTING", actualArray[0]);
-    assertEquals("TESTED", actualArray[1]);
+    assertSame(array, actualArray);
+    assertEquals(6, actualArray.length);
+    assertEquals("  ", actualArray[0]);
+    assertEquals("test", actualArray[1]);
+    assertNull(actualArray[2]);
+    assertEquals("TESTING", actualArray[3]);
+    assertEquals("", actualArray[4]);
+    assertEquals("TESTED", actualArray[5]);
   }
 
   @Test
@@ -283,15 +335,16 @@ public class ArrayUtilsTest {
       }
 
       @Override public String transform(final String value) {
-        return value;
+        return value.toLowerCase();
       }
     };
 
     String[] actualArray = ArrayUtils.filterAndTransform(array, filteringTransformer);
 
-    assertNotNull(actualArray);
-    assertNotSame(array, actualArray);
-    assertEquals(0, actualArray.length);
+    assertSame(array, actualArray);
+    assertEquals("TEST", actualArray[0]);
+    assertEquals("TESTING", actualArray[1]);
+    assertEquals("TESTED", actualArray[2]);
   }
 
   @Test(expected = NullPointerException.class)
@@ -415,7 +468,7 @@ public class ArrayUtilsTest {
       ArrayUtils.asArray("one", "two", "four"), 2));
     TestUtils.assertEquals(ArrayUtils.asArray("one", "two", "four"), ArrayUtils.prepend("one",
       ArrayUtils.asArray("two", "four")));
-    TestUtils.assertEquals(ArrayUtils.asArray("one", "two", "four"), ArrayUtils.add("four",
+    TestUtils.assertEquals(ArrayUtils.asArray("one", "two", "four"), ArrayUtils.append("four",
       ArrayUtils.asArray("one", "two")));
   }
 
@@ -428,6 +481,21 @@ public class ArrayUtilsTest {
     assertFalse(ArrayUtils.isEmpty(new Object[] { null }));
     assertFalse(ArrayUtils.isEmpty(new Object[] { "test" }));
     assertFalse(ArrayUtils.isEmpty(new Object[] { "test", "testing", "tested" }));
+  }
+
+  @Test
+  public void testGetFirst() {
+    assertEquals("test", ArrayUtils.getFirst("test", "testing", "tested"));
+  }
+
+  @Test
+  public void testGetFirstWithEmptyArray() {
+    assertNull(ArrayUtils.getFirst());
+  }
+
+  @Test
+  public void testGetFirstWithNullArray() {
+    assertNull(ArrayUtils.getFirst((Object[]) null));
   }
 
   @Test
