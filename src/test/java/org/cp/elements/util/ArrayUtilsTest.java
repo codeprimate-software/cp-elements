@@ -317,16 +317,16 @@ public class ArrayUtilsTest {
 
     assertSame(array, actualArray);
     assertEquals(6, actualArray.length);
-    assertEquals("  ", actualArray[0]);
-    assertEquals("test", actualArray[1]);
+    assertNull(actualArray[0]);
+    assertNull(actualArray[1]);
     assertNull(actualArray[2]);
     assertEquals("TESTING", actualArray[3]);
-    assertEquals("", actualArray[4]);
+    assertNull(actualArray[4]);
     assertEquals("TESTED", actualArray[5]);
   }
 
   @Test
-  public void testFilterAndTransformEmptyArray() {
+  public void testFilterAndTransformIntoNullValueArray() {
     String[] array = { "TEST", "TESTING", "TESTED" };
 
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
@@ -342,9 +342,9 @@ public class ArrayUtilsTest {
     String[] actualArray = ArrayUtils.filterAndTransform(array, filteringTransformer);
 
     assertSame(array, actualArray);
-    assertEquals("TEST", actualArray[0]);
-    assertEquals("TESTING", actualArray[1]);
-    assertEquals("TESTED", actualArray[2]);
+    assertNull(actualArray[0]);
+    assertNull(actualArray[1]);
+    assertNull(actualArray[2]);
   }
 
   @Test(expected = NullPointerException.class)

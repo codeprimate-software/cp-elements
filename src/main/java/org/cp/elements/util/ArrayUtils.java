@@ -187,10 +187,7 @@ public abstract class ArrayUtils {
     int index = 0;
 
     for (T element : array) {
-      if (!filter.accept(element)) {
-        array[index] = null;
-      }
-
+      array[index] = (filter.accept(element) ? array[index] : null);
       index++;
     }
 
@@ -214,10 +211,7 @@ public abstract class ArrayUtils {
     int index = 0;
 
     for (T element : array) {
-      if (filteringTransformer.accept(element)) {
-        array[index] = filteringTransformer.transform(element);
-      }
-
+      array[index] = (filteringTransformer.accept(element) ? filteringTransformer.transform(element) : null);
       index++;
     }
 
