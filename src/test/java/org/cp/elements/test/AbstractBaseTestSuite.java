@@ -21,48 +21,26 @@
 
 package org.cp.elements.test;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.lib.concurrent.Synchroniser;
-import org.jmock.lib.legacy.ClassImposteriser;
-import org.junit.After;
-import org.junit.Before;
+import java.io.File;
 
 /**
- * The AbstractMockingTestSuite class is an abstract base class encapsulating mocking functionality common to all
- * unit tests.
- *
+ * The AbstractBaseTestSuite class is an abstract base class containing functionality common to all test classes
+ * in the cp-elements project.
+ * <p/>
  * @author John J. Blum
- * @see AbstractBaseTestSuite
- * @see org.jmock.Mockery
- * @see org.jmock.lib.concurrent.Synchroniser
- * @see org.jmock.lib.legacy.ClassImposteriser
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractMockingTestSuite extends AbstractBaseTestSuite {
+public abstract class AbstractBaseTestSuite {
 
-  protected Mockery mockContext;
-
-  protected void checking(final Expectations expectations) {
-    mockContext.checking(expectations);
+  protected String getBuildOutputDirectoryName() {
+    return "target";
   }
 
-  protected <T> T mock(final Class<T> type, final String name) {
-    return mockContext.mock(type, name);
-  }
-
-  @Before
-  public void preTestCaseSetup() {
-    mockContext = new Mockery();
-    mockContext.setImposteriser(ClassImposteriser.INSTANCE);
-    mockContext.setThreadingPolicy(new Synchroniser());
-  }
-
-  @After
-  public void postTestCaseTearDown() {
-    mockContext.assertIsSatisfied();
-    mockContext = null;
+  protected File getBuildOutputDirectoryAsWorkingDirectory() {
+    File currentWorkingDirectory = new File(System.getProperty("user.dir"));
+    File buildOutputDirectory = new File(currentWorkingDirectory, getBuildOutputDirectoryName());
+    return (buildOutputDirectory.isDirectory() ? buildOutputDirectory : currentWorkingDirectory);
   }
 
 }
