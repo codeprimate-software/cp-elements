@@ -25,22 +25,38 @@ import java.io.File;
 
 /**
  * The AbstractBaseTestSuite class is an abstract base class containing functionality common to all test classes
- * in the cp-elements project.
- * <p/>
+ * and test suites in the cp-elements project.
+ *
  * @author John J. Blum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class AbstractBaseTestSuite {
 
+  protected static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
+  protected static final File USER_HOME = new File(System.getProperty("user.home"));
+  protected static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
+
+  protected File getBuildOutputDirectory() {
+    File buildOutputDirectory = new File(WORKING_DIRECTORY, getBuildOutputDirectoryName());
+    return (buildOutputDirectory.isDirectory() ? buildOutputDirectory : WORKING_DIRECTORY);
+  }
+
   protected String getBuildOutputDirectoryName() {
     return "target";
   }
 
-  protected File getBuildOutputDirectoryAsWorkingDirectory() {
-    File currentWorkingDirectory = new File(System.getProperty("user.dir"));
-    File buildOutputDirectory = new File(currentWorkingDirectory, getBuildOutputDirectoryName());
-    return (buildOutputDirectory.isDirectory() ? buildOutputDirectory : currentWorkingDirectory);
+  protected File getClassesOutputDirectory() {
+    return new File(getBuildOutputDirectory(), getClassesOutputDirectoryName());
+  }
+
+  public String getClassesOutputDirectoryName() {
+    return "classes";
+  }
+
+  public File getLocation(Class type) {
+    String pathname = type.getName().replaceAll("\\.", File.separator).concat(".class");
+    return new File(getClassesOutputDirectory(), pathname);
   }
 
 }

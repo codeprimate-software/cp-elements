@@ -23,13 +23,16 @@ package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The FileExtensionFilter class is a FileFilter implementation filtering Files by extension.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
@@ -39,20 +42,33 @@ import org.cp.elements.lang.Filter;
 @SuppressWarnings("unused")
 public class FileExtensionFilter implements FileFilter, Filter<File> {
 
-  private final String fileExtension;
+  private final Set<String> fileExtensions;
 
-  public FileExtensionFilter(final String fileExtension) {
-    Assert.notBlank(fileExtension, "The file extension must be specified!");
-    this.fileExtension = fileExtension;
+  public FileExtensionFilter(final String... fileExtensions) {
+    this(ArrayUtils.iterable(fileExtensions));
   }
 
-  public String getFileExtension() {
-    return fileExtension;
+  public FileExtensionFilter(final Iterable<String> fileExtensions) {
+    this.fileExtensions = new HashSet<String>();
+
+    if (fileExtensions != null) {
+      for (String fileExtension : fileExtensions) {
+        if (StringUtils.hasText(fileExtension)) {
+          this.fileExtensions.add((fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension.substring(1)
+            : fileExtension).toLowerCase().trim());
+        }
+      }
+    }
+  }
+
+  public String[] getFileExtensions() {
+    return fileExtensions.toArray(new String[fileExtensions.size()]);
   }
 
   @Override
   public boolean accept(final File file) {
-    return file.getAbsolutePath().endsWith(getFileExtension());
+    String fileExtension = FileUtils.getExtension(file).toLowerCase().trim();
+    return ((fileExtensions.isEmpty() && StringUtils.isEmpty(fileExtension)) || fileExtensions.contains(fileExtension));
   }
 
 }

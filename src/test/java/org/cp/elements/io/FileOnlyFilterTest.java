@@ -25,27 +25,27 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.cp.elements.test.CommonBaseTestSuite;
+import org.cp.elements.test.AbstractBaseTestSuite;
 import org.junit.Test;
 
 /**
  * The FileOnlyFilterTest class is a test suite of test cases testing the contract and functionality of the
  * FileOnlyFilter class.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.io.File
  * @see org.cp.elements.io.FileOnlyFilter
- * @see org.cp.elements.test.CommonBaseTestSuite
+ * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class FileOnlyFilterTest extends CommonBaseTestSuite {
+public class FileOnlyFilterTest extends AbstractBaseTestSuite {
 
   private FileOnlyFilter filter = new FileOnlyFilter();
 
   @Test
   public void testAcceptWithFile() {
-    File fileOnlyFilterClass = new File(getBuildOutputDirectoryAsWorkingDirectory(),
+    File fileOnlyFilterClass = new File(getBuildOutputDirectory(),
       "classes/org/cp/elements/io/FileOnlyFilter.class");
 
     assertNotNull(fileOnlyFilterClass);

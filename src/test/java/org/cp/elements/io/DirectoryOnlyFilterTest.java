@@ -25,21 +25,21 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.cp.elements.test.CommonBaseTestSuite;
+import org.cp.elements.test.AbstractBaseTestSuite;
 import org.junit.Test;
 
 /**
  * The DirectoryOnlyFilterTest class is a test suite of test cases testing the contract and functionality of the
  * DirectoryOnlyFilter class.
- * <p/>
+ *
  * @author John J. Blum
+ * @see org.junit.Test
  * @see java.io.File
  * @see org.cp.elements.io.DirectoryOnlyFilter
- * @see org.cp.elements.test.CommonBaseTestSuite
- * @see org.junit.Test
+ * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
-public class DirectoryOnlyFilterTest extends CommonBaseTestSuite {
+public class DirectoryOnlyFilterTest extends AbstractBaseTestSuite {
 
   private DirectoryOnlyFilter filter = new DirectoryOnlyFilter();
 
@@ -52,7 +52,7 @@ public class DirectoryOnlyFilterTest extends CommonBaseTestSuite {
 
   @Test
   public void testAcceptWithFile() {
-    File directoryOnlyFilterClass = new File(getBuildOutputDirectoryAsWorkingDirectory(),
+    File directoryOnlyFilterClass = new File(getBuildOutputDirectory(),
       "classes/org/cp/elements/io/DirectoryOnlyFilter.class");
 
     assertNotNull(directoryOnlyFilterClass);
