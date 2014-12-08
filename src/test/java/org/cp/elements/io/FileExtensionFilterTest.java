@@ -66,7 +66,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithMultipleMixedFileExtensions() {
+  public void testConstructFileExtensionFilterWithAnArrayOfFileExtensions() {
     String[] expectedFileExtensions = { "ada", ".c", ".cpp", "java", ".rb" };
 
     FileExtensionFilter fileFilter = new FileExtensionFilter(expectedFileExtensions);
@@ -148,6 +148,18 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertFalse(fileFilter.accept(fileWithExtension));
     assertTrue(fileFilter.accept(fileWithoutExtension));
+  }
+
+  @Test
+  public void testAcceptsFileWithAndWithoutFileExtension() {
+    FileExtensionFilter fileFilter = new FileExtensionFilter("java", ".CLASS", ".");
+
+    assertTrue(fileFilter.accept(new File("/path/to/a/source.java")));
+    assertTrue(fileFilter.accept(new File("absolute/path/to/a/binary.class")));
+    assertTrue(fileFilter.accept(new File("/path/to/a/no/extension/file")));
+    assertTrue(fileFilter.accept(new File("file.")));
+    assertFalse(fileFilter.accept(new File("/path/to/a/non/source.cpp")));
+    assertFalse(fileFilter.accept(new File("/path/to/a/class.file")));
   }
 
 }

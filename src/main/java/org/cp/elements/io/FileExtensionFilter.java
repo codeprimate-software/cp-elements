@@ -23,8 +23,8 @@ package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
@@ -44,12 +44,28 @@ public class FileExtensionFilter implements FileFilter, Filter<File> {
 
   private final Set<String> fileExtensions;
 
+  /**
+   * Constructs an instance of the FileExtensionFilter class initialized with the specified array of file extensions
+   * defining the filtering criteria used by this FileFilter accept files.
+   *
+   * @param fileExtensions an array of file extensions used as the filtering criteria by this FileFilter
+   * to accept files.
+   * @see #FileExtensionFilter(Iterable)
+   */
   public FileExtensionFilter(final String... fileExtensions) {
     this(ArrayUtils.iterable(fileExtensions));
   }
 
+  /**
+   * Constructs an instance of the FileExtensionFilter class initialized with the specified Iterable of file extensions
+   * defining the filtering criteria used by this FileFilter to accept files.
+   *
+   * @param fileExtensions an Iterable of file extensions used as the filtering criteria by this FileFilter
+   * to accept files.
+   * @see java.lang.Iterable
+   */
   public FileExtensionFilter(final Iterable<String> fileExtensions) {
-    this.fileExtensions = new HashSet<String>();
+    this.fileExtensions = new TreeSet<String>();
 
     if (fileExtensions != null) {
       for (String fileExtension : fileExtensions) {
@@ -61,10 +77,26 @@ public class FileExtensionFilter implements FileFilter, Filter<File> {
     }
   }
 
+  /**
+   * Gets an array of Strings specifying the file extensions used as filtering criteria by this FileFilter
+   * when evaluation files.
+   *
+   * @return a String array containing the file extensions used as filtering criteria by this FileFilter
+   * when evaluating and accepting files.
+   */
   public String[] getFileExtensions() {
     return fileExtensions.toArray(new String[fileExtensions.size()]);
   }
 
+  /**
+   * Determines whether the given file is accepted by this FileFilter based on it's file extension.
+   *
+   * @param file the File evaluated by this FileFilter.
+   * @return a boolean value indicating whether the file's extension match the filtering criteria set
+   * by this FileFilter.
+   * @see java.io.File
+   * @see org.cp.elements.io.FileUtils#getExtension(java.io.File)
+   */
   @Override
   public boolean accept(final File file) {
     String fileExtension = FileUtils.getExtension(file).toLowerCase().trim();

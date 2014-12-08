@@ -91,8 +91,8 @@ public class FileUtilsTest extends AbstractMockingTestSuite {
     file = new File("relative/path/to/another/file.ext");
     location = FileUtils.getLocation(file);
 
-    assertEquals(String.format("%1$s%2$srelative/path/to/another", getBuildOutputDirectory()
-      .getAbsolutePath(), File.separator), location);
+    assertEquals(String.format("%1$s%2$srelative/path/to/another", WORKING_DIRECTORY.getAbsolutePath(), File.separator),
+      location);
 
     file = new File("/location/to/a/file/system/directory");
     location = FileUtils.getLocation(file);
