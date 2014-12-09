@@ -25,7 +25,7 @@ import java.sql.Types;
 
 /**
  * The SqlType enum is an enumeration of SQL types from the java.sql.Types class.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.sql.Types
  * @since 1.0.0
@@ -71,12 +71,24 @@ public enum SqlType {
 
   private final int type;
 
+  /**
+   * Constructs an instance of the SqlType enumeration based on the java.sql.Types constant.
+   *
+   * @param type the java.sql.Types integer constant.
+   */
   SqlType(final int type) {
     this.type = type;
   }
 
+  /**
+   * Gets the SqlType enumeration based on the java.sql.Types constant, or null if the integer value is not
+   * one of the java.sql.Types constants.
+   *
+   * @param type the java.sql.Types integer constant.
+   * @return the SqlType enumeration corresponding to the java.sql.Types constant.
+   */
   public static SqlType valueOf(final int type) {
-    for (final SqlType sqlType : values()) {
+    for (SqlType sqlType : values()) {
       if (sqlType.getType() == type) {
         return sqlType;
       }
@@ -85,6 +97,11 @@ public enum SqlType {
     return null;
   }
 
+  /**
+   * Gets the java.sql.Types constant corresponding to this SqlType enum.
+   *
+   * @return a java.sql.Types constant value corresponding to this SqlType enum.
+   */
   public int getType() {
     return type;
   }
