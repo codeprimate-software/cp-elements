@@ -40,7 +40,7 @@ import org.cp.elements.lang.Constants;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DataSourceAdapter implements DataSource {
+public abstract class DataSourceAdapter implements DataSource {
 
   protected static final String UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE = Constants.NOT_IMPLEMENTED;
 
