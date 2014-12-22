@@ -21,18 +21,19 @@
 
 package org.cp.elements.lang.factory;
 
+import org.cp.elements.lang.reflect.MethodNotFoundException;
+
 /**
  * The NoSuchConstructorException is a RuntimeException indicating that a constructor with the specified signature
  * could not be found in the specified class.  This class is the unchecked, runtime equivalent of the checked
  * NoSuchMethodException with emphasis on constructors!
- * <p/>
+ *
  * @author John J. Blum
- * @see java.lang.NoSuchMethodException
- * @see java.lang.RuntimeException
+ * @see org.cp.elements.lang.reflect.MethodNotFoundException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class NoSuchConstructorException extends RuntimeException {
+public class NoSuchConstructorException extends MethodNotFoundException {
 
   /**
    * Default constructor creating an instance of the NoSuchConstructorException.
