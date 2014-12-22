@@ -24,6 +24,9 @@ package org.cp.elements.lang;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.cp.elements.lang.reflect.FieldNotFoundException;
+import org.cp.elements.lang.reflect.MethodNotFoundException;
+
 /**
  * The ClassUtils class provides utility methods for working with Class objects.
  *
@@ -96,19 +99,19 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets a Field object representing the named field on the specified Class.  This method will recursively search
+   * Gets a Field object representing the named field on the specified class.  This method will recursively search
    * up the class hierarchy of the specified class until the Object class is reached.  If the named field is found
-   * then a Field object representing the field is returned otherwise a NoSuchFieldException is thrown.
+   * then a Field object representing the class field is returned, otherwise a NoSuchFieldException is thrown.
    * 
    * @param type the Class type to search for the specified field.
-   * @param fieldName a String value specifying the name of the field on the Class type.
-   * @return a Field objects representing the named field on the specified Class.
-   * @throws NoSuchFieldException if the named field does not exist on the specified Class or a superclass
-   * of the specified Class.
+   * @param fieldName a String indicating the name of the field on the class.
+   * @return a Field object representing the named field on the specified class.
+   * @throws FieldNotFoundException if the named field does not exist on the specified class
+   * or a superclass of the specified class.
    * @see java.lang.Class#getDeclaredField(String)
    * @see java.lang.reflect.Field
    */
-  public static Field getField(final Class type, final String fieldName) throws NoSuchFieldException {
+  public static Field getField(final Class<?> type, final String fieldName) {
     try {
       return type.getDeclaredField(fieldName);
     }
@@ -116,33 +119,37 @@ public abstract class ClassUtils {
       if (type.getSuperclass() != null) {
         return getField(type.getSuperclass(), fieldName);
       }
-      throw e;
+
+      throw new FieldNotFoundException(e);
     }
   }
 
   /**
-   * Gets a Method object representing the named method on the specified Class.  This method will recursively search
-   * up the class hierarchy of the specified lass until the Object class is reached.  If the named field is found
-   * then a Method object representing the method is returned otherwise a NoSuchMethodException is thrown.
+   * Gets a Method object representing the named method on the specified class.  This method will recursively search
+   * up the class hierarchy of the specified class until the Object class is reached.  If the named method is found
+   * then a Method object representing the class method is returned, otherwise a NoSuchMethodException is thrown.
    * 
    * @param type the Class type to search for the specified method.
-   * @param methodName a String value specifying the name of the method ofn the Class type.
-   * @return a Method object representing the named method on the specified Class.
-   * @throws NoSuchMethodException if the named method does not exist on the specified Class or a superclass
-   * of the specified Class.
+   * @param methodName a String indicating the name of the method on the class.
+   * @param parameterTypes an array of Class objects identifying the parameters and their types
+   * based on the method's signature.
+   * @return a Method object representing the named method on the specified class.
+   * @throws MethodNotFoundException if the named method does not exist on the specified class
+   * or a superclass of the specified class.
    * @see java.lang.Class#getDeclaredMethod(String, Class[])
    * @see java.lang.reflect.Method
    */
   @SuppressWarnings("unchecked")
-  public static Method getMethod(final Class type, final String methodName) throws NoSuchMethodException {
+  public static Method getMethod(final Class type, final String methodName, final Class<?>... parameterTypes) {
     try {
-      return type.getDeclaredMethod(methodName);
+      return type.getDeclaredMethod(methodName, parameterTypes);
     }
     catch (NoSuchMethodException e) {
       if (type.getSuperclass() != null) {
-        return getMethod(type.getSuperclass(), methodName);
+        return getMethod(type.getSuperclass(), methodName, parameterTypes);
       }
-      throw e;
+
+      throw new MethodNotFoundException(e);
     }
   }
 
@@ -262,7 +269,7 @@ public abstract class ClassUtils {
    * 
    * @param className the fully qualified name of the class to determine the presence of.
    * @return a boolean value indicating whether the class identified by name is in the classpath.
-   * @see #loadClass
+   * @see #loadClass(String)
    */
   public static boolean isPresent(final String className) {
     try {

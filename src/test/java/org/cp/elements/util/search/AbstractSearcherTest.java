@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.cp.elements.lang.NumberUtils;
+import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.test.AbstractMockingTestSuite;
 import org.jmock.Expectations;
 import org.junit.Test;
@@ -665,7 +666,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     catch (SearchException expected) {
       assertEquals("Error occurred getting the list of elements to search from the (asList) method on object of type (java.lang.Object)!",
         expected.getMessage());
-      assertTrue(expected.getCause() instanceof NoSuchMethodException);
+      assertTrue(expected.getCause() instanceof MethodNotFoundException);
       throw expected;
     }
   }

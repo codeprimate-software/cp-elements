@@ -30,11 +30,13 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.cp.elements.lang.reflect.FieldNotFoundException;
+import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.junit.Test;
 
 /**
  * The ClassUtilsTest class is a test suite of test cases testing the contract and functionality of the ClassUtils class.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.lang.Class
  * @see org.cp.elements.lang.ClassUtils
@@ -98,53 +100,107 @@ public class ClassUtilsTest {
   }
 
   @Test
-  public void testGetField() throws NoSuchFieldException {
-    final Field charValueField = ClassUtils.getField(DerivedClass.class, "charValue");
+  public void testGetField() {
+    Field charValueField = ClassUtils.getField(DerivedType.class, "charValue");
 
     assertNotNull(charValueField);
-    assertEquals(DerivedClass.class, charValueField.getDeclaringClass());
+    assertEquals(DerivedType.class, charValueField.getDeclaringClass());
     assertEquals("charValue", charValueField.getName());
     assertEquals(Character.class, charValueField.getType());
   }
 
   @Test
-  public void testGetFieldFromSuperClass() throws NoSuchFieldException {
-    final Field strValueField = ClassUtils.getField(DerivedClass.class, "strValue");
+  public void testGetFieldFromSuperClass() {
+    Field strValueField = ClassUtils.getField(DerivedType.class, "strValue");
 
     assertNotNull(strValueField);
-    assertEquals(SuperClass.class, strValueField.getDeclaringClass());
+    assertEquals(SuperType.class, strValueField.getDeclaringClass());
     assertEquals("strValue", strValueField.getName());
     assertEquals(String.class, strValueField.getType());
   }
 
-  @Test(expected = NoSuchFieldException.class)
-  public void testGetFieldThrowsNoSuchFieldException() throws NoSuchFieldException {
-    ClassUtils.getField(SuperClass.class, "charValue");
+  @Test(expected = FieldNotFoundException.class)
+  public void testGetFieldOnDerivedClassFromSuperClassThrowsFieldNotFoundException() {
+    ClassUtils.getField(SuperType.class, "charValue");
+  }
+
+  @Test(expected = FieldNotFoundException.class)
+  public void testGetNonExistingFieldThrowsFieldNotFoundException() {
+    ClassUtils.getField(DerivedType.class, "nonExistingField");
   }
 
   @Test
-  public void testGetMethod() throws NoSuchMethodException {
-    final Method getCharacterValueMethod = ClassUtils.getMethod(DerivedClass.class, "getCharacterValue");
+  public void testGetOverriddenFieldOnDerivedClass() {
+    Field idField = ClassUtils.getField(DerivedType.class, "id");
+
+    assertNotNull(idField);
+    assertEquals(DerivedType.class, idField.getDeclaringClass());
+    assertEquals("id", idField.getName());
+    assertEquals(Long.class, idField.getType());
+  }
+
+  @Test
+  public void testGetMethod() {
+    Method getCharacterValueMethod = ClassUtils.getMethod(DerivedType.class, "getCharacterValue");
 
     assertNotNull(getCharacterValueMethod);
-    assertEquals(DerivedClass.class, getCharacterValueMethod.getDeclaringClass());
+    assertEquals(DerivedType.class, getCharacterValueMethod.getDeclaringClass());
     assertEquals("getCharacterValue", getCharacterValueMethod.getName());
     assertEquals(Character.class, getCharacterValueMethod.getReturnType());
   }
 
   @Test
-  public void testGetMethodFromSuperClass() throws NoSuchMethodException {
-    final Method getStringValueMethod = ClassUtils.getMethod(DerivedClass.class, "getStringValue");
+  public void testGetMethodFromSuperClass() {
+    Method getStringValueMethod = ClassUtils.getMethod(DerivedType.class, "getStringValue");
 
     assertNotNull(getStringValueMethod);
-    assertEquals(SuperClass.class, getStringValueMethod.getDeclaringClass());
+    assertEquals(SuperType.class, getStringValueMethod.getDeclaringClass());
     assertEquals("getStringValue", getStringValueMethod.getName());
     assertEquals(String.class, getStringValueMethod.getReturnType());
   }
 
-  @Test(expected = NoSuchMethodException.class)
-  public void testGetMethodThrowsNoSuchMethodException() throws NoSuchMethodException {
-    ClassUtils.getMethod(SuperClass.class, "getCharacterValue");
+  @Test(expected = MethodNotFoundException.class)
+  public void testGetMethodThrowsMethodNotFoundException() {
+    ClassUtils.getMethod(SuperType.class, "getCharacterValue");
+  }
+
+  @Test(expected = MethodNotFoundException.class)
+  public void testGetNonExistingMethod() {
+    ClassUtils.getMethod(DerivedType.class, "nonExistingMethod");
+  }
+
+  @Test
+  public void testGetOverloadedMethodOnDerivedClassFromDerivedClass() {
+    Method methodOne = ClassUtils.getMethod(DerivedType.class, "methodOne", Integer.class, Double.class);
+
+    assertNotNull(methodOne);
+    assertEquals(DerivedType.class, methodOne.getDeclaringClass());
+  }
+
+  @Test
+  public void testGetOverloadedMethodOnSuperClassFromDerivedClass() {
+    Method methodOne = ClassUtils.getMethod(DerivedType.class, "methodOne", Integer.class);
+
+    assertNotNull(methodOne);
+    assertEquals(SuperType.class, methodOne.getDeclaringClass());
+  }
+
+  @Test(expected = MethodNotFoundException.class)
+  public void testGetOverloadedMethodOnDerivedClassFromSuperClass() {
+    ClassUtils.getMethod(SuperType.class, "methodOne", Boolean.class);
+  }
+
+  @Test
+  public void testGetOverriddenMethod() {
+    Method methodOne = ClassUtils.getMethod(DerivedType.class, "methodOne", String.class);
+
+    assertNotNull(methodOne);
+    assertEquals(DerivedType.class, methodOne.getDeclaringClass());
+
+    methodOne = ClassUtils.getMethod(SuperType.class, "methodOne", String.class);
+
+    assertNotNull(methodOne);
+    assertEquals(SuperType.class, methodOne.getDeclaringClass());
   }
 
   @Test
@@ -310,8 +366,9 @@ public class ClassUtilsTest {
   }
 
   @SuppressWarnings("unused")
-  public static class SuperClass {
+  public static class SuperType {
 
+    private String id;
     private String strValue;
 
     public String getStringValue() {
@@ -321,12 +378,22 @@ public class ClassUtilsTest {
     public void setStringValue(final String stringValue) {
       this.strValue = stringValue;
     }
+
+    public Object methodOne(final String value) {
+      return value;
+    }
+
+    public Object methodOne(final Integer value) {
+      return value;
+    }
   }
 
   @SuppressWarnings("unused")
-  public static class DerivedClass extends SuperClass {
+  public static class DerivedType extends SuperType {
 
-    public Character charValue;
+    private Character charValue;
+
+    private Long id;
 
     public Character getCharacterValue() {
       return charValue;
@@ -334,6 +401,19 @@ public class ClassUtilsTest {
 
     public void setCharacterValue(final Character charValue) {
       this.charValue = charValue;
+    }
+
+    @Override
+    public Object methodOne(final String value) {
+      return value;
+    }
+
+    public Object methodOne(final Boolean value) {
+      return value;
+    }
+
+    public Object methodOne(final Integer wholeNumber, final Double floatingPointNumber) {
+      return Math.max(wholeNumber, floatingPointNumber);
     }
   }
 
