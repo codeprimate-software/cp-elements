@@ -21,11 +21,14 @@
 
 package org.cp.elements.lang;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The ClassUtils class provides utility methods for working with Class objects.
@@ -125,6 +128,45 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Attempts to find a method with the specified name on the given class type having a signature with parameter types
+   * that are compatible with the given arguments.  This method searches recursively up the inherited class hierarchy
+   * for the given class type until the desired method is found or the class type hierarchy is exhausted, in which case,
+   * null is returned.
+   *
+   * @param type the Class type to search for the desired method.
+   * @param methodName a String value indicating the name of the method to find.
+   * @param arguments an array of object values indicating the arguments the method's parameters must accept.
+   * @return a Method on the given class type with the specified name having a signature compatible with the arguments,
+   * or null if no such Method exists on the given class type or one of it's inherited (parent) class types.
+   * @throws NullPointerException if the given class type is null.
+   * @see #instanceOf(Object, Class)
+   * @see java.lang.Class#getDeclaredMethods()
+   * @see java.lang.Class#getSuperclass()
+   * @see java.lang.reflect.Method#getParameterTypes()
+   */
+  public static Method findMethod(final Class<?> type, final String methodName, final Object... arguments) {
+    for (Method method : type.getDeclaredMethods()) {
+      if (method.getName().equals(methodName)) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+
+        if (ArrayUtils.length(arguments) == parameterTypes.length) {
+          boolean match = true;
+
+          for (int index = 0; index < parameterTypes.length; index++) {
+            match &= instanceOf(arguments[index], parameterTypes[index]);
+          }
+
+          if (match) {
+            return method;
+          }
+        }
+      }
+    }
+
+    return (type.getSuperclass() != null ? findMethod(type.getSuperclass(), methodName, arguments) : null);
+  }
+
+  /**
    * Gets a Method object representing the named method on the specified class.  This method will recursively search
    * up the class hierarchy of the specified class until the Object class is reached.  If the named method is found
    * then a Method object representing the class method is returned, otherwise a NoSuchMethodException is thrown.
@@ -139,8 +181,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredMethod(String, Class[])
    * @see java.lang.reflect.Method
    */
-  @SuppressWarnings("unchecked")
-  public static Method getMethod(final Class type, final String methodName, final Class<?>... parameterTypes) {
+  public static Method getMethod(final Class<?> type, final String methodName, final Class<?>... parameterTypes) {
     try {
       return type.getDeclaredMethod(methodName, parameterTypes);
     }
@@ -151,6 +192,90 @@ public abstract class ClassUtils {
 
       throw new MethodNotFoundException(e);
     }
+  }
+
+  /**
+   * Attempts to resolve the method with the specified name and signature on the given class type.  The named method's
+   * resolution is first attempted by using the specified method's name along with the array of parameter types.
+   * If unsuccessful, the method proceeds to lookup the named method by searching all "declared" methods
+   * of the class type having a signature compatible with the given argument types.  This method operates recursively
+   * until the method is resolved or the class type hierarchy is exhausted, in which case,
+   * a MethodNotFoundException is thrown.
+   *
+   * @param type the Class type on which to resolve the method.
+   * @param methodName a String indicating the name of the method to resolve.
+   * @param parameterTypes an array of Class objects used to resolve the exact signature of the method.
+   * @param arguments an array of Objects used in a method invocation serving as a fallback search/lookup strategy
+   * if the method cannot be resolved using it's parameter types.  Maybe null.
+   * @param returnType the declared class type of the method's return value (used only for Exception message purposes).
+   * @return the resolved method from the given class type given the name, parameter types (signature)
+   * and calling arguments, if any.
+   * @throws MethodNotFoundException if the specified method cannot be resolved on the given class type.
+   * @throws NullPointerException if the class type is null.
+   */
+  public static Method resolveMethod(final Class<?> type,
+                                     final String methodName,
+                                     final Class<?>[] parameterTypes,
+                                     final Object[] arguments,
+                                     final Class<?> returnType)
+  {
+    try {
+      return getMethod(type, methodName, parameterTypes);
+    }
+    catch (MethodNotFoundException e) {
+      Method method = findMethod(type, methodName, arguments);
+
+      if (method == null) {
+        throw new MethodNotFoundException(String.format(
+          "Failed to resolve method with signature (%1$s) on class type (%2$s)!",
+            getMethodSignature(methodName, parameterTypes, returnType), getName(type)), e.getCause());
+      }
+
+      return method;
+    }
+  }
+
+  /**
+   * Builds the signature of a method based on a java.lang.reflect.Method object.
+   *
+   * @param method the Method object to build an method signature of.
+   * @return the signature of the Method as a String.
+   * @see #getMethodSignature(String, Class[], Class)
+   */
+  protected static String getMethodSignature(final Method method) {
+    return getMethodSignature(method.getName(), method.getParameterTypes(), method.getReturnType());
+  }
+
+  /**
+   * Builds the signature of a method based on the method's name, parameter types and return type.
+   *
+   * @param methodName a String indicating the name of the method.
+   * @param parameterTypes an array of Class objects indicating the type of each method parameter.
+   * @param returnType a Class object indicating the methods return type.
+   * @return the signature of the method as a String.
+   * @see #getSimpleName(Class)
+   */
+  protected static String getMethodSignature(final String methodName,
+                                             final Class<?>[] parameterTypes,
+                                             final Class<?> returnType)
+  {
+    StringBuilder buffer = new StringBuilder(methodName);
+
+    buffer.append("(");
+
+    if (parameterTypes != null) {
+      int index = 0;
+
+      for (Class<?> parameterType : parameterTypes) {
+        buffer.append(index++ > 0 ? ", :" : ":");
+        buffer.append(getSimpleName(parameterType));
+      }
+    }
+
+    buffer.append("):");
+    buffer.append(returnType == null || Void.class.equals(returnType) ? "void" : getSimpleName(returnType));
+
+    return buffer.toString();
   }
 
   /**
@@ -204,6 +329,29 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Determines whether the specified Annotation meta-data is present on the given "annotated" members,
+   * such as fields and methods.
+   *
+   * @param annotation the Annotation used in the detection for presence on the given members.
+   * @param members the members of a class type or object to inspect for the presence of the specified Annotation.
+   * @return a boolean value indicating whether the specified Annotation is present on any of the given members.
+   * @see java.lang.annotation.Annotation
+   * @see java.lang.reflect.AccessibleObject#isAnnotationPresent(Class)
+   */
+  @NullSafe
+  public static boolean isAnnotationPresent(final Class<? extends Annotation> annotation, final AnnotatedElement... members) {
+    if (members != null) {
+      for (AnnotatedElement member : members) {
+        if (member != null && member.isAnnotationPresent(annotation)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Determines whether the specified Class object represents an array type.
    * 
    * @param type the Class object tested as an array type.
@@ -253,8 +401,25 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Determines whether the specified class identified by name is available and present on the application classpath.
+   *
+   * @param className the fully qualified name of the class to determine the presence of.
+   * @return a boolean value indicating whether the class identified by name is in the classpath.
+   * @see #loadClass(String)
+   */
+  public static boolean isPresent(final String className) {
+    try {
+      loadClass(className);
+      return true;
+    }
+    catch (TypeNotFoundException ignore) {
+      return false;
+    }
+  }
+
+  /**
    * Determines whether the specified Class object represents a primitive type.
-   * 
+   *
    * @param type the Class object tested as a primitive type.
    * @return true iff the Class object is not null and represents a primitive type.
    * @see java.lang.Class#isPrimitive()
@@ -265,31 +430,15 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Determines whether the specified class identified by name is available and present on the application classpath.
-   * 
-   * @param className the fully qualified name of the class to determine the presence of.
-   * @return a boolean value indicating whether the class identified by name is in the classpath.
-   * @see #loadClass(String)
-   */
-  public static boolean isPresent(final String className) {
-    try {
-      ClassUtils.loadClass(className);
-      return true;
-    }
-    catch (TypeNotFoundException ignore) {
-      return false;
-    }
-  }
-
-  /**
    * Loads the Class object for the specified, fully qualified class name using the current Thread's context ClassLoader,
    * following by initializing the class.
    * 
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
-   * @return a Class object for the specified, fully qualified class name.
+   * @return a Class object for the specified, fully-qualified class name.
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
-   * @see #loadClass(String)
-   * @see java.lang.Class#forName(String, boolean, ClassLoader)
+   * @see #loadClass(String, boolean, ClassLoader)
+   * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread#getContextClassLoader()
    */
   public static Class loadClass(final String fullyQualifiedClassName) {
     return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_ON_LOAD_CLASS,
@@ -303,7 +452,7 @@ public abstract class ClassUtils {
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
    * @param initialize a boolean value indicating whether to initialize the class after loading.
    * @param classLoader the ClassLoader used to load the class.
-   * @return a Class object for the specified, fully qualified class name.
+   * @return a Class object for the specified, fully-qualified class name.
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
    */

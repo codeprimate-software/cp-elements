@@ -28,10 +28,9 @@ import org.junit.Test;
 /**
  * The ObjectUtilsTest class is a test suite of test cases testing the contract and functionality
  * of the ObjectUtils class.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.ObjectUtils
- * @see org.junit.Assert
  * @see org.junit.Test
  * @since 1.0.0
  */
@@ -59,7 +58,7 @@ public class ObjectUtilsTest {
   @Test
   @SuppressWarnings("boxing")
   public void testEquals() {
-    final Object testObject = new Object();
+    Object testObject = new Object();
     assertTrue(ObjectUtils.equals(testObject, testObject));
     assertTrue(ObjectUtils.equals(true, Boolean.TRUE));
     assertTrue(ObjectUtils.equals('c', new Character('c')));
@@ -73,20 +72,24 @@ public class ObjectUtilsTest {
     assertFalse(ObjectUtils.equals(null, null));
     assertFalse(ObjectUtils.equals("test", null));
     assertFalse(ObjectUtils.equals(null, "test"));
+    assertFalse(ObjectUtils.equals(null, "null"));
+    assertFalse(ObjectUtils.equals("null", "nil"));
     assertFalse(ObjectUtils.equals(true, false));
     assertFalse(ObjectUtils.equals('c', 'C'));
     assertFalse(ObjectUtils.equals('c', "c"));
     assertFalse(ObjectUtils.equals(-2, 2));
     assertFalse(ObjectUtils.equals(3.14159d, Math.PI));
+    assertFalse(ObjectUtils.equals("mock", "proxy"));
     assertFalse(ObjectUtils.equals("test", "TEST"));
     assertFalse(ObjectUtils.equals("test", "testing"));
-    assertFalse(ObjectUtils.equals("test", "mock"));
+    assertFalse(ObjectUtils.equals("test", "tested"));
   }
 
   @Test
   public void testEqualsIgnoreNull() {
     assertTrue(ObjectUtils.equalsIgnoreNull(null, null));
     assertTrue(ObjectUtils.equalsIgnoreNull("null", "null"));
+    assertTrue(ObjectUtils.equalsIgnoreNull("nil", "nil"));
     assertTrue(ObjectUtils.equalsIgnoreNull(Boolean.FALSE, Boolean.FALSE));
     assertTrue(ObjectUtils.equalsIgnoreNull('\0', '\0'));
     assertTrue(ObjectUtils.equalsIgnoreNull(0, -0));
@@ -97,9 +100,9 @@ public class ObjectUtilsTest {
 
   @Test
   public void testEqualsIgnoreNullUsingUnequalValues() {
-    assertFalse(ObjectUtils.equalsIgnoreNull("null", null));
     assertFalse(ObjectUtils.equalsIgnoreNull(null, "null"));
-    assertFalse(ObjectUtils.equalsIgnoreNull("nil", "null"));
+    assertFalse(ObjectUtils.equalsIgnoreNull("null", null));
+    assertFalse(ObjectUtils.equalsIgnoreNull("null", "nil"));
     assertFalse(ObjectUtils.equalsIgnoreNull(Boolean.FALSE, Boolean.TRUE));
     assertFalse(ObjectUtils.equalsIgnoreNull('\0', null));
     assertFalse(ObjectUtils.equalsIgnoreNull(0, 1));

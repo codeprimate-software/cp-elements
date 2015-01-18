@@ -21,15 +21,18 @@
 
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.reflect.ReflectionUtils;
+
 /**
  * The ObjectUtils utility class performs various operations on java.lang.Objects.
  *
  * @author John J. Blum
  * @see java.lang.Object
+ * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class ObjectUtils {
+public abstract class ObjectUtils extends ReflectionUtils {
 
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
