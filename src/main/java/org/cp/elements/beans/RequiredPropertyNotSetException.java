@@ -22,49 +22,49 @@
 package org.cp.elements.beans;
 
 /**
- * The IllegalPropertyValueException class is an IllegalStateException signifying that the value being assigned
- * to the property is not valid.
+ * The RequiredPropertiesNotSetException class is a subclass of RequiredPropertyNotSetException indicating that a bean
+ * property annotated with @Required was not properly set.
  *
  * @author John J. Blum
- * @see java.lang.IllegalStateException
+ * @see org.cp.elements.beans.IllegalPropertyValueException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class IllegalPropertyValueException extends IllegalStateException {
+public class RequiredPropertyNotSetException extends IllegalPropertyValueException {
 
   /**
-   * Constructs an uninitialized instance of the IllegalPropertyValueException.
+   * Constructs an uninitialized instance of the RequiredPropertyNotSetException class.
    */
-  public IllegalPropertyValueException() {
+  public RequiredPropertyNotSetException() {
   }
 
   /**
-   * Constructs an instance of the IllegalPropertyValueException initialized with a message describing the problem.
+   * Constructs an instance of the RequiredPropertyNotSetException initialized with a message describing the problem.
    *
    * @param message a String describing the nature of the problem and reason this Exception was thrown.
    */
-  public IllegalPropertyValueException(final String message) {
+  public RequiredPropertyNotSetException(final String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the IllegalPropertyValueException initialized with the specified Throwable
+   * Constructs an instance of the RequiredPropertyNotSetException initialized with the specified Throwable
    * indicating the reason, or underlying cause for why this Exception was thrown.
    *
-   * @param cause a Throwable indicating the reason this IllegalPropertyValueException was thrown.
+   * @param cause a Throwable indicating the reason this RequiredPropertyNotSetException was thrown.
    */
-  public IllegalPropertyValueException(final Throwable cause) {
+  public RequiredPropertyNotSetException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the IllegalPropertyValueException initialized with a message describing the exceptional
+   * Constructs an instance of the RequiredPropertyNotSetException initialized with a message describing the exceptional
    * condition along with a Throwable indicating the reason, or underlying cause for why this Exception was thrown.
    *
    * @param message a String describing the nature of the problem and reason this Exception was thrown.
-   * @param cause a Throwable indicating the reason this IllegalPropertyValueException was thrown.
+   * @param cause a Throwable indicating the reason this RequiredPropertyNotSetException was thrown.
    */
-  public IllegalPropertyValueException(final String message, final Throwable cause) {
+  public RequiredPropertyNotSetException(final String message, final Throwable cause) {
     super(message, cause);
   }
 
