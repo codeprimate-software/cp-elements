@@ -22,6 +22,10 @@
 package org.cp.elements.test;
 
 import java.io.File;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The AbstractBaseTestSuite class is an abstract base class containing functionality common to all test classes
@@ -37,6 +41,20 @@ public abstract class AbstractBaseTestSuite {
   protected static final File USER_HOME = new File(System.getProperty("user.home"));
   protected static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
 
+  private final Logger logger;
+
+  protected AbstractBaseTestSuite() {
+    logger = Logger.getLogger(getClass().getName());
+    logger.setLevel(Level.WARNING);
+    logger.setUseParentHandlers(false);
+
+    for (Handler handler : logger.getHandlers()) {
+      logger.removeHandler(handler);
+    }
+
+    logger.addHandler(new ConsoleHandler());
+  }
+
   protected File getBuildOutputDirectory() {
     File buildOutputDirectory = new File(WORKING_DIRECTORY, getBuildOutputDirectoryName());
     return (buildOutputDirectory.isDirectory() ? buildOutputDirectory : WORKING_DIRECTORY);
@@ -50,13 +68,53 @@ public abstract class AbstractBaseTestSuite {
     return new File(getBuildOutputDirectory(), getClassesOutputDirectoryName());
   }
 
-  public String getClassesOutputDirectoryName() {
+  protected String getClassesOutputDirectoryName() {
     return "classes";
   }
 
-  public File getLocation(Class type) {
+  protected File getLocation(Class type) {
     String pathname = type.getName().replaceAll("\\.", File.separator).concat(".class");
     return new File(getClassesOutputDirectory(), pathname);
+  }
+
+  protected void logDebug(final String message) {
+    if (logger.isLoggable(Level.FINE) || logger.isLoggable(Level.FINER) || logger.isLoggable(Level.FINEST)) {
+      logger.fine(message);
+    }
+  }
+
+  protected void logConfig(final String message) {
+    if (logger.isLoggable(Level.CONFIG)) {
+      logger.config(message);
+    }
+  }
+
+  protected void logInfo(final String message) {
+    if (logger.isLoggable(Level.INFO)) {
+      logger.info(message);
+    }
+  }
+
+  protected void logWarning(final String message) {
+    if (logger.isLoggable(Level.WARNING)) {
+      logger.warning(message);
+    }
+  }
+
+  protected void logError(final String message) {
+    if (logger.isLoggable(Level.SEVERE)) {
+      logger.severe(message);
+    }
+  }
+
+  protected void setLogLevel(final Level logLevel) {
+    logger.setLevel(logLevel);
+
+    for (Handler logHandler : logger.getHandlers()) {
+      if (logHandler instanceof ConsoleHandler) {
+        logHandler.setLevel(logLevel);
+      }
+    }
   }
 
 }
