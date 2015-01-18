@@ -21,7 +21,7 @@
 
 package org.cp.elements.util;
 
-import static org.cp.elements.lang.OperatorUtils.from;
+import static org.cp.elements.util.CollectionExtensions.from;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;

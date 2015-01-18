@@ -21,151 +21,30 @@
 
 package org.cp.elements.lang;
 
-import static org.cp.elements.lang.OperatorUtils.*;
+import static org.cp.elements.lang.LangExtensions.*;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
 import org.junit.Test;
 
 /**
- * The OperatorUtilsTest class is a test suite of test cases testing the contract and functionality
- * of the OperatorUtils class.
- * <p/>
+ * The LangExtensionsTest class is a test suite of test cases testing the contract and functionality
+ * of the LangExtensions class.
+ *
  * @author John J. Blum
- * @see org.cp.elements.lang.OperatorUtils
+ * @see org.cp.elements.lang.LangExtensions
  * @see org.cp.elements.test.TestUtils
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class OperatorUtilsTest {
+public class LangExtensionsTest {
 
   private final Comparable NULL = null;
-
-  @Test
-  public void testFromArrayToList() {
-    final Object[] expected = { "Aardvark", "Baboon", "Cheetah", "Dog", "Elephant", "Ferret", "Guinea Pig", "Horse",
-      "Iguana", "Jackal", "Kangaroo", "Lemming", "Moose", "N", "Octopus", "Pig", "Quail", "Rattlesnake", "Sheep",
-      "Turkey", "U", "Velociraptor", "Whale", "X", "Y", "Zebra"
-    };
-
-    final List<Object> actual = from(expected).toList();
-
-    assertNotNull(actual);
-    assertEquals(expected.length, actual.size());
-    assertArrayEquals(expected, actual.toArray(new Object[actual.size()]));
-  }
-
-  @Test
-  public void testFromEmptyArrayToList() {
-    final Object[] expected = new Object[0];
-    final List<Object> actual = from(expected).toList();
-
-    assertNotNull(actual);
-    assertTrue(actual.isEmpty());
-  }
-
-  @Test
-  public void testFromNullArrayToList() {
-    final List<Object> actual = from((Object[]) null).toList();
-
-    assertNotNull(actual);
-    assertTrue(actual.isEmpty());
-  }
-
-  @Test
-  public void testFromSingleElementArrayToList() {
-    final Object[] expected = { "test" };
-    final List<Object> actual = from(expected).toList();
-
-    assertNotNull(actual);
-    assertEquals(1, actual.size());
-    assertArrayEquals(expected, actual.toArray(new Object[actual.size()]));
-  }
-
-  @Test
-  public void testFromArrayToSet() {
-    final Object[] expected = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
-    final Set<Object> actual = from(expected).toSet();
-
-    assertNotNull(actual);
-    assertEquals(expected.length, actual.size());
-
-    for (final Object number : expected) {
-      assertTrue("Expected the Set to contain (" + number + ")!", actual.contains(number));
-    }
-  }
-
-  @Test
-  public void testFromDuplicateElementArrayToSet() {
-    final Object[] expected = { 1, 0, 1, 3, 2, 0, 1, 1, 3 };
-    final Set<Object> actual = from(expected).toSet();
-
-    assertNotNull(actual);
-    assertEquals(4, actual.size());
-    assertTrue(actual.contains(0));
-    assertTrue(actual.contains(1));
-    assertTrue(actual.contains(2));
-    assertTrue(actual.contains(3));
-  }
-
-  @Test
-  public void testFromEmptyArrayToSet() {
-    final Object[] expected = new Object[0];
-    final Set<Object> actual = from(expected).toSet();
-
-    assertNotNull(actual);
-    assertTrue(actual.isEmpty());
-  }
-
-  @Test
-  public void testFromNullArrayToSet() {
-    final Set<Object> actual = from((Object[]) null).toSet();
-
-    assertNotNull(actual);
-    assertTrue(actual.isEmpty());
-  }
-
-  @Test
-  public void testFromSingleElementArrayToSet() {
-    final Object[] expected = { "test" };
-    final Set<Object> actual = from(expected).toSet();
-
-    assertNotNull(actual);
-    assertEquals(1, actual.size());
-    assertTrue(actual.contains(expected[0]));
-  }
-
-  @Test
-  public void testFromArrayToString() {
-    assertEquals("[one, two, three]", from("one", "two", "three").toString());
-  }
-
-  @Test
-  public void testFromArrayContainingBlankEmptyOrNullElementsToString() throws Exception {
-    assertEquals("[, test,  , , null]", from("", "test", " ", "", null).toString());
-  }
-
-  @Test
-  public void testFromEmptyArrayToString() {
-    assertEquals("[]", from(new Object[0].clone()).toString());
-  }
-
-  @Test
-  public void testFromNullArrayToString() {
-    assertEquals("[]", from((Object[]) null).toString());
-  }
-
-  @Test
-  public void testFromSingleElementArrayToString() {
-    assertEquals("[test]", from("test").toString());
-  }
 
   @Test
   public void testIsAssignableFrom() {
@@ -527,9 +406,9 @@ public class OperatorUtilsTest {
 
   @Test
   public void testIsNotSameAs() {
-    assertTrue(is(NULL).not().sameAs("null"));
-    assertTrue(is(Boolean.TRUE).not().sameAs(Boolean.FALSE));
-    assertTrue(is("test").not().sameAs(new String("test")));
+    assertTrue(is(NULL).notSameAs("null"));
+    assertTrue(is(Boolean.TRUE).notSameAs(Boolean.FALSE));
+    assertTrue(is("test").notSameAs(new String("test")));
   }
 
   @Test

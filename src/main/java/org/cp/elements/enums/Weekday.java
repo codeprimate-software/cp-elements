@@ -21,7 +21,7 @@
 
 package org.cp.elements.enums;
 
-import static org.cp.elements.lang.OperatorUtils.from;
+import static org.cp.elements.util.CollectionExtensions.from;
 
 import java.util.Calendar;
 

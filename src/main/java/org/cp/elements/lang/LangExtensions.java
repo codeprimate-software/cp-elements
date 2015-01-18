@@ -21,100 +21,16 @@
 
 package org.cp.elements.lang;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.cp.elements.lang.annotation.DSL;
 
 /**
- * The OperatorUtils class provides methods to write natural language expressions for various conditions, such as 
+ * The LangExtensions class provides methods to write natural language expressions for various conditions, such as
  * equality comparisons, identity checks, null checks, negation and so on, and operations such as conversion, etc.
  * 
  * @author John J. Blum
- * @see org.cp.elements.lang.LogicalOperator
- * @see java.util.Arrays
- * @see java.util.Collections
- * @see java.util.List
- * @see java.util.Set
  * @since 1.0.0
  */
-public abstract class OperatorUtils {
-
-  /**
-   * The from operator performs conversions on the given array and it's elements.  For instance, the array can be
-   * converted into an ordered List of elements, or a unique Set of elements originating from the array.
-   * 
-   * @param <T> the type of the elements in the array.
-   * @param array the array of elements all of type T to be converted.
-   * @return a From operator to perform the conversions.
-   */
-  public static <T> From<T> from(final T... array) {
-    return new FromImpl<T>(array);
-  }
-
-  /**
-   * The From interface defines operations for conversion of an Object array to a List, Set or String.
-   * 
-   * @param <T> the element type of objects in the List or Set.
-   */
-  public static interface From<T> {
-
-    /**
-     * Converts an object array to a List.
-     * 
-     * @return a List implementation containing all the elements in the given object array to the from operator.
-     * @see java.util.List
-     */
-    public List<T> toList();
-
-    /**
-     * Converts an object array to a Set.
-     * 
-     * @return a Set implementation containing all the elements of the given object array to the from operator.
-     * @see java.util.Set
-     */
-    public Set<T> toSet();
-  }
-
-  /**
-   * The FromImpl class is an implementation of the From interface, from operator.
-   * 
-   * @param <T> the element type of items in the List or Set.
-   */
-  private static final class FromImpl<T> implements From<T> {
-
-    private final T[] array;
-
-    public FromImpl(final T... array) {
-      this.array = array;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<T> toList() {
-      return (array == null ? Collections.<T>emptyList() : (array.length == 1 ? Collections.singletonList(array[0])
-        : Arrays.asList(array)));
-    }
-
-    public Set<T> toSet() {
-      return (array == null ? Collections.<T>emptySet() : (array.length == 1 ? Collections.singleton(array[0])
-        : new HashSet<T>(toList())));
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder buffer = new StringBuilder("[");
-
-      if (array != null) {
-        for (int index = 0; index < array.length; index++) {
-          buffer.append(index > 0 ? StringUtils.COMMA_SPACE_DELIMITER : StringUtils.EMPTY_STRING);
-          buffer.append(array[index]);
-        }
-      }
-
-      return buffer.append("]").toString();
-    }
-  }
+public abstract class LangExtensions {
 
   /**
    * The is operator can be used to make logical determinations about an object such as boolean, equality, identity,
@@ -123,9 +39,11 @@ public abstract class OperatorUtils {
    * @param <T> the type of Object as the subject of the is operator.
    * @param obj the Object that is the subject of the operation.
    * @return an instance of the is operator.
+   * @see org.cp.elements.lang.annotation.DSL
    */
+  @DSL
   public static <T> Is<T> is(final T obj) {
-    return new IsImpl<T>(obj);
+    return new IsExpression<T>(obj);
   }
 
   /**
@@ -133,8 +51,9 @@ public abstract class OperatorUtils {
    * to another object.
    * 
    * @param <T> the type of Object as the subject of the is operator.
+   * @see org.cp.elements.lang.DslExtension
    */
-  public static interface Is<T> {
+  public static interface Is<T> extends DslExtension {
 
     /**
      * Determines whether the Class object provided to the is operator is assignable from the Class type parameter.
@@ -337,7 +256,7 @@ public abstract class OperatorUtils {
     public Is<T> not();
 
     /**
-     * Shortcut method of the not().Null() operation.  Determines whether the object provided to the is operator
+     * Shortcut method for the not().Null() operation.  Determines whether the object provided to the is operator
      * is not null.
      * 
      * @return a boolean value indicating whether the object in question is not null.
@@ -352,12 +271,24 @@ public abstract class OperatorUtils {
     public boolean Null();
 
     /**
+     * Shortcut method for the not().sameAs(:Object) operation.  Determines whether the object provided to
+     * the is operator is *not* the same as, or does not refer to the same object in memory
+     * as the given object parameter.
+     *
+     * @param obj the Object reference used to determine if the object in question is not a reference to the same object
+     * in memory.
+     * @return a boolean value indicating whether the object in question and object parameter reference do not refer to
+     * the same object.
+     */
+    public boolean notSameAs(T obj);
+
+    /**
      * Determines whether the object provided to the is operator is the same as, or refers to the same object
      * in memory as the given object parameter.
      * 
      * @param obj the Object reference used to determine if the object in question is a reference to the same object
      * in memory.
-     * @return a boolean value indicating whether the object in question and object parameter reference refer to
+     * @return a boolean value indicating whether the object in question and object parameter reference refers to
      * the same object.
      */
     public boolean sameAs(T obj);
@@ -373,23 +304,24 @@ public abstract class OperatorUtils {
   }
 
   /**
-   * The IsImpl class is an implementation of the Is interface, is operator.  Note, this implementation is Thread-safe,
+   * The IsExpression class is an implementation of the Is interface, is operator.  Note, this implementation is Thread-safe,
    * although it is very unlikely that a Thread will share an instance of this class since every invocation of the
    * is() operator factory method will return a new instance of this class, at least for the time being.
    * 
    * @param <T> the Object's type.
+   * @see org.cp.elements.lang.LangExtensions.Is
    */
-  private static final class IsImpl<T> implements Is<T> {
+  private static final class IsExpression<T> implements Is<T> {
 
     private final boolean expectedOutcome;
 
     private final T obj;
 
-    private IsImpl(final T obj) {
+    private IsExpression(final T obj) {
       this(obj, true);
     }
 
-    private IsImpl(final T obj, final boolean expectedOutcome) {
+    private IsExpression(final T obj, final boolean expectedOutcome) {
       this.obj = obj;
       this.expectedOutcome = expectedOutcome;
     }
@@ -476,7 +408,7 @@ public abstract class OperatorUtils {
     }
 
     public Is<T> not() {
-      return new IsImpl<T>(this.obj, !expectedOutcome);
+      return new IsExpression<T>(this.obj, !expectedOutcome);
     }
 
     public boolean notNull() {
@@ -485,6 +417,10 @@ public abstract class OperatorUtils {
 
     public boolean Null() {
       return getOutcome(this.obj == null);
+    }
+
+    public boolean notSameAs(final T obj) {
+      return not().sameAs(obj);
     }
 
     public boolean sameAs(final T obj) {

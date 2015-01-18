@@ -21,7 +21,7 @@
 
 package org.cp.elements.util.convert.support;
 
-import static org.cp.elements.lang.OperatorUtils.is;
+import static org.cp.elements.lang.LangExtensions.is;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

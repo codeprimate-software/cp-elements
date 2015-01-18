@@ -19,44 +19,25 @@
  * the EULA @ ...
  */
 
-package org.cp.elements.util.convert;
+package org.cp.elements.lang.annotation;
 
-import static org.cp.elements.lang.LangExtensions.is;
-
-import org.cp.elements.lang.Assert;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * The AbstractConverter class is an abstract base class encapsulating all common functionality and behavior for all
- * custom Converter implementation.
- * <p/>
+ * The DSL annotation is a Java language, meta-data annotation indicating that a particular Java class method
+ * implements a Domain Specific Language (DSL) 'Expression'.
+ *
  * @author John J. Blum
- * @see org.cp.elements.util.convert.ConversionServiceAware
- * @see org.cp.elements.util.convert.Converter
- * @see org.cp.elements.util.convert.ConverterAdapter
  * @since 1.0.0
  */
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
 @SuppressWarnings("unused")
-public abstract class AbstractConverter<S, T> implements Converter<S, T> {
-
-  private ConversionService conversionService;
-
-  protected ConversionService getConversionService() {
-    Assert.state(conversionService != null, "The ConversionService reference was not properly initialized!");
-    return conversionService;
-  }
-
-  public final void setConversionService(final ConversionService conversionService) {
-    this.conversionService = conversionService;
-  }
-
-  protected boolean isAssignableTo(final Class<?> fromType, final Class<?>... toTypes) {
-    for (Class toType : toTypes) {
-      if (is(toType).assignableFrom(fromType)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
+public @interface DSL {
 
 }

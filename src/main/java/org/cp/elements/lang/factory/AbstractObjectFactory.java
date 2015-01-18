@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
 
 package org.cp.elements.lang.factory;
 
-import static org.cp.elements.lang.OperatorUtils.from;
+import static org.cp.elements.util.CollectionExtensions.from;
 
 import java.lang.reflect.Constructor;
 
@@ -35,7 +35,7 @@ import org.cp.elements.util.convert.ConversionService;
 /**
  * The AbstractObjectFactory class is a abstract base class encapsulating functionality common to all ObjectFactory
  * implementations.
- * <p/>
+ * 
  * @author John J. Blum
  * @see java.lang.reflect.Constructor
  * @see org.cp.elements.context.configure.Configuration
@@ -52,7 +52,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Determines whether the reference to the application Configuration was initialized.
-   * <p/>
+   * 
    * @return a boolean value indicating whether the application Configuration reference was initialized.
    */
   protected boolean isConfigurationAvailable() {
@@ -61,7 +61,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Gets the reference to the application Configuration used by the ObjectFactory to perform object configuration.
-   * <p/>
+   * 
    * @return a reference to the application Configuration.
    * @throws IllegalStateException if the reference to the application Configuration has not been initialized.
    */
@@ -72,7 +72,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Sets a reference to an instance of the application Configuration in use.
-   * <p/>
+   * 
    * @param configuration the Configuration reference in use by the application.
    */
   public final void setConfiguration(final Configuration configuration) {
@@ -81,7 +81,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Determines whether the reference to the ConversionService was initialized.
-   * <p/>
+   * 
    * @return a boolean value indicating whether the ConversionService reference was initialized.
    */
   protected boolean isConversionServiceAvailable() {
@@ -90,7 +90,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Gets the reference to the ConversionService used by the ObjectFactory to perform type conversions.
-   * <p/>
+   * 
    * @return a reference to the ConversionService.
    * @throws IllegalStateException if the reference to the ConversionService has not been initialized.
    */
@@ -101,7 +101,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Sets a reference to the specified ConversionService.
-   * <p/>
+   * 
    * @param conversionService the reference to the ConversionService.
    */
   public final void setConversionService(final ConversionService conversionService) {
@@ -110,7 +110,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Determines the class types of the array of object arguments.
-   * <p/>
+   * 
    * @param arguments the array of Object arguments to determine the class types for.
    * @return an array of Class types for each of the arguments in the array.
    * @see org.cp.elements.lang.ClassUtils#getClass(Object)
@@ -129,7 +129,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Resolves the Class constructor with the given signature as determined by the parameter types.
-   * <p/>
+   * 
    * @param objectType the Class from which the constructor is resolved.
    * @param parameterTypes the array of Class types determining the resolved constructor's signature.
    * @return a Constructor from the specified class with a matching signature based on the parameter types.
@@ -138,7 +138,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @see java.lang.Class
    * @see java.lang.reflect.Constructor
    */
-  protected Constructor resolveConstructor(final Class objectType, final Class... parameterTypes) {
+  protected Constructor resolveConstructor(final Class<?> objectType, final Class... parameterTypes) {
     try {
       return objectType.getConstructor(parameterTypes);
     }
@@ -158,7 +158,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Resolves the matching constructor for the specified Class type who's actual public constructor argument types
    * are assignment compatible with the expected parameter types.
-   * <p/>
+   * 
    * @param objectType the Class from which the constructor is resolved.
    * @param parameterTypes the array of Class types determining the resolved constructor's signature.
    * @return a matching constructor from the specified Class type who's actual public constructor argument types
@@ -168,7 +168,8 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @see java.lang.Class
    * @see java.lang.reflect.Constructor
    */
-  protected Constructor resolveCompatibleConstructor(final Class objectType, final Class[] parameterTypes) {
+  @SuppressWarnings("unchecked")
+  protected Constructor resolveCompatibleConstructor(final Class<?> objectType, final Class<?>[] parameterTypes) {
     for (Constructor constructor : objectType.getConstructors()) {
       Class[] constructorParameterTypes = constructor.getParameterTypes();
 
@@ -191,7 +192,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments.
    * The parameter types of the constructor used to construct the object are determined from the arguments.
-   * <p/>
+   * 
    * @param <T> the Class type of the created object.
    * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
    * @param args an array of Objects used as constructor arguments to initialize the object.
@@ -210,7 +211,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
    * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
    * the object.
-   * <p/>
+   * 
    * @param <T> the Class type of the created object.
    * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
    * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
@@ -230,7 +231,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Creates an object given the class type, initialized with the specified constructor arguments. The parameter types
    * of the constructor used to construct the object are determined from the arguments.
-   * <p/>
+   * 
    * @param <T> the Class type of the created object.
    * @param objectType the Class type from which the instance is created.
    * @param args an array of Objects used as constructor arguments to initialize the object.
@@ -249,7 +250,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
    * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
    * the object.
-   * <p/>
+   * 
    * @param <T> the Class type of the created object.
    * @param objectType the Class type from which the instance is created.
    * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
@@ -292,7 +293,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Method called after construction of the object allowing custom ObjectFactory implementations to perform post
    * construction initialization and additional configuration.  The default implementation is to do nothing.
-   * <p/>
+   * 
    * @param <T> the Class type of object created.
    * @param object the object created by this factory.
    * @param args the array of Objects arguments used for post construction initialization and configuration if no

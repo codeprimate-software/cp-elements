@@ -19,44 +19,17 @@
  * the EULA @ ...
  */
 
-package org.cp.elements.util.convert;
-
-import static org.cp.elements.lang.LangExtensions.is;
-
-import org.cp.elements.lang.Assert;
+package org.cp.elements.lang;
 
 /**
- * The AbstractConverter class is an abstract base class encapsulating all common functionality and behavior for all
- * custom Converter implementation.
- * <p/>
+ * The DslExtension interface is a marker interface for classes the implement Domain Specific Language (DSL)
+ * Extensions containing the build blocks of an expressions, often expressed using the Builder Design Pattern.
+ *
  * @author John J. Blum
- * @see org.cp.elements.util.convert.ConversionServiceAware
- * @see org.cp.elements.util.convert.Converter
- * @see org.cp.elements.util.convert.ConverterAdapter
+ * @link http://en.wikipedia.org/wiki/Builder_pattern
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractConverter<S, T> implements Converter<S, T> {
-
-  private ConversionService conversionService;
-
-  protected ConversionService getConversionService() {
-    Assert.state(conversionService != null, "The ConversionService reference was not properly initialized!");
-    return conversionService;
-  }
-
-  public final void setConversionService(final ConversionService conversionService) {
-    this.conversionService = conversionService;
-  }
-
-  protected boolean isAssignableTo(final Class<?> fromType, final Class<?>... toTypes) {
-    for (Class toType : toTypes) {
-      if (is(toType).assignableFrom(fromType)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
+public interface DslExtension {
 
 }
