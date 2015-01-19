@@ -1,15 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>cp-elements</artifactId>
-  <packaging>jar</packaging>
 
   <parent>
     <groupId>org.codeprimate</groupId>
     <artifactId>cp-core</artifactId>
     <version>1.0.0.BUILD-SNAPSHOT</version>
-    <relativePath>../</relativePath>
+    <relativePath>../cp-core/pom.xml</relativePath>
   </parent>
+  <artifactId>cp-elements</artifactId>
+  <packaging>jar</packaging>
+
+  <name>cp-elements</name>
+  <description>
+    'Codeprimate Elements' (a.k.a cp-elements) is a foundational Java Class Library and framework used to build
+    software applications with the Java platform.  Elements packages many robust APIs together in order to address
+    various, distinct application concerns during development.  Elememts is a highly efficient, simple, yet robust
+    framework built on fundamental OO principles, best practices and design patterns to appropriately solve common
+    and reoccuring problems in software development.
+  </description>
+  <url>http://www.codeprimate.org/products/cp-elements</url>
+
+  <organization>
+    <name>Codeprimate, LLC</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate, LLC.</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <licenses>
+ 		<license>
+ 			<name>Codeprimate License, Version 1.0</name>
+ 			<url>http://www.codeprimate.org/licenses/LICENSE-1.0</url>
+ 			<comments>
+        Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
+
+        This software is licensed under the Codeprimate End User License Agreement (EULA).
+        This software is proprietary and confidential in addition to an intellectual asset
+        of the aforementioned authors.
+
+        By using the software, the end-user implicitly consents to and agrees to be in compliance
+        with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
+        the maximum penalties permissible by law.
+
+        In short, this software may not be reverse engineered, reproduced, copied, modified
+        or distributed without prior authorization of the aforementioned authors, permissible
+        and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
+        and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
+        EXTENSIONS or CONDITIONS of any kind.
+
+        For further information on the software license, the end user is encouraged to read
+        the EULA @ ...
+ 			</comments>
+ 		</license>
+ 	</licenses>
 
 </project>
