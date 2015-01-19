@@ -40,6 +40,7 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
@@ -458,7 +459,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
       field.set(this, newValue);
       field.setAccessible(accessible);
     }
-    catch (NoSuchFieldException e) {
+    catch (FieldNotFoundException e) {
       throw new PropertyNotFoundException(String.format(
         "The property (%1$s) corresponding to field (%2$s) was not found in this Bean (%3$s)!",
           propertyName, getFieldName(propertyName), getClass().getName()), e);
