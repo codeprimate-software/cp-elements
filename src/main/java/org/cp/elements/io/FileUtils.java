@@ -22,7 +22,6 @@
 package org.cp.elements.io;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.cp.elements.lang.Assert;

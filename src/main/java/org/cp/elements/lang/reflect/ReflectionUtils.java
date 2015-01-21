@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.BooleanUtils;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.Filter;
@@ -158,7 +159,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
     catch (Exception e) {
       throw new FieldAccessException(String.format("Failed to get value of field (%1$s) from %2$s type (%3$s)!",
-        field.getName(), (target == null ? "class" : "object of"), getClassName(target)), e);
+        field.getName(), BooleanUtils.toString(target == null, "class", "object of"), getClassName(target)), e);
     }
   }
 
@@ -222,8 +223,8 @@ public abstract class ReflectionUtils extends ClassUtils {
   public static void setField(final Object target, final Field field, final Object value) {
     try {
       Assert.isFalse(Modifier.isFinal(field.getModifiers()), new FieldAccessException(String.format(
-        "Cannot set the value of a final field (%1$s) on %2$s type (%3$s)!",
-          field.getName(), (target == null ? "class" : "object of"), field.getDeclaringClass().getName())));
+        "Cannot set the value of a final field (%1$s) on %2$s type (%3$s)!", field.getName(),
+          BooleanUtils.toString(target == null, "class", "object of"), field.getDeclaringClass().getName())));
 
       boolean currentAccessible = field.isAccessible();
 
@@ -239,7 +240,8 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
     catch (Exception e) {
       throw new FieldAccessException(String.format("Failed to set field (%1$s) to value (%2$s) on %3$s type (%4$s)!",
-        field.getName(), value, (target == null ? "class" : "object of"), field.getDeclaringClass().getName()), e);
+        field.getName(), value, BooleanUtils.toString(target == null, "class", "object of"),
+          field.getDeclaringClass().getName()), e);
     }
   }
 
@@ -575,7 +577,8 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
     catch (Exception e) {
       throw new MethodInvocationException(String.format("Failed to invoke method (%1$s) on %2$s type (%3$s)!",
-        getMethodSignature(method), (target == null ? "class" : "object of"), method.getDeclaringClass().getName()), e);
+        getMethodSignature(method), BooleanUtils.toString(target == null, "class", "object of"),
+          method.getDeclaringClass().getName()), e);
     }
   }
 

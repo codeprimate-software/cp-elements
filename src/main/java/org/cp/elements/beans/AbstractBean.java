@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -27,7 +27,6 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
-import java.lang.reflect.Field;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,16 +35,14 @@ import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.beans.event.ChangeSupport;
 import org.cp.elements.beans.event.ChangeTracker;
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitor;
-import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
  * The AbstractBean class is an abstract base class for modeling application data as domain model objects.
- * <p/>
+ * 
  * @author John J. Blum
  * @param <ID> the Comparable class type of the identifier uniquely identifying this Bean.
  * @param <USER> the class type of the object identifying the user for auditing information.
@@ -112,7 +109,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Creates an instance of the AbstractBean class initialized with the specified typed identifier.  It is recommended
    * that the identifier uniquely identify objects within this Bean class.
-   * <p/>
+   * 
    * @param id the generically typed identifier uniquely identifying objects of this particular Bean class.
    * @see org.cp.elements.lang.Identifiable
    */
@@ -123,7 +120,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the user who is responsible for the creation of this object.
-   * <p/>
+   * 
    * @return an object denoting the user who created this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -133,7 +130,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the user who is responsible for the creation of this object.
-   * <p/>
+   * 
    * @param createdBy an object denoting the user who created this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -143,7 +140,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the date and time when this object was created.
-   * <p/>
+   * 
    * @return a Calendar object denoting the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
    */
@@ -153,7 +150,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the date and time when this object was created.
-   * <p/>
+   * 
    * @param createdDateTime a Calendar object denoting the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
    */
@@ -163,7 +160,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the process (the what) that functionally created this object.
-   * <p/>
+   * 
    * @return an object denoting the process that created this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -173,7 +170,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the process (the what) that functionally created this object.
-   * <p/>
+   * 
    * @param creatingProcess an object denoting the process that created this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -183,7 +180,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Determines whether event dispatching is enabled for property changes on this Bean.
-   * <p/>
+   * 
    * @return a boolean value indicating whether event dispatching is enabled for property changes on this Bean.
    */
   public boolean isEventDispatchEnabled() {
@@ -192,7 +189,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Enables or disables event dispatching for property changes on this Bean.
-   * <p/>
+   * 
    * @param eventDispatchEnabled a boolean value indicating whether to enable or disable event dispatching
    * for property changes to this Bean.
    */
@@ -203,7 +200,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Gets the name of the field mapped to the given property.  If no such mapping exists, then the given property name
    * is returned.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property to retrieve the corresponding field name.
    * @return a String value indicating the field name corresponding to the specified property.
    */
@@ -213,7 +210,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the identifier uniquely identifying this object.
-   * <p/>
+   * 
    * @return the value of type T indicating this object's assigned unique identifier.
    * @see org.cp.elements.lang.Identifiable
    */
@@ -223,7 +220,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the identifier uniquely identifying this object.
-   * <p/>
+   * 
    * @param id a value of type T assigned as this object's unique identifier.
    * @see org.cp.elements.lang.Identifiable
    */
@@ -233,7 +230,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the user who was last responsible for modifying this object.
-   * <p/>
+   * 
    * @return an object denoting the last user responsible for modifying this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -243,7 +240,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the last date and time when this object was modified.
-   * <p/>
+   * 
    * @return a Calendar object denoting the date and time when this object was last modified.
    * @see org.cp.elements.lang.Auditable
    */
@@ -253,7 +250,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the process (the what) that was last responsible for modifying this object.
-   * <p/>
+   * 
    * @return an object denoting the last process responsible for modifying this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -265,7 +262,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * Determines whether this Auditable object has been modified.  One particular implementation suggests that
    * if the last modified date/time does not match the current modified date/time then the Auditable object has
    * been modified.
-   * <p/>
+   * 
    * @return a boolean value indicating whether this Auditable object has been modified or not.
    * @see org.cp.elements.lang.Auditable
    */
@@ -276,7 +273,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Determines whether the specified property of this Auditable object has been modified.  The property has been
    * changed if the old and new value are not equal in value.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property to check for modification.
    * @return a boolean value indicating whether the specified property of this Auditable object, identified by name,
    * has been modified.
@@ -287,7 +284,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the user who is responsible for modifying this object.
-   * <p/>
+   * 
    * @return an object denoting the user who modified this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -297,7 +294,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the user who is responsible for modifying this object.
-   * <p/>
+   * 
    * @param modifiedBy an object denoting the user who modified this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -309,7 +306,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the date and time when this object was modified.
-   * <p/>
+   * 
    * @return a Calendar object denoting the date and time when this object was modified.
    * @see org.cp.elements.lang.Auditable
    */
@@ -319,7 +316,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the date and time when this object was modified.
-   * <p/>
+   * 
    * @param modifiedDateTime a Calendar object denoting the date and time when this object was modified.
    * @see org.cp.elements.lang.Auditable
    */
@@ -330,7 +327,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Gets the process (the what) that functionally modified this object.
-   * <p/>
+   * 
    * @return an object denoting the process that modified this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -340,7 +337,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Sets the process (the what) that functionally modified this object.
-   * <p/>
+   * 
    * @param modifyingProcess an object denoting the process that modified this object.
    * @see org.cp.elements.lang.Auditable
    */
@@ -352,7 +349,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Makes a determination, or assessment for whether this Bean (object) is new.
-   * <p/>
+   * 
    * @return a boolean value indicating whether this Bean is new or not.
    * @see org.cp.elements.lang.Identifiable
    */
@@ -362,7 +359,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Accepts a Visitor implementation for performing some operation or inspection on this object.
-   * <p/>
+   * 
    * @param visitor an object who's class implements the Visitor interface to walk a graph of objects
    * in order to perform some inspection or operation on the object graph.
    * @see org.cp.elements.lang.Visitable
@@ -375,7 +372,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Adds the specified ChangeListener to the list of listeners to be notified of change events (or changes)
    * to this Bean.
-   * <p/>
+   * 
    * @param listener the ChangeListener to add to the list of listeners being notified of change events on
    * this Bean.
    * @see org.cp.elements.beans.event.ChangeListener
@@ -388,7 +385,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Adds the specified PropertyChangeListener to listen for and be notified of all property change events on
    * this Bean.
-   * <p/>
+   * 
    * @param listener the PropertyChangeListener listening for all property change events on this Bean.
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
@@ -400,7 +397,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Adds the specified PropertyChangeListener to listen for and receive notifications for changes to the specified
    * property of this Bean.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean for which the specified
    * listener will receive property change events.
    * @param listener the PropertyChangeListener listening for property changes events on the specified property.
@@ -414,7 +411,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Adds the specified VetoableChangeListener to this Bean listening for property change events in order to monitor
    * and veto any undesired change to this Bean's state.
-   * <p/>
+   * 
    * @param listener the VetoableChangeListener listening for and potentially vetoing any undesired property change
    * events to this Bean.
    * @see java.beans.VetoableChangeListener
@@ -427,7 +424,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Adds the specified VetoableChangeListener to this Bean listening for change events on the specified property
    * in order to monitor and veto any undesired changes.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean for wihch the specified
    * listener will receive property change events.
    * @param listener the VetoableChangeListener listening for and potentially vetoing any undesired property change
@@ -443,7 +440,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * Changes the value of the given property, referenced by name, to the new Object value, effectively modifying
    * the internal state of this Bean.  This method uses the Java reflective APIs to set the field corresponding
    * to the specified property.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property (internally, the field) to set to
    * the new Object value.
    * @param newValue an Object containing the new value for the given property (internally, the field).
@@ -453,26 +450,19 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    */
   void changeState(final String propertyName, final Object newValue) {
     try {
-      final Field field = ClassUtils.getField(getClass(), getFieldName(propertyName));
-      final boolean accessible = field.isAccessible();
-      field.setAccessible(true);
-      field.set(this, newValue);
-      field.setAccessible(accessible);
+      ObjectUtils.setField(this, getFieldName(propertyName), newValue);
     }
-    catch (FieldNotFoundException e) {
+    catch (IllegalArgumentException e) {
       throw new PropertyNotFoundException(String.format(
         "The property (%1$s) corresponding to field (%2$s) was not found in this Bean (%3$s)!",
           propertyName, getFieldName(propertyName), getClass().getName()), e);
-    }
-    catch (IllegalAccessException ignore) {
-      // the Field should be accessible if it succeeded the setAccessible call
     }
   }
 
   /**
    * Compares the specified Bean with this Bean to determine order.  The default implementation is to
    * order by identifier, where null identifiers are ordered before non-null identifiers.
-   * <p/>
+   * 
    * @param obj the Bean being compared with this Bean.
    * @return an integer value indicating the relative ordering of the specified Bean with this Bean.
    * A negative value implies this Bean logically occurs before the specified Bean.  A zero value indicates
@@ -493,7 +483,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * name of the property that is changing along with the property's old and new values.  A PropertyChangeEvent
    * will be created only if event dispatching to registered listeners is enabled and there are either
    * PropertyChangeListeners or VetoableChangeListeners registered on this Bean.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean that is being changed.
    * @param oldValue an Object containing the old value of the specified property.
    * @param newValue an Object containing the new value for the specified property.
@@ -515,7 +505,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * Determines whether this Bean and the specified Bean are equal in value.  This Bean and the specified Bean
    * are considered equal in value if their identifiers match.  Note, a null identifier is not logically equivalent
    * to any other Bean, even other Beans with a null identifier regardless of the Bean's other state.
-   * <p/>
+   * 
    * @param obj the Bean object being compared for equality with this Bean.
    * @return a boolean value indicating whether this Bean and the specified Bean are logically equal.
    * @see java.lang.Object#equals(Object)
@@ -538,7 +528,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Notifies all ChangeListeners of a change event happening on this Bean.
-   * <p/>
+   * 
    * @see org.cp.elements.beans.event.ChangeEvent
    * @see org.cp.elements.beans.event.ChangeListener
    * @see org.cp.elements.beans.event.ChangeSupport#fireChangeEvent()
@@ -554,7 +544,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Notifies all PropertyChangeListeners of a property change event occurring on this Bean.
-   * <p/>
+   * 
    * @param event the PropertyChangeEvent indicating the property who's value is changing.
    * @throws NullPointerException if the PropertyChangeEvent is null.
    * @see java.beans.PropertyChangeEvent
@@ -575,7 +565,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * Notifies all VetoableChangeListeners of a property change event occurring on this Bean.  The change to
    * the property may potentially be vetoed by one of the VetoableChangeListeners listening to property changes
    * on this Bean, resulting in preventing the value of the property to change.
-   * <p/>
+   * 
    * @param event the PropertyChangeEvent indicating the property who's value is changing.
    * @throws NullPointerException if the PropertyChangeEvent is null.
    * @throws PropertyVetoException if the property change is vetoed by a VetoableChangeListener listening to
@@ -596,7 +586,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Computes the hash code value for this Bean as determined by this Bean's internal state.
-   * <p/>
+   * 
    * @return an integer value representing the computed hash code of this Bean.
    * @see java.lang.Object#hashCode()
    * @see org.cp.elements.lang.ObjectUtils#hashCode(Object)
@@ -610,7 +600,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Creates a mapping from the specified property on this Bean class to one of the Bean object's fields.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of a property on this Bean class.
    * @param fieldName a String value specifying the name of the Bean object's field.
    * @return a boolean value indicating whether the mapping between the property and field was successfully
@@ -625,7 +615,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Creates a mapping from the specified property on this Bean to the specified ParameterizedStateChangeCallback
    * for affecting state transitions and changes.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean class.
    * @param callback a ParameterizedStateChangeCallback affecting the state change/transition.
    * @return a boolean indicating that the mapping was added successfully.
@@ -643,12 +633,12 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * in order to validate the change and veto any undesired change to the specified property.  Next, the state change
    * is effected followed by notification of all PropertyChangeListeners.  Finally, a change event is sent to all
    * ChangeListeners notifying them this Bean has been changed.
-   * <p/>
+   * 
    * This particular implementation uses property-to-field mapping and reflection to change the state of this Bean.
    * Subclasses are allowed to create a mapping of property names to actual fields of this particular Bean by calling
    * the mapPropertyNameToFieldName method.  However, if no such mapping exists, then the field name is derived from
    * the name of the specified property.  Essentially, the field name is expected to be the same as the property name.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean that is being changed.
    * @param oldValue an Object containing the old value of the specified property.
    * @param newValue an Object containing the new value for the specified property.
@@ -666,11 +656,11 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * in order to validate the change and veto any undesired change to the specified property.  Next, the state change
    * is effected followed by notification of all PropertyChangeListeners.  Finally, a change event is sent to all
    * ChangeListeners notifying them this Bean has been changed.
-   * <p/>
+   * 
    * This particular implementation employs a callback style approach to effectively changing the state of this Bean.
    * As it is not always possible to access the particular fields of an object's class, the callback allows the subclass
    * to effect the change.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean that is being changed.
    * @param oldValue an Object containing the old value of the specified property.
    * @param newValue an Object containing the new value for the specified property.
@@ -713,7 +703,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Removes the specified ChangeListener from the list of listeners being notified of change events to this Bean.
-   * <p/>
+   * 
    * @param listener the ChangeListener to to remove from the list of listeners being notified of change events on
    * this Bean.
    * @see org.cp.elements.beans.event.ChangeListener
@@ -726,7 +716,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Removes the specified PropertyChangeListener from listening and being notified of property change events on
    * this Bean.
-   * <p/>
+   * 
    * @param listener the PropertyChangeListener to remove and stop notifying of property change events on this Bean.
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
@@ -738,7 +728,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Removes the specified PropertyChangeListener from listening and being notified of property change events
    * for the specified property on this Bean.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean.
    * @param listener the PropertyChangeListener to remove and stop notifying of property change events for
    * the specified property on this Bean.
@@ -753,7 +743,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * Removes the specified VetoableChangeListener from listening and being notified of property change events
    * to this Bean.  In addition, the listeners vote in vetoing potentially undesirable property changes is now
    * void.
-   * <p/>
+   * 
    * @param listener the VetoableChangeListener to remove and stop notifying of property change events on this Bean.
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
@@ -766,7 +756,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * Removes the specified VetoableChangeListener from listening and being notified of property change events
    * from the specified property on this Bean.  In addition, the listeners vote in vetoing potentially undesirable
    * property changes to the specified property is now void.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean.
    * @param listener the VetoableChangeListener to remove and stop notifying of property change events on this Bean.
    * @see java.beans.VetoableChangeListener
@@ -778,7 +768,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   /**
    * Removes the mapping between the specified property and the corresponding field of this Bean.
-   * <p/>
+   * 
    * @param propertyName a String value indicating the name of the property on this Bean to remove the mapping for.
    * @return a String value indicating the name of the Bean object's field mapped to the specified property.
    */
@@ -789,7 +779,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   /**
    * Removes the mapping from the specified property on this Bean to the registered ParameterizedStateChangeCallback
    * for affecting state transitions and changes.
-   * <p/>
+   * 
    * @param propertyName a String value specifying the name of the property on this Bean class.
    * @return a boolean indicating that the mapping was removed.
    */
@@ -802,7 +792,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * by the invoked method.
    */
   protected static interface StateChangeCallback {
-    public void changeState();
+    void changeState();
   }
 
   /**
@@ -810,7 +800,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param <T> the Class type of the value.
    */
   protected static interface ParameterizedStateChangeCallback<T> {
-    public void changeState(T newValue);
+    void changeState(T newValue);
   }
 
 }

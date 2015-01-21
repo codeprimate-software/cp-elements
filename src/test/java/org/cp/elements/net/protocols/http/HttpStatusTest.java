@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -31,6 +31,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.junit.Test
  * @see org.cp.elements.net.protocols.http.HttpStatus
+ * @since 1.0.0
  */
 public class HttpStatusTest {
 
@@ -50,6 +51,7 @@ public class HttpStatusTest {
   @Test
   public void testValueOfInvalidStatusCode() {
     assertNull(HttpStatus.valueOf(-404));
+    assertNull(HttpStatus.valueOf(600));
     assertNull(HttpStatus.valueOf(1024));
   }
 
@@ -68,14 +70,14 @@ public class HttpStatusTest {
 
   @Test
   public void testValueOfInvalidDescription() {
-    assertNull(HttpStatus.valueOfDescription(null));
-    assertNull(HttpStatus.valueOfDescription(""));
-    assertNull(HttpStatus.valueOfDescription("  "));
     assertNull(HttpStatus.valueOfDescription("pause"));
     assertNull(HttpStatus.valueOfDescription("NOT OK"));
     assertNull(HttpStatus.valueOfDescription("Lost and Found"));
     assertNull(HttpStatus.valueOfDescription("External Server Error"));
     assertNull(HttpStatus.valueOfDescription("invalid description"));
+    assertNull(HttpStatus.valueOfDescription("  "));
+    assertNull(HttpStatus.valueOfDescription(""));
+    assertNull(HttpStatus.valueOfDescription(null));
   }
 
   @Test
@@ -135,6 +137,7 @@ public class HttpStatusTest {
 
   @Test
   public void testToString() {
+    assertEquals("100 - Continue", HttpStatus.CONTINUE.toString());
     assertEquals("200 - OK", HttpStatus.OK.toString());
     assertEquals("302 - Found", HttpStatus.FOUND.toString());
     assertEquals("404 - Not Found", HttpStatus.NOT_FOUND.toString());

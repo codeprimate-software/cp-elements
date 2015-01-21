@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -22,6 +22,9 @@
 package org.cp.elements.jdbc;
 
 import java.sql.Types;
+
+import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.StringUtils;
 
 /**
  * The SqlType enum is an enumeration of SQL types from the java.sql.Types class.
@@ -72,20 +75,21 @@ public enum SqlType {
   private final int type;
 
   /**
-   * Constructs an instance of the SqlType enumeration based on the java.sql.Types constant.
+   * Constructs an instance of the SqlType enum initialized with the matching java.sql.Types constant.
    *
    * @param type the java.sql.Types integer constant.
+   * @see java.sql.Types
    */
   SqlType(final int type) {
     this.type = type;
   }
 
   /**
-   * Gets the SqlType enumeration based on the java.sql.Types constant, or null if the integer value is not
-   * one of the java.sql.Types constants.
+   * Returns the SqlType enumerated value matching the java.sql.Types constant or null if no match was found.
    *
    * @param type the java.sql.Types integer constant.
-   * @return the SqlType enumeration corresponding to the java.sql.Types constant.
+   * @return the SqlType enumerated value matching the java.sql.Types constant or null if no match was found.
+   * @see java.sql.Types
    */
   public static SqlType valueOf(final int type) {
     for (SqlType sqlType : values()) {
@@ -98,9 +102,31 @@ public enum SqlType {
   }
 
   /**
-   * Gets the java.sql.Types constant corresponding to this SqlType enum.
+   * Returns a SqlType enumerated value matching the given String name or null if no match was found.  A match
+   * is found by ignoring case and trimming leading/trailing whitespace in the String name.
+   *
+   * @param name the String name used ot match the SqlType.
+   * @return a SqlType enumerated value matching the String name or null for no match was found.
+   * @see java.lang.String#equalsIgnoreCase(String)
+   * @see org.cp.elements.jdbc.SqlType#name()
+   * @see org.cp.elements.lang.StringUtils#trim(String)
+   */
+  @NullSafe
+  public static SqlType valueOfIgnoreCase(final String name) {
+    for (SqlType sqlType : values()) {
+      if (sqlType.name().equalsIgnoreCase(StringUtils.trim(name))) {
+        return sqlType;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets the java.sql.Types constant corresponding to this SqlType enumerated value.
    *
    * @return a java.sql.Types constant value corresponding to this SqlType enum.
+   * @see java.sql.Types
    */
   public int getType() {
     return type;

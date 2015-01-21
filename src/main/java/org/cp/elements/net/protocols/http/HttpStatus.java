@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
+ * 
  * This software is licensed under the Codeprimate End User License Agreement (EULA).
  * This software is proprietary and confidential in addition to an intellectual asset
  * of the aforementioned authors.
- * <p/>
+ * 
  * By using the software, the end-user implicitly consents to and agrees to be in compliance
  * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
  * the maximum penalties permissible by law.
- * <p/>
+ * 
  * In short, this software may not be reverse engineered, reproduced, copied, modified
  * or distributed without prior authorization of the aforementioned authors, permissible
  * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
  * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
  * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
+ * 
  * For further information on the software license, the end user is encouraged to read
  * the EULA @ ...
  */
@@ -22,9 +22,10 @@
 package org.cp.elements.net.protocols.http;
 
 import org.cp.elements.lang.RelationalOperator;
+import org.cp.elements.lang.StringUtils;
 
 /**
- * The HttpStatus enum enumerates all HTTP status codes.
+ * The HttpStatus enum is an enumeration of all HTTP status codes.
  *
  * @author John J. Blum
  * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
@@ -84,11 +85,11 @@ public enum HttpStatus {
   private final String description;
 
   /**
-   * Constructs an instance of the HttpStatus enumerated type initialized with the corresponding HTTP status code
-   * and a description of the HTTP status code.
+   * Constructs an instance of the HttpStatus enum initialized with the corresponding HTTP status code
+   * and description of the HTTP status code.
    *
-   * @param statusCode an integer value indicating the numeric HTTP status code.
-   * @param description a String describing the HTTP status code.
+   * @param statusCode an integer value specifying the numeric HTTP status code.
+   * @param description a String describing the HTTP status.
    */
   HttpStatus(final int statusCode, final String description) {
     this.statusCode = statusCode;
@@ -96,10 +97,10 @@ public enum HttpStatus {
   }
 
   /**
-   * Gets the value of the numeric HTTP status code as an HttpStatus enumerated type.
+   * Returns an HttpStatus enumerated value matching the numeric HTTP status code or null if no match was found.
    *
-   * @param statusCode an integer value indicating the numeric HTTP status code.
-   * @return a corresponding HttpStatus enumerated type for the given numeric HTTP status code.
+   * @param statusCode an integer value specifying the numeric HTTP status code used to match the HttpStatus.
+   * @return a HttpStatus enumerated value for the given numeric HTTP status code or null if no match was found.
    * @see #getCode()
    */
   public static HttpStatus valueOf(final int statusCode) {
@@ -113,16 +114,17 @@ public enum HttpStatus {
   }
 
   /**
-   * Gets the value of the HTTP status code description as an HttpStatus enumerated type.
+   * Returns an HttpStatus enumerated value for the given HTTP status description or null if no match was found.
    *
-   * @param description a String describing the corresponding HTTP status code.
-   * @return a corresponding HttpStatus enumerated type for the given HTTP status code description.
+   * @param description a String describing the HTTP status.
+   * @return a HttpStatus enumerated value for the given HTTP status description or null if no match was found.
    * @see java.lang.String#equalsIgnoreCase(String)
+   * @see org.cp.elements.lang.StringUtils#trim(String)
    * @see #getDescription()
    */
   public static HttpStatus valueOfDescription(final String description) {
     for (HttpStatus httpStatus : values()) {
-      if (httpStatus.getDescription().equalsIgnoreCase(description)) {
+      if (httpStatus.getDescription().equalsIgnoreCase(StringUtils.trim(description))) {
         return httpStatus;
       }
     }
@@ -202,10 +204,9 @@ public enum HttpStatus {
   }
 
   /**
-   * Returns a description of the HTTP status code represented by this HttpStatus enumerated value.
+   * Returns a description of the HTTP status represented by this HttpStatus enumerated value.
    *
-   * @return a String describing the corresponding HTTP status code.
-   * @see #getCode()
+   * @return a String describing the corresponding HTTP status.
    */
   public String getDescription() {
     return description;
