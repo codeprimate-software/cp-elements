@@ -38,7 +38,7 @@ import org.junit.Test;
 public class NumberUtilsTest {
 
   @Test
-  public void testGetBytes() {
+  public void getBytes() {
     final byte[] expectedValues = { (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE };
     final byte[] actualValues = NumberUtils.getBytes(0xCAFEBABE);
 
@@ -53,7 +53,7 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testIsDecimal() {
+  public void isDecimal() {
     assertTrue(NumberUtils.isDecimal(Math.PI));
     assertTrue(NumberUtils.isDecimal(3.21d));
     assertTrue(NumberUtils.isDecimal(1.1d));
@@ -67,7 +67,7 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testIsEven() {
+  public void isEven() {
     assertFalse(NumberUtils.isEven(-9));
     assertTrue(NumberUtils.isEven(-8));
     assertFalse(NumberUtils.isEven(-7));
@@ -90,7 +90,30 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testIsNegative() {
+  public void isEvenBitwise() {
+    assertFalse(NumberUtils.isBitwiseEven(-9));
+    assertTrue(NumberUtils.isBitwiseEven(-8));
+    assertFalse(NumberUtils.isBitwiseEven(-7));
+    assertTrue(NumberUtils.isBitwiseEven(-6));
+    assertFalse(NumberUtils.isBitwiseEven(-5));
+    assertTrue(NumberUtils.isBitwiseEven(-4));
+    assertFalse(NumberUtils.isBitwiseEven(-3));
+    assertTrue(NumberUtils.isBitwiseEven(-2));
+    assertFalse(NumberUtils.isBitwiseEven(-1));
+    assertTrue(NumberUtils.isBitwiseEven(0));
+    assertFalse(NumberUtils.isBitwiseEven(1));
+    assertTrue(NumberUtils.isBitwiseEven(2));
+    assertFalse(NumberUtils.isBitwiseEven(3));
+    assertTrue(NumberUtils.isBitwiseEven(4));
+    assertFalse(NumberUtils.isBitwiseEven(5));
+    assertTrue(NumberUtils.isBitwiseEven(6));
+    assertFalse(NumberUtils.isBitwiseEven(7));
+    assertTrue(NumberUtils.isBitwiseEven(8));
+    assertFalse(NumberUtils.isBitwiseEven(9));
+  }
+
+  @Test
+  public void isNegative() {
     assertTrue(NumberUtils.isNegative(-10.0d));
     assertTrue(NumberUtils.isNegative(-1.0d));
     assertTrue(NumberUtils.isNegative(-0.01d));
@@ -102,7 +125,7 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testIsOdd() {
+  public void isOdd() {
     assertTrue(NumberUtils.isOdd(-9));
     assertFalse(NumberUtils.isOdd(-8));
     assertTrue(NumberUtils.isOdd(-7));
@@ -125,7 +148,30 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testIsPositive() {
+  public void isOddBitwise() {
+    assertTrue(NumberUtils.isBitwiseOdd(-9));
+    assertFalse(NumberUtils.isBitwiseOdd(-8));
+    assertTrue(NumberUtils.isBitwiseOdd(-7));
+    assertFalse(NumberUtils.isBitwiseOdd(-6));
+    assertTrue(NumberUtils.isBitwiseOdd(-5));
+    assertFalse(NumberUtils.isBitwiseOdd(-4));
+    assertTrue(NumberUtils.isBitwiseOdd(-3));
+    assertFalse(NumberUtils.isBitwiseOdd(-2));
+    assertTrue(NumberUtils.isBitwiseOdd(-1));
+    assertFalse(NumberUtils.isBitwiseOdd(0));
+    assertTrue(NumberUtils.isBitwiseOdd(1));
+    assertFalse(NumberUtils.isBitwiseOdd(2));
+    assertTrue(NumberUtils.isBitwiseOdd(3));
+    assertFalse(NumberUtils.isBitwiseOdd(4));
+    assertTrue(NumberUtils.isBitwiseOdd(5));
+    assertFalse(NumberUtils.isBitwiseOdd(6));
+    assertTrue(NumberUtils.isBitwiseOdd(7));
+    assertFalse(NumberUtils.isBitwiseOdd(8));
+    assertTrue(NumberUtils.isBitwiseOdd(9));
+  }
+
+  @Test
+  public void isPositive() {
     assertFalse(NumberUtils.isPositive(-10.0d));
     assertFalse(NumberUtils.isPositive(-1.0d));
     assertFalse(NumberUtils.isPositive(-0.01d));
@@ -137,7 +183,7 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testIsWhole() {
+  public void isWhole() {
     assertFalse(NumberUtils.isWhole(Math.PI));
     assertFalse(NumberUtils.isWhole(3.21d));
     assertFalse(NumberUtils.isWhole(1.1d));
@@ -151,37 +197,37 @@ public class NumberUtilsTest {
   }
 
   @Test
-  public void testValueOfByte() {
+  public void valueOfByte() {
     assertEquals(0, NumberUtils.valueOf((Byte) null));
     assertEquals(8, NumberUtils.valueOf((byte) 8));
   }
 
   @Test
-  public void testValueOfShort() {
+  public void valueOfShort() {
     assertEquals(0, NumberUtils.valueOf((Short) null));
     assertEquals(16, NumberUtils.valueOf((short) 16));
   }
 
   @Test
-  public void testValueOfInteger() {
+  public void valueOfInteger() {
     assertEquals(0, NumberUtils.valueOf((Integer) null));
     assertEquals(32, NumberUtils.valueOf(32));
   }
 
   @Test
-  public void testValueOfLong() {
+  public void valueOfLong() {
     assertEquals(0L, NumberUtils.valueOf((Long) null));
     assertEquals(64l, NumberUtils.valueOf(64l));
   }
 
   @Test
-  public void testValueOfFloat() {
+  public void valueOfFloat() {
     assertEquals(0.0f, NumberUtils.valueOf((Float) null), 0);
     assertEquals(32.0f, NumberUtils.valueOf(32.0f), 0);
   }
 
   @Test
-  public void testValueOfDouble() {
+  public void valueOfDouble() {
     assertEquals(0.0d, NumberUtils.valueOf((Double) null), 0);
     assertEquals(Math.PI, NumberUtils.valueOf(Math.PI), 0);
   }

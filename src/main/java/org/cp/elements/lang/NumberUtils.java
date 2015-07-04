@@ -60,14 +60,28 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified long value is an even number, which is any number divisible by 2.
+   * Determines whether the specified long value is an even number using modulus, which is any number divisible by 2
+   * with a remainder of 0.
    * 
-   * @param value the long value being evaluated as an even value.
+   * @param value the long value being evaluated as an even number.
    * @return a boolean value indicating whether the specified long value is even.
+   * @see #isBitwiseEven(long)
    * @see #isOdd(long)
    */
   public static boolean isEven(final long value) {
     return (Math.abs(value) % 2l == 0);
+  }
+
+  /**
+   * Determines whether the specified long value is an even number using bitwise 'AND', which is any number
+   * with a 0 in the 0 position of the binary representation of the number.
+   *
+   * @param value the long value being evaluated as an even number.
+   * @return a boolean value indicating whether the specified long value is even.
+   * @see #isEven(long)
+   */
+  public static boolean isBitwiseEven(final long value) {
+    return ((1l & Math.abs(value)) == 0l);
   }
 
   /**
@@ -82,15 +96,28 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified long value is an odd number, which is any number having a remainder of 1
-   * when divided by 2
+   * Determines whether the specified long value is an odd number using modulus, which is any number
+   * having a remainder of 1 when divided by 2.
    * 
-   * @param value the long value being evaluated as an odd value.
+   * @param value the long value being evaluated as an odd number.
    * @return a boolean value indicating whether the specified long value is odd.
+   * @see #isBitwiseOdd(long)
    * @see #isEven(long)
    */
   public static boolean isOdd(final long value) {
     return (Math.abs(value) % 2l == 1);
+  }
+
+  /**
+   * Determines whether the specified long value is an odd number using bitwise 'AND', which is any number
+   * with a 1 in the 0 position of the binary representation of the number.
+   *
+   * @param value the long value being evaluated as an odd number.
+   * @return a boolean value indicating whether the specified long value is odd.
+   * @see #isOdd(long)
+   */
+  public static boolean isBitwiseOdd(final long value) {
+    return ((1l & Math.abs(value)) == 1l);
   }
 
   /**
