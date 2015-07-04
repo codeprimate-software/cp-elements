@@ -27,7 +27,7 @@ import java.util.List;
 import org.junit.Assert;
 
 @SuppressWarnings("unused")
-public class TestUtils {
+public abstract class TestUtils {
 
   public static <T> void assertEquals(final T[] expected, final T[] actual) {
     Assert.assertEquals(expected.getClass(), actual.getClass());
@@ -61,6 +61,15 @@ public class TestUtils {
     Assert.assertEquals(expectedDateTime.get(Calendar.MILLISECOND), actualDateTime.get(Calendar.MILLISECOND));
   }
 
+  public static void assertNullEquals(final Object expectedValue, final Object actualValue) {
+    if (expectedValue == null) {
+      Assert.assertNull("expected 'actual' value to be null", actualValue);
+    }
+    else {
+      Assert.assertEquals(expectedValue, actualValue);
+    }
+  }
+
   public static void assertNegative(final int value) {
     Assert.assertTrue(value < 0);
   }
@@ -74,14 +83,20 @@ public class TestUtils {
   }
 
   public static Calendar createCalendar(final int year, final int month, final int day) {
-    final Calendar dateTime = Calendar.getInstance();
+    Calendar dateTime = Calendar.getInstance();
     dateTime.clear();
     dateTime.set(year, month, day);
     return dateTime;
   }
 
-  public static Calendar createCalendar(final int year, final int month, final int day, final int hour, final int minute, final int second) {
-    final Calendar dateTime = createCalendar(year, month, day);
+  public static Calendar createCalendar(final int year,
+                                        final int month,
+                                        final int day,
+                                        final int hour,
+                                        final int minute,
+                                        final int second)
+  {
+    Calendar dateTime = createCalendar(year, month, day);
     dateTime.set(Calendar.HOUR_OF_DAY, hour);
     dateTime.set(Calendar.MINUTE, minute);
     dateTime.set(Calendar.SECOND, second);
@@ -89,18 +104,16 @@ public class TestUtils {
   }
 
   public static String toString(final Object... array) {
-    if (array != null) {
-      final StringBuilder buffer = new StringBuilder("[");
+    StringBuilder buffer = new StringBuilder("[");
 
-      for (final Object element : array) {
+    if (array != null) {
+      for (Object element : array) {
         buffer.append(buffer.length() > 1 ? ", " : "");
         buffer.append(element);
       }
-
-      return buffer.append("]").toString();
     }
 
-    return null;
+    return buffer.append("]").toString();
   }
 
 }
