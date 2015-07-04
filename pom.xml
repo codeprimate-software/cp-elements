@@ -16,11 +16,11 @@
 
   <name>cp-elements</name>
   <description>
-    'Codeprimate Elements' (a.k.a cp-elements) is a foundational Java Class Library and framework used to build
-    software applications with the Java platform.  Elements packages many robust APIs together in order to address
-    various, distinct application concerns during development.  Elememts is a highly efficient, simple, yet robust
-    framework built on fundamental OO principles, best practices and design patterns to appropriately solve common
-    and reoccuring problems in software development.
+    'Codeprimate Elements' (a.k.a. cp-elements, or Elements) is a Java Class Library and micro-framework for simplifying
+    the development of software applications using the Java platform.  Elements packages several mature and robust APIs
+    into one library in order to address various application concerns and aspects of application development.  Elememts
+    is a highly simple, yet robust framework built on fundamental OO principles, design patterns and best practices
+    to appropriately and effectively solve common and reoccuring problems in software development.
   </description>
   <url>http://www.codeprimate.org/products/cp-elements</url>
 
