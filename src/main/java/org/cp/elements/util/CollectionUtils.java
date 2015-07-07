@@ -28,6 +28,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Set;
 
 import org.cp.elements.lang.Assert;
@@ -321,6 +322,33 @@ public abstract class CollectionUtils {
         throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
       }
     };
+  }
+
+  /**
+   * Shuffles the elements in the given List.  This method guarantees a random, uniform shuffling of the elements
+   * in the List, and has an operational efficiency of O(n).
+   *
+   * @param <T> the class type of the elements in the list.
+   * @param list the List of elements to shuffle.
+   * @return the shuffled List of elements.
+   * @throws java.lang.NullPointerException if the List references is null.
+   * @see java.util.List
+   */
+  public static <T> List<T> shuffle(final List<T> list) {
+    Assert.notNull(list, "The List to shuffle must not be null!");
+
+    if (!isEmpty(list)) {
+      Random random = new Random(System.currentTimeMillis());
+
+      for (int index = 0, adjustedSize = size(list) - 1; index < adjustedSize; index++) {
+        T elementAtIndex = list.get(index);
+        int randomIndex = (random.nextInt(adjustedSize - index) + 1);
+        list.set(index, list.get(randomIndex));
+        list.set(randomIndex, elementAtIndex);
+      }
+    }
+
+    return list;
   }
 
   /**

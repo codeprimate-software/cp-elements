@@ -23,6 +23,7 @@ package org.cp.elements.util;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -50,8 +51,29 @@ import org.junit.Test;
  */
 public class ArrayUtilsTest {
 
+  protected <T> void assertShuffled(final T[] source, final T[] target) {
+    assertTrue("'source' array must not be null or empty!", source != null && source.length != 0);
+    assertTrue("'target' array must not be null or empty!", target != null && target.length != 0);
+    assertEquals("The lengths of the 'source' and 'target' arrays must match!", source.length, target.length);
+
+    boolean shuffled = false;
+
+    for (int index = 0; index < source.length && !shuffled; index++) {
+      shuffled |= !source[index].equals(target[index]);
+    }
+
+    assertTrue(String.format("The target array (%1$s) was not shuffled!", Arrays.toString(target)), shuffled);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected <T> T[] copy(final T[] array) {
+    T[] arrayCopy = (T[]) Array.newInstance(array[0].getClass(), array.length);
+    System.arraycopy(array, 0, arrayCopy, 0, array.length);
+    return arrayCopy;
+  }
+
   @Test
-  public void testAppend() {
+  public void append() {
     String[] array = ArrayUtils.append("test", new String[0]);
 
     assertNotNull(array);
@@ -75,23 +97,32 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testAsArrayWithArray() {
+  public void asArrayWithArray() {
     TestUtils.assertEquals(new String[] { "test", "testing", "tested" },
       ArrayUtils.asArray("test", "testing", "tested"));
   }
 
   @Test
-  public void testAsArrayWithEmptyArray() {
+  public void asArrayWithEmptyArray() {
     TestUtils.assertEquals(new Integer[0], ArrayUtils.<Integer>asArray());
   }
 
   @Test
-  public void testAsArrayWithNullArray() {
-    assertNull(ArrayUtils.asArray((Object[]) null));
+  public void asArrayWithEmptyIterable() {
+    Iterable<String> iterable = new Iterable<String>() {
+      @Override public Iterator<String> iterator() {
+        return Arrays.<String>asList().iterator();
+      }
+    };
+
+    String[] strings = ArrayUtils.asArray(iterable, String.class);
+
+    assertNotNull(strings);
+    assertEquals(0, strings.length);
   }
 
   @Test
-  public void testAsArrayWithIterable() {
+  public void asArrayWithIterable() {
     Iterable<Integer> iterable = new Iterable<Integer>() {
       @Override public Iterator<Integer> iterator() {
         return Arrays.asList(0, 1, 2).iterator();
@@ -109,21 +140,12 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testAsArrayWithEmptyIterable() {
-    Iterable<String> iterable = new Iterable<String>() {
-      @Override public Iterator<String> iterator() {
-        return Arrays.<String>asList().iterator();
-      }
-    };
-
-    String[] strings = ArrayUtils.asArray(iterable, String.class);
-
-    assertNotNull(strings);
-    assertEquals(0, strings.length);
+  public void asArrayWithNullArray() {
+    assertNull(ArrayUtils.asArray((Object[]) null));
   }
 
   @Test
-  public void testAsArrayWithNullIterable() {
+  public void asArrayWithNullIterable() {
     Object[] array = ArrayUtils.asArray(null, Object.class);
 
     assertNotNull(array);
@@ -131,7 +153,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testCount() {
+  public void count() {
     Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     assertNotNull(array);
@@ -144,29 +166,29 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testCountReturnsLength() {
+  public void countReturnsLength() {
     Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     assertEquals(array.length, ArrayUtils.count(array, new DefaultFilter<Object>(true)));
   }
 
   @Test
-  public void testCountReturnsZero() {
+  public void countReturnsZero() {
     assertEquals(0, ArrayUtils.count(new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new DefaultFilter<Object>(false)));
   }
 
   @Test(expected = NullPointerException.class)
-  public void testCountWithNullArray() {
+  public void countWithNullArray() {
     ArrayUtils.count(null, new DefaultFilter<Object>(true));
   }
 
   @Test(expected = NullPointerException.class)
-  public void testCountWithNullFilter() {
+  public void countWithNullFilter() {
     ArrayUtils.count(new Object[0], null);
   }
 
   @Test
-  public void testEmptyArray() {
+  public void emptyArray() {
     Object[] emptyArray = ArrayUtils.emptyArray();
 
     assertNotNull(emptyArray);
@@ -180,7 +202,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testEmptyArrayWithArray() {
+  public void emptyArrayWithArray() {
     Object[] expectedArray = { 0, 1, 2 };
     Object[] actualArray = ArrayUtils.emptyArray(expectedArray);
 
@@ -189,7 +211,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testEmptyArrayWithEmptyArray() {
+  public void emptyArrayWithEmptyArray() {
     Object[] expectedArray = { };
     Object[] actualArray = ArrayUtils.emptyArray(expectedArray);
 
@@ -198,7 +220,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testEmptyArrayWithNullArray() {
+  public void emptyArrayWithNullArray() {
     Object[] actualArray = ArrayUtils.emptyArray((Object[]) null);
 
     assertNotNull(actualArray);
@@ -206,7 +228,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testEnumeration() {
+  public void enumeration() {
     Object[] array = { "test", "testing", "tested" };
     Enumeration<?> arrayEnumeration = ArrayUtils.enumeration(array);
 
@@ -221,31 +243,8 @@ public class ArrayUtilsTest {
     assertEquals(array.length, index);
   }
 
-  @Test
-  public void testEnumerationWithNoElements() {
-    Enumeration<?> noElementEnumeration = ArrayUtils.enumeration(ArrayUtils.emptyArray());
-
-    assertNotNull(noElementEnumeration);
-    assertFalse(noElementEnumeration.hasMoreElements());
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testEnumerationWithNullArray() {
-    ArrayUtils.enumeration((Object[]) null);
-  }
-
-  @Test
-  public void testEnumerationWithSingleElement() {
-    Enumeration<?> singleElementEnumeration = ArrayUtils.enumeration("test");
-
-    assertNotNull(singleElementEnumeration);
-    assertTrue(singleElementEnumeration.hasMoreElements());
-    assertEquals("test", singleElementEnumeration.nextElement());
-    assertFalse(singleElementEnumeration.hasMoreElements());
-  }
-
   @Test(expected = NoSuchElementException.class)
-  public void testEnumerationWithExhaustedArray() {
+  public void enumerationWithExhaustedArray() {
     Enumeration<?> enumeration = ArrayUtils.enumeration("test");
 
     assertNotNull(enumeration);
@@ -257,7 +256,30 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testFilter() {
+  public void enumerationWithNoElementArray() {
+    Enumeration<?> noElementEnumeration = ArrayUtils.enumeration(ArrayUtils.emptyArray());
+
+    assertNotNull(noElementEnumeration);
+    assertFalse(noElementEnumeration.hasMoreElements());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void enumerationWithNullArray() {
+    ArrayUtils.enumeration((Object[]) null);
+  }
+
+  @Test
+  public void enumerationWithSingleElementArray() {
+    Enumeration<?> singleElementEnumeration = ArrayUtils.enumeration("test");
+
+    assertNotNull(singleElementEnumeration);
+    assertTrue(singleElementEnumeration.hasMoreElements());
+    assertEquals("test", singleElementEnumeration.nextElement());
+    assertFalse(singleElementEnumeration.hasMoreElements());
+  }
+
+  @Test
+  public void filter() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     Filter<Integer> oddNumberFilter = new Filter<Integer>() {
@@ -281,7 +303,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testFilterEmptyArray() {
+  public void filterEmptyArray() {
     Object[] array = {};
 
     assertEquals(0, array.length);
@@ -290,17 +312,17 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFilterNullArray() {
+  public void filterNullArray() {
     ArrayUtils.filter(null, new DefaultFilter<Object>(true));
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFilterWithNullFilter() {
+  public void filterWithNullFilter() {
     ArrayUtils.filter(new Object[0], null);
   }
 
   @Test
-  public void testFilterAndTransform() {
+  public void filterAndTransform() {
     String[] array = { "  ", "test", null, "testing", "", "tested" };
 
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
@@ -326,7 +348,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testFilterAndTransformIntoNullValueArray() {
+  public void filterAndTransformIntoNullValueArray() {
     String[] array = { "TEST", "TESTING", "TESTED" };
 
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
@@ -348,7 +370,7 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFilterAndTransformNullArray() {
+  public void filterAndTransformNullArray() {
     ArrayUtils.filterAndTransform(null, new FilteringTransformer<Object>() {
       @Override public boolean accept(final Object obj) {
         return false;
@@ -361,12 +383,12 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFilterAndTransformWithNullFilteringTransformer() {
+  public void filterAndTransformWithNullFilteringTransformer() {
     ArrayUtils.filterAndTransform(new Object[0], null);
   }
 
   @Test
-  public void testFind() {
+  public void find() {
     Person cookieDoe = new Person("Cookie", "Doe");
     Person janeDoe = new Person("Jane", "Doe");
     Person jonDoe = new Person("Jon", "Doe");
@@ -388,18 +410,8 @@ public class ArrayUtilsTest {
     assertEquals(jonDoe, actualPerson);
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testFindWithNullArray() {
-    ArrayUtils.find(null, new DefaultFilter<Object>(true));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testFindWithNullFilter() {
-    ArrayUtils.find(new Object[0], null);
-  }
-
   @Test
-  public void testFindWithNonMatchingFilter() {
+  public void findWithNonMatchingFilter() {
     Person cookieDoe = new Person("Cookie", "Doe");
     Person janeDoe = new Person("Jane", "Doe");
     Person jonDoe = new Person("Jon", "Doe");
@@ -420,8 +432,18 @@ public class ArrayUtilsTest {
     assertNull(actualPerson);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void findWithNullArray() {
+    ArrayUtils.find(null, new DefaultFilter<Object>(true));
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void findWithNullFilter() {
+    ArrayUtils.find(new Object[0], null);
+  }
+
   @Test
-  public void testFindAll() {
+  public void findAll() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     Filter<Integer> evenNumberFilter = new Filter<Integer>() {
@@ -442,7 +464,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testFindAllWithNonMatchingFilter() {
+  public void findAllWithNonMatchingFilter() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     Integer[] actualNumbers = ArrayUtils.findAll(numbers, new DefaultFilter<Integer>(false));
 
@@ -453,17 +475,32 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFindAllWithNullArray() {
+  public void findAllWithNullArray() {
     ArrayUtils.findAll(null, new DefaultFilter<Object>(true));
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFindAllWithNullFilter() {
+  public void findAllWithNullFilter() {
     ArrayUtils.findAll(new Object[0], null);
   }
 
   @Test
-  public void testInsert() {
+  public void getFirst() {
+    assertEquals("test", ArrayUtils.getFirst("test", "testing", "tested"));
+  }
+
+  @Test
+  public void getFirstWithEmptyArray() {
+    assertNull(ArrayUtils.getFirst());
+  }
+
+  @Test
+  public void getFirstWithNullArray() {
+    assertNull(ArrayUtils.getFirst((Object[]) null));
+  }
+
+  @Test
+  public void insert() {
     TestUtils.assertEquals(ArrayUtils.asArray("one", "two", "three", "four"), ArrayUtils.insert("three",
       ArrayUtils.asArray("one", "two", "four"), 2));
     TestUtils.assertEquals(ArrayUtils.asArray("one", "two", "four"), ArrayUtils.prepend("one",
@@ -473,7 +510,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testIsEmpty() {
+  public void isEmpty() {
     assertTrue(ArrayUtils.isEmpty(null));
     assertTrue(ArrayUtils.isEmpty(new Object[0]));
     assertTrue(ArrayUtils.isEmpty(new Object[] { }));
@@ -484,22 +521,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testGetFirst() {
-    assertEquals("test", ArrayUtils.getFirst("test", "testing", "tested"));
-  }
-
-  @Test
-  public void testGetFirstWithEmptyArray() {
-    assertNull(ArrayUtils.getFirst());
-  }
-
-  @Test
-  public void testGetFirstWithNullArray() {
-    assertNull(ArrayUtils.getFirst((Object[]) null));
-  }
-
-  @Test
-  public void testIterable() {
+  public void iterable() {
     Object[] array = { "test", "testing", "tested" };
     Iterable<?> iterable = ArrayUtils.iterable(array);
 
@@ -516,7 +538,7 @@ public class ArrayUtilsTest {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testIterableWithNoElements() {
+  public void iterableWithNoElementArray() {
     Iterable<?> iterable = ArrayUtils.iterable();
 
     assertNotNull(iterable);
@@ -524,7 +546,7 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableWithNullArray() {
+  public void iterableWithNullArray() {
     try {
       ArrayUtils.iterable((Object[]) null);
     }
@@ -535,7 +557,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testIterableWithSingleElement() {
+  public void iterableWithSingleElementArray() {
     Iterable<String> iterable = ArrayUtils.iterable("test");
 
     assertNotNull(iterable);
@@ -544,7 +566,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testIterator() {
+  public void iterator() {
     Object[] array = { "test", "testing", "tested" };
     Iterator<?> arrayIterator = ArrayUtils.iterator(array);
 
@@ -559,44 +581,8 @@ public class ArrayUtilsTest {
     assertEquals(array.length, index);
   }
 
-  @Test
-  @SuppressWarnings("unchecked")
-  public void testIteratorWithNoElements() {
-    Iterator<?> noElementsIterator = ArrayUtils.iterator();
-
-    assertNotNull(noElementsIterator);
-    assertFalse(noElementsIterator.hasNext());
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testIteratorWithNullArray() {
-    ArrayUtils.iterator((Object[]) null);
-  }
-
-  @Test
-  public void testIteratorWithSingleElement() {
-    Iterator<?> singleElementIterator = ArrayUtils.iterator("test");
-
-    assertNotNull(singleElementIterator);
-    assertTrue(singleElementIterator.hasNext());
-    assertEquals("test", singleElementIterator.next());
-    assertFalse(singleElementIterator.hasNext());
-  }
-
-  @Test(expected = NoSuchElementException.class)
-  public void testIteratorWithExhaustedArray() {
-    Iterator<?> iterator = ArrayUtils.iterator("test");
-
-    assertNotNull(iterator);
-    assertTrue(iterator.hasNext());
-    assertEquals("test", iterator.next());
-    assertFalse(iterator.hasNext());
-
-    iterator.next();
-  }
-
   @Test(expected = UnsupportedOperationException.class)
-  public void testIteratorModification() {
+  public void iteratorModification() {
     Object[] array = { "test", "testing", "tested" };
     Iterator<?> arrayIterator = ArrayUtils.iterator(array);
 
@@ -614,8 +600,44 @@ public class ArrayUtilsTest {
     }
   }
 
+  @Test(expected = NoSuchElementException.class)
+  public void iteratorWithExhaustedArray() {
+    Iterator<?> iterator = ArrayUtils.iterator("test");
+
+    assertNotNull(iterator);
+    assertTrue(iterator.hasNext());
+    assertEquals("test", iterator.next());
+    assertFalse(iterator.hasNext());
+
+    iterator.next();
+  }
+
   @Test
-  public void testLength() {
+  @SuppressWarnings("unchecked")
+  public void iteratorWithNoElementArray() {
+    Iterator<?> noElementsIterator = ArrayUtils.iterator();
+
+    assertNotNull(noElementsIterator);
+    assertFalse(noElementsIterator.hasNext());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void iteratorWithNullArray() {
+    ArrayUtils.iterator((Object[]) null);
+  }
+
+  @Test
+  public void iteratorWithSingleElementArray() {
+    Iterator<?> singleElementIterator = ArrayUtils.iterator("test");
+
+    assertNotNull(singleElementIterator);
+    assertTrue(singleElementIterator.hasNext());
+    assertEquals("test", singleElementIterator.next());
+    assertFalse(singleElementIterator.hasNext());
+  }
+
+  @Test
+  public void length() {
     assertEquals(0, ArrayUtils.length(null));
     assertEquals(0, ArrayUtils.length(new Object[0]));
     assertEquals(0, ArrayUtils.length(new Object[] { }));
@@ -626,7 +648,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testPrepend() {
+  public void prepend() {
     String[] array = ArrayUtils.prepend("tested", new String[0]);
     
     assertNotNull(array);
@@ -650,7 +672,46 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testSubArray() {
+  public void shuffle() {
+    Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Integer[] shuffledArray = ArrayUtils.shuffle(copy(array));
+
+    assertNotNull(shuffledArray);
+    assertNotSame(array, shuffledArray);
+    assertShuffled(array, shuffledArray);
+
+    Integer[] shuffledArrayAgain = ArrayUtils.shuffle(copy(shuffledArray));
+
+    assertNotNull(shuffledArrayAgain);
+    assertNotSame(shuffledArray, shuffledArrayAgain);
+    assertShuffled(shuffledArray, shuffledArrayAgain);
+  }
+
+  @Test
+  public void shuffleEmptyArray() {
+    Object[] emptyArray = { };
+    Object[] shuffledEmptyArray = ArrayUtils.shuffle(emptyArray);
+
+    assertSame(emptyArray, shuffledEmptyArray);
+    assertEquals(0, shuffledEmptyArray.length);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void shuffleNullArray() {
+    ArrayUtils.shuffle(null);
+  }
+
+  @Test
+  public void shuffleSingleElementArray() {
+    Object[] singleElementArray = { "test" };
+    Object[] shuffledSingleElementArray = ArrayUtils.shuffle(singleElementArray);
+
+    assertSame(singleElementArray, shuffledSingleElementArray);
+    assertEquals("test", shuffledSingleElementArray[0]);
+  }
+
+  @Test
+  public void subArray() {
     Integer[] result = ArrayUtils.subArray(new Integer[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 1, 2, 4, 8);
 
     assertNotNull(result);
@@ -659,7 +720,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testSubArrayWithEmptyArray() {
+  public void subArrayWithEmptyArray() {
     Object[] result = ArrayUtils.subArray(new Object[0]);
 
     assertNotNull(result);
@@ -667,12 +728,12 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = ArrayIndexOutOfBoundsException.class)
-  public void testSubArrayWithEmptyArrayAndIndices() {
+  public void subArrayWithEmptyArrayAndIndices() {
     ArrayUtils.subArray(new Object[0], 1, 2, 4);
   }
 
   @Test
-  public void testSubArrayWithNoIndices() {
+  public void subArrayWithNoIndices() {
     String[] result = ArrayUtils.subArray(new String[] { "test", "testing", "tested" });
 
     assertNotNull(result);
@@ -680,12 +741,12 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testSubArrayWithNullArray() {
+  public void subArrayWithNullArrayAndIndices() {
     ArrayUtils.subArray(null, 1, 2, 3);
   }
 
   @Test
-  public void testTransform() {
+  public void transform() {
     String[] array = { "test", "testing", "tested" };
 
     Transformer<String> transformer = new Transformer<String>() {
@@ -703,7 +764,7 @@ public class ArrayUtilsTest {
   }
 
   @Test
-  public void testTransformEmptyArray() {
+  public void transformEmptyArray() {
     Object[] array = {};
 
     assertEquals(0, array.length);
@@ -716,7 +777,7 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testTransformNullArray() {
+  public void transformNullArray() {
     ArrayUtils.transform(null, new Transformer<Object>() {
       @Override public Object transform(final Object value) {
         return null;
@@ -725,7 +786,7 @@ public class ArrayUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testTransformWithNullTransformer() {
+  public void transformWithNullTransformer() {
     ArrayUtils.transform(new Object[0], null);
   }
 
@@ -757,7 +818,7 @@ public class ArrayUtilsTest {
         return false;
       }
 
-      final Person that = (Person) obj;
+      Person that = (Person) obj;
 
       return ObjectUtils.equals(getFirstName(), that.getFirstName())
         && ObjectUtils.equals(getLastName(), that.getLastName());

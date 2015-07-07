@@ -27,6 +27,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
@@ -410,6 +411,32 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Shuffles the elements in the given array.  This method guarantees a random, uniform shuffling of the elements
+   * in the array, and has an operational efficiency of O(n).
+   *
+   * @param <T> the class type of the elements in the array.
+   * @param array the array of elements to shuffle.
+   * @return the shuffled array of elements.
+   * @throws java.lang.NullPointerException if the array references is null.
+   */
+  public static <T> T[] shuffle(final T[] array) {
+    Assert.notNull(array, "The Array to shuffle must not be null!");
+
+    if (!isEmpty(array)) {
+      Random random = new Random(System.currentTimeMillis());
+
+      for (int index = 0, adjustedLength = length(array) - 1; index < adjustedLength; index++) {
+        T elementAtIndex = array[index];
+        int randomIndex = (random.nextInt(adjustedLength - index) + 1);
+        array[index] = array[randomIndex];
+        array[randomIndex] = elementAtIndex;
+      }
+    }
+
+    return array;
+  }
+
+  /**
    * Creates a sub-array from the given array with the values at the specified indices in the given array.
    *
    * @param <T> the Class type of the array elements.
@@ -426,15 +453,6 @@ public abstract class ArrayUtils {
     }
 
     return subArray.toArray((T[]) Array.newInstance(getComponentType(array), indices.length));
-  }
-
-  /*
-   * non-Javadoc
-   */
-  @SuppressWarnings("unchecked")
-  private static Class<?> getComponentType(final Object[] array) {
-    Class<?> type = (!isEmpty(array) ? ClassUtils.getClass(array[0]) : null);
-    return ObjectUtils.defaultIfNull(type, Object.class);
   }
 
   /**
@@ -458,6 +476,13 @@ public abstract class ArrayUtils {
     }
 
     return array;
+  }
+
+  /* non-Javadoc */
+  @SuppressWarnings("unchecked")
+  private static Class<?> getComponentType(final Object[] array) {
+    Class<?> type = (!isEmpty(array) ? ClassUtils.getClass(array[0]) : null);
+    return ObjectUtils.defaultIfNull(type, Object.class);
   }
 
 }

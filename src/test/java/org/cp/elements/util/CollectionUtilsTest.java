@@ -57,8 +57,23 @@ import org.junit.Test;
  */
 public class CollectionUtilsTest {
 
+  protected <T> void assertShuffled(final Iterable<T> source, final Iterable<T> target) {
+    assertTrue("'source' must not be null and must have elements!", source != null && source.iterator().hasNext());
+    assertTrue("'target' must not be null and must have elements!", target != null && target.iterator().hasNext());
+
+    Iterator<T> targetIterator = target.iterator();
+    boolean shuffled = false;
+
+    for (T sourceElement : source) {
+      shuffled &= targetIterator.hasNext();
+      shuffled |= !sourceElement.equals(targetIterator.next());
+    }
+
+    assertTrue(String.format("Target (%1$s) was not shuffled!", target), shuffled);
+  }
+
   @Test
-  public void testCount() {
+  public void count() {
     Collection<String> collection = Arrays.asList("test", "fixture", "testing", "mock", "tested");
 
     assertNotNull(collection);
@@ -71,7 +86,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testCountReturnsSize() {
+  public void countReturnsSize() {
     Collection<String> collection = Arrays.asList("test", "testing", "tested");
 
     assertNotNull(collection);
@@ -79,7 +94,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testCountReturnsZero() {
+  public void countReturnsZero() {
     Collection<String> collection = Arrays.asList("test", "testing", "tested");
 
     assertNotNull(collection);
@@ -87,17 +102,17 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testCountWithNullCollection() {
+  public void countWithNullCollection() {
     CollectionUtils.count(null, new DefaultFilter<Object>(true));
   }
 
   @Test(expected = NullPointerException.class)
-  public void testCountWithNullFilter() {
+  public void countWithNullFilter() {
     CollectionUtils.count(Collections.emptyList(), null);
   }
 
   @Test
-  public void testEmptyList() {
+  public void emptyList() {
     List<?> expectedList = Arrays.asList("test", "testing", "tested");
 
     assertFalse(expectedList.isEmpty());
@@ -109,7 +124,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testEmptyListWithEmptyList() {
+  public void emptyListWithEmptyList() {
     List<?> expectedList = new ArrayList<Object>(0);
 
     assertTrue(expectedList.isEmpty());
@@ -121,7 +136,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testEmptyListWithNullList() {
+  public void emptyListWithNullList() {
     List<?> actualList = CollectionUtils.emptyList(null);
 
     assertNotNull(actualList);
@@ -129,7 +144,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testEmptySet() {
+  public void emptySet() {
     Set<?> expectedSet = from("test", "testing", "tested").toSet();
 
     assertFalse(expectedSet.isEmpty());
@@ -141,7 +156,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testEmptySetWithEmptySet() {
+  public void emptySetWithEmptySet() {
     Set<?> expectedSet = new HashSet<Object>(0);
 
     assertTrue(expectedSet.isEmpty());
@@ -153,7 +168,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testEmptySetWithNullSet() {
+  public void emptySetWithNullSet() {
     Set<?> actualSet = CollectionUtils.emptySet(null);
 
     assertNotNull(actualSet);
@@ -161,7 +176,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testEnumeration() {
+  public void enumeration() {
     List<?> expectedList = Arrays.asList("test", "testing", "tested");
     Enumeration<?> expectedListEnumeration = CollectionUtils.enumeration(expectedList.iterator());
 
@@ -176,31 +191,8 @@ public class CollectionUtilsTest {
     assertEquals(expectedList.size(), index);
   }
 
-  @Test
-  public void testEnumerationWithNoElements() {
-    Enumeration<?> noElementEnumeration = CollectionUtils.enumeration(Collections.emptyList().iterator());
-
-    assertNotNull(noElementEnumeration);
-    assertFalse(noElementEnumeration.hasMoreElements());
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testEnumerationWithNullIterator() {
-    CollectionUtils.enumeration(null);
-  }
-
-  @Test
-  public void testEnumerationWithSingleElement() {
-    Enumeration<?> singleElementEnumeration = CollectionUtils.enumeration(Collections.singletonList("test").iterator());
-
-    assertNotNull(singleElementEnumeration);
-    assertTrue(singleElementEnumeration.hasMoreElements());
-    assertEquals("test", singleElementEnumeration.nextElement());
-    assertFalse(singleElementEnumeration.hasMoreElements());
-  }
-
   @Test(expected = NoSuchElementException.class)
-  public void testEnumerationWithExhaustedIterator() {
+  public void enumerationWithExhaustedIterator() {
     Enumeration<?> enumeration = CollectionUtils.enumeration(Collections.singletonList("test").iterator());
 
     assertNotNull(enumeration);
@@ -212,7 +204,30 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFilter() {
+  public void enumerationWithNoElementIterator() {
+    Enumeration<?> noElementEnumeration = CollectionUtils.enumeration(Collections.emptyList().iterator());
+
+    assertNotNull(noElementEnumeration);
+    assertFalse(noElementEnumeration.hasMoreElements());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void enumerationWithNullIterator() {
+    CollectionUtils.enumeration(null);
+  }
+
+  @Test
+  public void enumerationWithSingleElementIterator() {
+    Enumeration<?> singleElementEnumeration = CollectionUtils.enumeration(Collections.singletonList("test").iterator());
+
+    assertNotNull(singleElementEnumeration);
+    assertTrue(singleElementEnumeration.hasMoreElements());
+    assertEquals("test", singleElementEnumeration.nextElement());
+    assertFalse(singleElementEnumeration.hasMoreElements());
+  }
+
+  @Test
+  public void filter() {
     Collection<String> collection = new ArrayList<String>(Arrays.asList("test", "testing", "tested"));
 
     assertNotNull(collection);
@@ -232,7 +247,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFilterEmptiesCollection() {
+  public void filterEmptiesCollection() {
     Collection<String> collection = new ArrayList<String>(Arrays.asList("test", "testing", "tested"));
 
     assertNotNull(collection);
@@ -246,7 +261,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFilterRetainsCollection() {
+  public void filterRetainsCollection() {
     Collection<String> collection = Arrays.asList("test", "testing", "tested");
 
     assertNotNull(collection);
@@ -261,17 +276,17 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFilterNullCollection() {
+  public void filterNullCollection() {
     CollectionUtils.filter(null, new DefaultFilter<Object>(true));
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFilterWithNullFilter() {
+  public void filterWithNullFilter() {
     CollectionUtils.filter(Collections.emptyList(), null);
   }
 
   @Test
-  public void testFilterAndTransform() {
+  public void filterAndTransform() {
     List<String> collection = new ArrayList<String>(Arrays.asList("  ", "test", null, "testing", "", "tested"));
 
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
@@ -294,7 +309,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFilterAndTransformEmptyCollection() {
+  public void filterAndTransformEmptyCollection() {
     Collection<String> collection = new ArrayList<String>(Arrays.asList("test", "testing", "tested"));
 
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
@@ -314,7 +329,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFind() {
+  public void find() {
     Person cookieDoe = new Person("Cookie", "Doe");
     Person janeDoe = new Person("Jane", "Doe");
     Person jonDoe = new Person("Jon", "Doe");
@@ -337,7 +352,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFindWithNonMatchingFilter() {
+  public void findWithNonMatchingFilter() {
     Person cookieDoe = new Person("Cookie", "Doe");
     Person janeDoe = new Person("Jane", "Doe");
     Person jonDoe = new Person("Jon", "Doe");
@@ -359,17 +374,17 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFindWithNullIterable() {
-    CollectionUtils.find(null, new DefaultFilter<Object>(true));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testFindWithNullFilter() {
+  public void findWithNullFilter() {
     CollectionUtils.find(Collections.emptyList(), null);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void findWithNullIterable() {
+    CollectionUtils.find(null, new DefaultFilter<Object>(true));
+  }
+
   @Test
-  public void testFindAll() {
+  public void findAll() {
     List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     Filter<Integer> oddNumberFilter = new Filter<Integer>() {
@@ -393,7 +408,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testFindAllWithNonMatchingFilter() {
+  public void findAllWithNonMatchingFilter() {
     List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
     List<Integer> actualNumbers = CollectionUtils.findAll(numbers, new DefaultFilter<Integer>(false));
 
@@ -404,17 +419,17 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testFindAllWithNullIterable() {
-    CollectionUtils.findAll(null, new DefaultFilter<Object>(true));
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testFindAllWithNullFilter() {
+  public void findAllWithNullFilter() {
     CollectionUtils.findAll(Collections.emptyList(), null);
   }
 
+  @Test(expected = NullPointerException.class)
+  public void findAllWithNullIterable() {
+    CollectionUtils.findAll(null, new DefaultFilter<Object>(true));
+  }
+
   @Test
-  public void testIsEmptyCollection() {
+  public void isEmptyCollection() {
     assertTrue(CollectionUtils.isEmpty(null));
     assertTrue(CollectionUtils.isEmpty(Collections.emptyList()));
     assertTrue(CollectionUtils.isEmpty(Collections.emptySet()));
@@ -427,7 +442,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testIterableWithCollection() {
+  public void iterableWithCollection() {
     String[] expectedElements = { "test", "testing", "tested" };
     Collection<String> collection = Arrays.asList(expectedElements);
 
@@ -441,12 +456,12 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableWithNullCollection() {
+  public void iterableWithNullCollection() {
     CollectionUtils.iterable((Collection<?>) null);
   }
 
   @Test
-  public void testIterableWithEnumeration() {
+  public void iterableWithEnumeration() {
     String[] expectedElements = { "test", "testing", "tested" };
     Enumeration<String> enumeration = new Vector<String>(Arrays.asList(expectedElements)).elements();
 
@@ -460,12 +475,12 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableWithNullEnumeration() {
+  public void iterableWithNullEnumeration() {
     CollectionUtils.iterable((Enumeration<?>) null);
   }
 
   @Test
-  public void testIterableWithIterator() {
+  public void iterableWithIterator() {
     String[] expectedElements = { "test", "testing", "tested" };
     Iterator<String> iterator = Arrays.asList(expectedElements).iterator();
 
@@ -479,12 +494,12 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testIterableWithNullIterator() {
+  public void iterableWithNullIterator() {
     CollectionUtils.iterable((Iterator<?>) null);
   }
 
   @Test
-  public void testIterator() {
+  public void iterator() {
     Vector<Object> expectedVector = new Vector<Object>(3);
 
     expectedVector.add("test");
@@ -504,51 +519,8 @@ public class CollectionUtilsTest {
     assertEquals(expectedVector.size(), index);
   }
 
-  @Test
-  public void testIteratorWithNoElements() {
-    final Iterator<?> zeroElementIterator = CollectionUtils.iterator(new Vector<Object>().elements());
-
-    assertNotNull(zeroElementIterator);
-    assertFalse(zeroElementIterator.hasNext());
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testIteratorWithNullEnumeration() {
-    CollectionUtils.iterator((Enumeration<?>) null);
-  }
-
-  @Test
-  public void testIteratorWithSingleElement() {
-    Vector<Object> singleElementVector = new Vector<Object>(1);
-
-    singleElementVector.add("test");
-
-    Iterator<?> singleElementIterator = CollectionUtils.iterator(singleElementVector.elements());
-
-    assertNotNull(singleElementIterator);
-    assertTrue(singleElementIterator.hasNext());
-    assertEquals("test", singleElementIterator.next());
-    assertFalse(singleElementIterator.hasNext());
-  }
-
-  @Test(expected = NoSuchElementException.class)
-  public void testIteratorWithExhaustedEnumeration() {
-    Vector<Object> vector = new Vector<Object>(1);
-
-    vector.add("test");
-
-    Iterator<?> iterator = CollectionUtils.iterator(vector.elements());
-
-    assertNotNull(iterator);
-    assertTrue(iterator.hasNext());
-    assertEquals("test", iterator.next());
-    assertFalse(iterator.hasNext());
-
-    iterator.next();
-  }
-
   @Test(expected = UnsupportedOperationException.class)
-  public void testIteratorModification() {
+  public void iteratorModification() {
     Vector<Object> vector = new Vector<Object>(3);
 
     vector.add("test");
@@ -573,8 +545,90 @@ public class CollectionUtilsTest {
     }
   }
 
+  @Test(expected = NoSuchElementException.class)
+  public void iteratorWithExhaustedEnumeration() {
+    Vector<Object> vector = new Vector<Object>(1);
+
+    vector.add("test");
+
+    Iterator<?> iterator = CollectionUtils.iterator(vector.elements());
+
+    assertNotNull(iterator);
+    assertTrue(iterator.hasNext());
+    assertEquals("test", iterator.next());
+    assertFalse(iterator.hasNext());
+
+    iterator.next();
+  }
+
   @Test
-  public void testSizeOfCollection() {
+  public void iteratorWithNoElementEnumeration() {
+    final Iterator<?> zeroElementIterator = CollectionUtils.iterator(new Vector<Object>().elements());
+
+    assertNotNull(zeroElementIterator);
+    assertFalse(zeroElementIterator.hasNext());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void iteratorWithNullEnumeration() {
+    CollectionUtils.iterator((Enumeration<?>) null);
+  }
+
+  @Test
+  public void iteratorWithSingleElementEnumeration() {
+    Vector<Object> singleElementVector = new Vector<Object>(1);
+
+    singleElementVector.add("test");
+
+    Iterator<?> singleElementIterator = CollectionUtils.iterator(singleElementVector.elements());
+
+    assertNotNull(singleElementIterator);
+    assertTrue(singleElementIterator.hasNext());
+    assertEquals("test", singleElementIterator.next());
+    assertFalse(singleElementIterator.hasNext());
+  }
+
+  @Test
+  public void shuffle() {
+    List<Integer> numberList = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    List<Integer> shuffledNumberList = CollectionUtils.shuffle(new ArrayList<Integer>(numberList));
+
+    assertNotNull(shuffledNumberList);
+    assertNotEquals(numberList, shuffledNumberList);
+    assertShuffled(numberList, shuffledNumberList);
+
+    List<Integer> shuffledNumberListAgain = CollectionUtils.shuffle(new ArrayList<Integer>(shuffledNumberList));
+
+    assertNotNull(shuffledNumberList);
+    assertNotEquals(shuffledNumberList, shuffledNumberListAgain);
+    assertShuffled(shuffledNumberList, shuffledNumberListAgain);
+  }
+
+  @Test
+  public void shuffleEmptyList() {
+    List<Integer> emptyList = Arrays.asList();
+    List<Integer> shuffledEmptyList = CollectionUtils.shuffle(emptyList);
+
+    assertSame(emptyList, shuffledEmptyList);
+    assertTrue(shuffledEmptyList.isEmpty());
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void shuffleNullList() {
+    CollectionUtils.shuffle(null);
+  }
+
+  @Test
+  public void shuffleSingleElementList() {
+    List<Integer> singleElementList = Arrays.asList(1);
+    List<Integer> shuffledSingleElementList = CollectionUtils.shuffle(singleElementList);
+
+    assertNotNull(shuffledSingleElementList);
+    assertEquals(singleElementList, shuffledSingleElementList);
+  }
+
+  @Test
+  public void sizeOfCollection() {
     assertEquals(0, CollectionUtils.size(null));
     assertEquals(0, CollectionUtils.size(Collections.emptyList()));
     assertEquals(0, CollectionUtils.size(Collections.emptySet()));
@@ -591,7 +645,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testSubList() {
+  public void subList() {
     List<Integer> result = CollectionUtils.subList(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 1, 2, 4, 8);
 
     assertNotNull(result);
@@ -601,7 +655,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testSubListWithEmptyList() {
+  public void subListWithEmptyList() {
     List<Object> result = CollectionUtils.subList(Collections.emptyList());
 
     assertNotNull(result);
@@ -609,12 +663,12 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
-  public void testSubListWithEmptyListAndIndices() {
+  public void subListWithEmptyListAndIndices() {
     CollectionUtils.subList(Collections.emptyList(), 1, 2, 4, 8);
   }
 
   @Test
-  public void testSubListWithNoIndices() {
+  public void subListWithListAndNoIndices() {
     List<String> result = CollectionUtils.subList(Arrays.asList("test", "testing", "tested"));
 
     assertNotNull(result);
@@ -622,18 +676,18 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testSubListWithNullList() {
+  public void subListWithNullListAndIndices() {
     CollectionUtils.subList(null, 1, 2, 4, 8);
   }
 
   @Test
-  public void testToString() {
+  public void toStringFromCollection() {
     assertEquals("[]", CollectionUtils.toString(Collections.emptyList()));
     assertEquals("[test, testing, tested]", CollectionUtils.toString(Arrays.asList("test", "testing", "tested")));
   }
 
   @Test
-  public void testTransform() {
+  public void transformCollection() {
     List<String> collection = new ArrayList<String>(Arrays.asList("test", "testing", "tested"));
 
     Transformer<String> transformer = new Transformer<String>() {
@@ -653,7 +707,7 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void testTransformEmptyCollection() {
+  public void transformEmptyCollection() {
     Collection<Object> collection = Collections.emptySet();
 
     assertTrue(collection.isEmpty());
@@ -666,7 +720,7 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testTransformNullCollection() {
+  public void transformNullCollection() {
     CollectionUtils.transform(null, new Transformer<Object>() {
       @Override public Object transform(final Object value) {
         return null;
@@ -675,12 +729,12 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testTransformWithNullTransformer() {
+  public void transformWithNullTransformer() {
     CollectionUtils.transform(Collections.emptyList(), null);
   }
 
   @Test
-  public void testUnmodifiableIterator() {
+  public void unmodifiableIterator() {
     List<?> list = Arrays.asList("test", "testing", "tested");
     Iterator<?> listIterator = list.iterator();
 
@@ -701,7 +755,7 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void testUnmodifiableIteratorModification() {
+  public void unmodifiableIteratorModification() {
     List<?> list = Arrays.asList("test", "testing", "tested");
     Iterator<?> listIterator = list.iterator();
 
@@ -725,7 +779,7 @@ public class CollectionUtilsTest {
   }
 
   @Test(expected = NullPointerException.class)
-  public void testUnmodifiableIteratorWithNullIterator() {
+  public void unmodifiableIteratorWithNullIterator() {
     CollectionUtils.unmodifiableIterator(null);
   }
 
@@ -757,7 +811,7 @@ public class CollectionUtilsTest {
         return false;
       }
 
-      final Person that = (Person) obj;
+      Person that = (Person) obj;
 
       return ObjectUtils.equals(getFirstName(), that.getFirstName())
         && ObjectUtils.equals(getLastName(), that.getLastName());
