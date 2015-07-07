@@ -22,8 +22,8 @@
 package org.cp.elements.lang;
 
 /**
- * The DslExtension interface is a marker interface for classes the implement Domain Specific Language (DSL)
- * Extensions containing the build blocks of an expressions, often expressed using the Builder Design Pattern.
+ * DslExtension is a marker interface for classes the implement Domain Specific Language (DSL) Extensions
+ * containing the building blocks of an expression, often expressed using the Builder Design Pattern.
  *
  * @author John J. Blum
  * @link http://en.wikipedia.org/wiki/Builder_pattern
