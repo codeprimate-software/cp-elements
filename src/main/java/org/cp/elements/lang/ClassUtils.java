@@ -23,9 +23,11 @@ package org.cp.elements.lang;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.util.ArrayUtils;
@@ -41,7 +43,7 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings("unused")
 public abstract class ClassUtils {
 
-  protected static final boolean DEFAULT_INITIALIZE_ON_LOAD_CLASS = true;
+  protected static final boolean DEFAULT_INITIALIZE_LOADED_CLASS = true;
 
   public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
@@ -102,6 +104,91 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Attempts to find a compatible constructor on the given class type with a signature having parameter types
+   * satisfying the specified arguments.
+   *
+   * @param <T> the generic class type to search for the constructor.
+   * @param type the Class type to search for the desired constructor.
+   * @param arguments an array of Object arguments used to match the constructor's signature.
+   * @return a Constructor from the given class type whose signature matches the specified arguments.
+   * @see java.lang.Class
+   * @see java.lang.Class#getDeclaredConstructors()
+   * @see java.lang.reflect.Constructor
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> Constructor<T> findConstructor(final Class<T> type, final Object... arguments) {
+    for (Constructor<?> constructor : type.getDeclaredConstructors()) {
+      Class<?>[] parameterTypes = constructor.getParameterTypes();
+
+      if (ArrayUtils.length(arguments) == parameterTypes.length) {
+        boolean match = true;
+
+        for (int index = 0; match && index < parameterTypes.length; index++) {
+          match &= instanceOf(arguments[index], parameterTypes[index]);
+        }
+
+        if (match) {
+          return (Constructor<T>) constructor;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets the constructor with the specified signature from the given class type.
+   *
+   * @param <T> the generic class type from which to get the constructor.
+   * @param type the Class type from which to get the Constructor.
+   * @param parameterTypes an array of class types indicating the constructor signature.
+   * @return a Constructor from the given class type with a matching signature.
+   * @see java.lang.Class
+   * @see java.lang.Class#getDeclaredConstructor(Class[])
+   * @see java.lang.reflect.Constructor
+   */
+  public static <T> Constructor<T> getConstructor(final Class<T> type, final Class<?>... parameterTypes) {
+    try {
+      return type.getDeclaredConstructor(parameterTypes);
+    }
+    catch (NoSuchMethodException e) {
+      throw new ConstructorNotFoundException(e);
+    }
+  }
+
+  /**
+   * Attempts to resolve the constructor from the given class type based on the constructor's exact signature,
+   * otherwise finds a constructor who's signature parameter types satisfy the array of Object arguments.
+   *
+   * @param <T> the generic class type from which to resolve the constructor.
+   * @param type the Class type from which to resolve the constructor.
+   * @param parameterTypes an array of Class types indicating the desired constructor's signature.
+   * @param arguments an array of Object arguments used to match the constructor's signature.
+   * @return a Constructor from the given class type who's signature either matches the parameter types
+   * or satisfies the array of arguments.
+   * @see #getConstructor(Class, Class[])
+   * @see #findConstructor(Class, Object...)
+   * @see java.lang.Class
+   * @see java.lang.reflect.Constructor
+   */
+  public static <T> Constructor<T> resolveConstructor(final Class<T> type, final Class<?>[] parameterTypes, final Object... arguments) {
+    try {
+      return getConstructor(type, parameterTypes);
+    }
+    catch (ConstructorNotFoundException e) {
+      Constructor<T> constructor = findConstructor(type, arguments);
+
+      if (constructor == null) {
+        throw new ConstructorNotFoundException(String.format(
+          "Failed to resolve constructor with signature (%1$s) on class type (%2$s)!",
+            getMethodSignature(getSimpleName(type), parameterTypes, Void.class), getName(type)), e.getCause());
+      }
+
+      return constructor;
+    }
+  }
+
+  /**
    * Gets a Field object representing the named field on the specified class.  This method will recursively search
    * up the class hierarchy of the specified class until the Object class is reached.  If the named field is found
    * then a Field object representing the class field is returned, otherwise a NoSuchFieldException is thrown.
@@ -111,6 +198,7 @@ public abstract class ClassUtils {
    * @return a Field object representing the named field on the specified class.
    * @throws FieldNotFoundException if the named field does not exist on the specified class
    * or a superclass of the specified class.
+   * @see java.lang.Class
    * @see java.lang.Class#getDeclaredField(String)
    * @see java.lang.reflect.Field
    */
@@ -139,10 +227,10 @@ public abstract class ClassUtils {
    * @return a Method on the given class type with the specified name having a signature compatible with the arguments,
    * or null if no such Method exists on the given class type or one of it's inherited (parent) class types.
    * @throws NullPointerException if the given class type is null.
-   * @see #instanceOf(Object, Class)
+   * @see java.lang.Class
    * @see java.lang.Class#getDeclaredMethods()
    * @see java.lang.Class#getSuperclass()
-   * @see java.lang.reflect.Method#getParameterTypes()
+   * @see java.lang.reflect.Method
    */
   public static Method findMethod(final Class<?> type, final String methodName, final Object... arguments) {
     for (Method method : type.getDeclaredMethods()) {
@@ -152,7 +240,7 @@ public abstract class ClassUtils {
         if (ArrayUtils.length(arguments) == parameterTypes.length) {
           boolean match = true;
 
-          for (int index = 0; index < parameterTypes.length; index++) {
+          for (int index = 0; match && index < parameterTypes.length; index++) {
             match &= instanceOf(arguments[index], parameterTypes[index]);
           }
 
@@ -178,6 +266,7 @@ public abstract class ClassUtils {
    * @return a Method object representing the named method on the specified class.
    * @throws MethodNotFoundException if the named method does not exist on the specified class
    * or a superclass of the specified class.
+   * @see java.lang.Class
    * @see java.lang.Class#getDeclaredMethod(String, Class[])
    * @see java.lang.reflect.Method
    */
@@ -212,6 +301,10 @@ public abstract class ClassUtils {
    * and calling arguments, if any.
    * @throws MethodNotFoundException if the specified method cannot be resolved on the given class type.
    * @throws NullPointerException if the class type is null.
+   * @see #getMethod(Class, String, Class[])
+   * @see #findMethod(Class, String, Object...)
+   * @see java.lang.Class
+   * @see java.lang.reflect.Method
    */
   public static Method resolveMethod(final Class<?> type,
                                      final String methodName,
@@ -441,7 +534,7 @@ public abstract class ClassUtils {
    * @see java.lang.Thread#getContextClassLoader()
    */
   public static Class loadClass(final String fullyQualifiedClassName) {
-    return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_ON_LOAD_CLASS,
+    return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_LOADED_CLASS,
       Thread.currentThread().getContextClassLoader());
   }
 
