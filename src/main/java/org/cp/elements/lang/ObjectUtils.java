@@ -21,6 +21,9 @@
 
 package org.cp.elements.lang;
 
+import java.lang.reflect.Constructor;
+
+import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
 
 /**
@@ -35,6 +38,41 @@ import org.cp.elements.lang.reflect.ReflectionUtils;
 public abstract class ObjectUtils extends ReflectionUtils {
 
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+
+  public static final String CLONE_METHOD_NAME = "clone";
+
+  /**
+   * Null-safe clone operation on Objects that implement the Cloneable interface or implement a copy constructor.
+   *
+   * @param <T> the Cloneable class type of the value.
+   * @param value the Object value to clone.
+   * @return a "clone" of a given Cloneable Object or value if the Object is not Cloneable but implements
+   * a copy constructor.
+   * @see java.lang.Cloneable
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static <T> T clone(final T value) {
+    if (value instanceof Cloneable) {
+      return (T) invoke(value, CLONE_METHOD_NAME, value.getClass());
+    }
+    else if (value != null) {
+      try {
+        Class<T> valueType = (Class<T>) value.getClass();
+        Constructor<T> copyConstructor = resolveConstructor(valueType, new Class<?>[] { valueType }, value);
+        return copyConstructor.newInstance(value);
+      }
+      catch (ConstructorNotFoundException ignore) {
+        // a copy constructor was not found in the value's class type
+      }
+      catch (Exception e) {
+        throw new CloneException("'clone' using 'copy constructor' was unsuccessful", e);
+      }
+    }
+
+    throw new UnsupportedOperationException(new CloneNotSupportedException(String.format(
+      "'clone' is not supported for (%1$s) value", getClassSimpleName(value))));
+  }
 
   /**
    * Gets the first non-null value in the array of values.

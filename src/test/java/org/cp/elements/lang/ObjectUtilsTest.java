@@ -21,7 +21,10 @@
 
 package org.cp.elements.lang;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+
+import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 
@@ -37,7 +40,77 @@ import org.junit.Test;
 public class ObjectUtilsTest {
 
   @Test
-  public void testDefaultIfNullUsingNonNullValues() {
+  public void cloneWithCloneableObject() {
+    CloneableObject<String> cloneableObject = new CloneableObject<String>("test");
+    CloneableObject<String> cloneableObjectClone = ObjectUtils.clone(cloneableObject);
+
+    assertThat(cloneableObjectClone, is(not(nullValue())));
+    assertThat(cloneableObjectClone, is(not(sameInstance(cloneableObject))));
+    assertThat(cloneableObjectClone, is(equalTo(cloneableObject)));
+  }
+
+  @Test
+  public void cloneWithCopyableObject() {
+    CopyableObject<Object> copyableObject = new CopyableObject<Object>("test");
+    CopyableObject<Object> copyableObjectClone = ObjectUtils.clone(copyableObject);
+
+    assertThat(copyableObjectClone, is(not(nullValue())));
+    assertThat(copyableObjectClone, is(not(sameInstance(copyableObject))));
+    assertThat(copyableObjectClone, is(equalTo(copyableObject)));
+  }
+
+  @Test
+  public void cloneWithAssignmentCompatibleArgumentTypeCopyConstructor() {
+    SoftwareEngineer jonDoe = new SoftwareEngineer("Jon", "Doe");
+    SoftwareEngineer jonDoeClone = ObjectUtils.clone(jonDoe);
+
+    assertThat(jonDoeClone, is(not(nullValue())));
+    assertThat(jonDoeClone, is(not(sameInstance(jonDoe))));
+    assertThat(jonDoeClone, is(equalTo(jonDoe)));
+  }
+
+  @Test(expected = CloneException.class)
+  public void cloneWithExceptionThrowingCopyConstructor() {
+    try {
+      ObjectUtils.clone(new ExceptionThrowingCopyConstructorObject<String>("test"));
+    }
+    catch (CloneException expected) {
+      assertThat(expected.getMessage(), is(equalTo("'clone' using 'copy constructor' was unsuccessful")));
+      assertThat(expected.getCause(), is(instanceOf(InvocationTargetException.class)));
+      assertThat(expected.getCause().getCause(), is(instanceOf(IllegalArgumentException.class)));
+      assertThat(expected.getCause().getCause().getMessage(), is(equalTo("test")));
+      throw expected;
+    }
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void cloneWithNonCloneableNonCopyableObject() {
+    try {
+      ObjectUtils.clone(new Object());
+    }
+    catch (UnsupportedOperationException expected) {
+      assertThat(expected.getMessage(), containsString("'clone' is not supported for (Object) value"));
+      assertThat(expected.getCause(), is(instanceOf(CloneNotSupportedException.class)));
+      assertThat(expected.getCause().getMessage(), is(equalTo("'clone' is not supported for (Object) value")));
+      throw expected;
+    }
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void cloneWithNullObject() {
+    try {
+      ObjectUtils.clone(null);
+    }
+    catch (UnsupportedOperationException expected) {
+      assertThat(expected.getMessage(), containsString("'clone' is not supported for (null) value"));
+      assertThat(expected.getCause(), is(instanceOf(CloneNotSupportedException.class)));
+      assertThat(expected.getCause().getMessage(), is(equalTo("'clone' is not supported for (null) value")));
+      throw expected;
+    }
+  }
+
+  @Test
+  public void defaultIfNullWithNonNullValues() {
     assertEquals("test", ObjectUtils.defaultIfNull("test", null, null, null));
     assertEquals("test", ObjectUtils.defaultIfNull(null, "test"));
     assertEquals("test", ObjectUtils.defaultIfNull(null, null, null, "test"));
@@ -49,7 +122,7 @@ public class ObjectUtilsTest {
   }
 
   @Test
-  public void testDefaultIfNullUsingNullValues() {
+  public void defaultIfNullWithNullValues() {
     assertNull(ObjectUtils.defaultIfNull((Object[]) null));
     assertNull(ObjectUtils.defaultIfNull(null, (Object[]) null));
     assertNull(ObjectUtils.defaultIfNull(null, null, null));
@@ -57,7 +130,7 @@ public class ObjectUtilsTest {
 
   @Test
   @SuppressWarnings("boxing")
-  public void testEquals() {
+  public void equals() {
     Object testObject = new Object();
     assertTrue(ObjectUtils.equals(testObject, testObject));
     assertTrue(ObjectUtils.equals(true, Boolean.TRUE));
@@ -68,7 +141,7 @@ public class ObjectUtilsTest {
   }
 
   @Test
-  public void testEqualsUsingUnequalValues() {
+  public void equalsWithUnequalValues() {
     assertFalse(ObjectUtils.equals(null, null));
     assertFalse(ObjectUtils.equals("test", null));
     assertFalse(ObjectUtils.equals(null, "test"));
@@ -86,7 +159,7 @@ public class ObjectUtilsTest {
   }
 
   @Test
-  public void testEqualsIgnoreNull() {
+  public void equalsIgnoreNull() {
     assertTrue(ObjectUtils.equalsIgnoreNull(null, null));
     assertTrue(ObjectUtils.equalsIgnoreNull("null", "null"));
     assertTrue(ObjectUtils.equalsIgnoreNull("nil", "nil"));
@@ -99,7 +172,7 @@ public class ObjectUtilsTest {
   }
 
   @Test
-  public void testEqualsIgnoreNullUsingUnequalValues() {
+  public void equalsIgnoreNullWithUnequalValues() {
     assertFalse(ObjectUtils.equalsIgnoreNull(null, "null"));
     assertFalse(ObjectUtils.equalsIgnoreNull("null", null));
     assertFalse(ObjectUtils.equalsIgnoreNull("null", "nil"));
@@ -113,17 +186,17 @@ public class ObjectUtilsTest {
   }
 
   @Test
-  public void testHashCode() {
+  public void hashCodeWithNonNullValue() {
     assertEquals("test".hashCode(), ObjectUtils.hashCode("test"));
   }
 
   @Test
-  public void testHashCodeWithNull() {
+  public void hashCodeWithNullValue() {
     assertEquals(0, ObjectUtils.hashCode(null));
   }
 
   @Test
-  public void testToString() {
+  public void toStringWithValues() {
     assertNull(ObjectUtils.toString(null));
     assertEquals("true", ObjectUtils.toString(Boolean.TRUE));
     assertEquals("\0", ObjectUtils.toString('\0'));
@@ -133,6 +206,143 @@ public class ObjectUtilsTest {
     assertEquals("test", ObjectUtils.toString("test"));
     assertEquals("null", ObjectUtils.toString("null"));
     assertEquals("nil", ObjectUtils.toString("nil"));
+  }
+
+  @SuppressWarnings("unused")
+  protected static class CopyableObject<T> {
+
+    private final T value;
+
+    protected CopyableObject() {
+      this.value = null;
+    }
+
+    public CopyableObject(final T value) {
+      this.value = value;
+    }
+
+    public CopyableObject(final CopyableObject<T> copyableObject) {
+      this(copyableObject.getValue());
+    }
+
+    public T getValue() {
+      return value;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      if (obj == this) {
+        return true;
+      }
+
+      if (!(obj instanceof CopyableObject)) {
+        return false;
+      }
+
+      CopyableObject that = (CopyableObject) obj;
+
+      return ObjectUtils.equals(this.getValue(), that.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+      int hashValue = 17;
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getValue());
+      return hashValue;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(getValue());
+    }
+  }
+
+  protected static class CloneableObject<T> extends CopyableObject<T> implements Cloneable {
+
+    protected CloneableObject(final T value) {
+      super(value);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+      return new CloneableObject<T>(getValue());
+    }
+  }
+
+  protected static class ExceptionThrowingCopyConstructorObject<T> extends CopyableObject<T> {
+
+    public ExceptionThrowingCopyConstructorObject(final T value) {
+      super(value);
+    }
+
+    @SuppressWarnings("unused")
+    public ExceptionThrowingCopyConstructorObject(final ExceptionThrowingCopyConstructorObject<T> copyableObject) {
+      throw new IllegalArgumentException("test");
+    }
+  }
+
+  protected static abstract class Person {
+
+    private final String firstName;
+    private final String lastName;
+
+    public Person(final String firstName, final String lastName) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+    }
+
+    public Person(final Person person) {
+      this(person.getFirstName(), person.getLastName());
+    }
+
+    public String getFirstName() {
+      return firstName;
+    }
+
+    public String getLastName() {
+      return lastName;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      if (obj == this) {
+        return true;
+      }
+
+      if (!(obj instanceof Person)) {
+        return false;
+      }
+
+      Person that = (Person) obj;
+
+      return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
+        && ObjectUtils.equals(this.getLastName(), that.getLastName());
+    }
+
+    @Override
+    public int hashCode() {
+      int hashValue = 17;
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
+      return hashValue;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("%1$s %2$s", getFirstName(), getLastName());
+    }
+  }
+
+  protected static class SoftwareEngineer extends Person {
+
+    public SoftwareEngineer(final String firstName, final String lastName) {
+      super(firstName, lastName);
+    }
+
+    @SuppressWarnings("unused")
+    public SoftwareEngineer(final Person person) {
+      super(person);
+    }
   }
 
 }
