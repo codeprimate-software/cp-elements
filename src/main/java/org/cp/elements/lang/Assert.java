@@ -38,63 +38,28 @@ import java.util.Map;
 public final class Assert {
 
   /**
-   * Formats the specified message with the given arguments.
-   * 
-   * @param message the String message to format.
-   * @param arguments the Object arguments used for format the message.
-   * @return the String message formatted with the arguments.
-   * @see #messageFormat(String, Object...) 
-   * @see #stringFormat(String, Object...) 
-   */
-  private static String format(final String message, final Object... arguments) {
-    return stringFormat(messageFormat(message, arguments), arguments);
-  }
-
-  /**
-   * Formats a given message containing placeholders as defined by the java.text.MessageFormat class in the Java API.
-   * 
-   * @param message a String containing the message to format.
-   * @param arguments an array of Object values used to subsitute for the placeholders in the message.
-   * @return a String containing the formatted message.
-   * @see java.text.MessageFormat#format(String, Object...)
-   */
-  private static String messageFormat(final String message, final Object... arguments) {
-    return (arguments == null ? message : MessageFormat.format(message, arguments));
-  }
-
-  /**
-   * Formats a given message containing placeholders as defined by the java.lang.String class in the Java API.
-   * 
-   * @param message a String containing the message to format.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @return a String containing the formatted message.
-   * @see java.lang.String#format(String, Object...)
-   */
-  private static String stringFormat(final String message, final Object... arguments) {
-    return String.format(message, arguments);
-  }
-
-  /**
-   * Asserts an argument is valid in order to satisfy the pre-conditions or constraints imposed by the caller,
-   * which can be determined by any expression evaluating to a boolean value.
-   * 
-   * @param valid a Boolean value indicating the result of the expression evaluation constraining the argument.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws IllegalArgumentException if the argument is invalid.
+   * Asserts that an argument is valid.  The assertion holds if and only if valid is true.
+   *
+   * @param valid a Boolean value resulting from the evaluation of the criteria used by the caller
+   * to determine the validity of the argument.
+   * @param message a String specifying the message for the IllegalArgumentException that is thrown
+   * if the assertion fails.
+   * @param arguments an array of Object arguments used to populate the placeholders in the message.
+   * @throws java.lang.IllegalArgumentException if the assertion fails and the argument is invalid.
+   * @see #argument(Boolean, RuntimeException)
    */
   public static void argument(final Boolean valid, final String message, final Object... arguments) {
     argument(valid, new IllegalArgumentException(format(message, arguments)));
   }
 
   /**
-   * Asserts an argument is valid in order to satisfy the pre-conditions or constraints imposed by the caller,
-   * which can be determined by any expression evaluating to a boolean value.
-   * 
-   * @param valid a Boolean value indicating the result of the expression evaluation constraining the argument.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the argument is invalid.
+   * Asserts that an argument is valid.  The assertion holds if and only if valid is true.
+   *
+   * @param valid a Boolean value resulting from the evaluation of the criteria used by the caller
+   * to determine the validity of the argument.
+   * @param e the RuntimeException thrown if the assertion fails and the argument is invalid.
+   * @throws java.lang.RuntimeException if the assertion fails and the argument is invalid.
+   * @see #argument(Boolean, String, Object...)
    */
   public static void argument(final Boolean valid, final RuntimeException e) {
     if (!Boolean.TRUE.equals(valid)) {
@@ -103,16 +68,15 @@ public final class Assert {
   }
 
   /**
-   * Asserts two Objects are equal in value as determined by Object.equals.  The assertion holds if and only if
-   * both Objects are not null and are equal in value.  If either Object is null or their values differ, then the
-   * assertion fails with an AssertionFailedException.
+   * Asserts that two object are equal as determined by Object.equals.  The assertion holds if and only if
+   * both objects are not null and equal in value.
    * 
-   * @param obj1 the first Object in the equality comparison.
-   * @param obj2 the second Object in the equality comparison.
-   * @param message a String specifying the message for the AssertionFailedException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws org.cp.elements.lang.EqualityException if the two Objects are not equal.
+   * @param obj1 the left operand in the equality comparison.
+   * @param obj2 the right operand in the equality comparison.
+   * @param message a String specifying the message for the EqualityException that is thrown if the assertion fails.
+   * @param arguments an array of Object values used as placeholder values when formatting the message.
+   * @throws org.cp.elements.lang.EqualityException if the assertion fails and the two objects are not equal.
+   * @see #equals(Object, Object, RuntimeException)
    * @see java.lang.Object#equals(Object)
    */
   public static void equals(final Object obj1, final Object obj2, final String message, final Object... arguments) {
@@ -120,14 +84,14 @@ public final class Assert {
   }
 
   /**
-   * Asserts two Objects are equal in value as determined by Object.equals.  The assertion holds if and only if
-   * both Objects are not null and are equal in value.  If either Object is null or their values differ, then the
-   * assertion fails with an AssertionFailedException.
-   * 
-   * @param obj1 the first Object in the equality comparison.
-   * @param obj2 the second Object in the equality comparison.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the two Objects are not equal.
+   * Asserts that two object are equal as determined by Object.equals.  The assertion holds if and only if
+   * both objects are not null and equal in value.
+   *
+   * @param obj1 the left operand in the equality comparison.
+   * @param obj2 the right operand in the equality comparison.
+   * @param e the RuntimeException thrown if the assertion fails and the two objects are not equal.
+   * @throws java.lang.RuntimeException if the assertion fails and the two objects are not equal.
+   * @see #equals(Object, Object, String, Object...)
    * @see java.lang.Object#equals(Object)
    */
   public static void equals(final Object obj1, final Object obj2, final RuntimeException e) {
@@ -137,14 +101,16 @@ public final class Assert {
   }
 
   /**
-   * Asserts that the current Thread holds the lock.  If the lock is null or the current Thread is not the holder
-   * of the lock, then the assertion fails.
+   * Asserts that the current Thread holds the specified lock.  The assertion holds if and only if the lock is not null
+   * and the current Thread is the holder of the lock, otherwise the assertion fails.
    * 
-   * @param lock the Object used as the synchronization mechanism (monitor).
-   * @param message a String specifying the message for the IllegalMonitorStateException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws IllegalMonitorStateException if the current Thread does not hold the lock or the lock is null.
+   * @param lock an Object used as the lock and synchronization mutex/monitor.
+   * @param message a String specifying the message for the IllegalMonitorStateException that is thrown
+   * if the assertion fails.
+   * @param arguments an array of Object values used as placeholder value when formatting the message.
+   * @throws java.lang.IllegalMonitorStateException if the assertion fails and the current Thread does not hold the lock
+   * or the lock is null.
+   * @see #holdsLock(Object, String, Object...)
    * @see java.lang.Thread#holdsLock(Object)
    */
   public static void holdsLock(final Object lock, final String message, final Object... arguments) {
@@ -152,12 +118,15 @@ public final class Assert {
   }
 
   /**
-   * Asserts that the current Thread holds the lock.  If the lock is null or the current Thread is not the holder
-   * of the lock, then the assertion fails.
-   * 
-   * @param lock the Object used as the synchronization mechanism (monitor).
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the current Thread does not hold the lock, or the lock is null.
+   * Asserts that the current Thread holds the specified lock.  The assertion holds if and only if the lock is not null
+   * and the current Thread is the holder of the lock, otherwise the assertion fails.
+   *
+   * @param lock an Object used as the lock and synchronization mutex/monitor.
+   * @param e the RuntimeException thrown if the assertion fails and the current Thread does not hold the lock
+   * or the lock is null.
+   * @throws java.lang.RuntimeException if the the assertion fails and the current Thread does not hold the lock
+   * or the lock is null.
+   * @see #holdsLock(Object, String, Object...)
    * @see java.lang.Thread#holdsLock(Object)
    */
   public static void holdsLock(final Object lock, final RuntimeException e) {
@@ -426,12 +395,14 @@ public final class Assert {
   }
 
   /**
-   * Asserts the Object reference is not null.
+   * Asserts that the Object reference is not null.  The assertion holds if and only if the Object reference
+   * is not null.
    * 
-   * @param obj the Object reference being tested for null.
+   * @param obj the Object reference being evaluated for null.
    * @param message a String specifying the message for the NullPointerException that is thrown if the assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws NullPointerException if the Object reference is null.
+   * @param arguments an array of Object values used as placeholder values when formatting the message.
+   * @throws java.lang.NullPointerException if the assertion fails and the Object reference is null.
+   * @see #notNull(Object, RuntimeException)
    * @see java.lang.Object
    */
   public static void notNull(final Object obj, final String message, final Object... arguments) {
@@ -439,11 +410,13 @@ public final class Assert {
   }
 
   /**
-   * Asserts the Object reference is not null.
-   * 
-   * @param obj the Object reference being tested for null.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the Object reference is null.
+   * Asserts that the Object reference is not null.  The assertion holds if and only if the Object reference
+   * is not null.
+   *
+   * @param obj the Object reference being evaluated for null.
+   * @param e the RuntimeException thrown if the assertion fails and the Object reference is null.
+   * @throws java.lang.RuntimeException if the assertion fails and the Object reference is null.
+   * @see #notNull(Object, String, Object...)
    * @see java.lang.Object
    */
   public static void notNull(final Object obj, final RuntimeException e) {
@@ -453,15 +426,15 @@ public final class Assert {
   }
 
   /**
-   * Asserts two Objects are the same Object as determined by the identity comparison.  Two Objects are the same
-   * if and only if they refer to the same Object in memory.
+   * Asserts that two objects are the same object as determined by the identity comparison.  Two objects are the same
+   * if and only if they refer to the same object in memory.
    * 
-   * @param obj1 the first Object in the identity comparison.
-   * @param obj2 the second Object in the identity comparison.
-   * @param message a String specifying the message for the AssertionFailedException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws org.cp.elements.lang.IdentityException if the two Objects are not identical.
+   * @param obj1 the left operand in the identity comparison.
+   * @param obj2 the right operand in the identity comparison.
+   * @param message a String specifying the message for the IdentityException that is thrown if the assertion fails.
+   * @param arguments an array of Object arguments used to populate the placeholders in the message.
+   * @throws org.cp.elements.lang.IdentityException if the two objects are not the same.
+   * @see #same(Object, Object, RuntimeException)
    * @see java.lang.Object
    */
   public static void same(final Object obj1, final Object obj2, final String message, final Object... arguments) {
@@ -469,13 +442,14 @@ public final class Assert {
   }
 
   /**
-   * Asserts two Objects are the same Object as determined by the identity comparison.  Two Objects are the same
-   * if and only if they refer to the same Object in memory.
-   * 
-   * @param obj1 the first Object in the identity comparison.
-   * @param obj2 the second Object in the identity comparison.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the two Objects are not identical.
+   * Asserts that two objects are the same object as determined by the identity comparison.  Two objects are the same
+   * if and only if they refer to the same object in memory.
+   *
+   * @param obj1 the left operand in the identity comparison.
+   * @param obj2 the right operand in the identity comparison.
+   * @param e the RuntimeException thrown if the assertion fails and the objects are not the same.
+   * @throws java.lang.RuntimeException if the assertion fails and the objects are not the same.
+   * @see #same(Object, Object, String, Object...)
    * @see java.lang.Object
    */
   public static void same(final Object obj1, final Object obj2, final RuntimeException e) {
@@ -485,28 +459,98 @@ public final class Assert {
   }
 
   /**
-   * Asserts the state is valid.  The condition holds if and only if the state is true.
+   * Asserts that the state is valid.  The assertion holds if and only if valid is true.
    * 
-   * @param valid a Boolean value indicating whether the condition holds.
+   * @param valid a Boolean value indicating whether the state is valid.
    * @param message a String specifying the message for the IllegalStateException that is thrown if the assertion fails.
-   * @param arguments an array of Object value used to substitute for the placeholders in the message.
-   * @throws IllegalStateException if the condition does not hold.
+   * @param arguments an array of Object arguments used to populate the placeholders in the message.
+   * @throws java.lang.IllegalStateException if the assertion fails and the state is invalid.
+   * @see #state(Boolean, RuntimeException)
    */
   public static void state(final Boolean valid, final String message, final Object... arguments) {
     state(valid, new IllegalStateException(format(message, arguments)));
   }
 
   /**
-   * Asserts the state is valid.  The condition holds if and only if the state is true.
+   * Asserts that the state is valid.  The assertion holds if and only if valid is true.
    * 
-   * @param valid a Boolean value indicating whether the condition holds.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the condition does not hold.
+   * @param valid a Boolean value indicating whether the state is valid.
+   * @param e the RuntimeException thrown if the assertion fails and the state is invalid.
+   * @throws java.lang.RuntimeException if the assertion fails and the state is invalid.
+   * @see #state(Boolean, String, Object...)
    */
   public static void state(final Boolean valid, final RuntimeException e) {
     if (!Boolean.TRUE.equals(valid)) {
       throw e;
     }
+  }
+
+  /**
+   * Asserts that an operation is supported.  The assertion holds if and only if supported is true.
+   *
+   * @param supported a Boolean value resulting from the evaluation of the criteria used to determine
+   * if the operation is supported.
+   * @param message a String specifying the message of the UnsupportedOperationException that is thrown
+   * if the assertion fails.
+   * @param arguments an array of Object arguments used to populate the placeholders in the message.
+   * @throws java.lang.UnsupportedOperationException if the assertion fails and the operations is unsupported.
+   * @see #supported(Boolean, RuntimeException)
+   */
+  public static void supported(final Boolean supported, final String message, final Object... arguments) {
+    supported(supported, new UnsupportedOperationException(format(message, arguments)));
+  }
+
+  /**
+   * Asserts that an operation is supported.  The assertion holds if and only if supported is true.
+   *
+   * @param supported a Boolean value resulting from the evaluation of the criteria used to determine
+   * if the operation is supported.
+   * @param e the RuntimeException thrown if the assertion fails and the operation is unsupported.
+   * @see #supported(Boolean, String, Object...)
+   */
+  public static void supported(final Boolean supported, final RuntimeException e) {
+    if (!Boolean.TRUE.equals(supported)) {
+      throw e;
+    }
+  }
+
+  /**
+   * Formats the specified message with the given arguments.
+   *
+   * @param message the String message to format.
+   * @param arguments an array of Object values used when formatting the message.
+   * @return the String message formatted with the arguments.
+   * @see #messageFormat(String, Object...)
+   * @see #stringFormat(String, Object...)
+   */
+  private static String format(final String message, final Object... arguments) {
+    return stringFormat(messageFormat(message, arguments), arguments);
+  }
+
+  /**
+   * Formats the specified message containing possible placeholders as defined by the java.text.MessageFormat class
+   * in the Java API.
+   *
+   * @param message a String containing the message to format.
+   * @param arguments an array of Object values used as placeholder values when formatting the message.
+   * @return a String formatted with the arguments.
+   * @see java.text.MessageFormat#format(String, Object...)
+   */
+  private static String messageFormat(final String message, final Object... arguments) {
+    return (arguments == null ? message : MessageFormat.format(message, arguments));
+  }
+
+  /**
+   * Formats the specified message containing possible placeholders as defined by the java.lang.String class
+   * in the Java API.
+   *
+   * @param message a String containing the message to format.
+   * @param arguments an array of Object values used as placeholder values when formatting the message.
+   * @return a String formatted with the arguments.
+   * @see java.lang.String#format(String, Object...)
+   */
+  private static String stringFormat(final String message, final Object... arguments) {
+    return String.format(message, arguments);
   }
 
 }
