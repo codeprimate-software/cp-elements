@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -236,208 +235,223 @@ public class AssertTest {
   }
 
   @Test
-  public void testAssertIsAssignableTo() {
-    Assert.isAssignableTo(Boolean.class, Boolean.class, "The class type is not assignable to a Boolean!");
-    Assert.isAssignableTo(Character.class, Object.class, "The class type is not assignable to Object!");
-    Assert.isAssignableTo(java.sql.Date.class, java.util.Date.class, "The class type is not assignable to java.util.Date!");
-    Assert.isAssignableTo(Double.class, Number.class, "The class type is not assignable to Number!");
-    Assert.isAssignableTo(Integer.class, Number.class, "The class type is not assignable to Number!");
-    Assert.isAssignableTo(String.class, Object.class, "The class type is not assignable to Object!");
-  }
-
-  @Test(expected = ClassCastException.class)
-  public void testAssertIsAssignableToCastingObjectToString() {
-    try {
-      Assert.isAssignableTo(Object.class, String.class, "{0} is not assignable to a reference of type {1}!",
-        "Object", "String");
-    }
-    catch (ClassCastException e) {
-      assertEquals("Object is not assignable to a reference of type String!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = ClassCastException.class)
-  public void testAssertIsAssignableToWithIncompatibleClassTypes() {
-    try {
-      Assert.isAssignableTo(Integer.class, Boolean.class, "{0} is not type compatible with {1}!",
-        "Integer", "Boolean");
-    }
-    catch (ClassCastException e) {
-      assertEquals("Integer is not type compatible with Boolean!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertIsAssignableToThrowsAssertionFailedException() {
-    Assert.isAssignableTo(Calendar.class, Date.class, new AssertionFailedException());
+  public void assertIsAssignableToWithAssignableClassTypes() {
+    Assert.isAssignableTo(Boolean.class, Boolean.class, "class type is not assignable");
+    Assert.isAssignableTo(Character.class, Object.class, "class type is not assignable");
+    Assert.isAssignableTo(java.sql.Date.class, java.util.Date.class, "class type is not assignable");
+    Assert.isAssignableTo(Double.class, Number.class, "class type is not assignable");
+    Assert.isAssignableTo(Integer.class, Number.class, "class type is not assignable");
+    Assert.isAssignableTo(String.class, Object.class, "class type is not assignable");
+    Assert.isAssignableTo(TestEnum.class, Enum.class, "class type is not assignable");
   }
 
   @Test
-  public void testAssertIsFalse() {
-    Assert.isFalse(false, "The value is not false!");
-    Assert.isFalse(Boolean.FALSE, "The value is not false!");
-    Assert.isFalse(!Boolean.TRUE, "The value is not false!");
-    Assert.isFalse(new Object() == new Object(), "An object compared for identity with another object is false!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertIsFalseWithTrue() {
-    try {
-      Assert.isFalse(true, "{0} is not {1}!", "True", "false");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("True is not false!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertIsFalseThrowsAssertionFailedException() {
-    Assert.isFalse(Boolean.TRUE, new AssertionFailedException());
+  public void assertIsAssignableToWithNonAssignableClassTypes() {
+    expectedException.expect(ClassCastException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Character is not assignable to String");
+    Assert.isAssignableTo(Character.class, String.class, "%1$s is not assignable to {1}!",
+      "Character", "String");
   }
 
   @Test
-  public void testAssertIsInstanceOf() throws Exception {
-    Assert.isInstanceOf(true, Boolean.class, "The Object is not an instance of the Boolean class!");
-    Assert.isInstanceOf('c', Character.class, "The Object is not an instance of the Character class!");
-    Assert.isInstanceOf(3.14f, Float.class, "The Object is not an instance of the Float class!");
-    Assert.isInstanceOf(Math.PI, Double.class, "The Object is not an instance of the Double class!");
-    Assert.isInstanceOf(0, Integer.class, "The Object is not an instance of the Integer class!");
-    Assert.isInstanceOf(1l, Long.class, "The Object is not an instance of the Long class!");
-    Assert.isInstanceOf("test", CharSequence.class, "The Object is not an instance of the CharSequence class!");
-    Assert.isInstanceOf(new Object(), Object.class, "The Object is not an instance of the Object class!");
-    Assert.isInstanceOf(Object.class, Class.class, "The Object is not an instance of the Class class!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertIsInstanceOfIsNotAnInstance() {
-    try {
-      Assert.isInstanceOf("0123456789", Long.class, "A {0} is not an instance of the {1} class!",
-        "String", "Long");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("A String is not an instance of the Long class!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertIsInstanceOfThrowsAssertionFailedException() {
-    Assert.isInstanceOf(new Object(), Class.class, new AssertionFailedException());
+  public void assertIsAssignableToWithNullFromClassType() {
+    Assert.isAssignableTo(null, Object.class, "null was not assignable to Object");
   }
 
   @Test
-  public void testAssertIsTrue() {
-    Assert.isTrue(true, "The value is not true!");
-    Assert.isTrue(Boolean.TRUE, "The value is not true!");
-    Assert.isTrue(!Boolean.FALSE, "The value is not true!");
-    Assert.isTrue("test".equals("test"), "The value is not true!");
-    Assert.isTrue("test".equalsIgnoreCase("TEST"), "The value is not true!");
-    Assert.isTrue(LOCK.equals(LOCK), "An Object is equal to itself!");
-    Assert.isTrue(LOCK == LOCK, "An identity comparison of an Object with itself is true!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertIsTrueWithFalse() {
-    try {
-      Assert.isTrue(false, "{0} is not {1}!", "False", "true");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("False is not true!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertIsTrueThrowsAssertionFailedException() {
-    Assert.isTrue(Boolean.FALSE, new AssertionFailedException());
+  public void assertIsAssignableToWithNullToClassType() {
+    expectedException.expect(ClassCastException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("String is not assignable to null");
+    Assert.isAssignableTo(String.class, null, "String is not assignable to null");
   }
 
   @Test
-  public void testAssertNotBlank() throws Exception {
-    Assert.notBlank("test", "The String is blank!");
-    Assert.notBlank("blank", "The String is blank!");
-    Assert.notBlank("empty", "The String is blank!");
-    Assert.notBlank("null", "The String is blank!");
-    Assert.notBlank("space", "The String is blank!");
-    Assert.notBlank("_", "The String is blank!");
-    Assert.notBlank("--", "The String is blank!");
-    Assert.notBlank("0", "The String is blank!");
+  public void assertIsAssignableToThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.isAssignableTo(Object.class, String.class, new AssertionFailedException("test"));
+  }
+
+  @Test
+  public void assertIsFalseWithFalse() {
+    Assert.isFalse(false, "value is not false");
+    Assert.isFalse(Boolean.FALSE, "value is not false");
+    Assert.isFalse(!Boolean.TRUE, "value is not false");
+    Assert.isFalse(new Object() == new Object(), "value is not false");
+  }
+
+  @Test
+  public void assertIsFalseWithTrue() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("true is not false");
+    Assert.isFalse(true, "%1$s is not {1}", "true", "false");
+  }
+
+  @Test
+  public void assertIsFalseThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.isFalse(Boolean.TRUE, new AssertionFailedException("test"));
+  }
+
+  @Test
+  public void assertIsInstanceOfWithInstances() throws Exception {
+    Assert.isInstanceOf(true, Boolean.class, "object is not an instance of class type");
+    Assert.isInstanceOf('c', Character.class, "object is not an instance of class type");
+    Assert.isInstanceOf(3.14159f, Float.class, "object is not an instance of class type");
+    Assert.isInstanceOf(Math.PI, Double.class, "object is not an instance of class type");
+    Assert.isInstanceOf(0, Integer.class, "object is not an instance of class type");
+    Assert.isInstanceOf(1l, Long.class, "object is not an instance of class type");
+    Assert.isInstanceOf("mock", CharSequence.class, "object is not an instance of class type");
+    Assert.isInstanceOf("test", String.class, "object is not an instance of class type");
+    Assert.isInstanceOf(new Object(), Object.class, "object is not an instance of class type");
+    Assert.isInstanceOf(Object.class, Class.class, "object is not an instance of class type");
+    Assert.isInstanceOf(TestEnum.ONE, Enum.class, "object is not an instance of class type");
+  }
+
+  @Test
+  public void assertIsInstanceOfWithNonInstances() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("A String is not an instance of the Long class!");
+    Assert.isInstanceOf("0123456789", Long.class, "A %1$s is not an instance of the {1} class!",
+      "String", "Long");
+  }
+
+  @Test
+  public void assertIsInstanceOfWithNull() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("null is not an instance of Object");
+    Assert.isInstanceOf(null, Object.class, "null is not an instance of Object", "unused", "args");
+  }
+
+  @Test
+  public void assertIsInstanceOfThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.isInstanceOf(new Object(), Class.class, new AssertionFailedException("test"));
+  }
+
+  @Test
+  public void assertIsTrueWithTrue() {
+    Assert.isTrue(true, "value is not true");
+    Assert.isTrue(Boolean.TRUE, "value is not true");
+    Assert.isTrue(!Boolean.FALSE, "value is not true");
+    Assert.isTrue("test".equals("test"), "value is not true");
+    Assert.isTrue("test".equalsIgnoreCase("TEST"), "value is not true");
+    Assert.isTrue(LOCK.equals(LOCK), "value is not true");
+    Assert.isTrue(LOCK == LOCK, "value is not true");
+  }
+
+  @Test
+  public void assertIsTrueWithFalse() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("false is not true");
+    Assert.isTrue(false, "%1$s is not {1}", "false", "true");
+  }
+
+  @Test
+  public void assertIsTrueThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.isTrue(Boolean.FALSE, new AssertionFailedException("test"));
+  }
+
+  @Test
+  public void assertNotBlankWithNonBlankValues() throws Exception {
+    Assert.notBlank("test", "value is blank");
+    Assert.notBlank("blank", "value is blank");
+    Assert.notBlank("empty", "value is blank");
+    Assert.notBlank("null", "value is blank");
+    Assert.notBlank("space", "value is blank");
+    Assert.notBlank("_", "value is blank");
+    Assert.notBlank("--", "value is blank");
+    Assert.notBlank("0", "value is blank");
+    Assert.notBlank("! ", "value is blank");
+    Assert.notBlank(" !", "value is blank");
+    Assert.notBlank(" _ ", "value is blank");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotBlankWithEmptyString() {
-    Assert.notBlank("", "The empty String is blank!");
+  public void assertNotBlankWithEmptyString() {
+    Assert.notBlank("", "empty String is blank");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotBlankWithNull() {
-    Assert.notBlank(null, "Null is blank!");
+  public void assertNotBlankWithNull() {
+    Assert.notBlank(null, "null is blank");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotBlankWithNullCharacter() {
-    Assert.notBlank("\0", "The null Character is blank!");
+  public void assertNotBlankWithNullCharacter() {
+    Assert.notBlank("\0", "null Character is blank");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotBlankWithSpaces() {
-    Assert.notBlank("  ", "Spaces is blank!");
+  public void assertNotBlankWithSpaces() {
+    Assert.notBlank("  ", "spaces are blank");
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotBlankWithTabs() {
-    try {
-      Assert.notBlank("\t", "The {0} is blank!", "tab character");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("The tab character is blank!", e.getMessage());
-      throw e;
-    }
+  @Test
+  public void assertNotBlankWithTabAndNewline() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("tab and newlines are blank");
+    Assert.notBlank("\t\n", "%1$s and {1} are blank", "tab", "newlines");
   }
 
-  @Test(expected = AssertionFailedException.class)
+  @Test
   public void testAssertNotBlankWithNewlineThrowsAssertionFailedException() {
-    Assert.notBlank("\n", new AssertionFailedException("The newline character is blank!"));
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.notBlank("\n", new AssertionFailedException("test"));
   }
 
   @Test
-  public void testAssertNotEmptyStrings() {
-    Assert.notEmpty((String) null, "The String is empty!");
-    Assert.notEmpty("blank", "The String is empty!");
-    Assert.notEmpty("empty", "The String is empty!");
+  public void assertNotEmptyWithNonEmptyStrings() {
+    Assert.notEmpty((String) null, "String is empty");
+    Assert.notEmpty("blank", "String is empty");
+    Assert.notEmpty("empty", "String is empty");
     Assert.notEmpty("null", "The String 'null' is not empty!");
-    Assert.notEmpty(" ", "The String is empty!");
-    Assert.notEmpty("   ", "The String is empty!");
-    Assert.notEmpty("_", "The String is empty!");
-    Assert.notEmpty("___", "The String is empty!");
-    Assert.notEmpty("\0", "The String is empty!");
-    Assert.notEmpty("\n", "The String is empty!");
-    Assert.notEmpty("\t", "The String is empty!");
-    Assert.notEmpty("test", "The String is empty!");
+    Assert.notEmpty(" ", "String is empty");
+    Assert.notEmpty("   ", "String is empty");
+    Assert.notEmpty("_", "String is empty");
+    Assert.notEmpty("___", "String is empty");
+    Assert.notEmpty("\0", "String is empty");
+    Assert.notEmpty("\n", "String is empty");
+    Assert.notEmpty("\t", "String is empty");
+    Assert.notEmpty("test", "String is empty");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyWithEmptyString() {
-    Assert.notEmpty("", "The String is empty!");
+  public void assertNotEmptyWithEmptyString() {
+    Assert.notEmpty("", "String is empty");
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyStringUsingMessage() {
-    try {
-      Assert.notEmpty("", "The {0} String is empty!", "empty");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("The empty String is empty!", e.getMessage());
-      throw e;
-    }
+  @Test
+  public void assertNotEmptyWithEmptyStringAndPlaceholderMessage() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("empty String is empty");
+    Assert.notEmpty("", "{0} String is %1$s", "empty");
   }
 
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertNotEmptyStringThrowsAssertionFailedException() {
-    Assert.notEmpty("", new AssertionFailedException());
+  @Test
+  public void assertNotEmptyStringThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.notEmpty("", new AssertionFailedException("test"));
   }
 
   @Test
