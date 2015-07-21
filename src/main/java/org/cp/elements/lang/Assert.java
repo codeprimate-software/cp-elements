@@ -41,10 +41,9 @@ public abstract class Assert {
    *
    * @param valid a Boolean value resulting from the evaluation of the criteria used by the caller
    * to determine the validity of the argument.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object arguments used to populate the placeholders in the message.
-   * @throws java.lang.IllegalArgumentException if the assertion fails and the argument is invalid.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the argument is invalid.
    * @see #argument(Boolean, RuntimeException)
    */
   public static void argument(final Boolean valid, final String message, final Object... arguments) {
@@ -56,8 +55,8 @@ public abstract class Assert {
    *
    * @param valid a Boolean value resulting from the evaluation of the criteria used by the caller
    * to determine the validity of the argument.
-   * @param e the RuntimeException thrown if the assertion fails and the argument is invalid.
-   * @throws java.lang.RuntimeException if the assertion fails and the argument is invalid.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the argument is invalid.
    * @see #argument(Boolean, String, Object...)
    */
   public static void argument(final Boolean valid, final RuntimeException e) {
@@ -72,8 +71,8 @@ public abstract class Assert {
    * 
    * @param obj1 the left operand in the equality comparison.
    * @param obj2 the right operand in the equality comparison.
-   * @param message a String specifying the message for the EqualityException that is thrown if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values when formatting the message.
+   * @param message a String specifying the message for the EqualityException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
    * @throws org.cp.elements.lang.EqualityException if the assertion fails and the two objects are not equal.
    * @see #equals(Object, Object, RuntimeException)
    * @see java.lang.Object#equals(Object)
@@ -88,8 +87,8 @@ public abstract class Assert {
    *
    * @param obj1 the left operand in the equality comparison.
    * @param obj2 the right operand in the equality comparison.
-   * @param e the RuntimeException thrown if the assertion fails and the two objects are not equal.
-   * @throws java.lang.RuntimeException if the assertion fails and the two objects are not equal.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the two objects are not equal.
    * @see #equals(Object, Object, String, Object...)
    * @see java.lang.Object#equals(Object)
    */
@@ -101,15 +100,13 @@ public abstract class Assert {
 
   /**
    * Asserts that the current Thread holds the specified lock.  The assertion holds if and only if the lock is not null
-   * and the current Thread is the holder of the lock, otherwise the assertion fails.
+   * and the current Thread is the holder of the lock.
    * 
-   * @param lock an Object used as the lock and synchronization mutex/monitor.
-   * @param message a String specifying the message for the IllegalMonitorStateException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object values used as placeholder value when formatting the message.
-   * @throws java.lang.IllegalMonitorStateException if the assertion fails and the current Thread does not hold the lock
-   * or the lock is null.
-   * @see #holdsLock(Object, String, Object...)
+   * @param lock the Object used as the lock and synchronization mutex/monitor.
+   * @param message a String specifying the message for the IllegalMonitorStateException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalMonitorStateException if the current Thread does not hold the lock or the lock is null.
+   * @see #holdsLock(Object, RuntimeException)
    * @see java.lang.Thread#holdsLock(Object)
    */
   public static void holdsLock(final Object lock, final String message, final Object... arguments) {
@@ -118,13 +115,11 @@ public abstract class Assert {
 
   /**
    * Asserts that the current Thread holds the specified lock.  The assertion holds if and only if the lock is not null
-   * and the current Thread is the holder of the lock, otherwise the assertion fails.
+   * and the current Thread is the holder of the lock.
    *
-   * @param lock an Object used as the lock and synchronization mutex/monitor.
-   * @param e the RuntimeException thrown if the assertion fails and the current Thread does not hold the lock
-   * or the lock is null.
-   * @throws java.lang.RuntimeException if the the assertion fails and the current Thread does not hold the lock
-   * or the lock is null.
+   * @param lock the Object used as the lock and synchronization mutex/monitor.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the current Thread does not hold the lock or the lock is null.
    * @see #holdsLock(Object, String, Object...)
    * @see java.lang.Thread#holdsLock(Object)
    */
@@ -140,10 +135,9 @@ public abstract class Assert {
    * 
    * @param from the class type being evaluated for assignment compatibility with the 'to' class type.
    * @param to the class type used to determine if the 'from' class type is assignment compatible.
-   * @param message a String specifying the message for the ClassCastException that is thrown if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values in the message.
-   * @throws ClassCastException if the assertion fails and the 'from' class type is not assignment compatible
-   * with the 'to' class type.
+   * @param message a String specifying the message for the ClassCastException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.ClassCastException if the 'from' class type is not assignment compatible with the 'to' class type.
    * @see #isAssignableTo(Class, Class, RuntimeException)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
@@ -157,10 +151,8 @@ public abstract class Assert {
    *
    * @param from the class type being evaluated for assignment compatibility with the 'to' class type.
    * @param to the class type used to determine if the 'from' class type is assignment compatible.
-   * @param e the RuntimeException thrown if the assertion fails an the 'from' class type is not assignment compatible
-   * with the 'to' class type.
-   * @throws java.lang.RuntimeException if the assertion fails and the 'from' class type is not assignment compatible
-   * with the 'to' class type.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the 'from' class type is not assignment compatible with the 'to' class type.
    * @see #isAssignableTo(Class, Class, String, Object...)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
@@ -174,10 +166,9 @@ public abstract class Assert {
    * Asserts that the condition is false.  The assertion holds if and only if the value is equal to false.
    * 
    * @param condition the Boolean value being evaluated as a false condition.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values in the message.
-   * @throws java.lang.IllegalArgumentException if the assertion fails and the value is not false.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the value is not false.
    * @see #isFalse(Boolean, RuntimeException)
    * @see java.lang.Boolean#FALSE
    */
@@ -189,8 +180,8 @@ public abstract class Assert {
    * Asserts that the condition is false.  The assertion holds if and only if the value is equal to false.
    *
    * @param condition the Boolean value being evaluated as a false condition.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws java.lang.RuntimeException if the assertion fails and the value is not false.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the value is not false.
    * @see #isFalse(Boolean, String, Object...)
    * @see java.lang.Boolean#FALSE
    */
@@ -201,17 +192,15 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that a given object is an instance of the specified class type.  The assertion holds if and only if
+   * Asserts that the given object is an instance of the specified class type.  The assertion holds if and only if
    * the object is not null and is an instance of the specified class type.  This assertion functions exactly
    * the same as the Java instanceof operator.
    *
    * @param obj the object evaluated as an instance of the class type.
    * @param type the class type used to evaluate the object in the instanceof operator.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values in the message.
-   * @throws java.lang.IllegalArgumentException if the assertion fails and the object is not an instance of
-   * the class type.
+   * @param message a String specifying the message for the IllegalArgumentException thrown  if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the object is not an instance of the class type.
    * @see #isInstanceOf(Object, Class, RuntimeException)
    * @see java.lang.Class#isInstance(Object)
    */
@@ -220,14 +209,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that a given object is an instance of the specified class type.  The assertion holds if and only if
+   * Asserts that the given object is an instance of the specified class type.  The assertion holds if and only if
    * the object is not null and is an instance of the specified class type.  This assertion functions exactly
    * the same as the Java instanceof operator.
    *
    * @param obj the object evaluated as an instance of the class type.
    * @param type the class type used to evaluate the object in the instanceof operator.
    * @param e the RuntimeException thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the assertion fails and the object is not an instance of class type.
+   * @throws java.lang.RuntimeException if the object is not an instance of class type.
    * @see #isInstanceOf(Object, Class, String, Object...)
    * @see java.lang.Class#isInstance(Object)
    */
@@ -241,10 +230,9 @@ public abstract class Assert {
    * Asserts that the condition is true.  The assertion holds if and only if the value is equal to true.
    *
    * @param condition the Boolean value being evaluated as a true condition.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values in the message.
-   * @throws java.lang.IllegalArgumentException if the assertion fails and the value is not true.
+   * @param message a String specifying the message for the IllegalArgumentException thrown  if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the value is not true.
    * @see #isTrue(Boolean, RuntimeException)
    * @see java.lang.Boolean#TRUE
    */
@@ -257,7 +245,7 @@ public abstract class Assert {
    *
    * @param condition the Boolean value being evaluated as a true condition.
    * @param e the RuntimeException thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the assertion fails and the value is not true.
+   * @throws java.lang.RuntimeException if the value is not true.
    * @see #isTrue(Boolean, String, Object...)
    * @see java.lang.Boolean#TRUE
    */
@@ -272,10 +260,9 @@ public abstract class Assert {
    * or contains only whitespace characters.
    * 
    * @param value the String being evaluated for blankness.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values in the message.
-   * @throws java.lang.IllegalArgumentException if the assertion fails and the String is blank.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the String is blank.
    * @see #notBlank(String, RuntimeException)
    * @see java.lang.String
    */
@@ -289,7 +276,7 @@ public abstract class Assert {
    *
    * @param value the String being evaluated for blankness.
    * @param e the RuntimeException thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the assertion fails and the String is blank.
+   * @throws java.lang.RuntimeException if the String is blank.
    * @see #notBlank(String, String, Object...)
    * @see java.lang.String
    */
@@ -303,10 +290,9 @@ public abstract class Assert {
    * Asserts that the String is not empty.  The assertion holds if and only if the String is not the empty String.
    * 
    * @param value the String being evaluated for emptiness.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values in the message.
-   * @throws java.lang.IllegalArgumentException if the assertion fails and the String is empty.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the String is empty.
    * @see #notEmpty(String, RuntimeException)
    * @see java.lang.String
    */
@@ -319,7 +305,7 @@ public abstract class Assert {
    *
    * @param value the String being evaluated for emptiness.
    * @param e the RuntimeException thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the assertion fails and the String is empty.
+   * @throws java.lang.RuntimeException if the String is empty.
    * @see #notEmpty(String, String, Object...)
    * @see java.lang.String
    */
@@ -330,14 +316,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the Object array is not empty. An Object array is empty if it is null or does not contain any elements;
-   * has zero length.
+   * Asserts that the Object array is not empty.  The assertion holds if and only if the Object array is not null
+   * and contains at least 1 element.
    * 
-   * @param array the Object array being evaluated.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws IllegalArgumentException if the Object array is empty.
+   * @param array the Object array to evaluate for emptiness.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the Object array is null or empty.
+   * @see #notEmpty(Object[], RuntimeException)
    * @see java.lang.Object[]
    */
   public static void notEmpty(final Object[] array, final String message, final Object... arguments) {
@@ -345,12 +331,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the Object array is not empty. An Object array is empty if it is null or does not contain any elements;
-   * has zero length.
-   * 
-   * @param array the Object array being evaluated.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the Object array is empty.
+   * Asserts that the Object array is not empty.  The assertion holds if and only if the Object array is not null
+   * and contains at least 1 element.
+   *
+   * @param array the Object array to evaluate for emptiness.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the Object array is null or empty.
+   * @see #notEmpty(Object[], String, Object...)
    * @see java.lang.Object[]
    */
   public static void notEmpty(final Object[] array, final RuntimeException e) {
@@ -360,13 +347,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the Collection is not empty.  A Collection is empty if it is null or does not contain any elements.
+   * Asserts that the Collection is not empty.  The assertion holds if and only if the Collection is not null
+   * and contains at least 1 element.
    * 
-   * @param collection the Collection being evaluated.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws IllegalArgumentException if the Collection is empty.
+   * @param collection the Collection to evaluate for emptiness.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the Collection is null or empty.
+   * @see #notEmpty(java.util.Collection, RuntimeException)
    * @see java.util.Collection#isEmpty()
    */
   public static void notEmpty(final Collection<?> collection, final String message, final Object... arguments) {
@@ -374,11 +362,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the Collection is not empty.  A Collection is empty if it is null or does not contain any elements.
-   * 
-   * @param collection the Collection being evaluated.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the Collection is empty.
+   * Asserts that the Collection is not empty.  The assertion holds if and only if the Collection is not null
+   * and contains at least 1 element.
+   *
+   * @param collection the Collection to evaluate for emptiness.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the Collection is null or empty.
+   * @see #notEmpty(java.util.Collection, String, Object...)
    * @see java.util.Collection#isEmpty()
    */
   public static void notEmpty(final Collection<?> collection, final RuntimeException e) {
@@ -388,13 +378,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the Map is not empty.  A Map is empty if it is null or does not contain any key-value pairs.
+   * Asserts that the Map is not empty.  The assertion holds if and only if the Map is not null
+   * and contains at least 1 key/value mapping.
    * 
-   * @param map the Map being evaluated.
-   * @param message a String specifying the message for the IllegalArgumentException that is thrown if the
-   * assertion fails.
-   * @param arguments an array of Object values used to substitute for the placeholders in the message.
-   * @throws IllegalArgumentException if the Map is empty.
+   * @param map the Map to evaluate for emptiness.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the Map is null or empty.
+   * @see #notEmpty(java.util.Map, RuntimeException)
    * @see java.util.Map#isEmpty()
    */
   public static void notEmpty(final Map<?, ?> map, final String message, final Object... arguments) {
@@ -402,11 +393,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the Map is not empty.  A Map is empty if it is null or does not contain any key-value pairs.
-   * 
-   * @param map the Map being evaluated.
-   * @param e the RuntimeException to throw if the assertion fails.
-   * @throws RuntimeException if the Map is empty.
+   * Asserts that the Map is not empty.  The assertion holds if and only if the Map is not null
+   * and contains at least 1 key/value mapping.
+   *
+   * @param map the Map to evaluate for emptiness.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the Map is null or empty.
+   * @see #notEmpty(java.util.Map, String, Object...)
    * @see java.util.Map#isEmpty()
    */
   public static void notEmpty(final Map<?, ?> map, final RuntimeException e) {
@@ -420,9 +413,9 @@ public abstract class Assert {
    * is not null.
    * 
    * @param obj the Object reference being evaluated for null.
-   * @param message a String specifying the message for the NullPointerException that is thrown if the assertion fails.
-   * @param arguments an array of Object values used as placeholder values when formatting the message.
-   * @throws java.lang.NullPointerException if the assertion fails and the Object reference is null.
+   * @param message a String specifying the message for the NullPointerException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.NullPointerException if the Object reference is null.
    * @see #notNull(Object, RuntimeException)
    * @see java.lang.Object
    */
@@ -435,8 +428,8 @@ public abstract class Assert {
    * is not null.
    *
    * @param obj the Object reference being evaluated for null.
-   * @param e the RuntimeException thrown if the assertion fails and the Object reference is null.
-   * @throws java.lang.RuntimeException if the assertion fails and the Object reference is null.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the Object reference is null.
    * @see #notNull(Object, String, Object...)
    * @see java.lang.Object
    */
@@ -447,13 +440,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that two objects are the same object as determined by the identity comparison.  Two objects are the same
-   * if and only if they refer to the same object in memory.
+   * Asserts that two objects are the same object as determined by the identity comparison.  The assertion holds
+   * if and only if the two objects are the same object in memory.
    * 
    * @param obj1 the left operand in the identity comparison.
    * @param obj2 the right operand in the identity comparison.
-   * @param message a String specifying the message for the IdentityException that is thrown if the assertion fails.
-   * @param arguments an array of Object arguments used to populate the placeholders in the message.
+   * @param message a String specifying the message for the IdentityException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
    * @throws org.cp.elements.lang.IdentityException if the two objects are not the same.
    * @see #same(Object, Object, RuntimeException)
    * @see java.lang.Object
@@ -463,13 +456,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that two objects are the same object as determined by the identity comparison.  Two objects are the same
-   * if and only if they refer to the same object in memory.
+   * Asserts that two objects are the same object as determined by the identity comparison.  The assertion holds
+   * if and only if the two objects are the same object in memory.
    *
    * @param obj1 the left operand in the identity comparison.
    * @param obj2 the right operand in the identity comparison.
-   * @param e the RuntimeException thrown if the assertion fails and the objects are not the same.
-   * @throws java.lang.RuntimeException if the assertion fails and the objects are not the same.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the objects are not the same.
    * @see #same(Object, Object, String, Object...)
    * @see java.lang.Object
    */
@@ -483,9 +476,9 @@ public abstract class Assert {
    * Asserts that the state is valid.  The assertion holds if and only if valid is true.
    * 
    * @param valid a Boolean value indicating whether the state is valid.
-   * @param message a String specifying the message for the IllegalStateException that is thrown if the assertion fails.
-   * @param arguments an array of Object arguments used to populate the placeholders in the message.
-   * @throws java.lang.IllegalStateException if the assertion fails and the state is invalid.
+   * @param message a String specifying the message for the IllegalStateException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, RuntimeException)
    */
   public static void state(final Boolean valid, final String message, final Object... arguments) {
@@ -496,8 +489,8 @@ public abstract class Assert {
    * Asserts that the state is valid.  The assertion holds if and only if valid is true.
    * 
    * @param valid a Boolean value indicating whether the state is valid.
-   * @param e the RuntimeException thrown if the assertion fails and the state is invalid.
-   * @throws java.lang.RuntimeException if the assertion fails and the state is invalid.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the state is invalid.
    * @see #state(Boolean, String, Object...)
    */
   public static void state(final Boolean valid, final RuntimeException e) {
@@ -509,12 +502,11 @@ public abstract class Assert {
   /**
    * Asserts that an operation is supported.  The assertion holds if and only if supported is true.
    *
-   * @param supported a Boolean value resulting from the evaluation of the criteria used to determine
-   * if the operation is supported.
-   * @param message a String specifying the message of the UnsupportedOperationException that is thrown
-   * if the assertion fails.
-   * @param arguments an array of Object arguments used to populate the placeholders in the message.
-   * @throws java.lang.UnsupportedOperationException if the assertion fails and the operations is unsupported.
+   * @param supported a Boolean value resulting from the evaluation of the criteria used by the caller
+   * to determine if the operation is supported.
+   * @param message a String specifying the message of the UnsupportedOperationException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
    * @see #supported(Boolean, RuntimeException)
    */
   public static void supported(final Boolean supported, final String message, final Object... arguments) {
@@ -524,9 +516,10 @@ public abstract class Assert {
   /**
    * Asserts that an operation is supported.  The assertion holds if and only if supported is true.
    *
-   * @param supported a Boolean value resulting from the evaluation of the criteria used to determine
-   * if the operation is supported.
-   * @param e the RuntimeException thrown if the assertion fails and the operation is unsupported.
+   * @param supported a Boolean value resulting from the evaluation of the criteria used by the caller
+   * to determine if the operation is supported.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the operation is unsupported.
    * @see #supported(Boolean, String, Object...)
    */
   public static void supported(final Boolean supported, final RuntimeException e) {

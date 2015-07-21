@@ -22,9 +22,8 @@
 package org.cp.elements.lang;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -410,7 +409,7 @@ public class AssertTest {
   }
 
   @Test
-  public void testAssertNotBlankWithNewlineThrowsAssertionFailedException() {
+  public void assertNotBlankWithNewlineThrowsAssertionFailedException() {
     expectedException.expect(AssertionFailedException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
     expectedException.expectMessage("test");
@@ -418,7 +417,7 @@ public class AssertTest {
   }
 
   @Test
-  public void assertNotEmptyWithNonEmptyStrings() {
+  public void assertNotEmptyStringWithNonEmptyStrings() {
     Assert.notEmpty((String) null, "String is empty");
     Assert.notEmpty("blank", "String is empty");
     Assert.notEmpty("empty", "String is empty");
@@ -434,12 +433,12 @@ public class AssertTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotEmptyWithEmptyString() {
+  public void assertNotEmptyStringWithEmptyString() {
     Assert.notEmpty("", "String is empty");
   }
 
   @Test
-  public void assertNotEmptyWithEmptyStringAndPlaceholderMessage() {
+  public void assertNotEmptyStringWithEmptyStringAndPlaceholderMessage() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
     expectedException.expectMessage("empty String is empty");
@@ -455,115 +454,99 @@ public class AssertTest {
   }
 
   @Test
-  public void testAssertNotEmptyArray() {
-    Assert.notEmpty(new Object[] { "assert", "mock", "test" }, "The Object array is empty!");
-    Assert.notEmpty(new String[1], "The Object array is empty!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyArrayWithNull() {
-    Assert.notEmpty((Object[]) null, "A null Object array reference is empty!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyArrayWithEmptyArray() {
-    Assert.notEmpty(new Object[0], "A zero element Object array is empty!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyArrayUsingMessage() {
-    try {
-      Assert.notEmpty(new Object[0], "The {0} is empty!", "Object array");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("The Object array is empty!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertNotEmptyArrayThrowsAssertionFailedException() {
-    Assert.notEmpty(new Object[0], new AssertionFailedException());
+  public void assertNotEmptyArray() {
+    Assert.notEmpty(new Object[] { "assert", "mock", "test" }, "Object array is empty");
+    Assert.notEmpty(new String[1], "Object array is empty");
   }
 
   @Test
-  public void testAssertNotEmptyCollection() {
-    final Collection<String> animals = new ArrayList<String>(3);
-
-    animals.add("bat");
-    animals.add("cat");
-    animals.add("dog");
-
-    org.junit.Assert.assertNotNull(animals);
-    assertFalse(animals.isEmpty());
-
-    Assert.notEmpty(animals, "The Collection is empty!");
-    Assert.notEmpty(Collections.singleton(1), "The Collection is empty!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyCollectionWithNull() {
-    Assert.notEmpty((Collection) null, "A null Collection reference is empty!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyCollectionWithEmptyCollection() {
-    Assert.notEmpty(Collections.emptyList(), "The List is empty!");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyCollectionUsingMessage() {
-    try {
-      Assert.notEmpty(Collections.emptySet(), "The {0} is empty!", "Set");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("The Set is empty!", e.getMessage());
-      throw e;
-    }
-  }
-
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertNotEmptyCollectionThrowsAssertionFailedException() {
-    Assert.notEmpty(Collections.emptyList(), new AssertionFailedException());
+  public void assertNotEmptyArrayWithNull() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Object array is null");
+    Assert.notEmpty((Object[]) null, "Object array is %1$s", "null", "empty");
   }
 
   @Test
-  public void testAssertNotEmptyMap() {
-    final Map<String, String> map = new HashMap<String, String>(1);
-
-    map.put("key", "value");
-
-    org.junit.Assert.assertNotNull(map);
-    assertFalse(map.isEmpty());
-
-    Assert.notEmpty(map, "The Map is empty!");
-    Assert.notEmpty(Collections.singletonMap("myKey", "myValue"), "The Map is empty!");
+  public void assertNotEmptyArrayWithEmptyArray() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Object array is empty");
+    Assert.notEmpty(new Object[0], "Object array is {1}", "null", "empty");
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyMapWithNull() {
-    Assert.notEmpty((Map) null, "A null Map reference is empty!");
+  @Test
+  public void assertNotEmptyArrayThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.notEmpty((Object[]) null, new AssertionFailedException("test"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyMapWithEmptyMap() {
-    Assert.notEmpty(Collections.emptyMap(), "The Map is empty!");
+  @Test
+  public void assertNotEmptyCollection() {
+    Assert.notEmpty(Arrays.asList("ant", "bat", "cat", "dog"), "Collection is empty");
+    Assert.notEmpty(Collections.singleton(1), "Collection is empty");
+    Assert.notEmpty(Collections.singletonList("test"), "Collection is empty");
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAssertNotEmptyMapUsingMessage() {
-    try {
-      Assert.notEmpty(Collections.emptyMap(), "The {0} is empty!", "Map");
-    }
-    catch (IllegalArgumentException e) {
-      assertEquals("The Map is empty!", e.getMessage());
-      throw e;
-    }
+  @Test
+  public void assertNotEmptyCollectionWithNull() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Collection is null");
+    Assert.notEmpty((Collection) null, "Collection is %1$s", "null", "empty");
   }
 
-  @Test(expected = AssertionFailedException.class)
-  public void testAssertNotEmptyMapThrowsAssertionFailedException() {
-    Assert.notEmpty(Collections.emptyMap(), new AssertionFailedException());
+  @Test
+  public void assertNotEmptyCollectionWithEmptyCollection() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Collection is empty");
+    Assert.notEmpty(Collections.emptyList(), "Collection is {1}", "null", "empty");
+  }
+
+  @Test
+  public void assertNotEmptyCollectionThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.notEmpty(Collections.emptyList(), new AssertionFailedException("test"));
+  }
+
+  @Test
+  public void assertNotEmptyMap() {
+    Map<String, String> map = new HashMap<String, String>(2);
+
+    map.put("one", "1");
+    map.put("two", "2");
+
+    Assert.notEmpty(map, "Map is empty");
+    Assert.notEmpty(Collections.singletonMap("myKey", "myValue"), "Map is empty");
+  }
+
+  @Test
+  public void assertNotEmptyMapWithNull() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Map is null");
+    Assert.notEmpty((Map) null, "Map is %1$s", "null", "empty");
+  }
+
+  @Test
+  public void assertNotEmptyMapWithEmptyMap() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Map is empty");
+    Assert.notEmpty(Collections.emptyMap(), "Map is {1}", "null", "empty");
+  }
+
+  @Test
+  public void assertNotEmptyMapThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.notEmpty(Collections.emptyMap(), new AssertionFailedException("test"));
   }
 
   @Test
