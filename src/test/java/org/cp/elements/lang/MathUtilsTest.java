@@ -21,9 +21,14 @@
 
 package org.cp.elements.lang;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
+import java.math.BigInteger;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The MathUtilsTest class is a test suite of test cases testing the contract and functionality of the MathUtils 
@@ -35,6 +40,9 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class MathUtilsTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   protected void assertEqualIntArrays(final int[] expected, final int[] actual) {
     assertEquals(expected.length, actual.length);
@@ -104,19 +112,48 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testFactorial() {
-    assertEquals(1, MathUtils.factorial(0));
-    assertEquals(1, MathUtils.factorial(1));
-    assertEquals(2, MathUtils.factorial(2));
-    assertEquals(6, MathUtils.factorial(3));
-    assertEquals(24, MathUtils.factorial(4));
-    assertEquals(120, MathUtils.factorial(5));
-    assertEquals(720, MathUtils.factorial(6));
+  public void factorial() {
+    assertThat(MathUtils.factorial(BigInteger.ZERO), is(equalTo(BigInteger.ONE)));
+    assertThat(MathUtils.factorial(BigInteger.ONE), is(equalTo(BigInteger.ONE)));
+    assertThat(MathUtils.factorial(MathUtils.TWO), is(equalTo(MathUtils.TWO)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(3)).longValue(), is(equalTo(6l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(4)).longValue(), is(equalTo(24l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(5)).longValue(), is(equalTo(120l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(6)).longValue(), is(equalTo(720l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(7)).longValue(), is(equalTo(5040l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(8)).longValue(), is(equalTo(40320l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(9)).longValue(), is(equalTo(362880l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(10)).longValue(), is(equalTo(3628800l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(11)).longValue(), is(equalTo(39916800l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(12)).longValue(), is(equalTo(479001600l)));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testFactorialWithIllegalArgument() {
-    MathUtils.factorial(-1);
+  @Test
+  public void factorialHandlesNumericOverflow() {
+    assertThat(MathUtils.factorial(BigInteger.valueOf(13)).longValue(), is(equalTo(6227020800l)));
+    assertThat(MathUtils.factorial(BigInteger.valueOf(20)).longValue(), is(equalTo(2432902008176640000l)));
+  }
+
+  @Test
+  public void factorialHandlesStackOverflow() {
+    MathUtils.factorial(BigInteger.valueOf(20000));
+  }
+
+  @Test
+  public void factorialOfNegativeOne() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage(is(equalTo(String.format(MathUtils.NUMBER_LESS_THAN_ZERO_ERROR_MESSAGE,
+      MathUtils.NEGATIVE_ONE))));
+    MathUtils.factorial(MathUtils.NEGATIVE_ONE);
+  }
+
+  @Test
+  public void factorialOfNullValue() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage(is(equalTo("value must not be null")));
+    MathUtils.factorial(null);
   }
 
   @Test
