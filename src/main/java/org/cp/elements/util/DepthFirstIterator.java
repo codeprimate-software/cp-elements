@@ -21,44 +21,46 @@
 
 package org.cp.elements.util;
 
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.cp.elements.lang.Assert;
 
 /**
- * The BreadthFirstIterator class is an Iterator implementation and facade for an Iterator of Iterators
- * iterating elements in row order, left to right, top to bottom.
+ * The DepthFirstIterator class is an Iterator implementation and facade for an Iterator of Iterators iterating elements
+ * in column order, from top to bottom, left to right.
  *
- * @author John Blum
+ * @author John J. Blum
  * @see java.util.Iterator
- * @see org.cp.elements.util.DepthFirstIterator
+ * @see org.cp.elements.util.BreadthFirstIterator
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class BreadthFirstIterator<T> implements Iterator<T> {
+public class DepthFirstIterator<T> implements Iterator<T> {
 
-  private AtomicBoolean nextCalled = new AtomicBoolean(false);
+  private final AtomicBoolean nextCalled = new AtomicBoolean(false);
 
-  private final Deque<Iterator<T>> iterators = new LinkedList<Iterator<T>>();
+  private final List<Iterator<T>> iteratorList = new ArrayList<Iterator<T>>();
+
+  private int currentIteratorIndex = 0;
 
   /**
-   * Constructs an instance of the BreadthFirstIterator class wrapping the Iterator of Iterators to collectively
-   * traverse the Iterators in order, left to right, top to bottom.
+   * Constructs an instance of the DepthFirstIterator class initialized with Iterator of Iterators to collectively
+   * traverse the Iterators in depth-first order, or top to bottom, left to right.
    *
-   * @param iterators the Iterator of Iterators to encapsulate in a breadth-first traversal.
-   * @throws java.lang.NullPointerException if the Iterator of Iterators reference is null.
+   * @param iterators the Iterator of Iterators to encapsulate in a depth-first traversal.
+   * @throws java.lang.NullPointerException if the Iterator of Iterators references is null.
    * @see java.util.Iterator
    */
-  public BreadthFirstIterator(final Iterator<Iterator<T>> iterators) {
+  public DepthFirstIterator(final Iterator<Iterator<T>> iterators) {
     Assert.notNull(iterators, "The Iterator of Iterators must not be null!");
 
     for (Iterator<T> iterator : CollectionUtils.iterable(iterators)) {
       if (iterator != null) {
-        this.iterators.add(iterator);
+        iteratorList.add(iterator);
       }
     }
   }
@@ -71,11 +73,12 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public boolean hasNext() {
-    while (!(iterators.isEmpty() || iterators.peek().hasNext())) {
-      Assert.isFalse(iterators.removeFirst().hasNext(), new IllegalStateException("removing a non-empty Iterator"));
+    while (!(iteratorList.isEmpty() || iteratorList.get(currentIteratorIndex).hasNext())) {
+      Assert.isFalse(iteratorList.remove(currentIteratorIndex).hasNext(), "removing a non-empty Iterator");
+      currentIteratorIndex = (iteratorList.isEmpty() ? 0 : (currentIteratorIndex % iteratorList.size()));
     }
 
-    return (!iterators.isEmpty() && iterators.peek().hasNext());
+    return !iteratorList.isEmpty();
   }
 
   /**
@@ -89,9 +92,10 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
   @Override
   public T next() {
     Assert.isTrue(hasNext(), new NoSuchElementException("The iteration has no more elements!"));
-    T value = iterators.peek().next();
+    T nextValue = iteratorList.get(currentIteratorIndex).next();
+    currentIteratorIndex = (++currentIteratorIndex % iteratorList.size());
     nextCalled.set(true);
-    return value;
+    return nextValue;
   }
 
   /**
@@ -104,7 +108,9 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
   @Override
   public void remove() {
     Assert.state(nextCalled.compareAndSet(true, false), "next was not called before remove");
-    iterators.peek().remove();
+    int iteratorIndexForRemove = (currentIteratorIndex - 1);
+    iteratorIndexForRemove = (iteratorIndexForRemove < 0 ? iteratorList.size() - 1 : iteratorIndexForRemove);
+    iteratorList.get(iteratorIndexForRemove).remove();
   }
 
 }
