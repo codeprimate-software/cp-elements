@@ -43,6 +43,7 @@ public class QuickSortTest extends CommonSortTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void testSetAndGetSizeThreshold() {
     QuickSort sorter = getSorter();
 

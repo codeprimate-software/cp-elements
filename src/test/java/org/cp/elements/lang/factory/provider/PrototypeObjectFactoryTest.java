@@ -199,7 +199,7 @@ public class PrototypeObjectFactoryTest extends AbstractMockingTestSuite {
     assertSame(mockObject, objectFactory.postConstruct(mockObject, arguments));
   }
 
-  protected static interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable {
+  protected interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable {
   }
 
   protected static final class TestPrototypeObjectFactory extends PrototypeObjectFactory {

@@ -80,10 +80,10 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   private ID id;
 
-  private final Map<String, String> propertyNameToFieldNameMapping = new TreeMap<String, String>();
+  private final Map<String, String> propertyNameToFieldNameMapping = new TreeMap<>();
 
   private final Map<String, ParameterizedStateChangeCallback> propertyNameToParameterizedStateChangeCallbackMapping =
-    new TreeMap<String, ParameterizedStateChangeCallback>();
+    new TreeMap<>();
 
   private PROCESS creatingProcess;
   private PROCESS lastModifyingProcess;
@@ -471,8 +471,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @throws IllegalArgumentException if the specified Bean is not an instance of this Bean class.
    * @see java.lang.Comparable#compareTo(Object)
    */
-  @Override
-  public int compareTo(final Bean obj) {
+  @SuppressWarnings("all")
+  public int compareTo(final Bean<ID, USER, PROCESS> obj) {
     Assert.isInstanceOf(obj, getClass(), new ClassCastException(String.format(
       "The Bean being compared with this Bean must be an instance of %1$s!", getClass().getName())));
     return ComparatorUtils.compareIgnoreNull(getId(), obj.getId());
@@ -791,7 +791,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * The StateChangeCallback interface is a callback interface allowing the invocation of a method to be called
    * by the invoked method.
    */
-  protected static interface StateChangeCallback {
+  protected interface StateChangeCallback {
     void changeState();
   }
 
@@ -799,7 +799,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * The ParameterizedStateChangeCallback interface is a callback interface affecting the state of this Bean.
    * @param <T> the Class type of the value.
    */
-  protected static interface ParameterizedStateChangeCallback<T> {
+  protected interface ParameterizedStateChangeCallback<T> {
     void changeState(T newValue);
   }
 

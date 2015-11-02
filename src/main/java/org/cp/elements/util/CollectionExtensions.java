@@ -55,8 +55,9 @@ public class CollectionExtensions {
    * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL
+  @SafeVarargs
   public static <T> From<T> from(final T... array) {
-    return new FromExpression<T>(array);
+    return new FromExpression<>(array);
   }
 
   /**
@@ -65,7 +66,7 @@ public class CollectionExtensions {
    * @param <T> the element type of objects in the List or Set.
    * @see org.cp.elements.lang.DslExtension
    */
-  public static interface From<T> extends DslExtension {
+  public interface From<T> extends DslExtension {
 
     /**
      * Converts an object array to a List.
@@ -73,7 +74,7 @@ public class CollectionExtensions {
      * @return a List implementation containing all the elements in the given object array to the from operator.
      * @see java.util.List
      */
-    public List<T> toList();
+    List<T> toList();
 
     /**
      * Converts an object array to a Set.
@@ -81,7 +82,8 @@ public class CollectionExtensions {
      * @return a Set implementation containing all the elements of the given object array to the from operator.
      * @see java.util.Set
      */
-    public Set<T> toSet();
+    Set<T> toSet();
+
   }
 
   /**
@@ -94,6 +96,7 @@ public class CollectionExtensions {
 
     private final T[] array;
 
+    @SafeVarargs
     public FromExpression(final T... array) {
       this.array = array;
     }
@@ -106,7 +109,7 @@ public class CollectionExtensions {
 
     public Set<T> toSet() {
       return (array == null ? Collections.<T>emptySet() : (array.length == 1 ? Collections.singleton(array[0])
-        : new HashSet<T>(toList())));
+        : new HashSet<>(toList())));
     }
 
     @Override

@@ -46,7 +46,7 @@ import org.cp.elements.lang.ObjectUtils;
 public abstract class AbstractConversionService implements ConversionService {
 
   private final Map<ConverterDescriptor, Converter> registry = Collections.synchronizedMap(
-    new HashMap<ConverterDescriptor, Converter>(19, 0.95f));
+    new HashMap<>(19, 0.95f));
 
   /**
    * Gets a raw reference to the registry of Converters registered with this ConversionService.
@@ -69,7 +69,6 @@ public abstract class AbstractConversionService implements ConversionService {
    * desired Class type.
    * @see #canConvert(Class, Class)
    */
-  @Override
   public boolean canConvert(final Object value, final Class<?> toType) {
     return (value != null && canConvert(value.getClass(), toType));
   }
@@ -84,7 +83,7 @@ public abstract class AbstractConversionService implements ConversionService {
    * @see #canConvert(Object, Class)
    * @see org.cp.elements.util.convert.Converter#canConvert(Class, Class)
    */
-  @Override
+  @SuppressWarnings("unchecked")
   public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
     for (Converter converter : this) {
       if (converter.canConvert(fromType, toType)) {
@@ -107,7 +106,6 @@ public abstract class AbstractConversionService implements ConversionService {
    * @see org.cp.elements.util.convert.Converter#convert(Object)
    * @see org.cp.elements.util.convert.Converter#convert(Object, Class)
    */
-  @Override
   @SuppressWarnings("unchecked")
   public <T> T convert(final Object value, final Class<T> toType) {
     for (ConverterDescriptor descriptor : getRegistry().keySet()) {
@@ -155,8 +153,6 @@ public abstract class AbstractConversionService implements ConversionService {
       "The Converter (%1$s) does not directly implement the Converter interface or extend either the AbstractConverter or ConverterAdapter class!",
         converter.getClass().getName())));
 
-    assert parameterizedType != null;
-
     Class fromType = getRawClassType(parameterizedType.getActualTypeArguments()[0]);
     Class toType = getRawClassType(parameterizedType.getActualTypeArguments()[1]);
 
@@ -187,6 +183,7 @@ public abstract class AbstractConversionService implements ConversionService {
    * @see org.cp.elements.util.convert.Converter
    * @see org.cp.elements.util.convert.ConverterAdapter
    */
+  @SuppressWarnings("all")
   protected boolean isParameterizedConverterType(final Type type) {
     return (type instanceof ParameterizedType && ((Converter.class.equals(((ParameterizedType) type).getRawType())
       || AbstractConverter.class.equals(((ParameterizedType) type).getRawType())
@@ -200,7 +197,6 @@ public abstract class AbstractConversionService implements ConversionService {
    * @see java.util.Iterator
    * @see org.cp.elements.util.convert.Converter
    */
-  @Override
   public Iterator<Converter> iterator() {
     return Collections.unmodifiableCollection(getRegistry().values()).iterator();
   }
@@ -214,7 +210,6 @@ public abstract class AbstractConversionService implements ConversionService {
    * @see #unregister(Converter)
    * @see org.cp.elements.util.convert.Converter
    */
-  @Override
   public void register(final Converter<?, ?> converter) {
     Assert.notNull(converter, "The Converter to register with this ConversionService ({0}) cannot be null!",
       this.getClass().getName());
@@ -230,7 +225,6 @@ public abstract class AbstractConversionService implements ConversionService {
    * @see #register(Converter)
    * @see org.cp.elements.util.convert.Converter
    */
-  @Override
   public void unregister(final Converter<?, ?> converter) {
     for (ConverterDescriptor descriptor : getRegistry().keySet()) {
       if (descriptor.getConverter().equals(converter)) {

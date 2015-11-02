@@ -21,12 +21,12 @@
 
 package org.cp.elements.util.convert;
 
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Constants;
 
 /**
  * The ConverterAdapter class is an abstract base class for all Converter implementations implemented as an Adapter
  * throwing UnsupportedOperationExceptions for all unimplemented Converter methods.
- * <p/>
+ *
  * @author John Blum
  * @see java.lang.UnsupportedOperationException
  * @see org.cp.elements.util.convert.AbstractConverter
@@ -47,7 +47,7 @@ public abstract class ConverterAdapter<S, T> extends AbstractConverter<S, T> {
    */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -61,7 +61,7 @@ public abstract class ConverterAdapter<S, T> extends AbstractConverter<S, T> {
    */
   @Override
   public T convert(final S value) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -77,7 +77,7 @@ public abstract class ConverterAdapter<S, T> extends AbstractConverter<S, T> {
    */
   @Override
   public <QT extends T> QT convert(final S value, final Class<QT> qualifyingType) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
 }

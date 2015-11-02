@@ -43,7 +43,7 @@ public class DepthFirstIterator<T> implements Iterator<T> {
 
   private final AtomicBoolean nextCalled = new AtomicBoolean(false);
 
-  private final List<Iterator<T>> iteratorList = new ArrayList<Iterator<T>>();
+  private final List<Iterator<T>> iteratorList = new ArrayList<>();
 
   private int currentIteratorIndex = 0;
 

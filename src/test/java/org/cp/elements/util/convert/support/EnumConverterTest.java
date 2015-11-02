@@ -21,18 +21,21 @@
 
 package org.cp.elements.util.convert.support;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
 import org.cp.elements.enums.TimeUnit;
 import org.cp.elements.util.convert.ConversionException;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The EnumConverterTest class is a test suite of test cases testing the contract and functionality of the
  * EnumConverter class.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.util.convert.support.EnumConverter
  * @see org.junit.Test
@@ -42,68 +45,59 @@ public class EnumConverterTest {
 
   private EnumConverter converter = new EnumConverter();
 
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
+
   @Test
-  public void testCanConvert() {
-    assertTrue(converter.canConvert(String.class, Enum.class));
-    assertTrue(converter.canConvert(String.class, Gender.class));
-    assertTrue(converter.canConvert(String.class, Race.class));
-    assertTrue(converter.canConvert(String.class, TimeUnit.class));
+  public void canConvert() {
+    assertThat(converter.canConvert(String.class, Enum.class), is(true));
+    assertThat(converter.canConvert(String.class, Gender.class), is(true));
+    assertThat(converter.canConvert(String.class, Race.class), is(true));
+    assertThat(converter.canConvert(String.class, TimeUnit.class), is(true));
   }
 
   @Test
-  public void testCannotConvert() {
-    assertFalse(converter.canConvert(Enum.class, Enum.class));
-    assertFalse(converter.canConvert(null, Enum.class));
-    assertFalse(converter.canConvert(Enum.class, null));
-    assertFalse(converter.canConvert(Enum.class, String.class));
-    assertFalse(converter.canConvert(Enum.class, Race.class));
-    assertFalse(converter.canConvert(Enum.class, Gender.class));
-    assertFalse(converter.canConvert(Character.class, Enum.class));
-    assertFalse(converter.canConvert(Boolean.class, Enum.class));
+  public void cannotConvert() {
+    assertThat(converter.canConvert(Enum.class, Enum.class), is(false));
+    assertThat(converter.canConvert(null, Enum.class), is(false));
+    assertThat(converter.canConvert(Enum.class, null), is(false));
+    assertThat(converter.canConvert(Enum.class, String.class), is(false));
+    assertThat(converter.canConvert(Enum.class, Race.class), is(false));
+    assertThat(converter.canConvert(Enum.class, Gender.class), is(false));
+    assertThat(converter.canConvert(Character.class, Enum.class), is(false));
+    assertThat(converter.canConvert(Boolean.class, Enum.class), is(false));
   }
 
   @Test
-  public void testConvert() {
+  public void convert() {
     Gender gender = converter.convert("FEMALE", Gender.class);
 
-    assertNotNull(gender);
-    assertEquals(Gender.FEMALE, gender);
+    assertThat(gender, is(notNullValue()));
+    assertThat(gender, is(equalTo(Gender.FEMALE)));
   }
 
-  @Test(expected = ConversionException.class)
-  public void testConvertInvalidEnum() {
-    try {
-      converter.convert("BLACK", Gender.class);
-    }
-    catch (ConversionException expected) {
-      assertEquals(String.format("The String (BLACK) is not a valid enumerated value of Enum (%1$s)!", Gender.class),
-        expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void convertInvalidEnum() {
+    expectedException.expect(ConversionException.class);
+    expectedException.expectCause(is(instanceOf(IllegalArgumentException.class)));
+    expectedException.expectMessage(String.format("(BLACK) is not a valid enumerated value of Enum (%1$s)", Gender.class));
+    converter.convert("BLACK", Gender.class);
   }
 
-  @Test(expected = ConversionException.class)
-  public void testConvertInvalidEnumValue() {
-    try {
-      converter.convert("IT", Gender.class);
-    }
-    catch (ConversionException expected) {
-      assertEquals(String.format("The String (IT) is not a valid enumerated value of Enum (%1$s)!", Gender.class),
-        expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void convertInvalidEnumValue() {
+    expectedException.expect(ConversionException.class);
+    expectedException.expectCause(is(instanceOf(IllegalArgumentException.class)));
+    expectedException.expectMessage(String.format("(IT) is not a valid enumerated value of Enum (%1$s)", Gender.class));
+    converter.convert("IT", Gender.class);
   }
 
-  @Test(expected = ConversionException.class)
-  public void testConvertWithEnum() {
-    try {
-      converter.convert("test", Enum.class);
-    }
-    catch (ConversionException expected) {
-      assertEquals(String.format("The String (test) is not a valid enumerated value of Enum (%1$s)!", Enum.class),
-        expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void convertWithEnum() {
+    expectedException.expect(ConversionException.class);
+    expectedException.expectCause(is(instanceOf(IllegalArgumentException.class)));
+    expectedException.expectMessage(String.format("(test) is not a valid enumerated value of Enum (%1$s)", Enum.class));
+    converter.convert("test", Enum.class);
   }
 
 }

@@ -124,6 +124,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.util.Arrays#asList(Object[])
    */
   @Override
+  @SuppressWarnings("all")
   public <E> E search(final E... array) {
     return search(Arrays.asList(array));
   }
@@ -184,6 +185,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see java.util.Arrays#asList(Object[])
    */
+  @SuppressWarnings("all")
   public <E> Iterable<E> searchForAll(final E... array) {
     return searchForAll(Arrays.asList(array));
   }
@@ -204,7 +206,7 @@ public abstract class AbstractSearcher implements Searcher {
   public <E> Iterable<E> searchForAll(final Collection<E> collection) {
     Assert.notNull(collection, "The collection to search cannot be null!");
 
-    final List<E> results = new ArrayList<E>(collection.size());
+    final List<E> results = new ArrayList<>(collection.size());
 
     for (E element : collection) {
       if (getMatcher().isMatch(element)) {
@@ -352,7 +354,7 @@ public abstract class AbstractSearcher implements Searcher {
    * 'listMethod' attribute that converts the object into a searchable list of elements.
    * @return a searchable list of elements from the given object.
    * @see java.lang.reflect.Method#invoke(Object, Object...)
-   * @see org.cp.elements.lang.ClassUtils#getMethod(Class, String)
+   * @see org.cp.elements.lang.ClassUtils#getMethod(Class, String, Class[])
    * @see org.cp.elements.util.search.annotation.Searchable
    */
   @SuppressWarnings("unchecked")
@@ -377,7 +379,7 @@ public abstract class AbstractSearcher implements Searcher {
    */
   protected static class MatcherHolder {
 
-    private static final ThreadLocal<Matcher<?>> MATCHER_HOLDER = new ThreadLocal<Matcher<?>>();
+    private static final ThreadLocal<Matcher<?>> MATCHER_HOLDER = new ThreadLocal<>();
 
     public static Matcher<?> get() {
       return MATCHER_HOLDER.get();

@@ -70,11 +70,9 @@ public class ThreadUtilsTest {
     final int expectedWait = 500;
     final long t0 = System.currentTimeMillis();
 
-    final Runnable testThreadRunnable = new Runnable() {
-      public void run() {
-        array[0] = true;
-        sleep(expectedWait);
-      }
+    final Runnable testThreadRunnable = () -> {
+      array[0] = true;
+      sleep(expectedWait);
     };
 
     assertFalse(array[0]);
@@ -103,11 +101,7 @@ public class ThreadUtilsTest {
   public void testJoinInterruptedDeprecated() {
     final Thread mainThread = Thread.currentThread();
 
-    final Runnable testThreadRunnable = new Runnable() {
-      public void run() {
-        mainThread.interrupt();
-      }
-    };
+    final Runnable testThreadRunnable = mainThread::interrupt;
 
     final Thread testThread = new Thread(testThreadRunnable, "Test Thread");
     testThread.setDaemon(false);

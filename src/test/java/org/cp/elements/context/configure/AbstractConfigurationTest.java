@@ -306,13 +306,8 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  // NOTE integration test!
   public void testGetDefaultPropertyValueAs() {
-    User guestUser = new User() {
-      @Override public String getUsername() {
-        return "GUEST";
-      }
-    };
+    User guestUser = () -> "GUEST";
 
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
@@ -393,7 +388,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   protected interface User {
-    public String getUsername();
+    String getUsername();
   }
 
   protected final class UserConverter extends ConverterAdapter<String, User> {

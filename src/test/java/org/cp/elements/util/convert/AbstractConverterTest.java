@@ -65,6 +65,7 @@ public class AbstractConverterTest extends AbstractMockingTestSuite {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void testIsAssignableTo() {
     AbstractConverter converter = new TestConverter();
 

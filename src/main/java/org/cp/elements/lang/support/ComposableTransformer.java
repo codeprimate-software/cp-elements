@@ -47,6 +47,7 @@ public class ComposableTransformer<T> implements Transformer<T>, Iterable<Transf
    *
    * @param transformers the array of Transformers used as delegates in this Transformer composition.
    */
+  @SafeVarargs
   private ComposableTransformer(final Transformer<T>... transformers) {
     this.transformers = ArrayUtils.iterable(transformers.clone());
   }
@@ -60,9 +61,10 @@ public class ComposableTransformer<T> implements Transformer<T>, Iterable<Transf
    * is null, or a single Transformer if the array is of length 1, otherwise a ComposableTransformer composed
    * of the Transformers in the array.
    */
+  @SafeVarargs
   public static <T> Transformer<T> compose(final Transformer<T>... transformers) {
     return (ArrayUtils.isEmpty(transformers) ? null : (transformers.length == 1 ? transformers[0]
-      : new ComposableTransformer<T>(transformers)));
+      : new ComposableTransformer<>(transformers)));
   }
 
   /**
@@ -71,7 +73,6 @@ public class ComposableTransformer<T> implements Transformer<T>, Iterable<Transf
    * @return an Iterator over the Transformers in this composition.
    * @see java.lang.Iterable#iterator()
    */
-  @Override
   public Iterator<Transformer<T>> iterator() {
     return transformers.iterator();
   }
@@ -82,7 +83,6 @@ public class ComposableTransformer<T> implements Transformer<T>, Iterable<Transf
    * @param value the value to transform.
    * @return the transformed value.
    */
-  @Override
   public T transform(T value) {
     for (Transformer<T> transformer : transformers) {
       value = transformer.transform(value);

@@ -87,7 +87,7 @@ public class ClearIdentityVisitorTest extends AbstractMockingTestSuite {
     visitor.visit(null);
   }
 
-  public static interface IdentifiableVisitable extends Identifiable<Long>, Visitable {
+  public interface IdentifiableVisitable extends Identifiable<Long>, Visitable {
   }
 
   protected static class IdentifierVisitable implements Visitable {

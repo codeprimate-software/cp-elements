@@ -220,6 +220,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws FieldAccessException if the field is final, or the value for the specified field could not be set.
    * @throws NullPointerException if the field parameter argument is null.
    */
+  @SuppressWarnings("all")
   public static void setField(final Object target, final Field field, final Object value) {
     try {
       Assert.isFalse(Modifier.isFinal(field.getModifiers()), new FieldAccessException(String.format(
@@ -617,7 +618,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.reflect.ReflectionUtils.FieldCallback
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodCallback
    */
-  public static interface MemberCallback<T extends Member> {
+  public interface MemberCallback<T extends Member> {
     void with(T member);
   }
 
@@ -627,7 +628,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Field
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MemberCallback
    */
-  public static interface FieldCallback extends MemberCallback<Field> {
+  public interface FieldCallback extends MemberCallback<Field> {
   }
 
   /**
@@ -636,7 +637,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Method
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MemberCallback
    */
-  public static interface MethodCallback extends MemberCallback<Method> {
+  public interface MethodCallback extends MemberCallback<Method> {
   }
 
   /**
@@ -652,16 +653,13 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private volatile boolean accepted = false;
 
-    private final Filter<T> defaultFilter = new Filter<T>() {
-      @Override public boolean accept(final T obj) {
-        return (obj != null);
-      }
-    };
+    private final Filter<T> defaultFilter = (obj) -> (obj != null);
 
     private Filter<T> filter;
 
-    private final Set<T> members = new HashSet<T>();
+    private final Set<T> members = new HashSet<>();
 
+    @SuppressWarnings("all")
     protected WithExpression(final T... members) {
       if (members != null) {
         Collections.addAll(this.members, members);

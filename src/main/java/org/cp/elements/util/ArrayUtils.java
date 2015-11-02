@@ -57,6 +57,7 @@ import org.cp.elements.lang.Transformer;
 @SuppressWarnings("unused")
 public abstract class ArrayUtils {
 
+  @SuppressWarnings("all")
   private static final Object[] EMPTY_ARRAY = new Object[0];
 
   /**
@@ -79,6 +80,7 @@ public abstract class ArrayUtils {
    * @param array the array.
    * @return the array as itself.
    */
+  @SafeVarargs
   public static <T> T[] asArray(T... array) {
     return array;
   }
@@ -95,7 +97,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] asArray(final Iterable<T> iterable, final Class<T> componentType) {
-    List<T> arrayList = new ArrayList<T>();
+    List<T> arrayList = new ArrayList<>();
 
     if (iterable != null) {
       for (T element : iterable) {
@@ -152,6 +154,7 @@ public abstract class ArrayUtils {
    * @throws NullPointerException if the reference to the Object array is null.
    * @see java.util.Enumeration
    */
+  @SafeVarargs
   public static <T> Enumeration<T> enumeration(final T... array) {
     Assert.notNull(array, "The array of elements cannot be null!");
 
@@ -263,7 +266,7 @@ public abstract class ArrayUtils {
     Assert.notNull(array, "The Object array from which to find elements accepted by the Filter cannot be null!");
     Assert.notNull(filter, "The Filter used to find elements from the Object array cannot be null!");
 
-    List<T> arrayList = new ArrayList<T>(array.length);
+    List<T> arrayList = new ArrayList<>(array.length);
 
     for (T element : array) {
       if (filter.accept(element)) {
@@ -284,6 +287,7 @@ public abstract class ArrayUtils {
    * @return the first element of the array or null if the array is null or empty.
    * @see #isEmpty(Object[])
    */
+  @SafeVarargs
   public static <T> T getFirst(final T... array) {
     return (isEmpty(array) ? null : array[0]);
   }
@@ -346,14 +350,11 @@ public abstract class ArrayUtils {
    * @see #iterator(Object[])
    * @see java.lang.Iterable
    */
+  @SafeVarargs
   public static <T> Iterable<T> iterable(final T... array) {
     Assert.notNull(array, "The array of elements cannot be null!");
 
-    return new Iterable<T>() {
-      @Override public Iterator<T> iterator() {
-        return ArrayUtils.iterator(array);
-      }
-    };
+    return () -> ArrayUtils.iterator(array);
   }
 
   /**
@@ -365,6 +366,7 @@ public abstract class ArrayUtils {
    * @throws NullPointerException if the reference to the Object array is null.
    * @see java.util.Iterator
    */
+  @SafeVarargs
   public static <T> Iterator<T> iterator(final T... array) {
     Assert.notNull(array, "The array of elements cannot be null!");
 
@@ -446,7 +448,7 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] subArray(final T[] array, int... indices) {
-    List<T> subArray = new ArrayList<T>(indices.length);
+    List<T> subArray = new ArrayList<>(indices.length);
 
     for (int index : indices) {
       subArray.add(array[index]);

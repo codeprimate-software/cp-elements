@@ -51,7 +51,7 @@ public class ValueHolder<T> {
    * @see java.lang.Comparable
    */
   public static <T extends Comparable<T>> ComparableValueHolder<T> withComparableValue(final T value) {
-    return new ComparableValueHolder<T>(value);
+    return new ComparableValueHolder<>(value);
   }
 
   /**
@@ -104,7 +104,7 @@ public class ValueHolder<T> {
    * @see java.io.Serializable
    */
   public static <T extends Serializable> SerializableValueHolder<T> withSerializableValue(final T value) {
-    return new SerializableValueHolder<T>(value);
+    return new SerializableValueHolder<>(value);
   }
 
   /**
@@ -189,6 +189,7 @@ public class ValueHolder<T> {
     }
 
     @Override
+    @SuppressWarnings("all")
     public int compareTo(final T value) {
       return ComparatorUtils.compareIgnoreNull(getValue(), value);
     }

@@ -60,7 +60,7 @@ public class OrderableComparatorTest {
     final NumberHolder eight = new NumberHolder(8, "eight");
     final NumberHolder nine = new NumberHolder(9, "nine");
 
-    final List<NumberHolder> numbers = new ArrayList<NumberHolder>(
+    final List<NumberHolder> numbers = new ArrayList<>(
       Arrays.asList(zero, one, two, four, eight, nine, six, three, seven, five));
 
     Collections.sort(numbers);
@@ -71,7 +71,7 @@ public class OrderableComparatorTest {
 
     final List<NumberHolder> orderedNumbers = Arrays.asList(eight, five, four, nine, one, seven, six, three, two, zero);
 
-    Collections.sort(numbers, new OrderableComparator<String>());
+    Collections.sort(numbers, new OrderableComparator<>());
 
     assertEquals(orderedNumbers, numbers);
   }
@@ -102,6 +102,7 @@ public class OrderableComparatorTest {
     }
 
     @Override
+    @SuppressWarnings("all")
     public int compareTo(final NumberHolder numberHolder) {
       return (getNumber() - numberHolder.getNumber());
     }

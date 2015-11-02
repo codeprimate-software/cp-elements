@@ -44,10 +44,11 @@ public class EnumConverter extends ConverterAdapter<String, Enum> {
   @Override
   public <QT extends Enum> QT convert(final String value, final Class<QT> enumType) {
     try {
-      return enumType.cast(Enum.valueOf(enumType, value));
+      Enum enumInstance = Enum.valueOf(enumType, value);
+      return enumType.cast(enumInstance);
     }
     catch (Exception e) {
-      throw new ConversionException(String.format("The String (%1$s) is not a valid enumerated value of Enum (%2$s)!",
+      throw new ConversionException(String.format("(%1$s) is not a valid enumerated value of Enum (%2$s)",
         value, enumType), e);
     }
   }

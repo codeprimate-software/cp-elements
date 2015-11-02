@@ -248,12 +248,8 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
 
     @Override
     public String toString() {
-      final StringBuilder buffer = new StringBuilder(getClass().getName());
-      buffer.append(":{id = ").append(getId());
-      buffer.append(", visitable = is ").append(next() == null ? "" : "not").append(" null");
-      buffer.append(", visited = ").append(isVisited());
-      buffer.append("}");
-      return buffer.toString();
+      return String.format("{ id = %1$s, vistable = is %2$s null, visited = %3$s }", getId(),
+        (next() == null ? "" : "not"), isVisited());
     }
   }
 
@@ -269,7 +265,7 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
   @SuppressWarnings("unused")
   private static final class TraceVisitor implements Iterable<Visitable>, Visitor {
 
-    private List<Visitable> visitablesVisited = new LinkedList<Visitable>();
+    private List<Visitable> visitablesVisited = new LinkedList<>();
 
     public Iterator<Visitable> iterator() {
       return CollectionUtils.unmodifiableIterator(visitablesVisited.iterator());

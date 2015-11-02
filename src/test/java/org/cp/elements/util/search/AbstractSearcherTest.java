@@ -632,7 +632,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
 
       assertTrue(searcher.isCustomMatcherAllowed());
 
-      searcher.configureMatcher(searcher.getSearchableMetaData(new TestSearchableWithProblem<Object>()));
+      searcher.configureMatcher(searcher.getSearchableMetaData(new TestSearchableWithProblem<>()));
     }
     catch (SearchException expected) {
       assertEquals(String.format(
@@ -675,7 +675,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   public void testAsListWithSearchableAnnotatedObjectReturningNullList() {
     AbstractSearcher searcher = new TestSearcher();
 
-    TestSearchableWithDefaults<Object> testSearchable = new TestSearchableWithDefaults<Object>(null);
+    TestSearchableWithDefaults<Object> testSearchable = new TestSearchableWithDefaults<>(null);
 
     List<String> actualList = searcher.asList(testSearchable, searcher.getSearchableMetaData(testSearchable));
 
@@ -727,7 +727,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   @org.cp.elements.util.search.annotation.Searchable
   protected static final class TestSearchableWithDefaults<E> {
 
-    protected static final TestSearchableWithDefaults<String> INSTANCE = new TestSearchableWithDefaults<String>(
+    protected static final TestSearchableWithDefaults<String> INSTANCE = new TestSearchableWithDefaults<>(
       Arrays.asList(ANIMALS));
 
     private final List<E> list;
@@ -744,7 +744,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   @org.cp.elements.util.search.annotation.Searchable(listMethod = "toCollection", matcher = TestMatcher.class)
   protected static final class TestSearchableWithOverrides<E> {
 
-    protected static final TestSearchableWithOverrides<String> INSTANCE = new TestSearchableWithOverrides<String>(
+    protected static final TestSearchableWithOverrides<String> INSTANCE = new TestSearchableWithOverrides<>(
       Arrays.asList(ANIMALS));
 
     private final List<E> list;

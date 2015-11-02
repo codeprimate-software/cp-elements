@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.Transformer;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
@@ -77,11 +76,8 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     Arrays.sort(actualFileExtensions);
 
-    TestUtils.assertEquals(ArrayUtils.transform(expectedFileExtensions, new Transformer<String>() {
-      @Override public String transform(final String value) {
-        return (value.startsWith(StringUtils.DOT_SEPARATOR) ? value.substring(1) : value);
-      }
-    }), actualFileExtensions);
+    TestUtils.assertEquals(ArrayUtils.transform(expectedFileExtensions, (value) -> value.startsWith(StringUtils.DOT_SEPARATOR)
+      ? value.substring(1) : value), actualFileExtensions);
   }
 
   @Test

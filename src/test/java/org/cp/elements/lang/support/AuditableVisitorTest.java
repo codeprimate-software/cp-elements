@@ -53,7 +53,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     User mockUser = mockContext.mock(User.class);
     Process mockProcess = mockContext.mock(Process.class);
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertNotNull(visitor);
     assertSame(mockUser, visitor.getUser());
@@ -67,7 +67,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     Process mockProcess = mockContext.mock(Process.class);
     Calendar now = createCalendar(2014, Calendar.JANUARY, 16, 22, 30, 45);
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess, now);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertNotNull(visitor);
     assertSame(mockUser, visitor.getUser());
@@ -112,7 +112,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       will(returnValue(null));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
   }
@@ -133,7 +133,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       will(returnValue(now));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
   }
@@ -151,7 +151,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       will(returnValue(null));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
   }
@@ -170,7 +170,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       will(returnValue(now));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertFalse(visitor.isCreatedUnset(mockAuditable));
   }
@@ -184,7 +184,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       will(returnValue(true));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(
       mockContext.mock(User.class), mockContext.mock(Process.class));
 
     assertTrue(visitor.isNew(mockIdentifiable));
@@ -199,7 +199,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       will(returnValue(false));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(
       mockContext.mock(User.class), mockContext.mock(Process.class));
 
     assertFalse(visitor.isNew(mockIdentifiable));
@@ -207,7 +207,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testIsNewWithNonIdentifiableObject() {
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(
       mockContext.mock(User.class), mockContext.mock(Process.class));
 
     assertFalse(visitor.isNew(mockContext.mock(Auditable.class)));
@@ -235,7 +235,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       oneOf(mockAuditable).setModifyingProcess(with(same(mockProcess)));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess, now);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertNotNull(visitor);
     assertSame(mockUser, visitor.getUser());
@@ -269,7 +269,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       oneOf(mockAuditable).setModifyingProcess(with(same(mockProcess)));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess, now);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertNotNull(visitor);
     assertSame(mockUser, visitor.getUser());
@@ -281,7 +281,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testVisitWithNonIdentiableNonAuditableObject() {
-    new AuditableVisitor<User, Process>(mockContext.mock(User.class), mockContext.mock(Process.class))
+    new AuditableVisitor<>(mockContext.mock(User.class), mockContext.mock(Process.class))
       .visit(mockContext.mock(Visitable.class));
   }
 
@@ -311,7 +311,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       oneOf(mockAuditable).setModifyingProcess(with(same(mockProcess)));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess, now);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertNotNull(visitor);
     assertSame(mockUser, visitor.getUser());
@@ -347,7 +347,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
       never(mockAuditable).setModifyingProcess(with(any(Process.class)));
     }});
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<User, Process>(mockUser, mockProcess, now);
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertNotNull(visitor);
     assertSame(mockUser, visitor.getUser());
@@ -357,16 +357,16 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     visitor.visit(mockAuditable);
   }
 
-  protected static interface VisitableIdentifiableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS>, Identifiable, Visitable {
+  protected interface VisitableIdentifiableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS>, Identifiable, Visitable {
   }
 
-  protected static interface VisitableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS>, Visitable {
+  protected interface VisitableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS>, Visitable {
   }
 
-  protected static interface User {
+  protected interface User {
   }
 
-  protected static interface Process {
+  protected interface Process {
   }
 
 }

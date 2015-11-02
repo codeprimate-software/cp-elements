@@ -319,49 +319,49 @@ public class RelationalOperatorTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithBlankDescription() {
-    new MockRelationalOperator<String>(" ", "<>", "test");
+    new MockRelationalOperator<>(" ", "<>", "test");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithEmptyDescription() {
-    new MockRelationalOperator<String>("", "<>", "test");
+    new MockRelationalOperator<>("", "<>", "test");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithNullDescription() {
-    new MockRelationalOperator<String>(null, "<>", "test");
+    new MockRelationalOperator<>(null, "<>", "test");
   }
 
   @Test(expected = NullPointerException.class)
   public void testRelationalOperatorInstantiationWithNullExpectedValue() {
-    new MockRelationalOperator<String>("description", "<>", null);
+    new MockRelationalOperator<>("description", "<>", null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithBlankSymbol() {
-    new MockRelationalOperator<String>("description", " ", "test");
+    new MockRelationalOperator<>("description", " ", "test");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithEmptySymbol() {
-    new MockRelationalOperator<String>("description", "", "test");
+    new MockRelationalOperator<>("description", "", "test");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithNullSymbol() {
-    new MockRelationalOperator<String>("description", null, "test");
+    new MockRelationalOperator<>("description", null, "test");
   }
 
   @Test
   public void testRelationalOperatorComposition() throws Exception {
-    final MockRelationalOperator<String> leftOperand = new MockRelationalOperator<String>("left operand", "<>", "test");
-    final MockRelationalOperator<String> rightOperand = new MockRelationalOperator<String>("right operand", "<>", "test");
+    MockRelationalOperator<String> leftOperand = new MockRelationalOperator<>("left operand", "<>", "test");
+    MockRelationalOperator<String> rightOperand = new MockRelationalOperator<>("right operand", "<>", "test");
 
     assertNull(RelationalOperator.ComposableRelationalOperator.compose(NULL, LogicalOperator.AND, NULL));
     assertSame(leftOperand, RelationalOperator.ComposableRelationalOperator.compose(leftOperand, LogicalOperator.AND, null));
     assertSame(rightOperand, RelationalOperator.ComposableRelationalOperator.compose(null, LogicalOperator.AND, rightOperand));
 
-    final RelationalOperator op = RelationalOperator.ComposableRelationalOperator.compose(
+    RelationalOperator op = RelationalOperator.ComposableRelationalOperator.compose(
       leftOperand, LogicalOperator.AND, rightOperand);
 
     assertTrue(op instanceof RelationalOperator.ComposableRelationalOperator);

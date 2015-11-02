@@ -311,7 +311,7 @@ public abstract class AbstractSorter implements Sorter {
    */
   protected static class ComparatorHolder {
 
-    private static final ThreadLocal<Comparator<?>> COMPARATOR_HOLDER = new ThreadLocal<Comparator<?>>();
+    private static final ThreadLocal<Comparator<?>> COMPARATOR_HOLDER = new ThreadLocal<>();
 
     public static Comparator<?> get() {
       return COMPARATOR_HOLDER.get();
@@ -340,6 +340,7 @@ public abstract class AbstractSorter implements Sorter {
 
     private final E[] elements;
 
+    @SafeVarargs
     public SortableArrayList(final E... elements) {
       Assert.notNull(elements, "The array of elements to wrap in a List cannot be null!");
       this.elements = elements;

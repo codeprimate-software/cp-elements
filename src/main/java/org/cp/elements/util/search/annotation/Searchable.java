@@ -60,7 +60,7 @@ public @interface Searchable {
    * @return the name of method on the Class annotated with this annotation to get the List of elements to search.
    * The default value is "asList".
    */
-  public String listMethod() default "asList";
+  String listMethod() default "asList";
 
   /**
    * Searchable meta-data attribute defining the Matcher class to use when searching for elements in the collection.
@@ -69,6 +69,6 @@ public @interface Searchable {
    * @see java.lang.Class
    * @see org.cp.elements.util.search.Matcher
    */
-  public Class<? extends Matcher> matcher() default Matcher.class;
+  Class<? extends Matcher> matcher() default Matcher.class;
 
 }

@@ -23,6 +23,7 @@ package org.cp.elements.beans;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
+
 import org.junit.Assert;
 
 /**
@@ -46,7 +47,7 @@ public class AbstractBeanPerformanceTest {
   }
 
   private static void processByCallback() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<Integer>();
+    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
     final long t0 = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
@@ -60,7 +61,7 @@ public class AbstractBeanPerformanceTest {
   }
 
   private static void processByReflection() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<Integer>();
+    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
     final long t0 = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
@@ -74,7 +75,7 @@ public class AbstractBeanPerformanceTest {
   }
 
   private static void processBySetter() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<Integer>();
+    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
     final long t0 = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
@@ -88,7 +89,7 @@ public class AbstractBeanPerformanceTest {
   }
 
   private static void processBySetterWithEventNotification() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<Integer>();
+    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
     final long t0 = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
@@ -118,11 +119,7 @@ public class AbstractBeanPerformanceTest {
     }
 
     public void setCallbackValue(final T callbackValue) {
-      processChange("callbackValue", this.callbackValue, callbackValue, new StateChangeCallback() {
-        public void changeState() {
-          ValueHolder.this.callbackValue = callbackValue;
-        }
-      });
+      processChange("callbackValue", this.callbackValue, callbackValue, () -> ValueHolder.this.callbackValue = callbackValue);
     }
 
     public T getNotificationValue() {

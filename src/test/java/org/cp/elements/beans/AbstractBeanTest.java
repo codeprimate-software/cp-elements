@@ -21,49 +21,49 @@
 
 package org.cp.elements.beans;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 /**
  * The AbstractBeanTest class is a test suite of test cases testing the contract and functionality
  * of the AbstractBean class.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.beans.AbstractBean
- * @see org.junit.Assert
+ * @see org.cp.elements.beans.Bean
  * @see org.junit.Test
  * @since 1.0.0
- * @version 1.0.0
  */
 public class AbstractBeanTest {
 
   @Test
-  public void testCreateAbstractBean() {
-    final TestBean<Long> bean = new TestBean<Long>();
+  public void createAbstractBean() {
+    TestBean<Long> bean = new TestBean<>();
 
-    assertNotNull(bean);
-    assertNull(bean.getId());
+    assertThat(bean, is(notNullValue()));
+    assertThat(bean.getId(), is(nullValue()));
   }
 
   @Test
-  public void testCreateAbstractBeanWithId() {
-    final TestBean<Long> bean = new TestBean<Long>(1L);
+  public void createAbstractBeanWithId() {
+    TestBean<Long> bean = new TestBean<>(1L);
 
-    assertNotNull(bean);
-    assertEquals(new Long(1L), bean.getId());
+    assertThat(bean, is(notNullValue()));
+    assertThat(bean.getId(), is(equalTo(1l)));
   }
 
   @Test
-  public void testSetAndGetId() {
-    final TestBean<Long> bean = new TestBean<Long>();
+  public void setAndGetId() {
+    TestBean<Long> bean = new TestBean<>();
 
-    assertNotNull(bean);
-    assertNull(bean.getId());
+    assertThat(bean, is(notNullValue()));
+    assertThat(bean.getId(), is(nullValue()));
 
     bean.setId(1L);
 
-    assertEquals(new Long(1L), bean.getId());
+    assertThat(bean.getId(), is(equalTo(1l)));
   }
 
   protected static final class TestBean<ID extends Comparable<ID>> extends AbstractBean<ID, String, String> {

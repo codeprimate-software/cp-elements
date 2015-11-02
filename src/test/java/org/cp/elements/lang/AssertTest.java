@@ -339,6 +339,7 @@ public class AssertTest {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void assertIsTrueWithTrue() {
     Assert.isTrue(true, "value is not true");
     Assert.isTrue(Boolean.TRUE, "value is not true");
@@ -516,7 +517,7 @@ public class AssertTest {
 
   @Test
   public void assertNotEmptyMap() {
-    Map<String, String> map = new HashMap<String, String>(2);
+    Map<String, String> map = new HashMap<>(2);
 
     map.put("one", "1");
     map.put("two", "2");
@@ -680,7 +681,7 @@ public class AssertTest {
     Assert.supported(false, new AssertionFailedException("test"));
   }
 
-  protected static enum TestEnum {
+  protected enum TestEnum {
     ONE,
     TWO
   }

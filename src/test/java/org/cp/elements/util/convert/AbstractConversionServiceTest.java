@@ -150,7 +150,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   @Test
   public void testIteration() {
     AbstractConversionService conversionService = new TestConversionService();
-    Set<Converter> expectedConverters = new HashSet<Converter>(5);
+    Set<Converter> expectedConverters = new HashSet<>(5);
 
     conversionService.register(add(expectedConverters, new BooleanConverter()));
     conversionService.register(add(expectedConverters, new CharacterConverter()));

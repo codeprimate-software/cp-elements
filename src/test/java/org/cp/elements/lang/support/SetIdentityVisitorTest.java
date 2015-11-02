@@ -93,7 +93,7 @@ public class SetIdentityVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testGetNextSequencedIdentifier() {
-    Set<Long> identifiers = new HashSet<Long>(100);
+    Set<Long> identifiers = new HashSet<>(100);
 
     synchronized (SetIdentityVisitor.class) {
       for (int count = 100; count > 0; count--) {
@@ -114,7 +114,7 @@ public class SetIdentityVisitorTest extends AbstractMockingTestSuite {
     }
   }
 
-  protected static interface IdentifiableVisitable extends Identifiable<Long>, Visitable {
+  protected interface IdentifiableVisitable extends Identifiable<Long>, Visitable {
   }
 
 }

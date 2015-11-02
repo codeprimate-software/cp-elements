@@ -59,7 +59,7 @@ public @interface Sortable {
    * @return the name of method on the Class annotated with this annotation to get the List of elements to sort.
    * The default value is "asList".
    */
-  public String listMethod() default "asList";
+  String listMethod() default "asList";
 
   /**
    * Attribute defining the Comparator class to use when sorting and ordering the elements in the collection (List).
@@ -68,6 +68,6 @@ public @interface Sortable {
    * @see java.lang.Class
    * @see java.util.Comparator
    */
-  public Class<? extends Comparator> orderBy() default Comparator.class;
+  Class<? extends Comparator> orderBy() default Comparator.class;
 
 }

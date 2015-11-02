@@ -59,11 +59,7 @@ public abstract class ComparatorUtils {
    * @see java.util.Comparator
    */
   public static <T> Comparator<T> invert(final Comparator<T> comparator) {
-    return new Comparator<T>() {
-      @Override public int compare(final T obj1, final T obj2) {
-        return (-1 * comparator.compare(obj1, obj2));
-      }
-    };
+    return (obj1, obj2) -> (-1 * comparator.compare(obj1, obj2));
   }
 
 }

@@ -52,7 +52,7 @@ public class OrderedComparatorTest {
     final Priority niceToHave = new Priority(3, "Nice-to-Have");
     final Priority useless = new Priority(4, "Useless");
 
-    final List<Priority> priorities = new ArrayList<Priority>(Arrays.asList(useless, niceToHave, necessary, requirement));
+    final List<Priority> priorities = new ArrayList<>(Arrays.asList(useless, niceToHave, necessary, requirement));
 
     Collections.sort(priorities);
 
@@ -94,6 +94,7 @@ public class OrderedComparatorTest {
     }
 
     @Override
+    @SuppressWarnings("all")
     public int compareTo(final Priority priority) {
       return getName().compareTo(priority.getName());
     }

@@ -41,7 +41,7 @@ public class ObjectUtilsTest {
 
   @Test
   public void cloneWithCloneableObject() {
-    CloneableObject<String> cloneableObject = new CloneableObject<String>("test");
+    CloneableObject<String> cloneableObject = new CloneableObject<>("test");
     CloneableObject<String> cloneableObjectClone = ObjectUtils.clone(cloneableObject);
 
     assertThat(cloneableObjectClone, is(not(nullValue())));
@@ -51,7 +51,7 @@ public class ObjectUtilsTest {
 
   @Test
   public void cloneWithCopyableObject() {
-    CopyableObject<Object> copyableObject = new CopyableObject<Object>("test");
+    CopyableObject<Object> copyableObject = new CopyableObject<>("test");
     CopyableObject<Object> copyableObjectClone = ObjectUtils.clone(copyableObject);
 
     assertThat(copyableObjectClone, is(not(nullValue())));
@@ -72,7 +72,7 @@ public class ObjectUtilsTest {
   @Test(expected = CloneException.class)
   public void cloneWithExceptionThrowingCopyConstructor() {
     try {
-      ObjectUtils.clone(new ExceptionThrowingCopyConstructorObject<String>("test"));
+      ObjectUtils.clone(new ExceptionThrowingCopyConstructorObject<>("test"));
     }
     catch (CloneException expected) {
       assertThat(expected.getMessage(), is(equalTo("'clone' using 'copy constructor' was unsuccessful")));
@@ -129,7 +129,7 @@ public class ObjectUtilsTest {
   }
 
   @Test
-  @SuppressWarnings("boxing")
+  @SuppressWarnings("all")
   public void equals() {
     Object testObject = new Object();
     assertTrue(ObjectUtils.equals(testObject, testObject));
@@ -159,6 +159,7 @@ public class ObjectUtilsTest {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void equalsIgnoreNull() {
     assertTrue(ObjectUtils.equalsIgnoreNull(null, null));
     assertTrue(ObjectUtils.equalsIgnoreNull("null", "null"));
@@ -264,6 +265,7 @@ public class ObjectUtilsTest {
     }
 
     @Override
+    @SuppressWarnings("all")
     public Object clone() throws CloneNotSupportedException {
       return new CloneableObject<T>(getValue());
     }

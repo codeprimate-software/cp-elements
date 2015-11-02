@@ -61,7 +61,7 @@ public class DefaultConversionService extends AbstractConversionService {
 
   private volatile boolean defaultsEnabled = false;
 
-  private final Map<Class, Object> defaultValues = Collections.synchronizedMap(new HashMap<Class, Object>(13, 0.95f));
+  private final Map<Class, Object> defaultValues = Collections.synchronizedMap(new HashMap<>(13, 0.95f));
 
   /**
    * Constructs a instance of the DefaultConversionService class to perform type conversions.
@@ -74,8 +74,6 @@ public class DefaultConversionService extends AbstractConversionService {
 
     Assert.notNull(converterClassResource, "The URL for the Converter class ({0}) pathname ({1}) was null!",
       CONVERTER_CLASS.getName(), converterClassPathname);
-
-    assert converterClassResource != null;
 
     File convertersPackageDirectory;
 
@@ -246,8 +244,8 @@ public class DefaultConversionService extends AbstractConversionService {
    * <p/>
    * @param <T> the type of value to generate.
    */
-  public static interface ValueGenerator<T> {
-    public T generateValue();
+  public interface ValueGenerator<T> {
+    T generateValue();
   }
 
   /**

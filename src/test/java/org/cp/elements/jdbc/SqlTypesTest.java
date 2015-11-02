@@ -21,6 +21,7 @@
 
 package org.cp.elements.jdbc;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
@@ -49,15 +50,21 @@ public class SqlTypesTest {
   }
 
   @Test
-  public void testValueOfTypes() throws IllegalAccessException {
+  @SuppressWarnings("all")
+  public void valueOfAllJavaSqlTypes() throws IllegalAccessException {
     int count = 0;
 
     for (Field field : java.sql.Types.class.getDeclaredFields()) {
       if (isJavaSqlTypesConstant(field)) {
         int value = field.getInt(null);
+
         SqlType sqlType = SqlType.valueOf(value);
-        assertNotNull(sqlType);
-        assertEquals(value, sqlType.getType());
+
+        assertThat(String.format("Expected %1$s for %2$s.%3$s!", SqlType.class.getName(),
+          java.sql.Types.class.getName(), field.getName()), sqlType, is(notNullValue()));
+
+        assertThat(sqlType.getType(), is(equalTo(value)));
+
         count++;
       }
     }
@@ -66,23 +73,13 @@ public class SqlTypesTest {
   }
 
   @Test
-  public void testValueOfTypesWithInvalidValue() {
+  public void valueOfInvalidValue() {
     assertNull(SqlType.valueOf(Integer.MIN_VALUE));
     assertNull(SqlType.valueOf(-123456789));
   }
 
   @Test
-  public void testValueOfIgnoreCase() {
-    assertEquals(SqlType.ARRAY, SqlType.valueOfIgnoreCase("ARRAY"));
-    assertEquals(SqlType.BINARY, SqlType.valueOfIgnoreCase("binary"));
-    assertEquals(SqlType.BLOB, SqlType.valueOfIgnoreCase("bLOB"));
-    assertEquals(SqlType.CLOB, SqlType.valueOfIgnoreCase(" Clob"));
-    assertEquals(SqlType.VARCHAR, SqlType.valueOfIgnoreCase("VARchar"));
-    assertEquals(SqlType.TIMESTAMP, SqlType.valueOfIgnoreCase(" TiMeSTamp  "));
-  }
-
-  @Test
-  public void testValueOfIgnoreCaseNoMatch() {
+  public void valueOfInvalidValuesIgnoringCase() {
     assertNull(SqlType.valueOfIgnoreCase("  character"));
     assertNull(SqlType.valueOfIgnoreCase("Fake"));
     assertNull(SqlType.valueOfIgnoreCase("FixedChar "));
@@ -92,6 +89,16 @@ public class SqlTypesTest {
     assertNull(SqlType.valueOfIgnoreCase("  "));
     assertNull(SqlType.valueOfIgnoreCase(""));
     assertNull(SqlType.valueOfIgnoreCase(null));
+  }
+
+  @Test
+  public void valueOfJavaSqlTypesIgnoringCase() {
+    assertEquals(SqlType.ARRAY, SqlType.valueOfIgnoreCase("ARRAY"));
+    assertEquals(SqlType.BINARY, SqlType.valueOfIgnoreCase("binary"));
+    assertEquals(SqlType.BLOB, SqlType.valueOfIgnoreCase("bLOB"));
+    assertEquals(SqlType.CLOB, SqlType.valueOfIgnoreCase(" Clob"));
+    assertEquals(SqlType.VARCHAR, SqlType.valueOfIgnoreCase("VARchar"));
+    assertEquals(SqlType.TIMESTAMP, SqlType.valueOfIgnoreCase(" TiMeSTamp  "));
   }
 
 }

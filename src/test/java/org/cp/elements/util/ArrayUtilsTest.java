@@ -25,6 +25,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -51,6 +52,7 @@ import org.junit.Test;
  */
 public class ArrayUtilsTest {
 
+  @SuppressWarnings("all")
   protected <T> void assertShuffled(final T[] source, final T[] target) {
     assertTrue("'source' array must not be null or empty!", source != null && source.length != 0);
     assertTrue("'target' array must not be null or empty!", target != null && target.length != 0);
@@ -109,11 +111,7 @@ public class ArrayUtilsTest {
 
   @Test
   public void asArrayWithEmptyIterable() {
-    Iterable<String> iterable = new Iterable<String>() {
-      @Override public Iterator<String> iterator() {
-        return Arrays.<String>asList().iterator();
-      }
-    };
+    Iterable<String> iterable = () -> Collections.<String>emptyList().iterator();
 
     String[] strings = ArrayUtils.asArray(iterable, String.class);
 
@@ -123,11 +121,7 @@ public class ArrayUtilsTest {
 
   @Test
   public void asArrayWithIterable() {
-    Iterable<Integer> iterable = new Iterable<Integer>() {
-      @Override public Iterator<Integer> iterator() {
-        return Arrays.asList(0, 1, 2).iterator();
-      }
-    };
+    Iterable<Integer> iterable = () ->  Arrays.asList(0, 1, 2).iterator();
 
     Integer[] numbers = ArrayUtils.asArray(iterable, Integer.class);
 
@@ -158,28 +152,24 @@ public class ArrayUtilsTest {
 
     assertNotNull(array);
     assertEquals(10, array.length);
-    assertEquals(5, ArrayUtils.count(array, new Filter<Integer>() {
-      @Override public boolean accept(final Integer number) {
-        return NumberUtils.isEven(number);
-      }
-    }));
+    assertEquals(5, ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isEven));
   }
 
   @Test
   public void countReturnsLength() {
     Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-    assertEquals(array.length, ArrayUtils.count(array, new DefaultFilter<Object>(true)));
+    assertEquals(array.length, ArrayUtils.count(array, new DefaultFilter<>(true)));
   }
 
   @Test
   public void countReturnsZero() {
-    assertEquals(0, ArrayUtils.count(new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new DefaultFilter<Object>(false)));
+    assertEquals(0, ArrayUtils.count(new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new DefaultFilter<>(false)));
   }
 
   @Test(expected = NullPointerException.class)
   public void countWithNullArray() {
-    ArrayUtils.count(null, new DefaultFilter<Object>(true));
+    ArrayUtils.count(null, new DefaultFilter<>(true));
   }
 
   @Test(expected = NullPointerException.class)
@@ -282,11 +272,7 @@ public class ArrayUtilsTest {
   public void filter() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-    Filter<Integer> oddNumberFilter = new Filter<Integer>() {
-      @Override public boolean accept(final Integer number) {
-        return NumberUtils.isOdd(number);
-      }
-    };
+    Filter<Integer> oddNumberFilter = NumberUtils::isOdd;
 
     Integer[] actualNumbers = ArrayUtils.filter(numbers, oddNumberFilter);
 
@@ -307,13 +293,13 @@ public class ArrayUtilsTest {
     Object[] array = {};
 
     assertEquals(0, array.length);
-    assertSame(array, ArrayUtils.filter(array, new DefaultFilter<Object>(false)));
+    assertSame(array, ArrayUtils.filter(array, new DefaultFilter<>(false)));
     assertEquals(0, array.length);
   }
 
   @Test(expected = NullPointerException.class)
   public void filterNullArray() {
-    ArrayUtils.filter(null, new DefaultFilter<Object>(true));
+    ArrayUtils.filter(null, new DefaultFilter<>(true));
   }
 
   @Test(expected = NullPointerException.class)
@@ -398,11 +384,7 @@ public class ArrayUtilsTest {
 
     Person[] people = { jackHandy, jonDoe, janeDoe, sandyHandy, pieDoe, cookieDoe };
 
-    Filter<Person> doeFilter = new Filter<Person>() {
-      @Override public boolean accept(final Person person) {
-        return "Doe".equalsIgnoreCase(person.getLastName());
-      }
-    };
+    Filter<Person> doeFilter = (person) -> "Doe".equalsIgnoreCase(person.getLastName());
 
     Person actualPerson = ArrayUtils.find(people, doeFilter);
 
@@ -421,11 +403,8 @@ public class ArrayUtilsTest {
 
     Person[] people = { jackHandy, jonDoe, janeDoe, sandyHandy, pieDoe, cookieDoe };
 
-    Filter<Person> doeFilter = new Filter<Person>() {
-      @Override public boolean accept(final Person person) {
-        return ("Play".equalsIgnoreCase(person.getFirstName()) && "Doe".equalsIgnoreCase(person.getLastName()));
-      }
-    };
+    Filter<Person> doeFilter = (person) -> ("Play".equalsIgnoreCase(person.getFirstName())
+      && "Doe".equalsIgnoreCase(person.getLastName()));
 
     Person actualPerson = ArrayUtils.find(people, doeFilter);
 
@@ -434,7 +413,7 @@ public class ArrayUtilsTest {
 
   @Test(expected = NullPointerException.class)
   public void findWithNullArray() {
-    ArrayUtils.find(null, new DefaultFilter<Object>(true));
+    ArrayUtils.find(null, new DefaultFilter<>(true));
   }
 
   @Test(expected = NullPointerException.class)
@@ -446,11 +425,7 @@ public class ArrayUtilsTest {
   public void findAll() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-    Filter<Integer> evenNumberFilter = new Filter<Integer>() {
-      public boolean accept(final Integer number) {
-        return NumberUtils.isEven(number);
-      }
-    };
+    Filter<Integer> evenNumberFilter = NumberUtils::isEven;
 
     Integer[] actualNumbers = ArrayUtils.findAll(numbers, evenNumberFilter);
 
@@ -466,7 +441,7 @@ public class ArrayUtilsTest {
   @Test
   public void findAllWithNonMatchingFilter() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    Integer[] actualNumbers = ArrayUtils.findAll(numbers, new DefaultFilter<Integer>(false));
+    Integer[] actualNumbers = ArrayUtils.findAll(numbers, new DefaultFilter<>(false));
 
     assertNotNull(actualNumbers);
     assertNotSame(numbers, actualNumbers);
@@ -476,7 +451,7 @@ public class ArrayUtilsTest {
 
   @Test(expected = NullPointerException.class)
   public void findAllWithNullArray() {
-    ArrayUtils.findAll(null, new DefaultFilter<Object>(true));
+    ArrayUtils.findAll(null, new DefaultFilter<>(true));
   }
 
   @Test(expected = NullPointerException.class)
@@ -749,11 +724,7 @@ public class ArrayUtilsTest {
   public void transform() {
     String[] array = { "test", "testing", "tested" };
 
-    Transformer<String> transformer = new Transformer<String>() {
-      @Override public String transform(final String value) {
-        return value.toUpperCase();
-      }
-    };
+    Transformer<String> transformer = String::toUpperCase;
 
     String[] actualArray = ArrayUtils.transform(array, transformer);
 
@@ -768,21 +739,13 @@ public class ArrayUtilsTest {
     Object[] array = {};
 
     assertEquals(0, array.length);
-    assertSame(array, ArrayUtils.transform(array, new Transformer<Object>() {
-      @Override public Object transform(final Object value) {
-        return null;
-      }
-    }));
+    assertSame(array, ArrayUtils.transform(array, (value) ->  null));
     assertEquals(0, array.length);
   }
 
   @Test(expected = NullPointerException.class)
   public void transformNullArray() {
-    ArrayUtils.transform(null, new Transformer<Object>() {
-      @Override public Object transform(final Object value) {
-        return null;
-      }
-    });
+    ArrayUtils.transform(null, (value) -> null);
   }
 
   @Test(expected = NullPointerException.class)

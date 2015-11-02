@@ -43,7 +43,7 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
 
   private AtomicBoolean nextCalled = new AtomicBoolean(false);
 
-  private final Deque<Iterator<T>> iterators = new LinkedList<Iterator<T>>();
+  private final Deque<Iterator<T>> iterators = new LinkedList<>();
 
   /**
    * Constructs an instance of the BreadthFirstIterator class wrapping the Iterator of Iterators to collectively

@@ -65,7 +65,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File> {
    * @see java.lang.Iterable
    */
   public FileExtensionFilter(final Iterable<String> fileExtensions) {
-    this.fileExtensions = new TreeSet<String>();
+    this.fileExtensions = new TreeSet<>();
 
     if (fileExtensions != null) {
       for (String fileExtension : fileExtensions) {

@@ -44,8 +44,8 @@ public class ComposableFilterTest {
 
   @Test
   public void testAcceptUsingAnd() {
-    final Filter<Object> falseFilter = new DefaultFilter<Object>(false);
-    final Filter<Object> trueFilter = new DefaultFilter<Object>(true);
+    Filter<Object> falseFilter = new DefaultFilter<>(false);
+    Filter<Object> trueFilter = new DefaultFilter<>(true);
 
     assertFalse(ComposableFilter.and(falseFilter, falseFilter).accept("test"));
     assertFalse(ComposableFilter.and(trueFilter, falseFilter).accept("test"));
@@ -55,8 +55,8 @@ public class ComposableFilterTest {
 
   @Test
   public void testAcceptUsingOr() {
-    final Filter<Object> falseFilter = new DefaultFilter<Object>(false);
-    final Filter<Object> trueFilter = new DefaultFilter<Object>(true);
+    Filter<Object> falseFilter = new DefaultFilter<>(false);
+    Filter<Object> trueFilter = new DefaultFilter<>(true);
 
     assertFalse(ComposableFilter.or(falseFilter, falseFilter).accept("test"));
     assertTrue(ComposableFilter.or(trueFilter, falseFilter).accept("test"));
@@ -85,8 +85,8 @@ public class ComposableFilterTest {
 
   @Test
   public void testComposeAnd() {
-    final Filter<Object> leftFilter = new DefaultFilter<Object>(true);
-    final Filter<Object> rightFilter = new DefaultFilter<Object>(false);
+    Filter<Object> leftFilter = new DefaultFilter<>(true);
+    Filter<Object> rightFilter = new DefaultFilter<>(false);
 
     assertNull(ComposableFilter.and(null, null));
     assertSame(leftFilter, ComposableFilter.and(leftFilter, null));
@@ -105,8 +105,8 @@ public class ComposableFilterTest {
 
   @Test
   public void testComposeOr() {
-    final Filter<Object> leftFilter = new DefaultFilter<Object>(true);
-    final Filter<Object> rightFilter = new DefaultFilter<Object>(false);
+    Filter<Object> leftFilter = new DefaultFilter<>(true);
+    Filter<Object> rightFilter = new DefaultFilter<>(false);
 
     assertNull(ComposableFilter.or(null, null));
     assertSame(leftFilter, ComposableFilter.or(leftFilter, null));

@@ -68,7 +68,7 @@ public class DefaultConversionServiceTest {
 
   @Test
   public void testRegisteredSupportConverters() {
-    Set<Class> expectedRegisteredSupportConverters = new HashSet<Class>(17);
+    Set<Class> expectedRegisteredSupportConverters = new HashSet<>(17);
 
     expectedRegisteredSupportConverters.add(BigDecimalConverter.class);
     expectedRegisteredSupportConverters.add(BigIntegerConverter.class);

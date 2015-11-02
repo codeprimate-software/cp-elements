@@ -86,7 +86,7 @@ public class ComposableFilter<T> implements Filter<T> {
    */
   private static <T> Filter<T> compose(final Filter<T> leftFilter, final LogicalOperator op, final Filter<T> rightFilter) {
     return (leftFilter == null ? rightFilter : (rightFilter == null ? leftFilter
-      : new ComposableFilter<T>(leftFilter, op, rightFilter)));
+      : new ComposableFilter<>(leftFilter, op, rightFilter)));
   }
 
   /**

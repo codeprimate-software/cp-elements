@@ -42,8 +42,8 @@ import org.cp.elements.lang.Visitable;
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Visitable
  * @since 1.0.0
- * @version 1.0.0
  */
-public interface Bean<ID extends Comparable<ID>, USER, PROCESS> extends Auditable<USER, PROCESS>, Cloneable, Comparable<Bean>, Identifiable<ID>, Serializable, Visitable {
+public interface Bean<ID extends Comparable<ID>, USER, PROCESS> extends Auditable<USER, PROCESS>, Cloneable,
+  Comparable<Bean<ID, USER, PROCESS>>, Identifiable<ID>, Serializable, Visitable {
 
 }

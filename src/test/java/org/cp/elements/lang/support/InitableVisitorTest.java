@@ -68,7 +68,7 @@ public class InitableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testConstructWithParameters() {
-    Map<String, String> expectedParameters = new HashMap<String, String>(3);
+    Map<String, String> expectedParameters = new HashMap<>(3);
 
     expectedParameters.put("param1", "value1");
     expectedParameters.put("param2", "value2");
@@ -83,7 +83,7 @@ public class InitableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testVisitParameterizedInitableWithParameters() {
-    final Map<String, String> expectedParameters = new HashMap<String, String>(3);
+    final Map<String, String> expectedParameters = new HashMap<>(3);
 
     expectedParameters.put("param1", "value1");
     expectedParameters.put("param2", "value2");
@@ -167,10 +167,10 @@ public class InitableVisitorTest extends AbstractMockingTestSuite {
     new InitableVisitor().visit(mockContext.mock(Visitable.class));
   }
 
-  protected static interface VisitiableParameterizedInitiable extends ParameterizedInitable, Visitable {
+  protected interface VisitiableParameterizedInitiable extends ParameterizedInitable, Visitable {
   }
 
-  protected static interface VisitableInitable extends Initable, Visitable {
+  protected interface VisitableInitable extends Initable, Visitable {
   }
 
 }

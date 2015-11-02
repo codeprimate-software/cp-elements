@@ -109,7 +109,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
         numbers[index] = numberGenerator.nextInt(getMaximumNumberValue());
       }
 
-      TestSorter.TestSortableArrayList<Integer> numberList = new TestSorter.TestSortableArrayList<Integer>(numbers);
+      TestSorter.TestSortableArrayList<Integer> numberList = new TestSorter.TestSortableArrayList<>(numbers);
 
       assertNotNull(numberList);
       assertEquals(numbers.length, numberList.size());
@@ -147,6 +147,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
     protected static class TestSortableArrayList<E> extends SortableArrayList<E> {
 
+      @SafeVarargs
       public TestSortableArrayList(final E... elements) {
         super(elements);
       }

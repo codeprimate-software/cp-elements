@@ -60,13 +60,9 @@ public class ComparatorUtilsTest {
 
   @Test
   public void testInvert() {
-    final List<Number> numbers = new ArrayList<Number>(Arrays.asList(2, 1, 3));
+    List<Number> numbers = new ArrayList<>(Arrays.asList(2, 1, 3));
 
-    final Comparator<Number> numbersComparator = new Comparator<Number>() {
-      @Override public int compare(final Number numberOne, final Number numberTwo) {
-        return (numberOne.intValue() - numberTwo.intValue());
-      }
-    };
+    Comparator<Number> numbersComparator = (numberOne, numberTwo) -> (numberOne.intValue() - numberTwo.intValue());
 
     Collections.sort(numbers,  numbersComparator);
 

@@ -39,7 +39,7 @@ public class AbstractRuleTest {
 
   @Test
   public void testSetAndGetId() {
-    AbstractRule<Object, Long> rule = new TestRule<Object, Long>();
+    AbstractRule<Object, Long> rule = new TestRule<>();
 
     rule.setId(1l);
 
@@ -72,7 +72,7 @@ public class AbstractRuleTest {
 
   @Test
   public void testSetAndGetExpectedOutcome() {
-    AbstractRule<Object, Long> rule = new TestRule<Object, Long>();
+    AbstractRule<Object, Long> rule = new TestRule<>();
 
     assertEquals(AbstractRule.DEFAULT_EXPECTED_OUTCOME, rule.getExpectedOutcome());
 
@@ -87,7 +87,7 @@ public class AbstractRuleTest {
 
   @Test
   public void testSetAndIsThrowExceptionOnFailure() {
-    AbstractRule<Object, Long> rule = new TestRule<Object, Long>();
+    AbstractRule<Object, Long> rule = new TestRule<>();
 
     assertEquals(AbstractRule.DEFAULT_THROW_EXCEPTION_ON_FAILURE, rule.isThrowExceptionOnFailure());
 

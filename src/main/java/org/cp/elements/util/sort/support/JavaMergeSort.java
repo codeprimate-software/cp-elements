@@ -50,6 +50,7 @@ public class JavaMergeSort extends AbstractSorter {
    * @see java.util.Arrays#sort(Object[], java.util.Comparator)
    */
   @Override
+  @SuppressWarnings("all")
   public <E> E[] sort(final E... elements) {
     Arrays.sort(elements, getOrderBy());
     return elements;

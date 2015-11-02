@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +36,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import javax.annotation.Resource;
 
-import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.test.AbstractMockingTestSuite;
@@ -60,7 +60,7 @@ import org.junit.Test;
  */
 public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
-  private static final AtomicReference<String> METHOD_NAME = new AtomicReference<String>();
+  private static final AtomicReference<String> METHOD_NAME = new AtomicReference<>();
 
   @Before
   public void setup() {
@@ -250,7 +250,7 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
     }
     catch (NullPointerException expected) {
       // for line "Assert.isFalse(Modifier.isFinal(field.getModifiers())..." in setField(:Object, :Field, :Object):void
-      assertEquals(225, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(226, expected.getStackTrace()[0].getLineNumber());
       throw expected;
     }
   }
@@ -422,20 +422,17 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
       ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class);
     }
     catch (NullPointerException expected) {
-      assertEquals(569, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(570, expected.getStackTrace()[0].getLineNumber());
       throw expected;
     }
   }
 
   @Test
   public void testWithFieldsOnClass() {
-    final Set<String> fieldNames = new HashSet<String>(2);
+    final Set<String> fieldNames = new HashSet<>(2);
 
-    ReflectionUtils.withFields().on(SuperType.class).call(new ReflectionUtils.FieldCallback() {
-      @Override public void with(final Field field) {
-        fieldNames.add(field.getName());
-      }
-    }).throwing(new FieldNotFoundException());
+    ReflectionUtils.withFields().on(SuperType.class).call((field) -> fieldNames.add(field.getName()))
+      .throwing(new FieldNotFoundException());
 
     assertNotNull(fieldNames);
     assertFalse(fieldNames.isEmpty());
@@ -445,13 +442,10 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithFieldsOnObject() {
-    final Set<String> fieldNames = new HashSet<String>(5);
+    final Set<String> fieldNames = new HashSet<>(5);
 
-    ReflectionUtils.withFields().on(new DerivedType()).call(new ReflectionUtils.FieldCallback() {
-      @Override public void with(final Field field) {
-        fieldNames.add(field.getName());
-      }
-    }).throwing(new FieldNotFoundException());
+    ReflectionUtils.withFields().on(new DerivedType()).call((field) -> fieldNames.add(field.getName()))
+      .throwing(new FieldNotFoundException());
 
     assertNotNull(fieldNames);
     assertFalse(fieldNames.isEmpty());
@@ -462,22 +456,15 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithPublicInstanceFieldsOnly() {
-    final Set<String> fieldNames = new HashSet<String>(2);
+    final Set<String> fieldNames = new HashSet<>(2);
 
-    ReflectionUtils.withFields().on(DerivedType.class).matching(new Filter<Field>() {
-      @Override public boolean accept(final Field field) {
-        return Modifier.isPublic(field.getModifiers());
-      }
-    }).call(new ReflectionUtils.FieldCallback() {
-      @Override public void with(final Field field) {
-        fieldNames.add(field.getName());
-      }
-    }).throwing(new FieldNotFoundException());
+    ReflectionUtils.withFields().on(DerivedType.class).matching((field) -> Modifier.isPublic(field.getModifiers()))
+      .call((field) -> fieldNames.add(field.getName())).throwing(new FieldNotFoundException());
 
     assertNotNull(fieldNames);
     assertFalse(fieldNames.isEmpty());
     assertEquals(1, fieldNames.size());
-    assertTrue(fieldNames.containsAll(Arrays.asList("magicNumber")));
+    assertTrue(fieldNames.containsAll(Collections.singletonList("magicNumber")));
   }
 
   @Test(expected = FieldNotFoundException.class)
@@ -485,17 +472,13 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
     final AtomicInteger count = new AtomicInteger(0);
 
     try {
-      ReflectionUtils.withFields().on(new DerivedType()).matching(new Filter<Field>() {
-        @Override public boolean accept(final Field field) {
+      ReflectionUtils.withFields().on(new DerivedType()).matching((field) -> {
           int fieldModifiers = field.getModifiers();
           return ((Modifier.isPublic(fieldModifiers) || Modifier.isProtected(fieldModifiers))
             && !Modifier.isFinal(fieldModifiers) && !Modifier.isStatic(fieldModifiers));
-        }
-      }).call(new ReflectionUtils.FieldCallback() {
-        @Override public void with(final Field field) {
+        }).call((field) -> {
           logDebug(field.getName());
           count.incrementAndGet();
-        }
       }).throwing(new FieldNotFoundException());
     }
     finally {
@@ -505,26 +488,16 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithNullFields() {
-    ReflectionUtils.withFields(null, null, null).call(new ReflectionUtils.FieldCallback() {
-      @Override public void with(final Field field) {
-        throw new NullPointerException("The Field must not be null!");
-      }
-    });
+    ReflectionUtils.withFields(null, null, null).call((field) -> new NullPointerException("The Field must not be null!"));
   }
 
   @Test
   public void testWithMethodsOnClass() {
-    final Set<String> methods = new HashSet<String>(5);
+    final Set<String> methods = new HashSet<>(5);
 
-    ReflectionUtils.withMethods().on(SuperType.class).matching(new Filter<Method>() {
-      @Override public boolean accept(final Method method) {
-        return SuperType.class.equals(method.getDeclaringClass());
-      }
-    }).call(new ReflectionUtils.MethodCallback() {
-      @Override public void with(final Method method) {
-        methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length));
-      }
-    }).throwing(new MethodNotFoundException());
+    ReflectionUtils.withMethods().on(SuperType.class).matching((method) -> SuperType.class.equals(method.getDeclaringClass()))
+      .call((method) -> methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length)))
+        .throwing(new MethodNotFoundException());
 
     assertNotNull(methods);
     assertFalse(methods.isEmpty());
@@ -535,18 +508,14 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithMethodsOnObject() {
-    final Set<String> methods = new HashSet<String>(10);
+    final Set<String> methods = new HashSet<>(10);
 
-    ReflectionUtils.withMethods().on(new DerivedType()).matching(new Filter<Method>() {
-      @Override public boolean accept(final Method method) {
-        return (DerivedType.class.equals(method.getDeclaringClass()) && method.getName().startsWith("method"));
-      }
-    }).call(new ReflectionUtils.MethodCallback() {
-      @Override public void with(final Method method) {
+    ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->
+      DerivedType.class.equals(method.getDeclaringClass()) && method.getName().startsWith("method"))
+      .call((method) -> {
         logDebug(method.getName());
         methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length));
-      }
-    }).throwing(new MethodNotFoundException());
+      }).throwing(new MethodNotFoundException());
 
     assertNotNull(methods);
     assertFalse(methods.isEmpty());
@@ -559,15 +528,8 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
   public void testWithMethodTenOnObject() {
     final AtomicInteger count = new AtomicInteger(0);
 
-    ReflectionUtils.withMethods().on(new DerivedType()).matching(new Filter<Method>() {
-      @Override public boolean accept(final Method method) {
-        return ("methodTen".equals(method.getName()));
-      }
-    }).call(new ReflectionUtils.MethodCallback() {
-      @Override public void with(final Method method) {
-        count.incrementAndGet();
-      }
-    });
+    ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->  "methodTen".equals(method.getName()))
+      .call((method) -> count.incrementAndGet());
 
     assertEquals(0, count.get());
   }
@@ -577,15 +539,8 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
     final AtomicInteger count = new AtomicInteger(0);
 
     try {
-      ReflectionUtils.withMethods().on(new DerivedType()).matching(new Filter<Method>() {
-        @Override public boolean accept(final Method obj) {
-          return false;
-        }
-      }).call(new ReflectionUtils.MethodCallback() {
-        @Override public void with(final Method member) {
-          count.incrementAndGet();
-        }
-      }).throwing(new MethodNotFoundException());
+      ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->  false)
+        .call((method) ->  count.incrementAndGet()).throwing(new MethodNotFoundException());
     }
     finally {
       assertEquals(0, count.get());
@@ -594,11 +549,7 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithNullMethods() {
-    ReflectionUtils.withMethods(null, null, null).call(new ReflectionUtils.MethodCallback() {
-      @Override public void with(final Method method) {
-        throw new NullPointerException("The Method must not be null!");
-      }
-    });
+    ReflectionUtils.withMethods(null, null, null).call((method) -> new NullPointerException("Method must not be null"));
   }
 
   // TODO write many more test cases!!!

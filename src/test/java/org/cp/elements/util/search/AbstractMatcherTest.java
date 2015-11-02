@@ -39,7 +39,7 @@ public class AbstractMatcherTest {
 
   @Test
   public void testAccept() {
-    TestMatcher<Object> matcher = new TestMatcher<Object>();
+    TestMatcher<Object> matcher = new TestMatcher<>();
 
     matcher.matchValue = 0;
 
@@ -56,7 +56,7 @@ public class AbstractMatcherTest {
 
   @Test
   public void testIsMatch() {
-    TestMatcher<Object> matcher = new TestMatcher<Object>();
+    TestMatcher<Object> matcher = new TestMatcher<>();
 
     matcher.matchValue = 0;
 

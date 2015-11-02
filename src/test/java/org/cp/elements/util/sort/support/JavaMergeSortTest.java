@@ -54,7 +54,7 @@ public class JavaMergeSortTest extends CommonSortTestSuite {
 
     assertNotNull("The Sorter implementation was not configured and initialized properly!", sorter);
 
-    List<Integer> sortedNumbers = sorter.sort(new ArrayList<Integer>(Arrays.asList(numbers)));
+    List<Integer> sortedNumbers = sorter.sort(new ArrayList<>(Arrays.asList(numbers)));
 
     assertNotNull(sortedNumbers);
     assertEquals(getNumberOfElementsToSort(), sortedNumbers.size());

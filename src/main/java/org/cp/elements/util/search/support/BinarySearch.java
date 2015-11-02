@@ -31,7 +31,7 @@ import org.cp.elements.util.search.AbstractSearcher;
 /**
  * The BinarySearch class is an implementation of the Searcher interface iterating over the elements in the collection
  * using a binary algorithm in search of the first element satisfying the Matcher's criteria.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.util.search.AbstractSearcher
  * @since 1.0.0
@@ -44,7 +44,7 @@ public class BinarySearch extends AbstractSearcher {
    * by the Matcher.  The search operation expects the collection of elements to an instance of java.util.List,
    * an ordered collection of elements that are sorted according the natural ordering of the element's Comparable
    * Class type.
-   * <p/>
+   *
    * @param <E> the Class type of elements in the Collection.
    * @param collection the Collection of elements to search.
    * @return the element in the Collection matching the search criteria defined by the Matcher.
@@ -59,15 +59,15 @@ public class BinarySearch extends AbstractSearcher {
   public <E> E search(final Collection<E> collection) {
     Assert.isInstanceOf(collection, List.class, "The collection {0} must be an instance of java.util.List!",
       ClassUtils.getClassName(collection));
-    return (E) doSearch((List<E>) collection);
+
+    return doSearch((List<E>) collection);
   }
 
   /**
    * Performs the actual (binary) search of an ordered collection (List) of elements in search of a single element
    * matching the criteria defined by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of the elements in the List.
-   * @param <T> the Class type of the List of elements.
    * @param list the List of elements to search.
    * @return a single element of the List matching the criteria defined by the Matcher or null if no element in the List
    * matches the criteria defined by the Matcher.

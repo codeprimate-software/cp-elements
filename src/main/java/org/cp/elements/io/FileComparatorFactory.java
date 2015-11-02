@@ -38,43 +38,23 @@ import java.util.Comparator;
 public abstract class FileComparatorFactory {
 
   public static Comparator<File> fileExtensionComparator() {
-    return new Comparator<File>() {
-      @Override public int compare(final File fileOne, final File fileTwo) {
-        return FileUtils.getExtension(fileOne).compareTo(FileUtils.getExtension(fileTwo));
-      }
-    };
+    return (fileOne, fileTwo) -> FileUtils.getExtension(fileOne).compareTo(FileUtils.getExtension(fileTwo));
   }
 
   public static Comparator<File> fileLastModifiedComparator() {
-    return new Comparator<File>() {
-      @Override public int compare(final File fileOne, final File fileTwo) {
-        return new BigDecimal(fileOne.lastModified() - fileTwo.lastModified()).intValue();
-      }
-    };
+    return (fileOne, fileTwo) -> new BigDecimal(fileOne.lastModified() - fileTwo.lastModified()).intValue();
   }
 
   public static Comparator<File> fileNameComparator() {
-    return new Comparator<File>() {
-      @Override public int compare(final File fileOne, final File fileTwo) {
-        return fileOne.getName().compareTo(fileTwo.getName());
-      }
-    };
+    return (fileOne, fileTwo) -> fileOne.getName().compareTo(fileTwo.getName());
   }
 
   public static Comparator<File> filePathComparator() {
-    return new Comparator<File>() {
-      @Override public int compare(final File fileOne, final File fileTwo) {
-        return fileOne.getAbsolutePath().compareTo(fileTwo.getAbsolutePath());
-      }
-    };
+    return (fileOne, fileTwo) -> fileOne.getAbsolutePath().compareTo(fileTwo.getAbsolutePath());
   }
 
   public static Comparator<File> fileSizeComparator() {
-    return new Comparator<File>() {
-      @Override public int compare(final File fileOne, final File fileTwo) {
-        return new BigDecimal(fileOne.length() - fileTwo.length()).intValue();
-      }
-    };
+    return (fileOne, fileTwo) -> new BigDecimal(fileOne.length() - fileTwo.length()).intValue();
   }
 
 }

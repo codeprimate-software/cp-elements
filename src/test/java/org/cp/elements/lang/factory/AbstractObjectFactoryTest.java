@@ -371,12 +371,8 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
 
     @Override
     public String toString() {
-      StringBuilder buffer = new StringBuilder("{ class = ");
-      buffer.append(getClass());
-      buffer.append(", dateTime = ").append(toString(getDateTime()));
-      buffer.append(", id = ").append(getId());
-      buffer.append(", name = ").append(getName());
-      return buffer.toString();
+      return String.format("{ type = %1$s, dateTime = %2$s, id = %3$s, name = %4$s }", getClass(),
+        toString(getDateTime()), getId(), getName());
     }
   }
 

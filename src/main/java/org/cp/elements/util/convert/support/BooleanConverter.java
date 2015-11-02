@@ -48,7 +48,7 @@ public class BooleanConverter extends ConverterAdapter<Object, Boolean> {
 
   public BooleanConverter(final String... trueValues) {
     this.trueValues = (trueValues == null ? Collections.<String>emptySet()
-      : Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(trueValues))));
+      : Collections.unmodifiableSet(new HashSet<>(Arrays.asList(trueValues))));
   }
 
   protected boolean isTrue(final Object value) {

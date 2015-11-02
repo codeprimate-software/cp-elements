@@ -45,7 +45,7 @@ public class ComposableTransformerTest extends AbstractMockingTestSuite {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testComposeWithArray() {
+  public void composeWithArray() {
     Transformer mockTransformerOne = mock(Transformer.class, "testComposeWithArray.one");
     Transformer mockTransformerTwo = mock(Transformer.class, "testComposeWithArray.two");
 
@@ -69,19 +69,20 @@ public class ComposableTransformerTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testComposeWithNull() {
-    assertNull(ComposableTransformer.compose((Transformer<?>[]) null));
+  @SuppressWarnings("unchecked")
+  public void composeWithNull() {
+    assertNull(ComposableTransformer.compose((Transformer<Object>[]) null));
   }
 
   @Test
-  public void testComposeWithOne() {
+  public void composeWithOne() {
     Transformer mockTransformer = mock(Transformer.class, "testComposeWithOne");
     assertSame(mockTransformer, ComposableTransformer.compose(mockTransformer));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testComposeWithTwo() {
+  public void composeWithTwo() {
     Transformer mockTransformerOne = mock(Transformer.class, "testComposeWithTwo.One");
     Transformer mockTransformerTwo = mock(Transformer.class, "testComposeWithTwo.Two");
     Transformer composedTransformer = ComposableTransformer.compose(mockTransformerOne, mockTransformerTwo);
@@ -100,36 +101,16 @@ public class ComposableTransformerTest extends AbstractMockingTestSuite {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testTransform() {
-    Transformer<Integer> incrementingTransformer = new Transformer<Integer>() {
-      @Override public Integer transform(final Integer value) {
-        return (value + 1);
-      }
-    };
+  public void transform() {
+    Transformer<Integer> incrementingTransformer = (value) -> (value + 1);
 
-    Transformer<Integer> doublingTransformer = new Transformer<Integer>() {
-      @Override public Integer transform(final Integer value) {
-        return (value * 2);
-      }
-    };
+    Transformer<Integer> doublingTransformer = (value) -> (value * 2);
 
-    Transformer<Integer> multiplyingTransformer = new Transformer<Integer>() {
-      @Override public Integer transform(final Integer value) {
-        return (value * value);
-      }
-    };
+    Transformer<Integer> multiplyingTransformer = (value) -> (value * value);
 
-    Transformer<Integer> dividingTransformer = new Transformer<Integer>() {
-      @Override public Integer transform(final Integer value) {
-        return (value / 2);
-      }
-    };
+    Transformer<Integer> dividingTransformer = (value) -> (value / 2);
 
-    Transformer<Integer> squareRootTransformer = new Transformer<Integer>() {
-      @Override public Integer transform(final Integer value) {
-        return (int) Math.sqrt(value);
-      }
-    };
+    Transformer<Integer> squareRootTransformer = (value) -> (int) Math.sqrt(value);
 
     Transformer<Integer> composedTransformer = ComposableTransformer.compose(incrementingTransformer,
       incrementingTransformer, incrementingTransformer);

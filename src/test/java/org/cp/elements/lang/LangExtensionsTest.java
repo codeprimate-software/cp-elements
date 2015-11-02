@@ -405,6 +405,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void testIsNotSameAs() {
     assertTrue(is(NULL).notSameAs("null"));
     assertTrue(is(Boolean.TRUE).notSameAs(Boolean.FALSE));
@@ -472,6 +473,7 @@ public class LangExtensionsTest {
     }
 
     @Override
+    @SuppressWarnings("all")
     public int compareTo(final Person person) {
       int compareValue = ComparatorUtils.compareIgnoreNull(getFirstName(), person.getFirstName());
       return (compareValue != 0 ? compareValue : ComparatorUtils.compareIgnoreNull(getLastName(), person.getLastName()));
@@ -505,12 +507,7 @@ public class LangExtensionsTest {
 
     @Override
     public String toString() {
-      final StringBuilder buffer = new StringBuilder("{id: ");
-      buffer.append(getId());
-      buffer.append(", firstName: ").append(getFirstName());
-      buffer.append(", lastName: ").append(getLastName());
-      buffer.append("}");
-      return buffer.toString();
+      return String.format("{ id = %1$s, firstName = %2$s, lastName = %3$s }", getId(), getFirstName(), getLastName());
     }
 
   }

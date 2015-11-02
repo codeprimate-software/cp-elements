@@ -58,7 +58,7 @@ public class DestroyableVisitorTest extends AbstractMockingTestSuite {
     new DestroyableVisitor().visit(mockContext.mock(Visitable.class));
   }
 
-  protected static interface VisitableDestroyable extends Destroyable, Visitable {
+  protected interface VisitableDestroyable extends Destroyable, Visitable {
   }
 
 }

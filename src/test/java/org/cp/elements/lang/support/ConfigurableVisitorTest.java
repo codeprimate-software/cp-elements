@@ -45,7 +45,7 @@ public class ConfigurableVisitorTest extends AbstractMockingTestSuite {
 
   @Test
   public void testConstruct() {
-    new ConfigurableVisitor<Configuration>(mockContext.mock(Configuration.class));
+    new ConfigurableVisitor<>(mockContext.mock(Configuration.class));
   }
 
   @Test(expected = NullPointerException.class)
@@ -69,18 +69,18 @@ public class ConfigurableVisitorTest extends AbstractMockingTestSuite {
       oneOf(mockConfigurable).configure(with(equal(mockConfiguration)));
     }});
 
-    ConfigurableVisitor<Configuration> visitor = new ConfigurableVisitor<Configuration>(mockConfiguration);
+    ConfigurableVisitor<Configuration> visitor = new ConfigurableVisitor<>(mockConfiguration);
 
     visitor.visit(mockConfigurable);
   }
 
   @Test
   public void testVisitWithNonConfigurableVisitable() {
-    new ConfigurableVisitor<Configuration>(mockContext.mock(Configuration.class))
+    new ConfigurableVisitor<>(mockContext.mock(Configuration.class))
       .visit(mockContext.mock(Visitable.class));
   }
 
-  protected static interface VisitableConfigurable<T> extends Configurable<T>, Visitable {
+  protected interface VisitableConfigurable<T> extends Configurable<T>, Visitable {
   }
 
 }

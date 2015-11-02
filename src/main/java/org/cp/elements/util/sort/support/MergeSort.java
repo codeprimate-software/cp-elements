@@ -96,7 +96,7 @@ public class MergeSort extends AbstractSorter {
     int rightIndex = 0;
     int rightSize = rightElements.size();
 
-    List<E> mergedElements = new ArrayList<E>(leftSize + rightSize);
+    List<E> mergedElements = new ArrayList<>(leftSize + rightSize);
 
     for (int mergeIndex = 0, mergeSize = (leftSize + rightSize); mergeIndex < mergeSize; mergeIndex++) {
       if (leftIndex == leftSize) {

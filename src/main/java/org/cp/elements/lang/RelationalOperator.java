@@ -40,7 +40,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @return a RelationalOperator for the equality comparison.
    */
   public static <T extends Comparable<T>> RelationalOperator<T> equalTo(final T value) {
-    return new EqualToOperator<T>(value);
+    return new EqualToOperator<>(value);
   }
 
   /**
@@ -52,7 +52,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @return a RelationalOperator for the greater than comparison.
    */
   public static <T extends Comparable<T>> RelationalOperator<T> greaterThan(final T lowerBound) {
-    return new GreaterThanOperator<T>(lowerBound);
+    return new GreaterThanOperator<>(lowerBound);
   }
 
   /**
@@ -90,7 +90,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @return a RelationalOperator for the greater than equal to comparison.
    */
   public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualTo(final T lowerBound) {
-    return new GreaterThanEqualToOperator<T>(lowerBound);
+    return new GreaterThanEqualToOperator<>(lowerBound);
   }
 
   /**
@@ -130,7 +130,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @return a RelationalOperator for the less than comparison.
    */
   public static <T extends Comparable<T>> RelationalOperator<T> lessThan(final T lowerBound) {
-    return new LessThanOperator<T>(lowerBound);
+    return new LessThanOperator<>(lowerBound);
   }
 
   /**
@@ -168,7 +168,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @return a RelationalOperator for the less than equal to comparison.
    */
   public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualTo(final T lowerBound) {
-    return new LessThanEqualToOperator<T>(lowerBound);
+    return new LessThanEqualToOperator<>(lowerBound);
   }
 
   /**
@@ -379,7 +379,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
                                                                           final RelationalOperator<T> rightOperand)
     {
       return (leftOperand == null ? rightOperand : (rightOperand == null ? leftOperand
-        : new ComposableRelationalOperator<T>(leftOperand, operator, rightOperand)));
+        : new ComposableRelationalOperator<>(leftOperand, operator, rightOperand)));
     }
 
     /**

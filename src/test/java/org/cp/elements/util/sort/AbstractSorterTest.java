@@ -384,7 +384,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
 
   @Test
   public void testSwap() {
-    List<String> elements = new ArrayList<String>(Arrays.asList("zero", "one", "two", "three"));
+    List<String> elements = new ArrayList<>(Arrays.asList("zero", "one", "two", "three"));
 
     assertEquals("one", elements.get(1));
     assertEquals("two", elements.get(2));
@@ -429,7 +429,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   @Test
   public void testSortableArrayListGetSetAndSize() {
     String[] elements = { "test", "testing", "tested" };
-    AbstractSorter.SortableArrayList<String> list = new AbstractSorter.SortableArrayList<String>(elements);
+    AbstractSorter.SortableArrayList<String> list = new AbstractSorter.SortableArrayList<>(elements);
 
     assertEquals(elements.length, list.size());
     assertEquals("test", list.get(0));
@@ -476,7 +476,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     protected static final TestSortableWithOverrides INSTANCE = new TestSortableWithOverrides();
 
     public List<String> toCollection() {
-      List<String> elements = new ArrayList<String>(Arrays.asList(ELEMENTS));
+      List<String> elements = new ArrayList<>(Arrays.asList(ELEMENTS));
       Collections.reverse(elements);
       return elements;
     }
@@ -541,18 +541,14 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
       assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
       Sortable<String> sortable = sorter.sort(new Sortable<String>() {
-        private final List<String> elements = new ArrayList<String>(Arrays.asList(ELEMENTS));
+        private final List<String> elements = new ArrayList<>(Arrays.asList(ELEMENTS));
 
         @Override public List<String> asList() {
           return elements;
         }
 
         @Override public Comparator<String> getOrderBy() {
-          return new Comparator<String>() {
-            @Override public int compare(final String value1, final String value2) {
-              return value2.compareTo(value1);
-            }
-          };
+          return (value1, value2) -> value2.compareTo(value1);
         }
       });
 
@@ -576,7 +572,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
       assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
       Sortable<String> sortable = sorter.sort(new Sortable<String>() {
-        private final List<String> elements = new ArrayList<String>(Arrays.asList(ELEMENTS));
+        private final List<String> elements = new ArrayList<>(Arrays.asList(ELEMENTS));
 
         @Override public List<String> asList() {
           return elements;

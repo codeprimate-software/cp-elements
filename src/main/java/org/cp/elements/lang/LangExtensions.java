@@ -43,7 +43,7 @@ public abstract class LangExtensions {
    */
   @DSL
   public static <T> Is<T> is(final T obj) {
-    return new IsExpression<T>(obj);
+    return new IsExpression<>(obj);
   }
 
   /**
@@ -53,7 +53,7 @@ public abstract class LangExtensions {
    * @param <T> the type of Object as the subject of the is operator.
    * @see org.cp.elements.lang.DslExtension
    */
-  public static interface Is<T> extends DslExtension {
+  public interface Is<T> extends DslExtension {
 
     /**
      * Determines whether the Class object provided to the is operator is assignable from the Class type parameter.
@@ -63,7 +63,7 @@ public abstract class LangExtensions {
      * this is operator.
      * @see java.lang.Class#isAssignableFrom(Class)
      */
-    public boolean assignableFrom(Class type);
+    boolean assignableFrom(Class type);
 
     /**
      * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
@@ -74,7 +74,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating whether the objects are equal.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean equalByComparison(T obj);
+    boolean equalByComparison(T obj);
 
     /**
      * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
@@ -85,7 +85,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating whether the objects are equal.
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equalTo(T obj);
+    boolean equalTo(T obj);
 
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value false.  An object
@@ -94,7 +94,7 @@ public abstract class LangExtensions {
      * @return a boolean value of true if the object in question is indeed the value false.
      * @see java.lang.Boolean#FALSE
      */
-    public boolean False();
+    boolean False();
 
     /**
      * Determines whether the object provided to the is operator is greater than the specified value, as determined
@@ -104,7 +104,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating if the object is greater than the specified value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean greaterThan(T lowerBound);
+    boolean greaterThan(T lowerBound);
 
     /**
      * Determines whether the object provided to the is operator is greater than some specified lower bound value
@@ -116,7 +116,7 @@ public abstract class LangExtensions {
      * upper bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean greaterThanAndLessThan(T lowerBound, T upperBound);
+    boolean greaterThanAndLessThan(T lowerBound, T upperBound);
 
     /**
      * Determines whether the object provided to the is operator is greater than some specified lower bound value
@@ -129,7 +129,7 @@ public abstract class LangExtensions {
      * the upper bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean greaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
+    boolean greaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
 
     /**
      * Determines whether the object provided to the is operator is greater than or equal to the specified value,
@@ -139,7 +139,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating if the object is greater than or equal to the specified value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean greaterThanEqualTo(T lowerBound);
+    boolean greaterThanEqualTo(T lowerBound);
 
     /**
      * Determines whether the object provided to the is operator is greater than or equal to some specified
@@ -152,7 +152,7 @@ public abstract class LangExtensions {
      * the upper bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean greaterThanEqualToAndLessThan(T lowerBound, T upperBound);
+    boolean greaterThanEqualToAndLessThan(T lowerBound, T upperBound);
 
     /**
      * Determines whether the object provided to the is operator is greater than or equal to some specified
@@ -165,7 +165,7 @@ public abstract class LangExtensions {
      * and less than or equal to the upper bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean greaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
+    boolean greaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
 
     /**
      * Determines whether the object provided to the is operator is an instance of the specified class type.
@@ -174,7 +174,7 @@ public abstract class LangExtensions {
      * specified Class.
      * @return a boolean value indicating whether the object in question is an instance of the specified Class.
      */
-    public boolean instanceOf(Class type);
+    boolean instanceOf(Class type);
 
     /**
      * Determines whether the object provided to the is operator is less than the specified value, as determined by
@@ -184,7 +184,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating if the object is less than the specified value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean lessThan(T upperBound);
+    boolean lessThan(T upperBound);
 
     /**
      * Determines whether the object provided to the is operator is less than some specified lower upper bound value
@@ -197,7 +197,7 @@ public abstract class LangExtensions {
      * or is greater than the lower bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean lessThanOrGreaterThan(T upperBound, T lowerBound);
+    boolean lessThanOrGreaterThan(T upperBound, T lowerBound);
 
     /**
      * Determines whether the object provided to the is operator is less than some specified lower upper bound value
@@ -210,7 +210,7 @@ public abstract class LangExtensions {
      * or equal to the lower bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean lessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
+    boolean lessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
      * Determines whether the object provided to the is operator is less than or equal to the specified value,
@@ -220,7 +220,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating if the object is less than or equal to the specified value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean lessThanEqualTo(T upperBound);
+    boolean lessThanEqualTo(T upperBound);
 
     /**
      * Determines whether the object provided to the is operator is less than or equal to some specified
@@ -233,7 +233,7 @@ public abstract class LangExtensions {
      * or is greater than the lower bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean lessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
+    boolean lessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
 
     /**
      * Determines whether the object provided to the is operator is less than or equal to some specified
@@ -246,14 +246,14 @@ public abstract class LangExtensions {
      * or is greater than or equal to the lower bound value.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    public boolean lessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
+    boolean lessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
      * Negates the expected outcome/result of this operator.
      * 
      * @return the instance of this Is operator negated.
      */
-    public Is<T> not();
+    Is<T> not();
 
     /**
      * Shortcut method for the not().Null() operation.  Determines whether the object provided to the is operator
@@ -261,14 +261,14 @@ public abstract class LangExtensions {
      * 
      * @return a boolean value indicating whether the object in question is not null.
      */
-    public boolean notNull();
+    boolean notNull();
 
     /**
      * Determines whether the object provided to the is operator is null.
      * 
      * @return a boolean value indicating whether the object in question is null.
      */
-    public boolean Null();
+    boolean Null();
 
     /**
      * Shortcut method for the not().sameAs(:Object) operation.  Determines whether the object provided to
@@ -280,7 +280,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating whether the object in question and object parameter reference do not refer to
      * the same object.
      */
-    public boolean notSameAs(T obj);
+    boolean notSameAs(T obj);
 
     /**
      * Determines whether the object provided to the is operator is the same as, or refers to the same object
@@ -291,7 +291,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating whether the object in question and object parameter reference refers to
      * the same object.
      */
-    public boolean sameAs(T obj);
+    boolean sameAs(T obj);
 
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value true.  An object
@@ -300,7 +300,7 @@ public abstract class LangExtensions {
      * @return a boolean value of true if the object in question is indeed the value true
      * @see java.lang.Boolean#TRUE
      */
-    public boolean True();
+    boolean True();
   }
 
   /**
@@ -408,7 +408,7 @@ public abstract class LangExtensions {
     }
 
     public Is<T> not() {
-      return new IsExpression<T>(this.obj, !expectedOutcome);
+      return new IsExpression<>(this.obj, !expectedOutcome);
     }
 
     public boolean notNull() {
