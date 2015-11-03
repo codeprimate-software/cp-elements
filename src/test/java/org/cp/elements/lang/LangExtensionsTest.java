@@ -22,6 +22,7 @@
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.*;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
@@ -30,7 +31,10 @@ import java.util.Date;
 
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
+import org.hamcrest.CoreMatchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The LangExtensionsTest class is a test suite of test cases testing the contract and functionality
@@ -45,6 +49,67 @@ import org.junit.Test;
 public class LangExtensionsTest {
 
   private final Comparable NULL = null;
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
+
+  @Test
+  public void assertThatFalseIsFalse() {
+    LangExtensions.assertThat(false).isFalse();
+    LangExtensions.assertThat(Boolean.FALSE).isFalse();
+    LangExtensions.assertThat(false).not().isTrue();
+  }
+
+  @Test
+  public void assertThatFalseIsTrueThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(false) is not true");
+    LangExtensions.assertThat(false).isTrue();
+  }
+
+  @Test
+  public void assertThatTrueIsTrue() {
+    LangExtensions.assertThat(true).isTrue();
+    LangExtensions.assertThat(Boolean.TRUE).isTrue();
+    LangExtensions.assertThat(true).not().isFalse();
+  }
+
+  @Test
+  public void assertThatTrueIsFalseThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(true) is not false");
+    LangExtensions.assertThat(true).isFalse();
+  }
+
+  @Test
+  public void assertThatNonNullObjectIsNotNull() {
+    LangExtensions.assertThat("test").isNotNull();
+    LangExtensions.assertThat("test").not().isNull();
+  }
+
+  @Test
+  public void assertThatNonNullObjectIsNullThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is not null");
+    LangExtensions.assertThat("test").isNull();
+  }
+
+  @Test
+  public void assertThatNullObjectIsNull() {
+    LangExtensions.assertThat(null).isNull();
+    LangExtensions.assertThat(null).not().isNotNull();
+  }
+
+  @Test
+  public void assertThatNullObjectIsNotNullThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(null) is null");
+    LangExtensions.assertThat(null).isNotNull();
+  }
 
   @Test
   public void testIsAssignableFrom() {

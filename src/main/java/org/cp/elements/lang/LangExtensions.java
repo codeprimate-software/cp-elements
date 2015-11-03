@@ -30,7 +30,87 @@ import org.cp.elements.lang.annotation.DSL;
  * @author John J. Blum
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public abstract class LangExtensions {
+
+  /**
+   * The assertThat operator can be used to assert an expression of an object, such as it's equality, identity, nullity,
+   * and so on.
+   *
+   * @param <T> the class type object subject to assertion.
+   * @param obj the Object to be asserted.
+   * @return an instance of the AssertThat DSL expression for making assertions.
+   */
+  @DSL
+  public static <T> AssertThat<T> assertThat(final T obj) {
+    return new AssertThatExpression<>(obj);
+  }
+
+  public interface AssertThat<T> extends DslExtension {
+
+    void isFalse();
+
+    void isNotNull();
+
+    void isNull();
+
+    void isTrue();
+
+    AssertThat<T> not();
+
+  }
+
+  private static final class AssertThatExpression<T> implements AssertThat<T> {
+
+    private static final boolean DEFAULT_EXPECTED = true;
+
+    private final boolean expected;
+
+    private final T obj;
+
+    private AssertThatExpression(final T obj) {
+      this(obj, DEFAULT_EXPECTED);
+    }
+
+    private AssertThatExpression(final T obj, final boolean expected) {
+      this.obj = obj;
+      this.expected = expected;
+    }
+
+    private String negate(final String value) {
+      return (expected ? value : "");
+    }
+
+    private boolean notEqualToExpected(final boolean actual) {
+      return !(actual == expected);
+    }
+
+    public void isFalse() {
+      if (notEqualToExpected(is(obj).False())) {
+        throw new AssertionFailedException(String.format("(%1$s) is %2$sfalse", obj, negate("not ")));
+      }
+    }
+
+    public void isNotNull() {
+      not().isNull();
+    }
+
+    public void isNull() {
+      if (notEqualToExpected(is(obj).Null())) {
+        throw new AssertionFailedException(String.format("(%1$s) is %2$snull", obj, negate("not ")));
+      }
+    }
+
+    public void isTrue() {
+      if (notEqualToExpected(is(obj).True())) {
+        throw new AssertionFailedException(String.format("(%1$s) is %2$strue", obj, negate("not ")));
+      }
+    }
+
+    public AssertThat<T> not() {
+      return new AssertThatExpression<>(this.obj, !expected);
+    }
+  }
 
   /**
    * The is operator can be used to make logical determinations about an object such as boolean, equality, identity,
@@ -301,6 +381,7 @@ public abstract class LangExtensions {
      * @see java.lang.Boolean#TRUE
      */
     boolean True();
+
   }
 
   /**
@@ -313,25 +394,27 @@ public abstract class LangExtensions {
    */
   private static final class IsExpression<T> implements Is<T> {
 
-    private final boolean expectedOutcome;
+    private static final boolean DEFAULT_EXPECTED = true;
+
+    private final boolean expected;
 
     private final T obj;
 
     private IsExpression(final T obj) {
-      this(obj, true);
+      this(obj, DEFAULT_EXPECTED);
     }
 
-    private IsExpression(final T obj, final boolean expectedOutcome) {
+    private IsExpression(final T obj, final boolean expected) {
       this.obj = obj;
-      this.expectedOutcome = expectedOutcome;
+      this.expected = expected;
+    }
+
+    private boolean equalToExpected(final boolean actualOutcome) {
+      return (actualOutcome == expected);
     }
 
     private LogicalOperator getOp(final LogicalOperator op) {
-      return (expectedOutcome ? op : op.getOpposite());
-    }
-
-    private boolean getOutcome(final boolean actualOutcome) {
-      return (actualOutcome == expectedOutcome);
+      return (expected ? op : op.getOpposite());
     }
 
     @SuppressWarnings("unchecked")
@@ -340,23 +423,23 @@ public abstract class LangExtensions {
     }
 
     public boolean assignableFrom(final Class type) {
-      return getOutcome(this.obj != null && type != null && ((Class<?>) this.obj).isAssignableFrom(type));
+      return equalToExpected(this.obj != null && type != null && ((Class<?>) this.obj).isAssignableFrom(type));
     }
 
     public boolean equalByComparison(final T obj) {
-      return getOutcome(toComparable(this.obj).compareTo(obj) == 0);
+      return equalToExpected(toComparable(this.obj).compareTo(obj) == 0);
     }
 
     public boolean equalTo(final T obj) {
-      return getOutcome(this.obj != null && this.obj.equals(obj));
+      return equalToExpected(this.obj != null && this.obj.equals(obj));
     }
 
     public boolean False() {
-      return getOutcome(Boolean.FALSE.equals(this.obj));
+      return equalToExpected(Boolean.FALSE.equals(this.obj));
     }
 
     public boolean greaterThan(final T lowerBound) {
-      return getOutcome(toComparable(this.obj).compareTo(lowerBound) > 0);
+      return equalToExpected(toComparable(this.obj).compareTo(lowerBound) > 0);
     }
 
     public boolean greaterThanAndLessThan(final T lowerBound, final T upperBound) {
@@ -368,7 +451,7 @@ public abstract class LangExtensions {
     }
 
     public boolean greaterThanEqualTo(final T lowerBound) {
-      return getOutcome(toComparable(this.obj).compareTo(lowerBound) >= 0);
+      return equalToExpected(toComparable(this.obj).compareTo(lowerBound) >= 0);
     }
 
     public boolean greaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
@@ -380,11 +463,11 @@ public abstract class LangExtensions {
     }
 
     public boolean instanceOf(final Class type) {
-      return getOutcome(type != null && type.isInstance(this.obj));
+      return equalToExpected(type != null && type.isInstance(this.obj));
     }
 
     public boolean lessThan(final T upperBound) {
-      return getOutcome(toComparable(this.obj).compareTo(upperBound) < 0);
+      return equalToExpected(toComparable(this.obj).compareTo(upperBound) < 0);
     }
 
     public boolean lessThanOrGreaterThan(final T upperBound, final T lowerBound) {
@@ -396,7 +479,7 @@ public abstract class LangExtensions {
     }
 
     public boolean lessThanEqualTo(final T upperBound) {
-      return getOutcome(toComparable(this.obj).compareTo(upperBound) <= 0);
+      return equalToExpected(toComparable(this.obj).compareTo(upperBound) <= 0);
     }
 
     public boolean lessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
@@ -408,7 +491,7 @@ public abstract class LangExtensions {
     }
 
     public Is<T> not() {
-      return new IsExpression<>(this.obj, !expectedOutcome);
+      return new IsExpression<>(this.obj, !expected);
     }
 
     public boolean notNull() {
@@ -416,7 +499,7 @@ public abstract class LangExtensions {
     }
 
     public boolean Null() {
-      return getOutcome(this.obj == null);
+      return equalToExpected(this.obj == null);
     }
 
     public boolean notSameAs(final T obj) {
@@ -424,11 +507,11 @@ public abstract class LangExtensions {
     }
 
     public boolean sameAs(final T obj) {
-      return getOutcome(this.obj == obj);
+      return equalToExpected(this.obj == obj);
     }
 
     public boolean True() {
-      return getOutcome(Boolean.TRUE.equals(this.obj));
+      return equalToExpected(Boolean.TRUE.equals(this.obj));
     }
   }
 
