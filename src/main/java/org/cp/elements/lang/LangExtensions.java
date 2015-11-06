@@ -34,12 +34,13 @@ import org.cp.elements.lang.annotation.DSL;
 public abstract class LangExtensions {
 
   /**
-   * The assertThat operator can be used to assert an expression of an object, such as it's equality, identity, nullity,
-   * and so on.
+   * The assertThat operator used to assert the state of an object, such as it's equality, identity, nullity,
+   * relational value, and so on.
    *
-   * @param <T> the class type object subject to assertion.
+   * @param <T> the class type of the object subject to assertion.
    * @param obj the Object to be asserted.
-   * @return an instance of the AssertThat DSL expression for making assertions.
+   * @return an instance of the AssertThat DSL expression for making assertions about an object's state.
+   * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL
   public static <T> AssertThat<T> assertThat(final T obj) {
@@ -48,11 +49,15 @@ public abstract class LangExtensions {
 
   public interface AssertThat<T> extends DslExtension {
 
+    void isEqualTo(T obj);
+
     void isFalse();
 
     void isNotNull();
 
     void isNull();
+
+    void isSameAs(T obj);
 
     void isTrue();
 
@@ -63,6 +68,8 @@ public abstract class LangExtensions {
   private static final class AssertThatExpression<T> implements AssertThat<T> {
 
     private static final boolean DEFAULT_EXPECTED = true;
+
+    private static final String NOT = "not ";
 
     private final boolean expected;
 
@@ -85,9 +92,16 @@ public abstract class LangExtensions {
       return !(actual == expected);
     }
 
+    public void isEqualTo(final T obj) {
+      if (notEqualToExpected(is(this.obj).equalTo(obj))) {
+        throw new AssertionFailedException(String.format("(%1$s) is %2$sequal to object (%3$s)",
+          this.obj, negate(NOT), obj));
+      }
+    }
+
     public void isFalse() {
       if (notEqualToExpected(is(obj).False())) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$sfalse", obj, negate("not ")));
+        throw new AssertionFailedException(String.format("(%1$s) is %2$sfalse", obj, negate(NOT)));
       }
     }
 
@@ -97,13 +111,20 @@ public abstract class LangExtensions {
 
     public void isNull() {
       if (notEqualToExpected(is(obj).Null())) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$snull", obj, negate("not ")));
+        throw new AssertionFailedException(String.format("(%1$s) is %2$snull", obj, negate(NOT)));
+      }
+    }
+
+    public void isSameAs(final T obj) {
+      if (notEqualToExpected(is(this.obj).sameAs(obj))) {
+        throw new AssertionFailedException(String.format("(%1$s) is %2$sthe same as object (%3$s)",
+          this.obj, negate(NOT), obj));
       }
     }
 
     public void isTrue() {
       if (notEqualToExpected(is(obj).True())) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$strue", obj, negate("not ")));
+        throw new AssertionFailedException(String.format("(%1$s) is %2$strue", obj, negate(NOT)));
       }
     }
 
