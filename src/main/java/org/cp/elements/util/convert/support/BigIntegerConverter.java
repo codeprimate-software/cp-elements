@@ -52,7 +52,7 @@ public class BigIntegerConverter extends ConverterAdapter<String, BigInteger> {
 
   @Override
   public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (is(String.class).assignableFrom(fromType) && BigInteger.class.equals(toType));
+    return (is(fromType).assignableTo(String.class) && BigInteger.class.equals(toType));
   }
 
   @Override

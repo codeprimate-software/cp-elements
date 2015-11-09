@@ -22,10 +22,12 @@
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.*;
+import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -54,6 +56,67 @@ public class LangExtensionsTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
+  public void assertThatClassTypesAreAssignable() {
+    assertThat(Boolean.class).isAssignableTo(Object.class);
+    assertThat(Character.class).isAssignableTo(Object.class);
+    assertThat(Double.class).isAssignableTo(Number.class);
+    assertThat(Integer.class).isAssignableTo(Number.class);
+    assertThat(Number.class).isAssignableTo(Object.class);
+    assertThat(String.class).isAssignableTo(String.class);
+    assertThat(String.class).isAssignableTo(Object.class);
+    assertThat(Object.class).isAssignableTo(Object.class);
+  }
+
+  @Test
+  public void assertThatClassTypesAreNotAssignable() {
+    assertThat(Boolean.class).not().isAssignableTo(Number.class);
+    assertThat(Character.class).not().isAssignableTo(String.class);
+    assertThat(Float.class).not().isAssignableTo(Double.class);
+    assertThat(Integer.class).not().isAssignableTo(Long.class);
+    assertThat(Object.class).not().isAssignableTo(String.class);
+  }
+
+  @Test
+  public void assertThatBooleanIsNotAssignableToNumberThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(Boolean.class).throwing(new IllegalArgumentException("test")).isAssignableTo(Number.class);
+  }
+
+  @Test
+  public void assertThatFloatTypeIsNotAssignableToIntegerType() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(class java.lang.Float) is not assignable to (class java.lang.Integer)");
+
+    assertThat(Float.class).isAssignableTo(Integer.class);
+  }
+
+  @Test
+  public void assertThatObjectIsNotAssignableToStringUsingCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(Object.class).using("This is a %1$s{1}", "test", "!").isAssignableTo(String.class);
+  }
+
+  @Test
+  public void assertThatStringTypeIsAssignableToObjectType() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(class java.lang.String) is assignable to (class java.lang.Object)");
+
+    assertThat(String.class).not().isAssignableTo(Object.class);
+  }
+
+  @Test
+  public void test() {
+  }
+
+  @Test
   public void assertThatFalseIsFalse() {
     LangExtensions.assertThat(false).isFalse();
     LangExtensions.assertThat(Boolean.FALSE).isFalse();
@@ -66,21 +129,6 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(false) is not true");
     LangExtensions.assertThat(false).isTrue();
-  }
-
-  @Test
-  public void assertThatTrueIsTrue() {
-    LangExtensions.assertThat(true).isTrue();
-    LangExtensions.assertThat(Boolean.TRUE).isTrue();
-    LangExtensions.assertThat(true).not().isFalse();
-  }
-
-  @Test
-  public void assertThatTrueIsFalseThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
-    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(true) is not false");
-    LangExtensions.assertThat(true).isFalse();
   }
 
   @Test
@@ -112,26 +160,43 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsAssignableFrom() {
-    assertTrue(is(Object.class).assignableFrom(Object.class));
-    assertTrue(is(Object.class).assignableFrom(Boolean.class));
-    assertTrue(is(Object.class).assignableFrom(Number.class));
-    assertTrue(is(Object.class).assignableFrom(String.class));
-    assertTrue(is(Number.class).assignableFrom(Double.class));
-    assertTrue(is(Number.class).assignableFrom(Integer.class));
-    assertTrue(is(java.util.Date.class).assignableFrom(java.sql.Date.class));
-    assertTrue(is(String.class).not().assignableFrom(Object.class));
+  public void assertThatTrueIsTrue() {
+    LangExtensions.assertThat(true).isTrue();
+    LangExtensions.assertThat(Boolean.TRUE).isTrue();
+    LangExtensions.assertThat(true).not().isFalse();
   }
 
   @Test
-  public void testIsNotAssignableFrom() {
-    assertFalse(is(String.class).assignableFrom(Object.class));
-    assertFalse(is(Boolean.class).assignableFrom(Boolean.TYPE));
-    assertFalse(is(Long.class).assignableFrom(Integer.class));
-    assertFalse(is(BigDecimal.class).assignableFrom(Double.class));
-    assertFalse(is(BigDecimal.class).assignableFrom(String.class));
-    assertFalse(is(Character.class).assignableFrom(String.class));
-    assertFalse(is(String.class).assignableFrom(Character.class));
+  public void assertThatTrueIsFalseThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(true) is not false");
+    LangExtensions.assertThat(true).isFalse();
+  }
+
+  @Test
+  public void isAssignableFrom() {
+    assertTrue(is(Object.class).assignableTo(Object.class));
+    assertTrue(is(Boolean.class).assignableTo(Object.class));
+    assertTrue(is(Character.class).assignableTo(Object.class));
+    assertTrue(is(Number.class).assignableTo(Object.class));
+    assertTrue(is(String.class).assignableTo(Object.class));
+    assertTrue(is(Double.class).assignableTo(Number.class));
+    assertTrue(is(Integer.class).assignableTo(Number.class));
+    assertTrue(is(java.sql.Date.class).assignableTo(java.util.Date.class));
+    assertTrue(is(Object.class).not().assignableTo(String.class));
+  }
+
+  @Test
+  public void isNotAssignableFrom() {
+    assertFalse(is(Object.class).assignableTo(String.class));
+    assertFalse(is(Boolean.TYPE).assignableTo(Boolean.class));
+    assertFalse(is(Double.class).assignableTo(BigDecimal.class));
+    assertFalse(is(Integer.class).assignableTo(BigInteger.class));
+    assertFalse(is(Integer.class).assignableTo(Long.class));
+    assertFalse(is(String.class).assignableTo(BigDecimal.class));
+    assertFalse(is(String.class).assignableTo(Character.class));
+    assertFalse(is(Character.class).assignableTo(String.class));
   }
 
   @Test
@@ -139,8 +204,8 @@ public class LangExtensionsTest {
     final Person jonDoe1 = new Person(1l, "Jon", "Doe");
     final Person jonDoe2 = new Person(2l, "Jon", "Doe");
 
-    assertTrue(is(jonDoe1).equalByComparison(jonDoe2));
-    assertFalse(is(jonDoe1).not().equalByComparison(jonDoe2));
+    assertTrue(is(jonDoe1).comparableTo(jonDoe2));
+    assertFalse(is(jonDoe1).not().comparableTo(jonDoe2));
     assertFalse(is(jonDoe1).equalTo(jonDoe2));
   }
 
@@ -149,8 +214,8 @@ public class LangExtensionsTest {
     final Person johnBlum = new Person(1l, "John", "Blum");
     final Person jonBloom = new Person(1l, "Jon", "Bloom");
 
-    assertFalse(is(johnBlum).equalByComparison(jonBloom));
-    assertTrue(is(johnBlum).not().equalByComparison(jonBloom));
+    assertFalse(is(johnBlum).comparableTo(jonBloom));
+    assertTrue(is(johnBlum).not().comparableTo(jonBloom));
     assertTrue(is(johnBlum).equalTo(jonBloom));
   }
 

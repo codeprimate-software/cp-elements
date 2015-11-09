@@ -21,6 +21,10 @@
 
 package org.cp.elements.lang;
 
+import java.text.MessageFormat;
+import java.util.Collection;
+import java.util.Map;
+
 import org.cp.elements.lang.annotation.DSL;
 
 /**
@@ -34,13 +38,14 @@ import org.cp.elements.lang.annotation.DSL;
 public abstract class LangExtensions {
 
   /**
-   * The assertThat operator used to assert the state of an object, such as it's equality, identity, nullity,
+   * The assertThat operator is used to assert the state of an object, such as it's equality, identity, nullity,
    * relational value, and so on.
    *
    * @param <T> the class type of the object subject to assertion.
    * @param obj the Object to be asserted.
    * @return an instance of the AssertThat DSL expression for making assertions about an object's state.
    * @see org.cp.elements.lang.annotation.DSL
+   * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    */
   @DSL
   public static <T> AssertThat<T> assertThat(final T obj) {
@@ -49,9 +54,23 @@ public abstract class LangExtensions {
 
   public interface AssertThat<T> extends DslExtension {
 
+    void hasText();
+
+    void holdsLock(Object lock);
+
+    void isAssignableTo(Class type);
+
+    void isComparableTo(Comparable<T> obj);
+
     void isEqualTo(T obj);
 
     void isFalse();
+
+    void isInstanceOf(Class type);
+
+    void isNotBlank();
+
+    void isNotEmpty();
 
     void isNotNull();
 
@@ -62,6 +81,10 @@ public abstract class LangExtensions {
     void isTrue();
 
     AssertThat<T> not();
+
+    AssertThat<T> throwing(RuntimeException e);
+
+    AssertThat<T> using(String message, Object... args);
 
   }
 
@@ -75,6 +98,14 @@ public abstract class LangExtensions {
 
     private final T obj;
 
+    private RuntimeException cause;
+
+    private String message;
+
+    private AssertThatExpression() {
+      this(null, DEFAULT_EXPECTED);
+    }
+
     private AssertThatExpression(final T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
@@ -84,24 +115,61 @@ public abstract class LangExtensions {
       this.expected = expected;
     }
 
-    private String negate(final String value) {
-      return (expected ? value : "");
-    }
-
     private boolean notEqualToExpected(final boolean actual) {
       return !(actual == expected);
     }
 
+    public void hasText() {
+      isNotBlank();
+    }
+
+    public void holdsLock(final Object lock) {
+      if (notEqualToExpected(Thread.holdsLock(lock))) {
+        throwAssertionError("(%1$s) %2$slock (%3$s)", Thread.currentThread(),
+          (expected ? "does not hold " : "holds "), lock);
+      }
+    }
+
+    public void isAssignableTo(final Class type) {
+      if (notEqualToExpected(is(obj).assignableTo(type))) {
+        throwAssertionError("(%1$s) is %2$sassignable to (%3$s)", obj, negate(NOT), type);
+      }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void isComparableTo(final Comparable<T> comparable) {
+      if (notEqualToExpected(is((Comparable<T>) obj).comparableTo(comparable))) {
+        throwAssertionError("(%1$s) is %2$scomparable to (%3$s)", obj, negate(NOT), comparable);
+      }
+    }
+
     public void isEqualTo(final T obj) {
       if (notEqualToExpected(is(this.obj).equalTo(obj))) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$sequal to object (%3$s)",
-          this.obj, negate(NOT), obj));
+        throwAssertionError("(%1$s) is %2$sequal to (%3$s)", this.obj, negate(NOT), obj);
       }
     }
 
     public void isFalse() {
       if (notEqualToExpected(is(obj).False())) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$sfalse", obj, negate(NOT)));
+        throwAssertionError("(%1$s) is %2$sfalse", obj, negate(NOT));
+      }
+    }
+
+    public void isInstanceOf(final Class type) {
+      if (notEqualToExpected(is(obj).instanceOf(type))) {
+        throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), type);
+      }
+    }
+
+    public void isNotBlank() {
+      if (notEqualToExpected(is(obj).notBlank())) {
+        throwAssertionError("(%1$s) is %2$sblank", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+      }
+    }
+
+    public void isNotEmpty() {
+      if (notEqualToExpected(is(obj).notEmpty())) {
+        throwAssertionError("(%1$s) is %2$sempty", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
       }
     }
 
@@ -111,25 +179,59 @@ public abstract class LangExtensions {
 
     public void isNull() {
       if (notEqualToExpected(is(obj).Null())) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$snull", obj, negate(NOT)));
+        throwAssertionError("(%1$s) is %2$snull", obj, negate(NOT));
       }
     }
 
     public void isSameAs(final T obj) {
       if (notEqualToExpected(is(this.obj).sameAs(obj))) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$sthe same as object (%3$s)",
-          this.obj, negate(NOT), obj));
+        throwAssertionError("(%1$s) is %2$sthe same as (%3$s)", this.obj, negate(NOT), obj);
       }
     }
 
     public void isTrue() {
       if (notEqualToExpected(is(obj).True())) {
-        throw new AssertionFailedException(String.format("(%1$s) is %2$strue", obj, negate(NOT)));
+        throwAssertionError("(%1$s) is %2$strue", obj, negate(NOT));
       }
     }
 
     public AssertThat<T> not() {
       return new AssertThatExpression<>(this.obj, !expected);
+    }
+
+    public AssertThat<T> throwing(final RuntimeException cause) {
+      this.cause = cause;
+      return this;
+    }
+
+    public AssertThat<T> using(final String message, final Object... args) {
+      this.message = format(message, args);
+      return this;
+    }
+
+    private String format(final String message, final Object... args) {
+      return stringFormat(messageFormat(message, args), args);
+    }
+
+    private String messageFormat(final String message, final Object... args) {
+      return MessageFormat.format(message, args);
+    }
+
+    private String stringFormat(final String message, final Object... args) {
+      return String.format(message, args);
+    }
+
+    private void throwAssertionError(final String defaultMessage, final Object... args) {
+      throw (is(cause).notNull() ? cause : new AssertionFailedException(withMessage(defaultMessage, args)));
+    }
+
+    private String withMessage(final String defaultMessage, final Object... args) {
+      return (is(message).notBlank() ? message : format(defaultMessage, args));
+    }
+
+    // TODO rename
+    private String negate(final String value) {
+      return (expected ? value : "");
     }
   }
 
@@ -157,14 +259,14 @@ public abstract class LangExtensions {
   public interface Is<T> extends DslExtension {
 
     /**
-     * Determines whether the Class object provided to the is operator is assignable from the Class type parameter.
+     * Determines whether the Class object provided to the is operator is assignable to the Class type parameter.
      * 
-     * @param type the Class type to check for assignment compatibility.
-     * @return a boolean value indicating if the Class type parameter is assignable to the Class object provided in
-     * this is operator.
+     * @param type the Class type used to check for assignment compatibility.
+     * @return a boolean value indicating if the Class object provided to the is operator is assignable to
+     * the Class type parameter.
      * @see java.lang.Class#isAssignableFrom(Class)
      */
-    boolean assignableFrom(Class type);
+    boolean assignableTo(Class<?> type);
 
     /**
      * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
@@ -175,7 +277,7 @@ public abstract class LangExtensions {
      * @return a boolean value indicating whether the objects are equal.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    boolean equalByComparison(T obj);
+    boolean comparableTo(T obj);
 
     /**
      * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
@@ -356,6 +458,10 @@ public abstract class LangExtensions {
      */
     Is<T> not();
 
+    boolean notBlank();
+
+    boolean notEmpty();
+
     /**
      * Shortcut method for the not().Null() operation.  Determines whether the object provided to the is operator
      * is not null.
@@ -438,16 +544,20 @@ public abstract class LangExtensions {
       return (expected ? op : op.getOpposite());
     }
 
+    private Class<?> toClass(final Object obj) {
+      return (obj instanceof Class ? (Class<?>) obj : obj.getClass());
+    }
+
     @SuppressWarnings("unchecked")
-    private Comparable<T> toComparable(T obj) {
+    private Comparable<T> toComparable(final T obj) {
       return (Comparable<T>) obj;
     }
 
-    public boolean assignableFrom(final Class type) {
-      return equalToExpected(this.obj != null && type != null && ((Class<?>) this.obj).isAssignableFrom(type));
+    public boolean assignableTo(final Class<?> type) {
+      return equalToExpected(obj != null && type != null && type.isAssignableFrom(toClass(obj)));
     }
 
-    public boolean equalByComparison(final T obj) {
+    public boolean comparableTo(final T obj) {
       return equalToExpected(toComparable(this.obj).compareTo(obj) == 0);
     }
 
@@ -513,6 +623,18 @@ public abstract class LangExtensions {
 
     public Is<T> not() {
       return new IsExpression<>(this.obj, !expected);
+    }
+
+    public boolean notBlank() {
+      return StringUtils.hasText(ObjectUtils.toString(obj));
+    }
+
+    public boolean notEmpty() {
+      boolean result = (obj instanceof Object[] && ((Object[]) obj).length != 0);
+      result |= (obj instanceof Collection && !((Collection) obj).isEmpty());
+      result |= (obj instanceof Map && !((Map) obj).isEmpty());
+      result |= (obj != null);
+      return result;
     }
 
     public boolean notNull() {

@@ -53,7 +53,7 @@ public class BigDecimalConverter extends ConverterAdapter<String, BigDecimal> {
 
   @Override
   public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (is(String.class).assignableFrom(fromType) && BigDecimal.class.equals(toType));
+    return (is(fromType).assignableTo(String.class) && BigDecimal.class.equals(toType));
   }
 
   @Override

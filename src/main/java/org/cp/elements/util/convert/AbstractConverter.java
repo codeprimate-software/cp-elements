@@ -51,7 +51,7 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
 
   protected boolean isAssignableTo(final Class<?> fromType, final Class<?>... toTypes) {
     for (Class toType : toTypes) {
-      if (is(toType).assignableFrom(fromType)) {
+      if (is(fromType).assignableTo(toType)) {
         return true;
       }
     }
