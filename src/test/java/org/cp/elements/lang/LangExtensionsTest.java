@@ -248,7 +248,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is equal to (test)");
 
-    assertThat("test").not().isEqualTo("test");
+    assertThat("test").isNotEqualTo("test");
   }
 
   @Test
@@ -299,8 +299,73 @@ public class LangExtensionsTest {
   }
 
   @Test
+  public void assertThatObjectIsInstanceOfClassType() {
+    assertThat(true).isInstanceOf(Boolean.class);
+    assertThat('c').isInstanceOf(Character.class);
+    assertThat(3.14159d).isInstanceOf(Double.class);
+    assertThat(Math.PI).isInstanceOf(Number.class);
+    assertThat(2).isInstanceOf(Integer.class);
+    assertThat(123).isInstanceOf(Number.class);
+    assertThat("test").isInstanceOf(String.class);
+    assertThat("test").isInstanceOf(Object.class);
+    assertThat(new Object()).isInstanceOf(Object.class);
+  }
+
+  @Test
+  public void assertThatObjectIsNotInstanceOfClassType() {
+    assertThat("false").not().isInstanceOf(Boolean.class);
+    assertThat("C").not().isInstanceOf(Character.class);
+    assertThat(123).not().isInstanceOf(Double.class);
+    assertThat(Math.PI).not().isInstanceOf(Integer.class);
+    assertThat('a').not().isInstanceOf(String.class);
+    assertThat(null).not().isInstanceOf(Object.class);
+  }
+
+  @Test
+  public void assertThatStringIsInstanceOfCharacerThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is not an instance of (java.lang.Character)");
+
+    assertThat("test").isInstanceOf(Character.class);
+  }
+
+  @Test
+  public void assertThatStringIsInstanceOfCharacterThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("test").using("This is a %1$s{1}", "test", "!").isInstanceOf(Character.class);
+  }
+
+  @Test
+  public void assertThatStringIsInstanceOfCharacterThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat("test").throwing(new IllegalArgumentException("test")).isInstanceOf(Character.class);
+  }
+
+  @Test
+  public void assertThatStringIsNotInstanceOfStringThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is an instance of (java.lang.String)");
+
+    assertThat("test").not().isInstanceOf(String.class);
+  }
+
+  @Test
+  public void assertThatNullObjectIsNull() {
+    assertThat(null).isNull();
+    assertThat(null).not().isNotNull();
+  }
+
+  @Test
   public void assertThatNonNullObjectIsNotNull() {
-    assertThat("test").isNotNull();
+    assertThat(new Object()).isNotNull();
     assertThat("test").not().isNull();
   }
 
@@ -314,9 +379,21 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void assertThatNullObjectIsNull() {
-    assertThat(null).isNull();
-    assertThat(null).not().isNotNull();
+  public void assertThatNonNullObjectIsNullThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("test").using("This is a %1$s{1}", "test", "!").isNull();
+  }
+
+  @Test
+  public void assertThatNonNullObjectIsNullThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat("test").throwing(new IllegalArgumentException("test")).isNull();
   }
 
   @Test
@@ -326,6 +403,60 @@ public class LangExtensionsTest {
     expectedException.expectMessage("(null) is null");
 
     assertThat(null).isNotNull();
+  }
+
+  @Test
+  public void assertThatObjectIsSameAsObject() {
+    assertThat(true).isSameAs(Boolean.TRUE);
+    assertThat('c').isSameAs('c');
+    //assertThat(Math.PI).isSameAs(Math.PI);
+    assertThat(1).isSameAs(1);
+    assertThat("test").isSameAs("test");
+  }
+
+  @Test
+  public void assertThatObjectIsNotSameAsObject() {
+    assertThat(false).isNotSameAs(Boolean.TRUE);
+    assertThat('c').isNotSameAs('C');
+    assertThat(3.14159d).isNotSameAs(Math.PI);
+    assertThat(123).isNotSameAs(-123);
+    assertThat("test").isNotSameAs("TEST");
+  }
+
+  @Test
+  public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is not the same as (TEST)");
+
+    assertThat("test").isSameAs("TEST");
+  }
+
+  @Test
+  public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("test").using("This is a %1$s{1}", "test", "!").isSameAs("TEST");
+  }
+
+  @Test
+  public void assertThatNonIdenticalObjectsAreTheSameThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat("test").throwing(new IllegalArgumentException("test")).isSameAs("TEST");
+  }
+
+  @Test
+  public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is the same as (test)");
+
+    assertThat("test").isNotSameAs("test");
   }
 
   @Test

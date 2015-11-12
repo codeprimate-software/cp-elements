@@ -165,7 +165,7 @@ public abstract class LangExtensions {
 
     public void isInstanceOf(final Class type) {
       if (notEqualToExpected(is(obj).instanceOf(type))) {
-        throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), type);
+        throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
       }
     }
 

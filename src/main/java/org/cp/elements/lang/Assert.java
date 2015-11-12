@@ -27,12 +27,13 @@ import java.util.Map;
 
 /**
  * The Assert class is a more capable replacement for Java's assert facility, providing functionality to make assertions
- * about pre-conditions and state to ensure that invariants are upheld and enforced.
+ * about pre-conditions and state in order to ensure that an object's invariants are upheld and enforced.
  * 
  * @author John J. Blum
  * @see java.lang.String#format(String, Object...)
  * @see java.text.MessageFormat#format(String, Object...)
  * @see org.cp.elements.lang.AssertionFailedException
+ * @see org.cp.elements.lang.LangExtensions#assertThat(Object)
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
