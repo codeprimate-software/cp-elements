@@ -54,19 +54,23 @@ public abstract class LangExtensions {
 
   public interface AssertThat<T> extends DslExtension {
 
-    void hasText();
-
-    void holdsLock(Object lock);
-
     void isAssignableTo(Class type);
 
     void isComparableTo(Comparable<T> obj);
 
     void isEqualTo(T obj);
 
+    void isNotEqualTo(T obj);
+
     void isFalse();
 
+    void hasText();
+
+    void holdsLock(Object lock);
+
     void isInstanceOf(Class type);
+
+    AssertThat<T> not();
 
     void isNotBlank();
 
@@ -78,9 +82,9 @@ public abstract class LangExtensions {
 
     void isSameAs(T obj);
 
-    void isTrue();
+    void isNotSameAs(T obj);
 
-    AssertThat<T> not();
+    void isTrue();
 
     AssertThat<T> throwing(RuntimeException e);
 
@@ -119,20 +123,9 @@ public abstract class LangExtensions {
       return !(actual == expected);
     }
 
-    public void hasText() {
-      isNotBlank();
-    }
-
-    public void holdsLock(final Object lock) {
-      if (notEqualToExpected(Thread.holdsLock(lock))) {
-        throwAssertionError("(%1$s) %2$slock (%3$s)", Thread.currentThread(),
-          (expected ? "does not hold " : "holds "), lock);
-      }
-    }
-
     public void isAssignableTo(final Class type) {
       if (notEqualToExpected(is(obj).assignableTo(type))) {
-        throwAssertionError("(%1$s) is %2$sassignable to (%3$s)", obj, negate(NOT), type);
+        throwAssertionError("(%1$s) is %2$sassignable to (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
       }
     }
 
@@ -149,9 +142,24 @@ public abstract class LangExtensions {
       }
     }
 
+    public void isNotEqualTo(final T obj) {
+      not().isEqualTo(obj);
+    }
+
     public void isFalse() {
       if (notEqualToExpected(is(obj).False())) {
         throwAssertionError("(%1$s) is %2$sfalse", obj, negate(NOT));
+      }
+    }
+
+    public void hasText() {
+      isNotBlank();
+    }
+
+    public void holdsLock(final Object lock) {
+      if (notEqualToExpected(Thread.holdsLock(lock))) {
+        throwAssertionError("(%1$s) %2$slock (%3$s)", Thread.currentThread(),
+          (expected ? "does not hold " : "holds "), lock);
       }
     }
 
@@ -159,6 +167,10 @@ public abstract class LangExtensions {
       if (notEqualToExpected(is(obj).instanceOf(type))) {
         throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), type);
       }
+    }
+
+    public AssertThat<T> not() {
+      return new AssertThatExpression<>(this.obj, !expected);
     }
 
     public void isNotBlank() {
@@ -189,14 +201,14 @@ public abstract class LangExtensions {
       }
     }
 
+    public void isNotSameAs(final T obj) {
+      not().isSameAs(obj);
+    }
+
     public void isTrue() {
       if (notEqualToExpected(is(obj).True())) {
         throwAssertionError("(%1$s) is %2$strue", obj, negate(NOT));
       }
-    }
-
-    public AssertThat<T> not() {
-      return new AssertThatExpression<>(this.obj, !expected);
     }
 
     public AssertThat<T> throwing(final RuntimeException cause) {
@@ -289,6 +301,18 @@ public abstract class LangExtensions {
      * @see java.lang.Object#equals(Object)
      */
     boolean equalTo(T obj);
+
+    /**
+     * Shortcut for not().equalTo(:Object). Determines whether the object provided to the is operator is not equal to
+     * the object parameter.  The objects are considered unequal when either is null, both are objects of
+     * different types, or both objects are unequal in value as determined by their equals method.
+     *
+     * @param obj the Object parameter used in the equality comparison.
+     * @return a boolean value indicating whether the objects are unequal.
+     * @see #not()
+     * @see #equalTo(Object)
+     */
+    boolean notEqualTo(T obj);
 
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value false.  An object
@@ -458,8 +482,18 @@ public abstract class LangExtensions {
      */
     Is<T> not();
 
+    /**
+     * Determines whether the String object provided to the is operator is not blank (or rather, has actual text data).
+     *
+     * @return a boolean value indicating whether the String has actual text data.
+     */
     boolean notBlank();
 
+    /**
+     * Determines whether the String object provided to the is operator is not empty.
+     *
+     * @return a boolean value indicating whether the String is not empty.
+     */
     boolean notEmpty();
 
     /**
@@ -467,6 +501,8 @@ public abstract class LangExtensions {
      * is not null.
      * 
      * @return a boolean value indicating whether the object in question is not null.
+     * @see #not()
+     * @see #Null()
      */
     boolean notNull();
 
@@ -478,27 +514,28 @@ public abstract class LangExtensions {
     boolean Null();
 
     /**
-     * Shortcut method for the not().sameAs(:Object) operation.  Determines whether the object provided to
-     * the is operator is *not* the same as, or does not refer to the same object in memory
-     * as the given object parameter.
-     *
-     * @param obj the Object reference used to determine if the object in question is not a reference to the same object
-     * in memory.
-     * @return a boolean value indicating whether the object in question and object parameter reference do not refer to
-     * the same object.
-     */
-    boolean notSameAs(T obj);
-
-    /**
      * Determines whether the object provided to the is operator is the same as, or refers to the same object
      * in memory as the given object parameter.
-     * 
+     *
      * @param obj the Object reference used to determine if the object in question is a reference to the same object
      * in memory.
      * @return a boolean value indicating whether the object in question and object parameter reference refers to
      * the same object.
      */
     boolean sameAs(T obj);
+
+    /**
+     * Shortcut for not().isSameAs(:Object).  Determines whether the object provided to the is operator is *not*
+     * the same as, or does not refer to the same object in memory as the given object parameter.
+     *
+     * @param obj the Object reference used to determine if the object in question is not a reference to the same object
+     * in memory.
+     * @return a boolean value indicating whether the object in question and object parameter do not refer to
+     * the same object.
+     * @see #not()
+     * @see #sameAs(Object)
+     */
+    boolean notSameAs(T obj);
 
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value true.  An object
@@ -563,6 +600,10 @@ public abstract class LangExtensions {
 
     public boolean equalTo(final T obj) {
       return equalToExpected(this.obj != null && this.obj.equals(obj));
+    }
+
+    public boolean notEqualTo(final T obj) {
+      return not().equalTo(obj);
     }
 
     public boolean False() {
@@ -645,12 +686,12 @@ public abstract class LangExtensions {
       return equalToExpected(this.obj == null);
     }
 
-    public boolean notSameAs(final T obj) {
-      return not().sameAs(obj);
-    }
-
     public boolean sameAs(final T obj) {
       return equalToExpected(this.obj == obj);
+    }
+
+    public boolean notSameAs(final T obj) {
+      return not().sameAs(obj);
     }
 
     public boolean True() {

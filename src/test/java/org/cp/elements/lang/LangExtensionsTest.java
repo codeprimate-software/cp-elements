@@ -56,11 +56,18 @@ public class LangExtensionsTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Test
-  public void assertThatClassTypesAreAssignable() {
+  public void assertThatClassIsAssignableToClassType() {
+    assertThat(Boolean.class).isAssignableTo(Boolean.class);
     assertThat(Boolean.class).isAssignableTo(Object.class);
+    assertThat(Character.class).isAssignableTo(Character.class);
     assertThat(Character.class).isAssignableTo(Object.class);
+    assertThat(Double.class).isAssignableTo(Double.class);
     assertThat(Double.class).isAssignableTo(Number.class);
+    assertThat(Double.class).isAssignableTo(Object.class);
+    assertThat(Integer.class).isAssignableTo(Integer.class);
     assertThat(Integer.class).isAssignableTo(Number.class);
+    assertThat(Integer.class).isAssignableTo(Object.class);
+    assertThat(Number.class).isAssignableTo(Number.class);
     assertThat(Number.class).isAssignableTo(Object.class);
     assertThat(String.class).isAssignableTo(String.class);
     assertThat(String.class).isAssignableTo(Object.class);
@@ -68,34 +75,48 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void assertThatClassTypesAreNotAssignable() {
-    assertThat(Boolean.class).not().isAssignableTo(Number.class);
+  public void assertThatClassIsNotAssignableToClassType() {
+    assertThat(Boolean.class).not().isAssignableTo(Boolean.TYPE);
     assertThat(Character.class).not().isAssignableTo(String.class);
     assertThat(Float.class).not().isAssignableTo(Double.class);
     assertThat(Integer.class).not().isAssignableTo(Long.class);
+    assertThat(String.class).not().isAssignableTo(Character.class);
     assertThat(Object.class).not().isAssignableTo(String.class);
   }
 
   @Test
-  public void assertThatBooleanIsNotAssignableToNumberThrowsIllegalArgumentException() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("test");
-
-    assertThat(Boolean.class).throwing(new IllegalArgumentException("test")).isAssignableTo(Number.class);
+  public void assertThatObjectIsAssignableToClassType() {
+    assertThat(true).isAssignableTo(Boolean.class);
+    assertThat('c').isAssignableTo(Character.class);
+    assertThat(Math.PI).isAssignableTo(Double.class);
+    assertThat(123).isAssignableTo(Integer.class);
+    assertThat("test").isAssignableTo(String.class);
+    assertThat(new Object()).isAssignableTo(Object.class);
   }
 
   @Test
-  public void assertThatFloatTypeIsNotAssignableToIntegerType() {
+  public void assertThatObjectIsNotAssignableToClassType() {
+    assertThat("false").not().isAssignableTo(Boolean.class);
+    assertThat("test").not().isAssignableTo(Character.class);
+    assertThat(3.14159d).not().isAssignableTo(Float.class);
+    assertThat(123.45f).not().isAssignableTo(Double.class);
+    assertThat(123).not().isAssignableTo(Long.class);
+    assertThat(123l).not().isAssignableTo(Integer.class);
+    assertThat('c').not().isAssignableTo(String.class);
+    assertThat(new Object()).not().isAssignableTo(String.class);
+  }
+
+  @Test
+  public void assertThatDoubleIsAssignableToIntegerThrowsAssertionError() {
     expectedException.expect(AssertionFailedException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(class java.lang.Float) is not assignable to (class java.lang.Integer)");
+    expectedException.expectMessage(String.format("(%1$s) is not assignable to (java.lang.Integer)", Math.PI));
 
-    assertThat(Float.class).isAssignableTo(Integer.class);
+    assertThat(Math.PI).isAssignableTo(Integer.class);
   }
 
   @Test
-  public void assertThatObjectIsNotAssignableToStringUsingCustomMessage() {
+  public void assertThatObjectIsAssignableToStringThrowsAssertionErrorWithCustomMessage() {
     expectedException.expect(AssertionFailedException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
@@ -104,66 +125,141 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void assertThatStringTypeIsAssignableToObjectType() {
+  public void assertThatCharacterIsAssignableToStringThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(Character.class).throwing(new IllegalArgumentException("test")).isAssignableTo(String.class);
+  }
+
+  @Test
+  public void assertThatStringIsNotAssignableToObjectThrowsAssertionError() {
     expectedException.expect(AssertionFailedException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(class java.lang.String) is assignable to (class java.lang.Object)");
+    expectedException.expectMessage("(class java.lang.String) is assignable to (java.lang.Object)");
 
     assertThat(String.class).not().isAssignableTo(Object.class);
   }
 
   @Test
-  public void test() {
+  public void assertThatObjectIsComparableWithObject() {
+    assertThat(true).isComparableTo(Boolean.TRUE);
+    assertThat('c').isComparableTo('c');
+    assertThat(3.14159d).isComparableTo(3.14159d);
+    assertThat(123).isComparableTo(123);
+    assertThat("test").isComparableTo("test");
+  }
+
+  @Test
+  public void assertThatObjectIsNotComparableWithObject() {
+    assertThat(Boolean.FALSE).not().isComparableTo(true);
+    assertThat('c').not().isComparableTo('C');
+    assertThat(3.14159d).not().isComparableTo(Math.PI);
+    assertThat(123).not().isComparableTo(-123);
+    assertThat("test").not().isComparableTo("mock");
+  }
+
+  @Test
+  public void assertThatObjectsAreNotComparableThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(queue) is not comparable to (Q)");
+
+    assertThat("queue").isComparableTo("Q");
+  }
+
+  @Test
+  public void assertThatObjectsAreNotComparableThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("c").using("This is a %1$s{1}", "test", "!").isComparableTo("see");
+  }
+
+  @Test
+  public void assertThatObjectsAreNotComparableThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat("c").throwing(new IllegalArgumentException("test")).isComparableTo("see");
+  }
+
+  @Test
+  public void assertThatComparableObjectsAreNotComparableThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is comparable to (test)");
+
+    assertThat("test").not().isComparableTo("test");
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void assertThatObjectsIsEqualToObject() {
+    assertThat(true).isEqualTo(Boolean.TRUE);
+    assertThat('c').isEqualTo(Character.valueOf('c'));
+    assertThat(Math.PI).isEqualTo(Double.valueOf(Math.PI));
+    assertThat(123).isEqualTo(Integer.valueOf(123));
+    assertThat("test").isEqualTo("test");
+  }
+
+  @Test
+  public void assertThatObjectIsNotEqualToObject() {
+    assertThat(false).isNotEqualTo(Boolean.TRUE);
+    assertThat('c').isNotEqualTo('C');
+    assertThat(3.14159d).isNotEqualTo(Math.PI);
+    assertThat(123).isNotEqualTo(-123);
+    assertThat("test").isNotEqualTo("TEST");
+  }
+
+  @Test
+  public void assertThatObjectIsNotEqualToObjectThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is not equal to (mock)");
+
+    assertThat("test").isEqualTo("mock");
+  }
+
+  @Test
+  public void assertThatObjectIsNotEqualToObjectThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("r").using("This is a %1$s{1}", "test", "!").isEqualTo("are");
+  }
+
+  @Test
+  public void assertThatObjectIsNotEqualToObjectThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat("r").throwing(new IllegalArgumentException("test")).isEqualTo("are");
+  }
+
+  @Test
+  public void assertThatObjectIsNotEqualToEqualObjectThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is equal to (test)");
+
+    assertThat("test").not().isEqualTo("test");
   }
 
   @Test
   public void assertThatFalseIsFalse() {
-    LangExtensions.assertThat(false).isFalse();
-    LangExtensions.assertThat(Boolean.FALSE).isFalse();
-    LangExtensions.assertThat(false).not().isTrue();
+    assertThat(false).isFalse();
+    assertThat(Boolean.FALSE).isFalse();
   }
 
   @Test
-  public void assertThatFalseIsTrueThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
-    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(false) is not true");
-    LangExtensions.assertThat(false).isTrue();
-  }
-
-  @Test
-  public void assertThatNonNullObjectIsNotNull() {
-    LangExtensions.assertThat("test").isNotNull();
-    LangExtensions.assertThat("test").not().isNull();
-  }
-
-  @Test
-  public void assertThatNonNullObjectIsNullThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
-    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(test) is not null");
-    LangExtensions.assertThat("test").isNull();
-  }
-
-  @Test
-  public void assertThatNullObjectIsNull() {
-    LangExtensions.assertThat(null).isNull();
-    LangExtensions.assertThat(null).not().isNotNull();
-  }
-
-  @Test
-  public void assertThatNullObjectIsNotNullThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
-    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(null) is null");
-    LangExtensions.assertThat(null).isNotNull();
-  }
-
-  @Test
-  public void assertThatTrueIsTrue() {
-    LangExtensions.assertThat(true).isTrue();
-    LangExtensions.assertThat(Boolean.TRUE).isTrue();
-    LangExtensions.assertThat(true).not().isFalse();
+  public void assertThatTrueIsNotFalse() {
+    assertThat(true).not().isFalse();
   }
 
   @Test
@@ -171,11 +267,116 @@ public class LangExtensionsTest {
     expectedException.expect(AssertionFailedException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(true) is not false");
-    LangExtensions.assertThat(true).isFalse();
+
+    assertThat(true).isFalse();
   }
 
   @Test
-  public void isAssignableFrom() {
+  public void assertThatTrueIsFalseThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(true).using("This is a %1$s{1}", "test", "!").isFalse();
+  }
+
+  @Test
+  public void assertThatTrueIsFalseThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(true).throwing(new IllegalArgumentException("test")).isFalse();
+  }
+
+  @Test
+  public void assertThatFalseIsNotFalseThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(false) is false");
+
+    assertThat(false).not().isFalse();
+  }
+
+  @Test
+  public void assertThatNonNullObjectIsNotNull() {
+    assertThat("test").isNotNull();
+    assertThat("test").not().isNull();
+  }
+
+  @Test
+  public void assertThatNonNullObjectIsNullThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is not null");
+
+    assertThat("test").isNull();
+  }
+
+  @Test
+  public void assertThatNullObjectIsNull() {
+    assertThat(null).isNull();
+    assertThat(null).not().isNotNull();
+  }
+
+  @Test
+  public void assertThatNullObjectIsNotNullThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(null) is null");
+
+    assertThat(null).isNotNull();
+  }
+
+  @Test
+  public void assertThatTrueIsTrue() {
+    assertThat(true).isTrue();
+    assertThat(Boolean.TRUE).isTrue();
+  }
+
+  @Test
+  public void assertThatFalseIsNotTrue() {
+    assertThat(false).not().isTrue();
+  }
+
+  @Test
+  public void assertThatFalseIsTrueThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(false) is not true");
+
+    assertThat(false).isTrue();
+  }
+
+  @Test
+  public void assertThatFalseIsTrueThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(false).using("This is a %1$s{1}", "test", "!").isTrue();
+  }
+
+  @Test
+  public void assertThatFalseIsTrueThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(false).throwing(new IllegalArgumentException("test")).isTrue();
+  }
+
+  @Test
+  public void assertThatTrueIsNotTrueThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(true) is true");
+
+    assertThat(true).not().isTrue();
+  }
+
+  @Test
+  public void isAssignableTo() {
     assertTrue(is(Object.class).assignableTo(Object.class));
     assertTrue(is(Boolean.class).assignableTo(Object.class));
     assertTrue(is(Character.class).assignableTo(Object.class));
@@ -188,7 +389,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void isNotAssignableFrom() {
+  public void isNotAssignableTo() {
     assertFalse(is(Object.class).assignableTo(String.class));
     assertFalse(is(Boolean.TYPE).assignableTo(Boolean.class));
     assertFalse(is(Double.class).assignableTo(BigDecimal.class));
