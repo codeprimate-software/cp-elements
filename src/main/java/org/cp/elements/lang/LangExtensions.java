@@ -64,11 +64,35 @@ public abstract class LangExtensions {
 
     void isFalse();
 
+    void isGreaterThan(T lowerBound);
+
+    void isGreaterThanAndLessThan(T lowerBound, T upperBound);
+
+    void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
+
+    void isGreaterThanEqualTo(T lowerBound);
+
+    void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound);
+
+    void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
+
     void hasText();
 
     void holdsLock(Object lock);
 
     void isInstanceOf(Class type);
+
+    void isLessThan(T upperBound);
+
+    void isLessThanOrGreaterThan(T upperBound, T lowerBound);
+
+    void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
+
+    void isLessThanEqualTo(T upperBound);
+
+    void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
+
+    void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     AssertThat<T> not();
 
@@ -152,6 +176,46 @@ public abstract class LangExtensions {
       }
     }
 
+    public void isGreaterThan(final T lowerBound) {
+      if (notEqualToExpected(is(obj).greaterThan(lowerBound))) {
+        throwAssertionError("(%1$s) is %2$sgreater than (%3$s)", obj, negate(NOT), lowerBound);
+      }
+    }
+
+    public void isGreaterThanAndLessThan(final T lowerBound, final T upperBound) {
+      if (notEqualToExpected(is(obj).greaterThanAndLessThan(lowerBound, upperBound))) {
+        throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than (%4$s)", obj, negate(NOT),
+          lowerBound, upperBound);
+      }
+    }
+
+    public void isGreaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+      if (notEqualToExpected(is(obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
+        throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than equal to (%4$s)", obj, negate(NOT),
+          lowerBound, upperBound);
+      }
+    }
+
+    public void isGreaterThanEqualTo(final T lowerBound) {
+      if (notEqualToExpected(is(obj).greaterThanEqualTo(lowerBound))) {
+        throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s)", obj, negate(NOT), lowerBound);
+      }
+    }
+
+    public void isGreaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
+      if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
+        throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than (%4$s)", obj, negate(NOT),
+          lowerBound, upperBound);
+      }
+    }
+
+    public void isGreaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+      if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
+        throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than equal to (%4$s)",
+          obj, negate(NOT), lowerBound, upperBound);
+      }
+    }
+
     public void hasText() {
       isNotBlank();
     }
@@ -166,6 +230,46 @@ public abstract class LangExtensions {
     public void isInstanceOf(final Class type) {
       if (notEqualToExpected(is(obj).instanceOf(type))) {
         throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
+      }
+    }
+
+    public void isLessThan(final T upperBound) {
+      if (notEqualToExpected(is(obj).lessThan(upperBound))) {
+        throwAssertionError("(%1$s) is %2$sless than (%3$s)", obj, negate(NOT), upperBound);
+      }
+    }
+
+    public void isLessThanOrGreaterThan(final T upperBound, final T lowerBound) {
+      if (notEqualToExpected(is(obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
+        throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than (%4$s)", obj, negate(NOT),
+          upperBound, lowerBound);
+      }
+    }
+
+    public void isLessThanOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+      if (notEqualToExpected(is(obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
+        throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than equal to (%4$s)", obj, negate(NOT),
+          upperBound, lowerBound);
+      }
+    }
+
+    public void isLessThanEqualTo(final T upperBound) {
+      if (notEqualToExpected(is(obj).lessThanEqualTo(upperBound))) {
+        throwAssertionError("(%1$s) is %2$sless than equal to (%3$s)", obj, negate(NOT), upperBound);
+      }
+    }
+
+    public void isLessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
+      if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
+        throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than (%4$s)", obj, negate(NOT),
+          upperBound, lowerBound);
+      }
+    }
+
+    public void isLessThanEqualToOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+      if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
+        throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than equal to (%4$s)",
+          obj, negate(NOT), upperBound, lowerBound);
       }
     }
 
