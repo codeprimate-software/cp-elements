@@ -55,6 +55,8 @@ public class LangExtensionsTest {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
 
+  private final Object lock = new Object();
+
   @Test
   public void assertThatClassIsAssignableToClassType() {
     assertThat(Boolean.class).isAssignableTo(Boolean.class);
@@ -299,6 +301,111 @@ public class LangExtensionsTest {
   }
 
   @Test
+  public void assertThatStringsHaveText() {
+    assertThat("test").hasText();
+    assertThat("null").isNotBlank();
+    assertThat("empty").hasText();
+    assertThat("123").isNotBlank();
+    assertThat("0").hasText();
+    assertThat("_").isNotBlank();
+  }
+
+  @Test
+  public void assertThatStringsDoNotHaveText() {
+    assertThat(null).not().hasText();
+    assertThat("").not().isNotBlank();
+    assertThat("  ").not().hasText();
+    assertThat("\t").not().hasText();
+    assertThat("\n").not().hasText();
+  }
+
+  @Test
+  public void assertThatBlankStringHasTextThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("( ) is blank");
+
+    assertThat(" ").hasText();
+  }
+
+  @Test
+  public void assertThatEmptyStringHasTextThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("").using("This is a %1$s{1}", "test", "!").isNotBlank();
+  }
+
+  @Test
+  public void assertThatNullStringHasTextThrowsIlegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(null).throwing(new IllegalArgumentException("test")).hasText();
+  }
+
+  @Test
+  public void assertThatStringDoesNotHaveTextThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(test) is not blank");
+
+    assertThat("test").not().hasText();
+  }
+
+  @Test
+  public void assertThatCurrentThreadHoldsLock() {
+    synchronized (lock) {
+      assertThat(Thread.currentThread()).holdsLock(lock);
+    }
+  }
+
+  @Test
+  public void assertThatCurrentThreadDoesNotHoldLock() {
+    assertThat(Thread.currentThread()).not().holdsLock(lock);
+  }
+
+  @Test
+  public void assertThatCurrentThreadHoldsLockThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage(String.format("(%1$s) does not hold lock (%2$s)", Thread.currentThread(), lock));
+
+    assertThat(Thread.currentThread()).holdsLock(lock);
+  }
+
+  @Test
+  public void assertThatCurrentThreadHoldsLockThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(Thread.currentThread()).using("This is a %1$s{1}", "test", "!").holdsLock(lock);
+  }
+
+  @Test
+  public void assertThatCurrentThreadHoldsLockThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(Thread.currentThread()).throwing(new IllegalArgumentException("test")).holdsLock(lock);
+  }
+
+  @Test
+  public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage(String.format("(%1$s) holds lock (%2$s)", Thread.currentThread(), lock));
+
+    synchronized (lock) {
+      assertThat(Thread.currentThread()).not().holdsLock(lock);
+    }
+  }
+
+  @Test
   public void assertThatObjectIsInstanceOfClassType() {
     assertThat(true).isInstanceOf(Boolean.class);
     assertThat('c').isInstanceOf(Character.class);
@@ -322,7 +429,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void assertThatStringIsInstanceOfCharacerThrowsAssertionError() {
+  public void assertThatStringIsInstanceOfCharacterThrowsAssertionError() {
     expectedException.expect(AssertionFailedException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is not an instance of (java.lang.Character)");
@@ -403,6 +510,62 @@ public class LangExtensionsTest {
     expectedException.expectMessage("(null) is null");
 
     assertThat(null).isNotNull();
+  }
+
+  @Test
+  public void assertThatNonEmptyStringsAreNotEmpty() {
+    assertThat("test").isNotEmpty();
+    assertThat("null").isNotEmpty();
+    assertThat("empty").isNotEmpty();
+    assertThat("0").isNotEmpty();
+    assertThat("  ").isNotEmpty();
+    assertThat("_").isNotEmpty();
+    assertThat("-").isNotEmpty();
+    assertThat("*").isNotEmpty();
+    assertThat("!").isNotEmpty();
+    assertThat("\t").isNotEmpty();
+    assertThat("\n").isNotEmpty();
+  }
+
+  @Test
+  public void assertThatEmptyStringIsEmpty() {
+    assertThat("").not().isNotEmpty();
+  }
+
+  @Test
+  public void assertThatEmptyStringIsNotEmptyThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("() is empty");
+
+    assertThat("").isNotEmpty();
+  }
+
+  @Test
+  public void assertThatEmptyStringIsNotEmptyThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat("").using("This is a %1$s{1}", "test", "!").isNotBlank();
+  }
+
+  @Test
+  public void assertThatEmptyStringIsNotEmptyThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat("").throwing(new IllegalArgumentException("test")).isNotBlank();
+  }
+
+  @Test
+  public void assertThatNonEmptyStringIsEnptyThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("( ) is not empty");
+
+    assertThat(" ").not().isNotEmpty();
   }
 
   @Test

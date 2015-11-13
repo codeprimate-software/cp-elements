@@ -674,7 +674,7 @@ public abstract class LangExtensions {
       boolean result = (obj instanceof Object[] && ((Object[]) obj).length != 0);
       result |= (obj instanceof Collection && !((Collection) obj).isEmpty());
       result |= (obj instanceof Map && !((Map) obj).isEmpty());
-      result |= (obj != null);
+      result |= (obj instanceof String && !obj.toString().isEmpty());
       return result;
     }
 
