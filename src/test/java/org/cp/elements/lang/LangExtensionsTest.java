@@ -301,6 +301,54 @@ public class LangExtensionsTest {
   }
 
   @Test
+  public void assertThatGreaterThan() {
+    assertThat(2).isGreaterThan(1);
+    assertThat(2).isGreaterThan(-4);
+  }
+
+  @Test
+  public void assertThatNotGreaterThan() {
+    assertThat(2).not().isGreaterThan(2);
+    assertThat(2).not().isGreaterThan(3);
+  }
+
+  @Test
+  public void assertThatGreaterThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not greater than (2)");
+
+    assertThat(2).isGreaterThan(2);
+  }
+
+  @Test
+  public void assertThatGreaterThanThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThan(3);
+  }
+
+  @Test
+  public void assertThatGreaterThanThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThan(3);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is greater than (1)");
+
+    assertThat(2).not().isGreaterThan(1);
+  }
+
+  @Test
   public void assertThatStringsHaveText() {
     assertThat("test").hasText();
     assertThat("null").isNotBlank();
