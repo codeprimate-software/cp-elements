@@ -302,14 +302,15 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatGreaterThan() {
-    assertThat(2).isGreaterThan(1);
     assertThat(2).isGreaterThan(-4);
+    assertThat(2).isGreaterThan(1);
   }
 
   @Test
   public void assertThatNotGreaterThan() {
     assertThat(2).not().isGreaterThan(2);
     assertThat(2).not().isGreaterThan(3);
+    assertThat(-2).not().isGreaterThan(1);
   }
 
   @Test
@@ -346,6 +347,265 @@ public class LangExtensionsTest {
     expectedException.expectMessage("(2) is greater than (1)");
 
     assertThat(2).not().isGreaterThan(1);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThan() {
+    assertThat(2).isGreaterThanAndLessThan(-4, 4);
+    assertThat(2).isGreaterThanAndLessThan(1, 3);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanAndLessThan() {
+    assertThat(2).not().isGreaterThanAndLessThan(2, 2);
+    assertThat(2).not().isGreaterThanAndLessThan(2, 3);
+    assertThat(2).not().isGreaterThanAndLessThan(1, 2);
+    assertThat(2).not().isGreaterThanAndLessThan(3, 5);
+    assertThat(2).not().isGreaterThanAndLessThan(-1, 1);
+    assertThat(2).not().isGreaterThanAndLessThan(3, 2);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not greater than (2) and less than (2)");
+
+    assertThat(2).isGreaterThanAndLessThan(2, 2);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThan(2, 2);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThan(2, 2);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanAndLessThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is greater than (1) and less than (3)");
+
+    assertThat(2).not().isGreaterThanAndLessThan(1, 3);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanEqualTo() {
+    assertThat(2).isGreaterThanAndLessThanEqualTo(-4, 4);
+    assertThat(2).isGreaterThanAndLessThanEqualTo(1, 3);
+    assertThat(2).isGreaterThanAndLessThanEqualTo(1, 2);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanAndLessThanEqualTo() {
+    assertThat(2).not().isGreaterThanAndLessThanEqualTo(3, 1);
+    assertThat(2).not().isGreaterThanAndLessThanEqualTo(2, 1);
+    assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 1);
+    assertThat(2).not().isGreaterThanAndLessThanEqualTo(2, 3);
+    assertThat(2).not().isGreaterThanAndLessThanEqualTo(3, 4);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanEqualToThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not greater than (2) and less than equal to (2)");
+
+    assertThat(2).isGreaterThanAndLessThanEqualTo(2, 2);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThanEqualTo(2, 2);
+  }
+
+  @Test
+  public void assertThatGreaterThanAndLessThanEqualToThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThanEqualTo(2, 2);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanAndLessThanEqualToThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is greater than (1) and less than equal to (2)");
+
+    assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 2);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualTo() {
+    assertThat(2).isGreaterThanEqualTo(-3);
+    assertThat(2).isGreaterThanEqualTo(1);
+    assertThat(2).isGreaterThanEqualTo(2);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanEqualTo() {
+    assertThat(2).not().isGreaterThanEqualTo(3);
+    assertThat(-2).not().isGreaterThanEqualTo(-1);
+    assertThat(-2).not().isGreaterThanEqualTo(0);
+    assertThat(-2).not().isGreaterThanEqualTo(1);
+    assertThat(-2).not().isGreaterThanEqualTo(2);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not greater than equal to (3)");
+
+    assertThat(2).isGreaterThanEqualTo(3);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToThrowsIlegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualTo(3);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanEqualToThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is greater than equal to (1)");
+
+    assertThat(2).not().isGreaterThanEqualTo(1);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThan() {
+    assertThat(2).isGreaterThanEqualToAndLessThan(1, 3);
+    assertThat(2).isGreaterThanEqualToAndLessThan(2, 3);
+    assertThat(2).isGreaterThanEqualToAndLessThan(-4, 3);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanEqualToAndLessThan() {
+    assertThat(2).not().isGreaterThanEqualToAndLessThan(3, 1);
+    assertThat(2).not().isGreaterThanEqualToAndLessThan(3, 4);
+    assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 1);
+    assertThat(2).not().isGreaterThanEqualToAndLessThan(2, 1);
+    assertThat(-2).not().isGreaterThanEqualToAndLessThan(1, -3);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not greater than equal to (3) and less than (1)");
+
+    assertThat(2).isGreaterThanEqualToAndLessThan(3, 1);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1s{1}", "test", "!").isGreaterThanEqualToAndLessThan(3, 1);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThan(3, 1);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanEqualToAndLessThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is greater than equal to (1) and less than (3)");
+
+    assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 3);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanEqualTo() {
+    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(1, 3);
+    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(2, 3);
+    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(1, 2);
+    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(2, 2);
+    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(-4, 4);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanEqualToAndLessThanEqualTo() {
+    assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+    assertThat(-2).not().isGreaterThanEqualToAndLessThanEqualTo(1, -3);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not greater than equal to (3) and less than equal to (1)");
+
+    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+  }
+
+  @Test
+  public void assertThatGreaterThanEqualToAndLessThanEqualToThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+  }
+
+  @Test
+  public void assertThatNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is greater than equal to (1) and less than equal to (3)");
+
+    assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(1, 3);
   }
 
   @Test
