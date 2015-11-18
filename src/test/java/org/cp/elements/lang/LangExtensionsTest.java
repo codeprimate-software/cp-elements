@@ -646,7 +646,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void assertThatNullStringHasTextThrowsIlegalArgumentException() {
+  public void assertThatNullStringHasTextThrowsIllegalArgumentException() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("test");
@@ -770,6 +770,57 @@ public class LangExtensionsTest {
     expectedException.expectMessage("(test) is an instance of (java.lang.String)");
 
     assertThat("test").not().isInstanceOf(String.class);
+  }
+
+  @Test
+  public void assertThatIsLessThan() {
+    assertThat(2).isLessThan(3);
+    assertThat(-2).isLessThan(1);
+  }
+
+  @Test
+  public void assertThatIsNotLessThan() {
+    assertThat(2).not().isLessThan(2);
+    assertThat(2).not().isLessThan(1);
+    assertThat(2).not().isLessThan(0);
+    assertThat(2).not().isLessThan(-2);
+    assertThat(2).not().isLessThan(-3);
+  }
+
+  @Test
+  public void assertThatIsLessThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(2) is not less than (1)");
+
+    assertThat(2).isLessThan(1);
+  }
+
+  @Test
+  public void assertThatIsLessThanThrowsAssertionErrorWithCustomMessage() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("This is a test!");
+
+    assertThat(2).using("This is a %1$s{1}", "test", "!").isLessThan(1);
+  }
+
+  @Test
+  public void assertThatIsLessThanThrowsIllegalArgumentException() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(2).throwing(new IllegalArgumentException("test")).isLessThan(1);
+  }
+
+  @Test
+  public void assertThatIsNotLessThanThrowsAssertionError() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(1) is less than (2)");
+
+    assertThat(1).not().isLessThan(2);
   }
 
   @Test
