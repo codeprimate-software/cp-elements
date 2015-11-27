@@ -114,6 +114,8 @@ public abstract class LangExtensions {
 
     AssertThat<T> using(String message, Object... args);
 
+    AssertThat<T> when(Condition condition);
+
   }
 
   private static final class AssertThatExpression<T> implements AssertThat<T> {
@@ -125,6 +127,8 @@ public abstract class LangExtensions {
     private final boolean expected;
 
     private final T obj;
+
+    private Condition condition;
 
     private RuntimeException cause;
 
@@ -141,6 +145,11 @@ public abstract class LangExtensions {
     private AssertThatExpression(final T obj, final boolean expected) {
       this.obj = obj;
       this.expected = expected;
+      this.condition = () -> true;
+    }
+
+    private boolean conditionHolds() {
+      return condition.evaluate();
     }
 
     private boolean notEqualToExpected(final boolean actual) {
@@ -148,21 +157,27 @@ public abstract class LangExtensions {
     }
 
     public void isAssignableTo(final Class type) {
-      if (notEqualToExpected(is(obj).assignableTo(type))) {
-        throwAssertionError("(%1$s) is %2$sassignable to (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).assignableTo(type))) {
+          throwAssertionError("(%1$s) is %2$sassignable to (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
+        }
       }
     }
 
     @SuppressWarnings("unchecked")
     public void isComparableTo(final Comparable<T> comparable) {
-      if (notEqualToExpected(is((Comparable<T>) obj).comparableTo(comparable))) {
-        throwAssertionError("(%1$s) is %2$scomparable to (%3$s)", obj, negate(NOT), comparable);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is((Comparable<T>) obj).comparableTo(comparable))) {
+          throwAssertionError("(%1$s) is %2$scomparable to (%3$s)", obj, negate(NOT), comparable);
+        }
       }
     }
 
     public void isEqualTo(final T obj) {
-      if (notEqualToExpected(is(this.obj).equalTo(obj))) {
-        throwAssertionError("(%1$s) is %2$sequal to (%3$s)", this.obj, negate(NOT), obj);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(this.obj).equalTo(obj))) {
+          throwAssertionError("(%1$s) is %2$sequal to (%3$s)", this.obj, negate(NOT), obj);
+        }
       }
     }
 
@@ -171,48 +186,62 @@ public abstract class LangExtensions {
     }
 
     public void isFalse() {
-      if (notEqualToExpected(is(obj).False())) {
-        throwAssertionError("(%1$s) is %2$sfalse", obj, negate(NOT));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).False())) {
+          throwAssertionError("(%1$s) is %2$sfalse", obj, negate(NOT));
+        }
       }
     }
 
     public void isGreaterThan(final T lowerBound) {
-      if (notEqualToExpected(is(obj).greaterThan(lowerBound))) {
-        throwAssertionError("(%1$s) is %2$sgreater than (%3$s)", obj, negate(NOT), lowerBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).greaterThan(lowerBound))) {
+          throwAssertionError("(%1$s) is %2$sgreater than (%3$s)", obj, negate(NOT), lowerBound);
+        }
       }
     }
 
     public void isGreaterThanAndLessThan(final T lowerBound, final T upperBound) {
-      if (notEqualToExpected(is(obj).greaterThanAndLessThan(lowerBound, upperBound))) {
-        throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than (%4$s)", obj, negate(NOT),
-          lowerBound, upperBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).greaterThanAndLessThan(lowerBound, upperBound))) {
+          throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than (%4$s)", obj, negate(NOT),
+            lowerBound, upperBound);
+        }
       }
     }
 
     public void isGreaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
-      if (notEqualToExpected(is(obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
-        throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than equal to (%4$s)", obj, negate(NOT),
-          lowerBound, upperBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
+          throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than equal to (%4$s)", obj, negate(NOT),
+            lowerBound, upperBound);
+        }
       }
     }
 
     public void isGreaterThanEqualTo(final T lowerBound) {
-      if (notEqualToExpected(is(obj).greaterThanEqualTo(lowerBound))) {
-        throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s)", obj, negate(NOT), lowerBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).greaterThanEqualTo(lowerBound))) {
+          throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s)", obj, negate(NOT), lowerBound);
+        }
       }
     }
 
     public void isGreaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
-      if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
-        throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than (%4$s)", obj, negate(NOT),
-          lowerBound, upperBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
+          throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than (%4$s)", obj, negate(NOT),
+            lowerBound, upperBound);
+        }
       }
     }
 
     public void isGreaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
-      if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
-        throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than equal to (%4$s)",
-          obj, negate(NOT), lowerBound, upperBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
+          throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than equal to (%4$s)",
+            obj, negate(NOT), lowerBound, upperBound);
+        }
       }
     }
 
@@ -221,71 +250,93 @@ public abstract class LangExtensions {
     }
 
     public void holdsLock(final Object lock) {
-      if (notEqualToExpected(Thread.holdsLock(lock))) {
-        throwAssertionError("(%1$s) %2$slock (%3$s)", Thread.currentThread(),
-          (expected ? "does not hold " : "holds "), lock);
+      if (conditionHolds()) {
+        if (notEqualToExpected(Thread.holdsLock(lock))) {
+          throwAssertionError("(%1$s) %2$slock (%3$s)", Thread.currentThread(),
+            (expected ? "does not hold " : "holds "), lock);
+        }
       }
     }
 
     public void isInstanceOf(final Class type) {
-      if (notEqualToExpected(is(obj).instanceOf(type))) {
-        throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).instanceOf(type))) {
+          throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
+        }
       }
     }
 
     public void isLessThan(final T upperBound) {
-      if (notEqualToExpected(is(obj).lessThan(upperBound))) {
-        throwAssertionError("(%1$s) is %2$sless than (%3$s)", obj, negate(NOT), upperBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).lessThan(upperBound))) {
+          throwAssertionError("(%1$s) is %2$sless than (%3$s)", obj, negate(NOT), upperBound);
+        }
       }
     }
 
     public void isLessThanOrGreaterThan(final T upperBound, final T lowerBound) {
-      if (notEqualToExpected(is(obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
-        throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than (%4$s)", obj, negate(NOT),
-          upperBound, lowerBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
+          throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than (%4$s)", obj, negate(NOT),
+            upperBound, lowerBound);
+        }
       }
     }
 
     public void isLessThanOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
-      if (notEqualToExpected(is(obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
-        throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than equal to (%4$s)", obj, negate(NOT),
-          upperBound, lowerBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
+          throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than equal to (%4$s)", obj, negate(NOT),
+            upperBound, lowerBound);
+        }
       }
     }
 
     public void isLessThanEqualTo(final T upperBound) {
-      if (notEqualToExpected(is(obj).lessThanEqualTo(upperBound))) {
-        throwAssertionError("(%1$s) is %2$sless than equal to (%3$s)", obj, negate(NOT), upperBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).lessThanEqualTo(upperBound))) {
+          throwAssertionError("(%1$s) is %2$sless than equal to (%3$s)", obj, negate(NOT), upperBound);
+        }
       }
     }
 
     public void isLessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
-      if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
-        throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than (%4$s)", obj, negate(NOT),
-          upperBound, lowerBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
+          throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than (%4$s)", obj, negate(NOT),
+            upperBound, lowerBound);
+        }
       }
     }
 
     public void isLessThanEqualToOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
-      if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
-        throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than equal to (%4$s)",
-          obj, negate(NOT), upperBound, lowerBound);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
+          throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than equal to (%4$s)",
+            obj, negate(NOT), upperBound, lowerBound);
+        }
       }
     }
 
     public AssertThat<T> not() {
-      return new AssertThatExpression<>(this.obj, !expected);
+      AssertThat<T> expression = new AssertThatExpression<>(this.obj, !expected);
+      expression = expression.when(this.condition);
+      return expression;
     }
 
     public void isNotBlank() {
-      if (notEqualToExpected(is(obj).notBlank())) {
-        throwAssertionError("(%1$s) is %2$sblank", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).notBlank())) {
+          throwAssertionError("(%1$s) is %2$sblank", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+        }
       }
     }
 
     public void isNotEmpty() {
-      if (notEqualToExpected(is(obj).notEmpty())) {
-        throwAssertionError("(%1$s) is %2$sempty", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).notEmpty())) {
+          throwAssertionError("(%1$s) is %2$sempty", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+        }
       }
     }
 
@@ -294,14 +345,18 @@ public abstract class LangExtensions {
     }
 
     public void isNull() {
-      if (notEqualToExpected(is(obj).Null())) {
-        throwAssertionError("(%1$s) is %2$snull", obj, negate(NOT));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).Null())) {
+          throwAssertionError("(%1$s) is %2$snull", obj, negate(NOT));
+        }
       }
     }
 
     public void isSameAs(final T obj) {
-      if (notEqualToExpected(is(this.obj).sameAs(obj))) {
-        throwAssertionError("(%1$s) is %2$sthe same as (%3$s)", this.obj, negate(NOT), obj);
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(this.obj).sameAs(obj))) {
+          throwAssertionError("(%1$s) is %2$sthe same as (%3$s)", this.obj, negate(NOT), obj);
+        }
       }
     }
 
@@ -310,8 +365,10 @@ public abstract class LangExtensions {
     }
 
     public void isTrue() {
-      if (notEqualToExpected(is(obj).True())) {
-        throwAssertionError("(%1$s) is %2$strue", obj, negate(NOT));
+      if (conditionHolds()) {
+        if (notEqualToExpected(is(obj).True())) {
+          throwAssertionError("(%1$s) is %2$strue", obj, negate(NOT));
+        }
       }
     }
 
@@ -322,6 +379,11 @@ public abstract class LangExtensions {
 
     public AssertThat<T> using(final String message, final Object... args) {
       this.message = format(message, args);
+      return this;
+    }
+
+    public AssertThat<T> when(final Condition condition) {
+      this.condition = (condition != null ? condition : () -> true);
       return this;
     }
 
@@ -337,17 +399,16 @@ public abstract class LangExtensions {
       return String.format(message, args);
     }
 
+    private String negate(final String value) {
+      return (expected ? value : "");
+    }
+
     private void throwAssertionError(final String defaultMessage, final Object... args) {
       throw (is(cause).notNull() ? cause : new AssertionFailedException(withMessage(defaultMessage, args)));
     }
 
     private String withMessage(final String defaultMessage, final Object... args) {
       return (is(message).notBlank() ? message : format(defaultMessage, args));
-    }
-
-    // TODO rename
-    private String negate(final String value) {
-      return (expected ? value : "");
     }
   }
 

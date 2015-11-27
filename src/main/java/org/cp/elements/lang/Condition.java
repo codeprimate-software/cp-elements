@@ -25,19 +25,17 @@ package org.cp.elements.lang;
  * The Condition interface defines a contract for implementing objects used to evaluate a required condition
  * of the application or system.
  *
- * @param <T> the Class type of the arguments used in the evaluation of the condition.
  * @author John Blum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Condition<T> {
+public interface Condition {
 
   /**
    * Evaluates the required criteria of this condition to determine whether the condition holds.
    *
-   * @param argument the arguments using in the evaluation of this condition.
    * @return a boolean value indicating whether the condition holds.
    */
-  boolean evaluate(T argument);
+  boolean evaluate();
 
 }
