@@ -110,6 +110,8 @@ public abstract class LangExtensions {
 
     void isTrue();
 
+    AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer);
+
     AssertThat<T> throwing(RuntimeException e);
 
     AssertThat<T> using(String message, Object... args);
@@ -372,6 +374,11 @@ public abstract class LangExtensions {
       }
     }
 
+    @Override
+    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+      return assertionTransformer.transform(this);
+    }
+
     public AssertThat<T> throwing(final RuntimeException cause) {
       this.cause = cause;
       return this;
@@ -409,6 +416,183 @@ public abstract class LangExtensions {
 
     private String withMessage(final String defaultMessage, final Object... args) {
       return (is(message).notBlank() ? message : format(defaultMessage, args));
+    }
+  }
+
+  public static class AssertThatWrapper<T> implements AssertThat<T> {
+
+    private final AssertThat<T> delegate;
+
+    public AssertThatWrapper(final AssertThat<T> delegate) {
+      Assert.notNull(delegate, "delegate must not be null");
+      this.delegate = delegate;
+    }
+
+    protected AssertThat<T> getDelegate() {
+      return delegate;
+    }
+
+    @Override
+    public void isAssignableTo(final Class type) {
+      getDelegate().isAssignableTo(type);
+    }
+
+    @Override
+    public void isComparableTo(final Comparable<T> obj) {
+      getDelegate().isComparableTo(obj);
+    }
+
+    @Override
+    public void isEqualTo(final T obj) {
+      getDelegate().isEqualTo(obj);
+    }
+
+    @Override
+    public void isNotEqualTo(final T obj) {
+      getDelegate().isNotEqualTo(obj);
+    }
+
+    @Override
+    public void isFalse() {
+      getDelegate().isFalse();
+    }
+
+    @Override
+    public void isGreaterThan(final T lowerBound) {
+      getDelegate().isGreaterThan(lowerBound);
+    }
+
+    @Override
+    public void isGreaterThanAndLessThan(final T lowerBound, final T upperBound) {
+      getDelegate().isGreaterThanAndLessThan(lowerBound, upperBound);
+    }
+
+    @Override
+    public void isGreaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+      getDelegate().isGreaterThanAndLessThanEqualTo(lowerBound, upperBound);
+    }
+
+    @Override
+    public void isGreaterThanEqualTo(final T lowerBound) {
+      getDelegate().isGreaterThanEqualTo(lowerBound);
+    }
+
+    @Override
+    public void isGreaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
+      getDelegate().isGreaterThanEqualToAndLessThan(lowerBound, upperBound);
+    }
+
+    @Override
+    public void isGreaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+      getDelegate().isGreaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound);
+    }
+
+    @Override
+    public void hasText() {
+      getDelegate().hasText();
+    }
+
+    @Override
+    public void holdsLock(final Object lock) {
+      getDelegate().holdsLock(lock);
+    }
+
+    @Override
+    public void isInstanceOf(final Class type) {
+      getDelegate().isInstanceOf(type);
+    }
+
+    @Override
+    public void isLessThan(final T upperBound) {
+      getDelegate().isLessThan(upperBound);
+    }
+
+    @Override
+    public void isLessThanOrGreaterThan(final T upperBound, final T lowerBound) {
+      getDelegate().isLessThanOrGreaterThan(upperBound, lowerBound);
+    }
+
+    @Override
+    public void isLessThanOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+      getDelegate().isLessThanOrGreaterThanEqualTo(upperBound, lowerBound);
+    }
+
+    @Override
+    public void isLessThanEqualTo(final T upperBound) {
+      getDelegate().isLessThanEqualTo(upperBound);
+    }
+
+    @Override
+    public void isLessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
+      getDelegate().isLessThanEqualToOrGreaterThan(upperBound, lowerBound);
+    }
+
+    @Override
+    public void isLessThanEqualToOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+      getDelegate().isLessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound);
+    }
+
+    @Override
+    public AssertThat<T> not() {
+      return new AssertThatWrapper<>(getDelegate().not());
+    }
+
+    @Override
+    public void isNotBlank() {
+      getDelegate().isNotBlank();
+    }
+
+    @Override
+    public void isNotEmpty() {
+      getDelegate().isNotEmpty();
+    }
+
+    @Override
+    public void isNotNull() {
+      getDelegate().isNotNull();
+    }
+
+    @Override
+    public void isNull() {
+      getDelegate().isNull();
+    }
+
+    @Override
+    public void isSameAs(final T obj) {
+      getDelegate().isSameAs(obj);
+    }
+
+    @Override
+    public void isNotSameAs(final T obj) {
+      getDelegate().isNotSameAs(obj);
+    }
+
+    @Override
+    public void isTrue() {
+      getDelegate().isTrue();
+    }
+
+    @Override
+    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+      return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
+    }
+
+    @Override
+    public AssertThat<T> throwing(final RuntimeException e) {
+      getDelegate().throwing(e);
+      return this;
+    }
+
+    @Override
+    public AssertThat<T> using(final String message, final Object... args) {
+      getDelegate().using(message, args);
+      return this;
+    }
+
+    @Override
+    public AssertThat<T> when(final Condition condition) {
+      getDelegate().when(condition);
+      return this;
     }
   }
 
