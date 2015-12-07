@@ -32,6 +32,9 @@ import org.cp.elements.lang.annotation.DSL;
  * equality comparisons, identity checks, null checks, negation and so on, and operations such as conversion, etc.
  * 
  * @author John J. Blum
+ * @see org.cp.elements.lang.Assert
+ * @see org.cp.elements.lang.DslExtension
+ * @see org.cp.elements.lang.annotation.DSL
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -41,11 +44,11 @@ public abstract class LangExtensions {
    * The assertThat operator is used to assert the state of an object, such as it's equality, identity, nullity,
    * relational value, and so on.
    *
-   * @param <T> the class type of the object subject to assertion.
-   * @param obj the Object to be asserted.
+   * @param <T> Class type of the object being asserted.
+   * @param obj Object to be asserted.
    * @return an instance of the AssertThat DSL expression for making assertions about an object's state.
-   * @see org.cp.elements.lang.annotation.DSL
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
+   * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL
   public static <T> AssertThat<T> assertThat(final T obj) {
@@ -57,6 +60,8 @@ public abstract class LangExtensions {
    * of the application or system.
    *
    * @param <T> the type of object to evaluation and perform the assertion.
+   * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
+   * @see org.cp.elements.lang.LangExtensions.AssertThatWrapper
    * @see org.cp.elements.lang.DslExtension
    */
   public interface AssertThat<T> extends DslExtension {
@@ -258,13 +263,6 @@ public abstract class LangExtensions {
     void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
-     * Negates this assertion.
-     *
-     * @return a negated instance of this assertion.
-     */
-    AssertThat<T> not();
-
-    /**
      * Assert that the object to evaluate is not blank, or rather, has text.  The object String value is blank
      * if it contains only whitespace characters or null.
      *
@@ -298,16 +296,6 @@ public abstract class LangExtensions {
     void isNull();
 
     /**
-     * Asserts that the object to evaluate is the same instance as the given object.  This assertion deems the objects
-     * are the same as determined by the identity comparison (==).
-     *
-     * @param obj the object used in the identity comparison with the object being evaluated.
-     * @throws AssertionFailedException if the objects are not the same.
-     * @see #isEqualTo(Object)
-     */
-    void isSameAs(T obj);
-
-    /**
      * Asserts that the object to evaluate is not the same instance as the given object.  This assertion deems
      * the objects are not the same as determined by the identity comparison (==).
      *
@@ -319,12 +307,37 @@ public abstract class LangExtensions {
     void isNotSameAs(T obj);
 
     /**
+     * Asserts that the object to evaluate is the same instance as the given object.  This assertion deems the objects
+     * are the same as determined by the identity comparison (==).
+     *
+     * @param obj the object used in the identity comparison with the object being evaluated.
+     * @throws AssertionFailedException if the objects are not the same.
+     * @see #isEqualTo(Object)
+     */
+    void isSameAs(T obj);
+
+    /**
      * Asserts that the object to evaluate is true.
      *
      * @throws AssertionFailedException if the object being evaluated is not true.
      * @see #isFalse()
      */
     void isTrue();
+
+    /**
+     * Negates this assertion.
+     *
+     * @return a negated instance of this assertion.
+     */
+    AssertThat<T> not();
+
+    /**
+     * Throws the provided RuntimeException when an assertion fails.
+     *
+     * @param e the RuntimeException to throw when an assertion fails.
+     * @return this assertion instance.
+     */
+    AssertThat<T> throwing(RuntimeException e);
 
     /**
      * Transforms this assertion into an adapted assertion of the same type using the provided Transformer.
@@ -335,14 +348,6 @@ public abstract class LangExtensions {
      * @see org.cp.elements.lang.Transformer
      */
     AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer);
-
-    /**
-     * Throws the provided RuntimeException when an assertion fails.
-     *
-     * @param e the RuntimeException to throw when an assertion fails.
-     * @return this assertion instance.
-     */
-    AssertThat<T> throwing(RuntimeException e);
 
     /**
      * Uses the provided message and message arguments in the AssertionFailedException thrown when an assertion fails.
@@ -596,13 +601,6 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public AssertThat<T> not() {
-      AssertThat<T> expression = new AssertThatExpression<>(this.obj, !expected);
-      expression = expression.when(this.condition);
-      return expression;
-    }
-
-    /* (non-Javadoc) */
     public void isNotBlank() {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).notBlank())) {
@@ -635,17 +633,17 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
+    public void isNotSameAs(final T obj) {
+      not().isSameAs(obj);
+    }
+
+    /* (non-Javadoc) */
     public void isSameAs(final T obj) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(this.obj).sameAs(obj))) {
           throwAssertionError("(%1$s) is %2$sthe same as (%3$s)", this.obj, negate(NOT), obj);
         }
       }
-    }
-
-    /* (non-Javadoc) */
-    public void isNotSameAs(final T obj) {
-      not().isSameAs(obj);
     }
 
     /* (non-Javadoc) */
@@ -658,15 +656,22 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    @Override
-    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
-      return assertionTransformer.transform(this);
+    public AssertThat<T> not() {
+      AssertThat<T> expression = new AssertThatExpression<>(this.obj, !expected);
+      expression = expression.when(this.condition);
+      return expression;
     }
 
     /* (non-Javadoc) */
     public AssertThat<T> throwing(final RuntimeException cause) {
       this.cause = cause;
       return this;
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+      return assertionTransformer.transform(this);
     }
 
     /* (non-Javadoc) */
@@ -727,6 +732,11 @@ public abstract class LangExtensions {
     public AssertThatWrapper(final AssertThat<T> delegate) {
       Assert.notNull(delegate, "delegate must not be null");
       this.delegate = delegate;
+    }
+
+    /* (non-Javadoc) */
+    public static <T> AssertThat<T> wrap(AssertThat<T> delegate) {
+      return new AssertThatWrapper<>(delegate);
     }
 
     /* (non-Javadoc) */
@@ -856,12 +866,6 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> not() {
-      return new AssertThatWrapper<>(getDelegate().not());
-    }
-
-    /* (non-Javadoc) */
-    @Override
     public void isNotBlank() {
       getDelegate().isNotBlank();
     }
@@ -886,14 +890,14 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public void isSameAs(final T obj) {
-      getDelegate().isSameAs(obj);
+    public void isNotSameAs(final T obj) {
+      getDelegate().isNotSameAs(obj);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isNotSameAs(final T obj) {
-      getDelegate().isNotSameAs(obj);
+    public void isSameAs(final T obj) {
+      getDelegate().isSameAs(obj);
     }
 
     /* (non-Javadoc) */
@@ -904,8 +908,8 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
-      return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
+    public AssertThat<T> not() {
+      return new AssertThatWrapper<>(getDelegate().not());
     }
 
     /* (non-Javadoc) */
@@ -913,6 +917,12 @@ public abstract class LangExtensions {
     public AssertThat<T> throwing(final RuntimeException e) {
       getDelegate().throwing(e);
       return this;
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+      return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
     }
 
     /* (non-Javadoc) */
@@ -1159,13 +1169,6 @@ public abstract class LangExtensions {
     boolean lessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
-     * Negates the expected outcome/result of this operator.
-     * 
-     * @return the instance of this Is operator negated.
-     */
-    Is<T> not();
-
-    /**
      * Determines whether the String object provided to the is operator is not blank (or rather, has actual text data).
      *
      * @return a boolean value indicating whether the String has actual text data.
@@ -1182,7 +1185,7 @@ public abstract class LangExtensions {
     /**
      * Shortcut method for the not().Null() operation.  Determines whether the object provided to the is operator
      * is not null.
-     * 
+     *
      * @return a boolean value indicating whether the object in question is not null.
      * @see #not()
      * @see #Null()
@@ -1191,7 +1194,7 @@ public abstract class LangExtensions {
 
     /**
      * Determines whether the object provided to the is operator is null.
-     * 
+     *
      * @return a boolean value indicating whether the object in question is null.
      */
     boolean Null();
@@ -1223,11 +1226,18 @@ public abstract class LangExtensions {
     /**
      * Determines whether the object provided to the is operator actually evaluates to the value true.  An object
      * is true if and only if the value is actually true and not null or some other value (such as false).
-     * 
+     *
      * @return a boolean value of true if the object in question is indeed the value true
      * @see java.lang.Boolean#TRUE
      */
     boolean True();
+
+    /**
+     * Negates the expected outcome/result of this operator.
+     *
+     * @return the instance of this Is operator negated.
+     */
+    Is<T> not();
 
   }
 
@@ -1370,11 +1380,6 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public Is<T> not() {
-      return new IsExpression<>(this.obj, !expected);
-    }
-
-    /* (non-Javadoc) */
     public boolean notBlank() {
       return StringUtils.hasText(ObjectUtils.toString(obj));
     }
@@ -1399,18 +1404,23 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public boolean sameAs(final T obj) {
-      return equalToExpected(this.obj == obj);
-    }
-
-    /* (non-Javadoc) */
     public boolean notSameAs(final T obj) {
       return not().sameAs(obj);
     }
 
     /* (non-Javadoc) */
+    public boolean sameAs(final T obj) {
+      return equalToExpected(this.obj == obj);
+    }
+
+    /* (non-Javadoc) */
     public boolean True() {
       return equalToExpected(Boolean.TRUE.equals(this.obj));
+    }
+
+    /* (non-Javadoc) */
+    public Is<T> not() {
+      return new IsExpression<>(this.obj, !expected);
     }
   }
 

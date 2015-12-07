@@ -21,13 +21,21 @@
 
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.LangExtensions.AssertThat;
+import static org.cp.elements.lang.LangExtensions.AssertThatWrapper;
 import static org.cp.elements.lang.LangExtensions.Is;
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.LangExtensions.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -40,21 +48,26 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Matchers;
 
 /**
  * The LangExtensionsTest class is a test suite of test cases testing the contract and functionality
  * of the LangExtensions class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.LangExtensions
- * @see org.cp.elements.test.TestUtils
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.lang.LangExtensions
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 public class LangExtensionsTest {
 
   private final Comparable NULL = null;
+
+  private final Condition ENABLE_DISABLE_CONDITION = Condition.FALSE_CONDITION;
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -1281,6 +1294,443 @@ public class LangExtensionsTest {
   }
 
   @Test
+  public void assertionTransformationIgnoresCondition() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(false) is not true");
+
+    assertThat(false).transform(new Transformer<AssertThat<Boolean>>() {
+      @Override public AssertThat<Boolean> transform(final AssertThat<Boolean> assertion) {
+        return new AssertThatWrapper<Boolean>(assertion) {
+          @Override public AssertThat<Boolean> when(final Condition condition) {
+            assertion.when(Condition.TRUE_CONDITION);
+            return this;
+          }
+        };
+      }
+    }).when(ENABLE_DISABLE_CONDITION).isTrue();
+  }
+
+  @Test
+  public void disabledAssertThatIsAssignableToSuppressesAssertionError() {
+    assertThat(1).when(ENABLE_DISABLE_CONDITION).isAssignableTo(Boolean.class);
+  }
+
+  @Test
+  public void disabledAssertThatIsComparableToSuppressesAssertionError() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isComparableTo("TEST");
+  }
+
+  @Test
+  public void disabledAssertThatIsEqualToSuppressesAssertionError() {
+    assertThat(3.1459d).when(ENABLE_DISABLE_CONDITION).isEqualTo(Math.PI);
+  }
+
+  @Test
+  public void disabledAssertThatIsNotEqualToSuppressesAssertionError() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isNotEqualTo("test");
+  }
+
+  @Test
+  public void disabledAssertThatIsFalseSuppressesAssertionError() {
+    assertThat(true).when(ENABLE_DISABLE_CONDITION).isFalse();
+  }
+
+  @Test
+  public void disabledAssertThatIsGreaterThanSuppressesAssertionError() {
+    assertThat(-2).when(ENABLE_DISABLE_CONDITION).isGreaterThan(1);
+  }
+
+  @Test
+  public void disabledAssertThatIsGreaterThanAndLessThanSuppressesAssertionError() {
+    assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanAndLessThan(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsGreaterThanAndLessThanEqualToSuppressesAssertionError() {
+    assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanAndLessThanEqualTo(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsGreaterThanEqualToSuppressesAssertionError() {
+    assertThat(-2).when(ENABLE_DISABLE_CONDITION).isGreaterThanEqualTo(1);
+  }
+
+  @Test
+  public void disabledAssertThatIsGreaterThanEqualToAndLessThanSuppressesAssertionError() {
+    assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanEqualToAndLessThan(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsGreaterThanEqualToAndLessThanEqualToSuppressesAssertionError() {
+    assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanEqualToAndLessThanEqualTo(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatHasTextSuppressesAssertionError() {
+    assertThat("  ").when(ENABLE_DISABLE_CONDITION).hasText();
+  }
+
+  @Test
+  public void disabledAssertThatHoldsLockSuppressesAssertionError() {
+    assertThat(Thread.currentThread()).when(ENABLE_DISABLE_CONDITION).holdsLock(lock);
+  }
+
+  @Test
+  public void disabledAssertThatIsInstanceOfSuppressesAssertionError() {
+    assertThat(null).when(ENABLE_DISABLE_CONDITION).isInstanceOf(Object.class);
+  }
+
+  @Test
+  public void disabledAssertThatIsLessThanSuppressesAssertionError() {
+    assertThat(1).when(ENABLE_DISABLE_CONDITION).isLessThan(-2);
+  }
+
+  @Test
+  public void disabledAssertThatIsLessThanOrGreaterThanSuppressesAssertinError() {
+    assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanOrGreaterThan(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsLessThanOrGreaterThanEqualToSuppressesAssertinError() {
+    assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanOrGreaterThanEqualTo(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsLessThanEqualToSuppressesAssertionError() {
+    assertThat(1).when(ENABLE_DISABLE_CONDITION).isLessThanEqualTo(-1);
+  }
+
+  @Test
+  public void disabledAssertThatIsLessThanEqualToOrGreaterThanSuppressesAssertionError() {
+    assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanEqualToOrGreaterThan(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsLessThanEqualToOrGreaterThanEqualToSuppressesAssertionError() {
+    assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+  }
+
+  @Test
+  public void disabledAssertThatIsNotBlankSuppressesAssertionError() {
+    assertThat(" ").when(ENABLE_DISABLE_CONDITION).isNotBlank();
+  }
+
+  @Test
+  public void disabledAssertThatIsNotEmptySuppressesAssertionError() {
+    assertThat("").when(ENABLE_DISABLE_CONDITION).isNotEmpty();
+  }
+
+  @Test
+  public void disabledAssertThatIsNotNullSuppressesAssertoinError() {
+    assertThat(null).when(ENABLE_DISABLE_CONDITION).isNotNull();
+  }
+
+  @Test
+  public void disabledAssertThatIsNullSuppressesAssertionError() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isNull();
+  }
+
+  @Test
+  public void disabledAssertThatIsSameAsSuppressesAssertionError() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isSameAs("TEST");
+  }
+
+  @Test
+  public void disabledAssertThatIsNotSameAsSuppressesAssertionError() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isNotSameAs("test");
+  }
+
+  @Test
+  public void disabledAssertThatIsTrueSuppressesAssertionError() {
+    assertThat(false).when(ENABLE_DISABLE_CONDITION).isTrue();
+  }
+
+  @Test
+  public void wrappedAssertThatIsAssignableToDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isAssignableTo(Object.class);
+    verify(mockAssertion, times(1)).isAssignableTo(eq(Object.class));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsComparableToDelegatesToWrappedAssertion() {
+    Comparable mockComparable = mock(Comparable.class);
+    AssertThat<Comparable> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isComparableTo(mockComparable);
+    verify(mockAssertion, times(1)).isComparableTo(eq(mockComparable));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsEqualToDelegatesToWrappedAssertion() {
+    Object obj = new Object();
+    AssertThat<Object> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isEqualTo(obj);
+    verify(mockAssertion, times(1)).isEqualTo(eq(obj));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsNotEqualToDelegatesToWrappedAssertion() {
+    Object obj = new Object();
+    AssertThat<Object> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isNotEqualTo(obj);
+    verify(mockAssertion, times(1)).isNotEqualTo(eq(obj));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsFalseDelegatesToWrappedAssertion() {
+    AssertThat<Boolean> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isFalse();
+    verify(mockAssertion, times(1)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsGreaterThanDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isGreaterThan(0);
+    verify(mockAssertion, times(1)).isGreaterThan(eq(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsGreaterThanOrLessThanDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isGreaterThanAndLessThan(-1, 1);
+    verify(mockAssertion, times(1)).isGreaterThanAndLessThan(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsGreaterThanOrLessThanEqualToDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isGreaterThanAndLessThanEqualTo(-1, 1);
+    verify(mockAssertion, times(1)).isGreaterThanAndLessThanEqualTo(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsGreaterThanEqualToDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualTo(0);
+    verify(mockAssertion, times(1)).isGreaterThanEqualTo(eq(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsGreaterThanEqualToAndLessThanDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThan(-1, 1);
+    verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThan(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsGreaterThanEqualToAndLessThanEqualToDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThanEqualTo(-1, 1);
+    verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThanEqualTo(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatHasTextDelegatesToWrappedAssertion() {
+    AssertThat<String> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).hasText();
+    verify(mockAssertion, times(1)).hasText();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatHoldsLockDelegatesToWrappedAssertion() {
+    AssertThat<Thread> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).holdsLock(lock);
+    verify(mockAssertion, times(1)).holdsLock(eq(lock));
+  }
+
+  @Test
+  public void wrappedAssertThatIsInstanceOfDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isInstanceOf(Object.class);
+    verify(mockAssertion, times(1)).isInstanceOf(eq(Object.class));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsLessThanDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isLessThan(0);
+    verify(mockAssertion, times(1)).isLessThan(eq(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsLessThanOrGreaterThanDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isLessThanOrGreaterThan(-1, 1);
+    verify(mockAssertion, times(1)).isLessThanOrGreaterThan(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsLessThanOrGreaterThanEqualToDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isLessThanOrGreaterThanEqualTo(-1, 1);
+    verify(mockAssertion, times(1)).isLessThanOrGreaterThanEqualTo(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsLessThanEqualToDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isLessThanEqualTo(0);
+    verify(mockAssertion, times(1)).isLessThanEqualTo(eq(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsLessThanEqualToOrGreaterThanDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThan(-1, 1);
+    verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThan(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsLessThanEqualToOrGreaterThanEqualToDelegatesToWrappedAssertion() {
+    AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+    verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThanEqualTo(eq(-1), eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsNotBlankDelegatesToWrappedAssertion() {
+    AssertThat<String> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isNotBlank();
+    verify(mockAssertion, times(1)).isNotBlank();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsNotEmptyDelegatesToWrappedAssertion() {
+    AssertThat<String> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isNotEmpty();
+    verify(mockAssertion, times(1)).isNotEmpty();
+  }
+
+  @Test
+  public void wrappedAssertThatIsNotNullDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isNotNull();
+    verify(mockAssertion, times(1)).isNotNull();
+  }
+
+  @Test
+  public void wrappedAssertThatIsNullDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isNull();
+    verify(mockAssertion, times(1)).isNull();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsNotSameAsDelegatesToWrappedAssertion() {
+    Object obj = new Object();
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isNotSameAs(obj);
+    verify(mockAssertion, times(1)).isNotSameAs(eq(obj));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsSameAsDelegatesToWrappedAssertion() {
+    Object obj = new Object();
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isSameAs(obj);
+    verify(mockAssertion, times(1)).isSameAs(eq(obj));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsTrueDelegatesToWrappedAssertion() {
+    AssertThat<Boolean> mockAssertion = mock(AssertThat.class);
+    AssertThatWrapper.wrap(mockAssertion).isTrue();
+    verify(mockAssertion, times(1)).isTrue();
+  }
+
+  @Test
+  public void wrappedAssertThatNotDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+
+    when(mockAssertion.not()).thenReturn(mockAssertion);
+
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).not();
+
+    assertNotSame(mockAssertion, wrappedAssertion);
+    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+
+    verify(mockAssertion, times(1)).not();
+  }
+
+  @Test
+  public void wrappedAssertThatThrowingDelegatesToWrappedAssertion() {
+    RuntimeException illegalArgument = new IllegalArgumentException("test");
+
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).throwing(illegalArgument);
+
+    assertNotSame(mockAssertion, wrappedAssertion);
+    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+
+    verify(mockAssertion, times(1)).throwing(eq(illegalArgument));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatTransformDelegatesToWrappedAssertion() {
+    Transformer<AssertThat> mockTransformer = mock(Transformer.class);
+
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion);
+
+    when(mockTransformer.transform(Matchers.any(AssertThat.class))).thenReturn(wrappedAssertion);
+
+    wrappedAssertion = wrappedAssertion.transform(mockTransformer);
+
+    assertNotSame(mockAssertion, wrappedAssertion);
+    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+
+    verify(mockTransformer, times(1)).transform(eq(mockAssertion));
+  }
+
+  @Test
+  public void wrappedAssertThatUsingDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).using("message", "args");
+
+    assertNotSame(mockAssertion, wrappedAssertion);
+    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+
+    verify(mockAssertion, times(1)).using(eq("message"), eq("args"));
+  }
+
+  @Test
+  public void wrappedAssertThatWhenDelegatesToWrappedAssertion() {
+    AssertThat mockAssertion = mock(AssertThat.class);
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).when(ENABLE_DISABLE_CONDITION);
+
+    assertNotSame(mockAssertion, wrappedAssertion);
+    assertTrue(wrappedAssertion instanceof AssertThatWrapper);
+
+    verify(mockAssertion, times(1)).when(eq(ENABLE_DISABLE_CONDITION));
+  }
+
+  @Test
   public void isAssignableTo() {
     assertTrue(is(Object.class).assignableTo(Object.class));
     assertTrue(is(Boolean.class).assignableTo(Object.class));
@@ -1290,15 +1740,15 @@ public class LangExtensionsTest {
     assertTrue(is(Double.class).assignableTo(Number.class));
     assertTrue(is(Integer.class).assignableTo(Number.class));
     assertTrue(is(java.sql.Date.class).assignableTo(java.util.Date.class));
-    assertTrue(is(Object.class).not().assignableTo(String.class));
   }
 
   @Test
-  public void isNotAssignableTo() {
+  public void isAssignableToIsFalse() {
     assertFalse(is(Object.class).assignableTo(String.class));
     assertFalse(is(Boolean.TYPE).assignableTo(Boolean.class));
     assertFalse(is(Double.class).assignableTo(BigDecimal.class));
     assertFalse(is(Integer.class).assignableTo(BigInteger.class));
+    assertFalse(is(Float.class).assignableTo(Double.class));
     assertFalse(is(Integer.class).assignableTo(Long.class));
     assertFalse(is(String.class).assignableTo(BigDecimal.class));
     assertFalse(is(String.class).assignableTo(Character.class));
@@ -1306,9 +1756,18 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsEqualByComparison() {
-    final Person jonDoe1 = new Person(1l, "Jon", "Doe");
-    final Person jonDoe2 = new Person(2l, "Jon", "Doe");
+  public void isNotAssignableTo() {
+    assertTrue(is(Boolean.TYPE).not().assignableTo(Boolean.class));
+    assertTrue(is(Character.class).not().assignableTo(String.class));
+    assertTrue(is(Double.TYPE).not().assignableTo(Double.class));
+    assertTrue(is(Integer.TYPE).not().assignableTo(Integer.class));
+    assertTrue(is(Object.class).not().assignableTo(String.class));
+  }
+
+  @Test
+  public void isComparableTo() {
+    Person jonDoe1 = new Person(1l, "Jon", "Doe");
+    Person jonDoe2 = new Person(2l, "Jon", "Doe");
 
     assertTrue(is(jonDoe1).comparableTo(jonDoe2));
     assertFalse(is(jonDoe1).not().comparableTo(jonDoe2));
@@ -1316,9 +1775,9 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotEqualByComparison() {
-    final Person johnBlum = new Person(1l, "John", "Blum");
-    final Person jonBloom = new Person(1l, "Jon", "Bloom");
+  public void isNotComparableTo() {
+    Person johnBlum = new Person(1l, "John", "Blum");
+    Person jonBloom = new Person(1l, "Jon", "Bloom");
 
     assertFalse(is(johnBlum).comparableTo(jonBloom));
     assertTrue(is(johnBlum).not().comparableTo(jonBloom));
@@ -1326,7 +1785,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsEqualTo() {
+  public void isEqualTo() {
     assertTrue(is(true).equalTo(Boolean.TRUE));
     assertTrue(is('c').equalTo('c'));
     assertTrue(is(2).equalTo(2));
@@ -1335,7 +1794,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsEqualToWithUnequalValues() {
+  public void isEqualToWithUnequalValues() {
     assertFalse(is(NULL).equalTo(NULL));
     assertFalse(is("null").equalTo(null));
     assertFalse(is("null").equalTo("nil"));
@@ -1347,7 +1806,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotEqualTo() {
+  public void isNotEqualTo() {
     assertTrue((is(NULL).not().equalTo(NULL)));
     assertTrue(is((String) null).not().equalTo("null"));
     assertTrue(is("null").not().equalTo(null));
@@ -1361,14 +1820,14 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsFalse() {
+  public void isFalse() {
     assertTrue(is(false).False());
     assertTrue(is(Boolean.FALSE).False());
     assertTrue(is(!Boolean.TRUE).False());
   }
 
   @Test
-  public void testIsNotFalse() {
+  public void isNotFalse() {
     assertTrue(is(true).not().False());
     assertTrue(is(Boolean.TRUE).not().False());
     assertTrue(is(!Boolean.FALSE).not().False());
@@ -1376,7 +1835,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsGreaterThan() {
+  public void isGreaterThan() {
     assertTrue(is(3).greaterThan(1));
     assertTrue(is(3).greaterThan(2));
     assertFalse(is(3).greaterThan(3));
@@ -1385,7 +1844,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotGreaterThan() {
+  public void isNotGreaterThan() {
     assertFalse(is(3).not().greaterThan(1));
     assertFalse(is(3).not().greaterThan(2));
     assertTrue(is(3).not().greaterThan(3));
@@ -1394,7 +1853,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsGreaterThanAndLessThan() {
+  public void isGreaterThanAndLessThan() {
     assertFalse(is(1).greaterThanAndLessThan(2, 4));
     assertFalse(is(2).greaterThanAndLessThan(2, 4));
     assertTrue(is(3).greaterThanAndLessThan(2, 4));
@@ -1403,7 +1862,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotGreaterThanAndLessThan() {
+  public void isNotGreaterThanAndLessThan() {
     assertTrue(is(1).not().greaterThanAndLessThan(2, 4));
     assertTrue(is(2).not().greaterThanAndLessThan(2, 4));
     assertFalse(is(3).not().greaterThanAndLessThan(2, 4));
@@ -1412,7 +1871,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsGreaterThanAndLessThanEqualTo() {
+  public void isGreaterThanAndLessThanEqualTo() {
     assertFalse(is(1).greaterThanAndLessThanEqualTo(2, 4));
     assertFalse(is(2).greaterThanAndLessThanEqualTo(2, 4));
     assertTrue(is(3).greaterThanAndLessThanEqualTo(2, 4));
@@ -1421,7 +1880,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotGreaterThanAndLessThanEqualTo() {
+  public void isNotGreaterThanAndLessThanEqualTo() {
     assertTrue(is(1).not().greaterThanAndLessThanEqualTo(2, 4));
     assertTrue(is(2).not().greaterThanAndLessThanEqualTo(2, 4));
     assertFalse(is(3).not().greaterThanAndLessThanEqualTo(2, 4));
@@ -1430,7 +1889,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsGreaterThanEqualTo() {
+  public void isGreaterThanEqualTo() {
     assertTrue(is(3).greaterThanEqualTo(1));
     assertTrue(is(3).greaterThanEqualTo(2));
     assertTrue(is(3).greaterThanEqualTo(3));
@@ -1439,7 +1898,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotGreaterThanEqualTo() {
+  public void isNotGreaterThanEqualTo() {
     assertFalse(is(3).not().greaterThanEqualTo(1));
     assertFalse(is(3).not().greaterThanEqualTo(2));
     assertFalse(is(3).not().greaterThanEqualTo(3));
@@ -1448,7 +1907,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsGreaterThanEqualToAndLessThan() {
+  public void isGreaterThanEqualToAndLessThan() {
     assertFalse(is(1).greaterThanEqualToAndLessThan(2, 4));
     assertTrue(is(2).greaterThanEqualToAndLessThan(2, 4));
     assertTrue(is(3).greaterThanEqualToAndLessThan(2, 4));
@@ -1457,7 +1916,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotGreaterThanEqualToAndLessThan() {
+  public void isNotGreaterThanEqualToAndLessThan() {
     assertTrue(is(1).not().greaterThanEqualToAndLessThan(2, 4));
     assertFalse(is(2).not().greaterThanEqualToAndLessThan(2, 4));
     assertFalse(is(3).not().greaterThanEqualToAndLessThan(2, 4));
@@ -1466,7 +1925,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsGreaterThanEqualToAndLessThanEqualTo() {
+  public void isGreaterThanEqualToAndLessThanEqualTo() {
     assertFalse(is(1).greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertTrue(is(2).greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertTrue(is(3).greaterThanEqualToAndLessThanEqualTo(2, 4));
@@ -1475,7 +1934,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotGreaterThanEqualToAndLessThanEqualTo() {
+  public void isNotGreaterThanEqualToAndLessThanEqualTo() {
     assertTrue(is(1).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertFalse(is(2).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertFalse(is(3).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
@@ -1484,7 +1943,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsInstanceOf() {
+  public void isInstanceOf() {
     assertTrue(is(false).instanceOf(Boolean.class));
     assertTrue(is(Boolean.TRUE).instanceOf(Boolean.class));
     assertTrue(is(Calendar.getInstance()).instanceOf(Calendar.class));
@@ -1499,7 +1958,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotInstanceOf() {
+  public void isNotInstanceOf() {
     assertTrue(is("false").not().instanceOf(Boolean.class));
     assertTrue(is(Calendar.getInstance()).not().instanceOf(Date.class));
     assertTrue(is("c").not().instanceOf(Character.class));
@@ -1511,7 +1970,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsLessThan() {
+  public void isLessThan() {
     assertFalse(is(3).lessThan(1));
     assertFalse(is(3).lessThan(2));
     assertFalse(is(3).lessThan(3));
@@ -1520,7 +1979,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotLessThan() {
+  public void isNotLessThan() {
     assertTrue(is(3).not().lessThan(1));
     assertTrue(is(3).not().lessThan(2));
     assertTrue(is(3).not().lessThan(3));
@@ -1529,7 +1988,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsLessThanOrGreaterThan() {
+  public void isLessThanOrGreaterThan() {
     assertTrue(is(1).lessThanOrGreaterThan(2, 4));
     assertFalse(is(2).lessThanOrGreaterThan(2, 4));
     assertFalse(is(3).lessThanOrGreaterThan(2, 4));
@@ -1538,7 +1997,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotLessThanOrGreaterThan() {
+  public void isNotLessThanOrGreaterThan() {
     assertFalse(is(1).not().lessThanOrGreaterThan(2, 4));
     assertTrue(is(2).not().lessThanOrGreaterThan(2, 4));
     assertTrue(is(3).not().lessThanOrGreaterThan(2, 4));
@@ -1547,7 +2006,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsLessThanOrGreaterThanEqualTo() {
+  public void isLessThanOrGreaterThanEqualTo() {
     assertTrue(is(1).lessThanOrGreaterThanEqualTo(2, 4));
     assertFalse(is(2).lessThanOrGreaterThanEqualTo(2, 4));
     assertFalse(is(3).lessThanOrGreaterThanEqualTo(2, 4));
@@ -1556,7 +2015,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotLessThanOrGreaterThanEqualTo() {
+  public void isNotLessThanOrGreaterThanEqualTo() {
     assertFalse(is(1).not().lessThanOrGreaterThanEqualTo(2, 4));
     assertTrue(is(2).not().lessThanOrGreaterThanEqualTo(2, 4));
     assertTrue(is(3).not().lessThanOrGreaterThanEqualTo(2, 4));
@@ -1565,7 +2024,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsLessThanEqualTo() {
+  public void isLessThanEqualTo() {
     assertFalse(is(3).lessThanEqualTo(1));
     assertFalse(is(3).lessThanEqualTo(2));
     assertTrue(is(3).lessThanEqualTo(3));
@@ -1574,7 +2033,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotLessThanEqualTo() {
+  public void isNotLessThanEqualTo() {
     assertTrue(is(3).not().lessThanEqualTo(1));
     assertTrue(is(3).not().lessThanEqualTo(2));
     assertFalse(is(3).not().lessThanEqualTo(3));
@@ -1583,7 +2042,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsLessThanEqualToOrGreaterThan() {
+  public void isLessThanEqualToOrGreaterThan() {
     assertTrue(is(1).lessThanEqualToOrGreaterThan(2, 4));
     assertTrue(is(2).lessThanEqualToOrGreaterThan(2, 4));
     assertFalse(is(3).lessThanEqualToOrGreaterThan(2, 4));
@@ -1592,7 +2051,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotLessThanEqualToOrGreaterThan() {
+  public void isNotLessThanEqualToOrGreaterThan() {
     assertFalse(is(1).not().lessThanEqualToOrGreaterThan(2, 4));
     assertFalse(is(2).not().lessThanEqualToOrGreaterThan(2, 4));
     assertTrue(is(3).not().lessThanEqualToOrGreaterThan(2, 4));
@@ -1601,7 +2060,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsLessThanEqualToOrGreaterThanEqualTo() {
+  public void isLessThanEqualToOrGreaterThanEqualTo() {
     assertTrue(is(1).lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertTrue(is(2).lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertFalse(is(3).lessThanEqualToOrGreaterThanEqualTo(2, 4));
@@ -1610,7 +2069,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotLessThanEqualToOrGreaterThanEqualTo() {
+  public void isNotLessThanEqualToOrGreaterThanEqualTo() {
     assertFalse(is(1).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertFalse(is(2).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertTrue(is(3).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
@@ -1619,7 +2078,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNotNull() {
+  public void isNotNull() {
     assertTrue(is(Boolean.FALSE).notNull());
     assertTrue(is(Calendar.getInstance()).notNull());
     assertTrue(is('\0').notNull());
@@ -1629,12 +2088,12 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsNull() {
+  public void isNull() {
     assertTrue(is(NULL).Null());
   }
 
   @Test
-  public void testIsSameAs() {
+  public void isSameAs() {
     assertTrue(is(NULL).sameAs(NULL));
     assertTrue(is(Boolean.TRUE).sameAs(Boolean.TRUE));
     assertTrue(is("test").sameAs("test"));
@@ -1642,21 +2101,21 @@ public class LangExtensionsTest {
 
   @Test
   @SuppressWarnings("all")
-  public void testIsNotSameAs() {
+  public void isNotSameAs() {
     assertTrue(is(NULL).notSameAs("null"));
     assertTrue(is(Boolean.TRUE).notSameAs(Boolean.FALSE));
     assertTrue(is("test").notSameAs(new String("test")));
   }
 
   @Test
-  public void testIsTrue() {
+  public void isTrue() {
     assertTrue(is(true).True());
     assertTrue(is(Boolean.TRUE).True());
     assertTrue(is(!Boolean.FALSE).True());
   }
 
   @Test
-  public void testIsNotTrue() {
+  public void isNotTrue() {
     assertTrue(is(false).not().True());
     assertTrue(is(Boolean.FALSE).not().True());
     assertTrue(is(!Boolean.TRUE).not().True());
@@ -1664,7 +2123,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsReuse() {
+  public void isReuse() {
     final Is<String> isOperator = is("test");
 
     assertNotNull(isOperator);
@@ -1678,7 +2137,7 @@ public class LangExtensionsTest {
   }
 
   @Test
-  public void testIsDoubleNegative() {
+  public void isDoubleNegative() {
     assertTrue(is(true).not().not().True());
     assertTrue(is(false).not().not().False());
   }
@@ -1708,6 +2167,10 @@ public class LangExtensionsTest {
       return lastName;
     }
 
+    public String getName() {
+      return String.format("%1$s %2$s", getFirstName(), getLastName());
+    }
+
     @Override
     @SuppressWarnings("all")
     public int compareTo(final Person person) {
@@ -1725,7 +2188,7 @@ public class LangExtensionsTest {
         return false;
       }
 
-      final Person that = (Person) obj;
+      Person that = (Person) obj;
 
       return (ObjectUtils.equalsIgnoreNull(this.getId(), that.getId()));
         //&& ObjectUtils.equals(this.getFirstName(), that.getFirstName())

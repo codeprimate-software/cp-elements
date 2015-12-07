@@ -31,6 +31,9 @@ package org.cp.elements.lang;
 @SuppressWarnings("unused")
 public interface Condition {
 
+  Condition FALSE_CONDITION = () -> false;
+  Condition TRUE_CONDITION = () -> true;
+
   /**
    * Evaluates the required criteria of this condition to determine whether the condition holds.
    *
