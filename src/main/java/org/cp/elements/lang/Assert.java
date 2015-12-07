@@ -69,6 +69,41 @@ public abstract class Assert {
   }
 
   /**
+   * Asserts that the objects are comparable.  The assertion holds if and only if the Comparable objects
+   * are equal in comparison.
+   *
+   * @param <T> the Comparable class type of the objects in the comparison.
+   * @param obj1 the first Comparable object in the relational comparison.
+   * @param obj2 the second Comparable object in the relational comparison.
+   * @param message a String specifying the message for the ComparisonException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws org.cp.elements.lang.ComparisonException if the assertion fails and the two objects are not comparable.
+   * @see #comparable(Comparable, Comparable, RuntimeException)
+   * @see java.lang.Comparable
+   */
+  public static <T extends Comparable<T>> void comparable(final T obj1, final T obj2, final String message, final Object... arguments) {
+    comparable(obj1, obj2, new ComparisonException(format(message, arguments)));
+  }
+
+  /**
+   * Asserts that the objects are comparable.  The assertion holds if and only if the Comparable objects
+   * are equal in comparison.
+   *
+   * @param <T> the Comparable class type of the objects in the comparison.
+   * @param obj1 the first Comparable object in the relational comparison.
+   * @param obj2 the second Comparable object in the relational comparison.
+   * @param e the RumtimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the assertion fails and the two objects are not comparable.
+   * @see #comparable(Comparable, Comparable, String, Object...)
+   * @see java.lang.Comparable
+   */
+  public static <T extends Comparable<T>> void comparable(final T obj1, final T obj2, final RuntimeException e) {
+    if (obj1 == null || obj2 == null || obj1.compareTo(obj2) != 0) {
+      throw e;
+    }
+  }
+
+  /**
    * Asserts that two object are equal as determined by Object.equals.  The assertion holds if and only if
    * both objects are not null and equal in value.
    * 

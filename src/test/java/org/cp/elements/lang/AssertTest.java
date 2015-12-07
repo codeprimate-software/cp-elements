@@ -21,7 +21,8 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -71,11 +72,11 @@ public class AssertTest {
   }
 
   @Test
-  public void assertArgumentWithNullCondition() {
+  public void assertArgumentWithNull() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
     expectedException.expectMessage("(mock) is not a valid argument");
-    Assert.argument(null, "(%1$s) is not a valid argument", "mock");
+    Assert.argument(null, "(%1$s) is not a valid {1}", "mock", "argument");
   }
 
   @Test
@@ -87,7 +88,7 @@ public class AssertTest {
   }
 
   @Test
-  public void assertArgumentThrowsIllegalArgumentExceptionWithMixedMessageFormatting() {
+  public void assertArgumentThrowsIllegalArgumentExceptionWithStringAndMessageFormatting() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
     expectedException.expectMessage("(spy) is a bad argument, a bad, bad, bad argument; just terrible");
@@ -96,19 +97,60 @@ public class AssertTest {
   }
 
   @Test
+  public void assertComparable() {
+    Assert.comparable(true, true, "argments are not comparable");
+    Assert.comparable('c', 'c', "argments are not comparable");
+    Assert.comparable(1, 1, "argments are not comparable");
+    Assert.comparable(Math.PI, Math.PI, "argments are not comparable");
+    Assert.comparable("test", "test", "argments are not comparable");
+  }
+
+  @Test
+  public void assertNotComparable() {
+    expectedException.expect(ComparisonException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage(String.format("(3.14159) is not comparable to (%1$s)", Math.PI));
+    Assert.comparable(3.14159d, Math.PI, "(%1$s) is not comparable to ({1})", 3.14159, String.valueOf(Math.PI));
+  }
+
+  @Test
+  public void assertComparableWithNullFirstArgument() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.comparable(null, "test", new IllegalArgumentException("test"));
+  }
+
+  @Test
+  public void assertComparableWithNullSecondArgument() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.comparable("test", null, new IllegalArgumentException("test"));
+  }
+
+  @Test
+  public void assertNotComparableThrowsAssertionFailedException() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+    Assert.comparable(-1, 1, new AssertionFailedException("test"));
+  }
+
+  @Test
   public void assertEqualsWithEqualValues() {
-    Assert.equals(Boolean.TRUE, true, "the values are unequal");
+    Assert.equals(Boolean.TRUE, true, "values are unequal");
     Assert.equals(TestUtils.createCalendar(2011, Calendar.OCTOBER, 4),
-      TestUtils.createCalendar(2011, Calendar.OCTOBER, 4), "the values are unequal");
+      TestUtils.createCalendar(2011, Calendar.OCTOBER, 4), "values are unequal");
     Assert.equals(TestUtils.createCalendar(2013, Calendar.JANUARY, 13),
-      TestUtils.createCalendar(2013, Calendar.JANUARY, 13), "the values are unequal");
+      TestUtils.createCalendar(2013, Calendar.JANUARY, 13), "values are unequal");
     Assert.equals(TestUtils.createCalendar(2015, Calendar.JULY, 16),
-      TestUtils.createCalendar(2015, Calendar.JULY, 16), "the values are unequal");
-    Assert.equals("c".charAt(0), 'c', "the values are unequal");
-    Assert.equals(Double.valueOf(String.valueOf(Math.PI)), Math.PI, "the values are unequal");
-    Assert.equals(Integer.valueOf("2"), 2, "the values are unequal");
-    Assert.equals("test", "test", "the values are unequal");
-    Assert.equals(TestEnum.valueOf("ONE"), TestEnum.ONE, "the values are unequal");
+      TestUtils.createCalendar(2015, Calendar.JULY, 16), "values are unequal");
+    Assert.equals("c".charAt(0), 'c', "values are unequal");
+    Assert.equals(Double.valueOf(String.valueOf(Math.PI)), Math.PI, "values are unequal");
+    Assert.equals(Integer.valueOf("2"), 2, "values are unequal");
+    Assert.equals("test", "test", "values are unequal");
+    Assert.equals(TestEnum.valueOf("ONE"), TestEnum.ONE, "values are unequal");
   }
 
   @Test
@@ -276,10 +318,10 @@ public class AssertTest {
 
   @Test
   public void assertIsFalseWithFalse() {
-    Assert.isFalse(false, "value is not false");
-    Assert.isFalse(Boolean.FALSE, "value is not false");
-    Assert.isFalse(!Boolean.TRUE, "value is not false");
-    Assert.isFalse(new Object() == new Object(), "value is not false");
+    Assert.isFalse(false, "value is true");
+    Assert.isFalse(Boolean.FALSE, "value is true");
+    Assert.isFalse(!Boolean.TRUE, "value is true");
+    Assert.isFalse(new Object() == new Object(), "value is true");
   }
 
   @Test
@@ -299,7 +341,7 @@ public class AssertTest {
   }
 
   @Test
-  public void assertIsInstanceOfWithInstances() throws Exception {
+  public void assertIsInstanceOf() throws Exception {
     Assert.isInstanceOf(true, Boolean.class, "object is not an instance of class type");
     Assert.isInstanceOf('c', Character.class, "object is not an instance of class type");
     Assert.isInstanceOf(3.14159f, Float.class, "object is not an instance of class type");
@@ -341,13 +383,13 @@ public class AssertTest {
   @Test
   @SuppressWarnings("all")
   public void assertIsTrueWithTrue() {
-    Assert.isTrue(true, "value is not true");
-    Assert.isTrue(Boolean.TRUE, "value is not true");
-    Assert.isTrue(!Boolean.FALSE, "value is not true");
-    Assert.isTrue("test".equals("test"), "value is not true");
-    Assert.isTrue("test".equalsIgnoreCase("TEST"), "value is not true");
-    Assert.isTrue(LOCK.equals(LOCK), "value is not true");
-    Assert.isTrue(LOCK == LOCK, "value is not true");
+    Assert.isTrue(true, "value is false");
+    Assert.isTrue(Boolean.TRUE, "value is false");
+    Assert.isTrue(!Boolean.FALSE, "value is false");
+    Assert.isTrue("test".equals("test"), "value is false");
+    Assert.isTrue("test".equalsIgnoreCase("TEST"), "value is false");
+    Assert.isTrue(LOCK.equals(LOCK), "value is false");
+    Assert.isTrue(LOCK == LOCK, "value is false");
   }
 
   @Test
