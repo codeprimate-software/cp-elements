@@ -35,18 +35,141 @@ import org.cp.elements.lang.NullSafe;
  * @see java.util.concurrent
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public abstract class ThreadUtils {
+
+  @NullSafe
+  public static boolean isAlive(final Thread thread) {
+    return (thread != null && thread.isAlive());
+  }
+
+  @NullSafe
+  public static boolean isBlocked(final Thread thread) {
+    return (thread != null && Thread.State.BLOCKED.equals(thread.getState()));
+  }
+
+  @NullSafe
+  public static boolean isDaemon(final Thread thread) {
+    return (thread != null && thread.isDaemon());
+  }
+
+  @NullSafe
+  public static boolean isNonDaemon(final Thread thread) {
+    return  (thread != null && !thread.isDaemon());
+  }
+
+  @NullSafe
+  public static boolean isNew(final Thread thread) {
+    return (thread != null && Thread.State.NEW.equals(thread.getState()));
+  }
+
+  @NullSafe
+  public static boolean isRunnable(final Thread thread) {
+    return (thread != null && Thread.State.RUNNABLE.equals(thread.getState()));
+  }
+
+  @NullSafe
+  public static boolean isTerminated(final Thread thread) {
+    return (thread != null && Thread.State.TERMINATED.equals(thread.getState()));
+  }
+
+  @NullSafe
+  public static boolean isTimedWaiting(final Thread thread) {
+    return (thread != null && Thread.State.TIMED_WAITING.equals(thread.getState()));
+  }
+
+  @NullSafe
+  public static boolean isWaiting(final Thread thread) {
+    return (thread != null && Thread.State.WAITING.equals(thread.getState()));
+  }
+
+  /**
+   * A null-safe method for getting the Thread's context ClassLoader.
+   *
+   * @param thread the Thread from which the context ClassLoader is returned.
+   * @return the context ClassLoader of the specified Thread or the ThreadUtils class ClassLoader if the Thread is null.
+   * @see java.lang.Thread#getContextClassLoader()
+   * @see java.lang.ClassLoader
+   */
+  @NullSafe
+  public static ClassLoader getContextClassLoader(final Thread thread) {
+    return (thread != null ? thread.getContextClassLoader() : ThreadUtils.class.getClassLoader());
+  }
+
+  /**
+   * A null-safe method for getting the Thread's ID.
+   *
+   * @param thread the Thread from which the ID is returned.
+   * @return the identifier of the specified Thread, or 0 if the Thread is null.
+   * @see java.lang.Thread#getId()
+   */
+  @NullSafe
+  public static long getId(final Thread thread) {
+    return (thread != null ? thread.getId() : 0l);
+  }
 
   /**
    * A null-safe method for getting the Thread's name.
    * 
    * @param thread the Thread from which the name is returned.
-   * @return a String indicating the name of the specified Thread, or null if the Thread object reference is null.
+   * @return a String indicating the name of the specified Thread or null if the Thread is null.
    * @see java.lang.Thread#getName()
    */
   @NullSafe
   public static String getName(final Thread thread) {
-    return (thread == null ? null : thread.getName());
+    return (thread != null ? thread.getName() : null);
+  }
+
+  /**
+   * A null-safe method for getting the Thread's priority.
+   *
+   * @param thread the Thread from which the priority is returned.
+   * @return an integer value indicating the priority of the specified Thread or 0 if the Thread is null.
+   * @see java.lang.Thread#getPriority()
+   */
+  @NullSafe
+  public static int getPriority(final Thread thread) {
+    return (thread != null ? thread.getPriority() : 0);
+  }
+
+  /**
+   * A null-safe method for getting a snapshot of the Thread's current stack trace.
+   *
+   * @param thread the Thread from which the stack trace is returned.
+   * @return an array of StackTraceElements indicating the stack trace of the specified Thread,
+   * or an empty StackTraceElement array if the Thread is null.
+   * @see java.lang.Thread#getStackTrace()
+   * @see java.lang.StackTraceElement
+   */
+  @NullSafe
+  public static StackTraceElement[] getStackTrace(final Thread thread) {
+    return (thread != null ? thread.getStackTrace() : new StackTraceElement[0]);
+  }
+
+  /**
+   * A null-safe method for getting the Thread's current state.
+   *
+   * @param thread the Thread from which the state is returned.
+   * @return the State of the specified Thread or null if the Thread is null.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State
+   */
+  @NullSafe
+  public static Thread.State getState(final Thread thread) {
+    return (thread != null ? thread.getState() : null);
+  }
+
+  /**
+   * A null-safe method for getting the Thread's ThreadGroup.
+   *
+   * @param thread the Thread from which the ThreadGroup is returned.
+   * @return the ThreadGroup of the specified Thread or null if the Thread is null.
+   * @see java.lang.Thread#getThreadGroup()
+   * @see java.lang.ThreadGroup
+   */
+  @NullSafe
+  public static ThreadGroup getThreadGroup(final Thread thread) {
+    return (thread != null ? thread.getThreadGroup() : null);
   }
 
   /**

@@ -21,7 +21,17 @@
 
 package org.cp.elements.lang.concurrent;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,17 +65,112 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void testGetName() {
-    assertEquals("t1", ThreadUtils.getName(new Thread("t1")));
+  public void getContextClassLoaderOfNonNullThread() {
+    ClassLoader mockClassLoader = mock(ClassLoader.class);
+    Thread mockThread = mock(Thread.class);
+
+    when(mockThread.getContextClassLoader()).thenReturn(mockClassLoader);
+
+    assertThat(ThreadUtils.getContextClassLoader(mockThread), is(equalTo(mockClassLoader)));
+
+    verify(mockThread, times(1)).getContextClassLoader();
   }
 
   @Test
-  public void testGetNameForNullThread() {
-    assertNull(ThreadUtils.getName(null));
+  public void getContextClassLoaderOfNullThread() {
+    assertThat(ThreadUtils.getContextClassLoader(null), is(ThreadUtils.class.getClassLoader()));
   }
 
   @Test
-  public void testJoin() {
+  public void getIdOfNonNullThread() {
+    Thread mockThread = mock(Thread.class);
+
+    when(mockThread.getId()).thenReturn(1l);
+
+    assertThat(ThreadUtils.getId(mockThread), is(equalTo(1l)));
+
+    verify(mockThread, times(1)).getId();
+  }
+
+  @Test
+  public void getIdOfNullThread() {
+    assertThat(ThreadUtils.getId(null), is(equalTo(0l)));
+  }
+
+  @Test
+  public void getNameOfNonNullThread() {
+    assertThat(ThreadUtils.getName(new Thread("test")), is(equalTo("test")));
+  }
+
+  @Test
+  public void getNameOfNullThread() {
+    assertThat(ThreadUtils.getName(null), is(nullValue()));
+  }
+
+  @Test
+  public void getPriorityOfNonNullThread() {
+    Thread thread = new Thread("test");
+    thread.setPriority(1);
+
+    assertThat(ThreadUtils.getPriority(thread), is(equalTo(1)));
+  }
+
+  @Test
+  public void getPriorityOfNullThread() {
+    assertThat(ThreadUtils.getPriority(null), is(equalTo(0)));
+  }
+
+  @Test
+  public void getStackTraceOfMNonNullThread() {
+    StackTraceElement[] expectedStackTrace = Thread.currentThread().getStackTrace();
+    Thread mockThread = mock(Thread.class);
+
+    when(mockThread.getStackTrace()).thenReturn(expectedStackTrace);
+
+    assertThat(ThreadUtils.getStackTrace(mockThread), is(equalTo(expectedStackTrace)));
+
+    verify(mockThread, times(1)).getStackTrace();
+  }
+
+  @Test
+  public void getStackTraceOfNullThread() {
+    StackTraceElement[] stackTrace = ThreadUtils.getStackTrace(null);
+
+    assertThat(stackTrace, is(notNullValue()));
+    assertThat(stackTrace.length, is(equalTo(0)));
+  }
+
+  @Test
+  public void getStateOfNonNullThread() {
+    Thread mockThread = mock(Thread.class);
+
+    when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
+
+    assertThat(ThreadUtils.getState(mockThread), is(equalTo(Thread.State.RUNNABLE)));
+
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void getStateOfNullThread() {
+    assertThat(ThreadUtils.getState(null), is(nullValue()));
+  }
+
+  @Test
+  public void getThreadGroupOfNonNullThread() {
+    ThreadGroup expectedThreadGroup = new ThreadGroup("test");
+    Thread thread = new Thread(expectedThreadGroup, "test");
+
+    assertThat(ThreadUtils.getThreadGroup(thread), is(equalTo(expectedThreadGroup)));
+  }
+
+  @Test
+  public void getThreadGroupOfNullThread() {
+    assertThat(ThreadUtils.getThreadGroup(null), is(nullValue()));
+  }
+
+  @Test
+  public void join() {
     final boolean[] array = { false };
     final int expectedWait = 500;
     final long t0 = System.currentTimeMillis();
@@ -91,19 +196,20 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void testJoinInterrupted() throws Throwable {
+  public void joinInterrupted() throws Throwable {
     TestFramework.runOnce(new JoinInterruptedMultithreadedTestCase());
   }
 
   //@Test
   //@Ignore
   @SuppressWarnings("unused")
-  public void testJoinInterruptedDeprecated() {
-    final Thread mainThread = Thread.currentThread();
+  public void joinInterruptedDeprecated() {
+    Thread mainThread = Thread.currentThread();
 
-    final Runnable testThreadRunnable = mainThread::interrupt;
+    Runnable testRunnable = mainThread::interrupt;
 
-    final Thread testThread = new Thread(testThreadRunnable, "Test Thread");
+    Thread testThread = new Thread(testRunnable, "Test Thread");
+
     testThread.setDaemon(false);
     testThread.start();
 
@@ -112,7 +218,7 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void testPause() {
+  public void pause() {
     final long expectedWait = 500;
     final long t0 = System.currentTimeMillis();
 
