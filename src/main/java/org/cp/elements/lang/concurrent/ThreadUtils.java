@@ -21,7 +21,14 @@
 
 package org.cp.elements.lang.concurrent;
 
+import java.util.concurrent.TimeUnit;
+
+import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Condition;
+import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.DSL;
 
 /**
  * The ThreadUtils class provides utilities for writing concurrent programs using Java Threads
@@ -38,46 +45,122 @@ import org.cp.elements.lang.NullSafe;
 @SuppressWarnings("unused")
 public abstract class ThreadUtils {
 
+  /**
+   * Determines whether the specified Thread is alive.  A Thread is alive if it has been started and has not yet died.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the specified Thread is alive.
+   * @see java.lang.Thread#isAlive()
+   */
   @NullSafe
   public static boolean isAlive(final Thread thread) {
     return (thread != null && thread.isAlive());
   }
 
+  /**
+   * Determines whether the specified Thread is in a blocked state.  A Thread may be currently blocked waiting on a lock
+   * or whlie performing some IO operation.
+   *
+   * @param thread the Thread who's state is evaluated.
+   * @return a boolean valued indicating whether he specified Thread is blocked.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State#BLOCKED
+   */
   @NullSafe
   public static boolean isBlocked(final Thread thread) {
     return (thread != null && Thread.State.BLOCKED.equals(thread.getState()));
   }
 
+  /**
+   * Determines whether the specified Thread is a daemon Thread.  A daemon Thread is a background Thread that does not
+   * prevent the JVM from exiting.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the specified Thread is a daemon.
+   * @see java.lang.Thread#isDaemon()
+   * @see #isNonDaemon(Thread)
+   */
   @NullSafe
   public static boolean isDaemon(final Thread thread) {
     return (thread != null && thread.isDaemon());
   }
 
+  /**
+   * Determines whether the specified Thread is a non-daemon Thread.  A non-daemon Thread is a background Thread
+   * that prevents the JVM from exiting.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the specified Thread is a non-daemon.
+   * @see java.lang.Thread#isDaemon()
+   * @see #isDaemon(Thread)
+   */
   @NullSafe
   public static boolean isNonDaemon(final Thread thread) {
     return  (thread != null && !thread.isDaemon());
   }
 
+  /**
+   * Determines whether the specified Thread is a new Thread.  A "new" Thread is any Thread that has not been
+   * started yet.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the Thread is new.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State#NEW
+   */
   @NullSafe
   public static boolean isNew(final Thread thread) {
     return (thread != null && Thread.State.NEW.equals(thread.getState()));
   }
 
+  /**
+   * Determines whether the specified Thread is a runnable Thread.  A "runnable" Thread is any Thread that can be
+   * scheduled by the Operation System (OS) for execution.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the Thread is in a runnable state.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State#RUNNABLE
+   */
   @NullSafe
   public static boolean isRunnable(final Thread thread) {
     return (thread != null && Thread.State.RUNNABLE.equals(thread.getState()));
   }
 
+  /**
+   * Determines whether the specified Thread has been terminated (stopped).
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the Thread has been terminated.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State#TERMINATED
+   */
   @NullSafe
   public static boolean isTerminated(final Thread thread) {
     return (thread != null && Thread.State.TERMINATED.equals(thread.getState()));
   }
 
+  /**
+   * Determines whether the specified Thread is currently in a timed wait.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the Thread is currently in a timed wait.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State#TIMED_WAITING
+   */
   @NullSafe
   public static boolean isTimedWaiting(final Thread thread) {
     return (thread != null && Thread.State.TIMED_WAITING.equals(thread.getState()));
   }
 
+  /**
+   * Determines whether the specified Thread is currently in a wait.
+   *
+   * @param thread the Thread to evaluate.
+   * @return a boolean value indicating whether the Thread is currently in a wait.
+   * @see java.lang.Thread#getState()
+   * @see java.lang.Thread.State#WAITING
+   */
   @NullSafe
   public static boolean isWaiting(final Thread thread) {
     return (thread != null && Thread.State.WAITING.equals(thread.getState()));
@@ -173,6 +256,33 @@ public abstract class ThreadUtils {
   }
 
   /**
+   * Null-safe operation to dump the (call) stack of the current Thread.
+   *
+   * @param tag a String labeling the stack dump of the current Thread.
+   * @see java.lang.Thread#dumpStack()
+   */
+  @NullSafe
+  public static void dumpStack(final String tag) {
+    Thread currentThread = Thread.currentThread();
+    System.err.printf("%1$s - %2$s Thread @ %3$d%n", String.valueOf(tag).toUpperCase(), currentThread.getName(),
+      currentThread.getId());
+    Thread.dumpStack();
+  }
+
+  /**
+   * Null-safe operation to interrupt the specified Thread.
+   *
+   * @param thread the Thread to interrupt.
+   * @see java.lang.Thread#interrupt()
+   */
+  @NullSafe
+  public static void interrupt(final Thread thread) {
+    if (thread != null) {
+      thread.interrupt();
+    }
+  }
+
+  /**
    * Causes the current Thread to join with the specified Thread.  If the current Thread is interrupted while waiting
    * for the specified Thread, then the current Threads interrupt bit will be set and this method will return false.
    * Otherwise, the current Thread will wait on the specified Thread until it dies, or until the time period has expired
@@ -220,6 +330,96 @@ public abstract class ThreadUtils {
     catch (InterruptedException ignore) {
       Thread.currentThread().interrupt();
       return false;
+    }
+  }
+
+  @DSL
+  public static WaitTask waitFor(final long duration) {
+    return waitFor(duration, WaitTask.DEFAULT_TIME_UNIT);
+  }
+
+  @DSL
+  public static WaitTask waitFor(final long duration, final TimeUnit timeUnit) {
+    return new WaitTask().waitFor(duration, timeUnit);
+  }
+
+  public static class WaitTask implements DslExtension {
+
+    protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;
+
+    private long duration;
+    private long interval;
+
+    private final Object waitTaskMonitor = new Object();
+
+    private TimeUnit durationTimeUnit;
+    private TimeUnit intervalTimeUnit;
+
+    public long getDuration() {
+      return duration;
+    }
+
+    public TimeUnit getDurationTimeUnit() {
+      return durationTimeUnit;
+    }
+
+    public long getInterval() {
+      long duration = getDuration();
+      return (interval > 0 ? Math.min(interval, duration) : duration);
+    }
+
+    public TimeUnit getIntervalTimeUnit() {
+      return ObjectUtils.defaultIfNull(intervalTimeUnit, getDurationTimeUnit());
+    }
+
+    public WaitTask waitFor(final long duration) {
+      return waitFor(duration, DEFAULT_TIME_UNIT);
+    }
+
+    public WaitTask waitFor(final long duration, final TimeUnit durationTimeUnit) {
+      Assert.argument(duration > 0, String.format("duration (%1$d) must be greater than 0", duration));
+      this.duration = duration;
+      this.durationTimeUnit = ObjectUtils.defaultIfNull(durationTimeUnit, DEFAULT_TIME_UNIT);
+      return this;
+    }
+
+    private boolean isValidInterval(final long interval, final TimeUnit intervalTimeUnit) {
+      return (interval > 0 && intervalTimeUnit.toMillis(interval) <= durationTimeUnit.toMillis(duration));
+    }
+
+    public WaitTask checkEvery(final long interval) {
+      return checkEvery(interval, DEFAULT_TIME_UNIT);
+    }
+
+    public WaitTask checkEvery(final long interval, final TimeUnit intervalTimeUnit) {
+      this.intervalTimeUnit = ObjectUtils.defaultIfNull(intervalTimeUnit, DEFAULT_TIME_UNIT);
+
+      Assert.argument(isValidInterval(interval, this.intervalTimeUnit), String.format(
+        "interval (%1$d %2$s) must be greater than 0 and less than equal to duration (%3$d %4$s)!",
+          interval, intervalTimeUnit, duration, durationTimeUnit));
+
+      this.interval = interval;
+      this.intervalTimeUnit = intervalTimeUnit;
+
+      return this;
+    }
+
+    public boolean on(Condition condition) {
+      final long timeout = (System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration()));
+
+      condition = ObjectUtils.defaultIfNull(condition, Condition.FALSE_CONDITION);
+
+      while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
+        try {
+          synchronized (waitTaskMonitor) {
+            getIntervalTimeUnit().timedWait(waitTaskMonitor, getInterval());
+          }
+        }
+        catch (InterruptedException ignore) {
+        }
+      }
+
+      return (Condition.FALSE_CONDITION.equals(condition) || condition.evaluate());
     }
   }
 

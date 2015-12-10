@@ -28,13 +28,19 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.cp.elements.lang.Constants;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -42,14 +48,23 @@ import edu.umd.cs.mtc.TestFramework;
 /**
  * The ThreadUtilsTest class is a test suite of test cases testing the contract and functionality of the 
  * ThreadUtils class.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.concurrent.ThreadUtils
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
+ * @see org.mockito.Mock
+ * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ThreadUtilsTest {
+
+  @Mock
+  private Thread mockThread;
 
   protected static void sleep(final long milliseconds) {
     try {
@@ -61,7 +76,169 @@ public class ThreadUtilsTest {
 
   @Before
   public void setup() {
-    Thread.interrupted(); // clear the interrupt status of the current Thread
+    // clear the interrupt status of the current Thread
+    Thread.interrupted();
+  }
+
+  @Test
+  public void isAliveWithNull() {
+    assertThat(ThreadUtils.isAlive(null), is(false));
+  }
+
+  @Test
+  public void isBlockedWithBlockedThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.BLOCKED);
+    assertThat(ThreadUtils.isBlocked(mockThread), is(true));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isBlockedWithRunnableThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
+    assertThat(ThreadUtils.isBlocked(mockThread), is(false));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isBlockedWithNull() {
+    assertThat(ThreadUtils.isBlocked(null), is(false));
+  }
+
+  @Test
+  public void isDaemonWithDaemonThread() {
+    Thread thread = new Thread("testDaemonThread");
+    thread.setDaemon(true);
+
+    assertThat(ThreadUtils.isDaemon(thread), is(true));
+  }
+
+  @Test
+  public void isDaemonWithNonDaemonThread() {
+    Thread thread = new Thread("testNonDaemonThread");
+    thread.setDaemon(false);
+
+    assertThat(ThreadUtils.isDaemon(thread), is(false));
+  }
+
+  @Test
+  public void isDaemonWithNull() {
+    assertThat(ThreadUtils.isDaemon(null), is(false));
+  }
+
+  @Test
+  public void isNonDaemonWithNonDaemonThread() {
+    Thread thread = new Thread("testNonDaemonThread");
+    thread.setDaemon(false);
+
+    assertThat(ThreadUtils.isNonDaemon(thread), is(true));
+  }
+
+  @Test
+  public void isNonDaemonWithDaemonThread() {
+    Thread thread = new Thread("testDaemonThread");
+    thread.setDaemon(true);
+
+    assertThat(ThreadUtils.isNonDaemon(thread), is(false));
+  }
+
+  @Test
+  public void isNonDaemonWithNull() {
+    assertThat(ThreadUtils.isNonDaemon(null), is(false));
+  }
+
+  @Test
+  public void isNewWithNewThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.NEW);
+    assertThat(ThreadUtils.isNew(mockThread), is(true));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isNewWithTerminatedThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.TERMINATED);
+    assertThat(ThreadUtils.isNew(mockThread), is(false));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isNewWithNull() {
+    assertThat(ThreadUtils.isNew(null), is(false));
+  }
+
+  @Test
+  public void isRunnableWithRunnableThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
+    assertThat(ThreadUtils.isRunnable(mockThread), is(true));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isRunnableWithBlockedThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.BLOCKED);
+    assertThat(ThreadUtils.isRunnable(mockThread), is(false));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isRunnableWithNull() {
+    assertThat(ThreadUtils.isRunnable(null), is(false));
+  }
+
+  @Test
+  public void isTerminatedWithTerminatedThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.TERMINATED);
+    assertThat(ThreadUtils.isTerminated(mockThread), is(true));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isTerminatedWithNewThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.NEW);
+    assertThat(ThreadUtils.isTerminated(mockThread), is(false));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isTerminatedWithNull() {
+    assertThat(ThreadUtils.isTerminated(null), is(false));
+  }
+
+  @Test
+  public void isTimedWaitingWithTimedWaitingThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.TIMED_WAITING);
+    assertThat(ThreadUtils.isTimedWaiting(mockThread), is(true));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isTimedWaitingWithWaitingThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.WAITING);
+    assertThat(ThreadUtils.isTimedWaiting(mockThread), is(false));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isTimeWaitingWithNull() {
+    assertThat(ThreadUtils.isTimedWaiting(null), is(false));
+  }
+
+  @Test
+  public void isWaitingWithWaitingThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.WAITING);
+    assertThat(ThreadUtils.isWaiting(mockThread), is(true));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isWaitingWithTimedWaitingThread() {
+    when(mockThread.getState()).thenReturn(Thread.State.TIMED_WAITING);
+    assertThat(ThreadUtils.isWaiting(mockThread), is(false));
+    verify(mockThread, times(1)).getState();
+  }
+
+  @Test
+  public void isWaitingWithNull() {
+    assertThat(ThreadUtils.isWaiting(null), is(false));
   }
 
   @Test
@@ -77,7 +254,7 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getContextClassLoaderOfNullThread() {
+  public void getContextClassLoaderWithNull() {
     assertThat(ThreadUtils.getContextClassLoader(null), is(ThreadUtils.class.getClassLoader()));
   }
 
@@ -93,7 +270,7 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getIdOfNullThread() {
+  public void getIdWithNull() {
     assertThat(ThreadUtils.getId(null), is(equalTo(0l)));
   }
 
@@ -103,7 +280,7 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getNameOfNullThread() {
+  public void getNameWithNull() {
     assertThat(ThreadUtils.getName(null), is(nullValue()));
   }
 
@@ -116,12 +293,12 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getPriorityOfNullThread() {
+  public void getPriorityWithNull() {
     assertThat(ThreadUtils.getPriority(null), is(equalTo(0)));
   }
 
   @Test
-  public void getStackTraceOfMNonNullThread() {
+  public void getStackTraceOfNonNullThread() {
     StackTraceElement[] expectedStackTrace = Thread.currentThread().getStackTrace();
     Thread mockThread = mock(Thread.class);
 
@@ -133,7 +310,7 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getStackTraceOfNullThread() {
+  public void getStackTraceWithNull() {
     StackTraceElement[] stackTrace = ThreadUtils.getStackTrace(null);
 
     assertThat(stackTrace, is(notNullValue()));
@@ -152,7 +329,7 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getStateOfNullThread() {
+  public void getStateWithNull() {
     assertThat(ThreadUtils.getState(null), is(nullValue()));
   }
 
@@ -165,8 +342,19 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void getThreadGroupOfNullThread() {
+  public void getThreadGroupWithNull() {
     assertThat(ThreadUtils.getThreadGroup(null), is(nullValue()));
+  }
+
+  @Test
+  public void interruptInterruptsThread() {
+    ThreadUtils.interrupt(mockThread);
+    verify(mockThread, times(1)).interrupt();
+  }
+
+  @Test
+  public void interruptWithNull() {
+    ThreadUtils.interrupt(null);
   }
 
   @Test
@@ -200,9 +388,9 @@ public class ThreadUtilsTest {
     TestFramework.runOnce(new JoinInterruptedMultithreadedTestCase());
   }
 
-  //@Test
-  //@Ignore
-  @SuppressWarnings("unused")
+  @Test
+  @Ignore
+  @Deprecated
   public void joinInterruptedDeprecated() {
     Thread mainThread = Thread.currentThread();
 
@@ -227,6 +415,12 @@ public class ThreadUtilsTest {
     final long t1 = System.currentTimeMillis();
 
     assertTrue((t1 - t0) >= expectedWait);
+  }
+
+  @Test
+  @Ignore
+  public void test() {
+    fail(Constants.NOT_IMPLEMENTED);
   }
 
   @SuppressWarnings("unused")
