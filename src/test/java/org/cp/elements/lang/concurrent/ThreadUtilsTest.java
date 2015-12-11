@@ -21,23 +21,29 @@
 
 package org.cp.elements.lang.concurrent;
 
+import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.number.OrderingComparisons.greaterThanOrEqualTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.cp.elements.lang.Constants;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.cp.elements.lang.Condition;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -62,6 +68,9 @@ import edu.umd.cs.mtc.TestFramework;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ThreadUtilsTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   @Mock
   private Thread mockThread;
@@ -419,8 +428,49 @@ public class ThreadUtilsTest {
 
   @Test
   @Ignore
-  public void test() {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void waitForDuration() {
+    final long timeout = (System.currentTimeMillis() + 500);
+
+    assertThat(waitFor(500, TimeUnit.MILLISECONDS).checkEvery(100, TimeUnit.MILLISECONDS).run(), is(true));
+    assertThat(System.currentTimeMillis(), is(greaterThanOrEqualTo(timeout)));
+  }
+
+  @Test
+  public void waitForPassesConditionImmediately() {
+    AtomicInteger count = new AtomicInteger(0);
+
+    Condition countCondition = () ->  (count.incrementAndGet() > 0);
+
+    assertThat(count.get(), is(equalTo(0)));
+    assertThat(waitFor(5, TimeUnit.SECONDS).checkEvery(1, TimeUnit.SECONDS).on(countCondition), is(true));
+    assertThat(count.get(), is(equalTo(2)));
+  }
+
+  @Test
+  public void waitForWithInvalidDuration() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("duration (-500) must be greater than 0");
+
+    waitFor(-500);
+  }
+
+  @Test
+  public void waitForWithIntervalGreaterThanDuration() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("interval (2 SECONDS) must be greater than 0 and less than equal to duration (500 MILLISECONDS)");
+
+    waitFor(500).checkEvery(2, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void waitForWithNegativeInterval() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("interval (-1 SECONDS) must be greater than 0 and less than equal to duration (500 MILLISECONDS)");
+
+    waitFor(500).checkEvery(-1, TimeUnit.SECONDS);
   }
 
   @SuppressWarnings("unused")

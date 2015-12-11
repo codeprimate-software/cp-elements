@@ -333,16 +333,40 @@ public abstract class ThreadUtils {
     }
   }
 
+  /**
+   * Waits for a specified duration on a Condition possibly checking every specified interval on whether the Condition
+   * has been satisfied.
+   *
+   * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied
+   * (default time unit is MILLISECONDS).
+   * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
+   * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
+   */
   @DSL
   public static WaitTask waitFor(final long duration) {
     return waitFor(duration, WaitTask.DEFAULT_TIME_UNIT);
   }
 
+  /**
+   * Waits for a specified duration on a Condition possibly checking every specified interval on whether the Condition
+   * has been satisfied.
+   *
+   * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied.
+   * @param timeUnit the TimeUnit of the duration time value.
+   * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
+   * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
+   * @see java.util.concurrent.TimeUnit
+   */
   @DSL
   public static WaitTask waitFor(final long duration, final TimeUnit timeUnit) {
     return new WaitTask().waitFor(duration, timeUnit);
   }
 
+  /**
+   * The WaitTask class is a DslExtension specifying an API for setting up a wait condition.
+   *
+   * @see org.cp.elements.lang.DslExtension
+   */
   public static class WaitTask implements DslExtension {
 
     protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;
@@ -355,27 +379,33 @@ public abstract class ThreadUtils {
     private TimeUnit durationTimeUnit;
     private TimeUnit intervalTimeUnit;
 
+    /* (non-Javadoc) */
     public long getDuration() {
       return duration;
     }
 
+    /* (non-Javadoc) */
     public TimeUnit getDurationTimeUnit() {
       return durationTimeUnit;
     }
 
+    /* (non-Javadoc) */
     public long getInterval() {
       long duration = getDuration();
       return (interval > 0 ? Math.min(interval, duration) : duration);
     }
 
+    /* (non-Javadoc) */
     public TimeUnit getIntervalTimeUnit() {
       return ObjectUtils.defaultIfNull(intervalTimeUnit, getDurationTimeUnit());
     }
 
+    /* (non-Javadoc) */
     public WaitTask waitFor(final long duration) {
       return waitFor(duration, DEFAULT_TIME_UNIT);
     }
 
+    /* (non-Javadoc) */
     public WaitTask waitFor(final long duration, final TimeUnit durationTimeUnit) {
       Assert.argument(duration > 0, String.format("duration (%1$d) must be greater than 0", duration));
       this.duration = duration;
@@ -383,19 +413,22 @@ public abstract class ThreadUtils {
       return this;
     }
 
+    /* (non-Javadoc) */
     private boolean isValidInterval(final long interval, final TimeUnit intervalTimeUnit) {
       return (interval > 0 && intervalTimeUnit.toMillis(interval) <= durationTimeUnit.toMillis(duration));
     }
 
+    /* (non-Javadoc) */
     public WaitTask checkEvery(final long interval) {
       return checkEvery(interval, DEFAULT_TIME_UNIT);
     }
 
+    /* (non-Javadoc) */
     public WaitTask checkEvery(final long interval, final TimeUnit intervalTimeUnit) {
       this.intervalTimeUnit = ObjectUtils.defaultIfNull(intervalTimeUnit, DEFAULT_TIME_UNIT);
 
       Assert.argument(isValidInterval(interval, this.intervalTimeUnit), String.format(
-        "interval (%1$d %2$s) must be greater than 0 and less than equal to duration (%3$d %4$s)!",
+        "interval (%1$d %2$s) must be greater than 0 and less than equal to duration (%3$d %4$s)",
           interval, intervalTimeUnit, duration, durationTimeUnit));
 
       this.interval = interval;
@@ -404,6 +437,7 @@ public abstract class ThreadUtils {
       return this;
     }
 
+    /* (non-Javadoc) */
     public boolean on(Condition condition) {
       final long timeout = (System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration()));
 
@@ -420,6 +454,11 @@ public abstract class ThreadUtils {
       }
 
       return (Condition.FALSE_CONDITION.equals(condition) || condition.evaluate());
+    }
+
+    /* (non-Javadoc) */
+    public boolean run() {
+      return on(null);
     }
   }
 
