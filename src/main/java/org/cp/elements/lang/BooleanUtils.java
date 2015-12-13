@@ -26,6 +26,7 @@ package org.cp.elements.lang;
  * 
  * @author John J. Blum
  * @see java.lang.Boolean
+ * @see java.lang.Boolean#TYPE
  * @since 1.0.0
  */
 public abstract class BooleanUtils {
@@ -39,6 +40,7 @@ public abstract class BooleanUtils {
    * @return a boolean value of true if the Boolean array is not null and all Boolean wrapper object evaluate to true.
    * @see #valueOf(Boolean)
    */
+  @SuppressWarnings("all")
   public static boolean and(final Boolean... values) {
     boolean result = (values != null); // innocent until proven guilty
 
@@ -76,6 +78,7 @@ public abstract class BooleanUtils {
    * @return a boolean value of true if the Boolean array is not null and any of the Boolean values is true.
    * @see #valueOf(Boolean)
    */
+  @SuppressWarnings("all")
   public static boolean or(final Boolean... values) {
     boolean result = false; // guilty until proven innocent
 

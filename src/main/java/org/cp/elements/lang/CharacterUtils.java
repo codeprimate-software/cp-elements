@@ -26,6 +26,7 @@ package org.cp.elements.lang;
  * 
  * @author John J. Blum
  * @see java.lang.Character
+ * @see java.lang.Character#TYPE
  * @since 1.0.0
  */
 public abstract class CharacterUtils {

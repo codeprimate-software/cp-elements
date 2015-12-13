@@ -115,7 +115,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredConstructors()
    * @see java.lang.reflect.Constructor
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("all")
   public static <T> Constructor<T> findConstructor(final Class<T> type, final Object... arguments) {
     for (Constructor<?> constructor : type.getDeclaredConstructors()) {
       Class<?>[] parameterTypes = constructor.getParameterTypes();
@@ -232,6 +232,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getSuperclass()
    * @see java.lang.reflect.Method
    */
+  @SuppressWarnings("all")
   public static Method findMethod(final Class<?> type, final String methodName, final Object... arguments) {
     for (Method method : type.getDeclaredMethods()) {
       if (method.getName().equals(methodName)) {
@@ -549,6 +550,7 @@ public abstract class ClassUtils {
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
    */
+  @SuppressWarnings("all")
   public static Class loadClass(final String fullyQualifiedClassName,
                                 final boolean initialize,
                                 final ClassLoader classLoader)
@@ -573,6 +575,7 @@ public abstract class ClassUtils {
    * @see #instanceOf(Object, Class)
    */
   @NullSafe
+  @SuppressWarnings("all")
   public static boolean notInstanceOf(final Object obj, final Class... types) {
     boolean result = true;
 
