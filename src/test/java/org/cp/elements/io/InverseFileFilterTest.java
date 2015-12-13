@@ -21,13 +21,20 @@
 
 package org.cp.elements.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
@@ -35,17 +42,16 @@ import org.junit.Test;
  * of the InverseFileFilter class.
  *
  * @author John J. Blum
- * @see org.jmock.Mockery
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.io.InverseFileFilter
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @since 1.0.0
  */
-public class InverseFileFilterTest extends AbstractMockingTestSuite {
+public class InverseFileFilterTest {
 
   @Test
   public void testConstructInverseFileFilter() {
-    FileFilter mockFileFiler = mock(FileFilter.class, "testConstructInverseFileFilter.mock");
+    FileFilter mockFileFiler = mock(FileFilter.class);
     InverseFileFilter inverseFileFilter = new InverseFileFilter(mockFileFiler);
     assertSame(mockFileFiler, inverseFileFilter.getDelegate());
   }
@@ -63,30 +69,28 @@ public class InverseFileFilterTest extends AbstractMockingTestSuite {
 
   @Test
   public void testAccept() {
-    File mockFile = mock(File.class, "testAccept.file");
-    final FileFilter mockFileFilter = mock(FileFilter.class, "testAccept.fileFilter");
+    File mockFile = mock(File.class);
+    FileFilter mockFileFilter = mock(FileFilter.class, "fileFilter");
     InverseFileFilter inverseFileFilter = new InverseFileFilter(mockFileFilter);
 
-    checking(new Expectations() {{
-      oneOf(mockFileFilter).accept(with(aNonNull(File.class)));
-      will(returnValue(false));
-    }});
+    when(mockFileFilter.accept(any(File.class))).thenReturn(false);
 
     assertTrue(inverseFileFilter.accept(mockFile));
+
+    verify(mockFileFilter, times(1)).accept(eq(mockFile));
   }
 
   @Test
   public void testReject() {
-    File mockFile = mock(File.class, "testReject.file");
-    final FileFilter mockFileFilter = mock(FileFilter.class, "testReject.fileFilter");
+    File mockFile = mock(File.class);
+    FileFilter mockFileFilter = mock(FileFilter.class, "fileFilter");
     InverseFileFilter inverseFileFilter = new InverseFileFilter(mockFileFilter);
 
-    checking(new Expectations() {{
-      oneOf(mockFileFilter).accept(with(aNonNull(File.class)));
-      will(returnValue(true));
-    }});
+    when(mockFileFilter.accept(any(File.class))).thenReturn(true);
 
     assertFalse(inverseFileFilter.accept(mockFile));
+
+    verify(mockFileFilter, times(1)).accept(eq(mockFile));
   }
 
 }

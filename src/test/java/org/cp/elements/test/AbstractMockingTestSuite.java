@@ -38,8 +38,10 @@ import org.junit.Before;
  * @see org.jmock.lib.concurrent.Synchroniser
  * @see org.jmock.lib.legacy.ClassImposteriser
  * @since 1.0.0
+ * @deprecated replacing jMock with Mockito.
  */
 @SuppressWarnings("unused")
+@Deprecated
 public abstract class AbstractMockingTestSuite extends AbstractBaseTestSuite {
 
   protected Mockery mockContext;

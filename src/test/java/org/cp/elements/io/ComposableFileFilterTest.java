@@ -21,14 +21,21 @@
 
 package org.cp.elements.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.LogicalOperator;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
@@ -38,13 +45,12 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.jmock.Mockery
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.io.ComposableFileFilter
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @since 1.0.0
  */
-public class ComposableFileFilterTest extends AbstractMockingTestSuite {
+public class ComposableFileFilterTest {
 
   @Test
   public void testComposeAnd() {
@@ -99,62 +105,59 @@ public class ComposableFileFilterTest extends AbstractMockingTestSuite {
 
   @Test
   public void testAcceptAnd() {
-    File mockFile = mock(File.class, "testAcceptAnd.mockFile");
+    File mockFile = mock(File.class);
 
-    final FileFilter acceptOperand = mock(FileFilter.class, "testAcceptAnd.acceptOperand");
-    final FileFilter rejectOperand = mock(FileFilter.class, "testAcceptAnd.rejectOperand");
+    FileFilter acceptOperand = mock(FileFilter.class, "acceptOperand");
+    FileFilter rejectOperand = mock(FileFilter.class, "rejectOperand");
 
-    mockContext.checking(new Expectations() {{
-      allowing(acceptOperand).accept(with(aNonNull(File.class)));
-      will(returnValue(true));
-      allowing(rejectOperand).accept(with(aNonNull(File.class)));
-      will(returnValue(false));
-    }});
+    when(acceptOperand.accept(any(File.class))).thenReturn(true);
+    when(rejectOperand.accept(any(File.class))).thenReturn(false);
 
     assertTrue(ComposableFileFilter.and(acceptOperand, acceptOperand).accept(mockFile));
     assertFalse(ComposableFileFilter.and(acceptOperand, rejectOperand).accept(mockFile));
     assertFalse(ComposableFileFilter.and(rejectOperand, acceptOperand).accept(mockFile));
     assertFalse(ComposableFileFilter.and(rejectOperand, rejectOperand).accept(mockFile));
+
+    verify(acceptOperand, times(4)).accept(any(File.class));
+    verify(rejectOperand, times(4)).accept(any(File.class));
   }
 
   @Test
   public void testAcceptOr() {
-    File mockFile = mock(File.class, "testAcceptOr.mockFile");
+    File mockFile = mock(File.class);
 
-    final FileFilter acceptOperand = mock(FileFilter.class, "testAcceptOr.acceptOperand");
-    final FileFilter rejectOperand = mock(FileFilter.class, "testAcceptOr.rejectOperand");
+    FileFilter acceptOperand = mock(FileFilter.class, "acceptOperand");
+    FileFilter rejectOperand = mock(FileFilter.class, "rejectOperand");
 
-    mockContext.checking(new Expectations() {{
-      allowing(acceptOperand).accept(with(aNonNull(File.class)));
-      will(returnValue(true));
-      allowing(rejectOperand).accept(with(aNonNull(File.class)));
-      will(returnValue(false));
-    }});
+    when(acceptOperand.accept(any(File.class))).thenReturn(true);
+    when(rejectOperand.accept(any(File.class))).thenReturn(false);
 
     assertTrue(ComposableFileFilter.or(acceptOperand, acceptOperand).accept(mockFile));
     assertTrue(ComposableFileFilter.or(acceptOperand, rejectOperand).accept(mockFile));
     assertTrue(ComposableFileFilter.or(rejectOperand, acceptOperand).accept(mockFile));
     assertFalse(ComposableFileFilter.or(rejectOperand, rejectOperand).accept(mockFile));
+
+    verify(acceptOperand, times(4)).accept(any(File.class));
+    verify(rejectOperand, times(4)).accept(any(File.class));
   }
 
   @Test
   public void testAcceptXor() {
-    File mockFile = mock(File.class, "testAcceptXor.mockFile");
+    File mockFile = mock(File.class);
 
-    final FileFilter acceptOperand = mock(FileFilter.class, "testAcceptXor.acceptOperand");
-    final FileFilter rejectOperand = mock(FileFilter.class, "testAcceptXor.rejectOperand");
+    FileFilter acceptOperand = mock(FileFilter.class, "acceptOperand");
+    FileFilter rejectOperand = mock(FileFilter.class, "rejectOperand");
 
-    mockContext.checking(new Expectations() {{
-      allowing(acceptOperand).accept(with(aNonNull(File.class)));
-      will(returnValue(true));
-      allowing(rejectOperand).accept(with(aNonNull(File.class)));
-      will(returnValue(false));
-    }});
+    when(acceptOperand.accept(any(File.class))).thenReturn(true);
+    when(rejectOperand.accept(any(File.class))).thenReturn(false);
 
     assertFalse(ComposableFileFilter.xor(acceptOperand, acceptOperand).accept(mockFile));
     assertTrue(ComposableFileFilter.xor(acceptOperand, rejectOperand).accept(mockFile));
     assertTrue(ComposableFileFilter.xor(rejectOperand, acceptOperand).accept(mockFile));
     assertFalse(ComposableFileFilter.xor(rejectOperand, rejectOperand).accept(mockFile));
+
+    verify(acceptOperand, times(4)).accept(any(File.class));
+    verify(rejectOperand, times(4)).accept(any(File.class));
   }
 
 }

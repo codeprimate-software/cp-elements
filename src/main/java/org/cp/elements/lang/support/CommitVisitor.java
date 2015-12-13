@@ -65,11 +65,11 @@ public class CommitVisitor implements Visitor {
    *
    * @param visitable the object visited by this Visitor.
    * @see org.cp.elements.lang.Visitable
-   * @see #isCommittable(Object)
+   * @see #isCommitable(Object)
    */
   @Override
   public void visit(final Visitable visitable) {
-    if (isCommittable(visitable)) {
+    if (isCommitable(visitable)) {
       ObjectUtils.setField(visitable, "lastModifiedBy", ((Auditable) visitable).getModifiedBy());
       ObjectUtils.setField(visitable, "lastModifiedDateTime", ((Auditable) visitable).getModifiedDateTime());
       ObjectUtils.setField(visitable, "lastModifyingProcess", ((Auditable) visitable).getModifyingProcess());
@@ -85,9 +85,13 @@ public class CommitVisitor implements Visitor {
    * @return a boolean value indicating whether the targeted object can be committed.
    * @see org.cp.elements.lang.Auditable
    */
-  protected boolean isCommittable(final Object visitable) {
-    return (visitable instanceof Auditable
-      && (this.target == null || System.identityHashCode(visitable) == System.identityHashCode(this.target)));
+  protected boolean isCommitable(final Object visitable) {
+    return (visitable instanceof Auditable && (target == null || identity(visitable) == identity(target)));
+  }
+
+  /* (non-Javadoc) */
+  private int identity(final Object obj) {
+    return System.identityHashCode(obj);
   }
 
 }

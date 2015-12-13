@@ -21,66 +21,74 @@
 
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.test.TestUtils;
-import org.jmock.Expectations;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The CommitVisitorTest class is a test suite of test cases testing the contract and functionality
  * of the CommitVisitor class.
  *
  * @author John J. Blum
- * @see org.jmock.Mockery
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
+ * @see org.mockito.Mock
+ * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor
  * @see org.cp.elements.lang.support.CommitVisitor
  * @since 1.0.0
  */
-public class CommitVisitorTest extends AbstractMockingTestSuite {
+@RunWith(MockitoJUnitRunner.class)
+public class CommitVisitorTest {
+
+  @Mock
+  private Auditable mockAuditable;
 
   @Test
-  public void testIsCommittableWithAuditable() {
-    Auditable<?, ?> mockAuditable = mock(Auditable.class, "testIsCommittableWithAuditable");
-
-    assertTrue(new CommitVisitor().isCommittable(mockAuditable));
-    assertTrue(new CommitVisitor(mockAuditable).isCommittable(mockAuditable));
+  public void isCommitableWithAuditable() {
+    assertTrue(new CommitVisitor().isCommitable(mockAuditable));
+    assertTrue(new CommitVisitor(mockAuditable).isCommitable(mockAuditable));
   }
 
   @Test
-  public void testIsCommittableWithNonAuditable() {
-    assertFalse(new CommitVisitor().isCommittable(new Object()));
+  public void isCommitableWithNonAuditable() {
+    assertFalse(new CommitVisitor().isCommitable(new Object()));
+    assertFalse(new CommitVisitor(mockAuditable).isCommitable(new Object()));
   }
 
   @Test
-  public void testIsCommittableWithNonTargetedAuditable() {
-    assertFalse(new CommitVisitor(mock(Auditable.class, "testIsCommittableWithNonTargetedAuditable.target"))
-      .isCommittable(mock(Auditable.class, "testIsCommittableWithNonTargetedAuditable.visitable")));
+  public void isCommitableWithNonTargetedAuditable() {
+    assertFalse(new CommitVisitor(mockAuditable).isCommitable(mock(Auditable.class)));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testVisit() {
-    final Calendar expectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 17);
+  public void visit() {
+    Calendar expectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 17);
 
-    final AuditableVisitable<String, String> mockAuditableVisitable = mock(AuditableVisitable.class, "testVisit");
+    AuditableVisitable<String, String> mockAuditableVisitable = mock(AuditableVisitable.class);
 
-    checking(new Expectations() {{
-      oneOf(mockAuditableVisitable).getModifiedBy();
-      will(returnValue("ExpectedUser"));
-      oneOf(mockAuditableVisitable).getModifiedDateTime();
-      will(returnValue(expectedDateTime));
-      oneOf(mockAuditableVisitable).getModifyingProcess();
-      will(returnValue("ExpectedProcess"));
-    }});
+    when(mockAuditableVisitable.getModifiedBy()).thenReturn("ExpectedUser");
+    when(mockAuditableVisitable.getModifiedDateTime()).thenReturn(expectedDateTime);
+    when(mockAuditableVisitable.getModifyingProcess()).thenReturn("ExpectedProcess");
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
     assertNull(mockAuditableVisitable.lastModifiedDateTime);
@@ -92,48 +100,41 @@ public class CommitVisitorTest extends AbstractMockingTestSuite {
     assertEquals(expectedDateTime, mockAuditableVisitable.lastModifiedDateTime);
     assertEquals("ExpectedProcess", mockAuditableVisitable.lastModifyingProcess);
 
-    final Calendar differentExpectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 18);
+    Calendar updatedExpectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 18);
 
-    checking(new Expectations() {{
-      oneOf(mockAuditableVisitable).getModifiedBy();
-      will(returnValue("DifferentExpectedUser"));
-      oneOf(mockAuditableVisitable).getModifiedDateTime();
-      will(returnValue(differentExpectedDateTime));
-      oneOf(mockAuditableVisitable).getModifyingProcess();
-      will(returnValue("DifferentExpectedProcess"));
-    }});
+    when(mockAuditableVisitable.getModifiedBy()).thenReturn("UpdatedExpectedUser");
+    when(mockAuditableVisitable.getModifiedDateTime()).thenReturn(updatedExpectedDateTime);
+    when(mockAuditableVisitable.getModifyingProcess()).thenReturn("UpdatedExpectedProcess");
 
     new CommitVisitor(mockAuditableVisitable).visit(mockAuditableVisitable);
 
-    assertEquals("DifferentExpectedUser", mockAuditableVisitable.lastModifiedBy);
-    assertEquals(differentExpectedDateTime, mockAuditableVisitable.lastModifiedDateTime);
-    assertEquals("DifferentExpectedProcess", mockAuditableVisitable.lastModifyingProcess);
+    assertEquals("UpdatedExpectedUser", mockAuditableVisitable.lastModifiedBy);
+    assertEquals(updatedExpectedDateTime, mockAuditableVisitable.lastModifiedDateTime);
+    assertEquals("UpdatedExpectedProcess", mockAuditableVisitable.lastModifyingProcess);
   }
 
   @Test
-  public void testVisitWithNonAuditable() {
-    new CommitVisitor().visit(mock(Visitable.class, "testVisitWithNonAuditable"));
+  public void visitWithNonAuditable() {
+    new CommitVisitor().visit(mock(Visitable.class));
   }
 
   @Test
-  public void testVisitWithNonTargetedAuditable() {
-    final AuditableVisitable<?, ?> mockAuditableVisitable = mock(AuditableVisitable.class, "testVisitWithNonTargetedAuditable");
-
-    checking(new Expectations() {{
-      never(mockAuditableVisitable).getModifiedBy();
-      never(mockAuditableVisitable).getModifiedDateTime();
-      never(mockAuditableVisitable).getModifyingProcess();
-    }});
+  public void visitWithNonTargetedAuditable() {
+    AuditableVisitable<?, ?> mockAuditableVisitable = mock(AuditableVisitable.class);
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
     assertNull(mockAuditableVisitable.lastModifiedDateTime);
     assertNull(mockAuditableVisitable.lastModifyingProcess);
 
-    new CommitVisitor(new Object()).visit(mockAuditableVisitable);
+    new CommitVisitor(mockAuditable).visit(mockAuditableVisitable);
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
     assertNull(mockAuditableVisitable.lastModifiedDateTime);
     assertNull(mockAuditableVisitable.lastModifyingProcess);
+
+    verify(mockAuditableVisitable, never()).getModifiedBy();
+    verify(mockAuditableVisitable, never()).getModifiedDateTime();
+    verify(mockAuditableVisitable, never()).getModifyingProcess();
   }
 
   @SuppressWarnings("unused")

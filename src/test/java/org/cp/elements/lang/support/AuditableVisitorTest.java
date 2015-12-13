@@ -21,38 +21,68 @@
 
 package org.cp.elements.lang.support;
 
-import static org.cp.elements.test.TestUtils.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.*;
+import static org.cp.elements.test.TestUtils.assertEqualDate;
+import static org.cp.elements.test.TestUtils.assertEqualDateTime;
+import static org.cp.elements.test.TestUtils.createCalendar;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Visitable;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The AuditableVisitorTest class is a test suite of test cases testing the contract and functionality of the
  * AuditableVisitor class.
- * <p/>
+ *
  * @author John J. Blum
- * @see org.cp.elements.lang.Auditable
- * @see org.cp.elements.lang.support.AuditableVisitor
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
+ * @see org.mockito.Mock
+ * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.cp.elements.lang.Auditable
+ * @see org.cp.elements.lang.Visitor
+ * @see org.cp.elements.lang.support.AuditableVisitor
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AuditableVisitorTest extends AbstractMockingTestSuite {
+@RunWith(MockitoJUnitRunner.class)
+public class AuditableVisitorTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
+
+  @Mock
+  private Process mockProcess;
+
+  @Mock
+  private User mockUser;
 
   @Test
-  public void testConstructWithUserProcess() {
-    User mockUser = mockContext.mock(User.class);
-    Process mockProcess = mockContext.mock(Process.class);
-
+  public void constructWithUserAndProcess() {
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertNotNull(visitor);
@@ -62,9 +92,7 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConstructWithUserProcessAndDateTime() {
-    User mockUser = mockContext.mock(User.class);
-    Process mockProcess = mockContext.mock(Process.class);
+  public void constructWithUserProcessAndDateTime() {
     Calendar now = createCalendar(2014, Calendar.JANUARY, 16, 22, 30, 45);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
@@ -76,164 +104,124 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     assertEqualDateTime(now, visitor.getDateTime());
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testConstructWithNullUser() {
-    try {
-      new AuditableVisitor<User, Process>(null, mockContext.mock(Process.class));
-    }
-    catch (NullPointerException expected) {
-      assertEquals("The user cannot be null!", expected.getMessage());
-      throw expected;
-    }
-  }
+  @Test
+  public void constructWithNullUser() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("user must not be null");
 
-  @Test(expected = NullPointerException.class)
-  public void testConstructWithNullProcess() {
-    try {
-      new AuditableVisitor<User, Process>(mockContext.mock(User.class), null);
-    }
-    catch (NullPointerException expected) {
-      assertEquals("The process cannot be null!", expected.getMessage());
-      throw expected;
-    }
+    new AuditableVisitor<User, Process>(null, mockProcess);
   }
 
   @Test
-  public void testIsCreatedUnsetWithCreatedByAndCreatedDateTimeUnset() {
-    User mockUser = mockContext.mock(User.class);
-    Process mockProcess = mockContext.mock(Process.class);
+  public void constructWithNullProcess() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("process must not be null");
 
-    final Auditable mockAuditable = mockContext.mock(Auditable.class);
+    new AuditableVisitor<User, Process>(mockUser, null);
+  }
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(null));
-      allowing(mockAuditable).getCreatedDateTime();
-      will(returnValue(null));
-    }});
+  @Test
+  public void isCreatedUnsetWithCreatedByAndCreatedDateTimePropertiesUnset() {
+    Auditable mockAuditable = mock(Auditable.class);
+
+    when(mockAuditable.getCreatedBy()).thenReturn(null);
+    when(mockAuditable.getCreatedDateTime()).thenReturn(null);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
+
+    verify(mockAuditable, times(1)).getCreatedBy();
+    verify(mockAuditable, never()).getCreatedDateTime();
   }
 
   @Test
-  public void testIsCreatedUnsetWithCreatedByUnset() {
-    User mockUser = mockContext.mock(User.class);
-    Process mockProcess = mockContext.mock(Process.class);
+  public void isCreatedUnsetWithOnlyCreatedByPropertyUnset() {
+    Auditable mockAuditable = mock(Auditable.class);
 
-    final Calendar now = Calendar.getInstance();
-
-    final Auditable mockAuditable = mockContext.mock(Auditable.class);
-
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(null));
-      allowing(mockAuditable).getCreatedDateTime();
-      will(returnValue(now));
-    }});
+    when(mockAuditable.getCreatedBy()).thenReturn(null);
+    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
+
+    verify(mockAuditable, times(1)).getCreatedBy();
+    verify(mockAuditable, never()).getCreatedDateTime();
   }
 
   @Test
-  public void testIsCreatedUnsetWithCreatedDateTimeUnset() {
-    final User mockUser = mockContext.mock(User.class);
-    final Process mockProcess = mockContext.mock(Process.class);
-    final Auditable mockAuditable = mockContext.mock(Auditable.class);
+  public void isCreatedUnsetWithOnlyCreatedDateTimePropertyUnset() {
+    Auditable mockAuditable = mock(Auditable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(mockUser));
-      oneOf(mockAuditable).getCreatedDateTime();
-      will(returnValue(null));
-    }});
+    when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
+    when(mockAuditable.getCreatedDateTime()).thenReturn(null);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
+
+    verify(mockAuditable, times(1)).getCreatedBy();
+    verify(mockAuditable, times(1)).getCreatedDateTime();
   }
 
   @Test
-  public void testIsCreatedUnset() {
-    final User mockUser = mockContext.mock(User.class);
-    final Process mockProcess = mockContext.mock(Process.class);
-    final Calendar now = Calendar.getInstance();
-    final Auditable mockAuditable = mockContext.mock(Auditable.class);
+  public void isCreatedUnsetWhenBothCreatedByAndCreatedDateTimePropertiesAreSet() {
+    Auditable mockAuditable = mock(Auditable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(mockUser));
-      oneOf(mockAuditable).getCreatedDateTime();
-      will(returnValue(now));
-    }});
+    when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
+    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertFalse(visitor.isCreatedUnset(mockAuditable));
+
+    verify(mockAuditable, times(1)).getCreatedBy();
+    verify(mockAuditable, times(1)).getCreatedDateTime();
   }
 
   @Test
-  public void testIsNew() {
-    final VisitableIdentifiableAuditable mockIdentifiable = mockContext.mock(VisitableIdentifiableAuditable.class);
+  public void isNew() {
+    VisitableIdentifiableAuditable mockIdentifiable = mock(VisitableIdentifiableAuditable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockIdentifiable).isNew();
-      will(returnValue(true));
-    }});
+    when(mockIdentifiable.isNew()).thenReturn(true);
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(
-      mockContext.mock(User.class), mockContext.mock(Process.class));
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isNew(mockIdentifiable));
+
+    verify(mockIdentifiable, times(1)).isNew();
   }
 
   @Test
-  public void testIsNewReturningFalse() {
-    final VisitableIdentifiableAuditable mockIdentifiable = mockContext.mock(VisitableIdentifiableAuditable.class);
+  public void isNewReturningFalse() {
+    VisitableIdentifiableAuditable mockIdentifiable = mock(VisitableIdentifiableAuditable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockIdentifiable).isNew();
-      will(returnValue(false));
-    }});
+    when(mockIdentifiable.isNew()).thenReturn(false);
 
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(
-      mockContext.mock(User.class), mockContext.mock(Process.class));
+    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertFalse(visitor.isNew(mockIdentifiable));
+
+    verify(mockIdentifiable, times(1)).isNew();
   }
 
   @Test
-  public void testIsNewWithNonIdentifiableObject() {
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(
-      mockContext.mock(User.class), mockContext.mock(Process.class));
-
-    assertFalse(visitor.isNew(mockContext.mock(Auditable.class)));
+  public void isNewWithNonIdentifiableObject() {
+    assertFalse(new AuditableVisitor<>(mockUser, mockProcess).isNew(mock(Auditable.class)));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testVisit() {
-    final User mockUser = mockContext.mock(User.class);
-    final Process mockProcess = mockContext.mock(Process.class);
-    final Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 14, 55, 30);
+  public void visit() {
+    VisitableIdentifiableAuditable<User, Process> mockAuditable = mock(VisitableIdentifiableAuditable.class);
 
-    final VisitableIdentifiableAuditable<User, Process> mockAuditable = mockContext.mock(VisitableIdentifiableAuditable.class);
+    when(mockAuditable.isNew()).thenReturn(true);
+    when(mockAuditable.isModified()).thenReturn(true);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).isNew();
-      will(returnValue(true));
-      oneOf(mockAuditable).setCreatedBy(with(same(mockUser)));
-      oneOf(mockAuditable).setCreatedDateTime(with(equal(now)));
-      oneOf(mockAuditable).setCreatingProcess(with(same(mockProcess)));
-      oneOf(mockAuditable).isModified();
-      will(returnValue(true));
-      oneOf(mockAuditable).setModifiedBy(with(same(mockUser)));
-      oneOf(mockAuditable).setModifiedDateTime(with(equal(now)));
-      oneOf(mockAuditable).setModifyingProcess(with(same(mockProcess)));
-    }});
+    Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 14, 55, 30);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -243,31 +231,26 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     assertEqualDateTime(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
+
+    verify(mockAuditable, times(1)).isNew();
+    verify(mockAuditable, times(1)).setCreatedBy(same(mockUser));
+    verify(mockAuditable, times(1)).setCreatedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setCreatingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).isModified();
+    verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
+    verify(mockAuditable, times(1)).setModifiedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testVisitWithNonIdentifiableObject() {
-    final User mockUser = mockContext.mock(User.class);
-    final Process mockProcess = mockContext.mock(Process.class);
-    final Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 15, 10, 15);
+  public void visitWithNonIdentifiableObject() {
+    VisitableAuditable<User, Process> mockAuditable = mock(VisitableAuditable.class);
 
-    final VisitableAuditable<User, Process> mockAuditable = mockContext.mock(VisitableAuditable.class);
+    when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
+    when(mockAuditable.isModified()).thenReturn(true);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(new User() {}));
-      oneOf(mockAuditable).getCreatedDateTime();
-      will(returnValue(null));
-      oneOf(mockAuditable).setCreatedBy(with(same(mockUser)));
-      oneOf(mockAuditable).setCreatedDateTime(with(equal(now)));
-      oneOf(mockAuditable).setCreatingProcess(with(same(mockProcess)));
-      oneOf(mockAuditable).isModified();
-      will(returnValue(true));
-      oneOf(mockAuditable).setModifiedBy(with(same(mockUser)));
-      oneOf(mockAuditable).setModifiedDateTime(with(equal(now)));
-      oneOf(mockAuditable).setModifyingProcess(with(same(mockProcess)));
-    }});
+    Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 15, 10, 15);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -277,39 +260,32 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     assertEqualDateTime(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
+
+    verify(mockAuditable, times(1)).setCreatedBy(same(mockUser));
+    verify(mockAuditable, times(1)).setCreatedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setCreatingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).isModified();
+    verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
+    verify(mockAuditable, times(1)).setModifiedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
   }
 
   @Test
-  public void testVisitWithNonIdentiableNonAuditableObject() {
-    new AuditableVisitor<>(mockContext.mock(User.class), mockContext.mock(Process.class))
-      .visit(mockContext.mock(Visitable.class));
+  public void visitWithNonIdentifyableNonAuditableObject() {
+    new AuditableVisitor<>(mockUser, mockProcess).visit(mock(Visitable.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testVisitWhenModifiedOnly() {
-    final User mockUser = mockContext.mock(User.class);
-    final Process mockProcess = mockContext.mock(Process.class);
-    final Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 23, 45, 0);
+  public void visitWhenModifiedOnly() {
+    VisitableIdentifiableAuditable<User, Process> mockAuditable = mock(VisitableIdentifiableAuditable.class);
 
-    final VisitableIdentifiableAuditable<User, Process> mockAuditable = mockContext.mock(VisitableIdentifiableAuditable.class);
+    when(mockAuditable.isNew()).thenReturn(false);
+    when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
+    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
+    when(mockAuditable.isModified()).thenReturn(true);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).isNew();
-      will(returnValue(false));
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(new User() {}));
-      oneOf(mockAuditable).getCreatedDateTime();
-      will(returnValue(Calendar.getInstance()));
-      never(mockAuditable).setCreatedBy(with(any(User.class)));
-      never(mockAuditable).setCreatedDateTime(with(any(Calendar.class)));
-      never(mockAuditable).setCreatingProcess(with(any(Process.class)));
-      oneOf(mockAuditable).isModified();
-      will(returnValue(true));
-      oneOf(mockAuditable).setModifiedBy(with(same(mockUser)));
-      oneOf(mockAuditable).setModifiedDateTime(with(equal(now)));
-      oneOf(mockAuditable).setModifyingProcess(with(same(mockProcess)));
-    }});
+    Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 23, 45, 0);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -319,33 +295,28 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     assertEqualDateTime(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
+
+    verify(mockAuditable, times(1)).isNew();
+    verify(mockAuditable, never()).setCreatedBy(any(User.class));
+    verify(mockAuditable, never()).setCreatedDateTime(any(Calendar.class));
+    verify(mockAuditable, never()).setCreatingProcess(any(Process.class));
+    verify(mockAuditable, times(1)).isModified();
+    verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
+    verify(mockAuditable, times(1)).setModifiedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testVisitDoesNothing() {
-    final User mockUser = mockContext.mock(User.class);
-    final Process mockProcess = mockContext.mock(Process.class);
-    final Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 23, 55, 45);
+  public void visitDoesNothing() {
+    VisitableIdentifiableAuditable<User, Process> mockAuditable = mock(VisitableIdentifiableAuditable.class);
 
-    final VisitableIdentifiableAuditable<User, Process> mockAuditable = mockContext.mock(VisitableIdentifiableAuditable.class);
+    when(mockAuditable.isNew()).thenReturn(false);
+    when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
+    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
+    when(mockAuditable.isModified()).thenReturn(false);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockAuditable).isNew();
-      will(returnValue(false));
-      oneOf(mockAuditable).getCreatedBy();
-      will(returnValue(new User() {}));
-      oneOf(mockAuditable).getCreatedDateTime();
-      will(returnValue(Calendar.getInstance()));
-      never(mockAuditable).setCreatedBy(with(any(User.class)));
-      never(mockAuditable).setCreatedDateTime(with(any(Calendar.class)));
-      never(mockAuditable).setCreatingProcess(with(any(Process.class)));
-      oneOf(mockAuditable).isModified();
-      will(returnValue(false));
-      never(mockAuditable).setModifiedBy(with(any(User.class)));
-      never(mockAuditable).setModifiedDateTime(with(any(Calendar.class)));
-      never(mockAuditable).setModifyingProcess(with(any(Process.class)));
-    }});
+    Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 23, 55, 45);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -355,6 +326,15 @@ public class AuditableVisitorTest extends AbstractMockingTestSuite {
     assertEqualDateTime(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
+
+    verify(mockAuditable, times(1)).isNew();
+    verify(mockAuditable, never()).setCreatedBy(any(User.class));
+    verify(mockAuditable, never()).setCreatedDateTime(any(Calendar.class));
+    verify(mockAuditable, never()).setCreatingProcess(any(Process.class));
+    verify(mockAuditable, times(1)).isModified();
+    verify(mockAuditable, never()).setModifiedBy(any(User.class));
+    verify(mockAuditable, never()).setModifiedDateTime(any(Calendar.class));
+    verify(mockAuditable, never()).setModifyingProcess(any(Process.class));
   }
 
   protected interface VisitableIdentifiableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS>, Identifiable, Visitable {

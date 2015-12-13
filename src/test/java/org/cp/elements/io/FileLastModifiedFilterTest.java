@@ -21,16 +21,19 @@
 
 package org.cp.elements.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Calendar;
 
 import org.cp.elements.lang.RelationalOperator;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.test.TestUtils;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
@@ -40,36 +43,39 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.jmock.Mockery
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileLastModifiedFilter
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-public class FileLastModifiedFilterTest extends AbstractMockingTestSuite {
+@SuppressWarnings("all")
+public class FileLastModifiedFilterTest {
+
+  protected long toMilliseconds(final int year, final int month, final int day) {
+    return TestUtils.createCalendar(year, month, day).getTimeInMillis();
+  }
 
   @Test
   public void testAcceptAfter() {
     FileLastModifiedFilter fileFilter = FileLastModifiedFilter.after(TestUtils.createCalendar(
       2014, Calendar.DECEMBER, 6));
 
-    final File fileAfter = mock(File.class, "testAcceptAfter.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptAfter.fileBefore");
-    final File fileOn = mock(File.class, "testAcceptAfter.fileOn");
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileOn = mock(File.class, "fileOn");
 
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileOn).lastModified();
-      will(returnValue(TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis()));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileOn.lastModified()).thenReturn(toMilliseconds(2014, Calendar.DECEMBER, 6));
 
     assertFalse(fileFilter.accept(fileBefore));
     assertFalse(fileFilter.accept(fileOn));
     assertTrue(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(1)).lastModified();
+    verify(fileBefore, times(1)).lastModified();
+    verify(fileOn, times(1)).lastModified();
   }
 
   @Test
@@ -77,22 +83,21 @@ public class FileLastModifiedFilterTest extends AbstractMockingTestSuite {
     FileLastModifiedFilter fileFilter = FileLastModifiedFilter.before(TestUtils.createCalendar(
       2014, Calendar.DECEMBER, 6));
 
-    final File fileAfter = mock(File.class, "testAcceptBefore.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptBefore.fileBefore");
-    final File fileOn = mock(File.class, "testAcceptBefore.fileOn");
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileOn = mock(File.class, "fileOn");
 
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileOn).lastModified();
-      will(returnValue(TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis()));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileOn.lastModified()).thenReturn(toMilliseconds(2014, Calendar.DECEMBER, 6));
 
     assertTrue(fileFilter.accept(fileBefore));
     assertFalse(fileFilter.accept(fileOn));
     assertFalse(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(1)).lastModified();
+    verify(fileBefore, times(1)).lastModified();
+    verify(fileOn, times(1)).lastModified();
   }
 
   @Test
@@ -100,30 +105,29 @@ public class FileLastModifiedFilterTest extends AbstractMockingTestSuite {
     FileLastModifiedFilter fileFilter = FileLastModifiedFilter.during(TestUtils.createCalendar(
       2014, Calendar.DECEMBER, 6), TestUtils.createCalendar(2015, Calendar.DECEMBER, 5));
 
-    final File fileAfter = mock(File.class, "testAcceptDuring.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptDuring.fileBefore");
-    final File fileDuring = mock(File.class, "testAcceptDuring.fileDuring");
-    final File fileOnStart = mock(File.class, "testAcceptDuring.fileOnStart");
-    final File fileOnEnd = mock(File.class, "testAcceptDuring.fileOnEnd");
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileDuring = mock(File.class, "fileDuring");
+    File fileOnStart = mock(File.class, "fileOnStart");
+    File fileOnEnd = mock(File.class, "fileOnEnd");
 
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileDuring).lastModified();
-      will(returnValue(TestUtils.createCalendar(2015, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileOnStart).lastModified();
-      will(returnValue(TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis()));
-      allowing(fileOnEnd).lastModified();
-      will(returnValue(TestUtils.createCalendar(2015, Calendar.DECEMBER, 5).getTimeInMillis()));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileDuring.lastModified()).thenReturn(toMilliseconds(2015, Calendar.APRIL, 1));
+    when(fileOnStart.lastModified()).thenReturn(toMilliseconds(2014, Calendar.DECEMBER, 6));
+    when(fileOnEnd.lastModified()).thenReturn(toMilliseconds(2015, Calendar.DECEMBER, 5));
 
     assertFalse(fileFilter.accept(fileBefore));
-    assertTrue(fileFilter.accept(fileDuring));
     assertTrue(fileFilter.accept(fileOnStart));
+    assertTrue(fileFilter.accept(fileDuring));
     assertTrue(fileFilter.accept(fileOnEnd));
     assertFalse(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(1)).lastModified();
+    verify(fileBefore, times(1)).lastModified();
+    verify(fileDuring, times(1)).lastModified();
+    verify(fileOnStart, times(1)).lastModified();
+    verify(fileOnEnd, times(1)).lastModified();
   }
 
   @Test
@@ -131,175 +135,168 @@ public class FileLastModifiedFilterTest extends AbstractMockingTestSuite {
     FileLastModifiedFilter fileFilter = FileLastModifiedFilter.on(TestUtils.createCalendar(
       2014, Calendar.DECEMBER, 6));
 
-    final File fileAfter = mock(File.class, "testAcceptOn.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptOn.fileBefore");
-    final File fileOn = mock(File.class, "testAcceptOn.fileOn");
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileOn = mock(File.class, "fileOn");
 
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileOn).lastModified();
-      will(returnValue(TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis()));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileOn.lastModified()).thenReturn(toMilliseconds(2014, Calendar.DECEMBER, 6));
 
     assertFalse(fileFilter.accept(fileBefore));
     assertTrue(fileFilter.accept(fileOn));
     assertFalse(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(1)).lastModified();
+    verify(fileBefore, times(1)).lastModified();
+    verify(fileOn, times(1)).lastModified();
   }
 
   @Test
   public void testAcceptOnOrAfter() {
-    final long lastModified  = TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis();
+    long lastModified  = toMilliseconds(2014, Calendar.DECEMBER, 6);
+
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileOn = mock(File.class, "fileOn");
 
     FileFilter fileFilter = ComposableFileFilter.or(FileLastModifiedFilter.on(lastModified),
       FileLastModifiedFilter.after(lastModified));
 
-    final File fileAfter = mock(File.class, "testAcceptOnOrAfter.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptOnOrAfter.fileBefore");
-    final File fileOn = mock(File.class, "testAcceptOnOrAfter.fileOn");
-
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileOn).lastModified();
-      will(returnValue(TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis()));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileOn.lastModified()).thenReturn(toMilliseconds(2014, Calendar.DECEMBER, 6));
 
     assertFalse(fileFilter.accept(fileBefore));
     assertTrue(fileFilter.accept(fileOn));
     assertTrue(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(2)).lastModified();
+    verify(fileBefore, times(2)).lastModified();
+    verify(fileOn, times(2)).lastModified();
   }
 
   @Test
   public void testAcceptOnOrBefore() {
-    final long lastModified  = TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis();
+    long lastModified  = toMilliseconds(2014, Calendar.DECEMBER, 6);
+
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileOn = mock(File.class, "fileOn");
 
     FileFilter fileFilter = ComposableFileFilter.or(FileLastModifiedFilter.on(lastModified),
       FileLastModifiedFilter.before(lastModified));
 
-    final File fileAfter = mock(File.class, "testAcceptOnOrBefore.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptOnOrBefore.fileBefore");
-    final File fileOn = mock(File.class, "testAcceptOnOrBefore.fileOn");
-
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileOn).lastModified();
-      will(returnValue(TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis()));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileOn.lastModified()).thenReturn(toMilliseconds(2014, Calendar.DECEMBER, 6));
 
     assertTrue(fileFilter.accept(fileBefore));
     assertTrue(fileFilter.accept(fileOn));
     assertFalse(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(2)).lastModified();
+    verify(fileBefore, times(2)).lastModified();
+    verify(fileOn, times(2)).lastModified();
   }
 
   @Test
   public void testAcceptAfterAndBefore() {
-    final long afterLastModified  = TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis();
-    final long beforeLastModified  = TestUtils.createCalendar(2015, Calendar.DECEMBER, 5).getTimeInMillis();
+    long afterLastModified  = toMilliseconds(2014, Calendar.DECEMBER, 6);
+    long beforeLastModified  = toMilliseconds(2015, Calendar.DECEMBER, 5);
+
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileDuring = mock(File.class, "fileDuring");
+    File fileOnAfter = mock(File.class, "fileOnAfter");
+    File fileOnBefore = mock(File.class, "fileOnEnd");
 
     FileFilter fileFilter = ComposableFileFilter.and(FileLastModifiedFilter.after(afterLastModified),
       FileLastModifiedFilter.before(beforeLastModified));
 
-    final File fileAfter = mock(File.class, "testAcceptAfterAndBefore.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptAfterAndBefore.fileBefore");
-    final File fileDuring = mock(File.class, "testAcceptAfterAndBefore.fileDuring");
-    final File fileOnAfter = mock(File.class, "testAcceptAfterAndBefore.fileOnAfter");
-    final File fileOnBefore = mock(File.class, "testAcceptAfterAndBefore.fileOnBefore");
-
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileDuring).lastModified();
-      will(returnValue(TestUtils.createCalendar(2015, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileOnAfter).lastModified();
-      will(returnValue(afterLastModified));
-      allowing(fileOnBefore).lastModified();
-      will(returnValue(beforeLastModified));
-    }});
-
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileDuring.lastModified()).thenReturn(toMilliseconds(2015, Calendar.APRIL, 1));
+    when(fileOnAfter.lastModified()).thenReturn(afterLastModified);
+    when(fileOnBefore.lastModified()).thenReturn(beforeLastModified);
 
     assertFalse(fileFilter.accept(fileBefore));
     assertFalse(fileFilter.accept(fileOnBefore));
     assertTrue(fileFilter.accept(fileDuring));
     assertFalse(fileFilter.accept(fileOnAfter));
     assertFalse(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(2)).lastModified();
+    verify(fileBefore, times(2)).lastModified();
+    verify(fileDuring, times(2)).lastModified();
+    verify(fileOnAfter, times(2)).lastModified();
+    verify(fileOnBefore, times(2)).lastModified();
   }
 
   @Test
   public void testAcceptBeforeOrAfter() {
-    final long beforeLastModified  = TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis();
-    final long afterLastModified  = TestUtils.createCalendar(2015, Calendar.DECEMBER, 5).getTimeInMillis();
+    long beforeLastModified  = toMilliseconds(2014, Calendar.DECEMBER, 6);
+    long afterLastModified  = toMilliseconds(2015, Calendar.DECEMBER, 5);
+
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileDuring = mock(File.class, "fileDuring");
+    File fileOnAfter = mock(File.class, "fileOnAfter");
+    File fileOnBefore = mock(File.class, "fileOnEnd");
 
     FileFilter fileFilter = ComposableFileFilter.or(FileLastModifiedFilter.before(beforeLastModified),
       FileLastModifiedFilter.after(afterLastModified));
 
-    final File fileAfter = mock(File.class, "testAcceptAfterAndBefore.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptAfterAndBefore.fileBefore");
-    final File fileDuring = mock(File.class, "testAcceptAfterAndBefore.fileDuring");
-    final File fileOnAfter = mock(File.class, "testAcceptAfterAndBefore.fileOnAfter");
-    final File fileOnBefore = mock(File.class, "testAcceptAfterAndBefore.fileOnBefore");
-
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileDuring).lastModified();
-      will(returnValue(TestUtils.createCalendar(2015, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileOnAfter).lastModified();
-      will(returnValue(afterLastModified));
-      allowing(fileOnBefore).lastModified();
-      will(returnValue(beforeLastModified));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileDuring.lastModified()).thenReturn(toMilliseconds(2015, Calendar.APRIL, 1));
+    when(fileOnAfter.lastModified()).thenReturn(afterLastModified);
+    when(fileOnBefore.lastModified()).thenReturn(beforeLastModified);
 
     assertTrue(fileFilter.accept(fileBefore));
     assertFalse(fileFilter.accept(fileOnBefore));
     assertFalse(fileFilter.accept(fileDuring));
     assertFalse(fileFilter.accept(fileOnAfter));
     assertTrue(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(2)).lastModified();
+    verify(fileBefore, times(2)).lastModified();
+    verify(fileDuring, times(2)).lastModified();
+    verify(fileOnAfter, times(2)).lastModified();
+    verify(fileOnBefore, times(2)).lastModified();
   }
 
   @Test
   public void testCreate() {
-    final long beforeOrOnLastModified  = TestUtils.createCalendar(2014, Calendar.DECEMBER, 6).getTimeInMillis();
-    final long afterOrOnLastModified  = TestUtils.createCalendar(2015, Calendar.DECEMBER, 5).getTimeInMillis();
+    long beforeOrOnLastModified  = toMilliseconds(2014, Calendar.DECEMBER, 6);
+    long afterOrOnLastModified  = toMilliseconds(2015, Calendar.DECEMBER, 5);
+
+    File fileAfter = mock(File.class, "fileAfter");
+    File fileBefore = mock(File.class, "fileBefore");
+    File fileDuring = mock(File.class, "fileDuring");
+    File fileOnAfter = mock(File.class, "fileOnAfter");
+    File fileOnBefore = mock(File.class, "fileOnEnd");
 
     FileLastModifiedFilter fileFilter = FileLastModifiedFilter.create(
       RelationalOperator.lessThanEqualToOrGreaterThanEqualTo(beforeOrOnLastModified, afterOrOnLastModified));
 
-    final File fileAfter = mock(File.class, "testAcceptAfterAndBefore.fileAfter");
-    final File fileBefore = mock(File.class, "testAcceptAfterAndBefore.fileBefore");
-    final File fileDuring = mock(File.class, "testAcceptAfterAndBefore.fileDuring");
-    final File fileOnAfter = mock(File.class, "testAcceptAfterAndBefore.fileOnAfter");
-    final File fileOnBefore = mock(File.class, "testAcceptAfterAndBefore.fileOnBefore");
-
-    checking(new Expectations() {{
-      allowing(fileAfter).lastModified();
-      will(returnValue(TestUtils.createCalendar(2024, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileBefore).lastModified();
-      will(returnValue(TestUtils.createCalendar(2004, Calendar.DECEMBER, 31).getTimeInMillis()));
-      allowing(fileDuring).lastModified();
-      will(returnValue(TestUtils.createCalendar(2015, Calendar.APRIL, 1).getTimeInMillis()));
-      allowing(fileOnAfter).lastModified();
-      will(returnValue(afterOrOnLastModified));
-      allowing(fileOnBefore).lastModified();
-      will(returnValue(beforeOrOnLastModified));
-    }});
+    when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Calendar.APRIL, 1));
+    when(fileBefore.lastModified()).thenReturn(toMilliseconds(2004, Calendar.DECEMBER, 31));
+    when(fileDuring.lastModified()).thenReturn(toMilliseconds(2015, Calendar.APRIL, 1));
+    when(fileOnAfter.lastModified()).thenReturn(afterOrOnLastModified);
+    when(fileOnBefore.lastModified()).thenReturn(beforeOrOnLastModified);
 
     assertTrue(fileFilter.accept(fileBefore));
     assertTrue(fileFilter.accept(fileOnBefore));
     assertFalse(fileFilter.accept(fileDuring));
     assertTrue(fileFilter.accept(fileOnAfter));
     assertTrue(fileFilter.accept(fileAfter));
+
+    verify(fileAfter, times(1)).lastModified();
+    verify(fileBefore, times(1)).lastModified();
+    verify(fileDuring, times(1)).lastModified();
+    verify(fileOnAfter, times(1)).lastModified();
+    verify(fileOnBefore, times(1)).lastModified();
   }
 
 }

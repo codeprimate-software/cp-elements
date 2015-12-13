@@ -21,12 +21,16 @@
 
 package org.cp.elements.io;
 
-import static org.cp.elements.test.TestUtils.*;
+import static org.cp.elements.test.TestUtils.assertNegative;
+import static org.cp.elements.test.TestUtils.assertPositive;
+import static org.cp.elements.test.TestUtils.assertZero;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
@@ -35,103 +39,99 @@ import org.junit.Test;
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.jmock.Mockery
+ * @see java.util.Comparator
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileComparatorFactory
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-public class FileComparatorFactoryTest extends AbstractMockingTestSuite {
+@SuppressWarnings("all")
+public class FileComparatorFactoryTest {
 
   @Test
   public void testFileExtensionComparator() {
-    final File mockFileOne = mock(File.class, "testFileExtensionComparator.mockFileOne");
-    final File mockFileTwo = mock(File.class, "testFileExtensionComparator.mockFileTwo");
+    File mockFileOne = mock(File.class, "mockFileOne");
+    File mockFileTwo = mock(File.class, "mockFileTwo");
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockFileOne).getName();
-      will(returnValue("/path/to/fileOne.groovy"));
-      allowing(mockFileTwo).getName();
-      will(returnValue("/path/to/fileTwo.java"));
-    }});
+    when(mockFileOne.getName()).thenReturn("/path/to/fileOne.groovy");
+    when(mockFileTwo.getName()).thenReturn("/path/to/fileTwo.java");
 
     assertZero(FileComparatorFactory.fileExtensionComparator().compare(mockFileOne, mockFileOne));
     assertNegative(FileComparatorFactory.fileExtensionComparator().compare(mockFileOne, mockFileTwo));
     assertPositive(FileComparatorFactory.fileExtensionComparator().compare(mockFileTwo, mockFileOne));
     assertZero(FileComparatorFactory.fileExtensionComparator().compare(mockFileTwo, mockFileTwo));
+
+    verify(mockFileOne, times(4)).getName();
+    verify(mockFileTwo, times(4)).getName();
   }
 
   @Test
   public void testFileLastModifiedComparator() {
-    final File mockFileOne = mock(File.class, "testFileLastModifiedComparator.mockFileOne");
-    final File mockFileTwo = mock(File.class, "testFileLastModifiedComparator.mockFileTwo");
+    File mockFileOne = mock(File.class, "mockFileOne");
+    File mockFileTwo = mock(File.class, "mockFileTwo");
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockFileOne).lastModified();
-      will(returnValue(System.currentTimeMillis()));
-      allowing(mockFileTwo).lastModified();
-      will(returnValue(System.currentTimeMillis() + 100000));
-    }});
+    when(mockFileOne.lastModified()).thenReturn(1l);
+    when(mockFileTwo.lastModified()).thenReturn(2l);
 
     assertZero(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileOne, mockFileOne));
     assertNegative(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileOne, mockFileTwo));
     assertPositive(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileTwo, mockFileOne));
     assertZero(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileTwo, mockFileTwo));
+
+    verify(mockFileOne, times(4)).lastModified();
+    verify(mockFileTwo, times(4)).lastModified();
   }
 
   @Test
   public void testFileNameComparator() {
-    final File mockFileOne = mock(File.class, "testFileNameComparator.mockFileOne");
-    final File mockFileTwo = mock(File.class, "testFileNameComparator.mockFileTwo");
+    File mockFileOne = mock(File.class, "mockFileOne");
+    File mockFileTwo = mock(File.class, "mockFileTwo");
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockFileOne).getName();
-      will(returnValue("/path/to/fileOne.ext"));
-      allowing(mockFileTwo).getName();
-      will(returnValue("/path/to/fileTwo.ext"));
-    }});
+    when(mockFileOne.getName()).thenReturn("/path/to/fileOne.ext");
+    when(mockFileTwo.getName()).thenReturn("/path/to/fileTwo.ext");
 
     assertZero(FileComparatorFactory.fileNameComparator().compare(mockFileOne, mockFileOne));
     assertNegative(FileComparatorFactory.fileNameComparator().compare(mockFileOne, mockFileTwo));
     assertPositive(FileComparatorFactory.fileNameComparator().compare(mockFileTwo, mockFileOne));
     assertZero(FileComparatorFactory.fileNameComparator().compare(mockFileTwo, mockFileTwo));
+
+    verify(mockFileOne, times(4)).getName();
+    verify(mockFileTwo, times(4)).getName();
   }
 
   @Test
   public void testFilePathComparator() {
-    final File mockFileOne = mock(File.class, "testFilePathComparator.mockFileOne");
-    final File mockFileTwo = mock(File.class, "testFilePathComparator.mockFileTwo");
+    File mockFileOne = mock(File.class, "mockFileOne");
+    File mockFileTwo = mock(File.class, "mockFileTwo");
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockFileOne).getAbsolutePath();
-      will(returnValue("/a/path/to/fileOne.ext"));
-      allowing(mockFileTwo).getAbsolutePath();
-      will(returnValue("/different/path/to/fileTwo.ext"));
-    }});
+    when(mockFileOne.getAbsolutePath()).thenReturn("/a/path/to/fileOne.ext");
+    when(mockFileTwo.getAbsolutePath()).thenReturn("/different/path/to/fileTwo.ext");
 
     assertZero(FileComparatorFactory.filePathComparator().compare(mockFileOne, mockFileOne));
     assertNegative(FileComparatorFactory.filePathComparator().compare(mockFileOne, mockFileTwo));
     assertPositive(FileComparatorFactory.filePathComparator().compare(mockFileTwo, mockFileOne));
     assertZero(FileComparatorFactory.filePathComparator().compare(mockFileTwo, mockFileTwo));
+
+    verify(mockFileOne, times(4)).getAbsolutePath();
+    verify(mockFileTwo, times(4)).getAbsolutePath();
   }
 
   @Test
   public void testFileSizeComparator() {
-    final File mockFileOne = mock(File.class, "testFileSizeComparator.mockFileOne");
-    final File mockFileTwo = mock(File.class, "testFileSizeComparator.mockFileTwo");
+    File mockFileOne = mock(File.class, "mockFileOne");
+    File mockFileTwo = mock(File.class, "mockFileTwo");
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockFileOne).length();
-      will(returnValue(1024l));
-      allowing(mockFileTwo).length();
-      will(returnValue(1024000l));
-    }});
+    when(mockFileOne.length()).thenReturn(1024l);
+    when(mockFileTwo.length()).thenReturn(1024000l);
 
     assertZero(FileComparatorFactory.fileSizeComparator().compare(mockFileOne, mockFileOne));
     assertNegative(FileComparatorFactory.fileSizeComparator().compare(mockFileOne, mockFileTwo));
     assertPositive(FileComparatorFactory.fileSizeComparator().compare(mockFileTwo, mockFileOne));
     assertZero(FileComparatorFactory.fileSizeComparator().compare(mockFileTwo, mockFileTwo));
+
+    verify(mockFileOne, times(4)).length();
+    verify(mockFileTwo, times(4)).length();
   }
 
 }

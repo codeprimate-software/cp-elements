@@ -21,13 +21,17 @@
 
 package org.cp.elements.io;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
@@ -35,50 +39,47 @@ import org.junit.Test;
  * of the RegexFileFilter class.
  *
  * @author John J. Blum
- * @see org.jmock.Mockery
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.io.RegexFileFilter
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @since 1.0.0
  */
-public class RegexFileFilterTest extends AbstractMockingTestSuite {
+@SuppressWarnings("all")
+public class RegexFileFilterTest {
 
   @Test
   public void testConstructRegexFileFilter() {
-    RegexFileFilter regexFileFilter = new RegexFileFilter("[.*/]+.*\\.dat");
-    assertEquals("[.*/]+.*\\.dat", regexFileFilter.getRegularExpression());
+    assertEquals("[.*/]+.*\\.dat", new RegexFileFilter("[.*/]+.*\\.dat").getRegularExpression());
   }
 
   @Test
   public void testAccept() throws IOException {
-    final File mockFileOne = mock(File.class, "testAccept.mockFileOne");
-    final File mockFileTwo = mock(File.class, "testAccept.mockFileTwo");
+    File mockFileOne = mock(File.class, "mockFileOne");
+    File mockFileTwo = mock(File.class, "mockFileTwo");
 
-    checking(new Expectations() {{
-      allowing(mockFileOne).getCanonicalPath();
-      will(returnValue("./db.dat"));
-      allowing(mockFileTwo).getCanonicalPath();
-      will(returnValue("/path/to/db.dat"));
-    }});
+    when(mockFileOne.getCanonicalPath()).thenReturn("./db.dat");
+    when(mockFileTwo.getCanonicalPath()).thenReturn("/path/to/db.dat");
 
     RegexFileFilter regexFileFilter = new RegexFileFilter("[.*/]+.*\\.dat");
 
     assertTrue(regexFileFilter.accept(mockFileOne));
     assertTrue(regexFileFilter.accept(mockFileTwo));
+
+    verify(mockFileOne, times(1)).getCanonicalPath();
+    verify(mockFileTwo, times(1)).getCanonicalPath();
   }
 
   @Test
   public void testReject() throws IOException {
-    final File mockFile= mock(File.class, "testReject.mockFile");
+    File mockFile= mock(File.class, "mockFile");
 
-    checking(new Expectations() {{
-      allowing(mockFile).getCanonicalPath();
-      will(returnValue("relative/path/to/some/junk.data"));
-    }});
+    when(mockFile.getCanonicalPath()).thenReturn("relative/path/to/some/junk.data");
 
     RegexFileFilter regexFileFilter = new RegexFileFilter("[.*/]+.*\\.dat");
 
     assertFalse(regexFileFilter.accept(mockFile));
+
+    verify(mockFile, times(1)).getCanonicalPath();
   }
 
 }

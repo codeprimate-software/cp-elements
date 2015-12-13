@@ -73,8 +73,8 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @see java.util.Calendar
    */
   public AuditableVisitor(final USER user, final PROCESS process, final Calendar dateTime) {
-    Assert.notNull(user, "The user cannot be null!");
-    Assert.notNull(process, "The process cannot be null!");
+    Assert.notNull(user, "user must not be null");
+    Assert.notNull(process, "process must not be null");
     this.user = user;
     this.process = process;
     this.dateTime = (dateTime != null ? dateTime : Calendar.getInstance());
