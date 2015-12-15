@@ -36,6 +36,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.lang.Condition;
@@ -368,33 +369,42 @@ public class ThreadUtilsTest {
 
   @Test
   public void join() {
-    final boolean[] array = { false };
-    final int expectedWait = 500;
-    final long t0 = System.currentTimeMillis();
+    final long expectedWait = 500l;
 
-    final Runnable testThreadRunnable = () -> {
-      array[0] = true;
+    AtomicBoolean condition = new AtomicBoolean(false);
+
+    Runnable testRunnable = () -> {
+      condition.set(true);
       sleep(expectedWait);
     };
 
-    assertFalse(array[0]);
+    assertThat(condition.get(), is(false));
 
-    final Thread testThread = new Thread(testThreadRunnable, "Test Thread");
+    Thread testThread = new Thread(testRunnable, "Test Thread");
+
     testThread.setDaemon(false);
+    testThread.setPriority(Thread.MAX_PRIORITY);
     testThread.start();
 
-    assertTrue(ThreadUtils.join(testThread, expectedWait, 0));
+    final long t0 = System.currentTimeMillis();
+
+    assertThat(ThreadUtils.join(testThread, expectedWait, 0), is(true));
 
     final long t1 = System.currentTimeMillis();
 
-    assertFalse(Thread.interrupted());
-    assertTrue(array[0]);
-    assertTrue((t1 - t0) >= expectedWait);
+    assertThat(Thread.interrupted(), is(false));
+    assertThat(condition.get(), is(true));
+    assertThat((t1 - t0) >= expectedWait, is(true));
   }
 
   @Test
   public void joinInterrupted() throws Throwable {
     TestFramework.runOnce(new JoinInterruptedMultithreadedTestCase());
+  }
+
+  @Test
+  public void joinNullThread() {
+    assertThat(ThreadUtils.join(null, 1000, 1000), is(false));
   }
 
   @Test
@@ -415,19 +425,23 @@ public class ThreadUtilsTest {
   }
 
   @Test
-  public void pause() {
-    final long expectedWait = 500;
+  public void sleep() {
+    final long expectedWait = 500l;
     final long t0 = System.currentTimeMillis();
 
-    assertTrue(ThreadUtils.pause(expectedWait, 0));
+    assertThat(ThreadUtils.sleep(expectedWait, 0), is(true));
 
     final long t1 = System.currentTimeMillis();
 
-    assertTrue((t1 - t0) >= expectedWait);
+    assertThat((t1 - t0) >= expectedWait, is(true));
   }
 
   @Test
-  @Ignore
+  public void sleepInterrupted() throws Throwable {
+    TestFramework.runOnce(new SleepInterruptedMultithreadedTestCase());
+  }
+
+  @Test
   public void waitForDuration() {
     final long timeout = (System.currentTimeMillis() + 500);
 
@@ -444,6 +458,11 @@ public class ThreadUtilsTest {
     assertThat(count.get(), is(equalTo(0)));
     assertThat(waitFor(5, TimeUnit.SECONDS).checkEvery(1, TimeUnit.SECONDS).on(countCondition), is(true));
     assertThat(count.get(), is(equalTo(2)));
+  }
+
+  @Test
+  public void waitForInterrupted() throws Throwable {
+    TestFramework.runOnce(new WaitForInterruptedMultithreadedTestCase());
   }
 
   @Test
@@ -486,11 +505,10 @@ public class ThreadUtilsTest {
       interruptingThread.setName("Interrupting Thread");
 
       waitForTick(2);
-      assertNotNull(joiningThread);
+
+      assertThat(joiningThread, is(notNullValue()));
 
       joiningThread.interrupt();
-
-      waitForTick(3);
     }
 
     public void thread2() {
@@ -499,15 +517,94 @@ public class ThreadUtilsTest {
       joiningThread = Thread.currentThread();
       joiningThread.setName("Joining Thread");
 
-      assertNotNull(interruptingThread);
-      assertFalse(ThreadUtils.join(interruptingThread, 0, 0));
-      assertTrue(joiningThread.isInterrupted());
+      assertThat(interruptingThread, is(notNullValue()));
+      assertThat(ThreadUtils.join(interruptingThread, TimeUnit.SECONDS.toMillis(5), 0), is(false));
+      assertThat(joiningThread.isInterrupted(), is(true));
     }
 
     @Override
     public void finish() {
-      assertFalse(interruptingThread.isAlive());
-      assertFalse(joiningThread.isAlive());
+      assertThat(interruptingThread.isAlive(), is(false));
+      assertThat(joiningThread.isAlive(), is(false));
+    }
+  }
+
+  @SuppressWarnings("unused")
+  protected static final class SleepInterruptedMultithreadedTestCase extends MultithreadedTestCase {
+
+    private Thread interruptingThread;
+    private Thread sleepingThread;
+
+    public void thread1() {
+      assertTick(0);
+
+      interruptingThread = Thread.currentThread();
+      interruptingThread.setName("Interrupting Thread");
+
+      waitForTick(2);
+
+      assertThat(sleepingThread, is(notNullValue()));
+
+      sleepingThread.interrupt();
+    }
+
+    public void thread2() {
+      waitForTick(1);
+
+      sleepingThread = Thread.currentThread();
+      sleepingThread.setName("Sleeping Thread");
+
+      assertThat(interruptingThread, is(notNullValue()));
+      assertThat(ThreadUtils.sleep(TimeUnit.SECONDS.toMillis(5), 0), is(false));
+      assertThat(sleepingThread.isInterrupted(), is(true));
+    }
+
+    @Override
+    public void finish() {
+      assertThat(interruptingThread.isAlive(), is(false));
+      assertThat(sleepingThread.isAlive(), is(false));
+    }
+  }
+
+  @SuppressWarnings("unused")
+  protected static final class WaitForInterruptedMultithreadedTestCase extends MultithreadedTestCase {
+
+    private Thread interruptingThread;
+    private Thread waitingThread;
+
+    public void thread1() {
+      assertTick(0);
+
+      interruptingThread = Thread.currentThread();
+      interruptingThread.setName("Interrupting Thread");
+
+      waitForTick(2);
+
+      assertThat(waitingThread, is(notNullValue()));
+
+      waitingThread.interrupt();
+    }
+
+    public void thread2() {
+      waitForTick(1);
+
+      waitingThread = Thread.currentThread();
+      waitingThread.setName("Waiting Thread");
+
+      AtomicInteger counter = new AtomicInteger(0);
+
+      Condition countCondition = () -> counter.incrementAndGet() > 2;
+
+      assertThat(interruptingThread, is(notNullValue()));
+      assertThat(waitFor(500, TimeUnit.MILLISECONDS).checkEvery(100, TimeUnit.MILLISECONDS).on(countCondition), is(false));
+      assertThat(waitingThread.isInterrupted(), is(true));
+      assertThat(counter.get(), is(equalTo(2)));
+    }
+
+    @Override
+    public void finish() {
+      assertThat(interruptingThread.isAlive(), is(false));
+      assertThat(waitingThread.isAlive(), is(false));
     }
   }
 

@@ -299,35 +299,39 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#join(long, int)
    * @see java.lang.Thread#interrupt()
    */
+  @NullSafe
   public static boolean join(final Thread thread, final long milliseconds, final int nanoseconds) {
     try {
-      thread.join(milliseconds, nanoseconds);
-      return true;
+      if (thread != null) {
+        thread.join(milliseconds, nanoseconds);
+        return true;
+      }
     }
-    catch (InterruptedException ignore) {
+    catch (InterruptedException e) {
       Thread.currentThread().interrupt();
-      return false;
     }
+
+    return false;
   }
 
   /**
-   * Causes the current Thread to pause for the specified number of milliseconds and nanoseconds.  If the current Thread
-   * is interrupted, the pause is aborted, however, the interrupt bit is reset and this method returns false.
+   * Causes the current Thread to sleep for the specified number of milliseconds and nanoseconds.  If the current Thread
+   * is interrupted, the sleep is aborted, however, the interrupt bit is reset and this method returns false.
    * 
-   * @param milliseconds the number of milliseconds to cause the current Thread to pause (sleep).  If the number
-   * of milliseconds is 0, then the current Thread will pause (sleep) until interrupted.
-   * @param nanoseconds the number of nanoseconds in addition to the milliseconds to cause the current Thread to pause
+   * @param milliseconds the number of milliseconds to cause the current Thread to sleep (sleep).  If the number
+   * of milliseconds is 0, then the current Thread will sleep (sleep) until interrupted.
+   * @param nanoseconds the number of nanoseconds in addition to the milliseconds to cause the current Thread to sleep
    * (sleep).
-   * @return a boolean value if the pause operation was successful without interruption.
+   * @return a boolean value if the sleep operation was successful without interruption.
    * @see java.lang.Thread#sleep(long)
    * @see java.lang.Thread#interrupt()
    */
-  public static boolean pause(final long milliseconds, final int nanoseconds) {
+  public static boolean sleep(final long milliseconds, final int nanoseconds) {
     try {
       Thread.sleep(milliseconds, nanoseconds);
       return true;
     }
-    catch (InterruptedException ignore) {
+    catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       return false;
     }
@@ -441,15 +445,22 @@ public abstract class ThreadUtils {
     public boolean on(Condition condition) {
       final long timeout = (System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration()));
 
+      long interval = getIntervalTimeUnit().toMillis(getInterval());
+
       condition = ObjectUtils.defaultIfNull(condition, Condition.FALSE_CONDITION);
 
       while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
         try {
           synchronized (waitTaskMonitor) {
-            getIntervalTimeUnit().timedWait(waitTaskMonitor, getInterval());
+            TimeUnit.MILLISECONDS.timedWait(waitTaskMonitor, interval);
           }
         }
-        catch (InterruptedException ignore) {
+        catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          break;
+        }
+        finally {
+          interval = Math.min(interval, (timeout - System.currentTimeMillis()));
         }
       }
 
