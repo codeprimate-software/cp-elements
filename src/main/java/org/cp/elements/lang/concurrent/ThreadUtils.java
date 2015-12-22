@@ -59,9 +59,9 @@ public abstract class ThreadUtils {
 
   /**
    * Determines whether the specified Thread is in a blocked state.  A Thread may be currently blocked waiting on a lock
-   * or whlie performing some IO operation.
+   * or performing some IO operation.
    *
-   * @param thread the Thread who's state is evaluated.
+   * @param thread the Thread to evaluate.
    * @return a boolean valued indicating whether he specified Thread is blocked.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#BLOCKED
@@ -76,7 +76,7 @@ public abstract class ThreadUtils {
    * prevent the JVM from exiting.
    *
    * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the specified Thread is a daemon.
+   * @return a boolean value indicating whether the specified Thread is a daemon Thread.
    * @see java.lang.Thread#isDaemon()
    * @see #isNonDaemon(Thread)
    */
@@ -90,7 +90,7 @@ public abstract class ThreadUtils {
    * that prevents the JVM from exiting.
    *
    * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the specified Thread is a non-daemon.
+   * @return a boolean value indicating whether the specified Thread is a non-daemon Thread.
    * @see java.lang.Thread#isDaemon()
    * @see #isDaemon(Thread)
    */
@@ -111,6 +111,11 @@ public abstract class ThreadUtils {
   @NullSafe
   public static boolean isNew(final Thread thread) {
     return (thread != null && Thread.State.NEW.equals(thread.getState()));
+  }
+
+  @NullSafe
+  public static boolean isInterrupted(final Thread thread) {
+    return (thread != null && thread.isInterrupted());
   }
 
   /**
