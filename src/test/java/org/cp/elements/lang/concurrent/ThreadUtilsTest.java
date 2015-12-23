@@ -57,7 +57,7 @@ import edu.umd.cs.mtc.TestFramework;
  * ThreadUtils class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.concurrent.ThreadUtils
+ * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
@@ -65,6 +65,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.mockito.runners.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
+ * @see org.cp.elements.lang.concurrent.ThreadUtils
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -154,6 +155,25 @@ public class ThreadUtilsTest {
   @Test
   public void isNonDaemonWithNull() {
     assertThat(ThreadUtils.isNonDaemon(null), is(false));
+  }
+
+  @Test
+  public void isInterruptedWithInterruptedThread() {
+    when(mockThread.isInterrupted()).thenReturn(true);
+    assertThat(ThreadUtils.isInterrupted(mockThread), is(true));
+    verify(mockThread, times(1)).isInterrupted();
+  }
+
+  @Test
+  public void isInterruptedWithNonInterruptedThread() {
+    when(mockThread.isInterrupted()).thenReturn(false);
+    assertThat(ThreadUtils.isInterrupted(mockThread), is(false));
+    verify(mockThread, times(1)).isInterrupted();
+  }
+
+  @Test
+  public void isInterruptedWithNull() {
+    assertThat(ThreadUtils.isInterrupted(null), is(false));
   }
 
   @Test

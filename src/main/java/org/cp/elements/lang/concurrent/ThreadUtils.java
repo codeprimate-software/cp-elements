@@ -100,6 +100,19 @@ public abstract class ThreadUtils {
   }
 
   /**
+   * Determines whether the specified Thread has been interrupted. The interrupted status of the Thread is unaffected
+   * by this method.
+   *
+   * @param thread the Thread to evaluate for interruption.
+   * @return a boolean value indicating whether the given Thread has been interrupted or not.
+   * @see java.lang.Thread#isInterrupted()
+   */
+  @NullSafe
+  public static boolean isInterrupted(final Thread thread) {
+    return (thread != null && thread.isInterrupted());
+  }
+
+  /**
    * Determines whether the specified Thread is a new Thread.  A "new" Thread is any Thread that has not been
    * started yet.
    *
@@ -113,14 +126,9 @@ public abstract class ThreadUtils {
     return (thread != null && Thread.State.NEW.equals(thread.getState()));
   }
 
-  @NullSafe
-  public static boolean isInterrupted(final Thread thread) {
-    return (thread != null && thread.isInterrupted());
-  }
-
   /**
    * Determines whether the specified Thread is a runnable Thread.  A "runnable" Thread is any Thread that can be
-   * scheduled by the Operation System (OS) for execution.
+   * scheduled by the Operating System (OS) for execution.
    *
    * @param thread the Thread to evaluate.
    * @return a boolean value indicating whether the Thread is in a runnable state.
