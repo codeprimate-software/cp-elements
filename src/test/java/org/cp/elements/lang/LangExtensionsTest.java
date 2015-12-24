@@ -26,7 +26,8 @@ import static org.cp.elements.lang.LangExtensions.AssertThatWrapper;
 import static org.cp.elements.lang.LangExtensions.Is;
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.LangExtensions.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -41,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
@@ -1444,6 +1446,48 @@ public class LangExtensionsTest {
   @Test
   public void disabledAssertThatIsTrueSuppressesAssertionError() {
     assertThat(false).when(ENABLE_DISABLE_CONDITION).isTrue();
+  }
+
+  @Test
+  public void negatedAssertThatRetainsThrowable() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("test");
+
+    assertThat(true).throwing(new IllegalArgumentException("test")).not().isTrue();
+  }
+
+  @Test
+  public void negatedAssertThatRetainsTransformer() {
+    AtomicInteger holdsLockCallCount = new AtomicInteger(0);
+
+    Object lock = new Object();
+
+    Transformer<AssertThat<Thread>> assertThatTransformer = (AssertThat<Thread> assertion) ->
+      new AssertThatWrapper<Thread>(assertion) {
+        @Override public void holdsLock(final Object lock) {
+          holdsLockCallCount.incrementAndGet();
+          assertion.holdsLock(lock);
+        }
+      };
+
+    assertThat(Thread.currentThread()).transform(assertThatTransformer).not().holdsLock(lock);
+
+    assertEquals(1, holdsLockCallCount.get());
+  }
+
+  @Test
+  public void negatedAssertThatRetainsExceptionMessageAndArgs() {
+    expectedException.expect(AssertionFailedException.class);
+    expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Object cannot be null");
+
+    assertThat(null).using("%1$s cannot be {1}", "Object", "null").isNotNull();
+  }
+
+  @Test
+  public void negatedAssertThatRetainsCondition() {
+    assertThat(false).when(Condition.FALSE_CONDITION).not().isFalse();
   }
 
   @Test

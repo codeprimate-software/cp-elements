@@ -296,6 +296,16 @@ public abstract class LangExtensions {
     void isNull();
 
     /**
+     * Asserts that the object to evaluate is the same instance as the given object.  This assertion deems the objects
+     * are the same as determined by the identity comparison (==).
+     *
+     * @param obj the object used in the identity comparison with the object being evaluated.
+     * @throws AssertionFailedException if the objects are not the same.
+     * @see #isEqualTo(Object)
+     */
+    void isSameAs(T obj);
+
+    /**
      * Asserts that the object to evaluate is not the same instance as the given object.  This assertion deems
      * the objects are not the same as determined by the identity comparison (==).
      *
@@ -305,16 +315,6 @@ public abstract class LangExtensions {
      * @see #not()
      */
     void isNotSameAs(T obj);
-
-    /**
-     * Asserts that the object to evaluate is the same instance as the given object.  This assertion deems the objects
-     * are the same as determined by the identity comparison (==).
-     *
-     * @param obj the object used in the identity comparison with the object being evaluated.
-     * @throws AssertionFailedException if the objects are not the same.
-     * @see #isEqualTo(Object)
-     */
-    void isSameAs(T obj);
 
     /**
      * Asserts that the object to evaluate is true.
@@ -390,6 +390,8 @@ public abstract class LangExtensions {
     private RuntimeException cause;
 
     private String message;
+
+    private Transformer<AssertThat<T>> transformer;
 
     /* (non-Javadoc) */
     private AssertThatExpression() {
@@ -633,17 +635,17 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isNotSameAs(final T obj) {
-      not().isSameAs(obj);
-    }
-
-    /* (non-Javadoc) */
     public void isSameAs(final T obj) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(this.obj).sameAs(obj))) {
           throwAssertionError("(%1$s) is %2$sthe same as (%3$s)", this.obj, negate(NOT), obj);
         }
       }
+    }
+
+    /* (non-Javadoc) */
+    public void isNotSameAs(final T obj) {
+      not().isSameAs(obj);
     }
 
     /* (non-Javadoc) */
@@ -657,7 +659,10 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     public AssertThat<T> not() {
-      AssertThat<T> expression = new AssertThatExpression<>(this.obj, !expected);
+      AssertThat<T> expression = new AssertThatExpression<>(obj, !expected);
+      expression = (transformer != null ? transformer.transform(expression) : expression);
+      expression = expression.throwing(cause);
+      expression = (message != null ? expression.using(message) : expression);
       expression = expression.when(this.condition);
       return expression;
     }
@@ -671,6 +676,7 @@ public abstract class LangExtensions {
     /* (non-Javadoc) */
     @Override
     public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+      this.transformer = assertionTransformer;
       return assertionTransformer.transform(this);
     }
 
@@ -890,14 +896,14 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public void isNotSameAs(final T obj) {
-      getDelegate().isNotSameAs(obj);
+    public void isSameAs(final T obj) {
+      getDelegate().isSameAs(obj);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isSameAs(final T obj) {
-      getDelegate().isSameAs(obj);
+    public void isNotSameAs(final T obj) {
+      getDelegate().isNotSameAs(obj);
     }
 
     /* (non-Javadoc) */
