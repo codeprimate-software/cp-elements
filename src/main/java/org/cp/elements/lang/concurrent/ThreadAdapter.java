@@ -68,7 +68,7 @@ public class ThreadAdapter {
    * @see java.lang.Thread
    */
   public ThreadAdapter(final Thread delegate) {
-    assertThat(delegate).using("The Thread to delegate to must not be null").isNotNull();
+    assertThat(delegate).throwing(new IllegalArgumentException("The delegate Thread must not be null")).isNotNull();
     this.delegate = delegate;
   }
 
@@ -379,17 +379,12 @@ public class ThreadAdapter {
   /**
    * Causes the current executing Thread to join and wait for this Thread to terminate.
    *
-   * @throws org.cp.elements.lang.InterruptedException if the current Thread is interrupted while waiting
+   * @throws java.lang.InterruptedException if the current Thread is interrupted while waiting
    * for this Thread.
    * @see java.lang.Thread#join()
    */
-  public void join() {
-    try {
-      getDelegate().join();
-    }
-    catch (InterruptedException e) {
-      throw new org.cp.elements.lang.InterruptedException(e);
-    }
+  public void join() throws InterruptedException {
+    getDelegate().join();
   }
 
   /**
@@ -397,17 +392,12 @@ public class ThreadAdapter {
    * number of milliseconds have elapsed.
    *
    * @param milliseconds the number of milliseconds to wait for this Thread to terminate.
-   * @throws org.cp.elements.lang.InterruptedException if the current Thread is interrupted while waiting
+   * @throws java.lang.InterruptedException if the current Thread is interrupted while waiting
    * for this Thread.
    * @see java.lang.Thread#join(long)
    */
-  public void join(final long milliseconds) {
-    try {
-      getDelegate().join(milliseconds);
-    }
-    catch (InterruptedException e) {
-      throw new org.cp.elements.lang.InterruptedException(e);
-    }
+  public void join(final long milliseconds) throws InterruptedException {
+    getDelegate().join(milliseconds);
   }
 
   /**
@@ -416,17 +406,12 @@ public class ThreadAdapter {
    *
    * @param milliseconds the number of milliseconds to wait for this Thread to terminate.
    * @param nanoseconds the number of nanoseconds to wait for this Thread to terminate.
-   * @throws org.cp.elements.lang.InterruptedException if the current Thread is interrupted while waiting
+   * @throws java.lang.InterruptedException if the current Thread is interrupted while waiting
    * for this Thread.
    * @see java.lang.Thread#join(long, int)
    */
-  public void join(final long milliseconds, final int nanoseconds) {
-    try {
-      getDelegate().join(milliseconds, nanoseconds);
-    }
-    catch (InterruptedException e) {
-      throw new org.cp.elements.lang.InterruptedException(e);
-    }
+  public void join(final long milliseconds, final int nanoseconds) throws InterruptedException {
+    getDelegate().join(milliseconds, nanoseconds);
   }
 
   /**
