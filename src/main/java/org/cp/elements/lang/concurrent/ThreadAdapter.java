@@ -377,7 +377,7 @@ public class ThreadAdapter {
   }
 
   /**
-   * Causes the current executing Thread to join and wait for this Thread to terminate.
+   * Causes the current, executing Thread to join and wait for this Thread to terminate.
    *
    * @throws java.lang.InterruptedException if the current Thread is interrupted while waiting
    * for this Thread.
@@ -388,7 +388,7 @@ public class ThreadAdapter {
   }
 
   /**
-   * Causes the current executing Thread to join and wait for this Thread to terminate or until the specified
+   * Causes the current, executing Thread to join and wait for this Thread to terminate, or until the specified
    * number of milliseconds have elapsed.
    *
    * @param milliseconds the number of milliseconds to wait for this Thread to terminate.
@@ -401,7 +401,7 @@ public class ThreadAdapter {
   }
 
   /**
-   * Causes the current executing Thread to join and wait for this Thread to terminate or until the specified
+   * Causes the current executing Thread to join and wait for this Thread to terminate, or until the specified
    * number of milliseconds and nanoseconds have elapsed.
    *
    * @param milliseconds the number of milliseconds to wait for this Thread to terminate.

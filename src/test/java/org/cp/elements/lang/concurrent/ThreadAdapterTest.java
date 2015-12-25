@@ -28,19 +28,18 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.cp.elements.lang.Constants;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -48,6 +47,9 @@ import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
 
 /**
  * The ThreadAdapterTest class is a test suite of test cases testing the contract and functionality
@@ -399,33 +401,123 @@ public class ThreadAdapterTest {
   }
 
   @Test
-  public void join() {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void join() throws Exception {
+    AtomicBoolean runCalled = new AtomicBoolean(false);
+    CountDownLatch latch = new CountDownLatch(1);
+
+    ThreadAdapter joinedThread = new ThreadAdapter(() -> {
+      try {
+        latch.await();
+      }
+      catch (InterruptedException ignore) {
+      }
+      finally {
+        runCalled.compareAndSet(false, true);
+      }
+    });
+
+    joinedThread.setDaemon(true);
+    joinedThread.setName("Joined Thread");
+    joinedThread.setPriority(Thread.NORM_PRIORITY);
+    joinedThread.start();
+    latch.countDown();
+    joinedThread.join();
+
+    assertThat(joinedThread.isTerminated(), is(true));
+    assertThat(runCalled.get(), is(true));
   }
 
   @Test
-  public void joinThrowsInterruptedException() throws InterruptedException {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void joinRespondsToInterruption() throws Throwable {
+    TestFramework.runOnce(new JoinInterruptionMultithreadedTestCase());
   }
 
   @Test
-  public void joinWithMilliseconds() {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void joinWithMilliseconds() throws Exception {
+    AtomicBoolean runCalled = new AtomicBoolean(false);
+    AtomicBoolean runFinished = new AtomicBoolean(false);
+
+    CountDownLatch latch = new CountDownLatch(1);
+
+    ThreadAdapter joinedThread = new ThreadAdapter(() -> {
+      try {
+        runCalled.compareAndSet(false, true);
+        latch.await();
+      }
+      catch (InterruptedException ignore) {
+      }
+      finally {
+        runFinished.compareAndSet(false, true);
+      }
+    });
+
+    try {
+      joinedThread.setDaemon(true);
+      joinedThread.setName("Joined Thread");
+      joinedThread.setPriority(Thread.NORM_PRIORITY);
+      joinedThread.start();
+      joinedThread.join(200l);
+
+      assertThat(joinedThread.isTerminated(), is(false));
+      assertThat(runCalled.get(), is(true));
+      assertThat(runFinished.get(), is(false));
+    }
+    finally {
+      latch.countDown();
+      joinedThread.join();
+
+      assertThat(joinedThread.isTerminated(), is(true));
+      assertThat(runFinished.get(), is(true));
+    }
   }
 
   @Test
-  public void joinWithMillisecondsThrowsInterruptedException() throws InterruptedException {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void joinWithMillisecondsRespondsToInterruption() throws Throwable {
+    TestFramework.runOnce(new JoinInterruptionMultithreadedTestCase(TimeUnit.SECONDS.toMillis(5)));
   }
 
   @Test
-  public void joinWithMillisecondsAndNanoseconds() {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void joinWithMillisecondsAndNanoseconds() throws Exception {
+    AtomicBoolean runCalled = new AtomicBoolean(false);
+    AtomicBoolean runFinished = new AtomicBoolean(false);
+
+    CountDownLatch latch = new CountDownLatch(1);
+
+    ThreadAdapter joinedThread = new ThreadAdapter(() -> {
+      try {
+        runCalled.compareAndSet(false, true);
+        latch.await();
+      }
+      catch (InterruptedException ignore) {
+      }
+      finally {
+        runFinished.compareAndSet(false, true);
+      }
+    });
+
+    try {
+      joinedThread.setDaemon(true);
+      joinedThread.setName("Joined Thread");
+      joinedThread.setPriority(Thread.NORM_PRIORITY);
+      joinedThread.start();
+      joinedThread.join(200l, 500);
+
+      assertThat(joinedThread.isTerminated(), is(false));
+      assertThat(runCalled.get(), is(true));
+      assertThat(runFinished.get(), is(false));
+    }
+    finally {
+      latch.countDown();
+      joinedThread.join();
+
+      assertThat(joinedThread.isTerminated(), is(true));
+      assertThat(runFinished.get(), is(true));
+    }
   }
 
   @Test
-  public void joinWithMillisecondsAndNanosecondsThrowsInterruptedException() throws InterruptedException {
-    fail(Constants.NOT_IMPLEMENTED);
+  public void joinWithMillisecondsAndNanosecondsRespondsToInterruption() throws Throwable {
+    TestFramework.runOnce(new JoinInterruptionMultithreadedTestCase(TimeUnit.SECONDS.toMillis(5), 500));
   }
 
   @Test
@@ -438,6 +530,77 @@ public class ThreadAdapterTest {
   public void start() {
     new ThreadAdapter(mockThread).start();
     verify(mockThread, times(1)).start();
+  }
+
+  @SuppressWarnings("unused")
+  protected static final class JoinInterruptionMultithreadedTestCase extends MultithreadedTestCase {
+
+    private final AtomicBoolean interrupted = new AtomicBoolean(false);
+
+    private final Integer nanoseconds;
+
+    private final Long milliseconds;
+
+    private volatile ThreadAdapter joiningThread;
+    private volatile ThreadAdapter interruptingThread;
+
+    public JoinInterruptionMultithreadedTestCase() {
+      this(null, null);
+    }
+
+    public JoinInterruptionMultithreadedTestCase(final Long milliseconds) {
+      this(milliseconds, null);
+    }
+
+    public JoinInterruptionMultithreadedTestCase(final Long milliseconds, final Integer nanoseconds) {
+      this.milliseconds = milliseconds;
+      this.nanoseconds = nanoseconds;
+    }
+
+    protected Thread.State getExpectedJoiningThreadState() {
+      return (milliseconds != null ? Thread.State.TIMED_WAITING : Thread.State.WAITING);
+    }
+
+    public void thread1() {
+      assertTick(0);
+
+      interruptingThread = new ThreadAdapter(Thread.currentThread()).setName("Interrupting Thread");
+
+      waitForTick(2);
+
+      assertThat(joiningThread.getState(), is(equalTo(getExpectedJoiningThreadState())));
+      assertThat(interrupted.get(), is(false));
+
+      joiningThread.interrupt();
+
+      waitForTick(3);
+
+      assertThat(interrupted.get(), is(true));
+      assertThat(joiningThread.isTerminated(), is(true));
+    }
+
+    public void thread2() {
+      waitForTick(1);
+
+      joiningThread = new ThreadAdapter(Thread.currentThread()).setName("Joining Thread");
+
+      assertThat(interruptingThread, is(notNullValue()));
+
+      try {
+        if (milliseconds != null && nanoseconds != null) {
+          interruptingThread.join(milliseconds, nanoseconds);
+        }
+        else if (milliseconds != null) {
+          interruptingThread.join(milliseconds);
+        }
+        else {
+          interruptingThread.join();
+        }
+      }
+      catch (InterruptedException e) {
+        interrupted.compareAndSet(false, true);
+      }
+    }
   }
 
 }
