@@ -31,8 +31,13 @@ import java.lang.annotation.Target;
 /**
  * The ThreadSafe annotation declares a class type to be safe for use in the context of a multi-threaded, highly
  * concurrent application.
- * <p/>
+ *
  * @author John J. Blum
+ * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.ElementType#FIELD
+ * @see java.lang.annotation.ElementType#METHOD
+ * @see java.lang.annotation.Inherited
+ * @see java.lang.annotation.RetentionPolicy#SOURCE
  * @since 1.0.0
  */
 @Documented
