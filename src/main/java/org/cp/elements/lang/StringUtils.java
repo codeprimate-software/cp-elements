@@ -38,6 +38,11 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings("unused")
 public abstract class StringUtils {
 
+  public static final char COMMA_DELIMITER_CHAR = ',';
+  public static final char DOT_SEPARATOR_CHAR = '.';
+  public static final char EMPTY_CHAR = '\0';
+  public static final char SINGLE_SPACE_CHAR = ' ';
+
   public static final String COMMA_DELIMITER = ",";
   public static final String COMMA_SPACE_DELIMITER = ", ";
   public static final String DOT_SEPARATOR = ".";
@@ -402,7 +407,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String pad(final String value, final int length) {
-    return pad(value, SINGLE_SPACE.charAt(0), length);
+    return pad(value, SINGLE_SPACE_CHAR, length);
   }
 
   /**
@@ -584,11 +589,16 @@ public abstract class StringUtils {
    * @param length an integer specifying the length to truncate the String to.
    * @return the given String truncated to length, or the entire String if the desired length exceeds
    * the String's length.
+   * @throws IllegalArgumentException if length is less than 0.
+   * @see java.lang.String#substring(int, int)
    * @see java.lang.String#length()
    */
   @NullSafe
   public static String truncate(String value, final int length) {
-    return (value != null ? value.substring(0, Math.min(value.length(), Math.max(0, length))) : null);
+    assertThat(length).throwing(new IllegalArgumentException(String.format(
+      "(%1$d) must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
+
+    return (value != null ? value.substring(0, Math.min(value.length(), length)) : null);
   }
 
   /**
@@ -623,7 +633,7 @@ public abstract class StringUtils {
       line = line.substring(spaceIndex + 1);
     }
 
-    buffer.append(lineCount > 1 ? indent : "");
+    buffer.append(lineCount > 1 ? indent : EMPTY_STRING);
     buffer.append(line);
 
     return buffer.toString();

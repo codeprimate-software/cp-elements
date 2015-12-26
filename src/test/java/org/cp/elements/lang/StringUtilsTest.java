@@ -23,6 +23,7 @@ package org.cp.elements.lang;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,7 +31,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -442,14 +442,13 @@ public class StringUtilsTest {
 
   @Test
   public void padWithCharacter() {
-    assertThat(StringUtils.pad(null, 'x', 5), is(equalTo("xxxxx")));
     assertThat(StringUtils.pad("", 'x', 5), is(equalTo("xxxxx")));
     assertThat(StringUtils.pad(" ", 'x', 5), is(equalTo(" xxxx")));
-    assertThat(StringUtils.pad("  ", 'x', 5), is(equalTo("  xxx")));
+    assertThat(StringUtils.pad("   ", 'x', 5), is(equalTo("   xx")));
+    assertThat(StringUtils.pad("xxxxx", 'x', 5), is(equalTo("xxxxx")));
     assertThat(StringUtils.pad("x", 'x', 5), is(equalTo("xxxxx")));
     assertThat(StringUtils.pad("xxX", 'x', 5), is(equalTo("xxXxx")));
-    assertThat(StringUtils.pad("xxxxx", 'x', 5), is(equalTo("xxxxx")));
-    assertThat(StringUtils.pad("xxxxxXXXXX", 'x', 5), is(equalTo("xxxxxXXXXX")));
+    assertThat(StringUtils.pad("xxxxx", 'X', 10), is(equalTo("xxxxxXXXXX")));
   }
 
   @Test
@@ -462,6 +461,13 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void padWithNull() {
+    assertThat(StringUtils.pad(null, 0), is(nullValue()));
+    assertThat(StringUtils.pad(null, 2), is(equalTo("  ")));
+    assertThat(StringUtils.pad(null, 'x', 5), is(equalTo("xxxxx")));
+  }
+
+  @Test
   public void padWithSpaces() {
     assertThat(StringUtils.pad("test", ' ', 10), is(equalTo("test      ")));
     assertThat(StringUtils.pad("test", ' ', 5), is(equalTo("test ")));
@@ -469,11 +475,10 @@ public class StringUtilsTest {
     assertThat(StringUtils.pad("test", ' ', 1), is(equalTo("test")));
     assertThat(StringUtils.pad("x", ' ', 0), is(equalTo("x")));
     assertThat(StringUtils.pad("null", ' ', 2), is(equalTo("null")));
+    assertThat(StringUtils.pad("nil", ' ', 2), is(equalTo("nil")));
     assertThat(StringUtils.pad("", ' ', 2), is(equalTo("  ")));
     assertThat(StringUtils.pad(" ", ' ', 2), is(equalTo("  ")));
-    assertThat(StringUtils.pad("  ", ' ', 2), is(equalTo("  ")));
     assertThat(StringUtils.pad("   ", ' ', 2), is(equalTo("   ")));
-    assertThat(StringUtils.pad(null, ' ', 2), is(equalTo("  ")));
   }
 
   @Test
@@ -547,6 +552,16 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void toStringArrayWithNullDelimitedValue() {
+    assertThat(StringUtils.toStringArray(null), is(equalTo(toArray(""))));
+  }
+
+  @Test
+  public void toStringArrayWithNullDelimiter() {
+    assertThat(StringUtils.toStringArray("1, 2, 3", null), is(equalTo(toArray("1", "2", "3"))));
+  }
+
+  @Test
   public void toStringArrayWithOtherDelimiter() {
     assertThat(StringUtils.toStringArray("test; testing; tested", ";"), is(equalTo(toArray("test", "testing", "tested"))));
     assertThat(StringUtils.toStringArray("1-2-3", "-"), is(equalTo(toArray("1", "2", "3"))));
@@ -610,14 +625,38 @@ public class StringUtilsTest {
     assertThat(StringUtils.truncate(null, 10), is(nullValue()));
     assertThat(StringUtils.truncate("", 5), is(""));
     assertThat(StringUtils.truncate("  ", 5), is("  "));
-    assertThat(StringUtils.truncate("  ", 5), is("  "));
     assertThat(StringUtils.truncate("     ", 5), is("     "));
     assertThat(StringUtils.truncate("          ", 5), is(equalTo("     ")));
   }
 
   @Test
+  public void truncateWithIllegalLength() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(-2) must be greater than equal to 0");
+
+    StringUtils.truncate("test", -2);
+  }
+
+  @Test
   public void testWrap() {
-    fail();
+    String text = "This example block of text will be wrapped at no more than 40 characters."
+      .concat(" This is a test of the wrap(..) method in the org.cp.elements.StringUtils utility class.")
+      .concat(" This is a test and only a test. If this were an actual emergency then this freakin test will fail")
+      .concat(" and will require a fix.");
+
+    String[] lines = StringUtils.wrap(text, 40, null).split(StringUtils.LINE_SEPARATOR);
+
+    assertThat(lines, is(notNullValue()));
+    assertThat(lines.length, is(equalTo(8)));
+    assertThat(lines[0], is(equalTo("This example block of text will be")));
+    assertThat(lines[1], is(equalTo("wrapped at no more than 40 characters.")));
+    assertThat(lines[2], is(equalTo("This is a test of the wrap(..) method")));
+    assertThat(lines[3], is(equalTo("in the org.cp.elements.StringUtils")));
+    assertThat(lines[4], is(equalTo("utility class. This is a test and only")));
+    assertThat(lines[5], is(equalTo("a test. If this were an actual")));
+    assertThat(lines[6], is(equalTo("emergency then this freakin test will")));
+    assertThat(lines[7], is(equalTo("fail and will require a fix.")));
   }
 
 }
