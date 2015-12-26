@@ -82,6 +82,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return the first non-null value in the array of Object values.
    */
   @NullSafe
+  @SuppressWarnings("all")
   public static <T> T defaultIfNull(final T... values) {
     if (values != null) {
       for (T value : values) {

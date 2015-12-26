@@ -21,21 +21,35 @@
 
 package org.cp.elements.lang;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The StringUtilsTest class is a test suite of test cases testing the contract and functionality of the 
  * StringUtils class.
- * <p/>
+ *
  * @author John J. Blum
- * @see org.cp.elements.lang.StringUtils
- * @see org.junit.Assert
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.cp.elements.lang.StringUtils
  * @since 1.0.0
  */
 public class StringUtilsTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   @Test
   public void testConcat() {
@@ -68,7 +82,7 @@ public class StringUtilsTest {
   }
 
   @Test
-  public void testContainsWithUncontainedText() {
+  public void testContainsWithNonContainedText() {
     assertFalse(StringUtils.contains("null", "nil"));
     assertFalse(StringUtils.contains("test", "TEST"));
     assertFalse(StringUtils.contains("TEST", "test"));
@@ -144,6 +158,25 @@ public class StringUtilsTest {
     assertFalse(StringUtils.containsWhitespace("test ".trim()));
     assertFalse(StringUtils.containsWhitespace("t_e_s_t".trim()));
     assertFalse(StringUtils.containsWhitespace("McFly".trim()));
+  }
+
+  @Test
+  public void defaultIfBlankWithBlankValues() {
+    assertThat(StringUtils.defaultIfBlank(null, "test", "testing", "tested"), is(equalTo("test")));
+    assertThat(StringUtils.defaultIfBlank("", null, "<empty/>", "  ", "tested"), is(equalTo("<empty/>")));
+    assertThat(StringUtils.defaultIfBlank("  ", null, "", "  ", "___"), is(equalTo("___")));
+  }
+
+  @Test
+  public void defaultIfBlankWithNonBlankValues() {
+    assertThat(StringUtils.defaultIfBlank("test", "1", "2", "3"), is(equalTo("test")));
+    assertThat(StringUtils.defaultIfBlank("-1", "1", "2", "3"), is(equalTo("-1")));
+    assertThat(StringUtils.defaultIfBlank("0", "1", "2", "3"), is(equalTo("0")));
+    assertThat(StringUtils.defaultIfBlank("<empty/>", "1", "2", "3"), is(equalTo("<empty/>")));
+    assertThat(StringUtils.defaultIfBlank("___", "1", "2", "3"), is(equalTo("___")));
+    assertThat(StringUtils.defaultIfBlank("-", "1", "2", "3"), is(equalTo("-")));
+    assertThat(StringUtils.defaultIfBlank("nil", null, null, null), is(equalTo("nil")));
+    assertThat(StringUtils.defaultIfBlank("null", null, null, null), is(equalTo("null")));
   }
 
   @Test
@@ -408,6 +441,42 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void padWithCharacter() {
+    assertThat(StringUtils.pad(null, 'x', 5), is(equalTo("xxxxx")));
+    assertThat(StringUtils.pad("", 'x', 5), is(equalTo("xxxxx")));
+    assertThat(StringUtils.pad(" ", 'x', 5), is(equalTo(" xxxx")));
+    assertThat(StringUtils.pad("  ", 'x', 5), is(equalTo("  xxx")));
+    assertThat(StringUtils.pad("x", 'x', 5), is(equalTo("xxxxx")));
+    assertThat(StringUtils.pad("xxX", 'x', 5), is(equalTo("xxXxx")));
+    assertThat(StringUtils.pad("xxxxx", 'x', 5), is(equalTo("xxxxx")));
+    assertThat(StringUtils.pad("xxxxxXXXXX", 'x', 5), is(equalTo("xxxxxXXXXX")));
+  }
+
+  @Test
+  public void padWithIllegalLength() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(-10) must be greater than equal to 0");
+
+    StringUtils.pad("test", -10);
+  }
+
+  @Test
+  public void padWithSpaces() {
+    assertThat(StringUtils.pad("test", ' ', 10), is(equalTo("test      ")));
+    assertThat(StringUtils.pad("test", ' ', 5), is(equalTo("test ")));
+    assertThat(StringUtils.pad("test", ' ', 4), is(equalTo("test")));
+    assertThat(StringUtils.pad("test", ' ', 1), is(equalTo("test")));
+    assertThat(StringUtils.pad("x", ' ', 0), is(equalTo("x")));
+    assertThat(StringUtils.pad("null", ' ', 2), is(equalTo("null")));
+    assertThat(StringUtils.pad("", ' ', 2), is(equalTo("  ")));
+    assertThat(StringUtils.pad(" ", ' ', 2), is(equalTo("  ")));
+    assertThat(StringUtils.pad("  ", ' ', 2), is(equalTo("  ")));
+    assertThat(StringUtils.pad("   ", ' ', 2), is(equalTo("   ")));
+    assertThat(StringUtils.pad(null, ' ', 2), is(equalTo("  ")));
+  }
+
+  @Test
   public void testSingleSpaceString() {
     assertEquals("This is a test!", StringUtils.singleSpaceString(" This is  a          test!  "));
     assertEquals("This_is_another_test!", StringUtils.singleSpaceString("This_is_another_test!"));
@@ -469,6 +538,26 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void toStringArrayWithCommaDelimiter() {
+    assertThat(StringUtils.toStringArray(" test,testing,  tested"), is(equalTo(toArray("test", "testing", "tested"))));
+    assertThat(StringUtils.toStringArray("1, 2, 3"), is(equalTo(toArray("1", "2", "3"))));
+    assertThat(StringUtils.toStringArray(", ,  "), is(equalTo(toArray("", "", ""))));
+    assertThat(StringUtils.toStringArray("null,_,  nil "), is(equalTo(toArray("null", "_", "nil"))));
+    assertThat(StringUtils.toStringArray("  1: 2 :3  "), is(equalTo(toArray("1: 2 :3"))));
+  }
+
+  @Test
+  public void toStringArrayWithOtherDelimiter() {
+    assertThat(StringUtils.toStringArray("test; testing; tested", ";"), is(equalTo(toArray("test", "testing", "tested"))));
+    assertThat(StringUtils.toStringArray("1-2-3", "-"), is(equalTo(toArray("1", "2", "3"))));
+    assertThat(StringUtils.toStringArray("a:b:c", ":"), is(equalTo(toArray("a", "b", "c"))));
+  }
+
+  protected String[] toArray(String... elements) {
+    return elements;
+  }
+
+  @Test
   public void testToUpperCase() {
     assertNull(StringUtils.toUpperCase(null));
     assertEquals("", StringUtils.toUpperCase(""));
@@ -506,6 +595,29 @@ public class StringUtilsTest {
     assertEquals("abc", StringUtils.trimAll(" abc"));
     assertEquals("abc", StringUtils.trimAll(" abc  "));
     assertEquals("abc", StringUtils.trimAll(" a  b    c   "));
+  }
+
+  @Test
+  public void truncateWithString() {
+    assertThat(StringUtils.truncate("test", 4), is(equalTo("test")));
+    assertThat(StringUtils.truncate("tested", 4), is(equalTo("test")));
+    assertThat(StringUtils.truncate("testing", 4), is(equalTo("test")));
+    assertThat(StringUtils.truncate("test", 8), is(equalTo("test")));
+  }
+
+  @Test
+  public void truncateWithNonTextualString() {
+    assertThat(StringUtils.truncate(null, 10), is(nullValue()));
+    assertThat(StringUtils.truncate("", 5), is(""));
+    assertThat(StringUtils.truncate("  ", 5), is("  "));
+    assertThat(StringUtils.truncate("  ", 5), is("  "));
+    assertThat(StringUtils.truncate("     ", 5), is("     "));
+    assertThat(StringUtils.truncate("          ", 5), is(equalTo("     ")));
+  }
+
+  @Test
+  public void testWrap() {
+    fail();
   }
 
 }

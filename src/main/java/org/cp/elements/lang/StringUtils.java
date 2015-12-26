@@ -21,8 +21,12 @@
 
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.LangExtensions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The StringUtils class performs utility operations on Strings.
@@ -41,6 +45,7 @@ public abstract class StringUtils {
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
   public static final String NOT_IMPLEMENTED = Constants.NOT_IMPLEMENTED; // TODO remove!
   public static final String SINGLE_SPACE = " ";
+  public static final String UTF_8 = "UTF-8";
 
   public static final char[] EMPTY_CHAR_ARRAY = new char[0];
 
@@ -162,6 +167,30 @@ public abstract class StringUtils {
     }
 
     return false;
+  }
+
+  /**
+   * Defaults the given String to the first non-blank default value if the given String is blank, otherwise returns
+   * the given String.
+   *
+   * @param value the String to evaluate if blank.
+   * @param defaultValues an array of default String values to use if the given String is blank.
+   * @return the first non-blank default String value if the given String is blank.  If the given String
+   * and all default String values are blank, then the given String is returned.
+   * @see #isBlank(String)
+   * @see #hasText(String)
+   */
+  @NullSafe
+  public static String defaultIfBlank(final String value, final String... defaultValues) {
+    if (isBlank(value)) {
+      for (String defaultValue : defaultValues) {
+        if (hasText(defaultValue)) {
+          return defaultValue;
+        }
+      }
+    }
+
+    return value;
   }
 
   /**
@@ -364,6 +393,46 @@ public abstract class StringUtils {
   }
 
   /**
+   * Pads the given String with the specified number of spaces to the right.
+   *
+   * @param value the String to pad.
+   * @param length the total length of the given String with padding.
+   * @return the given String padded with spaces up to the specified length.
+   * @see #pad(String, char, int)
+   */
+  @NullSafe
+  public static String pad(final String value, final int length) {
+    return pad(value, SINGLE_SPACE.charAt(0), length);
+  }
+
+  /**
+   * Pads the given String with the specified number of characters to the right.
+   *
+   * @param value the String to pad.
+   * @param padding the character used for padding.
+   * @param length the total length of the given String with padding.
+   * @return the given String padded with the specified character up to the specified length.
+   * @throws IllegalArgumentException if length is less than 0.
+   */
+  @NullSafe
+  public static String pad(final String value, final char padding, final int length) {
+    assertThat(length).throwing(new IllegalArgumentException(String.format(
+      "(%1$d) must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
+
+    if (length > 0) {
+      StringBuilder builder = new StringBuilder(ObjectUtils.defaultIfNull(value, EMPTY_STRING));
+
+      while (length - builder.length() > 0) {
+        builder.append(padding);
+      }
+
+      return builder.toString();
+    }
+
+    return value;
+  }
+
+  /**
    * Single spaces the tokens in the specified String value.  A token is defined as any non-whitespace character.
    * 
    * @param value the String value for which the tokens will be single spaced.
@@ -389,7 +458,7 @@ public abstract class StringUtils {
    * @see java.lang.String#valueOf(Object)
    */
   public static String singleSpaceValues(final Object... values) {
-    final List<String> valueList = new ArrayList<String>(values.length);
+    List<String> valueList = new ArrayList<>(values.length);
 
     for (final Object value : values) {
       valueList.add(String.valueOf(value));
@@ -407,7 +476,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static char[] toCharArray(final String value) {
-    return (value == null ? EMPTY_CHAR_ARRAY : value.toCharArray());
+    return (value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY);
   }
 
   /**
@@ -421,6 +490,40 @@ public abstract class StringUtils {
   @NullSafe
   public static String toLowerCase(final String value) {
     return (value != null ? value.toLowerCase() : null);
+  }
+
+  /**
+   * Tokenizes the given delimited String into an array of individually trimmed Strings.  If String is blank,
+   * empty or null, then a 0 length String array is returned. If the String is not delimited with the specified
+   * delimiter then a String array of size 1 is returned with the given String value as the only element.
+   *
+   * @param commaDelimitedValue the comma delimited String to tokenize.
+   * @return an array of individually tokenized and trimmed Strings from the given String.
+   * @see #toStringArray(String, String)
+   */
+  @NullSafe
+  public static String[] toStringArray(final String commaDelimitedValue) {
+    return toStringArray(commaDelimitedValue, COMMA_DELIMITER);
+  }
+
+  /**
+   * Tokenizes the given delimited String into an array of individually trimmed Strings.  If String is blank,
+   * empty or null, then a 0 length String array is returned. If the String is not delimited with the specified
+   * delimiter then a String array of size 1 is returned with the given String value as the only element.
+   *
+   * @param delimitedValue the String to tokenize based on the delimiter.
+   * @param delimiter the delimiter used to tokenize the String value.
+   * @return an array of individually tokenized and trimmed Strings from the given String.
+   * @see java.lang.String#split(String)
+   * @see org.cp.elements.lang.ObjectUtils#defaultIfNull(Object[])
+   * @see org.cp.elements.util.ArrayUtils#transform(Object[], Transformer)
+   * @see #defaultIfBlank(String, String...)
+   * @see #trim(String)
+   */
+  @NullSafe
+  public static String[] toStringArray(final String delimitedValue, final String delimiter) {
+    return ArrayUtils.transform(ObjectUtils.defaultIfNull(delimitedValue, EMPTY_STRING).split(
+        defaultIfBlank(delimiter, COMMA_DELIMITER)), StringUtils::trim);
   }
 
   /**
@@ -471,6 +574,59 @@ public abstract class StringUtils {
     }
 
     return null;
+  }
+
+  /**
+   * Truncates the given String to the desired length.  If the String is blank, empty or null, then value is returned,
+   * otherwise the String is truncated to the maximum length determined by the value's length and desired length.
+   *
+   * @param value the String to truncate.
+   * @param length an integer specifying the length to truncate the String to.
+   * @return the given String truncated to length, or the entire String if the desired length exceeds
+   * the String's length.
+   * @see java.lang.String#length()
+   */
+  @NullSafe
+  public static String truncate(String value, final int length) {
+    return (value != null ? value.substring(0, Math.min(value.length(), Math.max(0, length))) : null);
+  }
+
+  /**
+   * Wraps a line of text to no longer than the specified width, measured by the number of characters in each line,
+   * indenting all subsequent lines with the indent.  If the indent is null, then an empty String is used.
+   *
+   * @param line a String containing the line of text to wrap.
+   * @param widthInCharacters an integer value indicating the width of each line measured by the number of characters.
+   * @param indent the String value used to indent all subsequent lines.
+   * @return the line of text wrapped.
+   * @throws IndexOutOfBoundsException if widthInCharacters is less than 0, or there are no word boundaries within
+   * the given width on any given split.
+   * @throws NullPointerException if the line of text is null.
+   */
+  public static String wrap(String line, final int widthInCharacters, String indent) {
+    StringBuilder buffer = new StringBuilder();
+
+    int lineCount = 1;
+    int spaceIndex;
+
+    // if indent is null, then do not indent the wrapped lines
+    indent = (indent != null ? indent : EMPTY_STRING);
+
+    while (line.length() > widthInCharacters) {
+      spaceIndex = line.substring(0, widthInCharacters).lastIndexOf(SINGLE_SPACE);
+      buffer.append(lineCount++ > 1 ? indent : EMPTY_STRING);
+      // throws IndexOutOfBoundsException if spaceIndex is -1, implying no word boundary was found within
+      // the given width; this also avoids the infinite loop
+      buffer.append(line.substring(0, spaceIndex));
+      buffer.append(LINE_SEPARATOR);
+      // possible infinite loop if spaceIndex is -1, see comment above
+      line = line.substring(spaceIndex + 1);
+    }
+
+    buffer.append(lineCount > 1 ? indent : "");
+    buffer.append(line);
+
+    return buffer.toString();
   }
 
 }
