@@ -204,7 +204,7 @@ public abstract class LogicalOperator {
      */
     @Override
     public LogicalOperator getOpposite() {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
 
     /**

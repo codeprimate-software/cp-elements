@@ -31,12 +31,12 @@ import java.util.Random;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.RelationalOperator;
-import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
 
 /**
@@ -383,7 +383,7 @@ public abstract class ArrayUtils {
       }
 
       public void remove() {
-        throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
       }
     };
   }

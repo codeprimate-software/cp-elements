@@ -28,9 +28,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Ordered;
-import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
 
 /**
@@ -86,7 +86,7 @@ public class OrderedComparatorTest {
 
     @Override
     public void setIndex(final int index) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
 
     public String getName() {

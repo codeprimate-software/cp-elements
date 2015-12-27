@@ -22,7 +22,7 @@
 package org.cp.elements.biz.rules;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Constants;
 
 /**
  * The AbstractRule class is an abstract base class for encapsulating functionality common to all Rule implementations.
@@ -74,7 +74,7 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * @throws UnsupportedOperationException operation not support by the Rule class.
    */
   public boolean isNew() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**

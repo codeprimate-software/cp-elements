@@ -21,13 +21,16 @@
 
 package org.cp.elements.util.sort.support;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.sort.AbstractSorter;
@@ -49,7 +52,7 @@ import org.junit.Test;
  * @see org.junit.Test
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "deprecation", "unused" })
 public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
   protected static final int DEFAULT_ELEMENT_COUNT_TO_SORT = 10000;
@@ -142,7 +145,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
 
     @Override
     public <E> List<E> sort(final List<E> elements) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
 
     protected static class TestSortableArrayList<E> extends SortableArrayList<E> {

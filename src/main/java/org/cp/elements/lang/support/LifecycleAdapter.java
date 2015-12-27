@@ -21,8 +21,8 @@
 
 package org.cp.elements.lang.support;
 
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Lifecycle;
-import org.cp.elements.lang.StringUtils;
 
 /**
  * The LifecyleAdapter is a abstract base class for conveniently implementing the Lifecycle interface, allowing
@@ -42,7 +42,7 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @return the configuration meta-data used to configure this object.
    */
   public T getConfiguration() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -52,7 +52,7 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @return a boolean value indicating whether this object has been properly configured.
    */
   public boolean isConfigured() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -61,7 +61,7 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @param configuration the configuration meta-data of type T used to configure this object.
    */
   public void configure(final T configuration) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -71,14 +71,14 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @return a boolean value indicating whether this object has been initialized or not.
    */
   public boolean isInitialized() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Initializes this object and prepares any required resources.
    */
   public void init() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -87,14 +87,14 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @return a boolean value indicating whether this object is running or not.
    */
   public boolean isRunning() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Runs the implementing objects main logic.
    */
   public void run() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -104,7 +104,7 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @return a boolean value indicating whether this object was interrupted.
    */
   public boolean isInterrupted() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -112,7 +112,7 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * while this object is performing a complex, long running and intensive computation.
    */
   public void interrupt() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -122,14 +122,14 @@ public abstract class LifecycleAdapter<T> implements Lifecycle<T> {
    * @return a boolean value indicating whether this object has been destroyed or not.
    */
   public boolean isDestroyed() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Destroys this object and releases any and all resources held.
    */
   public void destroy() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
 }

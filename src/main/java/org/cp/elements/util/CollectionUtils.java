@@ -32,6 +32,7 @@ import java.util.Random;
 import java.util.Set;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.Renderer;
@@ -217,7 +218,7 @@ public abstract class CollectionUtils {
     Assert.notNull(collection, "The Iterable collection from which to find elements cannot be null!");
     Assert.notNull(filter, "The Filter used to find elements from the Iterable collection cannot be null!");
 
-    List<T> matchingElements = new ArrayList<T>();
+    List<T> matchingElements = new ArrayList<>();
 
     for (T element : collection) {
       if (filter.accept(element)) {
@@ -285,12 +286,7 @@ public abstract class CollectionUtils {
    */
   public static <T> Iterable<T> iterable(final Iterator<T> iterator) {
     Assert.notNull(iterator, "The Iterator backing the Iterable implementation cannot be null!");
-
-    return new Iterable<T>() {
-      public Iterator<T> iterator() {
-        return iterator;
-      }
-    };
+    return () -> iterator;
   }
 
   /**
@@ -319,7 +315,7 @@ public abstract class CollectionUtils {
       }
 
       public void remove() {
-        throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
       }
     };
   }
@@ -373,7 +369,7 @@ public abstract class CollectionUtils {
    * @see java.util.List
    */
   public static <T> List<T> subList(final List<T> list, int... indices) {
-    List<T> subList = new ArrayList<T>(indices.length);
+    List<T> subList = new ArrayList<>(indices.length);
 
     for (int index : indices) {
       subList.add(list.get(index));
@@ -391,7 +387,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   public static <T> String toString(final Iterable<T> collection) {
-    return toString(collection, new ToStringRenderer<T>());
+    return toString(collection, new ToStringRenderer<>());
   }
 
   /**
@@ -433,7 +429,7 @@ public abstract class CollectionUtils {
     Assert.notNull(collection, "The Collection of elements to transform cannot be null!");
     Assert.notNull(transformer, "The Transformer used to transform the elements of the Collection cannot be null!");
 
-    List<T> transformedElements = new ArrayList<T>(collection.size());
+    List<T> transformedElements = new ArrayList<>(collection.size());
 
     for (T element : collection) {
       transformedElements.add(transformer.transform(element));
@@ -468,7 +464,7 @@ public abstract class CollectionUtils {
       }
 
       public void remove() {
-        throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+        throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
       }
     };
   }

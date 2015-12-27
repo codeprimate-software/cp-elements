@@ -24,7 +24,7 @@ package org.cp.elements.lang.support;
 import java.util.Calendar;
 
 import org.cp.elements.lang.Auditable;
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Constants;
 
 /**
  * The AuditableAdapter class is abstract base class provided for convenience when implementing the Auditable interface.
@@ -46,7 +46,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public USER getCreatedBy() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -56,7 +56,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public void setCreatedBy(final USER user) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -66,7 +66,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public Calendar getCreatedDateTime() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -76,7 +76,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public void setCreatedDateTime(final Calendar dateTime) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -86,7 +86,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public PROCESS getCreatingProcess() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -96,7 +96,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public void setCreatingProcess(final PROCESS process) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -106,7 +106,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public USER getLastModifiedBy() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -116,7 +116,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public Calendar getLastModifiedDateTime() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -126,7 +126,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public PROCESS getLastModifyingProcess() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -138,7 +138,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public boolean isModified() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -151,7 +151,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public boolean isModified(final String propertyName) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -161,7 +161,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public USER getModifiedBy() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -171,7 +171,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public void setModifiedBy(final USER user) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -181,7 +181,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public Calendar getModifiedDateTime() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -191,7 +191,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public void setModifiedDateTime(final Calendar dateTime) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -201,7 +201,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public PROCESS getModifyingProcess() {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
@@ -211,7 +211,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    */
   @Override
   public void setModifyingProcess(final PROCESS process) {
-    throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
 }

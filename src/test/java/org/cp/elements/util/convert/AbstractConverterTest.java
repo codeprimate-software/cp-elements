@@ -21,12 +21,15 @@
 
 package org.cp.elements.util.convert;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
@@ -40,7 +43,7 @@ import org.junit.Test;
  * @see org.junit.Test
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "deprecation", "unused" })
 public class AbstractConverterTest extends AbstractMockingTestSuite {
 
   @Test
@@ -79,17 +82,17 @@ public class AbstractConverterTest extends AbstractMockingTestSuite {
 
     @Override
     public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
 
     @Override
     public Object convert(final Object value) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
 
     @Override
     public <QT> QT convert(final Object value, final Class<QT> qualifyingType) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
 

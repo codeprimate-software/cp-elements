@@ -21,7 +21,12 @@
 
 package org.cp.elements.lang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -378,7 +383,7 @@ public class RelationalOperatorTest {
 
     @Override
     public boolean evaluate(final T actualValue) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
 

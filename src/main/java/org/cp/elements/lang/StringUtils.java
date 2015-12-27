@@ -48,7 +48,6 @@ public abstract class StringUtils {
   public static final String DOT_SEPARATOR = ".";
   public static final String EMPTY_STRING = "";
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-  public static final String NOT_IMPLEMENTED = Constants.NOT_IMPLEMENTED; // TODO remove!
   public static final String SINGLE_SPACE = " ";
   public static final String UTF_8 = "UTF-8";
 
