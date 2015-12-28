@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.util.sort;
@@ -34,7 +29,7 @@ import org.cp.elements.util.sort.support.ShellSort;
 /**
  * The SorterFactory class is a factory for creating instances of different Sorter implementations that implement
  * different sorting algorithms.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.util.sort.SortType
  * @see org.cp.elements.util.sort.support.BubbleSort
@@ -52,7 +47,7 @@ public class SorterFactory {
 
   /**
    * Creates an instance of the Sorter interface implementing the sorting algorithm based on the SortType.
-   * <p/>
+   *
    * @param <T> the Class type of the actual Sorter implementation based on the SortType.
    * @param type the type of sorting algorithm Sorter implementation to create.
    * @return a Sorter implementation subclass that implements the sorting algorithm based on the SortType.
@@ -88,7 +83,7 @@ public class SorterFactory {
    * Creates an instance of the Sorter interface implementing the sorting algorithm based on the SortType,
    * otherwise returns the provided default Sorter implementation if a Sorter based on the specified SortType
    * is not available.
-   * <p/>
+   *
    * @param <T> the Class type of the actual Sorter implementation based on the SortType.
    * @param type the type of sorting algorithm Sorter implementation to create.
    * @param defaultSorter the default Sorter implementation to use if a Sorter based on the specified SortType

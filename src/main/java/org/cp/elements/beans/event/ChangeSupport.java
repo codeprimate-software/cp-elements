@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.beans.event;
@@ -32,7 +27,7 @@ import org.cp.elements.lang.Assert;
 /**
  * The ChangeSupport class is a support class used to register and unregister ChangeListeners and notify listeners
  * of state change events happening on the source Object associated with this change support class.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.io.Serializable
  * @see java.lang.Iterable
@@ -53,7 +48,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
   /**
    * Creates an instance of the ChangeSupport class initialized with the specified Object as the source
    * of change events.
-   * <p/>
+   *
    * @param source the Object that is the source of the change events sent to listeners as notifications by
    * this support class.
    * @throws NullPointerException if the source Object reference is null.
@@ -65,7 +60,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   /**
    * Gets a reference to the Object that is the source of change events fired by this change support class.
-   * <p/>
+   *
    * @return an Object reference to the source of the change events.
    */
   protected Object getSource() {
@@ -75,7 +70,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
   /**
    * Adds the specified ChangeListener to the collection of listeners managed by this support class that get notified
    * of change events occurring for the given source Object.
-   * <p/>
+   *
    * @param listener the ChangeListener to add to the collection of listeners managed by this support class.
    * @return a boolean indicating if the ChangeListener was successfully added to the collection of listeners.
    * Null ChangeListeners cannot be added and so this method will return false if the ChangeListener object reference
@@ -88,7 +83,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   /**
    * Determines whether the support class contains the specified ChangeListener.
-   * <p/>
+   *
    * @param listener the ChangeListener parameter being tested for registration with this support class.
    * @return a boolean value indication whether the ChangeListener has been registered with this support class.
    */
@@ -99,7 +94,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
   /**
    * Creates an instance of the ChangeEvent class initialized with the specified source Object for which
    * change events occur.
-   * <p/>
+   *
    * @param source a reference to the source Object for the change events.
    * @return a ChangeEvent object wrapping the specified Object parameter as the source of the change events.
    * @see org.cp.elements.beans.event.ChangeEvent
@@ -110,7 +105,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   /**
    * Fires a ChangeEvent for the source Object notifying each registered ChangeListener of the change.
-   * <p/>
+   *
    * @see org.cp.elements.beans.event.ChangeEvent
    * @see org.cp.elements.beans.event.ChangeListener
    * @see #iterator()
@@ -125,7 +120,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   /**
    * Determines whether this support class has any registered ChangeListeners.
-   * <p/>
+   *
    * @return a boolean value indicating whether this support class has any registered ChangeListeners.
    */
   public boolean hasListeners() {
@@ -134,7 +129,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   /**
    * Iterates over the ChangeListeners registered on this support class for the specified event source Object.
-   * <p/>
+   *
    * @return an Iterator over the ChangeListeners registered with this support class instance for the source Object.
    * @see java.util.Iterator
    */
@@ -145,7 +140,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
   /**
    * Removes the specified ChangeListener from the collection of listeners on this support class that are notified
    * of change events occurring for the source Object.
-   * <p/>
+   *
    * @param listener the ChangeListener to remove from this support class.
    * @return a boolean indicating if the ChangeListener was successfully removed from the collection of listeners.
    * @see #add(ChangeListener)
@@ -156,7 +151,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   /**
    * Determines the number of registered ChangeListeners registered on this support class.
-   * <p/>
+   *
    * @return an integer value indicating the number of ChangeListener registered on this support class.
    */
   public int size() {

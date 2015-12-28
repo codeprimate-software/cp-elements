@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.util.convert;
@@ -35,7 +30,7 @@ import org.cp.elements.lang.ObjectUtils;
 /**
  * The AbstractConversionService class is a base class encapsulating functionality common to all service
  * classes/components that perform value type conversions.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.util.convert.ConversionService
  * @see org.cp.elements.util.convert.Converter
@@ -50,7 +45,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Gets a raw reference to the registry of Converters registered with this ConversionService.
-   * <p/>
+   *
    * @return a mapping of ConverterDescriptors describing the registered Converter.
    * @see java.util.Map
    * @see org.cp.elements.util.convert.AbstractConversionService.ConverterDescriptor
@@ -62,7 +57,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Determines whether this ConversionService can convert a given object into a value of the desired Class type.
-   * <p/>
+   *
    * @param value the object to convert into a value of the target Class type.
    * @param toType the Class type to convert the Object value into.
    * @return a boolean value indicating whether this ConversionService can convert the object into a value of the
@@ -75,7 +70,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Determines whether this ConversionService can convert values from a given Class type into the desired Class type.
-   * <p/>
+   *
    * @param fromType the Class type to convert from.
    * @param toType the Class type to convert to.
    * @return a boolean value indicating whether this ConversionService can convert values from a given Class type
@@ -96,7 +91,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Converts the Object value into a value of the target Class type.
-   * <p/>
+   *
    * @param <T> the target Class type for the conversion.
    * @param value the Object value to convert.
    * @param toType the Class type to convert the Object value into.
@@ -127,7 +122,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Describes the Converter in order to determine what type of conversion the Converter can perform.
-   * <p/>
+   *
    * @param converter the Converter to describe.
    * @return a ConverterDescriptor describing the Converter and the type of conversion.
    * @see org.cp.elements.util.convert.AbstractConversionService.ConverterDescriptor
@@ -161,7 +156,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Gets the raw Class type of the Type parameter.
-   * <p/>
+   *
    * @param type the Type parameter to inspect.
    * @return a raw Class type for the Type parameter.
    * @see java.lang.Class
@@ -175,7 +170,7 @@ public abstract class AbstractConversionService implements ConversionService {
   /**
    * Determines whether the type is a generic, parameterized Converter type, such as the Converter interface, or the
    * AbstractConverter or ConverterAdapter class.
-   * <p/>
+   *
    * @param type the Type being evaluated as a generic, parameterized Converter type.
    * @return a boolean if the Type represents a generic, parameterized Converter type.
    * @see java.lang.reflect.Type
@@ -192,7 +187,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Iterates over the registered Converters in the ConversionService registry.
-   * <p/>
+   *
    * @return a Iterator over the Converters registered in the ConversionService registry.
    * @see java.util.Iterator
    * @see org.cp.elements.util.convert.Converter
@@ -205,7 +200,7 @@ public abstract class AbstractConversionService implements ConversionService {
    * Registers the Converter with the registry making it available to perform type conversions.  Any existing,
    * registered Converter converting from the same source type to the same target type will simply be overridden
    * with the incoming Converter registration.
-   * <p/>
+   *
    * @param converter the Converter to register with the registry.
    * @see #unregister(Converter)
    * @see org.cp.elements.util.convert.Converter
@@ -220,7 +215,7 @@ public abstract class AbstractConversionService implements ConversionService {
 
   /**
    * Unregisters the Converter from the registry.
-   * <p/>
+   *
    * @param converter the Converter to unregister from the registry.
    * @see #register(Converter)
    * @see org.cp.elements.util.convert.Converter

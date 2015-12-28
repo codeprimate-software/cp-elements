@@ -1,29 +1,24 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.util.convert;
 
 /**
  * The Converter interface defines a contract for objects that convert an Object value from one type to another.
- * <p/>
+ *
  * @author John J. Blum
  * @param <S> the source Class type to convert from.
  * @param <T> the target Class type to convert to.
@@ -38,7 +33,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
 
   /**
    * Determines whether this Converter can convert values from the source Class type into the target Class type.
-   * <p/>
+   *
    * @param fromType the Class type to convert from.
    * @param toType the Class type to convert to.
    * @return a boolean indicating whether this Converter can convert values from the source Class type
@@ -49,7 +44,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
 
   /**
    * Converts a value of type S into a value of type T.
-   * <p/>
+   *
    * @param value the S typed value to convert into a value of type T.
    * @return the converted value.
    * @throws ConversionException if the value cannot be converted.
@@ -60,7 +55,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
 
   /**
    * Converts a value of type S into a value of the qualifying type QT.
-   * <p/>
+   *
    * @param <QT> qualifying Class type extending the type parameter T.
    * @param value the S typed value to convert into a value of the qualifying type QT.
    * @param qualifyingType the qualifying Class type to convert the value into.

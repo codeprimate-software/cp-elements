@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.context.configure;
@@ -26,7 +21,7 @@ import java.io.Serializable;
 /**
  * The Configuration interface is an abstraction for modeling configuration settings used to configure any application
  * or program.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.io.Serializable
  * @see java.lang.Iterable
@@ -38,7 +33,7 @@ public interface Configuration extends Iterable<String>, Serializable {
   /**
    * Determines whether the configuration property identified by name is present in the configuration settings, which
    * means the configuration property was declared but not necessarily defined.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @return a boolean value indicating if the property identified by name is present (declared) in the configuration
    * settings.
@@ -49,7 +44,7 @@ public interface Configuration extends Iterable<String>, Serializable {
   /**
    * Determines whether the configuration property identified by name is set in the configuration settings, which
    * means the configuration property was both declared and defined (set with a value).
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @return a boolean value indicating if the property identified by name is defined (set with a value) in the
    * configuration settings.
@@ -60,7 +55,7 @@ public interface Configuration extends Iterable<String>, Serializable {
   /**
    * Gets the value of the configuration property identified by name.  The property is required to be declared
    * and defined otherwise a ConfigurationException is thrown.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @return the value of the configuration property identified by name.
    * @throws ConfigurationException if the property value was undeclared or is undefined.
@@ -71,7 +66,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * Gets the value of the configuration property identified by name.  The required parameter can be used to indicate
    * the property is not required and that a ConfigurationException should not be thrown if the property is undeclared
    * or undefined.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @param required used to indicate whether the configuration property is required to be declared and defined.
    * @return the value of the configuration property identified by name.
@@ -83,7 +78,7 @@ public interface Configuration extends Iterable<String>, Serializable {
   /**
    * Gets the value of the configuration property identified by name.  The defaultPropertyValue parameter effectively
    * overrides the required attribute indicating that the property is not required to be declared or defined.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
    * undefined.
@@ -95,7 +90,7 @@ public interface Configuration extends Iterable<String>, Serializable {
   /**
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
    * The property is required to be declared and defined otherwise a ConfigurationException is thrown.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @param type the expected Class type of the configuration property value.
    * @return the value of the configuration property identified by name.
@@ -107,7 +102,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
    * The required parameter can be used to indicate the property is not required and that a ConfigurationException
    * should not be thrown if the property is undeclared or undefined.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @param required used to indicate whether the configuration property is required to be declared and defined.
    * @param type the expected Class type of the configuration property value.
@@ -121,7 +116,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
    * The defaultPropertyValue parameter effectively overrides the required attribute indicating that the property
    * is not required to be declared or defined.
-   * <p/>
+   *
    * @param propertyName a String value indicating the name of the configuration property.
    * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
    * undefined.

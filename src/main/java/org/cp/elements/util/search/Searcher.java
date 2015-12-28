@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.util.search;
@@ -26,7 +21,7 @@ import java.util.Collection;
 /**
  * The Searcher interface defines a contract for implementing classes responsible for searching a collection of objects
  * in order to find a specified match or a collection of matches.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.util.Collection
  * @see org.cp.elements.util.search.AbstractSearcher
@@ -42,7 +37,7 @@ public interface Searcher {
 
   /**
    * Gets the Matcher used to match and find the desired element or elements in the collection.
-   * <p/>
+   *
    * @param <E> the Class type of elements in the collection.
    * @return the Matcher used to match and find the desired element or elements in the collection during
    * the search operation.
@@ -53,7 +48,7 @@ public interface Searcher {
   /**
    * Searches the array of elements in order to find the element or elements matching the criteria defined
    * by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements in the array.
    * @param array the array of elements to search.
    * @return the element in the array matching the search criteria defined by the Matcher.
@@ -68,7 +63,7 @@ public interface Searcher {
   /**
    * Searches the Collection of elements in order to find the element or elements matching the criteria defined
    * by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements in the Collection.
    * @param collection the Collection of elements to search.
    * @return the element in the Collection matching the search criteria defined by the Matcher.
@@ -84,7 +79,7 @@ public interface Searcher {
   /**
    * Searches the Searchable object in order to find the element or elements matching the criteria defined
    * by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements to search in the Searchable object.
    * @param searchable the Searchable object to search.
    * @return the element in the Searchable object matching the search criteria defined by the Matcher.
@@ -100,7 +95,7 @@ public interface Searcher {
   /**
    * Searches the @Searchable annotated object in order to find the element or elements matching the criteria defined
    * by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements to search in the @Searchable annotated object.
    * @param searchableAnnotatedObject the @Searchable annotated object to search.
    * @return the element in the @Searchable annotated object matching the search criteria defined by the Matcher.
@@ -115,7 +110,7 @@ public interface Searcher {
 
   /**
    * Searches an array of elements finding all elements in the array matching the criteria defined by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements in the array.
    * @param array the array of elements to search.
    * @return an Iterable object containing all elements in the array that match the criteria defined by the Matcher.
@@ -131,7 +126,7 @@ public interface Searcher {
   /**
    * Searches a collection of elements finding all elements in the collection matching the criteria defined
    * by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements in the collection.
    * @param collection the collection of elements to search.
    * @return an Iterable object containing all elements in the collection that match the criteria defined
@@ -149,7 +144,7 @@ public interface Searcher {
   /**
    * Searches the Searchable object finding all elements in the Searchable object matching the criteria
    * defined by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements to search in the Searchable object.
    * @param searchable the Searchable object to search.
    * @return an Iterable object containing all elements from the Searchable object that match the criteria
@@ -167,7 +162,7 @@ public interface Searcher {
   /**
    * Searches the @Searchable annotated object finding all elements in the object matching the criteria
    * defined by the Matcher.
-   * <p/>
+   *
    * @param <E> the Class type of elements to search in the @Searchable annotated object.
    * @param searchableAnnotatedObject the @Searchable annotated object to search.
    * @return an Iterable object containing all elements from the @Searchable annotated object matching the criteria

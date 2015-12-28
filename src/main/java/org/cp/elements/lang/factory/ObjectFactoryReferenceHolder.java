@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.lang.factory;
@@ -26,7 +21,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
  * The ObjectFactoryReferenceHolder class is reference holder to an ObjectFactory instance.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.concurrent.ThreadSafe
  * @see org.cp.elements.lang.factory.ObjectFactory
@@ -40,7 +35,7 @@ public final class ObjectFactoryReferenceHolder {
 
   /**
    * Determines whether this reference holder holds a reference to an ObjectFactory.
-   * <p/>
+   *
    * @return a boolean value indicating whether this reference holder holds an ObjectFactory reference.
    */
   public static synchronized boolean hasReference() {
@@ -49,7 +44,7 @@ public final class ObjectFactoryReferenceHolder {
 
   /**
    * Gets the reference to the current ObjectFactory in use by the application.
-   * <p/>
+   *
    * @return a reference to the current ObjectFactory.
    * @throws IllegalStateException if the ObjectFactory reference is not set.
    */
@@ -60,7 +55,7 @@ public final class ObjectFactoryReferenceHolder {
 
   /**
    * Sets a reference to the ObjectFactory used by the application in this holder.
-   * <p/>
+   *
    * @param objectFactory the ObjectFactory reference to hold in this reference holder.
    * @throws IllegalStateException if the reference holder already holds a reference to an ObjectFactory.
    * @see #compareAndSet(ObjectFactory, ObjectFactory)
@@ -74,7 +69,7 @@ public final class ObjectFactoryReferenceHolder {
   /**
    * CAS operation allowing the ObjectFactory reference to be changed providing the Thread knows, or has a reference
    * to the current ObjectFactory reference.
-   * <p/>
+   *
    * @param currentObjectFactory a reference to the current ObjectFactory held by this reference holder.
    * @param objectFactory the new ObjectFactory reference to set on this reference holder providing the comparison
    * succeeds.

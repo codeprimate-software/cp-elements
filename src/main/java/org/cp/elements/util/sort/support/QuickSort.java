@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.util.sort.support;
@@ -29,7 +24,7 @@ import org.cp.elements.util.sort.Sorter;
 
 /**
  * The QuickSort class is an implementation of the Quick Sort algorithm and the Sorter interface.
- * <p/>
+ *
  * @author John J. Blum
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see org.cp.elements.util.sort.Sorter
@@ -51,7 +46,7 @@ public class QuickSort extends AbstractSorter {
   /**
    * Gets the size threshold used to stop the recursion of the Quick Sort and resort to another sorting algorithm
    * as determined by the Sorter property.
-   * <p/>
+   *
    * @return an integer value indicating the size threshold in terms of the remaining unsorted elements from the
    * collection to use a non-recursive sorting algorithm on.  Returns the DEFAULT_THRESHOLD value if the user
    * specified size threshold is less than the default.
@@ -66,7 +61,7 @@ public class QuickSort extends AbstractSorter {
   /**
    * Sets the size threshold used to stop the recursion of the Quick Sort and resort to another sorting algorithm
    * as determined by the Sorter property.
-   * <p/>
+   *
    * @param sizeThreshold an integer value indicating the size threshold in terms of the remaining unsorted elements
    * from the collection to use a non-recursive sorting algorithm on.
    * @see #getSizeThreshold()
@@ -78,7 +73,7 @@ public class QuickSort extends AbstractSorter {
   /**
    * Gets the Sorter implementation to use when the remaining elements from the collection to sort using the Quick Sort
    * algorithm is less than equal to the size threshold.
-   * <p/>
+   *
    * @return the alternate sorting algorithm implementation, or the default sorting algorithm when the user defined
    * Sorter is unspecified, or has not been configured.
    * @see #DEFAULT_SORTER
@@ -93,7 +88,7 @@ public class QuickSort extends AbstractSorter {
   /**
    * Sets the Sorter implementation to use when the remaining elements from the collection to sort using the Quick Sort
    * algorithm is less than equal to the size threshold.
-   * <p/>
+   *
    * @param sorter an alternate sorting algorithm implementation to use when the size threshold is reached during the
    * Quick Sort.
    * @see #getSorter()
@@ -106,7 +101,7 @@ public class QuickSort extends AbstractSorter {
   /**
    * Uses the Quick Sort algorithm to sort a List of elements as defined by the Comparator, or as determined
    * by the elements in the collection if the elements are Comparable.
-   * <p/>
+   *
    * @param <E> the type of elements in the List.
    * @param elements the List of elements to sort.
    * @return the collection of elements sorted.

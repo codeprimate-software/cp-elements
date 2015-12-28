@@ -1,22 +1,17 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.cp.elements.lang.factory;
@@ -26,7 +21,7 @@ import org.cp.elements.util.convert.ConversionServiceAware;
 
 /**
  * The ObjectFactory interface defines a contract for components that create instances of other objects.
- * <p/>
+ *
  * @author John J. Blum
  * @see java.lang.Object
  * @see org.cp.elements.context.configure.ConfigurationAware
@@ -40,7 +35,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
   /**
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments.
    * The parameter types of the constructor used to construct the object are determined from the arguments.
-   * <p/>
+   *
    * @param <T> the Class type of the created object.
    * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
    * @param args an array of Objects used as constructor arguments to initialize the object.
@@ -53,7 +48,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
    * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
    * the object.
-   * <p/>
+   *
    * @param <T> the Class type of the created object.
    * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
    * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
@@ -68,7 +63,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
   /**
    * Creates an object given the class type, initialized with the specified constructor arguments. The parameter types
    * of the constructor used to construct the object are determined from the arguments.
-   * <p/>
+   *
    * @param <T> the Class type of the created object.
    * @param objectType the Class type from which the instance is created.
    * @param args an array of Objects used as constructor arguments to initialize the object.
@@ -82,7 +77,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
    * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
    * the object.
-   * <p/>
+   *
    * @param <T> the Class type of the created object.
    * @param objectType the Class type from which the instance is created.
    * @param parameterTypes an array of Class types indicating the signature of the constructor used to create

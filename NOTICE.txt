@@ -1,9 +1,5 @@
 Codeprimate Elements
-Copyright 2011-present Codeprimate, LLC
+Copyright 2011-Present Codeprimate, LLC and Authors
 
 This product includes software developed at
-Coderpimate, LLC (http://www.codeprimate.org/).
-
-Note the Codeprimate Elements software will be
-switching to the Apache 2 License
-as of the Milestone (M1) release.
+Codeprimate, LLC (http://www.codeprimate.org/).
