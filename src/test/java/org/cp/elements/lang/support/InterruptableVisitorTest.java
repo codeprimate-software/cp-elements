@@ -39,6 +39,15 @@ public class InterruptableVisitorTest {
   private InterruptableVisitor visitor = new InterruptableVisitor();
 
   @Test
+  public void visitInterruptableObjectInvokesInterrupt() {
+    InterruptableVisitable mockInterruptable = mock(InterruptableVisitable.class);
+
+    visitor.visit(mockInterruptable);
+
+    verify(mockInterruptable, times(1)).interrupt();
+  }
+
+  @Test
   public void visitNonInterruptableObjectWithNoConsequences() {
     visitor.visit(mock(Visitable.class));
   }
@@ -48,16 +57,7 @@ public class InterruptableVisitorTest {
     visitor.visit(null);
   }
 
-  @Test
-  public void visitInterruptableObjectInvokesInterrupt() {
-    VisitableInterruptable mockInterruptable = mock(VisitableInterruptable.class);
-
-    visitor.visit(mockInterruptable);
-
-    verify(mockInterruptable, times(1)).interrupt();
-  }
-
-  interface VisitableInterruptable extends Interruptable, Visitable {
+  interface InterruptableVisitable extends Interruptable, Visitable {
   }
 
 }

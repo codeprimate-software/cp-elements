@@ -16,97 +16,91 @@
 
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.HashSet;
-import java.util.Set;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.Visitable;
-import org.cp.elements.lang.Visitor;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.hamcrest.Description;
-import org.jmock.Expectations;
-import org.jmock.api.Action;
-import org.jmock.api.Invocation;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The SetIdentityVisitorTest class is a test suite of test cases testing the contract and functionality
  * of the SetIdentityVisitor class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.support.SetIdentityVisitor
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.IdentifierSequence
+ * @see org.cp.elements.lang.Visitable
+ * @see org.cp.elements.lang.support.SetIdentityVisitor
  * @since 1.0.0
  */
-public class SetIdentityVisitorTest extends AbstractMockingTestSuite {
+public class SetIdentityVisitorTest {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   private SetIdentityVisitor visitor = new SetIdentityVisitor();
 
   @Test
-  public void testVisitIdentifiableVisitable() {
-    final IdentifiableVisitable mockIdentifiableVisitable = mock(IdentifiableVisitable.class,
-      "testVisitIdentifiableVisitable");
-
-    checking(new Expectations() {{
-      oneOf(mockIdentifiableVisitable).accept(with(equal(visitor)));
-      will(new Action() {
-        @Override
-        public Object invoke(final Invocation invocation) throws Throwable {
-          ((Visitor) invocation.getParameter(0)).visit(mockIdentifiableVisitable);
-          return null;
-        }
-
-        @Override
-        public void describeTo(final Description description) {
-          description.appendText("Visiting a mock IdentifiableVisitable object with an instance of SetIdentityVisitor!");
-        }
-      });
-      oneOf(mockIdentifiableVisitable).setId(with(aNonNull(Long.class)));
-    }});
-
-    mockIdentifiableVisitable.accept(visitor);
+  public void constructDefaultSetIdentifyVisitor() {
+    assertThat(visitor, is(notNullValue()));
+    assertThat(visitor.getIdentifierSequence(), is(instanceOf(UUIDIdentifierSequence.class)));
   }
 
   @Test
-  public void testVisitNonIdentifiableVisitable() {
-    IdentifierVisitable identifierVisitor = new IdentifierVisitable();
+  @SuppressWarnings("unchecked")
+  public void constructInitializedSetIdentityVisitor() {
+    IdentifierSequence<Long> mockIdentifierSequence = mock(IdentifierSequence.class);
+    SetIdentityVisitor<Long> visitor = new SetIdentityVisitor<>(mockIdentifierSequence);
 
-    assertEquals(1l, identifierVisitor.id.longValue());
-
-    identifierVisitor.accept(visitor);
-
-    assertEquals(1l, identifierVisitor.id.longValue());
+    assertThat(visitor, is(notNullValue()));
+    assertThat(visitor.getIdentifierSequence(), is(sameInstance(mockIdentifierSequence)));
   }
 
   @Test
-  public void testVisitNull() {
+  public void constructSetIdentityVisitorWithNull() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("The IdentifierSequence cannot be null");
+
+    new SetIdentityVisitor<>(null);
+  }
+
+  @Test
+  public void visitIdentifiableVisitable() {
+    IdentifiableVisitable mockIdentifiableVisitable = mock(IdentifiableVisitable.class);
+    SetIdentityVisitor<Long> visitor = new SetIdentityVisitor<>(new SimpleIdentifierSequence());
+
+    visitor.visit(mockIdentifiableVisitable);
+
+    verify(mockIdentifiableVisitable, times(1)).setId(eq(1l));
+  }
+
+  @Test
+  public void visitNonIdentifiableVisitable() {
+    Visitable mockVisitable = mock(Visitable.class);
+    SetIdentityVisitor<?> visitor = new SetIdentityVisitor<>();
+
+    visitor.visit(mockVisitable);
+  }
+
+  @Test
+  public void visitNull() {
     visitor.visit(null);
-  }
-
-  @Test
-  public void testGetNextSequencedIdentifier() {
-    Set<Long> identifiers = new HashSet<>(100);
-
-    synchronized (SetIdentityVisitor.class) {
-      for (int count = 100; count > 0; count--) {
-        identifiers.add(SetIdentityVisitor.getNextSequencedIdentifier());
-      }
-    }
-
-    assertEquals(100, identifiers.size());
-  }
-
-  protected static class IdentifierVisitable implements Visitable {
-
-    private Long id = 1l;
-
-    @Override
-    public void accept(final Visitor visitor) {
-      visitor.visit(this);
-    }
   }
 
   protected interface IdentifiableVisitable extends Identifiable<Long>, Visitable {
