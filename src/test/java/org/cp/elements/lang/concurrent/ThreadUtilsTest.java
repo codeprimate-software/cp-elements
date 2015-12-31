@@ -513,7 +513,7 @@ public class ThreadUtilsTest {
     private Thread interruptingThread;
     private Thread joiningThread;
 
-    public void thread1() {
+    public void thread1() throws InterruptedException {
       assertTick(0);
 
       interruptingThread = Thread.currentThread();
@@ -524,6 +524,7 @@ public class ThreadUtilsTest {
       assertThat(joiningThread, is(notNullValue()));
 
       joiningThread.interrupt();
+      joiningThread.join();
     }
 
     public void thread2() {
