@@ -23,7 +23,7 @@ import java.math.BigInteger;
  * 
  * @author John J. Blum
  * @see java.lang.Math
- * @link http://www.math.com
+ * @see <a href="http://www.math.com">math.com</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

@@ -81,12 +81,13 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Converts the Iterable object into an array.
+   * Converts the {@link Iterable} object into an array.
    *
-   * @param <T> the type of elements in the Iterable as well as the resulting array.
-   * @param iterable the Iterable object to convert into an array.
-   * @return an array containing the elements from the Iterable object.  Returns an empty array
-   * if the Iterable object reference is null.
+   * @param <T> the type of elements in the {@link Iterable} as well as the resulting array.
+   * @param iterable the {@link Iterable} object to convert into an array.
+   * @param componentType the class type of elements in the {@link Iterable} collection.
+   * @return an array containing the elements from the {@link Iterable} object.  Returns an empty array
+   * if the {@link Iterable} object reference is null.
    * @see java.lang.Iterable
    */
   @NullSafe

@@ -260,9 +260,12 @@ public abstract class ReflectionUtils extends ClassUtils {
    * Calls the no argument method with the specified name on the given class type, casting the method's return value
    * to the desired return type.  This method assumes the "method" to invoke is a static (class) member method.
    *
+   * @param <T> the desired return type in which the method's return value will be cast; should be compatible with
+   * the method's return type.
    * @param type the Class type on which the method to invoke is declared and defined.
    * @param methodName a String indicating the name of the method to invoke.
    * @param returnType the desired Class type in which to cast the method's return value.
+   * @return the specified method's return value cast to the desired return type.
    * @throws IllegalArgumentException if the method with the specified name is not declared on the given class type.
    * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
    * @see #getMethod(Class, String, Class[])
@@ -654,7 +657,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private final Set<T> members = new HashSet<>();
 
-    @SuppressWarnings("all")
+    @SuppressWarnings({ "unchecked", "varargs" })
     protected WithExpression(final T... members) {
       if (members != null) {
         Collections.addAll(this.members, members);

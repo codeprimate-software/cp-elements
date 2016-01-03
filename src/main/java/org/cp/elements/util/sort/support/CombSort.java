@@ -21,12 +21,14 @@ import java.util.List;
 import org.cp.elements.util.sort.AbstractSorter;
 
 /**
- * The CombSort class is an implementation of the Comb Sort algorithm and Sorter interface.
+ * The CombSort class is an implementation of the Comb Sort algorithm
+ * and the {@link org.cp.elements.util.sort.Sorter} interface.
  *
  * @author John J. Blum
  * @see java.util.List
  * @see org.cp.elements.util.sort.AbstractSorter
- * @link http://en.wikipedia.org/wiki/Comb_sort
+ * @see org.cp.elements.util.sort.Sorter
+ * @see <a href="http://en.wikipedia.org/wiki/Comb_sort">Comb Sort</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

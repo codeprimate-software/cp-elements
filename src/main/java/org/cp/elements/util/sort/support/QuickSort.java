@@ -23,13 +23,15 @@ import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 
 /**
- * The QuickSort class is an implementation of the Quick Sort algorithm and the Sorter interface.
+ * The QuickSort class is an implementation of the Quick Sort algorithm
+ * and the {@link org.cp.elements.util.sort.Sorter} interface.
  *
  * @author John J. Blum
+ * @see java.util.List
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see org.cp.elements.util.sort.Sorter
  * @see org.cp.elements.util.sort.support.InsertionSort
- * @link http://en.wikipedia.org/wiki/Quicksort
+ * @see <a href="http://en.wikipedia.org/wiki/Quicksort">Quicksort</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

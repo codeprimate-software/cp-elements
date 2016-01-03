@@ -36,14 +36,14 @@ import org.cp.elements.util.convert.Converter;
 import org.cp.elements.util.convert.support.StringConverter;
 
 /**
- * The DefaultConversionService class is a Service class/components for performing value type conversions.
+ * The DefaultConversionService class is a Service class/component that performs value type conversions.
  *
  * @author John J. Blum
  * @see org.cp.elements.util.convert.AbstractConversionService
  * @see org.cp.elements.util.convert.Converter
  * @see org.cp.elements.util.convert.support.StringConverter
+ * @see <a href="http://stackoverflow.com/questions/176527/how-can-i-enumerate-all-classes-in-a-package-and-add-them-to-a-list">How can I enumerate all classes in a package and add them to a List?</a>
  * @since 1.0.0
- * @link http://stackoverflow.com/questions/176527/how-can-i-enumerate-all-classes-in-a-package-and-add-them-to-a-list
  */
 @SuppressWarnings("unused")
 public class DefaultConversionService extends AbstractConversionService {

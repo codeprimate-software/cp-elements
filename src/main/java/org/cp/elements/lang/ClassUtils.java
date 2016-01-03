@@ -28,7 +28,7 @@ import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The ClassUtils class provides utility methods for working with Class objects.
+ * The ClassUtils class provides utility methods for working with {@link Class} objects.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -110,7 +110,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredConstructors()
    * @see java.lang.reflect.Constructor
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "all" })
   public static <T> Constructor<T> findConstructor(final Class<T> type, final Object... arguments) {
     for (Constructor<?> constructor : type.getDeclaredConstructors()) {
       Class<?>[] parameterTypes = constructor.getParameterTypes();

@@ -21,11 +21,14 @@ import java.util.List;
 import org.cp.elements.util.sort.AbstractSorter;
 
 /**
- * The HeapSort class is an implementation of the Heap Sort algorithm and the Sorter interface.
+ * The HeapSort class is an implementation of the Heap Sort algorithm
+ * and the {@link org.cp.elements.util.sort.Sorter} interface.
  *
  * @author John J. Blum
+ * @see java.util.List
  * @see org.cp.elements.util.sort.AbstractSorter
- * @link http://en.wikipedia.org/wiki/Heapsort
+ * @see org.cp.elements.util.sort.Sorter
+ * @see <a href="http://en.wikipedia.org/wiki/Heapsort">Heapsort</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

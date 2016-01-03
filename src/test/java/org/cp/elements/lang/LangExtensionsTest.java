@@ -49,7 +49,7 @@ import org.mockito.Matchers;
 
 /**
  * The LangExtensionsTest class is a test suite of test cases testing the contract and functionality
- * of the LangExtensions class.
+ * of the {@link LangExtensions} class.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -1486,6 +1486,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsAssignableToDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThatWrapper.wrap(mockAssertion).isAssignableTo(Object.class);
@@ -1592,6 +1593,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsInstanceOfDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThatWrapper.wrap(mockAssertion).isInstanceOf(Object.class);
@@ -1663,6 +1665,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsNotNullDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThatWrapper.wrap(mockAssertion).isNotNull();
@@ -1670,6 +1673,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsNullDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThatWrapper.wrap(mockAssertion).isNull();
@@ -1703,6 +1707,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatNotDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
 
@@ -1717,6 +1722,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatThrowingDelegatesToWrappedAssertion() {
     RuntimeException illegalArgument = new IllegalArgumentException("test");
 
@@ -1748,6 +1754,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatUsingDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).using("message", "args");
@@ -1759,6 +1766,7 @@ public class LangExtensionsTest {
   }
 
   @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatWhenDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).when(ENABLE_DISABLE_CONDITION);

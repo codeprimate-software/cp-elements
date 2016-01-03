@@ -21,7 +21,7 @@ package org.cp.elements.lang;
  * containing the building blocks of an expression, often expressed using the Builder Design Pattern.
  *
  * @author John J. Blum
- * @link http://en.wikipedia.org/wiki/Builder_pattern
+ * @see <a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder pattern</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

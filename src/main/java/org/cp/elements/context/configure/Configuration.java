@@ -91,6 +91,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * Gets the value of the configuration property identified by name as a value of the specified Class type.
    * The property is required to be declared and defined otherwise a ConfigurationException is thrown.
    *
+   * @param <T> the return class type of the property value.
    * @param propertyName a String value indicating the name of the configuration property.
    * @param type the expected Class type of the configuration property value.
    * @return the value of the configuration property identified by name.
@@ -103,6 +104,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * The required parameter can be used to indicate the property is not required and that a ConfigurationException
    * should not be thrown if the property is undeclared or undefined.
    *
+   * @param <T> the return class type of the property value.
    * @param propertyName a String value indicating the name of the configuration property.
    * @param required used to indicate whether the configuration property is required to be declared and defined.
    * @param type the expected Class type of the configuration property value.
@@ -117,6 +119,7 @@ public interface Configuration extends Iterable<String>, Serializable {
    * The defaultPropertyValue parameter effectively overrides the required attribute indicating that the property
    * is not required to be declared or defined.
    *
+   * @param <T> the return class type of the property value.
    * @param propertyName a String value indicating the name of the configuration property.
    * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
    * undefined.

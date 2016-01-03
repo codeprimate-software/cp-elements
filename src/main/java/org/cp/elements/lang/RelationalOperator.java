@@ -17,9 +17,11 @@
 package org.cp.elements.lang;
 
 /**
- * The RelationalOperator class defines class representations for the relation operators (==, >, >=, < and <=).
+ * The RelationalOperator class defines class representations for the relation operators ({@literal ==},
+ * {@literal >}, {@literal >=}, {@literal <}, {@literal <=}).
  * 
  * @author John J. Blum
+ * @param <T> a {@link Comparable} class type for the values evaluated by this operator.
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.LogicalOperator
  * @since 1.0.0
@@ -202,7 +204,8 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
   public abstract String getDescription();
 
   /**
-   * Gets the symbolic representation of the relational operator, such as ==, >, >=, <, <= and so on.
+   * Gets the symbolic representation of the relational operator, such as {@literal ==}, {@literal >}, {@literal >=},
+   * {@literal <}, {@literal <=} and so on.
    * 
    * @return a String value symbolizing the relational operator.
    */
@@ -303,7 +306,8 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     }
 
     /**
-     * Gets the symbolic representation of the relational operator, such as ==, >, >=, <, <= and so on.
+     * Gets the symbolic representation of the relational operator, such as {@literal ==}, {@literal >}, {@literal >=},
+     * {@literal <}, {@literal <=} and so on.
      * 
      * @return a String symbolizing the relational operator.
      */
@@ -358,13 +362,14 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     }
 
     /**
-     * Factory method used in composing a compound relational operator comparison, such as > && <, or < || >.
+     * Factory method used in composing a compound relational operator comparison, such as
+     * {@literal >} {@literal &&} {@literal <} or {@literal <} {@literal ||} {@literal >}.
      * 
+     * @param <T> the Class type of the Comparable operands used in the relational comparison.
      * @param leftOperand a RelationalOperator operand on the left-side of the logical operation.
      * @param operator the LogicalOperator used to the combine the two ReltaionalOperator operands in a compound
      * relational comparison.
      * @param rightOperand a RelationalOperator operand on the right-side of the logical operation.
-     * @param <T> the Class type of the Comparable operands used in the relational comparison.
      * @return the left RelationalOperator operand if the right operand is null, or the right RelationalOperator
      * operand if the left is null, or a new ComposableRelationalOperator combining the two individual
      * RelationalOperator operands into a compound relational comparison using the specified LogicalOperator.

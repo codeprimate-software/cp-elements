@@ -17,7 +17,8 @@
 package org.cp.elements.lang;
 
 /**
- * The LogicalOperator class defines class representations for the standard logical operators AND (&&) and OR (||).
+ * The LogicalOperator class defines class representations for the standard logical operators AND ({@literal &&})
+ * and OR ({@literal ||}).
  * 
  * @author John J. Blum
  * @see org.cp.elements.lang.RelationalOperator
@@ -90,7 +91,7 @@ public abstract class LogicalOperator {
 
   /**
    * Gets the symbolic representation of this logical operator.  For instance, the symbolic representation of AND
-   * in Java is &&, and the symbolic representation of OR in Java is ||.
+   * in Java is {@literal &&}, and the symbolic representation of OR in Java is {@literal ||}.
    * 
    * @return a String value representing the symbolic representation of this logical operator.
    * @see #getDescription()
@@ -204,7 +205,7 @@ public abstract class LogicalOperator {
 
     /**
      * Gets the symbolic representation of this logical operator.  For instance, the symbolic representation of AND
-     * in Java is &&, and the symbolic representation of OR in Java is ||.
+     * in Java is {@literal &&}, and the symbolic representation of OR in Java is {@literal ||}.
      * 
      * @return a String value representing the symbolic representation of this logical operator.
      * @see #getDescription()

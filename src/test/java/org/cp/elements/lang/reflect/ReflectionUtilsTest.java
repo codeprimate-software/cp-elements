@@ -57,6 +57,7 @@ import org.junit.Test;
  * @see org.junit.Test
  * @since 1.0.0
  */
+@SuppressWarnings("deprecation")
 public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   private static final AtomicReference<String> METHOD_NAME = new AtomicReference<>();
@@ -421,7 +422,7 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
       ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class);
     }
     catch (NullPointerException expected) {
-      assertEquals(565, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(568, expected.getStackTrace()[0].getLineNumber());
       throw expected;
     }
   }

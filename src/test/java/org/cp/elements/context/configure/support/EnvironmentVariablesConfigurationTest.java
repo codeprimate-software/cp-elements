@@ -21,27 +21,29 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.context.configure.Configuration;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
  * The EnvironmentVariablesConfigurationTest class is a test suite of test cases testing the contract and functionality
- * of the EnvironmentVariablesConfiguration class.
+ * of the {@link EnvironmentVariablesConfiguration} class.
  *
  * @author John J. Blum
+ * @see org.junit.Test
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.EnvironmentVariablesConfiguration
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.junit.Test
  * @since 1.0.0
  */
-public class EnvironmentVariablesConfigurationTest extends AbstractMockingTestSuite {
+public class EnvironmentVariablesConfigurationTest {
 
   private final EnvironmentVariablesConfiguration configuration = new EnvironmentVariablesConfiguration();
 
@@ -62,26 +64,23 @@ public class EnvironmentVariablesConfigurationTest extends AbstractMockingTestSu
   }
 
   @Test
-  public void testGetParentPropertyValue() {
-    final Configuration mockParentConfiguration = mockContext.mock(Configuration.class);
+  public void getParentPropertyValue() {
+    Configuration mockParentConfiguration = mock(Configuration.class);
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockParentConfiguration).getPropertyValue(with(equal("CUSTOM_ENVIRONMENT_VARIABLE")), with(equal(true)));
-      will(returnValue("test"));
-      allowing(mockParentConfiguration).getPropertyValue(with(any(String.class)), with(any(Boolean.class)));
-      will(returnValue(null));
-    }});
+    when(mockParentConfiguration.getPropertyValue(eq("CUSTOM_ENVIRONMENT_VARIABLE"), eq(true))).thenReturn("test");
 
     EnvironmentVariablesConfiguration configuration = new EnvironmentVariablesConfiguration(mockParentConfiguration);
 
     assertEquals(System.getenv("USER"), configuration.getPropertyValue("USER"));
     assertEquals("test", configuration.getPropertyValue("CUSTOM_ENVIRONMENT_VARIABLE"));
     assertNull(configuration.getPropertyValue("UNSET_ENVIRONMENT_VARIABLE", false));
+
+    verify(mockParentConfiguration, times(1)).getPropertyValue(eq("CUSTOM_ENVIRONMENT_VARIABLE"), eq(true));
   }
 
   @Test
   public void testIterator() {
-    Set<String> expectedEnvironmentVariableNames = new HashSet<String>(System.getenv().keySet());
+    Set<String> expectedEnvironmentVariableNames = new HashSet<>(System.getenv().keySet());
 
     assertFalse(expectedEnvironmentVariableNames.isEmpty());
 

@@ -16,24 +16,26 @@
 
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 /**
  * The ToStringRendererTest class is a test suite of test cases testing the contract and functionality
- * of the ToStringRenderer class.
+ * of the {@link ToStringRenderer} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.support.ToStringRenderer
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @see org.cp.elements.lang.support.ToStringRenderer
+ * @since 1.0.0
  */
 public class ToStringRendererTest {
 
   @Test
-  public void testRender() {
-    assertEquals("test", new ToStringRenderer().render("test"));
+  public void render() {
+    assertThat(new ToStringRenderer<String>().render("test"), is(equalTo("test")));
   }
 
 }

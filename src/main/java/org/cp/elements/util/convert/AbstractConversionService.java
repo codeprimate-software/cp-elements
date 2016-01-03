@@ -28,14 +28,14 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
 
 /**
- * The AbstractConversionService class is a base class encapsulating functionality common to all service
+ * The AbstractConversionService class is an abstract base class encapsulating functionality common to all service
  * classes/components that perform value type conversions.
  *
  * @author John J. Blum
  * @see org.cp.elements.util.convert.ConversionService
  * @see org.cp.elements.util.convert.Converter
+ * @see <a href="http://stackoverflow.com/questions/8040362/class-name-of-type-parameters-in-java">Class name of type parameters in Java?</a>
  * @since 1.0.0
- * @link http://stackoverflow.com/questions/8040362/class-name-of-type-parameters-in-java
  */
 @SuppressWarnings("unused")
 public abstract class AbstractConversionService implements ConversionService {

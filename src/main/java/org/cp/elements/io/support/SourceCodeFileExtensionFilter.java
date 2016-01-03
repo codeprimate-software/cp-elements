@@ -19,11 +19,12 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The SourceCodeFileExtensionFilter is a FileExtensionFilter implementation...
+ * The SourceCodeFileExtensionFilter class is a {@link FileExtensionFilter} implementation
+ * that filters files by source code file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
- * @link http://www.file-extensions.org/filetype/extension/name/source-code-and-script-files
+ * @see <a href="http://www.file-extensions.org/filetype/extension/name/source-code-and-script-files">file-extensions.org</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

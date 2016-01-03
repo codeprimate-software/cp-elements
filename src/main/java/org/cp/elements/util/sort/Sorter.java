@@ -53,6 +53,7 @@ public interface Sorter {
    * @param elements the array of elements to sort.
    * @return the array of elements sorted.
    */
+  @SuppressWarnings({ "unchecked", "varargs "})
   <E> E[] sort(E... elements);
 
   /**

@@ -41,6 +41,7 @@ import org.junit.Test;
  * @see org.junit.Test
  * @since 1.0.0
  */
+@SuppressWarnings("deprecation")
 public class ComposableTransformerTest extends AbstractMockingTestSuite {
 
   @Test
@@ -76,7 +77,7 @@ public class ComposableTransformerTest extends AbstractMockingTestSuite {
 
   @Test
   public void composeWithOne() {
-    Transformer mockTransformer = mock(Transformer.class, "testComposeWithOne");
+    Transformer<?> mockTransformer = mock(Transformer.class, "MockTransformer");
     assertSame(mockTransformer, ComposableTransformer.compose(mockTransformer));
   }
 

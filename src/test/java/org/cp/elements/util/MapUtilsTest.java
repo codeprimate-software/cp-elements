@@ -34,12 +34,13 @@ import org.cp.elements.lang.support.DefaultFilter;
 import org.junit.Test;
 
 /**
- * The MapUtilsTest class is a test suite of test cases testing the contract and functionality of the MapUtils class.
+ * The MapUtilsTest class is a test suite of test cases testing the contract and functionality
+ * of the {@link MapUtils} class.
  *
  * @author John J. Blum
  * @see java.util.Map
- * @see org.cp.elements.util.MapUtils
  * @see org.junit.Test
+ * @see org.cp.elements.util.MapUtils
  * @since 1.0.0
  */
 public class MapUtilsTest {
@@ -233,7 +234,7 @@ public class MapUtilsTest {
 
   @Test
   public void testTransformEmptyMap() {
-    Map emptyMap = Collections.emptyMap();
+    Map<?, ?> emptyMap = Collections.emptyMap();
 
     assertTrue(emptyMap.isEmpty());
     assertSame(emptyMap, MapUtils.transform(emptyMap, (value) -> null));

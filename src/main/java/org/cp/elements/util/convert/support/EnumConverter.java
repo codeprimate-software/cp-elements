@@ -31,12 +31,15 @@ import org.cp.elements.util.convert.ConverterAdapter;
 @SuppressWarnings("unused")
 public class EnumConverter extends ConverterAdapter<String, Enum> {
 
+  /* (non-Javadoc) */
   @Override
   public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
     return (String.class.equals(fromType) && isAssignableTo(toType, Enum.class));
   }
 
+  /* (non-Javadoc) */
   @Override
+  @SuppressWarnings("unchecked")
   public <QT extends Enum> QT convert(final String value, final Class<QT> enumType) {
     try {
       Enum enumInstance = Enum.valueOf(enumType, value);

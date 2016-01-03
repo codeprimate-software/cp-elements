@@ -27,10 +27,11 @@ import org.cp.elements.lang.Transformer;
 
 /**
  * The MapUtils class provides utility methods for working with the Java Collections Framework and specifically
- * the Map classes.
+ * the {@link Map} classes.
  * 
  * @author John J. Blum
  * @see java.util.Collections
+ * @see java.util.Iterator
  * @see java.util.Map
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.Transformer
@@ -73,8 +74,9 @@ public abstract class MapUtils {
   /**
    * Filters the Map of key-value pairs based on the criteria defined by the Filter.
    * 
-   * @param <K> the Class type of the key.
-   * @param <V> the Class type of the value.
+   * @param <K> the class type of the key.
+   * @param <V> the class type of the value.
+   * @param <M> the subclass type of Map to filter.
    * @param map the Map of key-value pairs to filter.
    * @param filter the Filter defining the criteria used to match key-value pairs from the Map.
    * @return a new Map containing only the key-value pairs from the original Map matching the criteria defined
@@ -112,7 +114,7 @@ public abstract class MapUtils {
     Assert.notNull(map, "The Map to search and find key-value pairs matching the criteria defined by the Filter cannot be null!");
     Assert.notNull(filter, "The Filter used to find and match key-value pairs from the Map cannot be null!");
 
-    Map<K, V> resultMap = new HashMap<K, V>(map.size());
+    Map<K, V> resultMap = new HashMap<>(map.size());
 
     for (Map.Entry<K, V> entry : map.entrySet()) {
       if (filter.accept(entry)) {

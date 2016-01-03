@@ -23,11 +23,14 @@ import java.util.List;
 import org.cp.elements.util.sort.AbstractSorter;
 
 /**
- * The MergeSort class is an implementation of the Merge Sort algorithm and the Sorter interface.
+ * The MergeSort class is an implementation of the Merge Sort algorithm
+ * and the {@link org.cp.elements.util.sort.Sorter} interface.
  *
  * @author John J. Blum
+ * @see java.util.List
  * @see org.cp.elements.util.sort.AbstractSorter
- * @link http://en.wikipedia.org/wiki/Merge_sort
+ * @see org.cp.elements.util.sort.Sorter
+ * @see <a href="http://en.wikipedia.org/wiki/Merge_sort">Merge Sort</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

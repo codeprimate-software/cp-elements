@@ -22,7 +22,7 @@ import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
 
 /**
- * The ObjectUtils utility class performs various operations on java.lang.Objects.
+ * The ObjectUtils utility class performs various operations on {@link java.lang.Object}.
  *
  * @author John J. Blum
  * @see java.lang.Object
@@ -77,7 +77,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return the first non-null value in the array of Object values.
    */
   @NullSafe
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "varargs" })
   public static <T> T defaultIfNull(final T... values) {
     if (values != null) {
       for (T value : values) {

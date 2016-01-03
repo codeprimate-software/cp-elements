@@ -19,11 +19,12 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ArchivingAndCompressionFileExtensionFilter class is a FileExtensionFilter implementation...
+ * The ArchivingAndCompressionFileExtensionFilter class is a {@link FileExtensionFilter} implementation
+ * that filters files by archive file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
- * @link http://en.wikipedia.org/wiki/List_of_archive_formats
+ * @see <a href="http://en.wikipedia.org/wiki/List_of_archive_formats">List of archive formats</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

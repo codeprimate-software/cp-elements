@@ -23,7 +23,7 @@ import org.cp.elements.lang.StringUtils;
  * The HttpStatus enum is an enumeration of all HTTP status codes.
  *
  * @author John J. Blum
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+ * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">Hypertext Transfer Protocol - HTTP/1.1 - RFC-2616</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

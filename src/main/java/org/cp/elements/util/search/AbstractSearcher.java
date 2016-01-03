@@ -28,7 +28,8 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
 
 /**
- * The AbstractSearcher class is a base class encapsulating functionality common to all Searcher implementations.
+ * The AbstractSearcher class is a base class encapsulating functionality common to all
+ * {@link Searcher} implementations.
  *
  * @author John J. Blum
  * @see MatcherHolder
@@ -119,7 +120,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.util.Arrays#asList(Object[])
    */
   @Override
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "varargs" })
   public <E> E search(final E... array) {
     return search(Arrays.asList(array));
   }
@@ -180,7 +181,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see java.util.Arrays#asList(Object[])
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "varargs" })
   public <E> Iterable<E> searchForAll(final E... array) {
     return searchForAll(Arrays.asList(array));
   }
@@ -288,6 +289,7 @@ public abstract class AbstractSearcher implements Searcher {
    * the annotation meta-data, applying only to the calling Thread and only if a custom Matcher is allowed.  The Matcher
    * is local to calling Thread during the search operation and does not change the Matcher set on the Searcher.
    *
+   * @param <T> the class type of the elements in the {@link Searchable} collection.
    * @param searchable the Searchable implementing object used to determine the desired Matcher used to match and find
    * elements during the search operation.
    * @return the Searchable implementing object evaluated, allowing this method call to be chained.

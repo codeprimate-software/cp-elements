@@ -21,12 +21,14 @@ import java.util.List;
 import org.cp.elements.util.sort.AbstractSorter;
 
 /**
- * The ShellSort class is an implementation of the Shell Sort algorithm and Sorter interface.
+ * The ShellSort class is an implementation of the Shell Sort algorithm
+ * and the {@link org.cp.elements.util.sort.Sorter} interface.
  *
  * @author John J. Blum
  * @see java.util.List
  * @see org.cp.elements.util.sort.AbstractSorter
- * @link http://en.wikipedia.org/wiki/Shellsort
+ * @see org.cp.elements.util.sort.Sorter
+ * @see <a href="http://en.wikipedia.org/wiki/Shellsort">Shellsort</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

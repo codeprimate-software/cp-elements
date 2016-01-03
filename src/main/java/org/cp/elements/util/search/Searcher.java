@@ -58,6 +58,7 @@ public interface Searcher {
    * @see #search(Object)
    * @see #searchForAll(Object[])
    */
+  @SuppressWarnings({ "unchecked", "varargs" })
   <E> E search(E... array);
 
   /**
@@ -121,6 +122,7 @@ public interface Searcher {
    * @see #searchForAll(Object)
    * @see java.lang.Iterable
    */
+  @SuppressWarnings({ "unchecked", "varargs" })
   <E> Iterable<E> searchForAll(E... array);
 
   /**
