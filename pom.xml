@@ -8,19 +8,20 @@
   <parent>
     <groupId>org.codeprimate</groupId>
     <artifactId>cp-core</artifactId>
-    <version>1.0.0.BUILD-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
     <relativePath>../cp-core/pom.xml</relativePath>
   </parent>
   <artifactId>cp-elements</artifactId>
+  <version>1.0.0.SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>cp-elements</name>
   <description>
-    'Codeprimate Elements' (a.k.a. cp-elements, or Elements) is a Java Class Library and micro-framework for simplifying
-    the development of software applications using the Java platform.  Elements packages several mature and robust APIs
-    into one library in order to address various application concerns and aspects of application development.  Elememts
-    is a highly simple, yet robust framework built on fundamental OO principles, design patterns and best practices
-    to appropriately and effectively solve common and reoccuring problems in software development.
+    'Codeprimate Elements' (a.k.a. cp-elements, or Elements) is a Java Class Library and micro-framework that simplifies 
+    the development of software applications written in Java.  Elements packages several APIs in one library in order to 
+    address various application concerns and aspects of software development collectively.  Elememts is a highly simple, 
+    yet robust and proven library built on solid OO principles, design patterns and best practices effectively solving 
+    common and reoccuring problems in software development. 
   </description>
   <url>http://www.codeprimate.org/products/cp-elements</url>
 
@@ -44,7 +45,7 @@
  			<name>Apache License, Version 2.0</name>
  			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
  			<comments>
-        Copyright 2016 Author or Authors.
+        Copyright 2016-Present Author or Authors.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -59,30 +60,145 @@
         limitations under the License.
       </comments>
  		</license>
- 		<license>
- 			<name>Codeprimate License, Version 1.0</name>
- 			<url>http://www.codeprimate.org/licenses/LICENSE-1.0</url>
- 			<comments>
-        Copyright (c) 2011-Present. Codeprimate, LLC and Authors.  All Rights Reserved.
-
-        This software is licensed under the Codeprimate End User License Agreement (EULA).
-        This software is proprietary and confidential in addition to an intellectual asset
-        of the aforementioned authors.
-
-        By using the software, the end-user implicitly consents to and agrees to be in compliance
-        with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
-        the maximum penalties permissible by law.
-
-        In short, this software may not be reverse engineered, reproduced, copied, modified
-        or distributed without prior authorization of the aforementioned authors, permissible
-        and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
-        and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
-        EXTENSIONS or CONDITIONS of any kind.
-
-        For further information on the software license, the end user is encouraged to read
-        the EULA @ ...
- 			</comments>
- 		</license>
  	</licenses>
+
+  <properties>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-source-plugin.version>2.4</maven-source-plugin.version>
+  </properties>
+
+  <scm>
+    <connection>git@github.com:codeprimate-software/cp-elements.git</connection>
+    <developerConnection>git@github.com:codeprimate-software/cp-elements.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-elements</url>
+  </scm>
+
+  <issueManagement>
+ 		<system>GitHub</system>
+ 		<url>https://github.com/codeprimate-software/cp-elements/issues</url>
+ 	</issueManagement>
+
+  <profiles>
+    <profile>
+      <id>prepare-release</id>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+      <reporting>
+        <plugins>
+<!--
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changelog-plugin</artifactId>
+            <version>2.3</version>
+            <configuration>
+              <type>date</type>
+              <dates>
+                <date implementation="java.lang.String">2013-12-30</date>
+                <date implementation="java.lang.String">2016-01-02</date>
+              </dates>
+              <dateFormat>yyyy-MM-dd</dateFormat>
+            </configuration>
+          </plugin>
+-->
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>auto-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${maven-release-plugin.version}</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <useReleaseProfile>false</useReleaseProfile>
+              <releaseProfiles>release</releaseProfiles>
+              <goals>deploy</goals>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+<!--
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+-->
+        </plugins>
+      </build>
+      <distributionManagement>
+        <snapshotRepository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
+  </profiles>
 
 </project>

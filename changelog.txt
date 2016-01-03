@@ -1,0 +1,42 @@
+Codeprimate Elements changelog.txt
+----------------------------------
+https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
+
+
+1.0.0.M1 - 2016-01-03
+---------------------
+Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang package.
+
+* Add the assertThat(..) language expression and extension.
+* Add the IdentifierSequence API along with supporting implementation classes.
+* Introduce a ThreadAdapter class for adapting the java.lang.Thread API.
+* Introduce a SystemUtilities class for interacting with the application's operating system environment.
+* Modify build to generate source archive, Javadoc and digitally sign release artifacts.
+
+
+birth - 2011-10-03
+------------------
+Key features of the 1.0.0 inception is the Language extensions and concurrent utilities, IO utilities
+and supporting classes, Network utilities and supporting classes, Reflection utilities, Collection Framework utilities,
+ObjectFactory API, Beans API, Business Rules API, Configuration API, Conversion API, Search API and the Sorting API.
+
+* Includes the org.cp.elements.beans package.
+* Includes the org.cp.elements.biz.rules package.
+* Includes the org.cp.elements.context.configure package.
+* Includes the org.cp.elements.dao package.
+* Includes the org.cp.elements.enums package.
+* Includes the org.cp.elements.io package.
+* Includes the org.cp.elements.jdbc package.
+* Includes the org.cp.elements.lang package.
+* Includes the org.cp.elements.lang.concurrent package.
+* Includes the org.cp.elements.lang.factory package.
+* Includes the org.cp.elements.lang.reflect package.
+* Includes the org.cp.elements.net package.
+* Includes the org.cp.elements.security package.
+* Includes the org.cp.elements.service package.
+* Includes the org.cp.elements.text package.
+* Includes the org.cp.elements.tools package.
+* Includes the org.cp.elements.util package.
+* Includes the org.cp.elements.util.convert package.
+* Includes the org.cp.elements.util.search package.
+* Includes the org.cp.elements.util.sort package.
