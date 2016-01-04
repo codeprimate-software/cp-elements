@@ -64,10 +64,13 @@
 
   <properties>
     <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
+    <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>2.1</maven-jxr-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-source-plugin.version>2.4</maven-source-plugin.version>
+    <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
   </properties>
 
   <scm>
@@ -130,6 +133,20 @@
           </plugin>
         </plugins>
       </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>${maven-surefire-report-plugin.version}</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <version>${maven-jxr-plugin.version}</version>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
     <profile>
       <id>prepare-release</id>
@@ -138,21 +155,29 @@
       </properties>
       <reporting>
         <plugins>
-<!--
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-changelog-plugin</artifactId>
-            <version>2.3</version>
-            <configuration>
-              <type>date</type>
-              <dates>
-                <date implementation="java.lang.String">2013-12-30</date>
-                <date implementation="java.lang.String">2016-01-02</date>
-              </dates>
-              <dateFormat>yyyy-MM-dd</dateFormat>
-            </configuration>
+            <version>${maven-changelog-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+                <id>all-reports</id>
+                <configuration>
+                  <type>date</type>
+                  <dates>
+                    <date implementation="java.lang.String">2013-12-30</date>
+                    <date implementation="java.lang.String">2016-01-04</date>
+                  </dates>
+                  <dateFormat>yyyy-MM-dd</dateFormat>
+                </configuration>
+                <reports>
+                  <report>changelog</report>
+                  <report>dev-activity</report>
+                  <report>file-activity</report>
+                </reports>
+              </reportSet>
+            </reportSets>
           </plugin>
--->
         </plugins>
       </reporting>
     </profile>
