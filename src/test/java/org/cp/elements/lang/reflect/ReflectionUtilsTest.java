@@ -16,10 +16,13 @@
 
 package org.cp.elements.lang.reflect;
 
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
@@ -429,29 +432,25 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithFieldsOnClass() {
-    final Set<String> fieldNames = new HashSet<>(2);
+    Set<String> fieldNames = new HashSet<>(2);
 
     ReflectionUtils.withFields().on(SuperType.class).call((field) -> fieldNames.add(field.getName()))
       .throwing(new FieldNotFoundException());
 
-    assertNotNull(fieldNames);
-    assertFalse(fieldNames.isEmpty());
-    assertEquals(2, fieldNames.size());
-    assertTrue(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField")));
+    assertThat(fieldNames.size(), is(greaterThanOrEqualTo(2)));
+    assertThat(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField")), is(true));
   }
 
   @Test
   public void testWithFieldsOnObject() {
-    final Set<String> fieldNames = new HashSet<>(5);
+    Set<String> fieldNames = new HashSet<>(5);
 
     ReflectionUtils.withFields().on(new DerivedType()).call((field) -> fieldNames.add(field.getName()))
       .throwing(new FieldNotFoundException());
 
-    assertNotNull(fieldNames);
-    assertFalse(fieldNames.isEmpty());
-    assertEquals(5, fieldNames.size());
-    assertTrue(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField",
-      "booleanField", "magicNumber", "id")));
+    assertThat(fieldNames.size(), is(greaterThanOrEqualTo(5)));
+    assertThat(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField",
+      "booleanField", "magicNumber", "id")), is(true));
   }
 
   @Test
@@ -493,22 +492,20 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
 
   @Test
   public void testWithMethodsOnClass() {
-    final Set<String> methods = new HashSet<>(5);
+    Set<String> methods = new HashSet<>(5);
 
     ReflectionUtils.withMethods().on(SuperType.class).matching((method) -> SuperType.class.equals(method.getDeclaringClass()))
       .call((method) -> methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length)))
         .throwing(new MethodNotFoundException());
 
-    assertNotNull(methods);
-    assertFalse(methods.isEmpty());
-    assertEquals(5, methods.size());
-    assertTrue(methods.containsAll(Arrays.asList("methodOne(0)", "methodTwo(1)", "methodThree(0)",
-      "methodFour(1)", "methodFour(2)")));
+    assertThat(methods.size(), is(greaterThanOrEqualTo(5)));
+    assertThat(methods.containsAll(Arrays.asList("methodOne(0)", "methodTwo(1)", "methodThree(0)",
+      "methodFour(1)", "methodFour(2)")), is(true));
   }
 
   @Test
   public void testWithMethodsOnObject() {
-    final Set<String> methods = new HashSet<>(10);
+    Set<String> methods = new HashSet<>(10);
 
     ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->
       DerivedType.class.equals(method.getDeclaringClass()) && method.getName().startsWith("method"))
@@ -517,11 +514,9 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
         methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length));
       }).throwing(new MethodNotFoundException());
 
-    assertNotNull(methods);
-    assertFalse(methods.isEmpty());
-    assertEquals(5, methods.size());
-    assertTrue(methods.containsAll(Arrays.asList("methodFive(0)", "methodSix(1)", "methodSeven(0)", "methodEight(2)",
-      "methodNine(1)")));
+    assertThat(methods.size(), is(greaterThanOrEqualTo(5)));
+    assertThat(methods.containsAll(Arrays.asList("methodFive(0)", "methodSix(1)", "methodSeven(0)", "methodEight(2)",
+      "methodNine(1)")), is(true));
   }
 
   @Test
