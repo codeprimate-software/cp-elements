@@ -63,6 +63,7 @@
   </licenses>
 
   <properties>
+    <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
@@ -157,6 +158,11 @@
               <suppressionsLocation>${basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
               <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
             </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>findbugs-maven-plugin</artifactId>
+            <version>${findbugs-maven-plugin.version}</version>
           </plugin>
         </plugins>
       </reporting>
