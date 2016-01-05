@@ -1,6 +1,7 @@
 .backup/
 .bak/
 etc/build
+etc/release
 lib/
 target/
 .DS_Store
