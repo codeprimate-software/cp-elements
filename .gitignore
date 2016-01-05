@@ -1,6 +1,6 @@
 .backup/
 .bak/
-etc/
+etc/build
 lib/
 target/
 .DS_Store

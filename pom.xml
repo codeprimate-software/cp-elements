@@ -65,6 +65,7 @@
   <properties>
     <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.1</maven-jxr-plugin.version>
@@ -144,6 +145,18 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
             <version>${maven-jxr-plugin.version}</version>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>${maven-checkstyle-plugin.version}</version>
+            <configuration>
+              <configLocation>${basedir}/etc/checkstyle/config/codeprimate_checks.xml</configLocation>
+              <failsOnError>true</failsOnError>
+              <headerLocation>${basedir}/etc/checkstyle/config/java.header</headerLocation>
+              <suppressionsLocation>${basedir}/etc/checkstyle/config/suppressions.xml</suppressionsLocation>
+              <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+            </configuration>
           </plugin>
         </plugins>
       </reporting>
