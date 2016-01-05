@@ -9,9 +9,12 @@ Code review, refactoring, enhancements and new features introduced in the org.cp
 
 * Add the assertThat(..) language expression and extension.
 * Add the IdentifierSequence API along with supporting implementation classes.
-* Introduce a ThreadAdapter class for adapting the java.lang.Thread API.
 * Introduce a SystemUtilities class for interacting with the application's operating system environment.
+* Introduce a ThreadAdapter class for adapting the java.lang.Thread API.
 * Modify build to generate source archive, Javadoc and digitally sign release artifacts.
+* Add Surefire Reporting, Checkstyle, FindBugs and PMD code analytics to the Elements Maven POM.
+* Enable Maven Changelog Plugin along with Site generation.
+* Add Nexus Staging Maven Plugin
 
 
 birth - 2011-10-03

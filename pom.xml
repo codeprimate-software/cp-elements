@@ -12,7 +12,7 @@
     <relativePath>../cp-core/pom.xml</relativePath>
   </parent>
   <artifactId>cp-elements</artifactId>
-  <version>1.0.0.SNAPSHOT</version>
+  <version>1.0.0.M1</version>
   <packaging>jar</packaging>
 
   <name>cp-elements</name>
@@ -147,6 +147,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
             <version>${maven-jxr-plugin.version}</version>
+            <configuration>
+              <javadocDir>${project.build.directory}/apidocs</javadocDir>
+            </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -171,7 +174,6 @@
             <version>${maven-pmd-plugin.version}</version>
             <configuration>
               <rulesets>
-                <!-- Two rule sets that come bundled with PMD -->
                 <ruleset>/rulesets/java/basic.xml</ruleset>
                 <ruleset>/rulesets/java/braces.xml</ruleset>
                 <ruleset>/rulesets/java/clone.xml</ruleset>
@@ -201,7 +203,7 @@
     <profile>
       <id>prepare-release</id>
       <properties>
-        <skipTests>true</skipTests>
+        <skipTests>false</skipTests>
       </properties>
       <reporting>
         <plugins>
@@ -216,7 +218,7 @@
                   <type>date</type>
                   <dates>
                     <date implementation="java.lang.String">2013-12-30</date>
-                    <date implementation="java.lang.String">2016-01-04</date>
+                    <date implementation="java.lang.String">2016-01-06</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
@@ -306,7 +308,7 @@
             <configuration>
               <serverId>ossrh</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              <autoReleaseAfterClose>false</autoReleaseAfterClose>
             </configuration>
           </plugin>
         </plugins>
