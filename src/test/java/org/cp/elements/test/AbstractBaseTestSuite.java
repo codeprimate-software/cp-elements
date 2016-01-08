@@ -68,7 +68,7 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected File getLocation(Class type) {
-    String pathname = type.getName().replaceAll("\\.", File.separator).concat(".class");
+    String pathname = type.getName().replaceAll("\\.", "/").concat(".class");
     return new File(getClassesOutputDirectory(), pathname);
   }
 

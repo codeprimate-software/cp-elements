@@ -16,7 +16,10 @@
 
 package org.cp.elements.io;
 
+import static org.cp.elements.lang.LangExtensions.assertThat;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.cp.elements.lang.Assert;
@@ -24,7 +27,7 @@ import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The FileUtils class is a utility class for working with File objects and the file system.
+ * The FileUtils class encapsulates several utility methods for working with files.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -35,57 +38,73 @@ import org.cp.elements.lang.StringUtils;
 public abstract class FileUtils extends IOUtils {
 
   /**
-   * Gets the extension of the given file.
+   * Asserts that the given file exists.
    *
-   * @param file the File from which to pull the file extension.
+   * @param path the {@link File} to assert for existence.
+   * @return a reference back to the file.
+   * @throws FileNotFoundException if the file does not exist.
+   * @see #isExisting(File)
+   */
+  public static File assertExists(final File path) throws FileNotFoundException {
+    if (isExisting(path)) {
+      return path;
+    }
+
+    throw new FileNotFoundException(String.format("(%1$s) was not found", path));
+  }
+
+  /**
+   * Returns the extension of the given file.
+   *
+   * @param file the {@link File} from which to get the extension.
    * @return the file extension of the given file or an empty String if the file does not have an extension.
    * @throws java.lang.NullPointerException if the file reference is null.
    * @see java.io.File#getName()
    */
   public static String getExtension(final File file) {
-    Assert.notNull(file, "The File from which to get the extension cannot be null!");
+    Assert.notNull(file, "File cannot be null");
     String filename = file.getName();
     int index = filename.indexOf(StringUtils.DOT_SEPARATOR);
-    return (index == -1 ? StringUtils.EMPTY_STRING : filename.substring(index + 1));
+    return (index != -1 ? filename.substring(index + 1) : StringUtils.EMPTY_STRING);
   }
 
   /**
-   * Gets the absolute path of the given file.
+   * Returns the absolute path of the given file.
    *
-   * @param file the File from which to pull the file path.
-   * @return a String indicating the absolute pathname (location) of the given file.
+   * @param file the {@link File} from which to get the absolute filesystem path.
+   * @return a String indicating the absolute filesystem pathname (location) of the given file.
    * @throws java.lang.NullPointerException if the file reference is null.
    * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    * @see java.io.File#getParentFile()
    */
   public static String getLocation(final File file) {
-    Assert.notNull(file, "The File to get the location of cannot be null!");
+    Assert.notNull(file, "File cannot be null");
     File parent = file.getParentFile();
-    Assert.notNull(parent, new IllegalArgumentException(String.format("Unable to find the location of file (%1$s)!",
-      file)));
+    Assert.notNull(parent, new IllegalArgumentException(String.format(
+      "Unable to determine the location of file (%1$s)", file)));
     return tryGetCanonicalPathElseGetAbsolutePath(parent);
   }
 
   /**
-   * Gets the name of the given file without the extension.
+   * Returns the name of the given file without it's extension.
    *
-   * @param file the File from which to get the name.
-   * @return a String indicating the name of the file without the extension.
+   * @param file the {@link File} from which to get the name.
+   * @return a String indicating the name of the file without it's extension.
    * @throws java.lang.NullPointerException if the file reference is null.
    * @see java.io.File#getName()
    */
-  public static String getNameWithoutExtension(final File file) {
-    Assert.notNull(file, "The File from which to get the name of without extension cannot be null!");
+  public static String getName(final File file) {
+    Assert.notNull(file, "File cannot be null");
     String filename = file.getName();
     int index = filename.indexOf(StringUtils.DOT_SEPARATOR);
-    return (index == -1 ? filename : filename.substring(0, index));
+    return (index != -1 ? filename.substring(0, index) : filename);
   }
 
   /**
-   * Determines whether the given File path actually exists and is a directory.
+   * Determines whether the given file actually exists and is a directory.
    *
-   * @param path the File used to determine whether the path is a directory.
-   * @return a boolean valued indicating whether the given File path actually exists and is a directory.
+   * @param path the {@link File} to be evaluated as a directory.
+   * @return a boolean valued indicating whether the given file actually exists and is a directory.
    * @see java.io.File#isDirectory()
    */
   @NullSafe
@@ -94,10 +113,10 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Determines whether the given File path actually exists.
+   * Determines whether the given file actually exists.
    *
-   * @param path the File used to determine whether the path exists.
-   * @return a boolean valued indicating whether the given File path actually exists.
+   * @param path the {@link File} to evaluate.
+   * @return a boolean valued indicating whether the given file actually exists.
    * @see java.io.File#exists()
    */
   @NullSafe
@@ -106,10 +125,10 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Determines whether the given File path actually exists and is a file.
+   * Determines whether the given file actually exists and is a file.
    *
-   * @param path the File used to determine whether the path is a file.
-   * @return a boolean valued indicating whether the given File path actually exists and is a file.
+   * @param path the {@link File} to be evaluated as a file.
+   * @return a boolean valued indicating whether the given file actually exists and is a file.
    * @see java.io.File#isFile()
    */
   @NullSafe

@@ -16,10 +16,12 @@
 
 package org.cp.elements.io;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -27,172 +29,215 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The FileUtilsTest class is a test suite of test cases testing the contract and functionality of the FileUtils class.
  *
  * @author John J. Blum
  * @see java.io.File
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
-@SuppressWarnings("all")
 public class FileUtilsTest extends AbstractBaseTestSuite {
 
-  @Test
-  public void testGetExtension() {
-    File file = new File("/absolute/path/to/file.ext");
-    String fileExtension = FileUtils.getExtension(file);
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
-    assertEquals("ext", fileExtension);
-
-    file = new File("FileUtils.java");
-    fileExtension = FileUtils.getExtension(file);
-
-    assertEquals("java", fileExtension);
-
-    file = new File("FileUtilsTest.class");
-    fileExtension = FileUtils.getExtension(file);
-
-    assertEquals("class", fileExtension);
-
-    file = new File("relative/path/to/some/file");
-    fileExtension = FileUtils.getExtension(file);
-
-    assertEquals("", fileExtension);
-
-    file = new File("/path/to/some/file/with/two/extensions/test.java.class");
-    fileExtension = FileUtils.getExtension(file);
-
-    assertEquals("java.class", fileExtension);
+  protected File newFile(String pathname) {
+    return new File(pathname);
   }
 
-  @Test(expected = NullPointerException.class)
-  public void testGetExtensionWithNullFile() {
-    try {
-      FileUtils.getExtension(null);
-    }
-    catch (NullPointerException expected) {
-      assertEquals("The File from which to get the extension cannot be null!", expected.getMessage());
-      throw expected;
-    }
+  protected File newFile(File parent, String pathname) {
+    return new File(parent, pathname);
   }
 
   @Test
-  public void testGetLocation() {
-    File file = new File("/absolute/path/to/file.ext");
-    String location = FileUtils.getLocation(file);
-
-    assertEquals("/absolute/path/to", location);
-
-    file = new File("relative/path/to/another/file.ext");
-    location = FileUtils.getLocation(file);
-
-    assertEquals(String.format("%1$s%2$srelative/path/to/another", WORKING_DIRECTORY.getAbsolutePath(), File.separator),
-      location);
-
-    file = new File("/location/to/a/file/system/directory");
-    location = FileUtils.getLocation(file);
-
-    assertEquals("/location/to/a/file/system", location);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testGetLocationWithNonLocatableFile() {
-    try {
-       FileUtils.getLocation(new File("file.ext"));
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals("Unable to find the location of file (file.ext)!", expected.getMessage());
-      throw expected;
-    }
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testGetLocationWithNullFile() {
-    try {
-      FileUtils.getLocation(null);
-    }
-    catch (NullPointerException expected) {
-      assertEquals("The File to get the location of cannot be null!", expected.getMessage());
-      throw expected;
-    }
+  public void assertExistsWithExistingDirectory() throws FileNotFoundException {
+    FileUtils.assertExists(WORKING_DIRECTORY);
   }
 
   @Test
-  public void testGetNameWithoutExtension() {
-    File file = new File("/absolute/path/to/file.ext");
-    String filename = FileUtils.getNameWithoutExtension(file);
-
-    assertEquals("file", filename);
-
-    file = new File("FileUtilsTest.java");
-    filename = FileUtils.getNameWithoutExtension(file);
-
-    assertEquals("FileUtilsTest", filename);
-
-    file = new File("relative/path/to/someFile");
-    filename = FileUtils.getNameWithoutExtension(file);
-
-    assertEquals("someFile", filename);
-
-    file = new File("FileUtils");
-    filename = FileUtils.getNameWithoutExtension(file);
-
-    assertEquals("FileUtils", filename);
-
-    file = new File("/path/to/some/file/with/two/extensions/test.java.class");
-    filename = FileUtils.getNameWithoutExtension(file);
-
-    assertEquals("test", filename);
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void testGetNameWithoutExtensionWithNullFile() {
-    try {
-      FileUtils.getNameWithoutExtension(null);
-    }
-    catch (NullPointerException expected) {
-      assertEquals("The File from which to get the name of without extension cannot be null!", expected.getMessage());
-      throw expected;
-    }
+  public void assertExistsWithExistingFile() throws FileNotFoundException {
+    FileUtils.assertExists(getLocation(FileUtils.class));
   }
 
   @Test
-  public void testIsDirectory() {
-    assertTrue(FileUtils.isDirectory(TEMPORARY_DIRECTORY));
-    assertTrue(FileUtils.isDirectory(USER_HOME));
-    assertTrue(FileUtils.isDirectory(WORKING_DIRECTORY));
-    assertFalse(FileUtils.isDirectory(new File(WORKING_DIRECTORY, "non_existing_directory/")));
-    assertFalse(FileUtils.isDirectory(new File(WORKING_DIRECTORY, "cp-elements-1.0.0.SNAPSHOT.jar")));
-    assertFalse(FileUtils.isDirectory(new File(WORKING_DIRECTORY, "non_existing_file.ext")));
-    assertFalse(FileUtils.isDirectory(null));
+  public void assertExistsWithNonExistingDirectory() throws FileNotFoundException {
+    expectedException.expect(FileNotFoundException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(/absolute/path/to/non/existing/directory) was not found");
+
+    FileUtils.assertExists(newFile("/absolute/path/to/non/existing/directory"));
   }
 
   @Test
-  public void testIsExisting() {
-    assertTrue(FileUtils.isExisting(getLocation(FileUtils.class)));
-    assertTrue(FileUtils.isExisting(WORKING_DIRECTORY));
-    assertFalse(FileUtils.isExisting(new File("/path/to/non_existing/pathname")));
-    assertFalse(FileUtils.isExisting(null));
+  public void assertExistsWithNonExistingFile() throws FileNotFoundException {
+    expectedException.expect(FileNotFoundException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(relative/path/to/non/existing/file.ext) was not found");
+
+    FileUtils.assertExists(newFile("relative/path/to/non/existing/file.ext"));
   }
 
   @Test
-  public void testIsFile() {
-    assertTrue(FileUtils.isFile(getLocation(FileUtils.class)));
-    assertFalse(FileUtils.isFile(WORKING_DIRECTORY));
-    assertFalse(FileUtils.isFile(new File("/path/to/non_existing/file.ext")));
-    assertFalse(FileUtils.isFile(new File("/path/to/non_existing/directory/")));
+  public void assertExistsWithNull() throws FileNotFoundException {
+    expectedException.expect(FileNotFoundException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("(null) was not found");
+
+    FileUtils.assertExists(null);
   }
 
   @Test
+  public void getExtensionOfFilesWithExtension() {
+    assertThat(FileUtils.getExtension(newFile("/absolute/path/to/file.ext")), is(equalTo("ext")));
+    assertThat(FileUtils.getExtension(newFile("relative/path/to/file.ext")), is(equalTo("ext")));
+    assertThat(FileUtils.getExtension(newFile("FileUtils.java")), is(equalTo("java")));
+    assertThat(FileUtils.getExtension(newFile("FileUtilsTest.class")), is(equalTo("class")));
+    assertThat(FileUtils.getExtension(newFile("search.c")), is(equalTo("c")));
+    assertThat(FileUtils.getExtension(newFile("sort.cpp")), is(equalTo("cpp")));
+    assertThat(FileUtils.getExtension(newFile("/path/to/file/with/two/extensions/test.java.class")),
+      is(equalTo("java.class")));
+  }
+
+  @Test
+  public void getExtensionOfFilesWithNoExtension() {
+    assertThat(FileUtils.getExtension(newFile("file")), is(equalTo(StringUtils.EMPTY_STRING)));
+    assertThat(FileUtils.getExtension(newFile("file.")), is(equalTo(StringUtils.EMPTY_STRING)));
+    assertThat(FileUtils.getExtension(newFile("exe")), is(equalTo(StringUtils.EMPTY_STRING)));
+  }
+
+  @Test
+  public void getExtensionWithNull() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("File cannot be null");
+
+    FileUtils.getExtension(null);
+  }
+
+  @Test
+  public void getLocationOfFilesWithLocation() {
+    assertThat(FileUtils.getLocation(newFile("/absolute/path/to/file.ext")), is(equalTo("/absolute/path/to")));
+    assertThat(FileUtils.getLocation(newFile("relative/path/to/file.ext")), is(equalTo(String.format(
+      "%1$s%2$srelative/path/to", WORKING_DIRECTORY.getAbsolutePath(), File.separator))));
+    assertThat(FileUtils.getLocation(newFile("/location/to/a/file/system/directory")),
+      is(equalTo("/location/to/a/file/system")));
+    assertThat(FileUtils.getLocation(WORKING_DIRECTORY), is(equalTo(WORKING_DIRECTORY.getParent())));
+  }
+
+  @Test
+  public void getLocationOfFileWithNoLocation() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("Unable to determine the location of file (file.ext)");
+
+    FileUtils.getLocation(new File("file.ext"));
+  }
+
+  @Test
+  public void getLocationWithNull() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("File cannot be null");
+
+    FileUtils.getLocation(null);
+  }
+
+  @Test
+  public void getNameOfFilesWithName() {
+    assertThat(FileUtils.getName(newFile("/absolute/path/to/file.ext")), is(equalTo("file")));
+    assertThat(FileUtils.getName(newFile("relative/path/to/file.ext")), is(equalTo("file")));
+    assertThat(FileUtils.getName(newFile("FileUtilsTest.java")), is(equalTo("FileUtilsTest")));
+    assertThat(FileUtils.getName(newFile("FileUtils.class")), is(equalTo("FileUtils")));
+    assertThat(FileUtils.getName(newFile("search.c")), is(equalTo("search")));
+    assertThat(FileUtils.getName(newFile("sort.cpp")), is(equalTo("sort")));
+    assertThat(FileUtils.getName(newFile("/path/to/file/with/two/extensions/test.java.class")),
+      is(equalTo("test")));
+  }
+
+  @Test
+  public void getNameOfFilesWithNoName() {
+    assertThat(FileUtils.getName(newFile(".exe")), is(equalTo(StringUtils.EMPTY_STRING)));
+    assertThat(FileUtils.getName(newFile(".")), is(equalTo(StringUtils.EMPTY_STRING)));
+  }
+
+  @Test
+  public void getNameWithNull() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("File cannot be null");
+
+    FileUtils.getName(null);
+  }
+
+  @Test
+  public void isDirectoryWithDirectories() {
+    assertThat(FileUtils.isDirectory(TEMPORARY_DIRECTORY), is(true));
+    assertThat(FileUtils.isDirectory(USER_HOME), is(true));
+    assertThat(FileUtils.isDirectory(WORKING_DIRECTORY), is(true));
+  }
+
+  @Test
+  public void isDirectoryWithNonDirectories() {
+    assertThat(FileUtils.isDirectory(newFile(WORKING_DIRECTORY, "non_existing_directory/")), is(false));
+    assertThat(FileUtils.isDirectory(newFile(WORKING_DIRECTORY, "nonExistingFile.ext")), is(false));
+    assertThat(FileUtils.isDirectory(newFile(WORKING_DIRECTORY, "cp-elements-1.0.0.SNAPSHOT.jar")), is(false));
+  }
+
+  @Test
+  public void isDirectoryWithNull() {
+    assertThat(FileUtils.isDirectory(null), is(false));
+  }
+
+  @Test
+  public void isExistingWithExistingFiles() {
+    assertThat(FileUtils.isExisting(WORKING_DIRECTORY), is(true));
+    assertThat(FileUtils.isExisting(getLocation(FileUtils.class)), is(true));
+  }
+
+  @Test
+  public void isExistingWithNonExistingFiles() {
+    assertThat(FileUtils.isExisting(new File("/path/to/non/existing/pathname")), is(false));
+  }
+
+  @Test
+  public void isExistingWithNull() {
+    assertThat(FileUtils.isExisting(null), is(false));
+  }
+
+  @Test
+  public void isFileWithFiles() {
+    assertThat(FileUtils.isFile(getLocation(FileUtils.class)), is(true));
+  }
+
+  @Test
+  public void isFileWithNonFiles() {
+    assertThat(FileUtils.isFile(WORKING_DIRECTORY), is(false));
+    assertThat(FileUtils.isFile(new File("relative/path/to/non/existing/directory/")), is(false));
+    assertThat(FileUtils.isFile(new File("/absolute/path/to/non/existing/file.ext")), is(false));
+  }
+
+  @Test
+  public void isFileWithNull() {
+    assertThat(FileUtils.isFile(null), is(false));
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void testTryGetCanonicalFileElseGetAbsoluteFile() throws IOException {
     File mockFile = mock(File.class);
 
@@ -205,6 +250,7 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void testTryGetCanonicalFileElseGetAbsoluteFileWhenGetCanonicalFileThrowIOException() throws IOException {
     File expectedMockAbsoluteFile = mock(File.class, "expectedMockAbsoluteFile");
     File mockFile = mock(File.class, "mockFile");
@@ -219,6 +265,7 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void testTryGetCanonicalPathElseGetAbsolutePath() throws IOException {
     File mockFile = mock(File.class);
 
@@ -231,6 +278,7 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void testTryGetCanonicalPathElseGetAbsolutePathWhenGetCanonicalPathThrowsIOException() throws IOException {
     File mockFile = mock(File.class);
 

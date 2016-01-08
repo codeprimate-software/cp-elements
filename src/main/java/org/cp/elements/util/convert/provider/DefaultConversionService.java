@@ -84,7 +84,7 @@ public class DefaultConversionService extends AbstractConversionService {
 
     for (File classFile : convertersPackageDirectory.listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION))) {
       String className = CONVERTERS_PACKAGE.getName().concat(StringUtils.DOT_SEPARATOR).concat(
-        FileUtils.getNameWithoutExtension(classFile));
+        FileUtils.getName(classFile));
 
       Class classType = ClassUtils.loadClass(className);
 
