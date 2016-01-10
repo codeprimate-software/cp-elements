@@ -19,8 +19,6 @@ package org.cp.elements.io;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -238,12 +236,12 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void testTryGetCanonicalFileElseGetAbsoluteFile() throws IOException {
+  public void tryGetCanonicalFileElseGetAbsoluteFile() throws IOException {
     File mockFile = mock(File.class);
 
     when(mockFile.getCanonicalFile()).thenReturn(mockFile);
 
-    assertSame(mockFile, FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile));
+    assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile), is(equalTo(mockFile)));
 
     verify(mockFile, never()).getAbsoluteFile();
     verify(mockFile, times(1)).getCanonicalFile();
@@ -251,14 +249,14 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void testTryGetCanonicalFileElseGetAbsoluteFileWhenGetCanonicalFileThrowIOException() throws IOException {
+  public void tryGetCanonicalFileElseGetAbsoluteFileWhenGetCanonicalFileThrowsIOException() throws IOException {
     File expectedMockAbsoluteFile = mock(File.class, "expectedMockAbsoluteFile");
     File mockFile = mock(File.class, "mockFile");
 
-    when(mockFile.getCanonicalFile()).thenThrow(new IOException("io error!"));
+    when(mockFile.getCanonicalFile()).thenThrow(new IOException("test"));
     when(mockFile.getAbsoluteFile()).thenReturn(expectedMockAbsoluteFile);
 
-    assertSame(expectedMockAbsoluteFile, FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile));
+    assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile), is(equalTo(expectedMockAbsoluteFile)));
 
     verify(mockFile, times(1)).getAbsoluteFile();
     verify(mockFile, times(1)).getCanonicalFile();
@@ -266,12 +264,13 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void testTryGetCanonicalPathElseGetAbsolutePath() throws IOException {
+  public void tryGetCanonicalPathElseGetAbsolutePath() throws IOException {
     File mockFile = mock(File.class);
 
-    when(mockFile.getCanonicalPath()).thenReturn("/absolute/path/to/mock/file");
+    when(mockFile.getCanonicalPath()).thenReturn("/absolute/path/to/mock/file.ext");
 
-    assertEquals("/absolute/path/to/mock/file", FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile));
+    assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile),
+      is(equalTo("/absolute/path/to/mock/file.ext")));
 
     verify(mockFile, never()).getAbsolutePath();
     verify(mockFile, times(1)).getCanonicalPath();
@@ -279,13 +278,14 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void testTryGetCanonicalPathElseGetAbsolutePathWhenGetCanonicalPathThrowsIOException() throws IOException {
+  public void tryGetCanonicalPathElseGetAbsolutePathWhenGetCanonicalPathThrowsIOException() throws IOException {
     File mockFile = mock(File.class);
 
-    when(mockFile.getAbsolutePath()).thenReturn("/absolute/path/to/mock/file");
-    when(mockFile.getCanonicalPath()).thenThrow(new IOException("io error!"));
+    when(mockFile.getAbsolutePath()).thenReturn("/absolute/path/to/mock/file.ext");
+    when(mockFile.getCanonicalPath()).thenThrow(new IOException("test"));
 
-    assertEquals("/absolute/path/to/mock/file", FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile));
+    assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile),
+      is(equalTo("/absolute/path/to/mock/file.ext")));
 
     verify(mockFile, times(1)).getAbsolutePath();
     verify(mockFile, times(1)).getCanonicalPath();

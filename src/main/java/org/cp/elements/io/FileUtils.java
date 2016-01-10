@@ -16,8 +16,6 @@
 
 package org.cp.elements.io;
 
-import static org.cp.elements.lang.LangExtensions.assertThat;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -137,11 +135,11 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Attempts to the get the canonical representation of the specified File, otherwise returns
-   * the absolute representation of the File.
+   * Attempts to the get the canonical form of the given file, otherwise returns the absolute form of the file.
    *
-   * @param file the File from which the canonical or absolute File will be returned.
-   * @return the canonical form of the File, otherwise returns the absolute form of the File if an IOException occurs.
+   * @param file the {@link File} from which the canonical or absolute file will be returned.
+   * @return the canonical form of the file unless an IOException occurs then return the absolute form of the file.
+   * @throws NullPointerException if the file reference is null.
    * @see java.io.File#getAbsoluteFile()
    * @see java.io.File#getCanonicalFile()
    */
@@ -155,10 +153,10 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Attempts to the get the canonical path of the specified File, otherwise returns the absolute path of the File.
+   * Attempts to the get the canonical path of the given file, otherwise returns the absolute path of the file.
    *
-   * @param file the File from which the canonical or absolute path will be returned.
-   * @return the canonical path of the File, otherwise returns the absolute path of the File if an IOException occurs.
+   * @param file the {@link File} from which the canonical or absolute path will be returned.
+   * @return the canonical path of the file unless an IOException occurs then return the absolute path of the file.
    * @see java.io.File#getAbsolutePath()
    * @see java.io.File#getCanonicalPath()
    */
