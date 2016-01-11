@@ -26,8 +26,8 @@ package org.cp.elements.lang;
 @SuppressWarnings("unused")
 public abstract class SystemUtils {
 
-  // Present Working Directory (PWD)
-  public static final String CURRENT_DIRECTORY = System.getProperty("user.dir");
+  // define $PATH separator
+  public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
   // Java Virtual Machine (JVM) Names
   public static final String IBM_J9_JVM_NAME = "J9";
