@@ -18,6 +18,7 @@ package org.cp.elements.io;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -97,6 +98,99 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
     expectedException.expectMessage("(null) was not found");
 
     FileUtils.assertExists(null);
+  }
+
+  @Test
+  public void createDirectoryWithNonExistingDirectory() {
+    File parentDirectory = new File(TEMPORARY_DIRECTORY, "parentDirectory");
+    File childDirectory = new File(parentDirectory, "childDirectory");
+
+    childDirectory.deleteOnExit();
+    parentDirectory.deleteOnExit();
+
+    assertThat(childDirectory.exists(), is(false));
+    assertThat(FileUtils.createDirectory(childDirectory), is(true));
+    assertThat(childDirectory.isDirectory(), is(true));
+    assertThat(childDirectory.isFile(), is(false));
+  }
+
+  @Test
+  public void createDirectoryWithNonExistingFile() {
+    File tempFile = new File(TEMPORARY_DIRECTORY, "file.tmp");
+
+    tempFile.deleteOnExit();
+
+    assertThat(tempFile.exists(), is(false));
+    assertThat(FileUtils.createDirectory(tempFile), is(true));
+    assertThat(tempFile.isDirectory(), is(true));
+    assertThat(tempFile.isFile(), is(false));
+  }
+
+  @Test
+  public void createDirectoryWithExistingDirectory() {
+    assertThat(WORKING_DIRECTORY.isDirectory(), is(true));
+    assertThat(FileUtils.createDirectory(WORKING_DIRECTORY), is(true));
+  }
+
+  @Test
+  public void createDirectoryWithExistingFile() {
+    File fileUtilsClass = getLocation(FileUtils.class);
+
+    assertThat(fileUtilsClass, is(notNullValue()));
+    assertThat(fileUtilsClass.isFile(), is(true));
+    assertThat(FileUtils.createDirectory(fileUtilsClass), is(false));
+    assertThat(fileUtilsClass.isFile(), is(true));
+  }
+
+  @Test
+  public void createDirectoryWithNull() {
+    assertThat(FileUtils.createDirectory(null), is(false));
+  }
+
+  @Test
+  public void createFileWithNonExistingFile() {
+    File tempFile = new File(TEMPORARY_DIRECTORY, "file.ext");
+
+    tempFile.deleteOnExit();
+
+    assertThat(tempFile.exists(), is(false));
+    assertThat(FileUtils.createFile(tempFile), is (true));
+    assertThat(tempFile.isDirectory(), is(false));
+    assertThat(tempFile.isFile(), is(true));
+  }
+
+  @Test
+  public void createFileWithNonExistingDirectory() {
+    File parentDirectory = new File(TEMPORARY_DIRECTORY, "parentDirectory");
+    File tempDirectory = new File(parentDirectory, "temp");
+
+    tempDirectory.deleteOnExit();
+    parentDirectory.deleteOnExit();
+
+    assertThat(tempDirectory.exists(), is(false));
+    assertThat(FileUtils.createFile(tempDirectory), is(true));
+    assertThat(tempDirectory.isDirectory(), is(false));
+    assertThat(tempDirectory.isFile(), is(true));
+  }
+
+  @Test
+  public void createFileWithExistingFile() {
+    File fileUtilsClass = getLocation(FileUtils.class);
+
+    assertThat(fileUtilsClass, is(notNullValue()));
+    assertThat(fileUtilsClass.isFile(), is(true));
+    assertThat(FileUtils.createFile(fileUtilsClass), is(true));
+  }
+
+  @Test
+  public void createFileWithExistingDirectory() {
+    assertThat(WORKING_DIRECTORY.isDirectory(), is(true));
+    assertThat(FileUtils.createFile(WORKING_DIRECTORY), is(false));
+  }
+
+  @Test
+  public void createFileWithNull() {
+    assertThat(FileUtils.createFile(null), is(false));
   }
 
   @Test
@@ -232,6 +326,33 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   @Test
   public void isFileWithNull() {
     assertThat(FileUtils.isFile(null), is(false));
+  }
+
+  @Test
+  public void newFileWithNonNullNonExistingPathnameIsSuccessful() {
+    File file = FileUtils.newFile("/absolute/path/to/file.ext");
+
+    assertThat(file, is(notNullValue()));
+    assertThat(file.exists(), is(false));
+    assertThat(file.getAbsolutePath(), is(equalTo("/absolute/path/to/file.ext")));
+  }
+
+  @Test
+  public void newFileWithNonNullExistingPathnameIsSuccessful() {
+    File fileUtilsClass = getLocation(FileUtils.class);
+
+    assertThat(fileUtilsClass, is(notNullValue()));
+    assertThat(fileUtilsClass.isFile(), is(true));
+    assertThat(FileUtils.newFile(fileUtilsClass.getAbsolutePath()), is(equalTo(fileUtilsClass)));
+  }
+
+  @Test
+  public void newFileWithNullPathnameIsUnsuccessful() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage(is(nullValue(String.class)));
+
+    FileUtils.newFile(null);
   }
 
   @Test

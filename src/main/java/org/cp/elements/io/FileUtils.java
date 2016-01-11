@@ -43,12 +43,45 @@ public abstract class FileUtils extends IOUtils {
    * @throws FileNotFoundException if the file does not exist.
    * @see #isExisting(File)
    */
+  @NullSafe
   public static File assertExists(final File path) throws FileNotFoundException {
     if (isExisting(path)) {
       return path;
     }
 
     throw new FileNotFoundException(String.format("(%1$s) was not found", path));
+  }
+
+  /**
+   * Creates a file system directory with the given {@link File} path.
+   *
+   * @param path the given {@link File} indicating the file system path of the directory to create.
+   * @return true if the path represented by the {@link File} object is not null, is not an existing file,
+   * or the path can be created as a directory if it does not already exist.  Returns true if the directory
+   * already exists.
+   * @see java.io.File
+   */
+  @NullSafe
+  public static boolean createDirectory(final File path) {
+    return (path != null && !path.isFile() && (path.isDirectory() || path.mkdirs()));
+  }
+
+  /**
+   * Creates a file with the given {@link File} path.
+   *
+   * @param path the given {@link File} indicating the absolute location and name of the file.
+   * @return true if the path represented by the {@link File} object is not null, is not an existing directory,
+   * or the path can be created as a file if it does not already exist.  Returns true if the file already exists.
+   * @see java.io.File
+   */
+  @NullSafe
+  public static boolean createFile(final File path) {
+    try {
+      return (path != null && !path.isDirectory() && (path.isFile() || path.createNewFile()));
+    }
+    catch (IOException ignore) {
+      return false;
+    }
   }
 
   /**
@@ -62,8 +95,8 @@ public abstract class FileUtils extends IOUtils {
   public static String getExtension(final File file) {
     Assert.notNull(file, "File cannot be null");
     String filename = file.getName();
-    int index = filename.indexOf(StringUtils.DOT_SEPARATOR);
-    return (index != -1 ? filename.substring(index + 1) : StringUtils.EMPTY_STRING);
+    int dotIndex = filename.indexOf(StringUtils.DOT_SEPARATOR);
+    return (dotIndex != -1 ? filename.substring(dotIndex + 1) : StringUtils.EMPTY_STRING);
   }
 
   /**
@@ -94,8 +127,8 @@ public abstract class FileUtils extends IOUtils {
   public static String getName(final File file) {
     Assert.notNull(file, "File cannot be null");
     String filename = file.getName();
-    int index = filename.indexOf(StringUtils.DOT_SEPARATOR);
-    return (index != -1 ? filename.substring(0, index) : filename);
+    int dotIndex = filename.indexOf(StringUtils.DOT_SEPARATOR);
+    return (dotIndex != -1 ? filename.substring(0, dotIndex) : filename);
   }
 
   /**
@@ -132,6 +165,18 @@ public abstract class FileUtils extends IOUtils {
   @NullSafe
   public static boolean isFile(final File path) {
     return (path != null && path.isFile());
+  }
+
+  /**
+   * Creates an instance of {@link File} initialized with the given pathname.
+   *
+   * @param pathname a String indicating the path of the file.
+   * @return a new {@link File} initialized with the given pathname.
+   * @throws NullPointerException if pathname is null.
+   * @see java.io.File#File(String)
+   */
+  public static File newFile(final String pathname) {
+    return new File(pathname);
   }
 
   /**
