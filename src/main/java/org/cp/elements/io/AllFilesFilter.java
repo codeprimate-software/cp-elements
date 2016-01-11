@@ -22,8 +22,8 @@ import java.io.FileFilter;
 import org.cp.elements.lang.Filter;
 
 /**
- * The FileOnlyFilter class is a FileFilter implementation filtering a list of File references to include only
- * directories.
+ * The AllFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that accepts
+ * all non-null {@link File}s
  *
  * @author John J. Blum
  * @see java.io.File
@@ -32,20 +32,20 @@ import org.cp.elements.lang.Filter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DirectoryOnlyFilter implements FileFilter, Filter<File> {
+public class AllFilesFilter implements FileFilter, Filter<File> {
 
-  public static final DirectoryOnlyFilter INSTANCE = new DirectoryOnlyFilter();
+  public static final AllFilesFilter INSTANCE = new AllFilesFilter();
 
   /**
-   * Accepts all File objects referencing directories in the file system.
+   * Evaluates and determines whether the given {@link File} path satisfies the criteria of this filter.
    *
-   * @param file the File being filtered by this Filter.
-   * @return a boolean value indicating if the File reference is a directory.
-   * @see java.io.File
-   * @see org.cp.elements.io.FileUtils#isFile(java.io.File)
+   * @param path the {@link File} to evaluate.
+   * @return a boolean value indicating whether the given file satisfies the criteria of this filter.
+   * @see java.io.FileFilter#accept(File)
    */
-  public boolean accept(final File file) {
-    return FileUtils.isDirectory(file);
+  @Override
+  public boolean accept(final File path) {
+    return (path != null);
   }
 
 }

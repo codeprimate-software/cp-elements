@@ -34,6 +34,8 @@ import org.cp.elements.lang.Filter;
 @SuppressWarnings("unused")
 public class FileOnlyFilter implements FileFilter, Filter<File> {
 
+  public static final FileOnlyFilter INSTANCE = new FileOnlyFilter();
+
   /**
    * Accepts all File objects referencing actual files in the file system.
    *
