@@ -16,9 +16,15 @@
 
 package org.cp.elements.io;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.NullSafe;
@@ -179,6 +185,25 @@ public abstract class FileUtils extends IOUtils {
     return new File(pathname);
   }
 
+  public static String read(final File file) throws IOException {
+    Assert.isTrue(isFile(file), "(%1$s) must be a valid file", file);
+
+    BufferedReader fileReader = new BufferedReader(new FileReader(file));
+    StringBuilder buffer = new StringBuilder();
+
+    try {
+      for (String line = fileReader.readLine(); line != null; line = fileReader.readLine()) {
+        buffer.append(line);
+        buffer.append(StringUtils.LINE_SEPARATOR);
+      }
+
+      return buffer.toString().trim();
+    }
+    finally {
+      close(fileReader);
+    }
+  }
+
   /**
    * Attempts to the get the canonical form of the given file, otherwise returns the absolute form of the file.
    *
@@ -211,6 +236,20 @@ public abstract class FileUtils extends IOUtils {
     }
     catch (IOException ignore) {
       return file.getAbsolutePath();
+    }
+  }
+
+  public static void write(final InputStream in, final File file) throws IOException {
+    Assert.notNull(in, "The input source used to populate the file cannot be null");
+    Assert.notNull(file, "The file to write the contents of the input stream cannot be null");
+
+    OutputStream out = null;
+
+    try {
+      copy(in, out = new BufferedOutputStream(new FileOutputStream(file)));
+    }
+    finally {
+      close(out);
     }
   }
 

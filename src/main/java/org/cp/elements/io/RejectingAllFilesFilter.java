@@ -20,10 +20,10 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The AllFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that accepts
- * all non-null {@link File}s
+ * The RejectingAllFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that rejects all files.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -31,21 +31,24 @@ import org.cp.elements.lang.Filter;
  * @see org.cp.elements.lang.Filter
  * @since 1.0.0
  */
+@ThreadSafe
 @SuppressWarnings("unused")
-public class AllFilesFilter implements FileFilter, Filter<File> {
+public class RejectingAllFilesFilter implements FileFilter, Filter<File> {
 
-  public static final AllFilesFilter INSTANCE = new AllFilesFilter();
+  public static final RejectingAllFilesFilter INSTANCE = new RejectingAllFilesFilter();
 
   /**
-   * Evaluates and determines whether the given {@link File} path satisfies the criteria of this filter.
+   * Rejects all files regardless of their stature.
    *
-   * @param path the {@link File} to evaluate.
-   * @return a boolean value indicating whether the given file satisfies the criteria of this filter.
+   * @param pathname the {@link File} to evaluate.
+   * @return false rejecting all files.
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
+   * @see java.io.File
    */
   @Override
-  public boolean accept(final File path) {
-    return (path != null);
+  public boolean accept(final File pathname) {
+    return false;
   }
 
 }
