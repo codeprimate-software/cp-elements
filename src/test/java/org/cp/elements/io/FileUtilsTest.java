@@ -234,6 +234,46 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void deleteExistingFileIsSuccessful() {
+    when(mockFile.exists()).thenReturn(true);
+    when(mockFile.delete()).thenReturn(true);
+
+    assertThat(FileUtils.delete(mockFile), is(true));
+
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).delete();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteExistingFileIsUnsuccessful() {
+    when(mockFile.exists()).thenReturn(true);
+    when(mockFile.delete()).thenReturn(false);
+
+    assertThat(FileUtils.delete(mockFile), is(false));
+
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).delete();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteNonExistingFileIsUnsuccessful() {
+    when(mockFile.exists()).thenReturn(false);
+
+    assertThat(FileUtils.delete(mockFile), is(false));
+
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, never()).delete();
+  }
+
+  @Test
+  public void deleteNull() {
+    assertThat(FileUtils.delete(null), is(false));
+  }
+
+  @Test
   public void getExtensionOfFilesWithExtension() {
     assertThat(FileUtils.getExtension(newFile("/absolute/path/to/file.ext")), is(equalTo("ext")));
     assertThat(FileUtils.getExtension(newFile("relative/path/to/file.ext")), is(equalTo("ext")));

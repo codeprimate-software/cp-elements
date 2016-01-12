@@ -91,6 +91,20 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
+   * Deletes the given {@link File}.
+   *
+   * @param path the {@link File} to delete.
+   * @return a boolean value indicating whether the given {@link File} was deleted successfully.
+   * Returns false if the {@link File} references is null or does not exist.
+   * @see java.io.File#delete()
+   * @see #isExisting(File)
+   */
+  @NullSafe
+  public static boolean delete(final File path) {
+    return (isExisting(path) && path.delete());
+  }
+
+  /**
    * Returns the extension of the given file.
    *
    * @param file the {@link File} from which to get the extension.
@@ -154,7 +168,7 @@ public abstract class FileUtils extends IOUtils {
    *
    * @param path the {@link File} to evaluate.
    * @return a boolean value indicating whether the given {@link File} has any content.
-   * @see java.io.File
+   * @see java.io.File#length()
    * @see #size(File)
    */
   @NullSafe
@@ -235,6 +249,7 @@ public abstract class FileUtils extends IOUtils {
    * @param path the {@link File} to evaluate.
    * @return a long value indicating the size of the given {@link File} in bytes.  If the {@link File} is null
    * or does not exist, then 0 is returned.
+   * @see java.io.File#length()
    */
   @NullSafe
   public static long size(final File path) {
