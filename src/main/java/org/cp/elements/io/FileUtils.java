@@ -150,6 +150,19 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
+   * Determines whether the given {@link File} has any content.
+   *
+   * @param path the {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} has any content.
+   * @see java.io.File
+   * @see #size(File)
+   */
+  @NullSafe
+  public static boolean isEmpty(final File path) {
+    return (size(path) == 0l);
+  }
+
+  /**
    * Determines whether the given file actually exists.
    *
    * @param path the {@link File} to evaluate.
@@ -185,8 +198,19 @@ public abstract class FileUtils extends IOUtils {
     return new File(pathname);
   }
 
+  /**
+   * Reads the contents of the given {@link File} into a {@link String}.
+   *
+   * @param file the source {@link File} to read the contents from.
+   * @return a {@link String} containing the contents of the given {@link File}.
+   * @throws IOException if an I/O error occurs while reading the {@link File}.
+   * @throws IllegalArgumentException if the {@link File} is not a valid file.
+   * @throws IllegalStateException if the file cannot be read.
+   * @see java.io.File
+   */
   public static String read(final File file) throws IOException {
     Assert.isTrue(isFile(file), "(%1$s) must be a valid file", file);
+    Assert.state(file.canRead(), "(%1$s) is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
     BufferedReader fileReader = new BufferedReader(new FileReader(file));
     StringBuilder buffer = new StringBuilder();
@@ -202,6 +226,19 @@ public abstract class FileUtils extends IOUtils {
     finally {
       close(fileReader);
     }
+  }
+
+  /**
+   * Determines the size in bytes of the given {@link File}.  If the {@link File} is null or does not exist,
+   * then 0 is returned.
+   *
+   * @param path the {@link File} to evaluate.
+   * @return a long value indicating the size of the given {@link File} in bytes.  If the {@link File} is null
+   * or does not exist, then 0 is returned.
+   */
+  @NullSafe
+  public static long size(final File path) {
+    return (isExisting(path) ? path.length() : 0l);
   }
 
   /**
@@ -239,9 +276,24 @@ public abstract class FileUtils extends IOUtils {
     }
   }
 
+  /**
+   * Writes the contents of the given {@link InputStream} out to the given {@link File}.
+   *
+   * @param in the {@link InputStream} that is used as the source of the {@link File} content.
+   * @param file the {@link File} to write the contents of the {@link InputStream} to.
+   * @throws IOException if writing the contents of the {@link InputStream} to the {@link File}
+   * results in an I/O error.
+   * @throws NullPointerException if either the {@link InputStream} or {@link File} reference are null.
+   * @throws IllegalStateException if the file exists and is not writable.
+   * @see java.io.InputStream
+   * @see java.io.File
+   * @see #copy(InputStream, OutputStream)
+   */
   public static void write(final InputStream in, final File file) throws IOException {
-    Assert.notNull(in, "The input source used to populate the file cannot be null");
-    Assert.notNull(file, "The file to write the contents of the input stream cannot be null");
+    Assert.notNull(in, "InputStream cannot be null");
+    Assert.notNull(file, "File cannot be null");
+    Assert.state(!isExisting(file) || file.canWrite(), "(%1$s) is not writable",
+      tryGetCanonicalPathElseGetAbsolutePath(file));
 
     OutputStream out = null;
 
