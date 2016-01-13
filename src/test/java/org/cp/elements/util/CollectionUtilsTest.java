@@ -17,6 +17,9 @@
 package org.cp.elements.util;
 
 import static org.cp.elements.util.CollectionExtensions.from;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -24,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -53,8 +57,9 @@ import org.junit.Test;
  * 
  * @author John J. Blum
  * @see java.util.Collection
- * @see org.cp.elements.util.CollectionUtils
+ * @see java.util.Collections
  * @see org.junit.Test
+ * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
  */
 public class CollectionUtilsTest {
@@ -110,67 +115,51 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void emptyList() {
+  public void nullSafeListWithNonNullNonEmptyList() {
     List<?> expectedList = Arrays.asList("test", "testing", "tested");
+    List<?> actualList = CollectionUtils.nullSafeList(expectedList);
 
-    assertFalse(expectedList.isEmpty());
-
-    List<?> actualList = CollectionUtils.emptyList(expectedList);
-
-    assertSame(expectedList, actualList);
-    assertFalse(actualList.isEmpty());
+    assertThat(actualList, is(sameInstance(actualList)));
   }
 
   @Test
-  public void emptyListWithEmptyList() {
+  public void nullSafeListWithEmptyList() {
     List<?> expectedList = new ArrayList<>(0);
+    List<?> actualList = CollectionUtils.nullSafeList(expectedList);
 
-    assertTrue(expectedList.isEmpty());
-
-    List<?> actualList = CollectionUtils.emptyList(expectedList);
-
-    assertSame(expectedList, actualList);
-    assertTrue(actualList.isEmpty());
+    assertThat(actualList, is(sameInstance(expectedList)));
   }
 
   @Test
-  public void emptyListWithNullList() {
-    List<?> actualList = CollectionUtils.emptyList(null);
+  public void nullSafeListWithNullList() {
+    List<?> actualList = CollectionUtils.nullSafeList(null);
 
-    assertNotNull(actualList);
-    assertTrue(actualList.isEmpty());
+    assertThat(actualList, is(notNullValue()));
+    assertThat(actualList.isEmpty(), is(true));
   }
 
   @Test
-  public void emptySet() {
+  public void nullSafeSetWithNonNullNonEmptySet() {
     Set<?> expectedSet = from("test", "testing", "tested").toSet();
+    Set<?> actualSet = CollectionUtils.nullSafeSet(expectedSet);
 
-    assertFalse(expectedSet.isEmpty());
-
-    Set<?> actualSet = CollectionUtils.emptySet(expectedSet);
-
-    assertSame(expectedSet, actualSet);
-    assertFalse(actualSet.isEmpty());
+    assertThat(actualSet, is(sameInstance(expectedSet)));
   }
 
   @Test
-  public void emptySetWithEmptySet() {
+  public void nullSafeSetWithEmptySet() {
     Set<?> expectedSet = new HashSet<>(0);
+    Set<?> actualSet = CollectionUtils.nullSafeSet(expectedSet);
 
-    assertTrue(expectedSet.isEmpty());
-
-    Set<?> actualSet = CollectionUtils.emptySet(expectedSet);
-
-    assertSame(expectedSet, actualSet);
-    assertTrue(actualSet.isEmpty());
+    assertThat(actualSet, is(sameInstance(expectedSet)));
   }
 
   @Test
-  public void emptySetWithNullSet() {
-    Set<?> actualSet = CollectionUtils.emptySet(null);
+  public void nullSafeSetWithNullSet() {
+    Set<?> actualSet = CollectionUtils.nullSafeSet(null);
 
-    assertNotNull(actualSet);
-    assertTrue(actualSet.isEmpty());
+    assertThat(actualSet, is(notNullValue()));
+    assertThat(actualSet.isEmpty(), is(true));
   }
 
   @Test
@@ -422,25 +411,6 @@ public class CollectionUtilsTest {
     assertFalse(CollectionUtils.isEmpty(from("test", "testing", "tested").toSet()));
     assertFalse(CollectionUtils.isEmpty(from(null, null, null).toList()));
     assertFalse(CollectionUtils.isEmpty(from("test", "test", "test").toSet()));
-  }
-
-  @Test
-  public void iterableWithCollection() {
-    String[] expectedElements = { "test", "testing", "tested" };
-    Collection<String> collection = Arrays.asList(expectedElements);
-
-    int index = 0;
-
-    for (String actualElement : CollectionUtils.iterable(collection)) {
-      assertEquals(expectedElements[index++], actualElement);
-    }
-
-    assertEquals(expectedElements.length, index);
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void iterableWithNullCollection() {
-    CollectionUtils.iterable((Collection<?>) null);
   }
 
   @Test

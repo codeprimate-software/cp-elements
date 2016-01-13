@@ -30,6 +30,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
@@ -72,32 +73,6 @@ public abstract class CollectionUtils {
    */
   public static <T> int count(final Iterable<T> collection, final Filter<T> filter) {
     return findAll(collection, filter).size();
-  }
-
-  /**
-   * Gets the List if not null or returns an empty List.
-   * 
-   * @param list the List reference being tested with a null check.
-   * @param <T> the Class type of the List elements.
-   * @return the List if not null otherwise return an empty List.
-   * @see java.util.Collections#emptyList()
-   * @see java.util.List
-   */
-  public static <T> List<T> emptyList(final List<T> list) {
-    return (list != null ? list : Collections.<T>emptyList());
-  }
-
-  /**
-   * Gets the Set if not null or returns an empty Set.
-   * 
-   * @param set the Set reference being tested with a null check.
-   * @param <T> the Class type of the Set elements.
-   * @return the Set if not null otherwise return an empty Set.
-   * @see java.util.Collections#emptySet()
-   * @see java.util.Set
-   */
-  public static <T> Set<T> emptySet(final Set<T> set) {
-    return (set != null ? set : Collections.<T>emptySet());
   }
 
   /**
@@ -237,22 +212,6 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Adapts the specified Collection into an instance of the Iterable interface.
-   *
-   * @param <T> the Class type of elements contained in the Collection.
-   * @param collection the Collection backing the Iterable implementation.
-   * @return an Iterable implementation backed by the Collection.
-   * @throws NullPointerException if the Collection is null.
-   * @see #iterable(java.util.Iterator)
-   * @see java.lang.Iterable
-   * @see java.util.Collection#iterator()
-   */
-  public static <T> Iterable<T> iterable(final Collection<T> collection) {
-    Assert.notNull(collection, "The Collection backing the Iterable implementation cannot be null!");
-    return iterable(collection.iterator());
-  }
-
-  /**
    * Adapts the specified Enumeration into an instance of the Iterable interface.
    * 
    * @param <T> the Class type of elements enumerated by the Enumeration.
@@ -265,7 +224,7 @@ public abstract class CollectionUtils {
    * @see java.util.Enumeration
    */
   public static <T> Iterable<T> iterable(final Enumeration<T> enumeration) {
-    Assert.notNull(enumeration, "The Enumeration back the Iterable implementation cannot be null!");
+    Assert.notNull(enumeration, "Enumeration cannot be null");
     return iterable(iterator(enumeration));
   }
 
@@ -280,7 +239,7 @@ public abstract class CollectionUtils {
    * @see java.util.Iterator
    */
   public static <T> Iterable<T> iterable(final Iterator<T> iterator) {
-    Assert.notNull(iterator, "The Iterator backing the Iterable implementation cannot be null!");
+    Assert.notNull(iterator, "Iterator cannot be null");
     return () -> iterator;
   }
 
@@ -313,6 +272,34 @@ public abstract class CollectionUtils {
         throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
       }
     };
+  }
+
+  /**
+   * Null-safe method returning the {@link List} if not null otherwise returns an empty {@link List}.
+   *
+   * @param <T> the type of elements in the {@link List}.
+   * @param list the {@link List} reference being evaluated for null.
+   * @return the {@link List} if not null otherwise return an empty {@link List}.
+   * @see java.util.Collections#emptyList()
+   * @see java.util.List
+   */
+  @NullSafe
+  public static <T> List<T> nullSafeList(final List<T> list) {
+    return (list != null ? list : Collections.<T>emptyList());
+  }
+
+  /**
+   * Null-safe method returning the {@link Set} if not null otherwise returns an empty {@link Set}.
+   *
+   * @param <T> the type of the elements in the {@link Set}.
+   * @param set the {@link Set} reference being evaluated for null.
+   * @return the {@link Set} if not null otherwise return an empty {@link Set}.
+   * @see java.util.Collections#emptySet()
+   * @see java.util.Set
+   */
+  @NullSafe
+  public static <T> Set<T> nullSafeSet(final Set<T> set) {
+    return (set != null ? set : Collections.<T>emptySet());
   }
 
   /**
