@@ -16,6 +16,8 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.lang.LangExtensions.assertThat;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -31,7 +33,6 @@ import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.Transformer;
 
 /**
@@ -81,13 +82,30 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Converts the {@link Enumeration} into an array.
+   *
+   * @param <T> the type of elements in the {@link Enumeration} as well as the component type of the constructed array.
+   * @param enumeration the {@link Enumeration} to convert into an array.
+   * @param componentType {@link Class} type of the elements in the {@link Enumeration}.
+   * @return an array containing all the elements from the {@link Enumeration}.  Returns an empty array
+   * if the {@link Enumeration} is null.
+   * @see java.util.Enumeration
+   * @see #asArray(Iterable, Class)
+   */
+  public static <T> T[] asArray(final Enumeration<T> enumeration, final Class<T> componentType) {
+    return asArray((enumeration != null ? CollectionUtils.iterable(enumeration) : null), componentType);
+  }
+
+  /**
    * Converts the {@link Iterable} object into an array.
    *
-   * @param <T> the type of elements in the {@link Iterable} as well as the resulting array.
+   * @param <T> the type of elements in the {@link Iterable} object as well as the component type
+   * of the constructed array.
    * @param iterable the {@link Iterable} object to convert into an array.
-   * @param componentType the class type of elements in the {@link Iterable} collection.
-   * @return an array containing the elements from the {@link Iterable} object.  Returns an empty array
-   * if the {@link Iterable} object reference is null.
+   * @param componentType {@link Class} type of the elements in the {@link Iterable} object.
+   * @return an array containing all the elements from the {@link Iterable} object.  Returns an empty array
+   * if the {@link Iterable} object is null.
+   * @see java.lang.Class
    * @see java.lang.Iterable
    */
   @NullSafe
@@ -103,6 +121,21 @@ public abstract class ArrayUtils {
 
     return arrayList.toArray((T[]) Array.newInstance(ObjectUtils.defaultIfNull(componentType, Object.class),
       arrayList.size()));
+  }
+
+  /**
+   * Converts the {@link Iterator} into an array.
+   *
+   * @param <T> the type of elements in the {@link Iterator} as well as the component type of the constructed array.
+   * @param iterator the {@link Iterator} to convert into an array.
+   * @param componentType {@link Class} type of the elements in the {@link Iterator}.
+   * @return an array containing all the elements from the {@link Iterator}.  Returns an empty array
+   * if the {@link Iterator} is null.
+   * @see java.util.Iterator
+   * @see #asArray(Iterable, Class)
+   */
+  public static <T> T[] asArray(final Iterator<T> iterator, final Class<T> componentType) {
+    return asArray((iterator != null ? CollectionUtils.iterable(iterator) : null), componentType);
   }
 
   /**
@@ -128,17 +161,6 @@ public abstract class ArrayUtils {
    */
   public static Object[] emptyArray() {
     return EMPTY_ARRAY.clone();
-  }
-
-  /**
-   * Gets the Object array if not null otherwise returns an empty Object array.
-   * 
-   * @param array the Object array reference being tested with a null check.
-   * @return the Object array if not null otherwise returns an empty Object array.
-   * @see #emptyArray()
-   */
-  public static Object[] emptyArray(final Object... array) {
-    return (array != null ? array : emptyArray());
   }
 
   /**
@@ -299,15 +321,16 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] insert(final T element, final T[] array, final int index) {
-    Assert.notNull(array, "The array to insert the element into cannot be null!");
+    Assert.notNull(array, "the array in which the element will be inserted cannot be null");
 
-    Assert.isTrue(RelationalOperator.greaterThanEqualToAndLessThan(0, array.length + 1).evaluate(index),
-      new ArrayIndexOutOfBoundsException(String.format("The index (%1$s) is not valid array index [0, %2$s]!",
-        index, array.length)));
+    assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
+      String.format("(%1$d) is not a valid array index [0, %2$s]", index, array.length)))
+        .isGreaterThanEqualToAndLessThanEqualTo(0, array.length);
 
     Class<?> componentType = array.getClass().getComponentType();
 
-    componentType = (componentType != null ? componentType : element.getClass());
+    componentType = (componentType != null ? componentType : ObjectUtils.getClass(element));
+    componentType = (componentType != null ? componentType : Object.class);
 
     T[] newArray = (T[]) Array.newInstance(componentType, array.length + 1);
 
@@ -393,6 +416,36 @@ public abstract class ArrayUtils {
    */
   public static int length(final Object[] array) {
     return (array == null ? 0 : array.length);
+  }
+
+  /**
+   * Null-safe method returning the array if not null otherwise returns an empty array.
+   *
+   * @param array the object array reference being evaluated for null.
+   * @return the array if not null otherwise returns an empty array.
+   * @see java.lang.reflect.Array#newInstance(Class, int)
+   * @see #nullSafeArray(Object[], Class)
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static <T> T[] nullSafeArray(final T[] array) {
+    return ArrayUtils.<T>nullSafeArray(array, Object.class);
+  }
+
+  /**
+   * Null-safe method returning the array if not null otherwise returns an empty array.
+   *
+   * @param array the object array reference being evaluated for null.
+   * @param componentType {@link Class} type of the elements in the array.
+   * Defaults to the {@link Object} class type if null.
+   * @return the array if not null otherwise returns an empty array.
+   * @see java.lang.reflect.Array#newInstance(Class, int)
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static <T> T[] nullSafeArray(final T[] array, final Class<?> componentType) {
+    return (array != null ? array : (T[]) Array.newInstance(ObjectUtils.defaultIfNull(
+      getFirst(componentType), Object.class), 0));
   }
 
   /**
