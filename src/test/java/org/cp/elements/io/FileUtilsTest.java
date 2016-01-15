@@ -51,13 +51,14 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see java.io.File
  * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.junit.rules.ExpectedException
+ * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.runners.MockitoJUnitRunner
  * @see org.cp.elements.io.FileUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -191,11 +192,9 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   @Test
   @IntegrationTest
   public void createFileWithNonExistingDirectory() {
-    File parentDirectory = newFile(TEMPORARY_DIRECTORY, "parentDirectory");
-    File tempDirectory = newFile(parentDirectory, "temp");
+    File tempDirectory = newFile(TEMPORARY_DIRECTORY, "temp");
 
     tempDirectory.deleteOnExit();
-    parentDirectory.deleteOnExit();
 
     assertThat(tempDirectory.exists(), is(false));
     assertThat(FileUtils.createFile(tempDirectory), is(true));
