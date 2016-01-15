@@ -432,6 +432,34 @@ public abstract class StringUtils {
   }
 
   /**
+   * Replaces the given characters in the given {@link String} value with the replacement {@link String}.
+   *
+   * @param value the {@link String} value to perform the search and replace operation.
+   * @param charsToReplace the characeters in the {@link String} value to replace.
+   * @param replacement the replacement {@link String} used to replace the characters.
+   * @return a modified {@link String} value with the characters replaced with the replacement.
+   * Returns null if the {@link String} value is null.
+   * @throws NullPointerException if the charsToReplace or the replacement {@link String}s are null.
+   * @see java.lang.String#replaceAll(String, String)
+   */
+  public static String replace(String value, final String charsToReplace, final String replacement) {
+    Assert.notNull(charsToReplace, "charsToReplace cannot be null");
+    Assert.notNull(replacement, "replacement cannot be null");
+
+    if (value != null) {
+      String newValue = value;
+
+      do {
+        value = newValue;
+        newValue = newValue.replaceAll(charsToReplace, replacement);
+      }
+      while (!value.equals(newValue));
+    }
+
+    return value;
+  }
+
+  /**
    * Single spaces the tokens in the specified String value.  A token is defined as any non-whitespace character.
    * 
    * @param value the String value for which the tokens will be single spaced.

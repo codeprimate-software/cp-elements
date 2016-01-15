@@ -477,6 +477,52 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void replaceModifiesString() {
+    assertThat(StringUtils.replace("test", "test", "mock"), is(equalTo("mock")));
+    assertThat(StringUtils.replace("xxx", "x", "X"), is(equalTo("XXX")));
+    assertThat(StringUtils.replace("xxx", "x", "XXX"), is(equalTo("XXXXXXXXX")));
+    assertThat(StringUtils.replace("www", "w", "M"), is(equalTo("MMM")));
+    assertThat(StringUtils.replace("//absolute//path//to//file.txt", "//", "/"),
+      is(equalTo("/absolute/path/to/file.txt")));
+    assertThat(StringUtils.replace("///absolute//////path/to//file.txt", "//", "/"),
+      is(equalTo("/absolute/path/to/file.txt")));
+    assertThat(StringUtils.replace("//////////", "//", "/"), is(equalTo("/")));
+  }
+
+  @Test
+  public void replaceReturnsStringUnmodified() {
+    assertThat(StringUtils.replace("test", "x", "X"), is(equalTo("test")));
+    assertThat(StringUtils.replace("test", "testing", "mock"), is(equalTo("test")));
+    assertThat(StringUtils.replace("test", "tested", "stub"), is(equalTo("test")));
+    assertThat(StringUtils.replace("test", "tests", "spy"), is(equalTo("test")));
+    assertThat(StringUtils.replace("XOXO", "0", "x"), is(equalTo("XOXO")));
+    assertThat(StringUtils.replace("WWW", "w", "M"), is(equalTo("WWW")));
+  }
+
+  @Test
+  public void replaceWithNullValue() {
+    assertThat(StringUtils.replace(null, "x", "X"), is(nullValue()));
+  }
+
+  @Test
+  public void replaceWithNullReplacement() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("replacement cannot be null");
+
+    assertThat(StringUtils.replace("value", "value", null), is(equalTo("value")));
+  }
+
+  @Test
+  public void replaceWithNullCharsToReplace() {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("charsToReplace cannot be null");
+
+    assertThat(StringUtils.replace("test", null, "x"), is(equalTo("test")));
+  }
+
+  @Test
   public void testSingleSpaceString() {
     assertEquals("This is a test!", StringUtils.singleSpaceString(" This is  a          test!  "));
     assertEquals("This_is_another_test!", StringUtils.singleSpaceString("This_is_another_test!"));
