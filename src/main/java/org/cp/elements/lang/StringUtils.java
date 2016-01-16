@@ -446,6 +446,10 @@ public abstract class StringUtils {
     Assert.notNull(charsToReplace, "charsToReplace cannot be null");
     Assert.notNull(replacement, "replacement cannot be null");
 
+    Assert.isFalse(replacement.contains(charsToReplace),
+      "charsToReplace (%1$s) cannot be part of the replacement (%2$s) String",
+        charsToReplace, replacement);
+
     if (value != null) {
       String newValue = value;
 

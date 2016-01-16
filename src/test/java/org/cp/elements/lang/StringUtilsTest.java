@@ -523,6 +523,15 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void replaceGuardsAgainstInfiniteRecursionLeadingToOutOfMemoryErrorOrStackOverflow() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectCause(is(nullValue(Throwable.class)));
+    expectedException.expectMessage("charsToReplace (x) cannot be part of the replacement (xx) String");
+
+    StringUtils.replace("x", "x", "xx");
+  }
+
+  @Test
   public void testSingleSpaceString() {
     assertEquals("This is a test!", StringUtils.singleSpaceString(" This is  a          test!  "));
     assertEquals("This_is_another_test!", StringUtils.singleSpaceString("This_is_another_test!"));
