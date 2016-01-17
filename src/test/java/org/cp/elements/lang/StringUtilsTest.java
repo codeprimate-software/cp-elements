@@ -477,58 +477,52 @@ public class StringUtilsTest {
   }
 
   @Test
-  public void replaceModifiesString() {
-    assertThat(StringUtils.replace("test", "test", "mock"), is(equalTo("mock")));
-    assertThat(StringUtils.replace("xxx", "x", "X"), is(equalTo("XXX")));
-    assertThat(StringUtils.replace("xxx", "x", "XXX"), is(equalTo("XXXXXXXXX")));
-    assertThat(StringUtils.replace("www", "w", "M"), is(equalTo("MMM")));
-    assertThat(StringUtils.replace("//absolute//path//to//file.txt", "//", "/"),
+  public void replaceCompletelyModifiesString() {
+    assertThat(StringUtils.replaceCompletely("testing", "test", "mock"), is(equalTo("mocking")));
+    assertThat(StringUtils.replaceCompletely("test", "test", "mock"), is(equalTo("mock")));
+    assertThat(StringUtils.replaceCompletely("xxx", "x", "X"), is(equalTo("XXX")));
+    assertThat(StringUtils.replaceCompletely("xxx", "x", "xxx"), is(equalTo("xxxxxxxxx")));
+    assertThat(StringUtils.replaceCompletely("mmm", "m", "w"), is(equalTo("www")));
+    assertThat(StringUtils.replaceCompletely("//absolute//path//to//file.txt", "//", "/"),
       is(equalTo("/absolute/path/to/file.txt")));
-    assertThat(StringUtils.replace("///absolute//////path/to//file.txt", "//", "/"),
+    assertThat(StringUtils.replaceCompletely("///absolute/////path/to//file.txt", "/+", "/"),
       is(equalTo("/absolute/path/to/file.txt")));
-    assertThat(StringUtils.replace("//////////", "//", "/"), is(equalTo("/")));
+    assertThat(StringUtils.replaceCompletely("//////////", "/+", "/"), is(equalTo("/")));
   }
 
   @Test
-  public void replaceReturnsStringUnmodified() {
-    assertThat(StringUtils.replace("test", "x", "X"), is(equalTo("test")));
-    assertThat(StringUtils.replace("test", "testing", "mock"), is(equalTo("test")));
-    assertThat(StringUtils.replace("test", "tested", "stub"), is(equalTo("test")));
-    assertThat(StringUtils.replace("test", "tests", "spy"), is(equalTo("test")));
-    assertThat(StringUtils.replace("XOXO", "0", "x"), is(equalTo("XOXO")));
-    assertThat(StringUtils.replace("WWW", "w", "M"), is(equalTo("WWW")));
+  public void replaceCompletelyReturnsStringUnmodified() {
+    assertThat(StringUtils.replaceCompletely("test", "testing", "mock"), is(equalTo("test")));
+    assertThat(StringUtils.replaceCompletely("test", "tset", "mock"), is(equalTo("test")));
+    assertThat(StringUtils.replaceCompletely("v", "x", "X"), is(equalTo("v")));
+    assertThat(StringUtils.replaceCompletely("v", "vv", "x"), is(equalTo("v")));
+    assertThat(StringUtils.replaceCompletely("www", "W", "m"), is(equalTo("www")));
+    assertThat(StringUtils.replaceCompletely("XOXO", "0", "x"), is(equalTo("XOXO")));
   }
 
   @Test
-  public void replaceWithNullValue() {
-    assertThat(StringUtils.replace(null, "x", "X"), is(nullValue()));
+  public void replaceCompletelyReturnsNullWithNullValue() {
+    assertThat(StringUtils.replaceCompletely(null, "x", "X"), is(nullValue()));
   }
 
   @Test
-  public void replaceWithNullReplacement() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("replacement cannot be null");
-
-    assertThat(StringUtils.replace("value", "value", null), is(equalTo("value")));
+  public void replaceCompletelyReturnsValueWithNullReplacement() {
+    assertThat(StringUtils.replaceCompletely("test", "x", null), is(equalTo("test")));
   }
 
   @Test
-  public void replaceWithNullCharsToReplace() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("charsToReplace cannot be null");
-
-    assertThat(StringUtils.replace("test", null, "x"), is(equalTo("test")));
+  public void replaceCompletelyReturnsValueWithNullPattern() {
+    assertThat(StringUtils.replaceCompletely("test", null, "X"), is(equalTo("test")));
   }
 
   @Test
-  public void replaceGuardsAgainstInfiniteRecursionLeadingToOutOfMemoryErrorOrStackOverflow() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("charsToReplace (x) cannot be part of the replacement (xx) String");
+  public void replaceCompletelyGuardsAgainsOutOfMemoryAndStackOverflowErrors() {
+    StringUtils.replaceCompletely("x", "x", "xx");
+  }
 
-    StringUtils.replace("x", "x", "xx");
+  @Test
+  public void stringReplaceAllIsNotComplete() {
+    assertThat("ttesttting".replaceAll("tt", "t"), is(equalTo("testting")));
   }
 
   @Test

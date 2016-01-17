@@ -37,6 +37,47 @@ public abstract class ObjectUtils extends ReflectionUtils {
   public static final String CLONE_METHOD_NAME = "clone";
 
   /**
+   * Null-safe method to determine if all the values in the array are null.
+   *
+   * @param values an array of values being evaluated for null.
+   * @return true if and only if the array is null, empty or all elements in the array are null.
+   * @see #areAnyNull(Object...)
+   */
+  @NullSafe
+  @SuppressWarnings("all")
+  public static boolean areAllNull(final Object... values) {
+    if (values != null) {
+      for (Object value : values) {
+        if (value != null) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Null-safe method to determine if any of the values in the array are null.
+   *
+   * @param values an array of values being evaluated for null
+   * @return true if and only if the array is not null, not empty and contains 1 null element.
+   * @see #areAllNull(Object...)
+   */
+  @NullSafe
+  public static boolean areAnyNull(final Object... values) {
+    if (values != null) {
+      for (Object value : values) {
+        if (value == null) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Null-safe clone operation on Objects that implement the Cloneable interface or implement a copy constructor.
    *
    * @param <T> the Cloneable class type of the value.

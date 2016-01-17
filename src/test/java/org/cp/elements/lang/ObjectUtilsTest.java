@@ -45,6 +45,54 @@ import org.junit.Test;
 public class ObjectUtilsTest {
 
   @Test
+  public void areAllNullReturnsTrue() {
+    assertThat(ObjectUtils.areAllNull(new Object[] { null }), is(true));
+    assertThat(ObjectUtils.areAllNull(null, null, null), is(true));
+  }
+
+  @Test
+  public void areAllNullReturnsTrueWhenArrayIsNull() {
+    assertThat(ObjectUtils.areAllNull((Object[]) null), is(true));
+  }
+
+  @Test
+  public void areAllNullReturnsTrueWhenArrayIsEmpty() {
+    assertThat(ObjectUtils.areAllNull(), is(true));
+  }
+
+  @Test
+  public void areAllNullReturnsFalseWithNonNullValue() {
+    assertThat(ObjectUtils.areAllNull(null, "null", null), is(false));
+    assertThat(ObjectUtils.areAllNull("test", "testing", "tested"), is(false));
+  }
+
+  @Test
+  public void areAnyNullReturnsTrue() {
+    assertThat(ObjectUtils.areAnyNull(new Object[] { null }), is(true));
+    assertThat(ObjectUtils.areAnyNull("test", null, "tested"), is(true));
+    assertThat(ObjectUtils.areAnyNull(null, "testing", null), is(true));
+    assertThat(ObjectUtils.areAnyNull(null, null, null), is(true));
+  }
+
+  @Test
+  public void areAnyNullReturnsFalseWhenArrayIsNull() {
+    assertThat(ObjectUtils.areAnyNull((Object[]) null), is(false));
+  }
+
+  @Test
+  public void areAnyNullReturnsFalseWhenArrayIsEmpty() {
+    assertThat(ObjectUtils.areAnyNull(), is(false));
+  }
+
+  @Test
+  public void areAnyNullReturnsFalseWhenNoNullValuesExist() {
+    assertThat(ObjectUtils.areAnyNull("test", "testing", "tested"), is(false));
+    assertThat(ObjectUtils.areAnyNull("test", "null", "nil"), is(false));
+    assertThat(ObjectUtils.areAnyNull("nil", "null"), is(false));
+    assertThat(ObjectUtils.areAnyNull("null"), is(false));
+  }
+
+  @Test
   public void cloneWithCloneableObject() {
     CloneableObject<String> cloneableObject = new CloneableObject<>("test");
     CloneableObject<String> cloneableObjectClone = ObjectUtils.clone(cloneableObject);

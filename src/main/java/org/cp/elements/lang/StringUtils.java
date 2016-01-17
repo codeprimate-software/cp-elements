@@ -20,6 +20,7 @@ import static org.cp.elements.lang.LangExtensions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.cp.elements.util.ArrayUtils;
 
@@ -432,32 +433,33 @@ public abstract class StringUtils {
   }
 
   /**
-   * Replaces the given characters in the given {@link String} value with the replacement {@link String}.
+   * Replaces the specified pattern in the given {@link String} value with the replacement {@link String}.
    *
-   * @param value the {@link String} value to perform the search and replace operation.
-   * @param charsToReplace the characeters in the {@link String} value to replace.
-   * @param replacement the replacement {@link String} used to replace the characters.
-   * @return a modified {@link String} value with the characters replaced with the replacement.
-   * Returns null if the {@link String} value is null.
-   * @throws NullPointerException if the charsToReplace or the replacement {@link String}s are null.
-   * @see java.lang.String#replaceAll(String, String)
+   * For example, given the following String...
+   *
+   * <code>
+   *   "///absolute//path/to/////some////file.ext"
+   * </code>
+   *
+   * When 'pattern' is "/+" and 'replacement' is "/", the resulting, returned String value will be...
+   *
+   * <code>
+   *   "/absolute/path/to/some/file.ext"
+   * </code>
+   *
+   * @param value the {@link String} value on which to perform the pattern search and replace operation.
+   * @param pattern the pattern of characters in the {@link String} value to replace.
+   * @param replacement the replacement {@link String} used to replace all occurrences of the pattern of characters.
+   * @return a modified {@link String} value with the pattern of characters replaced with the replacement.
+   * Returns the original {@link String} value if
+   * @see java.util.regex.Pattern#compile(String)
+   * @see java.util.regex.Pattern#matcher(CharSequence)
+   * @see java.util.regex.Matcher#replaceAll(String)
    */
-  public static String replace(String value, final String charsToReplace, final String replacement) {
-    Assert.notNull(charsToReplace, "charsToReplace cannot be null");
-    Assert.notNull(replacement, "replacement cannot be null");
-
-    Assert.isFalse(replacement.contains(charsToReplace),
-      "charsToReplace (%1$s) cannot be part of the replacement (%2$s) String",
-        charsToReplace, replacement);
-
-    if (value != null) {
-      String newValue = value;
-
-      do {
-        value = newValue;
-        newValue = newValue.replaceAll(charsToReplace, replacement);
-      }
-      while (!value.equals(newValue));
+  @NullSafe
+  public static String replaceCompletely(String value, final String pattern, final String replacement) {
+    if (!ObjectUtils.areAnyNull(value, pattern, replacement)) {
+         value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
     }
 
     return value;
