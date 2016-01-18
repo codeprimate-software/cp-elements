@@ -433,7 +433,8 @@ public abstract class StringUtils {
   }
 
   /**
-   * Replaces the specified pattern in the given {@link String} value with the replacement {@link String}.
+   * Null-safe method to replace the specified pattern in the given {@link String} value with
+   * the replacement {@link String}.
    *
    * For example, given the following String...
    *
@@ -457,7 +458,7 @@ public abstract class StringUtils {
    * @see java.util.regex.Matcher#replaceAll(String)
    */
   @NullSafe
-  public static String replaceCompletely(String value, final String pattern, final String replacement) {
+  public static String replaceAll(String value, final String pattern, final String replacement) {
     if (!ObjectUtils.areAnyNull(value, pattern, replacement)) {
          value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
     }

@@ -477,52 +477,53 @@ public class StringUtilsTest {
   }
 
   @Test
-  public void replaceCompletelyModifiesString() {
-    assertThat(StringUtils.replaceCompletely("testing", "test", "mock"), is(equalTo("mocking")));
-    assertThat(StringUtils.replaceCompletely("test", "test", "mock"), is(equalTo("mock")));
-    assertThat(StringUtils.replaceCompletely("xxx", "x", "X"), is(equalTo("XXX")));
-    assertThat(StringUtils.replaceCompletely("xxx", "x", "xxx"), is(equalTo("xxxxxxxxx")));
-    assertThat(StringUtils.replaceCompletely("mmm", "m", "w"), is(equalTo("www")));
-    assertThat(StringUtils.replaceCompletely("//absolute//path//to//file.txt", "//", "/"),
+  public void replaceAllModifiesString() {
+    assertThat(StringUtils.replaceAll("testing", "test", "mock"), is(equalTo("mocking")));
+    assertThat(StringUtils.replaceAll("test", "test", "mock"), is(equalTo("mock")));
+    assertThat(StringUtils.replaceAll("xxx", "x", "X"), is(equalTo("XXX")));
+    assertThat(StringUtils.replaceAll("xxx", "x", "xxx"), is(equalTo("xxxxxxxxx")));
+    assertThat(StringUtils.replaceAll("mmm", "m", "w"), is(equalTo("www")));
+    assertThat(StringUtils.replaceAll("//absolute//path//to//file.txt", "//", "/"),
       is(equalTo("/absolute/path/to/file.txt")));
-    assertThat(StringUtils.replaceCompletely("///absolute/////path/to//file.txt", "/+", "/"),
+    assertThat(StringUtils.replaceAll("///absolute/////path/to//file.txt", "/+", "/"),
       is(equalTo("/absolute/path/to/file.txt")));
-    assertThat(StringUtils.replaceCompletely("//////////", "/+", "/"), is(equalTo("/")));
+    assertThat(StringUtils.replaceAll("//////////", "/+", "/"), is(equalTo("/")));
   }
 
   @Test
-  public void replaceCompletelyReturnsStringUnmodified() {
-    assertThat(StringUtils.replaceCompletely("test", "testing", "mock"), is(equalTo("test")));
-    assertThat(StringUtils.replaceCompletely("test", "tset", "mock"), is(equalTo("test")));
-    assertThat(StringUtils.replaceCompletely("v", "x", "X"), is(equalTo("v")));
-    assertThat(StringUtils.replaceCompletely("v", "vv", "x"), is(equalTo("v")));
-    assertThat(StringUtils.replaceCompletely("www", "W", "m"), is(equalTo("www")));
-    assertThat(StringUtils.replaceCompletely("XOXO", "0", "x"), is(equalTo("XOXO")));
+  public void replaceAllReturnsStringUnmodified() {
+    assertThat(StringUtils.replaceAll("test", "testing", "mock"), is(equalTo("test")));
+    assertThat(StringUtils.replaceAll("test", "tset", "mock"), is(equalTo("test")));
+    assertThat(StringUtils.replaceAll("v", "x", "X"), is(equalTo("v")));
+    assertThat(StringUtils.replaceAll("v", "vv", "x"), is(equalTo("v")));
+    assertThat(StringUtils.replaceAll("www", "W", "m"), is(equalTo("www")));
+    assertThat(StringUtils.replaceAll("XOXO", "0", "x"), is(equalTo("XOXO")));
   }
 
   @Test
-  public void replaceCompletelyReturnsNullWithNullValue() {
-    assertThat(StringUtils.replaceCompletely(null, "x", "X"), is(nullValue()));
+  public void replaceAllReturnsNullWithNullValue() {
+    assertThat(StringUtils.replaceAll(null, "x", "X"), is(nullValue()));
   }
 
   @Test
-  public void replaceCompletelyReturnsValueWithNullReplacement() {
-    assertThat(StringUtils.replaceCompletely("test", "x", null), is(equalTo("test")));
+  public void replaceAllReturnsValueWithNullReplacement() {
+    assertThat(StringUtils.replaceAll("test", "x", null), is(equalTo("test")));
   }
 
   @Test
-  public void replaceCompletelyReturnsValueWithNullPattern() {
-    assertThat(StringUtils.replaceCompletely("test", null, "X"), is(equalTo("test")));
+  public void replaceAllReturnsValueWithNullPattern() {
+    assertThat(StringUtils.replaceAll("test", null, "X"), is(equalTo("test")));
   }
 
   @Test
-  public void replaceCompletelyGuardsAgainsOutOfMemoryAndStackOverflowErrors() {
-    StringUtils.replaceCompletely("x", "x", "xx");
+  public void replaceAllGuardsAgainsOutOfMemoryAndStackOverflowErrors() {
+    StringUtils.replaceAll("x", "x", "xx");
   }
 
   @Test
   public void stringReplaceAllIsNotComplete() {
     assertThat("ttesttting".replaceAll("tt", "t"), is(equalTo("testting")));
+    assertThat("tttesttttting".replaceAll("t+", "t"), is(equalTo("testing")));
   }
 
   @Test
