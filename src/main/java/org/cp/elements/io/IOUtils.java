@@ -84,8 +84,9 @@ public abstract class IOUtils {
   }
 
   /**
-   * Deserializes the given byte array back into an {@link Object}.
+   * Deserializes the given byte array back into an {@link Object} of the desired {@link Class} type.
    *
+   * @param <T> class type of the object deserialized from the given bytes.
    * @param serializedObjectBytes an array containing the bytes of a serialized object.
    * @return a {@link java.io.Serializable} object from the array of bytes.
    * @throws ClassNotFoundException if the class type of the serialized object cannot be resolved.
@@ -97,12 +98,13 @@ public abstract class IOUtils {
    * @see java.io.ObjectInputStream
    * @see java.io.Serializable
    */
-  public static Object deserializeObject(final byte[] serializedObjectBytes) throws ClassNotFoundException, IOException {
+  @SuppressWarnings("unchecked")
+  public static <T> T deserializeObject(final byte[] serializedObjectBytes) throws ClassNotFoundException, IOException {
     ObjectInputStream in = null;
 
     try {
       in = new ObjectInputStream(new ByteArrayInputStream(serializedObjectBytes));
-      return in.readObject();
+      return (T) in.readObject();
     }
     finally {
       close(in);
@@ -110,9 +112,10 @@ public abstract class IOUtils {
   }
 
   /**
-   * Deserializes the given byte array back into an {@link Object} who's {@link Class} type is resolvable
-   * with the specified {@link ClassLoader}.
+   * Deserializes the given byte array back into an {@link Object} of a desired {@link Class} type that is resolvable
+   * with the given {@link ClassLoader}.
    *
+   * @param <T> class type of the object deserialized from the given bytes.
    * @param serializedObjectBytes an array containing the bytes of a serialized object.
    * @param classLoader the Java {@link ClassLoader} used to resolve the {@link Class} type
    * of the serialized {@link Object}.
@@ -129,14 +132,15 @@ public abstract class IOUtils {
    * @see java.io.ObjectInputStream
    * @see java.io.Serializable
    */
-  public static Object deserializeObject(final byte[] serializedObjectBytes, final ClassLoader classLoader)
+  @SuppressWarnings("unchecked")
+  public static <T> T deserializeObject(final byte[] serializedObjectBytes, final ClassLoader classLoader)
     throws ClassNotFoundException, IOException
   {
     ObjectInputStream in = null;
 
     try {
       in = new ClassLoaderObjectInputStream(new ByteArrayInputStream(serializedObjectBytes), classLoader);
-      return in.readObject();
+      return (T) in.readObject();
     }
     finally {
       close(in);

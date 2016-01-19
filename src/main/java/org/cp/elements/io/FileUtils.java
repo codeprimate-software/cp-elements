@@ -46,7 +46,7 @@ public abstract class FileUtils extends IOUtils {
    *
    * @param path the {@link File} to assert for existence.
    * @return a reference back to the file.
-   * @throws FileNotFoundException if the file does not exist.
+   * @throws java.io.FileNotFoundException if the file does not exist.
    * @see #isExisting(File)
    */
   @NullSafe
@@ -65,7 +65,7 @@ public abstract class FileUtils extends IOUtils {
    * @return true if the path represented by the {@link File} object is not null, is not an existing file,
    * or the path can be created as a directory if it does not already exist.  Returns true if the directory
    * already exists.
-   * @see java.io.File
+   * @see java.io.File#mkdirs()
    */
   @NullSafe
   public static boolean createDirectory(final File path) {
@@ -78,7 +78,7 @@ public abstract class FileUtils extends IOUtils {
    * @param path the given {@link File} indicating the absolute location and name of the file.
    * @return true if the path represented by the {@link File} object is not null, is not an existing directory,
    * or the path can be created as a file if it does not already exist.  Returns true if the file already exists.
-   * @see java.io.File
+   * @see java.io.File#createNewFile()
    */
   @NullSafe
   public static boolean createFile(final File path) {
@@ -125,8 +125,8 @@ public abstract class FileUtils extends IOUtils {
    * @param file the {@link File} from which to get the absolute filesystem path.
    * @return a String indicating the absolute filesystem pathname (location) of the given file.
    * @throws java.lang.NullPointerException if the file reference is null.
-   * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    * @see java.io.File#getParentFile()
+   * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    */
   public static String getLocation(final File file) {
     Assert.notNull(file, "File cannot be null");
@@ -220,7 +220,8 @@ public abstract class FileUtils extends IOUtils {
    * @throws IOException if an I/O error occurs while reading the {@link File}.
    * @throws IllegalArgumentException if the {@link File} is not a valid file.
    * @throws IllegalStateException if the file cannot be read.
-   * @see java.io.File
+   * @see java.io.File#canRead()
+   * @see #isFile(File)
    */
   public static String read(final File file) throws IOException {
     Assert.isTrue(isFile(file), "(%1$s) must be a valid file", file);
@@ -250,6 +251,7 @@ public abstract class FileUtils extends IOUtils {
    * @return a long value indicating the size of the given {@link File} in bytes.  If the {@link File} is null
    * or does not exist, then 0 is returned.
    * @see java.io.File#length()
+   * @see #isExisting(File)
    */
   @NullSafe
   public static long size(final File path) {
