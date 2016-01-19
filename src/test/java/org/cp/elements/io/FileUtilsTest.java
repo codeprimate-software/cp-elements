@@ -375,29 +375,30 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void isEmptyWithExistingNonEmptyDirectoryIsTrue() {
+    assertThat(FileUtils.isEmpty(WORKING_DIRECTORY), is(true));
+  }
+
+  @Test
   @SuppressWarnings("all")
   public void isEmptyWithExistingNonEmptyFileIsFalse() {
-    File mockFile = mock(File.class);
-
-    when(mockFile.exists()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(true);
     when(mockFile.length()).thenReturn(1l);
 
     assertThat(FileUtils.isEmpty(mockFile), is(false));
 
-    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).isFile();
     verify(mockFile, times(1)).length();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isEmptyWithNonExistingFileIsTrue() {
-    File mockFile = mock(File.class);
-
-    when(mockFile.exists()).thenReturn(false);
+    when(mockFile.isFile()).thenReturn(false);
 
     assertThat(FileUtils.isEmpty(mockFile), is(true));
 
-    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).isFile();
     verify(mockFile, never()).length();
   }
 
@@ -495,24 +496,39 @@ public class FileUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void sizeOfExistingFile() {
+  public void sizeOfExistingDirectory() {
     when(mockFile.exists()).thenReturn(true);
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(false);
+
+    assertThat(FileUtils.size(mockFile), is(equalTo(0l)));
+
+    verify(mockFile, never()).exists();
+    verify(mockFile, never()).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, never()).length();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void sizeOfExistingFile() {
+    when(mockFile.isFile()).thenReturn(true);
     when(mockFile.length()).thenReturn(1l);
 
     assertThat(FileUtils.size(mockFile), is(equalTo(1l)));
 
-    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).isFile();
     verify(mockFile, times(1)).length();
   }
 
   @Test
   @SuppressWarnings("all")
   public void sizeOfNonExistingFile() {
-    when(mockFile.exists()).thenReturn(false);
+    when(mockFile.isFile()).thenReturn(false);
 
     assertThat(FileUtils.size(mockFile), is(equalTo(0l)));
 
-    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).isFile();
     verify(mockFile, never()).length();
   }
 

@@ -251,11 +251,11 @@ public abstract class FileUtils extends IOUtils {
    * @return a long value indicating the size of the given {@link File} in bytes.  If the {@link File} is null
    * or does not exist, then 0 is returned.
    * @see java.io.File#length()
-   * @see #isExisting(File)
+   * @see #isFile(File)
    */
   @NullSafe
   public static long size(final File path) {
-    return (isExisting(path) ? path.length() : 0l);
+    return (isFile(path) ? path.length() : 0l);
   }
 
   /**
