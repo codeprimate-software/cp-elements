@@ -101,4 +101,10 @@ public class SystemUtilsTest {
     assertThat(SystemUtils.isWindows(), is(equalTo(isOs(SystemUtils.WINDOWS_OS_NAME))));
   }
 
+  @Test
+  public void isUnixBasedOperatingSystem() {
+    boolean expected = (isOs(SystemUtils.LINUX_OS_NAME) || isOs(SystemUtils.MAC_OSX_NAME));
+    assertThat(SystemUtils.isUnixBasedOperatingSystem(), is(equalTo(expected)));
+  }
+
 }

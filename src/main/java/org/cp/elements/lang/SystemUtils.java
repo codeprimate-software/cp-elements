@@ -201,6 +201,17 @@ public abstract class SystemUtils {
   }
 
   /**
+   * Determines whether the operating system is UNIX-based.
+   *
+   * @return a boolean value indicating whether the operating system on localhost is UNIX-based.
+   * @see #isLinux()
+   * @see #isMacOSX()
+   */
+  public static boolean isUnixBasedOperatingSystem() {
+    return (isLinux() || isMacOSX());
+  }
+
+  /**
    * Determines wheehr this Operating System is the expected Operating System environment.  The current OS is determined
    * by the "os.name" System property.
    *
