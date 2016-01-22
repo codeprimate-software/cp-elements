@@ -17,26 +17,36 @@
 package org.cp.elements.io;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.io.FileFilter;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 /**
  * The FileSystemUtilsTest class is a test suite of test cases testing the contract and functionality
@@ -62,6 +72,13 @@ public class FileSystemUtilsTest extends AbstractBaseTestSuite {
 
   @Mock
   private File mockFile;
+
+  @Mock
+  private FileFilter mockFileFilter;
+
+  protected File[] asArray(final File... files) {
+    return files;
+  }
 
   @Test
   public void appendToPathWithNonNullBasePathnameAndNonEmptyPathElements() {
@@ -136,8 +153,257 @@ public class FileSystemUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void count() {
-    fail(Constants.NOT_IMPLEMENTED);
+  @SuppressWarnings("all")
+  public void countFilteredDirectoryIsAccepted() {
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(false);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(FileSystemUtils.NO_FILES);
+    when(mockFileFilter.accept(any(File.class))).thenReturn(true);
+
+    assertThat(FileSystemUtils.count(mockFile, mockFileFilter), is(equalTo(1)));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).isFile();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockFileFilter, times(1)).accept(eq(mockFile));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countFilteredDirectoryIsRejected() {
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(false);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(FileSystemUtils.NO_FILES);
+    when(mockFileFilter.accept(any(File.class))).thenReturn(false);
+
+    assertThat(FileSystemUtils.count(mockFile, mockFileFilter), is(equalTo(0)));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).isFile();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockFileFilter, times(1)).accept(eq(mockFile));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countFilteredFileIsAccepted() {
+    when(mockFile.isDirectory()).thenReturn(false);
+    when(mockFile.isFile()).thenReturn(true);
+    when(mockFileFilter.accept(eq(mockFile))).thenReturn(true);
+
+    assertThat(FileSystemUtils.count(mockFile, mockFileFilter), is(equalTo(1)));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).isFile();
+    verify(mockFile, never()).listFiles(any(FileFilter.class));
+    verify(mockFileFilter, times(1)).accept(eq(mockFile));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countFilteredFileIsRejected() {
+    when(mockFile.isDirectory()).thenReturn(false);
+    when(mockFile.isFile()).thenReturn(true);
+    when(mockFileFilter.accept(any(File.class))).thenReturn(false);
+
+    assertThat(FileSystemUtils.count(mockFile, mockFileFilter), is(equalTo(0)));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).isFile();
+    verify(mockFile, never()).listFiles(any(FileFilter.class));
+    verify(mockFileFilter, times(1)).accept(eq(mockFile));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countNonFilteredFileIsAccepted() {
+    when(mockFile.isDirectory()).thenReturn(false);
+    when(mockFile.isFile()).thenReturn(true);
+    assertThat(FileSystemUtils.count(mockFile), is(equalTo(1)));
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, never()).listFiles(any(FileFilter.class));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countNonFilteredDirectoryIsRejected() {
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(false);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(FileSystemUtils.NO_FILES);
+    assertThat(FileSystemUtils.count(mockFile), is(equalTo(0)));
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+  }
+
+  @Test
+  public void countNullFileIsRejected() {
+    assertThat(FileSystemUtils.count(null), is(equalTo(0)));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countNonFilteredNonEmptyDirectory() {
+    File mockSubDirectoryOne = mock(File.class, "MockSubDirectoryOne");
+    File mockSubDirectoryTwo = mock(File.class, "MockSubDirectoryTwo");
+    File mockFileOne = mock(File.class, "MockFileOne");
+    File mockFileTwo = mock(File.class, "MockFileTwo");
+    File mockFileThree = mock(File.class, "MockFileThree");
+    File mockFileFour = mock(File.class, "MockFileFour");
+
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(false);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(asArray(mockSubDirectoryOne, mockSubDirectoryTwo,
+      mockFileOne, mockFileTwo, mockFileThree));
+    when(mockSubDirectoryOne.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryOne.isFile()).thenReturn(false);
+    when(mockSubDirectoryOne.listFiles(any(FileFilter.class))).thenReturn(asArray(mockFileFour));
+    when(mockSubDirectoryTwo.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryTwo.isFile()).thenReturn(false);
+    when(mockSubDirectoryTwo.listFiles(any(FileFilter.class))).thenReturn(FileSystemUtils.NO_FILES);
+    when(mockFileOne.isDirectory()).thenReturn(false);
+    when(mockFileOne.isFile()).thenReturn(true);
+    when(mockFileTwo.isDirectory()).thenReturn(false);
+    when(mockFileTwo.isFile()).thenReturn(true);
+    when(mockFileThree.isDirectory()).thenReturn(false);
+    when(mockFileThree.isFile()).thenReturn(true);
+    when(mockFileFour.isDirectory()).thenReturn(false);
+    when(mockFileFour.isFile()).thenReturn(true);
+
+    assertThat(FileSystemUtils.count(mockFile), is(equalTo(4)));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryOne, times(2)).isDirectory();
+    verify(mockSubDirectoryOne, times(1)).isFile();
+    verify(mockSubDirectoryOne, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryTwo, times(2)).isDirectory();
+    verify(mockSubDirectoryTwo, times(1)).isFile();
+    verify(mockSubDirectoryTwo, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockFileOne, times(1)).isDirectory();
+    verify(mockFileOne, times(1)).isFile();
+    verify(mockFileOne, never()).listFiles(any(FileFilter.class));
+    verify(mockFileTwo, times(1)).isDirectory();
+    verify(mockFileTwo, times(1)).isFile();
+    verify(mockFileTwo, never()).listFiles(any(FileFilter.class));
+    verify(mockFileThree, times(1)).isDirectory();
+    verify(mockFileThree, times(1)).isFile();
+    verify(mockFileThree, never()).listFiles(any(FileFilter.class));
+    verify(mockFileFour, times(1)).isDirectory();
+    verify(mockFileFour, times(1)).isFile();
+    verify(mockFileFour, never()).listFiles(any(FileFilter.class));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void countFilteredNonEmptyDirectory() {
+    File mockSubDirectoryOne = mock(File.class, "MockSubDirectoryOne");
+    File mockSubDirectoryTwo = mock(File.class, "MockSubDirectoryTwo");
+    File mockSubDirectoryThree = mock(File.class, "MockSubDirectoryThree");
+    File mockFileOne = mock(File.class, "MockFileOne");
+    File mockFileTwo = mock(File.class, "MockFileTwo");
+    File mockFileThree = mock(File.class, "MockFileThree");
+    File mockFileFour = mock(File.class, "MockFileFour");
+    File mockFileFive = mock(File.class, "MockFileFive");
+    File mockFileSix = mock(File.class, "MockFileFive");
+
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.isFile()).thenReturn(false);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(asArray(mockSubDirectoryOne, mockSubDirectoryTwo,
+      mockFileOne, mockFileTwo, mockFileThree));
+    when(mockSubDirectoryOne.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryOne.isFile()).thenReturn(false);
+    when(mockSubDirectoryOne.listFiles(any(FileFilter.class))).thenReturn(asArray(mockFileFour, mockFileFive));
+    when(mockSubDirectoryTwo.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryTwo.isFile()).thenReturn(false);
+    when(mockSubDirectoryTwo.listFiles(any(FileFilter.class))).thenReturn(asArray(mockSubDirectoryThree, mockFileSix));
+    when(mockSubDirectoryThree.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryThree.isFile()).thenReturn(false);
+    when(mockSubDirectoryThree.listFiles(any(FileFilter.class))).thenReturn(asArray());
+    when(mockFileOne.isDirectory()).thenReturn(false);
+    when(mockFileOne.isFile()).thenReturn(true);
+    when(mockFileOne.isHidden()).thenReturn(false);
+    when(mockFileTwo.isDirectory()).thenReturn(false);
+    when(mockFileTwo.isFile()).thenReturn(true);
+    when(mockFileTwo.isHidden()).thenReturn(true);
+    when(mockFileThree.isDirectory()).thenReturn(false);
+    when(mockFileThree.isFile()).thenReturn(true);
+    when(mockFileThree.isHidden()).thenReturn(false);
+    when(mockFileFour.isDirectory()).thenReturn(false);
+    when(mockFileFour.isFile()).thenReturn(true);
+    when(mockFileFour.isHidden()).thenReturn(true);
+    when(mockFileFive.isDirectory()).thenReturn(false);
+    when(mockFileFive.isFile()).thenReturn(true);
+    when(mockFileFive.isHidden()).thenReturn(false);
+    when(mockFileSix.isDirectory()).thenReturn(false);
+    when(mockFileSix.isFile()).thenReturn(true);
+    when(mockFileSix.isHidden()).thenReturn(true);
+
+    when(mockFileFilter.accept(any(File.class))).thenAnswer(new Answer<Boolean>() {
+      @Override public Boolean answer(final InvocationOnMock invocationOnMock) throws Throwable {
+        File file = invocationOnMock.getArgumentAt(0, File.class);
+        return !file.isHidden();
+      }
+    });
+
+    assertThat(FileSystemUtils.count(mockFile, ComposableFileFilter.and(FileOnlyFilter.INSTANCE, mockFileFilter)),
+      is(equalTo(3)));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, times(1)).isHidden();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryOne, times(2)).isDirectory();
+    verify(mockSubDirectoryOne, times(1)).isFile();
+    verify(mockSubDirectoryOne, times(1)).isHidden();
+    verify(mockSubDirectoryOne, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryTwo, times(2)).isDirectory();
+    verify(mockSubDirectoryTwo, times(1)).isFile();
+    verify(mockSubDirectoryTwo, times(1)).isHidden();
+    verify(mockSubDirectoryTwo, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryThree, times(2)).isDirectory();
+    verify(mockSubDirectoryThree, times(1)).isFile();
+    verify(mockSubDirectoryThree, times(1)).isHidden();
+    verify(mockSubDirectoryThree, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockFileOne, times(1)).isDirectory();
+    verify(mockFileOne, times(1)).isFile();
+    verify(mockFileOne, times(1)).isHidden();
+    verify(mockFileOne, never()).listFiles(any(FileFilter.class));
+    verify(mockFileTwo, times(1)).isDirectory();
+    verify(mockFileTwo, times(1)).isFile();
+    verify(mockFileTwo, times(1)).isHidden();
+    verify(mockFileTwo, never()).listFiles(any(FileFilter.class));
+    verify(mockFileThree, times(1)).isDirectory();
+    verify(mockFileThree, times(1)).isFile();
+    verify(mockFileThree, times(1)).isHidden();
+    verify(mockFileThree, never()).listFiles(any(FileFilter.class));
+    verify(mockFileFour, times(1)).isDirectory();
+    verify(mockFileFour, times(1)).isFile();
+    verify(mockFileFour, times(1)).isHidden();
+    verify(mockFileFour, never()).listFiles(any(FileFilter.class));
+    verify(mockFileFive, times(1)).isDirectory();
+    verify(mockFileFive, times(1)).isFile();
+    verify(mockFileFive, times(1)).isHidden();
+    verify(mockFileFive, never()).listFiles(any(FileFilter.class));
+    verify(mockFileSix, times(1)).isDirectory();
+    verify(mockFileSix, times(1)).isFile();
+    verify(mockFileSix, times(1)).isHidden();
+    verify(mockFileSix, never()).listFiles(any(FileFilter.class));
+  }
+
+  @Test
+  @IntegrationTest
+  public void countJavaSourceFilesInProjectReturnsNonZeroCount() {
+    assertThat(FileSystemUtils.count(getSourceDirectory(), new FileExtensionFilter("java")),
+      is(greaterThanOrEqualTo(386)));
+  }
+
+  @Test
+  @IntegrationTest
+  public void countGroovySourceFilesInProjectReturnsZero() {
+    assertThat(FileSystemUtils.count(getSourceDirectory(), new FileExtensionFilter("groovy")), is(equalTo(0)));
   }
 
   @Test

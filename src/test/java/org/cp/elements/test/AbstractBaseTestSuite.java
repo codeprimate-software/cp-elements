@@ -72,6 +72,28 @@ public abstract class AbstractBaseTestSuite {
     return new File(getClassesOutputDirectory(), pathname);
   }
 
+  protected File getProjectHomeDirectory() {
+    File projectHomeDirectory = WORKING_DIRECTORY;
+
+    while (projectHomeDirectory != null && !getProjectHomeDirectoryName().equals(projectHomeDirectory.getName())) {
+      projectHomeDirectory = projectHomeDirectory.getParentFile();
+    }
+
+    return projectHomeDirectory;
+  }
+
+  protected String getProjectHomeDirectoryName() {
+    return "cp-elements";
+  }
+
+  protected File getSourceDirectory() {
+    return new File(getProjectHomeDirectory(), getSourceDirectoryName());
+  }
+
+  protected String getSourceDirectoryName() {
+    return "src";
+  }
+
   protected void logDebug(final String message) {
     if (logger.isLoggable(Level.FINE) || logger.isLoggable(Level.FINER) || logger.isLoggable(Level.FINEST)) {
       logger.fine(message);
