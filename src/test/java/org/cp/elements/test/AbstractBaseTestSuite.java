@@ -51,8 +51,7 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected File getBuildOutputDirectory() {
-    File buildOutputDirectory = new File(WORKING_DIRECTORY, getBuildOutputDirectoryName());
-    return (buildOutputDirectory.isDirectory() ? buildOutputDirectory : WORKING_DIRECTORY);
+    return new File(getProjectHomeDirectory(), getBuildOutputDirectoryName());
   }
 
   protected String getBuildOutputDirectoryName() {
