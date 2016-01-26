@@ -22,46 +22,46 @@ import java.io.FileFilter;
 import org.cp.elements.lang.Filter;
 
 /**
- * The WritableFileFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
- * by whether they are writable.
+ * The ReadableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
+ * by whether they are readable.
  *
- * @author John J. blum
+ * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.cp.elements.lang.Filter
  * @since 1.0.0
  */
 @SuppressWarnings("all")
-public class WritableFileFilter implements FileFilter, Filter<File> {
+public class ReadableFilesFilter implements FileFilter, Filter<File> {
 
-  public static final WritableFileFilter WRITABLE_FILES = new WritableFileFilter(true);
-  public static final WritableFileFilter NON_WRITABLE_FILES = new WritableFileFilter(false);
+  public static final ReadableFilesFilter READABLE_FILES = new ReadableFilesFilter(true);
+  public static final ReadableFilesFilter NON_READABLE_FILES = new ReadableFilesFilter(false);
 
-  private final boolean writable;
+  private final boolean readable;
 
   /**
-   * Constructs an instance of the WritableFileFilter class initialized with the boolean value indicating whether
-   * writable {@link File}s are accepted or rejected by this {@link FileFilter}.
+   * Constructs an instance of the ReadableFilesFilter class initialized with the boolean value indicating whether
+   * readable {@link File}s are accepted or rejected by this {@link FileFilter}.
    *
-   * @param readable a boolean value indicating whether writable {@link File}s are accepted or rejected
+   * @param readable a boolean value indicating whether readable {@link File}s are accepted or rejected
    * by this {@link FileFilter}.
    */
-  protected WritableFileFilter(final boolean writable) {
-    this.writable = writable;
+  protected ReadableFilesFilter(final boolean readable) {
+    this.readable = readable;
   }
 
   /**
    * Determines whether the given {@link File} is accepted by this {@link FileFilter}, which evaluates whether
-   * the {@link File} is writable or not.
+   * the {@link File} is readable or not.
    *
    * @param pathname the {@link File} to evaluate.
-   * @return a boolean value indicating whether writable {@link File}s are accepted or rejected.
+   * @return a boolean value indicating whether readable {@link File}s are accepted or rejected.
    * @see java.io.FileFilter#accept(File)
-   * @see java.io.File#canWrite()
+   * @see java.io.File#canRead()
    */
   @Override
   public boolean accept(final File pathname) {
-    return (pathname.canWrite() == writable);
+    return (pathname.canRead() == readable);
   }
 
 }

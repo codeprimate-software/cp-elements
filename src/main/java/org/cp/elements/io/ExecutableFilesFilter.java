@@ -22,7 +22,7 @@ import java.io.FileFilter;
 import org.cp.elements.lang.Filter;
 
 /**
- * The ExecutableFileFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
+ * The ExecutableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
  * by whether they are executable.
  *
  * @author John J. Blum
@@ -32,21 +32,21 @@ import org.cp.elements.lang.Filter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ExecutableFileFilter implements FileFilter, Filter<File> {
+public class ExecutableFilesFilter implements FileFilter, Filter<File> {
 
-  public static final ExecutableFileFilter EXECUTABLE_FILES = new ExecutableFileFilter(true);
-  public static final ExecutableFileFilter NON_EXECUTABLE_FILES = new ExecutableFileFilter(false);
+  public static final ExecutableFilesFilter EXECUTABLE_FILES = new ExecutableFilesFilter(true);
+  public static final ExecutableFilesFilter NON_EXECUTABLE_FILES = new ExecutableFilesFilter(false);
 
   private final boolean executable;
 
   /**
-   * Constructs an instance of the ExecutableFileFilter class initialized with a boolean value indicating whether
+   * Constructs an instance of the ExecutableFilesFilter class initialized with a boolean value indicating whether
    * executable {@link File}s are accepted or rejected by this {@link FileFilter}.
    *
    * @param executable a boolean value indicating whether executable {@link File}s are accepted or rejected
    * by this {@link FileFilter}.
    */
-  protected ExecutableFileFilter(final boolean executable) {
+  protected ExecutableFilesFilter(final boolean executable) {
     this.executable = executable;
   }
 

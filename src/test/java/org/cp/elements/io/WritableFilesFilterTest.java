@@ -30,8 +30,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The ExecutableFileFilterTest class is a test suite of test cases testing the contract and functionality
- * of the ExecutableFileFilter class.
+ * The WritableFilesFilterTest class is a test suite of test cases testing the contract and functionality
+ * of the WritableFilesFilter class.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -41,45 +41,45 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.runners.MockitoJUnitRunner
- * @see org.cp.elements.io.ExecutableFileFilter
+ * @see org.cp.elements.io.WritableFilesFilter
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ExecutableFileFilterTest {
+public class WritableFilesFilterTest {
 
   @Mock
   private File mockFile;
 
   @Test
   @SuppressWarnings("all")
-  public void executableFileFilterAcceptsExecutableFile() {
-    when(mockFile.canExecute()).thenReturn(true);
-    assertThat(ExecutableFileFilter.EXECUTABLE_FILES.accept(mockFile), is(true));
-    verify(mockFile, times(1)).canExecute();
+  public void writableFileFilterAcceptsWritableFile() {
+    when(mockFile.canWrite()).thenReturn(true);
+    assertThat(WritableFilesFilter.WRITABLE_FILES.accept(mockFile), is(true));
+    verify(mockFile, times(1)).canWrite();
   }
 
   @Test
   @SuppressWarnings("all")
-  public void executableFileFilterRejectsNonExecutableFile() {
-    when(mockFile.canExecute()).thenReturn(false);
-    assertThat(ExecutableFileFilter.EXECUTABLE_FILES.accept(mockFile), is(false));
-    verify(mockFile, times(1)).canExecute();
+  public void writableFileFilterRejectsNonWritableFile() {
+    when(mockFile.canWrite()).thenReturn(false);
+    assertThat(WritableFilesFilter.WRITABLE_FILES.accept(mockFile), is(false));
+    verify(mockFile, times(1)).canWrite();
   }
 
   @Test
   @SuppressWarnings("all")
-  public void nonExecutableFileFilterAcceptsNonExecutableFile() {
-    when(mockFile.canExecute()).thenReturn(false);
-    assertThat(ExecutableFileFilter.NON_EXECUTABLE_FILES.accept(mockFile), is(true));
-    verify(mockFile, times(1)).canExecute();
+  public void nonWritableFileFilterAcceptsNonWritableFile() {
+    when(mockFile.canWrite()).thenReturn(false);
+    assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(mockFile), is(true));
+    verify(mockFile, times(1)).canWrite();
   }
 
   @Test
   @SuppressWarnings("all")
-  public void nonExecutableFileFilterRejectsExecutableFile() {
-    when(mockFile.canExecute()).thenReturn(true);
-    assertThat(ExecutableFileFilter.NON_EXECUTABLE_FILES.accept(mockFile), is(false));
-    verify(mockFile, times(1)).canExecute();
+  public void nonWritableFileFilterRejectsWritableFile() {
+    when(mockFile.canWrite()).thenReturn(true);
+    assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(mockFile), is(false));
+    verify(mockFile, times(1)).canWrite();
   }
 
 }
