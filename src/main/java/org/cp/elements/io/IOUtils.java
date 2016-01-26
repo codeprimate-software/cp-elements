@@ -92,14 +92,14 @@ public abstract class IOUtils {
    * @throws ClassNotFoundException if the class type of the serialized object cannot be resolved.
    * @throws IOException if an I/O error occurs during the deserialization process.
    * @throws NullPointerException if the serialized object byte array is null.
-   * @see #deserializeObject(byte[], ClassLoader)
-   * @see #serializeObject(Object)
+   * @see #deserialize(byte[], ClassLoader)
+   * @see #serialize(Object)
    * @see java.io.ByteArrayInputStream
    * @see java.io.ObjectInputStream
    * @see java.io.Serializable
    */
   @SuppressWarnings("unchecked")
-  public static <T> T deserializeObject(final byte[] serializedObjectBytes) throws ClassNotFoundException, IOException {
+  public static <T> T deserialize(final byte[] serializedObjectBytes) throws ClassNotFoundException, IOException {
     ObjectInputStream in = null;
 
     try {
@@ -124,8 +124,8 @@ public abstract class IOUtils {
    * by the specified Java {@link ClassLoader}.
    * @throws IOException if an I/O error occurs while deserializing the object from the array of bytes.
    * @throws NullPointerException if the serialized object byte array is null.
-   * @see #deserializeObject(byte[])
-   * @see #serializeObject(Object)
+   * @see #deserialize(byte[])
+   * @see #serialize(Object)
    * @see IOUtils.ClassLoaderObjectInputStream
    * @see java.lang.ClassLoader
    * @see java.io.ByteArrayInputStream
@@ -133,7 +133,7 @@ public abstract class IOUtils {
    * @see java.io.Serializable
    */
   @SuppressWarnings("unchecked")
-  public static <T> T deserializeObject(final byte[] serializedObjectBytes, final ClassLoader classLoader)
+  public static <T> T deserialize(final byte[] serializedObjectBytes, final ClassLoader classLoader)
     throws ClassNotFoundException, IOException
   {
     ObjectInputStream in = null;
@@ -153,12 +153,12 @@ public abstract class IOUtils {
    * @param obj the {@link java.io.Serializable} object to serialize into an array of bytes.
    * @return the byte array of the serialized object.
    * @throws IOException if an I/O error occurs during the serialization process.
-   * @see #deserializeObject(byte[])
+   * @see #deserialize(byte[])
    * @see java.io.ByteArrayOutputStream
    * @see java.io.ObjectOutputStream
    * @see java.io.Serializable
    */
-  public static byte[] serializeObject(final Object obj) throws IOException {
+  public static byte[] serialize(final Object obj) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     ObjectOutputStream objOut = null;
 

@@ -110,12 +110,12 @@ public class IOUtilsTest {
 
   @Test
   public void serializationDeserializationIsSuccessful() throws ClassNotFoundException, IOException {
-    assertThat(IOUtils.deserializeObject(IOUtils.serializeObject("TEST")), is(equalTo("TEST")));
+    assertThat(IOUtils.deserialize(IOUtils.serialize("TEST")), is(equalTo("TEST")));
   }
 
   @Test
   public void serializationDeserializationWithClassLoaderIsSuccessful() throws ClassNotFoundException, IOException {
-    assertThat(IOUtils.deserializeObject(IOUtils.serializeObject("TEST"), Thread.currentThread().getContextClassLoader()),
+    assertThat(IOUtils.deserialize(IOUtils.serialize("TEST"), Thread.currentThread().getContextClassLoader()),
       is(equalTo("TEST")));
   }
 
