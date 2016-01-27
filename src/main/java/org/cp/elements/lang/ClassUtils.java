@@ -21,6 +21,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
@@ -41,6 +42,8 @@ public abstract class ClassUtils {
   protected static final boolean DEFAULT_INITIALIZE_LOADED_CLASS = true;
 
   public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+
+  public static final String CLASS_FILE_EXTENSION = ".class";
 
   /**
    * Determines whether a given Class type is assignable to a declared Class type.  A given Class type is assignable to
@@ -96,6 +99,12 @@ public abstract class ClassUtils {
   @NullSafe
   public static String getClassSimpleName(final Object obj) {
     return (obj == null ? null : obj.getClass().getSimpleName());
+  }
+
+  // TODO javadoc, tests
+  @NullSafe
+  public static String getResourceName(final Class type) {
+    return (type != null ? type.getName().replaceAll("\\.", "/").concat(".class") : null);
   }
 
   /**
@@ -558,6 +567,22 @@ public abstract class ClassUtils {
     }
     catch (NoClassDefFoundError err) {
       throw new TypeNotFoundException(String.format("Class (%1$s) was not found!", fullyQualifiedClassName), err);
+    }
+  }
+
+  // TODO javadoc, tests
+  public static URL locateClass(final String fullyQualifiedClassName) {
+    return locateClass(fullyQualifiedClassName, Thread.currentThread().getContextClassLoader());
+  }
+
+  // TODO javadoc, tests
+  public static URL locateClass(final String fullyQualifiedClassName, final ClassLoader classLoader) {
+    try {
+      Class<?> type = loadClass(fullyQualifiedClassName, false, classLoader);
+      return type.getClassLoader().getResource(getResourceName(type));
+    }
+    catch (TypeNotFoundException ignore) {
+      return null;
     }
   }
 
