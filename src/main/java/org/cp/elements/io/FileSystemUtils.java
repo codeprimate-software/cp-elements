@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.NullSafe;
-import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.util.ArrayUtils;
@@ -188,10 +187,10 @@ public abstract class FileSystemUtils extends FileUtils {
     boolean success = true;
 
     for (File file : safeListFiles(path)) {
-      success &= (isDirectory(file) ? deleteRecursive(file) : (!fileFilter.accept(file) || delete(file)));
+      success &= (isDirectory(file) ? deleteRecursive(file, fileFilter) : (!fileFilter.accept(file) || delete(file)));
     }
 
-    return ((!fileFilter.accept(path) || delete(path)) && success);
+    return (fileFilter.accept(path) && delete(path) && success);
   }
 
   /**
@@ -221,17 +220,15 @@ public abstract class FileSystemUtils extends FileUtils {
       tryGetCanonicalPathElseGetAbsolutePath(WORKING_DIRECTORY)));
   }
 
-  @NullSafe
-  public static File[] listFiles(final File directory, FileFilter fileFilter) {
-    Assert.isTrue(isDirectory(directory), String.format("(%1$s) is not a valid directory",
-      directory));
+  public static File[] listFiles(final File directory) {
+    return listFiles(directory, AcceptingAllNonNullFilesFilter.INSTANCE);
+  }
 
+  public static File[] listFiles(final File directory, final FileFilter fileFilter) {
     List<File> results = new ArrayList<>();
 
-    fileFilter = ObjectUtils.defaultIfNull(fileFilter, FileOnlyFilter.INSTANCE);
-
     for (File file : safeListFiles(directory, fileFilter)) {
-      if (file.isDirectory()) {
+      if (isDirectory(file)) {
         results.addAll(Arrays.asList(listFiles(file, fileFilter)));
       }
       else {
@@ -255,40 +252,40 @@ public abstract class FileSystemUtils extends FileUtils {
   }
 
   /**
-   * Determines the size of the directory in bytes.  The directory size is determined by the byte size of all the files
-   * contained within the directory itself as well as it's subdirectories.
+   * Determines the size of the path in bytes.  The path size is determined by the byte size of all the files
+   * contained within the path itself as well as it's subdirectories.
    *
-   * @param directory the {@link File} denoting the directory to evaluate.
-   * @return a long value indicating the size of the directory in number of bytes.
+   * @param path the {@link File} denoting the path to evaluate.
+   * @return a long value indicating the size of the path in number of bytes.
    * @see java.io.File
    * @see org.cp.elements.io.FileOnlyFilter
    * @see #size(File, FileFilter)
    */
-  public static long size(final File directory) {
-    return size(directory, FileOnlyFilter.INSTANCE);
+  public static long size(final File path) {
+    return size(path, FileOnlyFilter.INSTANCE);
   }
 
   /**
-   * Determines the size of the directory in bytes.  The directory size is determined by the byte size of all the files
-   * contained within the directory itself as well as it's subdirectories that are accepted by the {@link FileFilter}.
+   * Determines the size of the path in bytes.  The path size is determined by the byte size of all the files
+   * contained within the path itself as well as it's subdirectories that are accepted by the {@link FileFilter}.
    *
-   * @param directory the {@link File} denoting the directory to evaluate.
+   * @param path the {@link File} denoting the path to evaluate.
    * @param fileFilter the {@link FileFilter} used to determine whether files identified will be included in the size.
-   * @return a long value indicating the size of the directory in number of bytes.
+   * @return a long value indicating the size of the path in number of bytes.
    * @see java.io.File#length()
    * @see java.io.FileFilter#accept(File)
    * @see #isDirectory(File)
    * @see #size(File, FileFilter)
    */
-  public static long size(final File directory, final FileFilter fileFilter) {
+  public static long size(final File path, final FileFilter fileFilter) {
     long size = 0;
 
-    for (File file : safeListFiles(directory)) {
-      size += (isDirectory(directory) ? size(file, fileFilter) : (fileFilter.accept(file) ? size(file) : 0));
+    for (File file : safeListFiles(path)) {
+      size += (isDirectory(path) ? size(file, fileFilter) : (fileFilter.accept(file) ? size(file) : 0));
     }
 
-    return (ComposableFileFilter.and(fileFilter, FileOnlyFilter.INSTANCE).accept(directory)
-      ? (directory.length() + size) : size);
+    return (ComposableFileFilter.and(FileOnlyFilter.INSTANCE, fileFilter).accept(path)
+      ? (path.length() + size) : size);
   }
 
 }

@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.FileFilter;
 
-import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
@@ -136,7 +135,7 @@ public class FileSystemUtilsTest extends AbstractBaseTestSuite {
   @Test
   public void createPathFromNonNullEmptyPathElements() {
     assertThat(FileSystemUtils.createPath("", "null", " ", "nil", "  "), is(equalTo("/null/nil")));
-    assertThat(FileSystemUtils.createPath("", "  "), is(equalTo("")));
+    assertThat(FileSystemUtils.createPath(null, "", "  "), is(equalTo("")));
     assertThat(FileSystemUtils.createPath(), is(equalTo("")));
   }
 
@@ -407,8 +406,133 @@ public class FileSystemUtilsTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void deleteRecursive() {
-    fail(Constants.NOT_IMPLEMENTED);
+  @SuppressWarnings("all")
+  public void deleteRecursiveWithExistingNonEmptyDirectoryIsTrue() {
+    File mockSubDirectoryOne = mock(File.class, "MockSubDirectoryOne");
+    File mockSubDirectoryTwo = mock(File.class, "MockSubDirectoryTwo");
+    File mockFileOne = mock(File.class, "MockFileOne");
+    File mockFileTwo = mock(File.class, "MockFileTwo");
+    File mockFileThree = mock(File.class, "MockFileThree");
+
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.exists()).thenReturn(true);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(asArray(mockSubDirectoryOne, mockSubDirectoryTwo,
+      mockFileOne, mockFileTwo));
+    when(mockFile.delete()).thenReturn(true);
+    when(mockSubDirectoryOne.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryOne.exists()).thenReturn(true);
+    when(mockSubDirectoryOne.listFiles(any(FileFilter.class))).thenReturn(asArray(mockFileThree));
+    when(mockSubDirectoryOne.delete()).thenReturn(true);
+    when(mockSubDirectoryTwo.isDirectory()).thenReturn(true);
+    when(mockSubDirectoryTwo.exists()).thenReturn(true);
+    when(mockSubDirectoryTwo.listFiles(any(FileFilter.class))).thenReturn(asArray());
+    when(mockSubDirectoryTwo.delete()).thenReturn(true);
+    when(mockFileOne.isDirectory()).thenReturn(false);
+    when(mockFileOne.exists()).thenReturn(true);
+    when(mockFileOne.delete()).thenReturn(true);
+    when(mockFileTwo.isDirectory()).thenReturn(false);
+    when(mockFileTwo.exists()).thenReturn(true);
+    when(mockFileTwo.delete()).thenReturn(true);
+    when(mockFileThree.isDirectory()).thenReturn(false);
+    when(mockFileThree.exists()).thenReturn(true);
+    when(mockFileThree.delete()).thenReturn(true);
+
+    assertThat(FileSystemUtils.deleteRecursive(mockFile), is(true));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockFile, times(1)).delete();
+    verify(mockSubDirectoryOne, times(2)).isDirectory();
+    verify(mockSubDirectoryOne, times(1)).exists();
+    verify(mockSubDirectoryOne, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryOne, times(1)).delete();
+    verify(mockSubDirectoryTwo, times(2)).isDirectory();
+    verify(mockSubDirectoryTwo, times(1)).exists();
+    verify(mockSubDirectoryTwo, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockSubDirectoryTwo, times(1)).delete();
+    verify(mockFileOne, times(1)).isDirectory();
+    verify(mockFileOne, times(1)).exists();
+    verify(mockFileOne, never()).listFiles(any(FileFilter.class));
+    verify(mockFileOne, times(1)).delete();
+    verify(mockFileTwo, times(1)).isDirectory();
+    verify(mockFileTwo, times(1)).exists();
+    verify(mockFileTwo, never()).listFiles(any(FileFilter.class));
+    verify(mockFileTwo, times(1)).delete();
+    verify(mockFileThree, times(1)).isDirectory();
+    verify(mockFileThree, times(1)).exists();
+    verify(mockFileThree, never()).listFiles(any(FileFilter.class));
+    verify(mockFileThree, times(1)).delete();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteRecursiveWithExistingEmptyDirectoryIsTrue() {
+    when(mockFile.delete()).thenReturn(true);
+    when(mockFile.exists()).thenReturn(true);
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(asArray());
+
+    assertThat(FileSystemUtils.deleteRecursive(mockFile), is(true));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).delete();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteRecursiveWithNonExistingDirectoryIsFalse() {
+    when(mockFile.exists()).thenReturn(false);
+    when(mockFile.isDirectory()).thenReturn(true);
+    when(mockFile.listFiles(any(FileFilter.class))).thenReturn(asArray());
+
+    assertThat(FileSystemUtils.deleteRecursive(mockFile), is(false));
+
+    verify(mockFile, never()).delete();
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).listFiles(isA(AcceptingAllNonNullFilesFilter.class));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteRecursiveWithExistingFileIsTrue() {
+    when(mockFile.delete()).thenReturn(true);
+    when(mockFile.exists()).thenReturn(true);
+    when(mockFile.isDirectory()).thenReturn(false);
+
+    assertThat(FileSystemUtils.deleteRecursive(mockFile), is(true));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).listFiles(any(FileFilter.class));
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, times(1)).delete();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void deleteRecursiveWithNonExistingFileIsFalse() {
+    when(mockFile.exists()).thenReturn(false);
+    when(mockFile.isDirectory()).thenReturn(false);
+
+    assertThat(FileSystemUtils.deleteRecursive(mockFile), is(false));
+
+    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).listFiles(any(FileFilter.class));
+    verify(mockFile, times(1)).exists();
+    verify(mockFile, never()).delete();
+  }
+
+  @Test
+  public void deleteRecursiveWithNullFileIsFalse() {
+    assertThat(FileSystemUtils.deleteRecursive(null), is(false));
+  }
+
+  @Test
+  public void test() {
+    fail("Not Implemented");
   }
 
   @Test

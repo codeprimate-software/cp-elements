@@ -34,6 +34,11 @@ import org.cp.elements.util.ArrayUtils;
  * @author John J. Blum
  * @see java.lang.Class
  * @see java.lang.Object
+ * @see java.lang.annotation.Annotation
+ * @see java.lang.reflect.AnnotatedElement
+ * @see java.lang.reflect.Constructor
+ * @see java.lang.reflect.Field
+ * @see java.lang.reflect.Method
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -101,10 +106,23 @@ public abstract class ClassUtils {
     return (obj == null ? null : obj.getClass().getSimpleName());
   }
 
-  // TODO javadoc, tests
+  /**
+   * Gets the resource name of the given {@link Class} type.  The resource name of a given {@link Class} is
+   * the pathname of the class file defining the {@link Class} type relative to the CLASSPATH.
+   *
+   * For instance, if the {@link Class} type were java.lang.Object.class, then the resource name would be...
+   *
+   * <code>
+   *   java/lang/Object.class.
+   * </code>
+   *
+   * @param type the {@link Class} type from which to construct the resource name.
+   * @return a String indicating the resource name of the given {@link Class} type.
+   * @see java.lang.Class
+   */
   @NullSafe
   public static String getResourceName(final Class type) {
-    return (type != null ? type.getName().replaceAll("\\.", "/").concat(".class") : null);
+    return (type != null ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION) : null);
   }
 
   /**
@@ -547,7 +565,7 @@ public abstract class ClassUtils {
    * Loads the Class object for the specified, fully qualified class name using the provided ClassLoader and the option
    * to initialize the class (calling any static initializers) once loaded.
    * 
-   * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
+   * @param fullyQualifiedClassName a String indicating the fully qualified class name of the Class to load.
    * @param initialize a boolean value indicating whether to initialize the class after loading.
    * @param classLoader the ClassLoader used to load the class.
    * @return a Class object for the specified, fully-qualified class name.
@@ -570,15 +588,33 @@ public abstract class ClassUtils {
     }
   }
 
-  // TODO javadoc, tests
-  public static URL locateClass(final String fullyQualifiedClassName) {
-    return locateClass(fullyQualifiedClassName, Thread.currentThread().getContextClassLoader());
+  /**
+   * Locates the class file resource given the binary name of the {@link Class}.
+   *
+   * @param binaryName a String with the binary name of the {@link Class} that's class file resource will be located.
+   * @return a {@link URL} with the location of the class file resource containing the {@link Class} definition
+   * for the given binary name.
+   * @see #locateClass(String, ClassLoader)
+   * @see java.net.URL
+   */
+  public static URL locateClass(final String binaryName) {
+    return locateClass(binaryName, Thread.currentThread().getContextClassLoader());
   }
 
-  // TODO javadoc, tests
-  public static URL locateClass(final String fullyQualifiedClassName, final ClassLoader classLoader) {
+  /**
+   * Locates the class file resource given the binary name of the {@link Class}.  The {@link ClassLoader} used
+   * to search class file resource for the {@link Class} with the given binary name.
+   *
+   * @param binaryName a String with the binary name of the {@link Class} that's class file resource will be located.
+   * @param classLoader the {@link ClassLoader} used to locate the class file resource for the {@link Class}
+   * with the given binary name.
+   * @return a {@link URL} with the location of the class file resource containing the {@link Class} definition
+   * for the given binary name.
+   * @see java.net.URL
+   */
+  public static URL locateClass(final String binaryName, final ClassLoader classLoader) {
     try {
-      Class<?> type = loadClass(fullyQualifiedClassName, false, classLoader);
+      Class<?> type = loadClass(binaryName, false, classLoader);
       return type.getClassLoader().getResource(getResourceName(type));
     }
     catch (TypeNotFoundException ignore) {

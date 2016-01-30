@@ -29,11 +29,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Documented;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.Socket;
 import java.util.Calendar;
 import java.util.Date;
 import javax.annotation.Resource;
@@ -43,6 +48,7 @@ import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
+import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
 import org.junit.Rule;
@@ -56,12 +62,13 @@ import org.junit.rules.ExpectedException;
  * @author John J. Blum
  * @see java.lang.Class
  * @see org.cp.elements.lang.ClassUtils
+ * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.cp.elements.test.TestUtils
  * @see org.junit.Rule
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class ClassUtilsTest {
+public class ClassUtilsTest extends AbstractBaseTestSuite {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -124,6 +131,20 @@ public class ClassUtilsTest {
     assertEquals("Integer", ClassUtils.getClassSimpleName(9));
     assertEquals("Double", ClassUtils.getClassSimpleName(1.0d));
     assertEquals("String", ClassUtils.getClassSimpleName("TEST"));
+  }
+
+  @Test
+  public void getResourceName() {
+    assertThat(ClassUtils.getResourceName(Object.class), is(equalTo("java/lang/Object.class")));
+    assertThat(ClassUtils.getResourceName(Thread.class), is(equalTo("java/lang/Thread.class")));
+    assertThat(ClassUtils.getResourceName(InputStream.class), is(equalTo("java/io/InputStream.class")));
+    assertThat(ClassUtils.getResourceName(OutputStream.class), is(equalTo("java/io/OutputStream.class")));
+    assertThat(ClassUtils.getResourceName(Socket.class), is(equalTo("java/net/Socket.class")));
+  }
+
+  @Test
+  public void getResourceNameWithNull() {
+    assertThat(ClassUtils.getResourceName(null), is(nullValue()));
   }
 
   @Test
@@ -569,6 +590,12 @@ public class ClassUtilsTest {
       assertTrue(expected.getCause() instanceof ClassNotFoundException);
       throw expected;
     }
+  }
+
+  @Test
+  public void locateClass() throws MalformedURLException {
+    assertThat(ClassUtils.locateClass(ClassUtils.class.getName()), is(equalTo( new File(getClassesOutputDirectory(),
+      ClassUtils.class.getName().replaceAll("\\.", "/").concat(".class")).toURI().toURL())));
   }
 
   @Test
