@@ -26,53 +26,53 @@ import org.cp.elements.test.AbstractBaseTestSuite;
 import org.junit.Test;
 
 /**
- * The AcceptingAllNonNullFilesFilterTest class is a test suite of test cases testing the contract and functionality
- * of the AcceptingAllNonNullFilesFilter class.
+ * The AcceptingNonNullExistingFilesFilterTest class is a test suite of test cases testing the contract and functionality
+ * of the AcceptingNonNullExistingFilesFilter class.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.junit.Test
- * @see org.cp.elements.io.AcceptingAllNonNullFilesFilter
+ * @see AcceptingNonNullExistingFilesFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
-public class AcceptingAllNonNullFilesFilterTest extends AbstractBaseTestSuite {
+public class AcceptingNonNullExistingFilesFilterTest extends AbstractBaseTestSuite {
 
   @Test
-  public void acceptsExistingDirectory() {
+  public void acceptsNonNullExistingDirectory() {
     assertThat(WORKING_DIRECTORY.isDirectory(), is(true));
-    assertThat(AcceptingAllNonNullFilesFilter.INSTANCE.accept(WORKING_DIRECTORY), is(true));
+    assertThat(AcceptingNonNullExistingFilesFilter.INSTANCE.accept(WORKING_DIRECTORY), is(true));
   }
 
   @Test
-  public void acceptsExistingFile() {
-    File acceptingAllNonNullFilesFilterClass = getLocation(AcceptingAllNonNullFilesFilter.class);
+  public void acceptsNonNullExistingFile() {
+    File acceptingNonNullExistingFilesFilterClass = getLocation(AcceptingNonNullExistingFilesFilter.class);
 
-    assertThat(acceptingAllNonNullFilesFilterClass, is(notNullValue()));
-    assertThat(acceptingAllNonNullFilesFilterClass.isFile(), is(true));
-    assertThat(AcceptingAllNonNullFilesFilter.INSTANCE.accept(acceptingAllNonNullFilesFilterClass), is(true));
+    assertThat(acceptingNonNullExistingFilesFilterClass, is(notNullValue()));
+    assertThat(acceptingNonNullExistingFilesFilterClass.isFile(), is(true));
+    assertThat(AcceptingNonNullExistingFilesFilter.INSTANCE.accept(acceptingNonNullExistingFilesFilterClass), is(true));
   }
 
   @Test
-  public void acceptsNonExistingDirectory() {
+  public void rejectsNonNullNonExistingDirectory() {
     File nonExistingDirectory = new File("/absolute/path/to/non/existing/directory");
 
     assertThat(nonExistingDirectory.exists(), is(false));
-    assertThat(AcceptingAllNonNullFilesFilter.INSTANCE.accept(nonExistingDirectory), is(true));
+    assertThat(AcceptingNonNullExistingFilesFilter.INSTANCE.accept(nonExistingDirectory), is(false));
   }
 
   @Test
-  public void acceptsNonExistingFile() {
+  public void rejectsNonNullNonExistingFile() {
     File nonExistingFile = new File("relative/path/to/non/existing/file.ext");
 
     assertThat(nonExistingFile.exists(), is(false));
-    assertThat(AcceptingAllNonNullFilesFilter.INSTANCE.accept(nonExistingFile), is(true));
+    assertThat(AcceptingNonNullExistingFilesFilter.INSTANCE.accept(nonExistingFile), is(false));
   }
 
   @Test
   public void rejectsNull() {
-    assertThat(AcceptingAllNonNullFilesFilter.INSTANCE.accept(null), is(false));
+    assertThat(AcceptingNonNullExistingFilesFilter.INSTANCE.accept(null), is(false));
   }
 
 }

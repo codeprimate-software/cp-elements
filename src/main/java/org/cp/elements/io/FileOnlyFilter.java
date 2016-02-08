@@ -37,12 +37,13 @@ public class FileOnlyFilter implements FileFilter, Filter<File> {
   public static final FileOnlyFilter INSTANCE = new FileOnlyFilter();
 
   /**
-   * Accepts all File objects referencing actual files in the file system.
+   * Accepts all {@link File}s referencing actual files in the file system.
    *
-   * @param file the File being filtered by this Filter.
-   * @return a boolean value indicating if the File reference is a file.
-   * @see java.io.File
+   * @param file the {@link File} being evaluated and filtered by this {@link FileFilter}.
+   * @return a boolean value indicating if the given {@link File} reference is a file.
    * @see org.cp.elements.io.FileUtils#isFile(java.io.File)
+   * @see java.io.FileFilter#accept(File)
+   * @see java.io.File
    */
   public boolean accept(final File file) {
     return FileUtils.isFile(file);

@@ -23,8 +23,8 @@ import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The AcceptingAllNonNullFilesFilter class is a {@link FileFilter} and {@link Filter} implementation
- * that accepts all non-null files.
+ * The AcceptingNonNullExistingFilesFilter class is a {@link FileFilter} and {@link Filter} implementation
+ * that accepts all non-null, existing files.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -34,22 +34,23 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  */
 @ThreadSafe
 @SuppressWarnings("unused")
-public class AcceptingAllNonNullFilesFilter implements FileFilter, Filter<File> {
+public class AcceptingNonNullExistingFilesFilter implements FileFilter, Filter<File> {
 
-  public static final AcceptingAllNonNullFilesFilter INSTANCE = new AcceptingAllNonNullFilesFilter();
+  public static final AcceptingNonNullExistingFilesFilter INSTANCE = new AcceptingNonNullExistingFilesFilter();
 
   /**
    * Evaluates and determines whether the given {@link File} satisfies the criteria of this filter.
    *
    * @param pathname the {@link File} to evaluate.
    * @return a boolean value indicating whether the given file satisfies the criteria of this filter.
+   * @see org.cp.elements.io.FileUtils#isExisting(File)
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
   @Override
   public boolean accept(final File pathname) {
-    return (pathname != null);
+    return FileUtils.isExisting(pathname);
   }
 
 }

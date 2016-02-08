@@ -37,12 +37,13 @@ public class DirectoryOnlyFilter implements FileFilter, Filter<File> {
   public static final DirectoryOnlyFilter INSTANCE = new DirectoryOnlyFilter();
 
   /**
-   * Accepts all File objects referencing directories in the file system.
+   * Accepts all {@link File}s referencing directories in the file system.
    *
-   * @param file the File being filtered by this Filter.
-   * @return a boolean value indicating if the File reference is a directory.
+   * @param file the {@link File} being evaluated and filtered by this {@link FileFilter}.
+   * @return a boolean value indicating if the given {@link File} reference is a directory.
+   * @see org.cp.elements.io.FileUtils#isDirectory(File)
+   * @see java.io.FileFilter#accept(File)
    * @see java.io.File
-   * @see org.cp.elements.io.FileUtils#isFile(java.io.File)
    */
   public boolean accept(final File file) {
     return FileUtils.isDirectory(file);
