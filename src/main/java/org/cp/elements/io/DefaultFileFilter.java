@@ -55,6 +55,7 @@ public class DefaultFileFilter implements FileFilter, Filter<File> {
    *
    * @param pathname the {@link File} to evaluate.
    * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */

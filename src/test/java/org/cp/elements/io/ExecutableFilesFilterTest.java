@@ -31,7 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The ExecutableFilesFilterTest class is a test suite of test cases testing the contract and functionality
- * of the ExecutableFilesFilter class.
+ * of the {@link ExecutableFilesFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File

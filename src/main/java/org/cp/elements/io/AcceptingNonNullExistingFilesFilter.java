@@ -39,10 +39,10 @@ public class AcceptingNonNullExistingFilesFilter implements FileFilter, Filter<F
   public static final AcceptingNonNullExistingFilesFilter INSTANCE = new AcceptingNonNullExistingFilesFilter();
 
   /**
-   * Evaluates and determines whether the given {@link File} satisfies the criteria of this filter.
+   * Evaluates and determines whether the given {@link File} matches  the criteria of this filter.
    *
    * @param pathname the {@link File} to evaluate.
-   * @return a boolean value indicating whether the given file satisfies the criteria of this filter.
+   * @return a boolean value indicating whether the given {@link File} matches the criteria of this filter.
    * @see org.cp.elements.io.FileUtils#isExisting(File)
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)

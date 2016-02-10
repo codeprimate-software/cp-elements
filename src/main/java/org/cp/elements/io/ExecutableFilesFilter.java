@@ -23,7 +23,7 @@ import org.cp.elements.lang.Filter;
 
 /**
  * The ExecutableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
- * by whether they are executable.
+ * based on whether they are executable.
  *
  * @author John J. Blum
  * @see java.io.File

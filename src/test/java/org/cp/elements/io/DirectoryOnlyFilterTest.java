@@ -16,8 +16,8 @@
 
 package org.cp.elements.io;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -27,54 +27,51 @@ import org.junit.Test;
 
 /**
  * The DirectoryOnlyFilterTest class is a test suite of test cases testing the contract and functionality of the
- * DirectoryOnlyFilter class.
+ * {@link DirectoryOnlyFilter} class.
  *
  * @author John J. Blum
- * @see org.junit.Test
  * @see java.io.File
+ * @see org.junit.Test
  * @see org.cp.elements.io.DirectoryOnlyFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
 public class DirectoryOnlyFilterTest extends AbstractBaseTestSuite {
 
-  private DirectoryOnlyFilter filter = new DirectoryOnlyFilter();
-
   @Test
-  public void testAcceptWithDirectory() {
-    assertTrue(filter.accept(new File(System.getProperty("user.dir"))));
-    assertTrue(filter.accept(new File(System.getProperty("user.home"))));
-    assertTrue(filter.accept(new File(System.getProperty("java.io.tmpdir"))));
+  public void acceptsDirectories() {
+    assertTrue(DirectoryOnlyFilter.INSTANCE.accept(TEMPORARY_DIRECTORY));
+    assertTrue(DirectoryOnlyFilter.INSTANCE.accept(USER_HOME));
+    assertTrue(DirectoryOnlyFilter.INSTANCE.accept(WORKING_DIRECTORY));
   }
 
   @Test
-  public void testAcceptWithFile() {
-    File directoryOnlyFilterClass = new File(getBuildOutputDirectory(),
-      "classes/org/cp/elements/io/DirectoryOnlyFilter.class");
+  public void rejectsFile() {
+    File directoryOnlyFilterClass = getLocation(DirectoryOnlyFilter.class);
 
-    assertNotNull(directoryOnlyFilterClass);
-    assertTrue(directoryOnlyFilterClass.isFile());
-    assertFalse(filter.accept(directoryOnlyFilterClass));
+    assertThat(directoryOnlyFilterClass.isFile(), is(true));
+    assertThat(DirectoryOnlyFilter.INSTANCE.accept(directoryOnlyFilterClass), is(false));
   }
 
   @Test
-  public void testAcceptWithNonExistingDirectory() {
-    File nonExistingDirectory = new File(System.getProperty("user.dir"), "relative/path/to/non_existing/directory/");
+  public void rejectsNonExistingDirectory() {
+    File nonExistingDirectory = new File(WORKING_DIRECTORY, "relative/path/to/non/existing/directory/");
 
-    assertNotNull(nonExistingDirectory);
-    assertFalse(nonExistingDirectory.isDirectory());
-    assertFalse(nonExistingDirectory.exists());
-    assertFalse(filter.accept(nonExistingDirectory));
+    assertThat(nonExistingDirectory.exists(), is(false));
+    assertThat(DirectoryOnlyFilter.INSTANCE.accept(nonExistingDirectory), is(false));
   }
 
   @Test
-  public void testAcceptWithNonExistingFile() {
-    File nonExistingFile = new File(System.getProperty("user.dir"), "relative/path/to/non_existing/file.ext");
+  public void rejectsNonExistingFile() {
+    File nonExistingFile = new File(System.getProperty("user.dir"), "relative/path/to/non/existing/file.ext");
 
-    assertNotNull(nonExistingFile);
-    assertFalse(nonExistingFile.isFile());
-    assertFalse(nonExistingFile.exists());
-    assertFalse(filter.accept(nonExistingFile));
+    assertThat(nonExistingFile.exists(), is(false));
+    assertThat(DirectoryOnlyFilter.INSTANCE.accept(nonExistingFile), is(false));
+  }
+
+  @Test
+  public void rejectsNull() {
+    assertThat(DirectoryOnlyFilter.INSTANCE.accept(null), is(false));
   }
 
 }
