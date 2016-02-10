@@ -16,10 +16,11 @@
 
 package org.cp.elements.io;
 
-import static org.cp.elements.test.TestUtils.assertNegative;
-import static org.cp.elements.test.TestUtils.assertPositive;
-import static org.cp.elements.test.TestUtils.assertZero;
-import static org.mockito.Mockito.mock;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,6 +28,9 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The FileComparatorFactoryTest class is a test suite of test cases testing the contract and functionality
@@ -36,94 +40,89 @@ import org.junit.Test;
  * @see java.io.File
  * @see java.util.Comparator
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
+ * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
  * @see org.cp.elements.io.FileComparatorFactory
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 @SuppressWarnings("all")
+@RunWith(MockitoJUnitRunner.class)
 public class FileComparatorFactoryTest {
 
+  @Mock
+  private File mockFileOne;
+
+  @Mock
+  private File mockFileTwo;
+
   @Test
-  public void testFileExtensionComparator() {
-    File mockFileOne = mock(File.class, "mockFileOne");
-    File mockFileTwo = mock(File.class, "mockFileTwo");
+  public void fileExtensionComparator() {
+    when(mockFileOne.getName()).thenReturn("/path/to/source/file.groovy");
+    when(mockFileTwo.getName()).thenReturn("/path/to/source/file.java");
 
-    when(mockFileOne.getName()).thenReturn("/path/to/fileOne.groovy");
-    when(mockFileTwo.getName()).thenReturn("/path/to/fileTwo.java");
-
-    assertZero(FileComparatorFactory.fileExtensionComparator().compare(mockFileOne, mockFileOne));
-    assertNegative(FileComparatorFactory.fileExtensionComparator().compare(mockFileOne, mockFileTwo));
-    assertPositive(FileComparatorFactory.fileExtensionComparator().compare(mockFileTwo, mockFileOne));
-    assertZero(FileComparatorFactory.fileExtensionComparator().compare(mockFileTwo, mockFileTwo));
+    assertThat(FileComparatorFactory.fileExtensionComparator().compare(mockFileOne, mockFileOne), is(equalTo(0)));
+    assertThat(FileComparatorFactory.fileExtensionComparator().compare(mockFileOne, mockFileTwo), is(lessThan(0)));
+    assertThat(FileComparatorFactory.fileExtensionComparator().compare(mockFileTwo, mockFileOne), is(greaterThan(0)));
+    assertThat(FileComparatorFactory.fileExtensionComparator().compare(mockFileTwo, mockFileTwo), is(equalTo(0)));
 
     verify(mockFileOne, times(4)).getName();
     verify(mockFileTwo, times(4)).getName();
   }
 
   @Test
-  public void testFileLastModifiedComparator() {
-    File mockFileOne = mock(File.class, "mockFileOne");
-    File mockFileTwo = mock(File.class, "mockFileTwo");
-
+  public void fileLastModifiedComparator() {
     when(mockFileOne.lastModified()).thenReturn(1l);
     when(mockFileTwo.lastModified()).thenReturn(2l);
 
-    assertZero(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileOne, mockFileOne));
-    assertNegative(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileOne, mockFileTwo));
-    assertPositive(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileTwo, mockFileOne));
-    assertZero(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileTwo, mockFileTwo));
+    assertThat(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileOne, mockFileOne), is(equalTo(0)));
+    assertThat(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileOne, mockFileTwo), is(lessThan(0)));
+    assertThat(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileTwo, mockFileOne), is(greaterThan(0)));
+    assertThat(FileComparatorFactory.fileLastModifiedComparator().compare(mockFileTwo, mockFileTwo), is(equalTo(0)));
 
     verify(mockFileOne, times(4)).lastModified();
     verify(mockFileTwo, times(4)).lastModified();
   }
 
   @Test
-  public void testFileNameComparator() {
-    File mockFileOne = mock(File.class, "mockFileOne");
-    File mockFileTwo = mock(File.class, "mockFileTwo");
+  public void fileNameComparator() {
+    when(mockFileOne.getName()).thenReturn("/path/to/source/fileOne.java");
+    when(mockFileTwo.getName()).thenReturn("/path/to/source/fileTwo.java");
 
-    when(mockFileOne.getName()).thenReturn("/path/to/fileOne.ext");
-    when(mockFileTwo.getName()).thenReturn("/path/to/fileTwo.ext");
-
-    assertZero(FileComparatorFactory.fileNameComparator().compare(mockFileOne, mockFileOne));
-    assertNegative(FileComparatorFactory.fileNameComparator().compare(mockFileOne, mockFileTwo));
-    assertPositive(FileComparatorFactory.fileNameComparator().compare(mockFileTwo, mockFileOne));
-    assertZero(FileComparatorFactory.fileNameComparator().compare(mockFileTwo, mockFileTwo));
+    assertThat(FileComparatorFactory.fileNameComparator().compare(mockFileOne, mockFileOne), is(equalTo(0)));
+    assertThat(FileComparatorFactory.fileNameComparator().compare(mockFileOne, mockFileTwo), is(lessThan(0)));
+    assertThat(FileComparatorFactory.fileNameComparator().compare(mockFileTwo, mockFileOne), is(greaterThan(0)));
+    assertThat(FileComparatorFactory.fileNameComparator().compare(mockFileTwo, mockFileTwo), is(equalTo(0)));
 
     verify(mockFileOne, times(4)).getName();
     verify(mockFileTwo, times(4)).getName();
   }
 
   @Test
-  public void testFilePathComparator() {
-    File mockFileOne = mock(File.class, "mockFileOne");
-    File mockFileTwo = mock(File.class, "mockFileTwo");
+  public void filePathComparator() {
+    when(mockFileOne.getAbsolutePath()).thenReturn("/absolute/path/to/file.ext");
+    when(mockFileTwo.getAbsolutePath()).thenReturn("/relative/path/to/file.ext");
 
-    when(mockFileOne.getAbsolutePath()).thenReturn("/a/path/to/fileOne.ext");
-    when(mockFileTwo.getAbsolutePath()).thenReturn("/different/path/to/fileTwo.ext");
-
-    assertZero(FileComparatorFactory.filePathComparator().compare(mockFileOne, mockFileOne));
-    assertNegative(FileComparatorFactory.filePathComparator().compare(mockFileOne, mockFileTwo));
-    assertPositive(FileComparatorFactory.filePathComparator().compare(mockFileTwo, mockFileOne));
-    assertZero(FileComparatorFactory.filePathComparator().compare(mockFileTwo, mockFileTwo));
+    assertThat(FileComparatorFactory.filePathComparator().compare(mockFileOne, mockFileOne), is(equalTo(0)));
+    assertThat(FileComparatorFactory.filePathComparator().compare(mockFileOne, mockFileTwo), is(lessThan(0)));
+    assertThat(FileComparatorFactory.filePathComparator().compare(mockFileTwo, mockFileOne), is(greaterThan(0)));
+    assertThat(FileComparatorFactory.filePathComparator().compare(mockFileTwo, mockFileTwo), is(equalTo(0)));
 
     verify(mockFileOne, times(4)).getAbsolutePath();
     verify(mockFileTwo, times(4)).getAbsolutePath();
   }
 
   @Test
-  public void testFileSizeComparator() {
-    File mockFileOne = mock(File.class, "mockFileOne");
-    File mockFileTwo = mock(File.class, "mockFileTwo");
-
+  public void fileSizeComparator() {
     when(mockFileOne.length()).thenReturn(1024l);
     when(mockFileTwo.length()).thenReturn(1024000l);
 
-    assertZero(FileComparatorFactory.fileSizeComparator().compare(mockFileOne, mockFileOne));
-    assertNegative(FileComparatorFactory.fileSizeComparator().compare(mockFileOne, mockFileTwo));
-    assertPositive(FileComparatorFactory.fileSizeComparator().compare(mockFileTwo, mockFileOne));
-    assertZero(FileComparatorFactory.fileSizeComparator().compare(mockFileTwo, mockFileTwo));
+    assertThat(FileComparatorFactory.fileSizeComparator().compare(mockFileOne, mockFileOne), is(equalTo(0)));
+    assertThat(FileComparatorFactory.fileSizeComparator().compare(mockFileOne, mockFileTwo), is(lessThan(0)));
+    assertThat(FileComparatorFactory.fileSizeComparator().compare(mockFileTwo, mockFileOne), is(greaterThan(0)));
+    assertThat(FileComparatorFactory.fileSizeComparator().compare(mockFileTwo, mockFileTwo), is(equalTo(0)));
 
     verify(mockFileOne, times(4)).length();
     verify(mockFileTwo, times(4)).length();

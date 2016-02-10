@@ -21,33 +21,70 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 
 /**
- * The FileComparatorFactory class is a factory class returning File Comparator implementations based on various
- * File properties and attributes.
+ * The FileComparatorFactory class is a factory class returning {@link File} {@link Comparator} implementations
+ * based on various {@link File} properties and attributes.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see java.util.Comparator
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public abstract class FileComparatorFactory {
 
+  /**
+   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their extension.
+   *
+   * @return a {@link Comparator} used to compare {@link File}s for order by their extension.
+   * @see org.cp.elements.io.FileUtils#getExtension(File)
+   * @see java.util.Comparator#compare(Object, Object)
+   * @see java.io.File
+   */
   public static Comparator<File> fileExtensionComparator() {
     return (fileOne, fileTwo) -> FileUtils.getExtension(fileOne).compareTo(FileUtils.getExtension(fileTwo));
   }
 
+  /**
+   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their
+   * last modified timestamp.
+   *
+   * @return a {@link Comparator} used to compare {@link File}s for order by their last modified timestamp.
+   * @see java.util.Comparator#compare(Object, Object)
+   * @see java.io.File#lastModified()
+   */
   public static Comparator<File> fileLastModifiedComparator() {
     return (fileOne, fileTwo) -> new BigDecimal(fileOne.lastModified() - fileTwo.lastModified()).intValue();
   }
 
+  /**
+   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their name.
+   *
+   * @return a {@link Comparator} used to compare {@link File}s for order by their name.
+   * @see java.util.Comparator#compare(Object, Object)
+   * @see java.io.File#getName()
+   */
   public static Comparator<File> fileNameComparator() {
     return (fileOne, fileTwo) -> fileOne.getName().compareTo(fileTwo.getName());
   }
 
+  /**
+   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their
+   * file system location (absolute path).
+   *
+   * @return a {@link Comparator} used to compare {@link File}s for order by their file system location (absolute path).
+   * @see java.util.Comparator#compare(Object, Object)
+   * @see java.io.File#getAbsolutePath()
+   */
   public static Comparator<File> filePathComparator() {
     return (fileOne, fileTwo) -> fileOne.getAbsolutePath().compareTo(fileTwo.getAbsolutePath());
   }
 
+  /**
+   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their size.
+   *
+   * @return a {@link Comparator} used to compare {@link File}s for order by their size.
+   * @see java.util.Comparator#compare(Object, Object)
+   * @see java.io.File#length()
+   */
   public static Comparator<File> fileSizeComparator() {
     return (fileOne, fileTwo) -> new BigDecimal(fileOne.length() - fileTwo.length()).intValue();
   }
