@@ -17,52 +17,50 @@
 package org.cp.elements.lang;
 
 /**
- * The AssertionFailedException is a RuntimeException indicating an assertion failure using the Assert class.
+ * AssertionException is a {@link RuntimeException} thrown to indicate that an assertion has failed.
  *
  * @author John J. Blum
  * @see java.lang.AssertionError
  * @see java.lang.RuntimeException
- * @see org.cp.elements.lang.AssertionFailedException
  * @since 1.0.0
- * @version 1.0.0
  */
 @SuppressWarnings("unused")
-public class AssertionFailedException extends RuntimeException {
+public class AssertionException extends RuntimeException {
 
   /**
-   * Default constructor creating an instance of the AssertionFailedException.
+   * Default constructor creating an instance of the AssertionException.
    */
-  public AssertionFailedException() {
+  public AssertionException() {
   }
 
   /**
-   * Constructor to create an instance of the AssertionFailedException with the given message to describe the
+   * Constructor to create an instance of the AssertionException with the given message to describe the
    * assertion failure.
    *
    * @param message a String value describing the nature of the assertion failure.
    */
-  public AssertionFailedException(final String message) {
+  public AssertionException(final String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the AssertionFailedException with the given Throwable to indicated the cause
+   * Constructor to create an instance of the AssertionException with the given Throwable to indicated the cause
    * of the assertion failure.
    *
    * @param cause the Throwable indicated as the cause of this assertion failure.
    */
-  public AssertionFailedException(final Throwable cause) {
+  public AssertionException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the AssertionFailedException with a message to describe the assertion failure
+   * Constructor to create an instance of the AssertionException with a message to describe the assertion failure
    * and a Throwable to indicate the probable cause of the assertion failure.
    *
    * @param message a String value describing the nature of the assertion failure.
    * @param cause the Throwable indicated as the cause of this assertion failure.
    */
-  public AssertionFailedException(final String message, final Throwable cause) {
+  public AssertionException(final String message, final Throwable cause) {
     super(message, cause);
   }
 

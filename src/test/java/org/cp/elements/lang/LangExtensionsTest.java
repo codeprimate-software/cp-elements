@@ -124,7 +124,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatDoubleIsAssignableToIntegerThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage(String.format("(%1$s) is not assignable to (java.lang.Integer)", Math.PI));
 
@@ -133,7 +133,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatObjectIsAssignableToStringThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -151,7 +151,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatStringIsNotAssignableToObjectThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(class java.lang.String) is assignable to (java.lang.Object)");
 
@@ -178,7 +178,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatObjectsAreNotComparableThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(queue) is not comparable to (Q)");
 
@@ -187,7 +187,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatObjectsAreNotComparableThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -205,7 +205,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatComparableObjectsAreNotComparableThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is comparable to (test)");
 
@@ -233,7 +233,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatObjectIsEqualToObjectThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is not equal to (mock)");
 
@@ -242,7 +242,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatObjectIsEqualToObjectThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -260,7 +260,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatObjectIsNotEqualToObjectThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is equal to (test)");
 
@@ -280,7 +280,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatTrueIsFalseThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(true) is not false");
 
@@ -289,7 +289,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatTrueIsFalseThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -307,7 +307,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatFalseIsNotFalseThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(false) is false");
 
@@ -329,7 +329,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not greater than (2)");
 
@@ -338,7 +338,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -356,7 +356,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotGreaterThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is greater than (1)");
 
@@ -381,7 +381,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not greater than (2) and less than (2)");
 
@@ -390,7 +390,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -408,7 +408,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotGreaterThanAndLessThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is greater than (1) and less than (3)");
 
@@ -433,7 +433,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not greater than (2) and less than equal to (2)");
 
@@ -442,7 +442,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -460,7 +460,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotGreaterThanAndLessThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is greater than (1) and less than equal to (2)");
 
@@ -485,7 +485,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not greater than equal to (3)");
 
@@ -494,7 +494,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -512,7 +512,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is greater than equal to (1)");
 
@@ -537,7 +537,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not greater than equal to (3) and less than (1)");
 
@@ -546,7 +546,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -564,7 +564,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is greater than equal to (1) and less than (3)");
 
@@ -588,7 +588,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not greater than equal to (3) and less than equal to (1)");
 
@@ -597,7 +597,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -615,7 +615,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is greater than equal to (1) and less than equal to (3)");
 
@@ -643,7 +643,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatBlankStringHasTextThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("( ) is blank");
 
@@ -652,7 +652,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatEmptyStringHasTextThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -670,7 +670,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatStringDoesNotHaveTextThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is not blank");
 
@@ -691,7 +691,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatCurrentThreadHoldsLockThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage(String.format("(%1$s) does not hold lock (%2$s)", Thread.currentThread(), lock));
 
@@ -700,7 +700,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatCurrentThreadHoldsLockThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -718,7 +718,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage(String.format("(%1$s) holds lock (%2$s)", Thread.currentThread(), lock));
 
@@ -752,7 +752,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is not an instance of (java.lang.Character)");
 
@@ -761,7 +761,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -779,7 +779,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatStringIsNotInstanceOfStringThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is an instance of (java.lang.String)");
 
@@ -804,7 +804,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not less than (1)");
 
@@ -813,7 +813,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -831,7 +831,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotLessThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(1) is less than (2)");
 
@@ -853,7 +853,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(0) is not less than (-1) or greater than (1)");
 
@@ -862,7 +862,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -880,7 +880,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotLessThanOrGreaterThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(3) is less than (-1) or greater than (1)");
 
@@ -902,7 +902,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(0) is not less than (-1) or greater than equal to (1)");
 
@@ -911,7 +911,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -929,7 +929,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotLessThanOrGreaterThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(1) is less than (-1) or greater than equal to (1)");
 
@@ -953,7 +953,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is not less than equal to (-3)");
 
@@ -962,7 +962,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -980,7 +980,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotLessThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is less than equal to (3)");
 
@@ -1002,7 +1002,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(0) is not less than equal to (-1) or greater than (1)");
 
@@ -1011,7 +1011,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -1029,7 +1029,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThanThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is less than equal to (-1) or greater than (1)");
 
@@ -1051,7 +1051,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(0) is not less than equal to (-1) or greater than equal to (1)");
 
@@ -1060,7 +1060,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -1078,7 +1078,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(2) is less than equal to (-1) or greater than equal to (1)");
 
@@ -1099,7 +1099,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatNonNullObjectIsNullThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is not null");
 
@@ -1108,7 +1108,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatNonNullObjectIsNullThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -1126,7 +1126,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatNullObjectIsNotNullThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(null) is null");
 
@@ -1155,7 +1155,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("() is empty");
 
@@ -1164,7 +1164,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -1182,7 +1182,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatNonEmptyStringIsEnptyThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("( ) is not empty");
 
@@ -1209,7 +1209,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is not the same as (TEST)");
 
@@ -1218,7 +1218,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -1236,7 +1236,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(test) is the same as (test)");
 
@@ -1256,7 +1256,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatFalseIsTrueThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(false) is not true");
 
@@ -1265,7 +1265,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatFalseIsTrueThrowsAssertionErrorWithCustomMessage() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
@@ -1283,7 +1283,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertThatTrueIsNotTrueThrowsAssertionError() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(true) is true");
 
@@ -1292,7 +1292,7 @@ public class LangExtensionsTest {
 
   @Test
   public void assertionTransformationIgnoresCondition() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("(false) is not true");
 
@@ -1473,7 +1473,7 @@ public class LangExtensionsTest {
 
   @Test
   public void negatedAssertThatRetainsExceptionMessageAndArgs() {
-    expectedException.expect(AssertionFailedException.class);
+    expectedException.expect(AssertionException.class);
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("Object cannot be null");
 

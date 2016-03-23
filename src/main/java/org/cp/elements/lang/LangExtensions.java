@@ -66,7 +66,7 @@ public abstract class LangExtensions {
      * maybe a Class object, an instance of a Class or null.
      *
      * @param type the Class type with which to determine assignment compatibility.
-     * @throws AssertionFailedException if the object being evaluated is not assignable to the Class type.
+     * @throws AssertionException if the object being evaluated is not assignable to the Class type.
      * @see java.lang.Class#isAssignableFrom(Class)
      * @see #isInstanceOf(Class)
      */
@@ -77,7 +77,7 @@ public abstract class LangExtensions {
      * an equality comparison as determined by the Comparable criteria of the Class type of the objects.
      *
      * @param obj the Comparable object to compare with the object being evaluated.
-     * @throws AssertionFailedException if the object being evaluated is not comparable to the Comparable object.
+     * @throws AssertionException if the object being evaluated is not comparable to the Comparable object.
      * @see java.lang.Comparable#compareTo(Object)
      */
     void isComparableTo(Comparable<T> obj);
@@ -87,7 +87,7 @@ public abstract class LangExtensions {
      * as determined by the Object.equals method.
      *
      * @param obj the object used in the equality comparison with the object being evaluated.
-     * @throws AssertionFailedException if the object being evaluated is not equal to the given object.
+     * @throws AssertionException if the object being evaluated is not equal to the given object.
      * @see java.lang.Object#equals(Object)
      * @see #isSameAs(Object)
      */
@@ -98,7 +98,7 @@ public abstract class LangExtensions {
      * as determined by the Object.equals method.
      *
      * @param obj the object used in the equality comparison with the object being evaluated.
-     * @throws AssertionFailedException if the object being evaluated is equal to the given object.
+     * @throws AssertionException if the object being evaluated is equal to the given object.
      * @see java.lang.Object#equals(Object)
      * @see #isEqualTo(Object)
      * @see #not()
@@ -108,7 +108,7 @@ public abstract class LangExtensions {
     /**
      * Asserts whether the object to evaluate is false.
      *
-     * @throws AssertionFailedException if the object being evaluated is not false.
+     * @throws AssertionException if the object being evaluated is not false.
      * @see #isTrue()
      */
     void isFalse();
@@ -117,7 +117,7 @@ public abstract class LangExtensions {
      * Assert that the object to evaluate is greater than the given Comparable value.
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is less than or equal to the lower bound.
+     * @throws AssertionException if the object being evaluated is less than or equal to the lower bound.
      */
     void isGreaterThan(T lowerBound);
 
@@ -127,7 +127,7 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is less than equal to the lower bound
+     * @throws AssertionException if the object being evaluated is less than equal to the lower bound
      * or greater than equal to the upper bound.
      */
     void isGreaterThanAndLessThan(T lowerBound, T upperBound);
@@ -138,7 +138,7 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is less than equal to the lower bound
+     * @throws AssertionException if the object being evaluated is less than equal to the lower bound
      * or greater than the upper bound.
      */
     void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
@@ -147,7 +147,7 @@ public abstract class LangExtensions {
      * Assert that the object to evaluate is greater than or equal to the given Comparable value.
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is less than the lower bound.
+     * @throws AssertionException if the object being evaluated is less than the lower bound.
      */
     void isGreaterThanEqualTo(T lowerBound);
 
@@ -157,7 +157,7 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is less than the lower bound
+     * @throws AssertionException if the object being evaluated is less than the lower bound
      * or greater than equal to the upper bound.
      */
     void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound);
@@ -168,7 +168,7 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is less than the lower bound
+     * @throws AssertionException if the object being evaluated is less than the lower bound
      * or greater than the upper bound.
      */
     void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
@@ -177,7 +177,7 @@ public abstract class LangExtensions {
      * Asserts that the object to evaluate has actual textual information.  The object's String value has text
      * if and only if the value contains at least 1 character that is not whitespace.
      *
-     * @throws AssertionFailedException if the object being evaluated has no text.
+     * @throws AssertionException if the object being evaluated has no text.
      * @see #isNotBlank()
      */
     void hasText();
@@ -186,7 +186,7 @@ public abstract class LangExtensions {
      * Assert that the current Thread holds the specified lock inside a synchronized block.
      *
      * @param lock the Object lock that must be held by the current Thread.
-     * @throws AssertionFailedException if the current Thread does not hold the specified lock.
+     * @throws AssertionException if the current Thread does not hold the specified lock.
      * @see java.lang.Thread#holdsLock(Object)
      */
     void holdsLock(Object lock);
@@ -195,7 +195,7 @@ public abstract class LangExtensions {
      * Asserts that the object to evaluate is an instance of the specified Class type.
      *
      * @param type the Class type used in the instance of check for the object being evaluated.
-     * @throws AssertionFailedException if the object being evaluated is not an instance of the Class type.
+     * @throws AssertionException if the object being evaluated is not an instance of the Class type.
      * @see java.lang.Class#isInstance(Object)
      * @see #isAssignableTo(Class)
      */
@@ -205,7 +205,7 @@ public abstract class LangExtensions {
      * Asserts that the object to evaluate is less than the given Comparable value.
      *
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is not less than the upper bound.
+     * @throws AssertionException if the object being evaluated is not less than the upper bound.
      */
     void isLessThan(T upperBound);
 
@@ -214,7 +214,7 @@ public abstract class LangExtensions {
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is not less than the upper bound
+     * @throws AssertionException if the object being evaluated is not less than the upper bound
      * or greater than the lower bound.
      */
     void isLessThanOrGreaterThan(T upperBound, T lowerBound);
@@ -224,7 +224,7 @@ public abstract class LangExtensions {
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is not less than the upper bound
+     * @throws AssertionException if the object being evaluated is not less than the upper bound
      * or greater than equal to the lower bound.
      */
     void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
@@ -233,7 +233,7 @@ public abstract class LangExtensions {
      * Asserts that the object to evaluate is less than equal to the given Comparable value.
      *
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is not less than equal to the upper bound.
+     * @throws AssertionException if the object being evaluated is not less than equal to the upper bound.
      */
     void isLessThanEqualTo(T upperBound);
 
@@ -242,7 +242,7 @@ public abstract class LangExtensions {
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is not less than equal to the upper bound
+     * @throws AssertionException if the object being evaluated is not less than equal to the upper bound
      * or greater than the lower bound.
      */
     void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
@@ -252,7 +252,7 @@ public abstract class LangExtensions {
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
-     * @throws AssertionFailedException if the object being evaluated is not less than equal to the upper bound
+     * @throws AssertionException if the object being evaluated is not less than equal to the upper bound
      * or greater than equal to the lower bound.
      */
     void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
@@ -261,7 +261,7 @@ public abstract class LangExtensions {
      * Assert that the object to evaluate is not blank, or rather, has text.  The object String value is blank
      * if it contains only whitespace characters or null.
      *
-     * @throws AssertionFailedException if the object being evaluated is blank, or has no actual test.
+     * @throws AssertionException if the object being evaluated is blank, or has no actual test.
      * @see #hasText()
      */
     void isNotBlank();
@@ -270,14 +270,14 @@ public abstract class LangExtensions {
      * Assert that the object to evaluate is not empty.  The object String value is empty if it is equal to
      * the empty String.
      *
-     * @throws AssertionFailedException if the object being evaluated is empty.
+     * @throws AssertionException if the object being evaluated is empty.
      */
     void isNotEmpty();
 
     /**
      * Asserts that the object to evaluate is not null.
      *
-     * @throws AssertionFailedException if the object being evaluated is null.
+     * @throws AssertionException if the object being evaluated is null.
      * @see #isNull()
      * @see #not()
      */
@@ -286,7 +286,7 @@ public abstract class LangExtensions {
     /**
      * Asserts that the object to evaluate is null.
      *
-     * @throws AssertionFailedException if the object being evaluated is not null.
+     * @throws AssertionException if the object being evaluated is not null.
      */
     void isNull();
 
@@ -295,7 +295,7 @@ public abstract class LangExtensions {
      * are the same as determined by the identity comparison (==).
      *
      * @param obj the object used in the identity comparison with the object being evaluated.
-     * @throws AssertionFailedException if the objects are not the same.
+     * @throws AssertionException if the objects are not the same.
      * @see #isEqualTo(Object)
      */
     void isSameAs(T obj);
@@ -305,7 +305,7 @@ public abstract class LangExtensions {
      * the objects are not the same as determined by the identity comparison (==).
      *
      * @param obj the object used in the identity comparison with the object being evaluated.
-     * @throws AssertionFailedException if the objects are the same.
+     * @throws AssertionException if the objects are the same.
      * @see #isSameAs(Object)
      * @see #not()
      */
@@ -314,7 +314,7 @@ public abstract class LangExtensions {
     /**
      * Asserts that the object to evaluate is true.
      *
-     * @throws AssertionFailedException if the object being evaluated is not true.
+     * @throws AssertionException if the object being evaluated is not true.
      * @see #isFalse()
      */
     void isTrue();
@@ -345,9 +345,9 @@ public abstract class LangExtensions {
     AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer);
 
     /**
-     * Uses the provided message and message arguments in the AssertionFailedException thrown when an assertion fails.
+     * Uses the provided message and message arguments in the AssertionException thrown when an assertion fails.
      *
-     * @param message the String message used in the AssertionFailedException.
+     * @param message the String message used in the AssertionException.
      * @param args an array of object arguments used to populate the placeholders of the message.
      * @return this assertion instance.
      */
@@ -709,7 +709,7 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     private void throwAssertionError(final String defaultMessage, final Object... args) {
-      throw (is(cause).notNull() ? cause : new AssertionFailedException(withMessage(defaultMessage, args)));
+      throw (is(cause).notNull() ? cause : new AssertionException(withMessage(defaultMessage, args)));
     }
 
     /* (non-Javadoc) */
