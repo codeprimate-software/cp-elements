@@ -137,6 +137,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @return a newly constructed instance of the {@link PropertiesAdapter} containing only the filtered properties.
    * @see org.cp.elements.lang.Filter
    * @see java.util.Properties
+   * @see #from(Properties)
    */
   public PropertiesAdapter filter(Filter<String> filter) {
     Properties properties = new Properties();
