@@ -37,8 +37,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * The PropertiesAdapterTests class is a test suite of test cases testing the contract and functionality
@@ -156,7 +154,7 @@ public class PropertiesAdapterTests {
   }
 
   @Test
-  public void filterWithTextBasedProperties() {
+  public void filterForTextBasedProperties() {
     PropertiesAdapter filteredPropertiesAdapter = propertiesAdapter.filter(
       (property) -> property.startsWith("char") || property.startsWith("str"));
 
@@ -166,6 +164,66 @@ public class PropertiesAdapterTests {
     assertThat(filteredPropertiesAdapter.contains("booleanProperty"), is(false));
     assertThat(filteredPropertiesAdapter.contains("doubleProperty"), is(false));
     assertThat(filteredPropertiesAdapter.contains("integerProperty"), is(false));
+  }
+
+  @Test
+  public void filterForNonExistingProperties() {
+    PropertiesAdapter filteredPropertiesAdapter = propertiesAdapter.filter((property) -> false);
+
+    assertThat(filteredPropertiesAdapter, is(notNullValue()));
+    assertThat(filteredPropertiesAdapter.isEmpty(), is(true));
+  }
+
+  @Test
+  public void getExistingPropertyReturnsValue() {
+    assertThat(propertiesAdapter.get("booleanProperty"), is(equalTo("true")));
+    assertThat(propertiesAdapter.get("characterProperty"), is(equalTo("X")));
+    assertThat(propertiesAdapter.get("doubleProperty"), is(equalTo("3.14159")));
+    assertThat(propertiesAdapter.get("integerProperty"), is(equalTo("2")));
+    assertThat(propertiesAdapter.get("stringProperty"), is(equalTo("test")));
+  }
+
+  @Test
+  public void getExistingPropertyWithDefaultValueReturnsPropertyValue() {
+    assertThat(propertiesAdapter.get("stringProperty", "MOCK"), is(equalTo("test")));
+  }
+
+  @Test
+  public void getExistingPropertyAsTypeReturnsTypedValue() {
+    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.TYPE), is(equalTo(true)));
+    assertThat(propertiesAdapter.getAsType("characterProperty", Character.TYPE), is(equalTo('X')));
+    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.TYPE), is(equalTo(3.14159d)));
+    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.TYPE), is(equalTo(2)));
+    assertThat(propertiesAdapter.getAsType("stringProperty", String.class), is(equalTo("test")));
+  }
+
+  @Test
+  public void getExistingPropertyAsTypeWithDefaultValueReturnsTypedPropertyValue() {
+    assertThat(propertiesAdapter.getAsType("characterProperty", 'Y', Character.TYPE), is(equalTo('X')));
+  }
+
+  @Test
+  public void getNonExistingPropertyReturnsNull() {
+    assertThat(propertiesAdapter.get("nonExistingProperty"), is(nullValue()));
+  }
+
+  @Test
+  public void getNonExistingPropertyWithDefaultValueReturnsDefaultValue() {
+    assertThat(propertiesAdapter.get("nonExistingProperty", "TEST"), is(equalTo("TEST")));
+  }
+
+  @Test
+  public void getNonExistingPropertyAsTypeReturnsNull() {
+    assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE), is(nullValue()));
+  }
+
+  @Test
+  public void getNonExistingPropertyAsTypeWithDefaultValueReturnsDefaultValue() {
+    assertThat(propertiesAdapter.getAsType("nonExistingProperty", 123.45d, Double.TYPE), is(equalTo(123.45d)));
+  }
+
+  @Test
+  public void isEmpty() {
   }
 
 }
