@@ -16,13 +16,13 @@
 
 package org.cp.elements.util;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -30,11 +30,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.cp.elements.util.convert.ConversionService;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
@@ -43,12 +47,16 @@ import org.junit.rules.ExpectedException;
  * of the {@link PropertiesAdapter} class.
  *
  * @author John J. Blum
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.PropertiesAdapter
+ * @since 1.0.0
  */
 public class PropertiesAdapterTests {
 
+  @Rule
   public ExpectedException exception = ExpectedException.none();
 
   private static PropertiesAdapter propertiesAdapter;
@@ -71,6 +79,8 @@ public class PropertiesAdapterTests {
     assertThat(propertiesAdapter, is(notNullValue()));
     assertThat(propertiesAdapter.getProperties(), is(notNullValue()));
     assertThat(propertiesAdapter.getConversionService(), is(notNullValue()));
+    assertThat(propertiesAdapter.isEmpty(), is(false));
+    assertThat(propertiesAdapter.size(), is(equalTo(5)));
   }
 
   @Test
@@ -117,9 +127,9 @@ public class PropertiesAdapterTests {
     ConversionService mockConversionService = mock(ConversionService.class);
     Properties mockProperties = mock(Properties.class);
 
-    when(mockProperties.getProperty(anyString())).thenReturn("test");
-    when(mockConversionService.convert(any(Object.class), eq(Class.class))).thenAnswer(
-      (invocationOnMock) -> invocationOnMock.getArgumentAt(0, Object.class));
+    when(mockProperties.getProperty(anyString(), any())).thenReturn("test");
+    when(mockConversionService.convert(anyString(), eq(String.class))).thenAnswer(
+      (invocationOnMock) -> invocationOnMock.getArgumentAt(0, String.class));
 
     PropertiesAdapter propertiesAdapter = new PropertiesAdapter(mockProperties) {
       @Override protected ConversionService getConversionService() {
@@ -131,7 +141,7 @@ public class PropertiesAdapterTests {
     assertThat(propertiesAdapter.getProperties(), is(sameInstance(mockProperties)));
     assertThat(propertiesAdapter.convert("prop", String.class), is(equalTo("test")));
 
-    verify(mockProperties, times(1)).getProperty(eq("prop"));
+    verify(mockProperties, times(1)).getProperty(eq("prop"), eq(null));
     verify(mockConversionService, times(1)).convert(eq("test"), eq(String.class));
   }
 
@@ -190,16 +200,16 @@ public class PropertiesAdapterTests {
 
   @Test
   public void getExistingPropertyAsTypeReturnsTypedValue() {
-    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.TYPE), is(equalTo(true)));
-    assertThat(propertiesAdapter.getAsType("characterProperty", Character.TYPE), is(equalTo('X')));
-    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.TYPE), is(equalTo(3.14159d)));
-    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.TYPE), is(equalTo(2)));
+    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class), is(equalTo(true)));
+    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class), is(equalTo('X')));
+    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.class), is(equalTo(3.14159d)));
+    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.class), is(equalTo(2)));
     assertThat(propertiesAdapter.getAsType("stringProperty", String.class), is(equalTo("test")));
   }
 
   @Test
   public void getExistingPropertyAsTypeWithDefaultValueReturnsTypedPropertyValue() {
-    assertThat(propertiesAdapter.getAsType("characterProperty", 'Y', Character.TYPE), is(equalTo('X')));
+    assertThat(propertiesAdapter.getAsType("characterProperty", 'Y', Character.class), is(equalTo('X')));
   }
 
   @Test
@@ -224,6 +234,66 @@ public class PropertiesAdapterTests {
 
   @Test
   public void isEmpty() {
+    Properties properties = new Properties();
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+
+    assertThat(propertiesAdapter, is(notNullValue()));
+    assertThat(propertiesAdapter.isEmpty(), is(true));
+
+    properties.setProperty("one", "1");
+
+    assertThat(propertiesAdapter.isEmpty(), is(false));
+
+    properties.remove("1");
+
+    assertThat(propertiesAdapter.isEmpty(), is(false));
+
+    properties.setProperty("one", "null");
+
+    assertThat(propertiesAdapter.isEmpty(), is(false));
+
+    properties.clear();
+
+    assertThat(propertiesAdapter.isEmpty(), is(true));
+  }
+
+  @Test
+  public void iterableOnPropertyNames() {
+    Set<String> expectedPropertyNames = new HashSet<>(Arrays.asList("booleanProperty", "characterProperty",
+      "doubleProperty", "integerProperty", "stringProperty"));
+
+    for (String propertyName : propertiesAdapter) {
+      expectedPropertyNames.remove(propertyName);
+    }
+
+    assertThat(expectedPropertyNames.isEmpty(), is(true));
+  }
+
+  @Test
+  public void sizeIsEqualToNumberOfProperties() {
+    Properties properties = new Properties();
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+
+    assertThat(propertiesAdapter, is(notNullValue()));
+    assertThat(propertiesAdapter.size(), is(equalTo(0)));
+
+    properties.setProperty("one", "1");
+
+    assertThat(propertiesAdapter.size(), is(equalTo(1)));
+
+    properties.setProperty("two", "2");
+    properties.setProperty("three", "3");
+
+    assertThat(propertiesAdapter.size(), is(equalTo(3)));
+
+    properties.remove("three");
+    properties.setProperty("two", "null");
+
+    assertThat(propertiesAdapter.size(), is(equalTo(2)));
+
+    properties.clear();
+
+    assertThat(propertiesAdapter.size(), is(equalTo(0)));
   }
 
 }
