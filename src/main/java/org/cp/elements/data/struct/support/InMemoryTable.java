@@ -22,6 +22,7 @@
 package org.cp.elements.data.struct.support;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -31,18 +32,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.cp.elements.data.struct.AbstractColumn;
 import org.cp.elements.data.struct.AbstractRow;
 import org.cp.elements.data.struct.AbstractTable;
+import org.cp.elements.data.struct.AbstractView;
 import org.cp.elements.data.struct.Column;
 import org.cp.elements.data.struct.Row;
 import org.cp.elements.data.struct.View;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
-import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
- * The InMemoryTable class is an implementation of the Table interface implementing a table (tabular) data structure
- * in the Java VM Heap.
- * <p/>
+ * The InMemoryTable class is an implementation of the {@link org.cp.elements.data.struct.Table} interface
+ * implementing a table (tabular) data structure in the Java VM Heap.
+ *
  * @author John J. Blum
  * @see org.cp.elements.data.struct.AbstractTable
  * @see org.cp.elements.data.struct.Column
@@ -63,29 +66,43 @@ public class InMemoryTable extends AbstractTable {
     this(DEFAULT_INITIAL_CAPACITY);
   }
 
+  public InMemoryTable(final int initialCapacity) {
+    this(initialCapacity, new Column[0]);
+  }
+
   public InMemoryTable(final Column... columns) {
     this(DEFAULT_INITIAL_CAPACITY, columns);
   }
 
   @SuppressWarnings("unchecked")
   public InMemoryTable(final int initialCapacity, final Column... columns) {
-    List<Column> inMemoryColumns = new ArrayList<Column>(columns.length);
+    Assert.isTrue(initialCapacity >= 0, "The initial capacity ({0}) must be greater than equal to 0!", initialCapacity);
+
+    List<Column> inMemoryColumns = new ArrayList<>(columns.length);
 
     for (Column column : columns) {
       inMemoryColumns.add(new InMemoryColumn(column));
     }
 
-    this.columns = new CopyOnWriteArrayList<Column>(inMemoryColumns);
-    this.rows = Collections.synchronizedList(new ArrayList<Row>(initialCapacity));
+    this.columns = new CopyOnWriteArrayList<>(inMemoryColumns);
+    this.rows = Collections.synchronizedList(new ArrayList<>(initialCapacity));
   }
 
   @Override
-  public synchronized boolean add(final Column column) {
-    return false;  //To change body of implemented methods use File | Settings | File Templates.
+  public boolean add(final Column column) {
+    if (columns.add(column)) {
+      for (Row row : this) {
+        ((InMemoryRow) row).resize();
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   @Override
-  public synchronized boolean add(final Row row) {
+  public boolean add(final Row row) {
     return rows.add(new InMemoryRow(validateRow(row)));
   }
 
@@ -96,7 +113,46 @@ public class InMemoryTable extends AbstractTable {
 
   @Override
   public View query(final Filter<Row> predicate, final Comparator<Row> orderBy, final Column... projection) {
-    return null;
+    Assert.isTrue(columns.containsAll(Arrays.asList(projection)), "The Columns must be part of this Table!");
+
+    final List<Integer> rowIndices = new ArrayList<>(size());
+
+    for (int rowIndex = 0, size = size(); rowIndex < size; rowIndex++) {
+      if (predicate.accept(getRow(rowIndex))) {
+        rowIndices.add(rowIndex);
+      }
+    }
+
+    return new AbstractView() {
+      @Override public Iterable<Column> columns() {
+        return ArrayUtils.iterable(projection);
+      }
+
+      @Override
+      public View query(final Filter<Row> predicate, final Comparator<Row> orderBy, final Column... projection) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
+
+      @Override public Iterable<Row> rows() {
+        return CollectionUtils.iterable(
+          new Iterator<Row>() {
+            int index = 0;
+
+            @Override public boolean hasNext() {
+              return (index < rowIndices.size());
+            }
+
+            @Override public Row next() {
+              return InMemoryTable.this.getRow(rowIndices.get(index));
+            }
+
+            @Override public void remove() {
+              throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+            }
+          }
+        );
+      }
+    };
   }
 
   @Override
@@ -106,7 +162,7 @@ public class InMemoryTable extends AbstractTable {
 
   private Row validateRow(final Row row) {
     Assert.notNull(row, "Cannot add a null row to this table!");
-    Assert.isTrue(row.size() == columns.size(), "The size of the Row ({0}) must must be equal to the number of Columns ({1}) in this Table!",
+    Assert.isTrue(row.size() == columns.size(), "The size of the Row ({0}) must be equal to the number of Columns ({1}) in this Table!",
       row.size(), columns.size());
     return row;
   }
@@ -128,18 +184,19 @@ public class InMemoryTable extends AbstractTable {
 
     @Override
     public final void setView(final View view) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(String.format("The View for this Column (%1$s) cannot be changed!",
+        getName()));
     }
   }
 
   protected class InMemoryRow extends AbstractRow {
 
-    private Object[] values;
+    private volatile Object[] values;
 
     public InMemoryRow(final Row row) {
       values = new Object[columns.size()];
       for (int index = 0; index < values.length; index++) {
-        values[index] = row.getValue(columns.get(index));
+        values[index] = validateValue(row.getValue(index));
       }
     }
 
@@ -162,12 +219,21 @@ public class InMemoryTable extends AbstractTable {
 
     @Override
     public final void setView(final View view) {
-      throw new UnsupportedOperationException(StringUtils.NOT_IMPLEMENTED);
+      throw new UnsupportedOperationException(String.format("The View for this Row (%1$d) cannot be changed!",
+        index()));
     }
 
     @Override
     public Iterator<Object> iterator() {
       return ArrayUtils.iterator(values);
+    }
+
+    void resize() {
+      if (values.length < columns.size()) {
+        Object[] localValues = new Object[columns.size()];
+        System.arraycopy(values, 0, localValues, 0, values.length);
+        values = localValues;
+      }
     }
   }
 
