@@ -22,6 +22,7 @@ import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.convert.ConversionService;
 import org.cp.elements.util.convert.provider.DefaultConversionService;
 
@@ -76,12 +77,12 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Returns the {@link Properties} wrapped by this wrapper.
+   * Returns the {@link Properties} wrapped by this Adapter.
    *
-   * @return the {@link Properties} wrapped by this wrapper.
+   * @return the {@link Properties} wrapped by this Adapter.
    * @see java.util.Properties
    */
-  public Properties getProperties() {
+  protected Properties getProperties() {
     return delegate;
   }
 
@@ -95,6 +96,30 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   public boolean contains(String propertyName) {
     return getProperties().containsKey(propertyName);
+  }
+
+  /**
+   * Determines whether the property identified by name is set.
+   *
+   * @param propertyName the name of the property.
+   * @return a boolean value indicating whether the named property is set.
+   * @see org.cp.elements.lang.StringUtils#hasText(String)
+   * @see #get(String)
+   */
+  public boolean isSet(String propertyName) {
+    return StringUtils.hasText(get(propertyName));
+  }
+
+  /**
+   * Determines whether the property identified by name is unset.
+   *
+   * @param propertyName the name of the property.
+   * @return a boolean value indicating whether the named property exits but is unset.
+   * @see #contains(String)
+   * @see #isSet(String)
+   */
+  public boolean isUnset(String propertyName) {
+    return (contains(propertyName) && !isSet(propertyName));
   }
 
   /**
@@ -123,11 +148,11 @@ public class PropertiesAdapter implements Iterable<String> {
    * @return the value of the named property as a instance of the specified {@link Class} type
    * or return the default value if the named property does not exist.
    * @see java.lang.Class
-   * @see #contains(String)
+   * @see #isSet(String)
    * @see #convert(String, Class)
    */
   protected <T> T defaultIfNotExists(String propertyName, T defaultValue, Class<T> type) {
-    return (contains(propertyName) ? convert(propertyName, type) : defaultValue);
+    return (isSet(propertyName) ? convert(propertyName, type) : defaultValue);
   }
 
   /**

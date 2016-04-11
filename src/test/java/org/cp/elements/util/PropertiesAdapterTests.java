@@ -123,6 +123,50 @@ public class PropertiesAdapterTests {
   }
 
   @Test
+  public void isSetWithExistingSetProperties() {
+    Properties properties = new Properties();
+
+    properties.setProperty("one", "test");
+    properties.setProperty("two", "null");
+    properties.setProperty("three", "nil");
+    properties.setProperty("four", "__");
+    properties.setProperty("five", "0");
+    properties.setProperty("six", "!");
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+
+    assertThat(propertiesAdapter, is(notNullValue()));
+    assertThat(propertiesAdapter.size(), is(equalTo(6)));
+    assertThat(propertiesAdapter.isSet("one"), is(true));
+    assertThat(propertiesAdapter.isSet("two"), is(true));
+    assertThat(propertiesAdapter.isSet("three"), is(true));
+    assertThat(propertiesAdapter.isSet("four"), is(true));
+    assertThat(propertiesAdapter.isSet("five"), is(true));
+    assertThat(propertiesAdapter.isSet("six"), is(true));
+  }
+
+  @Test
+  public void isUnsetWithExistingUnsetProperties() {
+    Properties properties = new Properties();
+
+    properties.put("one", "  ");
+    properties.setProperty("two", "");
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+
+    assertThat(propertiesAdapter, is(notNullValue()));
+    assertThat(propertiesAdapter.size(), is(equalTo(2)));
+    assertThat(propertiesAdapter.isUnset("one"), is(true));
+    assertThat(propertiesAdapter.isUnset("two"), is(true));
+  }
+
+  @Test
+  public void nonExistingPropertiesAreNotSetOrUnset() {
+    assertThat(propertiesAdapter.isSet("nonExistingProperty"), is(false));
+    assertThat(propertiesAdapter.isUnset("nonExistingProperty"), is(false));
+  }
+
+  @Test
   public void convertUsesConversionService() {
     ConversionService mockConversionService = mock(ConversionService.class);
     Properties mockProperties = mock(Properties.class);
