@@ -17,10 +17,10 @@
 package org.cp.elements.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,6 +31,7 @@ import org.cp.elements.io.NoSuchFileException;
  *
  * @author John J. Blum
  * @see java.util.Properties
+ * @see org.cp.elements.util.PropertiesAdapter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -46,21 +47,37 @@ public class PropertiesBuilder {
    * contained in the given {@link File}.
    * @throws NoSuchFileException if the specified {@link File} cannot be found.
    * @throws SystemException if the properties from the specified {@link File} cannot be loaded.
-   * @see java.util.Properties#load(Reader)
    * @see java.io.File
-   * @see #from(Properties)
+   * @see #from(InputStream)
    */
   public static PropertiesBuilder from(File properties) {
     try {
-      Properties defaults = new Properties();
-      defaults.load(new FileReader(properties));
-      return from(defaults);
+      return from(new FileInputStream(properties));
     }
     catch (FileNotFoundException e) {
-      throw new NoSuchFileException(String.format("[$1%s] not found", properties), e);
+      throw new NoSuchFileException(String.format("[%1$s] not found", properties), e);
+    }
+  }
+
+  /**
+   * Factory method to load {@link Properties} from the given {@link InputStream}.
+   *
+   * @param inputStream a input source containing the {@link Properties} to load.
+   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
+   * from the given input source.
+   * @throws SystemException if the properties from the given {@link InputStream} could not be loaded.
+   * @see java.util.Properties#load(InputStream)
+   * @see java.io.InputStream
+   * @see #from(Properties)
+   */
+  public static PropertiesBuilder from(InputStream inputStream) {
+    try {
+      Properties defaults = new Properties();
+      defaults.load(inputStream);
+      return from(defaults);
     }
     catch (IOException e) {
-      throw new SystemException(String.format("failed to load properties from file [%1$s]", properties));
+      throw new SystemException(String.format("failed to load properties from input stream [%1$s]", inputStream), e);
     }
   }
 
@@ -110,6 +127,17 @@ public class PropertiesBuilder {
   }
 
   /**
+   * Factory method used to construct a new, empty {@link PropertiesBuilder} instance.  This factory method serves
+   * the same purpose as the {@code new} operator
+   *
+   * @return an instance of the {@link PropertiesBuilder} class.
+   * @see #PropertiesBuilder()
+   */
+  public static PropertiesBuilder newInstance() {
+    return new PropertiesBuilder();
+  }
+
+  /**
    * Constructs an instance of the PropertiesBuilder class with an empty set of {@link Properties}.
    */
   public PropertiesBuilder() {
@@ -123,7 +151,8 @@ public class PropertiesBuilder {
    * @see java.util.Properties
    */
   public PropertiesBuilder(Properties defaults) {
-    properties = new Properties(defaults);
+    properties = new Properties();
+    properties.putAll(defaults);
   }
 
   /**
@@ -171,6 +200,17 @@ public class PropertiesBuilder {
    */
   public Properties build() {
     return getProperties();
+  }
+
+  /**
+   * Constructs a {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
+   *
+   * @return a {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
+   * @see org.cp.elements.util.PropertiesAdapter
+   * @see #build()
+   */
+  public PropertiesAdapter toPropertiesAdapter() {
+    return PropertiesAdapter.from(build());
   }
 
   /**
