@@ -223,16 +223,7 @@ public class PropertiesBuilderTests {
   }
 
   @Test
-  public void propertiesBuilderToStringIsEqualToPropertiesToString() {
-    PropertiesBuilder propertiesBuilder = PropertiesBuilder.newInstance();
-
-    Properties properties = propertiesBuilder.set("propertyName", "propertyValue").getProperties();
-
-    assertThat(propertiesBuilder.toString(), is(equalTo(properties.toString())));
-  }
-
-  @Test
-  public void toPropertiesAdapter() {
+  public void buildPropertiesAdapter() {
     PropertiesAdapter propertiesAdapter = PropertiesBuilder.newInstance()
       .set("booleanProperty", false)
       .set("characterProperty", 'A')
@@ -241,7 +232,7 @@ public class PropertiesBuilderTests {
       .set("stringProperty", "test")
       .set("enumProperty", Numbers.ZERO)
       .set("personProperty", Person.create("Jon", "Doe"))
-      .toPropertiesAdapter();
+      .buildPropertiesAdapter();
 
     assertThat(propertiesAdapter, is(notNullValue()));
     assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class), is(equalTo(false)));
@@ -251,6 +242,15 @@ public class PropertiesBuilderTests {
     assertThat(propertiesAdapter.getAsType("stringProperty", String.class), is(equalTo("test")));
     assertThat(propertiesAdapter.getAsType("enumProperty", Numbers.class), is(equalTo(Numbers.ZERO)));
     //assertThat(propertiesAdapter.getAsType("personProperty", Person.class), is(equalTo(Person.create("Jon", "Doe"))));
+  }
+
+  @Test
+  public void propertiesBuilderToStringIsEqualToPropertiesToString() {
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.newInstance();
+
+    Properties properties = propertiesBuilder.set("propertyName", "propertyValue").getProperties();
+
+    assertThat(propertiesBuilder.toString(), is(equalTo(properties.toString())));
   }
 
   enum Numbers {

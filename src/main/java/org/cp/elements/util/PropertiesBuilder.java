@@ -209,7 +209,7 @@ public class PropertiesBuilder {
    * @see org.cp.elements.util.PropertiesAdapter
    * @see #build()
    */
-  public PropertiesAdapter toPropertiesAdapter() {
+  public PropertiesAdapter buildPropertiesAdapter() {
     return PropertiesAdapter.from(build());
   }
 
