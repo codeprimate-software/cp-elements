@@ -34,7 +34,11 @@ import org.cp.elements.lang.ObjectUtils;
  * The IOUtils class provides basic input and output utility operations.
  *
  * @author John J. Blum
+ * @see java.io.ByteArrayInputStream
+ * @see java.io.ByteArrayOutputStream
  * @see java.io.InputStream
+ * @see java.io.ObjectInputStream
+ * @see java.io.ObjectOutputStream
  * @see java.io.OutputStream
  * @since 1.0.0
  */
@@ -175,33 +179,28 @@ public abstract class IOUtils {
   }
 
   /**
-   * Reads the contents of the specified @{link InputStream} into a byte array.
+   * Reads the contents of the specified {@link InputStream} into a byte array.
    *
    * @param in the {@link InputStream} to read content from.
    * @return a byte array containing the contents of the given {@link InputStream}.
    * @throws IOException if an I/O error occurs while reading the {@link InputStream}.
+   * @throws NullPointerException if the {@link InputStream} source is null.
    * @see java.io.ByteArrayOutputStream
    * @see java.io.InputStream
    */
   @NullSafe
   public static byte[] toByteArray(final InputStream in) throws IOException {
-    Assert.notNull(in, "The InputStream from which to read bytes from cannot be null");
+    Assert.notNull(in, "The InputStream to read bytes from cannot be null");
 
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ByteArrayOutputStream out = new ByteArrayOutputStream(in.available());
 
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
     int bytesRead;
 
-    try {
-      while ((bytesRead = in.read(buffer)) != -1) {
-        out.write(buffer, 0, bytesRead);
-        out.flush();
-      }
-    }
-    finally {
-      close(in);
-      close(out);
+    while ((bytesRead = in.read(buffer)) != -1) {
+      out.write(buffer, 0, bytesRead);
+      out.flush();
     }
 
     return out.toByteArray();

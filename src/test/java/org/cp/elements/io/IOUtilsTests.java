@@ -20,9 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -40,13 +38,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.invocation.InvocationOnMock;
 
 /**
- * The IOUtilsTest class is a test suite of test cases testing the contract and functionality of the IOUtils class.
+ * The IOUtilsTests class is a test suite of test cases testing the contract and functionality
+ * of the {@link IOUtils} class.
  *
  * @author John J. Blum
  * @see java.io.Closeable
@@ -54,31 +54,37 @@ import org.mockito.invocation.InvocationOnMock;
  * @see java.io.OutputStream
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.IOUtils
  * @since 1.0.0
  */
-public class IOUtilsTest {
+public class IOUtilsTests {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
-  public void closeIsSuccessful() throws Exception {
+  public void closeWithCloseableReturnsTrue() throws Exception {
     Closeable mockCloseable = mock(Closeable.class);
-    assertTrue(IOUtils.close(mockCloseable));
+    assertThat(IOUtils.close(mockCloseable), is(true));
     verify(mockCloseable, times(1)).close();
   }
 
   @Test
-  public void closeThrowsIOException() throws Exception {
+  public void closeWithCloseableThrowingIOExceptionReturnsFalse() throws Exception {
     Closeable mockCloseable = mock(Closeable.class);
 
     doThrow(new IOException("test")).when(mockCloseable).close();
 
-    assertFalse(IOUtils.close(mockCloseable));
+    assertThat(IOUtils.close(mockCloseable), is(false));
 
     verify(mockCloseable, times(1)).close();
+  }
+
+  @Test
+  public void closeWithNullReturnsFalse() {
+    assertThat(IOUtils.close(null), is(false));
   }
 
   @Test
@@ -95,34 +101,38 @@ public class IOUtilsTest {
     verify(mockOutputStream, times(1)).write(any(byte[].class), eq(0), eq(IOUtils.DEFAULT_BUFFER_SIZE));
     verify(mockOutputStream, times(1)).write(any(byte[].class), eq(0), eq(8192));
     verify(mockOutputStream, never()).write(any(byte[].class), eq(0), eq(0));
+    verify(mockOutputStream, times(2)).flush();
   }
 
   @Test
+  @IntegrationTest
   public void copyActualIsSuccessful() throws IOException {
-    InputStream source = new ByteArrayInputStream("This is a test!".getBytes());
+    InputStream source = new ByteArrayInputStream("This is an actual integration test!".getBytes());
     OutputStream target = new ByteArrayOutputStream(source.available());
 
     IOUtils.copy(source, target);
 
     assertThat(new String(((ByteArrayOutputStream) target).toByteArray(), Charset.forName("UTF-8")),
-      is(equalTo("This is a test!")));
+      is(equalTo("This is an actual integration test!")));
   }
 
   @Test
   public void serializationDeserializationIsSuccessful() throws ClassNotFoundException, IOException {
-    assertThat(IOUtils.deserialize(IOUtils.serialize("TEST")), is(equalTo("TEST")));
+    assertThat(IOUtils.deserialize(IOUtils.serialize("test")), is(equalTo("test")));
   }
 
   @Test
   public void serializationDeserializationWithClassLoaderIsSuccessful() throws ClassNotFoundException, IOException {
-    assertThat(IOUtils.deserialize(IOUtils.serialize("TEST"), Thread.currentThread().getContextClassLoader()),
-      is(equalTo("TEST")));
+    assertThat(IOUtils.deserialize(IOUtils.serialize("test"), Thread.currentThread().getContextClassLoader()),
+      is(equalTo("test")));
   }
 
   @Test
   @SuppressWarnings("all")
   public void toByteArrayIsSuccessful() throws IOException {
     InputStream mockInputStream = mock(InputStream.class);
+
+    when(mockInputStream.available()).thenReturn(4);
 
     when(mockInputStream.read(any(byte[].class))).thenAnswer((InvocationOnMock invocation) -> {
       byte[] buffer = invocation.getArgumentAt(0, byte[].class);
@@ -144,23 +154,49 @@ public class IOUtilsTest {
     assertThat(bytes[2], is(equalTo((byte) 0xBA)));
     assertThat(bytes[3], is(equalTo((byte) 0xBE)));
 
+    verify(mockInputStream, times(1)).available();
     verify(mockInputStream, times(2)).read(any(byte[].class));
-    verify(mockInputStream, times(1)).close();
+    verify(mockInputStream, never()).close();
   }
 
   @Test
+  @SuppressWarnings("all")
   public void toByteArrayThrowsIOException() throws IOException {
     InputStream mockInputStream = mock(InputStream.class);
 
+    when(mockInputStream.available()).thenReturn(0);
     when(mockInputStream.read(any(byte[].class))).thenThrow(new IOException("test"));
 
-    expectedException.expect(IOException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("test");
+    exception.expect(IOException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("test");
 
     IOUtils.toByteArray(mockInputStream);
 
-    verify(mockInputStream, times(1)).close();
+    verify(mockInputStream, times(1)).available();
+    verify(mockInputStream, never()).close();
+  }
+
+  @Test
+  public void toByteArrayWithEmptyInputStreamReturnEmptyByteArray() throws IOException {
+    InputStream mockInputStream = mock(InputStream.class);
+
+    when(mockInputStream.available()).thenReturn(0);
+    when(mockInputStream.read(any(byte[].class))).thenReturn(-1);
+
+    byte[] byteArray = IOUtils.toByteArray(mockInputStream);
+
+    assertThat(byteArray, is(notNullValue()));
+    assertThat(byteArray.length, is(equalTo(0)));
+  }
+
+  @Test
+  public void toByteArrayWithNull() throws IOException {
+    exception.expect(NullPointerException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The InputStream to read bytes from cannot be null");
+
+    IOUtils.toByteArray(null);
   }
 
 }

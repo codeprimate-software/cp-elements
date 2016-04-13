@@ -2,19 +2,28 @@ Codeprimate Elements changelog.txt
 ----------------------------------
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
+1.0.0.M2 - ?
+------------
+Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang, org.cp.elements.io,
+org.cp.elements.net and org.cp.elements.util packages.
+
+*
+* Added additional assertions in the org.cp.elements.lang.Assert class to default the message in the related RuntimeException.
+* Added the PropertiesAdapter and PropertiesBuilder utility classes for conveniently working with java.util.Properties.
+* Added a new ClassLocator tool in the org.cp.elements.tools package for locating Java classes on the classpath.
 
 1.0.0.M1 - 2016-01-03
 ---------------------
 Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang package.
 
-* Add the assertThat(..) language expression and extension.
-* Add the IdentifierSequence API along with supporting implementation classes.
-* Introduce a SystemUtilities class for interacting with the application's operating system environment.
-* Introduce a ThreadAdapter class for adapting the java.lang.Thread API.
-* Modify build to generate source archive, Javadoc and digitally sign release artifacts.
-* Add Surefire Reporting, Checkstyle, FindBugs and PMD code analytics to the Elements Maven POM.
-* Enable Maven Changelog Plugin along with Site generation.
-* Add Nexus Staging Maven Plugin
+* Added the assertThat(..) language expression and extension.
+* Added the IdentifierSequence API along with supporting implementation classes.
+* Introduced a SystemUtilities class for interacting with the application's operating system environment.
+* Introduced a ThreadAdapter class for adapting the java.lang.Thread API.
+* Modified the build to generate source archive, Javadoc and digitally sign release artifacts.
+* Added Surefire Reporting, Checkstyle, FindBugs and PMD code analytics to the Elements Maven POM.
+* Enabled Maven Changelog Plugin along with Site generation.
+* Added Nexus Staging Maven Plugin
 
 
 birth - 2011-10-03

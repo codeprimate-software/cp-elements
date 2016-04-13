@@ -429,7 +429,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] nullSafeArray(final T[] array) {
-    return ArrayUtils.<T>nullSafeArray(array, Object.class);
+    return ArrayUtils.nullSafeArray(array, Object.class);
   }
 
   /**
