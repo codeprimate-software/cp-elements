@@ -55,7 +55,7 @@ public abstract class FileUtils extends IOUtils {
       return path;
     }
 
-    throw new FileNotFoundException(String.format("(%1$s) was not found", path));
+    throw new FileNotFoundException(String.format("[%1$s] was not found", path));
   }
 
   /**
@@ -132,7 +132,7 @@ public abstract class FileUtils extends IOUtils {
     Assert.notNull(file, "File cannot be null");
     File parent = file.getParentFile();
     Assert.notNull(parent, new IllegalArgumentException(String.format(
-      "Unable to determine the location of file (%1$s)", file)));
+      "Unable to determine the location of file [%1$s]", file)));
     return tryGetCanonicalPathElseGetAbsolutePath(parent);
   }
 
@@ -224,8 +224,8 @@ public abstract class FileUtils extends IOUtils {
    * @see #isFile(File)
    */
   public static String read(final File file) throws IOException {
-    Assert.isTrue(isFile(file), "(%1$s) must be a valid file", file);
-    Assert.state(file.canRead(), "(%1$s) is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
+    Assert.isTrue(isFile(file), "[%1$s] must be a valid file", file);
+    Assert.state(file.canRead(), "[%1$s] is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
     BufferedReader fileReader = new BufferedReader(new FileReader(file));
     StringBuilder buffer = new StringBuilder();
@@ -298,6 +298,7 @@ public abstract class FileUtils extends IOUtils {
    *
    * @param in the {@link InputStream} that is used as the source of the {@link File} content.
    * @param file the {@link File} to write the contents of the {@link InputStream} to.
+   * @return the {@link File} be written.
    * @throws IOException if writing the contents of the {@link InputStream} to the {@link File}
    * results in an I/O error.
    * @throws NullPointerException if either the {@link InputStream} or {@link File} reference are null.
@@ -306,16 +307,17 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File
    * @see #copy(InputStream, OutputStream)
    */
-  public static void write(final InputStream in, final File file) throws IOException {
+  public static File write(final InputStream in, final File file) throws IOException {
     Assert.notNull(in, "InputStream cannot be null");
     Assert.notNull(file, "File cannot be null");
-    Assert.state(!isExisting(file) || file.canWrite(), "(%1$s) is not writable",
+    Assert.state(!isExisting(file) || file.canWrite(), "[%1$s] is not writable",
       tryGetCanonicalPathElseGetAbsolutePath(file));
 
     OutputStream out = null;
 
     try {
       copy(in, out = new BufferedOutputStream(new FileOutputStream(file)));
+      return file;
     }
     finally {
       close(out);
