@@ -20,7 +20,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
  * The BloomFilter class is a probabilistic data structure to test whether an data element is a member of a set.
@@ -30,10 +32,11 @@ import org.cp.elements.lang.Filter;
  * @see <a href="https://en.wikipedia.org/wiki/Bloom_filter">Bloom Filter</a>
  * @since 1.0.0
  */
+@ThreadSafe
 @SuppressWarnings("unused")
 public class BloomFilter<T extends Number> implements Filter<T> {
 
-  protected static final int DEFAULT_BIT_ARRAY_SIZE = 4096;
+  protected static final int DEFAULT_BIT_ARRAY_SIZE = 8192;
 
   protected static final int[] BIT_MASKS = new int[32];
 
@@ -76,48 +79,110 @@ public class BloomFilter<T extends Number> implements Filter<T> {
 
   private final Random random = new Random();
 
+  /**
+   * Constructs an instance of the {@link BloomFilter} class with the default bit array size.
+   */
   public BloomFilter() {
     this(DEFAULT_BIT_ARRAY_SIZE);
   }
 
+  /**
+   * Constructs an instance of the {@link BloomFilter} class initialized with the specified bit array size.
+   *
+   * @param size the size of the bit array used as a filter.
+   * @throws IllegalArgumentException if size is less than equal to 0.
+   */
   public BloomFilter(int size) {
     Assert.isTrue(size > 0, "size [%1$d] must be greater than 0", size);
-
     bitArray = new int[size];
     Arrays.fill(bitArray, 0);
   }
 
-  protected int getBound() {
+  /* (non-Javadoc) */
+  int[] bitArray() {
+    return bitArray;
+  }
+
+  /**
+   * Determines the number of bits to set in this filter based on the number's class type.
+   *
+   * @param number the number who's class type will determine the number of bits to set in this filter.
+   * @return an integer value indicating the number of bits to set in this filter based on the number's class type.
+   */
+  protected int getBitCount(T number) {
+    Class<?> numberType = ClassUtils.getClass(number);
+
+    if (Long.class.equals(numberType) || Double.class.equals(numberType)) {
+      return 64;
+    }
+    else if (Integer.class.equals(numberType) || Float.class.equals(numberType)) {
+      return 32;
+    }
+    else if (Short.class.equals(numberType)) {
+      return 16;
+    }
+    else if (Byte.class.equals(numberType)){
+      return 8;
+    }
+    else {
+      return 32;
+    }
+  }
+
+  /**
+   * Returns the total number of bits in this filter.  The number of bits is used as an upper bound
+   * during random number generation.
+   *
+   * @param number the number being added or evaluated by this filter.
+   * @return an integer value indicating the total number of bits in this filter.
+   */
+  protected int getBound(T number) {
     return (bitArray.length * 32);
   }
 
-  public synchronized void add(T number) {
-    random.setSeed(number.longValue());
+  /**
+   * Determines whether the specified number is a member of this filter set.
+   *
+   * @param number the number being evaluated.
+   * @return a boolean value indicating whether the specified number is a member of this filer set.
+   * @see #add(Number)
+   */
+  @Override
+  public synchronized boolean accept(T number) {
+    boolean accepted = (number != null);
 
-    int bound = getBound();
-    int bitCount = random.nextInt(bound);
+    if (accepted) {
+      int bitCount = getBitCount(number);
+      int bound = getBound(number);
+
+      random.setSeed(number.longValue());
+
+      for (int count = 0; accepted && count < bitCount; count++) {
+        int bitIndex = random.nextInt(bound);
+        accepted = ((bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
+      }
+    }
+
+    return accepted;
+  }
+  /**
+   * Adds the given number to the set of numbers tracked by this filter.
+   *
+   * @param number the number to add to the set of numbers tracked by this filter.
+   * @see #accept(Number)
+   */
+  public synchronized void add(T number) {
+    Assert.notNull(number, "number cannot be null");
+
+    int bitCount = getBitCount(number);
+    int bound = getBound(number);
+
+    random.setSeed(number.longValue());
 
     for (int count = 0; count < bitCount; count++) {
       int bitIndex = random.nextInt(bound);
       bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
     }
-  }
-
-  @Override
-  public synchronized boolean accept(T number) {
-    boolean accepted = true;
-
-    random.setSeed(number.longValue());
-
-    int bound = getBound();
-    int bitCount = random.nextInt(bound);
-
-    for (int count = 0; accepted && count < bitCount; count++) {
-      int bitIndex = random.nextInt(bound);
-      accepted = ((bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
-    }
-
-    return accepted;
   }
 
 }
