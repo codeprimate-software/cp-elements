@@ -109,7 +109,7 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    * @param number the number who's class type will determine the number of bits to set in this filter.
    * @return an integer value indicating the number of bits to set in this filter based on the number's class type.
    */
-  protected int getBitCount(T number) {
+  protected int getBitCount(Number number) {
     Class<?> numberType = ClassUtils.getClass(number);
 
     if (Long.class.equals(numberType) || Double.class.equals(numberType)) {

@@ -19,11 +19,15 @@ package org.cp.elements.data.struct;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Random;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * The BloomFilterTests class is a test suite of test cases testing the contract and functionality
@@ -37,6 +41,65 @@ import org.junit.Test;
 public class BloomFilterTests {
 
   protected static final int NUMBER_COUNT = 50000;
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+
+  @Test
+  public void constructDefaultBloomFilter() {
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+
+    assertThat(bloomFilter, is(notNullValue()));
+    assertThat(bloomFilter.bitArray(), is(notNullValue()));
+    assertThat(bloomFilter.getBound(null), is(equalTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32)));
+
+    int index;
+
+    for (index = 0; index < bloomFilter.bitArray().length; index++) {
+      assertThat(bloomFilter.bitArray()[index], is(equalTo(0)));
+    }
+
+    assertThat(index, is(equalTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE)));
+  }
+
+  @Test
+  public void constructCustomBloomFilter() {
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>(4);
+
+    assertThat(bloomFilter, is(notNullValue()));
+    assertThat(bloomFilter.bitArray(), is(notNullValue()));
+    assertThat(bloomFilter.getBound(null), is(equalTo(4 * 32)));
+
+    int index;
+
+    for (index = 0; index < bloomFilter.bitArray().length; index++) {
+      assertThat(bloomFilter.bitArray()[index], is(equalTo(0)));
+    }
+
+    assertThat(index, is(equalTo(4)));
+  }
+
+  @Test
+  public void constructBloomFilterWithIllegalSize() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("size [-10] must be greater than 0");
+
+    new BloomFilter<>(-10);
+  }
+
+  @Test
+  public void bitCountForNumberType() {
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+
+    assertThat(bloomFilter.getBitCount((byte) 1), is(equalTo(8)));
+    assertThat(bloomFilter.getBitCount((short) 1), is(equalTo(16)));
+    assertThat(bloomFilter.getBitCount(1), is(equalTo(32)));
+    assertThat(bloomFilter.getBitCount(1f), is(equalTo(32)));
+    assertThat(bloomFilter.getBitCount(1l), is(equalTo(64)));
+    assertThat(bloomFilter.getBitCount(1d), is(equalTo(64)));
+    assertThat(bloomFilter.getBitCount(null), is(equalTo(32)));
+  }
 
   @Test
   public void bitMasksBinaryStringsAreCorrect() {
@@ -52,7 +115,7 @@ public class BloomFilterTests {
   @Test
   @SuppressWarnings("all")
   public void randomNumberSetIsAccepted() {
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>(32768);
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -69,15 +132,9 @@ public class BloomFilterTests {
 
       for (int index = 0; index < bloomFilter.bitArray().length; index++) {
         int elementAtBitArrayIndex = bloomFilter.bitArray()[index];
-        //assertThat(String.format("bitArray[%1$d] == %2$s", index, Integer.toBinaryString(elementAtBitArrayIndex)),
-        //  0xFFFF & elementAtBitArrayIndex, is(not(equalTo(0xFFFF))));
-        if ((elementAtBitArrayIndex & 0xFFFF) != 0xFFFF) {
-          count++;
-          System.out.printf("Index [%1$d] Number [%2$s]%n", index, Integer.toBinaryString(elementAtBitArrayIndex));
-        }
+        assertThat(String.format("bitArray[%1$d] == %2$s", index, Integer.toBinaryString(elementAtBitArrayIndex)),
+          0xFFFFFFFF & elementAtBitArrayIndex, is(not(equalTo(0xFFFFFFFF))));
       }
-
-      System.out.println(count);
     }
   }
 
