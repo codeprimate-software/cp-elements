@@ -444,8 +444,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] nullSafeArray(final T[] array, final Class<?> componentType) {
-    return (array != null ? array : (T[]) Array.newInstance(ObjectUtils.defaultIfNull(
-      getFirst(componentType), Object.class), 0));
+    return (array != null ? array : (T[]) Array.newInstance(ObjectUtils.defaultIfNull(componentType, Object.class), 0));
   }
 
   /**

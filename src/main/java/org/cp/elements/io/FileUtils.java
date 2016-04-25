@@ -50,7 +50,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #isExisting(File)
    */
   @NullSafe
-  public static File assertExists(final File path) throws FileNotFoundException {
+  public static File assertExists(File path) throws FileNotFoundException {
     if (isExisting(path)) {
       return path;
     }
@@ -68,7 +68,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#mkdirs()
    */
   @NullSafe
-  public static boolean createDirectory(final File path) {
+  public static boolean createDirectory(File path) {
     return (path != null && !path.isFile() && (path.isDirectory() || path.mkdirs()));
   }
 
@@ -81,7 +81,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#createNewFile()
    */
   @NullSafe
-  public static boolean createFile(final File path) {
+  public static boolean createFile(File path) {
     try {
       return (path != null && !path.isDirectory() && (path.isFile() || path.createNewFile()));
     }
@@ -100,7 +100,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #isExisting(File)
    */
   @NullSafe
-  public static boolean delete(final File path) {
+  public static boolean delete(File path) {
     return (isExisting(path) && path.delete());
   }
 
@@ -112,7 +112,7 @@ public abstract class FileUtils extends IOUtils {
    * @throws java.lang.NullPointerException if the file reference is null.
    * @see java.io.File#getName()
    */
-  public static String getExtension(final File file) {
+  public static String getExtension(File file) {
     Assert.notNull(file, "File cannot be null");
     String filename = file.getName();
     int dotIndex = filename.indexOf(StringUtils.DOT_SEPARATOR);
@@ -128,7 +128,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#getParentFile()
    * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    */
-  public static String getLocation(final File file) {
+  public static String getLocation(File file) {
     Assert.notNull(file, "File cannot be null");
     File parent = file.getParentFile();
     Assert.notNull(parent, new IllegalArgumentException(String.format(
@@ -144,7 +144,7 @@ public abstract class FileUtils extends IOUtils {
    * @throws java.lang.NullPointerException if the file reference is null.
    * @see java.io.File#getName()
    */
-  public static String getName(final File file) {
+  public static String getName(File file) {
     Assert.notNull(file, "File cannot be null");
     String filename = file.getName();
     int dotIndex = filename.indexOf(StringUtils.DOT_SEPARATOR);
@@ -159,7 +159,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#isDirectory()
    */
   @NullSafe
-  public static boolean isDirectory(final File path) {
+  public static boolean isDirectory(File path) {
     return (path != null && path.isDirectory());
   }
 
@@ -172,7 +172,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #size(File)
    */
   @NullSafe
-  public static boolean isEmpty(final File path) {
+  public static boolean isEmpty(File path) {
     return (size(path) == 0l);
   }
 
@@ -184,7 +184,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#exists()
    */
   @NullSafe
-  public static boolean isExisting(final File path) {
+  public static boolean isExisting(File path) {
     return (path != null && path.exists());
   }
 
@@ -196,7 +196,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#isFile()
    */
   @NullSafe
-  public static boolean isFile(final File path) {
+  public static boolean isFile(File path) {
     return (path != null && path.isFile());
   }
 
@@ -208,7 +208,7 @@ public abstract class FileUtils extends IOUtils {
    * @throws NullPointerException if pathname is null.
    * @see java.io.File#File(String)
    */
-  public static File newFile(final String pathname) {
+  public static File newFile(String pathname) {
     return new File(pathname);
   }
 
@@ -223,7 +223,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#canRead()
    * @see #isFile(File)
    */
-  public static String read(final File file) throws IOException {
+  public static String read(File file) throws IOException {
     Assert.isTrue(isFile(file), "[%1$s] must be a valid file", file);
     Assert.state(file.canRead(), "[%1$s] is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
@@ -254,7 +254,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #isFile(File)
    */
   @NullSafe
-  public static long size(final File path) {
+  public static long size(File path) {
     return (isFile(path) ? path.length() : 0l);
   }
 
@@ -267,7 +267,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#getAbsoluteFile()
    * @see java.io.File#getCanonicalFile()
    */
-  public static File tryGetCanonicalFileElseGetAbsoluteFile(final File file) {
+  public static File tryGetCanonicalFileElseGetAbsoluteFile(File file) {
     try {
       return file.getCanonicalFile();
     }
@@ -284,7 +284,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#getAbsolutePath()
    * @see java.io.File#getCanonicalPath()
    */
-  public static String tryGetCanonicalPathElseGetAbsolutePath(final File file) {
+  public static String tryGetCanonicalPathElseGetAbsolutePath(File file) {
     try {
       return file.getCanonicalPath();
     }
@@ -307,7 +307,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File
    * @see #copy(InputStream, OutputStream)
    */
-  public static File write(final InputStream in, final File file) throws IOException {
+  public static File write(InputStream in, File file) throws IOException {
     Assert.notNull(in, "InputStream cannot be null");
     Assert.notNull(file, "File cannot be null");
     Assert.state(!isExisting(file) || file.canWrite(), "[%1$s] is not writable",
