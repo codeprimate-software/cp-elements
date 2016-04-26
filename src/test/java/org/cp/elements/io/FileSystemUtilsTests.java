@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FilenameFilter;
 
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
@@ -161,7 +162,9 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   void whenDirectory(File mockDirectory, File... files) {
     when(mockDirectory.isDirectory()).thenReturn(true);
     when(mockDirectory.isFile()).thenReturn(false);
+    when(mockDirectory.listFiles()).thenReturn(files);
     when(mockDirectory.listFiles(any(FileFilter.class))).thenReturn(files);
+    when(mockDirectory.listFiles(any(FilenameFilter.class))).thenReturn(files);
   }
 
   void whenFile(File mockFile) {
@@ -505,11 +508,10 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void isEmptyDirectoryWithNonEmptyDirectoryIsFalse() {
-    when(mockFile.isDirectory()).thenReturn(true);
-    when(mockFile.listFiles()).thenReturn(new File[1]);
+  public void isEmptyDirectoryWithEmptyDirectoryIsTrue() {
+    whenDirectory(mockFile);
 
-    assertThat(FileSystemUtils.isEmptyDirectory(mockFile), is(false));
+    assertThat(FileSystemUtils.isEmptyDirectory(mockFile), is(equalTo(true)));
 
     verify(mockFile, times(1)).isDirectory();
     verify(mockFile, times(1)).listFiles();
@@ -517,11 +519,10 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   @SuppressWarnings("all")
-  public void isEmptyDirectoryWithEmptyDirectoryIsTrue() {
-    when(mockFile.isDirectory()).thenReturn(true);
-    when(mockFile.listFiles()).thenReturn(FileSystemUtils.NO_FILES);
+  public void isEmptyDirectoryWithNonEmptyDirectoryIsFalse() {
+    whenDirectory(mockFile, new File[10]);
 
-    assertThat(FileSystemUtils.isEmptyDirectory(mockFile), is(true));
+    assertThat(FileSystemUtils.isEmptyDirectory(mockFile), is(equalTo(false)));
 
     verify(mockFile, times(1)).isDirectory();
     verify(mockFile, times(1)).listFiles();
@@ -530,9 +531,13 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void isEmptyDirectoryWithFileIsFalse() {
-    when(mockFile.isDirectory()).thenReturn(false);
+    whenFile(mockFile);
+
     assertThat(FileSystemUtils.isEmptyDirectory(mockFile), is(false));
+
     verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, never()).isFile();
+    verify(mockFile, never()).listFiles();
   }
 
   @Test
