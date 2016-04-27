@@ -197,15 +197,15 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Determines whether the given directory is empty.  A directory is empty if it does not contain any files
-   * or subdirectories.
+   * or sub-directories, or is not a directory.
    *
-   * @param directory a {@link File} reference pointing to a directory that is evaluated for emptiness.
+   * @param directory a {@link File} reference pointing to a directory to evaluate.
    * @return a boolean value indicating whether the given directory is empty.
    * @see java.io.File#listFiles()
    * @see #isDirectory(File)
    */
   @SuppressWarnings("all")
-  public static boolean isEmptyDirectory(final File directory) {
+  public static boolean isEmptyDirectory(File directory) {
     return (isDirectory(directory) && directory.listFiles().length == 0);
   }
 
@@ -217,7 +217,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see #tryGetCanonicalPathElseGetAbsolutePath(File)
    */
   @NullSafe
-  public static boolean isRelativeToWorkingDirectory(final File path) {
+  public static boolean isRelativeToWorkingDirectory(File path) {
     return (path != null && tryGetCanonicalPathElseGetAbsolutePath(path).startsWith(
       tryGetCanonicalPathElseGetAbsolutePath(WORKING_DIRECTORY)));
   }
@@ -255,39 +255,39 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Determines the size of the path in bytes.  The path size is determined by the byte size of all the files
-   * contained within the path itself as well as it's subdirectories.
+   * contained within the path itself as well as all files in sub-directories.
    *
    * @param path the {@link File} denoting the path to evaluate.
-   * @return a long value indicating the size of the path in number of bytes.
-   * @see java.io.File
+   * @return a long value indicating the size of the path in bytes.
+   * @see java.io.File#length()
    * @see org.cp.elements.io.FileOnlyFilter
    * @see #size(File, FileFilter)
    */
-  public static long size(final File path) {
+  public static long size(File path) {
     return size(path, FileOnlyFilter.INSTANCE);
   }
 
   /**
    * Determines the size of the path in bytes.  The path size is determined by the byte size of all the files
-   * contained within the path itself as well as it's subdirectories that are accepted by the {@link FileFilter}.
+   * contained within the path itself as well as all files in sub-directories, which are accepted
+   * by the {@link FileFilter}.
    *
    * @param path the {@link File} denoting the path to evaluate.
    * @param fileFilter the {@link FileFilter} used to determine whether files identified will be included in the size.
-   * @return a long value indicating the size of the path in number of bytes.
+   * @return a long value indicating the size of the path in bytes.
    * @see java.io.File#length()
    * @see java.io.FileFilter#accept(File)
-   * @see #isDirectory(File)
-   * @see #size(File, FileFilter)
    */
-  public static long size(final File path, final FileFilter fileFilter) {
+  public static long size(File path, FileFilter fileFilter) {
     long size = 0;
 
+    FileFilter composedFileFilter = ComposableFileFilter.and(FileOnlyFilter.INSTANCE, fileFilter);
+
     for (File file : safeListFiles(path)) {
-      size += (isDirectory(path) ? size(file, fileFilter) : (fileFilter.accept(file) ? size(file) : 0));
+      size += size(file, fileFilter);
     }
 
-    return (ComposableFileFilter.and(FileOnlyFilter.INSTANCE, fileFilter).accept(path)
-      ? (path.length() + size) : size);
+    return (composedFileFilter.accept(path) ? (path.length() + size) : size);
   }
 
 }
