@@ -25,21 +25,6 @@
   </description>
   <url>http://www.codeprimate.org/products/cp-elements</url>
 
-  <organization>
-    <name>Codeprimate, LLC</name>
-    <url>http://www.codeprimate.org/</url>
-  </organization>
-
-  <developers>
-    <developer>
-      <id>jblum</id>
-      <name>John J. Blum</name>
-      <email>john dot blum at codeprimate dot org</email>
-      <organization>Codeprimate, LLC.</organization>
-      <organizationUrl>http://www.codeprimate.org</organizationUrl>
-    </developer>
-  </developers>
-
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -62,6 +47,32 @@
     </license>
   </licenses>
 
+  <organization>
+    <name>Codeprimate, LLC</name>
+    <url>http://www.codeprimate.org/</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>jblum</id>
+      <name>John J. Blum</name>
+      <email>john dot blum at codeprimate dot org</email>
+      <organization>Codeprimate, LLC.</organization>
+      <organizationUrl>http://www.codeprimate.org</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:codeprimate-software/cp-elements.git</connection>
+    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-elements.git</developerConnection>
+    <url>https://github.com/codeprimate-software/cp-elements</url>
+  </scm>
+
+  <issueManagement>
+ 		<system>GitHub</system>
+ 		<url>https://github.com/codeprimate-software/cp-elements/issues</url>
+ 	</issueManagement>
+
   <properties>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
@@ -75,17 +86,6 @@
     <maven-source-plugin.version>2.4</maven-source-plugin.version>
     <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
   </properties>
-
-  <scm>
-    <connection>scm:git:git@github.com:codeprimate-software/cp-elements.git</connection>
-    <developerConnection>scm:git:git@github.com:codeprimate-software/cp-elements.git</developerConnection>
-    <url>https://github.com/codeprimate-software/cp-elements</url>
-  </scm>
-
-  <issueManagement>
- 		<system>GitHub</system>
- 		<url>https://github.com/codeprimate-software/cp-elements/issues</url>
- 	</issueManagement>
 
   <profiles>
     <profile>

@@ -222,23 +222,48 @@ public abstract class FileSystemUtils extends FileUtils {
       tryGetCanonicalPathElseGetAbsolutePath(WORKING_DIRECTORY)));
   }
 
-  public static File[] listFiles(final File directory) {
+  /**
+   * Lists all files in the given directory.  This method uses recursion to list all files in the given directory
+   * as well as any sub-directories of the given directory.
+   *
+   * @param directory the directory to search for files.
+   * @return an array of all files in the given directory and any sub-directories of the given directory.
+   * @see #listFiles(File, FileFilter)
+   * @see #isExisting(File)
+   * @see java.io.File
+   */
+  @NullSafe
+  public static File[] listFiles(File directory) {
     return listFiles(directory, FileUtils::isExisting);
   }
 
-  public static File[] listFiles(final File directory, final FileFilter fileFilter) {
-    List<File> results = new ArrayList<>();
+  /**
+   * Lists all files in the given directory accepted by the {@link FileFilter}.  This method uses recursion to list
+   * all files in the given directory as well as any sub-directories of the given directory accepted by
+   * the {@link FileFilter}.
+   *
+   * @param directory the directory to search for files.
+   * @param fileFilter the {@link FileFilter} used to filter and match files.
+   * @return an array of all files in the given directory and any sub-directories of the given directory accepted by
+   * the {@link FileFilter}.
+   * @see #safeListFiles(File, FileFilter)
+   * @see java.io.FileFilter
+   * @see java.io.File
+   */
+  @NullSafe
+  public static File[] listFiles(File directory, FileFilter fileFilter) {
+    List<File> files = new ArrayList<>();
 
     for (File file : safeListFiles(directory, fileFilter)) {
       if (isDirectory(file)) {
-        results.addAll(Arrays.asList(listFiles(file, fileFilter)));
+        files.addAll(Arrays.asList(listFiles(file, fileFilter)));
       }
       else {
-        results.add(file);
+        files.add(file);
       }
     }
 
-    return results.toArray(new File[results.size()]);
+    return (files.isEmpty() ? NO_FILES : files.toArray(new File[files.size()]));
   }
 
   /* (non-Javadoc) */
