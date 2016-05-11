@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.cp.elements.lang.Assert;
@@ -166,7 +167,7 @@ public abstract class FileSystemUtils extends FileUtils {
   }
 
   /**
-   * Deletes the given {@link File} from the file system if accepted by the given {@link FileFilter}
+   * Deletes the given {@link File} from the file system if accepted by the given {@link FileFilter}.
    *
    * If the {@link File} is a directory, then this method recursively deletes all files and subdirectories
    * accepted by the {@link FileFilter} in the given directory along with the directory itself.
@@ -177,7 +178,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * This method attempts to delete as many files as possible.
    *
    * @param path the {@link File} to delete from the file system.
-   * @param fileFilter the {@link FileFilter} used to identify the desired {@link File}s to delete.
+   * @param fileFilter the {@link FileFilter} used to identify the {@link File}s to delete.
    * @return a boolean value indicating whether the given {@link File} was successfully deleted from the file system.
    * @see java.io.File
    * @see java.io.FileFilter
@@ -188,11 +189,11 @@ public abstract class FileSystemUtils extends FileUtils {
   public static boolean deleteRecursive(File path, FileFilter fileFilter) {
     boolean success = true;
 
-    for (File file : safeListFiles(path)) {
-      success &= (isDirectory(file) ? deleteRecursive(file, fileFilter) : (!fileFilter.accept(file) || delete(file)));
+    for (File file : safeListFiles(path, fileFilter)) {
+      success &= (isDirectory(file) ? deleteRecursive(file, fileFilter) : delete(file));
     }
 
-    return (fileFilter.accept(path) && delete(path) && success);
+    return (success && fileFilter.accept(path) && delete(path));
   }
 
   /**
@@ -255,12 +256,7 @@ public abstract class FileSystemUtils extends FileUtils {
     List<File> files = new ArrayList<>();
 
     for (File file : safeListFiles(directory, fileFilter)) {
-      if (isDirectory(file)) {
-        files.addAll(Arrays.asList(listFiles(file, fileFilter)));
-      }
-      else {
-        files.add(file);
-      }
+      files.addAll(isDirectory(file) ? Arrays.asList(listFiles(file, fileFilter)) : Collections.singletonList(file));
     }
 
     return (files.isEmpty() ? NO_FILES : files.toArray(new File[files.size()]));
