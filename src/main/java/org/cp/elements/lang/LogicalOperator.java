@@ -16,6 +16,8 @@
 
 package org.cp.elements.lang;
 
+import java.util.function.Supplier;
+
 /**
  * The LogicalOperator class defines class representations for the standard logical operators AND ({@literal &&})
  * and OR ({@literal ||}).
@@ -38,12 +40,12 @@ public abstract class LogicalOperator {
    * @return the given logical operator decorated with logical not.
    * @see LogicalNot
    */
-  public static LogicalOperator negate(final LogicalOperator op) {
-    return new LogicalNot(op);
+  public static LogicalOperator negate(LogicalOperator op) {
+    return new LogicalNot(op.getOpposite());
   }
 
   /**
-   * Indicates whether this logical operator is a binary operation.  A binary operator is an operator with two operands.
+   * Indicates whether this logical operator is a binary operator.  A binary operator is an operator with two operands.
    * With LogicalOperator implementations, such as AND and OR, this is expanded to mean two or more operands.
    * 
    * @return a boolean value indicating if this logical operator is a binary operator.
@@ -73,7 +75,7 @@ public abstract class LogicalOperator {
   public abstract boolean isUnary();
 
   /**
-   * Gets a description of this logical operator, such as 'and' or 'or'.
+   * Returns a description of this logical operator, such as 'and' or 'or'.
    * 
    * @return a String value describing this logical operator.
    * @see #getSymbol()
@@ -99,12 +101,24 @@ public abstract class LogicalOperator {
   public abstract String getSymbol();
 
   /**
-   * Evaluates the given array of conditions by applying this logical operator to all conditions collectively.
+   * Evaluates the given array of boolean conditions by applying this logical operator to all conditions collectively.
    * 
    * @param conditions a boolean array of conditions to which this logical operator is applied.
-   * @return a boolean value resulting from the evaluation of this logical operator applied to all conditions.
+   * @return a boolean value resulting from the evaluation of the given boolean conditions with this logical operator.
    */
   public abstract boolean evaluate(boolean... conditions);
+
+  /**
+   * Evaluates the given array of boolean based {@link Supplier}s by applying this logical operation to all conditions
+   * supplied collectively.
+   *
+   * @param suppliers an array of {@link Supplier}s supplying the boolean conditions to evaluate.
+   * @return a boolean value resulting from the evaluation of the given {@link Supplier}s of boolean values
+   * with this logical operater.
+   * @see java.util.function.Supplier
+   */
+  @SuppressWarnings("all")
+  public abstract boolean evaluate(Supplier<Boolean>... suppliers);
 
   /**
    * Gets a String representation of the logical operator.
@@ -133,9 +147,9 @@ public abstract class LogicalOperator {
      * @param symbol a String value symbolically represending the logical operator.
      * @throws IllegalArgumentException if either the description or symbol are not specified.
      */
-    protected AbstractLogicalOperator(final String description, final String symbol) {
-      Assert.notBlank(description, "The description of the logical operator must be specified!");
-      Assert.notBlank(symbol, "The symbolic representation of the logical operator must be specified!");
+    protected AbstractLogicalOperator(String description, String symbol) {
+      Assert.notBlank(description, "The description of this logical operator must be specified");
+      Assert.notBlank(symbol, "The symbolic representation of this logical operator must be specified");
       this.description = description;
       this.symbol = symbol;
     }
@@ -217,31 +231,47 @@ public abstract class LogicalOperator {
   }
 
   /**
-   * LogicalAnd is a LogicalOperator implementation of the binary, logical AND operator.
+   * LogicalAnd is a {@link LogicalOperator} implementation of the binary, logical AND operator.
    */
-  private static final class LogicalAnd extends AbstractLogicalOperator {
+  static final class LogicalAnd extends AbstractLogicalOperator {
 
     /**
      * Constructs an instance of the LogicalAnd operator.
      */
-    private LogicalAnd() {
+    LogicalAnd() {
       super("and", "&&");
     }
 
+    /* (non-Javadoc) */
     @Override
     public boolean isBinary() {
       return true;
     }
 
+    /* (non-Javadoc) */
     @Override
     public LogicalOperator getOpposite() {
       return LogicalOperator.OR;
     }
 
+    /* (non-Javadoc) */
     @Override
-    public boolean evaluate(final boolean... conditions) {
+    public boolean evaluate(boolean... conditions) {
       for (boolean condition : conditions) {
         if (!condition) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    @SafeVarargs
+    public final boolean evaluate(Supplier<Boolean>... suppliers) {
+      for (Supplier<Boolean> supplier : suppliers) {
+        if (!Boolean.TRUE.equals(supplier.get())) {
           return false;
         }
       }
@@ -251,9 +281,9 @@ public abstract class LogicalOperator {
   }
 
   /**
-   * LogicalNot is a LogicalOperator implementation of the unary, logical NOT operator.
+   * LogicalNot is a {@link LogicalOperator} implementation of the unary, logical NOT operator.
    */
-  private static final class LogicalNot extends AbstractLogicalOperator {
+  static final class LogicalNot extends AbstractLogicalOperator {
 
     private final LogicalOperator op;
 
@@ -262,54 +292,85 @@ public abstract class LogicalOperator {
      * 
      * @param op the LogicalOperator to negate.
      */
-    private LogicalNot(final LogicalOperator op) {
+    LogicalNot(LogicalOperator op) {
       super("not", "!");
-      Assert.notNull(op, "The LogicalOperator to negate cannot be null!");
+      Assert.notNull(op, "The LogicalOperator to negate cannot be null");
       this.op = op;
     }
 
+    /* (non-Javadoc) */
     @Override
     public boolean isUnary() {
       return true;
     }
 
-    @Override
-    public LogicalOperator getOpposite() {
-      return new LogicalNot(this);
+    /* (non-Javadoc) */
+    LogicalOperator getOp() {
+      return this.op;
     }
 
+    /* (non-Javadoc) */
     @Override
-    public boolean evaluate(final boolean... conditions) {
+    public LogicalOperator getOpposite() {
+      return this;
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    public boolean evaluate(boolean... conditions) {
       return !this.op.evaluate(conditions);
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    @SafeVarargs
+    public final boolean evaluate(Supplier<Boolean>... suppliers) {
+      return !this.op.evaluate(suppliers);
     }
   }
 
   /**
-   * LogicalOr is a LogicalOperator implementation of the binary, logical OR operator.
+   * LogicalOr is a {@link LogicalOperator} implementation of the binary, logical OR operator.
    */
-  private static final class LogicalOr extends AbstractLogicalOperator {
+  static final class LogicalOr extends AbstractLogicalOperator {
 
     /**
      * Constructs an instance of the LogicalOr operator.
      */
-    private LogicalOr() {
+    LogicalOr() {
       super("or", "||");
     }
 
+    /* (non-Javadoc) */
     @Override
     public boolean isBinary() {
       return true;
     }
 
+    /* (non-Javadoc) */
     @Override
     public LogicalOperator getOpposite() {
       return LogicalOperator.AND;
     }
 
+    /* (non-Javadoc) */
     @Override
-    public boolean evaluate(final boolean... conditions) {
+    public boolean evaluate(boolean... conditions) {
       for (boolean condition : conditions) {
         if (condition) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    @SafeVarargs
+    public final boolean evaluate(Supplier<Boolean>... suppliers) {
+      for (Supplier<Boolean> supplier : suppliers) {
+        if (Boolean.TRUE.equals(supplier.get())) {
           return true;
         }
       }
@@ -319,24 +380,31 @@ public abstract class LogicalOperator {
   }
 
   /**
-   * LogicalXor is a LogicalOperator implementation of the binary, logical XOR operator.
+   * LogicalXor is a {@link LogicalOperator} implementation of the binary, logical XOR operator.
    */
-  private static final class LogicalXor extends AbstractLogicalOperator {
+  static final class LogicalXor extends AbstractLogicalOperator {
 
     /**
      * Constructs an instance of the LogicalXor operator.
      */
-    private LogicalXor() {
+    LogicalXor() {
       super("xor", "^");
     }
 
+    /* (non-Javadoc) */
     @Override
     public boolean isBinary() {
       return true;
     }
 
+    /* (non-Javadoc) */
     @Override
-    public boolean evaluate(final boolean... conditions) {
+    public LogicalOperator getOpposite() {
+      return this;
+    }
+
+    @Override
+    public boolean evaluate(boolean... conditions) {
       int count = 0;
 
       for (int index = 0; index < conditions.length && count < 2; index++) {
@@ -347,6 +415,20 @@ public abstract class LogicalOperator {
 
       return (count == 1);
     }
-  }
 
+    /* (non-Javadoc) */
+    @Override
+    @SafeVarargs
+    public final boolean evaluate(Supplier<Boolean>... suppliers) {
+      int count = 0;
+
+      for (int index = 0; index < suppliers.length && count < 2; index++) {
+        if (Boolean.TRUE.equals(suppliers[index].get())) {
+          count++;
+        }
+      }
+
+      return (count == 1);
+    }
+  }
 }
