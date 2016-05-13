@@ -149,8 +149,8 @@ public class ComposableFileFilterTest {
     assertThat(ComposableFileFilter.and(mockFileFilterTwo, mockFileFilterOne).accept(mockFile), is(false));
     assertThat(ComposableFileFilter.and(mockFileFilterTwo, mockFileFilterTwo).accept(mockFile), is(false));
 
-    verify(mockFileFilterOne, times(4)).accept(eq(mockFile));
-    verify(mockFileFilterTwo, times(4)).accept(eq(mockFile));
+    verify(mockFileFilterOne, times(3)).accept(eq(mockFile));
+    verify(mockFileFilterTwo, times(3)).accept(eq(mockFile));
   }
 
   @Test
@@ -163,8 +163,8 @@ public class ComposableFileFilterTest {
     assertThat(ComposableFileFilter.or(mockFileFilterTwo, mockFileFilterOne).accept(mockFile), is(true));
     assertThat(ComposableFileFilter.or(mockFileFilterTwo, mockFileFilterTwo).accept(mockFile), is(false));
 
-    verify(mockFileFilterOne, times(4)).accept(eq(mockFile));
-    verify(mockFileFilterTwo, times(4)).accept(eq(mockFile));
+    verify(mockFileFilterOne, times(3)).accept(eq(mockFile));
+    verify(mockFileFilterTwo, times(3)).accept(eq(mockFile));
   }
 
   @Test

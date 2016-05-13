@@ -43,15 +43,19 @@ import org.junit.Test;
 @SuppressWarnings("all")
 public class FileSizeFilterTest {
 
+  protected File mockFile(String name) {
+    return mock(File.class, name);
+  }
+
   @Test
   public void testAcceptBetween() {
     FileSizeFilter fileFilter = FileSizeFilter.between(2048l, 4096l);
 
-    File fileBetween = mock(File.class, "fileBetween");
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOnMax = mock(File.class, "fileOnMax");
-    File fileOnMin = mock(File.class, "fileOnMin");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File fileBetween = mockFile("fileBetween");
+    File fileBigger = mockFile("fileBigger");
+    File fileOnMax = mockFile("fileOnMax");
+    File fileOnMin = mockFile("fileOnMin");
+    File fileSmaller = mockFile("fileSmaller");
 
     when(fileSmaller.length()).thenReturn(1024l);
     when(fileOnMin.length()).thenReturn(2048l);
@@ -76,11 +80,11 @@ public class FileSizeFilterTest {
   public void testAcceptOutside() {
     FileFilter fileFilter = new InverseFileFilter(FileSizeFilter.between(2048l, 4096l));
 
-    File fileBetween = mock(File.class, "fileBetween");
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOnMax = mock(File.class, "fileOnMax");
-    File fileOnMin = mock(File.class, "fileOnMin");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File fileBetween = mockFile("fileBetween");
+    File fileBigger = mockFile("fileBigger");
+    File fileOnMax = mockFile("fileOnMax");
+    File fileOnMin = mockFile("fileOnMin");
+    File fileSmaller = mockFile("fileSmaller");
 
     when(fileSmaller.length()).thenReturn(1024l);
     when(fileOnMin.length()).thenReturn(2048l);
@@ -105,9 +109,9 @@ public class FileSizeFilterTest {
   public void testAcceptEqualTo() {
     FileSizeFilter fileFilter = FileSizeFilter.equalTo(4096l);
 
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOn = mock(File.class, "fileOn");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File fileBigger = mockFile("fileBigger");
+    File fileOn = mockFile("fileOn");
+    File fileSmaller = mockFile("fileSmaller");
 
     when(fileSmaller.length()).thenReturn(2048l);
     when(fileOn.length()).thenReturn(4096l);
@@ -126,9 +130,9 @@ public class FileSizeFilterTest {
   public void testAcceptNotEqualTo() {
     FileFilter fileFilter = new InverseFileFilter(FileSizeFilter.equalTo(4096l));
 
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOn = mock(File.class, "fileOn");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File fileBigger = mockFile("fileBigger");
+    File fileOn = mockFile("fileOn");
+    File fileSmaller = mockFile("fileSmaller");
 
     when(fileSmaller.length()).thenReturn(2048l);
     when(fileOn.length()).thenReturn(4096l);
@@ -147,9 +151,9 @@ public class FileSizeFilterTest {
   public void testAcceptGreaterThan() {
     FileSizeFilter fileFilter = FileSizeFilter.greaterThan(4096l);
 
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOn = mock(File.class, "fileOn");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File fileBigger = mockFile("fileBigger");
+    File fileOn = mockFile("fileOn");
+    File fileSmaller = mockFile("fileSmaller");
 
     when(fileSmaller.length()).thenReturn(2048l);
     when(fileOn.length()).thenReturn(4096l);
@@ -168,30 +172,30 @@ public class FileSizeFilterTest {
   public void testAcceptGreaterThanEqualTo() {
     FileFilter fileFilter = ComposableFileFilter.or(FileSizeFilter.greaterThan(4096l), FileSizeFilter.equalTo(4096l));
 
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOn = mock(File.class, "fileOn");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File mockFileGreaterThan = mockFile("MockFileGreaterThan");
+    File mockFileEqualTo = mockFile("MockFileEqualTo");
+    File mockFileLessThan = mockFile("MockFileLessThan");
 
-    when(fileSmaller.length()).thenReturn(2048l);
-    when(fileOn.length()).thenReturn(4096l);
-    when(fileBigger.length()).thenReturn(8192l);
+    when(mockFileLessThan.length()).thenReturn(2048l);
+    when(mockFileEqualTo.length()).thenReturn(4096l);
+    when(mockFileGreaterThan.length()).thenReturn(8192l);
 
-    assertFalse(fileFilter.accept(fileSmaller));
-    assertTrue(fileFilter.accept(fileOn));
-    assertTrue(fileFilter.accept(fileBigger));
+    assertTrue(fileFilter.accept(mockFileGreaterThan));
+    assertTrue(fileFilter.accept(mockFileEqualTo));
+    assertFalse(fileFilter.accept(mockFileLessThan));
 
-    verify(fileSmaller, times(2)).length();
-    verify(fileOn, times(2)).length();
-    verify(fileBigger, times(2)).length();
+    verify(mockFileGreaterThan, times(1)).length();
+    verify(mockFileLessThan, times(2)).length();
+    verify(mockFileEqualTo, times(2)).length();
   }
 
   @Test
   public void testAcceptLessThan() {
     FileSizeFilter fileFilter = FileSizeFilter.lessThan(4096l);
 
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOn = mock(File.class, "fileOn");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File fileBigger = mockFile("fileBigger");
+    File fileOn = mockFile("fileOn");
+    File fileSmaller = mockFile("fileSmaller");
 
     when(fileSmaller.length()).thenReturn(2048l);
     when(fileOn.length()).thenReturn(4096l);
@@ -210,21 +214,21 @@ public class FileSizeFilterTest {
   public void testAcceptLessThanEqualTo() {
     FileFilter fileFilter = ComposableFileFilter.or(FileSizeFilter.lessThan(4096l), FileSizeFilter.equalTo(4096l));
 
-    File fileBigger = mock(File.class, "fileBigger");
-    File fileOn = mock(File.class, "fileOn");
-    File fileSmaller = mock(File.class, "fileSmaller");
+    File mockFileGreaterThan = mockFile("MockFileGreaterThan");
+    File mockFileEqualTo = mockFile("MockFileEqualTo");
+    File mockFileLessThan = mockFile("MockFileLessThan");
 
-    when(fileSmaller.length()).thenReturn(2048l);
-    when(fileOn.length()).thenReturn(4096l);
-    when(fileBigger.length()).thenReturn(8192l);
+    when(mockFileGreaterThan.length()).thenReturn(8192l);
+    when(mockFileEqualTo.length()).thenReturn(4096l);
+    when(mockFileLessThan.length()).thenReturn(2048l);
 
-    assertTrue(fileFilter.accept(fileSmaller));
-    assertTrue(fileFilter.accept(fileOn));
-    assertFalse(fileFilter.accept(fileBigger));
+    assertFalse(fileFilter.accept(mockFileGreaterThan));
+    assertTrue(fileFilter.accept(mockFileEqualTo));
+    assertTrue(fileFilter.accept(mockFileLessThan));
 
-    verify(fileSmaller, times(2)).length();
-    verify(fileOn, times(2)).length();
-    verify(fileBigger, times(2)).length();
+    verify(mockFileLessThan, times(1)).length();
+    verify(mockFileEqualTo, times(2)).length();
+    verify(mockFileGreaterThan, times(2)).length();
   }
 
 }

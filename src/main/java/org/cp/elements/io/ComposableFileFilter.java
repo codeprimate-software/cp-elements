@@ -53,11 +53,8 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see java.io.FileFilter
    * @see org.cp.elements.lang.LogicalOperator
    */
-  private ComposableFileFilter(final LogicalOperator operator,
-                               final FileFilter leftOperand,
-                               final FileFilter rightOperand)
-  {
-    Assert.notNull(operator, "logical operator must be specified");
+  private ComposableFileFilter(LogicalOperator operator, FileFilter leftOperand, FileFilter rightOperand) {
+    Assert.notNull(operator, "The logical operator must be specified");
     Assert.notNull(leftOperand, "The left FileFilter operand cannot be null");
     Assert.notNull(rightOperand, "The right FileFilter operand cannot be null");
 
@@ -79,10 +76,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see java.io.FileFilter
    * @see org.cp.elements.lang.LogicalOperator
    */
-  protected static FileFilter compose(final LogicalOperator operator,
-                                      final FileFilter leftOperand,
-                                      final FileFilter rightOperand)
-  {
+  protected static FileFilter compose(LogicalOperator operator, FileFilter leftOperand, FileFilter rightOperand) {
     return (leftOperand == null ? rightOperand : (rightOperand == null ? leftOperand :
       new ComposableFileFilter(operator, leftOperand, rightOperand)));
   }
@@ -98,7 +92,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see org.cp.elements.lang.LogicalOperator#AND
    * @see java.io.FileFilter
    */
-  public static FileFilter and(final FileFilter leftOperand, final FileFilter rightOperand) {
+  public static FileFilter and(FileFilter leftOperand, FileFilter rightOperand) {
     return compose(LogicalOperator.AND, leftOperand, rightOperand);
   }
 
@@ -113,7 +107,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see org.cp.elements.lang.LogicalOperator#OR
    * @see java.io.FileFilter
    */
-  public static FileFilter or(final FileFilter leftOperand, final FileFilter rightOperand) {
+  public static FileFilter or(FileFilter leftOperand, FileFilter rightOperand) {
     return compose(LogicalOperator.OR, leftOperand, rightOperand);
   }
 
@@ -128,7 +122,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see org.cp.elements.lang.LogicalOperator#XOR
    * @see java.io.FileFilter
    */
-  public static FileFilter xor(final FileFilter leftOperand, final FileFilter rightOperand) {
+  public static FileFilter xor(FileFilter leftOperand, FileFilter rightOperand) {
     return compose(LogicalOperator.XOR, leftOperand, rightOperand);
   }
 
@@ -139,7 +133,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see java.io.FileFilter
    */
   protected FileFilter getLeftOperand() {
-    return leftOperand;
+    return this.leftOperand;
   }
 
   /**
@@ -151,7 +145,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see org.cp.elements.lang.LogicalOperator
    */
   protected LogicalOperator getOperator() {
-    return operator;
+    return this.operator;
   }
 
   /**
@@ -161,7 +155,7 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see java.io.FileFilter
    */
   protected FileFilter getRightOperand() {
-    return rightOperand;
+    return this.rightOperand;
   }
 
   /**
@@ -173,8 +167,9 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    * @see java.io.File
    */
   @Override
-  public boolean accept(final File file) {
-    return getOperator().evaluate(getLeftOperand().accept(file), getRightOperand().accept(file));
+  @SuppressWarnings("unchecked")
+  public boolean accept(File file) {
+    return getOperator().evaluate(() -> getLeftOperand().accept(file), () -> getRightOperand().accept(file));
   }
 
 }
