@@ -122,7 +122,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see #count(File, FileFilter)
    */
   public static int count(File path) {
-    return count(path, FileOnlyFilter.INSTANCE);
+    return count(path, FileUtils::isExisting);
   }
 
   /**
@@ -143,11 +143,11 @@ public abstract class FileSystemUtils extends FileUtils {
   public static int count(File path, FileFilter fileFilter) {
     int count = 0;
 
-    for (File file : safeListFiles(path)) {
-      count += (isDirectory(file) ? count(file, fileFilter) : (fileFilter.accept(file) ? 1 : 0));
+    for (File file : safeListFiles(path, fileFilter)) {
+      count += (isDirectory(file) ? count(file, fileFilter) : 1);
     }
 
-    return (fileFilter.accept(path) ? ++count : count);
+    return (ComposableFileFilter.and(FileUtils::isFile, fileFilter).accept(path) ? 1 : count);
   }
 
   /**
@@ -285,7 +285,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see #size(File, FileFilter)
    */
   public static long size(File path) {
-    return size(path, FileOnlyFilter.INSTANCE);
+    return size(path, FileUtils::isExisting);
   }
 
   /**
@@ -302,13 +302,10 @@ public abstract class FileSystemUtils extends FileUtils {
   public static long size(File path, FileFilter fileFilter) {
     long size = 0;
 
-    FileFilter composedFileFilter = ComposableFileFilter.and(FileOnlyFilter.INSTANCE, fileFilter);
-
-    for (File file : safeListFiles(path)) {
-      size += size(file, fileFilter);
+    for (File file : safeListFiles(path, fileFilter)) {
+      size += (isDirectory(file) ? size(file, fileFilter) : file.length());
     }
 
-    return (composedFileFilter.accept(path) ? (path.length() + size) : size);
+    return (ComposableFileFilter.and(FileUtils::isFile, fileFilter).accept(path) ? path.length() : size);
   }
-
 }
