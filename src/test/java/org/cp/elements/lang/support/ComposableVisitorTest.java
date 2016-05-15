@@ -56,7 +56,7 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
     assertFalse(visitors.add(mockVisitor));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testAddNullVisitor() {
     new ComposableVisitor().add(null);
   }
@@ -277,5 +277,4 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
       return visitablesVisited.contains(visitable);
     }
   }
-
 }

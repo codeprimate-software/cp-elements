@@ -47,7 +47,7 @@ import org.junit.rules.ExpectedException;
 public class ValueHolderTest {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void constructWithNullValue() {
@@ -209,8 +209,9 @@ public class ValueHolderTest {
 
   @Test
   public void withNonNullValueHolderConstructedWithNullValue() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectMessage("The value must not be null!");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The value must not be null!");
 
     ValueHolder.withNonNullValue(null);
   }
@@ -222,8 +223,9 @@ public class ValueHolderTest {
     assertThat(valueHolder, is(not(nullValue())));
     assertThat(valueHolder.getValue(), is(equalTo("test")));
 
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectMessage("The value must not be null!");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The value must not be null!");
 
     valueHolder.setValue(null);
   }
@@ -256,5 +258,4 @@ public class ValueHolderTest {
     assertThat(twentyOneCopy, is(not(sameInstance(twentyOne))));
     assertThat(twentyOneCopy, is(equalTo(twentyOne)));
   }
-
 }

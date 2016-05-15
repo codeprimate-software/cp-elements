@@ -63,7 +63,7 @@ public class StringUtilsTest {
     assertEquals(StringUtils.EMPTY_STRING, StringUtils.concat(StringUtils.EMPTY_STRING));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConcatWithNullStringArray() {
     StringUtils.concat((String[]) null);
   }
@@ -703,5 +703,4 @@ public class StringUtilsTest {
     assertThat(lines[6], is(equalTo("emergency then this freakin test will")));
     assertThat(lines[7], is(equalTo("fail and will require a fix.")));
   }
-
 }

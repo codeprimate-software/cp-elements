@@ -68,7 +68,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class AuditableVisitorTest {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   @Mock
   private Process mockProcess;
@@ -101,18 +101,18 @@ public class AuditableVisitorTest {
 
   @Test
   public void constructWithNullUser() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("user must not be null");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("user must not be null");
 
     new AuditableVisitor<User, Process>(null, mockProcess);
   }
 
   @Test
   public void constructWithNullProcess() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("process must not be null");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("process must not be null");
 
     new AuditableVisitor<User, Process>(mockUser, null);
   }
@@ -343,5 +343,4 @@ public class AuditableVisitorTest {
 
   protected interface Process {
   }
-
 }

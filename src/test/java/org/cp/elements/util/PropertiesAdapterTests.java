@@ -85,7 +85,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void constructPropertiesAdapterWithNull() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The Properties to wrap cannot be null");
 
@@ -339,5 +339,4 @@ public class PropertiesAdapterTests {
 
     assertThat(propertiesAdapter.size(), is(equalTo(0)));
   }
-
 }

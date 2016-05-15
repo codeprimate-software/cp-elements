@@ -33,8 +33,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The AssertTest class is a test suite of test cases to test the contract and functionality of the Assert class
- * in the org.cp.elements API and Framework.
+ * The AssertTests class is a test suite of test cases testing the contract and functionality
+ * of the {@link }Assert} class in the org.cp.elements API and Framework.
  * 
  * @author John J. Blum
  * @see org.cp.elements.lang.Assert
@@ -43,7 +43,7 @@ import org.junit.rules.ExpectedException;
  * @since 1.0.0
  * @version 1.0.0
  */
-public class AssertTest {
+public class AssertTests {
 
   private static final Object LOCK = new Object();
 
@@ -278,6 +278,63 @@ public class AssertTest {
   }
 
   @Test
+  public void assertHasTextkWithNonBlankValues() throws Exception {
+    Assert.hasText("test");
+    Assert.hasText("blank");
+    Assert.hasText("empty");
+    Assert.hasText("null");
+    Assert.hasText("space");
+    Assert.hasText("_");
+    Assert.hasText("--");
+    Assert.hasText("0");
+    Assert.hasText("! ");
+    Assert.hasText(" !");
+    Assert.hasText(" _ ");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertHasTextWithEmptyString() {
+    Assert.hasText("", "empty String is blank");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertHasTextWithNull() {
+    Assert.hasText(null, "null is blank");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertHasTextWithNullCharacter() {
+    Assert.hasText("\0", "null Character is blank");
+  }
+
+  @Test
+  public void assertHasTextWithSpaces() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("argument is blank");
+
+    Assert.hasText("  ");
+  }
+
+  @Test
+  public void assertHasTextWithTabCarriageReturnAndNewLine() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("tab and newlines are blank");
+
+    Assert.hasText("\t\r\n", "%1$s and {1} are blank", "tab", "newlines");
+  }
+
+  @Test
+  public void assertHasTextThrowsAssertionException() {
+    exception.expect(AssertionException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("test");
+
+    Assert.hasText("\n", new AssertionException("test"));
+  }
+
+  @Test
   public void assertHoldsLock() {
     synchronized (LOCK) {
       Assert.holdsLock(LOCK);
@@ -437,7 +494,7 @@ public class AssertTest {
 
   @Test
   public void assertIsNotInstanceOf() {
-    exception.expect(IllegalArgumentException.class);
+    exception.expect(IllegalTypeException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[0123456789] is not an instance of [class java.lang.Long]");
 
@@ -446,7 +503,7 @@ public class AssertTest {
 
   @Test
   public void assertIsInstanceOfWithNull() {
-    exception.expect(IllegalArgumentException.class);
+    exception.expect(IllegalTypeException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("null is not an instance of Object");
 
@@ -454,8 +511,8 @@ public class AssertTest {
   }
 
   @Test
-  public void assertIsAssignableOfFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
+  public void assertIsInstanceOfFormatsMessageWithArguments() {
+    exception.expect(IllegalTypeException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("null is not an instance of Object");
 
@@ -517,63 +574,6 @@ public class AssertTest {
     exception.expectMessage("test");
 
     Assert.isTrue(Boolean.FALSE, new AssertionException("test"));
-  }
-
-  @Test
-  public void assertNotBlankWithNonBlankValues() throws Exception {
-    Assert.notBlank("test");
-    Assert.notBlank("blank");
-    Assert.notBlank("empty");
-    Assert.notBlank("null");
-    Assert.notBlank("space");
-    Assert.notBlank("_");
-    Assert.notBlank("--");
-    Assert.notBlank("0");
-    Assert.notBlank("! ");
-    Assert.notBlank(" !");
-    Assert.notBlank(" _ ");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void assertNotBlankWithEmptyString() {
-    Assert.notBlank("", "empty String is blank");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void assertNotBlankWithNull() {
-    Assert.notBlank(null, "null is blank");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void assertNotBlankWithNullCharacter() {
-    Assert.notBlank("\0", "null Character is blank");
-  }
-
-  @Test
-  public void assertNotBlankWithSpaces() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("argument is blank");
-
-    Assert.notBlank("  ");
-  }
-
-  @Test
-  public void assertNotBlankWithTabCarriageReturnAndNewLine() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("tab and newlines are blank");
-
-    Assert.notBlank("\t\r\n", "%1$s and {1} are blank", "tab", "newlines");
-  }
-
-  @Test
-  public void assertNotBlankThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    Assert.notBlank("\n", new AssertionException("test"));
   }
 
   @Test
@@ -767,7 +767,7 @@ public class AssertTest {
 
   @Test
   public void assertNotNullWithNull() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("argument is null");
 
@@ -776,7 +776,7 @@ public class AssertTest {
 
   @Test
   public void assertNotNullWithNullReturningMethod() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("argument is null");
 
@@ -785,7 +785,7 @@ public class AssertTest {
 
   @Test
   public void assertNotNullFormatsMessageWithArguments() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Object reference is null");
 
@@ -945,5 +945,4 @@ public class AssertTest {
     ONE,
     TWO
   }
-
 }

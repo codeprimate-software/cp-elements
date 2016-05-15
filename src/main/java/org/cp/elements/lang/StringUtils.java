@@ -474,9 +474,9 @@ public abstract class StringUtils {
    * @see #concat(String[], String)
    */
   public static String singleSpaceString(final String value) {
-    Assert.notBlank(value, "A String value must be specified!");
+    Assert.hasText(value, "A String value must be specified!");
 
-    final String[] tokens = value.split("\\s+");
+    String[] tokens = value.split("\\s+");
 
     return trim(concat(tokens, SINGLE_SPACE));
   }
@@ -667,5 +667,4 @@ public abstract class StringUtils {
 
     return buffer.toString();
   }
-
 }

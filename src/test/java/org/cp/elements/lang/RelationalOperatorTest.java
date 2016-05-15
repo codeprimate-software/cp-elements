@@ -332,7 +332,7 @@ public class RelationalOperatorTest {
     new MockRelationalOperator<>(null, "<>", "test");
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testRelationalOperatorInstantiationWithNullExpectedValue() {
     new MockRelationalOperator<>("description", "<>", null);
   }
@@ -381,5 +381,4 @@ public class RelationalOperatorTest {
       throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
-
 }

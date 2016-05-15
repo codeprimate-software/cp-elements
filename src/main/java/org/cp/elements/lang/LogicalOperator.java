@@ -148,8 +148,8 @@ public abstract class LogicalOperator {
      * @throws IllegalArgumentException if either the description or symbol are not specified.
      */
     protected AbstractLogicalOperator(String description, String symbol) {
-      Assert.notBlank(description, "The description of this logical operator must be specified");
-      Assert.notBlank(symbol, "The symbolic representation of this logical operator must be specified");
+      Assert.hasText(description, "The description of this logical operator must be specified");
+      Assert.hasText(symbol, "The symbolic representation of this logical operator must be specified");
       this.description = description;
       this.symbol = symbol;
     }
@@ -305,6 +305,7 @@ public abstract class LogicalOperator {
     }
 
     /* (non-Javadoc) */
+    @SuppressWarnings("unused")
     LogicalOperator getOp() {
       return this.op;
     }

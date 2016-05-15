@@ -260,8 +260,8 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @throws IllegalArgumentException if either the description or symbol are not specified.
      */
     private AbstractRelationalOperator(final String description, final String symbol) {
-      Assert.notBlank(description, "The description of the relational operator must be specified!");
-      Assert.notBlank(symbol, "The symbol of the relation operator must be specified!");
+      Assert.hasText(description, "The description of the relational operator must be specified!");
+      Assert.hasText(symbol, "The symbol of the relation operator must be specified!");
       this.description = description;
       this.symbol = symbol;
       this.expectedValue = null;
@@ -278,8 +278,8 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @throws NullPointerException if the expected Comparable value is not specified.
      */
     protected AbstractRelationalOperator(final String description, final String symbol, final T expectedValue) {
-      Assert.notBlank(description, "The description of the relational operator must be specified!");
-      Assert.notBlank(symbol, "The symbol of the relation operator must be specified!");
+      Assert.hasText(description, "The description of the relational operator must be specified!");
+      Assert.hasText(symbol, "The symbol of the relation operator must be specified!");
       Assert.notNull(expectedValue, "The expected value in the {0} comparison cannot be null!", description);
       this.description = description;
       this.symbol = symbol;

@@ -51,7 +51,7 @@ public class InverseFileFilterTest {
     assertSame(mockFileFiler, inverseFileFilter.getDelegate());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructInverseFileFilterWithNullDelegate() {
     try {
       new InverseFileFilter(null);
@@ -87,5 +87,4 @@ public class InverseFileFilterTest {
 
     verify(mockFileFilter, times(1)).accept(eq(mockFile));
   }
-
 }

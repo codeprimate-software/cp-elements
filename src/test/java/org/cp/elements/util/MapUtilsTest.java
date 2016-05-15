@@ -84,12 +84,12 @@ public class MapUtilsTest {
     assertEquals(0, MapUtils.count(map, new DefaultFilter<>(false)));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testCountWithNullMap() {
     MapUtils.count(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testCountWithNullFilter() {
     MapUtils.count(Collections.emptyMap(), null);
   }
@@ -151,12 +151,12 @@ public class MapUtilsTest {
     assertEquals(4, map.size());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFilterWithNullMap() {
     MapUtils.filter(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFilterWithNullFilter() {
     MapUtils.filter(Collections.emptyMap(), null);
   }
@@ -186,12 +186,12 @@ public class MapUtilsTest {
     assertTrue(resultMap.keySet().containsAll(Arrays.asList("test", "testing", "tested")));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFindWithNullMap() {
     MapUtils.find(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testFindWithNullFilter() {
     MapUtils.find(Collections.emptyMap(), null);
   }
@@ -241,14 +241,13 @@ public class MapUtilsTest {
     assertTrue(emptyMap.isEmpty());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testTransformNullMap() {
     MapUtils.transform(null, (value) -> null);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testTransformWithNullTransformer() {
     MapUtils.transform(Collections.emptyMap(), null);
   }
-
 }

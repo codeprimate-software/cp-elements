@@ -60,23 +60,23 @@ public class PropertiesConfigurationTest {
     assertSame(configurationSettings, configuration.getProperties());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructConfigurationWithNullProperties() {
     try {
       new PropertiesConfiguration((Properties) null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The Properties object used to back this Configuration cannot be null!", expected.getMessage());
       throw expected;
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructConfigurationWithNullPropertiesFile() throws IOException {
     try {
       new PropertiesConfiguration((File) null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The file to load properties from cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -173,5 +173,4 @@ public class PropertiesConfigurationTest {
     assertEquals("dba", configuration.getPropertyValue("jdbc.username"));
     assertEquals("p@55W0rd", configuration.getPropertyValue("jdbc.password"));
   }
-
 }

@@ -85,12 +85,12 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     assertSame(mockMatcher, searcher.getMatcher());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testSetMatcherWithNull() {
     try {
       new TestSearcher().setMatcher(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals(String.format("The Matcher used to match elements in the collection during the search operation by this Searcher (%1$s) cannot be null!",
         TestSearcher.class.getName()), expected.getMessage());
       throw expected;
@@ -298,12 +298,12 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     assertEquals(ANIMALS.length / 2, count);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testSearchForAllInCollectionWithNull() {
     try {
       new TestSearcher().searchForAll((Collection<?>) null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The collection to search cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -538,12 +538,12 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testGetSearchableMetaDataWithNull() {
     try {
       new TestSearcher().getSearchableMetaData(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The object to search cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -867,5 +867,4 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
       searcher = null;
     }
   }
-
 }

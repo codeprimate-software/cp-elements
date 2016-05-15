@@ -159,12 +159,12 @@ public class DefaultConversionServiceTest {
     assertNull(conversionService.getDefaultValue(Number.class));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testSetDefaultValueWithNullType() {
     try {
       conversionService.setDefaultValue(null, "test");
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The Class type to set the default value for cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -265,5 +265,4 @@ public class DefaultConversionServiceTest {
     assertEquals(new Double(0.0d), conversionService.convert(null, Double.class));
     assertNull(conversionService.convert(null, String.class));
   }
-
 }

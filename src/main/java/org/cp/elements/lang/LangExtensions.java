@@ -1424,5 +1424,4 @@ public abstract class LangExtensions {
       return new IsExpression<>(this.obj, !expected);
     }
   }
-
 }

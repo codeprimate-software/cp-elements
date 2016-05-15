@@ -42,7 +42,7 @@ public abstract class Assert {
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
    * @see #argument(Boolean, String, Object...)
    */
-  public static void argument(final Boolean valid) {
+  public static void argument(Boolean valid) {
     argument(valid, "argument is not valid");
   }
 
@@ -56,7 +56,7 @@ public abstract class Assert {
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
    * @see #argument(Boolean, RuntimeException)
    */
-  public static void argument(final Boolean valid, final String message, final Object... arguments) {
+  public static void argument(Boolean valid, String message, Object... arguments) {
     argument(valid, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -68,7 +68,7 @@ public abstract class Assert {
    * @param e the RuntimeException thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the argument is invalid.
    */
-  public static void argument(final Boolean valid, final RuntimeException e) {
+  public static void argument(Boolean valid, RuntimeException e) {
     if (!Boolean.TRUE.equals(valid)) {
       throw e;
     }
@@ -85,7 +85,7 @@ public abstract class Assert {
    * @see #comparable(Comparable, Comparable, String, Object...)
    * @see java.lang.Comparable#compareTo(Object)
    */
-  public static <T extends Comparable<T>> void comparable(final T obj1, final T obj2) {
+  public static <T extends Comparable<T>> void comparable(T obj1, T obj2) {
     comparable(obj1, obj2, "[%1$s] is not comparable to [%2$s]", obj1, obj2);
   }
 
@@ -102,7 +102,7 @@ public abstract class Assert {
    * @see #comparable(Comparable, Comparable, RuntimeException)
    * @see java.lang.Comparable#compareTo(Object)
    */
-  public static <T extends Comparable<T>> void comparable(final T obj1, final T obj2, final String message, final Object... arguments) {
+  public static <T extends Comparable<T>> void comparable(T obj1, T obj2, String message, Object... arguments) {
     comparable(obj1, obj2, new ComparisonException(format(message, arguments)));
   }
 
@@ -117,7 +117,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the assertion fails and the two objects are not comparable.
    * @see java.lang.Comparable#compareTo(Object)
    */
-  public static <T extends Comparable<T>> void comparable(final T obj1, final T obj2, final RuntimeException e) {
+  public static <T extends Comparable<T>> void comparable(T obj1, T obj2, RuntimeException e) {
     if (obj1 == null || obj2 == null || obj1.compareTo(obj2) != 0) {
       throw e;
     }
@@ -133,7 +133,7 @@ public abstract class Assert {
    * @see #equals(Object, Object, String, Object...)
    * @see java.lang.Object#equals(Object)
    */
-  public static void equals(final Object obj1, final Object obj2) {
+  public static void equals(Object obj1, Object obj2) {
     equals(obj1, obj2, "[%1$s] is not equal to [%2$s]", obj1, obj2);
   }
 
@@ -149,7 +149,7 @@ public abstract class Assert {
    * @see #equals(Object, Object, RuntimeException)
    * @see java.lang.Object#equals(Object)
    */
-  public static void equals(final Object obj1, final Object obj2, final String message, final Object... arguments) {
+  public static void equals(Object obj1, Object obj2, String message, Object... arguments) {
     equals(obj1, obj2, new EqualityException(format(message, arguments)));
   }
 
@@ -163,8 +163,51 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the two objects are not equal.
    * @see java.lang.Object#equals(Object)
    */
-  public static void equals(final Object obj1, final Object obj2, final RuntimeException e) {
+  public static void equals(Object obj1, Object obj2, RuntimeException e) {
     if (obj1 == null || !obj1.equals(obj2)) {
+      throw e;
+    }
+  }
+
+  /**
+   * Assert that the String is not blank.  The assertion holds if and only if the String is not null, empty
+   * or contains only whitespace characters.
+   *
+   * @param value the String being evaluated for blankness.
+   * @throws java.lang.IllegalArgumentException if the String is blank.
+   * @see #hasText(String, String, Object...)
+   * @see java.lang.String
+   */
+  public static void hasText(String value) {
+    hasText(value, "argument is blank");
+  }
+
+  /**
+   * Assert that the String is not blank.  The assertion holds if and only if the String is not null, empty
+   * or contains only whitespace characters.
+   *
+   * @param value the String being evaluated for blankness.
+   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
+   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
+   * @throws java.lang.IllegalArgumentException if the String is blank.
+   * @see #hasText(String, RuntimeException)
+   * @see java.lang.String
+   */
+  public static void hasText(String value, String message, Object... arguments) {
+    hasText(value, new IllegalArgumentException(format(message, arguments)));
+  }
+
+  /**
+   * Assert that the String is not blank.  The assertion holds if and only if the String is not null, empty
+   * or contains only whitespace characters.
+   *
+   * @param value the String being evaluated for blankness.
+   * @param e the RuntimeException thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the String is blank.
+   * @see java.lang.String
+   */
+  public static void hasText(String value, RuntimeException e) {
+    if (value == null || value.trim().isEmpty()) {
       throw e;
     }
   }
@@ -178,7 +221,7 @@ public abstract class Assert {
    * @see #holdsLock(Object, String, Object...)
    * @see java.lang.Thread#holdsLock(Object)
    */
-  public static void holdsLock(final Object lock) {
+  public static void holdsLock(Object lock) {
     holdsLock(lock, "current thread [%1$s] does not hold lock [%2$s]", Thread.currentThread().getName(), lock);
   }
 
@@ -193,7 +236,7 @@ public abstract class Assert {
    * @see #holdsLock(Object, RuntimeException)
    * @see java.lang.Thread#holdsLock(Object)
    */
-  public static void holdsLock(final Object lock, final String message, final Object... arguments) {
+  public static void holdsLock(Object lock, String message, Object... arguments) {
     holdsLock(lock, new IllegalMonitorStateException(format(message, arguments)));
   }
 
@@ -206,7 +249,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the current Thread does not hold the lock or the lock is null.
    * @see java.lang.Thread#holdsLock(Object)
    */
-  public static void holdsLock(final Object lock, final RuntimeException e) {
+  public static void holdsLock(Object lock, RuntimeException e) {
     if (lock == null || !Thread.holdsLock(lock)) {
       throw e;
     }
@@ -222,7 +265,7 @@ public abstract class Assert {
    * @see #isAssignableTo(Class, Class, String, Object...)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
-  public static void isAssignableTo(final Class<?> from, final Class<?> to) {
+  public static void isAssignableTo(Class<?> from, Class<?> to) {
     isAssignableTo(from, to, "[%1$s] is not assignable to [%2$s]", from, to);
   }
 
@@ -238,7 +281,7 @@ public abstract class Assert {
    * @see #isAssignableTo(Class, Class, RuntimeException)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
-  public static void isAssignableTo(final Class<?> from, final Class<?> to, final String message, final Object... arguments) {
+  public static void isAssignableTo(Class<?> from, Class<?> to, String message, Object... arguments) {
     isAssignableTo(from, to, new ClassCastException(format(message, arguments)));
   }
 
@@ -252,7 +295,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the 'from' class type is not assignment compatible with the 'to' class type.
    * @see java.lang.Class#isAssignableFrom(Class)
    */
-  public static void isAssignableTo(final Class<?> from, final Class<?> to, final RuntimeException e) {
+  public static void isAssignableTo(Class<?> from, Class<?> to, RuntimeException e) {
     if (to == null || (from != null && !to.isAssignableFrom(from))) {
       throw e;
     }
@@ -266,7 +309,7 @@ public abstract class Assert {
    * @see #isFalse(Boolean, String, Object...)
    * @see java.lang.Boolean#FALSE
    */
-  public static void isFalse(final Boolean condition) {
+  public static void isFalse(Boolean condition) {
     isFalse(condition, "condition [%1$s] is not false", condition);
   }
 
@@ -280,7 +323,7 @@ public abstract class Assert {
    * @see #isFalse(Boolean, RuntimeException)
    * @see java.lang.Boolean#FALSE
    */
-  public static void isFalse(final Boolean condition, final String message, final Object... arguments) {
+  public static void isFalse(Boolean condition, String message, Object... arguments) {
     isFalse(condition, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -292,7 +335,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the value is not false.
    * @see java.lang.Boolean#FALSE
    */
-  public static void isFalse(final Boolean condition, final RuntimeException e) {
+  public static void isFalse(Boolean condition, RuntimeException e) {
     if (!Boolean.FALSE.equals(condition)) {
       throw e;
     }
@@ -305,11 +348,11 @@ public abstract class Assert {
    *
    * @param obj the object evaluated as an instance of the class type.
    * @param type the class type used to evaluate the object in the instanceof operator.
-   * @throws java.lang.IllegalArgumentException if the object is not an instance of the class type.
+   * @throws org.cp.elements.lang.IllegalTypeException if the object is not an instance of the specified class type.
    * @see #isInstanceOf(Object, Class, String, Object...)
    * @see java.lang.Class#isInstance(Object)
    */
-  public static void isInstanceOf(final Object obj, final Class<?> type) {
+  public static void isInstanceOf(Object obj, Class<?> type) {
     isInstanceOf(obj, type, "[%1$s] is not an instance of [%2$s]", obj, type);
   }
 
@@ -322,12 +365,12 @@ public abstract class Assert {
    * @param type the class type used to evaluate the object in the instanceof operator.
    * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
    * @param arguments an array of Object arguments used as placeholder values when formatting the message.
-   * @throws java.lang.IllegalArgumentException if the object is not an instance of the class type.
+   * @throws org.cp.elements.lang.IllegalTypeException if the object is not an instance of the specified class type.
    * @see #isInstanceOf(Object, Class, RuntimeException)
    * @see java.lang.Class#isInstance(Object)
    */
-  public static void isInstanceOf(final Object obj, final Class<?> type, final String message, final Object... arguments) {
-    isInstanceOf(obj, type, new IllegalArgumentException(format(message, arguments)));
+  public static void isInstanceOf(Object obj, Class<?> type, String message, Object... arguments) {
+    isInstanceOf(obj, type, new IllegalTypeException(format(message, arguments)));
   }
 
   /**
@@ -341,7 +384,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the object is not an instance of class type.
    * @see java.lang.Class#isInstance(Object)
    */
-  public static void isInstanceOf(final Object obj, final Class<?> type, final RuntimeException e) {
+  public static void isInstanceOf(Object obj, Class<?> type, RuntimeException e) {
     if (!type.isInstance(obj)) {
       throw e;
     }
@@ -355,7 +398,7 @@ public abstract class Assert {
    * @see #isTrue(Boolean, String, Object...)
    * @see java.lang.Boolean#TRUE
    */
-  public static void isTrue(final Boolean condition) {
+  public static void isTrue(Boolean condition) {
     isTrue(condition, "condition [%1$s] is not true", condition);
   }
 
@@ -369,7 +412,7 @@ public abstract class Assert {
    * @see #isTrue(Boolean, RuntimeException)
    * @see java.lang.Boolean#TRUE
    */
-  public static void isTrue(final Boolean condition, final String message, final Object... arguments) {
+  public static void isTrue(Boolean condition, String message, Object... arguments) {
     isTrue(condition, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -381,51 +424,8 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the value is not true.
    * @see java.lang.Boolean#TRUE
    */
-  public static void isTrue(final Boolean condition, final RuntimeException e) {
+  public static void isTrue(Boolean condition, RuntimeException e) {
     if (!Boolean.TRUE.equals(condition)) {
-      throw e;
-    }
-  }
-
-  /**
-   * Assert that the String is not blank.  The assertion holds if and only if the String is not null, empty
-   * or contains only whitespace characters.
-   *
-   * @param value the String being evaluated for blankness.
-   * @throws java.lang.IllegalArgumentException if the String is blank.
-   * @see #notBlank(String, String, Object...)
-   * @see java.lang.String
-   */
-  public static void notBlank(final String value) {
-    notBlank(value, "argument is blank");
-  }
-
-  /**
-   * Assert that the String is not blank.  The assertion holds if and only if the String is not null, empty
-   * or contains only whitespace characters.
-   *
-   * @param value the String being evaluated for blankness.
-   * @param message a String specifying the message for the IllegalArgumentException thrown if the assertion fails.
-   * @param arguments an array of Object arguments used as placeholder values when formatting the message.
-   * @throws java.lang.IllegalArgumentException if the String is blank.
-   * @see #notBlank(String, RuntimeException)
-   * @see java.lang.String
-   */
-  public static void notBlank(final String value, final String message, final Object... arguments) {
-    notBlank(value, new IllegalArgumentException(format(message, arguments)));
-  }
-
-  /**
-   * Assert that the String is not blank.  The assertion holds if and only if the String is not null, empty
-   * or contains only whitespace characters.
-   *
-   * @param value the String being evaluated for blankness.
-   * @param e the RuntimeException thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the String is blank.
-   * @see java.lang.String
-   */
-  public static void notBlank(final String value, final RuntimeException e) {
-    if (value == null || value.trim().isEmpty()) {
       throw e;
     }
   }
@@ -438,7 +438,7 @@ public abstract class Assert {
    * @see #notEmpty(String, String, Object...)
    * @see java.lang.String
    */
-  public static void notEmpty(final String value) {
+  public static void notEmpty(String value) {
     notEmpty(value, "argument is empty");
   }
 
@@ -452,7 +452,7 @@ public abstract class Assert {
    * @see #notEmpty(String, RuntimeException)
    * @see java.lang.String
    */
-  public static void notEmpty(final String value, final String message, final Object... arguments) {
+  public static void notEmpty(String value, String message, Object... arguments) {
     notEmpty(value, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -464,7 +464,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the String is empty.
    * @see java.lang.String
    */
-  public static void notEmpty(final String value, final RuntimeException e) {
+  public static void notEmpty(String value, RuntimeException e) {
     if ("".equals(value)) {
       throw e;
     }
@@ -479,7 +479,7 @@ public abstract class Assert {
    * @see #notEmpty(Object[], String, Object...)
    * @see java.lang.Object[]
    */
-  public static void notEmpty(final Object[] array) {
+  public static void notEmpty(Object[] array) {
     notEmpty(array, "array is empty");
   }
 
@@ -494,7 +494,7 @@ public abstract class Assert {
    * @see #notEmpty(Object[], RuntimeException)
    * @see java.lang.Object[]
    */
-  public static void notEmpty(final Object[] array, final String message, final Object... arguments) {
+  public static void notEmpty(Object[] array, String message, Object... arguments) {
     notEmpty(array, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -507,7 +507,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the Object array is null or empty.
    * @see java.lang.Object[]
    */
-  public static void notEmpty(final Object[] array, final RuntimeException e) {
+  public static void notEmpty(Object[] array, RuntimeException e) {
     if (array == null || array.length == 0) {
       throw e;
     }
@@ -522,7 +522,7 @@ public abstract class Assert {
    * @see #notEmpty(Collection, String, Object...)
    * @see java.util.Collection#isEmpty()
    */
-  public static void notEmpty(final Collection<?> collection) {
+  public static void notEmpty(Collection<?> collection) {
     notEmpty(collection, "collection is empty");
   }
 
@@ -537,7 +537,7 @@ public abstract class Assert {
    * @see #notEmpty(java.util.Collection, RuntimeException)
    * @see java.util.Collection#isEmpty()
    */
-  public static void notEmpty(final Collection<?> collection, final String message, final Object... arguments) {
+  public static void notEmpty(Collection<?> collection, String message, Object... arguments) {
     notEmpty(collection, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -550,7 +550,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the Collection is null or empty.
    * @see java.util.Collection#isEmpty()
    */
-  public static void notEmpty(final Collection<?> collection, final RuntimeException e) {
+  public static void notEmpty(Collection<?> collection, RuntimeException e) {
     if (collection == null || collection.isEmpty()) {
       throw e;
     }
@@ -565,7 +565,7 @@ public abstract class Assert {
    * @see #notEmpty(Map, String, Object...)
    * @see java.util.Map#isEmpty()
    */
-  public static void notEmpty(final Map<?, ?> map) {
+  public static void notEmpty(Map<?, ?> map) {
     notEmpty(map, "map is empty");
   }
 
@@ -580,7 +580,7 @@ public abstract class Assert {
    * @see #notEmpty(java.util.Map, RuntimeException)
    * @see java.util.Map#isEmpty()
    */
-  public static void notEmpty(final Map<?, ?> map, final String message, final Object... arguments) {
+  public static void notEmpty(Map<?, ?> map, String message, Object... arguments) {
     notEmpty(map, new IllegalArgumentException(format(message, arguments)));
   }
 
@@ -593,7 +593,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the Map is null or empty.
    * @see java.util.Map#isEmpty()
    */
-  public static void notEmpty(final Map<?, ?> map, final RuntimeException e) {
+  public static void notEmpty(Map<?, ?> map, RuntimeException e) {
     if (map == null || map.isEmpty()) {
       throw e;
     }
@@ -604,11 +604,11 @@ public abstract class Assert {
    * is not null.
    *
    * @param obj the Object reference being evaluated.
-   * @throws java.lang.NullPointerException if the Object reference is null.
+   * @throws java.lang.IllegalArgumentException if the Object reference is null.
    * @see #notNull(Object, String, Object...)
    * @see java.lang.Object
    */
-  public static void notNull(final Object obj) {
+  public static void notNull(Object obj) {
     notNull(obj, "argument is null");
   }
 
@@ -619,12 +619,12 @@ public abstract class Assert {
    * @param obj the Object reference being evaluated.
    * @param message a String specifying the message for the NullPointerException thrown if the assertion fails.
    * @param arguments an array of Object arguments used as placeholder values when formatting the message.
-   * @throws java.lang.NullPointerException if the Object reference is null.
+   * @throws java.lang.IllegalArgumentException if the Object reference is null.
    * @see #notNull(Object, RuntimeException)
    * @see java.lang.Object
    */
-  public static void notNull(final Object obj, final String message, final Object... arguments) {
-    notNull(obj, new NullPointerException(format(message, arguments)));
+  public static void notNull(Object obj, String message, Object... arguments) {
+    notNull(obj, new IllegalArgumentException(format(message, arguments)));
   }
 
   /**
@@ -636,7 +636,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the Object reference is null.
    * @see java.lang.Object
    */
-  public static void notNull(final Object obj, final RuntimeException e) {
+  public static void notNull(Object obj, RuntimeException e) {
     if (obj == null) {
       throw e;
     }
@@ -652,7 +652,7 @@ public abstract class Assert {
    * @see #same(Object, Object, String, Object...)
    * @see java.lang.Object
    */
-  public static void same(final Object obj1, final Object obj2) {
+  public static void same(Object obj1, Object obj2) {
     same(obj1, obj2, "[%1$s] is not the same as [%2$s]", obj1, obj2);
   }
 
@@ -668,7 +668,7 @@ public abstract class Assert {
    * @see #same(Object, Object, RuntimeException)
    * @see java.lang.Object
    */
-  public static void same(final Object obj1, final Object obj2, final String message, final Object... arguments) {
+  public static void same(Object obj1, Object obj2, String message, Object... arguments) {
     same(obj1, obj2, new IdentityException(format(message, arguments)));
   }
 
@@ -682,7 +682,7 @@ public abstract class Assert {
    * @throws java.lang.RuntimeException if the objects are not the same.
    * @see java.lang.Object
    */
-  public static void same(final Object obj1, final Object obj2, final RuntimeException e) {
+  public static void same(Object obj1, Object obj2, RuntimeException e) {
     if (obj1 != obj2) {
       throw e;
     }
@@ -695,7 +695,7 @@ public abstract class Assert {
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, String, Object...)
    */
-  public static void state(final Boolean valid) {
+  public static void state(Boolean valid) {
     state(valid, "state is invalid");
   }
 
@@ -708,7 +708,7 @@ public abstract class Assert {
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, RuntimeException)
    */
-  public static void state(final Boolean valid, final String message, final Object... arguments) {
+  public static void state(Boolean valid, String message, Object... arguments) {
     state(valid, new IllegalStateException(format(message, arguments)));
   }
 
@@ -719,7 +719,7 @@ public abstract class Assert {
    * @param e the RuntimeException thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the state is invalid.
    */
-  public static void state(final Boolean valid, final RuntimeException e) {
+  public static void state(Boolean valid, RuntimeException e) {
     if (!Boolean.TRUE.equals(valid)) {
       throw e;
     }
@@ -733,7 +733,7 @@ public abstract class Assert {
    * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
    * @see #supported(Boolean, String, Object...)
    */
-  public static void supported(final Boolean supported) {
+  public static void supported(Boolean supported) {
     supported(supported, "operation not supported");
   }
 
@@ -747,7 +747,7 @@ public abstract class Assert {
    * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
    * @see #supported(Boolean, RuntimeException)
    */
-  public static void supported(final Boolean supported, final String message, final Object... arguments) {
+  public static void supported(Boolean supported, String message, Object... arguments) {
     supported(supported, new UnsupportedOperationException(format(message, arguments)));
   }
 
@@ -759,7 +759,7 @@ public abstract class Assert {
    * @param e the RuntimeException thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the operation is unsupported.
    */
-  public static void supported(final Boolean supported, final RuntimeException e) {
+  public static void supported(Boolean supported, RuntimeException e) {
     if (!Boolean.TRUE.equals(supported)) {
       throw e;
     }
@@ -774,7 +774,7 @@ public abstract class Assert {
    * @see #messageFormat(String, Object...)
    * @see #stringFormat(String, Object...)
    */
-  private static String format(final String message, final Object... arguments) {
+  private static String format(String message, Object... arguments) {
     return stringFormat(messageFormat(message, arguments), arguments);
   }
 
@@ -787,7 +787,7 @@ public abstract class Assert {
    * @return a String formatted with the arguments.
    * @see java.text.MessageFormat#format(String, Object...)
    */
-  private static String messageFormat(final String message, final Object... arguments) {
+  private static String messageFormat(String message, Object... arguments) {
     return (arguments == null ? message : MessageFormat.format(message, arguments));
   }
 
@@ -800,8 +800,7 @@ public abstract class Assert {
    * @return a String formatted with the arguments.
    * @see java.lang.String#format(String, Object...)
    */
-  private static String stringFormat(final String message, final Object... arguments) {
+  private static String stringFormat(String message, Object... arguments) {
     return String.format(message, arguments);
   }
-
 }

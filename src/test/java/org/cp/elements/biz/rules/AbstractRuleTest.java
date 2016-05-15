@@ -43,12 +43,12 @@ public class AbstractRuleTest {
     assertEquals(1l, rule.getId().longValue());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testSetIdWithNull() {
     try {
       new TestRule<Object, Long>().setId(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals(String.format("The identifier for Rule (%1$s) cannot be null!", TestRule.class.getName()),
         expected.getMessage());
       throw expected;
@@ -114,5 +114,4 @@ public class AbstractRuleTest {
       return evaluateResult;
     }
   }
-
 }

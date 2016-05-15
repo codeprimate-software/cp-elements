@@ -43,12 +43,12 @@ public class ConfigurableVisitorTest extends AbstractMockingTestSuite {
     new ConfigurableVisitor<>(mockContext.mock(Configuration.class));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConstructWithNullConfiguration() {
     try {
       new ConfigurableVisitor<Configuration>(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The configuration object cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -77,5 +77,4 @@ public class ConfigurableVisitorTest extends AbstractMockingTestSuite {
 
   protected interface VisitableConfigurable<T> extends Configurable<T>, Visitable {
   }
-
 }

@@ -49,7 +49,7 @@ public class InverseFilterTest extends AbstractMockingTestSuite {
     assertSame(mockFilter, inverseFilter.getFilter());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testCreateInverseFilterWithNullFilter() {
     new InverseFilter<Object>(null);
   }
@@ -87,5 +87,4 @@ public class InverseFilterTest extends AbstractMockingTestSuite {
     assertSame(mockFilter, inverseFilter.getFilter());
     assertTrue(inverseFilter.accept(value));
   }
-
 }

@@ -100,12 +100,12 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testSetConversionServiceWithNull() {
     try {
       new TestConfiguration(new Properties()).setConversionService(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The ConversionService used to support this Configuration cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -140,12 +140,12 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
     assertEquals(Gender.FEMALE, configuration.convert("FEMALE", Gender.class));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testConvertWithNullType() {
     try {
       new TestConfiguration(new Properties()).convert("test", null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The Class type to convert the String value to cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -413,5 +413,4 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
       return mockUser;
     }
   }
-
 }

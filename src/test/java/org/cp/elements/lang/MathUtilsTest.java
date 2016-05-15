@@ -40,7 +40,7 @@ import org.junit.rules.ExpectedException;
 public class MathUtilsTest {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   protected void assertEqualIntArrays(final int[] expected, final int[] actual) {
     assertEquals(expected.length, actual.length);
@@ -139,18 +139,19 @@ public class MathUtilsTest {
 
   @Test
   public void factorialOfNegativeOne() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage(is(equalTo(String.format(MathUtils.NUMBER_LESS_THAN_ZERO_ERROR_MESSAGE,
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(is(equalTo(String.format(MathUtils.NUMBER_LESS_THAN_ZERO_ERROR_MESSAGE,
       MathUtils.NEGATIVE_ONE))));
     MathUtils.factorial(MathUtils.NEGATIVE_ONE);
   }
 
   @Test
   public void factorialOfNullValue() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage(is(equalTo("value must not be null")));
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(is(equalTo("value must not be null")));
+
     MathUtils.factorial(null);
   }
 
@@ -309,5 +310,4 @@ public class MathUtilsTest {
   public void testTriangleArea() {
     assertEquals(15.0d, MathUtils.triangleArea(5.0d, 6.0d), 0.0d);
   }
-
 }

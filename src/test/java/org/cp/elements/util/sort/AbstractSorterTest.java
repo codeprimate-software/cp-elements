@@ -171,12 +171,12 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     assertEquals(TestComparator.class, sortable.orderBy());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testGetSortableMetaDataWithNullSortableAnnotatedObject() {
     try {
       new TestSorter().getSortableMetaData(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The @Sortable annotated object cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -602,5 +602,4 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
       sorter = null;
     }
   }
-
 }

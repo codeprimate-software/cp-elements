@@ -168,7 +168,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void appendToPathWithNullBasePath() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("basePath cannot be null");
 

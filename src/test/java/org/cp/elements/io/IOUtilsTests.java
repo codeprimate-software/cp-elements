@@ -192,11 +192,10 @@ public class IOUtilsTests {
 
   @Test
   public void toByteArrayWithNull() throws IOException {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The InputStream to read bytes from cannot be null");
 
     IOUtils.toByteArray(null);
   }
-
 }

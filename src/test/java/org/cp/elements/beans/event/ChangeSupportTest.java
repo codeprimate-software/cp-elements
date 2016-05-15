@@ -72,12 +72,12 @@ public class ChangeSupportTest extends AbstractMockingTestSuite {
     assertEquals(0, support.size());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testCreateChangeSupportWithNullSource() {
     try {
       new ChangeSupport(null);
     }
-    catch (NullPointerException e) {
+    catch (IllegalArgumentException e) {
       assertEquals("The source of the change events cannot be null!", e.getMessage());
       throw e;
     }
@@ -264,5 +264,4 @@ public class ChangeSupportTest extends AbstractMockingTestSuite {
       assertEquals(DateTimeUtils.truncate(now), DateTimeUtils.truncate(event.getChangeDateTime()));
     }
   }
-
 }

@@ -67,10 +67,10 @@ import org.junit.rules.ExpectedException;
 public class ArrayUtilsTest {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   @SuppressWarnings("all")
-  protected <T> void assertShuffled(final T[] source, final T[] target) {
+  protected <T> void assertShuffled(T[] source, T[] target) {
     assertTrue("'source' array must not be null or empty!", source != null && source.length != 0);
     assertTrue("'target' array must not be null or empty!", target != null && target.length != 0);
     assertEquals("The lengths of the 'source' and 'target' arrays must match!", source.length, target.length);
@@ -85,7 +85,7 @@ public class ArrayUtilsTest {
   }
 
   @SuppressWarnings("unchecked")
-  protected <T> T[] copy(final T[] array) {
+  protected <T> T[] copy(T[] array) {
     T[] arrayCopy = (T[]) Array.newInstance(array[0].getClass(), array.length);
     System.arraycopy(array, 0, arrayCopy, 0, array.length);
     return arrayCopy;
@@ -242,12 +242,12 @@ public class ArrayUtilsTest {
     assertEquals(0, ArrayUtils.count(new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new DefaultFilter<>(false)));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void countWithNullArray() {
     ArrayUtils.count(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void countWithNullFilter() {
     ArrayUtils.count(new Object[0], null);
   }
@@ -331,7 +331,7 @@ public class ArrayUtilsTest {
     assertFalse(noElementEnumeration.hasMoreElements());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void enumerationWithNullArray() {
     ArrayUtils.enumeration((Object[]) null);
   }
@@ -375,12 +375,12 @@ public class ArrayUtilsTest {
     assertEquals(0, array.length);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void filterNullArray() {
     ArrayUtils.filter(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void filterWithNullFilter() {
     ArrayUtils.filter(new Object[0], null);
   }
@@ -433,7 +433,7 @@ public class ArrayUtilsTest {
     assertNull(actualArray[2]);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void filterAndTransformNullArray() {
     ArrayUtils.filterAndTransform(null, new FilteringTransformer<Object>() {
       @Override public boolean accept(final Object obj) {
@@ -446,7 +446,7 @@ public class ArrayUtilsTest {
     });
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void filterAndTransformWithNullFilteringTransformer() {
     ArrayUtils.filterAndTransform(new Object[0], null);
   }
@@ -489,12 +489,12 @@ public class ArrayUtilsTest {
     assertNull(actualPerson);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findWithNullArray() {
     ArrayUtils.find(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findWithNullFilter() {
     ArrayUtils.find(new Object[0], null);
   }
@@ -527,12 +527,12 @@ public class ArrayUtilsTest {
     assertEquals(0, actualNumbers.length);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullArray() {
     ArrayUtils.findAll(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullFilter() {
     ArrayUtils.findAll(new Object[0], null);
   }
@@ -564,27 +564,27 @@ public class ArrayUtilsTest {
 
   @Test
   public void insertAtIllegalLowerBoundIndex() {
-    expectedException.expect(ArrayIndexOutOfBoundsException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(-1) is not a valid array index [0, 2]");
+    exception.expect(ArrayIndexOutOfBoundsException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("(-1) is not a valid array index [0, 2]");
 
     ArrayUtils.insert("one", ArrayUtils.asArray("zero", "two"), -1);
   }
 
   @Test
   public void insertAtIllegalUpperBoundIndex() {
-    expectedException.expect(ArrayIndexOutOfBoundsException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(3) is not a valid array index [0, 2]");
+    exception.expect(ArrayIndexOutOfBoundsException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("(3) is not a valid array index [0, 2]");
 
     ArrayUtils.insert("three", ArrayUtils.asArray("one", "two"), 3);
   }
 
   @Test
   public void insertIntoNullArray() {
-    expectedException.expect(NullPointerException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("the array in which the element will be inserted cannot be null");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("the array in which the element will be inserted cannot be null");
 
     ArrayUtils.insert("test", null, 0);
   }
@@ -631,12 +631,12 @@ public class ArrayUtilsTest {
     assertFalse(iterable.iterator().hasNext());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void iterableWithNullArray() {
     try {
       ArrayUtils.iterable((Object[]) null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The array of elements cannot be null!", expected.getMessage());
       throw expected;
     }
@@ -707,7 +707,7 @@ public class ArrayUtilsTest {
     assertFalse(noElementsIterator.hasNext());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void iteratorWithNullArray() {
     ArrayUtils.iterator((Object[]) null);
   }
@@ -782,7 +782,7 @@ public class ArrayUtilsTest {
     assertEquals(0, shuffledEmptyArray.length);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void shuffleNullArray() {
     ArrayUtils.shuffle(null);
   }
@@ -854,12 +854,12 @@ public class ArrayUtilsTest {
     assertEquals(0, array.length);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void transformNullArray() {
     ArrayUtils.transform(null, (value) -> null);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void transformWithNullTransformer() {
     ArrayUtils.transform(new Object[0], null);
   }
@@ -911,5 +911,4 @@ public class ArrayUtilsTest {
       return getFirstName().concat(" ").concat(getLastName());
     }
   }
-
 }

@@ -81,12 +81,12 @@ public class BreadthFirstIteratorTest {
     return list;
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void constructWithNullIteratorOfIterators() {
     try {
       new BreadthFirstIterator<Object>(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals("The Iterator of Iterators must not be null!", expected.getMessage());
       throw expected;
     }
@@ -251,5 +251,4 @@ public class BreadthFirstIteratorTest {
       throw expected;
     }
   }
-
 }

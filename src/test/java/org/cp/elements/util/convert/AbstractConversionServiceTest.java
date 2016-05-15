@@ -180,12 +180,12 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
     assertSame(testConverter, conversionService.iterator().next());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testRegisterNull() {
     try {
       new TestConversionService().register(null);
     }
-    catch (NullPointerException expected) {
+    catch (IllegalArgumentException expected) {
       assertEquals(String.format("The Converter to register with this ConversionService (%1$s) cannot be null!",
         TestConversionService.class.getName()), expected.getMessage());
       throw expected;
@@ -232,5 +232,4 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
       return String.valueOf(value);
     }
   }
-
 }

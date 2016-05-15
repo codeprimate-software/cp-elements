@@ -288,7 +288,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getExtensionWithNull() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
 
@@ -316,7 +316,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getLocationWithNull() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
 
@@ -343,7 +343,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getNameWithNull() {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
 
@@ -608,7 +608,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void writeNullInputStreamToFile() throws IOException {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("InputStream cannot be null");
 
@@ -622,7 +622,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void writeInputStreamToNullFile() throws IOException {
-    exception.expect(NullPointerException.class);
+    exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
 
@@ -682,5 +682,4 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
     assertThat(actualContent, is(equalTo(expectedContent)));
   }
-
 }

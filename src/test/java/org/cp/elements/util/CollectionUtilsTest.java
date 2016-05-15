@@ -104,12 +104,12 @@ public class CollectionUtilsTest {
     assertEquals(0, CollectionUtils.count(collection, new DefaultFilter<>(false)));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void countWithNullCollection() {
     CollectionUtils.count(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void countWithNullFilter() {
     CollectionUtils.count(Collections.emptyList(), null);
   }
@@ -198,7 +198,7 @@ public class CollectionUtilsTest {
     assertFalse(noElementEnumeration.hasMoreElements());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void enumerationWithNullIterator() {
     CollectionUtils.enumeration(null);
   }
@@ -258,12 +258,12 @@ public class CollectionUtilsTest {
     assertEquals(3, collection.size());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void filterNullCollection() {
     CollectionUtils.filter(null, new DefaultFilter<>(true));
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void filterWithNullFilter() {
     CollectionUtils.filter(Collections.emptyList(), null);
   }
@@ -349,12 +349,12 @@ public class CollectionUtilsTest {
     assertNull(actualPerson);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findWithNullFilter() {
     CollectionUtils.find(Collections.emptyList(), null);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findWithNullIterable() {
     CollectionUtils.find(null, new DefaultFilter<>(true));
   }
@@ -390,12 +390,12 @@ public class CollectionUtilsTest {
     assertEquals(0, actualNumbers.size());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullFilter() {
     CollectionUtils.findAll(Collections.emptyList(), null);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullIterable() {
     CollectionUtils.findAll(null, new DefaultFilter<>(true));
   }
@@ -427,7 +427,7 @@ public class CollectionUtilsTest {
     assertEquals(expectedElements.length, index);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void iterableWithNullEnumeration() {
     CollectionUtils.iterable((Enumeration<?>) null);
   }
@@ -446,7 +446,7 @@ public class CollectionUtilsTest {
     assertEquals(expectedElements.length, index);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void iterableWithNullIterator() {
     CollectionUtils.iterable((Iterator<?>) null);
   }
@@ -522,7 +522,7 @@ public class CollectionUtilsTest {
     assertFalse(zeroElementIterator.hasNext());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void iteratorWithNullEnumeration() {
     CollectionUtils.iterator((Enumeration<?>) null);
   }
@@ -566,7 +566,7 @@ public class CollectionUtilsTest {
     assertTrue(shuffledEmptyList.isEmpty());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void shuffleNullList() {
     CollectionUtils.shuffle(null);
   }
@@ -664,12 +664,12 @@ public class CollectionUtilsTest {
     assertTrue(collection.isEmpty());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void transformNullCollection() {
     CollectionUtils.transform(null, (value) -> null);
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void transformWithNullTransformer() {
     CollectionUtils.transform(Collections.emptyList(), null);
   }
@@ -719,7 +719,7 @@ public class CollectionUtilsTest {
     }
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void unmodifiableIteratorWithNullIterator() {
     CollectionUtils.unmodifiableIterator(null);
   }
@@ -771,5 +771,4 @@ public class CollectionUtilsTest {
       return getFirstName().concat(" ").concat(getLastName());
     }
   }
-
 }
