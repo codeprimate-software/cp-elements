@@ -22,8 +22,8 @@ import java.io.FileFilter;
 import org.cp.elements.lang.Filter;
 
 /**
- * The DefaultFileFilter class is a {@link FileFilter} and {@link Filter} implementation that evaluates and filters
- * {@link File}s based on a predetermined result.
+ * The DefaultFileFilter class is a {@link FileFilter} as well as {@link Filter} implementation that evaluates
+ * and filters {@link File}s based on a predetermined result.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -40,28 +40,41 @@ public class DefaultFileFilter implements FileFilter, Filter<File> {
   private final boolean acceptReturnValue;
 
   /**
-   * Constructs an instance of the DefaultFileFilter class initialized with the predetermined return value
+   * Factory method to obtain a {@link FileFilter} implementation that will either accept or reject all {@link File}s
+   * based on the argument to the accept parameter.
+   *
+   * @param accept a boolean value indicating whether all {@link File}s are accepted or rejected by the returned
+   * {@link FileFilter}.
+   * @return a default {@link FileFilter} implementation that will either accept or reject all {@link File}s based on
+   * the boolean argument.
+   * @see java.io.FileFilter
+   */
+  public static FileFilter getInstance(boolean accept) {
+    return (accept ? DEFAULT_ACCEPT : DEFAULT_REJECT);
+  }
+
+  /**
+   * Constructs an instance of {@link DefaultFileFilter} initialized with the predetermined return value
    * for the {@link #accept(File)} method.
    *
    * @param acceptReturnValue a boolean value specifying the predetermined result of the {@link #accept(File)} method.
    * @see #accept(File)
    */
-  public DefaultFileFilter(final boolean acceptReturnValue) {
+  public DefaultFileFilter(boolean acceptReturnValue) {
     this.acceptReturnValue = acceptReturnValue;
   }
 
   /**
-   * Evaluates whether the given {@link File} is accepted by this {@link FileFilter}.
+   * Evaluates the given {@link File} and determines whether it is accepted by this {@link FileFilter}.
    *
    * @param pathname the {@link File} to evaluate.
-   * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.
+   * @return a boolean value indicating whether the given {@link File} was accepted by this {@link FileFilter}.
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
   @Override
   public boolean accept(final File pathname) {
-    return acceptReturnValue;
+    return this.acceptReturnValue;
   }
-
 }
