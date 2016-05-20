@@ -16,8 +16,8 @@
 
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,7 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The ExecutableFilesFilterTest class is a test suite of test cases testing the contract and functionality
+ * The ExecutableFilesFilterTests class is a test suite of test cases testing the contract and functionality
  * of the {@link ExecutableFilesFilter} class.
  *
  * @author John J. Blum
@@ -45,7 +45,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ExecutableFilesFilterTest {
+public class ExecutableFilesFilterTests {
 
   @Mock
   private File mockFile;
@@ -54,7 +54,7 @@ public class ExecutableFilesFilterTest {
   @SuppressWarnings("all")
   public void executableFileFilterAcceptsExecutableFile() {
     when(mockFile.canExecute()).thenReturn(true);
-    assertThat(ExecutableFilesFilter.EXECUTABLE_FILES.accept(mockFile), is(true));
+    assertTrue(ExecutableFilesFilter.EXECUTABLE_FILES.accept(mockFile));
     verify(mockFile, times(1)).canExecute();
   }
 
@@ -62,15 +62,20 @@ public class ExecutableFilesFilterTest {
   @SuppressWarnings("all")
   public void executableFileFilterRejectsNonExecutableFile() {
     when(mockFile.canExecute()).thenReturn(false);
-    assertThat(ExecutableFilesFilter.EXECUTABLE_FILES.accept(mockFile), is(false));
+    assertFalse(ExecutableFilesFilter.EXECUTABLE_FILES.accept(mockFile));
     verify(mockFile, times(1)).canExecute();
+  }
+
+  @Test
+  public void executableFileFilterRejectsNull() {
+    assertFalse(ExecutableFilesFilter.EXECUTABLE_FILES.accept(null));
   }
 
   @Test
   @SuppressWarnings("all")
   public void nonExecutableFileFilterAcceptsNonExecutableFile() {
     when(mockFile.canExecute()).thenReturn(false);
-    assertThat(ExecutableFilesFilter.NON_EXECUTABLE_FILES.accept(mockFile), is(true));
+    assertTrue(ExecutableFilesFilter.NON_EXECUTABLE_FILES.accept(mockFile));
     verify(mockFile, times(1)).canExecute();
   }
 
@@ -78,8 +83,12 @@ public class ExecutableFilesFilterTest {
   @SuppressWarnings("all")
   public void nonExecutableFileFilterRejectsExecutableFile() {
     when(mockFile.canExecute()).thenReturn(true);
-    assertThat(ExecutableFilesFilter.NON_EXECUTABLE_FILES.accept(mockFile), is(false));
+    assertFalse(ExecutableFilesFilter.NON_EXECUTABLE_FILES.accept(mockFile));
     verify(mockFile, times(1)).canExecute();
   }
 
+  @Test
+  public void nonExecutableFileFilterRejectsNull() {
+    assertFalse(ExecutableFilesFilter.NON_EXECUTABLE_FILES.accept(null));
+  }
 }

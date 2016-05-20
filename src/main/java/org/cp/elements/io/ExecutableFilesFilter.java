@@ -20,9 +20,10 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 
 /**
- * The ExecutableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
+ * The ExecutableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation filtering {@link File}s
  * based on whether they are executable.
  *
  * @author John J. Blum
@@ -40,28 +41,29 @@ public class ExecutableFilesFilter implements FileFilter, Filter<File> {
   private final boolean executable;
 
   /**
-   * Constructs an instance of the ExecutableFilesFilter class initialized with a boolean value indicating whether
+   * Constructs an instance of ExecutableFilesFilter initialized with the given boolean value to indicate whether
    * executable {@link File}s are accepted or rejected by this {@link FileFilter}.
    *
-   * @param executable a boolean value indicating whether executable {@link File}s are accepted or rejected
+   * @param executable a boolean value determining whether executable {@link File}s are accepted or rejected
    * by this {@link FileFilter}.
    */
-  protected ExecutableFilesFilter(final boolean executable) {
+  protected ExecutableFilesFilter(boolean executable) {
     this.executable = executable;
   }
 
   /**
-   * Determines whether the given {@link File} is accepted by this {@link FileFilter}, which evaluates whether
-   * the {@link File} is executable or not.
+   * Accepts or rejects the given {@link File} based on whether it is executable or not.  This method is null-safe
+   * and guards against null {@link File} references.
    *
    * @param pathname the {@link File} to evaluate.
-   * @return a boolean value indicating whether executable {@link File}s are accepted or rejected.
+   * @return a boolean value indicating whether the executable {@link File} is accepted or rejected.
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File#canExecute()
    */
+  @NullSafe
   @Override
-  public boolean accept(final File pathname) {
-    return (pathname.canExecute() == executable);
+  public boolean accept(File pathname) {
+    return (pathname != null && pathname.canExecute() == executable);
   }
-
 }
