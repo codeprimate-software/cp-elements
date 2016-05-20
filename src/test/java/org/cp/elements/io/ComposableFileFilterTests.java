@@ -41,7 +41,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The ComposableFileFilterTest class is a test suite of test cases testing the contract and functionality
+ * The ComposableFileFilterTests class is a test suite of test cases testing the contract and functionality
  * of the {@link ComposableFileFilter} class.
  *
  * @author John J. Blum
@@ -56,7 +56,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ComposableFileFilterTest {
+public class ComposableFileFilterTests {
 
   @Mock
   private File mockFile;

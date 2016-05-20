@@ -396,7 +396,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     when(mockSubDirectoryThree.listFiles(any(FileFilter.class))).then(listFilesWithFilterAnswer);
     when(mockSubDirectoryFour.listFiles(any(FileFilter.class))).then(listFilesWithFilterAnswer);
 
-    FileFilter expectedFileFilter = ComposableFileFilter.or(DirectoryOnlyFilter.INSTANCE, (file) -> !file.isHidden());
+    FileFilter expectedFileFilter = ComposableFileFilter.or(DirectoriesOnlyFilter.INSTANCE, (file) -> !file.isHidden());
 
     assertThat(FileSystemUtils.count(mockFile, expectedFileFilter), is(equalTo(4)));
 
@@ -441,7 +441,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @IntegrationTest
   public void countJavaSourceFilesInProjectReturnsNonZeroCount() {
-    FileFilter directoryAndJavaFileFilter = ComposableFileFilter.or(DirectoryOnlyFilter.INSTANCE,
+    FileFilter directoryAndJavaFileFilter = ComposableFileFilter.or(DirectoriesOnlyFilter.INSTANCE,
       new FileExtensionFilter("java"));
 
     assertThat(FileSystemUtils.count(getSourceDirectory(), directoryAndJavaFileFilter),
@@ -451,7 +451,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @IntegrationTest
   public void countGroovySourceFilesInProjectReturnsZero() {
-    FileFilter directoryAndGroovyFileFilter = ComposableFileFilter.or(DirectoryOnlyFilter.INSTANCE,
+    FileFilter directoryAndGroovyFileFilter = ComposableFileFilter.or(DirectoriesOnlyFilter.INSTANCE,
       new FileExtensionFilter("groovy"));
 
     assertThat(FileSystemUtils.count(getSourceDirectory(), directoryAndGroovyFileFilter), is(equalTo(0)));
@@ -1035,7 +1035,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     when(mockFile.listFiles(any(FileFilter.class))).then(listFilesWithFilterAnswer);
     when(mockSubDirectory.listFiles(any(FileFilter.class))).then(listFilesWithFilterAnswer);
 
-    FileFilter expectedFileFilter = ComposableFileFilter.or(DirectoryOnlyFilter.INSTANCE, (file) -> !file.isHidden());
+    FileFilter expectedFileFilter = ComposableFileFilter.or(DirectoriesOnlyFilter.INSTANCE, (file) -> !file.isHidden());
 
     assertThat(FileSystemUtils.size(mockFile, expectedFileFilter),
       is(equalTo(2048l)));

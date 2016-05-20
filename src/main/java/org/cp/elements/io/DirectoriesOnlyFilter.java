@@ -22,8 +22,8 @@ import java.io.FileFilter;
 import org.cp.elements.lang.Filter;
 
 /**
- * The DirectoryOnlyFilter class is a {@link FileFilter} and {@link Filter} implementation that evaluates and filters
- * {@link File}s that includes only file system directories.
+ * The DirectoriesOnlyFilter class is a {@link FileFilter} as well as {@link Filter} implementation that evaluates
+ * and filters {@link File}s to only include file system directories.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -32,22 +32,21 @@ import org.cp.elements.lang.Filter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DirectoryOnlyFilter implements FileFilter, Filter<File> {
+public class DirectoriesOnlyFilter implements FileFilter, Filter<File> {
 
-  public static final DirectoryOnlyFilter INSTANCE = new DirectoryOnlyFilter();
+  public static final DirectoriesOnlyFilter INSTANCE = new DirectoriesOnlyFilter();
 
   /**
-   * Accepts all {@link File}s referencing directories in the file system.
+   * Accepts all {@link File}s referring to directories in the file system.
    *
-   * @param file the {@link File} being evaluated and filtered by this {@link FileFilter}.
-   * @return a boolean value indicating if the given {@link File} reference is a directory.
+   * @param file the {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} refers to a directory.
    * @see org.cp.elements.io.FileUtils#isDirectory(File)
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
-  public boolean accept(final File file) {
+  public boolean accept(File file) {
     return FileUtils.isDirectory(file);
   }
-
 }
