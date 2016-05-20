@@ -22,8 +22,8 @@ import java.io.FileFilter;
 import org.cp.elements.lang.Filter;
 
 /**
- * The FileOnlyFilter class is a FileFilter implementation filtering a list of File references to include only actual
- * files.
+ * The FilesOnlyFilter class is a {@link FileFilter} and {@link Filter} implementation filtering {@link File}s
+ * that include only actual files in the file system (i.e. excluding directories).
  *
  * @author John J. Blum
  * @see java.io.File
@@ -32,21 +32,21 @@ import org.cp.elements.lang.Filter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class FileOnlyFilter implements FileFilter, Filter<File> {
+public class FilesOnlyFilter implements FileFilter, Filter<File> {
 
-  public static final FileOnlyFilter INSTANCE = new FileOnlyFilter();
+  public static final FilesOnlyFilter INSTANCE = new FilesOnlyFilter();
 
   /**
    * Accepts all {@link File}s referencing actual files in the file system.
    *
-   * @param file the {@link File} being evaluated and filtered by this {@link FileFilter}.
-   * @return a boolean value indicating if the given {@link File} reference is a file.
+   * @param file the {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} is an actual file in the file system.
    * @see org.cp.elements.io.FileUtils#isFile(java.io.File)
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
   public boolean accept(final File file) {
     return FileUtils.isFile(file);
   }
-
 }

@@ -118,7 +118,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * @return an integer value indicating the number of files contained in the given file system path.
    * If path is a non-null file then this method returns 1.
    * @see java.io.File
-   * @see org.cp.elements.io.FileOnlyFilter
+   * @see FilesOnlyFilter
    * @see #count(File, FileFilter)
    */
   public static int count(File path) {
@@ -281,7 +281,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * @param path the {@link File} denoting the path to evaluate.
    * @return a long value indicating the size of the path in bytes.
    * @see java.io.File#length()
-   * @see org.cp.elements.io.FileOnlyFilter
+   * @see FilesOnlyFilter
    * @see #size(File, FileFilter)
    */
   public static long size(File path) {
