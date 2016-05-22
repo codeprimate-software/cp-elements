@@ -31,43 +31,51 @@ import org.cp.elements.lang.Filter;
  */
 public final class DefaultFilter<T> implements Filter<T> {
 
-  public static final boolean DEFAULT_ACCEPT_RESULT = true;
+  public static final DefaultFilter ACCEPT = new DefaultFilter<>(true);
+  public static final DefaultFilter REJECT = new DefaultFilter<>(false);
 
-  private final boolean acceptResult;
+  private final boolean acceptReturnValue;
 
   /**
-   * Constructs an instance of the DefaultFilter class with the default accept result of true.
+   * Returns an instance of {@link DefaultFilter} initialized with the specified, default return value
+   * for the {@link DefaultFilter#accept(Object)} method.
+   *
+   * @param <T> the Class type of the object to filter.
+   * @param acceptReturnValue the result of call the {@link DefaultFilter#accept(Object)} method.
+   * @return an instance of the {@link DefaultFilter} initialized with the default return value
+   * for the {@link DefaultFilter#accept(Object)} method.
    */
-  public DefaultFilter() {
-    this(DEFAULT_ACCEPT_RESULT);
+  @SuppressWarnings("unchecked")
+  public static <T> DefaultFilter<T> getInstance(boolean acceptReturnValue) {
+    return (acceptReturnValue ? ACCEPT : REJECT);
   }
 
   /**
    * Constructs an instance of the DefaultFilter class with the given boolean value for the accept's methods result.
    *
-   * @param acceptResult a boolean value defining the result of the accept method.
+   * @param acceptReturnValue a boolean value defining the result of the accept method.
    */
-  public DefaultFilter(final boolean acceptResult) {
-    this.acceptResult = acceptResult;
+  private DefaultFilter(boolean acceptReturnValue) {
+    this.acceptReturnValue = acceptReturnValue;
   }
 
   /**
-   * Determines the result of calling the accept method on any type of object.
+   * Determines the result of calling the {@link DefaultFilter#accept(Object)} method on any type of object.
    *
-   * @return a boolean value indicating the default return result for the accept method.
+   * @return a boolean value indicating the result of the accept method.
    */
   final boolean isAccepting() {
-    return this.acceptResult;
+    return this.acceptReturnValue;
   }
 
   /**
-   * Determines whether the specified object meets the criteria (rules) defined by this Filter.
+   * Determines whether the given object satisfies the criteria (rules) defined by this Filter.
    *
-   * @param obj the Object being evaluated by this Filter.
-   * @return a boolean value indicating whether the specified Object satisfies the criteria (rules) of this Filter.
+   * @param obj the Object being evaluated by this {@link Filter}.
+   * @return a boolean value indicating whether the given Object satisfies the criteria (rules) of this {@link Filter}.
+   * @see #isAccepting()
    */
-  public boolean accept(final T obj) {
-    return acceptResult;
+  public boolean accept(T obj) {
+    return isAccepting();
   }
-
 }

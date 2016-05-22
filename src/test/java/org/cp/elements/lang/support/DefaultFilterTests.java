@@ -16,54 +16,66 @@
 
 package org.cp.elements.lang.support;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 /**
- * The DefaultFilterTest class is a test suite of test cases testing the contract and functionality
- * of the DefaultFilter class.
+ * The DefaultFilterTests class is a test suite of test cases testing the contract and functionality
+ * of the {@link DefaultFilter} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.Filter
- * @see org.cp.elements.lang.support.DefaultFilter
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @see org.cp.elements.lang.support.DefaultFilter
  * @since 1.0.0
  */
-public class DefaultFilterTest {
+public class DefaultFilterTests {
 
   @Test
-  public void testAccept() {
-    final DefaultFilter<Object> defaultFilter = new DefaultFilter<Object>();
+  public void getInstanceWithTrueReturnsAccept() {
+    assertThat(DefaultFilter.getInstance(true), is(sameInstance(DefaultFilter.ACCEPT)));
+  }
+
+  @Test
+  public void getInstanceWithFalseReturnsReject() {
+    assertThat(DefaultFilter.getInstance(false), is(sameInstance(DefaultFilter.REJECT)));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void accept() {
+    DefaultFilter<Object> defaultFilter = DefaultFilter.ACCEPT;
 
     assertTrue(defaultFilter.isAccepting());
     assertTrue(defaultFilter.accept(null));
-    assertTrue(defaultFilter.accept(""));
-    assertTrue(defaultFilter.accept("  "));
     assertTrue(defaultFilter.accept(Boolean.FALSE));
     assertTrue(defaultFilter.accept('\0'));
     assertTrue(defaultFilter.accept(0));
     assertTrue(defaultFilter.accept(-0.0d));
+    assertTrue(defaultFilter.accept(""));
+    assertTrue(defaultFilter.accept("  "));
     assertTrue(defaultFilter.accept("test"));
     assertTrue(defaultFilter.accept(new Object()));
   }
 
   @Test
-  public void testReject() {
-    final DefaultFilter<Object> defaultFilter = new DefaultFilter<Object>(false);
+  @SuppressWarnings("unchecked")
+  public void reject() {
+    DefaultFilter<Object> defaultFilter = DefaultFilter.REJECT;
 
     assertFalse(defaultFilter.isAccepting());
     assertFalse(defaultFilter.accept(null));
-    assertFalse(defaultFilter.accept(""));
-    assertFalse(defaultFilter.accept("  "));
     assertFalse(defaultFilter.accept(Boolean.TRUE));
     assertFalse(defaultFilter.accept('a'));
     assertFalse(defaultFilter.accept(1));
     assertFalse(defaultFilter.accept(Math.PI));
+    assertFalse(defaultFilter.accept(""));
+    assertFalse(defaultFilter.accept("  "));
     assertFalse(defaultFilter.accept("test"));
     assertFalse(defaultFilter.accept(new Object()));
   }
-
 }
