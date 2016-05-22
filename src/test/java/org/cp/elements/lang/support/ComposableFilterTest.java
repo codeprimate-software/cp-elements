@@ -23,12 +23,18 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.when;
 
 import java.text.MessageFormat;
 
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.LogicalOperator;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The ComposableFilterTest class is a test suite of test cases testing the contract and functionality 
@@ -41,13 +47,23 @@ import org.junit.Test;
  * @see org.junit.Test
  * @since 1.0.0
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ComposableFilterTest {
+
+  @Mock
+  private Filter<Object> falseFilter;
+
+  @Mock
+  private Filter<Object> trueFilter;
+
+  @Before
+  public void setup() {
+    when(falseFilter.accept(anyObject())).thenReturn(false);
+    when(trueFilter.accept(anyObject())).thenReturn(true);
+  }
 
   @Test
   public void testAcceptUsingAnd() {
-    Filter<Object> falseFilter = new DefaultFilter<>(false);
-    Filter<Object> trueFilter = new DefaultFilter<>(true);
-
     assertFalse(ComposableFilter.and(falseFilter, falseFilter).accept("test"));
     assertFalse(ComposableFilter.and(trueFilter, falseFilter).accept("test"));
     assertFalse(ComposableFilter.and(falseFilter, trueFilter).accept("test"));
@@ -56,9 +72,6 @@ public class ComposableFilterTest {
 
   @Test
   public void testAcceptUsingOr() {
-    Filter<Object> falseFilter = new DefaultFilter<>(false);
-    Filter<Object> trueFilter = new DefaultFilter<>(true);
-
     assertFalse(ComposableFilter.or(falseFilter, falseFilter).accept("test"));
     assertTrue(ComposableFilter.or(trueFilter, falseFilter).accept("test"));
     assertTrue(ComposableFilter.or(falseFilter, trueFilter).accept("test"));
@@ -86,41 +99,35 @@ public class ComposableFilterTest {
 
   @Test
   public void testComposeAnd() {
-    Filter<Object> leftFilter = new DefaultFilter<>(true);
-    Filter<Object> rightFilter = new DefaultFilter<>(false);
-
     assertNull(ComposableFilter.and(null, null));
-    assertSame(leftFilter, ComposableFilter.and(leftFilter, null));
-    assertSame(rightFilter, ComposableFilter.and(null, rightFilter));
+    assertSame(trueFilter, ComposableFilter.and(trueFilter, null));
+    assertSame(falseFilter, ComposableFilter.and(null, falseFilter));
 
-    final Filter<Object> composedFilter = ComposableFilter.and(leftFilter, rightFilter);
+    final Filter<Object> composedFilter = ComposableFilter.and(trueFilter, falseFilter);
 
     assertNotNull(composedFilter);
-    assertNotSame(leftFilter, composedFilter);
-    assertNotSame(rightFilter, composedFilter);
+    assertNotSame(trueFilter, composedFilter);
+    assertNotSame(falseFilter, composedFilter);
     assertTrue(composedFilter instanceof ComposableFilter);
-    assertSame(leftFilter, ((ComposableFilter) composedFilter).getLeftFilter());
-    assertSame(rightFilter, ((ComposableFilter) composedFilter).getRightFilter());
+    assertSame(trueFilter, ((ComposableFilter) composedFilter).getLeftFilter());
+    assertSame(falseFilter, ((ComposableFilter) composedFilter).getRightFilter());
     assertEquals(LogicalOperator.AND, ((ComposableFilter) composedFilter).getOp());
   }
 
   @Test
   public void testComposeOr() {
-    Filter<Object> leftFilter = new DefaultFilter<>(true);
-    Filter<Object> rightFilter = new DefaultFilter<>(false);
-
     assertNull(ComposableFilter.or(null, null));
-    assertSame(leftFilter, ComposableFilter.or(leftFilter, null));
-    assertSame(rightFilter, ComposableFilter.or(null, rightFilter));
+    assertSame(trueFilter, ComposableFilter.or(trueFilter, null));
+    assertSame(falseFilter, ComposableFilter.or(null, falseFilter));
 
-    final Filter<Object> composedFilter = ComposableFilter.or(leftFilter, rightFilter);
+    final Filter<Object> composedFilter = ComposableFilter.or(trueFilter, falseFilter);
 
     assertNotNull(composedFilter);
-    assertNotSame(leftFilter, composedFilter);
-    assertNotSame(rightFilter, composedFilter);
+    assertNotSame(trueFilter, composedFilter);
+    assertNotSame(falseFilter, composedFilter);
     assertTrue(composedFilter instanceof ComposableFilter);
-    assertSame(leftFilter, ((ComposableFilter) composedFilter).getLeftFilter());
-    assertSame(rightFilter, ((ComposableFilter) composedFilter).getRightFilter());
+    assertSame(trueFilter, ((ComposableFilter) composedFilter).getLeftFilter());
+    assertSame(falseFilter, ((ComposableFilter) composedFilter).getRightFilter());
     assertEquals(LogicalOperator.OR, ((ComposableFilter) composedFilter).getOp());
   }
 
@@ -168,5 +175,4 @@ public class ComposableFilterTest {
       return driver.isDrivingWithParent();
     }
   }
-
 }
