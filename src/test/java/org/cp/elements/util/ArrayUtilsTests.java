@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Vector;
 
@@ -52,8 +53,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The ArrayUtilsTest class is a test suite of test cases testing the contract and functionality
- * of the ArrayUtils class.
+ * The ArrayUtilsTests class is a test suite of test cases testing the contract and functionality
+ * of the {@link ArrayUtils} class.
  * 
  * @author John J. Blum
  * @see java.lang.reflect.Array
@@ -64,16 +65,16 @@ import org.junit.rules.ExpectedException;
  * @see org.cp.elements.util.ArrayUtils
  * @since 1.0.0
  */
-public class ArrayUtilsTest {
+public class ArrayUtilsTests {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
   @SuppressWarnings("all")
   protected <T> void assertShuffled(T[] source, T[] target) {
-    assertTrue("'source' array must not be null or empty!", source != null && source.length != 0);
-    assertTrue("'target' array must not be null or empty!", target != null && target.length != 0);
-    assertEquals("The lengths of the 'source' and 'target' arrays must match!", source.length, target.length);
+    assertTrue("'source' array must not be null or empty", source != null && source.length != 0);
+    assertTrue("'target' array must not be null or empty", target != null && target.length != 0);
+    assertEquals("lengths of the 'source' and 'target' arrays must match", source.length, target.length);
 
     boolean shuffled = false;
 
@@ -81,7 +82,7 @@ public class ArrayUtilsTest {
       shuffled |= !source[index].equals(target[index]);
     }
 
-    assertTrue(String.format("The target array (%1$s) was not shuffled!", Arrays.toString(target)), shuffled);
+    assertTrue(String.format("target array [%1$s] was not shuffled", Arrays.toString(target)), shuffled);
   }
 
   @SuppressWarnings("unchecked")
@@ -234,17 +235,17 @@ public class ArrayUtilsTest {
   public void countReturnsLength() {
     Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-    assertEquals(array.length, ArrayUtils.count(array, new DefaultFilter<>(true)));
+    assertEquals(array.length, ArrayUtils.count(array, DefaultFilter.getInstance(true)));
   }
 
   @Test
   public void countReturnsZero() {
-    assertEquals(0, ArrayUtils.count(new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new DefaultFilter<>(false)));
+    assertEquals(0, ArrayUtils.count(new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, DefaultFilter.getInstance(false)));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void countWithNullArray() {
-    ArrayUtils.count(null, new DefaultFilter<>(true));
+    ArrayUtils.count(null, DefaultFilter.getInstance(true));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -371,13 +372,13 @@ public class ArrayUtilsTest {
     Object[] array = {};
 
     assertEquals(0, array.length);
-    assertSame(array, ArrayUtils.filter(array, new DefaultFilter<>(false)));
+    assertSame(array, ArrayUtils.filter(array, DefaultFilter.getInstance(false)));
     assertEquals(0, array.length);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void filterNullArray() {
-    ArrayUtils.filter(null, new DefaultFilter<>(true));
+    ArrayUtils.filter(null, DefaultFilter.getInstance(true));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -491,7 +492,7 @@ public class ArrayUtilsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void findWithNullArray() {
-    ArrayUtils.find(null, new DefaultFilter<>(true));
+    ArrayUtils.find(null, DefaultFilter.getInstance(true));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -505,31 +506,31 @@ public class ArrayUtilsTest {
 
     Filter<Integer> evenNumberFilter = NumberUtils::isEven;
 
-    Integer[] actualNumbers = ArrayUtils.findAll(numbers, evenNumberFilter);
+    List<Integer> actualNumbers = ArrayUtils.findAll(numbers, evenNumberFilter);
 
     assertNotNull(actualNumbers);
     assertNotSame(numbers, actualNumbers);
-    assertEquals(5, actualNumbers.length);
+    assertEquals(5, actualNumbers.size());
 
     for (int number = 0, index = 0; number < 10; number += 2, index++) {
-      assertEquals(number, actualNumbers[index].intValue());
+      assertEquals(number, actualNumbers.get(index).intValue());
     }
   }
 
   @Test
   public void findAllWithNonMatchingFilter() {
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    Integer[] actualNumbers = ArrayUtils.findAll(numbers, new DefaultFilter<>(false));
+    List<Integer> actualNumbers = ArrayUtils.findAll(numbers, DefaultFilter.getInstance(false));
 
     assertNotNull(actualNumbers);
     assertNotSame(numbers, actualNumbers);
     assertEquals(10, numbers.length);
-    assertEquals(0, actualNumbers.length);
+    assertEquals(0, actualNumbers.size());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullArray() {
-    ArrayUtils.findAll(null, new DefaultFilter<>(true));
+    ArrayUtils.findAll(null, DefaultFilter.getInstance(true));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -720,17 +721,6 @@ public class ArrayUtilsTest {
     assertTrue(singleElementIterator.hasNext());
     assertEquals("test", singleElementIterator.next());
     assertFalse(singleElementIterator.hasNext());
-  }
-
-  @Test
-  public void length() {
-    assertEquals(0, ArrayUtils.length(null));
-    assertEquals(0, ArrayUtils.length(new Object[0]));
-    assertEquals(0, ArrayUtils.length(new Object[] { }));
-    assertEquals(10, ArrayUtils.length(new Object[10]));
-    assertEquals(1, ArrayUtils.length(new Object[] { null }));
-    assertEquals(1, ArrayUtils.length(new Object[] { "test" }));
-    assertEquals(3, ArrayUtils.length(new Object[] { "test", "testing", "tested" }));
   }
 
   @Test

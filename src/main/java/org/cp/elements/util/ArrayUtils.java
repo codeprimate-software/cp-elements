@@ -17,9 +17,11 @@
 package org.cp.elements.util;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -27,8 +29,6 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.ClassUtils;
-import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NullSafe;
@@ -36,7 +36,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
 
 /**
- * The ArrayUtils class encapsulates utility methods for interacting with Object arrays.
+ * The ArrayUtils class encapsulates utility methods and functionality for interacting with Object arrays.
  * 
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -57,24 +57,25 @@ public abstract class ArrayUtils {
   private static final Object[] EMPTY_ARRAY = new Object[0];
 
   /**
-   * Adds (inserts) the element at the end of the array.
+   * Adds (inserts) the element to the end of the array.
    * 
-   * @param <T> the type of elements stored in the array.
-   * @param element the element to insert into the end of the array.
-   * @param array the array in which to insert the element.
+   * @param <T> Class type of the elements stored in the array.
+   * @param element element to insert at the end of the array.
+   * @param array array in which to insert the element.
    * @return a new array with the element inserted at the end.
    * @see #insert(Object, Object[], int)
+   * @see #count(Object[])
    */
-  public static <T> T[] append(final T element, final T[] array) {
-    return insert(element, array, length(array));
+  public static <T> T[] append(T element, T[] array) {
+    return insert(element, array, count(array));
   }
 
   /**
    * Convenience method for specifying an array.
    *
-   * @param <T> the type of elements stored in the array.
+   * @param <T> Class type of the elements stored in the array.
    * @param array the array.
-   * @return the array as itself.
+   * @return the given array.
    */
   @SafeVarargs
   public static <T> T[] asArray(T... array) {
@@ -84,207 +85,148 @@ public abstract class ArrayUtils {
   /**
    * Converts the {@link Enumeration} into an array.
    *
-   * @param <T> the type of elements in the {@link Enumeration} as well as the component type of the constructed array.
-   * @param enumeration the {@link Enumeration} to convert into an array.
+   * @param <T> Class type of the elements in the {@link Enumeration}.
+   * @param enumeration {@link Enumeration} to convert into an array.
    * @param componentType {@link Class} type of the elements in the {@link Enumeration}.
    * @return an array containing all the elements from the {@link Enumeration}.  Returns an empty array
    * if the {@link Enumeration} is null.
    * @see java.util.Enumeration
    * @see #asArray(Iterable, Class)
    */
-  public static <T> T[] asArray(final Enumeration<T> enumeration, final Class<T> componentType) {
-    return asArray((enumeration != null ? CollectionUtils.iterable(enumeration) : null), componentType);
+  @NullSafe
+  public static <T> T[] asArray(Enumeration<T> enumeration, Class<T> componentType) {
+    return asArray(CollectionUtils.iterable(enumeration), componentType);
   }
 
   /**
-   * Converts the {@link Iterable} object into an array.
+   * Converts the {@link Iterable} into an array.
    *
-   * @param <T> the type of elements in the {@link Iterable} object as well as the component type
-   * of the constructed array.
-   * @param iterable the {@link Iterable} object to convert into an array.
-   * @param componentType {@link Class} type of the elements in the {@link Iterable} object.
-   * @return an array containing all the elements from the {@link Iterable} object.  Returns an empty array
-   * if the {@link Iterable} object is null.
+   * @param <T> Class type of the elements in the {@link Iterable} collection.
+   * @param iterable {@link Iterable} collection to convert into an array.
+   * @param componentType {@link Class} type of the elements in the {@link Iterable} collection.
+   * @return an array containing all the elements from the {@link Iterable} collection.  Returns an empty array
+   * if the {@link Iterable} collection is null.
    * @see java.lang.Class
    * @see java.lang.Iterable
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T[] asArray(final Iterable<T> iterable, final Class<T> componentType) {
+  public static <T> T[] asArray(Iterable<T> iterable, Class<T> componentType) {
     List<T> arrayList = new ArrayList<>();
 
-    if (iterable != null) {
-      for (T element : iterable) {
-        arrayList.add(element);
-      }
+    for (T element : CollectionUtils.nullSafeIterable(iterable)) {
+      arrayList.add(element);
     }
 
-    return arrayList.toArray((T[]) Array.newInstance(ObjectUtils.defaultIfNull(componentType, Object.class),
-      arrayList.size()));
+    return arrayList.toArray((T[]) Array.newInstance(defaultIfNull(componentType, Object.class), arrayList.size()));
   }
 
   /**
    * Converts the {@link Iterator} into an array.
    *
-   * @param <T> the type of elements in the {@link Iterator} as well as the component type of the constructed array.
-   * @param iterator the {@link Iterator} to convert into an array.
+   * @param <T> Class type of the elements in the {@link Iterator}.
+   * @param iterator {@link Iterator} to convert into an array.
    * @param componentType {@link Class} type of the elements in the {@link Iterator}.
    * @return an array containing all the elements from the {@link Iterator}.  Returns an empty array
    * if the {@link Iterator} is null.
    * @see java.util.Iterator
    * @see #asArray(Iterable, Class)
    */
-  public static <T> T[] asArray(final Iterator<T> iterator, final Class<T> componentType) {
-    return asArray((iterator != null ? CollectionUtils.iterable(iterator) : null), componentType);
+  @NullSafe
+  public static <T> T[] asArray(Iterator<T> iterator, Class<T> componentType) {
+    return asArray(CollectionUtils.iterable(iterator), componentType);
   }
 
   /**
-   * Counts the number of elements from the Object array matching the criteria defined by the Filter.
+   * Counts the number of elements in the array.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array to evaluate.
+   * @return an integer value indicating the number of elements in the array (a.k.a. size).
+   */
+  @NullSafe
+  public static <T> int count(T[] array) {
+    return (array == null ? 0 : array.length);
+  }
+
+  /**
+   * Counts the number of elements in the array matching the criteria (rules) defined by the {@link Filter}.
    * 
-   * @param <T> the Class type of the elements in the Object array.
-   * @param array the Object array of elements to search and count.
-   * @param filter the Filter used to find matching elements from the Object array and tally the count.
-   * @return an integer value of the number of elements from the Object array matching the criteria defined
-   * by the Filter.
-   * @throws NullPointerException if either the Object array or Filter are null.
-   * @see #findAll(Object[], org.cp.elements.lang.Filter)
+   * @param <T> Class type of the elements in the array.
+   * @param array array to search.
+   * @param filter {@link Filter} used to match elements in the array and tally the count.
+   * @return an integer value indicating the number of elements in the array matching the criteria
+   * defined by the {@link Filter}.
    * @see org.cp.elements.lang.Filter
    */
-  public static <T> int count(final T[] array, final Filter<T> filter) {
-    return findAll(array, filter).length;
+  @NullSafe
+  public static <T> int count(T[] array, Filter<T> filter) {
+    int count = 0;
+
+    for (T element : nullSafeArray(array)) {
+      if (filter.accept(element)) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**
-   * Gets an empty Object array (an Object array containing no elements nor buckets for elements).
+   * Returns an empty array.
    * 
-   * @return an empty Object array with no capacity for elements.
+   * @return an empty array with no capacity for elements.
+   * @see #EMPTY_ARRAY
    */
   public static Object[] emptyArray() {
     return EMPTY_ARRAY.clone();
   }
 
   /**
-   * Gets an Enumeration to enumerate over the elements in the specified Object array.
+   * Returns an {@link Enumeration} to enumerate over the elements in the array.
    * 
-   * @param array the Object array backing the Enumeration implementation.
-   * @param <T> the Class type of the elements in the Object array.
-   * @return an Enumeration over the elements in the Object array.
-   * @throws NullPointerException if the reference to the Object array is null.
+   * @param <T> Class type of the elements in the array.
+   * @param array array to enumerate.
+   * @return an {@link Enumeration} over the elements in the array or an empty {@link Enumeration} if the array is null.
    * @see java.util.Enumeration
    */
+  @NullSafe
   @SafeVarargs
-  public static <T> Enumeration<T> enumeration(final T... array) {
-    Assert.notNull(array, "The array of elements cannot be null!");
+  public static <T> Enumeration<T> enumeration(T... array) {
+    return (array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
-    return new Enumeration<T>() {
       private int index = 0;
 
+      @Override
       public boolean hasMoreElements() {
         return (index < array.length);
       }
 
+      @Override
       public T nextElement() {
-        Assert.isTrue(hasMoreElements(), new NoSuchElementException(
-          "The Enumeration has reached the end of the array!"));
+        Assert.isTrue(hasMoreElements(), new NoSuchElementException("No more elements"));
         return array[index++];
       }
-    };
+    });
   }
 
   /**
-   * Filters the elements of the given Object array using the specified Filter.  Any element not accepted by the Filter
-   * is set to null at index in the array.
+   * Filters the elements in the given array.
    *
-   * @param <T> the Class type of the array elements.
-   * @param array the Object array to filter using the specified Filter.
-   * @param filter the Filter used to filter the array elements.
-   * @return the Object array with the elements filtered.
-   * @throws java.lang.NullPointerException if the Object array or Filter references are null.
-   * @see org.cp.elements.lang.Filter
-   */
-  public static <T> T[] filter(final T[] array, final Filter<T> filter) {
-    Assert.notNull(array, "The Object array to filter cannot be null!");
-    Assert.notNull(filter, "The Filter used to filter the array cannot be null!");
-
-    int index = 0;
-
-    for (T element : array) {
-      array[index] = (filter.accept(element) ? array[index] : null);
-      index++;
-    }
-
-    return array;
-  }
-
-  /**
-   * Filters and transforms the elements of the given array using the FilteringTransformer.
-   *
-   * @param <T> the Class type of the array elements.
-   * @param array the Object array to filter and transform.
-   * @param filteringTransformer the FilteringTransformer used to filter and transform elements in the array.
-   * @return the array of elements filtered and transformed.
-   * @throws java.lang.NullPointerException if the Object array or FilteringTransformer references are null.
-   * @see org.cp.elements.lang.FilteringTransformer
-   */
-  public static <T> T[] filterAndTransform(final T[] array, final FilteringTransformer<T> filteringTransformer) {
-    Assert.notNull(array, "The Object array to filter and then transform the elements of cannot be null!");
-    Assert.notNull(filteringTransformer, "The FilteringTransformer used to filter and transform the array elements cannot be null!");
-
-    int index = 0;
-
-    for (T element : array) {
-      array[index] = (filteringTransformer.accept(element) ? filteringTransformer.transform(element) : null);
-      index++;
-    }
-
-    return array;
-  }
-
-  /**
-   * Searches the Object array for the first element matching the criteria defined by the Filter.
-   * 
-   * @param <T> the Class type of the elements in the Object array.
-   * @param array the Object array of elements to search.
-   * @param filter the Filter defining the criteria used to find the first matching element from the Object array.
-   * @return the first element from the Object array matching the criteria defined by the Filter or null
-   * if no such element is found.
-   * @throws NullPointerException if either the Object array or Filter is null.
-   * @see java.lang.Iterable
-   * @see org.cp.elements.lang.Filter
-   */
-  public static <T> T find(final T[] array, final Filter<T> filter) {
-    Assert.notNull(array, "The Object array from which to find the first element accepted by the Filter cannot be null!");
-    Assert.notNull(filter, "The Filter used to find a matching element from the Object array cannot be null!");
-
-    T matchingElement = null;
-
-    for (T element : array) {
-      if (filter.accept(element)) {
-        matchingElement = element;
-        break;
-      }
-    }
-
-    return matchingElement;
-  }
-
-  /**
-   * Searches the Object array for elements matching the criteria defined by the Filter.
-   * 
-   * @param <T> the Class type of the elements in the Object array.
-   * @param array the Object array of elements to search.
-   * @param filter the Filter defining the criteria used to find and match elements from the Object array.
-   * @return an Object array of the same type consisting of elements from the originating Object array matching
-   * the criteria defined by the Filter.
-   * @throws NullPointerException if either the Object array or Filter is null.
+   * @param <T> Class type of the elements in the array.
+   * @param array array to filter.
+   * @param filter {@link Filter} used to filter the array elements.
+   * @return a new array of the array class component type containing only elements accepted by the {@link Filter}.
+   * @throws IllegalArgumentException if either the array or {@link Filter} are null.
+   * @see #filterAndTransform(Object[], FilteringTransformer)
    * @see org.cp.elements.lang.Filter
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] findAll(final T[] array, final Filter<T> filter) {
-    Assert.notNull(array, "The Object array from which to find elements accepted by the Filter cannot be null!");
-    Assert.notNull(filter, "The Filter used to find elements from the Object array cannot be null!");
+  public static <T> T[] filter(T[] array, Filter<T> filter) {
+    Assert.notNull(array, "Array cannot be null");
+    Assert.notNull(filter, "Filter cannot be null");
 
-    List<T> arrayList = new ArrayList<>(array.length);
+    List<T> arrayList = new ArrayList<>();
 
     for (T element : array) {
       if (filter.accept(element)) {
@@ -292,45 +234,119 @@ public abstract class ArrayUtils {
       }
     }
 
-    ((ArrayList) arrayList).trimToSize();
-
     return arrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size()));
   }
 
   /**
-   * Gets the first element in the array (at position 0).
+   * Filters and transforms the elements in the array.
    *
-   * @param <T> the Class type of the elements in the array.
-   * @param array the array from which to extract the first element.
-   * @return the first element of the array or null if the array is null or empty.
-   * @see #isEmpty(Object[])
+   * @param <T> Class type of the elements in the array.
+   * @param array array to filter and transform.
+   * @param filteringTransformer {@link FilteringTransformer} used to filter and transform the array elements.
+   * @return a new array of the array class component type containing transformed elements accepted
+   * by the {@link FilteringTransformer}.
+   * @throws IllegalArgumentException if either the array or {@link FilteringTransformer} are null.
+   * @see org.cp.elements.lang.FilteringTransformer
+   * @see #filter(Object[], Filter)
+   * @see #transform(Object[], Transformer)
    */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] filterAndTransform(T[] array, FilteringTransformer<T> filteringTransformer) {
+    return transform(filter(array, filteringTransformer), filteringTransformer);
+  }
+
+  /**
+   * Searches the array for the first element matching the criteria (rules) defined by the {@link Filter}.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array to search.
+   * @param filter {@link Filter} used to find the first element in the array matching the criteria (rules)
+   * defined by the {@link Filter}.
+   * @return the first element from the array matching the criteria (rules) defined by the {@link Filter}
+   * or null if no such element is found.
+   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @see org.cp.elements.lang.Filter
+   * @see #findAll(Object[], Filter)
+   */
+  public static <T> T find(T[] array, Filter<T> filter) {
+    Assert.notNull(filter, "Filter cannot be null");
+
+    for (T element : nullSafeArray(array)) {
+      if (filter.accept(element)) {
+        return element;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Searches the array for all elements matching the criteria (rules) defined by the {@link Filter}.
+   * 
+   * @param <T> Class type of the elements in the array.
+   * @param array array to search.
+   * @param filter {@link Filter} used to find all elements in the array matching the criteria (rules) defined
+   * by the {@link Filter}.
+   * @return a {@link List} containing all the matching elements from the array or an empty list if not elements
+   * matching the criteria defined by the {@link Filter} were found.
+   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @see org.cp.elements.lang.Filter
+   * @see #find(Object[], Filter)
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> List<T> findAll(T[] array, Filter<T> filter) {
+    Assert.notNull(filter, "Filter cannot be null");
+
+    List<T> arrayList = new ArrayList<>();
+
+    for (T element : nullSafeArray(array)) {
+      if (filter.accept(element)) {
+        arrayList.add(element);
+      }
+    }
+
+    return arrayList;
+  }
+
+  /**
+   * Returns the first element in the array (at index 0).
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array from which to extract the first element.
+   * @return the first element in the array or null if the array is null or empty.
+   * @see #isNotEmpty(Object[])
+   */
+  @NullSafe
   @SafeVarargs
-  public static <T> T getFirst(final T... array) {
-    return (isEmpty(array) ? null : array[0]);
+  public static <T> T getFirst(T... array) {
+    return (isNotEmpty(array) ? array[0] : null);
   }
 
   /**
    * Inserts element into the array at index.
    * 
-   * @param <T> the type of elements stored in the array.
-   * @param element the element to insert into the array.
-   * @param array the array used to insert the element.
-   * @param index the integer index at which the element will be inserted into the array.
-   * @return a new array with the element inserted at index.
+   * @param <T> Class type of the elements stored in the array.
+   * @param element element to insert into the array.
+   * @param array array in which the element is inserted.
+   * @param index an integer indicating the index into which the element will be inserted into the array.
+   * @return a new array with element inserted at index.
+   * @throws IllegalArgumentException if array is null.
+   * @throws ArrayIndexOutOfBoundsException if given index is not a valid index in the array.
+   * @see #append(Object, Object[])
+   * @see #prepend(Object, Object[])
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] insert(final T element, final T[] array, final int index) {
-    Assert.notNull(array, "the array in which the element will be inserted cannot be null");
+  public static <T> T[] insert(T element, T[] array, int index) {
+    Assert.notNull(array, "Array cannot be null");
 
     assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
-      String.format("(%1$d) is not a valid array index [0, %2$s]", index, array.length)))
+      String.format("[%1$d] is not a valid index [0, %2$d] in the array", index, array.length)))
         .isGreaterThanEqualToAndLessThanEqualTo(0, array.length);
 
     Class<?> componentType = array.getClass().getComponentType();
 
-    componentType = (componentType != null ? componentType : ObjectUtils.getClass(element));
-    componentType = (componentType != null ? componentType : Object.class);
+    componentType = defaultIfNull(componentType, ObjectUtils.getClass(element));
+    componentType = defaultIfNull(componentType, Object.class);
 
     T[] newArray = (T[]) Array.newInstance(componentType, array.length + 1);
 
@@ -348,138 +364,136 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Determines whether the specified Object array is empty.  An array of Objects is empty if the Object array
-   * reference is null, or Object array contains no elements (length of zero).
-   * 
-   * @param array the Object array being tested as empty.
-   * @return a boolean value indicating whether the specified Object array is empty.
-   * @see #length(Object[])
+   * Determines whether the array is empty.  An array is empty if it is null or contains no elements.
+   *
+   * @param array array to evaluate.
+   * @return a boolean value indicating whether the array is empty.
+   * @see #isNotEmpty(Object[])
+   * @see #count(Object[])
    */
-  public static boolean isEmpty(final Object[] array) {
-    return (length(array) == 0);
+  @NullSafe
+  public static boolean isEmpty(Object[] array) {
+    return (count(array) == 0);
   }
 
   /**
-   * Gets an Iterable over the elements in the specified Object array.
+   * Determines whether the array is non-empty.  An array is non-empty if it is not null and contains
+   * at least 1 element.
+   *
+   * @param array array to evaluate.
+   * @return a boolean value indicating whether the array is non-empty.
+   * @see #isEmpty(Object[])
+   */
+  @NullSafe
+  public static boolean isNotEmpty(Object[] array) {
+    return !isEmpty(array);
+  }
+
+  /**
+   * Returns an {@link Iterable} over the elements in the array.
    * 
-   * @param <T> the Class type of element in the Object array.
-   * @param array the Object array backing the Iterable implementation.
-   * @return an Iterable object over the elements in the array.
-   * @throws NullPointerException if the array is null.
+   * @param <T> Class type of the elements in the array.
+   * @param array array to iterate.
+   * @return an {@link Iterable) over the elements in the array
+   * or an empty {@link Iterable} if the array is null.
    * @see #iterator(Object[])
    * @see java.lang.Iterable
    */
   @SafeVarargs
-  public static <T> Iterable<T> iterable(final T... array) {
-    Assert.notNull(array, "The array of elements cannot be null!");
-
-    return () -> ArrayUtils.iterator(array);
+  public static <T> Iterable<T> iterable(T... array) {
+    return () -> iterator(array);
   }
 
   /**
-   * Gets an Iterator to iterate over the elements in the specified Object array.
+   * Returns an {@link Iterator} to iterate over the elements in the array.
    * 
-   * @param array the Object array backing the Iterator implementation.
-   * @param <T> the Class type of the elements in the Object array.
-   * @return an Iterator over the elements in the Object array.
-   * @throws NullPointerException if the reference to the Object array is null.
+   * @param <T> Class type of the elements in the array.
+   * @param array array to iterate.
+   * @return an {@link Iterator} to iterate over the elements in the array.
    * @see java.util.Iterator
    */
   @SafeVarargs
-  public static <T> Iterator<T> iterator(final T... array) {
-    Assert.notNull(array, "The array of elements cannot be null!");
+  public static <T> Iterator<T> iterator(T... array) {
+    return (array == null ? Collections.emptyIterator() : new Iterator<T>() {
 
-    return new Iterator<T>() {
       private int index = 0;
 
+      @Override
       public boolean hasNext() {
         return (index < array.length);
       }
 
+      @Override
       public T next() {
-        Assert.isTrue(hasNext(), new NoSuchElementException("The Iterator has reached the end of the array!"));
+        Assert.isTrue(hasNext(), new NoSuchElementException("No more elements"));
         return array[index++];
       }
-
-      public void remove() {
-        throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-      }
-    };
-  }
-
-  /**
-   * Determines the length, or size of the Object array.  The size of the Object array is determined by it's length
-   * if non-null, otherwise 0 is returned for null Object arrays.
-   * 
-   * @param array the Object array who's length, or size is being determined.
-   * @return an integer value specifying the length, or size of the Object array.
-   */
-  public static int length(final Object[] array) {
-    return (array == null ? 0 : array.length);
+    });
   }
 
   /**
    * Null-safe method returning the array if not null otherwise returns an empty array.
    *
-   * @param array the object array reference being evaluated for null.
-   * @return the array if not null otherwise returns an empty array.
-   * @see java.lang.reflect.Array#newInstance(Class, int)
+   * @param <T> Class type of the elements in the array.
+   * @param array array to evalute.
+   * @return the array if not null otherwise return an empty array.
    * @see #nullSafeArray(Object[], Class)
    */
   @NullSafe
-  @SuppressWarnings("unchecked")
-  public static <T> T[] nullSafeArray(final T[] array) {
-    return ArrayUtils.nullSafeArray(array, Object.class);
+  public static <T> T[] nullSafeArray(T[] array) {
+    return nullSafeArray(array, componentType(array));
   }
 
   /**
    * Null-safe method returning the array if not null otherwise returns an empty array.
    *
-   * @param array the object array reference being evaluated for null.
-   * @param componentType {@link Class} type of the elements in the array.
-   * Defaults to the {@link Object} class type if null.
-   * @return the array if not null otherwise returns an empty array.
-   * @see java.lang.reflect.Array#newInstance(Class, int)
+   * @param <T> Class type of the elements in the array.
+   * @param array array to evaluate.
+   * @param componentType {@link Class} type of the elements in the array.  Defaults to {@link Object} if null.
+   * @return the array if not null otherwise return an empty array.
+   * @see #nullSafeArray(Object[])
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T[] nullSafeArray(final T[] array, final Class<?> componentType) {
-    return (array != null ? array : (T[]) Array.newInstance(ObjectUtils.defaultIfNull(componentType, Object.class), 0));
+  public static <T> T[] nullSafeArray(T[] array, Class<?> componentType) {
+    return (array != null ? array : (T[]) Array.newInstance(defaultIfNull(componentType, Object.class), 0));
+  }
+
+  /* non-Javadoc */
+  @SuppressWarnings("unchecked")
+  static <T> Class<?> componentType(T[] array) {
+    return defaultIfNull((array != null ? array.getClass().getComponentType() : null), Object.class);
   }
 
   /**
-   * Prepends (insert) element at the beginning of the array.
+   * Prepends (inserts) the element to the beginning of the array.
    * 
-   * @param <T> the type of elements stored in the array.
-   * @param element the element to insert into the array.
-   * @param array the array used to insert the element.
+   * @param <T> Class type of the elements in the array.
+   * @param element element to insert at the beginning of the array.
+   * @param array array in which to insert the element.
    * @return a new array with the element inserted at the beginning.
    * @see #insert(Object, Object[], int)
    */
-  public static <T> T[] prepend(final T element, T[] array) {
+  public static <T> T[] prepend(T element, T[] array) {
     return insert(element, array, 0);
   }
 
   /**
-   * Shuffles the elements in the given array.  This method guarantees a random, uniform shuffling of the elements
-   * in the array, and has an operational efficiency of O(n).
+   * Shuffles the elements in the array.  This method guarantees a random, uniform shuffling of the elements
+   * in the array with an operational efficiency of O(n).
    *
-   * @param <T> the class type of the elements in the array.
-   * @param array the array of elements to shuffle.
-   * @return the shuffled array of elements.
-   * @throws java.lang.NullPointerException if the array references is null.
+   * @param <T> Class type of the elements in the array.
+   * @param array array to shuffle.
+   * @return the array of elements shuffled.
    */
-  public static <T> T[] shuffle(final T[] array) {
-    Assert.notNull(array, "The Array to shuffle must not be null!");
-
-    if (!isEmpty(array)) {
+  @NullSafe
+  public static <T> T[] shuffle(T[] array) {
+    if (isNotEmpty(array)) {
       Random random = new Random(System.currentTimeMillis());
 
-      for (int index = 0, adjustedLength = length(array) - 1; index < adjustedLength; index++) {
-        T elementAtIndex = array[index];
+      for (int index = 0, adjustedLength = count(array) - 1; index < adjustedLength; index++) {
         int randomIndex = (random.nextInt(adjustedLength - index) + 1);
-        array[index] = array[randomIndex];
-        array[randomIndex] = elementAtIndex;
+        swap(array, index, randomIndex);
       }
     }
 
@@ -495,29 +509,46 @@ public abstract class ArrayUtils {
    * @return a sub-array from the given array with the values at the specified indices in the given array.
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] subArray(final T[] array, int... indices) {
-    List<T> subArray = new ArrayList<>(indices.length);
+  public static <T> T[] subArray(T[] array, int... indices) {
+    List<T> subArrayList = new ArrayList<>(indices.length);
 
     for (int index : indices) {
-      subArray.add(array[index]);
+      subArrayList.add(array[index]);
     }
 
-    return subArray.toArray((T[]) Array.newInstance(getComponentType(array), indices.length));
+    return subArrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), subArrayList.size()));
   }
 
   /**
-   * Transforms the elements in the given Object array using the specified Transformer.
+   * Swaps elements in the array at indexOne and indexTwo.
    *
-   * @param <T> the Class type of the array elements.
-   * @param array the Object array who's elements will be transformed by the specified Transformer.
-   * @param transformer the Transformer used to transform the elements in the array.
-   * @return the Object array with it's elements transformed.
-   * @throws java.lang.NullPointerException if the Object array or Transformer references are null.
+   * @param <T> Class type of the elements in the array.
+   * @param array array with elements to swap.
+   * @param indexOne index of the first element to swap.
+   * @param indexTwo index of the second element to swap.
+   * @return the array with the specified elements at indexOne and indexTwo swapped.
+   * @throws NullPointerException if the array is null.
+   */
+  public static <T> T[] swap(T[] array, int indexOne, int indexTwo) {
+    T elementAtIndexOne = array[indexOne];
+    array[indexOne] = array[indexTwo];
+    array[indexTwo] = elementAtIndexOne;
+    return array;
+  }
+
+  /**
+   * Transforms the elements in the array using the {@link Transformer}.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array of elements to transform.
+   * @param transformer {@link Transformer} used to transform the elements in the array.
+   * @return the array elements transformed.
+   * @throws IllegalArgumentException if either array or {@link Transformer} are null.
    * @see org.cp.elements.lang.Transformer
    */
-  public static <T> T[] transform(final T[] array, final Transformer<T> transformer) {
-    Assert.notNull(array, "The Object array who's elements will be transformed cannot be null!");
-    Assert.notNull(transformer, "The Transformer used to transform the array elements cannot be null!");
+  public static <T> T[] transform(T[] array, Transformer<T> transformer) {
+    Assert.notNull(array, "Array cannot be null");
+    Assert.notNull(transformer, "Transformer cannot be null");
 
     int index = 0;
 
@@ -527,12 +558,4 @@ public abstract class ArrayUtils {
 
     return array;
   }
-
-  /* non-Javadoc */
-  @SuppressWarnings("unchecked")
-  private static Class<?> getComponentType(final Object[] array) {
-    Class<?> type = (!isEmpty(array) ? ClassUtils.getClass(array[0]) : null);
-    return ObjectUtils.defaultIfNull(type, Object.class);
-  }
-
 }
