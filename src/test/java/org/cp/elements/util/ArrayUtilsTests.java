@@ -87,7 +87,7 @@ public class ArrayUtilsTests {
 
   @SuppressWarnings("unchecked")
   protected <T> T[] copy(T[] array) {
-    T[] arrayCopy = (T[]) Array.newInstance(array[0].getClass(), array.length);
+    T[] arrayCopy = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
     System.arraycopy(array, 0, arrayCopy, 0, array.length);
     return arrayCopy;
   }
@@ -223,19 +223,24 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void countReturnsArrayLength() {
+    Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    assertThat(ArrayUtils.count(array), is(equalTo(array.length)));
+  }
+
+  @Test
+  public void countReturnsEmptyArrayLength() {
+    assertThat(ArrayUtils.count(new Object[10]), is(equalTo(10)));
+  }
+
+  @Test
   public void count() {
     Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     assertNotNull(array);
     assertEquals(10, array.length);
     assertEquals(5, ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isEven));
-  }
-
-  @Test
-  public void countReturnsLength() {
-    Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-
-    assertEquals(array.length, ArrayUtils.count(array, DefaultFilter.getInstance(true)));
   }
 
   @Test
