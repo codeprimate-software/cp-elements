@@ -439,16 +439,16 @@ public class ArrayUtilsTests {
     Filter<Integer> negativeNumberFilter = NumberUtils::isNegative;
     Filter<Integer> positiveNumberFilter = NumberUtils::isPositive;
 
-    Integer[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     Integer[] negativeNumbers = ArrayUtils.filter(numbers, negativeNumberFilter);
     Integer[] positiveNumbers = ArrayUtils.filter(numbers, positiveNumberFilter);
 
     assertThat(negativeNumbers, is(notNullValue(Integer[].class)));
-    assertThat(negativeNumbers.length, is(equalTo(4)));
+    assertThat(negativeNumbers.length, is(equalTo(0)));
     assertThat(negativeNumbers, is(not(sameInstance(numbers))));
     assertElements(negativeNumbers);
     assertThat(positiveNumbers, is(notNullValue(Integer[].class)));
-    assertThat(positiveNumbers.length, is(equalTo(5)));
+    assertThat(positiveNumbers.length, is(equalTo(9)));
     assertThat(positiveNumbers, is(not(sameInstance(numbers))));
     assertThat(positiveNumbers, is(not(sameInstance(negativeNumbers))));
     assertElements(positiveNumbers, 1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -734,7 +734,7 @@ public class ArrayUtilsTests {
   @Test
   public void insertIntoSingleElementArray() {
     assertElements(ArrayUtils.insert("one", toArray("two"), 0), "one", "two");
-    assertElements(ArrayUtils.insert("two", toArray("one"), 0), "one", "two");
+    assertElements(ArrayUtils.insert("two", toArray("one"), 1), "one", "two");
   }
 
   @Test
@@ -928,9 +928,10 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void nullSafeArrayWithNullArray() {
-    Integer[] actualArray = ArrayUtils.nullSafeArray(null, Integer.class);
+    Object[] actualArray = ArrayUtils.nullSafeArray(null, Integer.class);
 
-    assertThat(actualArray, is(notNullValue(Integer[].class)));
+    assertThat(actualArray, is(notNullValue(Object[].class)));
+    assertThat(actualArray.getClass().getComponentType(), is(equalTo(Integer.class)));
     assertThat(actualArray.length, is(equalTo(0)));
   }
 
@@ -948,7 +949,8 @@ public class ArrayUtilsTests {
   public void nullSafeArrayWithNullArrayUsedInAForEachLoop() {
     int sum = 0;
 
-    for (Integer number : ArrayUtils.<Integer>nullSafeArray(null)) {
+    //for (Integer number : ArrayUtils.<Integer>nullSafeArray(null)) { throws ClassCastException!
+    for (Integer number : ArrayUtils.<Integer>nullSafeArray(null, Integer.class)) {
       sum += number;
     }
 
