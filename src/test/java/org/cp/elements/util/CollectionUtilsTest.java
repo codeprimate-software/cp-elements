@@ -93,7 +93,7 @@ public class CollectionUtilsTest {
     Collection<String> collection = Arrays.asList("test", "testing", "tested");
 
     assertNotNull(collection);
-    assertEquals(collection.size(), CollectionUtils.count(collection, new DefaultFilter<>(true)));
+    assertEquals(collection.size(), CollectionUtils.count(collection, DefaultFilter.getInstance(true)));
   }
 
   @Test
@@ -101,12 +101,12 @@ public class CollectionUtilsTest {
     Collection<String> collection = Arrays.asList("test", "testing", "tested");
 
     assertNotNull(collection);
-    assertEquals(0, CollectionUtils.count(collection, new DefaultFilter<>(false)));
+    assertEquals(0, CollectionUtils.count(collection, DefaultFilter.getInstance(false)));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void countWithNullCollection() {
-    CollectionUtils.count(null, new DefaultFilter<>(true));
+    CollectionUtils.count(null, DefaultFilter.getInstance(true));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -237,7 +237,7 @@ public class CollectionUtilsTest {
     assertFalse(collection.isEmpty());
     assertEquals(3, collection.size());
 
-    Collection<String> filteredCollection = CollectionUtils.filter(collection, new DefaultFilter<>(false));
+    Collection<String> filteredCollection = CollectionUtils.filter(collection, DefaultFilter.getInstance(false));
 
     assertSame(collection, filteredCollection);
     assertTrue(collection.isEmpty());
@@ -251,7 +251,7 @@ public class CollectionUtilsTest {
     assertFalse(collection.isEmpty());
     assertEquals(3, collection.size());
 
-    Collection<String> filteredCollection = CollectionUtils.filter(collection, new DefaultFilter<>(true));
+    Collection<String> filteredCollection = CollectionUtils.filter(collection, DefaultFilter.getInstance(true));
 
     assertSame(collection, filteredCollection);
     assertFalse(collection.isEmpty());
@@ -260,7 +260,7 @@ public class CollectionUtilsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void filterNullCollection() {
-    CollectionUtils.filter(null, new DefaultFilter<>(true));
+    CollectionUtils.filter(null, DefaultFilter.getInstance(true));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -356,7 +356,7 @@ public class CollectionUtilsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void findWithNullIterable() {
-    CollectionUtils.find(null, new DefaultFilter<>(true));
+    CollectionUtils.find(null, DefaultFilter.getInstance(true));
   }
 
   @Test
@@ -382,7 +382,7 @@ public class CollectionUtilsTest {
   @Test
   public void findAllWithNonMatchingFilter() {
     List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-    List<Integer> actualNumbers = CollectionUtils.findAll(numbers, new DefaultFilter<>(false));
+    List<Integer> actualNumbers = CollectionUtils.findAll(numbers, DefaultFilter.getInstance(false));
 
     assertNotNull(actualNumbers);
     assertNotSame(numbers, actualNumbers);
@@ -397,7 +397,7 @@ public class CollectionUtilsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullIterable() {
-    CollectionUtils.findAll(null, new DefaultFilter<>(true));
+    CollectionUtils.findAll(null, DefaultFilter.getInstance(true));
   }
 
   @Test
@@ -581,20 +581,20 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void sizeOfCollection() {
-    assertEquals(0, CollectionUtils.size(null));
-    assertEquals(0, CollectionUtils.size(Collections.emptyList()));
-    assertEquals(0, CollectionUtils.size(Collections.emptySet()));
-    assertEquals(1, CollectionUtils.size(Collections.singletonList("test")));
-    assertEquals(1, CollectionUtils.size(Collections.singleton("test")));
-    assertEquals(3, CollectionUtils.size(from(null, null, null).toList()));
-    assertEquals(1, CollectionUtils.size(from("test", "test", "test").toSet()));
-    assertEquals(2, CollectionUtils.size(from('x', "x").toSet()));
-    assertEquals(2, CollectionUtils.size(from("x", "X").toSet()));
-    assertEquals(2, CollectionUtils.size(from("O", "0").toSet()));
-    assertEquals(3, CollectionUtils.size(from("test", "testing", "tested").toList()));
-    assertEquals(3, CollectionUtils.size(from("test", "testing", "tested").toSet()));
-    assertEquals(3, CollectionUtils.size(from("test", "TEST", "Test").toSet()));
+  public void countIterable() {
+    assertEquals(0, CollectionUtils.count(null));
+    assertEquals(0, CollectionUtils.count(Collections.emptyList()));
+    assertEquals(0, CollectionUtils.count(Collections.emptySet()));
+    assertEquals(1, CollectionUtils.count(Collections.singletonList("test")));
+    assertEquals(1, CollectionUtils.count(Collections.singleton("test")));
+    assertEquals(3, CollectionUtils.count(from(null, null, null).toList()));
+    assertEquals(1, CollectionUtils.count(from("test", "test", "test").toSet()));
+    assertEquals(2, CollectionUtils.count(from('x', "x").toSet()));
+    assertEquals(2, CollectionUtils.count(from("x", "X").toSet()));
+    assertEquals(2, CollectionUtils.count(from("O", "0").toSet()));
+    assertEquals(3, CollectionUtils.count(from("test", "testing", "tested").toList()));
+    assertEquals(3, CollectionUtils.count(from("test", "testing", "tested").toSet()));
+    assertEquals(3, CollectionUtils.count(from("test", "TEST", "Test").toSet()));
   }
 
   @Test
