@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
-import org.cp.elements.lang.support.DefaultFilter;
 import org.junit.Test;
 
 /**
@@ -71,7 +70,7 @@ public class MapUtilsTest {
     map.put("key", "value");
 
     assertNotNull(map);
-    assertEquals(map.size(), MapUtils.count(map, new DefaultFilter<>(true)));
+    assertEquals(map.size(), MapUtils.count(map, (entry) -> true));
   }
 
   @Test
@@ -81,12 +80,12 @@ public class MapUtilsTest {
     map.put("key", "value");
 
     assertNotNull(map);
-    assertEquals(0, MapUtils.count(map, new DefaultFilter<>(false)));
+    assertEquals(0, MapUtils.count(map, (entry) -> false));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testCountWithNullMap() {
-    MapUtils.count(null, new DefaultFilter<>(true));
+    MapUtils.count(null, (entry) -> true);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -153,7 +152,7 @@ public class MapUtilsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testFilterWithNullMap() {
-    MapUtils.filter(null, new DefaultFilter<>(true));
+    MapUtils.filter(null, (entry) -> true);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -188,7 +187,7 @@ public class MapUtilsTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testFindWithNullMap() {
-    MapUtils.find(null, new DefaultFilter<>(true));
+    MapUtils.find(null, (entry) -> true);
   }
 
   @Test(expected = IllegalArgumentException.class)

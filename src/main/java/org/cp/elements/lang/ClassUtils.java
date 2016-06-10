@@ -142,7 +142,7 @@ public abstract class ClassUtils {
     for (Constructor<?> constructor : type.getDeclaredConstructors()) {
       Class<?>[] parameterTypes = constructor.getParameterTypes();
 
-      if (ArrayUtils.length(arguments) == parameterTypes.length) {
+      if (ArrayUtils.nullSafeLength(arguments) == parameterTypes.length) {
         boolean match = true;
 
         for (int index = 0; match && index < parameterTypes.length; index++) {
@@ -260,7 +260,7 @@ public abstract class ClassUtils {
       if (method.getName().equals(methodName)) {
         Class<?>[] parameterTypes = method.getParameterTypes();
 
-        if (ArrayUtils.length(arguments) == parameterTypes.length) {
+        if (ArrayUtils.nullSafeLength(arguments) == parameterTypes.length) {
           boolean match = true;
 
           for (int index = 0; match && index < parameterTypes.length; index++) {
@@ -643,5 +643,4 @@ public abstract class ClassUtils {
 
     return result;
   }
-
 }

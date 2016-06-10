@@ -266,9 +266,9 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
       T object;
 
       if (!ArrayUtils.isEmpty(constructor.getParameterTypes())) {
-        Assert.equals(ArrayUtils.length(constructor.getParameterTypes()), ArrayUtils.length(args),
+        Assert.equals(ArrayUtils.nullSafeLength(constructor.getParameterTypes()), ArrayUtils.nullSafeLength(args),
           "The number of arguments ({0,number,integer}) does not match the number of parameters ({1,number,integer}) for constructor ({2}) in Class ({3})!",
-            ArrayUtils.length(args), ArrayUtils.length(constructor.getParameterTypes()), constructor, objectType);
+            ArrayUtils.nullSafeLength(args), ArrayUtils.nullSafeLength(constructor.getParameterTypes()), constructor, objectType);
 
         object = postConstruct(objectType.cast(constructor.newInstance(args)));
       }
@@ -298,5 +298,4 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   protected <T> T postConstruct(final T object, final Object... args) {
     return object;
   }
-
 }
