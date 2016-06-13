@@ -146,7 +146,6 @@ public abstract class CollectionUtils {
    * by the {@link Filter}.
    * 
    * @param <T> Class type of the elements in the {@link Collection}.
-   * @param <C> Class type of the {@link Collection} subtype.
    * @param collection {@link Collection} to filter.
    * @param filter {@link Filter} used to filter the {@link Collection}.
    * @return a filtered {@link Collection} of elements accepted by the {@link Filter}.
@@ -154,33 +153,34 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Filter
    */
   @SuppressWarnings("unchecked")
-  public static <T, C extends Collection<T>> C filter(C  collection, Filter<T> filter) {
+  public static <T> Collection<T> filter(Collection<T>  collection, Filter<T> filter) {
     Assert.notNull(collection, "Collection cannot be null");
     Assert.notNull(filter, "Filter cannot be null");
 
-    return (C) collection.stream().filter(filter::accept).collect(Collectors.toList());
+    return collection.stream().filter(filter::accept).collect(Collectors.toList());
   }
 
   /**
    * Filters and transforms the {@link Collection} of elements using the specified {@link FilteringTransformer}.
    *
    * @param <T> Class type of the elements in the {@link Collection}.
-   * @param <C> Class type of the {@link Collection} subtype.
    * @param collection {@link Collection} to filter and transform.
    * @param filteringTransformer {@link FilteringTransformer} used to filter and transform the {@link Collection}.
    * @return a filtered, transformed {@link Collection} of elements accepted and modified
    * by the {@link FilteringTransformer}.
    * @throws IllegalArgumentException if either the {@link Collection} or {@link FilteringTransformer} are null.
-   * @see #filter(java.util.Collection, org.cp.elements.lang.Filter)
-   * @see #transform(java.util.Collection, org.cp.elements.lang.Transformer)
    * @see org.cp.elements.lang.FilteringTransformer
    * @see java.util.Collection
    */
   @SuppressWarnings("unchecked")
-  public static <T, C extends Collection<T>> C filterAndTransform(C collection,
+  public static <T> Collection<T> filterAndTransform(Collection<T> collection,
       FilteringTransformer<T> filteringTransformer) {
 
-    return transform(filter(collection, filteringTransformer), filteringTransformer);
+    Assert.notNull(collection, "Collection cannot be null");
+    Assert.notNull(filteringTransformer, "FilteringTransformer cannot be null");
+
+    return collection.stream().filter(filteringTransformer::accept).map(filteringTransformer::transform)
+      .collect(Collectors.toList());
   }
 
   /**
@@ -392,6 +392,18 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Determines the size of the Collection.
+   *
+   * @param collection {@link Collection} to evaluate.
+   * @return the size of, or number of elements in the {@link Collection}.
+   * @see java.util.Collection#size()
+   */
+  @NullSafe
+  public static int nullSafeSize(Collection<?> collection) {
+    return (collection != null ? collection.size() : 0);
+  }
+
+  /**
    * Shuffles the elements in the {@link List}.  This method guarantees a random, uniform shuffling of the elements
    * in the {@link List} with an operational efficiency of O(n).
    *
@@ -479,7 +491,6 @@ public abstract class CollectionUtils {
    * Transforms the elements in the {@link Collection} using the {@link Transformer}.
    *
    * @param <T> Class type of the elements in the {@link Collection}.
-   * @param <C> Class type of the {@link Collection} subtype.
    * @param collection {@link Collection} of elements to transform.
    * @param transformer {@link Transformer} used to transform the elements in the {@link Collection}.
    * @return the {@link Collection} of elements transformed by the given {@link Transformer}.
@@ -488,11 +499,11 @@ public abstract class CollectionUtils {
    * @see java.util.Collection
    */
   @SuppressWarnings("unchecked")
-  public static <T, C extends Collection<T>> C transform(C collection, Transformer<T> transformer) {
+  public static <T> Collection<T> transform(Collection<T> collection, Transformer<T> transformer) {
     Assert.notNull(collection, "Collection cannot be null");
     Assert.notNull(transformer, "Transformer cannot be null");
 
-    return (C) collection.stream().map(transformer::transform).collect(Collectors.toList());
+    return collection.stream().map(transformer::transform).collect(Collectors.toList());
   }
 
   /**
