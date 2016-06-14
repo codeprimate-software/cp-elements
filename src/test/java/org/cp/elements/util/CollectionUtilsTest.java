@@ -256,14 +256,14 @@ public class CollectionUtilsTest {
 
   @Test
   public void enumerationForIterator() {
-    Iterator<String> iterator = asIterator("test", "testing", "tested");
-    Enumeration<String> enumeration = CollectionUtils.enumeration(iterator);
+    String[] elements = { "test", "testing", "tested"};
+    Enumeration<String> enumeration = CollectionUtils.enumeration(asIterator(elements));
 
     assertThat(enumeration, is(notNullValue(Enumeration.class)));
 
-    while (iterator.hasNext()) {
+    for (String element : elements) {
       assertThat(enumeration.hasMoreElements(), is(true));
-      assertThat(enumeration.nextElement(), is(equalTo(iterator.next())));
+      assertThat(enumeration.nextElement(), is(equalTo(element)));
     }
   }
 
@@ -664,15 +664,18 @@ public class CollectionUtilsTest {
 
   @Test
   public void iterableWithEnumeration() {
-    Enumeration<Integer> enumeration = asEnumeration(0, 1, 2);
-    Iterable<Integer> iterable = CollectionUtils.iterable(enumeration);
+    Integer[] elements = { 0, 1, 2 };
+    Iterable<Integer> iterable = CollectionUtils.iterable(asEnumeration(elements));
 
     assertThat(iterable, is(notNullValue(Iterable.class)));
 
-    for (Integer number : iterable) {
-      assertThat(enumeration.hasMoreElements(), is(true));
-      assertThat(number, is(equalTo(enumeration.nextElement())));
+    int index = 0;
+
+    for (Integer element : iterable) {
+      assertThat(element, is(equalTo(elements[index++])));
     }
+
+    assertThat(index, is(equalTo(elements.length)));
   }
 
   @Test
@@ -695,15 +698,18 @@ public class CollectionUtilsTest {
 
   @Test
   public void iterableWithIterator() {
-    Iterator<Integer> iterator = asIterator(0, 1, 2);
-    Iterable<Integer> iterable = CollectionUtils.iterable(iterator);
+    Integer[] elements = { 0, 1, 2 };
+    Iterable<Integer> iterable = CollectionUtils.iterable(asIterator(elements));
 
     assertThat(iterable, is(notNullValue(Iterable.class)));
 
+    int index = 0;
+
     for (Integer element : iterable) {
-      assertThat(iterator.hasNext(), is(true));
-      assertThat(element, is(equalTo(iterator.next())));
+      assertThat(element, is(equalTo(elements[index++])));
     }
+
+    assertThat(index, is(equalTo(elements.length)));
   }
 
   @Test
@@ -726,14 +732,14 @@ public class CollectionUtilsTest {
 
   @Test
   public void iteratorForEnumeration() {
-    Enumeration<?> enumeration = asEnumeration(0, 1, 2);
-    Iterator<?> iterator = CollectionUtils.iterator(enumeration);
+    Integer[] elements = { 0, 1, 2 };
+    Iterator<Integer> iterator = CollectionUtils.iterator(asEnumeration(elements));
 
     assertThat(iterator, is(notNullValue(Iterator.class)));
 
-    while (iterator.hasNext()) {
-      assertThat(enumeration.hasMoreElements(), is(true));
-      assertThat(iterator.next(), is(equalTo(enumeration.nextElement())));
+    for (Integer element : elements) {
+      assertThat(iterator.hasNext(), is(true));
+      assertThat(iterator.next(), is(equalTo(element)));
     }
   }
 
@@ -816,96 +822,6 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void iterator() {
-    Vector<Object> expectedVector = new Vector<>(3);
-
-    expectedVector.add("test");
-    expectedVector.add("testing");
-    expectedVector.add("tested");
-
-    Iterator<?> expectedVectorIterator = CollectionUtils.iterator(expectedVector.elements());
-
-    assertNotNull(expectedVectorIterator);
-
-    int index = 0;
-
-    while (expectedVectorIterator.hasNext()) {
-      assertEquals(expectedVector.get(index++), expectedVectorIterator.next());
-    }
-
-    assertEquals(expectedVector.size(), index);
-  }
-
-  @Test(expected = UnsupportedOperationException.class)
-  public void iteratorModification() {
-    Vector<Object> vector = new Vector<>(3);
-
-    vector.add("test");
-    vector.add("testing");
-    vector.add("tested");
-
-    assertNotNull(vector);
-    assertEquals(3, vector.size());
-
-    Iterator<?> iterator = CollectionUtils.iterator(vector.elements());
-
-    assertNotNull(iterator);
-    assertTrue(iterator.hasNext());
-    assertEquals("test", iterator.next());
-    assertTrue(iterator.hasNext());
-
-    try {
-      iterator.remove();
-    }
-    finally {
-      assertEquals(3, vector.size());
-    }
-  }
-
-  @Test(expected = NoSuchElementException.class)
-  public void iteratorWithExhaustedEnumeration() {
-    Vector<Object> vector = new Vector<>(1);
-
-    vector.add("test");
-
-    Iterator<?> iterator = CollectionUtils.iterator(vector.elements());
-
-    assertNotNull(iterator);
-    assertTrue(iterator.hasNext());
-    assertEquals("test", iterator.next());
-    assertFalse(iterator.hasNext());
-
-    iterator.next();
-  }
-
-  @Test
-  public void iteratorWithNoElementEnumeration() {
-    final Iterator<?> zeroElementIterator = CollectionUtils.iterator(new Vector<>().elements());
-
-    assertNotNull(zeroElementIterator);
-    assertFalse(zeroElementIterator.hasNext());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void iteratorWithNullEnumeration() {
-    CollectionUtils.iterator((Enumeration<?>) null);
-  }
-
-  @Test
-  public void iteratorWithSingleElementEnumeration() {
-    Vector<Object> singleElementVector = new Vector<>(1);
-
-    singleElementVector.add("test");
-
-    Iterator<?> singleElementIterator = CollectionUtils.iterator(singleElementVector.elements());
-
-    assertNotNull(singleElementIterator);
-    assertTrue(singleElementIterator.hasNext());
-    assertEquals("test", singleElementIterator.next());
-    assertFalse(singleElementIterator.hasNext());
-  }
-
-  @Test
   public void shuffle() {
     List<Integer> numberList = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
     List<Integer> shuffledNumberList = CollectionUtils.shuffle(new ArrayList<>(numberList));
@@ -930,9 +846,9 @@ public class CollectionUtilsTest {
     assertTrue(shuffledEmptyList.isEmpty());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void shuffleNullList() {
-    CollectionUtils.shuffle(null);
+    assertThat(CollectionUtils.shuffle(null), is(nullValue(List.class)));
   }
 
   @Test
@@ -992,21 +908,22 @@ public class CollectionUtilsTest {
 
     Transformer<String> transformer = StringUtils::toUpperCase;
 
-    Collection<String> actualCollection = CollectionUtils.transform(collection, transformer);
+    Collection<String> transformedCollection = CollectionUtils.transform(collection, transformer);
 
-    assertSame(collection, actualCollection);
-    assertFalse(actualCollection.isEmpty());
-    assertEquals(3, actualCollection.size());
-    assertThat(collection.containsAll(asCollection("TEST", "TESTING", "TESTED")), is(true));
+    assertThat(transformedCollection, is(notNullValue(Collection.class)));
+    assertThat(transformedCollection, is(not(sameInstance(collection))));
+    assertThat(transformedCollection.size(), is(equalTo(collection.size())));
+    assertThat(transformedCollection.containsAll(asCollection("TEST", "TESTING", "TESTED")), is(true));
   }
 
   @Test
   public void transformEmptyCollection() {
     Collection<Object> collection = Collections.emptySet();
+    Collection<Object> transformedCollection = CollectionUtils.transform(collection, (value) -> "test");
 
-    assertTrue(collection.isEmpty());
-    assertSame(collection, CollectionUtils.transform(collection, (value) -> null));
-    assertTrue(collection.isEmpty());
+    assertThat(transformedCollection, is(notNullValue(Collection.class)));
+    assertThat(transformedCollection, is(not(sameInstance(collection))));
+    assertThat(transformedCollection.isEmpty(), is(true));
   }
 
   @Test(expected = IllegalArgumentException.class)

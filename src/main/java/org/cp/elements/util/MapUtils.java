@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Transformer;
 
 /**
@@ -40,6 +41,11 @@ import org.cp.elements.lang.Transformer;
 @SuppressWarnings("unused")
 public abstract class MapUtils {
 
+  @NullSafe
+  public static <K, V> int count(Map<K, V> map) {
+    return size(map);
+  }
+
   /**
    * Counts the number of key-value pairs in the Map matching the criteria defined by the Filter.
    * 
@@ -53,7 +59,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    * @see org.cp.elements.lang.Filter
    */
-  public static <K, V> int count(final Map<K, V> map, final Filter<Map.Entry<K, V>> filter) {
+  public static <K, V> int count(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
     return find(map, filter).size();
   }
 

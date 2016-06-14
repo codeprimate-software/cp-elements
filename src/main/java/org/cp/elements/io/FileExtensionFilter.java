@@ -47,7 +47,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File> {
    * to accept files.
    * @see #FileExtensionFilter(Iterable)
    */
-  public FileExtensionFilter(final String... fileExtensions) {
+  public FileExtensionFilter(String... fileExtensions) {
     this(ArrayUtils.iterable(fileExtensions));
   }
 
@@ -59,7 +59,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File> {
    * to accept files.
    * @see java.lang.Iterable
    */
-  public FileExtensionFilter(final Iterable<String> fileExtensions) {
+  public FileExtensionFilter(Iterable<String> fileExtensions) {
     this.fileExtensions = new TreeSet<>();
 
     if (fileExtensions != null) {

@@ -84,12 +84,14 @@ public abstract class CollectionUtils {
    * accepted by the {@link Filter}.
    * @return an integer value indicating the number of elements in the {@link Iterable} collection accepted
    * by the {@link Filter}.
+   * @throws IllegalArgumentException if {@link Filter} is null.
    * @see java.lang.Iterable
    * @see org.cp.elements.lang.Filter
    * @see #nullSafeIterable(Iterable)
    */
-  @NullSafe
   public static <T> int count(Iterable<T> iterable, Filter<T> filter) {
+    Assert.notNull(filter, "Filter cannot be null");
+
     int count = 0;
 
     for (T element : nullSafeIterable(iterable)) {
