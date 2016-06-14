@@ -437,11 +437,14 @@ public abstract class CollectionUtils {
    * @param list {@link List} of elements from which to create the sub-list.
    * @param indices array of indices referring to values in the {@link List} to include in the sub-list.
    * @return a sub-list containing values at the given indices in the {@link List}.
+   * @throws IllegalArgumentException if either the {@link List} or array of indices are null.
    * @throws IndexOutOfBoundsException if the indices are not valid indexes in the {@link List}.
-   * @throws NullPointerException if either the {@link List} or array of indices are null.
    * @see java.util.List
    */
   public static <T> List<T> subList(List<T> list, int... indices) {
+    Assert.notNull(list, "List cannot be null");
+    Assert.notNull(indices, "Indices cannot be null");
+
     List<T> subList = new ArrayList<>(indices.length);
 
     for (int index : indices) {

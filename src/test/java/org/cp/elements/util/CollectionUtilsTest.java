@@ -16,19 +16,12 @@
 
 package org.cp.elements.util;
 
-import static org.cp.elements.util.CollectionExtensions.from;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
@@ -41,12 +34,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.Vector;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
@@ -54,7 +45,6 @@ import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.Transformer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -265,6 +255,8 @@ public class CollectionUtilsTest {
       assertThat(enumeration.hasMoreElements(), is(true));
       assertThat(enumeration.nextElement(), is(equalTo(element)));
     }
+
+    assertThat(enumeration.hasMoreElements(), is(false));
   }
 
   @Test
@@ -741,6 +733,26 @@ public class CollectionUtilsTest {
       assertThat(iterator.hasNext(), is(true));
       assertThat(iterator.next(), is(equalTo(element)));
     }
+
+    assertThat(iterator.hasNext(), is(false));
+  }
+
+  @Test
+  public void iteratorForEnumerationIsUnmodifiable() {
+    Iterator<String> iterator = CollectionUtils.iterator(asEnumeration("test"));
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(true));
+
+    try {
+      exception.expect(UnsupportedOperationException.class);
+      iterator.remove();
+    }
+    finally {
+      assertThat(iterator.hasNext(), is(true));
+      assertThat(iterator.next(), is(equalTo("test")));
+      assertThat(iterator.hasNext(), is(false));
+    }
   }
 
   @Test
@@ -770,80 +782,158 @@ public class CollectionUtilsTest {
   }
 
   @Test
-  public void test() {
+  public void nullSafeEnumerationWithEnumeration() {
+    Enumeration<?> enumeration = asEnumeration("test");
+
+    assertThat(CollectionUtils.nullSafeEnumeration(enumeration), is(sameInstance(enumeration)));
+  }
+
+  @Test
+  public void nullSafeEnumerationWithEmptyEnumeration() {
+    Enumeration<?> enumeration = Collections.emptyEnumeration();
+
+    assertThat(CollectionUtils.nullSafeEnumeration(enumeration), is(sameInstance(enumeration)));
+  }
+
+  @Test
+  public void nullSafeEnumerationWithNullEnumeration() {
+    Enumeration<?> enumeration = CollectionUtils.nullSafeEnumeration(null);
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void nullSafeIterableWithIterable() {
+    Iterable<?> iterable = asIterable("test");
+
+    assertThat(CollectionUtils.nullSafeIterable(iterable), is(sameInstance(iterable)));
+  }
+
+  @Test
+  public void nullSafeIterableWithEmptyIterable() {
+    Iterable<?> iterable = asIterable();
+
+    assertThat(CollectionUtils.nullSafeIterable(iterable), is(sameInstance(iterable)));
+  }
+
+  @Test
+  public void nullSafeIterableWithNullIterable() {
+    Iterable<?> iterable = CollectionUtils.nullSafeIterable(null);
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void nullSafeIteratorWithIterator() {
+    Iterator<?> iterator = asIterator("test");
+
+    assertThat(CollectionUtils.nullSafeIterator(iterator), is(sameInstance(iterator)));
+  }
+
+  @Test
+  public void nullSafeIteratorWithEmptyIterator() {
+    Iterator<?> iterator = Collections.emptyIterator();
+
+    assertThat(CollectionUtils.nullSafeIterator(iterator), is(sameInstance(iterator)));
+  }
+
+  @Test
+  public void nullSafeIteratorWithNullIterator() {
+    Iterator<?> iterator = CollectionUtils.nullSafeIterator(null);
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(false));
   }
 
   @Test
   public void nullSafeListWitList() {
-    List<?> expectedList = Arrays.asList("test", "testing", "tested");
-    List<?> actualList = CollectionUtils.nullSafeList(expectedList);
+    List<?> list = Collections.singletonList("test");
 
-    assertThat(actualList, is(sameInstance(actualList)));
+    assertThat(CollectionUtils.nullSafeList(list), is(sameInstance(list)));
   }
 
   @Test
-  public void nullSafeListWithEmptyList() {
-    List<?> expectedList = new ArrayList<>(0);
-    List<?> actualList = CollectionUtils.nullSafeList(expectedList);
+  public void nullSafeListWitEmptyList() {
+    List<?> list = Collections.emptyList();
 
-    assertThat(actualList, is(sameInstance(expectedList)));
+    assertThat(CollectionUtils.nullSafeList(list), is(sameInstance(list)));
   }
 
   @Test
   public void nullSafeListWithNullList() {
-    List<?> actualList = CollectionUtils.nullSafeList(null);
+    List<?> list = CollectionUtils.nullSafeList(null);
 
-    assertThat(actualList, is(notNullValue()));
-    assertThat(actualList.isEmpty(), is(true));
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.isEmpty(), is(true));
   }
 
   @Test
-  public void nullSafeSetWitSet() {
-    Set<?> expectedSet = from("test", "testing", "tested").toSet();
-    Set<?> actualSet = CollectionUtils.nullSafeSet(expectedSet);
+  public void nullSafeSetWithSet() {
+    Set<?> set = Collections.singleton("test");
 
-    assertThat(actualSet, is(sameInstance(expectedSet)));
+    assertThat(CollectionUtils.nullSafeSet(set), is(sameInstance(set)));
   }
 
   @Test
   public void nullSafeSetWithEmptySet() {
-    Set<?> expectedSet = new HashSet<>(0);
-    Set<?> actualSet = CollectionUtils.nullSafeSet(expectedSet);
+    Set<?> set = Collections.emptySet();
 
-    assertThat(actualSet, is(sameInstance(expectedSet)));
+    assertThat(CollectionUtils.nullSafeSet(set), is(sameInstance(set)));
   }
 
   @Test
   public void nullSafeSetWithNullSet() {
-    Set<?> actualSet = CollectionUtils.nullSafeSet(null);
+    Set<?> set = CollectionUtils.nullSafeSet(null);
 
-    assertThat(actualSet, is(notNullValue()));
-    assertThat(actualSet.isEmpty(), is(true));
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
+  }
+
+  @Test
+  public void nullSafeSizeForCollection() {
+    Collection<?> collection = Collections.singleton("test");
+
+    assertThat(CollectionUtils.nullSafeSize(collection), is(equalTo(collection.size())));
+  }
+
+  @Test
+  public void nullSafeSizeForEmptyCollection() {
+    assertThat(CollectionUtils.nullSafeSize(asCollection()), is(equalTo(0)));
+  }
+
+  @Test
+  public void nullSafeSizeForNullCollection() {
+    assertThat(CollectionUtils.nullSafeSize(null), is(equalTo(0)));
   }
 
   @Test
   public void shuffle() {
-    List<Integer> numberList = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-    List<Integer> shuffledNumberList = CollectionUtils.shuffle(new ArrayList<>(numberList));
+    List<Integer> numbers = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    List<Integer> shuffledNumbers = CollectionUtils.shuffle(new ArrayList<>(numbers));
 
-    assertNotNull(shuffledNumberList);
-    assertNotEquals(numberList, shuffledNumberList);
-    assertShuffled(numberList, shuffledNumberList);
+    assertThat(shuffledNumbers, is(notNullValue(List.class)));
+    assertThat(shuffledNumbers, is(not(equalTo(numbers))));
+    assertShuffled(numbers, shuffledNumbers);
 
-    List<Integer> shuffledNumberListAgain = CollectionUtils.shuffle(new ArrayList<>(shuffledNumberList));
+    List<Integer> shuffledNumbersAgain = CollectionUtils.shuffle(new ArrayList<>(shuffledNumbers));
 
-    assertNotNull(shuffledNumberList);
-    assertNotEquals(shuffledNumberList, shuffledNumberListAgain);
-    assertShuffled(shuffledNumberList, shuffledNumberListAgain);
+    assertThat(shuffledNumbersAgain, is(notNullValue(List.class)));
+    assertThat(shuffledNumbersAgain, is(not(equalTo(shuffledNumbers))));
+    assertThat(shuffledNumbersAgain, is(not(equalTo(numbers))));
+    assertShuffled(shuffledNumbers, shuffledNumbersAgain);
+    assertShuffled(numbers, shuffledNumbersAgain);
   }
 
   @Test
   public void shuffleEmptyList() {
-    List<Integer> emptyList = Collections.emptyList();
-    List<Integer> shuffledEmptyList = CollectionUtils.shuffle(emptyList);
+    List<?> emptyList = Collections.emptyList();
+    List<?> shuffledEmptyList = CollectionUtils.shuffle(emptyList);
 
-    assertSame(emptyList, shuffledEmptyList);
-    assertTrue(shuffledEmptyList.isEmpty());
+    assertThat(shuffledEmptyList, is(sameInstance(emptyList)));
+    assertThat(shuffledEmptyList.isEmpty(), is(true));
   }
 
   @Test
@@ -853,67 +943,100 @@ public class CollectionUtilsTest {
 
   @Test
   public void shuffleSingleElementList() {
-    List<Integer> singleElementList = Collections.singletonList(1);
-    List<Integer> shuffledSingleElementList = CollectionUtils.shuffle(singleElementList);
+    List<String> singleElementList = Collections.singletonList("test");
+    List<String> shuffledSingleElementList = CollectionUtils.shuffle(singleElementList);
 
-    assertNotNull(shuffledSingleElementList);
-    assertEquals(singleElementList, shuffledSingleElementList);
+    assertThat(shuffledSingleElementList, is(sameInstance(singleElementList)));
+    assertThat(shuffledSingleElementList.size(), is(equalTo(1)));
+    assertThat(shuffledSingleElementList.get(0), is(equalTo("test")));
   }
 
   @Test
   public void subList() {
-    List<Integer> result = CollectionUtils.subList(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 1, 2, 4, 8);
+    List<Integer> subList = CollectionUtils.subList(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), 1, 2, 4, 8);
 
-    assertNotNull(result);
-    assertFalse(result.isEmpty());
-    assertEquals(4, result.size());
-    assertTrue(result.containsAll(Arrays.asList(1, 2, 4, 8)));
+    assertThat(subList, is(notNullValue(List.class)));
+    assertElements(subList, 1, 2, 4, 8);
   }
 
   @Test
   public void subListWithEmptyList() {
-    List<Object> result = CollectionUtils.subList(Collections.emptyList());
+    List<Object> list = Collections.emptyList();
+    List<?> subList = CollectionUtils.subList(list);
 
-    assertNotNull(result);
-    assertTrue(result.isEmpty());
+    assertThat(subList, is(not(sameInstance(list))));
+    assertThat(subList.isEmpty(), is(true));
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void subListWithEmptyListAndIndices() {
-    CollectionUtils.subList(Collections.emptyList(), 1, 2, 4, 8);
+    CollectionUtils.subList(Collections.emptyList(), 0, 1, 2);
   }
 
   @Test
   public void subListWithListAndNoIndices() {
-    List<String> result = CollectionUtils.subList(Arrays.asList("test", "testing", "tested"));
+    List<String> subList = CollectionUtils.subList(Arrays.asList("test", "testing", "tested"));
 
-    assertNotNull(result);
-    assertTrue(result.isEmpty());
-  }
-
-  @Test(expected = NullPointerException.class)
-  public void subListWithNullListAndIndices() {
-    CollectionUtils.subList(null, 1, 2, 4, 8);
+    assertThat(subList, is(notNullValue(List.class)));
+    assertThat(subList.isEmpty(), is(true));
   }
 
   @Test
-  public void toStringFromCollection() {
-    assertEquals("[]", CollectionUtils.toString(Collections.emptyList()));
-    assertEquals("[test, testing, tested]", CollectionUtils.toString(Arrays.asList("test", "testing", "tested")));
+  public void subListWithNullList() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("List cannot be null");
+
+    CollectionUtils.subList(null, 0, 1, 2);
+  }
+
+  @Test
+  public void subListWithNullIndices() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Indices cannot be null");
+
+    CollectionUtils.subList(Collections.emptyList(), (int[]) null);
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void subListWithOverflowIndex() {
+    CollectionUtils.subList(Collections.singletonList("test"), 1);
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void subListWithUnderFlowIndex() {
+    CollectionUtils.subList(Collections.singletonList("test"), -1);
+  }
+
+  @Test
+  public void toStringFromIterable() {
+    assertThat(CollectionUtils.toString(asIterable("test", "testing", "tested")),
+      is(equalTo("[test, testing, tested]")));
+  }
+
+  @Test
+  public void toStringFromIterableUsingRenderer() {
+    assertThat(CollectionUtils.toString(asIterable("test"), String::toUpperCase), is(equalTo("[TEST]")));
+  }
+
+  @Test
+  public void toStringFromEmptyIterable() {
+    assertThat(CollectionUtils.toString(asIterable()), is(equalTo("[]")));
+  }
+
+  @Test
+  public void toStringFromNullIterable() {
+    assertThat(CollectionUtils.toString(null), is(equalTo("[]")));
   }
 
   @Test
   public void transformCollection() {
-    List<String> collection = new ArrayList<>(Arrays.asList("test", "testing", "tested"));
+    Collection<String> collection = asCollection("test", "testing", "tested");
+    Collection<String> transformedCollection = CollectionUtils.transform(collection, StringUtils::toUpperCase);
 
-    Transformer<String> transformer = StringUtils::toUpperCase;
-
-    Collection<String> transformedCollection = CollectionUtils.transform(collection, transformer);
-
-    assertThat(transformedCollection, is(notNullValue(Collection.class)));
     assertThat(transformedCollection, is(not(sameInstance(collection))));
-    assertThat(transformedCollection.size(), is(equalTo(collection.size())));
-    assertThat(transformedCollection.containsAll(asCollection("TEST", "TESTING", "TESTED")), is(true));
+    assertElements(transformedCollection, "TEST", "TESTING", "TESTED");
   }
 
   @Test
@@ -926,63 +1049,66 @@ public class CollectionUtilsTest {
     assertThat(transformedCollection.isEmpty(), is(true));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformNullCollection() {
-    CollectionUtils.transform(null, (value) -> null);
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Collection cannot be null");
+
+    CollectionUtils.transform(null, (value) -> "test");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformWithNullTransformer() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Transformer cannot be null");
+
     CollectionUtils.transform(Collections.emptyList(), null);
   }
 
   @Test
   public void unmodifiableIterator() {
-    List<?> list = Arrays.asList("test", "testing", "tested");
-    Iterator<?> listIterator = list.iterator();
+    String[] elements = { "test", "testing", "tested" };
+    Iterator<String> unmodifiableIterator = CollectionUtils.unmodifiableIterator(asIterator(elements));
 
-    assertNotNull(listIterator);
+    assertThat(unmodifiableIterator, is(notNullValue(Iterator.class)));
 
-    Iterator<?> unmodifiableListIterator = CollectionUtils.unmodifiableIterator(listIterator);
-
-    assertNotNull(unmodifiableListIterator);
-    assertNotSame(listIterator, unmodifiableListIterator);
-
-    int index = 0;
-
-    while (unmodifiableListIterator.hasNext()) {
-      assertEquals(list.get(index++), unmodifiableListIterator.next());
+    for (String element : elements) {
+      assertThat(unmodifiableIterator.hasNext(), is(true));
+      assertThat(unmodifiableIterator.next(), is(equalTo(element)));
     }
 
-    assertEquals(list.size(), index);
+    assertThat(unmodifiableIterator.hasNext(), is(false));
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void unmodifiableIteratorModification() {
-    List<?> list = Arrays.asList("test", "testing", "tested");
-    Iterator<?> listIterator = list.iterator();
+  @Test
+  public void unmodifiableIteratorIsImmutable() {
+    Iterator<String> iterator = CollectionUtils.unmodifiableIterator(asIterator("test"));
 
-    assertNotNull(listIterator);
-    assertEquals(3, list.size());
-
-    Iterator<?> unmodifiableListIterator = CollectionUtils.unmodifiableIterator(listIterator);
-
-    assertNotNull(unmodifiableListIterator);
-    assertNotSame(listIterator, unmodifiableListIterator);
-    assertTrue(unmodifiableListIterator.hasNext());
-    assertEquals("test", unmodifiableListIterator.next());
-    assertTrue(unmodifiableListIterator.hasNext());
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(true));
 
     try {
-      unmodifiableListIterator.remove();
+      exception.expect(UnsupportedOperationException.class);
+      exception.expectCause(is(nullValue(Throwable.class)));
+      exception.expectMessage("Iterator is immutable");
+
+      iterator.remove();
     }
     finally {
-      assertEquals(3, list.size());
+      assertThat(iterator.hasNext(), is(true));
+      assertThat(iterator.next(), is(equalTo("test")));
+      assertThat(iterator.hasNext(), is(false));
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void unmodifiableIteratorWithNullIterator() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Iterator cannot be null");
+
     CollectionUtils.unmodifiableIterator(null);
   }
 
