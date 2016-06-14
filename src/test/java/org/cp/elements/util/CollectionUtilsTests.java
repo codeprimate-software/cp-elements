@@ -50,7 +50,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The CollectionUtilsTest class is a test suite of test cases testing the contract and functionality 
+ * The CollectionUtilsTests class is a test suite of test cases testing the contract and functionality
  * of the {@link CollectionUtils} class.
  * 
  * @author John J. Blum
@@ -64,7 +64,7 @@ import org.junit.rules.ExpectedException;
  * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
  */
-public class CollectionUtilsTest {
+public class CollectionUtilsTests {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
