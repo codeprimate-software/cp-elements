@@ -144,8 +144,8 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Filters the {@link Collection} of elements retaining only the elements matching the criteria (rules) defined
-   * by the {@link Filter}.
+   * Returns a filtered {@link Collection} containing only the elements from the given {@link Collection} accepted by
+   * the {@link Filter}.
    * 
    * @param <T> Class type of the elements in the {@link Collection}.
    * @param collection {@link Collection} to filter.
