@@ -18,17 +18,19 @@ package org.cp.elements.util;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -140,17 +142,326 @@ public class MapUtilsTests {
 
   @Test
   public void filter() {
-    fail(Constants.NOT_IMPLEMENTED);
+    Map<String, Integer> map = new HashMap<>(3);
+
+    map.put("one", 1);
+    map.put("two", 2);
+    map.put("three", 3);
+
+    Map<String, Integer> evenMap = MapUtils.filter(map, (entry) -> NumberUtils.isEven(entry.getValue()));
+
+    assertThat(evenMap, is(notNullValue(Map.class)));
+    assertThat(evenMap, is(not(sameInstance(map))));
+    assertThat(evenMap.size(), is(equalTo(1)));
+    assertThat(evenMap.containsKey("one"), is(false));
+    assertThat(evenMap.containsKey("two"), is(true));
+    assertThat(evenMap.containsKey("three"), is(false));
+    assertThat(evenMap.get("two"), is(equalTo(2)));
+
+    Map<String, Integer> oddMap = MapUtils.filter(map, (entry) -> NumberUtils.isOdd(entry.getValue()));
+
+    assertThat(map, is(notNullValue(Map.class)));
+    assertThat(oddMap, is(not(sameInstance(map))));
+    assertThat(oddMap.size(), is(equalTo(2)));
+    assertThat(oddMap.containsKey("one"), is(true));
+    assertThat(oddMap.containsKey("two"), is(false));
+    assertThat(oddMap.containsKey("three"), is(true));
+    assertThat(oddMap.get("one"), is(equalTo(1)));
+    assertThat(oddMap.get("three"), is(equalTo(3)));
+  }
+
+  @Test
+  public void filterAcceptsAll() {
+    Map<String, Integer> map = new HashMap<>(2);
+
+    map.put("one", 1);
+    map.put("two", 2);
+
+    Map<String, Integer> resultMap = MapUtils.filter(map, (entry) -> true);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(map.size())));
+    assertThat(resultMap.containsKey("one"), is(true));
+    assertThat(resultMap.containsKey("two"), is(true));
+    assertThat(resultMap.get("one"), is(equalTo(1)));
+    assertThat(resultMap.get("two"), is(equalTo(2)));
+  }
+
+  @Test
+  public void filterRejectsAll() {
+    Map<String, Integer> map = new HashMap<>(2);
+
+    map.put("one", 1);
+    map.put("two", 2);
+
+    Map<String, Integer> resultMap = MapUtils.filter(map, (entry) -> false);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void filterEmptyMap() {
+    Map<Object, Object> emptyMap = Collections.emptyMap();
+    Map<Object, Object> resultMap = MapUtils.filter(emptyMap, (entry) -> true);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(emptyMap))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void filterWithNullFilter() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Filter cannot be null");
+
+    MapUtils.filter(Collections.emptyMap(), null);
+  }
+
+  @Test
+  public void filterWithNullMap() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Map cannot be null");
+
+    MapUtils.filter(null, (entry) -> true);
   }
 
   @Test
   public void filterAndTransform() {
-    fail(Constants.NOT_IMPLEMENTED);
+    Map<String, Integer> map = new HashMap<>(3);
+
+    map.put("one", 1);
+    map.put("two", 2);
+    map.put("three", 3);
+
+    Map<String, Integer> resultMap = MapUtils.filterAndTransform(map,
+      new FilteringTransformer<Map.Entry<String, Integer>>() {
+        @Override
+        public boolean accept(Map.Entry<String, Integer> entry) {
+          return NumberUtils.isEven(entry.getValue());
+        }
+
+        @Override
+        public Map.Entry<String, Integer> transform(Map.Entry<String, Integer> entry) {
+          entry.setValue(Double.valueOf(Math.pow(entry.getValue(), 2)).intValue());
+          return entry;
+        }
+      });
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(1)));
+    assertThat(resultMap.containsKey("one"), is(false));
+    assertThat(resultMap.containsKey("two"), is(true));
+    assertThat(resultMap.containsKey("three"), is(false));
+    assertThat(resultMap.get("two"), is(equalTo(4)));
+
+    resultMap = MapUtils.filterAndTransform(map, new FilteringTransformer<Map.Entry<String, Integer>>() {
+      @Override
+      public boolean accept(Map.Entry<String, Integer> entry) {
+        return NumberUtils.isOdd(entry.getValue());
+      }
+
+      @Override
+      public Map.Entry<String, Integer> transform(Map.Entry<String, Integer> entry) {
+        entry.setValue(Double.valueOf(Math.pow(entry.getValue(), 2)).intValue());
+        return entry;
+      }
+    });
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(2)));
+    assertThat(resultMap.containsKey("one"), is(true));
+    assertThat(resultMap.containsKey("two"), is(false));
+    assertThat(resultMap.containsKey("three"), is(true));
+    assertThat(resultMap.get("one"), is(equalTo(1)));
+    assertThat(resultMap.get("three"), is(equalTo(9)));
+  }
+
+  @Test
+  public void filterAndTransformAcceptsAll() {
+    Map<String, String> map = Collections.singletonMap("key", "test");
+
+    Map<String, String> resultMap = MapUtils.filterAndTransform(map,
+      new FilteringTransformer<Map.Entry<String, String>>() {
+        @Override
+        public boolean accept(Map.Entry<String, String> entry) {
+          return true;
+        }
+
+        @Override
+        public Map.Entry<String, String> transform(Map.Entry<String, String> entry) {
+          return new Map.Entry<String, String>() {
+            @Override
+            public String getKey() {
+              return entry.getKey();
+            }
+
+            @Override
+            public String getValue() {
+              return entry.getValue().toUpperCase();
+            }
+
+            @Override
+            public String setValue(final String value) {
+              throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+            }
+          };
+        }
+      });
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(1)));
+    assertThat(resultMap.containsKey("key"), is(true));
+    assertThat(resultMap.get("key"), is(equalTo("TEST")));
+  }
+
+  @Test
+  public void filterAndTransformRejectsAll() {
+    Map<String, String> map = Collections.singletonMap("key", "test");
+
+    Map<String, String> resultMap = MapUtils.filterAndTransform(map,
+      new FilteringTransformer<Map.Entry<String, String>>() {
+        @Override
+        public boolean accept(Map.Entry<String, String> entry) {
+          return false;
+        }
+
+        @Override
+        public Map.Entry<String, String> transform(Map.Entry<String, String> entry) {
+          return entry;
+        }
+      });
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void filterAndTransformEmptyMap() {
+    Map<Object, Object> emptyMap = Collections.emptyMap();
+
+    Map<Object, Object> resultMap = MapUtils.filterAndTransform(emptyMap, new FilteringTransformer<Map.Entry<Object, Object>>() {
+      @Override
+      public boolean accept(Map.Entry<Object, Object> entry) {
+        return true;
+      }
+
+      @Override
+      public Map.Entry<Object, Object> transform(Map.Entry<Object, Object> entry) {
+        return entry;
+      }
+    });
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(emptyMap))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void filterAndTransformWithNullFilter() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("FilteringTransformer cannot be null");
+
+    MapUtils.filterAndTransform(Collections.emptyMap(), null);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void filterAndTransformWithNullMap() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Map cannot be null");
+
+    MapUtils.filterAndTransform(null, mock(FilteringTransformer.class));
   }
 
   @Test
   public void findAll() {
-    fail(Constants.NOT_IMPLEMENTED);
+    Map<String, String> map = new HashMap<>(3);
+
+    map.put("one", "test");
+    map.put("two", "testing");
+    map.put("three", "tested");
+
+    Map<String, String> resultMap = MapUtils.findAll(map, (entry) -> "test".equals(entry.getValue()));
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(1)));
+    assertThat(resultMap.containsKey("one"), is(true));
+    assertThat(resultMap.containsKey("two"), is(false));
+    assertThat(resultMap.containsKey("three"), is(false));
+    assertThat(resultMap.get("one"), is(equalTo("test")));
+
+    resultMap = MapUtils.findAll(map, (entry) -> entry.getValue().endsWith("ing") || entry.getValue().endsWith("ed"));
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(2)));
+    assertThat(resultMap.containsKey("one"), is(false));
+    assertThat(resultMap.containsKey("two"), is(true));
+    assertThat(resultMap.containsKey("three"), is(true));
+    assertThat(resultMap.get("two"), is(equalTo("testing")));
+    assertThat(resultMap.get("three"), is(equalTo("tested")));
+  }
+
+  @Test
+  public void findAllAcceptsAll() {
+    Map<String, String> map = Collections.singletonMap("one", "test");
+    Map<String, String> resultMap = MapUtils.findAll(map, (entry) -> true);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(1)));
+    assertThat(resultMap.containsKey("one"), is(true));
+    assertThat(resultMap.get("one"), is(equalTo("test")));
+  }
+
+  @Test
+  public void findAllRejectsAll() {
+    Map<String, String> map = Collections.singletonMap("one", "test");
+    Map<String, String> resultMap = MapUtils.findAll(map, (entry) -> false);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void findAllWithEmptyMap() {
+    Map<String, String> emptyMap = Collections.emptyMap();
+    Map<String, String> resultMap = MapUtils.findAll(emptyMap, (entry) -> true);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(emptyMap))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void findAllWithNullFilter() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Filter cannot be null");
+
+    MapUtils.findAll(Collections.emptyMap(), null);
+  }
+
+  @Test
+  public void findAllWithNullMap() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Map cannot be null");
+
+    MapUtils.findAll(null, (entry) -> true);
   }
 
   @Test
@@ -251,6 +562,50 @@ public class MapUtilsTests {
 
   @Test
   public void transform() {
-    fail(Constants.NOT_IMPLEMENTED);
+    Map<Integer, String> map = new HashMap<>(3);
+
+    map.put(1, "test");
+    map.put(2, "testing");
+    map.put(3, "tested");
+
+    Map<Integer, String> resultMap = MapUtils.transform(map, String::toUpperCase);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(map))));
+    assertThat(resultMap.size(), is(equalTo(3)));
+    assertThat(resultMap.containsKey(1), is(true));
+    assertThat(resultMap.containsKey(2), is(true));
+    assertThat(resultMap.containsKey(3), is(true));
+    assertThat(resultMap.get(1), is(equalTo("TEST")));
+    assertThat(resultMap.get(2), is(equalTo("TESTING")));
+    assertThat(resultMap.get(3), is(equalTo("TESTED")));
+  }
+
+  @Test
+  public void transformEmptyMap() {
+    Map<Object, Object> emptyMap = Collections.emptyMap();
+    Map<Object, Object> resultMap =  MapUtils.transform(emptyMap, (value) -> null);
+
+    assertThat(resultMap, is(notNullValue(Map.class)));
+    assertThat(resultMap, is(not(sameInstance(emptyMap))));
+    assertThat(resultMap.isEmpty(), is(true));
+  }
+
+  @Test
+  public void transformWithNullMap() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Map cannot be null");
+
+    MapUtils.transform(null, (value) -> null);
+  }
+
+  @Test
+  public void transformWithNullTransformer() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Transformer cannot be null");
+
+    MapUtils.transform(Collections.emptyMap(), null);
   }
 }
