@@ -16,16 +16,21 @@
 
 package org.cp.elements.util.sort.support;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
- * The ShellSortTest class is a test suite of test cases testing the contract and functionality of the ShellSort
- * class and the Shell Sort algorithm.
+ * Test suite of test cases testing the contract and functionality of the {@link ShellSort} class
+ * and the Shell Sort algorithm.
  *
  * @author John J. Blum
  * @see org.cp.elements.util.sort.Sorter
@@ -33,7 +38,7 @@ import org.junit.Test;
  * @see org.cp.elements.util.sort.support.ShellSort
  * @since 1.0.0
  */
-public class ShellSortTest extends CommonSortTestSuite {
+public class ShellSortTests extends CommonSortTestSuite {
 
   @Override
   protected ShellSort getSorter() {
@@ -41,17 +46,15 @@ public class ShellSortTest extends CommonSortTestSuite {
   }
 
   @Test
-  public void testGetGap() {
-    final List mockList = mockContext.mock(List.class, "Sortable List");
+  public void getGap() {
+    List mockList = mock(List.class, "Sortable List");
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockList).size();
-      will(returnValue(300));
-    }});
+    when(mockList.size()).thenReturn(300);
 
     ShellSort sorter = getSorter();
 
-    assertEquals(100, sorter.getGap(mockList));
-  }
+    assertThat(sorter.getGap(mockList), is(equalTo(100)));
 
+    verify(mockList, times(1)).size();
+  }
 }

@@ -22,33 +22,31 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.Iterator;
 
 import org.cp.elements.lang.Transformer;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
 /**
- * The ComposableTransformerTest class is a test suite of test cases testing the contract and functionality
- * of the ComposableTransformer class.
+ * Test suite of test cases testing the contract and functionality of the {@link ComposableTransformer} class.
  *
  * @author John J. Blum
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Transformer
  * @see org.cp.elements.lang.support.ComposableTransformer
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.jmock.Mockery
- * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("deprecation")
-public class ComposableTransformerTest extends AbstractMockingTestSuite {
+public class ComposableTransformerTests {
 
   @Test
   @SuppressWarnings("unchecked")
   public void composeWithArray() {
-    Transformer mockTransformerOne = mock(Transformer.class, "testComposeWithArray.one");
-    Transformer mockTransformerTwo = mock(Transformer.class, "testComposeWithArray.two");
+    Transformer mockTransformerOne = mock(Transformer.class, "MockTransformerOne");
+    Transformer mockTransformerTwo = mock(Transformer.class, "MockTransformerTwo");
 
     Transformer[] transformerArray = { mockTransformerOne, mockTransformerTwo };
 
@@ -130,5 +128,4 @@ public class ComposableTransformerTest extends AbstractMockingTestSuite {
     assertNotNull(value);
     assertEquals(5, value.intValue());
   }
-
 }

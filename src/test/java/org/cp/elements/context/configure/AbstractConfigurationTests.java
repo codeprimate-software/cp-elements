@@ -16,12 +16,25 @@
 
 package org.cp.elements.context.configure;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Iterator;
 import java.util.Properties;
@@ -29,32 +42,37 @@ import java.util.Properties;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.test.AbstractMockingTestSuite;
+import org.cp.elements.test.annotation.IntegrationTest;
 import org.cp.elements.util.convert.AbstractConversionService;
 import org.cp.elements.util.convert.ConversionException;
 import org.cp.elements.util.convert.ConversionService;
 import org.cp.elements.util.convert.Converter;
 import org.cp.elements.util.convert.ConverterAdapter;
 import org.cp.elements.util.convert.provider.DefaultConversionService;
-import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * The AbstractConfigurationTest class is a test suite of test cases testing the contract and functionality of the 
- * AbstractConfiguration class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractConfiguration} class.
  *
  * @author John J. Blum
+ * @see org.junit.Rule
+ * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.AbstractConfiguration
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.cp.elements.util.convert.ConversionService
- * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractConfigurationTest extends AbstractMockingTestSuite {
+public class AbstractConfigurationTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   private Properties configurationSettings = new Properties();
 
@@ -73,7 +91,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConstruct() {
+  public void construct() {
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
     assertNotNull(configuration);
@@ -81,103 +99,97 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConstructWithParent() {
-    Configuration mockParentConfiguration = mockContext.mock(Configuration.class);
+  public void constructWithParent() {
+    Configuration mockParentConfiguration = mock(Configuration.class);
     AbstractConfiguration configuration = new TestConfiguration(mockParentConfiguration, new Properties());
 
-    assertNotNull(configuration);
-    assertSame(mockParentConfiguration, configuration.getParent());
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testGetUninitializedConversionService() {
-    try {
-      new TestConfiguration(new Properties()).getConversionService();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("The ConversionService was not properly initialized!", expected.getMessage());
-      throw expected;
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testSetConversionServiceWithNull() {
-    try {
-      new TestConfiguration(new Properties()).setConversionService(null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals("The ConversionService used to support this Configuration cannot be null!", expected.getMessage());
-      throw expected;
-    }
+    assertThat(configuration, is(notNullValue(AbstractConfiguration.class)));
+    assertThat(configuration.getParent(), is(sameInstance(mockParentConfiguration)));
   }
 
   @Test
-  public void testSetAndGetConversionService() {
-    AbstractConfiguration configuration = new TestConfiguration(new Properties());
-    ConversionService mockConversionService = mockContext.mock(ConversionService.class);
+  public void constructUninitializedConversionService() {
+    exception.expect(IllegalStateException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The ConversionService was not properly initialized!");
 
-    configuration.setConversionService(mockConversionService);
-
-    assertSame(mockConversionService, configuration.getConversionService());
+    new TestConfiguration(new Properties()).getConversionService();
   }
 
   @Test
-  public void testConvert() {
-    final ConversionService mockConversionService = mockContext.mock(ConversionService.class);
+  public void setConversionServiceToNull() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The ConversionService used to support this Configuration cannot be null!");
 
-    mockContext.checking(new Expectations() {{
-      atLeast(1).of(mockConversionService).canConvert(with(equal(String.class)), with(equal(Gender.class)));
-      will(returnValue(true));
-      oneOf(mockConversionService).convert(with(equal("FEMALE")), with(equal(Gender.class)));
-      will(returnValue(Gender.FEMALE));
-    }});
+    new TestConfiguration(new Properties()).setConversionService(null);
+  }
+
+  @Test
+  public void setAndGetConversionService() {
+    AbstractConfiguration configuration = new TestConfiguration(new Properties());
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    configuration.setConversionService(mockConversionService);
+
+    assertThat(configuration.getConversionService(), is(sameInstance(mockConversionService)));
+  }
+
+  @Test
+  public void convert() {
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    when(mockConversionService.canConvert(eq(String.class), eq(Gender.class))).thenReturn(true);
+    when(mockConversionService.convert(eq("FEMALE"), eq(Gender.class))).thenReturn(Gender.FEMALE);
 
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
     configuration.setConversionService(mockConversionService);
 
-    assertSame(mockConversionService, configuration.getConversionService());
-    assertEquals(Gender.FEMALE, configuration.convert("FEMALE", Gender.class));
+    assertThat(configuration.getConversionService(), is(sameInstance(mockConversionService)));
+    assertThat(configuration.convert("FEMALE", Gender.class), is(equalTo(Gender.FEMALE)));
+
+    verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(Gender.class));
+    verify(mockConversionService, times(1)).convert(eq("FEMALE"), eq(Gender.class));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testConvertWithNullType() {
-    try {
-      new TestConfiguration(new Properties()).convert("test", null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals("The Class type to convert the String value to cannot be null!", expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void convertWithNullType() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The Class type to convert the String value to cannot be null!");
+
+    new TestConfiguration(new Properties()).convert("test", null);
   }
 
-  @Test(expected = ConversionException.class)
-  public void testConvertWithUnsupportedConversion() {
-    final ConversionService mockConversionService = mockContext.mock(ConversionService.class);
+  @Test
+  public void convertWithUnsupportedConversion() {
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockConversionService).canConvert(with(equal(String.class)), with(equal(Process.class)));
-      will(returnValue(false));
-    }});
+    when(mockConversionService.canConvert(eq(String.class), eq(Process.class))).thenReturn(false);
 
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
     configuration.setConversionService(mockConversionService);
 
-    assertSame(mockConversionService, configuration.getConversionService());
+    assertThat(configuration.getConversionService(), is(sameInstance(mockConversionService)));
 
     try {
+      exception.expect(ConversionException.class);
+      exception.expectCause(is(nullValue(Throwable.class)));
+      exception.expectMessage(String.format("Cannot convert String value (12345) into a value of type (%1$s)!",
+        Process.class.getName()));
+
       configuration.convert("12345", Process.class);
     }
-    catch (ConversionException expected) {
-      assertEquals(String.format("Cannot convert String value (%1$s) into a value of type (%2$s)!", "12345",
-        Process.class.getName()), expected.getMessage());
-      throw expected;
+    finally {
+      verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(Process.class));
+      verify(mockConversionService, never()).convert(anyString(), eq(Process.class));
     }
   }
 
   @Test
-  public void testDefaultIfUnset() {
+  public void defaultIfUnset() {
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
     assertEquals("val", configuration.defaultIfUnset("val", "test"));
@@ -189,7 +201,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testIsPresent() {
+  public void isPresent() {
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     assertTrue(configuration.isPresent("jdbc.driverClassName"));
@@ -203,7 +215,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testIsSet() {
+  public void isSet() {
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     assertTrue(configuration.isPresent("jdbc.driverClassName"));
@@ -225,7 +237,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testGetPropertyValue() {
+  public void getPropertyValue() {
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     assertEquals("com.mysql.jdbc.Driver", configuration.getPropertyValue("jdbc.driverClassName"));
@@ -237,7 +249,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testGetParentPropertyValue() {
+  public void getParentPropertyValue() {
     Properties parentConfigurationSettings = new Properties();
 
     parentConfigurationSettings.setProperty("jdbc.username", "root");
@@ -252,20 +264,18 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
     assertEquals("p@5s5sW0rDd!", configuration.getPropertyValue("jdbc.password"));
   }
 
-  @Test(expected = ConfigurationException.class)
-  public void testGetRequiredUnsetPropertyValue() {
-    try {
-      new TestConfiguration(configurationSettings).getPropertyValue("jdbc.username");
-    }
-    catch (ConfigurationException expected) {
-      assertEquals(String.format("The property (%1$s) is required!", "jdbc.username"), expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void getRequiredUnsetPropertyValue() {
+    exception.expect(ConfigurationException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The property (jdbc.username) is required!");
+
+    new TestConfiguration(configurationSettings).getPropertyValue("jdbc.username");
   }
 
   @Test
-  // NOTE integration test!
-  public void testGetPropertyValueAs() {
+  @IntegrationTest
+  public void getPropertyValueAs() {
     Properties customConfigurationSettings = new Properties();
 
     customConfigurationSettings.setProperty("boolProp", "true");
@@ -287,8 +297,8 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  // NOTE integration test!
-  public void testGetConvertedPropertyValueAs() {
+  @IntegrationTest
+  public void getConvertedPropertyValueAs() {
     Properties customConfigurationProperties = new Properties();
 
     customConfigurationProperties.setProperty("os.admin.user", "root");
@@ -306,7 +316,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testGetDefaultPropertyValueAs() {
+  public void getDefaultPropertyValueAs() {
     User guestUser = () -> "GUEST";
 
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
@@ -318,8 +328,8 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  // NOTE integration test!
-  public void testGetNonRequiredPropertyValueAs() {
+  @IntegrationTest
+  public void getNonRequiredPropertyValueAs() {
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     configuration.setConversionService(new TestConversionService(new UserConverter()));
@@ -337,7 +347,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
       configurationSettings.setProperty("jdbc.username", "hacker123");
       configuration.setConversionService(new TestConversionService(new UserConverter()));
 
-      assertTrue(configuration.getConversionService() instanceof TestConversionService);
+      assertThat(configuration.getConversionService() instanceof TestConversionService, is(true));
 
       configuration.getPropertyValueAs("jdbc.username", true, User.class);
     }
@@ -345,7 +355,7 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
       assertEquals(String.format("Failed to get the value of configuration setting property (%1$s) as type (%2$s)!",
         "jdbc.username", User.class.getName()), expected.getMessage());
       assertTrue(expected.getCause() instanceof ConversionException);
-      assertEquals(String.format("Failed to convert username (%1$s) to a User!", "hacker123"),
+      assertEquals(String.format("Failed to convert username (%1$s) into a User", "hacker123"),
         expected.getCause().getMessage());
 
       throw expected;
@@ -356,18 +366,18 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
 
     private final Properties properties;
 
-    public TestConfiguration(final Properties properties) {
+    public TestConfiguration(Properties properties) {
       this(null, properties);
     }
 
-    public TestConfiguration(final Configuration parent, final Properties properties) {
+    public TestConfiguration(Configuration parent, Properties properties) {
       super(parent);
-      Assert.notNull(properties, "The configuration setting properties cannot be null!");
+      Assert.notNull(properties, "Properties cannot be null");
       this.properties = properties;
     }
 
     @Override
-    protected String doGetPropertyValue(final String propertyName) {
+    protected String doGetPropertyValue(String propertyName) {
       return properties.getProperty(propertyName);
     }
 
@@ -394,21 +404,18 @@ public class AbstractConfigurationTest extends AbstractMockingTestSuite {
   protected final class UserConverter extends ConverterAdapter<String, User> {
 
     @Override
-    public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
+    public boolean canConvert(Class<?> fromType, Class<?> toType) {
       return User.class.equals(toType);
     }
 
     @Override
-    public User convert(final String value) {
+    public User convert(String value) {
       Assert.isTrue(StringUtils.isLetters(value), new ConversionException(String.format(
-        "Failed to convert username (%1$s) to a User!", value)));
+        "Failed to convert username (%1$s) into a User", value)));
 
-      final User mockUser = mockContext.mock(User.class);
+      User mockUser = mock(User.class);
 
-      mockContext.checking(new Expectations() {{
-        allowing(mockUser).getUsername();
-        will(returnValue(value));
-      }});
+      when(mockUser.getUsername()).thenReturn(value);
 
       return mockUser;
     }

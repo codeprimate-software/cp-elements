@@ -25,14 +25,12 @@ import java.util.List;
 import org.cp.elements.lang.Assert;
 
 /**
- * The ChangeSupport class is a support class used to register and unregister ChangeListeners and notify listeners
- * of state change events happening on the source Object associated with this change support class.
+ * ChangeSupport is a support class used to register and unregister {@link ChangeListener}s interested in
+ * state change events happening associated with the source Object monitored by a instance of this class.
  *
  * @author John J. Blum
  * @see java.io.Serializable
  * @see java.lang.Iterable
- * @see java.util.Iterator
- * @see org.cp.elements.beans.AbstractBean
  * @see org.cp.elements.beans.event.ChangeEvent
  * @see org.cp.elements.beans.event.ChangeListener
  * @since 1.0.0
@@ -40,21 +38,20 @@ import org.cp.elements.lang.Assert;
 public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
 
   // collection of registered ChangeListeners listening for change events on the source Object
-  private transient final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
+  private transient final List<ChangeListener> changeListeners = new ArrayList<>();
 
   // an Object reference to the source of the change events
   private final Object source;
 
   /**
-   * Creates an instance of the ChangeSupport class initialized with the specified Object as the source
-   * of change events.
+   * Creates an instance of {@link ChangeSupport} initialized with the specified Object as the source
+   * of the change events.
    *
-   * @param source the Object that is the source of the change events sent to listeners as notifications by
-   * this support class.
-   * @throws NullPointerException if the source Object reference is null.
+   * @param source source of the change events.
+   * @throws IllegalArgumentException if {@code source} is null.
    */
-  public ChangeSupport(final Object source) {
-    Assert.notNull(source, "The source of the change events cannot be null!");
+  public ChangeSupport(Object source) {
+    Assert.notNull(source, "Source cannot be null");
     this.source = source;
   }
 
@@ -77,7 +74,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
    * is null.
    * @see #remove(ChangeListener)
    */
-  public boolean add(final ChangeListener listener) {
+  public boolean add(ChangeListener listener) {
     return (listener != null && changeListeners.add(listener));
   }
 
@@ -87,7 +84,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
    * @param listener the ChangeListener parameter being tested for registration with this support class.
    * @return a boolean value indication whether the ChangeListener has been registered with this support class.
    */
-  public boolean contains(final ChangeListener listener) {
+  public boolean contains(ChangeListener listener) {
     return changeListeners.contains(listener);
   }
 
@@ -99,7 +96,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
    * @return a ChangeEvent object wrapping the specified Object parameter as the source of the change events.
    * @see org.cp.elements.beans.event.ChangeEvent
    */
-  protected ChangeEvent createChangeEvent(final Object source) {
+  protected ChangeEvent createChangeEvent(Object source) {
     return new ChangeEvent(source);
   }
 
@@ -111,9 +108,9 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
    * @see #iterator()
    */
   public void fireChangeEvent() {
-    final ChangeEvent event = createChangeEvent(getSource());
+    ChangeEvent event = createChangeEvent(getSource());
 
-    for (final ChangeListener listener : this) {
+    for (ChangeListener listener : this) {
       listener.stateChanged(event);
     }
   }
@@ -145,7 +142,7 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
    * @return a boolean indicating if the ChangeListener was successfully removed from the collection of listeners.
    * @see #add(ChangeListener)
    */
-  public boolean remove(final ChangeListener listener) {
+  public boolean remove(ChangeListener listener) {
     return changeListeners.remove(listener);
   }
 
@@ -157,5 +154,4 @@ public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
   public int size() {
     return changeListeners.size();
   }
-
 }

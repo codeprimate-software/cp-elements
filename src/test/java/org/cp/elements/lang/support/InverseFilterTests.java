@@ -20,71 +20,73 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.cp.elements.lang.Filter;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
- * The InverseFilterTest class is a test suite of test cases testing the contract and functionality
- * of the InverseFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link InverseFilter} class.
  *
  * @author John J. Blum
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.support.InverseFilter
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
-public class InverseFilterTest extends AbstractMockingTestSuite {
+public class InverseFilterTests {
 
   @Test
-  public void testCreateInverseFilter() {
-    final Filter<Object> mockFilter = mockContext.mock(Filter.class);
-    final InverseFilter<?> inverseFilter = new InverseFilter<Object>(mockFilter);
+  public void createInverseFilter() {
+    Filter<Object> mockFilter = mock(Filter.class);
+    InverseFilter<?> inverseFilter = new InverseFilter<>(mockFilter);
 
     assertNotNull(inverseFilter);
     assertSame(mockFilter, inverseFilter.getFilter());
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testCreateInverseFilterWithNullFilter() {
-    new InverseFilter<Object>(null);
+  public void createInverseFilterWithNullFilter() {
+    new InverseFilter<>(null);
   }
 
   @Test
-  public void testAcceptReturnsFalse() {
-    final Object value = new Object();
-    final Filter<Object> mockFilter = mockContext.mock(Filter.class);
+  public void acceptReturnsFalse() {
+    Object value = new Object();
+    Filter<Object> mockFilter = mock(Filter.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockFilter).accept(with(same(value)));
-      will(returnValue(true));
-    }});
+    when(mockFilter.accept(same(value))).thenReturn(true);
 
-    final InverseFilter<Object> inverseFilter = new InverseFilter<Object>(mockFilter);
+    InverseFilter<Object> inverseFilter = new InverseFilter<>(mockFilter);
 
     assertNotNull(inverseFilter);
     assertSame(mockFilter, inverseFilter.getFilter());
     assertFalse(inverseFilter.accept(value));
+
+    verify(mockFilter, times(1)).accept(eq(value));
   }
 
   @Test
-  public void testAcceptReturnsTrue() {
-    final Object value = new Object();
-    final Filter<Object> mockFilter = mockContext.mock(Filter.class);
+  public void acceptReturnsTrue() {
+    Object value = new Object();
+    Filter<Object> mockFilter = mock(Filter.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockFilter).accept(with(same(value)));
-      will(returnValue(false));
-    }});
+    when(mockFilter.accept(anyObject())).thenReturn(false);
 
-    final InverseFilter<Object> inverseFilter = new InverseFilter<Object>(mockFilter);
+    InverseFilter<Object> inverseFilter = new InverseFilter<>(mockFilter);
 
     assertNotNull(inverseFilter);
     assertSame(mockFilter, inverseFilter.getFilter());
     assertTrue(inverseFilter.accept(value));
+
+    verify(mockFilter, times(1)).accept(eq(value));
   }
 }

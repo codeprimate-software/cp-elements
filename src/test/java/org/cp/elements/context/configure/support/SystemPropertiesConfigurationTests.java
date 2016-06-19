@@ -16,36 +16,42 @@
 
 package org.cp.elements.context.configure.support;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.context.configure.Configuration;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
- * The SystemPropertiesConfigurationTest class is a test suite of test cases testing the contract and functionality
- * of the SystemPropertiesConfiguration class.
+ * Test suite of test cases testing the contract and functionality of the {@link SystemPropertiesConfiguration} class.
  *
  * @author John J. Blum
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.SystemPropertiesConfiguration
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.junit.Test
  * @since 1.0.0
  */
-public class SystemPropertiesConfigurationTest extends AbstractMockingTestSuite {
+public class SystemPropertiesConfigurationTests {
 
   private final SystemPropertiesConfiguration configuration = new SystemPropertiesConfiguration();
 
   @Test
-  public void testIsPresent() {
+  public void isPresent() {
     assertTrue(configuration.isPresent("java.class.path"));
     assertTrue(configuration.isPresent("java.home"));
     assertTrue(configuration.isPresent("java.version"));
@@ -56,7 +62,7 @@ public class SystemPropertiesConfigurationTest extends AbstractMockingTestSuite 
   }
 
   @Test
-  public void testDoGetPropertyValue() {
+  public void doGetPropertyValue() {
     assertEquals(System.getProperty("java.class.path"), configuration.doGetPropertyValue("java.class.path"));
     assertEquals(System.getProperty("java.home"), configuration.doGetPropertyValue("java.home"));
     assertEquals(System.getProperty("java.version"), configuration.doGetPropertyValue("java.version"));
@@ -66,25 +72,24 @@ public class SystemPropertiesConfigurationTest extends AbstractMockingTestSuite 
   }
 
   @Test
-  public void testGetParentPropertyValue() {
-    final Configuration mockParentConfiguration = mockContext.mock(Configuration.class);
+  public void getParentPropertyValue() {
+    Configuration mockParentConfiguration = mock(Configuration.class);
 
-    mockContext.checking(new Expectations() {{
-      allowing(mockParentConfiguration).getPropertyValue(with(equal("custom.system.property")), with(equal(true)));
-      will(returnValue("test"));
-      allowing(mockParentConfiguration).getPropertyValue(with(any(String.class)), with(any(Boolean.class)));
-    }});
+    when(mockParentConfiguration.getPropertyValue(eq("custom.system.property"), anyBoolean())).thenReturn("test");
 
     SystemPropertiesConfiguration configuration = new SystemPropertiesConfiguration(mockParentConfiguration);
 
-    assertEquals(System.getProperty("java.version"), configuration.getPropertyValue("java.version"));
-    assertEquals("test", configuration.getPropertyValue("custom.system.property"));
-    assertNull(configuration.getPropertyValue("unset.system.property", false));
+    assertThat(configuration.getPropertyValue("java.version"), is(equalTo(System.getProperty("java.version"))));
+    assertThat(configuration.getPropertyValue("custom.system.property"), is(equalTo("test")));
+    assertThat(configuration.getPropertyValue("unset.system.property", false), is(nullValue()));
+
+    verify(mockParentConfiguration, times(1)).getPropertyValue(eq("custom.system.property"), eq(true));
+    verify(mockParentConfiguration, times(1)).getPropertyValue(eq("unset.system.property"), anyBoolean());
   }
 
   @Test
-  public void testIterator() {
-    Set<String> expectedSystemPropertyNames = new HashSet<String>(System.getProperties().stringPropertyNames());
+  public void iterator() {
+    Set<String> expectedSystemPropertyNames = new HashSet<>(System.getProperties().stringPropertyNames());
 
     assertFalse(expectedSystemPropertyNames.isEmpty());
 
@@ -94,5 +99,4 @@ public class SystemPropertiesConfigurationTest extends AbstractMockingTestSuite 
 
     assertTrue(expectedSystemPropertyNames.isEmpty());
   }
-
 }

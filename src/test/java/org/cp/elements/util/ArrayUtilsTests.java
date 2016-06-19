@@ -614,8 +614,9 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void findWithEmptyArray() {
-    Filter mockFilter = mock(Filter.class);
+    Filter<Object> mockFilter = mock(Filter.class);
 
     assertThat(ArrayUtils.find(toArray(), mockFilter), is(nullValue()));
 
@@ -623,8 +624,9 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void findWithNullArray() {
-    Filter mockFilter = mock(Filter.class);
+    Filter<Object> mockFilter = mock(Filter.class);
 
     assertThat(ArrayUtils.find(null, mockFilter), is(nullValue()));
 

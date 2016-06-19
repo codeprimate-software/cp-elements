@@ -18,29 +18,27 @@ package org.cp.elements.lang.support;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Test;
 
 /**
- * The IsModifiedVisitorTest class is a test suite of test cases testing the contract and functionality of the
- * IsModifiedVisitor class.
+ * Test suite of test cases testing the contract and functionality of the {@link IsModifiedVisitor} class.
  *
  * @author John J. Blum
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor
  * @see org.cp.elements.lang.support.IsModifiedVisitor
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.junit.Test
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
-public class IsModifiedVisitorTest extends AbstractMockingTestSuite {
+public class IsModifiedVisitorTests {
 
   @Test
-  public void testVisitOnAuditableObject() {
+  public void visitAuditableObject() {
     IsModifiedVisitor visitor = new IsModifiedVisitor();
 
     assertFalse(visitor.isModified());
@@ -56,7 +54,7 @@ public class IsModifiedVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testVisitOnMultipleAuditableObjects() {
+  public void visitMultipleAuditableObjects() {
     IsModifiedVisitor visitor = new IsModifiedVisitor();
 
     assertFalse(visitor.isModified());
@@ -68,12 +66,12 @@ public class IsModifiedVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testVisitOnNonAuditableObject() {
+  public void visitNonAuditableObject() {
     IsModifiedVisitor visitor = new IsModifiedVisitor();
 
     assertFalse(visitor.isModified());
 
-    visitor.visit(mockContext.mock(Visitable.class));
+    visitor.visit(mock(Visitable.class));
 
     assertFalse(visitor.isModified());
   }
@@ -83,15 +81,11 @@ public class IsModifiedVisitorTest extends AbstractMockingTestSuite {
     private final boolean modified;
     private final Visitable visitable;
 
-    public AuditableVisitable() {
-      this(false, null);
-    }
-
-    public AuditableVisitable(final boolean modified) {
+    public AuditableVisitable(boolean modified) {
       this(modified, null);
     }
 
-    public AuditableVisitable(final boolean modified, final Visitable visitable) {
+    public AuditableVisitable(boolean modified, Visitable visitable) {
       this.modified = modified;
       this.visitable = visitable;
     }
@@ -102,7 +96,7 @@ public class IsModifiedVisitorTest extends AbstractMockingTestSuite {
     }
 
     @Override
-    public void accept(final Visitor visitor) {
+    public void accept(Visitor visitor) {
       visitor.visit(this);
 
       if (visitable != null) {
@@ -110,5 +104,4 @@ public class IsModifiedVisitorTest extends AbstractMockingTestSuite {
       }
     }
   }
-
 }

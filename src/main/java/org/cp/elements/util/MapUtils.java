@@ -194,7 +194,7 @@ public abstract class MapUtils {
    * @see #count(Map)
    */
   @NullSafe
-  public static int size(Map map) {
+  public static int size(Map<?, ?> map) {
     return count(map);
   }
 

@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.cp.elements.lang.Constants;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
@@ -41,21 +40,20 @@ import org.junit.Test;
  *
  * @author John J. Blum
  * @see java.util.Random
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Test
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see org.cp.elements.util.sort.Sorter
- * @see org.junit.Test
  * @since 1.0.0
  */
-@SuppressWarnings({ "deprecation", "unused" })
-public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
+@SuppressWarnings("unused")
+public abstract class CommonSortTestSuite {
 
   protected static final int DEFAULT_ELEMENT_COUNT_TO_SORT = 10000;
   protected static final int DEFAULT_MAXIMUM_NUMBER_VALUE = 1000000;
 
   protected Integer[] numbers;
 
-  protected void assertShuffled(final Iterable<Integer> numbers) {
+  protected void assertShuffled(Iterable<Integer> numbers) {
     Integer previousNumber = Integer.MAX_VALUE;
 
     for (Integer currentNumber : numbers) {
@@ -69,11 +67,11 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
     fail("The array of numbers is not shuffled!");
   }
 
-  protected void assertSorted(final Iterable<Integer> numbers) {
+  protected void assertSorted(Iterable<Integer> numbers) {
     Integer previousNumber = -1;
 
     for (Integer currentNumber : numbers) {
-      assertTrue(String.format("%1$d is not less than equal to %2$d!", previousNumber, currentNumber),
+      assertTrue(String.format("%1$d is not less than equal to %2$d", previousNumber, currentNumber),
         previousNumber <= currentNumber);
       previousNumber = currentNumber;
     }
@@ -124,7 +122,7 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSort() {
+  public void sort() {
     Sorter sorter = getSorter();
 
     assertNotNull("The Sorter implementation was not configured and initialized properly!", sorter);
@@ -151,5 +149,4 @@ public abstract class CommonSortTestSuite extends AbstractMockingTestSuite {
       }
     }
   }
-
 }
