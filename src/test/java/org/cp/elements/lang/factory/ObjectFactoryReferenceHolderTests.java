@@ -16,32 +16,41 @@
 
 package org.cp.elements.lang.factory;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The ObjectFactoryReferenceHolderTest class is a test suite of test cases testing the contract and functionality
- * of the ObjectFactoryReferenceHolderTest class.
+ * Test suite of test cases testing the contract and functionality of the {@link ObjectFactoryReferenceHolderTests} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.factory.ObjectFactoryReferenceHolder
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.lang.factory.ObjectFactoryReferenceHolder
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
-public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
+public class ObjectFactoryReferenceHolderTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Before
   public void setup() {
@@ -50,10 +59,10 @@ public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSetGetClearAndHasReference() {
+  public void setGetClearAndHasReference() {
     assertFalse(ObjectFactoryReferenceHolder.hasReference());
 
-    ObjectFactory mockObjectFactory = mockContext.mock(ObjectFactory.class);
+    ObjectFactory mockObjectFactory = mock(ObjectFactory.class);
     ObjectFactoryReferenceHolder.set(mockObjectFactory);
 
     assertTrue(ObjectFactoryReferenceHolder.hasReference());
@@ -64,33 +73,32 @@ public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
     assertFalse(ObjectFactoryReferenceHolder.hasReference());
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void testGetWhenReferenceUnset() {
-    try {
-      assertFalse(ObjectFactoryReferenceHolder.hasReference());
-      ObjectFactoryReferenceHolder.get();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("The ObjectFactory reference was not properly initialized!", expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void getWhenReferenceUnset() {
+    exception.expect(IllegalStateException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("ObjectFactory was not properly initialized");
+
+    assertThat(ObjectFactoryReferenceHolder.hasReference(), is(false));
+
+    ObjectFactoryReferenceHolder.get();
   }
 
   @Test(expected = IllegalStateException.class)
-  public void testSetWhenReferenceSet() {
+  public void setWhenReferenceSet() {
     assertFalse(ObjectFactoryReferenceHolder.hasReference());
 
-    ObjectFactory mockObjectFactory = mockContext.mock(ObjectFactory.class, "Expected ObjectFactory");
+    ObjectFactory mockObjectFactory = mock(ObjectFactory.class, "Expected ObjectFactory");
     ObjectFactoryReferenceHolder.set(mockObjectFactory);
 
     assertTrue(ObjectFactoryReferenceHolder.hasReference());
     assertSame(mockObjectFactory, ObjectFactoryReferenceHolder.get());
 
     try {
-      ObjectFactoryReferenceHolder.set(mockContext.mock(ObjectFactory.class, "Illegal ObjectFactory"));
+      ObjectFactoryReferenceHolder.set(mock(ObjectFactory.class, "Illegal ObjectFactory"));
     }
     catch (IllegalStateException expected) {
-      assertEquals(String.format("The ObjectFactory reference is already set to (%1$s)!", mockObjectFactory),
+      assertEquals(String.format("The ObjectFactory reference is already set to (%1$s)", mockObjectFactory),
         expected.getMessage());
       assertTrue(ObjectFactoryReferenceHolder.hasReference());
       assertSame(mockObjectFactory, ObjectFactoryReferenceHolder.get());
@@ -99,16 +107,16 @@ public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testCompareAndSet() {
+  public void compareAndSet() {
     assertFalse(ObjectFactoryReferenceHolder.hasReference());
 
-    ObjectFactory mockObjectFactory1 = mockContext.mock(ObjectFactory.class, "ObjectFactory 1");
+    ObjectFactory mockObjectFactory1 = mock(ObjectFactory.class, "ObjectFactory 1");
     ObjectFactoryReferenceHolder.compareAndSet(null, mockObjectFactory1);
 
     assertTrue(ObjectFactoryReferenceHolder.hasReference());
     assertSame(mockObjectFactory1, ObjectFactoryReferenceHolder.get());
 
-    ObjectFactory mockObjectFactory2 = mockContext.mock(ObjectFactory.class, "ObjectFactory 2");
+    ObjectFactory mockObjectFactory2 = mock(ObjectFactory.class, "ObjectFactory 2");
     ObjectFactoryReferenceHolder.compareAndSet(null, mockObjectFactory2);
 
     assertTrue(ObjectFactoryReferenceHolder.hasReference());
@@ -120,7 +128,7 @@ public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
     assertTrue(ObjectFactoryReferenceHolder.hasReference());
     assertSame(mockObjectFactory2, ObjectFactoryReferenceHolder.get());
 
-    ObjectFactory mockObjectFactory3 = mockContext.mock(ObjectFactory.class, "ObjectFactory 3");
+    ObjectFactory mockObjectFactory3 = mock(ObjectFactory.class, "ObjectFactory 3");
     ObjectFactoryReferenceHolder.compareAndSet(mockObjectFactory1, mockObjectFactory3);
 
     assertTrue(ObjectFactoryReferenceHolder.hasReference());
@@ -142,8 +150,8 @@ public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
     @Override
     public void initialize() {
       super.initialize();
-      mockGetterObjectFactory = mockContext.mock(ObjectFactory.class, "Getter ObjectFactory");
-      mockSetterObjectFactory = mockContext.mock(ObjectFactory.class, "Setter ObjectFactory");
+      mockGetterObjectFactory = mock(ObjectFactory.class, "Getter ObjectFactory");
+      mockSetterObjectFactory = mock(ObjectFactory.class, "Setter ObjectFactory");
     }
 
     public void thread1() {
@@ -185,5 +193,4 @@ public class ObjectFactoryReferenceHolderTest extends AbstractMockingTestSuite {
       assertFalse(ObjectFactoryReferenceHolder.hasReference());
     }
   }
-
 }

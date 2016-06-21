@@ -40,7 +40,7 @@ import javax.annotation.Resource;
 
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.annotation.Id;
-import org.cp.elements.test.AbstractMockingTestSuite;
+import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
 import org.junit.After;
@@ -48,20 +48,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * The ReflectionUtilsTest class is a test suite of test cases testing the contract and functionality
- * of the ReflectionUtils class.
+ * Test suite of test cases testing the contract and functionality of the {@link ReflectionUtils} class.
  *
  * @author John J. Blum
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
- * @see org.cp.elements.lang.reflect.ReflectionUtils
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.cp.elements.test.TestUtils
  * @see org.junit.Test
+ * @see org.cp.elements.lang.reflect.ReflectionUtils
+ * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-@SuppressWarnings("deprecation")
-public class ReflectionUtilsTest extends AbstractMockingTestSuite {
+public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   private static final AtomicReference<String> METHOD_NAME = new AtomicReference<>();
 
@@ -614,5 +612,4 @@ public class ReflectionUtilsTest extends AbstractMockingTestSuite {
       throw new IllegalArgumentException(message);
     }
   }
-
 }

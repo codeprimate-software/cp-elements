@@ -27,8 +27,8 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @see org.cp.elements.lang.factory.ObjectFactory
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 @ThreadSafe
+@SuppressWarnings("unused")
 public final class ObjectFactoryReferenceHolder {
 
   private static ObjectFactory objectFactoryReference;
@@ -49,7 +49,7 @@ public final class ObjectFactoryReferenceHolder {
    * @throws IllegalStateException if the ObjectFactory reference is not set.
    */
   public static synchronized ObjectFactory get() {
-    Assert.state(objectFactoryReference != null, "The ObjectFactory reference was not properly initialized!");
+    Assert.state(objectFactoryReference != null, "ObjectFactory was not properly initialized!");
     return objectFactoryReference;
   }
 
@@ -61,7 +61,7 @@ public final class ObjectFactoryReferenceHolder {
    * @see #compareAndSet(ObjectFactory, ObjectFactory)
    */
   public static synchronized void set(final ObjectFactory objectFactory) {
-    Assert.state(objectFactoryReference == null, "The ObjectFactory reference is already set to ({0})!",
+    Assert.state(objectFactoryReference == null, "The ObjectFactory reference is already set to ({0})",
       objectFactoryReference);
     objectFactoryReference = objectFactory;
   }
@@ -88,5 +88,4 @@ public final class ObjectFactoryReferenceHolder {
   public static synchronized void clear() {
     objectFactoryReference = null;
   }
-
 }

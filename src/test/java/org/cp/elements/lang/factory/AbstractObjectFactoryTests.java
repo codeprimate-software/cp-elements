@@ -16,12 +16,18 @@
 
 package org.cp.elements.lang.factory;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
 import java.text.DateFormat;
@@ -32,26 +38,30 @@ import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.convert.ConversionService;
 import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * The AbstractObjectFactoryTest class is a test suite of test cases testing the contract and functionality of the
- * AbstractObjectFactory class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractObjectFactory} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.factory.AbstractObjectFactory
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.junit.After
- * @see org.junit.Before
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.context.configure.Configuration
+ * @see org.cp.elements.lang.factory.AbstractObjectFactory
+ * @see org.cp.elements.util.convert.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
+public class AbstractObjectFactoryTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   private TestObjectFactory objectFactory = new TestObjectFactory();
 
@@ -60,91 +70,88 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
     objectFactory.setConfiguration(null);
     objectFactory.setConversionService(null);
     objectFactory.init();
-    assertTrue(objectFactory.isInitialized());
+
+    assertThat(objectFactory.isInitialized(), is(true));
   }
 
   @Test
-  public void testSetAndGetConfiguration() {
-    Configuration mockConfiguration = mockContext.mock(Configuration.class);
-
-    assertFalse(objectFactory.isConfigurationAvailable());
-
-    objectFactory.setConfiguration(mockConfiguration);
-
-    assertTrue(objectFactory.isConfigurationAvailable());
-    assertSame(mockConfiguration, objectFactory.getConfiguration());
-
-    objectFactory.setConfiguration(null);
-
-    assertFalse(objectFactory.isConfigurationAvailable());
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testGetUninitializedConfiguration() {
-    try {
-      objectFactory.getConfiguration();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("The reference to the Configuration was not properly initialized!", expected.getMessage());
-      throw expected;
-    }
-  }
-
-  @Test
-  public void testSetAndGetConversionService() {
-    ConversionService mockConversionService = mockContext.mock(ConversionService.class);
-
-    assertFalse(objectFactory.isConversionServiceAvailable());
-
-    objectFactory.setConversionService(mockConversionService);
-
-    assertTrue(objectFactory.isConversionServiceAvailable());
-    assertSame(mockConversionService, objectFactory.getConversionService());
-
-    objectFactory.setConversionService(null);
-
-    assertFalse(objectFactory.isConversionServiceAvailable());
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testGetUninitializedConversionService() {
-    try {
-      objectFactory.getConversionService();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("The ConversionService was not properly initialized!", expected.getMessage());
-      throw expected;
-    }
-  }
-
-  @Test
-  public void testGetArgumentTypes() {
+  public void getArgumentTypes() {
     Class[] expectedArgumentTypes = { Boolean.class, Character.class, Double.class, Integer.class, String.class };
     Class[] actualArgumentTypes = objectFactory.getArgumentTypes(Boolean.TRUE, 'X', Math.PI, 2, "test");
 
-    assertNotNull(actualArgumentTypes);
-    TestUtils.assertEquals(expectedArgumentTypes, actualArgumentTypes);
+    assertThat(actualArgumentTypes, is(notNullValue(Class[].class)));
+    assertThat(actualArgumentTypes, is(equalTo(expectedArgumentTypes)));
   }
 
   @Test
-  public void testGetArgumentTypesForEmptyArguments() {
+  public void getArgumentTypesForEmptyArguments() {
     Class[] actualArgumentTypes = objectFactory.getArgumentTypes();
 
-    assertNotNull(actualArgumentTypes);
-    assertEquals(0, actualArgumentTypes.length);
+    assertThat(actualArgumentTypes, is(notNullValue(Class[].class)));
+    assertThat(actualArgumentTypes.length, is(equalTo(0)));
   }
 
   @Test
-  public void testGetArgumentTypesWithNullArguments() {
+  public void getArgumentTypesWithNullArguments() {
     Class[] expectedArgumentTypes = { Boolean.class, Object.class, Double.class, Integer.class, Object.class };
     Class[] actualArgumentTypes = objectFactory.getArgumentTypes(Boolean.FALSE, null, Math.PI, 2, null);
 
-    assertNotNull(actualArgumentTypes);
-    TestUtils.assertEquals(expectedArgumentTypes, actualArgumentTypes);
+    assertThat(actualArgumentTypes, is(notNullValue(Class[].class)));
+    assertThat(actualArgumentTypes, is(equalTo(expectedArgumentTypes)));
   }
 
   @Test
-  public void testResolveConstructor() {
+  public void setAndGetConfiguration() {
+    Configuration mockConfiguration = mock(Configuration.class);
+
+    assertThat(objectFactory.isConfigurationAvailable(), is(false));
+
+    objectFactory.setConfiguration(mockConfiguration);
+
+    assertThat(objectFactory.isConfigurationAvailable(), is(true));
+    assertThat(objectFactory.getConfiguration(), is(sameInstance(mockConfiguration)));
+
+    objectFactory.setConfiguration(null);
+
+    assertThat(objectFactory.isConfigurationAvailable(), is(false));
+  }
+
+  @Test
+  public void getUninitializedConfiguration() {
+    exception.expect(IllegalStateException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The Configuration was not properly initialized");
+
+    objectFactory.getConfiguration();
+  }
+
+  @Test
+  public void setAndGetConversionService() {
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    assertThat(objectFactory.isConversionServiceAvailable(), is(false));
+
+    objectFactory.setConversionService(mockConversionService);
+
+    assertThat(objectFactory.isConversionServiceAvailable(), is(true));
+    assertThat(objectFactory.getConversionService(), is(sameInstance(mockConversionService)));
+
+    objectFactory.setConversionService(null);
+
+    assertThat(objectFactory.isConversionServiceAvailable(), is(false));
+  }
+
+  @Test
+  public void getUninitializedConversionService() {
+    exception.expect(IllegalStateException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The ConversionService was not properly initialized");
+
+    objectFactory.getConversionService();
+  }
+
+  @Test
+  public void resolveConstructor() {
     Constructor idNameDateTimeConstructor = objectFactory.resolveConstructor(TestDomainObject.class,
       Long.class, String.class, Calendar.class);
 
@@ -161,7 +168,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testResolveCompatibleConstructor() {
+  public void resolveCompatibleConstructor() {
     Constructor numberConstructor = objectFactory.resolveConstructor(TestDomainObject.class, Long.class);
 
     assertNotNull(numberConstructor);
@@ -175,7 +182,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testResolveDefaultConstructor() {
+  public void resolveDefaultConstructor() {
     Constructor defaultConstructor = objectFactory.resolveConstructor(TestDomainObjectExtension.class, Integer.class);
 
     assertNotNull(defaultConstructor);
@@ -187,34 +194,28 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
     assertEquals(0, parameterTypes.length);
   }
 
-  @Test(expected = NoSuchConstructorException.class)
-  public void testResolveConstructorWithNoSuchConstructor() {
-    try {
-      objectFactory.resolveConstructor(TestDomainObject.class, String.class);
-    }
-    catch (NoSuchConstructorException expected) {
-      assertEquals(String.format("Failed to find a constructor with signature ([]) in Class (%1$s)!",
-        TestDomainObject.class.getName()), expected.getMessage());
-      assertTrue(expected.getCause() instanceof NoSuchMethodException);
-      throw expected;
-    }
-  }
+  @Test
+  public void resolveConstructorWithNoSuchConstructor() {
+    exception.expect(NoSuchConstructorException.class);
+    exception.expectCause(is(instanceOf(NoSuchMethodException.class)));
+    exception.expectMessage(String.format("Failed to find a constructor with signature ([]) in Class (%1$s)",
+      TestDomainObject.class.getName()));
 
-  @Test(expected = NoSuchConstructorException.class)
-  public void testResolveDefaultConstructorWithNoSuchConstructor() {
-    try {
-      objectFactory.resolveConstructor(TestDomainObject.class);
-    }
-    catch (NoSuchConstructorException expected) {
-      assertEquals(String.format("Failed to find a constructor with signature ([]) in Class (%1$s)!",
-        TestDomainObject.class.getName()), expected.getMessage());
-      assertTrue(expected.getCause() instanceof NoSuchMethodException);
-      throw expected;
-    }
+    objectFactory.resolveConstructor(TestDomainObject.class, String.class);
   }
 
   @Test
-  public void testCreateUsingObjectTypeName() {
+  public void resolveDefaultConstructorWithNoSuchConstructor() {
+    exception.expect(NoSuchConstructorException.class);
+    exception.expectCause(is(instanceOf(NoSuchMethodException.class)));
+    exception.expectMessage(String.format("Failed to find a constructor with signature ([]) in Class (%1$s)",
+      TestDomainObject.class.getName()));
+
+    objectFactory.resolveConstructor(TestDomainObject.class);
+  }
+
+  @Test
+  public void createUsingObjectTypeName() {
     TestDomainObject domainObject = objectFactory.create(TestDomainObject.class.getName(), 123l);
 
     assertNotNull(domainObject);
@@ -230,7 +231,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testCreateUsingObjectTypeNameNoArguments() {
+  public void createUsingObjectTypeNameNoArguments() {
     TestDomainObjectExtension domainObjectExtension = objectFactory.create(TestDomainObjectExtension.class.getName(),
       new Class[0], new Object[0]);
 
@@ -247,7 +248,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testCreateUsingObjectType() {
+  public void createUsingObjectType() {
     TestDomainObjectExtension domainObjectExtension = objectFactory.create(TestDomainObjectExtension.class, 123l, "test");
 
     assertNotNull(domainObjectExtension);
@@ -265,7 +266,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testCreateUsingObjectTypeWithCompatibleArguments() {
+  public void createUsingObjectTypeWithCompatibleArguments() {
     Calendar expectedDateTime = Calendar.getInstance();
     TestDomainObject domainObject = objectFactory.create(TestDomainObject.class,
       new Class[] { Long.class, String.class, Calendar.class }, 123l, "test", expectedDateTime);
@@ -283,7 +284,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = ObjectInstantiationException.class)
-  public void testCreateThrowsObjectInstantiationException() {
+  public void createThrowsObjectInstantiationException() {
     try {
       objectFactory.create(TestDomainObject.class, "test");
     }
@@ -291,7 +292,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
       assertEquals(String.format("Failed to instantiate and instance of class (%1$s) with constructor having signature (%2$s) using arguments (%3$s)!",
         TestDomainObject.class.getName(), "[class java.lang.String]", "[test]"), expected.getMessage());
       assertTrue(expected.getCause() instanceof NoSuchConstructorException);
-      assertEquals(String.format("Failed to find a constructor with signature (%1$s) in Class (%2$s)!", "[]",
+      assertEquals(String.format("Failed to find a constructor with signature (%1$s) in Class (%2$s)", "[]",
         TestDomainObject.class.getName()), expected.getCause().getMessage());
       throw expected;
     }
@@ -406,7 +407,7 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
     }
 
     @Override
-    protected <T> T postConstruct(final T object, final Object... args) {
+    protected <T> T postConstruct(T object, Object... args) {
       postConstructArguments = args;
       postConstructCalled = true;
       return super.postConstruct(object, args);
@@ -416,5 +417,4 @@ public class AbstractObjectFactoryTest extends AbstractMockingTestSuite {
       return postConstructCalled;
     }
   }
-
 }

@@ -61,7 +61,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @throws IllegalStateException if the reference to the application Configuration has not been initialized.
    */
   protected Configuration getConfiguration() {
-    Assert.state(configuration != null, "The reference to the Configuration was not properly initialized!");
+    Assert.state(configuration != null, "The Configuration was not properly initialized");
     return configuration;
   }
 
@@ -90,7 +90,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @throws IllegalStateException if the reference to the ConversionService has not been initialized.
    */
   protected ConversionService getConversionService() {
-    Assert.state(conversionService != null, "The ConversionService was not properly initialized!");
+    Assert.state(conversionService != null, "The ConversionService was not properly initialized");
     return conversionService;
   }
 
@@ -145,7 +145,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
       }
 
       throw new NoSuchConstructorException(String.format(
-        "Failed to find a constructor with signature (%1$s) in Class (%2$s)!", from(parameterTypes).toString(),
+        "Failed to find a constructor with signature (%1$s) in Class (%2$s)", from(parameterTypes).toString(),
           objectType.getName()), e);
     }
   }
