@@ -25,6 +25,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,8 +37,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.Test;
 
@@ -41,19 +44,18 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The AbstractSorterTest class is a test suite of test cases testing the contract and functionality of the
- * AbstractSorter class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractSorter} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
- * @see org.junit.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractSorterTest extends AbstractMockingTestSuite {
+public class AbstractSorterTest {
 
   private static final String[] ELEMENTS = { "test", "testing", "tested" };
 
@@ -63,7 +65,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSetAndIsCustomComparatorAllowed() {
+  public void setAndIsCustomComparatorAllowed() {
     AbstractSorter sorter = new TestSorter();
 
     assertEquals(AbstractSorter.DEFAULT_CUSTOM_COMPARATOR_ALLOWED, sorter.isCustomComparatorAllowed());
@@ -78,9 +80,9 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSetAndGetOrderBy() {
+  public void setAndGetOrderBy() {
     AbstractSorter sorter = new TestSorter();
-    Comparator mockOrderBy = mockContext.mock(Comparator.class);
+    Comparator mockOrderBy = mock(Comparator.class);
 
     sorter.setOrderBy(mockOrderBy);
 
@@ -92,11 +94,11 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSetAndGetOrderByOfCallingThread() {
+  public void setAndGetOrderByOfCallingThread() {
     AbstractSorter sorter = new TestSorter();
 
-    Comparator mockSorterOrderBy = mockContext.mock(Comparator.class, "testSetAndGetOrderByOfCallingThread.Sorter");
-    Comparator mockThreadOrderBy = mockContext.mock(Comparator.class, "testSetAndGetOrderByOfCallingThread.Thread");
+    Comparator mockSorterOrderBy = mock(Comparator.class, "MockSorterOrderBy");
+    Comparator mockThreadOrderBy = mock(Comparator.class, "MockThreadOrderBy");
 
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
@@ -118,7 +120,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSortArray() {
+  public void sortArray() {
     TestSorter sorter = new TestSorter();
 
     assertSame(ELEMENTS, sorter.sort(ELEMENTS));
@@ -126,7 +128,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSortSortableImplementObject() {
+  public void sortSortableImplementObject() {
     TestSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
@@ -139,7 +141,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSortSortableAnnotatedObject() {
+  public void sortSortableAnnotatedObject() {
     TestSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
@@ -152,7 +154,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testGetSortableMetaDataWithSortableAnnotatedObjectUsingDefaults() {
+  public void getSortableMetaDataWithSortableAnnotatedObjectUsingDefaults() {
     org.cp.elements.util.sort.annotation.Sortable sortable = new TestSorter().getSortableMetaData(
       TestSortableWithDefaults.INSTANCE);
 
@@ -162,7 +164,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testGetSortableMetaDataWithSortableAnnotatedObjectUsingOverrides() {
+  public void getSortableMetaDataWithSortableAnnotatedObjectUsingOverrides() {
     org.cp.elements.util.sort.annotation.Sortable sortable = new TestSorter().getSortableMetaData(
       TestSortableWithOverrides.INSTANCE);
 
@@ -172,7 +174,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testGetSortableMetaDataWithNullSortableAnnotatedObject() {
+  public void getSortableMetaDataWithNullSortableAnnotatedObject() {
     try {
       new TestSorter().getSortableMetaData(null);
     }
@@ -183,7 +185,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = SortException.class)
-  public void testGetSortableMetaDataWithNonSortableAnnotatedObject() {
+  public void getSortableMetaDataWithNonSortableAnnotatedObject() {
     try {
       new TestSorter().getSortableMetaData(new Object());
     }
@@ -195,22 +197,17 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConfigureComparatorWithSortableImplementingObject() {
+  @SuppressWarnings("unchecked")
+  public void configureComparatorWithSortableImplementingObject() {
     AbstractSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
-    final Comparator<?> mockComparator = mockContext.mock(Comparator.class,
-      "testConfigureComparatorWithSortableImplementingObject.Comparator");
+    Comparator<Comparable> mockComparator = mock(Comparator.class);
+    Sortable<Comparable> mockSortable = mock(Sortable.class);
 
-    final Sortable<?> mockSortable = mockContext.mock(Sortable.class,
-      "testConfigureComparatorWithSortableImplementingObject.Sortable");
-
-    mockContext.checking(new Expectations() {{
-      oneOf(mockSortable).getOrderBy();
-      will(returnValue(mockComparator));
-    }});
+    when(mockSortable.getOrderBy()).thenReturn(mockComparator);
 
     assertSame(mockSortable, sorter.configureComparator(mockSortable));
     assertSame(mockComparator, sorter.getOrderBy());
@@ -218,29 +215,29 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     AbstractSorter.ComparatorHolder.unset();
 
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
+
+    verify(mockSortable, times(1)).getOrderBy();
   }
 
   @Test
-  public void testConfigureComparatorWithSortableImplementingObjectHavingNullOrderBy() {
+  public void configureComparatorWithSortableImplementingObjectHavingNullOrderBy() {
     AbstractSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
-    final Sortable<?> mockSortable = mockContext.mock(Sortable.class,
-      "testConfigureComparatorWithSortableImplementingObject.Sortable");
+    Sortable<?> mockSortable = mock(Sortable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockSortable).getOrderBy();
-      will(returnValue(null));
-    }});
+    when(mockSortable.getOrderBy()).thenReturn(null);
 
     assertSame(mockSortable, sorter.configureComparator(mockSortable));
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
+
+    verify(mockSortable, times(1)).getOrderBy();
   }
 
   @Test
-  public void testConfigureComparatorWithSortableImplementObjectWhenCustomComparatorNotAllowed() {
+  public void configureComparatorWithSortableImplementObjectWhenCustomComparatorNotAllowed() {
     AbstractSorter sorter = new TestSorter();
 
     sorter.setCustomComparatorAllowed(false);
@@ -248,19 +245,16 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
     assertFalse(sorter.isCustomComparatorAllowed());
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
 
-    final Sortable<?> mockSortable = mockContext.mock(Sortable.class,
-      "testConfigureComparatorWithSortableImplementObjectWhenCustomComparatorIsNotAllowed.Sortable");
-
-    mockContext.checking(new Expectations() {{
-      never(mockSortable).getOrderBy();
-    }});
+    Sortable<?> mockSortable = mock(Sortable.class);
 
     assertSame(mockSortable, sorter.configureComparator(mockSortable));
     assertSame(AbstractSorter.ComparableComparator.INSTANCE, sorter.getOrderBy());
+
+    verify(mockSortable, never()).getOrderBy();
   }
 
   @Test
-  public void testConfigureComparatorWithSortableAnnotatedObject() {
+  public void configureComparatorWithSortableAnnotatedObject() {
     AbstractSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
@@ -279,7 +273,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConfigureComparatorWithSortableAnnotatedObjectsHavingUnspecifiedOrderBy() {
+  public void configureComparatorWithSortableAnnotatedObjectsHavingUnspecifiedOrderBy() {
     AbstractSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
@@ -293,7 +287,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConfigureComparatorWithSortableAnnotatedObjectWhenCustomComparatorNotAllowed() {
+  public void configureComparatorWithSortableAnnotatedObjectWhenCustomComparatorNotAllowed() {
     AbstractSorter sorter = new TestSorter();
 
     sorter.setCustomComparatorAllowed(false);
@@ -309,7 +303,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = SortException.class)
-  public void testConfigureComparatorWithSortableAnnotatedObjectUsingComparatorThrowingException() {
+  public void configureComparatorWithSortableAnnotatedObjectUsingComparatorThrowingException() {
     AbstractSorter sorter = new TestSorter();
 
     assertTrue(sorter.isCustomComparatorAllowed());
@@ -336,7 +330,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testAsListWithDefaults() {
+  public void asListWithDefaults() {
     AbstractSorter sorter = new TestSorter();
     List<String> elements = sorter.asList(TestSortableWithDefaults.INSTANCE, sorter.getSortableMetaData(
       TestSortableWithDefaults.INSTANCE));
@@ -348,7 +342,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testAsListWithOverrides() {
+  public void asListWithOverrides() {
     AbstractSorter sorter = new TestSorter();
     List<String> elements = sorter.asList(TestSortableWithOverrides.INSTANCE, sorter.getSortableMetaData(
       TestSortableWithOverrides.INSTANCE));
@@ -360,7 +354,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testAsListWithNullList() {
+  public void asListWithNullList() {
     AbstractSorter sorter = new TestSorter();
     List<String> elements = sorter.asList(TestSortableWithProblem.INSTANCE, sorter.getSortableMetaData(
       TestSortableWithProblem.INSTANCE));
@@ -370,7 +364,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = SortException.class)
-  public void testAsListWithNonSortableAnnotatedObject() {
+  public void asListWithNonSortableAnnotatedObject() {
     try {
       AbstractSorter sorter = new TestSorter();
       sorter.asList(new Object(), sorter.getSortableMetaData(TestSortableWithDefaults.INSTANCE));
@@ -384,7 +378,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSwap() {
+  public void swap() {
     List<String> elements = new ArrayList<>(Arrays.asList("zero", "one", "two", "three"));
 
     assertEquals("one", elements.get(1));
@@ -397,21 +391,21 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSortUsingSorterConcurrently() throws Throwable {
+  public void sortUsingSorterConcurrently() throws Throwable {
     TestFramework.runOnce(new UseSorterConcurrentlyMultithreadedTestCase());
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testComparableComparatorCompare() {
+  public void comparableComparatorCompare() {
     assertEquals(0, AbstractSorter.ComparableComparator.INSTANCE.compare("test", "test"));
     assertPositive(AbstractSorter.ComparableComparator.INSTANCE.compare("testing", "test"));
     assertNegative(AbstractSorter.ComparableComparator.INSTANCE.compare("test", "tested"));
   }
 
   @Test
-  public void testComparatorHolderGetIsSetSetAndUnset() {
-    Comparator<?> mockComparator = mockContext.mock(Comparator.class, "testComparatorHolderGetIsSetSetAndUnset");
+  public void comparatorHolderGetIsSetSetAndUnset() {
+    Comparator<?> mockComparator = mock(Comparator.class);
 
     assertNull(AbstractSorter.ComparatorHolder.get());
     assertFalse(AbstractSorter.ComparatorHolder.isSet());
@@ -428,7 +422,7 @@ public class AbstractSorterTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSortableArrayListGetSetAndSize() {
+  public void sortableArrayListGetSetAndSize() {
     String[] elements = { "test", "testing", "tested" };
     AbstractSorter.SortableArrayList<String> list = new AbstractSorter.SortableArrayList<>(elements);
 

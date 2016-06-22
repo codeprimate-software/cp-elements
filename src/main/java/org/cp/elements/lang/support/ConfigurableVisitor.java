@@ -42,8 +42,8 @@ public class ConfigurableVisitor<T> implements Visitor {
    *
    * @param configuration the Configuration used to configure visited objects.
    */
-  public ConfigurableVisitor(final T configuration) {
-    Assert.notNull(configuration, "The configuration object cannot be null!");
+  public ConfigurableVisitor(T configuration) {
+    Assert.notNull(configuration, "Configuration cannot be null!");
     this.configuration = configuration;
   }
 
@@ -56,10 +56,9 @@ public class ConfigurableVisitor<T> implements Visitor {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public void visit(final Visitable visitable) {
+  public void visit(Visitable visitable) {
     if (visitable instanceof Configurable) {
       ((Configurable<T>) visitable).configure(configuration);
     }
   }
-
 }

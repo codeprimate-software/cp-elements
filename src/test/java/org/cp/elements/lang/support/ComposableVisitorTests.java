@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,43 +29,46 @@ import java.util.List;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.CollectionUtils;
 import org.junit.Test;
 
 /**
- * The ComposableVisitorTest class is a test suite of test cases testing the contract and functionality of the
- * ComposableVisitor class.
+ * Test suite of test cases testing the contract and functionality of the {@link ComposableVisitor} class.
  *
  * @author John J. Blum
- * @see ComposableVisitor
  * @see org.junit.Test
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.lang.Visitable
+ * @see org.cp.elements.lang.Visitor
+ * @see org.cp.elements.lang.support.ComposableVisitor
  * @since 1.0.0
  */
-public class ComposableVisitorTest extends AbstractMockingTestSuite {
+public class ComposableVisitorTests {
 
   @Test
-  public void testAdd() {
-    assertTrue(new ComposableVisitor().add(mockContext.mock(Visitor.class)));
+  public void add() {
+    assertTrue(new ComposableVisitor().add(mock(Visitor.class)));
   }
 
   @Test
-  public void testAddExistingVisitor() {
-    final Visitor mockVisitor = mockContext.mock(Visitor.class);
-    final ComposableVisitor visitors = new ComposableVisitor();
+  public void addExistingVisitor() {
+    Visitor mockVisitor = mock(Visitor.class);
+    ComposableVisitor visitors = new ComposableVisitor();
+
     assertTrue(visitors.add(mockVisitor));
     assertFalse(visitors.add(mockVisitor));
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAddNullVisitor() {
+  public void addNullVisitor() {
     new ComposableVisitor().add(null);
   }
 
   @Test
-  public void testContains() {
-    final Visitor mockVisitor = mockContext.mock(Visitor.class);
-    final ComposableVisitor visitors = new ComposableVisitor();
+  public void contains() {
+    Visitor mockVisitor = mock(Visitor.class);
+
+    ComposableVisitor visitors = new ComposableVisitor();
 
     assertFalse(visitors.contains(mockVisitor));
     assertTrue(visitors.add(mockVisitor));
@@ -75,22 +79,22 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testIterator() {
+  public void iterator() {
     final Visitor[] expectedVisitors = {
-      mockContext.mock(Visitor.class, "Visitor 1"),
-      mockContext.mock(Visitor.class, "Visitor 2"),
-      mockContext.mock(Visitor.class, "Visitor 3"),
+      mock(Visitor.class, "MockVisitorOne"),
+      mock(Visitor.class, "MockVisitorTwo"),
+      mock(Visitor.class, "MockVisitorThree"),
     };
 
-    final ComposableVisitor visitors = new ComposableVisitor();
+    ComposableVisitor visitors = new ComposableVisitor();
 
-    for (final Visitor expectedVisitor : expectedVisitors) {
+    for (Visitor expectedVisitor : expectedVisitors) {
       assertTrue(visitors.add(expectedVisitor));
     }
 
     int index = 0;
 
-    for (final Visitor actualVisitor : visitors) {
+    for (Visitor actualVisitor : visitors) {
       assertEquals(expectedVisitors[index++], actualVisitor);
     }
 
@@ -98,14 +102,14 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void testIteratorModification() {
-    final Visitor mockVisitor = mockContext.mock(Visitor.class);
-    final ComposableVisitor visitors = new ComposableVisitor();
+  public void iteratorModification() {
+    Visitor mockVisitor = mock(Visitor.class);
+    ComposableVisitor visitors = new ComposableVisitor();
 
     assertTrue(visitors.add(mockVisitor));
     assertTrue(visitors.contains(mockVisitor));
 
-    final Iterator<Visitor> it = visitors.iterator();
+    Iterator<Visitor> it = visitors.iterator();
 
     assertNotNull(it);
     assertTrue(it.hasNext());
@@ -115,17 +119,17 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testIteratorWithNoVisitors() {
-    final Iterator<Visitor> it = new ComposableVisitor().iterator();
+  public void iteratorWithNoVisitors() {
+    Iterator<Visitor> iterator = new ComposableVisitor().iterator();
 
-    assertNotNull(it);
-    assertFalse(it.hasNext());
+    assertNotNull(iterator);
+    assertFalse(iterator.hasNext());
   }
 
   @Test
-  public void testRemove() {
-    final Visitor mockVisitor = mockContext.mock(Visitor.class);
-    final ComposableVisitor visitors = new ComposableVisitor();
+  public void remove() {
+    Visitor mockVisitor = mock(Visitor.class);
+    ComposableVisitor visitors = new ComposableVisitor();
 
     assertFalse(visitors.contains(mockVisitor));
     assertFalse(visitors.remove(mockVisitor));
@@ -138,9 +142,9 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSize() {
-    final Visitor mockVisitor = mockContext.mock(Visitor.class);
-    final ComposableVisitor visitors = new ComposableVisitor();
+  public void size() {
+    Visitor mockVisitor = mock(Visitor.class);
+    ComposableVisitor visitors = new ComposableVisitor();
 
     assertEquals(0, visitors.size());
     assertTrue(visitors.add(mockVisitor));
@@ -156,28 +160,29 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testVisit() {
-    final MockVisitable visitable3 = new MockVisitable(3);
-    final MockVisitable visitable2 = new MockVisitable(2, visitable3);
-    final MockVisitable visitable1 = new MockVisitable(1, visitable2);
+  public void visit() {
+    MockVisitable visitableThree = new MockVisitable(3);
+    MockVisitable visitableTwo = new MockVisitable(2, visitableThree);
+    MockVisitable visitableOne = new MockVisitable(1, visitableTwo);
 
-    final SetVisitedVisitor visitedVisitor = new SetVisitedVisitor();
-    final TraceVisitor traceVisitor = new TraceVisitor();
+    TraceVisitor traceVisitor = new TraceVisitor();
 
-    final ComposableVisitor visitors = new ComposableVisitor();
+    SetVisitedVisitor visitedVisitor = new SetVisitedVisitor();
+
+    ComposableVisitor visitors = new ComposableVisitor();
 
     assertTrue(visitors.add(traceVisitor));
     assertTrue(visitors.add(visitedVisitor));
 
-    visitable1.accept(visitors);
+    visitableOne.accept(visitors);
 
-    final Iterator<Visitable> it = traceVisitor.iterator();
+    Iterator<Visitable> iterator = traceVisitor.iterator();
 
-    MockVisitable theVisitable = visitable1;
+    MockVisitable theVisitable = visitableOne;
 
     do {
-      assertTrue(it.hasNext());
-      assertEquals(theVisitable, it.next());
+      assertTrue(iterator.hasNext());
+      assertEquals(theVisitable, iterator.next());
       assertTrue(theVisitable.isVisited());
       theVisitable = theVisitable.next();
     }
@@ -190,11 +195,11 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
     private final long id;
     private final MockVisitable visitable;
 
-    public MockVisitable(final long id) {
+    public MockVisitable(long id) {
       this(id, null);
     }
 
-    public MockVisitable(final long id, final MockVisitable visitable) {
+    public MockVisitable(long id, MockVisitable visitable) {
       this.id = id;
       this.visitable = visitable;
     }
@@ -211,8 +216,9 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
       this.visited = true;
     }
 
-    public void accept(final Visitor visitor) {
+    public void accept(Visitor visitor) {
       visitor.visit(this);
+
       if (next() != null) {
         next().accept(visitor);
       }
@@ -232,7 +238,7 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
         return false;
       }
 
-      final MockVisitable that = (MockVisitable) obj;
+      MockVisitable that = (MockVisitable) obj;
 
       return (this.getId() == that.getId());
     }
@@ -253,7 +259,7 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
 
   private static final class SetVisitedVisitor implements Visitor {
 
-    public void visit(final Visitable visitable) {
+    public void visit(Visitable visitable) {
       if (visitable instanceof MockVisitable) {
         ((MockVisitable) visitable).setVisited();
       }
@@ -269,11 +275,11 @@ public class ComposableVisitorTest extends AbstractMockingTestSuite {
       return CollectionUtils.unmodifiableIterator(visitablesVisited.iterator());
     }
 
-    public void visit(final Visitable visitable) {
+    public void visit(Visitable visitable) {
       visitablesVisited.add(visitable);
     }
 
-    public boolean visited(final Visitable visitable) {
+    public boolean visited(Visitable visitable) {
       return visitablesVisited.contains(visitable);
     }
   }

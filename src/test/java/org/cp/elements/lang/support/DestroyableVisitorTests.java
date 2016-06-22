@@ -16,44 +16,49 @@
 
 package org.cp.elements.lang.support;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.cp.elements.lang.Destroyable;
 import org.cp.elements.lang.Visitable;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 /**
- * The DestroyableVisitorTest class is a test suite of test cases testing the contract and functionality of the
- * DestroyableVisitor class.
+ * Test suite of test cases testing the contract and functionality of the {@link DestroyableVisitor} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.support.DestroyableVisitor
- * @see org.cp.elements.test.AbstractMockingTestSuite
  * @see org.junit.Test
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.lang.Destroyable
+ * @see org.cp.elements.lang.Visitable
+ * @see org.cp.elements.lang.support.DestroyableVisitor
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DestroyableVisitorTest extends AbstractMockingTestSuite {
+public class DestroyableVisitorTests {
 
   @Test
-  public void testVisitDestroyable() {
-    final VisitableDestroyable mockDestroyable = mockContext.mock(VisitableDestroyable.class);
-
-    mockContext.checking(new Expectations() {{
-      oneOf(mockDestroyable).destroy();
-    }});
+  public void visitDestroyable() {
+    VisitableDestroyable mockVisitableDestroyable = mock(VisitableDestroyable.class);
 
     DestroyableVisitor visitor = new DestroyableVisitor();
 
-    visitor.visit(mockDestroyable);
+    visitor.visit(mockVisitableDestroyable);
+
+    verify(mockVisitableDestroyable, times(1)).destroy();
   }
 
   @Test
-  public void testVisitNonDestroyableVisitable() {
-    new DestroyableVisitor().visit(mockContext.mock(Visitable.class));
+  public void visitNonDestroyableVisitable() {
+    new DestroyableVisitor().visit(mock(Visitable.class));
+  }
+
+  @Test
+  public void visitNull() {
+    new DestroyableVisitor().visit(null);
   }
 
   protected interface VisitableDestroyable extends Destroyable, Visitable {
   }
-
 }

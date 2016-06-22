@@ -16,12 +16,13 @@
 
 package org.cp.elements.util.sort;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.sort.support.BubbleSort;
 import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
@@ -30,22 +31,29 @@ import org.cp.elements.util.sort.support.MergeSort;
 import org.cp.elements.util.sort.support.QuickSort;
 import org.cp.elements.util.sort.support.SelectionSort;
 import org.cp.elements.util.sort.support.ShellSort;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * The SorterFactoryTest class is a test suite of test cases testing the contract and functionality of the
- * SorterFactory class.
+ * Test suite of test cases testing the contract and functionality of the {@link SorterFactory} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Rule
+ * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.SorterFactory
  * @see org.cp.elements.util.sort.SortType
  * @since 1.0.0
  */
-public class SorterFactoryTest extends AbstractMockingTestSuite {
+public class SorterFactoryTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
-  public void testCreate() {
+  public void create() {
     assertTrue(SorterFactory.createSorter(SortType.BUBBLE_SORT) instanceof BubbleSort);
     assertTrue(SorterFactory.createSorter(SortType.COMB_SORT) instanceof CombSort);
     assertTrue(SorterFactory.createSorter(SortType.HEAP_SORT) instanceof HeapSort);
@@ -56,29 +64,26 @@ public class SorterFactoryTest extends AbstractMockingTestSuite {
     assertTrue(SorterFactory.createSorter(SortType.SHELL_SORT) instanceof ShellSort);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateWithNull() {
-    try {
-      SorterFactory.createSorter(null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals(String.format("The SortType (null) is not supported by the %1$s!",
-        SorterFactory.class.getSimpleName()), expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void createWithNull() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(String.format("The SortType (null) is not supported by the %1$s!",
+      SorterFactory.class.getSimpleName()));
+
+    SorterFactory.createSorter(null);
   }
 
   @Test
-  public void testCreateSorterElseDefault() {
+  public void createSorterElseDefault() {
     assertTrue(SorterFactory.createSorterElseDefault(SortType.HEAP_SORT, null) instanceof HeapSort);
   }
 
   @Test
-  public void testCreateSorterElseDefaultWithUnknownSortAlgorithm() {
-    Sorter mockDefaultSorter = mockContext.mock(Sorter.class, "testCreateSorterElseDefaultWithUnknownSortAlgorithm");
+  public void createSorterElseDefaultWithUnknownSortAlgorithm() {
+    Sorter mockDefaultSorter = mock(Sorter.class);
 
     assertSame(mockDefaultSorter, SorterFactory.createSorterElseDefault(SortType.UNKONWN, mockDefaultSorter));
     assertNull(SorterFactory.createSorterElseDefault(SortType.UNKONWN, null));
   }
-
 }

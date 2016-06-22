@@ -21,13 +21,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.convert.support.BooleanConverter;
 import org.cp.elements.util.convert.support.CharacterConverter;
 import org.cp.elements.util.convert.support.DoubleConverter;
@@ -37,26 +37,26 @@ import org.cp.elements.util.convert.support.StringConverter;
 import org.junit.Test;
 
 /**
- * The AbstractConversionServiceTest class is a test suite of test cases testing the contract and functionality of the
- * AbstractConversionService class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractConversionService} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.cp.elements.util.convert.AbstractConversionService
  * @see org.junit.Test
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.util.convert.AbstractConversionService
+ * @since 1.0.0
  */
-public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
+public class AbstractConversionServiceTests {
 
-  protected static <T> T add(final Set<T> set, T element) {
+  protected static <T> T add(Set<T> set, T element) {
     if (set.add(element)) {
       return element;
     }
 
-    throw new IllegalArgumentException(String.format("Failed to add element (%1$s) to Set (%2$s)!", element, set));
+    throw new IllegalArgumentException(String.format("Failed to add element [%1$s] to Set [%2$s]", element, set));
   }
 
   @Test
-  public void testCanConvert() {
+  public void canConvert() {
     AbstractConversionService conversionService = new TestConversionService();
 
     assertFalse(conversionService.canConvert(null, String.class));
@@ -71,7 +71,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConvert() {
+  public void convert() {
     AbstractConversionService conversionService = new TestConversionService();
 
     conversionService.register(new TestConverter());
@@ -85,7 +85,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConvertExact() {
+  public void convertExact() {
     AbstractConversionService conversionService = new TestConversionService();
 
     conversionService.register(new EnumConverter());
@@ -99,7 +99,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = ConversionException.class)
-  public void testConvertThrowsConversionException() {
+  public void convertThrowsConversionException() {
     AbstractConversionService conversionService = new TestConversionService();
 
     assertFalse(conversionService.canConvert(null, String.class));
@@ -115,7 +115,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = ConversionException.class)
-  public void testConvertThrowsConversionExceptionForUnsupportedConversion() {
+  public void convertThrowsConversionExceptionForUnsupportedConversion() {
     AbstractConversionService conversionService = new TestConversionService();
 
     conversionService.register(new TestConverter());
@@ -133,7 +133,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testDescribe() {
+  public void describe() {
     AbstractConversionService conversionService = new TestConversionService();
 
     Converter converter = new TestConverter();
@@ -147,7 +147,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testIteration() {
+  public void iteration() {
     AbstractConversionService conversionService = new TestConversionService();
     Set<Converter> expectedConverters = new HashSet<>(5);
 
@@ -168,7 +168,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testRegister() {
+  public void register() {
     AbstractConversionService conversionService = new TestConversionService();
     Converter<Object, String> testConverter = new TestConverter();
 
@@ -181,7 +181,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testRegisterNull() {
+  public void registerNull() {
     try {
       new TestConversionService().register(null);
     }
@@ -193,7 +193,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testUnregister() {
+  public void unregister() {
     AbstractConversionService conversionService = new TestConversionService();
     Converter testConverter = new TestConverter();
 
@@ -207,7 +207,7 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
     assertFalse(conversionService.getRegistry().isEmpty());
     assertSame(testConverter, conversionService.iterator().next());
 
-    conversionService.unregister(mockContext.mock(Converter.class));
+    conversionService.unregister(mock(Converter.class));
 
     assertFalse(conversionService.getRegistry().isEmpty());
     assertSame(testConverter, conversionService.iterator().next());
@@ -223,12 +223,12 @@ public class AbstractConversionServiceTest extends AbstractMockingTestSuite {
   protected static class TestConverter extends ConverterAdapter<Object, String> {
 
     @Override
-    public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
+    public boolean canConvert(Class<?> fromType, Class<?> toType) {
       return String.class.equals(toType);
     }
 
     @Override
-    public String convert(final Object value) {
+    public String convert(Object value) {
       return String.valueOf(value);
     }
   }

@@ -16,55 +16,60 @@
 
 package org.cp.elements.util.convert;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.cp.elements.lang.Constants;
-import org.cp.elements.test.AbstractMockingTestSuite;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * The AbstractConverterTest class is a test suite of test cases testing the contract and functionality of the
- * AbstractConverter class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractConverter} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.cp.elements.util.convert.AbstractConverter
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.util.convert.AbstractConverter
  * @since 1.0.0
  */
-@SuppressWarnings({ "deprecation", "unused" })
-public class AbstractConverterTest extends AbstractMockingTestSuite {
+@SuppressWarnings("unused")
+public class AbstractConverterTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
-  public void testSetAndGetConversionService() {
+  public void setAndGetConversionService() {
     AbstractConverter converter = new TestConverter();
-    ConversionService mockConversionService = mockContext.mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
     converter.setConversionService(mockConversionService);
 
     assertSame(mockConversionService, converter.getConversionService());
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void testGetConversionService() {
-    try {
-      new TestConverter().getConversionService();
-    }
-    catch (IllegalStateException expected) {
-      assertEquals("The ConversionService reference was not properly initialized!", expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void getConversionService() {
+    exception.expect(IllegalStateException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The ConversionService reference was not properly initialized!");
+
+    new TestConverter().getConversionService();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void testIsAssignableTo() {
+  public void isAssignableTo() {
     AbstractConverter converter = new TestConverter();
 
     assertTrue(converter.isAssignableTo(Character.class, Short.class, String.class, Object.class));
@@ -90,5 +95,4 @@ public class AbstractConverterTest extends AbstractMockingTestSuite {
       throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
-
 }

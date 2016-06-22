@@ -22,6 +22,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,28 +34,25 @@ import java.util.List;
 
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
-import org.cp.elements.test.AbstractMockingTestSuite;
-import org.jmock.Expectations;
 import org.junit.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The AbstractSearcherTest class is a test suite of test cases testing the contract and functionality of the
- * AbstractSearcher class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractSearcher} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.util.search.AbstractSearcher
  * @see org.cp.elements.util.search.Searcher
- * @see org.junit.Test
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractSearcherTest extends AbstractMockingTestSuite {
+public class AbstractSearcherTests {
 
   private static final String[] ANIMALS = {
     "aardvark", "baboon", "cat", "dog", "elephant", "ferret", "giraffe", "horse", "iguana", "jackal", "kangaroo",
@@ -60,7 +61,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   };
 
   @Test
-  public void testSetAndGetCustomMatcherAllowed() {
+  public void setAndGetCustomMatcherAllowed() {
     AbstractSearcher searcher = new TestSearcher();
 
     assertNotNull(searcher);
@@ -76,9 +77,9 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSetAndGetMatcher() {
+  public void setAndGetMatcher() {
     AbstractSearcher searcher = new TestSearcher();
-    Matcher mockMatcher = mockContext.mock(Matcher.class);
+    Matcher mockMatcher = mock(Matcher.class);
 
     searcher.setMatcher(mockMatcher);
 
@@ -86,7 +87,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testSetMatcherWithNull() {
+  public void setMatcherWithNull() {
     try {
       new TestSearcher().setMatcher(null);
     }
@@ -98,7 +99,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void testGetMatcherWhenNull() {
+  public void getMatcherWhenNull() {
     try {
       new TestSearcher().getMatcher();
     }
@@ -110,7 +111,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchArray() {
+  public void searchArray() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher<String>() {
@@ -124,15 +125,12 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchObjectImplementingSearchable() {
-    final Searchable<?> mockSearchable = mockContext.mock(Searchable.class, "testSearchObjectImplementingSearchable");
+  @SuppressWarnings("unchecked")
+  public void searchObjectImplementingSearchable() {
+    Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockSearchable).asList();
-      will(returnValue(Arrays.asList(ANIMALS)));
-      oneOf(mockSearchable).getMatcher();
-      will(returnValue(null));
-    }});
+    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.getMatcher()).thenReturn(null);
 
     AbstractSearcher searcher = new TestSearcher();
 
@@ -147,23 +145,25 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     assertTrue(searcher.isCustomMatcherAllowed());
     assertNotNull(searcher.getMatcher());
     assertEquals(ANIMALS[12], searcher.search(mockSearchable));
+
+    verify(mockSearchable, times(1)).asList();
+    verify(mockSearchable, times(1)).getMatcher();
   }
 
   @Test
-  public void testSearchObjectImplementingSearchableHavingCustomMatcher() {
-    final Searchable<?> mockSearchable = mockContext.mock(Searchable.class,
-      "testSearchObjectImplementingSearchableHavingCustomMatcher");
+  @SuppressWarnings("unchecked")
+  public void searchObjectImplementingSearchableHavingCustomMatcher() {
+    Searchable<String> mockSearchable = mock(Searchable.class);
 
-    mockContext.checking(new Expectations() {{
-      exactly(2).of(mockSearchable).asList();
-      will(returnValue(Arrays.asList(ANIMALS)));
-      oneOf(mockSearchable).getMatcher();
-      will(returnValue(new AbstractMatcher<String>() {
-        @Override public int match(final String value) {
-          return ANIMALS[16].compareTo(value);
-        }
-      }));
-    }});
+    Matcher<String> matcher = new AbstractMatcher<String>() {
+      @Override
+      public int match(String value) {
+        return ANIMALS[16].compareTo(value);
+      }
+    };
+
+    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.getMatcher()).thenReturn(matcher);
 
     AbstractSearcher searcher = new TestSearcher();
 
@@ -184,10 +184,13 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     assertFalse(searcher.isCustomMatcherAllowed());
     assertNotNull(searcher.getMatcher());
     assertEquals(ANIMALS[12], searcher.search(mockSearchable));
+
+    verify(mockSearchable, times(2)).asList();
+    verify(mockSearchable, times(1)).getMatcher();
   }
 
   @Test
-  public void testSearchSearchableAnnotatedObject() {
+  public void searchSearchableAnnotatedObject() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -204,7 +207,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchSearchableAnnotatedObjectHavingCustomMatcher() {
+  public void searchSearchableAnnotatedObjectHavingCustomMatcher() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -227,7 +230,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchReturningNoMatch() {
+  public void searchReturningNoMatch() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher() {
@@ -241,7 +244,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchForAllInArray() {
+  public void searchForAllInArray() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher() {
@@ -270,7 +273,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchForAllInCollection() {
+  public void searchForAllInCollection() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher() {
@@ -299,7 +302,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testSearchForAllInCollectionWithNull() {
+  public void sarchForAllInCollectionWithNull() {
     try {
       new TestSearcher().searchForAll((Collection<?>) null);
     }
@@ -310,23 +313,19 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchForAllInObjectImplementingSearchable() {
-    final Searchable<?> mockSearchable = mockContext.mock(Searchable.class,
-      "testSearchForAllInObjectImplementingSearchable");
+  @SuppressWarnings("unchecked")
+  public void searchForAllInObjectImplementingSearchable() {
+    Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockSearchable).asList();
-      will(returnValue(Arrays.asList(ANIMALS)));
-      oneOf(mockSearchable).getMatcher();
-      will(returnValue(null));
-    }});
+    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.getMatcher()).thenReturn(null);
 
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
 
     searcher.setMatcher(new AbstractMatcher() {
-      @Override public int match(final Object obj) {
+      @Override public int match(Object obj) {
         return 0;
       }
     });
@@ -345,19 +344,20 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     }
 
     assertEquals(ANIMALS.length, index);
+
+    verify(mockSearchable, times(1)).asList();
+    verify(mockSearchable, times(1)).getMatcher();
   }
 
   @Test
-  public void testSearchForAllInObjectImplementingSearchableHavingCustomMatcher() {
-    final Searchable<?> mockSearchable = mockContext.mock(Searchable.class,
-      "testSearchForAllInObjectImplementingSearchable");
+  @SuppressWarnings("unchecked")
+  public void searchForAllInObjectImplementingSearchableHavingCustomMatcher() {
+    Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    mockContext.checking(new Expectations() {{
-      exactly(2).of(mockSearchable).asList();
-      will(returnValue(Arrays.asList(ANIMALS)));
-      oneOf(mockSearchable).getMatcher();
-      will(returnValue(new TestMatcher()));
-    }});
+    Matcher<Object> matcher = new TestMatcher();
+
+    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.getMatcher()).thenReturn(matcher);
 
     AbstractSearcher searcher = new TestSearcher();
 
@@ -404,10 +404,13 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     }
 
     assertEquals(ANIMALS.length, count);
+
+    verify(mockSearchable, times(2)).asList();
+    verify(mockSearchable, times(1)).getMatcher();
   }
 
   @Test
-  public void testSearchForAllInSearchableAnnotatedObject() {
+  public void searchForAllInSearchableAnnotatedObject() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -437,7 +440,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchForAllInSearchableAnnotatedObjectHavingCustomMatcher() {
+  public void searchForAllInSearchableAnnotatedObjectHavingCustomMatcher() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -486,7 +489,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchForAllReturningNoMatches() {
+  public void searchForAllReturningNoMatches() {
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setMatcher(new AbstractMatcher() {
@@ -504,12 +507,12 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testSearchForAllUsingSearcherConcurrently() throws Throwable {
+  public void searchForAllUsingSearcherConcurrently() throws Throwable {
     TestFramework.runOnce(new UseSearcherConcurrentlyMultithreadedTestCase());
   }
 
   @Test
-  public void testGetSearchableMetaData() {
+  public void getSearchableMetaData() {
     AbstractSearcher searcher = new TestSearcher();
 
     org.cp.elements.util.search.annotation.Searchable searchableMetaData = searcher.getSearchableMetaData(
@@ -527,7 +530,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = SearchException.class)
-  public void testGetSearchableMetaDataWithNonSearchableAnnotatedObject() {
+  public void getSearchableMetaDataWithNonSearchableAnnotatedObject() {
     try {
       new TestSearcher().getSearchableMetaData(new Object());
     }
@@ -539,7 +542,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testGetSearchableMetaDataWithNull() {
+  public void getSearchableMetaDataWithNull() {
     try {
       new TestSearcher().getSearchableMetaData(null);
     }
@@ -550,15 +553,13 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testConfigureMatcherUsingSearchable() {
-    Matcher<?> mockMatcher = mockContext.mock(Matcher.class, "testConfigureMatcherUsingSearchable.Matcher");
+  @SuppressWarnings("unchecked")
+  public void configureMatcherUsingSearchable() {
+    Matcher<Object> mockMatcher = mock(Matcher.class);
+    Matcher<Object> testMatcher = new TestMatcher();
+    Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    final Searchable<?> mockSearchable = mockContext.mock(Searchable.class, "testConfigureMatcherUsingSearchable.Searchable");
-
-    mockContext.checking(new Expectations() {{
-      oneOf(mockSearchable).getMatcher();
-      will(returnValue(new TestMatcher()));
-    }});
+    when(mockSearchable.getMatcher()).thenReturn(testMatcher);
 
     AbstractSearcher searcher = new TestSearcher();
 
@@ -578,21 +579,20 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
     assertSame(mockSearchable, searcher.configureMatcher(mockSearchable));
     assertSame(mockMatcher, searcher.getMatcher());
 
-    mockContext.checking(new Expectations() {{
-      oneOf(mockSearchable).getMatcher();
-      will(returnValue(null));
-    }});
+    when(mockSearchable.getMatcher()).thenReturn(null);
 
     searcher.setCustomMatcherAllowed(true);
 
     assertTrue(searcher.isCustomMatcherAllowed());
     assertSame(mockSearchable, searcher.configureMatcher(mockSearchable));
     assertSame(mockMatcher, searcher.getMatcher());
+
+    verify(mockSearchable, times(2)).getMatcher();
   }
 
   @Test
-  public void testConfigureMatcherUsingSearchableAnnotatedObject() {
-    Matcher<?> mockMatcher = mockContext.mock(Matcher.class, "testConfigureMatcherUsingSearchableAnnotatedObject");
+  public void configureMatcherUsingSearchableAnnotatedObject() {
+    Matcher<?> mockMatcher = mock(Matcher.class);
     AbstractSearcher searcher = new TestSearcher();
 
     searcher.setCustomMatcherAllowed(true);
@@ -624,7 +624,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = SearchException.class)
-  public void testConfigureMatcherUsingSearchableAnnotatedObjectThrowsException() {
+  public void configureMatcherUsingSearchableAnnotatedObjectThrowsException() {
     try {
       AbstractSearcher searcher = new TestSearcher();
 
@@ -646,7 +646,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testAsList() {
+  public void asList() {
     AbstractSearcher searcher = new TestSearcher();
 
     List<String> animalList = searcher.asList(TestSearchableWithOverrides.INSTANCE, searcher.getSearchableMetaData(
@@ -658,7 +658,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test(expected = SearchException.class)
-  public void testAsListWithNonSearchableAnnotatedObject() {
+  public void asListWithNonSearchableAnnotatedObject() {
     try {
       AbstractSearcher searcher = new TestSearcher();
       searcher.asList(new Object(), searcher.getSearchableMetaData(TestSearchableWithDefaults.INSTANCE));
@@ -672,7 +672,7 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testAsListWithSearchableAnnotatedObjectReturningNullList() {
+  public void asListWithSearchableAnnotatedObjectReturningNullList() {
     AbstractSearcher searcher = new TestSearcher();
 
     TestSearchableWithDefaults<Object> testSearchable = new TestSearchableWithDefaults<>(null);
@@ -684,8 +684,8 @@ public class AbstractSearcherTest extends AbstractMockingTestSuite {
   }
 
   @Test
-  public void testMatcherHolderGetIsSetSetAndUnset() {
-    Matcher<?> mockMatcher = mockContext.mock(Matcher.class, "testMatcherHolderGetIsSetSetAndUnset");
+  public void matcherHolderGetIsSetSetAndUnset() {
+    Matcher<?> mockMatcher = mock(Matcher.class);
 
     assertNull(AbstractSearcher.MatcherHolder.get());
     assertFalse(AbstractSearcher.MatcherHolder.isSet());

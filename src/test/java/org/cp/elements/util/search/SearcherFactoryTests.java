@@ -16,57 +16,61 @@
 
 package org.cp.elements.util.search;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
-import org.cp.elements.test.AbstractMockingTestSuite;
 import org.cp.elements.util.search.support.BinarySearch;
 import org.cp.elements.util.search.support.LinearSearch;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * The SearcherFactoryTest class is a test suite of test cases testing the contract and functionality of the
- * SearcherFactory class.
+ * Test suite of test cases testing the contract and functionality of the {@link SearcherFactory} class.
  *
  * @author John J. Blum
- * @see org.cp.elements.test.AbstractMockingTestSuite
- * @see org.cp.elements.util.search.SearcherFactory
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.ExpectedException
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.util.search.SearcherFactory
  * @since 1.0.0
  */
-public class SearcherFactoryTest extends AbstractMockingTestSuite {
+public class SearcherFactoryTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
-  public void testCreateSearcher() {
+  public void createSearcher() {
     assertTrue(SearcherFactory.createSearcher(SearchType.BINARY_SEARCH) instanceof BinarySearch);
     assertTrue(SearcherFactory.createSearcher(SearchType.LINEAR_SEARCH) instanceof LinearSearch);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCreateSearcherWithNull() {
-    try {
-      SearcherFactory.createSearcher(null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals(String.format("The SearchType (null) is not supported by the %1$s!",
-        SearcherFactory.class.getSimpleName()), expected.getMessage());
-      throw expected;
-    }
+  @Test
+  public void createSearcherWithNull() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(String.format("The SearchType (null) is not supported by the %1$s!",
+      SearcherFactory.class.getSimpleName()));
+
+    SearcherFactory.createSearcher(null);
   }
 
   @Test
-  public void testCreateSearcherElseDefaultWithKnownSearchAlgorithm() {
+  public void createSearcherElseDefaultWithKnownSearchAlgorithm() {
     assertTrue(SearcherFactory.createSearcherElseDefault(SearchType.BINARY_SEARCH, null) instanceof BinarySearch);
   }
 
   @Test
-  public void testCreateSearcherElseDefaultWithUnknownSearchAlgorithm() {
-    Searcher mockDefaultSearcher = mockContext.mock(Searcher.class, "testCreateSearcherElseDefaultWithUnknownSearchAlgorithm");
+  public void createSearcherElseDefaultWithUnknownSearchAlgorithm() {
+    Searcher mockDefaultSearcher = mock(Searcher.class);
 
     assertSame(mockDefaultSearcher, SearcherFactory.createSearcherElseDefault(SearchType.INDEX_SEARCH, mockDefaultSearcher));
     assertNull(SearcherFactory.createSearcherElseDefault(SearchType.UNKNOWN_SEARCH, null));
   }
-
 }
