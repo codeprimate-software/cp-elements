@@ -16,35 +16,41 @@
 
 package org.cp.elements.io;
 
+import static org.cp.elements.util.stream.StreamUtils.stream;
+
 import java.io.File;
 import java.io.FileFilter;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The FileExtensionFilter class is a FileFilter implementation filtering Files by extension.
+ * The FileExtensionFilter class is a {@link FileFilter} and {@link Filter} implementation
+ * filtering {@link File}s by extension.
  *
  * @author John J. Blum
+ * @see java.lang.Iterable
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.cp.elements.lang.Filter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class FileExtensionFilter implements FileFilter, Filter<File> {
+public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<String> {
 
   private final Set<String> fileExtensions;
 
   /**
-   * Constructs an instance of the FileExtensionFilter class initialized with the specified array of file extensions
-   * defining the filtering criteria used by this FileFilter accept files.
+   * Constructs an instance of {@link FileExtensionFilter} initialized with the given array of file extensions
+   * used to define filtering criteria used by this {@link FileFilter} to filter files.
    *
-   * @param fileExtensions an array of file extensions used as the filtering criteria by this FileFilter
-   * to accept files.
+   * @param fileExtensions array of file extensions used as the filtering criteria by this {@link FileFilter}
+   * to filter files.
    * @see #FileExtensionFilter(Iterable)
    */
   public FileExtensionFilter(String... fileExtensions) {
@@ -52,50 +58,57 @@ public class FileExtensionFilter implements FileFilter, Filter<File> {
   }
 
   /**
-   * Constructs an instance of the FileExtensionFilter class initialized with the specified Iterable of file extensions
-   * defining the filtering criteria used by this FileFilter to accept files.
+   * Constructs an instance of {@link FileExtensionFilter} initialized with the given {@link Iterable} collection
+   * of file extensions used to define filtering criteria used by this {@link FileFilter} to filter files.
    *
-   * @param fileExtensions an Iterable of file extensions used as the filtering criteria by this FileFilter
-   * to accept files.
+   * @param fileExtensions {@link Iterable} collection of file extensions used to define filtering criteria used
+   * by this {#link FileFilter} to filter files.
    * @see java.lang.Iterable
    */
   public FileExtensionFilter(Iterable<String> fileExtensions) {
-    this.fileExtensions = new TreeSet<>();
-
-    if (fileExtensions != null) {
-      for (String fileExtension : fileExtensions) {
-        if (StringUtils.hasText(fileExtension)) {
-          this.fileExtensions.add((fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension.substring(1)
-            : fileExtension).toLowerCase().trim());
-        }
-      }
-    }
+    this.fileExtensions = stream(fileExtensions).map((fileExtension) ->
+      (fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension.substring(1)
+        : fileExtension).toLowerCase().trim()
+    ).collect(Collectors.toSet());
   }
 
   /**
-   * Gets an array of Strings specifying the file extensions used as filtering criteria by this FileFilter
-   * when evaluation files.
+   * Returns the {@link Set} of file extensions used by this {@link FileFilter} as filtering criteria to evaluate
+   * and filter files.
    *
-   * @return a String array containing the file extensions used as filtering criteria by this FileFilter
-   * when evaluating and accepting files.
+   * @return the {@link Set} of file extensions used by this {@link FileFilter} as filtering criteria to evaluate
+   * and filter files.
+   * @see java.util.Set
    */
-  public String[] getFileExtensions() {
-    return fileExtensions.toArray(new String[fileExtensions.size()]);
+  public Set<String> getFileExtensions() {
+    return Collections.unmodifiableSet(this.fileExtensions);
   }
 
   /**
-   * Determines whether the given file is accepted by this FileFilter based on it's file extension.
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter} based on it's extension.
    *
-   * @param file the File evaluated by this FileFilter.
-   * @return a boolean value indicating whether the file's extension match the filtering criteria set
-   * by this FileFilter.
-   * @see java.io.File
+   * @param file {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.
    * @see org.cp.elements.io.FileUtils#getExtension(java.io.File)
+   * @see #getFileExtensions()
+   * @see java.io.File
    */
   @Override
-  public boolean accept(final File file) {
-    String fileExtension = FileUtils.getExtension(file).toLowerCase().trim();
-    return ((fileExtensions.isEmpty() && StringUtils.isEmpty(fileExtension)) || fileExtensions.contains(fileExtension));
+  public boolean accept(File file) {
+    Set<String> fileExtensions = getFileExtensions();
+
+    return (fileExtensions.isEmpty() || fileExtensions.contains(FileUtils.getExtension(file).toLowerCase().trim()));
   }
 
+  /**
+   * Returns an {@link Iterator} over the file extensions used in the filtering criteria of this {@link FileFilter}.
+   *
+   * @return an {@link Iterator} over the file extensions used in the filtering criteria of this {@link FileFilter}.
+   * @see java.lang.Iterable#iterator()
+   * @see java.util.Iterator
+   */
+  @Override
+  public Iterator<String> iterator() {
+    return getFileExtensions().iterator();
+  }
 }
