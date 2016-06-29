@@ -66,7 +66,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<S
    * @see java.lang.Iterable
    */
   public FileExtensionFilter(Iterable<String> fileExtensions) {
-    this.fileExtensions = stream(fileExtensions).map((fileExtension) ->
+    this.fileExtensions = stream(fileExtensions).filter(StringUtils::hasText).map((fileExtension) ->
       (fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension.substring(1)
         : fileExtension).toLowerCase().trim()
     ).collect(Collectors.toSet());

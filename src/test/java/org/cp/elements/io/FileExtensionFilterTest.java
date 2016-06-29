@@ -31,10 +31,10 @@ import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
- * The FileExtensionFilterTest class is a test suite of test cases testing the contract and functionality of the
- * FileExtensionFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link FileExtensionFilter} class.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.junit.Test
  * @see org.cp.elements.io.FileExtensionFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
@@ -42,8 +42,16 @@ import org.junit.Test;
  */
 public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
+  protected File newFile(String pathname) {
+    return new File(pathname);
+  }
+
+  protected File newFile(File parent, String pathname) {
+    return new File(parent, pathname);
+  }
+
   @Test
-  public void testConstructFileExtensionFilterWithClassExtension() {
+  public void constructFileExtensionFilterWithClassExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter("class");
 
     assertNotNull(fileFilter);
@@ -53,7 +61,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithDotJavaExtension() {
+  public void constructFileExtensionFilterWithDotJavaExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter(".java");
 
     assertNotNull(fileFilter);
@@ -63,8 +71,8 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithAnArrayOfFileExtensions() {
-    String[] expectedFileExtensions = { "ada", ".c", ".cpp", "java", ".rb" };
+  public void constructFileExtensionFilterWithAnArrayOfFileExtensions() {
+    String[] expectedFileExtensions = { "ada", ".c", ".cpp", "groovy", "java", ".rb" };
 
     FileExtensionFilter fileFilter = new FileExtensionFilter(expectedFileExtensions);
 
@@ -79,7 +87,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithBlankFileExtension() {
+  public void constructFileExtensionFilterWithBlankFileExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter("  ");
 
     assertNotNull(fileFilter);
@@ -88,7 +96,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithEmptyFileExtension() {
+  public void constructFileExtensionFilterWithEmptyFileExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter("");
 
     assertNotNull(fileFilter);
@@ -97,7 +105,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithNullFileExtension() {
+  public void constructFileExtensionFilterWithNullFileExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter((String) null);
 
     assertNotNull(fileFilter);
@@ -106,7 +114,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testConstructFileExtensionFilterWithNullEmptyAndBlankFileExtensions() {
+  public void constructFileExtensionFilterWithNullEmptyAndBlankFileExtensions() {
     FileExtensionFilter fileFilter = new FileExtensionFilter(null, "", "  ");
 
     assertNotNull(fileFilter);
@@ -115,14 +123,14 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testAccept() {
+  public void acceptIsSuccessful() {
     FileExtensionFilter fileFilter = new FileExtensionFilter("class");
 
-    File classFile = new File(getBuildOutputDirectory(),
+    File classFile = newFile(getBuildOutputDirectory(),
       "classes/org/cp/elements/io/FileExtensionFilter.class");
 
-    File javaFile = new File(getBuildOutputDirectory(),
-      "../src/main/java/org/cp/elements/io/FileExtensionFilter.java");
+    File javaFile = newFile(getSourceDirectory(),
+      "main/java/org/cp/elements/io/FileExtensionFilter.java");
 
     assertNotNull(classFile);
     assertTrue(classFile.isFile());
@@ -134,25 +142,22 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void testAcceptsFileWithoutExtension() {
+  public void acceptsFilesWithoutAnExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter();
 
-    File fileWithExtension = new File("/path/to/some/file.ext");
-    File fileWithoutExtension = new File("/path/to/some/file");
-
-    assertFalse(fileFilter.accept(fileWithExtension));
-    assertTrue(fileFilter.accept(fileWithoutExtension));
+    assertTrue(fileFilter.accept(newFile("/path/to/some/file.ext")));
+    assertTrue(fileFilter.accept(newFile("/path/to/some/file")));
   }
 
   @Test
-  public void testAcceptsFileWithAndWithoutFileExtension() {
+  public void acceptsFilesWithAndWithoutAnExtension() {
     FileExtensionFilter fileFilter = new FileExtensionFilter("java", ".CLASS", ".");
 
-    assertTrue(fileFilter.accept(new File("/path/to/a/source.java")));
-    assertTrue(fileFilter.accept(new File("absolute/path/to/a/binary.class")));
-    assertTrue(fileFilter.accept(new File("/path/to/a/no/extension/file")));
-    assertTrue(fileFilter.accept(new File("file.")));
-    assertFalse(fileFilter.accept(new File("/path/to/a/non/source.cpp")));
-    assertFalse(fileFilter.accept(new File("/path/to/a/class.file")));
+    assertTrue(fileFilter.accept(newFile("/path/to/a/source.java")));
+    assertTrue(fileFilter.accept(newFile("absolute/path/to/a/binary.class")));
+    assertTrue(fileFilter.accept(newFile("/path/to/a/no/extension/file")));
+    assertTrue(fileFilter.accept(newFile("file.")));
+    assertFalse(fileFilter.accept(newFile("/path/to/a/non/source.cpp")));
+    assertFalse(fileFilter.accept(newFile("/path/to/a/class.file")));
   }
 }
