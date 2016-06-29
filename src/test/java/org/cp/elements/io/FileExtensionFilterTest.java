@@ -48,8 +48,8 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
     assertNotNull(fileFilter.getFileExtensions());
-    assertEquals(1, fileFilter.getFileExtensions().length);
-    assertEquals("class", fileFilter.getFileExtensions()[0]);
+    assertEquals(1, fileFilter.getFileExtensions().size());
+    assertEquals("class", fileFilter.getFileExtensions().iterator().next());
   }
 
   @Test
@@ -58,8 +58,8 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
     assertNotNull(fileFilter.getFileExtensions());
-    assertEquals(1, fileFilter.getFileExtensions().length);
-    assertEquals("java", fileFilter.getFileExtensions()[0]);
+    assertEquals(1, fileFilter.getFileExtensions().size());
+    assertEquals("java", fileFilter.getFileExtensions().iterator().next());
   }
 
   @Test
@@ -70,7 +70,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
 
-    String[] actualFileExtensions = fileFilter.getFileExtensions();
+    String[] actualFileExtensions = fileFilter.getFileExtensions().toArray(new String[expectedFileExtensions.length]);
 
     Arrays.sort(actualFileExtensions);
 
@@ -84,7 +84,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
     assertNotNull(fileFilter.getFileExtensions());
-    assertEquals(0, fileFilter.getFileExtensions().length);
+    assertEquals(0, fileFilter.getFileExtensions().size());
   }
 
   @Test
@@ -93,7 +93,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
     assertNotNull(fileFilter.getFileExtensions());
-    assertEquals(0, fileFilter.getFileExtensions().length);
+    assertEquals(0, fileFilter.getFileExtensions().size());
   }
 
   @Test
@@ -102,7 +102,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
     assertNotNull(fileFilter.getFileExtensions());
-    assertEquals(0, fileFilter.getFileExtensions().length);
+    assertEquals(0, fileFilter.getFileExtensions().size());
   }
 
   @Test
@@ -111,7 +111,7 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
 
     assertNotNull(fileFilter);
     assertNotNull(fileFilter.getFileExtensions());
-    assertEquals(0, fileFilter.getFileExtensions().length);
+    assertEquals(0, fileFilter.getFileExtensions().size());
   }
 
   @Test
@@ -155,5 +155,4 @@ public class FileExtensionFilterTest extends AbstractBaseTestSuite {
     assertFalse(fileFilter.accept(new File("/path/to/a/non/source.cpp")));
     assertFalse(fileFilter.accept(new File("/path/to/a/class.file")));
   }
-
 }

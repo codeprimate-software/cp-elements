@@ -16,47 +16,56 @@
 
 package org.cp.elements.io.support;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Set;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 
 /**
- * The BackupFileExtensionFilterTest class is a test suite of test cases testing the contract and functionality
- * of the BackupFileExtensionFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link BackupFileExtensionFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.cp.elements.io.support.BackupFileExtensionFilter
  * @see org.junit.Test
+ * @see org.cp.elements.io.support.BackupFileExtensionFilter
  * @since 1.0.0
  */
 public class BackupFileExtensionFilterTest {
 
-  @Test
-  public void testAccept() {
-    BackupFileExtensionFilter fileExtensionFilter = new BackupFileExtensionFilter();
+  private BackupFileExtensionFilter fileExtensionFilter = new BackupFileExtensionFilter();
 
-    TestUtils.assertEquals(BackupFileExtensionFilter.BACKUP_FILE_EXTENSIONS, fileExtensionFilter.getFileExtensions());
+  protected File newFile(String pathname) {
+    return new File(pathname);
+  }
+
+  @Test
+  public void acceptIsSuccessful() {
+    Set<String> fileExtensions = fileExtensionFilter.getFileExtensions();
+
+    assertThat(fileExtensions, is(notNullValue(Set.class)));
+    assertThat(fileExtensions.size(), is(equalTo(BackupFileExtensionFilter.BACKUP_FILE_EXTENSIONS.length)));
+    assertThat(fileExtensions.containsAll(Arrays.asList(BackupFileExtensionFilter.BACKUP_FILE_EXTENSIONS)), is(true));
 
     for (String fileExtension : BackupFileExtensionFilter.BACKUP_FILE_EXTENSIONS) {
-      assertTrue(fileExtensionFilter.accept(new File(String.format("file.%1$s", fileExtension))));
+      assertTrue(fileExtensionFilter.accept(newFile(String.format("file.%1$s", fileExtension))));
     }
   }
 
   @Test
-  public void testReject() {
-    BackupFileExtensionFilter fileExtensionFilter = new BackupFileExtensionFilter();
-
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file.db")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file.bakup")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/source.java")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/binary.class")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file.ext")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file")));
+  public void rejectIsSuccessful() {
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file.db")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file.bakup")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/source.java")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/binary.class")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file.ext")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file")));
   }
-
 }

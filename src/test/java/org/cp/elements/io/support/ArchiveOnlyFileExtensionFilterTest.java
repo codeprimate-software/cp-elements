@@ -16,49 +16,57 @@
 
 package org.cp.elements.io.support;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Set;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 
 /**
- * The ArchiveOnlyFileExtensionFilterTest class is a test suite of test cases testing the contract and functionality
- * of the ArchiveOnlyFileExtensionFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link ArchiveOnlyFileExtensionFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.cp.elements.io.support.ArchiveOnlyFileExtensionFilter
  * @see org.junit.Test
+ * @see org.cp.elements.io.support.ArchiveOnlyFileExtensionFilter
  * @since 1.0.0
  */
 public class ArchiveOnlyFileExtensionFilterTest {
 
-  @Test
-  public void testAccept() {
-    ArchiveOnlyFileExtensionFilter fileExtensionFilter = new ArchiveOnlyFileExtensionFilter();
+  private ArchiveOnlyFileExtensionFilter fileExtensionFilter = new ArchiveOnlyFileExtensionFilter();
 
-    TestUtils.assertEquals(ArchiveOnlyFileExtensionFilter.ARCHIVE_ONLY_FILE_EXTENSIONS,
-      fileExtensionFilter.getFileExtensions());
+  protected File newFile(String pathname) {
+    return new File(pathname);
+  }
+
+  @Test
+  public void acceptIsSuccessful() {
+    Set<String> fileExtensions = fileExtensionFilter.getFileExtensions();
+
+    assertThat(fileExtensions, is(notNullValue(Set.class)));
+    assertThat(fileExtensions.size(), is(equalTo(ArchiveOnlyFileExtensionFilter.ARCHIVE_ONLY_FILE_EXTENSIONS.length)));
+    assertThat(fileExtensions.containsAll(Arrays.asList(ArchiveOnlyFileExtensionFilter.ARCHIVE_ONLY_FILE_EXTENSIONS)), is(true));
 
     for (String fileExtension : ArchiveOnlyFileExtensionFilter.ARCHIVE_ONLY_FILE_EXTENSIONS) {
-      assertTrue(fileExtensionFilter.accept(new File(String.format("file.%1$s", fileExtension))));
+      assertTrue(fileExtensionFilter.accept(newFile(String.format("file.%1$s", fileExtension))));
     }
   }
 
   @Test
-  public void testReject() {
-    ArchiveOnlyFileExtensionFilter fileExtensionFilter = new ArchiveOnlyFileExtensionFilter();
-
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file/archive.zip")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file/archive.war")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file/archive.jar")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/source.java")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/binary.class")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file.ext")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file")));
+  public void rejectIsSuccessful() {
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file/archive.zip")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file/archive.war")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file/archive.jar")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/source.java")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/binary.class")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file.ext")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file")));
   }
-
 }

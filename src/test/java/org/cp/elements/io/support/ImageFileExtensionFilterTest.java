@@ -16,48 +16,57 @@
 
 package org.cp.elements.io.support;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Set;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 
 /**
- * The ImageFileExtensionFilterTest class is a test suite of test cases testing the contract and functionality
- * of the ImageFileExtensionFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link ImageFileExtensionFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.cp.elements.io.support.ImageFileExtensionFilter
  * @see org.junit.Test
+ * @see org.cp.elements.io.support.ImageFileExtensionFilter
  * @since 1.0.0
  */
 public class ImageFileExtensionFilterTest {
 
-  @Test
-  public void testAccept() {
-    ImageFileExtensionFilter fileExtensionFilter = new ImageFileExtensionFilter();
+  private ImageFileExtensionFilter fileExtensionFilter = new ImageFileExtensionFilter();
 
-    TestUtils.assertEquals(ImageFileExtensionFilter.IMAGE_FILE_EXTENSIONS, fileExtensionFilter.getFileExtensions());
+  protected File newFile(String pathname) {
+    return new File(pathname);
+  }
+
+  @Test
+  public void acceptIsSuccessful() {
+    Set<String> fileExtensions = fileExtensionFilter.getFileExtensions();
+
+    assertThat(fileExtensions, is(notNullValue(Set.class)));
+    assertThat(fileExtensions.size(), is(equalTo(ImageFileExtensionFilter.IMAGE_FILE_EXTENSIONS.length)));
+    assertThat(fileExtensions.containsAll(Arrays.asList(ImageFileExtensionFilter.IMAGE_FILE_EXTENSIONS)), is(true));
 
     for (String fileExtension : ImageFileExtensionFilter.IMAGE_FILE_EXTENSIONS) {
-      assertTrue(fileExtensionFilter.accept(new File(String.format("file.%1$s", fileExtension))));
+      assertTrue(fileExtensionFilter.accept(newFile(String.format("file.%1$s", fileExtension))));
     }
   }
 
   @Test
-  public void testReject() {
-    ImageFileExtensionFilter fileExtensionFilter = new ImageFileExtensionFilter();
-
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/audio/file.mp3")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/image/file.img")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/video/file.mov")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/source.java")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/binary.class")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file.ext")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file")));
+  public void rejectIsSuccessful() {
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/audio/file.mp3")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/image/file.img")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/video/file.mov")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/source.java")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/binary.class")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file.ext")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file")));
   }
-
 }

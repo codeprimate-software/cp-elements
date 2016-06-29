@@ -16,48 +16,57 @@
 
 package org.cp.elements.io.support;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Set;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 
 /**
- * The CompressionOnlyFileExtensionFilterTest class is a test suite of test cases testing the contract and functionality
- * of the CompressionOnlyFileExtensionFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link CompressionOnlyFileExtensionFilter}
+ * class.
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.cp.elements.io.support.CompressionOnlyFileExtensionFilterTest
  * @see org.junit.Test
+ * @see org.cp.elements.io.support.CompressionOnlyFileExtensionFilterTest
  * @since 1.0.0
  */
 public class CompressionOnlyFileExtensionFilterTest {
 
-  @Test
-  public void testAccept() {
-    CompressionOnlyFileExtensionFilter fileExtensionFilter = new CompressionOnlyFileExtensionFilter();
+  private CompressionOnlyFileExtensionFilter fileExtensionFilter = new CompressionOnlyFileExtensionFilter();
 
-    TestUtils.assertEquals(CompressionOnlyFileExtensionFilter.COMPRESSION_ONLY_FILE_EXTENSIONS,
-      fileExtensionFilter.getFileExtensions());
+  protected File newFile(String pathname) {
+    return new File(pathname);
+  }
+
+  @Test
+  public void acceptIsSuccessful() {
+    Set<String> fileExtensions = fileExtensionFilter.getFileExtensions();
+
+    assertThat(fileExtensions, is(notNullValue(Set.class)));
+    assertThat(fileExtensions.size(), is(equalTo(CompressionOnlyFileExtensionFilter.COMPRESSION_ONLY_FILE_EXTENSIONS.length)));
+    assertThat(fileExtensions.containsAll(Arrays.asList(CompressionOnlyFileExtensionFilter.COMPRESSION_ONLY_FILE_EXTENSIONS)), is(true));
 
     for (String fileExtension : CompressionOnlyFileExtensionFilter.COMPRESSION_ONLY_FILE_EXTENSIONS) {
-      assertTrue(fileExtensionFilter.accept(new File(String.format("file.%1$s", fileExtension))));
+      assertTrue(fileExtensionFilter.accept(newFile(String.format("file.%1$s", fileExtension))));
     }
   }
 
   @Test
-  public void testReject() {
-    CompressionOnlyFileExtensionFilter fileExtensionFilter = new CompressionOnlyFileExtensionFilter();
-
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file/archive.tar")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file.jar")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/source.java")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/binary.class")));
-    assertFalse(fileExtensionFilter.accept(new File("/path/to/a/file.ext")));
-    assertFalse(fileExtensionFilter.accept(new File("absolute/path/to/a/file")));
+  public void rejectIsSuccessful() {
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file/archive.tar")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file.jar")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/source.java")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/binary.class")));
+    assertFalse(fileExtensionFilter.accept(newFile("/path/to/a/file.ext")));
+    assertFalse(fileExtensionFilter.accept(newFile("absolute/path/to/a/file")));
   }
-
 }
