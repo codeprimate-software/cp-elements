@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.ArrayUtils;
 
@@ -53,6 +54,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<S
    * to filter files.
    * @see #FileExtensionFilter(Iterable)
    */
+  @NullSafe
   public FileExtensionFilter(String... fileExtensions) {
     this(ArrayUtils.iterable(fileExtensions));
   }
