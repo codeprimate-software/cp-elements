@@ -18,19 +18,22 @@ package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.RelationalOperator;
 
 /**
- * The FileLastModifiedFilter class is a FileFilter implementation that filters files based on their last modified
- * timestamp (date/time).
+ * The FileLastModifiedFilter class is a {@link FileFilter} and {@link Filter} of {@link File}s implementation
+ * filtering {@link File}s based on their last modified timestamp (date/time).
  *
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see java.util.Calendar
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.RelationalOperator
  * @since 1.0.0
@@ -39,148 +42,316 @@ import org.cp.elements.lang.RelationalOperator;
 public abstract class FileLastModifiedFilter implements FileFilter, Filter<File> {
 
   /**
-   * Creates an instance of the FileLastModifiedFilter class initialized with the RelationOperator used
-   * in the evaluation of the File's last modified timestamp during the filtering operation.
+   * Creates an instance of {@link FileLastModifiedFilter} initialized with the provided {@link RelationalOperator},
+   * which is u in the evaluation of the {@link File)s last modified timestamp when {@link #accept(File)} is called.
    *
-   * @param operator the RelationOperator used to evaluate the File.
-   * @return an instance of this FileLastModifiedFilter initialized with an instance of the RelationOperator
-   * used as criteria for evaluating the File.
-   * @see org.cp.elements.lang.RelationalOperator#evaluate(Comparable)
+   * @param operator {@link RelationalOperator} used to evaluate the {@link File}.
+   * @return an instance of {@link FileLastModifiedFilter} initialized with the given {@link RelationalOperator}
+   * used when evaluating the {@link File}.
+   * @see org.cp.elements.lang.RelationalOperator
+   * @see FileLastModifiedFilter
    */
-  protected static FileLastModifiedFilter create(final RelationalOperator<Long> operator) {
+  protected static FileLastModifiedFilter create(RelationalOperator<Long> operator) {
     return new FileLastModifiedFilter() {
-      @Override public boolean accept(final File file) {
-        return operator.evaluate(file.lastModified());
+      @Override @NullSafe
+      public boolean accept(File file) {
+        return (file != null && operator.evaluate(file.lastModified()));
       }
     };
   }
 
   /**
-   * Determines whether the given File matches the criteria of and is accepted by this FileFilter.  The File is a match
-   * if the File's lastModified property matches the expected date/time criteria of this FileFilter.
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter}.  The {@link File} is accepted
+   * if the {@link File}'s lastModified property satisfies the expected date/time criteria of this {@link FileFilter}.
    *
-   * @param file the File to filter.
-   * @return a boolean value indicating whether the File's lastModified property satisfies the criteria
-   * of this FileFilter.
+   * @param file {@link File} to evaluate and filter.
+   * @return a boolean value indicating whether the {@link File}'s lastModified property satisfies the criteria
+   * of this {@link FileFilter}.
    * @see java.io.FileFilter#accept(java.io.File)
    * @see java.io.File
    */
   public abstract boolean accept(File file);
 
   /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified after the given timestamp.
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified after the given timestamp.
    *
-   * @param lastModified a long value indicating the last modified timestamp measured in milliseconds after which
-   * the file must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
+   * @param lastModified timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
    * @see org.cp.elements.lang.RelationalOperator#greaterThan(Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
    */
-  public static FileLastModifiedFilter after(final long lastModified) {
+  public static FileLastModifiedFilter after(long lastModified) {
     return create(RelationalOperator.greaterThan(lastModified));
   }
 
   /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified after the given date/time, expressed a java.util.Calendar value.
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified after the given date/time.
    *
-   * @param dateTime a Calendar value indicating the last modified date/time after which the file
-   * must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #after(long)
+   * @param dateTime {@link Calendar} used to filter {@link File}'s that were last modified after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
    * @see java.util.Calendar#getTimeInMillis()
+   * @see #after(long)
    */
-  public static FileLastModifiedFilter after(final Calendar dateTime) {
+  public static FileLastModifiedFilter after(Calendar dateTime) {
     return after(dateTime.getTimeInMillis());
   }
 
   /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified before the given timestamp.
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified after the given date/time.
    *
-   * @param lastModified a long value indicating the last modified timestamp measured in milliseconds before which
-   * the file must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
-   * @see org.cp.elements.lang.RelationalOperator#lessThan(Comparable)
+   * @param dateTime {@link Date} used to filter {@link File}'s that were last modified after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Date#getTime()
+   * @see #after(long)
    */
-  public static FileLastModifiedFilter before(final long lastModified) {
+  public static FileLastModifiedFilter after(Date dateTime) {
+    return after(dateTime.getTime());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified after the given date/time.
+   *
+   * @param dateTime {@link LocalDateTime} used to filter {@link File}'s that were last modified after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.time.LocalDateTime
+   * @see #after(long)
+   */
+  public static FileLastModifiedFilter after(LocalDateTime dateTime) {
+    return after(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before the given timestamp.
+   *
+   * @param lastModified timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see org.cp.elements.lang.RelationalOperator#lessThan(Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
+   */
+  public static FileLastModifiedFilter before(long lastModified) {
     return create(RelationalOperator.lessThan(lastModified));
   }
 
   /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified before the given date/time, expressed a java.util.Calendar value.
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before the given date/time.
    *
-   * @param dateTime a Calendar value indicating the last modified date/time before which the file
-   * must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #before(long)
+   * @param dateTime {@link Calendar} used to filter {@link File}'s that were last modified before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
    * @see java.util.Calendar#getTimeInMillis()
+   * @see #before(long)
    */
-  public static FileLastModifiedFilter before(final Calendar dateTime) {
+  public static FileLastModifiedFilter before(Calendar dateTime) {
     return before(dateTime.getTimeInMillis());
   }
 
   /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified between a given time span represented as a timestamp range.
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before the given date/time.
    *
-   * @param lastModifiedStart a long value indicating the last modified timestamp measured in milliseconds after which
-   * the file must have been modified.
-   * @param lastModifiedEnd a long value indicating the last modified timestamp measured in milliseconds before which
-   * the file must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
+   * @param dateTime {@link Date} used to filter {@link File}'s that were last modified before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Date#getTime()
+   * @see #before(long)
+   */
+  public static FileLastModifiedFilter before(Date dateTime) {
+    return before(dateTime.getTime());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before the given date/time.
+   *
+   * @param dateTime {@link LocalDateTime} used to filter {@link File}'s that were last modified before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.time.LocalDateTime
+   * @see #before(long)
+   */
+  public static FileLastModifiedFilter before(LocalDateTime dateTime) {
+    return before(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified between a given span of time.
+   *
+   * @param lastModifiedBegin timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * on or after this date/time.
+   * @param lastModifiedEnd timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * on or before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
    * @see org.cp.elements.lang.RelationalOperator#greaterThanEqualToAndLessThanEqualTo(Comparable, Comparable)
-   */
-  public static FileLastModifiedFilter during(final long lastModifiedStart, final long lastModifiedEnd) {
-    return create(RelationalOperator.greaterThanEqualToAndLessThanEqualTo(lastModifiedStart, lastModifiedEnd));
-  }
-
-  /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified between a given time span represented as a date/time range.
-   *
-   * @param startDateTime a Calendar value indicating the last modified date/time after which the file
-   * must have been modified.
-   * @param endDateTime a Calendar value indicating the last modified date/time before which the file
-   * must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #during(long, long)
-   * @see java.util.Calendar#getTimeInMillis()
-   */
-  public static FileLastModifiedFilter during(final Calendar startDateTime, final Calendar endDateTime) {
-    return during(startDateTime.getTimeInMillis(), endDateTime.getTimeInMillis());
-  }
-
-  /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified on a given timestamp.
-   *
-   * @param lastModified a long value indicating the last modified timestamp measured in milliseconds on which
-   * the file must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
    * @see #create(org.cp.elements.lang.RelationalOperator)
-   * @see org.cp.elements.lang.RelationalOperator#equalTo(Comparable)
    */
-  public static FileLastModifiedFilter on(final long lastModified) {
+  public static FileLastModifiedFilter during(long lastModifiedBegin, long lastModifiedEnd) {
+    return create(RelationalOperator.greaterThanEqualToAndLessThanEqualTo(lastModifiedBegin, lastModifiedEnd));
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified between a given span of time.
+   *
+   * @param dateTimeBegin {@link Calendar} used to filter {@link File}'s that were last modified
+   * on or after this date/time.
+   * @param dateTimeEnd {@link Calendar} used to filter {@link File}'s that were last modified
+   * on or before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Calendar#getTimeInMillis()
+   * @see #during(long, long)
+   */
+  public static FileLastModifiedFilter during(Calendar dateTimeBegin, Calendar dateTimeEnd) {
+    return during(dateTimeBegin.getTimeInMillis(), dateTimeEnd.getTimeInMillis());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified between a given span of time.
+   *
+   * @param dateTimeBegin {@link Date} used to filter {@link File}'s that were last modified on or after this date/time.
+   * @param dateTimeEnd {@link Date} used to filter {@link File}'s that were last modified on or before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Date#getTime()
+   * @see #during(long, long)
+   */
+  public static FileLastModifiedFilter during(Date dateTimeBegin, Date dateTimeEnd) {
+    return during(dateTimeBegin.getTime(), dateTimeEnd.getTime());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified between a given span of time.
+   *
+   * @param dateTimeBegin {@link LocalDateTime} used to filter {@link File}'s that were last modified
+   * on or after this date/time.
+   * @param dateTimeEnd {@link LocalDateTime} used to filter {@link File}'s that were last modified
+   * on or before this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.time.LocalDateTime
+   * @see #during(long, long)
+   */
+  public static FileLastModifiedFilter during(LocalDateTime dateTimeBegin, LocalDateTime dateTimeEnd) {
+    return during(dateTimeBegin.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+      dateTimeEnd.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified on a given date/time.
+   *
+   * @param lastModified timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * on this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see org.cp.elements.lang.RelationalOperator#equalTo(Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
+   */
+  public static FileLastModifiedFilter on(long lastModified) {
     return create(RelationalOperator.equalTo(lastModified));
   }
 
   /**
-   * Creates an instance of the FileLastModifiedFilter to evaluate and filter Files based on whether they were
-   * last modified on the given date/time, expressed a java.util.Calendar value.
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified on a given date/time.
    *
-   * @param dateTime a Calendar value indicating the last modified date/time on which the file
-   * must have been modified.
-   * @return an instance of the FileLastModifiedFilter.
-   * @see #on(long)
+   * @param dateTime {@link Calendar} used to filter {@link File}'s that were last modified on this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
    * @see java.util.Calendar#getTimeInMillis()
+   * @see #on(long)
    */
-  public static FileLastModifiedFilter on(final Calendar dateTime) {
+  public static FileLastModifiedFilter on(Calendar dateTime) {
     return on(dateTime.getTimeInMillis());
   }
 
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified on a given date/time.
+   *
+   * @param dateTime {@link Date} used to filter {@link File}'s that were last modified on this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Date#getTime()
+   * @see #on(long)
+   */
+  public static FileLastModifiedFilter on(Date dateTime) {
+    return on(dateTime.getTime());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified on a given date/time.
+   *
+   * @param dateTime {@link LocalDateTime} used to filter {@link File}'s that were last modified on this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.time.LocalDateTime
+   * @see #on(long)
+   */
+  public static FileLastModifiedFilter on(LocalDateTime dateTime) {
+    return on(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before or after a given span of time.
+   *
+   * @param onBefore timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * on or before this date/time.
+   * @param onAfter timestamp in milliseconds used to filter {@link File}'s that were last modified
+   * on or after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see org.cp.elements.lang.RelationalOperator#lessThanEqualToOrGreaterThanEqualTo(Comparable, Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
+   */
+  public static FileLastModifiedFilter outside(long onBefore, long onAfter) {
+    return create(RelationalOperator.lessThanEqualToOrGreaterThanEqualTo(onBefore, onAfter));
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before or after a given span of time.
+   *
+   * @param onBefore {@link Calendar} used to filter {@link File}'s that were last modified on or before this date/time.
+   * @param onAfter {@link Calendar} used to filter {@link File}'s that were last modified on or after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Calendar#getTimeInMillis()
+   * @see #outside(long, long)
+   */
+  public static FileLastModifiedFilter outside(Calendar onBefore, Calendar onAfter) {
+    return outside(onBefore.getTimeInMillis(), onAfter.getTimeInMillis());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before or after a given span of time.
+   *
+   * @param onBefore {@link Date} used to filter {@link File}'s that were last modified on or before this date/time.
+   * @param onAfter {@link Date} used to filter {@link File}'s that were last modified on or after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.util.Date#getTime()
+   * @see #outside(long, long)
+   */
+  public static FileLastModifiedFilter outside(Date onBefore, Date onAfter) {
+    return outside(onBefore.getTime(), onAfter.getTime());
+  }
+
+  /**
+   * Factory method to create an instance of the {@link FileLastModifiedFilter} that evaluates and filters {@link File}s
+   * based on whether they were last modified before or after a given span of time.
+   *
+   * @param onBefore {@link LocalDateTime} used to filter {@link File}'s that were last modified
+   * on or before this date/time.
+   * @param onAfter {@link LocalDateTime} used to filter {@link File}'s that were last modified
+   * on or after this date/time.
+   * @return an instance of the {@link FileLastModifiedFilter}.
+   * @see java.time.LocalDateTime
+   * @see #outside(long, long)
+   */
+  public static FileLastModifiedFilter outside(LocalDateTime onBefore, LocalDateTime onAfter) {
+    return outside(onBefore.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+      onAfter.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+  }
 }
