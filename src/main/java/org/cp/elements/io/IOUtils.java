@@ -36,6 +36,7 @@ import org.cp.elements.lang.ObjectUtils;
  * @author John J. Blum
  * @see java.io.ByteArrayInputStream
  * @see java.io.ByteArrayOutputStream
+ * @see java.io.Closeable
  * @see java.io.InputStream
  * @see java.io.ObjectInputStream
  * @see java.io.ObjectOutputStream
