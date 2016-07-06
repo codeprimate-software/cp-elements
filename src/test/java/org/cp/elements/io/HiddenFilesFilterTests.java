@@ -30,8 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The HiddenFilesFilterTest class is a test suite of test cases testing the contract and functionality
- * of the HiddenFilesFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link HiddenFilesFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -45,14 +44,14 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class HiddenFilesFilterTest {
+public class HiddenFilesFilterTests {
 
   @Mock
   private File mockFile;
 
   @Test
   @SuppressWarnings("all")
-  public void hiddenFileFilterAcceptsHiddenFile() {
+  public void hiddenFilesFilterAcceptsHiddenFile() {
     when(mockFile.isHidden()).thenReturn(true);
     assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(mockFile), is(true));
     verify(mockFile, times(1)).isHidden();
@@ -60,15 +59,20 @@ public class HiddenFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void hiddenFileFilterRejectsNonHiddenFile() {
+  public void hiddenFilesFilterRejectsNonHiddenFile() {
     when(mockFile.isHidden()).thenReturn(false);
     assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(mockFile), is(false));
     verify(mockFile, times(1)).isHidden();
   }
 
   @Test
+  public void hiddenFilesFilterRejectsNull() {
+    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(null), is(false));
+  }
+
+  @Test
   @SuppressWarnings("all")
-  public void nonHiddenFileFilterAcceptsNonHiddenFile() {
+  public void nonHiddenFilesFilterAcceptsNonHiddenFile() {
     when(mockFile.isHidden()).thenReturn(false);
     assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(mockFile), is(true));
     verify(mockFile, times(1)).isHidden();
@@ -76,10 +80,14 @@ public class HiddenFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void nonHiddenFileFilterRejectsHiddenFile() {
+  public void nonHiddenFilesFilterRejectsHiddenFile() {
     when(mockFile.isHidden()).thenReturn(true);
     assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(mockFile), is(false));
     verify(mockFile, times(1)).isHidden();
   }
 
+  @Test
+  public void nonHiddenFilesFilterRejectsNull() {
+    assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(null), is(false));
+  }
 }

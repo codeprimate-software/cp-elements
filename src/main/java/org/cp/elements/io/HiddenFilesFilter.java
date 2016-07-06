@@ -20,10 +20,11 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 
 /**
  * The HiddenFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
- * by whether they are hidden.
+ * by whether they are hidden or not.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -40,13 +41,13 @@ public class HiddenFilesFilter implements FileFilter, Filter<File> {
   private final boolean hidden;
 
   /**
-   * Constructs an instance of the HiddenFilesFilter class initialized with a boolean value indicating whether
-   * hidden {@link File}s are accepted or rejected by this {@link FileFilter}.
+   * Constructs an instance of the {@link HiddenFilesFilter} class initialized with the given boolean value
+   * to indicate whether hidden {@link File}s will be accepted or rejected by this {@link FileFilter}.
    *
    * @param hidden a boolean value indicating whether hidden {@link File}s are accepted or rejected
    * by this {@link FileFilter}.
    */
-  protected HiddenFilesFilter(final boolean hidden) {
+  protected HiddenFilesFilter(boolean hidden) {
     this.hidden = hidden;
   }
 
@@ -56,12 +57,13 @@ public class HiddenFilesFilter implements FileFilter, Filter<File> {
    *
    * @param pathname the {@link File} to evaluate.
    * @return a boolean value indicating whether hidden {@link File}s are accepted or rejected.
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File#isHidden()
    */
   @Override
-  public boolean accept(final File pathname) {
-    return (pathname.isHidden() == hidden);
+  @NullSafe
+  public boolean accept(File pathname) {
+    return (pathname != null && pathname.isHidden() == hidden);
   }
-
 }
