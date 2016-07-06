@@ -23,8 +23,8 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 
 /**
- * The InverseFileFilter class is a FileFilter implementation that returns the inverse result
- * of the delegating FileFilter from which the InverseFileFilter is composed.
+ * The InverseFileFilter class is a {@link FileFilter} and {@link Filter} implementation that returns the inverse
+ * result of the delegating {@link FileFilter} from which the {@link InverseFileFilter} is composed.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -44,32 +44,31 @@ public class InverseFileFilter implements FileFilter, Filter<File> {
    * @throws java.lang.NullPointerException if the delegating FileFilter reference is null.
    * @see java.io.FileFilter
    */
-  public InverseFileFilter(final FileFilter delegate) {
-    Assert.notNull(delegate, "The delegating FileFilter must not be null!");
+  public InverseFileFilter(FileFilter delegate) {
+    Assert.notNull(delegate, "FileFilter must not be null");
     this.delegate = delegate;
   }
 
   /**
-   * Gets the FileFilter used as the delegate to the InverseFilterFilter.
+   * Gets the {@link FileFilter} used as the delegate for the {@link InverseFileFilter}.
    *
-   * @return the backing, delegating FileFilter instance.
-   * @see java.io.File
+   * @return the backing, delegating {@link FileFilter} instance.
+   * @see java.io.FileFilter
    */
   protected FileFilter getDelegate() {
     return delegate;
   }
 
   /**
-   * Determines whether the specified File matches the criteria of this FileFilter.
+   * Determines whether the specified {@link File} is accepted by this {@link FileFilter}.
    *
-   * @param file the File to filter.
-   * @return a boolean value indicating whether the specified File matches the criteria of this FileFilter.
+   * @param file {@link File} to filter.
+   * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.
    * @see #getDelegate()
    * @see java.io.File
    */
   @Override
-  public boolean accept(final File file) {
+  public boolean accept(File file) {
     return !getDelegate().accept(file);
   }
-
 }
