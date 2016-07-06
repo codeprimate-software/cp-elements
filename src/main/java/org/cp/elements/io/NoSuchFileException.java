@@ -28,43 +28,42 @@ package org.cp.elements.io;
 public class NoSuchFileException extends RuntimeException {
 
   /**
-   * Creates an uninitialized instance of the NoSuchFileException class.
+   * Constructs an uninitialized instance of the {@link NoSuchFileException} class.
    */
   public NoSuchFileException() {
   }
 
   /**
-   * Creates an instance of the NoSuchFileException class initialized with the given message describing
+   * Constructs an instance of the {@link NoSuchFileException} class initialized with the given message describing
    * the details of the missing {@link java.io.File}.
    *
-   * @param message a String describing the cause of this exception.
+   * @param message description for the cause of this exception.
    */
-  public NoSuchFileException(final String message) {
+  public NoSuchFileException(String message) {
     super(message);
   }
 
   /**
-   * Creates an instance of the NoSuchFileException class initialized with the given {@link Throwable}
+   * Constructs an instance of the {@link NoSuchFileException} class initialized with the given {@link Throwable}
    * indicating the reason this exception was thrown.
    *
-   * @param cause a {@link Throwable} indicating the cause of this exception.
+   * @param cause {@link Throwable} indicating the cause of this exception.
    * @see java.lang.Throwable
    */
-  public NoSuchFileException(final Throwable cause) {
+  public NoSuchFileException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Creates an instance of the NoSuchFileException class initialized with the given message describing
+   * Constructs an instance of the {@link NoSuchFileException} class initialized with the given message describing
    * the details of the missing {@link java.io.File} along with the {@link Throwable} indicating the reason
    * this exception was thrown.
    *
-   * @param message a String describing the cause of this exception.
-   * @param cause a {@link Throwable} indicating the cause of this exception.
+   * @param message description for the cause of this exception.
+   * @param cause {@link Throwable} indicating the cause of this exception.
    * @see java.lang.Throwable
    */
-  public NoSuchFileException(final String message, final Throwable cause) {
+  public NoSuchFileException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }
