@@ -46,7 +46,7 @@ public class FilesOnlyFilter implements FileFilter, Filter<File> {
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
-  public boolean accept(final File file) {
+  public boolean accept(File file) {
     return FileUtils.isFile(file);
   }
 }
