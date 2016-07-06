@@ -20,10 +20,12 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.RelationalOperator;
 
 /**
- * The FileSizeFilter class is a FileFilter implementation that filters files based on their size in bytes.
+ * The FileSizeFilter class is a {@link FileFilter} and {@link Filter} of {@link File}s implementation
+ * that filters files based on their byte size.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -36,84 +38,100 @@ import org.cp.elements.lang.RelationalOperator;
 public abstract class FileSizeFilter implements FileFilter, Filter<File> {
 
   /**
-   * Creates an instance of the FileSizeFilter class initialized with the RelationOperator used in the evaluation
-   * of the File's size in bytes during he filtering operation.
+   * Factory method to create an instance of the {@link FileSizeFilter} initialized with the given
+   * {@link RelationalOperator} used during the filtering process to evaluate {@link File}s by size.
    *
-   * @param operator the RelationOperator used to evaluate the File.
-   * @return an instance of this FileSizeFilter initialized with an instance of the RelationOperator used as criteria
-   * for evaluating the File.
+   * @param operator [{@link RelationalOperator} used to evaluate a {@link File}'s size.
+   * @return an instance of {@link FileSizeFilter}.
    * @see org.cp.elements.lang.RelationalOperator#evaluate(Comparable)
+   * @see org.cp.elements.io.FileSizeFilter
+   * @see java.io.File
    */
-  protected static FileSizeFilter create(final RelationalOperator<Long> operator) {
+  protected static FileSizeFilter create(RelationalOperator<Long> operator) {
     return new FileSizeFilter() {
-      @Override public boolean accept(final File file) {
-        return operator.evaluate(file.length());
+      @Override @NullSafe
+      public boolean accept(File file) {
+        return (file != null && operator.evaluate(file.length()));
       }
     };
   }
 
   /**
-   * Determines whether the given File matches the criteria of and is accepted by this FileFilter.  The File is a match
-   * if the File's length property (size) matches the expected size criteria of this FileFilter.
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter}.  The {@link File} is accepted
+   * if the {@link File}'s length (byte size) satisfies the criteria of this {@link FileFilter}.
    *
-   * @param file the File to filter.
-   * @return a boolean value indicating whether the File's size property satisfies the criteria of this FileFilter.
+   * @param file {@link File} to filter.
+   * @return a boolean value indicating whether the given {@link File}'s length (byte size) satisfies the criteria
+   * of this {@link FileFilter}.
    * @see java.io.FileFilter#accept(java.io.File)
    * @see java.io.File
    */
   public abstract boolean accept(File file);
 
   /**
-   * Creates an instance of the FileSizeFilter that evaluates a File's size in bytes based on a size range, between
-   * the given minimum and maximum size in bytes, inclusive.
+   * Factory method to create an instance of the {@link FileSizeFilter}, which filters {@link File}s by length
+   * between a minimum and maximum (inclusive) size in bytes.
    *
-   * @param minSize a long value indicating the minimum file size in bytes.
-   * @param maxSize a long value indicating the maximum file size in bytes.
-   * @return an instance of the FileSizeFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
+   * @param minSize minimum acceptable {@link File} length (size) in bytes.
+   * @param maxSize maximum acceptable {@link File} length (size) in bytes.
+   * @return an instance of {@link FileSizeFilter}.
    * @see org.cp.elements.lang.RelationalOperator#greaterThanEqualToAndLessThanEqualTo(Comparable, Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
    */
-  public static FileSizeFilter between(final long minSize, final long maxSize) {
+  public static FileSizeFilter between(long minSize, long maxSize) {
     return create(RelationalOperator.greaterThanEqualToAndLessThanEqualTo(minSize, maxSize));
   }
 
   /**
-   * Creates an instance of the FileSizeFilter evaluating a File's size in bytes based on it's equality to
-   * the given size in bytes.
+   * Factory method to create an instance of the {@link FileSizeFilter}, which filters {@link File}s by length
+   * equal to the given size in bytes.
    *
-   * @param size a long vlaue indicating the exact file size in bytes.
-   * @return an instance of the FileSizeFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
+   * @param size acceptable {@link File} length (size) in bytes.
+   * @return an instance of {@link FileSizeFilter}.
    * @see org.cp.elements.lang.RelationalOperator#equalTo(Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
    */
-  public static FileSizeFilter equalTo(final long size) {
+  public static FileSizeFilter equalTo(long size) {
     return create(RelationalOperator.equalTo(size));
   }
 
   /**
-   * Creates an instance of the FileSizeFilter evaluating a File's size in bytes based on it's relation (greater than)
-   * to the given size in bytes.
+   * Factory method to create an instance of the {@link FileSizeFilter}, which filters {@link File}s by length
+   * greater than the given size in bytes.
    *
-   * @param size a long value indicating the lower bound file size in bytes.
-   * @return an instance of the FileSizeFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
+   * @param size acceptable lower bound {@link File} length (size) in bytes.
+   * @return an instance of {@link FileSizeFilter}.
    * @see org.cp.elements.lang.RelationalOperator#greaterThan(Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
    */
-  public static FileSizeFilter greaterThan(final long size) {
+  public static FileSizeFilter greaterThan(long size) {
     return create(RelationalOperator.greaterThan(size));
   }
 
   /**
-   * Creates an instance of the FileSizeFilter evaluating a File's size in bytes based on it's relation (less than)
-   * to the given size in bytes.
+   * Factory method to create an instance of the {@link FileSizeFilter}, which filters {@link File}s by length
+   * less than the given size in bytes.
    *
-   * @param size a long value indicating the upper bound file size in bytes.
-   * @return an instance of the FileSizeFilter.
-   * @see #create(org.cp.elements.lang.RelationalOperator)
+   * @param size acceptable upper bound {@link File} length (size) in bytes.
+   * @return an instance of {@link FileSizeFilter}.
    * @see org.cp.elements.lang.RelationalOperator#lessThan(Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
    */
-  public static FileSizeFilter lessThan(final long size) {
+  public static FileSizeFilter lessThan(long size) {
     return create(RelationalOperator.lessThan(size));
   }
 
+  /**
+   * Factory method to create an instance of the {@link FileSizeFilter}, which filters {@link File}s by length
+   * outsize a minimum and maximum (inclusive) size in bytes.
+   *
+   * @param lessorSize lessor acceptable {@link File} length (size) in bytes.
+   * @param greaterSize greater acceptable {@link File} length (size) in bytes.
+   * @return an instance of {@link FileSizeFilter}.
+   * @see org.cp.elements.lang.RelationalOperator#lessThanEqualToOrGreaterThanEqualTo(Comparable, Comparable)
+   * @see #create(org.cp.elements.lang.RelationalOperator)
+   */
+  public static FileSizeFilter outside(long lessorSize, long greaterSize) {
+    return create(RelationalOperator.lessThanEqualToOrGreaterThanEqualTo(lessorSize, greaterSize));
+  }
 }
