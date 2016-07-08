@@ -5,3 +5,6 @@ etc/release
 lib/
 target/
 .DS_Store
+*.iws
+*.ipr
+*.iml

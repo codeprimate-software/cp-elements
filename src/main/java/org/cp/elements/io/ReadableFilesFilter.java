@@ -20,10 +20,11 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 
 /**
  * The ReadableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
- * by whether they are readable.
+ * by whether they are readable or not.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -40,28 +41,29 @@ public class ReadableFilesFilter implements FileFilter, Filter<File> {
   private final boolean readable;
 
   /**
-   * Constructs an instance of the ReadableFilesFilter class initialized with the boolean value indicating whether
-   * readable {@link File}s are accepted or rejected by this {@link FileFilter}.
+   * Constructs an instance of the {@link ReadableFilesFilter} class initialized with the given boolean value
+   * to indicate whether readable {@link File}s are accepted or rejected by this {@link FileFilter}.
    *
    * @param readable a boolean value indicating whether readable {@link File}s are accepted or rejected
    * by this {@link FileFilter}.
    */
-  protected ReadableFilesFilter(final boolean readable) {
+  protected ReadableFilesFilter(boolean readable) {
     this.readable = readable;
   }
 
   /**
-   * Determines whether the given {@link File} is accepted by this {@link FileFilter}, which evaluates whether
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter}, evaluating whether
    * the {@link File} is readable or not.
    *
-   * @param pathname the {@link File} to evaluate.
+   * @param pathname {@link File} to evaluate.
    * @return a boolean value indicating whether readable {@link File}s are accepted or rejected.
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File#canRead()
    */
   @Override
-  public boolean accept(final File pathname) {
-    return (pathname.canRead() == readable);
+  @NullSafe
+  public boolean accept(File pathname) {
+    return (pathname != null && pathname.canRead() == readable);
   }
-
 }

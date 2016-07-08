@@ -30,8 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The ReadableFilesFilterTest class is a test suite of test cases testing the contract and functionality
- * of the ReadableFilesFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link ReadableFilesFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -45,14 +44,14 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ReadableFilesFilterTest {
+public class ReadableFilesFilterTests {
 
   @Mock
   private File mockFile;
 
   @Test
   @SuppressWarnings("all")
-  public void readableFileFilterAcceptsReadableFile() {
+  public void readableFilesFilterAcceptsReadableFile() {
     when(mockFile.canRead()).thenReturn(true);
     assertThat(ReadableFilesFilter.READABLE_FILES.accept(mockFile), is(true));
     verify(mockFile, times(1)).canRead();
@@ -60,7 +59,7 @@ public class ReadableFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void readableFileFilterRejectsNonReadableFile() {
+  public void readableFilesFilterRejectsNonReadableFile() {
     when(mockFile.canRead()).thenReturn(false);
     assertThat(ReadableFilesFilter.READABLE_FILES.accept(mockFile), is(false));
     verify(mockFile, times(1)).canRead();
@@ -68,7 +67,7 @@ public class ReadableFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void nonReadableFileFilterAcceptsNonReadableFile() {
+  public void nonReadableFilesFilterAcceptsNonReadableFile() {
     when(mockFile.canRead()).thenReturn(false);
     assertThat(ReadableFilesFilter.NON_READABLE_FILES.accept(mockFile), is(true));
     verify(mockFile, times(1)).canRead();
@@ -76,10 +75,15 @@ public class ReadableFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void nonReadableFileFilterRejectsReadableFile() {
+  public void nonReadableFilesFilterRejectsReadableFile() {
     when(mockFile.canRead()).thenReturn(true);
     assertThat(ReadableFilesFilter.NON_READABLE_FILES.accept(mockFile), is(false));
     verify(mockFile, times(1)).canRead();
   }
 
+  @Test
+  public void readableFilesFilterRejectsNull() {
+    assertThat(ReadableFilesFilter.NON_READABLE_FILES.accept(null), is(false));
+    assertThat(ReadableFilesFilter.READABLE_FILES.accept(null), is(false));
+  }
 }

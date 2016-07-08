@@ -69,9 +69,9 @@
   </scm>
 
   <issueManagement>
- 		<system>GitHub</system>
- 		<url>https://github.com/codeprimate-software/cp-elements/issues</url>
- 	</issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/codeprimate-software/cp-elements/issues</url>
+  </issueManagement>
 
   <properties>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
