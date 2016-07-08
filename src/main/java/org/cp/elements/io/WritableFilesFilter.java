@@ -20,10 +20,11 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 
 /**
  * The WritableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
- * by whether they are writable.
+ * by whether they are writable or not.
  *
  * @author John J. blum
  * @see java.io.File
@@ -40,28 +41,29 @@ public class WritableFilesFilter implements FileFilter, Filter<File> {
   private final boolean writable;
 
   /**
-   * Constructs an instance of the WritableFilesFilter class initialized with the boolean value indicating whether
-   * writable {@link File}s are accepted or rejected by this {@link FileFilter}.
+   * Constructs an instance of the {@link WritableFilesFilter} class initialized with the given boolean value
+   * to indicate whether writable {@link File}s are accepted or rejected by this {@link FileFilter}.
    *
    * @param writable a boolean value indicating whether writable {@link File}s are accepted or rejected
    * by this {@link FileFilter}.
    */
-  protected WritableFilesFilter(final boolean writable) {
+  protected WritableFilesFilter(boolean writable) {
     this.writable = writable;
   }
 
   /**
-   * Determines whether the given {@link File} is accepted by this {@link FileFilter}, which evaluates whether
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter}, evaluating whether
    * the {@link File} is writable or not.
    *
-   * @param pathname the {@link File} to evaluate.
+   * @param pathname {@link File} to evaluate.
    * @return a boolean value indicating whether writable {@link File}s are accepted or rejected.
+   * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File#canWrite()
    */
   @Override
-  public boolean accept(final File pathname) {
-    return (pathname.canWrite() == writable);
+  @NullSafe
+  public boolean accept(File pathname) {
+    return (pathname != null && pathname.canWrite() == writable);
   }
-
 }

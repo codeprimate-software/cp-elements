@@ -89,5 +89,6 @@ public class HiddenFilesFilterTests {
   @Test
   public void nonHiddenFilesFilterRejectsNull() {
     assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(null), is(false));
+    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(null), is(false));
   }
 }

@@ -30,8 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The WritableFilesFilterTest class is a test suite of test cases testing the contract and functionality
- * of the WritableFilesFilter class.
+ * Test suite of test cases testing the contract and functionality of the {@link WritableFilesFilter} class.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -45,14 +44,14 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class WritableFilesFilterTest {
+public class WritableFilesFilterTests {
 
   @Mock
   private File mockFile;
 
   @Test
   @SuppressWarnings("all")
-  public void writableFileFilterAcceptsWritableFile() {
+  public void writableFilesFilterAcceptsWritableFile() {
     when(mockFile.canWrite()).thenReturn(true);
     assertThat(WritableFilesFilter.WRITABLE_FILES.accept(mockFile), is(true));
     verify(mockFile, times(1)).canWrite();
@@ -60,7 +59,7 @@ public class WritableFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void writableFileFilterRejectsNonWritableFile() {
+  public void writableFilesFilterRejectsNonWritableFile() {
     when(mockFile.canWrite()).thenReturn(false);
     assertThat(WritableFilesFilter.WRITABLE_FILES.accept(mockFile), is(false));
     verify(mockFile, times(1)).canWrite();
@@ -68,7 +67,7 @@ public class WritableFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void nonWritableFileFilterAcceptsNonWritableFile() {
+  public void nonWritableFilesFilterAcceptsNonWritableFile() {
     when(mockFile.canWrite()).thenReturn(false);
     assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(mockFile), is(true));
     verify(mockFile, times(1)).canWrite();
@@ -76,10 +75,15 @@ public class WritableFilesFilterTest {
 
   @Test
   @SuppressWarnings("all")
-  public void nonWritableFileFilterRejectsWritableFile() {
+  public void nonWritableFilesFilterRejectsWritableFile() {
     when(mockFile.canWrite()).thenReturn(true);
     assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(mockFile), is(false));
     verify(mockFile, times(1)).canWrite();
   }
 
+  @Test
+  public void nonWritableFilesFilterRejectsNull() {
+    assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(null), is(false));
+    assertThat(WritableFilesFilter.WRITABLE_FILES.accept(null), is(false));
+  }
 }
