@@ -19,18 +19,18 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ArchivingAndCompressionFileExtensionFilter class is a {@link FileExtensionFilter} implementation
- * that filters files by archive and compression file types.
+ * The ArchiveAndCompressedFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by archive and compression file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
- * @see <a href="http://en.wikipedia.org/wiki/List_of_archive_formats">List of archive formats</a>
+ * @see <a href="http://en.wikipedia.org/wiki/List_of_archive_formats">List of file archive and compression formats</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ArchiveAndCompressionFileExtensionFilter extends FileExtensionFilter {
+public class ArchiveAndCompressedFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] ARCHIVE_AND_COMPRESSION_FILE_EXTENSIONS = {
+  protected static final String[] ARCHIVE_AND_COMPRESSED_FILE_EXTENSIONS = {
     "7z",
     "apk",
     "arc",
@@ -65,8 +65,13 @@ public class ArchiveAndCompressionFileExtensionFilter extends FileExtensionFilte
     "zipx"
   };
 
-  public ArchiveAndCompressionFileExtensionFilter() {
-    super(ARCHIVE_AND_COMPRESSION_FILE_EXTENSIONS);
+  /**
+   * Constructs an instance of the {@link ArchiveAndCompressedFileExtensionsFilter} class to filter
+   * {@link java.io.File}s by archive and compression file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public ArchiveAndCompressedFileExtensionsFilter() {
+    super(ARCHIVE_AND_COMPRESSED_FILE_EXTENSIONS);
   }
-
 }
