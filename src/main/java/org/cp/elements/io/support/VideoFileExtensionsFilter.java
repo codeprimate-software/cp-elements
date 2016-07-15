@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The VideoFileExtensionFilter is a FileExtensionFilter implementation...
+ * The VideoFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by video file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class VideoFileExtensionFilter extends FileExtensionFilter {
+public class VideoFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] VIDEO_FILE_EXTENSIONS = {
     "avi",
@@ -42,8 +43,13 @@ public class VideoFileExtensionFilter extends FileExtensionFilter {
     "wmv",
   };
 
-  public VideoFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link VideoFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by video file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public VideoFileExtensionsFilter() {
     super(VIDEO_FILE_EXTENSIONS);
   }
-
 }
