@@ -19,8 +19,8 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The CompressionOnlyFileExtensionFilter class is a {@link FileExtensionFilter} implementation
- * that filters files by compression file types.
+ * The CompressedFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by compression file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
@@ -28,9 +28,9 @@ import org.cp.elements.io.FileExtensionFilter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CompressionOnlyFileExtensionFilter extends FileExtensionFilter {
+public class CompressedFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] COMPRESSION_ONLY_FILE_EXTENSIONS = {
+  protected static final String[] COMPRESSED_FILE_EXTENSIONS = {
     "bz",
     "bz2",
     "bzip",
@@ -45,8 +45,13 @@ public class CompressionOnlyFileExtensionFilter extends FileExtensionFilter {
     "z"
   };
 
-  public CompressionOnlyFileExtensionFilter() {
-    super(COMPRESSION_ONLY_FILE_EXTENSIONS);
+  /**
+   * Constructs an instance of the {@link CompressedFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by compression file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public CompressedFileExtensionsFilter() {
+    super(COMPRESSED_FILE_EXTENSIONS);
   }
-
 }
