@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The TextFileExtensionFilter is a FileExtensionFilter implementation...
+ * The TextFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by text file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class TextFileExtensionFilter extends FileExtensionFilter {
+public class TextFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] TEXT_FILE_EXTENSIONS = {
     "dbg",
@@ -36,8 +37,13 @@ public class TextFileExtensionFilter extends FileExtensionFilter {
     "txt"
   };
 
-  public TextFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link TextFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by text file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public TextFileExtensionsFilter() {
     super(TEXT_FILE_EXTENSIONS);
   }
-
 }
