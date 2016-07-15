@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The BackupFileExtensionFilter is a FileExtensionFilter implementation...
+ * The BackupFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by backup file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class BackupFileExtensionFilter extends FileExtensionFilter {
+public class BackupFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] BACKUP_FILE_EXTENSIONS = {
     "backup",
@@ -35,8 +36,13 @@ public class BackupFileExtensionFilter extends FileExtensionFilter {
     "bup"
   };
 
-  public BackupFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link BackupFileExtensionsFilter} class that filters {@link java.io.File}s
+   * by backup file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public BackupFileExtensionsFilter() {
     super(BACKUP_FILE_EXTENSIONS);
   }
-
 }
