@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ImageFileExtensionFilter is a FileExtensionFilter implementation...
+ * The ImageFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by image file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ImageFileExtensionFilter extends FileExtensionFilter {
+public class ImageFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] IMAGE_FILE_EXTENSIONS = {
     "bmp",
@@ -43,8 +44,13 @@ public class ImageFileExtensionFilter extends FileExtensionFilter {
     "tiff"
   };
 
-  public ImageFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link ImageFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by image file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public ImageFileExtensionsFilter() {
     super(IMAGE_FILE_EXTENSIONS);
   }
-
 }
