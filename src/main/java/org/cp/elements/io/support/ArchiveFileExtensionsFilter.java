@@ -19,8 +19,8 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ArchivingAndCompressionFileExtensionFilter class is a {@link FileExtensionFilter} implementation
- * that filters files by archive file types.
+ * The ArchiveFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by archive file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
@@ -28,9 +28,9 @@ import org.cp.elements.io.FileExtensionFilter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ArchiveOnlyFileExtensionFilter extends FileExtensionFilter {
+public class ArchiveFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] ARCHIVE_ONLY_FILE_EXTENSIONS = {
+  protected static final String[] ARCHIVE_FILE_EXTENSIONS = {
     "a",
     "ar",
     "cpio",
@@ -39,8 +39,13 @@ public class ArchiveOnlyFileExtensionFilter extends FileExtensionFilter {
     "tar"
   };
 
-  public ArchiveOnlyFileExtensionFilter() {
-    super(ARCHIVE_ONLY_FILE_EXTENSIONS);
+  /**
+   * Constructs an instance of the {@link ArchiveFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by archive file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public ArchiveFileExtensionsFilter() {
+    super(ARCHIVE_FILE_EXTENSIONS);
   }
-
 }
