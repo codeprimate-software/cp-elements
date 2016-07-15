@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ConfigurationFileExtensionFilter is a FileExtensionFilter implementation...
+ * The ConfigurationFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by configuration file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ConfigurationFileExtensionFilter extends FileExtensionFilter {
+public class ConfigurationFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] CONFIGURATION_FILE_EXTENSIONS = {
     "cfg",
@@ -41,8 +42,13 @@ public class ConfigurationFileExtensionFilter extends FileExtensionFilter {
     "yaml"
   };
 
-  public ConfigurationFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link ConfigurationFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by configuration file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public ConfigurationFileExtensionsFilter() {
     super(CONFIGURATION_FILE_EXTENSIONS);
   }
-
 }
