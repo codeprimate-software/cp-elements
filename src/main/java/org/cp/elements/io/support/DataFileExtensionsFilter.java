@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The DataFileExtensionFilter is a FileExtensionFilter implementation...
+ * The DataFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by data file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DataFileExtensionFilter extends FileExtensionFilter {
+public class DataFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] DATA_FILE_EXTENSIONS = {
     "csv",
@@ -42,8 +43,13 @@ public class DataFileExtensionFilter extends FileExtensionFilter {
     "xml"
   };
 
-  public DataFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link DataFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by data file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public DataFileExtensionsFilter() {
     super(DATA_FILE_EXTENSIONS);
   }
-
 }
