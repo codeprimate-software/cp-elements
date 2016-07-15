@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ExecutableFileExtensionFilter is a FileExtensionFilter implementation...
+ * The ExecutableFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by executable file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ExecutableFileExtensionFilter extends FileExtensionFilter {
+public class ExecutableFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] EXECUTABLE_FILE_EXTENSIONS = {
     "bat",
@@ -46,8 +47,13 @@ public class ExecutableFileExtensionFilter extends FileExtensionFilter {
     "sh"
   };
 
-  public ExecutableFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link ExecutableFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by executable file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public ExecutableFileExtensionsFilter() {
     super(EXECUTABLE_FILE_EXTENSIONS);
   }
-
 }
