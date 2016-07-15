@@ -19,14 +19,15 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The AudioFileExtensionFilter is a FileExtensionFilter implementation...
+ * The AudioFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by audio file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AudioFileExtensionFilter extends FileExtensionFilter {
+public class AudioFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] AUDIO_FILE_EXTENSIONS = {
     "au",
@@ -39,8 +40,13 @@ public class AudioFileExtensionFilter extends FileExtensionFilter {
     "wma",
   };
 
-  public AudioFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link AudioFileExtensionsFilter} class that filters {@link java.io.File}s
+   * by audio file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public AudioFileExtensionsFilter() {
     super(AUDIO_FILE_EXTENSIONS);
   }
-
 }
