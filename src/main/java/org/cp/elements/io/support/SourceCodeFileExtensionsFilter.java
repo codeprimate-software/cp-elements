@@ -19,8 +19,8 @@ package org.cp.elements.io.support;
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The SourceCodeFileExtensionFilter class is a {@link FileExtensionFilter} implementation
- * that filters files by source code file types.
+ * The SourceCodeFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
+ * that filters {@link java.io.File}s by source code file types.
  *
  * @author John J. Blum
  * @see org.cp.elements.io.FileExtensionFilter
@@ -28,7 +28,7 @@ import org.cp.elements.io.FileExtensionFilter;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SourceCodeFileExtensionFilter extends FileExtensionFilter {
+public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] SOURCE_CODE_FILE_EXTENSIONS = {
     "ada",
@@ -37,6 +37,7 @@ public class SourceCodeFileExtensionFilter extends FileExtensionFilter {
     "cpp",
     "csharp",
     "ddl",
+    "dml",
     "dtd",
     "htm",
     "html",
@@ -58,8 +59,13 @@ public class SourceCodeFileExtensionFilter extends FileExtensionFilter {
     "xsd",
   };
 
-  public SourceCodeFileExtensionFilter() {
+  /**
+   * Constructs an instance of the {@link SourceCodeFileExtensionsFilter} class to filter {@link java.io.File}s
+   * by source code file types.
+   *
+   * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
+   */
+  public SourceCodeFileExtensionsFilter() {
     super(SOURCE_CODE_FILE_EXTENSIONS);
   }
-
 }
