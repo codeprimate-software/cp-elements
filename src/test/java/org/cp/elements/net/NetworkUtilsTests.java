@@ -16,6 +16,7 @@
 
 package org.cp.elements.net;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -39,6 +40,11 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class NetworkUtilsTests {
+
+  @Test
+  public void availablePortReturnsNonZeroPortGreaterThan1024() {
+    assertThat(NetworkUtils.availablePort(), is(greaterThan(1024)));
+  }
 
   @Test
   public void closeServerSocketReturnsTrue() throws Exception {

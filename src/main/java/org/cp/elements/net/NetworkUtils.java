@@ -33,6 +33,23 @@ import org.cp.elements.lang.NullSafe;
 public abstract class NetworkUtils {
 
   /**
+   * Gets an available network port used by a network service on which to listen for client {@link Socket} connections.
+   *
+   * @return in integer value indicating an available network port.
+   */
+  public static int availablePort() {
+    try {
+      ServerSocket serverSocket = new ServerSocket(0);
+      int availablePort = serverSocket.getLocalPort();
+      close(serverSocket);
+      return availablePort;
+    }
+    catch (IOException ignore) {
+      throw new IllegalStateException("No port available", ignore);
+    }
+  }
+
+  /**
    * Attempts to close the given {@link ServerSocket} returning a boolean value to indicate whether the operation
    * was successful or not.
    *
