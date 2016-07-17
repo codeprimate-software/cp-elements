@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.cp.elements.lang.NullSafe;
+
 /**
- * The NetworkUtils class provides utility methods related to networking.
- * 
+ * The NetworkUtils class encapsulates utility methods related to networking.
+ *
  * @author John J. Blum
  * @see java.net.ServerSocket
  * @see java.net.Socket
@@ -31,14 +33,15 @@ import java.net.Socket;
 public abstract class NetworkUtils {
 
   /**
-   * Attempts to close the specified ServerSocket returning a boolean value indicating whether the operation
+   * Attempts to close the given {@link ServerSocket} returning a boolean value to indicate whether the operation
    * was successful or not.
-   * 
-   * @param socket the ServerSocket to be closed.
-   * @return a boolean value indicating whether the ServerSocket was successfully closed or not.
+   *
+   * @param socket {@link ServerSocket} to close.
+   * @return a boolean value indicating whether the {@link ServerSocket} was successfully closed or not.
    * @see java.net.ServerSocket#close()
    */
-  public static boolean close(final ServerSocket socket) {
+  @NullSafe
+  public static boolean close(ServerSocket socket) {
     if (socket != null) {
       try {
         socket.close();
@@ -52,14 +55,15 @@ public abstract class NetworkUtils {
   }
 
   /**
-   * Attempts to close the specified Socket return a boolean value indicating whether the operaton was successful
-   * or not.
-   * 
-   * @param socket the Socket to be closed.
-   * @return a boolean value indicating whether the Socket was successfully closed or not.
+   * Attempts to close the given {@link Socket} returning a boolean value to indicate whether the operation
+   * was successful or not.
+   *
+   * @param socket {@link Socket} to close.
+   * @return a boolean value indicating whether the {@link Socket} was successfully closed or not.
    * @see java.net.Socket#close()
    */
-  public static boolean close(final Socket socket) {
+  @NullSafe
+  public static boolean close(Socket socket) {
     if (socket != null) {
       try {
         socket.close();
@@ -71,5 +75,4 @@ public abstract class NetworkUtils {
 
     return false;
   }
-
 }
