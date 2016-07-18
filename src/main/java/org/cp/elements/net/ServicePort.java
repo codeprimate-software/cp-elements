@@ -16,20 +16,22 @@
 
 package org.cp.elements.net;
 
-import org.cp.elements.lang.Assert;
+import static org.cp.elements.lang.LangExtensions.assertThat;
+
 import org.cp.elements.lang.NullSafe;
-import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The ServicePort enum defines an enumeration of values for well-known network service ports.
+ * The ServicePort enum defines an enumeration of well-known named network service ports.
  *
  * @author John J. Blum
+ * @see org.cp.elements.net.Protocol
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum ServicePort {
   DNS(53),
+  EPHEMERAL(0),
   FTP(21),
   HTTP(80),
   HTTPS(443),
@@ -41,31 +43,37 @@ public enum ServicePort {
   TIME(37),
   WHOIS(43);
 
+  public static final int MIN_PORT = 0;
+  public static final int MAX_PORT = 65535;
+  public static final int MAX_RESERVED_PORT = 1024;
+
   private final int portNumber;
 
   /**
-   * Constructs an instance of the ServicePort enum initialized with the specified network port number of the service.
+   * Constructs an instance of the {@link ServicePort} enum initialized to the given network port number.
    *
-   * @param portNumber an integer value indicating the network port number of the service.
-   * @throws java.lang.IllegalArgumentException if the network port number is outside
-   * the valid network port number range (0..65535).
+   * @param portNumber well-known network service port number.
+   * @throws java.lang.IllegalArgumentException if the port number is outside the valid network port number range
+   * [0-65535].
    */
-  ServicePort(final int portNumber) {
-    Assert.isTrue(RelationalOperator.greaterThanEqualToAndLessThanEqualTo(0, 65535).evaluate(portNumber),
-      "The port number must be between 0 and 65535 inclusive!");
+  ServicePort(int portNumber) {
+    assertThat(portNumber).throwing(new IllegalArgumentException(String.format(
+      "port number [%s] must be greater than equal 0 and less than equal 65535", portNumber)))
+        .isGreaterThanEqualToAndLessThanEqualTo(MIN_PORT, MAX_PORT);
+
     this.portNumber = portNumber;
   }
 
   /**
-   * Returns the ServicePort enumerated value corresponding to the given service port number.
+   * Returns a {@link ServicePort} enumerated value for the given network service port number.
    *
-   * @param portNumber an integer value indicating the service port number used ot match the ServicePort.
-   * @return a ServicePort enumerated value matching the service port number or null if no match was found.
-   * @see org.cp.elements.net.ServicePort#getPortNumber()
+   * @param portNumber network service port number to lookup.
+   * @return a {@link ServicePort} enumerated value for the given network service port number.
+   * @see #portNumber()
    */
-  public static ServicePort valueOf(final int portNumber) {
+  public static ServicePort valueOf(int portNumber) {
     for (ServicePort servicePort : values()) {
-      if (servicePort.getPortNumber() == portNumber) {
+      if (servicePort.portNumber() == portNumber) {
         return servicePort;
       }
     }
@@ -74,17 +82,15 @@ public enum ServicePort {
   }
 
   /**
-   * Returns a ServicePort enumerated value matching the given String name or null if no match could be found.  A match
-   * is found by ignoring case and trimming leading/trailing whitespace in the String name.
+   * Returns a {@link ServicePort} enumerated value matching the given name of the network service.
    *
-   * @param name the String name used to match the ServicePort.
-   * @return a ServicePort enumerated value matching the String name or null if no match was found.
-   * @see java.lang.String#equalsIgnoreCase(String)
-   * @see org.cp.elements.lang.StringUtils#trim(String)
-   * @see org.cp.elements.net.ServicePort#name()
+   * @param name name of the network service.
+   * @return a {@link ServicePort} enumerated value matching the given name of the network service.
+   * Returns null if no {@link ServicePort} matching the network service by name could be found.
+   * @see #name()
    */
   @NullSafe
-  public static ServicePort valueOfIgnoreCase(final String name) {
+  public static ServicePort valueOfIgnoreCase(String name) {
     for (ServicePort servicePort : values()) {
       if (servicePort.name().equalsIgnoreCase(StringUtils.trim(name))) {
         return servicePort;
@@ -95,23 +101,22 @@ public enum ServicePort {
   }
 
   /**
-   * Gets the port number of this service.
-   *
-   * @return an integer value indicating the port number of this service.
-   */
-  public int getPortNumber() {
-    return portNumber;
-  }
-
-  /**
    * Determines whether this ServicePort is reserved by the operating system.  Any port number that is 1024 or below
    * is reserved.
    *
    * @return a boolean indicating whether this ServicePort is reserved.
-   * @see #getPortNumber()
+   * @see #portNumber()
    */
   public boolean isReserved() {
-    return (getPortNumber() <= 1024);
+    return (portNumber() <= MAX_RESERVED_PORT);
   }
 
+  /**
+   * Gets the port number of this network service.
+   *
+   * @return an integer value indicating the port number of this network service.
+   */
+  public int portNumber() {
+    return portNumber;
+  }
 }
