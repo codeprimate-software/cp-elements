@@ -18,6 +18,7 @@ package org.cp.elements.net;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -42,8 +43,9 @@ import org.junit.Test;
 public class NetworkUtilsTests {
 
   @Test
-  public void availablePortReturnsNonZeroPortGreaterThan1024() {
-    assertThat(NetworkUtils.availablePort(), is(greaterThan(1024)));
+  public void availablePortReturnsNonZeroPortGreaterThan1024AndLessThan65536() {
+    assertThat(NetworkUtils.availablePort(), is(greaterThan(ServicePort.MIN_PORT)));
+    assertThat(NetworkUtils.availablePort(), is(lessThanOrEqualTo(ServicePort.MAX_PORT)));
   }
 
   @Test
