@@ -20,9 +20,10 @@ import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The Protocol enum defines constants for various well-known network protocols.
- * 
+ * The Protocol enum defines constants for well-known network protocols.
+ *
  * @author John J. Blum
+ * @see org.cp.elements.net.ServicePort
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -30,40 +31,40 @@ public enum Protocol {
   FTP(ServicePort.FTP, "ftp://", "File Transfer Protocol"),
   HTTP(ServicePort.HTTP, "http://", "Hypertext Transfer Protocol"),
   HTTPS(ServicePort.HTTPS, "https://", "Secure Hypertext Transfer Protocol"),
+  LDAP(ServicePort.LDAP, "ldap://", "Lightweight Directory Access Protocol"),
   SFTP(ServicePort.SFTP, "sftp://", "Secure File Transfer Protocol"),
   SMTP(ServicePort.SMTP, "smtp://", "Simple Mail Transfer Protocol");
 
-  private final ServicePort port;
+  private final ServicePort servicePort;
 
   private final String description;
   private final String scheme;
 
   /**
-   * Constructs an instance of the Protocol enum initialized with the specified ServicePort, Scheme and Description
-   * of the network protocol.
+   * Constructs an instance of the {@link Protocol} enum initialized with the given {@link ServicePort}, Scheme
+   * and Description of the network protocol.
    *
-   * @param port an integer value indicating the network port number used by the protocol.
-   * @param scheme a String value indicating the scheme of the protocol.
-   * @param description a String describing the protocol.
+   * @param servicePort {@link ServicePort} used by the network protocol.
+   * @param scheme scheme of the network protocol.
+   * @param description a String describing the network protocol.
+   * @see org.cp.elements.net.ServicePort
    */
-  Protocol(final ServicePort port, final String scheme, final String description) {
-    this.port = port;
+  Protocol(ServicePort servicePort, String scheme, String description) {
+    this.servicePort = servicePort;
     this.scheme = scheme;
     this.description = description;
   }
 
   /**
-   * Returns a Protocol enumerated value matching the given String name or null if no match could be found.  A match
-   * is found by ignoring case and trimming leading/trailing whitespace in the String name.
+   * Returns a {@link Protocol} enumerated value matching the given name of the network protocol.
    *
-   * @param name the String name used to match the Protocol.
-   * @return a Protocol enumerated value matching the String name or null if no match could be found.
-   * @see java.lang.String#equalsIgnoreCase(String)
-   * @see org.cp.elements.lang.StringUtils#trim(String)
-   * @see org.cp.elements.net.Protocol#name()
+   * @param name name of the network protocol to lookup.
+   * @return a {@link Protocol} enumerated value matching the given name of the network protocol
+   * or null if no match could be found.
+   * @see #name()
    */
   @NullSafe
-  public static Protocol valueOfIgnoreCase(final String name) {
+  public static Protocol valueOfIgnoreCase(String name) {
     for (Protocol protocol : values()) {
       if (protocol.name().equalsIgnoreCase(StringUtils.trim(name))) {
         return protocol;
@@ -74,18 +75,17 @@ public enum Protocol {
   }
 
   /**
-   * Returns a Protocol enumerated value having a ServicePort matching the given ServicePort.
+   * Returns a {@link Protocol} enumerated value matching the given network port number.
    *
-   * @param port a ServicePort used to match the Protocol.
-   * @return a Protocol enumerated value having a ServicePort matching the given ServicePort
+   * @param portNumber network port number used to match the {@link Protocol}.
+   * @return a {@link Protocol} enumerated value matching the given network port number
    * or null if no match could be found.
-   * @see org.cp.elements.net.Protocol#getPort()
-   * @see org.cp.elements.net.ServicePort
+   * @see #portNumber()
    */
   @NullSafe
-  public static Protocol valueOfPort(final ServicePort port) {
+  public static Protocol valueOfPortNumber(int portNumber) {
     for (Protocol protocol : values()) {
-      if (protocol.getPort().equals(port)) {
+      if (protocol.portNumber() == portNumber) {
         return protocol;
       }
     }
@@ -94,17 +94,16 @@ public enum Protocol {
   }
 
   /**
-   * Returns a Protocol enumerated value having a scheme matching the given scheme.
+   * Returns a {@link Protocol} enumerated value for the given scheme.
    *
-   * @param scheme a String indicating the scheme used to match the Protocol.
-   * @return a Protocol enumerated value having a scheme matching the given scheme
-   * or null if no match could be found.
-   * @see org.cp.elements.net.Protocol#getScheme()
+   * @param scheme scheme used to match the {@link Protocol}.
+   * @return a {@link Protocol} enumerated value for the given scheme or null if no match could be found.
+   * @see #scheme()
    */
   @NullSafe
-  public static Protocol valueOfScheme(final String scheme) {
+  public static Protocol valueOfScheme(String scheme) {
     for (Protocol protocol : values()) {
-      if (protocol.getScheme().equals(StringUtils.trim(scheme))) {
+      if (protocol.scheme().equals(StringUtils.trim(scheme))) {
         return protocol;
       }
     }
@@ -113,22 +112,52 @@ public enum Protocol {
   }
 
   /**
-   * Gets the ServicePort used by this network protocol.
+   * Returns a {@link Protocol} enumerated value for the given {@link ServicePort}.
    *
-   * @return a ServicePort enum indicating the service port number used by this Protocol.
+   * @param servicePort {@link ServicePort} used to lookup and match the {@link Protocol}.
+   * @return a {@link Protocol} enumerated value for the given {@link ServicePort}
+   * or null if no match could be found.
    * @see org.cp.elements.net.ServicePort
+   * @see #servicePort()
    */
-  public ServicePort getPort() {
-    return port;
+  @NullSafe
+  public static Protocol valueOfServicePort(ServicePort servicePort) {
+    for (Protocol protocol : values()) {
+      if (protocol.servicePort().equals(servicePort)) {
+        return protocol;
+      }
+    }
+
+    return null;
   }
 
   /**
-   * Gets the scheme used by the network protocol in the URI.
+   * Gets the network port number for the network protocol.
    *
-   * @return a String value indicating the scheme used by the protocol in the URI.
+   * @return an integer value with the network port number of this network protocol.
+   * @see #servicePort()
    */
-  public String getScheme() {
+  public int portNumber() {
+    return servicePort().portNumber();
+  }
+
+  /**
+   * Gets the scheme used by this network protocol in the URI.
+   *
+   * @return a String value with the scheme used by this network protocol in the URI.
+   */
+  public String scheme() {
     return scheme;
+  }
+
+  /**
+   * Gets the {@link ServicePort} used by this network protocol.
+   *
+   * @return a {@link ServicePort} enumerated value indicating the network port number used by this {@link Protocol}.
+   * @see org.cp.elements.net.ServicePort
+   */
+  public ServicePort servicePort() {
+    return servicePort;
   }
 
   /**
@@ -141,5 +170,4 @@ public enum Protocol {
   public String toString() {
     return this.description;
   }
-
 }
