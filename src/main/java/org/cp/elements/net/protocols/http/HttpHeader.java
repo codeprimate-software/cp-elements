@@ -80,26 +80,26 @@ public enum HttpHeader {
   private final String name;
 
   /**
-   * Constructs an instance of the HttpHeader enum initialized with the given HTTP request/response header name.
+   * Constructs an instance of the {@link HttpHeader} enum initialized with the given HTTP request/response header name.
    *
-   * @param name a String specifying the HTTP request/response header name.
-   * @throws java.lang.IllegalArgumentException if the HTTP header name is not specified.
+   * @param name name of the HTTP request/response header.
+   * @throws java.lang.IllegalArgumentException if the HTTP header name is null or empty.
    */
-  HttpHeader(final String name) {
-    Assert.argument(StringUtils.hasText(name), "The HTTP protocol request/response header name must be specified!");
+  HttpHeader(String name) {
+    Assert.hasText(name, "HTTP protocol request/response header name is required");
     this.name = name;
   }
 
   /**
-   * Returns a HttpHeader enumerated value given an HTTP request/response header name or null if no match was found.
+   * Returns an {@link HttpHeader} enumerated value for the given name of the HTTP request/response header
+   * or null if no match was found.
    *
-   * @param name a String indicating the name of the HTTP request/response header used to match the HttpHeader.
-   * @return a HttpHeader enumerated value matching the given HTTP header name or null if no match was found.
-   * @see java.lang.String#equalsIgnoreCase(String)
-   * @see org.cp.elements.lang.StringUtils#trim(String)
+   * @param name name of the HTTP request/response header.
+   * @return an {@link HttpHeader} enumerated value matching the given name of the HTTP request/response header
+   * or null if no match was found.
    * @see #name()
    */
-  public static HttpHeader valueOfIgnoreCase(final String name) {
+  public static HttpHeader valueOfIgnoreCase(String name) {
     for (HttpHeader httpHeader : values()) {
       if (httpHeader.getName().equalsIgnoreCase(StringUtils.trim(name))) {
         return httpHeader;
@@ -110,12 +110,11 @@ public enum HttpHeader {
   }
 
   /**
-   * Gets the name of the HTTP request/response header.
+   * Returns the name of the HTTP request/response header.
    *
-   * @return a String with the specified name of the HTTP request/response header.
+   * @return a String with the name of the HTTP request/response header.
    */
   public String getName() {
     return name;
   }
-
 }
