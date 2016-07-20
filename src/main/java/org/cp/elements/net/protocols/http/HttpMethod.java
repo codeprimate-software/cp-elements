@@ -26,42 +26,45 @@ import org.cp.elements.lang.StringUtils;
  *
  * @author John J. Blum
  * @see org.cp.elements.dao.CrudOperation
- * @since 1.1.0
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum HttpMethod {
-  CONNECT(null),
-  DELETE(CrudOperation.DELETE),
+  POST(CrudOperation.CREATE),
   GET(CrudOperation.READ),
+  PUT(CrudOperation.UPDATE),
+  DELETE(CrudOperation.DELETE),
+  CONNECT(null),
   HEAD(null),
   OPTIONS(null),
-  POST(CrudOperation.CREATE),
-  PUT(CrudOperation.UPDATE),
   TRACE(null);
 
   private final CrudOperation crudOperation;
 
   /**
-   * Constructs an instance of the HttpMethod enum initialized with the corresponding CRUD operation.
+   * Constructs an instance of the {@link HttpMethod} enum initialized with the corresponding CRUD operation.
    *
-   * @param crudOperation the CrudOperation corresponding to this HTTP method.
+   * @param crudOperation {@link CrudOperation} corresponding to this HTTP method.
    * @see org.cp.elements.dao.CrudOperation
    */
-  HttpMethod(final CrudOperation crudOperation) {
+  HttpMethod(CrudOperation crudOperation) {
     this.crudOperation = crudOperation;
   }
 
   /**
-   * Returns a HttpMethod enumerated value corresponding to the given CRUD operation or null if no match was found.
+   * Returns an {@link HttpMethod} enumerated value corresponding to the given CRUD operation
+   * or null if no match was found.
    *
-   * @param crudOperation the CRUD operation used to match the HttpMethod.
-   * @return a HttpMethod enumerated value corresponding to the given CRUD operation or null if no match was found.
+   * @param crudOperation CRUD operation used to match the HTTP method.
+   * @return an {@link HttpMethod} enumerated value corresponding to the given CRUD operation
+   * or null if no match was found.
    * @see org.cp.elements.dao.CrudOperation
+   * @see #crudOperation()
    */
   @NullSafe
-  public static HttpMethod valueOf(final CrudOperation crudOperation) {
+  public static HttpMethod valueOf(CrudOperation crudOperation) {
     for (HttpMethod httpMethod : values()) {
-      if (ObjectUtils.equals(httpMethod.getCrudOperation(), crudOperation)) {
+      if (ObjectUtils.equals(httpMethod.crudOperation(), crudOperation)) {
         return httpMethod;
       }
     }
@@ -70,16 +73,16 @@ public enum HttpMethod {
   }
 
   /**
-   * Returns a HttpMethod enumerated value matching the case insensitive String name of the HTTP method
+   * Returns an {@link HttpMethod} enumerated value matching the case insensitive name of the HTTP method
    * or null if no match was found.
    *
-   * @param name the String name used to match the HttpMethod.
-   * @return the HttpMethod enumerated value matching the String name of the HTTP method or null if no match is found.
-   * @see org.cp.elements.lang.StringUtils#trim(String)
+   * @param name name of the HTTP method.
+   * @return an {@link HttpMethod} enumerated value matching the case insensitive name of the HTTP method
+   * or null if no match is found.
    * @see #name()
    */
   @NullSafe
-  public static HttpMethod valueOfIgnoreCase(final String name) {
+  public static HttpMethod valueOfIgnoreCase(String name) {
     for (HttpMethod httpMethod : values()) {
       if (httpMethod.name().equalsIgnoreCase(StringUtils.trim(name))) {
         return httpMethod;
@@ -92,13 +95,10 @@ public enum HttpMethod {
   /**
    * Gets the corresponding CRUD operation for this HTTP method.
    *
-   * @return a CrudOperation for this HTTP method.
+   * @return a {@link CrudOperation} corresponding to this {@link HttpMethod}.
    * @see org.cp.elements.dao.CrudOperation
    */
-  public CrudOperation getCrudOperation() {
+  public CrudOperation crudOperation() {
     return crudOperation;
   }
-
 }
-
-
