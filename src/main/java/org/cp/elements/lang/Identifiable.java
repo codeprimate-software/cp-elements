@@ -17,35 +17,59 @@
 package org.cp.elements.lang;
 
 /**
- * The Identifiable interface defines a contract for uniquely identifying objects of the specified type.
+ * The Identifiable interface defines a contract for uniquely identifying objects of a given type.
  *
  * @author John J. Blum
  * @see java.lang.Comparable
- * @see org.cp.elements.lang.Auditable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface Identifiable<T extends Comparable<T>> {
 
   /**
-   * Gets the identifier uniquely identifying this object.
+   * Returns the identifier uniquely identifying this object.
    *
-   * @return the value of type T indicating this object's assigned unique identifier.
+   * @return the value uniquely identifying this object.
    */
   T getId();
 
   /**
    * Sets the identifier uniquely identifying this object.
    *
-   * @param id a value of type T assigned as this object's unique identifier.
+   * @param id value of type T assigned as this object's unique identifier.
    */
   void setId(T id);
 
   /**
-   * Determines whether this Identifiable object is new, which is signified by a null identifier.
+   * Determines whether this {@link Identifiable} object is new indicated with a {@literal null} identifier.
    *
-   * @return a boolean value indicating whether this Identifiable object is new.
+   * @return a boolean value indicating whether this {@link Identifiable} object is new.
    */
-  boolean isNew();
+  default boolean isNew() {
+    return (getId() == null);
+  }
 
+  /**
+   * Determines whether this {@link Identifiable} object is non-new indicated with a non-{@literal null} identifier.
+   *
+   * @return a boolean value indicating whether this {@link Identifiable} object is non-new.
+   * @see #isNew()
+   */
+  default boolean isNotNew() {
+    return !isNew();
+  }
+
+  /**
+   * Builder method used to set this {@link Identifiable} object's id.
+   *
+   * @param <S> Subclass type of this {@link Identifiable} object.
+   * @param id value of type T assigned as this object's unique identifier.
+   * @return a reference to this {@link Identifiable}.
+   * @see #setId(Comparable)
+   */
+  @SuppressWarnings("unchecked")
+  default <S extends Identifiable<T>> S identifiedBy(T id) {
+    setId(id);
+    return (S) this;
+  }
 }
