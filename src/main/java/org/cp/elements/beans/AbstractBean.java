@@ -139,7 +139,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a Calendar object denoting the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
    */
-  public Calendar getCreatedDateTime() {
+  public Calendar getCreatedOn() {
     return DateTimeUtils.clone(createdDateTime);
   }
 
@@ -149,7 +149,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param createdDateTime a Calendar object denoting the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setCreatedDateTime(final Calendar createdDateTime) {
+  public void setCreatedOn(final Calendar createdDateTime) {
     processChange("createdDateTime", DateTimeUtils.clone(this.createdDateTime), DateTimeUtils.clone(createdDateTime));
   }
 
@@ -239,7 +239,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a Calendar object denoting the date and time when this object was last modified.
    * @see org.cp.elements.lang.Auditable
    */
-  public Calendar getLastModifiedDateTime() {
+  public Calendar getLastModifiedOn() {
     return DateTimeUtils.clone(lastModifiedDateTime);
   }
 
@@ -305,7 +305,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a Calendar object denoting the date and time when this object was modified.
    * @see org.cp.elements.lang.Auditable
    */
-  public Calendar getModifiedDateTime() {
+  public Calendar getModifiedOn() {
     return DateTimeUtils.clone(modifiedDateTime);
   }
 
@@ -315,7 +315,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param modifiedDateTime a Calendar object denoting the date and time when this object was modified.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setModifiedDateTime(final Calendar modifiedDateTime) {
+  public void setModifiedOn(final Calendar modifiedDateTime) {
     processChange("modifiedDateTime", DateTimeUtils.clone(this.modifiedDateTime), DateTimeUtils.clone(modifiedDateTime));
     this.lastModifiedDateTime = ObjectUtils.defaultIfNull(this.lastModifiedDateTime, this.modifiedDateTime);
   }

@@ -51,14 +51,14 @@ public interface Auditable<USER, PROCESS> {
    *
    * @return a Calendar object denoting the date and time when this object was created.
    */
-  Calendar getCreatedDateTime();
+  Calendar getCreatedOn();
 
   /**
    * Sets the date and time when this object was created.
    *
    * @param dateTime a Calendar object denoting the date and time when this object was created.
    */
-  void setCreatedDateTime(Calendar dateTime);
+  void setCreatedOn(Calendar dateTime);
 
   /**
    * Gets the process (the what) that functionally created this object.
@@ -86,7 +86,7 @@ public interface Auditable<USER, PROCESS> {
    *
    * @return a Calendar object denoting the date and time when this object was last modified.
    */
-  Calendar getLastModifiedDateTime();
+  Calendar getLastModifiedOn();
 
   /**
    * Gets the process (the what) that was last responsible for modifying this object.
@@ -133,14 +133,14 @@ public interface Auditable<USER, PROCESS> {
    *
    * @return a Calendar object denoting the date and time when this object was modified.
    */
-  Calendar getModifiedDateTime();
+  Calendar getModifiedOn();
 
   /**
    * Sets the date and time when this object was modified.
    *
    * @param dateTime a Calendar object denoting the date and time when this object was modified.
    */
-  void setModifiedDateTime(Calendar dateTime);
+  void setModifiedOn(Calendar dateTime);
 
   /**
    * Gets the process (the what) that functionally modified this object.

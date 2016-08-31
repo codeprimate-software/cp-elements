@@ -82,7 +82,7 @@ public class CommitVisitorTest {
     AuditableVisitable<String, String> mockAuditableVisitable = mock(AuditableVisitable.class);
 
     when(mockAuditableVisitable.getModifiedBy()).thenReturn("ExpectedUser");
-    when(mockAuditableVisitable.getModifiedDateTime()).thenReturn(expectedDateTime);
+    when(mockAuditableVisitable.getModifiedOn()).thenReturn(expectedDateTime);
     when(mockAuditableVisitable.getModifyingProcess()).thenReturn("ExpectedProcess");
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
@@ -98,7 +98,7 @@ public class CommitVisitorTest {
     Calendar updatedExpectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 18);
 
     when(mockAuditableVisitable.getModifiedBy()).thenReturn("UpdatedExpectedUser");
-    when(mockAuditableVisitable.getModifiedDateTime()).thenReturn(updatedExpectedDateTime);
+    when(mockAuditableVisitable.getModifiedOn()).thenReturn(updatedExpectedDateTime);
     when(mockAuditableVisitable.getModifyingProcess()).thenReturn("UpdatedExpectedProcess");
 
     new CommitVisitor(mockAuditableVisitable).visit(mockAuditableVisitable);
@@ -128,7 +128,7 @@ public class CommitVisitorTest {
     assertNull(mockAuditableVisitable.lastModifyingProcess);
 
     verify(mockAuditableVisitable, never()).getModifiedBy();
-    verify(mockAuditableVisitable, never()).getModifiedDateTime();
+    verify(mockAuditableVisitable, never()).getModifiedOn();
     verify(mockAuditableVisitable, never()).getModifyingProcess();
   }
 

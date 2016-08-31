@@ -66,7 +66,7 @@ public class CommitVisitor implements Visitor {
   public void visit(final Visitable visitable) {
     if (isCommitable(visitable)) {
       ObjectUtils.setField(visitable, "lastModifiedBy", ((Auditable) visitable).getModifiedBy());
-      ObjectUtils.setField(visitable, "lastModifiedDateTime", ((Auditable) visitable).getModifiedDateTime());
+      ObjectUtils.setField(visitable, "lastModifiedDateTime", ((Auditable) visitable).getModifiedOn());
       ObjectUtils.setField(visitable, "lastModifyingProcess", ((Auditable) visitable).getModifyingProcess());
     }
   }

@@ -110,10 +110,10 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @param auditable the Auditable object being evaluated for unset created properties.
    * @return a boolean value indicating whether the Auditable object's created properties are currently unset.
    * @see org.cp.elements.lang.Auditable#getCreatedBy()
-   * @see org.cp.elements.lang.Auditable#getCreatedDateTime()
+   * @see org.cp.elements.lang.Auditable#getCreatedOn()
    */
   protected boolean isCreatedUnset(final Auditable auditable) {
-    return (auditable.getCreatedBy() == null || auditable.getCreatedDateTime() == null);
+    return (auditable.getCreatedBy() == null || auditable.getCreatedOn() == null);
   }
 
   /**
@@ -143,13 +143,13 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
 
       if (isNew(auditable) || isCreatedUnset(auditable)) {
         auditable.setCreatedBy(getUser());
-        auditable.setCreatedDateTime(getDateTime());
+        auditable.setCreatedOn(getDateTime());
         auditable.setCreatingProcess(getProcess());
       }
 
       if (auditable.isModified()) {
         auditable.setModifiedBy(getUser());
-        auditable.setModifiedDateTime(getDateTime());
+        auditable.setModifiedOn(getDateTime());
         auditable.setModifyingProcess(getProcess());
       }
     }

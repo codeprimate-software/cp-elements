@@ -122,14 +122,14 @@ public class AuditableVisitorTest {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(null);
-    when(mockAuditable.getCreatedDateTime()).thenReturn(null);
+    when(mockAuditable.getCreatedOn()).thenReturn(null);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
 
     verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, never()).getCreatedDateTime();
+    verify(mockAuditable, never()).getCreatedOn();
   }
 
   @Test
@@ -137,14 +137,14 @@ public class AuditableVisitorTest {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(null);
-    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
+    when(mockAuditable.getCreatedOn()).thenReturn(Calendar.getInstance());
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
 
     verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, never()).getCreatedDateTime();
+    verify(mockAuditable, never()).getCreatedOn();
   }
 
   @Test
@@ -152,14 +152,14 @@ public class AuditableVisitorTest {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
-    when(mockAuditable.getCreatedDateTime()).thenReturn(null);
+    when(mockAuditable.getCreatedOn()).thenReturn(null);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertTrue(visitor.isCreatedUnset(mockAuditable));
 
     verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, times(1)).getCreatedDateTime();
+    verify(mockAuditable, times(1)).getCreatedOn();
   }
 
   @Test
@@ -167,14 +167,14 @@ public class AuditableVisitorTest {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
-    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
+    when(mockAuditable.getCreatedOn()).thenReturn(Calendar.getInstance());
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertFalse(visitor.isCreatedUnset(mockAuditable));
 
     verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, times(1)).getCreatedDateTime();
+    verify(mockAuditable, times(1)).getCreatedOn();
   }
 
   @Test
@@ -229,11 +229,11 @@ public class AuditableVisitorTest {
 
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, times(1)).setCreatedBy(same(mockUser));
-    verify(mockAuditable, times(1)).setCreatedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setCreatedOn(eq(now));
     verify(mockAuditable, times(1)).setCreatingProcess(same(mockProcess));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
-    verify(mockAuditable, times(1)).setModifiedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setModifiedOn(eq(now));
     verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
   }
 
@@ -257,11 +257,11 @@ public class AuditableVisitorTest {
     visitor.visit(mockAuditable);
 
     verify(mockAuditable, times(1)).setCreatedBy(same(mockUser));
-    verify(mockAuditable, times(1)).setCreatedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setCreatedOn(eq(now));
     verify(mockAuditable, times(1)).setCreatingProcess(same(mockProcess));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
-    verify(mockAuditable, times(1)).setModifiedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setModifiedOn(eq(now));
     verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
   }
 
@@ -277,7 +277,7 @@ public class AuditableVisitorTest {
 
     when(mockAuditable.isNew()).thenReturn(false);
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
-    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
+    when(mockAuditable.getCreatedOn()).thenReturn(Calendar.getInstance());
     when(mockAuditable.isModified()).thenReturn(true);
 
     Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 23, 45, 0);
@@ -293,11 +293,11 @@ public class AuditableVisitorTest {
 
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, never()).setCreatedBy(any(User.class));
-    verify(mockAuditable, never()).setCreatedDateTime(any(Calendar.class));
+    verify(mockAuditable, never()).setCreatedOn(any(Calendar.class));
     verify(mockAuditable, never()).setCreatingProcess(any(Process.class));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
-    verify(mockAuditable, times(1)).setModifiedDateTime(eq(now));
+    verify(mockAuditable, times(1)).setModifiedOn(eq(now));
     verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
   }
 
@@ -308,7 +308,7 @@ public class AuditableVisitorTest {
 
     when(mockAuditable.isNew()).thenReturn(false);
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
-    when(mockAuditable.getCreatedDateTime()).thenReturn(Calendar.getInstance());
+    when(mockAuditable.getCreatedOn()).thenReturn(Calendar.getInstance());
     when(mockAuditable.isModified()).thenReturn(false);
 
     Calendar now = createCalendar(2014, Calendar.JANUARY, 18, 23, 55, 45);
@@ -324,11 +324,11 @@ public class AuditableVisitorTest {
 
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, never()).setCreatedBy(any(User.class));
-    verify(mockAuditable, never()).setCreatedDateTime(any(Calendar.class));
+    verify(mockAuditable, never()).setCreatedOn(any(Calendar.class));
     verify(mockAuditable, never()).setCreatingProcess(any(Process.class));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, never()).setModifiedBy(any(User.class));
-    verify(mockAuditable, never()).setModifiedDateTime(any(Calendar.class));
+    verify(mockAuditable, never()).setModifiedOn(any(Calendar.class));
     verify(mockAuditable, never()).setModifyingProcess(any(Process.class));
   }
 

@@ -60,7 +60,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    * @return a Calendar object denoting the date and time when this object was created.
    */
   @Override
-  public Calendar getCreatedDateTime() {
+  public Calendar getCreatedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -70,7 +70,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    * @param dateTime a Calendar object denoting the date and time when this object was created.
    */
   @Override
-  public void setCreatedDateTime(final Calendar dateTime) {
+  public void setCreatedOn(final Calendar dateTime) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -110,7 +110,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    * @return a Calendar object denoting the date and time when this object was last modified.
    */
   @Override
-  public Calendar getLastModifiedDateTime() {
+  public Calendar getLastModifiedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -175,7 +175,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    * @return a Calendar object denoting the date and time when this object was modified.
    */
   @Override
-  public Calendar getModifiedDateTime() {
+  public Calendar getModifiedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -185,7 +185,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    * @param dateTime a Calendar object denoting the date and time when this object was modified.
    */
   @Override
-  public void setModifiedDateTime(final Calendar dateTime) {
+  public void setModifiedOn(final Calendar dateTime) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
