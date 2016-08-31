@@ -184,5 +184,4 @@ public class BloomFilter<T extends Number> implements Filter<T> {
       bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
     }
   }
-
 }

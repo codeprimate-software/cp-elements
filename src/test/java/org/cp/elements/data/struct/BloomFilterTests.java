@@ -30,8 +30,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The BloomFilterTests class is a test suite of test cases testing the contract and functionality
- * of the {@link BloomFilter} class.
+ * Test suite of test cases testing the contract and functionality of the {@link BloomFilter} class.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -137,5 +136,4 @@ public class BloomFilterTests {
       }
     }
   }
-
 }
