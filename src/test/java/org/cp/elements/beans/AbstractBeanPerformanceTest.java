@@ -22,8 +22,7 @@ import java.beans.PropertyVetoException;
 import org.junit.Assert;
 
 /**
- * The AbstractBeanPerformanceTest class is a test suite for measuring and collection runtime performance metrics
- * for the AbstractBean class.
+ * Test suite of test cases testing and measuring the performance of the {@link AbstractBean} class.
  *
  * @author John J. Blum
  * @see org.cp.elements.beans.AbstractBean
@@ -35,66 +34,70 @@ public class AbstractBeanPerformanceTest {
   private static final int NUMBER_OF_OPERATIONS = 1000000;
 
   public static void main(final String... args) {
-    processByCallback();
-    processByReflection();
-    processBySetter();
-    processBySetterWithEventNotification();
+    testPerformanceOfCallback();
+    testPerformanceOfReflection();
+    testPerformanceOfSetter();
+    testPerformanceOfSetterWithEventNotification();
   }
 
-  private static void processByCallback() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
-    final long t0 = System.currentTimeMillis();
+  private static void testPerformanceOfCallback() {
+    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+
+    long timeBegin = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
       valueHolder.setCallbackValue(count);
       Assert.assertEquals(count, valueHolder.getCallbackValue().intValue());
     }
 
-    final long t1 = System.currentTimeMillis();
+    long timeEnd = System.currentTimeMillis();
 
-    System.out.println("Setting through callback took (" + (t1 - t0) + ") milliseconds.");
+    System.out.printf("Setting through callback took [%d] milliseconds.%n", timeEnd - timeBegin);
   }
 
-  private static void processByReflection() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
-    final long t0 = System.currentTimeMillis();
+  private static void testPerformanceOfReflection() {
+    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+
+    long timeBegin = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
       valueHolder.setReflectionValue(count);
       Assert.assertEquals(count, valueHolder.getReflectionValue().intValue());
     }
 
-    final long t1 = System.currentTimeMillis();
+    long timeEnd = System.currentTimeMillis();
 
-    System.out.println("Setting through reflection took (" + (t1 - t0) + ") milliseconds.");
+    System.out.printf("Setting through reflection took [%d] milliseconds.%n", timeEnd - timeBegin);
   }
 
-  private static void processBySetter() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
-    final long t0 = System.currentTimeMillis();
+  private static void testPerformanceOfSetter() {
+    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+
+    long timeBegin = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
       valueHolder.setValue(count);
       Assert.assertEquals(count, valueHolder.getValue().intValue());
     }
 
-    final long t1 = System.currentTimeMillis();
+    long timeEnd = System.currentTimeMillis();
 
-    System.out.println("Calling setter took (" + (t1 - t0) + ") milliseconds.");
+    System.out.printf("Calling setter took [%d] milliseconds.%n", timeEnd - timeBegin);
   }
 
-  private static void processBySetterWithEventNotification() {
-    final ValueHolder<Integer> valueHolder = new ValueHolder<>();
-    final long t0 = System.currentTimeMillis();
+  private static void testPerformanceOfSetterWithEventNotification() {
+    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+
+    long timeBegin = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
       valueHolder.setNotificationValue(count);
       Assert.assertEquals(count, valueHolder.getNotificationValue().intValue());
     }
 
-    final long t1 = System.currentTimeMillis();
+    long timeEnd = System.currentTimeMillis();
 
-    System.out.println("Calling setter with event notification took (" + (t1 - t0) + ") milliseconds.");
+    System.out.printf("Calling setter with event notification took [%d] milliseconds.", timeEnd - timeBegin);
   }
 
   @SuppressWarnings("unused")
@@ -113,7 +116,7 @@ public class AbstractBeanPerformanceTest {
       return callbackValue;
     }
 
-    public void setCallbackValue(final T callbackValue) {
+    public void setCallbackValue(T callbackValue) {
       processChange("callbackValue", this.callbackValue, callbackValue, () -> ValueHolder.this.callbackValue = callbackValue);
     }
 
@@ -121,10 +124,11 @@ public class AbstractBeanPerformanceTest {
       return notificationValue;
     }
 
-    public void setNotificationValue(final T notificationValue) {
+    public void setNotificationValue(T notificationValue) {
       try {
-        final PropertyChangeEvent event = newPropertyChangeEvent("notificationValue", this.notificationValue,
-          notificationValue);
+        PropertyChangeEvent event = newPropertyChangeEvent("notificationValue",
+          this.notificationValue, notificationValue);
+
         fireVetoableChange(event);
         this.notificationValue = notificationValue;
         firePropertyChange(event);
@@ -139,7 +143,7 @@ public class AbstractBeanPerformanceTest {
       return reflectionValue;
     }
 
-    public void setReflectionValue(final T reflectionValue) {
+    public void setReflectionValue(T reflectionValue) {
       processChange("reflectionValue", this.reflectionValue, reflectionValue);
     }
 
@@ -147,9 +151,8 @@ public class AbstractBeanPerformanceTest {
       return value;
     }
 
-    public void setValue(final T value) {
+    public void setValue(T value) {
       this.value = value;
     }
   }
-
 }
