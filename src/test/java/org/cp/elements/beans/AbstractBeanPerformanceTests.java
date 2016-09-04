@@ -28,7 +28,7 @@ import org.junit.Assert;
  * @see org.cp.elements.beans.AbstractBean
  * @since 1.0.0
  */
-public class AbstractBeanPerformanceTest {
+public class AbstractBeanPerformanceTests {
 
   private static final boolean EVENT_DISPATCH_ENABLED = false;
   private static final int NUMBER_OF_OPERATIONS = 1000000;

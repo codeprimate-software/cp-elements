@@ -47,16 +47,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The AuditableVisitorTest class is a test suite of test cases testing the contract and functionality of the
- * AuditableVisitor class.
+ * Test suite of test cases testing the contract and functionality of the {@link AuditableVisitor} class.
  *
  * @author John J. Blum
  * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.Visitor
  * @see org.cp.elements.lang.support.AuditableVisitor
@@ -64,7 +61,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  */
 @SuppressWarnings("unused")
 @RunWith(MockitoJUnitRunner.class)
-public class AuditableVisitorTest {
+public class AuditableVisitorTests {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();

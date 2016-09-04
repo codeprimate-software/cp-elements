@@ -33,7 +33,7 @@ import org.junit.Test;
  * @see org.cp.elements.beans.Bean
  * @since 1.0.0
  */
-public class AbstractBeanTest {
+public class AbstractBeanTests {
 
   @Test
   public void constructAbstractBean() {
