@@ -123,7 +123,8 @@ public class AbstractBeanPerformanceTest {
 
     public void setNotificationValue(final T notificationValue) {
       try {
-        final PropertyChangeEvent event = createPropertyChangeEvent("notificationValue", this.notificationValue, notificationValue);
+        final PropertyChangeEvent event = newPropertyChangeEvent("notificationValue", this.notificationValue,
+          notificationValue);
         fireVetoableChange(event);
         this.notificationValue = notificationValue;
         firePropertyChange(event);

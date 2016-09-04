@@ -22,7 +22,7 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,7 +30,6 @@ import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.beans.event.ChangeSupport;
 import org.cp.elements.beans.event.ChangeTracker;
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.util.ComparatorUtils;
@@ -48,7 +47,7 @@ import org.cp.elements.util.ComparatorUtils;
  * @see java.beans.VetoableChangeListener
  * @see java.beans.VetoableChangeSupport
  * @see java.lang.Comparable
- * @see java.util.Calendar
+ * @see java.time.LocalDateTime
  * @see org.cp.elements.beans.Bean
  * @see org.cp.elements.beans.event.ChangeEvent
  * @see org.cp.elements.beans.event.ChangeListener
@@ -56,7 +55,6 @@ import org.cp.elements.util.ComparatorUtils;
  * @see org.cp.elements.beans.event.ChangeTracker
  * @see org.cp.elements.lang.Visitor
  * @since 1.0.0
- * @version 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> implements Bean<ID, USER, PROCESS> {
@@ -65,15 +63,15 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   private volatile boolean eventDispatchEnabled = DEFAULT_EVENT_DISPATCH_ENABLED;
 
-  private Calendar createdDateTime;
-  private Calendar lastModifiedDateTime;
-  private Calendar modifiedDateTime;
-
   private final ChangeSupport changeSupport = new ChangeSupport(this);
 
   private final ChangeTracker changeTracker = new ChangeTracker();
 
   private ID id;
+
+  private LocalDateTime createdOn;
+  private LocalDateTime lastModifiedOn;
+  private LocalDateTime modifiedOn;
 
   private final Map<String, String> propertyNameToFieldNameMapping = new TreeMap<>();
 
@@ -108,7 +106,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param id the generically typed identifier uniquely identifying objects of this particular Bean class.
    * @see org.cp.elements.lang.Identifiable
    */
-  public AbstractBean(final ID id) {
+  public AbstractBean(ID id) {
     this();
     this.id = id;
   }
@@ -129,7 +127,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param createdBy an object denoting the user who created this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setCreatedBy(final USER createdBy) {
+  public void setCreatedBy(USER createdBy) {
     processChange("createdBy", this.createdBy, createdBy);
   }
 
@@ -139,18 +137,18 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a Calendar object denoting the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
    */
-  public Calendar getCreatedOn() {
-    return DateTimeUtils.clone(createdDateTime);
+  public LocalDateTime getCreatedOn() {
+    return createdOn;
   }
 
   /**
    * Sets the date and time when this object was created.
    * 
-   * @param createdDateTime a Calendar object denoting the date and time when this object was created.
+   * @param createdOn a Calendar object denoting the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setCreatedOn(final Calendar createdDateTime) {
-    processChange("createdDateTime", DateTimeUtils.clone(this.createdDateTime), DateTimeUtils.clone(createdDateTime));
+  public void setCreatedOn(LocalDateTime createdOn) {
+    processChange("createdOn", this.createdOn, createdOn);
   }
 
   /**
@@ -169,7 +167,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param creatingProcess an object denoting the process that created this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setCreatingProcess(final PROCESS creatingProcess) {
+  public void setCreatingProcess(PROCESS creatingProcess) {
     processChange("creatingProcess", this.creatingProcess, creatingProcess);
   }
 
@@ -188,7 +186,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param eventDispatchEnabled a boolean value indicating whether to enable or disable event dispatching
    * for property changes to this Bean.
    */
-  protected final void setEventDispatchEnabled(final boolean eventDispatchEnabled) {
+  protected final void setEventDispatchEnabled(boolean eventDispatchEnabled) {
     this.eventDispatchEnabled = eventDispatchEnabled;
   }
 
@@ -199,7 +197,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param propertyName a String value specifying the name of the property to retrieve the corresponding field name.
    * @return a String value indicating the field name corresponding to the specified property.
    */
-  protected String getFieldName(final String propertyName) {
+  protected String getFieldName(String propertyName) {
     return ObjectUtils.defaultIfNull(propertyNameToFieldNameMapping.get(propertyName), propertyName);
   }
 
@@ -219,7 +217,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param id a value of type T assigned as this object's unique identifier.
    * @see org.cp.elements.lang.Identifiable
    */
-  public final void setId(final ID id) {
+  public final void setId(ID id) {
     processChange("id", this.id, id);
   }
 
@@ -239,8 +237,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a Calendar object denoting the date and time when this object was last modified.
    * @see org.cp.elements.lang.Auditable
    */
-  public Calendar getLastModifiedOn() {
-    return DateTimeUtils.clone(lastModifiedDateTime);
+  public LocalDateTime getLastModifiedOn() {
+    return lastModifiedOn;
   }
 
   /**
@@ -273,7 +271,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a boolean value indicating whether the specified property of this Auditable object, identified by name,
    * has been modified.
    */
-  public boolean isModified(final String propertyName) {
+  public boolean isModified(String propertyName) {
     return changeTracker.isModified(propertyName);
   }
 
@@ -294,7 +292,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.lang.Auditable
    */
   @SuppressWarnings("unchecked")
-  public void setModifiedBy(final USER modifiedBy) {
+  public void setModifiedBy(USER modifiedBy) {
     processChange("modifiedBy", this.modifiedBy, modifiedBy);
     this.lastModifiedBy = ObjectUtils.defaultIfNull(this.lastModifiedBy, this.modifiedBy);
   }
@@ -305,19 +303,19 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return a Calendar object denoting the date and time when this object was modified.
    * @see org.cp.elements.lang.Auditable
    */
-  public Calendar getModifiedOn() {
-    return DateTimeUtils.clone(modifiedDateTime);
+  public LocalDateTime getModifiedOn() {
+    return modifiedOn;
   }
 
   /**
    * Sets the date and time when this object was modified.
    * 
-   * @param modifiedDateTime a Calendar object denoting the date and time when this object was modified.
+   * @param modifiedOn a Calendar object denoting the date and time when this object was modified.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setModifiedOn(final Calendar modifiedDateTime) {
-    processChange("modifiedDateTime", DateTimeUtils.clone(this.modifiedDateTime), DateTimeUtils.clone(modifiedDateTime));
-    this.lastModifiedDateTime = ObjectUtils.defaultIfNull(this.lastModifiedDateTime, this.modifiedDateTime);
+  public void setModifiedOn(LocalDateTime modifiedOn) {
+    processChange("modifiedOn", this.modifiedOn, modifiedOn);
+    this.lastModifiedOn = ObjectUtils.defaultIfNull(this.lastModifiedOn, this.modifiedOn);
   }
 
   /**
@@ -337,7 +335,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.lang.Auditable
    */
   @SuppressWarnings("unchecked")
-  public void setModifyingProcess(final PROCESS modifyingProcess) {
+  public void setModifyingProcess(PROCESS modifyingProcess) {
     processChange("modifyingProcess", this.modifyingProcess, modifyingProcess);
     this.lastModifyingProcess = ObjectUtils.defaultIfNull(this.lastModifyingProcess, this.modifyingProcess);
   }
@@ -360,7 +358,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.lang.Visitable
    * @see org.cp.elements.lang.Visitor
    */
-  public void accept(final Visitor visitor) {
+  public void accept(Visitor visitor) {
     visitor.visit(this);
   }
 
@@ -373,7 +371,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.beans.event.ChangeListener
    * @see org.cp.elements.beans.event.ChangeSupport
    */
-  protected void addChangeListener(final ChangeListener listener) {
+  protected void addChangeListener(ChangeListener listener) {
     changeSupport.add(listener);
   }
 
@@ -385,7 +383,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void addPropertyChangeListener(final PropertyChangeListener listener) {
+  protected void addPropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(listener);
   }
 
@@ -399,7 +397,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void addPropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+  protected void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
   }
 
@@ -412,7 +410,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void addVetoableChangeListener(final VetoableChangeListener listener) {
+  protected void addVetoableChangeListener(VetoableChangeListener listener) {
     vetoableChangeSupport.addVetoableChangeListener(listener);
   }
 
@@ -427,7 +425,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void addVetoableChangeListener(final String propertyName, final VetoableChangeListener listener) {
+  protected void addVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
     vetoableChangeSupport.addVetoableChangeListener(propertyName, listener);
   }
 
@@ -443,7 +441,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * occurs when the field for the corresponding property does not exist.
    * @see #getFieldName(String)
    */
-  void changeState(final String propertyName, final Object newValue) {
+  void changeState(String propertyName, Object newValue) {
     try {
       ObjectUtils.setField(this, getFieldName(propertyName), newValue);
     }
@@ -467,7 +465,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.lang.Comparable#compareTo(Object)
    */
   @SuppressWarnings("all")
-  public int compareTo(final Bean<ID, USER, PROCESS> obj) {
+  public int compareTo(Bean<ID, USER, PROCESS> obj) {
     Assert.isInstanceOf(obj, getClass(), new ClassCastException(String.format(
       "The Bean being compared with this Bean must be an instance of %1$s!", getClass().getName())));
     return ComparatorUtils.compareIgnoreNull(getId(), obj.getId());
@@ -486,7 +484,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * property's old and new value.
    * @see java.beans.PropertyChangeEvent
    */
-  protected PropertyChangeEvent createPropertyChangeEvent(final String propertyName, final Object oldValue, final Object newValue) {
+  protected PropertyChangeEvent newPropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
     if (isEventDispatchEnabled()) {
       if (vetoableChangeSupport.hasListeners(propertyName) || propertyChangeSupport.hasListeners(propertyName)) {
         return new PropertyChangeEvent(this, propertyName, oldValue, newValue);
@@ -507,7 +505,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.lang.ObjectUtils#equals(Object, Object)
    */
   @Override
-  public boolean equals(final Object obj) {
+  public boolean equals(Object obj) {
     if (obj == this) {
       return true;
     }
@@ -547,7 +545,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeSupport#firePropertyChange(java.beans.PropertyChangeEvent)
    * @see java.beans.PropertyChangeSupport#hasListeners(String)
    */
-  protected void firePropertyChange(final PropertyChangeEvent event) {
+  protected void firePropertyChange(PropertyChangeEvent event) {
     if (isEventDispatchEnabled()) {
       Assert.notNull(event, "The PropertyChangeEvent cannot be null!");
       if (propertyChangeSupport.hasListeners(event.getPropertyName())) {
@@ -570,7 +568,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeSupport#fireVetoableChange(java.beans.PropertyChangeEvent)
    * @see java.beans.VetoableChangeSupport#hasListeners(String)
    */
-  protected void fireVetoableChange(final PropertyChangeEvent event) throws PropertyVetoException {
+  protected void fireVetoableChange(PropertyChangeEvent event) throws PropertyVetoException {
     if (isEventDispatchEnabled()) {
       Assert.notNull(event, "The PropertyChangeEvent cannot be null!");
       if (vetoableChangeSupport.hasListeners(event.getPropertyName())) {
@@ -615,9 +613,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param callback a ParameterizedStateChangeCallback affecting the state change/transition.
    * @return a boolean indicating that the mapping was added successfully.
    */
-  protected boolean mapPropertyNameToParameterizedStateChangeCallback(final String propertyName,
-                                                                      final ParameterizedStateChangeCallback callback)
-  {
+  protected boolean mapPropertyNameToParameterizedStateChangeCallback(String propertyName,
+      ParameterizedStateChangeCallback callback) {
+
     propertyNameToParameterizedStateChangeCallbackMapping.put(propertyName, callback);
     return propertyNameToParameterizedStateChangeCallbackMapping.containsKey(propertyName);
   }
@@ -641,7 +639,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * VetoableChangeListeners listening to property change events on this Bean.
    * @see #processChange(String, Object, Object, org.cp.elements.beans.AbstractBean.StateChangeCallback)
    */
-  protected void processChange(final String propertyName, final Object oldValue, final Object newValue) {
+  protected void processChange(String propertyName, Object oldValue, Object newValue) {
     processChange(propertyName, oldValue, newValue, null);
   }
 
@@ -666,13 +664,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see #processChange(String, Object, Object)
    */
   @SuppressWarnings("unchecked")
-  protected void processChange(final String propertyName,
-                               final Object oldValue,
-                               final Object newValue,
-                               final StateChangeCallback callback)
-  {
+  protected void processChange(String propertyName, Object oldValue, Object newValue, StateChangeCallback callback) {
     try {
-      final PropertyChangeEvent event = createPropertyChangeEvent(propertyName, oldValue, newValue);
+      PropertyChangeEvent event = newPropertyChangeEvent(propertyName, oldValue, newValue);
 
       fireVetoableChange(event);
 
@@ -704,7 +698,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.beans.event.ChangeListener
    * @see org.cp.elements.beans.event.ChangeSupport
    */
-  protected void removeChangeListener(final ChangeListener listener) {
+  protected void removeChangeListener(ChangeListener listener) {
     changeSupport.remove(listener);
   }
 
@@ -716,7 +710,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void removePropertyChangeListener(final PropertyChangeListener listener) {
+  protected void removePropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.removePropertyChangeListener(listener);
   }
 
@@ -730,7 +724,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void removePropertyChangeListener(final String propertyName, final PropertyChangeListener listener) {
+  protected void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
     propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
   }
 
@@ -743,7 +737,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void removeVetoableChangeListener(final VetoableChangeListener listener) {
+  protected void removeVetoableChangeListener(VetoableChangeListener listener) {
     vetoableChangeSupport.removeVetoableChangeListener(listener);
   }
 
@@ -757,7 +751,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void removeVetoableChangeListener(final String propertyName, final VetoableChangeListener listener) {
+  protected void removeVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
     vetoableChangeSupport.removeVetoableChangeListener(propertyName, listener);
   }
 
@@ -767,7 +761,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param propertyName a String value indicating the name of the property on this Bean to remove the mapping for.
    * @return a String value indicating the name of the Bean object's field mapped to the specified property.
    */
-  protected String unmapPropertyNameToFieldName(final String propertyName) {
+  protected String unmapPropertyNameToFieldName(String propertyName) {
     return propertyNameToFieldNameMapping.remove(propertyName);
   }
 
@@ -778,7 +772,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param propertyName a String value specifying the name of the property on this Bean class.
    * @return a boolean indicating that the mapping was removed.
    */
-  protected boolean unmapPropertyNameToParameterizedStateChangeCallback(final String propertyName) {
+  protected boolean unmapPropertyNameToParameterizedStateChangeCallback(String propertyName) {
     return (propertyNameToParameterizedStateChangeCallbackMapping.remove(propertyName) != null);
   }
 
@@ -797,5 +791,4 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   protected interface ParameterizedStateChangeCallback<T> {
     void changeState(T newValue);
   }
-
 }

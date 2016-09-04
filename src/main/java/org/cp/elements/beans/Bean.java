@@ -19,12 +19,11 @@ package org.cp.elements.beans;
 import java.io.Serializable;
 
 import org.cp.elements.lang.Auditable;
-import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Visitable;
 
 /**
- * The Bean interface defines a contract for a domain model object representing application data in a
- * software application.
+ * The Bean interface defines a contract for an application domain model object representing/modeling data
+ * in a software application.
  * 
  * @author John J. Blum
  * @param <ID> the Comparable class type of the identifier uniquely identifying this Bean.
@@ -38,7 +37,7 @@ import org.cp.elements.lang.Visitable;
  * @see org.cp.elements.lang.Visitable
  * @since 1.0.0
  */
-public interface Bean<ID extends Comparable<ID>, USER, PROCESS> extends Auditable<USER, PROCESS>, Cloneable,
-  Comparable<Bean<ID, USER, PROCESS>>, Identifiable<ID>, Serializable, Visitable {
+public interface Bean<ID extends Comparable<ID>, USER, PROCESS> extends Auditable<USER, PROCESS, ID>,
+  Cloneable, Comparable<Bean<ID, USER, PROCESS>>, Serializable, Visitable {
 
 }

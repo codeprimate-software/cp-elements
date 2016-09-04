@@ -16,52 +16,51 @@
 
 package org.cp.elements.beans;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 /**
- * The AbstractBeanTest class is a test suite of test cases testing the contract and functionality
- * of the AbstractBean class.
+ * Test suite of test cases testing the contract and functionality of the {@link AbstractBean} class.
  *
  * @author John J. Blum
+ * @see org.junit.Test
  * @see org.cp.elements.beans.AbstractBean
  * @see org.cp.elements.beans.Bean
- * @see org.junit.Test
  * @since 1.0.0
  */
 public class AbstractBeanTest {
 
   @Test
-  public void createAbstractBean() {
+  public void constructAbstractBean() {
     TestBean<Long> bean = new TestBean<>();
 
-    assertThat(bean, is(notNullValue()));
-    assertThat(bean.getId(), is(nullValue()));
+    assertThat(bean, is(notNullValue(AbstractBean.class)));
+    assertThat(bean.getId(), is(nullValue(Long.class)));
   }
 
   @Test
-  public void createAbstractBeanWithId() {
+  public void constructAbstractBeanWithId() {
     TestBean<Long> bean = new TestBean<>(1L);
 
-    assertThat(bean, is(notNullValue()));
-    assertThat(bean.getId(), is(equalTo(1l)));
+    assertThat(bean, is(notNullValue(AbstractBean.class)));
+    assertThat(bean.getId(), is(equalTo(1L)));
   }
 
   @Test
   public void setAndGetId() {
     TestBean<Long> bean = new TestBean<>();
 
-    assertThat(bean, is(notNullValue()));
-    assertThat(bean.getId(), is(nullValue()));
+    assertThat(bean, is(notNullValue(AbstractBean.class)));
+    assertThat(bean.getId(), is(nullValue(Long.class)));
 
     bean.setId(1L);
 
-    assertThat(bean.getId(), is(equalTo(1l)));
+    assertThat(bean.getId(), is(equalTo(1L)));
   }
 
   protected static final class TestBean<ID extends Comparable<ID>> extends AbstractBean<ID, String, String> {
@@ -69,9 +68,8 @@ public class AbstractBeanTest {
     public TestBean() {
     }
 
-    public TestBean(final ID id) {
+    public TestBean(ID id) {
       super(id);
     }
   }
-
 }
