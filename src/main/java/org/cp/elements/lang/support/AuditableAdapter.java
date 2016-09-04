@@ -16,7 +16,7 @@
 
 package org.cp.elements.lang.support;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Constants;
@@ -27,15 +27,17 @@ import org.cp.elements.lang.Constants;
  * @author John J. Blum
  * @param <USER> an object type for tracking the user.
  * @param <PROCESS> an object type for tracking the process.
- * @see java.util.Calendar
+ * @see java.time.LocalDateTime
  * @see org.cp.elements.lang.Auditable
+ * @see org.cp.elements.lang.support.IdentifiableAdapter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER, PROCESS> {
+public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>> extends IdentifiableAdapter<ID>
+    implements Auditable<USER, PROCESS, ID> {
 
   /**
-   * Gets the user who is responsible for the creation of this object.
+   * Gets the user who is responsible for creating this object.
    *
    * @return an object denoting the user who created this object.
    */
@@ -45,32 +47,32 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
   }
 
   /**
-   * Sets the user who is responsible for the creation of this object.
+   * Sets the user who is responsible for creating this object.
    *
-   * @param user an object denoting the user who created this object.
+   * @param user object denoting the user who created this object.
    */
   @Override
-  public void setCreatedBy(final USER user) {
+  public void setCreatedBy(USER user) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Gets the date and time when this object was created.
    *
-   * @return a Calendar object denoting the date and time when this object was created.
+   * @return a {@link LocalDateTime} denoting the date and time when this object was created.
    */
   @Override
-  public Calendar getCreatedOn() {
+  public LocalDateTime getCreatedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Sets the date and time when this object was created.
    *
-   * @param dateTime a Calendar object denoting the date and time when this object was created.
+   * @param createdOn {@link LocalDateTime} denoting the date and time when this object was created.
    */
   @Override
-  public void setCreatedOn(final Calendar dateTime) {
+  public void setCreatedOn(LocalDateTime createdOn) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -87,10 +89,10 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
   /**
    * Sets the process (the what) that functionally created this object.
    *
-   * @param process an object denoting the process that created this object.
+   * @param process object denoting the process that created this object.
    */
   @Override
-  public void setCreatingProcess(final PROCESS process) {
+  public void setCreatingProcess(PROCESS process) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -105,12 +107,12 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
   }
 
   /**
-   * Gets the last date and time when this object was modified.
+   * Gets the date and time when this object was last modified.
    *
-   * @return a Calendar object denoting the date and time when this object was last modified.
+   * @return a {@link LocalDateTime} denoting the date and time when this object was last modified.
    */
   @Override
-  public Calendar getLastModifiedOn() {
+  public LocalDateTime getLastModifiedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -145,7 +147,7 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
    * has been modified.
    */
   @Override
-  public boolean isModified(final String propertyName) {
+  public boolean isModified(String propertyName) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -162,30 +164,30 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
   /**
    * Sets the user who is responsible for modifying this object.
    *
-   * @param user an object denoting the user who modified this object.
+   * @param user object denoting the user who modified this object.
    */
   @Override
-  public void setModifiedBy(final USER user) {
+  public void setModifiedBy(USER user) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Gets the date and time when this object was modified.
    *
-   * @return a Calendar object denoting the date and time when this object was modified.
+   * @return a {@link LocalDateTime} denoting the date and time when this object was modified.
    */
   @Override
-  public Calendar getModifiedOn() {
+  public LocalDateTime getModifiedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
    * Sets the date and time when this object was modified.
    *
-   * @param dateTime a Calendar object denoting the date and time when this object was modified.
+   * @param modifiedOn {@link LocalDateTime} denoting the date and time when this object was modified.
    */
   @Override
-  public void setModifiedOn(final Calendar dateTime) {
+  public void setModifiedOn(LocalDateTime modifiedOn) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -202,11 +204,10 @@ public abstract class AuditableAdapter<USER, PROCESS> implements Auditable<USER,
   /**
    * Sets the process (the what) that functionally modified this object.
    *
-   * @param process an object denoting the process that modified this object.
+   * @param process object denoting the process that modified this object.
    */
   @Override
-  public void setModifyingProcess(final PROCESS process) {
+  public void setModifyingProcess(PROCESS process) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
-
 }

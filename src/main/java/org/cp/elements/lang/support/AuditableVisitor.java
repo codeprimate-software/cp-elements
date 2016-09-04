@@ -16,23 +16,20 @@
 
 package org.cp.elements.lang.support;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Auditable;
-import org.cp.elements.lang.DateTimeUtils;
-import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 
 /**
- * The AuditableVisitor class is a Visitor implementation visiting the an object graph to set the auditable properties
- * of an Auditable object.
+ * The AuditableVisitor class is a {@link Visitor} implementation visiting the an object graph
+ * to set the auditable properties of an {@link Auditable} object.
  *
  * @author John J. Blum
- * @see java.util.Calendar
+ * @see java.time.LocalDateTime
  * @see org.cp.elements.lang.Auditable
- * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor
  * @since 1.0.0
@@ -40,7 +37,7 @@ import org.cp.elements.lang.Visitor;
 @SuppressWarnings("unused")
 public class AuditableVisitor<USER, PROCESS> implements Visitor {
 
-  private final Calendar dateTime;
+  private final LocalDateTime dateTime;
 
   private final PROCESS process;
 
@@ -53,8 +50,8 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @param process the process authorized and responsible for changing the Auditable object.
    * @see #AuditableVisitor(Object, Object, java.util.Calendar)
    */
-  public AuditableVisitor(final USER user, final PROCESS process) {
-    this(user, process, Calendar.getInstance());
+  public AuditableVisitor(USER user, PROCESS process) {
+    this(user, process, LocalDateTime.now());
   }
 
   /**
@@ -67,12 +64,13 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @see #AuditableVisitor(Object, Object)
    * @see java.util.Calendar
    */
-  public AuditableVisitor(final USER user, final PROCESS process, final Calendar dateTime) {
-    Assert.notNull(user, "user must not be null");
-    Assert.notNull(process, "process must not be null");
+  public AuditableVisitor(USER user, PROCESS process, LocalDateTime dateTime) {
+    Assert.notNull(user, "User must not be null");
+    Assert.notNull(process, "Process must not be null");
+
     this.user = user;
     this.process = process;
-    this.dateTime = (dateTime != null ? dateTime : Calendar.getInstance());
+    this.dateTime = (dateTime != null ? dateTime : LocalDateTime.now());
   }
 
   /**
@@ -99,8 +97,8 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @return a Calendar instance indicating the date and time the Auditable object was changed.
    * @see java.util.Calendar
    */
-  public Calendar getDateTime() {
-    return DateTimeUtils.clone(dateTime);
+  public LocalDateTime getDateTime() {
+    return dateTime;
   }
 
   /**
@@ -112,20 +110,8 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @see org.cp.elements.lang.Auditable#getCreatedBy()
    * @see org.cp.elements.lang.Auditable#getCreatedOn()
    */
-  protected boolean isCreatedUnset(final Auditable auditable) {
+  protected boolean isCreatedUnset(Auditable auditable) {
     return (auditable.getCreatedBy() == null || auditable.getCreatedOn() == null);
-  }
-
-  /**
-   * Determines whether the specified Auditable object is Identifiable and new.
-   *
-   * @param auditable the Auditable object being evaluated as an instance of the Identifiable interface and whether
-   * the Auditable object is new.
-   * @return a boolean value indicating whether the Auditable object is Identifiable and new.
-   * @see org.cp.elements.lang.Identifiable#isNew()
-   */
-  protected boolean isNew(final Auditable auditable) {
-    return (auditable instanceof Identifiable && ((Identifiable) auditable).isNew());
   }
 
   /**
@@ -137,11 +123,11 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public void visit(final Visitable visitable) {
+  public void visit(Visitable visitable) {
     if (visitable instanceof Auditable) {
-      final Auditable<USER, PROCESS> auditable = (Auditable<USER, PROCESS>) visitable;
+      Auditable<USER, PROCESS, ?> auditable = (Auditable<USER, PROCESS, ?>) visitable;
 
-      if (isNew(auditable) || isCreatedUnset(auditable)) {
+      if (auditable.isNew() || isCreatedUnset(auditable)) {
         auditable.setCreatedBy(getUser());
         auditable.setCreatedOn(getDateTime());
         auditable.setCreatingProcess(getProcess());
@@ -154,5 +140,4 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
       }
     }
   }
-
 }

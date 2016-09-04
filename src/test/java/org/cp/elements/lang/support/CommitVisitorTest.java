@@ -25,11 +25,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -37,11 +37,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The CommitVisitorTest class is a test suite of test cases testing the contract and functionality
- * of the CommitVisitor class.
+ * of the {@link CommitVisitor} class.
  *
  * @author John J. Blum
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.runners.MockitoJUnitRunner
@@ -77,7 +76,7 @@ public class CommitVisitorTest {
   @Test
   @SuppressWarnings("unchecked")
   public void visit() {
-    Calendar expectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 17);
+    LocalDateTime expectedDateTime = LocalDateTime.of(2014, Month.DECEMBER, 17, 0, 0);
 
     AuditableVisitable<String, String> mockAuditableVisitable = mock(AuditableVisitable.class);
 
@@ -95,7 +94,7 @@ public class CommitVisitorTest {
     assertEquals(expectedDateTime, mockAuditableVisitable.lastModifiedDateTime);
     assertEquals("ExpectedProcess", mockAuditableVisitable.lastModifyingProcess);
 
-    Calendar updatedExpectedDateTime = TestUtils.createCalendar(2014, Calendar.DECEMBER, 18);
+    LocalDateTime updatedExpectedDateTime = LocalDateTime.of(2014, Month.DECEMBER, 18, 0, 0);
 
     when(mockAuditableVisitable.getModifiedBy()).thenReturn("UpdatedExpectedUser");
     when(mockAuditableVisitable.getModifiedOn()).thenReturn(updatedExpectedDateTime);
@@ -133,12 +132,11 @@ public class CommitVisitorTest {
   }
 
   @SuppressWarnings("unused")
-  public static abstract class AuditableVisitable<USER, PROCESS> implements Auditable<USER, PROCESS>, Visitable {
+  public static abstract class AuditableVisitable<USER, PROCESS> implements Auditable<USER, PROCESS, Long>, Visitable {
 
-    private Calendar lastModifiedDateTime;
+    private LocalDateTime lastModifiedDateTime;
     private PROCESS lastModifyingProcess;
     private USER lastModifiedBy;
 
   }
-
 }

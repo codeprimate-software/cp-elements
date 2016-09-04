@@ -16,49 +16,51 @@
 
 package org.cp.elements.lang;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 /**
  * The Auditable interface defines a contract for objects that need to be audited, allowing all changes to be tracked
  * in fine-grained detail by specifying who, when and what made changes to this object.
  *
  * @author John J. Blum
- * @param <USER> an object type for tracking the user.
- * @param <PROCESS> an object type for tracking the process.
- * @see java.util.Calendar
+ * @param <USER> Class type for tracking the user.
+ * @param <PROCESS> Class type for tracking the process.
+ * @param <ID> Class type of the {@link} Identifiable object's identifier.
+ * @see java.lang.Comparable
+ * @see java.time.LocalDateTime
  * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Auditable<USER, PROCESS> {
+public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Identifiable<ID> {
 
   /**
-   * Gets the user who is responsible for the creation of this object.
+   * Gets the user who is responsible for creating this object.
    *
    * @return an object denoting the user who created this object.
    */
   USER getCreatedBy();
 
   /**
-   * Sets the user who is responsible for the creation of this object.
+   * Sets the user who is responsible for creating this object.
    *
-   * @param user an object denoting the user who created this object.
+   * @param user object denoting the user who created this object.
    */
   void setCreatedBy(USER user);
 
   /**
    * Gets the date and time when this object was created.
    *
-   * @return a Calendar object denoting the date and time when this object was created.
+   * @return a {@link LocalDateTime} denoting the date and time when this object was created.
    */
-  Calendar getCreatedOn();
+  LocalDateTime getCreatedOn();
 
   /**
    * Sets the date and time when this object was created.
    *
-   * @param dateTime a Calendar object denoting the date and time when this object was created.
+   * @param createdOn {@link LocalDateTime} denoting the date and time when this object was created.
    */
-  void setCreatedOn(Calendar dateTime);
+  void setCreatedOn(LocalDateTime createdOn);
 
   /**
    * Gets the process (the what) that functionally created this object.
@@ -70,7 +72,7 @@ public interface Auditable<USER, PROCESS> {
   /**
    * Sets the process (the what) that functionally created this object.
    *
-   * @param process an object denoting the process that created this object.
+   * @param process object denoting the process that created this object.
    */
   void setCreatingProcess(PROCESS process);
 
@@ -82,11 +84,11 @@ public interface Auditable<USER, PROCESS> {
   USER getLastModifiedBy();
 
   /**
-   * Gets the last date and time when this object was modified.
+   * Gets the date and time when this object was last modified.
    *
-   * @return a Calendar object denoting the date and time when this object was last modified.
+   * @return a {@link LocalDateTime} denoting the date and time when this object was last modified.
    */
-  Calendar getLastModifiedOn();
+  LocalDateTime getLastModifiedOn();
 
   /**
    * Gets the process (the what) that was last responsible for modifying this object.
@@ -124,23 +126,23 @@ public interface Auditable<USER, PROCESS> {
   /**
    * Sets the user who is responsible for modifying this object.
    *
-   * @param user an object denoting the user who modified this object.
+   * @param user object denoting the user who modified this object.
    */
   void setModifiedBy(USER user);
 
   /**
    * Gets the date and time when this object was modified.
    *
-   * @return a Calendar object denoting the date and time when this object was modified.
+   * @return a {@link LocalDateTime} denoting the date and time when this object was modified.
    */
-  Calendar getModifiedOn();
+  LocalDateTime getModifiedOn();
 
   /**
    * Sets the date and time when this object was modified.
    *
-   * @param dateTime a Calendar object denoting the date and time when this object was modified.
+   * @param modifiedOn {@link LocalDateTime} denoting the date and time when this object was modified.
    */
-  void setModifiedOn(Calendar dateTime);
+  void setModifiedOn(LocalDateTime modifiedOn);
 
   /**
    * Gets the process (the what) that functionally modified this object.
@@ -152,8 +154,43 @@ public interface Auditable<USER, PROCESS> {
   /**
    * Sets the process (the what) that functionally modified this object.
    *
-   * @param process an object denoting the process that modified this object.
+   * @param process object denoting the process that modified this object.
    */
   void setModifyingProcess(PROCESS process);
 
+  @SuppressWarnings("unchecked")
+  default <S extends Auditable<USER, PROCESS, ID>> S createdBy(USER user) {
+    setCreatedBy(user);
+    return (S) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(LocalDateTime createdOn) {
+    setCreatedOn(createdOn);
+    return (S) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  default <S extends Auditable<USER, PROCESS, ID>> S creatingProcess(PROCESS process) {
+    setCreatingProcess(process);
+    return (S) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  default <S extends Auditable<USER, PROCESS, ID>> S modifiedBy(USER user) {
+    setModifiedBy(user);
+    return (S) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(LocalDateTime modifiedOn) {
+    setModifiedOn(modifiedOn);
+    return (S) this;
+  }
+
+  @SuppressWarnings("unchecked")
+  default <S extends Auditable<USER, PROCESS, ID>> S modifyingProcess(PROCESS process) {
+    setModifyingProcess(process);
+    return (S) this;
+  }
 }
