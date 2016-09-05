@@ -12,7 +12,7 @@
     <relativePath>../cp-core/pom.xml</relativePath>
   </parent>
   <artifactId>cp-elements</artifactId>
-  <version>1.0.0.SNAPSHOT</version>
+  <version>1.0.0.M2</version>
   <packaging>jar</packaging>
 
   <name>cp-elements</name>
@@ -217,8 +217,8 @@
                 <configuration>
                   <type>date</type>
                   <dates>
-                    <date implementation="java.lang.String">2013-12-30</date>
                     <date implementation="java.lang.String">2016-01-06</date>
+                    <date implementation="java.lang.String">2016-09-06</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>

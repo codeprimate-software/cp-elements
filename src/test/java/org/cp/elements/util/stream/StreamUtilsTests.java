@@ -42,6 +42,7 @@ import org.junit.rules.ExpectedException;
  * @see org.cp.elements.util.stream.StreamUtils
  * @since 1.0.0
  */
+@SuppressWarnings("unchecked")
 public class StreamUtilsTests {
 
   @Rule

@@ -43,7 +43,7 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
 
   /**
    * Creates an instance of {@link FileLastModifiedFilter} initialized with the provided {@link RelationalOperator},
-   * which is u in the evaluation of the {@link File)s last modified timestamp when {@link #accept(File)} is called.
+   * which is in the evaluation of the {@link File}s last modified timestamp when {@link #accept(File)} is called.
    *
    * @param operator {@link RelationalOperator} used to evaluate the {@link File}.
    * @return an instance of {@link FileLastModifiedFilter} initialized with the given {@link RelationalOperator}

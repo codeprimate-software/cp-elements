@@ -207,6 +207,7 @@ public class PropertiesAdapter implements Iterable<String> {
    *
    * @param <T> {@link Class} type of the return value.
    * @param propertyName the name of the property to get.
+   * @param type Class type of the value to return for the specified property.
    * @return the assigned value of the named property as an instance of the specified {@link Class} type.
    * @see #getAsType(String, Object, Class)
    */
@@ -221,6 +222,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @param <T> {@link Class} type of the return value.
    * @param propertyName the name of the property to get.
    * @param defaultValue the default value to return if the named property does not exist.
+   * @param type Class type of the value to return for the specified property.
    * @return the assigned value of the named property as an instance of the specified {@link Class} type
    * or the default value if the named property does not exist.
    * @see #defaultIfNotExists(String, Object, Class)
@@ -264,5 +266,4 @@ public class PropertiesAdapter implements Iterable<String> {
   public int size() {
     return getProperties().size();
   }
-
 }

@@ -397,7 +397,7 @@ public abstract class ArrayUtils {
    *
    * @param <T> Class type of the elements in the array.
    * @param array array to iterate.
-   * @return an {@link Iterable) over the elements in the array
+   * @return an {@link Iterable} over the elements in the array
    * or an empty {@link Iterable} if the array is null or empty.
    * @see java.lang.Iterable
    * @see #iterator(Object[])

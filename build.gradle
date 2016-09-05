@@ -31,8 +31,8 @@ dependencies {
 }
 
 jar {
-  baseName = 'cp-elements'
-  version = '1.0.0.SNAPSHOT'
+  baseName = "$rootProject.name"
+  version = "$version"
 }
 
 test {

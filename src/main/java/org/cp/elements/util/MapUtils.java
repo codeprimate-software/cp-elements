@@ -86,7 +86,7 @@ public abstract class MapUtils {
    * 
    * @param <K> Class type of the key.
    * @param <V> Class type of the value.
-   * @param map {@link Map to filter.
+   * @param map {@link Map} to filter.
    * @param filter {@link Filter} used to filter the {@link Map}.
    * @return a filtered {@link Map} containing only the key-value entries from the given {@link Map} }accepted by
    * the {@link Filter}.
@@ -107,7 +107,7 @@ public abstract class MapUtils {
    *
    * @param <K> Class type of the key.
    * @param <V> Class type of the value.
-   * @param map {@link Map to filter and transform.
+   * @param map {@link Map} to filter and transform.
    * @param filteringTransformer {@link FilteringTransformer} used to filter and transform the given {@link Map}.
    * @return a filtered, transformed {@link Map} of entries from the given {@link Map}.
    * @throws IllegalArgumentException if the {@link Map} or {@link FilteringTransformer} are null.

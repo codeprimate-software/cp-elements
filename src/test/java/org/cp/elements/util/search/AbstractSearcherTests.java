@@ -129,7 +129,7 @@ public class AbstractSearcherTests {
   public void searchObjectImplementingSearchable() {
     Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.asList()).thenReturn(Arrays.asList((Object[]) ANIMALS));
     when(mockSearchable.getMatcher()).thenReturn(null);
 
     AbstractSearcher searcher = new TestSearcher();
@@ -317,7 +317,7 @@ public class AbstractSearcherTests {
   public void searchForAllInObjectImplementingSearchable() {
     Searchable<Object> mockSearchable = mock(Searchable.class);
 
-    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.asList()).thenReturn(Arrays.asList((Object[]) ANIMALS));
     when(mockSearchable.getMatcher()).thenReturn(null);
 
     AbstractSearcher searcher = new TestSearcher();
@@ -356,7 +356,7 @@ public class AbstractSearcherTests {
 
     Matcher<Object> matcher = new TestMatcher();
 
-    when(mockSearchable.asList()).thenReturn(Arrays.asList(ANIMALS));
+    when(mockSearchable.asList()).thenReturn(Arrays.asList((Object[]) ANIMALS));
     when(mockSearchable.getMatcher()).thenReturn(matcher);
 
     AbstractSearcher searcher = new TestSearcher();

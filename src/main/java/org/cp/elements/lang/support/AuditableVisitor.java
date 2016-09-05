@@ -48,7 +48,7 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    *
    * @param user the user authorized and responsible for changing the Auditable object.
    * @param process the process authorized and responsible for changing the Auditable object.
-   * @see #AuditableVisitor(Object, Object, java.util.Calendar)
+   * @see #AuditableVisitor(Object, Object, LocalDateTime)
    */
   public AuditableVisitor(USER user, PROCESS process) {
     this(user, process, LocalDateTime.now());

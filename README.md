@@ -49,7 +49,7 @@ properly out-of-the-box.  Good [Object-Oriented Design](https://en.wikipedia.org
  <dependency> 
   <groupId>org.codeprimate</groupId> 
   <artifactId>cp-elements</artifactId> 
-  <version>1.0.0.M1</version> 
+  <version>1.0.0.M2</version> 
 </dependency>
 ````
 
