@@ -2,15 +2,32 @@ Codeprimate Elements changelog.txt
 ----------------------------------
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
-1.0.0.M2 - ?
+
+1.0.0.M2 - 2016-09-05
 ------------
 Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang, org.cp.elements.io,
 org.cp.elements.net and org.cp.elements.util packages.
 
-*
-* Added additional assertions in the org.cp.elements.lang.Assert class to default the message in the related RuntimeException.
+* Added additional assertions in the org.cp.elements.lang.Assert class to default the message in the thrown RuntimeException.
+* Refactored the Auditable interface to use the new Java 8, java.time.LocalDateTime API for tracking created, lastModified and modified dates and times.
+* Refactored the Auditable interface to extend Identifiable thereby improving audit tracking details and information.
+* Refactored the Auditable interface by adding builder methods to conveniently set auditing properties of application domain objects.
+* Refactored the Auditable interface by renaming the date/time and process tracking properties.
+* Added the locateClass(:String) method to the ClassUtils class to locate a Class by name in the file system.
+* Refactored the Identifiable interface adding default, defender methods for isNew and isNotNew.
+* Refactored the Identifiable interface adding a builder method to conveniently set an application domain object's identifier.
+* Reviewed, refactored and added additional test coverage to the org.cp.elements.io API...
+* Added additional FileFilters, such as the Executable, Hidden, Readable and Writable file filters.
+* Improved the utility and usefulness of the IOUtils, FileUtils and FileSystemUtils classes.
+* Reviewed, refactored and added additional test coverage to the org.cp.elements.net API...
+* Improved the utility and usefulness of the NetworkUtils class.
+* Improved the ArrayUtils, CollectionUtils and MapUtils utility classes for working with Arrays and Collections, respectively,
+  cleaning up the interface and promoting consistent functionality and operations between Arrays and Collections.
 * Added the PropertiesAdapter and PropertiesBuilder utility classes for conveniently working with java.util.Properties.
-* Added a new ClassLocator tool in the org.cp.elements.tools package for locating Java classes on the classpath.
+* Added a new ClassLocator tool in the org.cp.elements.tools package for locating Java classes on the classpath by name.
+* Add a Gradle build to this project.
+* Enabled Travis CI for this project.
+
 
 1.0.0.M1 - 2016-01-03
 ---------------------
