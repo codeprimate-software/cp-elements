@@ -1,4 +1,4 @@
-##### Travis CI - [![Build Status](https://travis-ci.org/codeprimate-software/cp-elements.svg?branch=master)](https://travis-ci.org/codeprimate-software/cp-elements)
+#### Travis CI: [![Build Status](https://travis-ci.org/codeprimate-software/cp-elements.svg?branch=master)](https://travis-ci.org/codeprimate-software/cp-elements)
 
 ## Codeprimate Elements 
 
