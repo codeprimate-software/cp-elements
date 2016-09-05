@@ -1,0 +1,46 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven'
+
+description = "Codeprimate Elements Java class library and micro-framework."
+group = "org.codeprimate"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+tasks.withType(Test).all {
+  systemProperties['gradle.build'] = true
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testCompile "org.hamcrest:hamcrest-core:$hamcrestVersion"
+  testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
+  testCompile "junit:junit:$junitVersion"
+  testCompile "org.mockito:mockito-core:$mockitoVersion"
+  testCompile "edu.umd.cs.mtc:multithreadedtc:$multithreadedtcVersion"
+}
+
+jar {
+  baseName = 'cp-elements'
+  version = '1.0.0.SNAPSHOT'
+}
+
+test {
+  testLogging {
+    afterSuite { desc, result ->
+      if (!desc.parent) { // matches outermost test suite
+        println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+      }
+    }
+  }
+}

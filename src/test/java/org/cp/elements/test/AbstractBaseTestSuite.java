@@ -50,25 +50,26 @@ public abstract class AbstractBaseTestSuite {
     logger.addHandler(new ConsoleHandler());
   }
 
-  protected File getBuildOutputDirectory() {
-    return new File(getProjectHomeDirectory(), getBuildOutputDirectoryName());
+  protected File getBuildDirectory() {
+    return new File(getProjectHomeDirectory(), getBuildDirectoryName());
   }
 
-  protected String getBuildOutputDirectoryName() {
-    return "target";
+  protected String getBuildDirectoryName() {
+    return (Boolean.getBoolean("gradle.build") ? "build" : "target");
   }
 
-  protected File getClassesOutputDirectory() {
-    return new File(getBuildOutputDirectory(), getClassesOutputDirectoryName());
+  protected File getClassesDirectory() {
+    return new File(getBuildDirectory(), getClassesDirectoryName());
   }
 
-  protected String getClassesOutputDirectoryName() {
-    return "classes";
+  protected String getClassesDirectoryName() {
+    return (Boolean.getBoolean("gradle.build") ? String.format("%1$s%2$s%3$s", "classes", File.separator, "main")
+      : "classes");
   }
 
   protected File getLocation(Class type) {
     String pathname = type.getName().replaceAll("\\.", "/").concat(".class");
-    return new File(getClassesOutputDirectory(), pathname);
+    return new File(getClassesDirectory(), pathname);
   }
 
   protected File getProjectHomeDirectory() {

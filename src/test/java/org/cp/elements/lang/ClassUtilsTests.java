@@ -16,12 +16,12 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -56,8 +56,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The ClassUtilsTest class is a test suite of test cases testing the contract and functionality
- * of the ClassUtils class.
+ * Test suite of test cases testing the contract and functionality of the {@link ClassUtils} class.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -68,10 +67,10 @@ import org.junit.rules.ExpectedException;
  * @see org.junit.Test
  * @since 1.0.0
  */
-public class ClassUtilsTest extends AbstractBaseTestSuite {
+public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   protected <T> void assertConstructor(final Constructor<T> constructor, final Class<T> declaringClass, final Class<?>[] parameterTypes) {
     assertThat(constructor, is(not(nullValue())));
@@ -177,8 +176,9 @@ public class ClassUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   public void getNonExistingConstructor() {
-    expectedException.expect(ConstructorNotFoundException.class);
-    expectedException.expectCause(isA(NoSuchMethodException.class));
+    exception.expect(ConstructorNotFoundException.class);
+    exception.expectCause(isA(NoSuchMethodException.class));
+
     ClassUtils.getConstructor(SuperType.class, String.class);
   }
 
@@ -199,9 +199,10 @@ public class ClassUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   public void resolveNonExistingNonMatchingConstructor() {
-    expectedException.expect(ConstructorNotFoundException.class);
-    expectedException.expectMessage(startsWith("Failed to resolve constructor with signature"));
-    expectedException.expectCause(isA(NoSuchMethodException.class));
+    exception.expect(ConstructorNotFoundException.class);
+    exception.expectMessage(startsWith("Failed to resolve constructor with signature"));
+    exception.expectCause(isA(NoSuchMethodException.class));
+
     ClassUtils.resolveConstructor(SubType.class, new Class<?>[] { Integer.class }, 2);
   }
 
@@ -594,7 +595,7 @@ public class ClassUtilsTest extends AbstractBaseTestSuite {
 
   @Test
   public void locateClass() throws MalformedURLException {
-    assertThat(ClassUtils.locateClass(ClassUtils.class.getName()), is(equalTo( new File(getClassesOutputDirectory(),
+    assertThat(ClassUtils.locateClass(ClassUtils.class.getName()), is(equalTo(new File(getClassesDirectory(),
       ClassUtils.class.getName().replaceAll("\\.", "/").concat(".class")).toURI().toURL())));
   }
 
@@ -694,5 +695,4 @@ public class ClassUtilsTest extends AbstractBaseTestSuite {
     public void nonAnnotatedMethod() {
     }
   }
-
 }

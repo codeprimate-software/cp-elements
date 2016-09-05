@@ -1,5 +1,7 @@
 .backup/
 .bak/
+.gradle/
+build/
 etc/build
 etc/release
 lib/
