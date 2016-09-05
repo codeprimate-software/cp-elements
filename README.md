@@ -1,3 +1,5 @@
+##### Travis CI - [![Build Status](https://travis-ci.org/codeprimate-software/cp-elements.svg?branch=master)](https://travis-ci.org/codeprimate-software/cp-elements)
+
 ## Codeprimate Elements 
 
 *Codeprimate Elements* (codename *cp-elements* pronounced *see-pee elements*, or *Elements*) is a Java Class Library 
@@ -35,7 +37,7 @@ properly out-of-the-box.  Good [Object-Oriented Design](https://en.wikipedia.org
 
 #### Requirements
 
-  1. Java SE JRE 8.0 or later.
+  1. Java SE JDK/JRE 8.0 or later.
 
 #### License  
 
