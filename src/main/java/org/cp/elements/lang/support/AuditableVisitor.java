@@ -130,13 +130,13 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
       if (auditable.isNew() || isCreatedUnset(auditable)) {
         auditable.setCreatedBy(getUser());
         auditable.setCreatedOn(getDateTime());
-        auditable.setCreatingProcess(getProcess());
+        auditable.setCreatedWith(getProcess());
       }
 
       if (auditable.isModified()) {
         auditable.setModifiedBy(getUser());
         auditable.setModifiedOn(getDateTime());
-        auditable.setModifyingProcess(getProcess());
+        auditable.setModifiedWith(getProcess());
       }
     }
   }

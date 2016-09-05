@@ -37,9 +37,9 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
     implements Auditable<USER, PROCESS, ID> {
 
   /**
-   * Gets the user who is responsible for creating this object.
+   * Gets the user responsible for creating this object.
    *
-   * @return an object denoting the user who created this object.
+   * @return an object representing the user who created this object.
    */
   @Override
   public USER getCreatedBy() {
@@ -47,9 +47,9 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   }
 
   /**
-   * Sets the user who is responsible for creating this object.
+   * Sets the user responsible for creating this object.
    *
-   * @param user object denoting the user who created this object.
+   * @param user object representing the user who created this object.
    */
   @Override
   public void setCreatedBy(USER user) {
@@ -59,7 +59,7 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   /**
    * Gets the date and time when this object was created.
    *
-   * @return a {@link LocalDateTime} denoting the date and time when this object was created.
+   * @return a {@link LocalDateTime} capturing the date and time when this object was created.
    */
   @Override
   public LocalDateTime getCreatedOn() {
@@ -69,7 +69,7 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   /**
    * Sets the date and time when this object was created.
    *
-   * @param createdOn {@link LocalDateTime} denoting the date and time when this object was created.
+   * @param createdOn {@link LocalDateTime} capturing the date and time when this object was created.
    */
   @Override
   public void setCreatedOn(LocalDateTime createdOn) {
@@ -77,29 +77,29 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   }
 
   /**
-   * Gets the process (the what) that functionally created this object.
+   * Gets the process (application) used by the user to create this object.
    *
-   * @return an object denoting the process that created this object.
+   * @return an object representing the process (application) used by the user to create this object.
    */
   @Override
-  public PROCESS getCreatingProcess() {
+  public PROCESS getCreatedWith() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
-   * Sets the process (the what) that functionally created this object.
+   * Sets the process (application) used by the user to create this object.
    *
-   * @param process object denoting the process that created this object.
+   * @param process object representing the process (application) used by the user to create this object.
    */
   @Override
-  public void setCreatingProcess(PROCESS process) {
+  public void setCreatedWith(PROCESS process) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
-   * Gets the user who was last responsible for modifying this object.
+   * Gets the last user who modified this object.
    *
-   * @return an object denoting the last user responsible for modifying this object.
+   * @return an object representing the last user responsible for modifying this object.
    */
   @Override
   public USER getLastModifiedBy() {
@@ -109,7 +109,7 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   /**
    * Gets the date and time when this object was last modified.
    *
-   * @return a {@link LocalDateTime} denoting the date and time when this object was last modified.
+   * @return a {@link LocalDateTime} capturing the date and time when this object was last modified.
    */
   @Override
   public LocalDateTime getLastModifiedOn() {
@@ -117,12 +117,12 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   }
 
   /**
-   * Gets the process (the what) that was last responsible for modifying this object.
+   * Gets the last process (application) used by the user to modify this object.
    *
-   * @return an object denoting the last process responsible for modifying this object.
+   * @return an object representing the last process (application) used by the user to modify this object.
    */
   @Override
-  public PROCESS getLastModifyingProcess() {
+  public PROCESS getLastModifiedWith() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
@@ -152,9 +152,9 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   }
 
   /**
-   * Gets the user who is responsible for modifying this object.
+   * Gets the user responsible for modifying this object.
    *
-   * @return an object denoting the user who modified this object.
+   * @return an object representing the user responsible for modifying this object.
    */
   @Override
   public USER getModifiedBy() {
@@ -162,9 +162,9 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   }
 
   /**
-   * Sets the user who is responsible for modifying this object.
+   * Sets the user responsible for modifying this object.
    *
-   * @param user object denoting the user who modified this object.
+   * @param user object representing the user responsible for modifying this object.
    */
   @Override
   public void setModifiedBy(USER user) {
@@ -174,7 +174,7 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   /**
    * Gets the date and time when this object was modified.
    *
-   * @return a {@link LocalDateTime} denoting the date and time when this object was modified.
+   * @return a {@link LocalDateTime} capturing the date and time when this object was modified.
    */
   @Override
   public LocalDateTime getModifiedOn() {
@@ -184,7 +184,7 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   /**
    * Sets the date and time when this object was modified.
    *
-   * @param modifiedOn {@link LocalDateTime} denoting the date and time when this object was modified.
+   * @param modifiedOn {@link LocalDateTime} capturing the date and time when this object was modified.
    */
   @Override
   public void setModifiedOn(LocalDateTime modifiedOn) {
@@ -192,22 +192,22 @@ public abstract class AuditableAdapter<USER, PROCESS, ID extends Comparable<ID>>
   }
 
   /**
-   * Gets the process (the what) that functionally modified this object.
+   * Gets the process (application) used by the user to modify this object.
    *
-   * @return an object denoting the process that modified this object.
+   * @return an object representing the process (application) used by the user to modify this object.
    */
   @Override
-  public PROCESS getModifyingProcess() {
+  public PROCESS getModifiedWith() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
-   * Sets the process (the what) that functionally modified this object.
+   * Sets the process (application) used by the user to modify this object.
    *
-   * @param process object denoting the process that modified this object.
+   * @param process object representing the process (application) used by the user to modify this object.
    */
   @Override
-  public void setModifyingProcess(PROCESS process) {
+  public void setModifiedWith(PROCESS process) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 }

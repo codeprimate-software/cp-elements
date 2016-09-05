@@ -211,11 +211,11 @@ public class AuditableVisitorTests {
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, times(1)).setCreatedBy(same(mockUser));
     verify(mockAuditable, times(1)).setCreatedOn(eq(now));
-    verify(mockAuditable, times(1)).setCreatingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).setCreatedWith(same(mockProcess));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
     verify(mockAuditable, times(1)).setModifiedOn(eq(now));
-    verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).setModifiedWith(same(mockProcess));
   }
 
   @Test
@@ -239,11 +239,11 @@ public class AuditableVisitorTests {
 
     verify(mockAuditable, times(1)).setCreatedBy(same(mockUser));
     verify(mockAuditable, times(1)).setCreatedOn(eq(now));
-    verify(mockAuditable, times(1)).setCreatingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).setCreatedWith(same(mockProcess));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
     verify(mockAuditable, times(1)).setModifiedOn(eq(now));
-    verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).setModifiedWith(same(mockProcess));
   }
 
   @Test
@@ -275,11 +275,11 @@ public class AuditableVisitorTests {
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, never()).setCreatedBy(any(User.class));
     verify(mockAuditable, never()).setCreatedOn(any(LocalDateTime.class));
-    verify(mockAuditable, never()).setCreatingProcess(any(Process.class));
+    verify(mockAuditable, never()).setCreatedWith(any(Process.class));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
     verify(mockAuditable, times(1)).setModifiedOn(eq(now));
-    verify(mockAuditable, times(1)).setModifyingProcess(same(mockProcess));
+    verify(mockAuditable, times(1)).setModifiedWith(same(mockProcess));
   }
 
   @Test
@@ -306,11 +306,11 @@ public class AuditableVisitorTests {
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, never()).setCreatedBy(any(User.class));
     verify(mockAuditable, never()).setCreatedOn(any(LocalDateTime.class));
-    verify(mockAuditable, never()).setCreatingProcess(any(Process.class));
+    verify(mockAuditable, never()).setCreatedWith(any(Process.class));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, never()).setModifiedBy(any(User.class));
     verify(mockAuditable, never()).setModifiedOn(any(LocalDateTime.class));
-    verify(mockAuditable, never()).setModifyingProcess(any(Process.class));
+    verify(mockAuditable, never()).setModifiedWith(any(Process.class));
   }
 
   interface VisitableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS, Long>, Visitable {

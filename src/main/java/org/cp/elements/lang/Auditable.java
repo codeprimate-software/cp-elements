@@ -35,67 +35,67 @@ import java.time.LocalDateTime;
 public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Identifiable<ID> {
 
   /**
-   * Gets the user who is responsible for creating this object.
+   * Gets the user responsible for creating this object.
    *
-   * @return an object denoting the user who created this object.
+   * @return an object representing the user who created this object.
    */
   USER getCreatedBy();
 
   /**
-   * Sets the user who is responsible for creating this object.
+   * Sets the user responsible for creating this object.
    *
-   * @param user object denoting the user who created this object.
+   * @param user object representing the user who created this object.
    */
   void setCreatedBy(USER user);
 
   /**
    * Gets the date and time when this object was created.
    *
-   * @return a {@link LocalDateTime} denoting the date and time when this object was created.
+   * @return a {@link LocalDateTime} capturing the date and time when this object was created.
    */
   LocalDateTime getCreatedOn();
 
   /**
    * Sets the date and time when this object was created.
    *
-   * @param createdOn {@link LocalDateTime} denoting the date and time when this object was created.
+   * @param createdOn {@link LocalDateTime} capturing the date and time when this object was created.
    */
   void setCreatedOn(LocalDateTime createdOn);
 
   /**
-   * Gets the process (the what) that functionally created this object.
+   * Gets the process (application) used by the user to create this object.
    *
-   * @return an object denoting the process that created this object.
+   * @return an object representing the process (application) used by the user to create this object.
    */
-  PROCESS getCreatingProcess();
+  PROCESS getCreatedWith();
 
   /**
-   * Sets the process (the what) that functionally created this object.
+   * Sets the process (application) used by the user to create this object.
    *
-   * @param process object denoting the process that created this object.
+   * @param process object representing the process (application) used by the user to create this object.
    */
-  void setCreatingProcess(PROCESS process);
+  void setCreatedWith(PROCESS process);
 
   /**
-   * Gets the user who was last responsible for modifying this object.
+   * Gets the last user who modified this object.
    *
-   * @return an object denoting the last user responsible for modifying this object.
+   * @return an object representing the last user responsible for modifying this object.
    */
   USER getLastModifiedBy();
 
   /**
    * Gets the date and time when this object was last modified.
    *
-   * @return a {@link LocalDateTime} denoting the date and time when this object was last modified.
+   * @return a {@link LocalDateTime} capturing the date and time when this object was last modified.
    */
   LocalDateTime getLastModifiedOn();
 
   /**
-   * Gets the process (the what) that was last responsible for modifying this object.
+   * Gets the last process (application) used by the user to modify this object.
    *
-   * @return an object denoting the last process responsible for modifying this object.
+   * @return an object representing the last process (application) used by the user to modify this object.
    */
-  PROCESS getLastModifyingProcess();
+  PROCESS getLastModifiedWith();
 
   /**
    * Determines whether this Auditable object has been modified.  One particular implementation suggests that
@@ -117,80 +117,128 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   boolean isModified(String propertyName);
 
   /**
-   * Gets the user who is responsible for modifying this object.
+   * Gets the user responsible for modifying this object.
    *
-   * @return an object denoting the user who modified this object.
+   * @return an object representing the user responsible for modifying this object.
    */
   USER getModifiedBy();
 
   /**
-   * Sets the user who is responsible for modifying this object.
+   * Sets the user responsible for modifying this object.
    *
-   * @param user object denoting the user who modified this object.
+   * @param user object representing the user responsible for modifying this object.
    */
   void setModifiedBy(USER user);
 
   /**
    * Gets the date and time when this object was modified.
    *
-   * @return a {@link LocalDateTime} denoting the date and time when this object was modified.
+   * @return a {@link LocalDateTime} capturing the date and time when this object was modified.
    */
   LocalDateTime getModifiedOn();
 
   /**
    * Sets the date and time when this object was modified.
    *
-   * @param modifiedOn {@link LocalDateTime} denoting the date and time when this object was modified.
+   * @param modifiedOn {@link LocalDateTime} capturing the date and time when this object was modified.
    */
   void setModifiedOn(LocalDateTime modifiedOn);
 
   /**
-   * Gets the process (the what) that functionally modified this object.
+   * Gets the process (application) used by the user to modify this object.
    *
-   * @return an object denoting the process that modified this object.
+   * @return an object representing the process (application) used by the user to modify this object.
    */
-  PROCESS getModifyingProcess();
+  PROCESS getModifiedWith();
 
   /**
-   * Sets the process (the what) that functionally modified this object.
+   * Sets the process (application) used by the user to modify this object.
    *
-   * @param process object denoting the process that modified this object.
+   * @param process object representing the process (application) used by the user to modify this object.
    */
-  void setModifyingProcess(PROCESS process);
+  void setModifiedWith(PROCESS process);
 
+  /**
+   * Builder method to set the user responsible for creating this object.
+   *
+   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param user person responsible for creating this object.
+   * @return this {@link Auditable} object.
+   * @see #setCreatedBy(Object)
+   */
   @SuppressWarnings("unchecked")
   default <S extends Auditable<USER, PROCESS, ID>> S createdBy(USER user) {
     setCreatedBy(user);
     return (S) this;
   }
 
+  /**
+   * Builder method to set the date/time when this object was created.
+   *
+   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param createdOn {@link LocalDateTime} capturing the creation date/time.
+   * @return this {@link Auditable} object.
+   * @see #setCreatedOn(LocalDateTime)
+   */
   @SuppressWarnings("unchecked")
   default <S extends Auditable<USER, PROCESS, ID>> S createdOn(LocalDateTime createdOn) {
     setCreatedOn(createdOn);
     return (S) this;
   }
 
+  /**
+   * Builder method to set the process (application) used by the user to create this object.
+   *
+   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param process application used by the user to create this object.
+   * @return this {@link Auditable} object.
+   * @see #setCreatedWith(Object)
+   */
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S creatingProcess(PROCESS process) {
-    setCreatingProcess(process);
+  default <S extends Auditable<USER, PROCESS, ID>> S createdWith(PROCESS process) {
+    setCreatedWith(process);
     return (S) this;
   }
 
+  /**
+   * Builder method to set the user responsible for modifying this object.
+   *
+   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param user person responsible for modifying this object.
+   * @return this {@link Auditable} object.
+   * @see #setModifiedBy(Object)
+   */
   @SuppressWarnings("unchecked")
   default <S extends Auditable<USER, PROCESS, ID>> S modifiedBy(USER user) {
     setModifiedBy(user);
     return (S) this;
   }
 
+  /**
+   * Builder method to set the date and time when this object was modified.
+   *
+   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param modifiedOn {@link LocalDateTime} capturing the modification date/time.
+   * @return this {@link Auditable} object.
+   * @see #setModifiedOn(LocalDateTime)
+   */
   @SuppressWarnings("unchecked")
   default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(LocalDateTime modifiedOn) {
     setModifiedOn(modifiedOn);
     return (S) this;
   }
 
+  /**
+   * Builder method to set the process (application) used by the user to modify this object.
+   *
+   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param process application used by the user to modify this object.
+   * @return this {@link Auditable} object.
+   * @see #setModifiedWith(Object)
+   */
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S modifyingProcess(PROCESS process) {
-    setModifyingProcess(process);
+  default <S extends Auditable<USER, PROCESS, ID>> S modifiedWith(PROCESS process) {
+    setModifiedWith(process);
     return (S) this;
   }
 }

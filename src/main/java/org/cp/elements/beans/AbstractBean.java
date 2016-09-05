@@ -78,9 +78,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   private final Map<String, ParameterizedStateChangeCallback> propertyNameToParameterizedStateChangeCallbackMapping =
     new TreeMap<>();
 
-  private PROCESS creatingProcess;
-  private PROCESS lastModifyingProcess;
-  private PROCESS modifyingProcess;
+  private PROCESS createdWith;
+  private PROCESS lastModifiedWith;
+  private PROCESS modifiedWith;
 
   private transient final PropertyChangeEvent propertyChangeEvent = new PropertyChangeEvent(this, null, null, null);
 
@@ -157,8 +157,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return an object denoting the process that created this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public PROCESS getCreatingProcess() {
-    return creatingProcess;
+  public PROCESS getCreatedWith() {
+    return createdWith;
   }
 
   /**
@@ -167,8 +167,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @param creatingProcess an object denoting the process that created this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setCreatingProcess(PROCESS creatingProcess) {
-    processChange("creatingProcess", this.creatingProcess, creatingProcess);
+  public void setCreatedWith(PROCESS creatingProcess) {
+    processChange("createdWith", this.createdWith, creatingProcess);
   }
 
   /**
@@ -247,8 +247,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return an object denoting the last process responsible for modifying this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public PROCESS getLastModifyingProcess() {
-    return lastModifyingProcess;
+  public PROCESS getLastModifiedWith() {
+    return lastModifiedWith;
   }
 
   /**
@@ -324,8 +324,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @return an object denoting the process that modified this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public PROCESS getModifyingProcess() {
-    return modifyingProcess;
+  public PROCESS getModifiedWith() {
+    return modifiedWith;
   }
 
   /**
@@ -335,9 +335,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.lang.Auditable
    */
   @SuppressWarnings("unchecked")
-  public void setModifyingProcess(PROCESS modifyingProcess) {
-    processChange("modifyingProcess", this.modifyingProcess, modifyingProcess);
-    this.lastModifyingProcess = ObjectUtils.defaultIfNull(this.lastModifyingProcess, this.modifyingProcess);
+  public void setModifiedWith(PROCESS modifyingProcess) {
+    processChange("modifiedWith", this.modifiedWith, modifyingProcess);
+    this.lastModifiedWith = ObjectUtils.defaultIfNull(this.lastModifiedWith, this.modifiedWith);
   }
 
   /**

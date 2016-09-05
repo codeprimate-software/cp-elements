@@ -51,7 +51,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CommitVisitorTest {
+public class CommitVisitorTests {
 
   @Mock
   private Auditable mockAuditable;
@@ -82,29 +82,29 @@ public class CommitVisitorTest {
 
     when(mockAuditableVisitable.getModifiedBy()).thenReturn("ExpectedUser");
     when(mockAuditableVisitable.getModifiedOn()).thenReturn(expectedDateTime);
-    when(mockAuditableVisitable.getModifyingProcess()).thenReturn("ExpectedProcess");
+    when(mockAuditableVisitable.getModifiedWith()).thenReturn("ExpectedProcess");
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
-    assertNull(mockAuditableVisitable.lastModifiedDateTime);
-    assertNull(mockAuditableVisitable.lastModifyingProcess);
+    assertNull(mockAuditableVisitable.lastModifiedOn);
+    assertNull(mockAuditableVisitable.lastModifiedWith);
 
     new CommitVisitor().visit(mockAuditableVisitable);
 
     assertEquals("ExpectedUser", mockAuditableVisitable.lastModifiedBy);
-    assertEquals(expectedDateTime, mockAuditableVisitable.lastModifiedDateTime);
-    assertEquals("ExpectedProcess", mockAuditableVisitable.lastModifyingProcess);
+    assertEquals(expectedDateTime, mockAuditableVisitable.lastModifiedOn);
+    assertEquals("ExpectedProcess", mockAuditableVisitable.lastModifiedWith);
 
     LocalDateTime updatedExpectedDateTime = LocalDateTime.of(2014, Month.DECEMBER, 18, 0, 0);
 
     when(mockAuditableVisitable.getModifiedBy()).thenReturn("UpdatedExpectedUser");
     when(mockAuditableVisitable.getModifiedOn()).thenReturn(updatedExpectedDateTime);
-    when(mockAuditableVisitable.getModifyingProcess()).thenReturn("UpdatedExpectedProcess");
+    when(mockAuditableVisitable.getModifiedWith()).thenReturn("UpdatedExpectedProcess");
 
     new CommitVisitor(mockAuditableVisitable).visit(mockAuditableVisitable);
 
     assertEquals("UpdatedExpectedUser", mockAuditableVisitable.lastModifiedBy);
-    assertEquals(updatedExpectedDateTime, mockAuditableVisitable.lastModifiedDateTime);
-    assertEquals("UpdatedExpectedProcess", mockAuditableVisitable.lastModifyingProcess);
+    assertEquals(updatedExpectedDateTime, mockAuditableVisitable.lastModifiedOn);
+    assertEquals("UpdatedExpectedProcess", mockAuditableVisitable.lastModifiedWith);
   }
 
   @Test
@@ -117,25 +117,25 @@ public class CommitVisitorTest {
     AuditableVisitable<?, ?> mockAuditableVisitable = mock(AuditableVisitable.class);
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
-    assertNull(mockAuditableVisitable.lastModifiedDateTime);
-    assertNull(mockAuditableVisitable.lastModifyingProcess);
+    assertNull(mockAuditableVisitable.lastModifiedOn);
+    assertNull(mockAuditableVisitable.lastModifiedWith);
 
     new CommitVisitor(mockAuditable).visit(mockAuditableVisitable);
 
     assertNull(mockAuditableVisitable.lastModifiedBy);
-    assertNull(mockAuditableVisitable.lastModifiedDateTime);
-    assertNull(mockAuditableVisitable.lastModifyingProcess);
+    assertNull(mockAuditableVisitable.lastModifiedOn);
+    assertNull(mockAuditableVisitable.lastModifiedWith);
 
     verify(mockAuditableVisitable, never()).getModifiedBy();
     verify(mockAuditableVisitable, never()).getModifiedOn();
-    verify(mockAuditableVisitable, never()).getModifyingProcess();
+    verify(mockAuditableVisitable, never()).getModifiedWith();
   }
 
   @SuppressWarnings("unused")
   public static abstract class AuditableVisitable<USER, PROCESS> implements Auditable<USER, PROCESS, Long>, Visitable {
 
-    private LocalDateTime lastModifiedDateTime;
-    private PROCESS lastModifyingProcess;
+    private LocalDateTime lastModifiedOn;
+    private PROCESS lastModifiedWith;
     private USER lastModifiedBy;
 
   }

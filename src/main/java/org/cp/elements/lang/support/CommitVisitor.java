@@ -22,9 +22,9 @@ import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 
 /**
- * The CommitVisitor class is a Visitor implementation used to walk an application domain object graph hierarchy
+ * The CommitVisitor class is a {@link Visitor} implementation used to walk an application domain object graph
  * after the application domain objects have been persisted to a persistent data store in order to update
- * the persistent state of the application domain to committed.
+ * the persistent state of the application domain objects to committed.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Auditable
@@ -51,7 +51,7 @@ public class CommitVisitor implements Visitor {
    *
    * @param target the target Object of the 'commit' operation.
    */
-  public CommitVisitor(final Object target) {
+  public CommitVisitor(Object target) {
     this.target = target;
   }
 
@@ -63,11 +63,11 @@ public class CommitVisitor implements Visitor {
    * @see #isCommitable(Object)
    */
   @Override
-  public void visit(final Visitable visitable) {
+  public void visit(Visitable visitable) {
     if (isCommitable(visitable)) {
       ObjectUtils.setField(visitable, "lastModifiedBy", ((Auditable) visitable).getModifiedBy());
-      ObjectUtils.setField(visitable, "lastModifiedDateTime", ((Auditable) visitable).getModifiedOn());
-      ObjectUtils.setField(visitable, "lastModifyingProcess", ((Auditable) visitable).getModifyingProcess());
+      ObjectUtils.setField(visitable, "lastModifiedOn", ((Auditable) visitable).getModifiedOn());
+      ObjectUtils.setField(visitable, "lastModifiedWith", ((Auditable) visitable).getModifiedWith());
     }
   }
 
@@ -80,13 +80,12 @@ public class CommitVisitor implements Visitor {
    * @return a boolean value indicating whether the targeted object can be committed.
    * @see org.cp.elements.lang.Auditable
    */
-  protected boolean isCommitable(final Object visitable) {
+  protected boolean isCommitable(Object visitable) {
     return (visitable instanceof Auditable && (target == null || identity(visitable) == identity(target)));
   }
 
   /* (non-Javadoc) */
-  private int identity(final Object obj) {
+  private int identity(Object obj) {
     return System.identityHashCode(obj);
   }
-
 }
