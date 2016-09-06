@@ -3,6 +3,13 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0.M3 - ?
+------------
+Introduce the Process Executor API for launching, forking and managing processes.
+
+* ?
+
+
 1.0.0.M2 - 2016-09-05
 ------------
 Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang, org.cp.elements.io,
