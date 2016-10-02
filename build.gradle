@@ -23,6 +23,7 @@ repositories {
 }
 
 dependencies {
+  testCompile "org.assertj:assertj-core:$assertjVersion"
   testCompile "org.hamcrest:hamcrest-core:$hamcrestVersion"
   testCompile "org.hamcrest:hamcrest-library:$hamcrestVersion"
   testCompile "junit:junit:$junitVersion"
