@@ -23,13 +23,13 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The ProcessExecutor interface defines a contract for executing operating system programs.
+ * The {@link ProcessExecutor} interface defines a contract for executing Operating System (OS) programs
+ * and returning a reference to the running OS {@link Process} for program control.
  *
  * @author John Blum
  * @see java.lang.Process
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public interface ProcessExecutor {
 
   /**
@@ -38,8 +38,8 @@ public interface ProcessExecutor {
    * @param directory {@link File directory} in which the program will run.
    * @param commandLine array of {@link String} values constituting the program and it's runtime arguments.
    * @return a {@link Process} object representing the running program.
-   * @see java.io.File
    * @see java.lang.Process
+   * @see java.io.File
    */
   Process execute(File directory, String... commandLine);
 
@@ -74,8 +74,8 @@ public interface ProcessExecutor {
    * @param commandLine {@link Iterable} of {@link String} values constituting the program and it's runtime arguments.
    * @return a {@link Process} object representing the running program.
    * @see #execute(File, String...)
-   * @see java.io.File
    * @see java.lang.Process
+   * @see java.io.File
    */
   default Process execute(File directory, Iterable<String> commandLine) {
     return execute(directory, ArrayUtils.asArray(commandLine, String.class));

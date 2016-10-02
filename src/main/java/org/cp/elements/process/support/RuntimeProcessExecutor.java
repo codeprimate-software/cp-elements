@@ -5,14 +5,13 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.cp.elements.process.support;
@@ -23,25 +22,26 @@ import java.util.Arrays;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
 
 /**
- * The {@link ProcessBuilderProcessExecutor} class is a {@link ProcessExecutor} using the {@link ProcessBuilder} API
- * to configure and execute (start) a running Operating System (OS) programs, returning a reference
+ * The {@link RuntimeProcessExecutor} class is a {@link ProcessExecutor} using the {@link Runtime} API
+ * to configure and execute a running Operating System (OS) programs, returning a reference
  * to the running OS {@link Process}.
  *
  * @author John Blum
  * @see java.lang.Process
- * @see java.lang.ProcessBuilder
+ * @see java.lang.Runtime
  * @see org.cp.elements.process.ProcessExecutor
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ProcessBuilderProcessExecutor implements ProcessExecutor {
+public class RuntimeProcessExecutor implements ProcessExecutor {
 
   /**
-   * Uses the Java {@link ProcessBuilder} to execute the program defined by the given {@code commandLine}
+   * Uses the Java {@link Runtime} to execute the program defined by the given {@code commandLine}
    * in the given {@link File directory}.
    *
    * @param directory {@link File directory} in which the program will run.
@@ -61,11 +61,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor {
       Arrays.toString(commandLine));
 
     try {
-      ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
-
-      processBuilder.directory(directory);
-
-      return processBuilder.start();
+      return Runtime.getRuntime().exec(commandLine, StringUtils.EMPTY_STRING_ARRAY, directory);
     }
     catch (IOException e) {
       throw new ProcessExecutionException(String.format("Failed to execute program [%1$s] in directory [%2$s]",
