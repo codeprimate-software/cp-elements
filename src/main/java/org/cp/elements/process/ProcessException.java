@@ -5,58 +5,53 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
  */
 
 package org.cp.elements.process;
 
 /**
- * The {@link ProcessExecutionException} class is a {@link ProcessException} to indicate a problem during
- * the execution of a program on startup, which may or may not have terminated the running {@link Process}.
- *
- * @author John Blum
- * @see org.cp.elements.process.ProcessException
- * @since 1.0.0
+ * The {@link ProcessException} class is a general {@link RuntimeException} to indicate a problem during
+ * the normal execution of a program.
  */
 @SuppressWarnings("unused")
-public class ProcessExecutionException extends ProcessException {
+public class ProcessException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of {@link ProcessExecutionException} with no message or cause.
+   * Constructs an uninitialized instance of {@link ProcessException} with no message or cause.
    */
-  public ProcessExecutionException() {
+  public ProcessException() {
   }
 
   /**
-   * Constructs an instance of {@link ProcessExecutionException} initialized with the given message
+   * Constructs an instance of {@link ProcessException} initialized with the given message
    * describing this {@link RuntimeException}.
    *
    * @param message {@link String} describing this {@link RuntimeException}.
    */
-  public ProcessExecutionException(String message) {
+  public ProcessException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of {@link ProcessExecutionException} initialized with the given {@link Throwable}
+   * Constructs an instance of {@link ProcessException} initialized with the given {@link Throwable}
    * indicating the cause of this {@link RuntimeException}.
    *
    * @param cause {@link Throwable} object indicating the cause of this {@link RuntimeException}.
    * @see java.lang.Throwable
    */
-  public ProcessExecutionException(Throwable cause) {
+  public ProcessException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of {@link ProcessExecutionException} initialized with the given message
+   * Constructs an instance of {@link ProcessException} initialized with the given message
    * describing this {@link RuntimeException} and cause indicating the reason this {@link RuntimeException}
    * was thrown.
    *
@@ -64,7 +59,7 @@ public class ProcessExecutionException extends ProcessException {
    * @param cause {@link Throwable} object indicating the cause of this {@link RuntimeException}.
    * @see java.lang.Throwable
    */
-  public ProcessExecutionException(String message, Throwable cause) {
+  public ProcessException(String message, Throwable cause) {
     super(message, cause);
   }
 }
