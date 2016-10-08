@@ -493,7 +493,7 @@ public class ThreadUtilsTest {
   public void waitForWithIntervalGreaterThanDuration() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("interval (2 SECONDS) must be greater than 0 and less than equal to duration (500 MILLISECONDS)");
+    expectedException.expectMessage("Interval [2 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
 
     waitFor(500).checkEvery(2, TimeUnit.SECONDS);
   }
@@ -502,7 +502,7 @@ public class ThreadUtilsTest {
   public void waitForWithNegativeInterval() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("interval (-1 SECONDS) must be greater than 0 and less than equal to duration (500 MILLISECONDS)");
+    expectedException.expectMessage("Interval [-1 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
 
     waitFor(500).checkEvery(-1, TimeUnit.SECONDS);
   }
@@ -623,5 +623,4 @@ public class ThreadUtilsTest {
       assertThat(waitingThread.isAlive(), is(false));
     }
   }
-
 }

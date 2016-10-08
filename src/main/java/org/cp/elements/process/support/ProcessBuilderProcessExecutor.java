@@ -28,7 +28,7 @@ import org.cp.elements.process.ProcessExecutor;
 
 /**
  * The {@link ProcessBuilderProcessExecutor} class is a {@link ProcessExecutor} using the {@link ProcessBuilder} API
- * to configure and execute (start) a running Operating System (OS) programs, returning a reference
+ * to configure and execute (start) a running Operating System (OS) program, returning a reference
  * to the running OS {@link Process}.
  *
  * @author John Blum
@@ -55,17 +55,15 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor {
   @Override
   public Process execute(File directory, String... commandLine) {
 
-    Assert.isTrue(FileSystemUtils.isDirectory(directory), "File [%s] is not a valid directory", directory);
+    Assert.isTrue(FileSystemUtils.isDirectory(directory), "[%s] is not a valid directory", directory);
 
     Assert.notEmpty(commandLine, "The command-line [%s] must contain at least 1 command",
       Arrays.toString(commandLine));
 
     try {
-      ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
-
-      processBuilder.directory(directory);
-
-      return processBuilder.start();
+      return new ProcessBuilder(commandLine)
+        .directory(directory)
+        .start();
     }
     catch (IOException e) {
       throw new ProcessExecutionException(String.format("Failed to execute program [%1$s] in directory [%2$s]",

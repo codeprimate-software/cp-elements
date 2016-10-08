@@ -26,7 +26,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.DSL;
 
 /**
- * The ThreadUtils class provides utilities for writing concurrent programs using Java Threads
+ * The {@link ThreadUtils} class provides utilities for writing concurrent programs using Java {@link Thread Threads}
  * and the java.util.concurrent API.
  * 
  * @author John J. Blum
@@ -48,7 +48,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#isAlive()
    */
   @NullSafe
-  public static boolean isAlive(final Thread thread) {
+  public static boolean isAlive(Thread thread) {
     return (thread != null && thread.isAlive());
   }
 
@@ -62,7 +62,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#BLOCKED
    */
   @NullSafe
-  public static boolean isBlocked(final Thread thread) {
+  public static boolean isBlocked(Thread thread) {
     return (thread != null && Thread.State.BLOCKED.equals(thread.getState()));
   }
 
@@ -76,7 +76,7 @@ public abstract class ThreadUtils {
    * @see #isNonDaemon(Thread)
    */
   @NullSafe
-  public static boolean isDaemon(final Thread thread) {
+  public static boolean isDaemon(Thread thread) {
     return (thread != null && thread.isDaemon());
   }
 
@@ -90,7 +90,7 @@ public abstract class ThreadUtils {
    * @see #isDaemon(Thread)
    */
   @NullSafe
-  public static boolean isNonDaemon(final Thread thread) {
+  public static boolean isNonDaemon(Thread thread) {
     return  (thread != null && !thread.isDaemon());
   }
 
@@ -103,7 +103,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#isInterrupted()
    */
   @NullSafe
-  public static boolean isInterrupted(final Thread thread) {
+  public static boolean isInterrupted(Thread thread) {
     return (thread != null && thread.isInterrupted());
   }
 
@@ -117,7 +117,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#NEW
    */
   @NullSafe
-  public static boolean isNew(final Thread thread) {
+  public static boolean isNew(Thread thread) {
     return (thread != null && Thread.State.NEW.equals(thread.getState()));
   }
 
@@ -131,7 +131,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#RUNNABLE
    */
   @NullSafe
-  public static boolean isRunnable(final Thread thread) {
+  public static boolean isRunnable(Thread thread) {
     return (thread != null && Thread.State.RUNNABLE.equals(thread.getState()));
   }
 
@@ -144,7 +144,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#TERMINATED
    */
   @NullSafe
-  public static boolean isTerminated(final Thread thread) {
+  public static boolean isTerminated(Thread thread) {
     return (thread != null && Thread.State.TERMINATED.equals(thread.getState()));
   }
 
@@ -157,7 +157,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#TIMED_WAITING
    */
   @NullSafe
-  public static boolean isTimedWaiting(final Thread thread) {
+  public static boolean isTimedWaiting(Thread thread) {
     return (thread != null && Thread.State.TIMED_WAITING.equals(thread.getState()));
   }
 
@@ -170,7 +170,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#WAITING
    */
   @NullSafe
-  public static boolean isWaiting(final Thread thread) {
+  public static boolean isWaiting(Thread thread) {
     return (thread != null && Thread.State.WAITING.equals(thread.getState()));
   }
 
@@ -183,7 +183,7 @@ public abstract class ThreadUtils {
    * @see java.lang.ClassLoader
    */
   @NullSafe
-  public static ClassLoader getContextClassLoader(final Thread thread) {
+  public static ClassLoader getContextClassLoader(Thread thread) {
     return (thread != null ? thread.getContextClassLoader() : ThreadUtils.class.getClassLoader());
   }
 
@@ -195,7 +195,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#getId()
    */
   @NullSafe
-  public static long getId(final Thread thread) {
+  public static long getId(Thread thread) {
     return (thread != null ? thread.getId() : 0l);
   }
 
@@ -207,7 +207,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#getName()
    */
   @NullSafe
-  public static String getName(final Thread thread) {
+  public static String getName(Thread thread) {
     return (thread != null ? thread.getName() : null);
   }
 
@@ -219,7 +219,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#getPriority()
    */
   @NullSafe
-  public static int getPriority(final Thread thread) {
+  public static int getPriority(Thread thread) {
     return (thread != null ? thread.getPriority() : 0);
   }
 
@@ -233,7 +233,7 @@ public abstract class ThreadUtils {
    * @see java.lang.StackTraceElement
    */
   @NullSafe
-  public static StackTraceElement[] getStackTrace(final Thread thread) {
+  public static StackTraceElement[] getStackTrace(Thread thread) {
     return (thread != null ? thread.getStackTrace() : new StackTraceElement[0]);
   }
 
@@ -246,7 +246,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State
    */
   @NullSafe
-  public static Thread.State getState(final Thread thread) {
+  public static Thread.State getState(Thread thread) {
     return (thread != null ? thread.getState() : null);
   }
 
@@ -259,7 +259,7 @@ public abstract class ThreadUtils {
    * @see java.lang.ThreadGroup
    */
   @NullSafe
-  public static ThreadGroup getThreadGroup(final Thread thread) {
+  public static ThreadGroup getThreadGroup(Thread thread) {
     return (thread != null ? thread.getThreadGroup() : null);
   }
 
@@ -270,7 +270,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#dumpStack()
    */
   @NullSafe
-  public static void dumpStack(final String tag) {
+  public static void dumpStack(String tag) {
     Thread currentThread = Thread.currentThread();
     System.err.printf("%1$s - %2$s Thread @ %3$d%n", String.valueOf(tag).toUpperCase(), currentThread.getName(),
       currentThread.getId());
@@ -284,7 +284,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#interrupt()
    */
   @NullSafe
-  public static void interrupt(final Thread thread) {
+  public static void interrupt(Thread thread) {
     if (thread != null) {
       thread.interrupt();
     }
@@ -308,7 +308,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#interrupt()
    */
   @NullSafe
-  public static boolean join(final Thread thread, final long milliseconds, final int nanoseconds) {
+  public static boolean join(Thread thread, long milliseconds, int nanoseconds) {
     try {
       if (thread != null) {
         thread.join(milliseconds, nanoseconds);
@@ -334,7 +334,7 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#sleep(long)
    * @see java.lang.Thread#interrupt()
    */
-  public static boolean sleep(final long milliseconds, final int nanoseconds) {
+  public static boolean sleep(long milliseconds, int nanoseconds) {
     try {
       Thread.sleep(milliseconds, nanoseconds);
       return true;
@@ -355,7 +355,7 @@ public abstract class ThreadUtils {
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
    */
   @DSL
-  public static WaitTask waitFor(final long duration) {
+  public static WaitTask waitFor(long duration) {
     return waitFor(duration, WaitTask.DEFAULT_TIME_UNIT);
   }
 
@@ -370,12 +370,12 @@ public abstract class ThreadUtils {
    * @see java.util.concurrent.TimeUnit
    */
   @DSL
-  public static WaitTask waitFor(final long duration, final TimeUnit timeUnit) {
+  public static WaitTask waitFor(long duration, TimeUnit timeUnit) {
     return new WaitTask().waitFor(duration, timeUnit);
   }
 
   /**
-   * The WaitTask class is a DslExtension specifying an API for setting up a wait condition.
+   * The {@link WaitTask} class is a {@link DslExtension} specifying an API for setting up a wait condition.
    *
    * @see org.cp.elements.lang.DslExtension
    */
@@ -413,34 +413,36 @@ public abstract class ThreadUtils {
     }
 
     /* (non-Javadoc) */
-    public WaitTask waitFor(final long duration) {
+    public WaitTask waitFor(long duration) {
       return waitFor(duration, DEFAULT_TIME_UNIT);
     }
 
     /* (non-Javadoc) */
-    public WaitTask waitFor(final long duration, final TimeUnit durationTimeUnit) {
+    public WaitTask waitFor(long duration, TimeUnit durationTimeUnit) {
       Assert.argument(duration > 0, String.format("duration (%1$d) must be greater than 0", duration));
+
       this.duration = duration;
       this.durationTimeUnit = ObjectUtils.defaultIfNull(durationTimeUnit, DEFAULT_TIME_UNIT);
+
       return this;
     }
 
     /* (non-Javadoc) */
-    private boolean isValidInterval(final long interval, final TimeUnit intervalTimeUnit) {
-      return (interval > 0 && intervalTimeUnit.toMillis(interval) <= durationTimeUnit.toMillis(duration));
+    private boolean isValidInterval(long interval, TimeUnit intervalTimeUnit) {
+      return (interval > 0 && intervalTimeUnit.toMillis(interval) <= getDurationTimeUnit().toMillis(getDuration()));
     }
 
     /* (non-Javadoc) */
-    public WaitTask checkEvery(final long interval) {
+    public WaitTask checkEvery(long interval) {
       return checkEvery(interval, DEFAULT_TIME_UNIT);
     }
 
     /* (non-Javadoc) */
-    public WaitTask checkEvery(final long interval, final TimeUnit intervalTimeUnit) {
-      this.intervalTimeUnit = ObjectUtils.defaultIfNull(intervalTimeUnit, DEFAULT_TIME_UNIT);
+    public WaitTask checkEvery(long interval, TimeUnit intervalTimeUnit) {
+      intervalTimeUnit = ObjectUtils.defaultIfNull(intervalTimeUnit, DEFAULT_TIME_UNIT);
 
-      Assert.argument(isValidInterval(interval, this.intervalTimeUnit), String.format(
-        "interval (%1$d %2$s) must be greater than 0 and less than equal to duration (%3$d %4$s)",
+      Assert.argument(isValidInterval(interval, intervalTimeUnit), String.format(
+        "Interval [%1$d %2$s] must be greater than 0 and less than equal to duration [%3$d %4$s]",
           interval, intervalTimeUnit, duration, durationTimeUnit));
 
       this.interval = interval;
@@ -457,19 +459,16 @@ public abstract class ThreadUtils {
 
       condition = ObjectUtils.defaultIfNull(condition, Condition.FALSE_CONDITION);
 
-      while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
-        try {
+      try {
+        while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
           synchronized (waitTaskMonitor) {
+            interval = Math.min(interval, (timeout - System.currentTimeMillis()));
             TimeUnit.MILLISECONDS.timedWait(waitTaskMonitor, interval);
           }
         }
-        catch (InterruptedException e) {
-          Thread.currentThread().interrupt();
-          break;
-        }
-        finally {
-          interval = Math.min(interval, (timeout - System.currentTimeMillis()));
-        }
+      }
+      catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
       }
 
       return (Condition.FALSE_CONDITION.equals(condition) || condition.evaluate());
@@ -480,5 +479,4 @@ public abstract class ThreadUtils {
       return on(null);
     }
   }
-
 }

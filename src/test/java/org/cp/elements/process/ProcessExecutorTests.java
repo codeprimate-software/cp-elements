@@ -18,6 +18,7 @@ package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.test.mock.MockitoMatchers.stringArrayMatcher;
+import static org.cp.elements.util.ArrayUtils.iterable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -64,10 +65,10 @@ public class ProcessExecutorTests {
     when(processExecutor.execute(Matchers.<String[]>anyVararg())).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
 
-    assertThat(processExecutor.execute("java", "example.App", "test")).isEqualTo(mockProcess);
+    assertThat(processExecutor.execute("java", "example.App", "arg")).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(FileSystemUtils.WORKING_DIRECTORY),
-      argThat(stringArrayMatcher("java", "example.App", "test")));
+      argThat(stringArrayMatcher("java", "example.App", "arg")));
   }
 
   @Test
@@ -76,10 +77,10 @@ public class ProcessExecutorTests {
     when(processExecutor.execute(any(Iterable.class))).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
 
-    assertThat(processExecutor.execute(ArrayUtils.iterable("java", "example.App", "test"))).isEqualTo(mockProcess);
+    assertThat(processExecutor.execute(ArrayUtils.iterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(FileSystemUtils.WORKING_DIRECTORY),
-      argThat(stringArrayMatcher("java", "example.App", "test")));
+      argThat(stringArrayMatcher("java", "example.App", "arg")));
   }
 
   @Test
@@ -88,11 +89,10 @@ public class ProcessExecutorTests {
     when(processExecutor.execute(any(File.class), any(Iterable.class))).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
 
-    assertThat(processExecutor.execute(mockDirectory, ArrayUtils.iterable("java", "example.App", "test")))
-      .isEqualTo(mockProcess);
+    assertThat(processExecutor.execute(mockDirectory, iterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(mockDirectory),
-      argThat(stringArrayMatcher("java", "example.App", "test")));
+      argThat(stringArrayMatcher("java", "example.App", "arg")));
   }
 
   static abstract class TestProcessExecutor implements ProcessExecutor {

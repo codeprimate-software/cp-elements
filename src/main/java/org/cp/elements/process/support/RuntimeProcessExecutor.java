@@ -55,7 +55,7 @@ public class RuntimeProcessExecutor implements ProcessExecutor {
   @Override
   public Process execute(File directory, String... commandLine) {
 
-    Assert.isTrue(FileSystemUtils.isDirectory(directory), "File [%s] is not a valid directory", directory);
+    Assert.isTrue(FileSystemUtils.isDirectory(directory), "[%s] is not a valid directory", directory);
 
     Assert.notEmpty(commandLine, "The command-line [%s] must contain at least 1 command",
       Arrays.toString(commandLine));
