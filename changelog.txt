@@ -5,8 +5,11 @@ https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 1.0.0.M3 - ?
 ------------
-Introduce the Process Executor API for launching, forking and managing processes.
+Introduces the ProcessExecutor API for forking, launching and managing processes.
 
+* Renamed LangExtensions.AssertThat.using(:String, :Object[]) to LangExtensions.AssertThat.stating(:String, :Object[])
+to clearly indicate the caller is specifying a message with arguments to use in the assertion error.
+* Created the org.cp.elements.lang.support.HashCodeBuilder class for computing hash codes of an object.
 * ?
 
 

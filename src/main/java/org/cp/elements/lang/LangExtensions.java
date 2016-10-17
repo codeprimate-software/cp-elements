@@ -46,7 +46,7 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL
-  public static <T> AssertThat<T> assertThat(final T obj) {
+  public static <T> AssertThat<T> assertThat(T obj) {
     return new AssertThatExpression<>(obj);
   }
 
@@ -327,6 +327,15 @@ public abstract class LangExtensions {
     AssertThat<T> not();
 
     /**
+     * Uses the provided message and message arguments in the AssertionException thrown when an assertion fails.
+     *
+     * @param message the String message used in the AssertionException.
+     * @param args an array of object arguments used to populate the placeholders of the message.
+     * @return this assertion instance.
+     */
+    AssertThat<T> stating(String message, Object... args);
+
+    /**
      * Throws the provided RuntimeException when an assertion fails.
      *
      * @param e the RuntimeException to throw when an assertion fails.
@@ -343,15 +352,6 @@ public abstract class LangExtensions {
      * @see org.cp.elements.lang.Transformer
      */
     AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer);
-
-    /**
-     * Uses the provided message and message arguments in the AssertionException thrown when an assertion fails.
-     *
-     * @param message the String message used in the AssertionException.
-     * @param args an array of object arguments used to populate the placeholders of the message.
-     * @return this assertion instance.
-     */
-    AssertThat<T> using(String message, Object... args);
 
     /**
      * Enables or disables this assertion based on the provided Condition.
@@ -394,12 +394,12 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    private AssertThatExpression(final T obj) {
+    private AssertThatExpression(T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
 
     /* (non-Javadoc) */
-    private AssertThatExpression(final T obj, final boolean expected) {
+    private AssertThatExpression(T obj, boolean expected) {
       this.obj = obj;
       this.expected = expected;
       this.condition = () -> true;
@@ -411,12 +411,12 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    private boolean notEqualToExpected(final boolean actual) {
+    private boolean notEqualToExpected(boolean actual) {
       return !(actual == expected);
     }
 
     /* (non-Javadoc) */
-    public void isAssignableTo(final Class type) {
+    public void isAssignableTo(Class type) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).assignableTo(type))) {
           throwAssertionError("(%1$s) is %2$sassignable to (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
@@ -426,7 +426,7 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @SuppressWarnings("unchecked")
-    public void isComparableTo(final Comparable<T> comparable) {
+    public void isComparableTo(Comparable<T> comparable) {
       if (conditionHolds()) {
         if (notEqualToExpected(is((Comparable<T>) obj).comparableTo(comparable))) {
           throwAssertionError("(%1$s) is %2$scomparable to (%3$s)", obj, negate(NOT), comparable);
@@ -435,7 +435,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isEqualTo(final T obj) {
+    public void isEqualTo(T obj) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(this.obj).equalTo(obj))) {
           throwAssertionError("(%1$s) is %2$sequal to (%3$s)", this.obj, negate(NOT), obj);
@@ -444,7 +444,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isNotEqualTo(final T obj) {
+    public void isNotEqualTo(T obj) {
       not().isEqualTo(obj);
     }
 
@@ -458,7 +458,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isGreaterThan(final T lowerBound) {
+    public void isGreaterThan(T lowerBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).greaterThan(lowerBound))) {
           throwAssertionError("(%1$s) is %2$sgreater than (%3$s)", obj, negate(NOT), lowerBound);
@@ -467,7 +467,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isGreaterThanAndLessThan(final T lowerBound, final T upperBound) {
+    public void isGreaterThanAndLessThan(T lowerBound, T upperBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).greaterThanAndLessThan(lowerBound, upperBound))) {
           throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than (%4$s)", obj, negate(NOT),
@@ -477,7 +477,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isGreaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+    public void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
           throwAssertionError("(%1$s) is %2$sgreater than (%3$s) and less than equal to (%4$s)", obj, negate(NOT),
@@ -487,7 +487,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isGreaterThanEqualTo(final T lowerBound) {
+    public void isGreaterThanEqualTo(T lowerBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).greaterThanEqualTo(lowerBound))) {
           throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s)", obj, negate(NOT), lowerBound);
@@ -496,7 +496,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isGreaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
+    public void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
           throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than (%4$s)", obj, negate(NOT),
@@ -506,7 +506,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isGreaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+    public void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
           throwAssertionError("(%1$s) is %2$sgreater than equal to (%3$s) and less than equal to (%4$s)",
@@ -521,7 +521,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void holdsLock(final Object lock) {
+    public void holdsLock(Object lock) {
       if (conditionHolds()) {
         if (notEqualToExpected(Thread.holdsLock(lock))) {
           throwAssertionError("(%1$s) %2$slock (%3$s)", Thread.currentThread(),
@@ -531,7 +531,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isInstanceOf(final Class type) {
+    public void isInstanceOf(Class type) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).instanceOf(type))) {
           throwAssertionError("(%1$s) is %2$san instance of (%3$s)", obj, negate(NOT), ObjectUtils.getName(type));
@@ -540,7 +540,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isLessThan(final T upperBound) {
+    public void isLessThan(T upperBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).lessThan(upperBound))) {
           throwAssertionError("(%1$s) is %2$sless than (%3$s)", obj, negate(NOT), upperBound);
@@ -549,7 +549,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isLessThanOrGreaterThan(final T upperBound, final T lowerBound) {
+    public void isLessThanOrGreaterThan(T upperBound, T lowerBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
           throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than (%4$s)", obj, negate(NOT),
@@ -559,7 +559,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isLessThanOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+    public void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
           throwAssertionError("(%1$s) is %2$sless than (%3$s) or greater than equal to (%4$s)", obj, negate(NOT),
@@ -569,7 +569,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isLessThanEqualTo(final T upperBound) {
+    public void isLessThanEqualTo(T upperBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).lessThanEqualTo(upperBound))) {
           throwAssertionError("(%1$s) is %2$sless than equal to (%3$s)", obj, negate(NOT), upperBound);
@@ -578,7 +578,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isLessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
+    public void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
           throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than (%4$s)", obj, negate(NOT),
@@ -588,7 +588,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isLessThanEqualToOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+    public void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
           throwAssertionError("(%1$s) is %2$sless than equal to (%3$s) or greater than equal to (%4$s)",
@@ -630,7 +630,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isSameAs(final T obj) {
+    public void isSameAs(T obj) {
       if (conditionHolds()) {
         if (notEqualToExpected(is(this.obj).sameAs(obj))) {
           throwAssertionError("(%1$s) is %2$sthe same as (%3$s)", this.obj, negate(NOT), obj);
@@ -639,7 +639,7 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public void isNotSameAs(final T obj) {
+    public void isNotSameAs(T obj) {
       not().isSameAs(obj);
     }
 
@@ -657,63 +657,63 @@ public abstract class LangExtensions {
       AssertThat<T> expression = new AssertThatExpression<>(obj, !expected);
       expression = (transformer != null ? transformer.transform(expression) : expression);
       expression = expression.throwing(cause);
-      expression = (message != null ? expression.using(message) : expression);
+      expression = (message != null ? expression.stating(message) : expression);
       expression = expression.when(this.condition);
       return expression;
     }
 
     /* (non-Javadoc) */
-    public AssertThat<T> throwing(final RuntimeException cause) {
+    public AssertThat<T> stating(String message, Object... args) {
+      this.message = format(message, args);
+      return this;
+    }
+
+    /* (non-Javadoc) */
+    public AssertThat<T> throwing(RuntimeException cause) {
       this.cause = cause;
       return this;
     }
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+    public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
       this.transformer = assertionTransformer;
       return assertionTransformer.transform(this);
     }
 
     /* (non-Javadoc) */
-    public AssertThat<T> using(final String message, final Object... args) {
-      this.message = format(message, args);
-      return this;
-    }
-
-    /* (non-Javadoc) */
-    public AssertThat<T> when(final Condition condition) {
+    public AssertThat<T> when(Condition condition) {
       this.condition = (condition != null ? condition : () -> true);
       return this;
     }
 
     /* (non-Javadoc) */
-    private String format(final String message, final Object... args) {
+    private String format(String message, Object... args) {
       return stringFormat(messageFormat(message, args), args);
     }
 
     /* (non-Javadoc) */
-    private String messageFormat(final String message, final Object... args) {
+    private String messageFormat(String message, Object... args) {
       return MessageFormat.format(message, args);
     }
 
     /* (non-Javadoc) */
-    private String stringFormat(final String message, final Object... args) {
+    private String stringFormat(String message, Object... args) {
       return String.format(message, args);
     }
 
     /* (non-Javadoc) */
-    private String negate(final String value) {
+    private String negate(String value) {
       return (expected ? value : "");
     }
 
     /* (non-Javadoc) */
-    private void throwAssertionError(final String defaultMessage, final Object... args) {
+    private void throwAssertionError(String defaultMessage, Object... args) {
       throw (is(cause).notNull() ? cause : new AssertionException(withMessage(defaultMessage, args)));
     }
 
     /* (non-Javadoc) */
-    private String withMessage(final String defaultMessage, final Object... args) {
+    private String withMessage(String defaultMessage, Object... args) {
       return (is(message).notBlank() ? message : format(defaultMessage, args));
     }
   }
@@ -730,7 +730,7 @@ public abstract class LangExtensions {
     private final AssertThat<T> delegate;
 
     /* (non-Javadoc) */
-    public AssertThatWrapper(final AssertThat<T> delegate) {
+    public AssertThatWrapper(AssertThat<T> delegate) {
       Assert.notNull(delegate, "delegate must not be null");
       this.delegate = delegate;
     }
@@ -747,25 +747,25 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public void isAssignableTo(final Class type) {
+    public void isAssignableTo(Class type) {
       getDelegate().isAssignableTo(type);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isComparableTo(final Comparable<T> obj) {
+    public void isComparableTo(Comparable<T> obj) {
       getDelegate().isComparableTo(obj);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isEqualTo(final T obj) {
+    public void isEqualTo(T obj) {
       getDelegate().isEqualTo(obj);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isNotEqualTo(final T obj) {
+    public void isNotEqualTo(T obj) {
       getDelegate().isNotEqualTo(obj);
     }
 
@@ -777,37 +777,37 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public void isGreaterThan(final T lowerBound) {
+    public void isGreaterThan(T lowerBound) {
       getDelegate().isGreaterThan(lowerBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isGreaterThanAndLessThan(final T lowerBound, final T upperBound) {
+    public void isGreaterThanAndLessThan(T lowerBound, T upperBound) {
       getDelegate().isGreaterThanAndLessThan(lowerBound, upperBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isGreaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+    public void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
       getDelegate().isGreaterThanAndLessThanEqualTo(lowerBound, upperBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isGreaterThanEqualTo(final T lowerBound) {
+    public void isGreaterThanEqualTo(T lowerBound) {
       getDelegate().isGreaterThanEqualTo(lowerBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isGreaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
+    public void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
       getDelegate().isGreaterThanEqualToAndLessThan(lowerBound, upperBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isGreaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+    public void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
       getDelegate().isGreaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound);
     }
 
@@ -819,49 +819,49 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public void holdsLock(final Object lock) {
+    public void holdsLock(Object lock) {
       getDelegate().holdsLock(lock);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isInstanceOf(final Class type) {
+    public void isInstanceOf(Class type) {
       getDelegate().isInstanceOf(type);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isLessThan(final T upperBound) {
+    public void isLessThan(T upperBound) {
       getDelegate().isLessThan(upperBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isLessThanOrGreaterThan(final T upperBound, final T lowerBound) {
+    public void isLessThanOrGreaterThan(T upperBound, T lowerBound) {
       getDelegate().isLessThanOrGreaterThan(upperBound, lowerBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isLessThanOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+    public void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       getDelegate().isLessThanOrGreaterThanEqualTo(upperBound, lowerBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isLessThanEqualTo(final T upperBound) {
+    public void isLessThanEqualTo(T upperBound) {
       getDelegate().isLessThanEqualTo(upperBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isLessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
+    public void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
       getDelegate().isLessThanEqualToOrGreaterThan(upperBound, lowerBound);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isLessThanEqualToOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+    public void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       getDelegate().isLessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound);
     }
 
@@ -891,13 +891,13 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public void isSameAs(final T obj) {
+    public void isSameAs(T obj) {
       getDelegate().isSameAs(obj);
     }
 
     /* (non-Javadoc) */
     @Override
-    public void isNotSameAs(final T obj) {
+    public void isNotSameAs(T obj) {
       getDelegate().isNotSameAs(obj);
     }
 
@@ -915,27 +915,27 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> throwing(final RuntimeException e) {
+    public AssertThat<T> throwing(RuntimeException e) {
       getDelegate().throwing(e);
       return this;
     }
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> transform(final Transformer<AssertThat<T>> assertionTransformer) {
+    public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
       return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
     }
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> using(final String message, final Object... args) {
-      getDelegate().using(message, args);
+    public AssertThat<T> stating(String message, Object... args) {
+      getDelegate().stating(message, args);
       return this;
     }
 
     /* (non-Javadoc) */
     @Override
-    public AssertThat<T> when(final Condition condition) {
+    public AssertThat<T> when(Condition condition) {
       getDelegate().when(condition);
       return this;
     }
@@ -951,7 +951,7 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL
-  public static <T> Is<T> is(final T obj) {
+  public static <T> Is<T> is(T obj) {
     return new IsExpression<>(obj);
   }
 
@@ -1259,54 +1259,54 @@ public abstract class LangExtensions {
     private final T obj;
 
     /* (non-Javadoc) */
-    private IsExpression(final T obj) {
+    private IsExpression(T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
 
     /* (non-Javadoc) */
-    private IsExpression(final T obj, final boolean expected) {
+    private IsExpression(T obj, boolean expected) {
       this.obj = obj;
       this.expected = expected;
     }
 
     /* (non-Javadoc) */
-    private boolean equalToExpected(final boolean actualOutcome) {
+    private boolean equalToExpected(boolean actualOutcome) {
       return (actualOutcome == expected);
     }
 
     /* (non-Javadoc) */
-    private LogicalOperator getOp(final LogicalOperator op) {
+    private LogicalOperator getOp(LogicalOperator op) {
       return (expected ? op : op.getOpposite());
     }
 
     /* (non-Javadoc) */
-    private Class<?> toClass(final Object obj) {
+    private Class<?> toClass(Object obj) {
       return (obj instanceof Class ? (Class<?>) obj : obj.getClass());
     }
 
     /* (non-Javadoc) */
     @SuppressWarnings("unchecked")
-    private Comparable<T> toComparable(final T obj) {
+    private Comparable<T> toComparable(T obj) {
       return (Comparable<T>) obj;
     }
 
     /* (non-Javadoc) */
-    public boolean assignableTo(final Class<?> type) {
+    public boolean assignableTo(Class<?> type) {
       return equalToExpected(obj != null && type != null && type.isAssignableFrom(toClass(obj)));
     }
 
     /* (non-Javadoc) */
-    public boolean comparableTo(final T obj) {
+    public boolean comparableTo(T obj) {
       return equalToExpected(toComparable(this.obj).compareTo(obj) == 0);
     }
 
     /* (non-Javadoc) */
-    public boolean equalTo(final T obj) {
+    public boolean equalTo(T obj) {
       return equalToExpected(this.obj != null && this.obj.equals(obj));
     }
 
     /* (non-Javadoc) */
-    public boolean notEqualTo(final T obj) {
+    public boolean notEqualTo(T obj) {
       return not().equalTo(obj);
     }
 
@@ -1316,67 +1316,67 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public boolean greaterThan(final T lowerBound) {
+    public boolean greaterThan(T lowerBound) {
       return equalToExpected(toComparable(this.obj).compareTo(lowerBound) > 0);
     }
 
     /* (non-Javadoc) */
-    public boolean greaterThanAndLessThan(final T lowerBound, final T upperBound) {
+    public boolean greaterThanAndLessThan(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThan(lowerBound), lessThan(upperBound));
     }
 
     /* (non-Javadoc) */
-    public boolean greaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+    public boolean greaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThan(lowerBound), lessThanEqualTo(upperBound));
     }
 
     /* (non-Javadoc) */
-    public boolean greaterThanEqualTo(final T lowerBound) {
+    public boolean greaterThanEqualTo(T lowerBound) {
       return equalToExpected(toComparable(this.obj).compareTo(lowerBound) >= 0);
     }
 
     /* (non-Javadoc) */
-    public boolean greaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
+    public boolean greaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThanEqualTo(lowerBound), lessThan(upperBound));
     }
 
     /* (non-Javadoc) */
-    public boolean greaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+    public boolean greaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThanEqualTo(lowerBound), lessThanEqualTo(upperBound));
     }
 
     /* (non-Javadoc) */
-    public boolean instanceOf(final Class type) {
+    public boolean instanceOf(Class type) {
       return equalToExpected(type != null && type.isInstance(this.obj));
     }
 
     /* (non-Javadoc) */
-    public boolean lessThan(final T upperBound) {
+    public boolean lessThan(T upperBound) {
       return equalToExpected(toComparable(this.obj).compareTo(upperBound) < 0);
     }
 
     /* (non-Javadoc) */
-    public boolean lessThanOrGreaterThan(final T upperBound, final T lowerBound) {
+    public boolean lessThanOrGreaterThan(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThan(upperBound), greaterThan(lowerBound));
     }
 
     /* (non-Javadoc) */
-    public boolean lessThanOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+    public boolean lessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThan(upperBound), greaterThanEqualTo(lowerBound));
     }
 
     /* (non-Javadoc) */
-    public boolean lessThanEqualTo(final T upperBound) {
+    public boolean lessThanEqualTo(T upperBound) {
       return equalToExpected(toComparable(this.obj).compareTo(upperBound) <= 0);
     }
 
     /* (non-Javadoc) */
-    public boolean lessThanEqualToOrGreaterThan(final T upperBound, final T lowerBound) {
+    public boolean lessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThanEqualTo(upperBound), greaterThan(lowerBound));
     }
 
     /* (non-Javadoc) */
-    public boolean lessThanEqualToOrGreaterThanEqualTo(final T upperBound, final T lowerBound) {
+    public boolean lessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThanEqualTo(upperBound), greaterThanEqualTo(lowerBound));
     }
 
@@ -1405,12 +1405,12 @@ public abstract class LangExtensions {
     }
 
     /* (non-Javadoc) */
-    public boolean notSameAs(final T obj) {
+    public boolean notSameAs(T obj) {
       return not().sameAs(obj);
     }
 
     /* (non-Javadoc) */
-    public boolean sameAs(final T obj) {
+    public boolean sameAs(T obj) {
       return equalToExpected(this.obj == obj);
     }
 

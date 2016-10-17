@@ -137,7 +137,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(Object.class).using("This is a %1$s{1}", "test", "!").isAssignableTo(String.class);
+    assertThat(Object.class).stating("This is a %1$s{1}", "test", "!").isAssignableTo(String.class);
   }
 
   @Test
@@ -191,7 +191,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("c").using("This is a %1$s{1}", "test", "!").isComparableTo("see");
+    assertThat("c").stating("This is a %1$s{1}", "test", "!").isComparableTo("see");
   }
 
   @Test
@@ -246,7 +246,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("r").using("This is a %1$s{1}", "test", "!").isEqualTo("are");
+    assertThat("r").stating("This is a %1$s{1}", "test", "!").isEqualTo("are");
   }
 
   @Test
@@ -293,7 +293,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(true).using("This is a %1$s{1}", "test", "!").isFalse();
+    assertThat(true).stating("This is a %1$s{1}", "test", "!").isFalse();
   }
 
   @Test
@@ -342,7 +342,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThan(3);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThan(3);
   }
 
   @Test
@@ -394,7 +394,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThan(2, 2);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThan(2, 2);
   }
 
   @Test
@@ -446,7 +446,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThanEqualTo(2, 2);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThanEqualTo(2, 2);
   }
 
   @Test
@@ -498,7 +498,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3);
   }
 
   @Test
@@ -550,7 +550,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1s{1}", "test", "!").isGreaterThanEqualToAndLessThan(3, 1);
+    assertThat(2).stating("This is a %1s{1}", "test", "!").isGreaterThanEqualToAndLessThan(3, 1);
   }
 
   @Test
@@ -601,7 +601,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualToAndLessThanEqualTo(3, 1);
   }
 
   @Test
@@ -656,7 +656,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("").using("This is a %1$s{1}", "test", "!").isNotBlank();
+    assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank();
   }
 
   @Test
@@ -704,7 +704,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(Thread.currentThread()).using("This is a %1$s{1}", "test", "!").holdsLock(lock);
+    assertThat(Thread.currentThread()).stating("This is a %1$s{1}", "test", "!").holdsLock(lock);
   }
 
   @Test
@@ -765,7 +765,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("test").using("This is a %1$s{1}", "test", "!").isInstanceOf(Character.class);
+    assertThat("test").stating("This is a %1$s{1}", "test", "!").isInstanceOf(Character.class);
   }
 
   @Test
@@ -817,7 +817,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isLessThan(1);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThan(1);
   }
 
   @Test
@@ -866,7 +866,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(0).using("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThan(-1, 1);
+    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThan(-1, 1);
   }
 
   @Test
@@ -915,7 +915,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(0).using("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThanEqualTo(-1, 1);
+    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThanEqualTo(-1, 1);
   }
 
   @Test
@@ -966,7 +966,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(2).using("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3);
+    assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3);
   }
 
   @Test
@@ -1015,7 +1015,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(0).using("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThan(-1, 1);
+    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThan(-1, 1);
   }
 
   @Test
@@ -1064,7 +1064,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(0).using("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
   }
 
   @Test
@@ -1112,7 +1112,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("test").using("This is a %1$s{1}", "test", "!").isNull();
+    assertThat("test").stating("This is a %1$s{1}", "test", "!").isNull();
   }
 
   @Test
@@ -1168,7 +1168,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("").using("This is a %1$s{1}", "test", "!").isNotBlank();
+    assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank();
   }
 
   @Test
@@ -1222,7 +1222,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat("test").using("This is a %1$s{1}", "test", "!").isSameAs("TEST");
+    assertThat("test").stating("This is a %1$s{1}", "test", "!").isSameAs("TEST");
   }
 
   @Test
@@ -1269,7 +1269,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("This is a test!");
 
-    assertThat(false).using("This is a %1$s{1}", "test", "!").isTrue();
+    assertThat(false).stating("This is a %1$s{1}", "test", "!").isTrue();
   }
 
   @Test
@@ -1477,7 +1477,7 @@ public class LangExtensionsTest {
     expectedException.expectCause(CoreMatchers.is(nullValue(Throwable.class)));
     expectedException.expectMessage("Object cannot be null");
 
-    assertThat(null).using("%1$s cannot be {1}", "Object", "null").isNotNull();
+    assertThat(null).stating("%1$s cannot be {1}", "Object", "null").isNotNull();
   }
 
   @Test
@@ -1757,12 +1757,12 @@ public class LangExtensionsTest {
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatUsingDelegatesToWrappedAssertion() {
     AssertThat mockAssertion = mock(AssertThat.class);
-    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).using("message", "args");
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).stating("message", "args");
 
     assertNotSame(mockAssertion, wrappedAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
-    verify(mockAssertion, times(1)).using(eq("message"), eq("args"));
+    verify(mockAssertion, times(1)).stating(eq("message"), eq("args"));
   }
 
   @Test

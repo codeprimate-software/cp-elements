@@ -60,7 +60,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.ClassUtils#getClass(Object)
    */
   @NullSafe
-  public static Class[] getArgumentTypes(final Object... arguments) {
+  public static Class[] getArgumentTypes(Object... arguments) {
     Class[] argumentTypes = null;
 
     if (arguments != null) {
@@ -91,7 +91,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
   @SuppressWarnings("unchecked")
-  public static <T> T getValue(final Class<?> type, final String fieldName, final Class<T> fieldType) {
+  public static <T> T getValue(Class<?> type, String fieldName, Class<T> fieldType) {
     try {
       return getValue(null, getField(type, fieldName), fieldType);
     }
@@ -117,7 +117,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
-  public static <T> T getValue(final Object obj, final String fieldName, final Class<T> fieldType) {
+  public static <T> T getValue(Object obj, String fieldName, Class<T> fieldType) {
     try {
       return getValue(obj, getField(obj.getClass(), fieldName), fieldType);
     }
@@ -141,7 +141,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
    * @throws NullPointerException if the field or type parameter arguments are null.
    */
-  public static <T> T getValue(final Object target, final Field field, final Class<T> type) {
+  public static <T> T getValue(Object target, Field field, Class<T> type) {
     try {
       boolean currentAccessible = field.isAccessible();
       field.setAccessible(true);
@@ -171,7 +171,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #setField(Object, java.lang.reflect.Field, Object)
    */
-  public static void setField(final Class<?> type, final String fieldName, final Object value) {
+  public static void setField(Class<?> type, String fieldName, Object value) {
     try {
       setField(null, getField(type, fieldName), value);
     }
@@ -194,7 +194,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #setField(Object, java.lang.reflect.Field, Object)
    */
-  public static void setField(final Object obj, final String fieldName, final Object value) {
+  public static void setField(Object obj, String fieldName, Object value) {
     try {
       setField(obj, getField(obj.getClass(), fieldName), value);
     }
@@ -216,7 +216,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws NullPointerException if the field parameter argument is null.
    */
   @SuppressWarnings("all")
-  public static void setField(final Object target, final Field field, final Object value) {
+  public static void setField(Object target, Field field, Object value) {
     try {
       Assert.isFalse(Modifier.isFinal(field.getModifiers()), new FieldAccessException(String.format(
         "Cannot set the value of a final field (%1$s) on %2$s type (%3$s)!", field.getName(),
@@ -252,7 +252,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethod(Class, String, Class[])
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static void invoke(final Class<?> type, final String methodName) {
+  public static void invoke(Class<?> type, String methodName) {
     invoke(type, methodName, null, null, Void.class);
   }
 
@@ -271,7 +271,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethod(Class, String, Class[])
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(final Class<?> type, final String methodName, final Class<T> returnType) {
+  public static <T> T invoke(Class<?> type, String methodName, Class<T> returnType) {
     return invoke(type, methodName, null, null, returnType);
   }
 
@@ -289,7 +289,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethod(Class, String, Class[])
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static void invoke(final Class<?> type, final String methodName, final Object... arguments) {
+  public static void invoke(Class<?> type, String methodName, Object... arguments) {
     invoke(type, methodName, getArgumentTypes(arguments), arguments, Void.class);
   }
 
@@ -311,11 +311,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(final Class<?> type,
-                             final String methodName,
-                             final Object[] arguments,
-                             final Class<T> returnType)
-  {
+  public static <T> T invoke(Class<?> type, String methodName, Object[] arguments, Class<T> returnType) {
     return invoke(type, methodName, getArgumentTypes(arguments), arguments, returnType);
   }
 
@@ -336,11 +332,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static void invoke(final Class<?> type,
-                            final String methodName,
-                            final Class<?>[] parameterTypes,
-                            final Object... arguments)
-  {
+  public static void invoke(Class<?> type, String methodName, Class<?>[] parameterTypes, Object... arguments) {
     try {
       invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, Void.class), arguments, Void.class);
     }
@@ -372,12 +364,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static <T> T invoke(final Class<?> type,
-                             final String methodName,
-                             final Class<?>[] parameterTypes,
-                             final Object[] arguments,
-                             final Class<T> returnType)
-  {
+  public static <T> T invoke(Class<?> type, String methodName, Class<?>[] parameterTypes, Object[] arguments,
+      Class<T> returnType) {
+
     try {
       return invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, returnType),
         arguments, returnType);
@@ -399,7 +388,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static void invoke(final Object obj, final String methodName) {
+  public static void invoke(Object obj, String methodName) {
     invoke(obj, methodName, null, null, Void.class);
   }
 
@@ -418,7 +407,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(final Object obj, final String methodName, final Class<T> returnType) {
+  public static <T> T invoke(Object obj, String methodName, Class<T> returnType) {
     return invoke(obj, methodName, null, null, returnType);
   }
 
@@ -436,7 +425,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static void invoke(final Object obj, final String methodName, final Object... arguments) {
+  public static void invoke(Object obj, String methodName, Object... arguments) {
     invoke(obj, methodName, getArgumentTypes(arguments), arguments, Void.class);
   }
 
@@ -459,11 +448,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(final Object obj,
-                             final String methodName,
-                             final Object[] arguments,
-                             final Class<T> returnType)
-  {
+  public static <T> T invoke(Object obj, String methodName, Object[] arguments, Class<T> returnType) {
     return invoke(obj, methodName, getArgumentTypes(arguments), arguments, returnType);
   }
 
@@ -485,11 +470,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static void invoke(final Object obj,
-                            final String methodName,
-                            final Class<?>[] parameterTypes,
-                            final Object... arguments)
-  {
+  public static void invoke(Object obj, String methodName, Class<?>[] parameterTypes, Object... arguments) {
     try {
       invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, Void.class),
         arguments, Void.class);
@@ -523,12 +504,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static <T> T invoke(final Object obj,
-                             final String methodName,
-                             final Class<?>[] parameterTypes,
-                             final Object[] arguments,
-                             final Class<T> returnType)
-  {
+  public static <T> T invoke(Object obj, String methodName, Class<?>[] parameterTypes, Object[] arguments,
+      Class<T> returnType) {
+
     try {
       return invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, returnType),
         arguments, returnType);
@@ -559,11 +537,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Method#invoke(Object, Object...)
    * @see java.lang.reflect.Method#setAccessible(boolean)
    */
-  public static <T> T invoke(final Object target,
-                             final Method method,
-                             final Object[] arguments,
-                             final Class<T> returnType)
-  {
+  public static <T> T invoke(Object target, Method method, Object[] arguments, Class<T> returnType) {
     try {
       boolean currentAccessible = method.isAccessible();
       method.setAccessible(true);
@@ -591,7 +565,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL @NullSafe
-  public static WithFields withFields(final Field... fields) {
+  public static WithFields withFields(Field... fields) {
     return new WithFields(fields);
   }
 
@@ -605,7 +579,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.annotation.DSL
    */
   @DSL @NullSafe
-  public static WithMethods withMethods(final Method... methods) {
+  public static WithMethods withMethods(Method... methods) {
     return new WithMethods(methods);
   }
 
@@ -647,7 +621,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithFields
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
    */
-  protected static abstract class WithExpression<T extends Member> implements DslExtension {
+  public static abstract class WithExpression<T extends Member> implements DslExtension {
 
     private volatile boolean accepted = false;
 
@@ -657,28 +631,33 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private final Set<T> members = new HashSet<>();
 
+    /* (non-Javadoc) */
     @SuppressWarnings({ "unchecked", "varargs" })
-    protected WithExpression(final T... members) {
+    protected WithExpression(T... members) {
       if (members != null) {
         Collections.addAll(this.members, members);
       }
     }
 
+    /* (non-Javadoc) */
     protected Filter<T> getFilter() {
       return ComposableFilter.and(defaultFilter, filter);
     }
 
+    /* (non-Javadoc) */
     protected Iterable<T> getMembers() {
       return members;
     }
 
-    protected boolean accepts(final T member) {
+    /* (non-Javadoc) */
+    protected boolean accepts(T member) {
       boolean localAccepted = getFilter().accept(member);
-      accepted |= localAccepted;
+      this.accepted |= localAccepted;
       return localAccepted;
     }
 
-    public WithExpression<T> call(final MemberCallback<T> callback) {
+    /* (non-Javadoc) */
+    public WithExpression<T> call(MemberCallback<T> callback) {
       for (T member : getMembers()) {
         if (accepts(member)) {
           callback.with(member);
@@ -688,17 +667,21 @@ public abstract class ReflectionUtils extends ClassUtils {
       return this;
     }
 
-    public WithExpression<T> matching(final Filter<T> filter) {
+    /* (non-Javadoc) */
+    public WithExpression<T> matching(Filter<T> filter) {
       this.filter = filter;
       return this;
     }
 
+    /* (non-Javadoc) */
     protected abstract T[] members(Class<?> type);
 
-    public WithExpression<T> on(final Object obj) {
+    /* (non-Javadoc) */
+    public WithExpression<T> on(Object obj) {
       return on(ClassUtils.getClass(obj));
     }
 
+    /* (non-Javadoc) */
     public WithExpression<T> on(Class<?> type) {
       Assert.notNull(type, "The class type must not be null!");
 
@@ -710,7 +693,8 @@ public abstract class ReflectionUtils extends ClassUtils {
       return this;
     }
 
-    public WithExpression<T> throwing(final RuntimeException e) {
+    /* (non-Javadoc) */
+    public WithExpression<T> throwing(RuntimeException e) {
       if (!accepted) {
         throw e;
       }
@@ -725,14 +709,16 @@ public abstract class ReflectionUtils extends ClassUtils {
    *
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithExpression
    */
-  protected static class WithFields extends WithExpression<Field> {
+  public static class WithFields extends WithExpression<Field> {
 
-    public WithFields(final Field... fields) {
+    /* (non-Javadoc) */
+    public WithFields(Field... fields) {
       super(fields);
     }
 
+    /* (non-Javadoc) */
     @Override
-    protected Field[] members(final Class<?> type) {
+    protected Field[] members(Class<?> type) {
       return type.getDeclaredFields();
     }
   }
@@ -743,16 +729,17 @@ public abstract class ReflectionUtils extends ClassUtils {
    *
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
    */
-  protected static class WithMethods extends WithExpression<Method> {
+  public static class WithMethods extends WithExpression<Method> {
 
-    public WithMethods(final Method... methods) {
+    /* (non-Javadoc) */
+    public WithMethods(Method... methods) {
       super(methods);
     }
 
+    /* (non-Javadoc) */
     @Override
-    protected Method[] members(final Class<?> type) {
+    protected Method[] members(Class<?> type) {
       return type.getDeclaredMethods();
     }
   }
-
 }

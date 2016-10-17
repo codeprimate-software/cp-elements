@@ -39,8 +39,7 @@ public class ToStringRenderer<T> implements Renderer<T> {
    * @see java.lang.String#valueOf(Object)
    */
   @Override
-  public String render(final T obj) {
+  public String render(T obj) {
     return String.valueOf(obj);
   }
-
 }
