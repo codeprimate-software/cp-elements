@@ -423,7 +423,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
       ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class);
     }
     catch (NullPointerException expected) {
-      assertEquals(568, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(542, expected.getStackTrace()[0].getLineNumber());
       throw expected;
     }
   }
