@@ -21,8 +21,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.BooleanUtils;
@@ -629,7 +629,8 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private Filter<T> filter;
 
-    private final Set<T> members = new HashSet<>();
+    private final Set<T> members = new TreeSet<>((T member1, T member2) ->
+      member1.getName().compareTo(member2.getName()));
 
     /* (non-Javadoc) */
     @SuppressWarnings({ "unchecked", "varargs" })

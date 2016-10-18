@@ -235,20 +235,20 @@ public class HashCodeBuilderTests {
 
       Person that = (Person) obj;
 
-      return ObjectUtils.equals(this.getGender(), that.getGender())
+      return ObjectUtils.equals(this.getBirthDate(), that.getBirthDate())
         && ObjectUtils.equals(this.getFirstName(), that.getFirstName())
-        && ObjectUtils.equals(this.getLastName(), that.getLastName())
-        && ObjectUtils.equals(this.getBirthDate(), that.getBirthDate())
-        && ObjectUtils.equals(this.getId(), that.getId());
+        && ObjectUtils.equals(this.getGender(), that.getGender())
+        && ObjectUtils.equals(this.getId(), that.getId())
+        && ObjectUtils.equals(this.getLastName(), that.getLastName());
     }
 
     @Override
     public int hashCode() {
       int hashValue = 17;
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getGender());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getBirthDate());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getGender());
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
       return hashValue;
     }
