@@ -41,7 +41,7 @@ public abstract class ComparatorUtils {
    * their natural ordering.
    * @see java.lang.Comparable
    */
-  public static <T extends Comparable<T>> int compareIgnoreNull(final T obj1, final T obj2) {
+  public static <T extends Comparable<T>> int compareIgnoreNull(T obj1, T obj2) {
     return (obj1 == null ? 1 : (obj2 == null ? -1 : obj1.compareTo(obj2)));
   }
 
@@ -53,8 +53,20 @@ public abstract class ComparatorUtils {
    * @return a Comparator wrapper around the specified Comparator inverting the result of the comparison.
    * @see java.util.Comparator
    */
-  public static <T> Comparator<T> invert(final Comparator<T> comparator) {
+  public static <T> Comparator<T> invert(Comparator<T> comparator) {
     return (obj1, obj2) -> (-1 * comparator.compare(obj1, obj2));
   }
 
+  /**
+   * Wraps an exiting {@link Comparator} implementation in a null-safe, delegating {@link Comparator} implementation
+   * that protects against {@literal null} arguments to the {@literal compare} method.
+   *
+   * @param <T> Class type of the objects to compare.
+   * @param delegate {@link Comparator} delegate.
+   * @return a null-safe, delegating {@link Comparator} implementation.
+   * @see java.util.Comparator
+   */
+  public static <T> Comparator<T> nullSafeDelegatingComparator(Comparator<T> delegate) {
+    return (T obj1, T obj2) -> (obj1 == null ? 1 : (obj2 == null ? -1 : delegate.compare(obj1, obj2)));
+  }
 }
