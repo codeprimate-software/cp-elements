@@ -21,6 +21,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -32,6 +33,7 @@ import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.annotation.DSL;
 import org.cp.elements.lang.support.ComposableFilter;
+import org.cp.elements.util.ComparatorUtils;
 
 /**
  * The ReflectionUtils class is an abstract utility base class encapsulating commons operations used in Java
@@ -629,8 +631,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private Filter<T> filter;
 
-    private final Set<T> members = new TreeSet<>((T member1, T member2) ->
-      member1.getName().compareTo(member2.getName()));
+    private final Set<T> members = newMemberSet();
 
     /* (non-Javadoc) */
     @SuppressWarnings({ "unchecked", "varargs" })
@@ -678,6 +679,11 @@ public abstract class ReflectionUtils extends ClassUtils {
     protected abstract T[] members(Class<?> type);
 
     /* (non-Javadoc) */
+    protected Set<T> newMemberSet() {
+      return new HashSet<>();
+    }
+
+    /* (non-Javadoc) */
     public WithExpression<T> on(Object obj) {
       return on(ClassUtils.getClass(obj));
     }
@@ -717,10 +723,25 @@ public abstract class ReflectionUtils extends ClassUtils {
       super(fields);
     }
 
-    /* (non-Javadoc) */
+    /**
+     * @inheritDoc
+     */
     @Override
     protected Field[] members(Class<?> type) {
       return type.getDeclaredFields();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    protected Set<Field> newMemberSet() {
+      return new TreeSet<>(ComparatorUtils.nullSafeDelegatingComparator((Field field1, Field field2) -> {
+        String fullyQualfiedFieldOneName = field1.getDeclaringClass().getName().concat(field1.getName());
+        String fullyQualifiedFieldTwoName = field2.getDeclaringClass().getName().concat(field2.getName());
+
+        return fullyQualfiedFieldOneName.compareTo(fullyQualifiedFieldTwoName);
+      }));
     }
   }
 
@@ -737,7 +758,9 @@ public abstract class ReflectionUtils extends ClassUtils {
       super(methods);
     }
 
-    /* (non-Javadoc) */
+    /**
+     * @inheritDoc
+     */
     @Override
     protected Method[] members(Class<?> type) {
       return type.getDeclaredMethods();
