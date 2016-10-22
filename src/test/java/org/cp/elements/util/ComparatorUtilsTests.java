@@ -17,8 +17,6 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.test.TestUtils.assertNegative;
-import static org.cp.elements.test.TestUtils.assertPositive;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -51,61 +49,107 @@ public class ComparatorUtilsTests {
 
   @Test
   public void compareIgnoreNull() throws Exception {
-    assertPositive(ComparatorUtils.compareIgnoreNull(NULL, NULL));
-    assertPositive(ComparatorUtils.compareIgnoreNull(null, "null"));
-    assertNegative(ComparatorUtils.compareIgnoreNull("null", null));
+    assertThat(ComparatorUtils.compareIgnoreNull(NULL, NULL)).isGreaterThan(0);
+    assertThat(ComparatorUtils.compareIgnoreNull(null, "null")).isGreaterThan(0);
+    assertThat(ComparatorUtils.compareIgnoreNull("null", null)).isLessThan(0);
     assertThat(ComparatorUtils.compareIgnoreNull("test", "test")).isEqualTo(0);
-    assertNegative(ComparatorUtils.compareIgnoreNull("test", "testing"));
-    assertPositive(ComparatorUtils.compareIgnoreNull("tested", "test"));
-    assertPositive(ComparatorUtils.compareIgnoreNull("test", "TEST"));
+    assertThat(ComparatorUtils.compareIgnoreNull("test", "testing")).isLessThan(0);
+    assertThat(ComparatorUtils.compareIgnoreNull("tested", "test")).isGreaterThan(0);
+    assertThat(ComparatorUtils.compareIgnoreNull("test", "TEST")).isGreaterThan(0);
   }
 
   @Test
-  public void invert() {
+  public void invertAscending() {
     List<Number> numbers = new ArrayList<>(Arrays.asList(2, 1, 3));
 
-    Comparator<Number> numbersComparator = (numberOne, numberTwo) -> (numberOne.intValue() - numberTwo.intValue());
+    Comparator<Number> ascendingComparator = (numberOne, numberTwo) -> (numberOne.intValue() - numberTwo.intValue());
 
-    Collections.sort(numbers,  numbersComparator);
+    Collections.sort(numbers,  ascendingComparator);
 
     int currentNumber = Integer.MIN_VALUE;
 
-    for (final Number number : numbers) {
-      assertThat(currentNumber < number.intValue()).isTrue();
+    for (Number number : numbers) {
+      assertThat(currentNumber).isLessThan(number.intValue());
       currentNumber = number.intValue();
     }
 
-    Collections.sort(numbers, ComparatorUtils.invert(numbersComparator));
+    Collections.sort(numbers, ComparatorUtils.invert(ascendingComparator));
 
     currentNumber = Integer.MAX_VALUE;
 
-    for (final Number number : numbers) {
-      assertThat(currentNumber > number.intValue()).isTrue();
+    for (Number number : numbers) {
+      assertThat(currentNumber).isGreaterThan(number.intValue());
+      currentNumber = number.intValue();
+    }
+  }
+
+  @Test
+  public void invertDescending() {
+    List<Number> numbers = new ArrayList<>(Arrays.asList(2, 1, 3));
+
+    Comparator<Number> descendingComparator = (numberOne, numberTwo) -> (numberTwo.intValue() - numberOne.intValue());
+
+    Collections.sort(numbers,  descendingComparator);
+
+    int currentNumber = Integer.MAX_VALUE;
+
+    for (Number number : numbers) {
+      assertThat(currentNumber).isGreaterThan(number.intValue());
+      currentNumber = number.intValue();
+    }
+
+    Collections.sort(numbers, ComparatorUtils.invert(descendingComparator));
+
+    currentNumber = Integer.MIN_VALUE;
+
+    for (Number number : numbers) {
+      assertThat(currentNumber).isLessThan(number.intValue());
       currentNumber = number.intValue();
     }
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void nullSafeDelegatingComparatorWithNullValues() {
+  public void nullSafeArgumentComparatorWithNullValues() {
     Comparator<String> mockComparator = mock(Comparator.class);
 
-    assertThat(ComparatorUtils.nullSafeDelegatingComparator(mockComparator).compare(null, null)).isEqualTo(1);
-    assertThat(ComparatorUtils.nullSafeDelegatingComparator(mockComparator).compare(null, "test")).isEqualTo(1);
-    assertThat(ComparatorUtils.nullSafeDelegatingComparator(mockComparator).compare("test", null)).isEqualTo(-1);
+    assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare(null, null)).isEqualTo(1);
+    assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare(null, "test")).isEqualTo(1);
+    assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare("test", null)).isEqualTo(-1);
 
     verifyZeroInteractions(mockComparator);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void nullSafeDelegatingComparatorWithNonNullValues() {
+  public void nullSafeArgumentComparatorWithNonNullValues() {
     Comparator<String> mockComparator = mock(Comparator.class);
 
     when(mockComparator.compare(anyString(), anyString())).thenReturn(0);
 
-    assertThat(ComparatorUtils.nullSafeDelegatingComparator(mockComparator).compare("test", "TEST")).isEqualTo(0);
+    assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare("test", "TEST")).isEqualTo(0);
 
     verify(mockComparator, times(1)).compare(eq("test"), eq("TEST"));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void nullSafeComparatorWithNonNullComparator() {
+    Comparator<Comparable> mockComparator = mock(Comparator.class);
+
+    assertThat(ComparatorUtils.nullSafeComparator(mockComparator)).isSameAs(mockComparator);
+  }
+
+  @Test
+  public void nullSafeComparatorWithNullComparator() {
+    Comparator<Comparable> comparator = ComparatorUtils.nullSafeComparator(null);
+
+    assertThat(comparator).isNotNull();
+    assertThat(comparator.compare(null, null)).isEqualTo(1);
+    assertThat(comparator.compare(null, "test")).isEqualTo(1);
+    assertThat(comparator.compare("test", null)).isEqualTo(-1);
+    assertThat(comparator.compare("test", "test")).isEqualTo(0);
+    assertThat(comparator.compare("nil", "null")).isLessThan(0);
+    assertThat(comparator.compare("null", "nil")).isGreaterThan(0);
   }
 }

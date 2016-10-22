@@ -18,9 +18,11 @@ package org.cp.elements.util;
 
 import java.util.Comparator;
 
+import org.cp.elements.lang.NullSafe;
+
 /**
- * The ComparatorUtils class provides common functionality for ordering operations using the Comparable
- * and Comparator interfaces.
+ * The {@link ComparatorUtils} class is an abstract utility class providing common functionality
+ * for ordering operations using the {@link Comparable} and {@link Comparator} interfaces.
  *
  * @author John J. Blum
  * @see java.lang.Comparable
@@ -31,26 +33,28 @@ import java.util.Comparator;
 public abstract class ComparatorUtils {
 
   /**
-   * Compares two Comparable objects for absolute ordering, ignoring possible null values.  Null values are
-   * ordered last.
+   * Compares two {@link Comparable} objects for absolute ordering, ignoring possible {@literal null} values.
+   * Sorts (orders) {@literal null} values last.
    *
-   * @param obj1 the Comparable object being compared with obj2.
-   * @param obj2 the Comparable object being compared with obj1.
-   * @param <T> the type of Comparable objects in the comparison.
-   * @return a integer value indicating the absolute ordering of the Comparable objects as defined by
-   * their natural ordering.
+   * @param <T> {@link Class} type of {@link Comparable} objects in the comparison.
+   * @param obj1 {@link Comparable} object being compared with {@code obj2}.
+   * @param obj2 {@link Comparable} object being compared with {@code obj1}.
+   * @return a integer value indicating the absolute ordering of the {@link Comparable} objects
+   * as defined by their declared, natural ordering.
    * @see java.lang.Comparable
    */
+  @NullSafe
   public static <T extends Comparable<T>> int compareIgnoreNull(T obj1, T obj2) {
     return (obj1 == null ? 1 : (obj2 == null ? -1 : obj1.compareTo(obj2)));
   }
 
   /**
-   * Inverts the result of the Comparator.  Used to implement a descending sort order.
+   * Inverts the result of the {@link Comparator}.  Used to implement a descending sort order.
    *
-   * @param comparator the Comparator to invert.
-   * @param <T> the type of Comparable objects in the comparison.
-   * @return a Comparator wrapper around the specified Comparator inverting the result of the comparison.
+   * @param <T> {@link Class} type of {@link Comparable} objects in the comparison.
+   * @param comparator the {@link Comparator} to invert.
+   * @return a {@link Comparator} wrapper around the given {@link Comparator} inverting the result
+   * of the comparison.
    * @see java.util.Comparator
    */
   public static <T> Comparator<T> invert(Comparator<T> comparator) {
@@ -58,15 +62,32 @@ public abstract class ComparatorUtils {
   }
 
   /**
-   * Wraps an exiting {@link Comparator} implementation in a null-safe, delegating {@link Comparator} implementation
-   * that protects against {@literal null} arguments to the {@literal compare} method.
+   * Wraps an exiting {@link Comparator} in a null-safe, delegating {@link Comparator} implementation to protect
+   * against {@literal null} arguments passed to the {@literal compare} method.
+   * Sorts (order) {@literal null} values last.
    *
    * @param <T> Class type of the objects to compare.
    * @param delegate {@link Comparator} delegate.
-   * @return a null-safe, delegating {@link Comparator} implementation.
+   * @return a null-safe, delegating {@link Comparator} implementation wrapping the given {@link Comparator}.
    * @see java.util.Comparator
    */
-  public static <T> Comparator<T> nullSafeDelegatingComparator(Comparator<T> delegate) {
+  public static <T> Comparator<T> nullSafeArgumentsComparator(Comparator<T> delegate) {
     return (T obj1, T obj2) -> (obj1 == null ? 1 : (obj2 == null ? -1 : delegate.compare(obj1, obj2)));
+  }
+
+  /**
+   * Null-safe check on the given {@link Comparator} returning the given {@link Comparator} if not {@literal null}
+   * or providing a default {@link Comparator }implementation if the given {@link Comparator} is {@literal null}.
+   *
+   * @param <T> {@link Comparable} class type of the objects in the comparison.
+   * @param comparator {@link Comparator} to evaluate for {@literal null}.
+   * @return the given {@link Comparator} if not {@literal null} or a default, provided {@link Comparator}
+   * implementation if the given {@link Comparator} is {@literal null}.
+   * @see #nullSafeArgumentsComparator(Comparator)
+   * @see java.util.Comparator
+   */
+  @NullSafe
+  public static <T extends Comparable<T>> Comparator<T> nullSafeComparator(Comparator<T> comparator) {
+    return (comparator != null ? comparator : ComparatorUtils::compareIgnoreNull);
   }
 }

@@ -736,7 +736,7 @@ public abstract class ReflectionUtils extends ClassUtils {
      */
     @Override
     protected Set<Field> newMemberSet() {
-      return new TreeSet<>(ComparatorUtils.nullSafeDelegatingComparator((Field field1, Field field2) -> {
+      return new TreeSet<>(ComparatorUtils.nullSafeArgumentsComparator((Field field1, Field field2) -> {
         String fullyQualfiedFieldOneName = field1.getDeclaringClass().getName().concat(field1.getName());
         String fullyQualifiedFieldTwoName = field2.getDeclaringClass().getName().concat(field2.getName());
 
