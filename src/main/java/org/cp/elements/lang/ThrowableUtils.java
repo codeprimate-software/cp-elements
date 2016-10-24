@@ -31,66 +31,82 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class ThrowableUtils {
 
   /**
-   * Gets the underlying cause of the Throwable object t if t is an instance of InvocationTargetException.
-   * InvocationTargetExceptions are typically thrown when a method on some object is invoked reflectively.
-   * 
-   * @param t the Throwable object being evaluated in order to determine the underlying cause.
-   * @return a Throwable object indicating the underlying cause of t if t is an instance of InvocationTargetException,
-   * otherwise return the Throwable object t.
+   * Null-safe method returning the cause of the given {@link Throwable} object.  If the {@link Throwable} object
+   * reference is {@literal null} then this method returns {@literal null}.
+   *
+   * @param throwable {@link Throwable} object who's cause is returned.
+   * @return the cause of the given {@link Throwable} object.
    * @see java.lang.Throwable#getCause()
-   * @see java.lang.reflect.InvocationTargetException
    */
-  public static Throwable getCauseOfInvocationTargetException(final Throwable t) {
-    return (t instanceof InvocationTargetException ? t.getCause() : t);
+  @NullSafe
+  public static Throwable getCause(Throwable throwable) {
+    return (throwable != null ? throwable.getCause() : null);
   }
 
   /**
-   * Gets the message of the Throwable object t.  If the Throwable object reference is null, then this method
-   * returns null.
+   * Returns the underlying cause of the given {@link Throwable} object if the {@link Throwable} object
+   * is an instance of {@link InvocationTargetException}.  An {@link InvocationTargetException} is typically thrown
+   * when a method on some object is invoked reflectively.
    * 
-   * @param t the Throwable object from which to extract the message.
-   * @return the message of the Throwable object.
+   * @param throwable {@link Throwable} object to evaluate as a {@link InvocationTargetException}.
+   * @return a {@link Throwable} object indicating the underlying cause of {@code throwable} if {@code throwable} is an instance
+   * of {@link InvocationTargetException} otherwise return {@code throwable}.
+   * @see java.lang.reflect.InvocationTargetException
+   * @see java.lang.Throwable#getCause()
+   */
+  @NullSafe
+  public static Throwable getCauseOfInvocationTargetException(Throwable throwable) {
+    return (throwable instanceof InvocationTargetException ? throwable.getCause() : throwable);
+  }
+
+  /**
+   * Null-safe method returning the message of the given {@link Throwable} object.  If the {@link Throwable} object
+   * reference is {@literal null} then this method returns {@literal null}.
+   * 
+   * @param throwable {@link Throwable} object who's message is returned.
+   * @return the message of the given {@link Throwable} object.
    * @see java.lang.Throwable#getMessage()
    */
-  public static String getMessage(final Throwable t) {
-    return (t == null ? null : t.getMessage());
+  @NullSafe
+  public static String getMessage(Throwable throwable) {
+    return (throwable != null ? throwable.getMessage() : null);
   }
 
   /**
-   * Determines the original cause of the Throwable object t.
+   * Determines the original, root cause of the given {@link Throwable} object.
    * 
-   * @param t the Throwable object who's root cause is determined.
-   * @return a Throwable object indicating the root cause of the Throwable object t, or null if the Throwable object
-   * reference is null.
+   * @param throwable {@link Throwable} object who's root cause will be determined.
+   * @return a {@link Throwable} object indicating the root cause of the given {@link Throwable} object,
+   * or {@literal null} if the {@link Throwable} object reference is {@literal null}.
    * @see java.lang.Throwable#getCause()
    */
-  public static Throwable getRootCause(Throwable t) {
-    if (t != null) {
-      while (t.getCause() != null) {
-        t = t.getCause();
-      }
+  @NullSafe
+  @SuppressWarnings("all")
+  public static Throwable getRootCause(Throwable throwable) {
+    while (getCause(throwable) != null) {
+      throwable = throwable.getCause();
     }
 
-    return t;
+    return throwable;
   }
 
   /**
-   * Gets the stack trace of Throwable object t as a String value.  If t is null, then a null String is returned.
+   * Returns the Stack Trace of the given {@link Throwable} object as a {@link String}.  Returns {@literal null}
+   * if the given {@link Throwable} object reference is {@literal null}.
    * 
-   * @param t the Throwable object who's stack trace will be captured and returned.
-   * @return a String value of the stack trace for the Throwable object t.
+   * @param throwable {@link Throwable} object who's Stack Trace is returned.
+   * @return the Stack Trace of the given {@link Throwable} object as a {@link String}.
    * @see java.lang.Throwable#printStackTrace(java.io.PrintWriter)
    */
-  public static String getStackTrace(final Throwable t) {
+  public static String getStackTrace(Throwable throwable) {
     String stackTraceValue = null;
 
-    if (t != null) {
+    if (throwable != null) {
       StringWriter writer = new StringWriter();
-      t.printStackTrace(new PrintWriter(writer));
+      throwable.printStackTrace(new PrintWriter(writer));
       stackTraceValue = writer.toString();
     }
 
     return stackTraceValue;
   }
-
 }

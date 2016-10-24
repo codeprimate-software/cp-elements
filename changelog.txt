@@ -10,6 +10,13 @@ Introduces the ProcessExecutor API for forking, launching and managing processes
 * Renamed LangExtensions.AssertThat.using(:String, :Object[]) to LangExtensions.AssertThat.stating(:String, :Object[])
 to clearly indicate the caller is specifying a message with arguments to use in the assertion error.
 * Created the org.cp.elements.lang.support.HashCodeBuilder class for computing hash codes of an object.
+* Created the org.cp.elements.util.ComparatorResultBuilder to build a comparison expression composed of Comparable objects.
+* Introduced the ComparatorUtils.nullSafeArgumentsComparator(:Comparator) to protect against null arguments passed
+to the Comparator implementation during the comparison operation.
+* Introduced the ComparatorsUtils.nullSafeComparator(:Comparator) to guard against null Comparator reference,
+providing a null-safe default, Comparable Comparator implementation.
+* Created the org.cp.elements.text.FormatUtils abstract utility class for working with text content.
+* Refactored and polished the org.cp.elements.lang.ThrowableUtils class; added a null-safe getCause(:Throwable) method.
 * ?
 
 
