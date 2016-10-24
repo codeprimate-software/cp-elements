@@ -19,6 +19,10 @@ package org.cp.elements.process;
 /**
  * The {@link ProcessException} class is a general {@link RuntimeException} to indicate a problem during
  * the normal execution of a program.
+ *
+ * @author John J. Blum
+ * @see java.lang.RuntimeException
+ * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class ProcessException extends RuntimeException {
@@ -52,7 +56,7 @@ public class ProcessException extends RuntimeException {
 
   /**
    * Constructs an instance of {@link ProcessException} initialized with the given message
-   * describing this {@link RuntimeException} and cause indicating the reason this {@link RuntimeException}
+   * describing this {@link RuntimeException} and cause to indicate the reason this {@link RuntimeException}
    * was thrown.
    *
    * @param message {@link String} describing this {@link RuntimeException}.
