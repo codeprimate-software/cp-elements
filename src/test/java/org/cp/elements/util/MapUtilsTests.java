@@ -37,10 +37,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The MapUtilsTests class is a test suite of test cases testing the contract and functionality
- * of the {@link MapUtils} class.
+ * Unit tests for {@link MapUtils}.
  *
  * @author John J. Blum
+ * @see java.util.Collections
  * @see java.util.Map
  * @see org.junit.Test
  * @see org.junit.Rule
@@ -558,6 +558,40 @@ public class MapUtilsTests {
   @Test
   public void sizeOfSingleEntryMapReturnsOne() {
     assertThat(MapUtils.size(Collections.singletonMap("one", 1)), is(equalTo(1)));
+  }
+
+  @Test
+  public void toStringWithEmptyMap() {
+    assertThat(MapUtils.toString(Collections.emptyMap()), is(equalTo("{}")));
+  }
+
+  @Test
+  public void toStringWithNonEmptyMap() {
+    Map<String, Integer> map = new HashMap<>(3);
+
+    map.put("one", 1);
+    map.put("two", 2);
+    map.put("three", 3);
+
+    String mapString = MapUtils.toString(map);
+
+    String expected = "{"
+      .concat("\n\t").concat("one = 1,")
+      .concat("\n\t").concat("three = 3,")
+      .concat("\n\t").concat("two = 2")
+      .concat("\n}");
+
+    assertThat(mapString, is(equalTo(expected)));
+  }
+
+  @Test
+  public void toStringWithNullMap() {
+    assertThat(MapUtils.toString(null), is(equalTo("{}")));
+  }
+
+  @Test
+  public void toStringWithSingleEntryMap() {
+    assertThat(MapUtils.toString(Collections.singletonMap("one", 1)), is(equalTo("{\n\tone = 1\n}")));
   }
 
   @Test

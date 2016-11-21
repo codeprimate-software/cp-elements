@@ -18,6 +18,7 @@ package org.cp.elements.util;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
@@ -196,6 +197,34 @@ public abstract class MapUtils {
   @NullSafe
   public static int size(Map<?, ?> map) {
     return count(map);
+  }
+
+  /**
+   * Prints the given {@link Map} as a {@link String}.
+   *
+   * @param map {@link Map} to print as a {@link String}.
+   * @return a {@link String} representation of the given {@link Map}.
+   * @see java.lang.String
+   * @see java.util.Map
+   */
+  @NullSafe
+  public static String toString(Map<?, ?> map) {
+    StringBuilder builder = new StringBuilder("{");
+    int count = 0;
+
+    map = new TreeMap<Object, Object>(nullSafeMap(map));
+
+    for (Map.Entry<?, ?> entry : map.entrySet()) {
+      builder.append("\n\t");
+      builder.append(entry.getKey());
+      builder.append(" = ");
+      builder.append(entry.getValue());
+      builder.append(++count == map.size() ? "\n" : ",");
+    }
+
+    builder.append("}");
+
+    return builder.toString();
   }
 
   /**
