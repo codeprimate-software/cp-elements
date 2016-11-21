@@ -17,7 +17,8 @@
 package org.cp.elements.lang;
 
 /**
- * The NumberUtils class is a utility class encapsulating common functionality for working with Numbers.
+ * The {@link NumberUtils} class is an abstract utility class encapsulating common functionality
+ * for working with {@link Number Numbers}.
  * 
  * @author John J. Blum
  * @see java.lang.Number
@@ -33,12 +34,14 @@ public abstract class NumberUtils {
    * (or 32-bit value).
    * @return a byte array containing the individual bytes making up the value of the integer (int).
    */
-  public static byte[] getBytes(final int value) {
+  public static byte[] getBytes(int value) {
     byte[] valueBytes = new byte[4];
+
     valueBytes[0] = (byte) (value >>> 24 & 0xFF);
     valueBytes[1] = (byte) (value >>> 16 & 0xFF);
     valueBytes[2] = (byte) (value >>> 8 & 0xFF);
     valueBytes[3] = (byte) (value & 0xFF);
+
     return valueBytes;
   }
 
@@ -50,7 +53,7 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the specified double value is a floating-point number.
    * @see #isWhole(double)
    */
-  public static boolean isDecimal(final double value) {
+  public static boolean isDecimal(double value) {
     return (Math.floor(value) != value);
   }
 
@@ -63,8 +66,8 @@ public abstract class NumberUtils {
    * @see #isBitwiseEven(long)
    * @see #isOdd(long)
    */
-  public static boolean isEven(final long value) {
-    return (Math.abs(value) % 2l == 0);
+  public static boolean isEven(long value) {
+    return (Math.abs(value) % 2L == 0);
   }
 
   /**
@@ -75,8 +78,8 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the specified long value is even.
    * @see #isEven(long)
    */
-  public static boolean isBitwiseEven(final long value) {
-    return ((1l & Math.abs(value)) == 0l);
+  public static boolean isBitwiseEven(long value) {
+    return ((1L & Math.abs(value)) == 0L);
   }
 
   /**
@@ -86,7 +89,7 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the specified double value is negative (less than 0).
    * @see #isPositive(double)
    */
-  public static boolean isNegative(final double value) {
+  public static boolean isNegative(double value) {
     return (value < 0.0d);
   }
 
@@ -99,8 +102,8 @@ public abstract class NumberUtils {
    * @see #isBitwiseOdd(long)
    * @see #isEven(long)
    */
-  public static boolean isOdd(final long value) {
-    return (Math.abs(value) % 2l == 1);
+  public static boolean isOdd(long value) {
+    return (Math.abs(value) % 2L == 1);
   }
 
   /**
@@ -111,8 +114,8 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the specified long value is odd.
    * @see #isOdd(long)
    */
-  public static boolean isBitwiseOdd(final long value) {
-    return ((1l & Math.abs(value)) == 1l);
+  public static boolean isBitwiseOdd(long value) {
+    return ((1L & Math.abs(value)) == 1L);
   }
 
   /**
@@ -122,7 +125,7 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the specified double value is positive (greater than 0).
    * @see #isNegative(double)
    */
-  public static boolean isPositive(final double value) {
+  public static boolean isPositive(double value) {
     return (value > 0.0d);
   }
 
@@ -134,75 +137,163 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the specified double value is a whole number.
    * @see #isDecimal(double)
    */
-  public static boolean isWhole(final double value) {
+  public static boolean isWhole(double value) {
     return (Math.floor(value) == value);
   }
 
   /**
-   * Gets the primitive byte value of the specified Byte wrapper object, or 0 if the Byte wrapper object is null.
+   * Returns the byte value of the given {@link Number} or 0 if {@link Number} is {@literal null}.
+   *
+   * @param number {@link Number} to evaluate.
+   * @return the byte value of the given {@link Number} or 0 if the {@link Number} is {@literal null}.
+   * @see java.lang.Number#byteValue()
+   */
+  @NullSafe
+  public static byte byteValue(Number number) {
+    return (number != null ? number.byteValue() : 0);
+  }
+
+  /**
+   * Returns the short value of the given {@link Number} or 0 if {@link Number} is {@literal null}.
+   *
+   * @param number {@link Number} to evaluate.
+   * @return the short value of the given {@link Number} or 0 if the {@link Number} is {@literal null}.
+   * @see java.lang.Number#shortValue()
+   */
+  @NullSafe
+  public static short shortValue(Number number) {
+    return (number != null ? number.shortValue() : 0);
+  }
+
+  /**
+   * Returns the int value of the given {@link Number} or 0 if {@link Number} is {@literal null}.
+   *
+   * @param number {@link Number} to evaluate.
+   * @return the int value of the given {@link Number} or 0 if the {@link Number} is {@literal null}.
+   * @see java.lang.Number#intValue()
+   */
+  @NullSafe
+  public static int intValue(Number number) {
+    return (number != null ? number.intValue() : 0);
+  }
+
+  /**
+   * Returns the long value of the given {@link Number} or 0L if {@link Number} is {@literal null}.
+   *
+   * @param number {@link Number} to evaluate.
+   * @return the long value of the given {@link Number} or 0L if the {@link Number} is {@literal null}.
+   * @see java.lang.Number#longValue()
+   */
+  @NullSafe
+  public static long longValue(Number number) {
+    return (number != null ? number.longValue() : 0L);
+  }
+
+  /**
+   * Returns the float value of the given {@link Number} or 0.0f if {@link Number} is {@literal null}.
+   *
+   * @param number {@link Number} to evaluate.
+   * @return the float value of the given {@link Number} or 0.0f if the {@link Number} is {@literal null}.
+   * @see java.lang.Number#floatValue()
+   */
+  @NullSafe
+  public static float floatValue(Number number) {
+    return (number != null ? number.floatValue() : 0.0f);
+  }
+
+  /**
+   * Returns the double value of the given {@link Number} or 0.0d if {@link Number} is {@literal null}.
+   *
+   * @param number {@link Number} to evaluate.
+   * @return the double value of the given {@link Number} or 0.0d if the {@link Number} is {@literal null}.
+   * @see java.lang.Number#doubleValue()
+   */
+  @NullSafe
+  public static double doubleValue(Number number) {
+    return (number != null ? number.doubleValue() : 0.0d);
+  }
+
+  /**
+   * Return the primitive byte value of the specified {@link Byte} wrapper object, or 0
+   * if the {@link Byte} wrapper object is {@literal null}.
    * 
-   * @param value the Byte to determine the byte primitive value for.
-   * @return a primitive byte value for the specified Byte, or 0 if the Byte wrapper object is null.
+   * @param value {@link Byte} to evaluate.
+   * @return a primitive byte value for the specified {@link Byte}, or 0 if the {@link Byte} is {@literal null}.
+   * @see #byteValue(Number)
    * @see java.lang.Byte
    */
-  public static byte valueOf(final Byte value) {
-    return (value == null ? 0 : value);
+  @NullSafe
+  public static byte valueOf(Byte value) {
+    return byteValue(value);
   }
 
   /**
-   * Gets the primitive short value of the specified Short wrapper object, or 0 if the Short wrapper object is null.
-   * 
-   * @param value the Short to determine the short primitive value for.
-   * @return a primitive short value for the specified Short, or 0 if the Short wrapper object is null.
+   * Return the primitive short value of the specified {@link Short} wrapper object, or 0
+   * if the {@link Short} wrapper object is {@literal null}.
+   *
+   * @param value {@link Short} to evaluate.
+   * @return a primitive short value for the specified {@link Short}, or 0 if the {@link Short} is {@literal null}.
+   * @see #shortValue(Number)
    * @see java.lang.Short
    */
-  public static short valueOf(final Short value) {
-    return (value == null ? 0 : value);
+  @NullSafe
+  public static short valueOf(Short value) {
+    return shortValue(value);
   }
 
   /**
-   * Gets the primitive int value of the specified Integer wrapper object, or 0 if the Integer wrapper object is null.
-   * 
-   * @param value the Integer to determine the int primitive value for.
-   * @return a primitive int value for the specified Integer, or 0 if the Integer wrapper object is null.
+   * Return the primitive int value of the specified {@link Integer} wrapper object, or 0
+   * if the {@link Integer} wrapper object is {@literal null}.
+   *
+   * @param value {@link Integer} to evaluate.
+   * @return a primitive int value for the specified {@link Integer}, or 0 if the {@link Integer} is {@literal null}.
+   * @see #intValue(Number)
    * @see java.lang.Integer
    */
-  public static int valueOf(final Integer value) {
-    return (value == null ? 0 : value);
+  @NullSafe
+  public static int valueOf(Integer value) {
+    return intValue(value);
   }
 
   /**
-   * Gets the primitive long value of the specified Long wrapper object, or 0l if the Long wrapper object is null.
-   * 
-   * @param value the Long to determine the long primitive value for.
-   * @return a primitive long value for the specified Long, or 0L if the Long wrapper object is null.
+   * Return the primitive long value of the specified {@link Long} wrapper object, or 0
+   * if the {@link Long} wrapper object is {@literal null}.
+   *
+   * @param value {@link Long} to evaluate.
+   * @return a primitive long value for the specified {@link Long}, or 0 if the {@link Long} is {@literal null}.
+   * @see #longValue(Number)
    * @see java.lang.Long
    */
-  public static long valueOf(final Long value) {
-    return (value == null ? 0l : value);
+  @NullSafe
+  public static long valueOf(Long value) {
+    return longValue(value);
   }
 
   /**
-   * Gets the primitive float value of the specified Float wrapper object, or 0.0f if the Float wrapper object is null.
-   * 
-   * @param value the Float to determine the float primitive value for.
-   * @return a primitive float value for the specified Float, or 0.0f if the Float wrapper object is null.
+   * Return the primitive float value of the specified {@link Float} wrapper object, or 0
+   * if the {@link Float} wrapper object is {@literal null}.
+   *
+   * @param value {@link Float} to evaluate.
+   * @return a primitive float value for the specified {@link Float}, or 0 if the {@link Float} is {@literal null}.
+   * @see #floatValue(Number)
    * @see java.lang.Float
    */
-  public static float valueOf(final Float value) {
-    return (value == null ? 0.0f : value);
+  @NullSafe
+  public static float valueOf(Float value) {
+    return floatValue(value);
   }
 
   /**
-   * Gets the primitive double value of the specified Double wrapper object, or 0.0d if the Double wrapper object
-   * is null.
-   * 
-   * @param value the Double to determine the double primitive value for.
-   * @return a primitive double value for the specified Double, or 0.0d if the Double wrapper object is null.
+   * Return the primitive double value of the specified {@link Double} wrapper object, or 0
+   * if the {@link Double} wrapper object is {@literal null}.
+   *
+   * @param value {@link Double} to evaluate.
+   * @return a primitive double value for the specified {@link Double}, or 0 if the {@link Double} is {@literal null}.
+   * @see #doubleValue(Number)
    * @see java.lang.Double
    */
-  public static double valueOf(final Double value) {
-    return (value == null ? 0.0d : value);
+  @NullSafe
+  public static double valueOf(Double value) {
+    return doubleValue(value);
   }
-
 }
