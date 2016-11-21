@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -57,6 +58,22 @@ import org.cp.elements.lang.support.ToStringRenderer;
  */
 @SuppressWarnings("unused")
 public abstract class CollectionUtils {
+
+  /**
+   * Null-safe method to convert the array of elements into a {@link Set}.
+   *
+   * @param <T> {@link Class} type of the elements in the array.
+   * @param elements array of elements to convert into a {@link Set}.
+   * @return the array of elements as a {@link Set}.
+   * @see java.util.Set
+   */
+  @NullSafe
+  @SafeVarargs
+  public static <T> Set<T> asSet(T... elements) {
+    Set<T> set = new HashSet<>(ArrayUtils.nullSafeLength(elements));
+    Collections.addAll(set, ArrayUtils.nullSafeArray(elements));
+    return set;
+  }
 
   /**
    * Counts the number of elements in the {@link Iterable} collection.  If {@link Iterable} is null or contains
@@ -452,6 +469,58 @@ public abstract class CollectionUtils {
     }
 
     return subList;
+  }
+
+  /**
+   * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link List}.
+   *
+   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
+   * @param iterable {@link Iterable} to convert into a {@link List}.
+   * @return a {@link List} of the elements from the {@link Iterable} object.
+   * @see #nullSafeIterable(Iterable)
+   * @see java.lang.Iterable
+   * @see java.util.List
+   */
+  @NullSafe
+  public static <T> List<T> toList(Iterable<T> iterable) {
+    if (iterable instanceof Collection) {
+      return new ArrayList<>((Collection<T>) iterable);
+    }
+    else {
+      List<T> list = new ArrayList<>();
+
+      for (T element : nullSafeIterable(iterable)) {
+        list.add(element);
+      }
+
+      return list;
+    }
+  }
+
+  /**
+   * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link Set}.
+   *
+   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
+   * @param iterable {@link Iterable} to convert into a {@link Set}.
+   * @return a {@link Set} of the elements from the {@link Iterable} object.
+   * @see #nullSafeIterable(Iterable)
+   * @see java.lang.Iterable
+   * @see java.util.Set
+   */
+  @NullSafe
+  public static <T> Set<T> toSet(Iterable<T> iterable) {
+    if (iterable instanceof Collection) {
+      return new HashSet<>((Collection<T>) iterable);
+    }
+    else {
+      Set<T> set = new HashSet<>();
+
+      for (T element : nullSafeIterable(iterable)) {
+        set.add(element);
+      }
+
+      return set;
+    }
   }
 
   /**

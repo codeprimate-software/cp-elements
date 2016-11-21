@@ -50,10 +50,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The CollectionUtilsTests class is a test suite of test cases testing the contract and functionality
- * of the {@link CollectionUtils} class.
+ * Unit tests for {@link CollectionUtils}.
  * 
  * @author John J. Blum
+ * @see java.lang.Iterable
  * @see java.util.Collection
  * @see java.util.Collections
  * @see java.util.Enumeration
@@ -76,7 +76,7 @@ public class CollectionUtilsTests {
     assertThat(collection.containsAll(asCollection(elements)), is(true));
   }
 
-  protected <T> void assertShuffled(final Iterable<T> source, final Iterable<T> target) {
+  protected <T> void assertShuffled(Iterable<T> source, Iterable<T> target) {
     assertTrue("'source' must not be null and must have elements", source != null && source.iterator().hasNext());
     assertTrue("'target' must not be null and must have elements", target != null && target.iterator().hasNext());
 
@@ -138,6 +138,31 @@ public class CollectionUtilsTests {
         return elements[index++];
       }
     };
+  }
+
+  @Test
+  public void asSet() {
+    Set<Integer> set = CollectionUtils.asSet(1, 2, 4, 8);
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(4)));
+    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
+  }
+
+  @Test
+  public void asSetWitEmpty() {
+    Set<Integer> set = CollectionUtils.asSet();
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
+  }
+
+  @Test
+  public void asSetWitNull() {
+    Set<String> set = CollectionUtils.asSet((String[]) null);
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
   }
 
   @Test
@@ -1007,6 +1032,86 @@ public class CollectionUtilsTests {
   @Test(expected = IndexOutOfBoundsException.class)
   public void subListWithUnderFlowIndex() {
     CollectionUtils.subList(Collections.singletonList("test"), -1);
+  }
+
+  @Test
+  public void toListWithCollection() {
+    Collection<String> collection = asCollection("test", "testing", "tested");
+    List<String> list = CollectionUtils.toList(collection);
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list, is(not(sameInstance(collection))));
+    assertThat(list, is(equalTo(collection)));
+  }
+
+  @Test
+  public void toListWithEmptyIterable() {
+    List<?> list = CollectionUtils.toList(asIterable());
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.isEmpty(), is(true));
+  }
+
+  @Test
+  public void toListWithIterable() {
+    Iterable<String> iterable = asIterable("test", "testing", "tested");
+    List<String> list = CollectionUtils.toList(iterable);
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.size(), is(equalTo(3)));
+    assertThat(list.containsAll(asCollection("test", "testing", "tested")), is(true));
+  }
+
+  @Test
+  public void toListWithNull() {
+    List<?> list = CollectionUtils.toList(null);
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.isEmpty(), is(true));
+  }
+
+  @Test
+  public void toSetWithCollection() {
+    Collection<String> collection = asCollection("test", "testing", "tested");
+    Set<String> set = CollectionUtils.toSet(collection);
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(collection.size())));
+    assertThat(set.containsAll(collection), is(true));
+  }
+
+  @Test
+  public void toSetWithEmptyIterable() {
+    Set<?> set = CollectionUtils.toSet(asIterable());
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
+  }
+
+  @Test
+  public void toSetWithIterable() {
+    Set<Integer> set = CollectionUtils.toSet(asIterable(1, 2, 4, 8));
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(4)));
+    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
+  }
+
+  @Test
+  public void toSetWithIterableHavingDuplicates() {
+    Set<Integer> set = CollectionUtils.toSet(asIterable(1, 2, 4, 1, 8, 2));
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(4)));
+    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
+  }
+
+  @Test
+  public void toSetWithNull() {
+    Set<?> set = CollectionUtils.toSet(null);
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
   }
 
   @Test
