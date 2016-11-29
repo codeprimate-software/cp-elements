@@ -91,10 +91,10 @@ public class PropertiesBuilder {
    * @see java.util.Map
    * @see #from(Properties)
    */
-  public static PropertiesBuilder from(Map<String, Object> map) {
+  public static PropertiesBuilder from(Map<String, ?> map) {
     Properties properties = new Properties();
 
-    for (Map.Entry<String, Object> entry : map.entrySet()) {
+    for (Map.Entry<String, ?> entry : map.entrySet()) {
       properties.setProperty(entry.getKey(), String.valueOf(entry.getValue()));
     }
 
@@ -115,7 +115,19 @@ public class PropertiesBuilder {
   }
 
   /**
-   * Factory method to construct a new isntance of the {@link PropertiesBuilder} class initialized
+   * Factory method to construct a new instance of the {@link PropertiesBuilder} class initialized
+   * with the System environment variables.
+   *
+   * @return a newly constructed {@link PropertiesBuilder} initialized with the System properties.
+   * @see java.lang.System#getProperties()
+   * @see #from(Properties)
+   */
+  public static PropertiesBuilder fromEnvironmentVariables() {
+    return from(System.getenv());
+  }
+
+  /**
+   * Factory method to construct a new instance of the {@link PropertiesBuilder} class initialized
    * from the System properties.
    *
    * @return a newly constructed {@link PropertiesBuilder} initialized with the System properties.
@@ -224,5 +236,4 @@ public class PropertiesBuilder {
   public String toString() {
     return getProperties().toString();
   }
-
 }

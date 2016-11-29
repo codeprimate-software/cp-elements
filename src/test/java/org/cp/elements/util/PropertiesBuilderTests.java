@@ -46,8 +46,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The PropertiesBuilderTest class is a test suite of test cases testing the contract and functionality
- * of the {@link PropertiesBuilder} class.
+ * Unit tests for {@link PropertiesBuilder}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -164,10 +163,18 @@ public class PropertiesBuilderTests {
   }
 
   @Test
+  public void fromEnvironmentVariablesLoadsProperties() {
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromEnvironmentVariables();
+
+    assertThat(propertiesBuilder, is(notNullValue(PropertiesBuilder.class)));
+    assertThat(propertiesBuilder.build(), is(equalTo(System.getenv())));
+  }
+
+  @Test
   public void fromSystemPropertiesLoadsProperties() {
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromSystemProperties();
 
-    assertThat(propertiesBuilder, is(notNullValue()));
+    assertThat(propertiesBuilder, is(notNullValue(PropertiesBuilder.class)));
     assertThat(propertiesBuilder.build(), is(equalTo(System.getProperties())));
   }
 
@@ -314,5 +321,4 @@ public class PropertiesBuilderTests {
       return getName();
     }
   }
-
 }

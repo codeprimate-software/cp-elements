@@ -14,7 +14,7 @@ to clearly indicate the caller is specifying a message with arguments to use in 
 * Introduced the ComparatorUtils.nullSafeArgumentsComparator(:Comparator) to protect against null arguments passed
 to the Comparator implementation during the comparison operation.
 * Introduced the ComparatorsUtils.nullSafeComparator(:Comparator) to guard against null Comparator reference,
-providing a null-safe default, Comparable Comparator implementation.
+providing a null-safe, default, Comparable Comparator implementation.
 * Created the org.cp.elements.text.FormatUtils abstract utility class for working with text content.
 * Refactored and polished the org.cp.elements.lang.ThrowableUtils class; added a null-safe getCause(:Throwable) method.
 * ?
