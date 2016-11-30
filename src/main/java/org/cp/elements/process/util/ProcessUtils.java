@@ -40,6 +40,7 @@ import org.cp.elements.process.ProcessAdapter;
  *
  * @author John J. Blum
  * @see java.lang.Process
+ * @see java.io.File
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -78,7 +79,7 @@ public abstract class ProcessUtils {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Process} is still alive, or that the {@lnk Process}
+   * Null-safe method to determine whether the given {@link Process} is still alive, or that the {@link Process}
    * has not yet terminated yet.
    *
    * @param process {@link Process} to evaluate if still alive.
@@ -86,6 +87,7 @@ public abstract class ProcessUtils {
    * @see java.lang.Process#isAlive()
    * @see #isRunning(Process)
    */
+  @NullSafe
   public static boolean isAlive(Process process) {
     return (process != null && process.isAlive());
   }
@@ -136,6 +138,16 @@ public abstract class ProcessUtils {
     return (processAdapter != null && isRunning(processAdapter.getProcess()));
   }
 
+  /**
+   * Reads the process ID (pid) from the given {@link File}.
+   *
+   * @param pid {@link File} containing the process ID (pid) to read.
+   * @return the process ID (pid) stored in the given {@link File}.
+   * @throws PidUnknownException if the process ID (pid) could not be read from the given {@link File}.
+   * @throws NumberFormatException if the contents of the given {@link File} is not a valid process ID (pid).
+   * @see java.io.File
+   * @see #writePid(int)
+   */
   public static int readPid(File pid) {
     try {
       return Integer.parseInt(FileSystemUtils.read(pid));
@@ -145,6 +157,15 @@ public abstract class ProcessUtils {
     }
   }
 
+  /**
+   * Writes the given process ID ({@code pid}) to a .pid {@link File}.
+   *
+   * @param pid process ID to store in the .pid {@link File}.
+   * @return a {@link File} containing the given process ID ({@code pid}).
+   * @throws IOException if the process ID (pid) could not be stored in the {@link File}.
+   * @see java.io.File
+   * @see #readPid(File)
+   */
   public static File writePid(int pid) throws IOException {
     File pidFile = FileSystemUtils.newFile(PROCESS_ID_FILENAME);
 
@@ -168,7 +189,7 @@ public abstract class ProcessUtils {
     INSTANCE;
 
     public boolean isRunning(int processId) {
-      if (ObjectUtils.isPresent("com.sun.tools.attach.VirtualMachineDescriptor")) {
+      if (ObjectUtils.isPresent(VIRTUAL_MACHINE_CLASS_NAME)) {
         for (VirtualMachineDescriptor vmDescriptor : VirtualMachine.list()) {
           if (String.valueOf(processId).equals(vmDescriptor.id())) {
             return true;

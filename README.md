@@ -2,22 +2,22 @@
 
 ## Codeprimate Elements 
 
-*Codeprimate Elements* (codename *cp-elements* pronounced *see-pee elements*, or *Elements*) is a Java Class Library 
+*Codeprimate Elements* (codename *cp-elements* pronounced *see-pee elements*, or just *Elements*) is a Java Class Library 
 and micro-framework for simplifying the development of software applications written in **Java**. 
 
 *Elements* packages several APIs handling different application concerns and aspects, such as configuration, management,
  security, data modeling/processing along with the encapsulation of business logic into functional-based rules.
- At the most basic, fundamental level, *Elements* is an extension of the Java language and APIs itself, adding powerful
+ At the most basic/fundamental level, *Elements* is an extension of the Java language and APIs itself adding powerful
  and expressive capabilities not directly provided by the **Java Platform**. 
 
 The intent of *Elements* is to provide high quality, reusable and useful application classes and components that solve 
-common, reoccurring problems during application development.
+common, reoccurring problems during software development.
 
 #### Elemental Objectives  
 
 1. Function independently with no dependencies on 3rd-party libraries.
 2. Simple, robust and proven APIs built on solid OO principles, design patterns, and best practices.
-3. Promoting "open" standards and transparency through collaboration and feedback.
+3. Promote collaboration through "open", transparent communication and feedback.
 4. With priority on quality (over quantity) and reliability.  
 
 #### Why Elements...  

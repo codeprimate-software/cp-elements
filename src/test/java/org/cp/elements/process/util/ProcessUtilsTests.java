@@ -21,7 +21,11 @@ import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
 
 import org.cp.elements.process.ProcessAdapter;
 import org.junit.Test;
@@ -57,6 +61,7 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.isAlive(mockProcess)).isTrue();
 
     verify(mockProcess, times(1)).isAlive();
+    verifyNoMoreInteractions(mockProcess);
   }
 
   @Test
@@ -68,6 +73,7 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.isAlive(mockProcess)).isFalse();
 
     verify(mockProcess, times(1)).isAlive();
+    verifyNoMoreInteractions(mockProcess);
   }
 
   @Test
@@ -94,6 +100,7 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.isRunning(mockProcess)).isTrue();
 
     verify(mockProcess, times(1)).exitValue();
+    verifyNoMoreInteractions(mockProcess);
   }
 
   @Test
@@ -105,6 +112,7 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.isRunning(mockProcess)).isFalse();
 
     verify(mockProcess, times(1)).exitValue();
+    verifyNoMoreInteractions(mockProcess);
   }
 
   @Test
@@ -121,6 +129,7 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.isRunning(newProcessAdapter(mockProcess))).isTrue();
 
     verify(mockProcess, times(1)).exitValue();
+    verifyNoMoreInteractions(mockProcess);
   }
 
   @Test
@@ -132,5 +141,22 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.isRunning(newProcessAdapter(mockProcess))).isFalse();
 
     verify(mockProcess, times(1)).exitValue();
+    verifyNoMoreInteractions(mockProcess);
+  }
+
+  @Test
+  public void writeAndReadPidIsSuccessful() throws IOException {
+    int expectedPid = ProcessUtils.getProcessId();
+
+    assertThat(expectedPid).isGreaterThan(0);
+
+    File pidFile = ProcessUtils.writePid(expectedPid);
+
+    assertThat(pidFile).isNotNull();
+    assertThat(pidFile.isFile()).isTrue();
+
+    int actualPid = ProcessUtils.readPid(pidFile);
+
+    assertThat(actualPid).isEqualTo(expectedPid);
   }
 }
