@@ -18,7 +18,11 @@ package org.cp.elements.process.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -27,20 +31,29 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 
+import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.test.annotation.IntegrationTest;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Unit tests for {@link ProcessUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Process
+ * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.process.util.ProcessUtils
  * @since 1.0.0
  */
 public class ProcessUtilsTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void getProcessIdIsSuccessful() {
@@ -145,18 +158,112 @@ public class ProcessUtilsTests {
   }
 
   @Test
+  @IntegrationTest
   public void writeAndReadPidIsSuccessful() throws IOException {
-    int expectedPid = ProcessUtils.getProcessId();
+    File pidFile = null;
 
-    assertThat(expectedPid).isGreaterThan(0);
+    try {
+      int expectedPid = ProcessUtils.getProcessId();
 
-    File pidFile = ProcessUtils.writePid(expectedPid);
+      assertThat(expectedPid).isGreaterThan(0);
 
-    assertThat(pidFile).isNotNull();
-    assertThat(pidFile.isFile()).isTrue();
+      pidFile = ProcessUtils.writePid(expectedPid);
 
-    int actualPid = ProcessUtils.readPid(pidFile);
+      assertThat(pidFile).isNotNull();
+      assertThat(pidFile.isFile()).isTrue();
 
-    assertThat(actualPid).isEqualTo(expectedPid);
+      int actualPid = ProcessUtils.readPid(pidFile);
+
+      assertThat(actualPid).isEqualTo(expectedPid);
+    }
+    finally {
+      FileSystemUtils.delete(pidFile);
+    }
+  }
+
+  @Test
+  @IntegrationTest
+  public void readPidFromEmptyFileThrowsPidUnknownExceptionCausedByNumberFormatException() throws IOException {
+    File tmpPid = File.createTempFile("tempFile", ".pid");
+
+    assertThat(tmpPid).isNotNull();
+    assertThat(tmpPid.isFile()).isTrue();
+
+    tmpPid.deleteOnExit();
+
+    exception.expect(PidUnknownException.class);
+    exception.expectCause(isA(NumberFormatException.class));
+    exception.expectMessage(String.format("Failed to read Process ID (PID) from file [%s]",
+      tmpPid.getAbsolutePath()));
+
+    ProcessUtils.readPid(tmpPid);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void readPidFromNonExistingFileThrowsPidUnknownExceptionCausedByIllegalArgumentException() {
+    File mockFile = mock(File.class);
+
+    when(mockFile.isFile()).thenReturn(false);
+    when(mockFile.toString()).thenReturn("mock.pid");
+
+    try {
+      exception.expect(PidUnknownException.class);
+      exception.expectCause(isA(IllegalArgumentException.class));
+      exception.expectMessage("Failed to read Process ID (PID) from file [mock.pid]");
+
+      ProcessUtils.readPid(mockFile);
+    }
+    finally {
+      verify(mockFile, times(1)).isFile();
+      verify(mockFile, never()).canRead();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void readPidFromUnreadableFileThrowsPidUnknownExceptionCausedByIllegalStateException() {
+    File mockFile = mock(File.class);
+
+    when(mockFile.isFile()).thenReturn(true);
+    when(mockFile.canRead()).thenReturn(false);
+    when(mockFile.toString()).thenReturn("mock.pid");
+
+    try {
+      exception.expect(PidUnknownException.class);
+      exception.expectCause(isA(IllegalStateException.class));
+      exception.expectMessage("Failed to read Process ID (PID) from file [mock.pid]");
+
+      ProcessUtils.readPid(mockFile);
+    }
+    finally {
+      verify(mockFile, times(1)).isFile();
+      verify(mockFile, times(1)).canRead();
+    }
+  }
+
+  @Test
+  public void findPidFileInCurrentWorkingDirectoryReturnsNull() {
+    assertThat(ProcessUtils.findPidFile(FileSystemUtils.WORKING_DIRECTORY)).isNull();
+  }
+
+  @Test
+  public void findPidFileWithNonExistingPathThrowsIllegalArgumentException() {
+    File nonExistingFile = new File("/absolute/path/to/non/existing/file");
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The path [/absolute/path/to/non/existing/file] to search for the .pid file must not be null and must actually exist");
+
+    ProcessUtils.findPidFile(nonExistingFile);
+  }
+
+  @Test
+  public void findPidFileWithNullThrowsIllegalArgumentException() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The path [null] to search for the .pid file must not be null and must actually exist");
+
+    ProcessUtils.findPidFile(null);
   }
 }

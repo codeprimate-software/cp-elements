@@ -20,6 +20,7 @@ import static org.cp.elements.lang.StringUtils.hasText;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -29,7 +30,12 @@ import java.lang.management.RuntimeMXBean;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 
+import org.cp.elements.io.ComposableFileFilter;
+import org.cp.elements.io.DirectoriesOnlyFilter;
+import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.io.FilesOnlyFilter;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.process.PidUnknownException;
@@ -39,16 +45,22 @@ import org.cp.elements.process.ProcessAdapter;
  * The {@link ProcessUtils} class is an abstract utility class for working with Java {@link Process} objects.
  *
  * @author John J. Blum
- * @see java.lang.Process
  * @see java.io.File
+ * @see java.lang.Process
+ * @see org.cp.elements.process.ProcessAdapter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class ProcessUtils {
 
   protected static final String PROCESS_ID_FILENAME = ".pid";
-
   protected static final String VIRTUAL_MACHINE_CLASS_NAME = "com.sun.tools.attach.VirtualMachine";
+
+  protected static final FileFilter PID_FILE_FILTER = ComposableFileFilter.and(
+    FilesOnlyFilter.INSTANCE, new FileExtensionFilter(PROCESS_ID_FILENAME));
+
+  protected static final FileFilter DIRECTORY_PID_FILE_FILTER = ComposableFileFilter.or(
+    DirectoriesOnlyFilter.INSTANCE, PID_FILE_FILTER);
 
   /**
    * Determines the Process ID (PID) of this Java {@link Process}.
@@ -139,6 +151,42 @@ public abstract class ProcessUtils {
   }
 
   /**
+   * Searches the given {@link File} path for a {@literal .pid} {@link File}.
+   *
+   * If the given {@link File} is a directory then the directory is recursively searched (depth-first) until the first
+   * {@literal .pid} {@link File} is found.  If algorithm exhausts its search and no {@literal .pid} {@link File}
+   * can be found, then {@literal null} is returned.
+   *
+   * If the given {@link File} is a actual file then the file's containing directory is used as the base directory
+   * for the search and the algorithm continues as described above.
+   *
+   * @param path base {@link File} path to begin a search for a {@literal .pid} {@link File}.
+   * @return the first {@literal .pid} {@link File} found or {@literal null} if no {@literal .pid} {@link File}
+   * could be found exhausting the search.
+   * @throws IllegalArgumentException if the given {@link File} path is {@literal null} or does not exist.
+   * @see java.io.File
+   */
+  @SuppressWarnings("all")
+  public static File findPidFile(File path) {
+    Assert.isTrue(FileSystemUtils.isExisting(path),
+      "The path [%s] to search for the .pid file must not be null and must actually exist", path);
+
+    File searchDirectory = (path.isDirectory() ? path : path.getParentFile());
+
+    for (File file : searchDirectory.listFiles(DIRECTORY_PID_FILE_FILTER)) {
+      if (file.isDirectory()) {
+        file = findPidFile(file);
+      }
+
+      if (PID_FILE_FILTER.accept(file)) {
+        return file;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Reads the process ID (pid) from the given {@link File}.
    *
    * @param pid {@link File} containing the process ID (pid) to read.
@@ -152,15 +200,15 @@ public abstract class ProcessUtils {
     try {
       return Integer.parseInt(FileSystemUtils.read(pid));
     }
-    catch (IOException e) {
+    catch (IOException | IllegalArgumentException | IllegalStateException e) {
       throw new PidUnknownException(String.format("Failed to read Process ID (PID) from file [%s]", pid), e);
     }
   }
 
   /**
-   * Writes the given process ID ({@code pid}) to a .pid {@link File}.
+   * Writes the given process ID ({@code pid}) to a {@literal .pid} {@link File}.
    *
-   * @param pid process ID to store in the .pid {@link File}.
+   * @param pid process ID to store in the {@literal .pid} {@link File}.
    * @return a {@link File} containing the given process ID ({@code pid}).
    * @throws IOException if the process ID (pid) could not be stored in the {@link File}.
    * @see java.io.File
