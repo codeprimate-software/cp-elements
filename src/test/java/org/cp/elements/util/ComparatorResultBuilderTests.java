@@ -30,6 +30,7 @@ import org.junit.Test;
  * @see org.cp.elements.util.ComparatorResultBuilder
  * @since 1.0.0
  */
+@SuppressWarnings({ "unchecked" })
 public class ComparatorResultBuilderTests {
 
   @Test

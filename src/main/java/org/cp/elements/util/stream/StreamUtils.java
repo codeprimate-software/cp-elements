@@ -57,6 +57,7 @@ public abstract class StreamUtils {
    * @see java.util.stream.Stream
    * @see java.lang.Iterable
    */
+  @SuppressWarnings("unchecked")
   public static <T> Stream<T> stream(Iterable<T> iterable) {
     Assert.notNull(iterable, "Iterable cannot be null");
 

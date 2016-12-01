@@ -88,6 +88,16 @@
     <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.tools</groupId>
+      <artifactId>attach-api</artifactId>
+      <version>${java.version}</version>
+      <scope>system</scope>
+      <systemPath>${java.home}/../lib/tools.jar</systemPath>
+    </dependency>
+  </dependencies>
+
   <profiles>
     <profile>
       <id>code-analysis</id>

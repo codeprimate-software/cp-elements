@@ -141,6 +141,7 @@ public class ComparatorUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void nullSafeComparatorWithNullComparator() {
     Comparator<Comparable> comparator = ComparatorUtils.nullSafeComparator(null);
 
