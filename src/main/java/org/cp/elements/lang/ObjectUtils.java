@@ -20,6 +20,7 @@ import java.lang.reflect.Constructor;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The ObjectUtils utility class performs various operations on {@link java.lang.Object}.
@@ -45,12 +46,10 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static boolean areAllNull(final Object... values) {
-    if (values != null) {
-      for (Object value : values) {
-        if (value != null) {
-          return false;
-        }
+  public static boolean areAllNull(Object... values) {
+    for (Object value : ArrayUtils.nullSafeArray(values)) {
+      if (value != null) {
+        return false;
       }
     }
 
@@ -65,12 +64,10 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see #areAllNull(Object...)
    */
   @NullSafe
-  public static boolean areAnyNull(final Object... values) {
-    if (values != null) {
-      for (Object value : values) {
-        if (value == null) {
-          return true;
-        }
+  public static boolean areAnyNull(Object... values) {
+    for (Object value : ArrayUtils.nullSafeArray(values)) {
+      if (value == null) {
+        return true;
       }
     }
 
@@ -88,7 +85,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T clone(final T value) {
+  public static <T> T clone(T value) {
     if (value instanceof Cloneable) {
       return (T) invoke(value, CLONE_METHOD_NAME, value.getClass());
     }
@@ -119,12 +116,10 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   @SuppressWarnings({ "unchecked", "varargs" })
-  public static <T> T defaultIfNull(final T... values) {
-    if (values != null) {
-      for (T value : values) {
-        if (value != null) {
-          return value;
-        }
+  public static <T> T defaultIfNull(T... values) {
+    for (T value : ArrayUtils.nullSafeArray(values)) {
+      if (value != null) {
+        return value;
       }
     }
 
@@ -142,7 +137,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
-  public static boolean equals(final Object obj1, final Object obj2) {
+  public static boolean equals(Object obj1, Object obj2) {
     return (obj1 != null && obj1.equals(obj2));
   }
 
@@ -157,7 +152,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
-  public static boolean equalsIgnoreNull(final Object obj1, final Object obj2) {
+  public static boolean equalsIgnoreNull(Object obj1, Object obj2) {
     return (obj1 == null ? obj2 == null : obj1.equals(obj2));
   }
 
@@ -170,8 +165,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#hashCode()
    */
   @NullSafe
-  public static int hashCode(final Object obj) {
-    return (obj == null ? 0 : obj.hashCode());
+  public static int hashCode(Object obj) {
+    return (obj != null ? obj.hashCode() : 0);
   }
 
   /**
@@ -183,8 +178,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#toString()
    */
   @NullSafe
-  public static String toString(final Object obj) {
-    return (obj == null ? null : obj.toString());
+  public static String toString(Object obj) {
+    return (obj != null ? obj.toString() : null);
   }
-
 }

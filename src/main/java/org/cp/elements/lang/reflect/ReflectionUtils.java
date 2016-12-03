@@ -259,6 +259,24 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
+   * Calls the method with the specified name on the given class type, passing the given arguments.
+   * This method assumes the "method" to invoke is a static (class) member method with no return value.
+   *
+   * @param type the Class type on which the method to invoke is declared and defined.
+   * @param methodName a String indicating the name of the method to invoke.
+   * @param arguments an array of objects constituting the method's signature as well as the arguments
+   * to the method's parameters.
+   * @throws IllegalArgumentException if the method with the specified name is not declared on the given class type.
+   * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
+   * @see #getArgumentTypes(Object...)
+   * @see #getMethod(Class, String, Class[])
+   * @see #invoke(Class, String, Class[], Object[], Class)
+   */
+  public static void invoke(Class<?> type, String methodName, Object... arguments) {
+    invoke(type, methodName, getArgumentTypes(arguments), arguments, Void.class);
+  }
+
+  /**
    * Calls the no argument method with the specified name on the given class type, casting the method's return value
    * to the desired return type.  This method assumes the "method" to invoke is a static (class) member method.
    *
@@ -275,24 +293,6 @@ public abstract class ReflectionUtils extends ClassUtils {
    */
   public static <T> T invoke(Class<?> type, String methodName, Class<T> returnType) {
     return invoke(type, methodName, null, null, returnType);
-  }
-
-  /**
-   * Calls the method with the specified name on the given class type, passing the given arguments.
-   * This method assumes the "method" to invoke is a static (class) member method with no return value.
-   *
-   * @param type the Class type on which the method to invoke is declared and defined.
-   * @param methodName a String indicating the name of the method to invoke.
-   * @param arguments an array of objects constituting the method's signature as well as the arguments
-   * to the method's parameters.
-   * @throws IllegalArgumentException if the method with the specified name is not declared on the given class type.
-   * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
-   * @see #getArgumentTypes(Object...)
-   * @see #getMethod(Class, String, Class[])
-   * @see #invoke(Class, String, Class[], Object[], Class)
-   */
-  public static void invoke(Class<?> type, String methodName, Object... arguments) {
-    invoke(type, methodName, getArgumentTypes(arguments), arguments, Void.class);
   }
 
   /**
@@ -395,6 +395,24 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
+   * Calls the method with the specified name on the given object, passing the given arguments.
+   * This method assumes the "method" to invoke is an instance (object) member method.
+   *
+   * @param obj the Object on which the method to invoke is defined.
+   * @param methodName a String indicating the name of the method to invoke.
+   * @param arguments an array of objects constituting the method's signature as well as the arguments
+   * to the method's parameters.
+   * @throws IllegalArgumentException if the method with the specified name is not declared and defined
+   * on the given object's class type.
+   * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
+   * @see #getArgumentTypes(Object...)
+   * @see #invoke(Object, String, Class[], Object[], Class)
+   */
+  public static void invoke(Object obj, String methodName, Object... arguments) {
+    invoke(obj, methodName, getArgumentTypes(arguments), arguments, Void.class);
+  }
+
+  /**
    * Calls the method with the specified name on the given object, casting the method's return value
    * to the desired class type.  This method assumes the "method" to invoke is an instance (object) member method.
    *
@@ -411,24 +429,6 @@ public abstract class ReflectionUtils extends ClassUtils {
    */
   public static <T> T invoke(Object obj, String methodName, Class<T> returnType) {
     return invoke(obj, methodName, null, null, returnType);
-  }
-
-  /**
-   * Calls the method with the specified name on the given object, passing the given arguments.
-   * This method assumes the "method" to invoke is an instance (object) member method.
-   *
-   * @param obj the Object on which the method to invoke is defined.
-   * @param methodName a String indicating the name of the method to invoke.
-   * @param arguments an array of objects constituting the method's signature as well as the arguments
-   * to the method's parameters.
-   * @throws IllegalArgumentException if the method with the specified name is not declared and defined
-   * on the given object's class type.
-   * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
-   * @see #getArgumentTypes(Object...)
-   * @see #invoke(Object, String, Class[], Object[], Class)
-   */
-  public static void invoke(Object obj, String methodName, Object... arguments) {
-    invoke(obj, methodName, getArgumentTypes(arguments), arguments, Void.class);
   }
 
   /**
