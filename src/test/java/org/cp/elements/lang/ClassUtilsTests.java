@@ -384,7 +384,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
           ArrayUtils.asArray(false, 'c', 1, Math.PI, "test"), Void.class);
     }
     catch (MethodNotFoundException expected) {
-      assertEquals(String.format("Failed to resolve method with signature (methodTwo(:Boolean, :Character, :Integer, :Double, :String):void) on class type (%1$s)!",
+      assertEquals(String.format("Failed to resolve method with signature [methodTwo(:Boolean, :Character, :Integer, :Double, :String):void] on class type [%s]",
         SubType.class.getName()), expected.getMessage());
       throw expected;
     }
@@ -587,7 +587,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
       ClassUtils.loadClass("com.company.non.existing.Class");
     }
     catch (RuntimeException expected) {
-      assertEquals("Class (com.company.non.existing.Class) was not found!", expected.getMessage());
+      assertEquals("Class [com.company.non.existing.Class] was not found", expected.getMessage());
       assertTrue(expected.getCause() instanceof ClassNotFoundException);
       throw expected;
     }

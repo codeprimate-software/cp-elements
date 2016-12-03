@@ -62,7 +62,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isAssignableFrom(Class)
    */
   @NullSafe
-  public static boolean assignableTo(final Class<?> fromType, final Class<?> toType) {
+  public static boolean assignableTo(Class<?> fromType, Class<?> toType) {
     return (toType != null && (fromType == null || toType.isAssignableFrom(fromType)));
   }
 
@@ -74,8 +74,8 @@ public abstract class ClassUtils {
    * @see java.lang.Object#getClass()
    */
   @NullSafe
-  public static Class<?> getClass(final Object obj) {
-    return (obj == null ? null : obj.getClass());
+  public static Class<?> getClass(Object obj) {
+    return (obj != null ? obj.getClass() : null);
   }
 
   /**
@@ -88,8 +88,8 @@ public abstract class ClassUtils {
    * @see java.lang.Object#getClass()
    */
   @NullSafe
-  public static String getClassName(final Object obj) {
-    return (obj == null ? null : obj.getClass().getName());
+  public static String getClassName(Object obj) {
+    return (obj != null ? obj.getClass().getName() : null);
   }
 
   /**
@@ -102,8 +102,8 @@ public abstract class ClassUtils {
    * @see java.lang.Object#getClass()
    */
   @NullSafe
-  public static String getClassSimpleName(final Object obj) {
-    return (obj == null ? null : obj.getClass().getSimpleName());
+  public static String getClassSimpleName(Object obj) {
+    return (obj != null ? obj.getClass().getSimpleName() : null);
   }
 
   /**
@@ -121,7 +121,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static String getResourceName(final Class type) {
+  public static String getResourceName(Class type) {
     return (type != null ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION) : null);
   }
 
@@ -138,7 +138,7 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Constructor
    */
   @SuppressWarnings({ "unchecked", "all" })
-  public static <T> Constructor<T> findConstructor(final Class<T> type, final Object... arguments) {
+  public static <T> Constructor<T> findConstructor(Class<T> type, Object... arguments) {
     for (Constructor<?> constructor : type.getDeclaredConstructors()) {
       Class<?>[] parameterTypes = constructor.getParameterTypes();
 
@@ -169,7 +169,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredConstructor(Class[])
    * @see java.lang.reflect.Constructor
    */
-  public static <T> Constructor<T> getConstructor(final Class<T> type, final Class<?>... parameterTypes) {
+  public static <T> Constructor<T> getConstructor(Class<T> type, Class<?>... parameterTypes) {
     try {
       return type.getDeclaredConstructor(parameterTypes);
     }
@@ -193,18 +193,16 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    * @see java.lang.reflect.Constructor
    */
-  public static <T> Constructor<T> resolveConstructor(final Class<T> type, final Class<?>[] parameterTypes, final Object... arguments) {
+  public static <T> Constructor<T> resolveConstructor(Class<T> type, Class<?>[] parameterTypes, Object... arguments) {
     try {
       return getConstructor(type, parameterTypes);
     }
     catch (ConstructorNotFoundException e) {
       Constructor<T> constructor = findConstructor(type, arguments);
 
-      if (constructor == null) {
-        throw new ConstructorNotFoundException(String.format(
-          "Failed to resolve constructor with signature (%1$s) on class type (%2$s)!",
-            getMethodSignature(getSimpleName(type), parameterTypes, Void.class), getName(type)), e.getCause());
-      }
+      Assert.notNull(constructor, new ConstructorNotFoundException(String.format(
+        "Failed to resolve constructor with signature [%1$s] on class type [%2$s]",
+          getMethodSignature(getSimpleName(type), parameterTypes, Void.class), getName(type)), e.getCause()));
 
       return constructor;
     }
@@ -224,7 +222,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredField(String)
    * @see java.lang.reflect.Field
    */
-  public static Field getField(final Class<?> type, final String fieldName) {
+  public static Field getField(Class<?> type, String fieldName) {
     try {
       return type.getDeclaredField(fieldName);
     }
@@ -255,7 +253,7 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Method
    */
   @SuppressWarnings("all")
-  public static Method findMethod(final Class<?> type, final String methodName, final Object... arguments) {
+  public static Method findMethod(Class<?> type, String methodName, Object... arguments) {
     for (Method method : type.getDeclaredMethods()) {
       if (method.getName().equals(methodName)) {
         Class<?>[] parameterTypes = method.getParameterTypes();
@@ -293,7 +291,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredMethod(String, Class[])
    * @see java.lang.reflect.Method
    */
-  public static Method getMethod(final Class<?> type, final String methodName, final Class<?>... parameterTypes) {
+  public static Method getMethod(Class<?> type, String methodName, Class<?>... parameterTypes) {
     try {
       return type.getDeclaredMethod(methodName, parameterTypes);
     }
@@ -329,23 +327,18 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    * @see java.lang.reflect.Method
    */
-  public static Method resolveMethod(final Class<?> type,
-                                     final String methodName,
-                                     final Class<?>[] parameterTypes,
-                                     final Object[] arguments,
-                                     final Class<?> returnType)
-  {
+  public static Method resolveMethod(Class<?> type, String methodName, Class<?>[] parameterTypes, Object[] arguments,
+      Class<?> returnType) {
+
     try {
       return getMethod(type, methodName, parameterTypes);
     }
     catch (MethodNotFoundException e) {
       Method method = findMethod(type, methodName, arguments);
 
-      if (method == null) {
-        throw new MethodNotFoundException(String.format(
-          "Failed to resolve method with signature (%1$s) on class type (%2$s)!",
-            getMethodSignature(methodName, parameterTypes, returnType), getName(type)), e.getCause());
-      }
+      Assert.notNull(method, new MethodNotFoundException(String.format(
+        "Failed to resolve method with signature [%1$s] on class type [%2$s]",
+          getMethodSignature(methodName, parameterTypes, returnType), getName(type)), e.getCause()));
 
       return method;
     }
@@ -358,7 +351,7 @@ public abstract class ClassUtils {
    * @return the signature of the Method as a String.
    * @see #getMethodSignature(String, Class[], Class)
    */
-  protected static String getMethodSignature(final Method method) {
+  protected static String getMethodSignature(Method method) {
     return getMethodSignature(method.getName(), method.getParameterTypes(), method.getReturnType());
   }
 
@@ -371,10 +364,7 @@ public abstract class ClassUtils {
    * @return the signature of the method as a String.
    * @see #getSimpleName(Class)
    */
-  protected static String getMethodSignature(final String methodName,
-                                             final Class<?>[] parameterTypes,
-                                             final Class<?> returnType)
-  {
+  protected static String getMethodSignature(String methodName, Class<?>[] parameterTypes, Class<?> returnType) {
     StringBuilder buffer = new StringBuilder(methodName);
 
     buffer.append("(");
@@ -402,8 +392,8 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getName()
    */
   @NullSafe
-  public static String getName(final Class type) {
-    return (type == null ? null : type.getName());
+  public static String getName(Class type) {
+    return (type != null ? type.getName() : null);
   }
 
   /**
@@ -414,8 +404,8 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getSimpleName()
    */
   @NullSafe
-  public static String getSimpleName(final Class type) {
-    return (type == null ? null : type.getSimpleName());
+  public static String getSimpleName(Class type) {
+    return (type != null ? type.getSimpleName() : null);
   }
 
   /**
@@ -428,7 +418,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isInstance(Object)
    */
   @NullSafe
-  public static boolean instanceOf(final Object obj, final Class<?> type) {
+  public static boolean instanceOf(Object obj, Class<?> type) {
     return (type != null && type.isInstance(obj));
   }
 
@@ -440,7 +430,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isAnnotation()
    */
   @NullSafe
-  public static boolean isAnnotation(final Class type) {
+  public static boolean isAnnotation(Class type) {
     return (type != null && type.isAnnotation());
   }
 
@@ -455,12 +445,10 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.AccessibleObject#isAnnotationPresent(Class)
    */
   @NullSafe
-  public static boolean isAnnotationPresent(final Class<? extends Annotation> annotation, final AnnotatedElement... members) {
-    if (members != null) {
-      for (AnnotatedElement member : members) {
-        if (member != null && member.isAnnotationPresent(annotation)) {
-          return true;
-        }
+  public static boolean isAnnotationPresent(Class<? extends Annotation> annotation, AnnotatedElement... members) {
+    for (AnnotatedElement member : ArrayUtils.nullSafeArray(members, AnnotatedElement.class)) {
+      if (member != null && member.isAnnotationPresent(annotation)) {
+        return true;
       }
     }
 
@@ -475,7 +463,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isArray()
    */
   @NullSafe
-  public static boolean isArray(final Class type) {
+  public static boolean isArray(Class type) {
     return (type != null && type.isArray());
   }
 
@@ -487,7 +475,7 @@ public abstract class ClassUtils {
    * @return true iff the Class object is not null and represents an actual class.
    */
   @NullSafe
-  public static boolean isClass(final Class type) {
+  public static boolean isClass(Class type) {
     return (type != null && !(type.isAnnotation() || type.isArray() || type.isEnum() || type.isInterface()
       || type.isPrimitive()));
   }
@@ -500,7 +488,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isEnum()
    */
   @NullSafe
-  public static boolean isEnum(final Class type) {
+  public static boolean isEnum(Class type) {
     return (type != null && type.isEnum());
   }
 
@@ -512,7 +500,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isInterface()
    */
   @NullSafe
-  public static boolean isInterface(final Class type) {
+  public static boolean isInterface(Class type) {
     return (type != null && type.isInterface());
   }
 
@@ -523,10 +511,9 @@ public abstract class ClassUtils {
    * @return a boolean value indicating whether the class identified by name is in the classpath.
    * @see #loadClass(String)
    */
-  public static boolean isPresent(final String className) {
+  public static boolean isPresent(String className) {
     try {
-      loadClass(className);
-      return true;
+      return (loadClass(className) != null);
     }
     catch (TypeNotFoundException ignore) {
       return false;
@@ -541,7 +528,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isPrimitive()
    */
   @NullSafe
-  public static boolean isPrimitive(final Class type) {
+  public static boolean isPrimitive(Class type) {
     return (type != null && type.isPrimitive());
   }
 
@@ -556,7 +543,7 @@ public abstract class ClassUtils {
    * @see java.lang.Thread#currentThread()
    * @see java.lang.Thread#getContextClassLoader()
    */
-  public static Class loadClass(final String fullyQualifiedClassName) {
+  public static Class loadClass(String fullyQualifiedClassName) {
     return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_LOADED_CLASS,
       Thread.currentThread().getContextClassLoader());
   }
@@ -573,18 +560,15 @@ public abstract class ClassUtils {
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
    */
   @SuppressWarnings("all")
-  public static Class loadClass(final String fullyQualifiedClassName,
-                                final boolean initialize,
-                                final ClassLoader classLoader)
-  {
+  public static Class loadClass(String fullyQualifiedClassName, boolean initialize, ClassLoader classLoader) {
     try {
       return Class.forName(fullyQualifiedClassName, initialize, classLoader);
     }
     catch (ClassNotFoundException e) {
-      throw new TypeNotFoundException(String.format("Class (%1$s) was not found!", fullyQualifiedClassName), e);
+      throw new TypeNotFoundException(String.format("Class [%s] was not found", fullyQualifiedClassName), e);
     }
     catch (NoClassDefFoundError err) {
-      throw new TypeNotFoundException(String.format("Class (%1$s) was not found!", fullyQualifiedClassName), err);
+      throw new TypeNotFoundException(String.format("Class [%s] was not found", fullyQualifiedClassName), err);
     }
   }
 
@@ -597,7 +581,7 @@ public abstract class ClassUtils {
    * @see #locateClass(String, ClassLoader)
    * @see java.net.URL
    */
-  public static URL locateClass(final String binaryName) {
+  public static URL locateClass(String binaryName) {
     return locateClass(binaryName, Thread.currentThread().getContextClassLoader());
   }
 
@@ -612,7 +596,7 @@ public abstract class ClassUtils {
    * for the given binary name.
    * @see java.net.URL
    */
-  public static URL locateClass(final String binaryName, final ClassLoader classLoader) {
+  public static URL locateClass(String binaryName, ClassLoader classLoader) {
     try {
       Class<?> type = loadClass(binaryName, false, classLoader);
       return type.getClassLoader().getResource(getResourceName(type));
@@ -632,13 +616,11 @@ public abstract class ClassUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static boolean notInstanceOf(final Object obj, final Class... types) {
+  public static boolean notInstanceOf(Object obj, Class... types) {
     boolean result = true;
 
-    if (types != null) {
-      for (int index = 0; result && index < types.length; index++) {
-        result &= !instanceOf(obj, types[index]);
-      }
+    for (int index = 0; result && index < ArrayUtils.nullSafeLength(types); index++) {
+      result &= !instanceOf(obj, types[index]);
     }
 
     return result;
