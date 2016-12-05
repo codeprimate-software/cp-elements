@@ -32,8 +32,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The StringUtilsTest class is a test suite of test cases testing the contract and functionality of the 
- * StringUtils class.
+ * Unit tests for {@link StringUtils}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -266,7 +265,7 @@ public class StringUtilsTest {
       StringUtils.getSpaces(-1);
     }
     catch (IllegalArgumentException expected) {
-      assertEquals("The number (-1) must be greater than equal to 0!", expected.getMessage());
+      assertEquals("The number [-1] of desired spaces must be greater than equal to 0", expected.getMessage());
       throw expected;
     }
   }
@@ -450,7 +449,7 @@ public class StringUtilsTest {
   public void padWithIllegalLength() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(-10) must be greater than equal to 0");
+    expectedException.expectMessage("[-10] must be greater than equal to 0");
 
     StringUtils.pad("test", -10);
   }
@@ -527,6 +526,20 @@ public class StringUtilsTest {
   }
 
   @Test
+  public void testSingleSpaceObjects() {
+    assertEquals("true false", StringUtils.singleSpaceObjects(true, false));
+    assertEquals("t e s t", StringUtils.singleSpaceObjects('t', 'e', 's', 't'));
+    assertEquals("1 0 1", StringUtils.singleSpaceObjects(1, 0, 1));
+    assertEquals("3.14159", StringUtils.singleSpaceObjects(3.14159d));
+    assertEquals("false \0 c 0 3.14159 mock", StringUtils.singleSpaceObjects(false, '\0', 'c', 0, 3.14159d, "mock"));
+    assertEquals("test", StringUtils.singleSpaceObjects("test"));
+    assertEquals("null", StringUtils.singleSpaceObjects("  null "));
+    assertEquals("this   is  a     test!", StringUtils.singleSpaceObjects("  this", "  is ", "a", "    test!   "));
+    assertEquals("this is a test with a null value", StringUtils.singleSpaceObjects("this", "is", "a", "test", "with",
+      "a", null, "value"));
+  }
+
+  @Test
   public void testSingleSpaceString() {
     assertEquals("This is a test!", StringUtils.singleSpaceString(" This is  a          test!  "));
     assertEquals("This_is_another_test!", StringUtils.singleSpaceString("This_is_another_test!"));
@@ -546,19 +559,6 @@ public class StringUtilsTest {
   @Test(expected = IllegalArgumentException.class)
   public void testSingleSpaceStringWithNullString() {
     StringUtils.singleSpaceString(null);
-  }
-
-  @Test
-  public void testSingleSpaceValues() {
-    assertEquals("true false", StringUtils.singleSpaceValues(true, false));
-    assertEquals("t e s t", StringUtils.singleSpaceValues('t', 'e', 's', 't'));
-    assertEquals("1 0 1", StringUtils.singleSpaceValues(1, 0, 1));
-    assertEquals("3.14159", StringUtils.singleSpaceValues(3.14159d));
-    assertEquals("false \0 c 0 3.14159 mock", StringUtils.singleSpaceValues(false, '\0', 'c', 0, 3.14159d, "mock"));
-    assertEquals("test", StringUtils.singleSpaceValues("test"));
-    assertEquals("null", StringUtils.singleSpaceValues("  null "));
-    assertEquals("this   is  a     test!", StringUtils.singleSpaceValues("  this", "  is ", "a", "    test!   "));
-    assertEquals("this is a test with a null value", StringUtils.singleSpaceValues("this", "is", "a", "test", "with", "a", null, "value"));
   }
 
   @Test
@@ -678,7 +678,7 @@ public class StringUtilsTest {
   public void truncateWithIllegalLength() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("(-2) must be greater than equal to 0");
+    expectedException.expectMessage("[-2] must be greater than equal to 0");
 
     StringUtils.truncate("test", -2);
   }

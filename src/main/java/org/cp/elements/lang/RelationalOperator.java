@@ -36,7 +36,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the equality comparison.
    * @return a RelationalOperator for the equality comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> equalTo(final T value) {
+  public static <T extends Comparable<T>> RelationalOperator<T> equalTo(T value) {
     return new EqualToOperator<>(value);
   }
 
@@ -48,7 +48,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the greater than comparison.
    * @return a RelationalOperator for the greater than comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> greaterThan(final T lowerBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> greaterThan(T lowerBound) {
     return new GreaterThanOperator<>(lowerBound);
   }
 
@@ -61,7 +61,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the greater than and less than comparison.
    * @return a RelationalOperator for the greater than and less than comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanAndLessThan(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanAndLessThan(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(greaterThan(lowerBound), LogicalOperator.AND, lessThan(upperBound));
   }
 
@@ -74,7 +74,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the greater than and less than equal to comparison.
    * @return a RelationalOperator for the greater than and less than equal to comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(greaterThan(lowerBound), LogicalOperator.AND, lessThanEqualTo(upperBound));
   }
 
@@ -86,7 +86,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the greater than equal to comparison.
    * @return a RelationalOperator for the greater than equal to comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualTo(final T lowerBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualTo(T lowerBound) {
     return new GreaterThanEqualToOperator<>(lowerBound);
   }
 
@@ -99,7 +99,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the greater than equal to and less than comparison.
    * @return a RelationalOperator for the greater than equal to and less than comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualToAndLessThan(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(greaterThanEqualTo(lowerBound), LogicalOperator.AND, lessThan(upperBound));
   }
 
@@ -114,7 +114,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * comparison.
    * @return a RelationalOperator for the greater than equal to and less than equal to comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualToAndLessThanEqualTo(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> greaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(greaterThanEqualTo(lowerBound), LogicalOperator.AND, lessThanEqualTo(upperBound));
   }
 
@@ -126,7 +126,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the less than comparison.
    * @return a RelationalOperator for the less than comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> lessThan(final T lowerBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> lessThan(T lowerBound) {
     return new LessThanOperator<>(lowerBound);
   }
 
@@ -139,7 +139,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the less than or greater than comparison.
    * @return a RelationalOperator for the less than or greater than comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> lessThanOrGreaterThan(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> lessThanOrGreaterThan(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(lessThan(lowerBound), LogicalOperator.OR, greaterThan(upperBound));
   }
 
@@ -152,7 +152,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the less than or greater than equal to comparison.
    * @return a RelationalOperator for the less than or greater than equal to comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> lessThanOrGreaterThanEqualTo(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> lessThanOrGreaterThanEqualTo(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(lessThan(lowerBound), LogicalOperator.OR, greaterThanEqualTo(upperBound));
   }
 
@@ -164,7 +164,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the less than equal to comparison.
    * @return a RelationalOperator for the less than equal to comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualTo(final T lowerBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualTo(T lowerBound) {
     return new LessThanEqualToOperator<>(lowerBound);
   }
 
@@ -177,7 +177,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the expected Class type for the object used in the less than equal to or greater than comparison.
    * @return a RelationalOperator for the less than equal to or greater than comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualToOrGreaterThan(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualToOrGreaterThan(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(lessThanEqualTo(lowerBound), LogicalOperator.OR, greaterThan(upperBound));
   }
 
@@ -192,7 +192,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * comparison.
    * @return a RelationalOperator for the less than equal to or greater than equal to comparison.
    */
-  public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualToOrGreaterThanEqualTo(final T lowerBound, final T upperBound) {
+  public static <T extends Comparable<T>> RelationalOperator<T> lessThanEqualToOrGreaterThanEqualTo(T lowerBound, T upperBound) {
     return ComposableRelationalOperator.compose(lessThanEqualTo(lowerBound), LogicalOperator.OR, greaterThanEqualTo(upperBound));
   }
 
@@ -259,7 +259,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @param symbol a String to symbolically represent the relational operator.
      * @throws IllegalArgumentException if either the description or symbol are not specified.
      */
-    private AbstractRelationalOperator(final String description, final String symbol) {
+    private AbstractRelationalOperator(String description, String symbol) {
       Assert.hasText(description, "The description of the relational operator must be specified!");
       Assert.hasText(symbol, "The symbol of the relation operator must be specified!");
       this.description = description;
@@ -277,7 +277,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @throws IllegalArgumentException if either the description or symbol are not specified.
      * @throws NullPointerException if the expected Comparable value is not specified.
      */
-    protected AbstractRelationalOperator(final String description, final String symbol, final T expectedValue) {
+    protected AbstractRelationalOperator(String description, String symbol, T expectedValue) {
       Assert.hasText(description, "The description of the relational operator must be specified!");
       Assert.hasText(symbol, "The symbol of the relation operator must be specified!");
       Assert.notNull(expectedValue, "The expected value in the {0} comparison cannot be null!", description);
@@ -322,7 +322,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @param actualValue the actual Comparable value in the relational comparison.
      * @throws NullPointerException if the actual Comparable value is null.
      */
-    protected void validate(final T actualValue) {
+    protected void validate(T actualValue) {
       Assert.notNull(actualValue, "The actual value in the {0} comparison cannot be null!", this.description);
     }
   }
@@ -350,12 +350,12 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * relational comparison.
      * @param rightOperand a RelationalOperator operand on the right-side of the logical operation.
      */
-    private ComposableRelationalOperator(final RelationalOperator<T> leftOperand,
-                                         final LogicalOperator operator,
-                                         final RelationalOperator<T> rightOperand)
-    {
-      super(StringUtils.singleSpaceValues(leftOperand, operator, rightOperand),
-        StringUtils.singleSpaceValues(leftOperand.getSymbol(), operator.getSymbol(), rightOperand.getSymbol()));
+    private ComposableRelationalOperator(RelationalOperator<T> leftOperand, LogicalOperator operator,
+        RelationalOperator<T> rightOperand) {
+
+      super(StringUtils.singleSpaceObjects(leftOperand, operator, rightOperand),
+        StringUtils.singleSpaceObjects(leftOperand.getSymbol(), operator.getSymbol(), rightOperand.getSymbol()));
+
       this.leftOperand = leftOperand;
       this.operator = operator;
       this.rightOperand = rightOperand;
@@ -374,10 +374,9 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * operand if the left is null, or a new ComposableRelationalOperator combining the two individual
      * RelationalOperator operands into a compound relational comparison using the specified LogicalOperator.
      */
-    public static <T extends Comparable<T>> RelationalOperator<T> compose(final RelationalOperator<T> leftOperand,
-                                                                          final LogicalOperator operator,
-                                                                          final RelationalOperator<T> rightOperand)
-    {
+    public static <T extends Comparable<T>> RelationalOperator<T> compose(
+        RelationalOperator<T> leftOperand, LogicalOperator operator, RelationalOperator<T> rightOperand) {
+
       return (leftOperand == null ? rightOperand : (rightOperand == null ? leftOperand
         : new ComposableRelationalOperator<>(leftOperand, operator, rightOperand)));
     }
@@ -420,7 +419,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * relational comparison, with respect to it's expected values.
      */
     @Override
-    public boolean evaluate(final T actualValue) {
+    public boolean evaluate(T actualValue) {
       return getOperator().evaluate(getLeftOperand().evaluate(actualValue), getRightOperand().evaluate(actualValue));
     }
   }
@@ -432,12 +431,12 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    */
   private static final class EqualToOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
 
-    public EqualToOperator(final T expectedValue) {
+    public EqualToOperator(T expectedValue) {
       super("equal to", "==", expectedValue);
     }
 
     @Override
-    public boolean evaluate(final T actualValue) {
+    public boolean evaluate(T actualValue) {
       validate(actualValue);
       return (actualValue.equals(getExpectedValue()));
       //return (actualValue.compareTo(getExpectedValue()) == 0);
@@ -451,12 +450,12 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    */
   private static final class GreaterThanOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
 
-    public GreaterThanOperator(final T expectedValue) {
+    public GreaterThanOperator(T expectedValue) {
       super("greater than", ">", expectedValue);
     }
 
     @Override
-    public boolean evaluate(final T actualValue) {
+    public boolean evaluate(T actualValue) {
       validate(actualValue);
       return (actualValue.compareTo(getExpectedValue()) > 0);
     }
@@ -469,12 +468,12 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    */
   private static final class GreaterThanEqualToOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
 
-    public GreaterThanEqualToOperator(final T expectedValue) {
+    public GreaterThanEqualToOperator(T expectedValue) {
       super("greater than equal to", ">=", expectedValue);
     }
 
     @Override
-    public boolean evaluate(final T actualValue) {
+    public boolean evaluate(T actualValue) {
       validate(actualValue);
       return (actualValue.compareTo(getExpectedValue()) >= 0);
     }
@@ -487,12 +486,12 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    */
   private static final class LessThanOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
 
-    public LessThanOperator(final T expectedValue) {
+    public LessThanOperator(T expectedValue) {
       super("less than", "<", expectedValue);
     }
 
     @Override
-    public boolean evaluate(final T actualValue) {
+    public boolean evaluate(T actualValue) {
       validate(actualValue);
       return (actualValue.compareTo(getExpectedValue()) < 0);
     }
@@ -505,15 +504,14 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    */
   private static final class LessThanEqualToOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
 
-    public LessThanEqualToOperator(final T expectedValue) {
+    public LessThanEqualToOperator(T expectedValue) {
       super("less than equal to", "<=", expectedValue);
     }
 
     @Override
-    public boolean evaluate(final T actualValue) {
+    public boolean evaluate(T actualValue) {
       validate(actualValue);
       return (actualValue.compareTo(getExpectedValue()) <= 0);
     }
   }
-
 }

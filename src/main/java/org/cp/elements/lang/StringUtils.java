@@ -73,7 +73,7 @@ public abstract class StringUtils {
    * @throws NullPointerException if the String array is null.
    * @see #concat(String[], String)
    */
-  public static String concat(final String... values) {
+  public static String concat(String... values) {
     return concat(values, COMMA_SPACE_DELIMITER);
   }
 
@@ -86,7 +86,7 @@ public abstract class StringUtils {
    * @throws NullPointerException if the String array is null.
    * @see java.lang.StringBuilder
    */
-  public static String concat(final String[] values, final String delimiter) {
+  public static String concat(String[] values, String delimiter) {
     Assert.notNull(values, "The array of String values to concatenate cannot be null!");
 
     StringBuilder buffer = new StringBuilder();
@@ -102,14 +102,14 @@ public abstract class StringUtils {
   /**
    * Determines whether the String value contains the specified text, guarding against null values.
    * 
-   * @param value the String value being evaluated for text containment.
-   * @param text the String used to determine if the text is contained in value.
-   * @return a boolean value if the String value contains the text.
+   * @param text {@link String} evaluated for value containment.
+   * @param value {@link String} used to determine if the value is contained in the text.
+   * @return a boolean value if the {@link String} text contains the value.
    * @see java.lang.String#contains(CharSequence)
    */
   @NullSafe
-  public static boolean contains(final String value, final String text) {
-    return (value != null && text != null && value.contains(text));
+  public static boolean contains(String text, String value) {
+    return (text != null && value != null && text.contains(value));
   }
 
   /**
@@ -121,7 +121,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isDigit(char)
    */
   @NullSafe
-  public static boolean containsDigits(final String value) {
+  public static boolean containsDigits(String value) {
     for (char chr : toCharArray(value)) {
       if (Character.isDigit(chr)) {
         return true;
@@ -140,7 +140,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isLetter(char)
    */
   @NullSafe
-  public static boolean containsLetters(final String value) {
+  public static boolean containsLetters(String value) {
     for (char chr: toCharArray(value)) {
       if (Character.isLetter(chr)) {
         return true;
@@ -159,7 +159,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isWhitespace(char)
    */
   @NullSafe
-  public static boolean containsWhitespace(final String value) {
+  public static boolean containsWhitespace(String value) {
     for (char chr : toCharArray(value)) {
       if (Character.isWhitespace(chr)) {
         return true;
@@ -181,7 +181,7 @@ public abstract class StringUtils {
    * @see #hasText(String)
    */
   @NullSafe
-  public static String defaultIfBlank(final String value, final String... defaultValues) {
+  public static String defaultIfBlank(String value, String... defaultValues) {
     if (isBlank(value)) {
       for (String defaultValue : defaultValues) {
         if (hasText(defaultValue)) {
@@ -196,14 +196,14 @@ public abstract class StringUtils {
   /**
    * Determines whether two String values are equal in value ignoring case and guarding against null values.
    * 
-   * @param str1 the first String value in the case-insensitive equality comparison.
-   * @param str2 the second String value in the case-insensitive equality comparison.
+   * @param stringOne the first String value in the case-insensitive equality comparison.
+   * @param stringTwo the second String value in the case-insensitive equality comparison.
    * @return a boolean value indicating if the two String values are equal in value ignore case.
    * @see java.lang.String#equalsIgnoreCase(String)
    */
   @NullSafe
-  public static boolean equalsIgnoreCase(final String str1, final String str2) {
-    return (str1 != null && str1.equalsIgnoreCase(str2));
+  public static boolean equalsIgnoreCase(String stringOne, String stringTwo) {
+    return (stringOne != null && stringOne.equalsIgnoreCase(stringTwo));
   }
 
   /**
@@ -214,7 +214,7 @@ public abstract class StringUtils {
    * @throws NullPointerException if the String value is null.
    * @see java.lang.Character#isDigit(char)
    */
-  public static String getDigits(final String value) {
+  public static String getDigits(String value) {
     StringBuilder digits = new StringBuilder(value.length());
 
     for (char chr : value.toCharArray()) {
@@ -234,7 +234,7 @@ public abstract class StringUtils {
    * @throws NullPointerException if the String value is null.
    * @see java.lang.Character#isLetter(char)
    */
-  public static String getLetters(final String value) {
+  public static String getLetters(String value) {
     StringBuilder letters = new StringBuilder(value.length());
 
     for (char chr : value.toCharArray()) {
@@ -253,7 +253,7 @@ public abstract class StringUtils {
    * @return a String containing the specified number of spaces.
    */
   public static String getSpaces(int number) {
-    Assert.argument(number >= 0, "The number ({0}) must be greater than equal to 0!", number);
+    Assert.argument(number >= 0, "The number [{0}] of desired spaces must be greater than equal to 0", number);
 
     StringBuilder spaces = new StringBuilder(Math.max(number, 0));
 
@@ -275,7 +275,7 @@ public abstract class StringUtils {
    * @see #isBlank(String)
    */
   @NullSafe
-  public static boolean hasText(final String value) {
+  public static boolean hasText(String value) {
     return !isBlank(value);
   }
 
@@ -283,16 +283,16 @@ public abstract class StringUtils {
    * Determines the index of the first occurrence of token in the String value.  This indexOf operation is null-safe
    * and returns a -1 if the String value is null, or the token does not exist in the String value.
    * 
-   * @param value the String value used to search for the token.
-   * @param text the text to search for in the String value.
+   * @param text the String value used to search for the token.
+   * @param value the text to search for in the String value.
    * @return the index of the first occurrence of the token in the String value, or -1 if the token does not exist, or
    * the String value is blank, empty or null.
    * @see java.lang.String#indexOf(String)
    * @see #lastIndexOf(String, String)
    */
   @NullSafe
-  public static int indexOf(final String value, final String text) {
-    return (value != null && text != null ? value.indexOf(text) : -1);
+  public static int indexOf(String text, String value) {
+    return (text != null && value != null ? text.indexOf(value) : -1);
   }
 
   /**
@@ -305,7 +305,7 @@ public abstract class StringUtils {
    * @see #hasText(String)
    */
   @NullSafe
-  public static boolean isBlank(final String value) {
+  public static boolean isBlank(String value) {
     return (value == null || value.trim().isEmpty());
   }
 
@@ -319,7 +319,7 @@ public abstract class StringUtils {
    * @see #toCharArray(String)
    */
   @NullSafe
-  public static boolean isDigits(final String value) {
+  public static boolean isDigits(String value) {
     for (char chr : toCharArray(value)) {
       if (!Character.isDigit(chr)) {
         return false;
@@ -339,7 +339,7 @@ public abstract class StringUtils {
    * @see java.lang.String#isEmpty()
    */
   @NullSafe
-  public static boolean isEmpty(final String value) {
+  public static boolean isEmpty(String value) {
     return EMPTY_STRING.equals(value);
   }
 
@@ -353,7 +353,7 @@ public abstract class StringUtils {
    * @see #toCharArray(String)
    */
   @NullSafe
-  public static boolean isLetters(final String value) {
+  public static boolean isLetters(String value) {
     for (char chr : toCharArray(value)) {
       if (!Character.isLetter(chr)) {
         return false;
@@ -367,16 +367,16 @@ public abstract class StringUtils {
    * Determines the index of the last occurrence of token in the String value.  This lastIndexOf operation is null-safe
    * and returns a -1 if the String value is null, or the token does not exist in the String value.
    * 
-   * @param value the String value used to search for the token.
-   * @param text the text to search for in the String value.
+   * @param text the String value used to search for the token.
+   * @param value the text to search for in the String value.
    * @return the index of the last occurrence of the token in the String value, or -1 if the token does not exist, or
    * the String value is blank, empty or null.
    * @see java.lang.String#lastIndexOf(String)
    * @see #indexOf(String, String)
    */
   @NullSafe
-  public static int lastIndexOf(final String value, final String text) {
-    return (value != null && text != null ? value.lastIndexOf(text) : -1);
+  public static int lastIndexOf(String text, String value) {
+    return (text != null && value != null ? text.lastIndexOf(value) : -1);
   }
 
   /**
@@ -388,8 +388,8 @@ public abstract class StringUtils {
    * @see java.lang.String#length()
    */
   @NullSafe
-  public static int length(final String value) {
-    return (value == null ? 0 : value.length());
+  public static int length(String value) {
+    return (value != null ? value.length() : 0);
   }
 
   /**
@@ -401,7 +401,7 @@ public abstract class StringUtils {
    * @see #pad(String, char, int)
    */
   @NullSafe
-  public static String pad(final String value, final int length) {
+  public static String pad(String value, int length) {
     return pad(value, SINGLE_SPACE_CHAR, length);
   }
 
@@ -415,9 +415,10 @@ public abstract class StringUtils {
    * @throws IllegalArgumentException if length is less than 0.
    */
   @NullSafe
-  public static String pad(final String value, final char padding, final int length) {
+  @SuppressWarnings("all")
+  public static String pad(String value, char padding, int length) {
     assertThat(length).throwing(new IllegalArgumentException(String.format(
-      "(%1$d) must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
+      "[%d] must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
 
     if (length > 0) {
       StringBuilder builder = new StringBuilder(ObjectUtils.defaultIfNull(value, EMPTY_STRING));
@@ -458,47 +459,45 @@ public abstract class StringUtils {
    * @see java.util.regex.Matcher#replaceAll(String)
    */
   @NullSafe
-  public static String replaceAll(String value, final String pattern, final String replacement) {
+  public static String replaceAll(String value, String pattern, String replacement) {
     if (!ObjectUtils.areAnyNull(value, pattern, replacement)) {
-         value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
+      value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
     }
 
     return value;
   }
 
   /**
-   * Single spaces the tokens in the specified String value.  A token is defined as any non-whitespace character.
-   * 
-   * @param value the String value for which the tokens will be single spaced.
-   * @return a modified String where the tokens in the String value have been single spaced.
-   * @see #concat(String[], String)
-   */
-  public static String singleSpaceString(final String value) {
-    Assert.hasText(value, "A String value must be specified!");
-
-    String[] tokens = value.split("\\s+");
-
-    return trim(concat(tokens, SINGLE_SPACE));
-  }
-
-  /**
    * Single spaces the elements in the Object array and converts all values into a String representation using
    * Object.toString to be placed in a single String.
-   * 
+   *
    * @param values an array of Object values to be converted and combined into a String.
    * @return a String value containing all the Object values in String form single spaced.
    * @throws NullPointerException if the values Object array reference is null!
    * @see #concat(String[], String)
    * @see java.lang.String#valueOf(Object)
    */
-  public static String singleSpaceValues(final Object... values) {
+  public static String singleSpaceObjects(Object... values) {
     List<String> valueList = new ArrayList<>(values.length);
 
-    for (final Object value : values) {
+    for (Object value : values) {
       valueList.add(String.valueOf(value));
     }
 
     return trim(concat(valueList.toArray(new String[valueList.size()]), SINGLE_SPACE));
+  }
+
+  /**
+   * Single spaces the tokens in the specified String value.  A token is defined as any non-whitespace character.
+   *
+   * @param value the String value for which the tokens will be single spaced.
+   * @return a modified String where the tokens in the String value have been single spaced.
+   * @see #concat(String[], String)
+   */
+  public static String singleSpaceString(String value) {
+    Assert.hasText(value, "String value must contain text");
+
+    return trim(concat(value.split("\\s+"), SINGLE_SPACE));
   }
 
   /**
@@ -509,7 +508,7 @@ public abstract class StringUtils {
    * @see java.lang.String#toCharArray()
    */
   @NullSafe
-  public static char[] toCharArray(final String value) {
+  public static char[] toCharArray(String value) {
     return (value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY);
   }
 
@@ -522,7 +521,7 @@ public abstract class StringUtils {
    * @see java.lang.String#toLowerCase()
    */
   @NullSafe
-  public static String toLowerCase(final String value) {
+  public static String toLowerCase(String value) {
     return (value != null ? value.toLowerCase() : null);
   }
 
@@ -536,7 +535,7 @@ public abstract class StringUtils {
    * @see #toStringArray(String, String)
    */
   @NullSafe
-  public static String[] toStringArray(final String commaDelimitedValue) {
+  public static String[] toStringArray(String commaDelimitedValue) {
     return toStringArray(commaDelimitedValue, COMMA_DELIMITER);
   }
 
@@ -555,7 +554,8 @@ public abstract class StringUtils {
    * @see #trim(String)
    */
   @NullSafe
-  public static String[] toStringArray(final String delimitedValue, final String delimiter) {
+  @SuppressWarnings("all")
+  public static String[] toStringArray(String delimitedValue, String delimiter) {
     return ArrayUtils.transform(ObjectUtils.defaultIfNull(delimitedValue, EMPTY_STRING).split(
         defaultIfBlank(delimiter, COMMA_DELIMITER)), StringUtils::trim);
   }
@@ -569,7 +569,7 @@ public abstract class StringUtils {
    * @see java.lang.String#toUpperCase()
    */
   @NullSafe
-  public static String toUpperCase(final String value) {
+  public static String toUpperCase(String value) {
     return (value != null ? value.toUpperCase() : null);
   }
 
@@ -581,7 +581,7 @@ public abstract class StringUtils {
    * @see java.lang.String#trim()
    */
   @NullSafe
-  public static String trim(final String value) {
+  public static String trim(String value) {
     return (value != null ? value.trim() : null);
   }
 
@@ -594,7 +594,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isWhitespace(char)
    */
   @NullSafe
-  public static String trimAll(final String value) {
+  public static String trimAll(String value) {
     if (value != null) {
       StringBuilder trimmedValue = new StringBuilder(value.length());
 
@@ -623,9 +623,9 @@ public abstract class StringUtils {
    * @see java.lang.String#length()
    */
   @NullSafe
-  public static String truncate(String value, final int length) {
+  public static String truncate(String value, int length) {
     assertThat(length).throwing(new IllegalArgumentException(String.format(
-      "(%1$d) must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
+      "[%d] must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
 
     return (value != null ? value.substring(0, Math.min(value.length(), length)) : null);
   }
@@ -642,7 +642,7 @@ public abstract class StringUtils {
    * the given width on any given split.
    * @throws NullPointerException if the line of text is null.
    */
-  public static String wrap(String line, final int widthInCharacters, String indent) {
+  public static String wrap(String line, int widthInCharacters, String indent) {
     StringBuilder buffer = new StringBuilder();
 
     int lineCount = 1;
