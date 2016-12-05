@@ -54,7 +54,7 @@ public abstract class SystemUtils {
    * @return a boolean value indicating if the Java Runtime Environment meets the expected minimum version requirement.
    * @see java.lang.System#getProperty(String)
    */
-  public static boolean isJavaVersionAtLeast(final String expectedVersion) {
+  public static boolean isJavaVersionAtLeast(String expectedVersion) {
     String actualVersionDigits = StringUtils.getDigits(System.getProperty("java.version"));
 
     String expectedVersionDigits = StringUtils.pad(StringUtils.getDigits(expectedVersion), '0',
@@ -112,9 +112,8 @@ public abstract class SystemUtils {
    * @return a boolean value indicating whether this JVM is the expected make.
    * @see java.lang.System#getProperty(String)
    */
-  protected static boolean isJvmMake(final String expectedJvmVendor) {
-    String jvmVendor = System.getProperty("java.vm.vendor");
-    return (jvmVendor != null && jvmVendor.contains(expectedJvmVendor));
+  protected static boolean isJvmMake(String expectedJvmVendor) {
+    return StringUtils.contains(System.getProperty("java.vm.vendor"), expectedJvmVendor);
   }
 
   /**
@@ -160,9 +159,8 @@ public abstract class SystemUtils {
    * @return a boolean determining whether this JVM is the expected model.
    * @see java.lang.System#getProperty(String)
    */
-  protected static boolean isJvmModel(final String expectedJvmName) {
-    String jvmName = System.getProperty("java.vm.name");
-    return (jvmName != null && jvmName.contains(expectedJvmName));
+  protected static boolean isJvmModel(String expectedJvmName) {
+    return StringUtils.contains(System.getProperty("java.vm.name"), expectedJvmName);
   }
 
   /**
@@ -220,8 +218,6 @@ public abstract class SystemUtils {
    * @see java.lang.System#getProperty(String)
    */
   protected static boolean isOS(final String expectedOsName) {
-    String osName = System.getProperty("os.name");
-    return (osName != null && osName.contains(expectedOsName));
+    return StringUtils.contains(System.getProperty("os.name"), expectedOsName);
   }
-
 }
