@@ -21,6 +21,9 @@ import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -30,6 +33,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.process.PidUnknownException;
@@ -61,7 +65,7 @@ public class ProcessUtilsTests {
   }
 
   @Test
-  public void isAliveWithNull() {
+  public void isAliveWithNullProcess() {
     assertThat(ProcessUtils.isAlive(null)).isFalse();
   }
 
@@ -158,6 +162,116 @@ public class ProcessUtilsTests {
   }
 
   @Test
+  public void killTerminatedProcessIsSuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(false);
+
+    assertThat(ProcessUtils.kill(mockProcess)).isTrue();
+
+    verify(mockProcess, times(1)).isAlive();
+    verify(mockProcess, never()).destroy();
+    verify(mockProcess, never()).destroyForcibly();
+    verify(mockProcess, never()).waitFor(anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
+  public void killRunningProcessIsSuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(true);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
+
+    assertThat(ProcessUtils.kill(mockProcess)).isTrue();
+
+    verify(mockProcess, times(1)).isAlive();
+    verify(mockProcess, times(1)).destroy();
+    verify(mockProcess, never()).destroyForcibly();
+    verify(mockProcess, times(1)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+  }
+
+  @Test
+  public void killRunningProcessForciblyIsSuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(true);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(false).thenReturn(true);
+
+    assertThat(ProcessUtils.kill(mockProcess)).isTrue();
+
+    verify(mockProcess, times(1)).isAlive();
+    verify(mockProcess, times(1)).destroy();
+    verify(mockProcess, times(1)).destroyForcibly();
+    verify(mockProcess, times(2)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+  }
+
+  @Test
+  public void killRunningProcessIsUnsuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(true);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(false).thenReturn(false);
+
+    assertThat(ProcessUtils.kill(mockProcess)).isFalse();
+
+    verify(mockProcess, times(1)).isAlive();
+    verify(mockProcess, times(1)).destroy();
+    verify(mockProcess, times(1)).destroyForcibly();
+    verify(mockProcess, times(2)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+  }
+
+  @Test
+  public void killNullProcessIsSuccessful() {
+    assertThat(ProcessUtils.kill((Process) null)).isTrue();
+  }
+
+  @Test
+  public void killRunningProcessIsInterruptedWhileWaitingIsSuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(true).thenReturn(false);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenThrow(new InterruptedException("test interrupt"));
+
+    assertThat(ProcessUtils.kill(mockProcess)).isTrue();
+
+    verify(mockProcess, times(2)).isAlive();
+    verify(mockProcess, times(1)).destroy();
+    verify(mockProcess, never()).destroyForcibly();
+    verify(mockProcess, times(1)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+  }
+
+  @Test
+  public void killRunningProcessIsInterruptedTwiceWhileWaitingIsUnsuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(true).thenReturn(true).thenReturn(true);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenThrow(new InterruptedException("test interrupt"))
+      .thenThrow(new InterruptedException("test interrupt again"));
+
+    assertThat(ProcessUtils.kill(mockProcess)).isFalse();
+
+    verify(mockProcess, times(3)).isAlive();
+    verify(mockProcess, times(1)).destroy();
+    verify(mockProcess, times(1)).destroyForcibly();
+    verify(mockProcess, times(2)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+  }
+
+  @Test
+  public void killRunningProcessAdapterIsSuccessful() throws Exception {
+    Process mockProcess = mock(Process.class);
+
+    when(mockProcess.isAlive()).thenReturn(true);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
+
+    assertThat(ProcessUtils.kill(newProcessAdapter(mockProcess))).isTrue();
+
+    verify(mockProcess, times(1)).isAlive();
+    verify(mockProcess, times(1)).destroy();
+    verify(mockProcess, never()).destroyForcibly();
+    verify(mockProcess, times(1)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+  }
+
+  @Test
   @IntegrationTest
   public void writeAndReadPidIsSuccessful() throws IOException {
     File pidFile = null;
@@ -205,12 +319,12 @@ public class ProcessUtilsTests {
     File mockFile = mock(File.class);
 
     when(mockFile.isFile()).thenReturn(false);
-    when(mockFile.toString()).thenReturn("mock.pid");
+    when(mockFile.toString()).thenReturn("mockFile.pid");
 
     try {
       exception.expect(PidUnknownException.class);
       exception.expectCause(isA(IllegalArgumentException.class));
-      exception.expectMessage("Failed to read Process ID (PID) from file [mock.pid]");
+      exception.expectMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
 
       ProcessUtils.readPid(mockFile);
     }
@@ -227,12 +341,12 @@ public class ProcessUtilsTests {
 
     when(mockFile.isFile()).thenReturn(true);
     when(mockFile.canRead()).thenReturn(false);
-    when(mockFile.toString()).thenReturn("mock.pid");
+    when(mockFile.toString()).thenReturn("mockFile.pid");
 
     try {
       exception.expect(PidUnknownException.class);
       exception.expectCause(isA(IllegalStateException.class));
-      exception.expectMessage("Failed to read Process ID (PID) from file [mock.pid]");
+      exception.expectMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
 
       ProcessUtils.readPid(mockFile);
     }
@@ -265,5 +379,9 @@ public class ProcessUtilsTests {
     exception.expectMessage("The path [null] to search for the .pid file must not be null and must actually exist");
 
     ProcessUtils.findPidFile(null);
+  }
+
+  @Test
+  public void test() {
   }
 }

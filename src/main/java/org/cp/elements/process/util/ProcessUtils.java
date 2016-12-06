@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.concurrent.TimeUnit;
 
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
@@ -38,6 +39,7 @@ import org.cp.elements.io.FilesOnlyFilter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessAdapter;
 
@@ -53,7 +55,11 @@ import org.cp.elements.process.ProcessAdapter;
 @SuppressWarnings("unused")
 public abstract class ProcessUtils {
 
+  protected static final long KILL_WAIT_TIMEOUT = 5;
+
   protected static final String PROCESS_ID_FILENAME = ".pid";
+  protected static final String WINDOWS_KILL_COMMAND = "taskkill /F /PID";
+  protected static final String UNIX_KILL_COMMAND = "kill -KILL";
   protected static final String VIRTUAL_MACHINE_CLASS_NAME = "com.sun.tools.attach.VirtualMachine";
 
   protected static final FileFilter PID_FILE_FILTER = ComposableFileFilter.and(
@@ -61,6 +67,8 @@ public abstract class ProcessUtils {
 
   protected static final FileFilter DIRECTORY_PID_FILE_FILTER = ComposableFileFilter.or(
     DirectoriesOnlyFilter.INSTANCE, PID_FILE_FILTER);
+
+  protected static final TimeUnit KILL_WAIT_TIME_UNIT = TimeUnit.SECONDS;
 
   /**
    * Determines the Process ID (PID) of this Java {@link Process}.
@@ -148,6 +156,128 @@ public abstract class ProcessUtils {
   @NullSafe
   public static boolean isRunning(ProcessAdapter processAdapter) {
     return (processAdapter != null && isRunning(processAdapter.getProcess()));
+  }
+
+  /**
+   * Kills the Operating System (OS) process identified by the process ID (PID).
+   *
+   * @param processId ID of the process to kill.
+   * @return a boolean value indicating whether the process identified by the process ID (ID)
+   * was successfully terminated.
+   * @see Runtime#exec(String)
+   */
+  public static boolean kill(int processId) {
+    String killCommand = String.format("%s %d",
+      (SystemUtils.isWindows() ? WINDOWS_KILL_COMMAND : UNIX_KILL_COMMAND), processId);
+
+    try {
+      Process killProcess = Runtime.getRuntime().exec(killCommand);
+      return killProcess.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
+    }
+    catch (Throwable ignore) {
+      return false;
+    }
+  }
+
+  /**
+   * Kills the given {@link Process}.
+   *
+   * @param process {@link Process} to kill.
+   * @return a boolean value indicating whether the the given {@link Process} was successfully terminated.
+   * @see java.lang.Process
+   * @see java.lang.Process#destroy()
+   * @see java.lang.Process#destroyForcibly()
+   * @see #isAlive(Process)
+   */
+  @NullSafe
+  public static boolean kill(Process process) {
+    boolean alive = isAlive(process);
+
+    if (alive) {
+      process.destroy();
+
+      try {
+        alive = !process.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
+      }
+      catch (Throwable ignore) {
+        alive = isAlive(process);
+      }
+      finally {
+        if (alive) {
+          process.destroyForcibly();
+
+          try {
+            alive = !process.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
+          }
+          catch (Throwable ignore) {
+            alive = isAlive(process);
+          }
+        }
+      }
+    }
+
+    return !alive;
+  }
+
+  /**
+   * Kills the process represented by the given {@link ProcessAdapter}.
+   *
+   * @param processAdapter {@link ProcessAdapter} representing the process to kill.
+   * @return a boolean value indicating whether the the given process represented by the {@link ProcessAdapter}
+   * was successfully terminated.
+   * @see org.cp.elements.process.ProcessAdapter
+   * @see #kill(Process)
+   */
+  public static boolean kill(ProcessAdapter processAdapter) {
+    return kill(processAdapter.getProcess());
+  }
+
+  /**
+   * Constructs a new instance of {@link Thread} initialized with the given {@link Runnable}.
+   *
+   * @param runnable {@link Runnable} object to execute in a {@link Thread}.
+   * @return a new {@link Thread} initialized with the given {@link Runnable}.
+   * @see java.lang.Runnable
+   * @see java.lang.Thread
+   */
+  protected static Thread newThread(Runnable runnable) {
+    return new Thread(runnable, "Process Shutdown Hook Thread");
+  }
+
+  /**
+   * Registers a {@link Runtime} shutdown hook to kill the Operating System (OS) process
+   * identified by the process ID (PID).
+   *
+   * @param processId ID of the process to terminate on shutdown.
+   * @see java.lang.Runtime#addShutdownHook(Thread)
+   * @see #newThread(Runnable)
+   * @see #kill(int)
+   */
+  public static void registerShutdownHook(int processId) {
+    Runtime.getRuntime().addShutdownHook(newThread(() -> kill(processId)));
+  }
+
+  /**
+   * Registers a {@link Runtime} shutdown hook to kill the given {@link Process}.
+   *
+   * @param process {@link Process} to terminate on shutdown.
+   * @see java.lang.Runtime#addShutdownHook(Thread)
+   * @see #newThread(Runnable)
+   * @see #kill(Process)
+   */
+  public static void registerShutdownHook(Process process) {
+    Runtime.getRuntime().addShutdownHook(newThread(() -> kill(process)));
+  }
+
+  /**
+   * Registers a {@link Runtime} shutdown hook to kill the process represented by the given {@link ProcessAdapter}.
+   *
+   * @param processAdapter {@link ProcessAdapter} representing the process to terminate on shutdown.
+   * @see org.cp.elements.process.ProcessAdapter#getProcess()
+   * @see #registerShutdownHook(Process)
+   */
+  public static void registerShutdownHook(ProcessAdapter processAdapter) {
+    registerShutdownHook(processAdapter.getProcess());
   }
 
   /**
