@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -34,6 +35,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -138,6 +140,55 @@ public class CollectionUtilsTests {
         return elements[index++];
       }
     };
+  }
+
+  @Test
+  public void addAllIterableElementsToList() {
+    List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3));
+    List<Integer> newNumbers = CollectionUtils.addAll(numbers, asIterable(3, 4, 5));
+
+    assertThat(newNumbers, is(sameInstance(numbers)));
+    assertThat(newNumbers.size(), is(equalTo(6)));
+    assertThat(newNumbers, contains(1, 2, 3, 3, 4, 5));
+  }
+
+  @Test
+  public void addAllIterableElementsToSet() {
+    Set<Integer> numbers = new HashSet<>(Arrays.asList(1, 2, 3));
+    Set<Integer> newNumbers = CollectionUtils.addAll(numbers, asIterable(3, 4, 5));
+
+    assertThat(newNumbers, is(sameInstance(numbers)));
+    assertThat(newNumbers.size(), is(equalTo(5)));
+    assertThat(newNumbers, contains(1, 2, 3, 4, 5));
+  }
+
+  @Test
+  public void addEmptyIterableToCollection() {
+    Set<Integer> numbers = new HashSet<>(Arrays.asList(1, 2, 3));
+    Set<Integer> newNumers = CollectionUtils.addAll(numbers, asIterable());
+
+    assertThat(newNumers, is(sameInstance(numbers)));
+    assertThat(newNumers.size(), is(equalTo(3)));
+    assertThat(newNumers, contains(1, 2, 3));
+  }
+
+  @Test
+  public void addNullIterableToCollection() {
+    Set<Integer> numbers = new HashSet<>(Arrays.asList(1, 2, 3));
+    Set<Integer> newNumers = CollectionUtils.addAll(numbers, null);
+
+    assertThat(newNumers, is(sameInstance(numbers)));
+    assertThat(newNumers.size(), is(equalTo(3)));
+    assertThat(newNumers, contains(1, 2, 3));
+  }
+
+  @Test
+  public void addAllToNullCollection() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Collection must not be null");
+
+    CollectionUtils.addAll(null, asIterable(1));
   }
 
   @Test
@@ -258,6 +309,33 @@ public class CollectionUtilsTests {
     exception.expectMessage("Filter cannot be null");
 
     CollectionUtils.count(Collections.emptyList(), null);
+  }
+
+  @Test
+  public void defaultIfEmptyWithNonNullNonEmptyIterableReturnsIterable() {
+    Iterable<Number> iterable = asIterable(1);
+    Iterable<Number> defaultIterable = asIterable(2);
+
+    assertThat(CollectionUtils.defaultIfEmpty(iterable, defaultIterable), is(sameInstance(iterable)));
+  }
+
+  @Test
+  public void defaultIfNullWithEmptyIterableReturnsDefault() {
+    Iterable<Number> defaultIterable = asIterable(2);
+
+    assertThat(CollectionUtils.defaultIfEmpty(asIterable(), defaultIterable), is(sameInstance(defaultIterable)));
+  }
+
+  @Test
+  public void defaultIfNullWithNullIterableReturnsDefault() {
+    Iterable<Number> defaultIterable = asIterable(2);
+
+    assertThat(CollectionUtils.defaultIfEmpty(null, defaultIterable), is(sameInstance(defaultIterable)));
+  }
+
+  @Test
+  public void defaultIfNullWithNullIterableAndNullDefaultReturnsNull() {
+    assertThat(CollectionUtils.defaultIfEmpty(null, null), is(nullValue(Iterable.class)));
   }
 
   @Test

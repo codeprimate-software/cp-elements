@@ -60,6 +60,28 @@ import org.cp.elements.lang.support.ToStringRenderer;
 public abstract class CollectionUtils {
 
   /**
+ 	 * Adds all elements from the given {@link Iterable} to the {@link Collection}.
+ 	 *
+ 	 * @param <E> {@link Class} type of the elements in the {@link Collection} and {@link Iterable}.
+ 	 * @param <T> concrete {@link Class} type of the {@link Collection}.
+ 	 * @param collection {@link Collection} in which to add the elements from the {@link Iterable}.
+ 	 * @param iterable {@link Iterable} containing the elements to add to the {@link Collection}.
+ 	 * @return the given {@link Collection}.
+ 	 * @throws IllegalArgumentException if {@link Collection} is {@literal null}.
+ 	 * @see java.lang.Iterable
+ 	 * @see java.util.Collection
+ 	 */
+ 	public static <E, T extends Collection<E>> T addAll(T collection, Iterable<E> iterable) {
+ 		Assert.notNull(collection, "Collection must not be null");
+
+ 		for (E element : nullSafeIterable(iterable)) {
+ 			collection.add(element);
+ 		}
+
+ 		return collection;
+ 	}
+
+  /**
    * Null-safe method to convert the array of elements into a {@link Set}.
    *
    * @param <T> {@link Class} type of the elements in the array.
@@ -118,6 +140,20 @@ public abstract class CollectionUtils {
     }
 
     return count;
+  }
+
+  /**
+ 	 * Returns the given {@link Iterable} if not {@literal null} or empty, otherwise returns the {@code defaultIterable}.
+ 	 *
+ 	 * @param <E> {@link Class} type of the elements in the {@link Iterable Iterables}.
+ 	 * @param <T> concrete {@link Class} type of the {@link Iterable}.
+ 	 * @param iterable {@link Iterable} to evaluate.
+ 	 * @param defaultIterable {@link Iterable} to return if the given {@code iterable} is {@literal null} or empty.
+ 	 * @return {@code iterable} if not {@literal null} or empty otherwise return {@code defaultIterable}.
+ 	 * @see java.lang.Iterable
+ 	 */
+  public static <E, T extends Iterable<E>> T defaultIfEmpty(T iterable, T defaultIterable) {
+    return (iterable != null && iterable.iterator().hasNext() ? iterable : defaultIterable);
   }
 
   /**
