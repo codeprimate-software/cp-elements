@@ -21,6 +21,7 @@ import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -147,7 +148,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static <T> int count(T[] array) {
-    return (array == null ? 0 : array.length);
+    return (array != null ? array.length : 0);
   }
 
   /**
@@ -173,6 +174,18 @@ public abstract class ArrayUtils {
     }
 
     return count;
+  }
+
+  /**
+ 	 * Returns the given {@code array} if not {@literal null} or empty, otherwise returns the {@code defaultArray}.
+ 	 *
+ 	 * @param <T> {@link Class} type of the elements in the array.
+ 	 * @param array array to evaluate.
+ 	 * @param defaultArray array to return if the given {@code array} is {@literal null} or empty.
+ 	 * @return the given {@code array} if not {@literal null} or empty otherwise return the {@code defaultArray}.
+ 	 */
+  public static <T> T[] defaultIfEmpty(T[] array, T[] defaultArray) {
+    return (isNotEmpty(array) ? array : defaultArray);
   }
 
   /**
@@ -312,17 +325,30 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Returns the first element (at index 0) in the array.
+   * Returns the first element (at index 0) from the {@code array}.
    *
-   * @param <T> Class type of the elements in the array.
+   * @param <T> {@link Class} type of the elements in the array.
    * @param array array from which to extract the first element.
-   * @return the first element in the array or null if the array is null or empty.
-   * @see #isNotEmpty(Object[])
+   * @return the first element in the array or {@literal null} if {@code array} is {@literal null} or empty.
+   * @see #getFirst(Object[], Object)
    */
   @NullSafe
   @SafeVarargs
   public static <T> T getFirst(T... array) {
-    return (isNotEmpty(array) ? array[0] : null);
+    return getFirst(array, null);
+  }
+
+  /**
+   * Returns the first element (at index 0) from the {@code array}.
+   *
+   * @param <T> {@link Class} type of the elements in the array.
+   * @param array array from which to extract the first element.
+   * @return the first element in the array or return the {@code defaultValue }
+   * if {@code array} is {@literal null} or empty.
+   * @see #isNotEmpty(Object[])
+   */
+  public static <T> T getFirst(T[] array, T defaultValue) {
+    return (isNotEmpty(array) ? array[0] : defaultValue);
   }
 
   /**
@@ -503,6 +529,39 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Removes the element at index from the given array.
+   *
+   * @param <T> {@link Class} type of the elements in the array.
+   * @param array array from which to remove the element at index.
+   * @param index index of the element to remove from the array.
+   * @return a new array with the element at index removed.
+   * @throws IllegalArgumentException if the given array is {@literal null}.
+   * @throws ArrayIndexOutOfBoundsException if the {@code index} is not valid.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] remove(T[] array, int index) {
+    Assert.notNull(array, "Array cannot be null");
+
+    assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
+      String.format("[%1$d] is not a valid index [0, %2$d] in the array", index, array.length)))
+        .isGreaterThanEqualToAndLessThan(0, array.length);
+
+    Class<?> componentType = defaultIfNull(array.getClass().getComponentType(), Object.class);
+
+    T[] newArray = (T[]) Array.newInstance(componentType, array.length - 1);
+
+    if (index > 0) {
+      System.arraycopy(array, 0, newArray, 0, index);
+    }
+
+    if (index + 1 < array.length) {
+      System.arraycopy(array, index + 1, newArray, index, (array.length - index - 1));
+    }
+
+    return newArray;
+  }
+
+  /**
    * Shuffles the elements in the array.  This method guarantees a random, uniform shuffling of the array elements
    * with an operational efficiency of O(n).
    *
@@ -522,6 +581,19 @@ public abstract class ArrayUtils {
       }
     }
 
+    return array;
+  }
+
+  /**
+   * Sorts the {@link Comparable} elements in the given array.
+   *
+   * @param <T> {@link Class} type of the elements in the array.
+   * @param array array of {@link Comparable} elements to sort.
+   * @return the given array.
+   * @see java.lang.Comparable
+   */
+  public static <T extends Comparable<T>> T[] sort(T[] array) {
+    Arrays.sort(array);
     return array;
   }
 

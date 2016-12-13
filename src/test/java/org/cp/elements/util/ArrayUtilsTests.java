@@ -17,6 +17,7 @@
 package org.cp.elements.util;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
@@ -47,8 +48,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The ArrayUtilsTests class is a test suite of test cases testing the contract and functionality
- * of the {@link ArrayUtils} class.
+ * Unit tests for {@link ArrayUtils}.
  * 
  * @author John J. Blum
  * @see java.lang.reflect.Array
@@ -89,6 +89,12 @@ public class ArrayUtilsTests {
     }
 
     assertTrue(String.format("target array [%1$s] was not shuffled", Arrays.toString(target)), shuffled);
+  }
+
+  protected <T extends Comparable<T>> void assertSorted(T[] array) {
+    for (int index = 1; index < array.length; index++) {
+      assertThat(array[index].compareTo(array[index - 1]), is(greaterThanOrEqualTo(0)));
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -359,6 +365,33 @@ public class ArrayUtilsTests {
     assertThat(anotherEmptyArray, is(notNullValue(Object[].class)));
     assertThat(anotherEmptyArray.length, is(equalTo(0)));
     assertThat(anotherEmptyArray, is(not(sameInstance(emptyArray))));
+  }
+
+  @Test
+  public void defaultIfEmptyWithNonNullNonEmptyArrayReturnsArray() {
+    Object[] array = { "test" };
+    Object[] defaultArray = { "tested" };
+
+    assertThat(ArrayUtils.defaultIfEmpty(array,defaultArray), is(sameInstance(array)));
+  }
+
+  @Test
+  public void defaultIfEmptyArrayWithEmptyArrayReturnsDefault() {
+    Object[] defaultArray = { "test" };
+
+    assertThat(ArrayUtils.defaultIfEmpty(new Object[0], defaultArray), is(sameInstance(defaultArray)));
+  }
+
+  @Test
+  public void defaultIfEmptyArrayWithNullArrayReturnsDefault() {
+    Object[] defaultArray = { "test" };
+
+    assertThat(ArrayUtils.defaultIfEmpty(null, defaultArray), is(sameInstance(defaultArray)));
+  }
+
+  @Test
+  public void defaultIfEmptyWithNullArrayAndNullDefaultArrayReturnsNull() {
+    assertThat(ArrayUtils.defaultIfEmpty(null, null), is(nullValue()));
   }
 
   @Test
@@ -713,6 +746,26 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void getFirstFromNonNullNonEmptyArrayUsingDefaultValueReturnsFirstElement() {
+    assertThat(ArrayUtils.getFirst(new Object[] { "test" }, "default"), is(equalTo("test")));
+  }
+
+  @Test
+  public void getFirstFromEmptyArrayUsingDefaultValueReturnsDefaultValue() {
+    assertThat(ArrayUtils.getFirst(new Object[0], "default"), is(equalTo("default")));
+  }
+
+  @Test
+  public void getFirstFromNullArrayUsingDefaultValueReturnsDefaultValue() {
+    assertThat(ArrayUtils.getFirst(null, "default"), is(equalTo("default")));
+  }
+
+  @Test
+  public void getFirstFromNullArrayUsingNullDefaultValueReturnsNull() {
+    assertThat(ArrayUtils.defaultIfEmpty(null, null), is(nullValue()));
+  }
+
+  @Test
   public void insertIntoArray() {
     assertElements(ArrayUtils.insert("one", toArray("two", "three"), 0), "one", "two", "three");
     assertElements(ArrayUtils.insert("two", toArray("one", "three"), 1), "one", "two", "three");
@@ -1036,6 +1089,71 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void removeFromArray() {
+    Object[] array = { 1, 2, 3, 4 };
+    Object[] newArray = ArrayUtils.remove(array, 2);
+
+    assertThat(newArray, is(notNullValue(Object[].class)));
+    assertThat(newArray, is(not(sameInstance(array))));
+    assertThat(newArray.length, is(equalTo(3)));
+    assertThat(Arrays.asList(newArray).containsAll(Arrays.asList(1, 2, 4)), is(true));
+    assertThat(array.length, is(equalTo(4)));
+  }
+
+  @Test
+  public void removeFirstElementFromArray() {
+    Object[] array = { 1, 2, 3, 4 };
+    Object[] newArray = ArrayUtils.remove(array, 0);
+
+    assertThat(newArray, is(notNullValue(Object[].class)));
+    assertThat(newArray, is(not(sameInstance(array))));
+    assertThat(newArray.length, is(equalTo(3)));
+    assertThat(Arrays.asList(newArray).containsAll(Arrays.asList(2, 3, 4)), is(true));
+    assertThat(array.length, is(equalTo(4)));
+  }
+
+  @Test
+  public void removeLastElementFromArray() {
+    Object[] array = { 1, 2, 3, 4 };
+    Object[] newArray = ArrayUtils.remove(array, 3);
+
+    assertThat(newArray, is(notNullValue(Object[].class)));
+    assertThat(newArray, is(not(sameInstance(array))));
+    assertThat(newArray.length, is(equalTo(3)));
+    assertThat(Arrays.asList(newArray).containsAll(Arrays.asList(1, 2, 3)), is(true));
+    assertThat(array.length, is(equalTo(4)));
+  }
+
+  @Test
+  public void removeOnlyElementFromArray() {
+    Object[] array = { 1 };
+    Object[] newArray = ArrayUtils.remove(array, 0);
+
+    assertThat(newArray, is(notNullValue(Object[].class)));
+    assertThat(newArray, is(not(sameInstance(array))));
+    assertThat(newArray.length, is(equalTo(0)));
+    assertThat(array.length, is(equalTo(1)));
+  }
+
+  @Test
+  public void removeIllegalIndexFromArrayThrowsArrayIndexOutOfBoundsException() {
+    exception.expect(ArrayIndexOutOfBoundsException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("[4] is not a valid index [0, 4] in the array");
+
+    ArrayUtils.remove(new Object[] { 1, 2, 3, 4 }, 4);
+  }
+
+  @Test
+  public void removeFromNullArrayThrowsIllegalArgumentException() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Array cannot be null");
+
+    ArrayUtils.remove(null, 0);
+  }
+
+  @Test
   public void shuffle() {
     Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     Integer[] shuffledArray = ArrayUtils.shuffle(copy(array));
@@ -1072,6 +1190,15 @@ public class ArrayUtilsTests {
 
     assertThat(shuffledSingleElementArray, is(sameInstance(singleElementArray)));
     assertElements(shuffledSingleElementArray, "test");
+  }
+
+  @Test
+  public void sortArray() {
+    Integer[] numbers = { 2, 4, 3, 1 };
+    Integer[] sortedNumbers = ArrayUtils.sort(numbers);
+
+    assertThat(numbers, is(sameInstance(numbers)));
+    assertSorted(sortedNumbers);
   }
 
   @Test
