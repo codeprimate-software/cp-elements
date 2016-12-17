@@ -49,7 +49,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Unit tests for {@link ArrayUtils}.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.reflect.Array
  * @see java.util.Arrays
@@ -1193,12 +1193,33 @@ public class ArrayUtilsTests {
   }
 
   @Test
-  public void sortArray() {
+  public void sortComparableObjectArray() {
     Integer[] numbers = { 2, 4, 3, 1 };
     Integer[] sortedNumbers = ArrayUtils.sort(numbers);
 
     assertThat(numbers, is(sameInstance(numbers)));
     assertSorted(sortedNumbers);
+  }
+
+  @Test
+  public void sortNonComparableObjectArray() {
+    Person[] people = {
+      Person.newPerson("Jack", "Handy"),
+      Person.newPerson("Jon", "Doe"),
+      Person.newPerson("Agent", "Smith"),
+      Person.newPerson("Pie", "Doe")
+    };
+
+    Person[] sortedPeople = ArrayUtils.sort(people, (personOne, personTwo) ->
+      ComparatorResultBuilder.<String>create()
+        .doCompare(personOne.getLastName(), personTwo.getLastName())
+        .doCompare(personOne.getFirstName(), personTwo.getFirstName())
+        .getResult()
+    );
+
+    assertThat(sortedPeople, is(sameInstance(people)));
+    assertThat(Arrays.asList(sortedPeople), is(equalTo(Arrays.asList(Person.newPerson("Jon", "Doe"),
+      Person.newPerson("Pie", "Doe"), Person.newPerson("Jack", "Handy"), Person.newPerson("Agent", "Smith")))));
   }
 
   @Test

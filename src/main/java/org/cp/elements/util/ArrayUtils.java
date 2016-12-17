@@ -23,6 +23,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -590,10 +591,24 @@ public abstract class ArrayUtils {
    * @param <T> {@link Class} type of the elements in the array.
    * @param array array of {@link Comparable} elements to sort.
    * @return the given array.
+   * @see #sort(Object[], Comparator)
    * @see java.lang.Comparable
    */
   public static <T extends Comparable<T>> T[] sort(T[] array) {
-    Arrays.sort(array);
+    return sort(array, Comparable::compareTo);
+  }
+
+  /**
+   * Sorts the elements in the given array.
+   *
+   * @param <T> {@link Class} type of the elements in the array.
+   * @param array array of elements to sort.
+   * @param comparator {@link Comparator} used to sort (order) the elements in the array.
+   * @return the given array sorted.
+   * @see java.util.Comparator
+   */
+  public static <T> T[] sort(T[] array, Comparator<T> comparator) {
+    Arrays.sort(array, comparator);
     return array;
   }
 

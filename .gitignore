@@ -1,6 +1,7 @@
 .backup/
 .bak/
 .gradle/
+.idea/
 build/
 etc/build
 etc/release
