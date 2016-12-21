@@ -21,13 +21,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.Map;
 import java.util.Properties;
 
 import org.cp.elements.io.NoSuchFileException;
 
 /**
- * The PropertiesBuilder class is a Builder object for constructing an instance of the {@link Properties} class.
+ * The {@link PropertiesBuilder} class is a Builder object for constructing an instance of the {@link Properties} class.
  *
  * @author John J. Blum
  * @see java.util.Properties
@@ -77,7 +78,7 @@ public class PropertiesBuilder {
       return from(defaults);
     }
     catch (IOException e) {
-      throw new SystemException(String.format("failed to load properties from input stream [%1$s]", inputStream), e);
+      throw new SystemException(String.format("Failed to load properties from input stream [%s]", inputStream), e);
     }
   }
 
@@ -112,6 +113,28 @@ public class PropertiesBuilder {
    */
   public static PropertiesBuilder from(Properties properties) {
     return new PropertiesBuilder(properties);
+  }
+
+  /**
+   * Factory method to load {@link Properties} from the given {@link Reader}.
+   *
+   * @param reader {@link Reader} containing the {@link Properties} to load.
+   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
+   * from the given reader.
+   * @throws SystemException if the properties from the given {@link Reader} could not be loaded.
+   * @see java.util.Properties#load(Reader)
+   * @see java.io.Reader
+   * @see #from(Properties)
+   */
+  public static PropertiesBuilder from(Reader reader) {
+    try {
+      Properties defaults = new Properties();
+      defaults.load(reader);
+      return from(defaults);
+    }
+    catch (IOException e) {
+      throw new SystemException(String.format("Failed to load properties from reader [%s]", reader), e);
+    }
   }
 
   /**
@@ -163,8 +186,8 @@ public class PropertiesBuilder {
    * @see java.util.Properties
    */
   public PropertiesBuilder(Properties defaults) {
-    properties = new Properties();
-    properties.putAll(defaults);
+    this.properties = new Properties();
+    this.properties.putAll(defaults);
   }
 
   /**
@@ -174,7 +197,7 @@ public class PropertiesBuilder {
    * @see java.util.Properties
    */
   protected Properties getProperties() {
-    return properties;
+    return this.properties;
   }
 
   /**

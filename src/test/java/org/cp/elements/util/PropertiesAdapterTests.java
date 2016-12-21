@@ -43,8 +43,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * The PropertiesAdapterTests class is a test suite of test cases testing the contract and functionality
- * of the {@link PropertiesAdapter} class.
+ * Unit tests for {@link PropertiesAdapter}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -253,7 +252,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void getExistingPropertyAsTypeWithDefaultValueReturnsTypedPropertyValue() {
-    assertThat(propertiesAdapter.getAsType("characterProperty", 'Y', Character.class), is(equalTo('X')));
+    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class, 'Y'), is(equalTo('X')));
   }
 
   @Test
@@ -273,7 +272,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void getNonExistingPropertyAsTypeWithDefaultValueReturnsDefaultValue() {
-    assertThat(propertiesAdapter.getAsType("nonExistingProperty", 123.45d, Double.TYPE), is(equalTo(123.45d)));
+    assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE, 123.45d), is(equalTo(123.45d)));
   }
 
   @Test

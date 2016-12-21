@@ -27,8 +27,8 @@ import org.cp.elements.util.convert.ConversionService;
 import org.cp.elements.util.convert.provider.DefaultConversionService;
 
 /**
- * The PropertiesAdapter class is a wrapper around a {@link java.util.Properties} object encapsulating functionality
- * to conveniently access properties and convert to a specific value type.
+ * The {@link PropertiesAdapter} class is a wrapper around a {@link Properties} object to encapsulate functionality
+ * for conveniently accessing properties and converting value to a specific type.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -73,7 +73,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see org.cp.elements.util.convert.ConversionService
    */
   protected ConversionService getConversionService() {
-    return conversionService;
+    return this.conversionService;
   }
 
   /**
@@ -83,7 +83,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see java.util.Properties
    */
   protected Properties getProperties() {
-    return delegate;
+    return this.delegate;
   }
 
   /**
@@ -96,6 +96,17 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   public boolean contains(String propertyName) {
     return getProperties().containsKey(propertyName);
+  }
+
+  /**
+   * Determines whether this {@link Properties} object contains any properties.
+   *
+   * @return a boolean value indicating whether this {@link Properties} object contains any properties.
+   * @see java.util.Properties#isEmpty()
+   * @see #getProperties()
+   */
+  public boolean isEmpty() {
+    return getProperties().isEmpty();
   }
 
   /**
@@ -209,10 +220,10 @@ public class PropertiesAdapter implements Iterable<String> {
    * @param propertyName the name of the property to get.
    * @param type Class type of the value to return for the specified property.
    * @return the assigned value of the named property as an instance of the specified {@link Class} type.
-   * @see #getAsType(String, Object, Class)
+   * @see #getAsType(String, Class, Object)
    */
   public <T> T getAsType(String propertyName, Class<T> type) {
-    return getAsType(propertyName, null, type);
+    return getAsType(propertyName, type, null);
   }
 
   /**
@@ -221,26 +232,15 @@ public class PropertiesAdapter implements Iterable<String> {
    *
    * @param <T> {@link Class} type of the return value.
    * @param propertyName the name of the property to get.
-   * @param defaultValue the default value to return if the named property does not exist.
    * @param type Class type of the value to return for the specified property.
+   * @param defaultValue the default value to return if the named property does not exist.
    * @return the assigned value of the named property as an instance of the specified {@link Class} type
    * or the default value if the named property does not exist.
    * @see #defaultIfNotExists(String, Object, Class)
    * @see java.lang.Class
    */
-  public <T> T getAsType(String propertyName, T defaultValue, Class<T> type) {
+  public <T> T getAsType(String propertyName, Class<T> type, T defaultValue) {
     return defaultIfNotExists(propertyName, defaultValue, type);
-  }
-
-  /**
-   * Determines whether this {@link Properties} object contains any properties.
-   *
-   * @return a boolean value indicating whether this {@link Properties} object contains any properties.
-   * @see java.util.Properties#isEmpty()
-   * @see #getProperties()
-   */
-  public boolean isEmpty() {
-    return getProperties().isEmpty();
   }
 
   /**

@@ -35,6 +35,10 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -85,7 +89,7 @@ public class PropertiesBuilderTests {
 
     exception.expect(NoSuchFileException.class);
     exception.expectCause(is(instanceOf(FileNotFoundException.class)));
-    exception.expectMessage(String.format("[%1$s] not found", nonExistingFile));
+    exception.expectMessage(String.format("[%s] not found", nonExistingFile));
 
     PropertiesBuilder.from(nonExistingFile);
   }
@@ -119,7 +123,7 @@ public class PropertiesBuilderTests {
 
     exception.expect(SystemException.class);
     exception.expectCause(is(instanceOf(IOException.class)));
-    exception.expectMessage(String.format("failed to load properties from input stream [%1$s]", mockInputStream));
+    exception.expectMessage(String.format("Failed to load properties from input stream [%s]", mockInputStream));
 
     PropertiesBuilder.from(mockInputStream);
   }
@@ -160,6 +164,41 @@ public class PropertiesBuilderTests {
 
     assertThat(propertiesBuilder, is(notNullValue()));
     assertThat(propertiesBuilder.build(), is(equalTo(expected)));
+  }
+
+  @Test
+  public void fromReaderLoadsProperties() throws IOException {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    Properties expected = new Properties();
+
+    expected.setProperty("one", "1");
+    expected.setProperty("two", "2");
+    expected.store(new OutputStreamWriter(out), "Test Properties");
+
+    byte[] buffer = out.toByteArray();
+
+    Properties actual = PropertiesBuilder.from(new InputStreamReader(new ByteArrayInputStream(buffer))).build();
+
+    assertThat(actual, is(notNullValue(Properties.class)));
+    assertThat(actual, is(equalTo(expected)));
+  }
+
+  @Test
+  public void fromReaderThrowingIOExceptionIsHandledProperly() throws IOException {
+    Reader mockReader = mock(Reader.class);
+
+    IOException ioException = new IOException("test");
+
+    when(mockReader.read()).thenThrow(ioException);
+    when(mockReader.read(any(char[].class))).thenThrow(ioException);
+    when(mockReader.read(any(char[].class), anyInt(), anyInt())).thenThrow(ioException);
+    when(mockReader.read(any(CharBuffer.class))).thenThrow(ioException);
+
+    exception.expect(SystemException.class);
+    exception.expectCause(is(instanceOf(IOException.class)));
+    exception.expectMessage(String.format("Failed to load properties from reader [%s]", mockReader));
+
+    PropertiesBuilder.from(mockReader);
   }
 
   @Test
