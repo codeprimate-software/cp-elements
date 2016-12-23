@@ -200,7 +200,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version.Qualifier
    */
   private static Qualifier parseQualifier(String qualifier) {
-    return Qualifier.valueOfQualifier(qualifier);
+    return Qualifier.resolve(qualifier);
   }
 
   /**
@@ -601,20 +601,26 @@ public class Version implements Comparable<Version> {
     private final String description;
 
     /**
-     * Factory method to search for a {@link Qualifier} enumerated value matching the {@code value} that starts with
+     * Factory method to search for a {@link Qualifier} enumerated version matching the {@code version} that contains
      * the matching {@link Qualifier Qualifier's} abbreviation.
      *
-     * @param value {@link String} qualifier value to match against a {@link Qualifier} abbreviation.
-     * @return a {@link Qualifier} matching the {@link String} value or {@literal null} if no match was found.
+     * @param version {@link String} version for which to resolve the {@link Qualifier}.
+     * @return a {@link Qualifier} matching the {@link String} version or {@literal null} if no match was found.
      * @see org.cp.elements.lang.Version.Qualifier
-     * @see java.lang.String#startsWith(String)
      * @see #getAbbreviation()
      */
-    public static Qualifier valueOfQualifier(String value) {
-      if (StringUtils.hasText(value)) {
+    public static Qualifier resolve(String version) {
+      if (StringUtils.hasText(version)) {
+        String trimmedLowerCaseVersion = version.trim().toLowerCase();
+        String versionQualifier = version.substring(version.lastIndexOf(".") + 1);
+
         for (Qualifier qualifier : values()) {
-          if (value.toLowerCase().endsWith(qualifier.name().toLowerCase())
-              || value.startsWith(qualifier.getAbbreviation())) {
+          String qualifierName = qualifier.name().toLowerCase();
+          String alternateQualifierName = qualifierName.replace("_", "-");
+
+          if (trimmedLowerCaseVersion.endsWith(qualifierName)
+              || trimmedLowerCaseVersion.endsWith(alternateQualifierName)
+              || versionQualifier.startsWith(qualifier.getAbbreviation())) {
 
             return qualifier;
           }
