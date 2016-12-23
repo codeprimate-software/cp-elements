@@ -17,12 +17,15 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -164,5 +167,18 @@ public class SimpleThreadFactoryTests {
     exception.expectMessage("Thread name must be specified");
 
     SimpleThreadFactory.newThreadFactory().newThread("  ", mockRunnable);
+  }
+
+  @Test
+  public void newThreadRunsRunnableTask() {
+    AtomicBoolean ran = new AtomicBoolean(false);
+
+    Thread thread = SimpleThreadFactory.newThreadFactory()
+      .newThread("TestThread", () -> { ran.set(true); });
+
+    thread.start();
+    waitFor(500, TimeUnit.MILLISECONDS).checkEvery(100, TimeUnit.MILLISECONDS).on(ran::get);
+
+    assertThat(ran.get()).isTrue();
   }
 }
