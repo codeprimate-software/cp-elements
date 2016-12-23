@@ -17,7 +17,9 @@
 package org.cp.elements.util;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
@@ -265,5 +267,23 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   public int size() {
     return getProperties().size();
+  }
+
+  /**
+   * Converts this {@link PropertiesAdapter} into a {@link Map}.
+   *
+   * @return a {@link Map} containing the properties and values of this {@link PropertiesAdapter}.
+   * @see java.util.Map
+   * @see #iterator()
+   * @see #get(String)
+   */
+  public Map<String, String> toMap() {
+    Map<String, String> map = new HashMap<>(size());
+
+    for (String propertyName : this) {
+      map.put(propertyName, get(propertyName));
+    }
+
+    return map;
   }
 }

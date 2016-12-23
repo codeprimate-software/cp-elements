@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -337,5 +338,41 @@ public class PropertiesAdapterTests {
     properties.clear();
 
     assertThat(propertiesAdapter.size(), is(equalTo(0)));
+  }
+
+  @Test
+  public void toMapIsSuccessful() {
+    Properties properties = new Properties();
+
+    properties.setProperty("one", "1");
+    properties.setProperty("two", "2");
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+
+    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
+    assertThat(propertiesAdapter.size(), is(equalTo(properties.size())));
+
+    Map<String, String> map = propertiesAdapter.toMap();
+
+    assertThat(map, is(notNullValue(Map.class)));
+    assertThat(map.size(), is(equalTo(properties.size())));
+
+    for (String propertyName : properties.stringPropertyNames()) {
+      assertThat(map.containsKey(propertyName), is(true));
+      assertThat(map.get(propertyName), is(equalTo(properties.getProperty(propertyName))));
+    }
+  }
+
+  @Test
+  public void toMapWithEmptyPropertiesIsSuccessful() {
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(new Properties());
+
+    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
+    assertThat(propertiesAdapter.isEmpty(), is(true));
+
+    Map<String, String> map = propertiesAdapter.toMap();
+
+    assertThat(map, is(notNullValue(Map.class)));
+    assertThat(map.isEmpty(), is(true));
   }
 }
