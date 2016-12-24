@@ -24,6 +24,7 @@ import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.convert.ConversionService;
 import org.cp.elements.util.convert.provider.DefaultConversionService;
@@ -169,6 +170,19 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
+   * Returns {@literal null} for a {@literal "null"} {@link String} value or simply returns the {@link String} value.
+   * The {@link String} value is safely trimmed before evaluation.
+   *
+   * @param value {@link String} value to evaluate.
+   * @return a {@literal null} for a {@literal "null"} {@link String} value.
+   * @see java.lang.String
+   */
+  @NullSafe
+  protected String valueOf(String value) {
+    return ("null".equals(StringUtils.trim(value)) ? null : value);
+  }
+
+  /**
    * Filters the properties from this adapter by name.
    *
    * @param filter the {@link Filter} used to filter the properties of this adapter.
@@ -212,7 +226,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see #getProperties()
    */
   public String get(String propertyName, String defaultValue) {
-    return getProperties().getProperty(propertyName, defaultValue);
+    return valueOf(getProperties().getProperty(propertyName, defaultValue));
   }
 
   /**

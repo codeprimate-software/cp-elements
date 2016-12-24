@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.PropertiesUtils.singletonProperties;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -138,7 +139,7 @@ public class PropertiesAdapterTests {
     assertThat(propertiesAdapter, is(notNullValue()));
     assertThat(propertiesAdapter.size(), is(equalTo(6)));
     assertThat(propertiesAdapter.isSet("one"), is(true));
-    assertThat(propertiesAdapter.isSet("two"), is(true));
+    assertThat(propertiesAdapter.isSet("two"), is(false));
     assertThat(propertiesAdapter.isSet("three"), is(true));
     assertThat(propertiesAdapter.isSet("four"), is(true));
     assertThat(propertiesAdapter.isSet("five"), is(true));
@@ -158,6 +159,17 @@ public class PropertiesAdapterTests {
     assertThat(propertiesAdapter.size(), is(equalTo(2)));
     assertThat(propertiesAdapter.isUnset("one"), is(true));
     assertThat(propertiesAdapter.isUnset("two"), is(true));
+  }
+
+  @Test
+  public void existingUnsetPropertyIsNotSetAndIsUnset() {
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(singletonProperties("existingUnsetProperty", "null"));
+
+    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
+    assertThat(propertiesAdapter.size(), is(equalTo(1)));
+    assertThat(propertiesAdapter.contains("existingUnsetProperty"), is(true));
+    assertThat(propertiesAdapter.isSet("existingUnsetProperty"), is(false));
+    assertThat(propertiesAdapter.isUnset("existingUnsetProperty"), is(true));
   }
 
   @Test
@@ -205,6 +217,21 @@ public class PropertiesAdapterTests {
     assertThat(propertiesAdapter.defaultIfNotExists("floatProperty", 3.14f, Float.TYPE), is(3.14f));
     assertThat(propertiesAdapter.defaultIfNotExists("intProperty", 4, Integer.TYPE), is(4));
     assertThat(propertiesAdapter.defaultIfNotExists("strProperty", "TEST", String.class), is("TEST"));
+  }
+
+  @Test
+  public void valueOfStringIsString() {
+    assertThat(propertiesAdapter.valueOf("test"), is(equalTo("test")));
+  }
+
+  @Test
+  public void valueOfLiteralNullStringIsNull() {
+    assertThat(propertiesAdapter.valueOf(" null  "), is(nullValue(String.class)));
+  }
+
+  @Test
+  public void valueOfNullIsNull() {
+    assertThat(propertiesAdapter.valueOf(null), is(nullValue(String.class)));
   }
 
   @Test
