@@ -294,6 +294,6 @@ public class Environment implements Iterable<String> {
    */
   @Override
   public String toString() {
-    return MapUtils.toString(environment().toMap());
+    return environment().toString();
   }
 }

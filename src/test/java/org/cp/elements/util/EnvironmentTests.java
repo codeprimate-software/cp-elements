@@ -17,6 +17,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.iterable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -143,17 +144,69 @@ public class EnvironmentTests {
     assertThat(environment.getAs("unsetProperty", String.class)).isNull();
   }
 
-  /*
   @Test
   public void copyToMap() {
+    Map<String, String> env = new HashMap<>();
+
+    env.put("one", "1");
+    env.put("two", "2");
+    env.put("three", "3");
+
+    Map<String, String> map = new HashMap<>();
+
+    map.put("one", "1");
+    map.put("two", "4");
+
+    Environment environment = Environment.from(env);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(env.size());
+
+    Map<String, String> mapCopy = environment.copyTo(map);
+
+    assertThat(mapCopy).isSameAs(map);
+    assertThat(mapCopy).isNotSameAs(env);
+    assertThat(mapCopy).isEqualTo(env);
   }
 
   @Test
   public void copyToProperties() {
+    Properties env = new Properties();
+
+    env.setProperty("one", "1");
+    env.setProperty("two", "2");
+    env.setProperty("three", "3");
+
+    Properties properties = new Properties();
+
+    properties.setProperty("one", "1");
+    properties.setProperty("two", "4");
+
+    Environment environment = Environment.from(env);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(env.size());
+
+    Properties propertiesCopy = environment.copyTo(properties);
+
+    assertThat(propertiesCopy).isSameAs(properties);
+    assertThat(propertiesCopy).isNotSameAs(env);
+    assertThat(propertiesCopy).isEqualTo(env);
   }
 
   @Test
-  public void iteration() {
+  public void iterationIsSuccessful() {
+    Properties properties = new Properties();
+
+    properties.setProperty("one", "1");
+    properties.setProperty("two", "2");
+    properties.setProperty("three", "3");
+
+    Environment environment = Environment.from(properties);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(properties.size());
+
+    assertThat(CollectionUtils.toSet(environment)).containsAll(iterable("one", "two", "three"));
   }
-  */
 }
