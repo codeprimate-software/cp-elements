@@ -16,20 +16,23 @@
 
 package org.cp.elements.lang.support;
 
+import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.Filter;
 
 /**
- * The FilterBuilder class is an implementation of the Builder design pattern for composing Filter objects with the help
- * of the ComposableFilter class.  This Builder class can be used in place of the ComposableFilter if the Composition
- * design pattern is less desirable.
+ * The {@link FilterBuilder} class is an implementation of the Builder Software Design Pattern
+ * for composing {@link Filter} objects with the help of the {@link ComposableFilter} class.
+ * This Builder class can be used in place of the {@link ComposableFilter} if the Composite
+ * Software Design Pattern is less desirable.
  *
  * @author John J. Blum
+ * @see org.cp.elements.lang.Builder
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.support.ComposableFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class FilterBuilder<T> {
+public class FilterBuilder<T> implements Builder<Filter<T>> {
 
   private Filter<T> filterInstance;
 
@@ -66,5 +69,4 @@ public class FilterBuilder<T> {
   public Filter<T> build() {
     return filterInstance;
   }
-
 }

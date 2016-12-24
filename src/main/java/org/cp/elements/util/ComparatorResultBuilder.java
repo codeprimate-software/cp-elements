@@ -20,6 +20,7 @@ import static org.cp.elements.util.ComparatorUtils.compareIgnoreNull;
 
 import java.util.Comparator;
 
+import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.NullSafe;
 
 /**
@@ -29,10 +30,11 @@ import org.cp.elements.lang.NullSafe;
  * @author John J. Blum
  * @see java.lang.Comparable
  * @see java.util.Comparator
+ * @see org.cp.elements.lang.Builder
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ComparatorResultBuilder<T extends Comparable<T>> implements Comparator<T> {
+public class ComparatorResultBuilder<T extends Comparable<T>> implements Builder<Integer>, Comparator<T> {
 
   private int result = 0;
 
@@ -45,6 +47,15 @@ public class ComparatorResultBuilder<T extends Comparable<T>> implements Compara
    */
   public static <T extends Comparable<T>> ComparatorResultBuilder<T> create() {
     return new ComparatorResultBuilder<>();
+  }
+
+  /**
+   * @inheritDoc
+   * @see #getResult()
+   */
+  @Override
+  public Integer build() {
+    return getResult();
   }
 
   /**

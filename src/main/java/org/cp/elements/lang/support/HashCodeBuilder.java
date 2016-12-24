@@ -22,6 +22,7 @@ import static org.cp.elements.lang.reflect.ReflectionUtils.withFields;
 
 import java.lang.reflect.Field;
 
+import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 
@@ -30,12 +31,13 @@ import org.cp.elements.lang.ObjectUtils;
  *
  * @author John J. Blum
  * @see java.lang.Object#hashCode()
+ * @see org.cp.elements.lang.Builder
  * @see org.cp.elements.lang.ObjectUtils
  * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class HashCodeBuilder {
+public class HashCodeBuilder implements Builder<Integer> {
 
   protected static final int DEFAULT_BASE_VALUE = 17;
   protected static final int DEFAULT_MULTIPLIER = 37;
@@ -275,7 +277,7 @@ public class HashCodeBuilder {
    * @return an integer value with the result of computing the hash code.
    * @see #hashValue()
    */
-  public int build() {
+  public Integer build() {
     return hashValue();
   }
 }

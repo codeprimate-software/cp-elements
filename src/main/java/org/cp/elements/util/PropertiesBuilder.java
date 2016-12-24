@@ -26,17 +26,19 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.cp.elements.io.NoSuchFileException;
+import org.cp.elements.lang.Builder;
 
 /**
  * The {@link PropertiesBuilder} class is a Builder object for constructing an instance of the {@link Properties} class.
  *
  * @author John J. Blum
  * @see java.util.Properties
+ * @see org.cp.elements.lang.Builder
  * @see org.cp.elements.util.PropertiesAdapter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class PropertiesBuilder {
+public class PropertiesBuilder implements Builder<Properties> {
 
   private final Properties properties;
 
