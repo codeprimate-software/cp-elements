@@ -30,7 +30,7 @@ import org.cp.elements.lang.Transformer;
 /**
  * The MapUtils class provides utility methods for working with the Java Collections Framework and specifically
  * the {@link Map} class.
- * 
+ *
  * @author John J. Blum
  * @see java.util.Collections
  * @see java.util.Map
@@ -56,7 +56,7 @@ public abstract class MapUtils {
 
   /**
    * Counts the number of entries (key-value pairs) in the {@link Map} accepted by the {@link Filter}.
-   * 
+   *
    * @param <K> Class type of the key.
    * @param <V> Class type of the value.
    * @param map {@link Map} to evaluate.
@@ -84,7 +84,7 @@ public abstract class MapUtils {
   /**
    * Returns a filtered {@link Map} containing only the key-value entries from the given {@link Map} that are accepted
    * by the {@link Filter}.
-   * 
+   *
    * @param <K> Class type of the key.
    * @param <V> Class type of the value.
    * @param map {@link Map} to filter.
@@ -129,7 +129,7 @@ public abstract class MapUtils {
 
   /**
    * Finds all key-value entries from the given {@link Map} accepted by the {@link Filter}.
-   * 
+   *
    * @param <K> Class type of the key.
    * @param <V> Class type of the value.
    * @param map {@link Map} to search.
@@ -188,7 +188,7 @@ public abstract class MapUtils {
 
   /**
    * Determines the size, or number of entries in the {@link Map}, returning 0 if the {@link Map} is null or empty.
-   * 
+   *
    * @param map {@link Map} to evaluate.
    * @return an integer value indicating the size or number of entries in the {@link Map}.
    * @see java.util.Map#size()
@@ -209,7 +209,7 @@ public abstract class MapUtils {
    */
   @NullSafe
   public static String toString(Map<?, ?> map) {
-    StringBuilder builder = new StringBuilder("{");
+    StringBuilder builder = new StringBuilder("[");
     int count = 0;
 
     map = new TreeMap<Object, Object>(nullSafeMap(map));
@@ -222,7 +222,7 @@ public abstract class MapUtils {
       builder.append(++count == map.size() ? "\n" : ",");
     }
 
-    builder.append("}");
+    builder.append("]");
 
     return builder.toString();
   }

@@ -562,7 +562,7 @@ public class MapUtilsTests {
 
   @Test
   public void toStringWithEmptyMap() {
-    assertThat(MapUtils.toString(Collections.emptyMap()), is(equalTo("{}")));
+    assertThat(MapUtils.toString(Collections.emptyMap()), is(equalTo("[]")));
   }
 
   @Test
@@ -575,23 +575,23 @@ public class MapUtilsTests {
 
     String mapString = MapUtils.toString(map);
 
-    String expected = "{"
+    String expected = "["
       .concat("\n\t").concat("one = 1,")
       .concat("\n\t").concat("three = 3,")
       .concat("\n\t").concat("two = 2")
-      .concat("\n}");
+      .concat("\n]");
 
     assertThat(mapString, is(equalTo(expected)));
   }
 
   @Test
   public void toStringWithNullMap() {
-    assertThat(MapUtils.toString(null), is(equalTo("{}")));
+    assertThat(MapUtils.toString(null), is(equalTo("[]")));
   }
 
   @Test
   public void toStringWithSingleEntryMap() {
-    assertThat(MapUtils.toString(Collections.singletonMap("one", 1)), is(equalTo("{\n\tone = 1\n}")));
+    assertThat(MapUtils.toString(Collections.singletonMap("one", 1)), is(equalTo("[\n\tone = 1\n]")));
   }
 
   @Test
