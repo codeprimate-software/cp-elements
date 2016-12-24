@@ -165,7 +165,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see #isSet(String)
    * @see #convert(String, Class)
    */
-  protected <T> T defaultIfNotExists(String propertyName, T defaultValue, Class<T> type) {
+  protected <T> T defaultIfNotSet(String propertyName, T defaultValue, Class<T> type) {
     return (isSet(propertyName) ? convert(propertyName, type) : defaultValue);
   }
 
@@ -179,7 +179,7 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   @NullSafe
   protected String valueOf(String value) {
-    return ("null".equals(StringUtils.trim(value)) ? null : value);
+    return ("null".equalsIgnoreCase(String.valueOf(value).trim()) ? null : value);
   }
 
   /**
@@ -252,11 +252,11 @@ public class PropertiesAdapter implements Iterable<String> {
    * @param defaultValue the default value to return if the named property does not exist.
    * @return the assigned value of the named property as an instance of the specified {@link Class} type
    * or the default value if the named property does not exist.
-   * @see #defaultIfNotExists(String, Object, Class)
+   * @see #defaultIfNotSet(String, Object, Class)
    * @see java.lang.Class
    */
   public <T> T getAsType(String propertyName, Class<T> type, T defaultValue) {
-    return defaultIfNotExists(propertyName, defaultValue, type);
+    return defaultIfNotSet(propertyName, defaultValue, type);
   }
 
   /**
@@ -281,6 +281,14 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   public int size() {
     return getProperties().size();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public String toString() {
+    return MapUtils.toString(toMap());
   }
 
   /**
