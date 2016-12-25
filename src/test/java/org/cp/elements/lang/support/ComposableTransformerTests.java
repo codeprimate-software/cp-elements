@@ -60,6 +60,7 @@ public class ComposableTransformerTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void composeWithEmptyArray() {
     assertThat(ComposableTransformer.compose(new Transformer[0])).isNull();
   }
