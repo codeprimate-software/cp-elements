@@ -16,17 +16,17 @@
 
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.getFirst;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ComposableRunnable} class.
+ * Unit tests for {@link ComposableRunnable}.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
@@ -38,42 +38,62 @@ import org.junit.Test;
 @SuppressWarnings("unused")
 public class ComposableRunnableTests {
 
+  protected Runnable mockRunnable(String... name) {
+    return mock(Runnable.class, getFirst(name, "MockRunnable"));
+  }
+
   @Test
-  public void compose() {
-    Runnable mockRunnableLeft = mock(Runnable.class, "left");
-    Runnable mockRunnableRight = mock(Runnable.class, "right");
+  public void composeTwoRunnables() {
+    Runnable mockRunnableLeft = mockRunnable("left");
+    Runnable mockRunnableRight = mockRunnable("right");
 
-    assertNull(ComposableRunnable.compose(null, null));
-    assertSame(mockRunnableLeft, ComposableRunnable.compose(mockRunnableLeft, null));
-    assertSame(mockRunnableRight, ComposableRunnable.compose(null, mockRunnableRight));
+    assertThat(ComposableRunnable.getInstance().compose(null, null)).isNull();
+    assertThat(ComposableRunnable.getInstance().compose(mockRunnableLeft, null)).isSameAs(mockRunnableLeft);
+    assertThat(ComposableRunnable.getInstance().compose(null, mockRunnableRight)).isSameAs(mockRunnableRight);
 
-    Runnable composedRunnable = ComposableRunnable.compose(mockRunnableLeft, mockRunnableRight);
+    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableLeft, mockRunnableRight);
 
-    assertTrue(composedRunnable instanceof ComposableRunnable);
+    assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
   }
 
   @Test
   public void composeRunnableArray() {
-    Runnable mockRunnableZero = mock(Runnable.class, "zero");
-    Runnable mockRunnableOne = mock(Runnable.class, "one");
-    Runnable mockRunnableTwo = mock(Runnable.class, "two");
-    Runnable mockRunnableThree = mock(Runnable.class, "three");
+    Runnable mockRunnableZero = mockRunnable("zero");
+    Runnable mockRunnableOne = mockRunnable("one");
+    Runnable mockRunnableTwo = mockRunnable("two");
+    Runnable mockRunnableThree = mockRunnable("three");
 
-    assertNull(ComposableRunnable.compose((Runnable[]) null));
-    assertSame(mockRunnableZero, ComposableRunnable.compose(mockRunnableZero));
+    assertThat(ComposableRunnable.getInstance().compose((Runnable[]) null)).isNull();
+    assertThat(ComposableRunnable.getInstance().compose(mockRunnableZero)).isSameAs(mockRunnableZero);
 
-    Runnable composedRunnable = ComposableRunnable.compose(mockRunnableZero, mockRunnableOne, mockRunnableTwo,
-      mockRunnableThree);
+    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
+      mockRunnableTwo, mockRunnableThree);
 
-    assertTrue(composedRunnable instanceof ComposableRunnable);
+    assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
+  }
+
+  @Test
+  public void composeIterableRunnable() {
+    Runnable mockRunnableZero = mockRunnable("zero");
+    Runnable mockRunnableOne = mockRunnable("one");
+    Runnable mockRunnableTwo = mockRunnable("two");
+    Runnable mockRunnableThree = mockRunnable("three");
+
+    assertThat(ComposableRunnable.getInstance().compose((Iterable<Runnable>) null)).isNull();
+    assertThat(ComposableRunnable.getInstance().compose(ArrayUtils.iterable(mockRunnableOne))).isSameAs(mockRunnableOne);
+
+    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
+      mockRunnableTwo, mockRunnableThree);
+
+    assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
   }
 
   @Test
   public void runOne() {
-    Runnable mockRunnable = mock(Runnable.class);
-    Runnable actualRunnable = ComposableRunnable.compose(mockRunnable);
+    Runnable mockRunnable = mockRunnable("one");
+    Runnable actualRunnable = ComposableRunnable.getInstance().compose(mockRunnable);
 
-    assertSame(mockRunnable, actualRunnable);
+    assertThat(actualRunnable).isSameAs(mockRunnable);
 
     actualRunnable.run();
 
@@ -82,11 +102,11 @@ public class ComposableRunnableTests {
 
   @Test
   public void runTwo() {
-    Runnable mockRunnableLeft = mock(Runnable.class, "left");
-    Runnable mockRunnableRight = mock(Runnable.class, "right");
-    Runnable composedRunnable = ComposableRunnable.compose(mockRunnableLeft, mockRunnableRight);
+    Runnable mockRunnableLeft = mockRunnable("left");
+    Runnable mockRunnableRight = mockRunnable("right");
+    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableLeft, mockRunnableRight);
 
-    assertTrue(composedRunnable instanceof ComposableRunnable);
+    assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
 
     composedRunnable.run();
 
@@ -96,15 +116,15 @@ public class ComposableRunnableTests {
 
   @Test
   public void runFour() {
-    Runnable mockRunnableZero = mock(Runnable.class, "zero");
-    Runnable mockRunnableOne = mock(Runnable.class, "one");
-    Runnable mockRunnableTwo = mock(Runnable.class, "two");
-    Runnable mockRunnableThree = mock(Runnable.class, "three");
+    Runnable mockRunnableZero = mockRunnable("zero");
+    Runnable mockRunnableOne = mockRunnable("one");
+    Runnable mockRunnableTwo = mockRunnable("two");
+    Runnable mockRunnableThree = mockRunnable("three");
 
-    Runnable composedRunnable = ComposableRunnable.compose(mockRunnableZero, mockRunnableOne, mockRunnableTwo,
-      mockRunnableThree);
+    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
+      mockRunnableTwo, mockRunnableThree);
 
-    assertTrue(composedRunnable instanceof ComposableRunnable);
+    assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
 
     composedRunnable.run();
 

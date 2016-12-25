@@ -17,6 +17,7 @@
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Composite;
 
 /**
  * The ComposableRunnable class is an implementation of the Runnable interface and the Composite Design Pattern to
@@ -27,10 +28,32 @@ import org.cp.elements.lang.Assert;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public final class ComposableRunnable implements Runnable {
+public class ComposableRunnable implements Composite<Runnable>, Runnable {
+
+  protected static final ComposableRunnable INSTANCE = new ComposableRunnable();
 
   private final Runnable leftRunnable;
   private final Runnable rightRunnable;
+
+  /**
+   * Returns the single instance of {@link ComposableRunnable} used to compose 2 or more indiviudal {@link Runnable}
+   * objects into a {@link Composite} {@link Runnable} object.
+   *
+   * @return the single instance of {@link ComposableRunnable}.
+   * @see org.cp.elements.lang.support.ComposableRunnable
+   */
+  public static ComposableRunnable getInstance() {
+    return INSTANCE;
+  }
+
+  /**
+   * Default, private constructor used to construct a Singleton instance of the {@link ComposableRunnable} used to
+   * compose 2 or more individual {@link Runnable} objects into a Composite {@link Runnable} object.
+   */
+  private ComposableRunnable() {
+    this.leftRunnable = () -> {};
+    this.rightRunnable = () -> {};
+  }
 
   /**
    * Constructs an instance of the ComposableRunnable class composed an initialized with 2 Runnable objects.
@@ -39,46 +62,28 @@ public final class ComposableRunnable implements Runnable {
    * @param rightRunnable the right Runnable node in the composed graph.
    * @throws NullPointerException if either the left or right Runnable object is null.
    */
-  private ComposableRunnable(final Runnable leftRunnable, final Runnable rightRunnable) {
-    Assert.notNull(leftRunnable, "The left node Runnable object cannot be null!");
-    Assert.notNull(rightRunnable, "The right node Runnable object cannot be null!");
+  private ComposableRunnable(Runnable leftRunnable, Runnable rightRunnable) {
+    Assert.notNull(leftRunnable, "The left Runnable object cannot be null");
+    Assert.notNull(rightRunnable, "The right Runnable object cannot be null");
 
     this.leftRunnable = leftRunnable;
     this.rightRunnable = rightRunnable;
   }
 
   /**
-   * Composes 2 Runnable objects into a single, compound Runnable object.  Returns the left Runnable if the right is
-   * null and the right if the left is null.
+   * Composes two {@link Runnable} objects into a single, compound {@link Runnable} object.
    *
-   * @param leftRunnable the left Runnable node in the composed graph.
-   * @param rightRunnable the right Runnable node in the composed graph.
-   * @return a Runnable object composed with the left and right Runnable objects.
-   * @see #compose(Runnable...)
+   * Returns the {@code leftRunnable} if {@code rightRunnable} is {@literal null}
+   * and {@code rightRunnable} if the {@code leftRunnable} is {@literal null}.
+   *
+   * @param leftRunnable {@link Runnable} object in the composition.
+   * @param rightRunnable {@link Runnable} object in the composition.
+   * @return a {@link Runnable} object composed with the given left and right {@link Runnable} objects.
+   * @see java.lang.Runnable
    */
-  public static Runnable compose(final Runnable leftRunnable, final Runnable rightRunnable) {
-    return (rightRunnable == null ? leftRunnable : (leftRunnable == null ? rightRunnable
+  public Runnable compose(Runnable leftRunnable, Runnable rightRunnable) {
+    return (leftRunnable == null ? rightRunnable : (rightRunnable == null ? leftRunnable
       : new ComposableRunnable(leftRunnable, rightRunnable)));
-  }
-
-  /**
-   * Composes the array of Runnable objects into a single, compound Runnable object that are run in the order the
-   * Runnable objects are contained in the array.
-   *
-   * @param runnables an array of Runnable objects to compose into a single, compound Runnable object.
-   * @return a Runnable object composed with the Runnable objects contained in the array.
-   * @see #compose(Runnable, Runnable)
-   */
-  public static Runnable compose(final Runnable... runnables) {
-    Runnable currentRunnable = null;
-
-    if (runnables != null) {
-      for (Runnable runnable : runnables) {
-        currentRunnable = compose(currentRunnable, runnable);
-      }
-    }
-
-    return currentRunnable;
   }
 
   /**
@@ -91,5 +96,4 @@ public final class ComposableRunnable implements Runnable {
     leftRunnable.run();
     rightRunnable.run();
   }
-
 }

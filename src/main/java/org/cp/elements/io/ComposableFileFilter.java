@@ -20,23 +20,27 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Composite;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.LogicalOperator;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The ComposableFileFilter class is a {@link FileFilter} implementation composed of multiple {@link FileFilter}s
- * joined by logical operators, AND, OR and XOR.
+ * The {@link ComposableFileFilter} class is a {@link FileFilter} and {@link Filter} implementation composed of
+ * multiple {@link FileFilter FileFilters} joined by logical operators: AND, OR and XOR.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
+ * @see org.cp.elements.lang.Composite
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.LogicalOperator
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ComposableFileFilter implements FileFilter, Filter<File> {
+public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, Filter<File> {
+
+  protected static final ComposableFileFilter INSTANCE = new ComposableFileFilter();
 
   private final FileFilter leftOperand;
   private final FileFilter rightOperand;
@@ -44,13 +48,35 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
   private final LogicalOperator operator;
 
   /**
-   * Constructs an instance of {@link ComposableFileFilter} initialized with the logical operator used to perform
+   * Returns the single instance of {@link ComposableFileFilter} used to compose 2 or more individual {@link FileFilter}
+   * objects into a {@link Composite} {@link FileFilter} object.
+   *
+   * @return the single instance of {@link ComposableFileFilter}.
+   * @see org.cp.elements.io.ComposableFileFilter
+   */
+  public static ComposableFileFilter getInstance() {
+    return INSTANCE;
+  }
+
+  /**
+   * Default, private constructor used to construct a Singleton instance of {@link ComposableFileFilter} used to compose
+   * 2 or more individual {@link FileFilter} objects into a {@link Composite} {@link FileFilter} object.
+   */
+  private ComposableFileFilter() {
+    this.leftOperand = (file) -> false;
+    this.rightOperand = (file) -> false;
+    this.operator = LogicalOperator.AND;
+  }
+
+  /**
+   * Constructs an instance of {@link ComposableFileFilter} initialized with the {@link LogicalOperator} used to perform
    * a logical operation on the left and right {@link FileFilter} operands in the filtering process.
    *
-   * @param operator the logical operation to perform.
+   * @param operator {@link LogicalOperator logical operation} to perform.
    * @param leftOperand {@link FileFilter} operand used in the left hand side of the logical expression.
    * @param rightOperand {@link FileFilter} operand used in the right hand side of the logical expression.
-   * @throws java.lang.IllegalArgumentException if the logical operator or either {@link FileFilter} operand is null.
+   * @throws java.lang.IllegalArgumentException if the {@link LogicalOperator} or either {@link FileFilter} operand
+   * is {@literal null}.
    * @see org.cp.elements.lang.LogicalOperator
    * @see java.io.FileFilter
    */
@@ -135,6 +161,14 @@ public class ComposableFileFilter implements FileFilter, Filter<File> {
    */
   public static FileFilter xor(FileFilter leftOperand, FileFilter rightOperand) {
     return compose(LogicalOperator.XOR, leftOperand, rightOperand);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public FileFilter compose(FileFilter one, FileFilter two) {
+    return compose(LogicalOperator.AND, one, two);
   }
 
   /**

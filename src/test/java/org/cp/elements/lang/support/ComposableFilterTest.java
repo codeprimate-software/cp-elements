@@ -37,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
- * The ComposableFilterTest class is a test suite of test cases testing the contract and functionality 
+ * The ComposableFilterTest class is a test suite of test cases testing the contract and functionality
  * of the ComposableFilter class.
  *
  * @author John J. Blum
@@ -63,7 +63,7 @@ public class ComposableFilterTest {
   }
 
   @Test
-  public void testAcceptUsingAnd() {
+  public void acceptUsingAnd() {
     assertFalse(ComposableFilter.and(falseFilter, falseFilter).accept("test"));
     assertFalse(ComposableFilter.and(trueFilter, falseFilter).accept("test"));
     assertFalse(ComposableFilter.and(falseFilter, trueFilter).accept("test"));
@@ -71,7 +71,7 @@ public class ComposableFilterTest {
   }
 
   @Test
-  public void testAcceptUsingOr() {
+  public void acceptUsingOr() {
     assertFalse(ComposableFilter.or(falseFilter, falseFilter).accept("test"));
     assertTrue(ComposableFilter.or(trueFilter, falseFilter).accept("test"));
     assertTrue(ComposableFilter.or(falseFilter, trueFilter).accept("test"));
@@ -79,8 +79,16 @@ public class ComposableFilterTest {
   }
 
   @Test
-  public void testAcceptUsingAndWithOr() {
-    final Filter<Driver> driverFilter = ComposableFilter.or(new DrivingAgeFilter(16),
+  public void acceptUsingXor() {
+    assertFalse(ComposableFilter.xor(falseFilter, falseFilter).accept("test"));
+    assertTrue(ComposableFilter.xor(trueFilter, falseFilter).accept("test"));
+    assertTrue(ComposableFilter.xor(falseFilter, trueFilter).accept("test"));
+    assertFalse(ComposableFilter.xor(trueFilter, trueFilter).accept("test"));
+  }
+
+  @Test
+  public void acceptUsingAndWithOr() {
+    Filter<Driver> driverFilter = ComposableFilter.or(new DrivingAgeFilter(16),
       ComposableFilter.and(new DrivingAgeFilter(14), new ParentRequiredFilter()));
 
     assertNotNull(driverFilter);
@@ -98,12 +106,12 @@ public class ComposableFilterTest {
   }
 
   @Test
-  public void testComposeAnd() {
+  public void composeAnd() {
     assertNull(ComposableFilter.and(null, null));
     assertSame(trueFilter, ComposableFilter.and(trueFilter, null));
     assertSame(falseFilter, ComposableFilter.and(null, falseFilter));
 
-    final Filter<Object> composedFilter = ComposableFilter.and(trueFilter, falseFilter);
+    Filter<Object> composedFilter = ComposableFilter.and(trueFilter, falseFilter);
 
     assertNotNull(composedFilter);
     assertNotSame(trueFilter, composedFilter);
@@ -115,12 +123,12 @@ public class ComposableFilterTest {
   }
 
   @Test
-  public void testComposeOr() {
+  public void composeOr() {
     assertNull(ComposableFilter.or(null, null));
     assertSame(trueFilter, ComposableFilter.or(trueFilter, null));
     assertSame(falseFilter, ComposableFilter.or(null, falseFilter));
 
-    final Filter<Object> composedFilter = ComposableFilter.or(trueFilter, falseFilter);
+    Filter<Object> composedFilter = ComposableFilter.or(trueFilter, falseFilter);
 
     assertNotNull(composedFilter);
     assertNotSame(trueFilter, composedFilter);
@@ -129,6 +137,23 @@ public class ComposableFilterTest {
     assertSame(trueFilter, ((ComposableFilter) composedFilter).getLeftFilter());
     assertSame(falseFilter, ((ComposableFilter) composedFilter).getRightFilter());
     assertEquals(LogicalOperator.OR, ((ComposableFilter) composedFilter).getOp());
+  }
+
+  @Test
+  public void composeXor() {
+    assertNull(ComposableFilter.xor(null, null));
+    assertSame(trueFilter, ComposableFilter.xor(trueFilter, null));
+    assertSame(falseFilter, ComposableFilter.xor(null, falseFilter));
+
+    Filter<Object> composedFilter = ComposableFilter.xor(trueFilter, falseFilter);
+
+    assertNotNull(composedFilter);
+    assertNotSame(trueFilter, composedFilter);
+    assertNotSame(falseFilter, composedFilter);
+    assertTrue(composedFilter instanceof ComposableFilter);
+    assertSame(trueFilter, ((ComposableFilter) composedFilter).getLeftFilter());
+    assertSame(falseFilter, ((ComposableFilter) composedFilter).getRightFilter());
+    assertEquals(LogicalOperator.XOR, ((ComposableFilter) composedFilter).getOp());
   }
 
   private static final class Driver {

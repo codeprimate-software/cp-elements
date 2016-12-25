@@ -16,12 +16,15 @@
 
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.getFirst;
+import static org.cp.elements.util.ArrayUtils.iterable;
+import static org.cp.elements.util.CollectionUtils.toSet;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,12 +33,15 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.util.CollectionUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ComposableVisitor} class.
+ * Unit tests for {@link ComposableVisitor}.
  *
  * @author John J. Blum
+ * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Visitable
@@ -45,125 +51,167 @@ import org.junit.Test;
  */
 public class ComposableVisitorTests {
 
-  @Test
-  public void add() {
-    assertTrue(new ComposableVisitor().add(mock(Visitor.class)));
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
+
+  protected Visitor mockVisitor(String... name) {
+    return mock(Visitor.class, getFirst(name, "MockVisitor"));
   }
 
   @Test
-  public void addExistingVisitor() {
-    Visitor mockVisitor = mock(Visitor.class);
+  public void addVisitorReturnsTrue() {
+    assertThat(new ComposableVisitor().add(mockVisitor())).isTrue();
+  }
+
+  @Test
+  public void addExistingVisitorReturnsFalse() {
+    Visitor mockVisitor = mockVisitor();
+
     ComposableVisitor visitors = new ComposableVisitor();
 
-    assertTrue(visitors.add(mockVisitor));
-    assertFalse(visitors.add(mockVisitor));
+    assertThat(visitors.add(mockVisitor)).isTrue();
+    assertThat(visitors.add(mockVisitor)).isFalse();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void addNullVisitor() {
+  @Test
+  public void addNullVisitorThrowsIllegalArgumentException() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The Visitor to add to this composite cannot be null");
+
     new ComposableVisitor().add(null);
   }
 
   @Test
-  public void contains() {
-    Visitor mockVisitor = mock(Visitor.class);
+  public void addSelfReturnsFalse() {
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.add(visitors)).isFalse();
+  }
+
+  @Test
+  public void containsAddedVisitorIsTrue() {
+    Visitor mockVisitor = mockVisitor();
 
     ComposableVisitor visitors = new ComposableVisitor();
 
-    assertFalse(visitors.contains(mockVisitor));
-    assertTrue(visitors.add(mockVisitor));
-    assertTrue(visitors.contains(mockVisitor));
-    assertFalse(visitors.add(mockVisitor));
-    assertTrue(visitors.contains(mockVisitor));
-    assertFalse(visitors.contains(null));
+    assertThat(visitors.add(mockVisitor)).isTrue();
+    assertThat(visitors.contains(mockVisitor)).isTrue();
+    assertThat(visitors.add(mockVisitor)).isFalse();
+    assertThat(visitors.contains(mockVisitor)).isTrue();
+  }
+
+  @Test
+  public void containsNonAddedVisitorIsFalse() {
+    assertThat(new ComposableVisitor().contains(mockVisitor())).isFalse();
+  }
+
+  @Test
+  public void containsNullIsFalse() {
+    assertThat(new ComposableVisitor().contains(null)).isFalse();
+  }
+  @Test
+  public void isEmptyAfterAddIsFalse() {
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.add(mockVisitor())).isTrue();
+    assertThat(visitors.isEmpty()).isFalse();
+  }
+
+  @Test
+  public void isEmptyBeforeAddIsTrue() {
+    assertThat(new ComposableVisitor().isEmpty()).isTrue();
   }
 
   @Test
   public void iterator() {
-    final Visitor[] expectedVisitors = {
-      mock(Visitor.class, "MockVisitorOne"),
-      mock(Visitor.class, "MockVisitorTwo"),
-      mock(Visitor.class, "MockVisitorThree"),
+    Visitor[] expectedVisitors = {
+      mockVisitor("one"),
+      mockVisitor("two"),
+      mockVisitor("three")
     };
 
-    ComposableVisitor visitors = new ComposableVisitor();
-
-    for (Visitor expectedVisitor : expectedVisitors) {
-      assertTrue(visitors.add(expectedVisitor));
-    }
+    ComposableVisitor visitors = (ComposableVisitor) new ComposableVisitor().compose(expectedVisitors);
 
     int index = 0;
 
     for (Visitor actualVisitor : visitors) {
-      assertEquals(expectedVisitors[index++], actualVisitor);
+      assertThat(actualVisitor).isEqualTo(expectedVisitors[index++]);
     }
 
-    assertEquals(expectedVisitors.length, index);
+    assertThat(index).isEqualTo(expectedVisitors.length);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void iteratorModification() {
-    Visitor mockVisitor = mock(Visitor.class);
+  @Test
+  public void iteratorRemoveThrowsUnsupportedOperationException() {
+    Visitor mockVisitor = mockVisitor();
+
     ComposableVisitor visitors = new ComposableVisitor();
 
-    assertTrue(visitors.add(mockVisitor));
-    assertTrue(visitors.contains(mockVisitor));
+    assertThat(visitors.add(mockVisitor)).isTrue();
 
-    Iterator<Visitor> it = visitors.iterator();
+    Iterator<Visitor> iterator = visitors.iterator();
 
-    assertNotNull(it);
-    assertTrue(it.hasNext());
-    assertEquals(mockVisitor, it.next());
+    assertThat(iterator).isNotNull();
+    assertThat(iterator.hasNext()).isTrue();
+    assertThat(iterator.next()).isEqualTo(mockVisitor);
 
-    it.remove();
+    exception.expect(UnsupportedOperationException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+
+    iterator.remove();
   }
 
   @Test
   public void iteratorWithNoVisitors() {
-    Iterator<Visitor> iterator = new ComposableVisitor().iterator();
+    ComposableVisitor composableVisitor = new ComposableVisitor();
 
-    assertNotNull(iterator);
-    assertFalse(iterator.hasNext());
+    assertThat(composableVisitor.isEmpty()).isTrue();
+
+    Iterator<Visitor> iterator = composableVisitor.iterator();
+
+    assertThat(iterator).isNotNull();
+    assertThat(iterator.hasNext()).isFalse();
   }
 
   @Test
   public void remove() {
-    Visitor mockVisitor = mock(Visitor.class);
+    Visitor mockVisitor = mockVisitor();
+
     ComposableVisitor visitors = new ComposableVisitor();
 
-    assertFalse(visitors.contains(mockVisitor));
-    assertFalse(visitors.remove(mockVisitor));
-    assertTrue(visitors.add(mockVisitor));
-    assertTrue(visitors.contains(mockVisitor));
-    assertTrue(visitors.remove(mockVisitor));
-    assertFalse(visitors.contains(mockVisitor));
-    assertFalse(visitors.remove(mockVisitor));
-    assertFalse(visitors.remove(null));
+    assertThat(visitors.remove(mockVisitor)).isFalse();
+    assertThat(visitors.add(mockVisitor)).isTrue();
+    assertThat(visitors.contains(mockVisitor)).isTrue();
+    assertThat(visitors.remove(mockVisitor)).isTrue();
+    assertThat(visitors.contains(mockVisitor)).isFalse();
+    assertThat(visitors.remove(mockVisitor)).isFalse();
   }
 
   @Test
   public void size() {
-    Visitor mockVisitor = mock(Visitor.class);
+    Visitor mockVisitor = mockVisitor();
+
     ComposableVisitor visitors = new ComposableVisitor();
 
-    assertEquals(0, visitors.size());
-    assertTrue(visitors.add(mockVisitor));
-    assertEquals(1, visitors.size());
-    assertFalse(visitors.add(mockVisitor));
-    assertEquals(1, visitors.size());
-    assertFalse(visitors.remove(null));
-    assertEquals(1, visitors.size());
-    assertTrue(visitors.remove(mockVisitor));
-    assertEquals(0, visitors.size());
-    assertFalse(visitors.remove(mockVisitor));
-    assertEquals(0, visitors.size());
+    assertThat(visitors.size()).isEqualTo(0);
+    assertThat(visitors.add(mockVisitor)).isTrue();
+    assertThat(visitors.size()).isEqualTo(1);
+    assertThat(visitors.add(mockVisitor)).isFalse();
+    assertThat(visitors.size()).isEqualTo(1);
+    assertThat(visitors.remove(null)).isFalse();
+    assertThat(visitors.size()).isEqualTo(1);
+    assertThat(visitors.remove(mockVisitor)).isTrue();
+    assertThat(visitors.size()).isEqualTo(0);
+    assertThat(visitors.remove(mockVisitor)).isFalse();
+    assertThat(visitors.size()).isEqualTo(0);
   }
 
   @Test
   public void visit() {
-    MockVisitable visitableThree = new MockVisitable(3);
-    MockVisitable visitableTwo = new MockVisitable(2, visitableThree);
-    MockVisitable visitableOne = new MockVisitable(1, visitableTwo);
+    TestVisitable visitableThree = new TestVisitable(3);
+    TestVisitable visitableTwo = new TestVisitable(2, visitableThree);
+    TestVisitable visitableOne = new TestVisitable(1, visitableTwo);
 
     TraceVisitor traceVisitor = new TraceVisitor();
 
@@ -171,35 +219,95 @@ public class ComposableVisitorTests {
 
     ComposableVisitor visitors = new ComposableVisitor();
 
-    assertTrue(visitors.add(traceVisitor));
-    assertTrue(visitors.add(visitedVisitor));
+    assertThat(visitors.add(traceVisitor)).isTrue();
+    assertThat(visitors.add(visitedVisitor)).isTrue();
 
     visitableOne.accept(visitors);
 
     Iterator<Visitable> iterator = traceVisitor.iterator();
 
-    MockVisitable theVisitable = visitableOne;
+    TestVisitable currentVisitable = visitableOne;
 
     do {
-      assertTrue(iterator.hasNext());
-      assertEquals(theVisitable, iterator.next());
-      assertTrue(theVisitable.isVisited());
-      theVisitable = theVisitable.next();
+      assertThat(iterator.hasNext()).isTrue();
+      assertThat(iterator.next()).isEqualTo(currentVisitable);
+      assertThat(currentVisitable.isVisited()).isTrue();
+      currentVisitable = currentVisitable.next();
     }
-    while (theVisitable != null);
+    while (currentVisitable != null);
   }
 
-  private static final class MockVisitable implements Visitable {
+  @Test
+  public void compose() {
+    Visitor mockVisitorOne = mockVisitor("one");
+    Visitor mockVisitorTwo = mockVisitor("two");
+
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.isEmpty()).isTrue();
+    assertThat(visitors.compose(mockVisitorOne, mockVisitorTwo)).isSameAs(visitors);
+    assertThat(visitors.size()).isEqualTo(2);
+    assertThat(toSet(visitors)).containsAll(iterable(mockVisitorOne, mockVisitorTwo));
+  }
+
+  @Test
+  public void composeArray() {
+    Visitor[] visitorArray = {
+      mockVisitor("one"),
+      mockVisitor("two"),
+      mockVisitor("three")
+    };
+
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.isEmpty()).isTrue();
+    assertThat(visitors.compose(visitorArray)).isSameAs(visitors);
+    assertThat(visitors.size()).isEqualTo(visitorArray.length);
+    assertThat(toSet(visitors)).containsAll(iterable(visitorArray));
+  }
+
+  @Test
+  public void composeIterable() {
+    Iterable<Visitor> iterable = Arrays.asList(mockVisitor("one"), mockVisitor("two"), mockVisitor("three"));
+
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.isEmpty()).isTrue();
+    assertThat(visitors.compose(iterable)).isSameAs(visitors);
+    assertThat(visitors.size()).isEqualTo(3);
+    assertThat(toSet(visitors)).containsAll(iterable);
+  }
+
+  @Test
+  public void composeOne() {
+    Visitor mockVisitor = mockVisitor("one");
+
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.isEmpty()).isTrue();
+    assertThat(visitors.compose(mockVisitor, null)).isSameAs(visitors);
+    assertThat(visitors.size()).isEqualTo(1);
+    assertThat(toSet(visitors)).containsAll(iterable(mockVisitor));
+
+    visitors = new ComposableVisitor();
+
+    assertThat(visitors.isEmpty()).isTrue();
+    assertThat(visitors.compose(null, mockVisitor)).isSameAs(visitors);
+    assertThat(visitors.size()).isEqualTo(1);
+    assertThat(toSet(visitors)).containsAll(iterable(mockVisitor));
+  }
+
+  private static final class TestVisitable implements Visitable {
 
     private boolean visited;
     private final long id;
-    private final MockVisitable visitable;
+    private final TestVisitable visitable;
 
-    public MockVisitable(long id) {
+    public TestVisitable(long id) {
       this(id, null);
     }
 
-    public MockVisitable(long id, MockVisitable visitable) {
+    public TestVisitable(long id, TestVisitable visitable) {
       this.id = id;
       this.visitable = visitable;
     }
@@ -224,7 +332,7 @@ public class ComposableVisitorTests {
       }
     }
 
-    public MockVisitable next() {
+    public TestVisitable next() {
       return visitable;
     }
 
@@ -234,11 +342,11 @@ public class ComposableVisitorTests {
         return true;
       }
 
-      if (!(obj instanceof MockVisitable)) {
+      if (!(obj instanceof TestVisitable)) {
         return false;
       }
 
-      MockVisitable that = (MockVisitable) obj;
+      TestVisitable that = (TestVisitable) obj;
 
       return (this.getId() == that.getId());
     }
@@ -260,8 +368,8 @@ public class ComposableVisitorTests {
   private static final class SetVisitedVisitor implements Visitor {
 
     public void visit(Visitable visitable) {
-      if (visitable instanceof MockVisitable) {
-        ((MockVisitable) visitable).setVisited();
+      if (visitable instanceof TestVisitable) {
+        ((TestVisitable) visitable).setVisited();
       }
     }
   }

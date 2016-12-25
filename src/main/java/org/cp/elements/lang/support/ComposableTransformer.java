@@ -16,10 +16,16 @@
 
 package org.cp.elements.lang.support;
 
+import static org.cp.elements.util.ArrayUtils.asArray;
+import static org.cp.elements.util.ArrayUtils.isEmpty;
+import static org.cp.elements.util.ArrayUtils.iterable;
+import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+
 import java.util.Iterator;
 
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Transformer;
-import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * The ComposableTransformer class is a Transformer implementation combining two or more Transformer objects
@@ -37,53 +43,77 @@ public class ComposableTransformer<T> implements Transformer<T>, Iterable<Transf
   private final Iterable<Transformer<T>> transformers;
 
   /**
-   * Constructs an instance of the ComposableTransformer class composed of the specified Transformers delegated to
-   * in the transformation operation.
+   * Constructs an instance of the {@link ComposableTransformer} class composed of the given array
+   * of {@link Transformer} objects delegated to in the transformation operation.
    *
-   * @param transformers the array of Transformers used as delegates in this Transformer composition.
+   * @param transformers array of {@link Transformer Transformer} to compose.
+   * @see org.cp.elements.lang.Transformer
    */
   @SafeVarargs
-  private ComposableTransformer(final Transformer<T>... transformers) {
-    this.transformers = ArrayUtils.iterable(transformers.clone());
+  private ComposableTransformer(Transformer<T>... transformers) {
+    this.transformers = iterable(nullSafeArray(transformers, Transformer.class).clone());
   }
 
   /**
-   * Composes the array of Transformers into a Transformer composition.
+   * Composes the array of {@link Transformer Transformers} into a composite.
    *
-   * @param <T> the Class type of the values transformed by the Transformers.
-   * @param transformers the array of Transformers to combine into a composition.
-   * @return a Transformer composition composed of the specified Transformers.  Returns null if the array reference
-   * is null, or a single Transformer if the array is of length 1, otherwise a ComposableTransformer composed
-   * of the Transformers in the array.
+   * @param <T> {@link Class} type of the values transformed by the {@link Transformer Transformers}.
+   * @param transformers array of {@link Transformer Transformers} to compose.
+   * @return a composite {@link Transformer} composed of the given array of {@link Transformer Transformers}.
+   * Returns {@literal null} if the array is {@literal null} or empty.  Returns a single {@link Transformer}
+   * if the array has a length of 1, otherwise returns an instance of {@link ComposableTransformer} composed
+   * of all {@link Transformer Transformers} in the array.
+   * @see org.cp.elements.lang.Transformer
+   * @see #ComposableTransformer(Transformer[])
    */
   @SafeVarargs
-  public static <T> Transformer<T> compose(final Transformer<T>... transformers) {
-    return (ArrayUtils.isEmpty(transformers) ? null : (transformers.length == 1 ? transformers[0]
+  public static <T> Transformer<T> compose(Transformer<T>... transformers) {
+    return (isEmpty(transformers) ? null : (transformers.length == 1 ? transformers[0]
       : new ComposableTransformer<>(transformers)));
   }
 
   /**
-   * Iterates over the Transformers in this composition.
+   * Composes the {@link Iterable} object of {@link Transformer Transformers} into a composite.
    *
-   * @return an Iterator over the Transformers in this composition.
-   * @see java.lang.Iterable#iterator()
+   * @param <T> {@link Class} type of the values transformed by the {@link Transformer Transformers}.
+   * @param transformers {@link Iterable} object containing the {@link Transformer Transformers} to compose.
+   * @return a composite {@link Transformer} composed of the given {@link Iterable} object
+   * of {@link Transformer Transformers}.  Returns {@literal null} if the {@link Iterable} is {@literal null} or empty.
+   * Returns a single {@link Transformer} if the {@link Iterable} object contains only a single {@link Transformer},
+   * otherwise returns an instance of {@link ComposableTransformer} composed of all {@link Transformer Transformers}
+   * in the {@link Iterable} object.
+   * @see java.lang.Iterable
+   * @see org.cp.elements.lang.Transformer
+   * @see #compose(Transformer[])
    */
-  public Iterator<Transformer<T>> iterator() {
-    return transformers.iterator();
+  @SuppressWarnings("unchecked")
+  public static <T> Transformer<T> compose(Iterable<Transformer<T>> transformers) {
+    return compose(asArray((Iterable) transformers, Transformer.class));
   }
 
   /**
-   * Transforms the given value of Class type T with the delegating Transformers.
+   * Iterates over the {@link Transformer Transformers} in this composite.
    *
-   * @param value the value to transform.
+   * @return an {@link Iterator} over the {@link Transformer Transformers} in this composite.
+   * @see java.lang.Iterable#iterator()
+   */
+  @NullSafe
+  public Iterator<Transformer<T>> iterator() {
+    return CollectionUtils.nullSafeIterable(transformers).iterator();
+  }
+
+  /**
+   * Transforms the given value of {@link Class} type T with the {@link Transformer Transformers}.
+   *
+   * @param value {@link Object} value to transform.
    * @return the transformed value.
+   * @see #iterator()
    */
   public T transform(T value) {
-    for (Transformer<T> transformer : transformers) {
+    for (Transformer<T> transformer : this) {
       value = transformer.transform(value);
     }
 
     return value;
   }
-
 }

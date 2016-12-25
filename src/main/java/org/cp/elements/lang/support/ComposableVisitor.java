@@ -22,22 +22,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Composite;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 
 /**
- * The ComposableVisitor class is a collection of Visitors allowing multiple Visitors to visit a graph of Visitable
- * objects simultaneously.
+ * The {@link ComposableVisitor} class is a collection of {@link Visitor} objects enabling multiple
+ * {@link Visitor Visitors} to visit a graph of {@link Visitable} objects simultaneously.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
+ * @see java.util.Iterator
+ * @see org.cp.elements.lang.Composite
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor
  * @since 1.0.0
  */
-public class ComposableVisitor implements Iterable<Visitor>, Visitor {
+public class ComposableVisitor implements Composite<Visitor>, Iterable<Visitor>, Visitor {
 
-  private final List<Visitor> visitors = new LinkedList<Visitor>();
+  private final List<Visitor> visitors = new LinkedList<>();
 
   /**
    * Adds the specified Visitor to the composition (collection) of Visitors.  The Visitor will be added if and only if
@@ -48,9 +52,26 @@ public class ComposableVisitor implements Iterable<Visitor>, Visitor {
    * @throws NullPointerException if the Visitor is null.
    * @see #contains(org.cp.elements.lang.Visitor)
    */
-  public boolean add(final Visitor visitor) {
-    Assert.notNull(visitor, "The Visitor to add to this composition cannot be null!");
-    return (!contains(visitor) && visitors.add(visitor));
+  public boolean add(Visitor visitor) {
+    Assert.notNull(visitor, "The Visitor to add to this composite cannot be null");
+    return (visitor != this && !contains(visitor) && visitors.add(visitor));
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @NullSafe
+  @Override
+  public Visitor compose(Visitor one, Visitor two) {
+    if (one != null) {
+      add(one);
+    }
+
+    if (two != null) {
+      add(two);
+    }
+
+    return this;
   }
 
   /**
@@ -59,8 +80,17 @@ public class ComposableVisitor implements Iterable<Visitor>, Visitor {
    * @param visitor the Visitor object determined for containment in this composition.
    * @return a boolean value indicating whether the specified Visitor is a member of this composition.
    */
-  public boolean contains(final Visitor visitor) {
-    return visitors.contains(visitor);
+  public boolean contains(Visitor visitor) {
+    return this.visitors.contains(visitor);
+  }
+
+  /**
+   * Determines whether this {@link ComposableVisitor} contains any {@link Visitor Visitors}.
+   *
+   * @return a boolean value indicating whether this {@link ComposableVisitor} contains any {@link Visitor Visitors}.
+   */
+  public boolean isEmpty() {
+    return this.visitors.isEmpty();
   }
 
   /**
@@ -69,8 +99,7 @@ public class ComposableVisitor implements Iterable<Visitor>, Visitor {
    * @return an Iterator iterating over the Visitors contained in this composition.
    */
   public Iterator<Visitor> iterator() {
-    //return CollectionUtils.unmodifiableIterator(visitors.iterator());
-    return Collections.unmodifiableList(visitors).iterator();
+    return Collections.unmodifiableList(this.visitors).iterator();
   }
 
   /**
@@ -80,17 +109,17 @@ public class ComposableVisitor implements Iterable<Visitor>, Visitor {
    * @return a boolean value if the Visitor was actually contained by this composition
    * and was successfully removed.
    */
-  public boolean remove(final Visitor visitor) {
-    return visitors.remove(visitor);
+  public boolean remove(Visitor visitor) {
+    return this.visitors.remove(visitor);
   }
 
   /**
-   * Gets the number of Visitors in this composition.
+   * Returns the number of {@link Visitor Visitors} in this composite.
    *
-   * @return a integer value representing the count of Visitors in this composition.
+   * @return a integer value indicating the number of {@link Visitor Visitors} in this composite.
    */
   public int size() {
-    return visitors.size();
+    return this.visitors.size();
   }
 
   /**
@@ -98,10 +127,9 @@ public class ComposableVisitor implements Iterable<Visitor>, Visitor {
    *
    * @param visitable the Visitable object visited by this Visitor.
    */
-  public void visit(final Visitable visitable) {
-    for (final Visitor visitor : this) {
+  public void visit(Visitable visitable) {
+    for (Visitor visitor : this) {
       visitor.visit(visitable);
     }
   }
-
 }
