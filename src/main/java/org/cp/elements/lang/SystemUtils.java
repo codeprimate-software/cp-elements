@@ -17,7 +17,8 @@
 package org.cp.elements.lang;
 
 /**
- * SystemUtils is an abstract utility class designed to interact with and access properties of the Java System class.
+ * {@link SystemUtils} is an abstract utility class designed to interact with and access properties
+ * of the Java {@link java.lang.System} class.
  *
  * @author John J. Blum
  * @see java.lang.System
@@ -43,6 +44,10 @@ public abstract class SystemUtils {
   public static final String LINUX_OS_NAME = "Linux";
   public static final String MAC_OSX_NAME = "Mac";
   public static final String WINDOWS_OS_NAME = "Windows";
+
+  // User information
+  public static final String USER_HOME = System.getProperty("user.home");
+  public static final String USERNAME = System.getProperty("user.name");
 
   /**
    * Utility method to determine if the installed Java Runtime Environment (JRE) meets the minimum expected version.
