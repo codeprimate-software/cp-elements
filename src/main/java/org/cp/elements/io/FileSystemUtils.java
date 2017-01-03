@@ -30,7 +30,8 @@ import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The FileSystemUtils class is an abstract utility class for working with the operating system's file system.
+ * The {@link FileSystemUtils} class is an abstract utility class for working with
+ * the operating system's (OS) file system.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -41,9 +42,11 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings("unused")
 public abstract class FileSystemUtils extends FileUtils {
 
+  // Java File System Properties
   public static final File JAVA_HOME = new File(System.getProperty("java.home"));
   public static final File JAVA_EXE = new File(new File(JAVA_HOME, "bin"), "java");
 
+  // Well-Known File System Directories
   public static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
   public static final File USER_HOME_DIRECTORY = new File(System.getProperty("user.home"));
   public static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));

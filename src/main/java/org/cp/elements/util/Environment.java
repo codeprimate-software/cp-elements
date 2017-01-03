@@ -16,12 +16,13 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.io.FileSystemUtils.newFile;
+
 import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Version;
 
@@ -39,8 +40,12 @@ import org.cp.elements.lang.Version;
 @SuppressWarnings("unused")
 public class Environment implements Iterable<String> {
 
-  protected static final File TEMPORARY_DIRECTORY = FileSystemUtils.TEMPORARY_DIRECTORY;
+  protected static final File TEMPORARY_DIRECTORY = org.cp.elements.io.FileSystemUtils.TEMPORARY_DIRECTORY;
 
+  protected static final String JAVA_CLASS_PATH = "java.class.path";
+  protected static final String JAVA_COMPILER = "java.compiler";
+  protected static final String JAVA_HOME = "java.home";
+  protected static final String JAVA_LIBRARY_PATH = "java.library.path";
   protected static final String JAVA_VENDOR = "java.vendor";
   protected static final String JAVA_VERSION = "java.version";
 
@@ -52,6 +57,7 @@ public class Environment implements Iterable<String> {
   protected static final String OS_NAME = "os.name";
   protected static final String OS_VERSION = "os.version";
 
+  protected static final String USER_DIRECTORY = "user.dir";
   protected static final String USER_HOME = "user.home";
   protected static final String USER_NAME = "user.name";
 
@@ -264,7 +270,7 @@ public class Environment implements Iterable<String> {
   }
 
   public File getUserHome() {
-    return new File(systemProperties().get(USER_HOME));
+    return newFile(systemProperties().get(USER_HOME));
   }
 
   public String getUserName() {

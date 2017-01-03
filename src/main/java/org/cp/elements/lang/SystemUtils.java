@@ -27,7 +27,7 @@ package org.cp.elements.lang;
 @SuppressWarnings("unused")
 public abstract class SystemUtils {
 
-  // define $PATH separator
+  // Define $PATH separator
   public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
   // Java Virtual Machine (JVM) Names
@@ -46,6 +46,7 @@ public abstract class SystemUtils {
   public static final String WINDOWS_OS_NAME = "Windows";
 
   // User information
+  public static final String USER_DIRECTORY = System.getProperty("user.dir");
   public static final String USER_HOME = System.getProperty("user.home");
   public static final String USERNAME = System.getProperty("user.name");
 
