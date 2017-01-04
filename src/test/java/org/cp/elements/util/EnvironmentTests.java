@@ -18,9 +18,11 @@ package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.iterable;
+import static org.cp.elements.util.PropertiesUtils.singletonProperties;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -107,6 +109,16 @@ public class EnvironmentTests {
     exception.expectMessage("The initial environment cannot be null");
 
     new Environment(null);
+  }
+
+  @Test
+  public void isEmptyIsTrue() {
+    assertThat(Environment.from(Collections.emptyMap()).isEmpty()).isTrue();
+  }
+
+  @Test
+  public void isEmptyIsFalse() {
+    assertThat(Environment.from(singletonProperties("one", "1")).isEmpty()).isFalse();
   }
 
   @Test
@@ -208,5 +220,56 @@ public class EnvironmentTests {
     assertThat(environment.size()).isEqualTo(properties.size());
 
     assertThat(CollectionUtils.toSet(environment)).containsAll(iterable("one", "two", "three"));
+  }
+
+  @Test
+  public void sizeIsZero() {
+    assertThat(Environment.from(Collections.emptyMap()).size()).isEqualTo(0);
+  }
+
+  @Test
+  public void sizeIsOne() {
+    assertThat(Environment.from(singletonProperties("one", "1")).size()).isEqualTo(1);
+  }
+
+  @Test
+  public void equalEnvironmentsIsTrue() {
+    Environment environmentOne = Environment.from(Collections.singletonMap("one", "1"));
+    Environment environmentTwo = Environment.from(singletonProperties("one", "1"));
+
+    assertThat(environmentOne).isNotNull();
+    assertThat(environmentTwo).isNotNull();
+    assertThat(environmentOne.equals(environmentTwo)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsItselfIsTrue() {
+    Environment environment = Environment.fromEnvironmentVariables();
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.equals(environment)).isTrue();
+  }
+
+  @Test
+  public void equalsObjectIsFalse() {
+    assertThat(Environment.fromEnvironmentVariables().equals(new Object())).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsNullIsFalse() {
+    assertThat(Environment.fromEnvironmentVariables().equals(null)).isFalse();
+  }
+
+  @Test
+  public void hashCodeIsCorrect() {
+    Environment environmentMap = Environment.from(Collections.singletonMap("key", "test"));
+    Environment environmentProperties = Environment.from(singletonProperties("key", "test"));
+    Environment environmentVariables = Environment.fromEnvironmentVariables();
+
+    assertThat(environmentMap.hashCode()).isNotEqualTo(0);
+    assertThat(environmentMap.hashCode()).isEqualTo(environmentProperties.hashCode());
+    assertThat(environmentMap.hashCode()).isNotEqualTo(environmentVariables.hashCode());
   }
 }

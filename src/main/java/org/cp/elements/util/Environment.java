@@ -32,6 +32,7 @@ import org.cp.elements.lang.Version;
  *
  * @author John Blum
  * @see java.lang.Iterable
+ * @see java.util.Map
  * @see java.util.Properties
  * @see org.cp.elements.util.PropertiesAdapter
  * @see org.cp.elements.util.PropertiesBuilder
@@ -233,46 +234,77 @@ public class Environment implements Iterable<String> {
     return environment().getAsType(environmentVariableName, type, defaultValue);
   }
 
+  /* (non-Javadoc) */
+  public String getJavaClassPath() {
+    return systemProperties().get(JAVA_CLASS_PATH);
+  }
+
+  /* (non-Javadoc) */
+  public File getJavaHome() {
+    return newFile(systemProperties().get(JAVA_HOME));
+  }
+
+  /* (non-Javadoc) */
+  public String getJavaLibraryPath() {
+    return systemProperties().get(JAVA_LIBRARY_PATH);
+  }
+
+  /* (non-Javadoc) */
   public String getJavaVendor() {
     return systemProperties().get(JAVA_VENDOR);
   }
 
+  /* (non-Javadoc) */
   public Version getJavaVersion() {
     return Version.parse(systemProperties().get(JAVA_VERSION));
   }
 
+  /* (non-Javadoc) */
   public String getJvmName() {
     return systemProperties().get(JVM_NAME);
   }
 
+  /* (non-Javadoc) */
   public String getJvmVendor() {
     return systemProperties().get(JVM_VENDOR);
   }
 
+  /* (non-Javadoc) */
   public Version getJvmVersion() {
     return Version.parse(systemProperties().get(JVM_VERSION));
   }
 
+  /* (non-Javadoc) */
   public String getOperatingSystemArchitecture() {
     return systemProperties().get(OS_ARCHITECTURE);
   }
 
+  /* (non-Javadoc) */
   public String getOperatingSystemName() {
     return systemProperties().get(OS_NAME);
   }
 
+  /* (non-Javadoc) */
   public Version getOperatingSystemVersion() {
     return Version.parse(systemProperties().get(OS_VERSION));
   }
 
+  /* (non-Javadoc) */
   public File getTemporaryDirectory() {
     return TEMPORARY_DIRECTORY;
   }
 
+  /* (non-Javadoc) */
+  public File getUserDirectory() {
+    return newFile(systemProperties().get(USER_DIRECTORY));
+  }
+
+  /* (non-Javadoc) */
   public File getUserHome() {
     return newFile(systemProperties().get(USER_HOME));
   }
 
+  /* (non-Javadoc) */
   public String getUserName() {
     return systemProperties().get(USER_NAME);
   }
@@ -293,6 +325,34 @@ public class Environment implements Iterable<String> {
    */
   public int size() {
     return environment().size();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+
+    if (!(obj instanceof Environment)) {
+      return false;
+    }
+
+    Environment that = (Environment) obj;
+
+    return this.environment().equals(that.environment());
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public int hashCode() {
+    int hashValue = 17;
+    hashValue = 37 * hashValue + environment().hashCode();
+    return hashValue;
   }
 
   /**
