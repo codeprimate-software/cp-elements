@@ -287,6 +287,34 @@ public class PropertiesAdapter implements Iterable<String> {
    * @inheritDoc
    */
   @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+
+    if (!(obj instanceof PropertiesAdapter)) {
+      return false;
+    }
+
+    PropertiesAdapter that = (PropertiesAdapter) obj;
+
+    return this.getProperties().equals(that.getProperties());
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
+  public int hashCode() {
+    int hashValue = 17;
+    hashValue = 37 * hashValue + getProperties().hashCode();
+    return hashValue;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
   public String toString() {
     return MapUtils.toString(toMap());
   }
