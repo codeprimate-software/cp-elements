@@ -41,6 +41,17 @@ import org.cp.elements.process.ProcessExecutor;
 public class RuntimeProcessExecutor implements ProcessExecutor {
 
   /**
+   * Factory method to construct a new instance of {@link RuntimeProcessExecutor} used to execute and run a {@link Process}
+   * using {@link Runtime#exec(String[], String[], File)}.
+   *
+   * @return a new instance of {@link RuntimeProcessExecutor}.
+   * @see org.cp.elements.process.support.RuntimeProcessExecutor
+   */
+  public static RuntimeProcessExecutor newRuntimeProcessExecutor() {
+    return new RuntimeProcessExecutor();
+  }
+
+  /**
    * Uses the Java {@link Runtime} to execute the program defined by the given {@code commandLine}
    * in the given {@link File directory}.
    *

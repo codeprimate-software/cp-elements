@@ -43,6 +43,7 @@ import org.cp.elements.util.Environment;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+// TODO refactor and split class into process context information and process configuration
 public class ProcessContext {
 
   /**
