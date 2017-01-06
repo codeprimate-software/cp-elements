@@ -35,7 +35,7 @@ public abstract class SystemUtils {
   public static final String ORACLE_HOTSPOT_JVM_NAME = "HotSpot";
   public static final String ORACLE_JROCKIT_JVM_NAME = "JRockit";
 
-  // Java Virtual Machine (JVM) Vendor Names
+  // Java Virtual Machine (JVM) Vendors
   public static final String APPLE_JVM_VENDOR = "Apple";
   public static final String IBM_JVM_VENDOR = "IBM";
   public static final String ORACLE_JVM_VENDOR = "Oracle";
@@ -44,6 +44,14 @@ public abstract class SystemUtils {
   public static final String LINUX_OS_NAME = "Linux";
   public static final String MAC_OSX_NAME = "Mac";
   public static final String WINDOWS_OS_NAME = "Windows";
+
+  // Operating System Vendors
+  public static final String LINUX_OS_VENDOR = "Ubuntu";
+  public static final String MAC_OSX_VENDOR = "Apple";
+  public static final String WINDOWS_OS_VENDOR = "Microsoft";
+
+  // Define Temporary System Directory
+  public static final String TEMPORARY_DIRECTORY = System.getProperty("java.io.tmpdir");
 
   // User information
   public static final String USER_DIRECTORY = System.getProperty("user.dir");

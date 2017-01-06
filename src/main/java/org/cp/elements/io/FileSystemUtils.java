@@ -47,9 +47,9 @@ public abstract class FileSystemUtils extends FileUtils {
   public static final File JAVA_EXE = new File(new File(JAVA_HOME, "bin"), "java");
 
   // Well-Known File System Directories
-  public static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
-  public static final File USER_HOME_DIRECTORY = new File(System.getProperty("user.home"));
-  public static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
+  public static final File TEMPORARY_DIRECTORY = new File(SystemUtils.TEMPORARY_DIRECTORY);
+  public static final File USER_HOME_DIRECTORY = new File(SystemUtils.USER_HOME);
+  public static final File WORKING_DIRECTORY = new File(SystemUtils.USER_DIRECTORY);
 
   public static final File[] NO_FILES = new File[0];
 
