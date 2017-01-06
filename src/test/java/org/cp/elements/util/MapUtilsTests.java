@@ -25,9 +25,11 @@ import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.FilteringTransformer;
@@ -465,6 +467,60 @@ public class MapUtilsTests {
   }
 
   @Test
+  public void fromAssociativeArray() {
+    String[] associativeArray = { "keyOne=valueOne", "keyTwo=valueTwo" };
+
+    Map<String, String> map = MapUtils.fromAssociativeArray(associativeArray);
+
+    assertThat(map, is(notNullValue(Map.class)));
+    assertThat(map.size(), is(equalTo(associativeArray.length)));
+    assertThat(map.containsKey("keyOne"), is(true));
+    assertThat(map.get("keyOne"), is(equalTo("valueOne")));
+    assertThat(map.containsKey("keyTwo"), is(true));
+    assertThat(map.get("keyTwo"), is(equalTo("valueTwo")));
+  }
+
+  @Test
+  public void fromEmptyAssociativeArray() {
+    Map<String, String> map = MapUtils.fromAssociativeArray(new String[0]);
+
+    assertThat(map, is(notNullValue(Map.class)));
+    assertThat(map.isEmpty(), is(true));
+  }
+
+  @Test
+  public void fromSingleEntryAssociativeArray() {
+    Map<String, String> map = MapUtils.fromAssociativeArray(new String[] { "key=value" });
+
+    assertThat(map, is(notNullValue(Map.class)));
+    assertThat(map.size(), is(equalTo(1)));
+    assertThat(map.containsKey("key"), is(true));
+    assertThat(map.get("key"), is(equalTo("value")));
+  }
+
+  @Test
+  public void fromInvalidAssociateArray() {
+    String[] associativeArray = { "keyOne=valueOne", "", "keyThree" };
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Entry [] at index [1] must be specified");
+
+    MapUtils.fromAssociativeArray(associativeArray);
+  }
+
+  @Test
+  public void fromInvalidEntryInAssociateArray() {
+    String[] associativeArray = { "keyOne=valueOne", "keyTwo=valueTwo", "keyThree" };
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Entry [keyThree] at index [2] must have both a key and a value");
+
+    MapUtils.fromAssociativeArray(associativeArray);
+  }
+
+  @Test
   public void isEmptyMapWithEmptyMap() {
     assertThat(MapUtils.isEmpty(new HashMap<>(10)), is(true));
     assertThat(MapUtils.isEmpty(Collections.emptyMap()), is(true));
@@ -558,6 +614,50 @@ public class MapUtilsTests {
   @Test
   public void sizeOfSingleEntryMapReturnsOne() {
     assertThat(MapUtils.size(Collections.singletonMap("one", 1)), is(equalTo(1)));
+  }
+
+  @Test
+  public void toAssociativeArrayFromMap() {
+    Map<String, String> map = new TreeMap<>();
+
+    map.put("keyOne", "valueOne");
+    map.put("keyTwo", "valueTwo");
+    map.put("keyZero", "valueZero");
+
+    String[] associativeArray = MapUtils.toAssociativeArray(map);
+
+    assertThat(associativeArray, is(notNullValue(String[].class)));
+    assertThat(associativeArray.length, is(equalTo(3)));
+    assertThat(Arrays.toString(associativeArray), is(equalTo("[keyOne=valueOne, keyTwo=valueTwo, keyZero=valueZero]")));
+  }
+
+  @Test
+  public void toAssociativeArrayFromSingleElementMap() {
+    Map<String, String> map = Collections.singletonMap("keyOne", "valueOne");
+    String[] associativeArray = MapUtils.toAssociativeArray(map);
+
+    assertThat(associativeArray, is(notNullValue(String[].class)));
+    assertThat(associativeArray.length, is(equalTo(1)));
+    assertThat(Arrays.toString(associativeArray), is(equalTo("[keyOne=valueOne]")));
+  }
+
+  @Test
+  public void toAssociativeArrayFromEmptyMap() {
+    Map<String, String> map = Collections.emptyMap();
+    String[] associativeArray = MapUtils.toAssociativeArray(map);
+
+    assertThat(associativeArray, is(notNullValue(String[].class)));
+    assertThat(associativeArray.length, is(equalTo(0)));
+    assertThat(Arrays.toString(associativeArray), is(equalTo("[]")));
+  }
+
+  @Test
+  public void toAssociativeArrayFromNullMap() {
+    String[] associativeArray = MapUtils.toAssociativeArray(null);
+
+    assertThat(associativeArray, is(notNullValue(String[].class)));
+    assertThat(associativeArray.length, is(equalTo(0)));
+    assertThat(Arrays.toString(associativeArray), is(equalTo("[]")));
   }
 
   @Test

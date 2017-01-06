@@ -16,7 +16,13 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+import static org.cp.elements.util.ArrayUtils.nullSafeLength;
+
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -25,6 +31,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
 
 /**
@@ -145,6 +152,37 @@ public abstract class MapUtils {
   }
 
   /**
+   * Converts the given associative array into a {@link Map}.
+   *
+   * @param associativeArray associate array to convert into a {@link Map}.
+   * @return a {@link Map} populated with the key/value pairs in the associate array.
+   * @see ArrayUtils#nullSafeArray(Object[], Class)
+   * @see ArrayUtils#nullSafeLength(Object[])
+   */
+  @NullSafe
+  public static Map<String, String> fromAssociativeArray(String[] associativeArray) {
+    Map<String, String> map = new HashMap<>(nullSafeLength(associativeArray));
+
+    int index = 0;
+
+    for (String element : nullSafeArray(associativeArray, String.class)) {
+      Assert.hasText(element, "Entry [%s] at index [%d] must be specified", element, index);
+
+      String[] entry = element.split("=");
+
+      Assert.isTrue(entry.length == 2, "Entry [%s] at index [%d] must have both a key and a value", element, index);
+
+      String key = StringUtils.trim(entry[0]);
+      String value = StringUtils.trim(entry[1]);
+
+      map.put(key, value);
+      index++;
+    }
+
+    return map;
+  }
+
+  /**
    * Determines whether the given {@link Map} is empty.  A {@link Map} is empty if it contains no entries or is null.
    *
    * @param map {@link Map} to evaluate.
@@ -197,6 +235,29 @@ public abstract class MapUtils {
   @NullSafe
   public static int size(Map<?, ?> map) {
     return count(map);
+  }
+
+  /**
+   * Converts the given {@link Map} into an associative array.
+   *
+   * The associative array takes the form of [key1=value1, key2=value2, ..., keyN=valueN].
+   *
+   * @param map {@link Map} to convert into an associative array.
+   * @return an associative {@link String} array containing the keys and values
+   * from the given {@link Map}.
+   * @see java.util.Map
+   * @see #size(Map)
+   * @see #nullSafeMap(Map)
+   */
+  @NullSafe
+  public static String[] toAssociativeArray(Map<?, ?> map) {
+    List<String> list = new ArrayList<>(size(map));
+
+    for (Map.Entry<?, ?> entry : nullSafeMap(map).entrySet()) {
+      list.add(String.format("%1$s=%2$s", String.valueOf(entry.getKey()), entry.getValue()));
+    }
+
+    return list.toArray(new String[list.size()]);
   }
 
   /**
