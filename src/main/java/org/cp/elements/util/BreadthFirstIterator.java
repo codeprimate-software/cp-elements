@@ -16,6 +16,8 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.CollectionUtils.asIterable;
+
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -51,7 +53,7 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
   public BreadthFirstIterator(final Iterator<Iterator<T>> iterators) {
     Assert.notNull(iterators, "The Iterator of Iterators must not be null!");
 
-    for (Iterator<T> iterator : CollectionUtils.iterable(iterators)) {
+    for (Iterator<T> iterator : asIterable(iterators)) {
       if (iterator != null) {
         this.iterators.add(iterator);
       }
@@ -101,5 +103,4 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
     Assert.state(nextCalled.compareAndSet(true, false), "next was not called before remove");
     iterators.peek().remove();
   }
-
 }

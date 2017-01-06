@@ -19,8 +19,8 @@ package org.cp.elements.lang.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.getFirst;
-import static org.cp.elements.util.CollectionUtils.toList;
-import static org.cp.elements.util.CollectionUtils.toSet;
+import static org.cp.elements.util.CollectionUtils.asList;
+import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class ComposableTransformerTests {
 
     assertThat(compositeTransformer).isNotNull();
     assertThat(compositeTransformer).isInstanceOf(ComposableTransformer.class);
-    assertThat(toSet((ComposableTransformer) compositeTransformer).containsAll(Arrays.asList(transformerArray)))
+    assertThat(asSet((ComposableTransformer) compositeTransformer).containsAll(Arrays.asList(transformerArray)))
       .isTrue();
   }
 
@@ -113,7 +113,7 @@ public class ComposableTransformerTests {
 
     assertThat(compositeTransformer).isNotNull();
     assertThat(compositeTransformer).isInstanceOf(ComposableTransformer.class);
-    assertThat(toSet((ComposableTransformer) compositeTransformer).containsAll(toList(iterable)));
+    assertThat(asSet((ComposableTransformer) compositeTransformer).containsAll(asList(iterable)));
   }
 
   @Test

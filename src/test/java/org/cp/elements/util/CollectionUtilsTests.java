@@ -53,7 +53,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  * Unit tests for {@link CollectionUtils}.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Iterable
  * @see java.util.Collection
@@ -192,7 +192,211 @@ public class CollectionUtilsTests {
   }
 
   @Test
-  public void asSet() {
+  public void asEnumerationForIterator() {
+    String[] elements = { "test", "testing", "tested"};
+    Enumeration<String> enumeration = CollectionUtils.asEnumeration(asIterator(elements));
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+
+    for (String element : elements) {
+      assertThat(enumeration.hasMoreElements(), is(true));
+      assertThat(enumeration.nextElement(), is(equalTo(element)));
+    }
+
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void asEnumerationForEmptyIterator() {
+    Enumeration<?> enumeration = CollectionUtils.asEnumeration(Collections.emptyIterator());
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void asEnumerationForNullIterator() {
+    Enumeration<?> enumeration = CollectionUtils.asEnumeration(null);
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void asEnumerationForSingleElementIterator() {
+    Enumeration<String> enumeration = CollectionUtils.asEnumeration(asIterator("test"));
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(true));
+    assertThat(enumeration.nextElement(), is(equalTo("test")));
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void asIterableWithEnumeration() {
+    Integer[] elements = { 0, 1, 2 };
+    Iterable<Integer> iterable = CollectionUtils.asIterable(asEnumeration(elements));
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+
+    int index = 0;
+
+    for (Integer element : iterable) {
+      assertThat(element, is(equalTo(elements[index++])));
+    }
+
+    assertThat(index, is(equalTo(elements.length)));
+  }
+
+  @Test
+  public void asIterableWithEmptyEnumeration() {
+    Iterable<?> iterable = CollectionUtils.asIterable(Collections.emptyEnumeration());
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator(), is(notNullValue()));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void asIterableWithNullEnumeration() {
+    Iterable<?> iterable = CollectionUtils.asIterable((Enumeration<?>) null);
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void asIterableWithIterator() {
+    Integer[] elements = { 0, 1, 2 };
+    Iterable<Integer> iterable = CollectionUtils.asIterable(asIterator(elements));
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+
+    int index = 0;
+
+    for (Integer element : iterable) {
+      assertThat(element, is(equalTo(elements[index++])));
+    }
+
+    assertThat(index, is(equalTo(elements.length)));
+  }
+
+  @Test
+  public void asIterableWithEmptyIterator() {
+    Iterable<?> iterable = CollectionUtils.asIterable(Collections.emptyIterator());
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void asIterableWithNullIterator() {
+    Iterable<?> iterable = CollectionUtils.asIterable((Iterator<?>) null);
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void asIteratorForEnumeration() {
+    Integer[] elements = { 0, 1, 2 };
+    Iterator<Integer> iterator = CollectionUtils.asIterator(asEnumeration(elements));
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+
+    for (Integer element : elements) {
+      assertThat(iterator.hasNext(), is(true));
+      assertThat(iterator.next(), is(equalTo(element)));
+    }
+
+    assertThat(iterator.hasNext(), is(false));
+  }
+
+  @Test
+  public void asIteratorForEnumerationIsUnmodifiable() {
+    Iterator<String> iterator = CollectionUtils.asIterator(asEnumeration("test"));
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(true));
+
+    try {
+      exception.expect(UnsupportedOperationException.class);
+      iterator.remove();
+    }
+    finally {
+      assertThat(iterator.hasNext(), is(true));
+      assertThat(iterator.next(), is(equalTo("test")));
+      assertThat(iterator.hasNext(), is(false));
+    }
+  }
+
+  @Test
+  public void asIteratorForEmptyEnumeration() {
+    Iterator<?> iterator = CollectionUtils.asIterator(Collections.emptyEnumeration());
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(false));
+  }
+
+  @Test
+  public void asIteratorForNullEnumeration() {
+    Iterator<?> iterator = CollectionUtils.asIterator(null);
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(false));
+  }
+
+  @Test
+  public void asIteratorForSingleElementEnumeration() {
+    Iterator<?> iterator = CollectionUtils.asIterator(asEnumeration("test"));
+
+    assertThat(iterator, is(notNullValue(Iterator.class)));
+    assertThat(iterator.hasNext(), is(true));
+    assertThat(iterator.next(), is(equalTo("test")));
+    assertThat(iterator.hasNext(), is(false));
+  }
+
+  @Test
+  public void asListWithCollection() {
+    Collection<String> collection = asCollection("test", "testing", "tested");
+    List<String> list = CollectionUtils.asList(collection);
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list, is(not(sameInstance(collection))));
+    assertThat(list, is(equalTo(collection)));
+  }
+
+  @Test
+  public void asListWithEmptyIterable() {
+    List<?> list = CollectionUtils.asList(asIterable());
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.isEmpty(), is(true));
+  }
+
+  @Test
+  public void asListWithIterable() {
+    Iterable<String> iterable = asIterable("test", "testing", "tested");
+    List<String> list = CollectionUtils.asList(iterable);
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.size(), is(equalTo(3)));
+    assertThat(list.containsAll(asCollection("test", "testing", "tested")), is(true));
+  }
+
+  @Test
+  public void asListWithNullIterable() {
+    List<?> list = CollectionUtils.asList(null);
+
+    assertThat(list, is(notNullValue(List.class)));
+    assertThat(list.isEmpty(), is(true));
+  }
+
+  @Test
+  public void asSetWithArray() {
     Set<Integer> set = CollectionUtils.asSet(1, 2, 4, 8);
 
     assertThat(set, is(notNullValue(Set.class)));
@@ -201,7 +405,7 @@ public class CollectionUtilsTests {
   }
 
   @Test
-  public void asSetWitEmpty() {
+  public void asSetWitEmptyArray() {
     Set<Integer> set = CollectionUtils.asSet();
 
     assertThat(set, is(notNullValue(Set.class)));
@@ -209,8 +413,52 @@ public class CollectionUtilsTests {
   }
 
   @Test
-  public void asSetWitNull() {
+  public void asSetWitNullArray() {
     Set<String> set = CollectionUtils.asSet((String[]) null);
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
+  }
+
+  @Test
+  public void asSetWithCollection() {
+    Collection<String> collection = asCollection("test", "testing", "tested");
+    Set<String> set = CollectionUtils.asSet(collection);
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(collection.size())));
+    assertThat(set.containsAll(collection), is(true));
+  }
+
+  @Test
+  public void asSetWithEmptyIterable() {
+    Set<?> set = CollectionUtils.asSet(asIterable());
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.isEmpty(), is(true));
+  }
+
+  @Test
+  public void asSetWithIterable() {
+    Set<Integer> set = CollectionUtils.asSet(asIterable(1, 2, 4, 8));
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(4)));
+    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
+  }
+
+  @Test
+  public void asSetWithIterableHavingDuplicates() {
+    Set<Integer> set = CollectionUtils.asSet(asIterable(1, 2, 4, 1, 8, 2));
+
+    assertThat(set, is(notNullValue(Set.class)));
+    assertThat(set.size(), is(equalTo(4)));
+    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
+  }
+
+  @Test
+  public void asSetWithNullIterable() {
+    Set<?> set = CollectionUtils.asSet((Iterable<?>) null);
 
     assertThat(set, is(notNullValue(Set.class)));
     assertThat(set.isEmpty(), is(true));
@@ -345,47 +593,6 @@ public class CollectionUtilsTests {
     assertThat(emptyIterable, is(notNullValue(Iterable.class)));
     assertThat(emptyIterable.iterator(), is(notNullValue(Iterator.class)));
     assertThat(emptyIterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void enumerationForIterator() {
-    String[] elements = { "test", "testing", "tested"};
-    Enumeration<String> enumeration = CollectionUtils.enumeration(asIterator(elements));
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-
-    for (String element : elements) {
-      assertThat(enumeration.hasMoreElements(), is(true));
-      assertThat(enumeration.nextElement(), is(equalTo(element)));
-    }
-
-    assertThat(enumeration.hasMoreElements(), is(false));
-  }
-
-  @Test
-  public void enumerationForEmptyIterator() {
-    Enumeration<?> enumeration = CollectionUtils.enumeration(Collections.emptyIterator());
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-    assertThat(enumeration.hasMoreElements(), is(false));
-  }
-
-  @Test
-  public void enumerationForNullIterator() {
-    Enumeration<?> enumeration = CollectionUtils.enumeration(null);
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-    assertThat(enumeration.hasMoreElements(), is(false));
-  }
-
-  @Test
-  public void enumerationForSingleElementIterator() {
-    Enumeration<String> enumeration = CollectionUtils.enumeration(asIterator("test"));
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-    assertThat(enumeration.hasMoreElements(), is(true));
-    assertThat(enumeration.nextElement(), is(equalTo("test")));
-    assertThat(enumeration.hasMoreElements(), is(false));
   }
 
   @Test
@@ -758,133 +965,6 @@ public class CollectionUtilsTests {
   }
 
   @Test
-  public void iterableWithEnumeration() {
-    Integer[] elements = { 0, 1, 2 };
-    Iterable<Integer> iterable = CollectionUtils.iterable(asEnumeration(elements));
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-
-    int index = 0;
-
-    for (Integer element : iterable) {
-      assertThat(element, is(equalTo(elements[index++])));
-    }
-
-    assertThat(index, is(equalTo(elements.length)));
-  }
-
-  @Test
-  public void iterableWithEmptyEnumeration() {
-    Iterable<?> iterable = CollectionUtils.iterable(Collections.emptyEnumeration());
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator(), is(notNullValue()));
-    assertThat(iterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void iterableWithNullEnumeration() {
-    Iterable<?> iterable = CollectionUtils.iterable((Enumeration<?>) null);
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
-    assertThat(iterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void iterableWithIterator() {
-    Integer[] elements = { 0, 1, 2 };
-    Iterable<Integer> iterable = CollectionUtils.iterable(asIterator(elements));
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-
-    int index = 0;
-
-    for (Integer element : iterable) {
-      assertThat(element, is(equalTo(elements[index++])));
-    }
-
-    assertThat(index, is(equalTo(elements.length)));
-  }
-
-  @Test
-  public void iterableWithEmptyIterator() {
-    Iterable<?> iterable = CollectionUtils.iterable(Collections.emptyIterator());
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
-    assertThat(iterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void iterableWithNullIterator() {
-    Iterable<?> iterable = CollectionUtils.iterable((Iterator<?>) null);
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator(), is(notNullValue(Iterator.class)));
-    assertThat(iterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void iteratorForEnumeration() {
-    Integer[] elements = { 0, 1, 2 };
-    Iterator<Integer> iterator = CollectionUtils.iterator(asEnumeration(elements));
-
-    assertThat(iterator, is(notNullValue(Iterator.class)));
-
-    for (Integer element : elements) {
-      assertThat(iterator.hasNext(), is(true));
-      assertThat(iterator.next(), is(equalTo(element)));
-    }
-
-    assertThat(iterator.hasNext(), is(false));
-  }
-
-  @Test
-  public void iteratorForEnumerationIsUnmodifiable() {
-    Iterator<String> iterator = CollectionUtils.iterator(asEnumeration("test"));
-
-    assertThat(iterator, is(notNullValue(Iterator.class)));
-    assertThat(iterator.hasNext(), is(true));
-
-    try {
-      exception.expect(UnsupportedOperationException.class);
-      iterator.remove();
-    }
-    finally {
-      assertThat(iterator.hasNext(), is(true));
-      assertThat(iterator.next(), is(equalTo("test")));
-      assertThat(iterator.hasNext(), is(false));
-    }
-  }
-
-  @Test
-  public void iteratorForEmptyEnumeration() {
-    Iterator<?> iterator = CollectionUtils.iterator(Collections.emptyEnumeration());
-
-    assertThat(iterator, is(notNullValue(Iterator.class)));
-    assertThat(iterator.hasNext(), is(false));
-  }
-
-  @Test
-  public void iteratorForNullEnumeration() {
-    Iterator<?> iterator = CollectionUtils.iterator(null);
-
-    assertThat(iterator, is(notNullValue(Iterator.class)));
-    assertThat(iterator.hasNext(), is(false));
-  }
-
-  @Test
-  public void iteratorForSingleElementEnumeration() {
-    Iterator<?> iterator = CollectionUtils.iterator(asEnumeration("test"));
-
-    assertThat(iterator, is(notNullValue(Iterator.class)));
-    assertThat(iterator.hasNext(), is(true));
-    assertThat(iterator.next(), is(equalTo("test")));
-    assertThat(iterator.hasNext(), is(false));
-  }
-
-  @Test
   public void nullSafeEnumerationWithEnumeration() {
     Enumeration<?> enumeration = asEnumeration("test");
 
@@ -1110,86 +1190,6 @@ public class CollectionUtilsTests {
   @Test(expected = IndexOutOfBoundsException.class)
   public void subListWithUnderFlowIndex() {
     CollectionUtils.subList(Collections.singletonList("test"), -1);
-  }
-
-  @Test
-  public void toListWithCollection() {
-    Collection<String> collection = asCollection("test", "testing", "tested");
-    List<String> list = CollectionUtils.toList(collection);
-
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list, is(not(sameInstance(collection))));
-    assertThat(list, is(equalTo(collection)));
-  }
-
-  @Test
-  public void toListWithEmptyIterable() {
-    List<?> list = CollectionUtils.toList(asIterable());
-
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list.isEmpty(), is(true));
-  }
-
-  @Test
-  public void toListWithIterable() {
-    Iterable<String> iterable = asIterable("test", "testing", "tested");
-    List<String> list = CollectionUtils.toList(iterable);
-
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list.size(), is(equalTo(3)));
-    assertThat(list.containsAll(asCollection("test", "testing", "tested")), is(true));
-  }
-
-  @Test
-  public void toListWithNull() {
-    List<?> list = CollectionUtils.toList(null);
-
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list.isEmpty(), is(true));
-  }
-
-  @Test
-  public void toSetWithCollection() {
-    Collection<String> collection = asCollection("test", "testing", "tested");
-    Set<String> set = CollectionUtils.toSet(collection);
-
-    assertThat(set, is(notNullValue(Set.class)));
-    assertThat(set.size(), is(equalTo(collection.size())));
-    assertThat(set.containsAll(collection), is(true));
-  }
-
-  @Test
-  public void toSetWithEmptyIterable() {
-    Set<?> set = CollectionUtils.toSet(asIterable());
-
-    assertThat(set, is(notNullValue(Set.class)));
-    assertThat(set.isEmpty(), is(true));
-  }
-
-  @Test
-  public void toSetWithIterable() {
-    Set<Integer> set = CollectionUtils.toSet(asIterable(1, 2, 4, 8));
-
-    assertThat(set, is(notNullValue(Set.class)));
-    assertThat(set.size(), is(equalTo(4)));
-    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
-  }
-
-  @Test
-  public void toSetWithIterableHavingDuplicates() {
-    Set<Integer> set = CollectionUtils.toSet(asIterable(1, 2, 4, 1, 8, 2));
-
-    assertThat(set, is(notNullValue(Set.class)));
-    assertThat(set.size(), is(equalTo(4)));
-    assertThat(set.containsAll(asCollection(1, 2, 4, 8)), is(true));
-  }
-
-  @Test
-  public void toSetWithNull() {
-    Set<?> set = CollectionUtils.toSet(null);
-
-    assertThat(set, is(notNullValue(Set.class)));
-    assertThat(set.isEmpty(), is(true));
   }
 
   @Test

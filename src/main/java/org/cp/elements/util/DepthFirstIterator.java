@@ -16,6 +16,8 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.CollectionUtils.asIterable;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +55,7 @@ public class DepthFirstIterator<T> implements Iterator<T> {
   public DepthFirstIterator(final Iterator<Iterator<T>> iterators) {
     Assert.notNull(iterators, "The Iterator of Iterators must not be null!");
 
-    for (Iterator<T> iterator : CollectionUtils.iterable(iterators)) {
+    for (Iterator<T> iterator : asIterable(iterators)) {
       if (iterator != null) {
         iteratorList.add(iterator);
       }
@@ -107,5 +109,4 @@ public class DepthFirstIterator<T> implements Iterator<T> {
     iteratorIndexForRemove = (iteratorIndexForRemove < 0 ? iteratorList.size() - 1 : iteratorIndexForRemove);
     iteratorList.get(iteratorIndexForRemove).remove();
   }
-
 }

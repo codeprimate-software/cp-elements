@@ -98,7 +98,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static <T> T[] asArray(Enumeration<T> enumeration, Class<T> componentType) {
-    return asArray(CollectionUtils.iterable(enumeration), componentType);
+    return asArray(CollectionUtils.asIterable(enumeration), componentType);
   }
 
   /**
@@ -137,7 +137,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static <T> T[] asArray(Iterator<T> iterator, Class<T> componentType) {
-    return asArray(CollectionUtils.iterable(iterator), componentType);
+    return asArray(CollectionUtils.asIterable(iterator), componentType);
   }
 
   /**

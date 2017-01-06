@@ -39,7 +39,7 @@ import org.cp.elements.lang.support.ToStringRenderer;
 /**
  * The CollectionUtils class provides utility methods for working with the Java Collections Framework
  * and specifically the Collection classes.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Iterable
  * @see java.util.Collection
@@ -82,6 +82,115 @@ public abstract class CollectionUtils {
  	}
 
   /**
+   * Adapts the {@link Iterator} into an instance of the {@link Enumeration} interface.
+   * Returns an empty {@link Enumeration} if the {@link Iterator} is null.
+   *
+   * @param <T> Class type of the elements in the {@link Iterator}.
+   * @param iterator {@link Iterator} to adapt into an {@link Enumeration}.
+   * @return an {@link Enumeration} implementation enumerating over the elements in the {@link Iterator}.
+   * @see java.util.Collections#emptyEnumeration()
+   * @see #asIterator(java.util.Enumeration)
+   * @see java.util.Enumeration
+   * @see java.util.Iterator
+   */
+  @NullSafe
+  public static <T> Enumeration<T> asEnumeration(Iterator<T> iterator) {
+    return (iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+      @Override
+      public boolean hasMoreElements() {
+        return iterator.hasNext();
+      }
+
+      @Override
+      public T nextElement() {
+        return iterator.next();
+      }
+    });
+  }
+
+  /**
+   * Adapts the {@link Enumeration} into an instance of the {@link Iterable} interface.
+   *
+   * @param <T> Class type of the elements in the {@link Enumeration}.
+   * @param enumeration {@link Enumeration} to adapt into an {@link Iterable}.
+   * @return an {@link Iterable} implementation backed by the {@link Enumeration}.
+   * @see #asIterator(java.util.Enumeration)
+   * @see java.util.Enumeration
+   * @see java.lang.Iterable
+   */
+  @NullSafe
+  public static <T> Iterable<T> asIterable(Enumeration<T> enumeration) {
+    return () -> asIterator(enumeration);
+  }
+
+  /**
+   * Adapts the {@link Iterator} into an instance of the {@link Iterable} interface.
+   *
+   * @param <T> Class type of the elements in the {@link Iterator}.
+   * @param iterator {@link Iterator} to adapt into an {@link Iterable}.
+   * @return an {@link Iterable} implementation backed by the {@link Iterator}.
+   * @see #nullSafeIterator(Iterator)
+   * @see java.util.Iterator
+   * @see java.lang.Iterable
+   */
+  @NullSafe
+  public static <T> Iterable<T> asIterable(Iterator<T> iterator) {
+    return () -> nullSafeIterator(iterator);
+  }
+
+  /**
+   * Adapts the {@link Enumeration} into an instance of the {@link Iterator} interface.
+   *
+   * @param <T> Class type of the elements in the {@link Enumeration}.
+   * @param enumeration {@link Enumeration} to adapt into an {@link Iterator}.
+   * @return an {@link Iterator} implementation iterating over the elements in the {@link Enumeration}.
+   * @see java.util.Collections#emptyIterator()
+   * @see #asEnumeration(java.util.Iterator)
+   * @see java.util.Enumeration
+   * @see java.util.Iterator
+   */
+  @NullSafe
+  public static <T> Iterator<T> asIterator(Enumeration<T> enumeration) {
+    return (enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
+      @Override
+      public boolean hasNext() {
+        return enumeration.hasMoreElements();
+      }
+
+      @Override
+      public T next() {
+        return enumeration.nextElement();
+      }
+    });
+  }
+
+  /**
+   * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link List}.
+   *
+   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
+   * @param iterable {@link Iterable} to convert into a {@link List}.
+   * @return a {@link List} of the elements from the {@link Iterable} object.
+   * @see #nullSafeIterable(Iterable)
+   * @see java.lang.Iterable
+   * @see java.util.List
+   */
+  @NullSafe
+  public static <T> List<T> asList(Iterable<T> iterable) {
+    if (iterable instanceof Collection) {
+      return new ArrayList<>((Collection<T>) iterable);
+    }
+    else {
+      List<T> list = new ArrayList<>();
+
+      for (T element : nullSafeIterable(iterable)) {
+        list.add(element);
+      }
+
+      return list;
+    }
+  }
+
+  /**
    * Null-safe method to convert the array of elements into a {@link Set}.
    *
    * @param <T> {@link Class} type of the elements in the array.
@@ -95,6 +204,32 @@ public abstract class CollectionUtils {
     Set<T> set = new HashSet<>(ArrayUtils.nullSafeLength(elements));
     Collections.addAll(set, ArrayUtils.nullSafeArray(elements));
     return set;
+  }
+
+  /**
+   * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link Set}.
+   *
+   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
+   * @param iterable {@link Iterable} to convert into a {@link Set}.
+   * @return a {@link Set} of the elements from the {@link Iterable} object.
+   * @see #nullSafeIterable(Iterable)
+   * @see java.lang.Iterable
+   * @see java.util.Set
+   */
+  @NullSafe
+  public static <T> Set<T> asSet(Iterable<T> iterable) {
+    if (iterable instanceof Collection) {
+      return new HashSet<>((Collection<T>) iterable);
+    }
+    else {
+      Set<T> set = new HashSet<>();
+
+      for (T element : nullSafeIterable(iterable)) {
+        set.add(element);
+      }
+
+      return set;
+    }
   }
 
   /**
@@ -116,7 +251,7 @@ public abstract class CollectionUtils {
 
   /**
    * Counts the number of elements in the {@link Iterable} collection accepted by the {@link Filter}.
-   * 
+   *
    * @param <T> Class type of the elements in the {@link Iterable} collection.
    * @param iterable {@link Iterable} collection of elements being evaluated.
    * @param filter {@link Filter} used to determine the count of elements in the {@link Iterable} collection
@@ -170,36 +305,9 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Adapts the {@link Iterator} into an instance of the {@link Enumeration} interface.
-   * Returns an empty {@link Enumeration} if the {@link Iterator} is null.
-   * 
-   * @param <T> Class type of the elements in the {@link Iterator}.
-   * @param iterator {@link Iterator} to adapt into an {@link Enumeration}.
-   * @return an {@link Enumeration} implementation enumerating over the elements in the {@link Iterator}.
-   * @see java.util.Collections#emptyEnumeration()
-   * @see #iterator(java.util.Enumeration)
-   * @see java.util.Enumeration
-   * @see java.util.Iterator
-   */
-  @NullSafe
-  public static <T> Enumeration<T> enumeration(Iterator<T> iterator) {
-    return (iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
-      @Override
-      public boolean hasMoreElements() {
-        return iterator.hasNext();
-      }
-
-      @Override
-      public T nextElement() {
-        return iterator.next();
-      }
-    });
-  }
-
-  /**
    * Returns a filtered {@link Collection} containing only the elements from the given {@link Collection} accepted by
    * the {@link Filter}.
-   * 
+   *
    * @param <T> Class type of the elements in the {@link Collection}.
    * @param collection {@link Collection} to filter.
    * @param filter {@link Filter} used to filter the {@link Collection}.
@@ -240,7 +348,7 @@ public abstract class CollectionUtils {
 
   /**
    * Searches the {@link Iterable} for the first element accepted by the {@link Filter}.
-   * 
+   *
    * @param <T> Class type of the elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to search.
    * @param filter {@link Filter} used to find the first element from the {@link Iterable} accepted
@@ -267,7 +375,7 @@ public abstract class CollectionUtils {
 
   /**
    * Searches the {@link Iterable} for all elements accepted by the {@link Filter}.
-   * 
+   *
    * @param <T> Class type of the elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to search.
    * @param filter {@link Filter} used to find elements from the {@link Iterable} collection accepted
@@ -296,7 +404,7 @@ public abstract class CollectionUtils {
   /**
    * Determines if the {@link Collection} is empty.  The {@link Collection} is empty if it contains no elements
    * or the {@link Collection} object reference is null.
-   * 
+   *
    * @param collection {@link Collection} to evaluate.
    * @return a boolean value indicating if the {@link Collection} is empty.
    * @see java.util.Collection#isEmpty()
@@ -318,62 +426,6 @@ public abstract class CollectionUtils {
   @NullSafe
   public static boolean isNotEmpty(Collection<?> collection) {
     return !isEmpty(collection);
-  }
-
-  /**
-   * Adapts the {@link Enumeration} into an instance of the {@link Iterable} interface.
-   * 
-   * @param <T> Class type of the elements in the {@link Enumeration}.
-   * @param enumeration {@link Enumeration} to adapt into an {@link Iterable}.
-   * @return an {@link Iterable} implementation backed by the {@link Enumeration}.
-   * @see #iterator(java.util.Enumeration)
-   * @see java.util.Enumeration
-   * @see java.lang.Iterable
-   */
-  @NullSafe
-  public static <T> Iterable<T> iterable(Enumeration<T> enumeration) {
-    return () -> iterator(enumeration);
-  }
-
-  /**
-   * Adapts the {@link Iterator} into an instance of the {@link Iterable} interface.
-   * 
-   * @param <T> Class type of the elements in the {@link Iterator}.
-   * @param iterator {@link Iterator} to adapt into an {@link Iterable}.
-   * @return an {@link Iterable} implementation backed by the {@link Iterator}.
-   * @see #nullSafeIterator(Iterator)
-   * @see java.util.Iterator
-   * @see java.lang.Iterable
-   */
-  @NullSafe
-  public static <T> Iterable<T> iterable(Iterator<T> iterator) {
-    return () -> nullSafeIterator(iterator);
-  }
-
-  /**
-   * Adapts the {@link Enumeration} into an instance of the {@link Iterator} interface.
-   *
-   * @param <T> Class type of the elements in the {@link Enumeration}.
-   * @param enumeration {@link Enumeration} to adapt into an {@link Iterator}.
-   * @return an {@link Iterator} implementation iterating over the elements in the {@link Enumeration}.
-   * @see java.util.Collections#emptyIterator()
-   * @see #enumeration(java.util.Iterator)
-   * @see java.util.Enumeration
-   * @see java.util.Iterator
-   */
-  @NullSafe
-  public static <T> Iterator<T> iterator(Enumeration<T> enumeration) {
-    return (enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
-      @Override
-      public boolean hasNext() {
-        return enumeration.hasMoreElements();
-      }
-
-      @Override
-      public T next() {
-        return enumeration.nextElement();
-      }
-    });
   }
 
   /**
@@ -508,60 +560,8 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link List}.
-   *
-   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
-   * @param iterable {@link Iterable} to convert into a {@link List}.
-   * @return a {@link List} of the elements from the {@link Iterable} object.
-   * @see #nullSafeIterable(Iterable)
-   * @see java.lang.Iterable
-   * @see java.util.List
-   */
-  @NullSafe
-  public static <T> List<T> toList(Iterable<T> iterable) {
-    if (iterable instanceof Collection) {
-      return new ArrayList<>((Collection<T>) iterable);
-    }
-    else {
-      List<T> list = new ArrayList<>();
-
-      for (T element : nullSafeIterable(iterable)) {
-        list.add(element);
-      }
-
-      return list;
-    }
-  }
-
-  /**
-   * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link Set}.
-   *
-   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
-   * @param iterable {@link Iterable} to convert into a {@link Set}.
-   * @return a {@link Set} of the elements from the {@link Iterable} object.
-   * @see #nullSafeIterable(Iterable)
-   * @see java.lang.Iterable
-   * @see java.util.Set
-   */
-  @NullSafe
-  public static <T> Set<T> toSet(Iterable<T> iterable) {
-    if (iterable instanceof Collection) {
-      return new HashSet<>((Collection<T>) iterable);
-    }
-    else {
-      Set<T> set = new HashSet<>();
-
-      for (T element : nullSafeIterable(iterable)) {
-        set.add(element);
-      }
-
-      return set;
-    }
-  }
-
-  /**
    * Returns a {@link String} representation of the {@link Iterable}.
-   * 
+   *
    * @param iterable {@link Iterable} to render as a {@link String}.
    * @return a String representation of the {@link Iterable}.
    * @see #toString(Iterable, Renderer)
@@ -619,7 +619,7 @@ public abstract class CollectionUtils {
   /**
    * Returns an immutable {@link Iterator} implementation wrapping the given {@link Iterator} to prevent modifications
    * through invocations of the {@link Iterator#remove()} method.
-   * 
+   *
    * @param <T> Class type of the elements in the {@link Iterator}.
    * @param iterator {@link Iterator} to make immutable.
    * @return an immutable {@link Iterator} implementation wrapping the given {@link Iterator}.

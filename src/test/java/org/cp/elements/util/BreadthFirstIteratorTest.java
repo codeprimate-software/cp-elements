@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.CollectionUtils.asIterable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -56,7 +57,7 @@ public class BreadthFirstIteratorTest {
   protected <T> List<T> toList(final Iterator<T> iterator) {
     List<T> list = new ArrayList<T>();
 
-    for (T element : CollectionUtils.iterable(iterator)) {
+    for (T element : asIterable(iterator)) {
       list.add(element);
     }
 
