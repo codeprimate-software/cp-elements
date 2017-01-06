@@ -16,6 +16,7 @@
 
 package org.cp.elements.io;
 
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.io.File;
@@ -28,7 +29,6 @@ import java.util.stream.Collectors;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.util.ArrayUtils;
 
 /**
  * The FileExtensionFilter class is a {@link FileFilter} and {@link Filter} implementation
@@ -56,7 +56,7 @@ public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<S
    */
   @NullSafe
   public FileExtensionFilter(String... fileExtensions) {
-    this(ArrayUtils.iterable(fileExtensions));
+    this(asIterable(fileExtensions));
   }
 
   /**

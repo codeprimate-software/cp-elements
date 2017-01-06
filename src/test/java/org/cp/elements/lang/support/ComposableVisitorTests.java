@@ -17,8 +17,8 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.getFirst;
-import static org.cp.elements.util.ArrayUtils.iterable;
 import static org.cp.elements.util.CollectionUtils.toSet;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -247,7 +247,7 @@ public class ComposableVisitorTests {
     assertThat(visitors.isEmpty()).isTrue();
     assertThat(visitors.compose(mockVisitorOne, mockVisitorTwo)).isSameAs(visitors);
     assertThat(visitors.size()).isEqualTo(2);
-    assertThat(toSet(visitors)).containsAll(iterable(mockVisitorOne, mockVisitorTwo));
+    assertThat(toSet(visitors)).containsAll(asIterable(mockVisitorOne, mockVisitorTwo));
   }
 
   @Test
@@ -263,7 +263,7 @@ public class ComposableVisitorTests {
     assertThat(visitors.isEmpty()).isTrue();
     assertThat(visitors.compose(visitorArray)).isSameAs(visitors);
     assertThat(visitors.size()).isEqualTo(visitorArray.length);
-    assertThat(toSet(visitors)).containsAll(iterable(visitorArray));
+    assertThat(toSet(visitors)).containsAll(asIterable(visitorArray));
   }
 
   @Test
@@ -287,14 +287,14 @@ public class ComposableVisitorTests {
     assertThat(visitors.isEmpty()).isTrue();
     assertThat(visitors.compose(mockVisitor, null)).isSameAs(visitors);
     assertThat(visitors.size()).isEqualTo(1);
-    assertThat(toSet(visitors)).containsAll(iterable(mockVisitor));
+    assertThat(toSet(visitors)).containsAll(asIterable(mockVisitor));
 
     visitors = new ComposableVisitor();
 
     assertThat(visitors.isEmpty()).isTrue();
     assertThat(visitors.compose(null, mockVisitor)).isSameAs(visitors);
     assertThat(visitors.size()).isEqualTo(1);
-    assertThat(toSet(visitors)).containsAll(iterable(mockVisitor));
+    assertThat(toSet(visitors)).containsAll(asIterable(mockVisitor));
   }
 
   private static final class TestVisitable implements Visitable {

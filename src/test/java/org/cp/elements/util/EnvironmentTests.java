@@ -17,7 +17,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.util.ArrayUtils.iterable;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
@@ -219,7 +219,7 @@ public class EnvironmentTests {
     assertThat(environment).isNotNull();
     assertThat(environment.size()).isEqualTo(properties.size());
 
-    assertThat(CollectionUtils.toSet(environment)).containsAll(iterable("one", "two", "three"));
+    assertThat(CollectionUtils.toSet(environment)).containsAll(asIterable("one", "two", "three"));
   }
 
   @Test

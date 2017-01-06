@@ -17,13 +17,13 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 
-import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
@@ -97,7 +97,7 @@ public class CompositeTests {
 
   @Test
   public void composeIterable() {
-    Iterable<Doable> mockDoables = ArrayUtils.iterable(mockDoable("one"), mockDoable("two"), mockDoable("three"));
+    Iterable<Doable> mockDoables = asIterable(mockDoable("one"), mockDoable("two"), mockDoable("three"));
     Doable composite = CompositeDoable.getInstance().compose(mockDoables);
 
     assertThat(composite).isNotNull();
@@ -111,7 +111,7 @@ public class CompositeTests {
 
   @Test
   public void composeSingleElementIterable() {
-    Iterable<Doable> mockDoables = ArrayUtils.iterable(mockDoable("one"));
+    Iterable<Doable> mockDoables = asIterable(mockDoable("one"));
     Doable composite = CompositeDoable.getInstance().compose(mockDoables);
 
     assertThat(composite).isNotNull();

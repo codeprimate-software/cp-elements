@@ -17,8 +17,8 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.getFirst;
-import static org.cp.elements.util.ArrayUtils.iterable;
 import static org.cp.elements.util.CollectionUtils.toList;
 import static org.cp.elements.util.CollectionUtils.toSet;
 import static org.mockito.Mockito.mock;
@@ -107,7 +107,7 @@ public class ComposableTransformerTests {
   @SuppressWarnings("unchecked")
   public void composeWithIterable() {
     Iterable<Transformer<Object>> iterable =
-      iterable(mockTransformer("one"), mockTransformer("two"), mockTransformer("three"));
+      asIterable(mockTransformer("one"), mockTransformer("two"), mockTransformer("three"));
 
     Transformer<Object> compositeTransformer = ComposableTransformer.compose(iterable);
 
@@ -118,7 +118,7 @@ public class ComposableTransformerTests {
 
   @Test
   public void composeWithEmptyIterable() {
-    assertThat(ComposableTransformer.compose(iterable())).isNull();
+    assertThat(ComposableTransformer.compose(asIterable())).isNull();
   }
 
   @Test
@@ -130,7 +130,7 @@ public class ComposableTransformerTests {
   public void composeWithSingleElementIterable() {
     Transformer<Object> mockTransformer = mockTransformer();
 
-    assertThat(ComposableTransformer.compose(iterable(mockTransformer))).isSameAs(mockTransformer);
+    assertThat(ComposableTransformer.compose(asIterable(mockTransformer))).isSameAs(mockTransformer);
   }
 
   @Test

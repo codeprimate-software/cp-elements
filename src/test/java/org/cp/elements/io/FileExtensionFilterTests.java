@@ -16,6 +16,7 @@
 
 package org.cp.elements.io;
 
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -33,7 +34,6 @@ import java.util.stream.Collectors;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
-import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.stream.StreamUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -105,7 +105,7 @@ public class FileExtensionFilterTests extends AbstractBaseTestSuite {
 
   @Test
   public void constructWithAnIterableCollectionOfFileExtensions() {
-    Iterable<String> expectedFileExtensions = ArrayUtils.iterable(".groovy", "java");
+    Iterable<String> expectedFileExtensions = asIterable(".groovy", "java");
 
     FileExtensionFilter fileFilter = new FileExtensionFilter(expectedFileExtensions);
 

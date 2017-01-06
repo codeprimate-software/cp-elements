@@ -17,8 +17,8 @@
 package org.cp.elements.lang.support;
 
 import static org.cp.elements.util.ArrayUtils.asArray;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.isEmpty;
-import static org.cp.elements.util.ArrayUtils.iterable;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.util.Iterator;
@@ -32,7 +32,7 @@ import org.cp.elements.util.CollectionUtils;
  * in a composition delegate.
  *
  * @author John J. Blum
- * @param <T> the Class type of the object to transform.
+ * @param <T> {@link Class} type of the object to transform.
  * @see java.lang.Iterable
  * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
@@ -51,7 +51,7 @@ public class ComposableTransformer<T> implements Transformer<T>, Iterable<Transf
    */
   @SafeVarargs
   private ComposableTransformer(Transformer<T>... transformers) {
-    this.transformers = iterable(nullSafeArray(transformers, Transformer.class).clone());
+    this.transformers = asIterable(nullSafeArray(transformers, Transformer.class).clone());
   }
 
   /**

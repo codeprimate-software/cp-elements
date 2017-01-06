@@ -18,7 +18,7 @@ package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.test.mock.MockitoMatchers.stringArrayMatcher;
-import static org.cp.elements.util.ArrayUtils.iterable;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 
 import org.cp.elements.io.FileSystemUtils;
-import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -77,7 +76,7 @@ public class ProcessExecutorTests {
     when(processExecutor.execute(any(Iterable.class))).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
 
-    assertThat(processExecutor.execute(ArrayUtils.iterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
+    assertThat(processExecutor.execute(asIterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(FileSystemUtils.WORKING_DIRECTORY),
       argThat(stringArrayMatcher("java", "example.App", "arg")));
@@ -89,7 +88,7 @@ public class ProcessExecutorTests {
     when(processExecutor.execute(any(File.class), any(Iterable.class))).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
 
-    assertThat(processExecutor.execute(mockDirectory, iterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
+    assertThat(processExecutor.execute(mockDirectory, asIterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(mockDirectory),
       argThat(stringArrayMatcher("java", "example.App", "arg")));

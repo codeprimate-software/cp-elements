@@ -16,6 +16,7 @@
 
 package org.cp.elements.util.sort.support;
 
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.cp.elements.lang.Constants;
-import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 import org.junit.After;
@@ -112,7 +112,7 @@ public abstract class CommonSortTestSuite {
 
       Collections.shuffle(numberList, numberGenerator);
 
-      assertShuffled(ArrayUtils.iterable(numbers));
+      assertShuffled(asIterable(numbers));
     }
   }
 
@@ -131,7 +131,7 @@ public abstract class CommonSortTestSuite {
 
     assertNotNull(sortedNumbers);
     assertEquals(getNumberOfElementsToSort(), sortedNumbers.length);
-    assertSorted(ArrayUtils.iterable(sortedNumbers));
+    assertSorted(asIterable(sortedNumbers));
   }
 
   protected static class TestSorter extends AbstractSorter {

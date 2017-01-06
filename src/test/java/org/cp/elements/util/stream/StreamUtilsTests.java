@@ -16,6 +16,7 @@
 
 package org.cp.elements.util.stream;
 
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.cp.elements.util.ArrayUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -90,7 +90,7 @@ public class StreamUtilsTests {
 
   @Test
   public void streamFromIterable() {
-    Stream<Integer> stream = StreamUtils.stream(ArrayUtils.iterable(1, 2, 3));
+    Stream<Integer> stream = StreamUtils.stream(asIterable(1, 2, 3));
 
     assertThat(stream, is(notNullValue(Stream.class)));
 
@@ -106,7 +106,7 @@ public class StreamUtilsTests {
 
   @Test
   public void streamFromOneElementIterable() {
-    Stream<Integer> stream = StreamUtils.stream(ArrayUtils.iterable(1));
+    Stream<Integer> stream = StreamUtils.stream(asIterable(1));
 
     assertThat(stream, is(notNullValue(Stream.class)));
 
@@ -119,7 +119,7 @@ public class StreamUtilsTests {
 
   @Test
   public void streamFromEmptyIterable() {
-    Stream<Object> stream = StreamUtils.stream(ArrayUtils.iterable());
+    Stream<Object> stream = StreamUtils.stream(asIterable());
 
     assertThat(stream, is(notNullValue(Stream.class)));
     assertThat(stream.count(), is(equalTo(0l)));

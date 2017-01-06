@@ -141,6 +141,80 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Returns an {@link Enumeration} enumerating over the elements in the array.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array to enumerate.
+   * @return an {@link Enumeration} over the elements in the array or an empty {@link Enumeration}
+   * if the array is null or empty.
+   * @see java.util.Enumeration
+   */
+  @NullSafe
+  @SafeVarargs
+  public static <T> Enumeration<T> asEnumeration(T... array) {
+    return (array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+
+      private int index = 0;
+
+      @Override
+      public boolean hasMoreElements() {
+        return (index < array.length);
+      }
+
+      @Override
+      public T nextElement() {
+        Assert.isTrue(hasMoreElements(), new NoSuchElementException("No more elements"));
+        return array[index++];
+      }
+    });
+  }
+
+  /**
+   * Returns an {@link Iterable} over the elements in the array.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array to iterate.
+   * @return an {@link Iterable} over the elements in the array
+   * or an empty {@link Iterable} if the array is null or empty.
+   * @see java.lang.Iterable
+   * @see #asIterator(Object[])
+   */
+  @NullSafe
+  @SafeVarargs
+  public static <T> Iterable<T> asIterable(T... array) {
+    return () -> asIterator(array);
+  }
+
+  /**
+   * Returns an {@link Iterator} iterating over the elements in the array.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array to iterate.
+   * @return an {@link Iterator} to iterate over the elements in the array
+   * or an empty {@link Iterator} if the array is null or empty.
+   * @see java.util.Iterator
+   */
+  @NullSafe
+  @SafeVarargs
+  public static <T> Iterator<T> asIterator(T... array) {
+    return (array == null ? Collections.emptyIterator() : new Iterator<T>() {
+
+      private int index = 0;
+
+      @Override
+      public boolean hasNext() {
+        return (index < array.length);
+      }
+
+      @Override
+      public T next() {
+        Assert.isTrue(hasNext(), new NoSuchElementException("No more elements"));
+        return array[index++];
+      }
+    });
+  }
+
+  /**
    * Counts the number of elements in the array.
    *
    * @param <T> Class type of the elements in the array.
@@ -198,35 +272,6 @@ public abstract class ArrayUtils {
   @NullSafe
   public static Object[] emptyArray() {
     return EMPTY_ARRAY.clone();
-  }
-
-  /**
-   * Returns an {@link Enumeration} enumerating over the elements in the array.
-   *
-   * @param <T> Class type of the elements in the array.
-   * @param array array to enumerate.
-   * @return an {@link Enumeration} over the elements in the array or an empty {@link Enumeration}
-   * if the array is null or empty.
-   * @see java.util.Enumeration
-   */
-  @NullSafe
-  @SafeVarargs
-  public static <T> Enumeration<T> enumeration(T... array) {
-    return (array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
-
-      private int index = 0;
-
-      @Override
-      public boolean hasMoreElements() {
-        return (index < array.length);
-      }
-
-      @Override
-      public T nextElement() {
-        Assert.isTrue(hasMoreElements(), new NoSuchElementException("No more elements"));
-        return array[index++];
-      }
-    });
   }
 
   /**
@@ -417,51 +462,6 @@ public abstract class ArrayUtils {
   @NullSafe
   public static boolean isNotEmpty(Object[] array) {
     return !isEmpty(array);
-  }
-
-  /**
-   * Returns an {@link Iterable} over the elements in the array.
-   *
-   * @param <T> Class type of the elements in the array.
-   * @param array array to iterate.
-   * @return an {@link Iterable} over the elements in the array
-   * or an empty {@link Iterable} if the array is null or empty.
-   * @see java.lang.Iterable
-   * @see #iterator(Object[])
-   */
-  @NullSafe
-  @SafeVarargs
-  public static <T> Iterable<T> iterable(T... array) {
-    return () -> iterator(array);
-  }
-
-  /**
-   * Returns an {@link Iterator} iterating over the elements in the array.
-   *
-   * @param <T> Class type of the elements in the array.
-   * @param array array to iterate.
-   * @return an {@link Iterator} to iterate over the elements in the array
-   * or an empty {@link Iterator} if the array is null or empty.
-   * @see java.util.Iterator
-   */
-  @NullSafe
-  @SafeVarargs
-  public static <T> Iterator<T> iterator(T... array) {
-    return (array == null ? Collections.emptyIterator() : new Iterator<T>() {
-
-      private int index = 0;
-
-      @Override
-      public boolean hasNext() {
-        return (index < array.length);
-      }
-
-      @Override
-      public T next() {
-        Assert.isTrue(hasNext(), new NoSuchElementException("No more elements"));
-        return array[index++];
-      }
-    });
   }
 
   /**

@@ -303,6 +303,154 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void asEnumerationFromArray() {
+    Object[] array = { "test", "testing", "tested" };
+    Enumeration<Object> enumeration = ArrayUtils.asEnumeration(array);
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+
+    for (Object element : array) {
+      assertThat(enumeration.hasMoreElements(), is(true));
+      assertThat(enumeration.nextElement(), is(equalTo(element)));
+    }
+
+    assertThat(enumeration.hasMoreElements(), is(false));
+
+    exception.expect(NoSuchElementException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(is(equalTo("No more elements")));
+
+    enumeration.nextElement();
+  }
+
+  @Test
+  public void asEnumerationFromEmptyArray() {
+    Enumeration<Object> enumeration = ArrayUtils.asEnumeration();
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(false));
+
+    exception.expect(NoSuchElementException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(is(equalTo("No more elements")));
+
+    enumeration.nextElement();
+  }
+
+  @Test
+  public void asEnumerationFromNullArray() {
+    Enumeration<Object> enumeration = ArrayUtils.asEnumeration((Object[]) null);
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void asEnumerationFromSingleElementArray() {
+    Enumeration<String> enumeration = ArrayUtils.asEnumeration("test");
+
+    assertThat(enumeration, is(notNullValue(Enumeration.class)));
+    assertThat(enumeration.hasMoreElements(), is(true));
+    assertThat(enumeration.nextElement(), is(equalTo("test")));
+    assertThat(enumeration.hasMoreElements(), is(false));
+  }
+
+  @Test
+  public void asIterableFromArray() {
+    Object[] array = { "test", "testing", "tested" };
+    Iterable<Object> arrayIterable = ArrayUtils.asIterable(array);
+
+    assertThat(arrayIterable, is(notNullValue(Iterable.class)));
+
+    int index = 0;
+
+    for (Object element : arrayIterable) {
+      assertEquals(array[index++], element);
+    }
+
+    assertEquals(array.length, index);
+  }
+
+  @Test
+  public void asIterableFromEmptyArray() {
+    Iterable<?> iterable = ArrayUtils.asIterable();
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void asIterableFromNullArray() {
+    Iterable<?> iterable = ArrayUtils.asIterable((Object[]) null);
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator().hasNext(), is(false));
+  }
+
+  @Test
+  public void asIterableFromSingleElementArray() {
+    Iterable<String> iterable = ArrayUtils.asIterable("test");
+
+    assertThat(iterable, is(notNullValue(Iterable.class)));
+    assertThat(iterable.iterator().hasNext(), is(true));
+    assertThat(iterable.iterator().next(), is(equalTo("test")));
+  }
+
+  @Test
+  public void asIteratorFromArray() {
+    Object[] array = { "test", "testing", "tested" };
+    Iterator<Object> arrayIterator = ArrayUtils.asIterator(array);
+
+    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
+    assertThat(arrayIterator.hasNext(), is(true));
+
+    for (Object element : array) {
+      assertThat(arrayIterator.hasNext(), is(true));
+      assertThat(arrayIterator.next(), is(equalTo(element)));
+    }
+
+    assertThat(arrayIterator.hasNext(), is(false));
+
+    exception.expect(NoSuchElementException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("No more elements");
+
+    arrayIterator.next();
+  }
+
+  @Test
+  public void asIteratorFromEmptyArray() {
+    Iterator<?> arrayIterator = ArrayUtils.asIterator();
+
+    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
+    assertThat(arrayIterator.hasNext(), is(false));
+
+    exception.expect(NoSuchElementException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("No more elements");
+
+    arrayIterator.next();
+  }
+
+  @Test
+  public void asIteratorFromNullArray() {
+    Iterator<?> arrayIterator = ArrayUtils.asIterator((Object[]) null);
+
+    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
+    assertThat(arrayIterator.hasNext(), is(false));
+  }
+
+  @Test
+  public void asIteratorFromSingleElementArray() {
+    Iterator<String> arrayIterator = ArrayUtils.asIterator("test");
+
+    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
+    assertThat(arrayIterator.hasNext(), is(true));
+    assertThat(arrayIterator.next(), is(equalTo("test")));
+    assertThat(arrayIterator.hasNext(), is(false));
+  }
+
+  @Test
   public void countReturnsArrayLength() {
     Object[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
@@ -392,59 +540,6 @@ public class ArrayUtilsTests {
   @Test
   public void defaultIfEmptyWithNullArrayAndNullDefaultArrayReturnsNull() {
     assertThat(ArrayUtils.defaultIfEmpty(null, null), is(nullValue()));
-  }
-
-  @Test
-  public void enumerationFromArray() {
-    Object[] array = { "test", "testing", "tested" };
-    Enumeration<Object> enumeration = ArrayUtils.enumeration(array);
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-
-    for (Object element : array) {
-      assertThat(enumeration.hasMoreElements(), is(true));
-      assertThat(enumeration.nextElement(), is(equalTo(element)));
-    }
-
-    assertThat(enumeration.hasMoreElements(), is(false));
-
-    exception.expect(NoSuchElementException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(is(equalTo("No more elements")));
-
-    enumeration.nextElement();
-  }
-
-  @Test
-  public void enumerationFromEmptyArray() {
-    Enumeration<Object> enumeration = ArrayUtils.enumeration();
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-    assertThat(enumeration.hasMoreElements(), is(false));
-
-    exception.expect(NoSuchElementException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(is(equalTo("No more elements")));
-
-    enumeration.nextElement();
-  }
-
-  @Test
-  public void enumerationFromNullArray() {
-    Enumeration<Object> enumeration = ArrayUtils.enumeration((Object[]) null);
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-    assertThat(enumeration.hasMoreElements(), is(false));
-  }
-
-  @Test
-  public void enumerationFromSingleElementArray() {
-    Enumeration<String> enumeration = ArrayUtils.enumeration("test");
-
-    assertThat(enumeration, is(notNullValue(Enumeration.class)));
-    assertThat(enumeration.hasMoreElements(), is(true));
-    assertThat(enumeration.nextElement(), is(equalTo("test")));
-    assertThat(enumeration.hasMoreElements(), is(false));
   }
 
   @Test
@@ -847,105 +942,10 @@ public class ArrayUtilsTests {
     assertTrue(ArrayUtils.isNotEmpty(new Object[] { "test", "testing", "tested" }));
   }
 
-  @Test
-  public void iterableFromArray() {
-    Object[] array = { "test", "testing", "tested" };
-    Iterable<Object> arrayIterable = ArrayUtils.iterable(array);
-
-    assertThat(arrayIterable, is(notNullValue(Iterable.class)));
-
-    int index = 0;
-
-    for (Object element : arrayIterable) {
-      assertEquals(array[index++], element);
-    }
-
-    assertEquals(array.length, index);
-  }
-
-  @Test
-  public void iterableFromEmptyArray() {
-    Iterable<?> iterable = ArrayUtils.iterable();
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void iterableFromNullArray() {
-    Iterable<?> iterable = ArrayUtils.iterable((Object[]) null);
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator().hasNext(), is(false));
-  }
-
-  @Test
-  public void iterableFromSingleElementArray() {
-    Iterable<String> iterable = ArrayUtils.iterable("test");
-
-    assertThat(iterable, is(notNullValue(Iterable.class)));
-    assertThat(iterable.iterator().hasNext(), is(true));
-    assertThat(iterable.iterator().next(), is(equalTo("test")));
-  }
-
-  @Test
-  public void iteratorFromArray() {
-    Object[] array = { "test", "testing", "tested" };
-    Iterator<Object> arrayIterator = ArrayUtils.iterator(array);
-
-    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
-    assertThat(arrayIterator.hasNext(), is(true));
-
-    for (Object element : array) {
-      assertThat(arrayIterator.hasNext(), is(true));
-      assertThat(arrayIterator.next(), is(equalTo(element)));
-    }
-
-    assertThat(arrayIterator.hasNext(), is(false));
-
-    exception.expect(NoSuchElementException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("No more elements");
-
-    arrayIterator.next();
-  }
-
-  @Test
-  public void iteratorFromEmptyArray() {
-    Iterator<?> arrayIterator = ArrayUtils.iterator();
-
-    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
-    assertThat(arrayIterator.hasNext(), is(false));
-
-    exception.expect(NoSuchElementException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("No more elements");
-
-    arrayIterator.next();
-  }
-
-  @Test
-  public void iteratorFromNullArray() {
-    Iterator<?> arrayIterator = ArrayUtils.iterator((Object[]) null);
-
-    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
-    assertThat(arrayIterator.hasNext(), is(false));
-  }
-
-  @Test
-  public void iteratorFromSingleElementArray() {
-    Iterator<String> arrayIterator = ArrayUtils.iterator("test");
-
-    assertThat(arrayIterator, is(notNullValue(Iterator.class)));
-    assertThat(arrayIterator.hasNext(), is(true));
-    assertThat(arrayIterator.next(), is(equalTo("test")));
-    assertThat(arrayIterator.hasNext(), is(false));
-  }
-
   @Test(expected = UnsupportedOperationException.class)
   public void attemptRemovalFromArrayIterator() {
     String[] array = { "one", "two" };
-    Iterator<String> arrayIterator = ArrayUtils.iterator(array);
+    Iterator<String> arrayIterator = ArrayUtils.asIterator(array);
 
     assertThat(arrayIterator, is(notNullValue(Iterator.class)));
     assertThat(arrayIterator.hasNext(), is(true));

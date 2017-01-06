@@ -17,12 +17,12 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.getFirst;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
@@ -80,7 +80,7 @@ public class ComposableRunnableTests {
     Runnable mockRunnableThree = mockRunnable("three");
 
     assertThat(ComposableRunnable.getInstance().compose((Iterable<Runnable>) null)).isNull();
-    assertThat(ComposableRunnable.getInstance().compose(ArrayUtils.iterable(mockRunnableOne))).isSameAs(mockRunnableOne);
+    assertThat(ComposableRunnable.getInstance().compose(asIterable(mockRunnableOne))).isSameAs(mockRunnableOne);
 
     Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
       mockRunnableTwo, mockRunnableThree);
