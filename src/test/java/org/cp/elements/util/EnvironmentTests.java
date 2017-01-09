@@ -17,17 +17,21 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
+import org.cp.elements.lang.Version;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -36,8 +40,12 @@ import org.junit.rules.ExpectedException;
  * Unit tests for {@link Environment}.
  *
  * @author John Blum
+ * @see java.lang.String[]
+ * @see java.util.Map
+ * @see java.util.Properties
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.cp.elements.lang.Version
  * @see org.cp.elements.util.Environment
  * @since 1.0.0
  */
@@ -45,6 +53,16 @@ public class EnvironmentTests {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
+
+  @Test
+  public void fromAssociativeArray() {
+    String[] associativeArray = { "one=1", "two=2" };
+    Environment environment = Environment.from(associativeArray);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(associativeArray.length);
+    assertThat(environment.get("one")).isEqualTo("1");
+  }
 
   @Test
   public void fromMap() {
@@ -99,7 +117,7 @@ public class EnvironmentTests {
 
     assertThat(environment).isNotNull();
     assertThat(environment.isEmpty()).isTrue();
-    assertThat(environment.environment()).isInstanceOf(PropertiesAdapter.class);
+    assertThat(environment.environmentVariables()).isInstanceOf(PropertiesAdapter.class);
     assertThat(environment.systemProperties()).isInstanceOf(PropertiesAdapter.class);
   }
 
@@ -136,6 +154,7 @@ public class EnvironmentTests {
     Environment environment = Environment.from(map);
 
     assertThat(environment).isNotNull();
+    assertThat(environment.isEmpty()).isFalse();
     assertThat(environment.size()).isEqualTo(map.size());
     assertThat(environment.isSet("booleanProperty")).isTrue();
     assertThat(environment.get("booleanProperty")).isEqualTo("true");
@@ -168,7 +187,8 @@ public class EnvironmentTests {
     Map<String, String> map = new HashMap<>();
 
     map.put("one", "1");
-    map.put("two", "4");
+    map.put("two", "-2");
+    map.put("four", "4");
 
     Environment environment = Environment.from(env);
 
@@ -179,7 +199,11 @@ public class EnvironmentTests {
 
     assertThat(mapCopy).isSameAs(map);
     assertThat(mapCopy).isNotSameAs(env);
-    assertThat(mapCopy).isEqualTo(env);
+    assertThat(mapCopy.size()).isEqualTo(4);
+    assertThat(mapCopy.get("one")).isEqualTo("1");
+    assertThat(mapCopy.get("two")).isEqualTo("2");
+    assertThat(mapCopy.get("three")).isEqualTo("3");
+    assertThat(mapCopy.get("four")).isEqualTo("4");
   }
 
   @Test
@@ -193,7 +217,8 @@ public class EnvironmentTests {
     Properties properties = new Properties();
 
     properties.setProperty("one", "1");
-    properties.setProperty("two", "4");
+    properties.setProperty("two", "-2");
+    properties.setProperty("four", "4");
 
     Environment environment = Environment.from(env);
 
@@ -204,7 +229,96 @@ public class EnvironmentTests {
 
     assertThat(propertiesCopy).isSameAs(properties);
     assertThat(propertiesCopy).isNotSameAs(env);
-    assertThat(propertiesCopy).isEqualTo(env);
+    assertThat(propertiesCopy.size()).isEqualTo(4);
+    assertThat(propertiesCopy.getProperty("one")).isEqualTo("1");
+    assertThat(propertiesCopy.getProperty("two")).isEqualTo("2");
+    assertThat(propertiesCopy.getProperty("three")).isEqualTo("3");
+    assertThat(propertiesCopy.getProperty("four")).isEqualTo("4");
+  }
+
+  @Test
+  public void getJavaClassPathMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJavaClassPath())
+      .isEqualTo(System.getProperty("java.class.path"));
+  }
+
+  @Test
+  public void getJavaHomeMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJavaHome())
+      .isEqualTo(newFile(System.getProperty("java.home")));
+  }
+
+  @Test
+  public void getJavaLibraryPathMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJavaLibraryPath())
+      .isEqualTo(System.getProperty("java.library.path"));
+  }
+
+  @Test
+  public void getJavaVendorMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJavaVendor()).isEqualTo(System.getProperty("java.vendor"));
+  }
+
+  @Test
+  public void getJavaVersionMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJavaVersion())
+      .isEqualTo(Version.parse(System.getProperty("java.version")));
+  }
+
+  @Test
+  public void getJavaJvmNameMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJvmName()).isEqualTo(System.getProperty("java.vm.name"));
+  }
+
+  @Test
+  public void getJavaJvmVendorMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJvmVendor()).isEqualTo(System.getProperty("java.vm.vendor"));
+  }
+
+  @Test
+  public void getJavaJvmVersionMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getJvmVersion())
+      .isEqualTo(Version.parse(System.getProperty("java.vm.version")));
+  }
+
+  @Test
+  public void getOperatingSystemArchitectureMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getOperatingSystemArchitecture())
+      .isEqualTo(System.getProperty("os.arch"));
+  }
+
+  @Test
+  public void getOperatingSystemNameMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getOperatingSystemName())
+      .isEqualTo(System.getProperty("os.name"));
+  }
+
+  @Test
+  public void getOperatingSystemVersionMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getOperatingSystemVersion())
+      .isEqualTo(Version.parse(System.getProperty("os.version")));
+  }
+
+  @Test
+  public void getSystemPathMatchesEnvironmentPath() {
+    assertThat(Environment.fromEnvironmentVariables().getSystemPath()).isEqualTo(System.getenv().get("PATH"));
+  }
+
+  @Test
+  public void getUserDirectoryMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getUserDirectory())
+      .isEqualTo(newFile(System.getProperty("user.dir")));
+  }
+
+  @Test
+  public void getUserHomeMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getUserHome())
+      .isEqualTo(newFile(System.getProperty("user.home")));
+  }
+
+  @Test
+  public void getUserNameMatchesSystemProperty() {
+    assertThat(Environment.fromEnvironmentVariables().getUserName()).isEqualTo(System.getProperty("user.name"));
   }
 
   @Test
@@ -234,12 +348,18 @@ public class EnvironmentTests {
   }
 
   @Test
+  public void sizeIsMany() {
+    assertThat(Environment.fromEnvironmentVariables().size()).isGreaterThan(1);
+  }
+
+  @Test
   public void equalEnvironmentsIsTrue() {
     Environment environmentOne = Environment.from(Collections.singletonMap("one", "1"));
     Environment environmentTwo = Environment.from(singletonProperties("one", "1"));
 
     assertThat(environmentOne).isNotNull();
     assertThat(environmentTwo).isNotNull();
+    assertThat(environmentOne).isNotSameAs(environmentTwo);
     assertThat(environmentOne.equals(environmentTwo)).isTrue();
   }
 
@@ -265,12 +385,82 @@ public class EnvironmentTests {
 
   @Test
   public void hashCodeIsCorrect() {
+    Environment environmentArray = Environment.from(new String[] { "key=test" });
     Environment environmentMap = Environment.from(Collections.singletonMap("key", "test"));
     Environment environmentProperties = Environment.from(singletonProperties("key", "test"));
     Environment environmentVariables = Environment.fromEnvironmentVariables();
 
+    assertThat(environmentArray.hashCode()).isNotEqualTo(0);
     assertThat(environmentMap.hashCode()).isNotEqualTo(0);
+    assertThat(environmentProperties.hashCode()).isNotEqualTo(0);
+    assertThat(environmentVariables.hashCode()).isNotEqualTo(0);
+    assertThat(environmentArray.hashCode()).isEqualTo(environmentMap.hashCode());
     assertThat(environmentMap.hashCode()).isEqualTo(environmentProperties.hashCode());
-    assertThat(environmentMap.hashCode()).isNotEqualTo(environmentVariables.hashCode());
+    assertThat(environmentProperties.hashCode()).isNotEqualTo(environmentVariables.hashCode());
+  }
+
+  @Test
+  public void toAssociativeArrayFromEnvironment() {
+    Map<String, String> map = new TreeMap<>();
+
+    map.put("one", "1");
+    map.put("two", "2");
+
+    Environment environment = Environment.from(map);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(map.size());
+
+    String[] associativeArray = environment.toAssociativeArray();
+
+    assertThat(associativeArray).isNotNull();
+    assertThat(associativeArray.length).isEqualTo(map.size());
+
+    Arrays.sort(associativeArray);
+
+    int index = 0;
+
+    for (String key : map.keySet()) {
+      assertThat(associativeArray[index++]).isEqualTo(String.format("%1$s=%2$s", key, map.get(key)));
+    }
+
+    assertThat(index).isEqualTo(map.size());
+  }
+
+  @Test
+  public void toMapFromEnvironment() {
+    String[] associativeArray = { "one=1", "two=2" };
+    Environment environment = Environment.from(associativeArray);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(associativeArray.length);
+
+    Map<String, String> map = environment.toMap();
+
+    assertThat(map).isNotNull();
+    assertThat(map.size()).isEqualTo(associativeArray.length);
+    assertThat(map.containsKey("one")).isTrue();
+    assertThat(map.get("one")).isEqualTo("1");
+    assertThat(map.containsKey("two")).isTrue();
+    assertThat(map.get("two")).isEqualTo("2");
+  }
+
+  @Test
+  public void toPropertiesFromEnvironment() {
+    Properties env = new Properties();
+
+    env.setProperty("one", "1");
+    env.setProperty("two", "2");
+
+    Environment environment = Environment.from(env);
+
+    assertThat(environment).isNotNull();
+    assertThat(environment.size()).isEqualTo(env.size());
+
+    Properties properties = environment.toProperties();
+
+    assertThat(properties).isNotNull();
+    assertThat(properties.size()).isEqualTo(env.size());
+    assertThat(properties).isSameAs(env);
   }
 }
