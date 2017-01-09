@@ -43,7 +43,7 @@ import org.cp.elements.util.ArrayUtils;
 public abstract class FileSystemUtils extends FileUtils {
 
   // Java File System Properties
-  public static final File JAVA_HOME = new File(System.getProperty("java.home"));
+  public static final File JAVA_HOME = new File(SystemUtils.JAVA_HOME);
   public static final File JAVA_EXE = new File(new File(JAVA_HOME, "bin"), "java");
 
   // Well-Known File System Directories

@@ -46,14 +46,17 @@ public abstract class SystemUtils {
   public static final String WINDOWS_OS_NAME = "Windows";
 
   // Operating System Vendors
-  public static final String LINUX_OS_VENDOR = "Ubuntu";
   public static final String MAC_OSX_VENDOR = "Apple";
+  public static final String RED_HAT_LINUX_OS_VENDOR = "Red Hat";
+  public static final String SUSE_LINUX_OS_VENDOR = "Suse";
+  public static final String UBUNTU_LINUX_OS_VENDOR = "Canonical";
   public static final String WINDOWS_OS_VENDOR = "Microsoft";
 
-  // Define Temporary System Directory
+  // Define Common System Directories
+  public static final String JAVA_HOME = System.getProperty("java.home");
   public static final String TEMPORARY_DIRECTORY = System.getProperty("java.io.tmpdir");
 
-  // User information
+  // User Information
   public static final String USER_DIRECTORY = System.getProperty("user.dir");
   public static final String USER_HOME = System.getProperty("user.home");
   public static final String USERNAME = System.getProperty("user.name");
