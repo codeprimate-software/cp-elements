@@ -16,6 +16,8 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -202,7 +204,7 @@ public abstract class CollectionUtils {
   @SafeVarargs
   public static <T> Set<T> asSet(T... elements) {
     Set<T> set = new HashSet<>(ArrayUtils.nullSafeLength(elements));
-    Collections.addAll(set, ArrayUtils.nullSafeArray(elements));
+    Collections.addAll(set, nullSafeArray(elements));
     return set;
   }
 
@@ -230,6 +232,26 @@ public abstract class CollectionUtils {
 
       return set;
     }
+  }
+
+  /**
+   * Null-safe method to determine if any of the elements in the array are contained in the given {@link Collection}.
+   *
+   * @param collection {@link Collection} to evaluate for containment of the array elements.
+   * @param elements array of elements to evaluate for containment in the {@link Collection}.
+   * @return a boolean value indicating whether any (at least 1) elements from the array are contained
+   * in the given {@link Collection}.
+   * @see java.util.Collection#contains(Object)
+   */
+  @NullSafe
+  public static boolean containsAny(Collection<?> collection, Object... elements) {
+    for (Object element : nullSafeArray(elements)) {
+      if (nullSafeCollection(collection).contains(element)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -426,6 +448,20 @@ public abstract class CollectionUtils {
   @NullSafe
   public static boolean isNotEmpty(Collection<?> collection) {
     return !isEmpty(collection);
+  }
+
+  /**
+   * Null-safe method returning the given {@link Collection} if not {@literal null} or an empty {@link Collection}
+   * if {@literal null}.
+   *
+   * @param <T> {@link Class} type of the elements in the {@link Collection}.
+   * @param collection {@link Collection} to evaluate.
+   * @return the given {@link Collection} if not {@literal null} or an empty {@link Collection} if {@literal null}.
+   * @see java.util.Collection
+   */
+  @NullSafe
+  public static <T> Collection<T> nullSafeCollection(Collection<T> collection) {
+    return (collection != null ? collection : Collections.emptyList());
   }
 
   /**

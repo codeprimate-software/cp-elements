@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -462,6 +463,40 @@ public class CollectionUtilsTests {
 
     assertThat(set, is(notNullValue(Set.class)));
     assertThat(set.isEmpty(), is(true));
+  }
+
+  @Test
+  public void containsWithCollectionAndArrayElementsReturnsTrue() {
+    Collection<?> collection = asCollection(1, 2, 3);
+
+    assertThat(CollectionUtils.containsAny(collection, 1), is(true));
+    assertThat(CollectionUtils.containsAny(collection, 1, 2), is(true));
+    assertThat(CollectionUtils.containsAny(collection, 1, 2, 3), is(true));
+  }
+
+  @Test
+  public void containsWithCollectionAndArrayElementsReturnsFalse() {
+    Collection<?> collection = asCollection(1, 2, 3);
+
+    assertThat(CollectionUtils.containsAny(collection, -1), is(false));
+    assertThat(CollectionUtils.containsAny(collection, 1.5d, 2.01d), is(false));
+    assertThat(CollectionUtils.containsAny(collection, 4, 5, 6), is(false));
+  }
+
+  @Test
+  public void containsWithCollectionAndNullArrayReturnsFalse() {
+    assertThat(CollectionUtils.containsAny(asCollection(1, 2, 3), (Object[]) null), is(false));
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void containsWithNullCollectionAndArrayReturnsFalse() {
+    assertThat(CollectionUtils.containsAny(null, asArray(1, 2, 3)), is(false));
+  }
+
+  @Test
+  public void containsWithNullCollectionAndNullArrayIsFalse() {
+    assertThat(CollectionUtils.containsAny(null, (Object[]) null), is(false));
   }
 
   @Test
@@ -962,6 +997,28 @@ public class CollectionUtilsTests {
     assertThat(CollectionUtils.isNotEmpty(asCollection(0, 1, 2)), is(true));
     assertThat(CollectionUtils.isNotEmpty(Collections.singleton("null")), is(true));
     assertThat(CollectionUtils.isNotEmpty(asCollection("test", "testing", "tested")), is(true));
+  }
+
+  @Test
+  public void nullSafeCollectionWithCollection() {
+    Collection<?> collection = asCollection(1, 2, 3);
+
+    assertThat(CollectionUtils.nullSafeCollection(collection), is(sameInstance(collection)));
+  }
+
+  @Test
+  public void nullSafeCollectionWithEmptyCollection() {
+    Collection<?> collection = asCollection();
+
+    assertThat(CollectionUtils.nullSafeCollection(collection), is(sameInstance(collection)));
+  }
+
+  @Test
+  public void nullSafeCollectionWithNullCollection() {
+    Collection<?> collection = CollectionUtils.nullSafeCollection(null);
+
+    assertThat(collection, is(notNullValue(Collection.class)));
+    assertThat(collection.isEmpty(), is(true));
   }
 
   @Test
