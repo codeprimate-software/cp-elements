@@ -112,7 +112,7 @@ public class ProcessUtilsTests {
   public void isRunningWithRunningProcess() {
     Process mockProcess = mock(Process.class);
 
-    when(mockProcess.exitValue()).thenThrow(new IllegalMonitorStateException("Process is running"));
+    when(mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("Process is running"));
 
     assertThat(ProcessUtils.isRunning(mockProcess)).isTrue();
 
@@ -141,7 +141,7 @@ public class ProcessUtilsTests {
   public void isRunningWithRunningProcessAdapter() {
     Process mockProcess = mock(Process.class);
 
-    when(mockProcess.exitValue()).thenThrow(new IllegalMonitorStateException("Process is running"));
+    when(mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("Process is running"));
 
     assertThat(ProcessUtils.isRunning(newProcessAdapter(mockProcess))).isTrue();
 
@@ -379,9 +379,5 @@ public class ProcessUtilsTests {
     exception.expectMessage("The path [null] to search for the .pid file must not be null and must actually exist");
 
     ProcessUtils.findPidFile(null);
-  }
-
-  @Test
-  public void test() {
   }
 }

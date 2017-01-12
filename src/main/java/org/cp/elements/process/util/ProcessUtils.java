@@ -140,7 +140,7 @@ public abstract class ProcessUtils {
 
       return false;
     }
-    catch (IllegalMonitorStateException ignore) {
+    catch (IllegalThreadStateException ignore) {
       return true;
     }
   }

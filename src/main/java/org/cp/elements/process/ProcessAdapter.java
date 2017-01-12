@@ -275,7 +275,16 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   @Override
   public Integer getId() {
-    return ProcessUtils.readPid(ProcessUtils.findPidFile(getDirectory()));
+    try {
+      return ProcessUtils.readPid(ProcessUtils.findPidFile(getDirectory()));
+    }
+    catch (Throwable t) {
+      if (t instanceof PidUnknownException) {
+        throw (PidUnknownException) t;
+      }
+
+      throw new PidUnknownException("Process ID (PID) cannot be determined", t);
+    }
   }
 
   /**
