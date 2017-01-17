@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
@@ -312,6 +313,39 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   @Override
   public final void setId(Integer id) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+  }
+
+  /**
+   * Returns the standard error stream (stderr) of this process.
+   *
+   * @return an {@link InputStream} connected to the standard error stream (stderr) of this process.
+   * @see java.lang.Process#getErrorStream()
+   * @see #getProcess()
+   */
+  public InputStream getStandardErrorStream() {
+    return getProcess().getErrorStream();
+  }
+
+  /**
+   * Returns the standard output stream (stdout) of this process.
+   *
+   * @return an {@link InputStream} connecting to the standard output stream (stdout) of this process.
+   * @see java.lang.Process#getInputStream()
+   * @see #getProcess()
+   */
+  public InputStream getStandardOutStream() {
+    return getProcess().getInputStream();
+  }
+
+  /**
+   * Returns the standard input stream (stdin) of this process.
+   *
+   * @return an {@link OutputStream} connecting to the standard input stream (stdin) of this process.
+   * @see java.lang.Process#getOutputStream()
+   * @see #getProcess()
+   */
+  public OutputStream getStandardInStream() {
+    return getProcess().getOutputStream();
   }
 
   /**
