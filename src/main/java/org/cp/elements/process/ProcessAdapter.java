@@ -327,17 +327,6 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Returns the standard output stream (stdout) of this process.
-   *
-   * @return an {@link InputStream} connecting to the standard output stream (stdout) of this process.
-   * @see java.lang.Process#getInputStream()
-   * @see #getProcess()
-   */
-  public InputStream getStandardOutStream() {
-    return getProcess().getInputStream();
-  }
-
-  /**
    * Returns the standard input stream (stdin) of this process.
    *
    * @return an {@link OutputStream} connecting to the standard input stream (stdin) of this process.
@@ -346,6 +335,17 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   public OutputStream getStandardInStream() {
     return getProcess().getOutputStream();
+  }
+
+  /**
+   * Returns the standard output stream (stdout) of this process.
+   *
+   * @return an {@link InputStream} connecting to the standard output stream (stdout) of this process.
+   * @see java.lang.Process#getInputStream()
+   * @see #getProcess()
+   */
+  public InputStream getStandardOutStream() {
+    return getProcess().getInputStream();
   }
 
   /**

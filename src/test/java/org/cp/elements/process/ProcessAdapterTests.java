@@ -24,6 +24,8 @@ import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,7 +33,11 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
+
+import com.sun.tools.doclets.internal.toolkit.util.DocFinder;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
@@ -246,6 +252,45 @@ public class ProcessAdapterTests {
     exception.expectMessage(Constants.OPERATION_NOT_SUPPORTED);
 
     newProcessAdapter(mockProcess).setId(123);
+  }
+
+  @Test
+  public void getStandardErrorStream() {
+    InputStream mockErrorStream = mock(InputStream.class, "Standard Error Stream");
+
+    when(mockProcess.getErrorStream()).thenReturn(mockErrorStream);
+
+    assertThat(newProcessAdapter(mockProcess).getStandardErrorStream()).isSameAs(mockErrorStream);
+
+    verify(mockProcess, times(1)).getErrorStream();
+    verify(mockProcess, never()).getInputStream();
+    verify(mockProcess, never()).getOutputStream();
+  }
+
+  @Test
+  public void getStandardInStream() {
+    OutputStream mockOutputStream = mock(OutputStream.class, "Standard In Stream");
+
+    when(mockProcess.getOutputStream()).thenReturn(mockOutputStream);
+
+    assertThat(newProcessAdapter(mockProcess).getStandardInStream()).isSameAs(mockOutputStream);
+
+    verify(mockProcess, times(1)).getOutputStream();
+    verify(mockProcess, never()).getErrorStream();
+    verify(mockProcess, never()).getInputStream();
+  }
+
+  @Test
+  public void getStandardOutStream() {
+    InputStream mockInputStream = mock(InputStream.class, "Standard Out Stream");
+
+    when(mockProcess.getInputStream()).thenReturn(mockInputStream);
+
+    assertThat(newProcessAdapter(mockProcess).getStandardOutStream()).isSameAs(mockInputStream);
+
+    verify(mockProcess, times(1)).getInputStream();
+    verify(mockProcess, never()).getErrorStream();
+    verify(mockProcess, never()).getOutputStream();
   }
 
   @Test
