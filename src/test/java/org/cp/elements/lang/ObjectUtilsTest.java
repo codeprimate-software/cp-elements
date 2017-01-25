@@ -16,13 +16,13 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -34,12 +34,11 @@ import java.lang.reflect.InvocationTargetException;
 import org.junit.Test;
 
 /**
- * The ObjectUtilsTest class is a test suite of test cases testing the contract and functionality
- * of the ObjectUtils class.
+ * Unit tests for {@link ObjectUtils}.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.ObjectUtils
  * @see org.junit.Test
+ * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0
  */
 public class ObjectUtilsTest {
@@ -179,6 +178,22 @@ public class ObjectUtilsTest {
     assertNull(ObjectUtils.defaultIfNull((Object[]) null));
     assertNull(ObjectUtils.defaultIfNull(null, (Object[]) null));
     assertNull(ObjectUtils.defaultIfNull(null, null, null));
+  }
+
+  @Test
+  public void isNullOrEqualToReturnsTrueWhenObjectIsNull() {
+    assertThat(ObjectUtils.isNullOrEqualTo(null, "test"), is(true));
+  }
+
+  @Test
+  public void isNullOrEqualToReturnsTrueWhenObjectsAreEqual() {
+    assertThat(ObjectUtils.isNullOrEqualTo("test", "test"), is(true));
+  }
+
+  @Test
+  public void isNullOrEqualToReturnsFalseWhenObjectsAreNotEqual() {
+    assertThat(ObjectUtils.isNullOrEqualTo("test", null), is(false));
+    assertThat(ObjectUtils.isNullOrEqualTo("test", "mock"), is(false));
   }
 
   @Test
@@ -399,5 +414,4 @@ public class ObjectUtilsTest {
       super(person);
     }
   }
-
 }
