@@ -16,8 +16,10 @@
 
 package org.cp.elements.net;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
@@ -29,18 +31,25 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link NetworkUtils} class.
+ * Unit tests for {@link NetworkUtils}.
  *
  * @author John J. Blum
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.net.NetworkUtils
  * @since 1.0.0
  */
 public class NetworkUtilsTests {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void availablePortReturnsNonZeroPortGreaterThan1024AndLessThan65536() {
@@ -96,5 +105,54 @@ public class NetworkUtilsTests {
   @Test
   public void closeNullSocketReturnsFalse() {
     assertThat(NetworkUtils.close((Socket) null), is(false));
+  }
+
+  @Test
+  public void lenientParsePortIsSuccessful() {
+    assertThat(NetworkUtils.lenientParsePort("1234"), is(equalTo(1234)));
+  }
+
+  @Test
+  public void lenientParsePortWithHostnamePortNumberIsSuccessful() {
+    assertThat(NetworkUtils.lenientParsePort("skullbox:8080"), is(equalTo(8080)));
+  }
+
+  @Test
+  public void lenientParsePortWithMixedPortNumberIsSuccessful() {
+    assertThat(NetworkUtils.lenientParsePort("1 2#4%O L^B8(-?n 0 I"), is(equalTo(12480)));
+  }
+
+  @Test
+  public void lenientParsePortWithInvalidPortNumberHavingDefaultPortReturnsDefaultPort() {
+    assertThat(NetworkUtils.lenientParsePort("$O.OOL", 1234), is(equalTo(1234)));
+  }
+
+  @Test
+  public void lenientParsePortWithInvalidPortNumberThrowsIllegalArgumentExceptoin() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(isA(NumberFormatException.class));
+    exception.expectMessage("Port [] is not valid");
+
+    NetworkUtils.lenientParsePort("invalid");
+  }
+
+  @Test
+  public void parsePortIsSuccessful() {
+    assertThat(NetworkUtils.parsePort("1234"), is(equalTo(1234)));
+    assertThat(NetworkUtils.parsePort("  5678 "), is(equalTo(5678)));
+  }
+
+  @Test
+  public void parsePortWithInvalidPortNumberAndDefaultPortReturnsDefaultPort() {
+    assertThat(NetworkUtils.parsePort(" 1  23 4", 5678), is(equalTo(5678)));
+  }
+
+  @Test
+  public void parsePortWithInvalidPortNumberThrowsIllegalArgumentException() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(isA(NumberFormatException.class));
+    exception.expectMessage("Port [invalid] is not valid");
+
+    NetworkUtils.parsePort("invalid");
   }
 }

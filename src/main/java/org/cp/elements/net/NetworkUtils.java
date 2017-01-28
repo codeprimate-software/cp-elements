@@ -16,6 +16,9 @@
 
 package org.cp.elements.net;
 
+import static org.cp.elements.lang.StringUtils.getDigits;
+import static org.cp.elements.lang.StringUtils.trim;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -91,5 +94,80 @@ public abstract class NetworkUtils {
     }
 
     return false;
+  }
+
+  /**
+   * Leniently parses the given {@link String} as a numeric port number.
+   *
+   * This method works by stripping the digits from the given {@link String}.  Therefore, this method
+   * is capable of handling {@link String} values such as "hostname:port".
+   *
+   * For example: skullbox:8080
+   *
+   * @param port {@link String} to parse as a numeric port number.
+   * @return a numeric port number from the given {@link String}.
+   * @throws IllegalArgumentException if the {@link String} port number is not valid
+   * and {@code defaultPort} is {@literal null}.
+   * @see #lenientParsePort(String, Integer)
+   */
+  public static int lenientParsePort(String port) {
+    return lenientParsePort(port, null);
+  }
+
+  /**
+   * Leniently parses the given {@link String} as a numeric port number.
+   *
+   * This method works by stripping the digits from the given {@link String}.  Therefore, this method
+   * is capable of handling {@link String} values such as "hostname:port".
+   *
+   * For example: skullbox:8080
+   *
+   * @param port {@link String} to parse as a numeric port number.
+   * @param defaultPort {@link Integer} value used as the default port number
+   * if the {@link String} port number is not valid.
+   * @return a numeric port number from the given {@link String}.
+   * @throws IllegalArgumentException if the {@link String} port number is not valid
+   * and {@code defaultPort} is {@literal null}.
+   * @see #parsePort(String, Integer)
+   */
+  public static int lenientParsePort(String port, Integer defaultPort) {
+    return parsePort(getDigits(port), defaultPort);
+  }
+
+  /**
+   * Parses the given {@link String} as a numeric port number.
+   *
+   * @param port {@link String} to parse as a numeric port number.
+   * @return a numeric port number from the given {@link String}.
+   * @throws IllegalArgumentException if the {@link String} port number is not valid
+   * and {@code defaultPort} is {@literal null}.
+   * @see #parsePort(String, Integer)
+   */
+  public static int parsePort(String port) {
+    return parsePort(port, null);
+  }
+
+  /**
+   * Parses the given {@link String} as a numeric port number.
+   *
+   * @param port {@link String} to parse as a numeric port number.
+   * @param defaultPort {@link Integer} value used as the default port number
+   * if the {@link String} port number is not valid.
+   * @return a numeric port number from the given {@link String}.
+   * @throws IllegalArgumentException if the {@link String} port number is not valid
+   * and {@code defaultPort} is {@literal null}.
+   * @see java.lang.Integer#parseInt(String)
+   */
+  public static int parsePort(String port, Integer defaultPort) {
+    try {
+      return Integer.parseInt(trim(port));
+    }
+    catch (NumberFormatException ignore) {
+      if (defaultPort != null) {
+        return defaultPort;
+      }
+
+      throw new IllegalArgumentException(String.format("Port [%s] is not valid", port), ignore);
+    }
   }
 }
