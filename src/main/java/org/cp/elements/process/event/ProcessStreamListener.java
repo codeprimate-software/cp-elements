@@ -19,20 +19,21 @@ package org.cp.elements.process.event;
 import java.util.EventListener;
 
 /**
- * The {@link ProcessInputStreamListener} class is an {@link EventListener} used to listen for input events
+ * The {@link ProcessStreamListener} class is an {@link EventListener} used to listen for input events
  * originating from a {@link Process Process's} standard out or standard error streams.
  *
  * @author John Blum
+ * @see java.lang.Process
  * @see java.util.EventListener
  * @since 1.0.0
  */
-public interface ProcessInputStreamListener extends EventListener {
+public interface ProcessStreamListener extends EventListener {
 
   /**
-   * Event callback method invoked when a line of input is sent from a {@link Process Process's} standard output
+   * Event callback method invoked when a line of input is sent from a {@link Process Process's} standard out
    * or standard error streams.
    *
-   * @param line {@link String} containing the contents of the {@link Process Process's} standard output
+   * @param line {@link String} containing the contents of the {@link Process Process's} standard out
    * or standard error streams.
    * @see java.lang.Process#getErrorStream()
    * @see java.lang.Process#getInputStream()
