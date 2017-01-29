@@ -17,16 +17,17 @@
 
 package org.cp.elements.process;
 
-import java.io.File;
+import static org.cp.elements.io.FileSystemUtils.WORKING_DIRECTORY;
+import static org.cp.elements.util.ArrayUtils.asArray;
 
-import org.cp.elements.io.FileSystemUtils;
-import org.cp.elements.util.ArrayUtils;
+import java.io.File;
 
 /**
  * The {@link ProcessExecutor} interface defines a contract for executing Operating System (OS) programs
  * and returning a reference to the running OS {@link Process} for program control.
  *
  * @author John Blum
+ * @see java.io.File
  * @see java.lang.Process
  * @since 1.0.0
  */
@@ -52,7 +53,7 @@ public interface ProcessExecutor {
    * @see java.lang.Process
    */
   default Process execute(String... commandLine) {
-    return execute(FileSystemUtils.WORKING_DIRECTORY, commandLine);
+    return execute(WORKING_DIRECTORY, commandLine);
   }
 
   /**
@@ -64,7 +65,7 @@ public interface ProcessExecutor {
    * @see java.lang.Process
    */
   default Process execute(Iterable<String> commandLine) {
-    return execute(FileSystemUtils.WORKING_DIRECTORY, ArrayUtils.asArray(commandLine, String.class));
+    return execute(WORKING_DIRECTORY, asArray(commandLine, String.class));
   }
 
   /**
@@ -78,6 +79,6 @@ public interface ProcessExecutor {
    * @see java.io.File
    */
   default Process execute(File directory, Iterable<String> commandLine) {
-    return execute(directory, ArrayUtils.asArray(commandLine, String.class));
+    return execute(directory, asArray(commandLine, String.class));
   }
 }

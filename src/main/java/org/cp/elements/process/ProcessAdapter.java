@@ -48,7 +48,7 @@ import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.ThrowableUtils;
 import org.cp.elements.lang.concurrent.ThreadUtils;
-import org.cp.elements.process.event.ProcessInputStreamListener;
+import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.util.ProcessUtils;
 import org.cp.elements.util.Environment;
 
@@ -72,7 +72,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   private final AtomicBoolean initialized = new AtomicBoolean(false);
 
-  private final CopyOnWriteArraySet<ProcessInputStreamListener> listeners = new CopyOnWriteArraySet<>();
+  private final CopyOnWriteArraySet<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
 
   protected final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -80,8 +80,8 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   private final ProcessContext processContext;
 
-  private final ProcessInputStreamListener compositeProcessInputStreamListener = (line) -> {
-    for (ProcessInputStreamListener listener : this.listeners) {
+  private final ProcessStreamListener compositeProcessStreamListener = (line) -> {
+    for (ProcessStreamListener listener : this.listeners) {
       listener.onInput(line);
     }
   };
@@ -101,11 +101,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Factory method to construct an instance of {@link ProcessAdapter} initialized with
-   * the given {@link Process} and corresponding {@link ProcessContext}.
+   * Factory method to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}
+   * and corresponding {@link ProcessContext}.
    *
    * @param process {@link Process} object to adapt/wrap with an instance of the {@link ProcessAdapter} class.
-   * @param processContext {@link ProcessContext} used to capture the context in which the {@link Process} is running.
+   * @param processContext {@link ProcessContext} object containing contextual information about the environment
+   * in which the {@link Process} is running.
    * @return a newly constructed {@link ProcessAdapter} adapting/wrapping the given {@link Process}.
    * @throws IllegalArgumentException if {@link Process} or {@link ProcessContext} is {@literal null}.
    * @see #ProcessAdapter(Process, ProcessContext)
@@ -120,7 +121,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * Constructs an instance of {@link ProcessAdapter} initialized with the given {@link Process}
    * and {@link ProcessContext}.
    *
-   * @param process {@link Process} object adapted/wrapped by this {@link ProcessAdapter}.
+   * @param process {@link Process} object to adapt/wrap with this {@link ProcessAdapter}.
    * @param processContext {@link ProcessContext} object containing contextual information about the environment
    * in which the {@link Process} is running.
    * @throws IllegalArgumentException if {@link Process} or {@link ProcessContext} is {@literal null}.
@@ -141,12 +142,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   @Override
   public void init() {
     if (!getProcessContext().inheritsIO()) {
-      newThread("Process Standard Output Stream Reader",
-        newProcessInputStreamReader(getProcess().getInputStream())).start();
+      newThread(String.format("Process [%d] Standard Out Reader", safeGetId()),
+        newProcessStreamReader(getProcess().getInputStream())).start();
 
       if (!getProcessContext().isRedirectingErrorStream()) {
-        newThread("Process Standard Error Stream Reader",
-          newProcessInputStreamReader(getProcess().getErrorStream())).start();
+        newThread(String.format("Process [%d] Standard Error Reader", safeGetId()),
+          newProcessStreamReader(getProcess().getErrorStream())).start();
       }
     }
 
@@ -154,14 +155,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /* (non-Javadoc) */
-  protected Runnable newProcessInputStreamReader(InputStream in) {
+  protected Runnable newProcessStreamReader(InputStream in) {
     return () -> {
       if (isRunning()) {
         BufferedReader reader = newReader(in);
 
         try {
           for (String input = reader.readLine(); input != null; input = reader.readLine()) {
-            this.compositeProcessInputStreamListener.onInput(input);
+            this.compositeProcessStreamListener.onInput(input);
           }
         }
         catch (IOException ignore) {
@@ -291,11 +292,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   /**
    * Returns the process identifier (PID) of this running {@link Process}.
    *
-   * This operation is safe from the unhandled {@link PidUnknownException PidUnknownException},
-   * which can be thrown if the {@link Process} has stopped and the PID file was deleted.
+   * This operation is safe from the unhandled {@link PidUnknownException}, which will be thrown
+   * if the {@link Process} has terminated and the PID file was deleted.
    *
-   * @return an integer specifying the ID of the running {@link Process} or {@literal -1}
+   * @return an integer value specifying the ID of the running {@link Process} or {@literal -1}
    * if the process ID cannot be determined.
+   * @see org.cp.elements.process.PidUnknownException
    * @see #getId()
    */
   public Integer safeGetId() {
@@ -458,14 +460,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Registers the provided {@link ProcessInputStreamListener} to listen for the {@link Process Process's}
+   * Registers the provided {@link ProcessStreamListener} to listen for the {@link Process Process's}
    * standard output and error stream events.
    *
-   * @param listener {@link ProcessInputStreamListener} to unregister.
+   * @param listener {@link ProcessStreamListener} to unregister.
    * @return this {@link ProcessAdapter}.
-   * @see org.cp.elements.process.event.ProcessInputStreamListener
+   * @see ProcessStreamListener
    */
-  public ProcessAdapter register(ProcessInputStreamListener listener) {
+  public ProcessAdapter register(ProcessStreamListener listener) {
     this.listeners.add(listener);
     return this;
   }
@@ -485,14 +487,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Unregisters the given {@link ProcessInputStreamListener} from listening for the {@link Process Process's}
+   * Unregisters the given {@link ProcessStreamListener} from listening for the {@link Process Process's}
    * standard output and error stream events.
    *
-   * @param listener {@link ProcessInputStreamListener} to unregister.
+   * @param listener {@link ProcessStreamListener} to unregister.
    * @return this {@link ProcessAdapter}.
-   * @see org.cp.elements.process.event.ProcessInputStreamListener
+   * @see ProcessStreamListener
    */
-  public ProcessAdapter unregister(ProcessInputStreamListener listener) {
+  public ProcessAdapter unregister(ProcessStreamListener listener) {
     this.listeners.remove(listener);
     return this;
   }
