@@ -24,8 +24,8 @@ import org.junit.Test;
  * Unit tests for {@link NumberUtils}.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.NumberUtils
  * @see org.junit.Test
+ * @see org.cp.elements.lang.NumberUtils
  * @since 1.0.0
  */
 public class NumberUtilsTests {
@@ -239,6 +239,24 @@ public class NumberUtilsTests {
     assertThat(NumberUtils.isWhole(1.01d)).isFalse();
     assertThat(NumberUtils.isWhole(1.0001d)).isFalse();
     assertThat(NumberUtils.isWhole(0.123d)).isFalse();
+  }
+
+  @Test
+  public void isZero() {
+    assertThat(NumberUtils.isZero(0.0d)).isTrue();
+    assertThat(NumberUtils.isZero(-0.0d)).isTrue();
+    assertThat(NumberUtils.isZero(0)).isTrue();
+    assertThat(NumberUtils.isZero(-0)).isTrue();
+  }
+
+  @Test
+  public void isNotZero() {
+    assertThat(NumberUtils.isZero(1.0d)).isFalse();
+    assertThat(NumberUtils.isZero(10.0d)).isFalse();
+    assertThat(NumberUtils.isZero(100.0d)).isFalse();
+    assertThat(NumberUtils.isZero(-1.0d)).isFalse();
+    assertThat(NumberUtils.isZero(-10.0d)).isFalse();
+    assertThat(NumberUtils.isZero(-100.0d)).isFalse();
   }
 
   @Test

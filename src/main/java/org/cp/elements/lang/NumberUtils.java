@@ -19,7 +19,7 @@ package org.cp.elements.lang;
 /**
  * The {@link NumberUtils} class is an abstract utility class encapsulating common functionality
  * for working with {@link Number Numbers}.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Number
  * @since 1.0.0
@@ -29,7 +29,7 @@ public abstract class NumberUtils {
   /**
    * Gets the individual bytes of an integer (int) value.  An integer is a 32-bit value consisting of 4 bytes
    * where each byte of the integer (int) value is returned in an element of a 4-element byte array.
-   * 
+   *
    * @param value the integer (int) value to convert into a byte array consisting of the int value's 4 bytes
    * (or 32-bit value).
    * @return a byte array containing the individual bytes making up the value of the integer (int).
@@ -48,7 +48,7 @@ public abstract class NumberUtils {
   /**
    * Determines whether the specified double is a floating-point number, which is defined as a double value having a
    * fractional value (a non-zero value after the decimal point).
-   * 
+   *
    * @param value the double value being evaluated as a decimal value (floating-point value).
    * @return a boolean value indicating whether the specified double value is a floating-point number.
    * @see #isWhole(double)
@@ -60,7 +60,7 @@ public abstract class NumberUtils {
   /**
    * Determines whether the specified long value is an even number using modulus, which is any number divisible by 2
    * with a remainder of 0.
-   * 
+   *
    * @param value the long value being evaluated as an even number.
    * @return a boolean value indicating whether the specified long value is even.
    * @see #isBitwiseEven(long)
@@ -84,7 +84,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the specified double value is negative (less than 0).
-   * 
+   *
    * @param value a double who's value is evaluated as a negative value (less than 0).
    * @return a boolean value indicating whether the specified double value is negative (less than 0).
    * @see #isPositive(double)
@@ -96,7 +96,7 @@ public abstract class NumberUtils {
   /**
    * Determines whether the specified long value is an odd number using modulus, which is any number
    * having a remainder of 1 when divided by 2.
-   * 
+   *
    * @param value the long value being evaluated as an odd number.
    * @return a boolean value indicating whether the specified long value is odd.
    * @see #isBitwiseOdd(long)
@@ -120,7 +120,7 @@ public abstract class NumberUtils {
 
   /**
    * Determines whether the specified double value is positive (greater than 0).
-   * 
+   *
    * @param value a double who's value is evaluated as a positive value (greater than 0).
    * @return a boolean value indicating whether the specified double value is positive (greater than 0).
    * @see #isNegative(double)
@@ -132,13 +132,23 @@ public abstract class NumberUtils {
   /**
    * Determines whether the specified double is a whole number, which is defined as a double value having no
    * fractional value (containing only zeroes after the decimal point).
-   * 
+   *
    * @param value the double value being evaluated as a whole value (integral value).
    * @return a boolean value indicating whether the specified double value is a whole number.
    * @see #isDecimal(double)
    */
   public static boolean isWhole(double value) {
     return (Math.floor(value) == value);
+  }
+
+  /**
+   * Determines whether the given double value is zero.
+   *
+   * @param value double value to evaluate.
+   * @return a boolean value indicating whether the given double value is zero.
+   */
+  public static boolean isZero(double value) {
+    return (value == 0.0d);
   }
 
   /**
@@ -216,7 +226,7 @@ public abstract class NumberUtils {
   /**
    * Return the primitive byte value of the specified {@link Byte} wrapper object, or 0
    * if the {@link Byte} wrapper object is {@literal null}.
-   * 
+   *
    * @param value {@link Byte} to evaluate.
    * @return a primitive byte value for the specified {@link Byte}, or 0 if the {@link Byte} is {@literal null}.
    * @see #byteValue(Number)
