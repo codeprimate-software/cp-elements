@@ -24,6 +24,9 @@ import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -39,11 +42,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.util.Environment;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -432,4 +437,63 @@ public class ProcessAdapterTests {
 
   // test restart()
 
+  // test registerShutdownHook()
+
+  @Test
+  public void registerAndUnregisterProcessStreamListenerIsCorrect() {
+    ProcessStreamListener mockProcessStreamListenerOne = mock(ProcessStreamListener.class,
+      "MockProcessStreamListenerOne");
+
+    ProcessStreamListener mockProcessStreamListenerTwo = mock(ProcessStreamListener.class,
+      "MockProcessStreamListenerTwo");
+
+    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
+
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.register(mockProcessStreamListenerOne)).isSameAs(processAdapter);
+    assertThat(processAdapter.register(mockProcessStreamListenerTwo)).isSameAs(processAdapter);
+
+    ByteArrayInputStream in = new ByteArrayInputStream("Line one.\n".getBytes());
+
+    Runnable runnable = processAdapter.newProcessStreamReader(in);
+
+    assertThat(runnable).isNotNull();
+
+    runnable.run();
+
+    assertThat(processAdapter.unregister(mockProcessStreamListenerTwo)).isSameAs(processAdapter);
+
+    in = new ByteArrayInputStream("Line two.\n".getBytes());
+    runnable = processAdapter.newProcessStreamReader(in);
+
+    assertThat(runnable).isNotNull();
+
+    runnable.run();
+
+    verify(mockProcessStreamListenerOne, times(1)).onInput(eq("Line one."));
+    verify(mockProcessStreamListenerOne, times(1)).onInput(eq("Line two."));
+    verify(mockProcessStreamListenerTwo, times(1)).onInput(eq("Line one."));
+    verify(mockProcessStreamListenerTwo, never()).onInput(eq("Line two."));
+  }
+
+  @Test
+  public void waitForCallsProcessWaitFor() throws InterruptedException {
+    when(this.mockProcess.waitFor()).thenReturn(1);
+
+    assertThat(newProcessAdapter(this.mockProcess).waitFor()).isEqualTo(1);
+
+    verify(this.mockProcess, times(1)).waitFor();
+  }
+
+  @Test
+  public void waitForWithTimeoutCallsProcessWaitForWithTimeout() throws InterruptedException {
+    when(this.mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
+
+    assertThat(newProcessAdapter(this.mockProcess).waitFor(30, TimeUnit.SECONDS)).isTrue();
+
+    verify(this.mockProcess, times(1)).waitFor(eq(30L), eq(TimeUnit.SECONDS));
+  }
 }

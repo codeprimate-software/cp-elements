@@ -68,8 +68,6 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   protected static final long DEFAULT_TIMEOUT_MILLISECONDS = TimeUnit.SECONDS.toMillis(30);
 
-  private boolean buildCompositeProcessInputStreamListener = true;
-
   private final AtomicBoolean initialized = new AtomicBoolean(false);
 
   private final CopyOnWriteArraySet<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
