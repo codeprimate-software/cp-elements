@@ -18,6 +18,7 @@ package org.cp.elements.process;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.process.ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 import static org.cp.elements.util.ArrayUtils.asArray;
@@ -27,8 +28,10 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -42,6 +45,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.io.FileExtensionFilter;
@@ -88,7 +92,8 @@ public class ProcessAdapterTests {
 
   @Before
   public void setup() {
-    this.processContext = newProcessContext(this.mockProcess);
+    this.processContext = newProcessContext(this.mockProcess).ranBy(SystemUtils.USERNAME)
+      .ranIn(FileSystemUtils.WORKING_DIRECTORY);
   }
 
   @Test
@@ -435,7 +440,163 @@ public class ProcessAdapterTests {
     verify(this.mockProcess, never()).waitFor();
   }
 
-  // test restart()
+  @Test
+  public void restartRunningProcessIsSuccessful() throws InterruptedException {
+    ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
+    Process mockRestartedProcess = mock(Process.class);
+
+    List<String> expectedCommandLine = asList("java", "-server", "-ea",
+      "-classpath", "/class/path/to/application.jar", "mock.Application");
+
+    when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
+      .thenReturn(mockRestartedProcess);
+
+    doNothing().when(this.mockProcess).destroy();
+    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running")).thenReturn(0);
+    when(this.mockProcess.waitFor()).thenReturn(0);
+
+    this.processContext.ranIn(FileSystemUtils.USER_HOME_DIRECTORY).ranWith(expectedCommandLine);
+
+    ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+      @Override
+      protected ProcessExecutor newProcessExecutor() {
+        return mockProcessExecutor;
+      }
+
+      @Override
+      public Integer safeGetId() {
+        return 123;
+      }
+
+      @Override
+      public synchronized int stop(long timeout, TimeUnit unit) {
+        getProcess().destroy();
+        return 0;
+      }
+    });
+
+    ProcessAdapter restartedProcessAdapter = processAdapter.restart();
+
+    assertThat(restartedProcessAdapter).isNotNull();
+    assertThat(restartedProcessAdapter.getProcess()).isSameAs(mockRestartedProcess);
+    assertThat(restartedProcessAdapter.getProcessContext()).isSameAs(this.processContext);
+
+    verify(this.mockProcess, times(2)).exitValue();
+    verify(this.mockProcess, times(1)).destroy();
+    verify(this.mockProcess, times(1)).waitFor();
+    verify(processAdapter, times(1)).stop(
+      eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+    verify(mockProcessExecutor, times(1)).execute(
+      eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
+    verifyZeroInteractions(mockRestartedProcess);
+  }
+
+  @Test
+  public void restartTerminatedProcessIsSuccessful() throws InterruptedException {
+    ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
+    Process mockRestartedProcess = mock(Process.class);
+
+    List<String> expectedCommandLine = asList("java", "-server", "-ea",
+      "-classpath", "/class/path/to/application.jar", "mock.Application");
+
+    when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
+      .thenReturn(mockRestartedProcess);
+
+    this.processContext.ranIn(FileSystemUtils.USER_HOME_DIRECTORY).ranWith(expectedCommandLine);
+
+    doNothing().when(this.mockProcess).destroy();
+    when(this.mockProcess.exitValue()).thenReturn(0);
+
+    ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+      @Override
+      protected ProcessExecutor newProcessExecutor() {
+        return mockProcessExecutor;
+      }
+
+      @Override
+      public Integer safeGetId() {
+        return 123;
+      }
+
+      @Override
+      public synchronized int stop(long timeout, TimeUnit unit) {
+        getProcess().destroy();
+        return 0;
+      }
+    });
+
+    ProcessAdapter restartedProcessAdapter = processAdapter.restart();
+
+    assertThat(restartedProcessAdapter).isNotNull();
+    assertThat(restartedProcessAdapter.getProcess()).isSameAs(mockRestartedProcess);
+    assertThat(restartedProcessAdapter.getProcessContext()).isSameAs(this.processContext);
+
+    verify(this.mockProcess, times(2)).exitValue();
+    verify(this.mockProcess, never()).destroy();
+    verify(this.mockProcess, never()).waitFor();
+    verify(processAdapter, never()).stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+    verify(mockProcessExecutor, times(1)).execute(
+      eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
+    verifyZeroInteractions(mockRestartedProcess);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void restartUnstoppableProcessThrowsIllegalStateException() throws InterruptedException {
+    ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
+
+    doNothing().when(this.mockProcess).destroy();
+
+    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"))
+      .thenThrow(new IllegalThreadStateException("running"));
+
+    ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+      @Override
+      protected ProcessExecutor newProcessExecutor() {
+        return mockProcessExecutor;
+      }
+
+      @Override
+      public Integer safeGetId() {
+        return 123;
+      }
+
+      @Override
+      public synchronized int stop(long timeout, TimeUnit unit) {
+        getProcess().destroy();
+        return 0;
+      }
+    });
+
+    try {
+      exception.expect(IllegalStateException.class);
+      exception.expectCause(is(nullValue(Throwable.class)));
+      exception.expectMessage("Process [123] failed to stop");
+
+      processAdapter.restart();
+    }
+    finally {
+      verify(this.mockProcess, times(2)).exitValue();
+      verify(this.mockProcess, times(1)).destroy();
+      verify(this.mockProcess, times(1)).waitFor();
+      verify(processAdapter, times(1)).stop(
+        eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+      verify(mockProcessExecutor, never()).execute(any(File.class), any(List.class));
+    }
+  }
+
+  @Test
+  public void stopIsSuccessful() throws InterruptedException {
+    doNothing().when(this.mockProcess).destroy();
+    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
+    when(this.mockProcess.waitFor()).thenReturn(0);
+
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).stop()).isEqualTo(0);
+
+    verify(this.mockProcess, times(1)).exitValue();
+    verify(this.mockProcess, times(1)).destroy();
+    verify(this.mockProcess, times(1)).waitFor();
+  }
 
   // test registerShutdownHook()
 

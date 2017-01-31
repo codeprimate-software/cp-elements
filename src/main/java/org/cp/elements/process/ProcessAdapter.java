@@ -36,7 +36,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +46,6 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.ThrowableUtils;
-import org.cp.elements.lang.concurrent.ThreadUtils;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.util.ProcessUtils;
 import org.cp.elements.util.Environment;
@@ -56,7 +54,17 @@ import org.cp.elements.util.Environment;
  * The {@link ProcessAdapter} class is an Adapter (wrapper) around a Java {@link Process} object.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see java.lang.Process
+ * @see java.util.concurrent.ExecutorService
+ * @see java.util.concurrent.Executors
+ * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.Initable
+ * @see org.cp.elements.process.ProcessContext
+ * @see org.cp.elements.process.ProcessExecutor
+ * @see org.cp.elements.process.event.ProcessStreamListener
+ * @see org.cp.elements.process.util.ProcessUtils
+ * @see org.cp.elements.util.Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -360,9 +368,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Returns the exit value of this stopped {@link Process}.
+   * Returns the exit value of this terminated {@link Process}.
    *
-   * @return the exit value of this stopped {@link Process}.
+   * @return the exit value of this terminated {@link Process}.
    * @throws IllegalThreadStateException if the {@link Process} has not yet stopped.
    * @see java.lang.Process#exitValue()
    * @see #getProcess()
@@ -372,10 +380,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Returns the exit value of this stopped {@link Process}.
+   * Returns the exit value of this terminated {@link Process}.  Handles the {@link IllegalThreadStateException}
+   * if this {@link Process} has not yet stopped by returning a {@literal -1}.
    *
-   * @return the exit value of this stopped {@link Process} or {@literal -1}
-   * if the {@link Process} has not yet stopped.
+   * @return the exit value of this terminated {@link Process} or {@literal -1}
+   * if this {@link Process} has not yet stopped.
+   * @see java.lang.IllegalThreadStateException
    * @see #exitValue()
    */
   public int safeExitValue() {
@@ -387,70 +397,114 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     }
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Forcibly terminates this {@link Process} if still running.  Returns the exit value even if this {@link Process}
+   * was previously terminated.
+   *
+   * @return an integer value indicating the exit value of this [forcibly] terminated {@link Process}.
+   * @see java.lang.Process#destroyForcibly()
+   * @see #safeExitValue()
+   * @see #isRunning()
+   */
   public synchronized int kill() {
     return (isRunning() ? newProcessAdapter(getProcess().destroyForcibly(), getProcessContext()).waitFor()
       : safeExitValue());
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Restarts this {@link Process} by first attempting to stop this {@link Process} if running
+   * and then running this {@link Process} by executing this {@link Process Process's}
+   * {@link #getCommandLine() command-line} in the given {@link #getDirectory() directory}.
+   *
+   * @return a reference to this newly started and running {@link ProcessAdapter}.
+   * @throws IllegalStateException if this {@link Process} cannot be stopped and restarted.
+   * @see #execute(ProcessAdapter, ProcessContext)
+   * @see #isRunning()
+   * @see #stop()
+   * @see #waitFor()
+   */
   public synchronized ProcessAdapter restart() {
     if (isRunning()) {
       stop();
       waitFor();
     }
 
-    return newProcessAdapter(newRuntimeProcessExecutor().execute(getDirectory(), getCommandLine()),
-      getProcessContext());
+    Assert.state(!isRunning(), "Process [%d] failed to stop", safeGetId());
+
+    return execute(this, getProcessContext());
   }
 
   /* (non-Javadoc) */
+  protected ProcessAdapter execute(ProcessAdapter processAdapter, ProcessContext processContext) {
+    return newProcessAdapter(newProcessExecutor().execute(
+      processAdapter.getDirectory(), processAdapter.getCommandLine()), processContext);
+  }
+
+  /* (non-Javadoc) */
+  protected ProcessExecutor newProcessExecutor() {
+    return newRuntimeProcessExecutor();
+  }
+
+  /**
+   * Terminates this {@link Process} if still running.  {@code #stop()} has no effect if this {@link Process}
+   * was previously terminated and will just return the exit value.
+   *
+   * @return an integer value indicating the exit value of this {@link Process} after it has stopped.
+   * @see #stop(long, TimeUnit)
+   */
   public synchronized int stop() {
     return stop(DEFAULT_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS);
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Attempts to terminate this {@link Process} within the given timeout if still running.
+   * {@code #stop(long, TimeUnit)} has no effect if this {@link Process} was previously terminated
+   * and will just return the exit value.
+   *
+   * @param timeout duration to wait for this {@link Process} to stop.
+   * @param unit {@link TimeUnit} used in the duration to wait for this {@link Process} to stop.
+   * @return an integer value indicating the exit value of this {@link Process} after it has stopped.
+   * @see java.util.concurrent.TimeUnit
+   * @see java.lang.Process#destroy()
+   * @see java.lang.Process#waitFor()
+   * @see #isRunning()
+   * @see #exitValue()
+   * @see #safeExitValue()
+   */
   public synchronized int stop(long timeout, TimeUnit unit) {
     if (isRunning()) {
-      AtomicBoolean exited = new AtomicBoolean(false);
-      AtomicInteger exitValue = new AtomicInteger(-1);
-
-      final int pid = safeGetId();
-
-      ExecutorService executorService = Executors.newSingleThreadExecutor();
+      ExecutorService executorService = Executors.newSingleThreadExecutor(
+        newThreadFactory().as(DAEMON_THREAD).with(THREAD_PRIORITY));
 
       try {
         Future<Integer> futureExitValue = executorService.submit(() -> {
           getProcess().destroy();
-          int localExitValue = getProcess().waitFor();
-          exited.set(true);
-          return localExitValue;
+          return getProcess().waitFor();
         });
 
-        ThreadUtils.waitFor(timeout, unit).on(() -> {
-          try {
-            exitValue.set(futureExitValue.get(timeout, unit));
-            logger.info(String.format("Process [%d] has been stopped", pid));
+        try {
+          int exitValue = futureExitValue.get(timeout, unit);
+          logger.info(String.format("Process [%d] has been stopped", safeGetId()));
+          return exitValue;
+        }
+        catch (ExecutionException ignore) {
+          if (logger.isLoggable(Level.FINE)) {
+            logger.fine(ThrowableUtils.getStackTrace(ignore));
           }
-          catch (ExecutionException | InterruptedException ignore) {
-            if (logger.isLoggable(Level.FINE)) {
-              logger.fine(ThrowableUtils.getStackTrace(ignore));
-            }
-          }
-          catch (TimeoutException e) {
-            logger.warning(String.format("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
-              pid, unit.toMillis(timeout)));
-            exitValue.set(safeExitValue());
-          }
-
-          return exited.get();
-        });
+        }
+        catch (InterruptedException ignore) {
+          Thread.currentThread().interrupt();
+        }
+        catch (TimeoutException e) {
+          logger.warning(String.format("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
+            safeGetId(), unit.toMillis(timeout)));
+        }
       }
       finally {
         executorService.shutdownNow();
       }
 
-      return exitValue.get();
+      return safeExitValue();
     }
     else {
       return exitValue();
@@ -459,11 +513,11 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   /**
    * Registers the provided {@link ProcessStreamListener} to listen for the {@link Process Process's}
-   * standard output and error stream events.
+   * standard out and error stream events.
    *
    * @param listener {@link ProcessStreamListener} to unregister.
    * @return this {@link ProcessAdapter}.
-   * @see ProcessStreamListener
+   * @see org.cp.elements.process.event.ProcessStreamListener
    */
   public ProcessAdapter register(ProcessStreamListener listener) {
     this.listeners.add(listener);
@@ -476,6 +530,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @return this {@link ProcessAdapter}.
    * @see java.lang.Runtime#addShutdownHook(Thread)
    * @see #newThread(String, Runnable)
+   * @see #stop()
    */
   public ProcessAdapter registerShutdownHook() {
     Runtime.getRuntime().addShutdownHook(
@@ -490,7 +545,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    *
    * @param listener {@link ProcessStreamListener} to unregister.
    * @return this {@link ProcessAdapter}.
-   * @see ProcessStreamListener
+   * @see org.cp.elements.process.event.ProcessStreamListener
    */
   public ProcessAdapter unregister(ProcessStreamListener listener) {
     this.listeners.remove(listener);
@@ -498,7 +553,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Waits indefinitely until the {@link Process} stops.
+   * Waits indefinitely until this {@link Process} stops.
    *
    * This method handles the {@link InterruptedException} thrown by {@link Process#waitFor()}
    * by resetting the interrupt bit on the current (calling) {@link Thread}.
@@ -517,7 +572,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Waits until the specified timeout for the {@link Process} to stop.
+   * Waits until the specified timeout for this {@link Process} to stop.
    *
    * This method handles the {@link InterruptedException} thrown by {@link Process#waitFor(long, TimeUnit)}
    * by resetting the interrupt bit on the current (calling) {@link Thread}.
