@@ -29,11 +29,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +49,9 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
@@ -67,10 +72,14 @@ import org.mockito.runners.MockitoJUnitRunner;
  * Unit tests for {@link ProcessAdapter}.
  *
  * @author John Blum
+ * @see java.lang.Process
  * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.process.ProcessAdapter
  * @since 1.0.0
  */
@@ -235,18 +244,28 @@ public class ProcessAdapterTests {
   public void isRunningForRunningProcessIsTrue() {
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
-    assertThat(newProcessAdapter(this.mockProcess).isRunning()).isTrue();
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
 
-    verify(this.mockProcess, times(1)).exitValue();
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.isRunning()).isTrue();
+    assertThat(processAdapter.isNotRunning()).isFalse();
+
+    verify(this.mockProcess, times(2)).exitValue();
   }
 
   @Test
   public void isRunningForTerminatedProcessIsFalse() {
     when(this.mockProcess.exitValue()).thenReturn(0);
 
-    assertThat(newProcessAdapter(this.mockProcess).isRunning()).isFalse();
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
 
-    verify(this.mockProcess, times(1)).exitValue();
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.isRunning()).isFalse();
+    assertThat(processAdapter.isNotRunning()).isTrue();
+
+    verify(this.mockProcess, times(2)).exitValue();
   }
 
   @Test
@@ -586,16 +605,108 @@ public class ProcessAdapterTests {
   }
 
   @Test
-  public void stopIsSuccessful() throws InterruptedException {
+  public void stopHandlesProcessDestroyRuntimeException() throws InterruptedException {
+    doThrow(new RuntimeException("test")).when(this.mockProcess).destroy();
+    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running")).thenReturn(1);
+    assertThat(newProcessAdapter(this.mockProcess).stop()).isEqualTo(1);
+    verify(this.mockProcess, times(1)).destroy();
+    verify(this.mockProcess, times(2)).exitValue();
+    verify(this.mockProcess, never()).waitFor();
+  }
+
+  @Test
+  public void stopIsInterruptedWhileWaitingIsSuccessful() throws Throwable {
+    TestFramework.runOnce(new StopInterruptedTestCase());
+  }
+
+  @Test
+  public void stopNonRunningProcessIsSuccessful() {
+    when(this.mockProcess.exitValue()).thenReturn(1);
+    assertThat(newProcessAdapter(this.mockProcess).stop()).isEqualTo(1);
+    verify(this.mockProcess, times(2)).exitValue();
+  }
+
+  @Test
+  public void stopRunningProcessIsSuccessful() throws InterruptedException {
     doNothing().when(this.mockProcess).destroy();
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
     when(this.mockProcess.waitFor()).thenReturn(0);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).stop()).isEqualTo(0);
 
+    verify(this.mockProcess, times(1)).destroy();
     verify(this.mockProcess, times(1)).exitValue();
+    verify(this.mockProcess, times(1)).waitFor();
+  }
+
+  @Test
+  public void stopAndWaitCallsProcessAdapterStopAndWait() throws InterruptedException {
+    doNothing().when(this.mockProcess).destroy();
+    when(this.mockProcess.waitFor()).thenReturn(0);
+
+    ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+      @Override
+      public synchronized int stop() {
+        getProcess().destroy();
+        return 0;
+      }
+
+      @Override
+      public int waitFor() {
+        try {
+          return getProcess().waitFor();
+        }
+        catch (InterruptedException ignore) {
+          return -1;
+        }
+      }
+    });
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.stopAndWait()).isEqualTo(0);
+
     verify(this.mockProcess, times(1)).destroy();
     verify(this.mockProcess, times(1)).waitFor();
+    verifyNoMoreInteractions(this.mockProcess);
+    verify(processAdapter, times(1)).stop();
+    verify(processAdapter, times(1)).waitFor();
+  }
+
+  @Test
+  public void stopAndWaitWithTimeoutCallsProcessAdapterStopAndWaitWithTimeout() throws InterruptedException {
+    doNothing().when(this.mockProcess).destroy();
+    when(this.mockProcess.exitValue()).thenReturn(1);
+    when(this.mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
+
+    ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+      @Override
+      public synchronized int stop(long timeout, TimeUnit unit) {
+        getProcess().destroy();
+        return 0;
+      }
+
+      @Override
+      public boolean waitFor(long timeout, TimeUnit unit) {
+        try {
+          return getProcess().waitFor(timeout, unit);
+        }
+        catch (InterruptedException ignore) {
+          return false;
+        }
+      }
+    });
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.stopAndWait(15L, TimeUnit.SECONDS)).isEqualTo(1);
+
+    verify(this.mockProcess, times(1)).destroy();
+    verify(this.mockProcess, times(1)).exitValue();
+    verify(this.mockProcess, times(1)).waitFor(eq(15L), eq(TimeUnit.SECONDS));
+    verifyNoMoreInteractions(this.mockProcess);
+    verify(processAdapter, times(1)).stop(eq(15L), eq(TimeUnit.SECONDS));
+    verify(processAdapter, times(1)).waitFor(eq(15L), eq(TimeUnit.SECONDS));
   }
 
   // test registerShutdownHook()
@@ -650,11 +761,209 @@ public class ProcessAdapterTests {
   }
 
   @Test
+  public void waitForCallsProcessWaitForAndIsInterrupted() throws Throwable {
+    TestFramework.runOnce(new WaitForInterruptedTestCase());
+  }
+
+  @Test
   public void waitForWithTimeoutCallsProcessWaitForWithTimeout() throws InterruptedException {
     when(this.mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
 
     assertThat(newProcessAdapter(this.mockProcess).waitFor(30, TimeUnit.SECONDS)).isTrue();
 
     verify(this.mockProcess, times(1)).waitFor(eq(30L), eq(TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void waitForWithTimeoutCallsProcessWaitForWithTimeoutAndIsInterrupted() throws Throwable {
+    TestFramework.runOnce(new WaitForWithTimeoutInterruptedTestCase());
+  }
+
+  @SuppressWarnings("unused")
+  protected abstract class AbstractWaitInterruptingTestCase extends MultithreadedTestCase {
+
+    protected final Object mutex = new Object();
+
+    protected Thread waitingThread;
+
+    public void thread1() {
+      waitingThread = Thread.currentThread();
+      waitingThread.setName("Waiting Thread");
+
+      performWait(newProcessAdapter(mockProcess));
+
+      assertThat(waitingThread.isInterrupted()).isTrue();
+    }
+
+    protected abstract void performWait(ProcessAdapter processAdapter);
+
+    public void thread2() {
+      Thread.currentThread().setName("Interrupting Thread");
+
+      waitForTick(1);
+
+      assertThat(waitingThread).isNotNull();
+
+      waitingThread.interrupt();
+    }
+  }
+
+  @SuppressWarnings("unused")
+  protected class StopInterruptedTestCase extends AbstractWaitInterruptingTestCase {
+
+    @Override
+    public void initialize() {
+      super.initialize();
+
+      try {
+        doNothing().when(mockProcess).destroy();
+
+        when(mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
+
+        when(mockProcess.waitFor()).thenAnswer(invocationOnMock -> {
+          synchronized (mutex) {
+            mutex.wait();
+          }
+
+          return 1;
+        });
+      }
+      catch (InterruptedException ignore) {
+      }
+    }
+
+    @Override
+    public void thread1() {
+      super.thread1();
+    }
+
+    @Override
+    protected void performWait(ProcessAdapter processAdapter) {
+      assertThat(processAdapter.stop(30, TimeUnit.SECONDS)).isEqualTo(-1);
+    }
+
+    @Override
+    public void thread2() {
+      super.thread2();
+    }
+
+    @Override
+    public void finish() {
+      super.finish();
+
+      try {
+        verify(mockProcess, times(1)).destroy();
+        verify(mockProcess, times(2)).exitValue();
+        verify(mockProcess, times(1)).waitFor();
+        verify(mockProcess, never()).waitFor(anyLong(), any(TimeUnit.class));
+      }
+      catch (InterruptedException ignore) {
+      }
+    }
+  }
+
+  @SuppressWarnings("unused")
+  protected class WaitForInterruptedTestCase extends AbstractWaitInterruptingTestCase {
+
+    @Override
+    public void initialize() {
+      super.initialize();
+
+      try {
+        when(mockProcess.exitValue()).thenReturn(1);
+
+        when(mockProcess.waitFor()).thenAnswer(invocationOnMock -> {
+          synchronized (mutex) {
+            mutex.wait();
+          }
+
+          return 1;
+        });
+      }
+      catch (InterruptedException ignore) {
+      }
+    }
+
+    @Override
+    public void thread1() {
+      super.thread1();
+    }
+
+    @Override
+    protected void performWait(ProcessAdapter processAdapter) {
+      assertThat(processAdapter.waitFor()).isEqualTo(1);
+    }
+
+    @Override
+    public void thread2() {
+      super.thread2();
+    }
+
+    @Override
+    public void finish() {
+      super.finish();
+
+      try {
+        verify(mockProcess, times(1)).exitValue();
+        verify(mockProcess, times(1)).waitFor();
+        verify(mockProcess, never()).waitFor(anyLong(), any(TimeUnit.class));
+      }
+      catch (InterruptedException ignore) {
+      }
+    }
+  }
+
+  @SuppressWarnings("unused")
+  protected class WaitForWithTimeoutInterruptedTestCase extends AbstractWaitInterruptingTestCase {
+
+    @Override
+    public void initialize() {
+      super.initialize();
+
+      try {
+        when(mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
+
+        when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenAnswer(invocationOnMock -> {
+          assertThat(invocationOnMock.getArgumentAt(0, Long.class)).isEqualTo(15L);
+          assertThat(invocationOnMock.getArgumentAt(1, TimeUnit.class)).isEqualTo(TimeUnit.SECONDS);
+
+          synchronized (mutex) {
+            mutex.wait();
+          }
+
+          return false;
+        });
+      }
+      catch (InterruptedException ignore) {
+      }
+    }
+
+    @Override
+    public void thread1() {
+      super.thread1();
+    }
+
+    @Override
+    protected void performWait(ProcessAdapter processAdapter) {
+      assertThat(processAdapter.waitFor(15L, TimeUnit.SECONDS)).isFalse();
+    }
+
+    @Override
+    public void thread2() {
+      super.thread2();
+    }
+
+    @Override
+    public void finish() {
+      super.finish();
+
+      try {
+        verify(mockProcess, times(1)).exitValue();
+        verify(mockProcess, times(1)).waitFor(eq(15L), eq(TimeUnit.SECONDS));
+        verify(mockProcess, never()).waitFor();
+      }
+      catch (InterruptedException ignore) {
+      }
+    }
   }
 }

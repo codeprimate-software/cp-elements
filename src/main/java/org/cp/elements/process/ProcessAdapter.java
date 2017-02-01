@@ -53,6 +53,9 @@ import org.cp.elements.util.Environment;
 /**
  * The {@link ProcessAdapter} class is an Adapter (wrapper) around a Java {@link Process} object.
  *
+ * This class provides additional, convenient operations on an instance of {@link Process} that
+ * are not directly available in the Java {@link Process} API itself.
+ *
  * @author John J. Blum
  * @see java.io.File
  * @see java.lang.Process
@@ -230,18 +233,29 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   @Override
   public boolean isInitialized() {
-    return initialized.get();
+    return this.initialized.get();
   }
 
   /**
    * Determines whether this {@link Process} is still running.
    *
    * @return a boolean value indicating whether this {@link Process} is still running.
-   * @see org.cp.elements.process.util.ProcessUtils#isRunning(int)
+   * @see org.cp.elements.process.util.ProcessUtils#isRunning(Process)
+   * @see #isNotRunning()
    * @see #getProcess()
    */
   public boolean isRunning() {
     return ProcessUtils.isRunning(getProcess());
+  }
+
+  /**
+   * Determines whether this {@link Process} is still running.
+   *
+   * @return a boolean value indicating whether this {@link Process} is still running.
+   * @see #isRunning()
+   */
+  public boolean isNotRunning() {
+    return !isRunning();
   }
 
   /**
@@ -419,17 +433,16 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @return a reference to this newly started and running {@link ProcessAdapter}.
    * @throws IllegalStateException if this {@link Process} cannot be stopped and restarted.
    * @see #execute(ProcessAdapter, ProcessContext)
+   * @see #isNotRunning()
    * @see #isRunning()
-   * @see #stop()
-   * @see #waitFor()
+   * @see #stopAndWait()
    */
   public synchronized ProcessAdapter restart() {
     if (isRunning()) {
-      stop();
-      waitFor();
+      stopAndWait();
     }
 
-    Assert.state(!isRunning(), "Process [%d] failed to stop", safeGetId());
+    Assert.state(isNotRunning(), "Process [%d] failed to stop", safeGetId());
 
     return execute(this, getProcessContext());
   }
@@ -512,6 +525,35 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
+   * Terminates this {@link Process} and wait indefinitely for this {@link Process} to stop.
+   *
+   * @return the exit value for this {@link Process} when it stops.
+   * @see #stop()
+   * @see #waitFor()
+   */
+  public int stopAndWait() {
+    stop();
+    return waitFor();
+  }
+
+  /**
+   * Terminates this {@link Process} and wait until the given timeout for this {@link Process} to stop.
+   *
+   * @param timeout long value to indicate the number of units in the timeout.
+   * @param unit {@link TimeUnit} of the timeout (e.g. seconds).
+   * @return the exit value for this {@link Process} when if it stops, or {@literal -1} if this {@link Process}
+   * does not stop within the given timeout.
+   * @see #stop(long, TimeUnit)
+   * @see #waitFor(long, TimeUnit)
+   * @see #safeExitValue()
+   */
+  public int stopAndWait(long timeout, TimeUnit unit) {
+    stop(timeout, unit);
+    waitFor(timeout, unit);
+    return safeExitValue();
+  }
+
+  /**
    * Registers the provided {@link ProcessStreamListener} to listen for the {@link Process Process's}
    * standard out and error stream events.
    *
@@ -525,7 +567,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Registers a {@link Runtime} shutdown hood to stop this {@link Process} when the JVM exits.
+   * Registers a {@link Runtime} shutdown hook to stop this {@link Process} when the JVM exits.
    *
    * @return this {@link ProcessAdapter}.
    * @see java.lang.Runtime#addShutdownHook(Thread)
@@ -560,6 +602,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    *
    * @return an integer value specifying the exit value of the stopped {@link Process}.
    * @see java.lang.Process#waitFor()
+   * @see #safeExitValue();
    */
   public int waitFor() {
     try {
@@ -581,6 +624,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @param unit {@link TimeUnit} of the timeout (e.g. seconds).
    * @return a boolean value indicating whether the {@link Process} stopped within the given timeout.
    * @see java.lang.Process#waitFor(long, TimeUnit)
+   * @see #isNotRunning()
    */
   public boolean waitFor(long timeout, TimeUnit unit) {
     try {
@@ -588,7 +632,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     }
     catch (InterruptedException ignore) {
       Thread.currentThread().interrupt();
-      return !isRunning();
+      return isNotRunning();
     }
   }
 }
