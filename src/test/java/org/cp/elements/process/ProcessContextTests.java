@@ -61,10 +61,10 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
 
   @Test
   public void newProcessContextWithNonNullProcessIsSuccessful() {
-    ProcessContext processContext = newProcessContext(mockProcess);
+    ProcessContext processContext = newProcessContext(this.mockProcess);
 
     assertThat(processContext).isNotNull();
-    assertThat(processContext.getProcess()).isSameAs(mockProcess);
+    assertThat(processContext.getProcess()).isSameAs(this.mockProcess);
     assertThat(processContext.getCommandLine()).isEmpty();
     assertThat(processContext.getDirectory()).isNull();
     assertThat(processContext.getEnvironment()).isNull();
@@ -86,20 +86,20 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void fullyInitializedProcessContext() {
-    ProcessContext processContext = newProcessContext(mockProcess)
+  public void constructFullyInitializedProcessContext() {
+    ProcessContext processContext = new ProcessContext(this.mockProcess)
       .inheritIO(true)
       .ranBy("mockUser")
       .ranIn(FileSystemUtils.WORKING_DIRECTORY)
       .ranWith("java", "-server", "example.Application")
-      .redirectError(ProcessBuilder.Redirect.to(mockFile))
+      .redirectError(ProcessBuilder.Redirect.to(this.mockFile))
       .redirectErrorStream(true)
-      .redirectInput(ProcessBuilder.Redirect.from(mockFile))
-      .redirectOutput(ProcessBuilder.Redirect.appendTo(mockFile))
+      .redirectInput(ProcessBuilder.Redirect.from(this.mockFile))
+      .redirectOutput(ProcessBuilder.Redirect.appendTo(this.mockFile))
       .usingEnvironmentVariables();
 
     assertThat(processContext).isNotNull();
-    assertThat(processContext.getProcess()).isSameAs(mockProcess);
+    assertThat(processContext.getProcess()).isSameAs(this.mockProcess);
     assertThat(processContext.getCommandLine()).isEqualTo(Arrays.asList("java", "-server", "example.Application"));
     assertThat(processContext.getDirectory()).isEqualTo(FileSystemUtils.WORKING_DIRECTORY);
     assertThat(processContext.getEnvironment()).isInstanceOf(Environment.class);
@@ -119,7 +119,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage(String.format("[%s] must be a valid directory", processContextJava.getAbsolutePath()));
 
-    newProcessContext(mockProcess).ranIn(processContextJava);
+    newProcessContext(this.mockProcess).ranIn(processContextJava);
   }
 
   @Test
@@ -128,7 +128,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[/absolute/path/to/non/existing/directory] must be a valid directory");
 
-    newProcessContext(mockProcess).ranIn(newFile("/absolute/path/to/non/existing/directory"));
+    newProcessContext(this.mockProcess).ranIn(newFile("/absolute/path/to/non/existing/directory"));
   }
 
   @Test
@@ -137,6 +137,6 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[null] must be a valid directory");
 
-    newProcessContext(mockProcess).ranIn(null);
+    newProcessContext(this.mockProcess).ranIn(null);
   }
 }
