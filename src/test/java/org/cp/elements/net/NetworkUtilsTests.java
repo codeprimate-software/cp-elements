@@ -48,13 +48,18 @@ import org.junit.rules.ExpectedException;
  */
 public class NetworkUtilsTests {
 
+  private static final int COUNT = 100;
+
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void availablePortReturnsNonZeroPortGreaterThan1024AndLessThan65536() {
-    assertThat(NetworkUtils.availablePort(), is(greaterThan(ServicePort.MIN_PORT)));
-    assertThat(NetworkUtils.availablePort(), is(lessThanOrEqualTo(ServicePort.MAX_PORT)));
+    for (int count = 0, port = NetworkUtils.availablePort(); count < COUNT;
+         count++, port = NetworkUtils.availablePort()) {
+      assertThat(port, is(greaterThan(ServicePort.MIN_PORT)));
+      assertThat(port, is(lessThanOrEqualTo(ServicePort.MAX_PORT)));
+    }
   }
 
   @Test

@@ -41,14 +41,17 @@ public abstract class NetworkUtils {
    * @return in integer value indicating an available network port.
    */
   public static int availablePort() {
+    ServerSocket serverSocket = null;
+
     try {
-      ServerSocket serverSocket = new ServerSocket(0);
-      int availablePort = serverSocket.getLocalPort();
-      close(serverSocket);
-      return availablePort;
+      serverSocket = new ServerSocket(0);
+      return serverSocket.getLocalPort();
     }
     catch (IOException ignore) {
-      throw new IllegalStateException("No port available", ignore);
+      throw new NoAvailablePortException("No port available", ignore);
+    }
+    finally {
+      close(serverSocket);
     }
   }
 
