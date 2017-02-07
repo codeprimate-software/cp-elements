@@ -52,6 +52,7 @@ import org.junit.rules.ExpectedException;
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.process.util.ProcessUtils
+ * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
 public class ProcessUtilsTests {
@@ -209,15 +210,16 @@ public class ProcessUtilsTests {
   public void killRunningProcessIsUnsuccessful() throws Exception {
     Process mockProcess = mock(Process.class);
 
-    when(mockProcess.isAlive()).thenReturn(true);
+    when(mockProcess.isAlive()).thenReturn(true).thenReturn(true);
     when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(false).thenReturn(false);
 
     assertThat(ProcessUtils.kill(mockProcess)).isFalse();
 
-    verify(mockProcess, times(1)).isAlive();
+    verify(mockProcess, times(2)).isAlive();
     verify(mockProcess, times(1)).destroy();
     verify(mockProcess, times(1)).destroyForcibly();
-    verify(mockProcess, times(2)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+    verify(mockProcess, times(2)).waitFor(
+      eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
   }
 
   @Test
@@ -229,31 +231,34 @@ public class ProcessUtilsTests {
   public void killRunningProcessIsInterruptedWhileWaitingIsSuccessful() throws Exception {
     Process mockProcess = mock(Process.class);
 
-    when(mockProcess.isAlive()).thenReturn(true).thenReturn(false);
-    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenThrow(new InterruptedException("test interrupt"));
+    when(mockProcess.isAlive()).thenReturn(true);
+    when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenThrow(new InterruptedException("test interrupt"))
+      .thenReturn(true);
 
     assertThat(ProcessUtils.kill(mockProcess)).isTrue();
 
-    verify(mockProcess, times(2)).isAlive();
+    verify(mockProcess, times(1)).isAlive();
     verify(mockProcess, times(1)).destroy();
-    verify(mockProcess, never()).destroyForcibly();
-    verify(mockProcess, times(1)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+    verify(mockProcess, times(1)).destroyForcibly();
+    verify(mockProcess, times(2)).waitFor(
+      eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
   }
 
   @Test
   public void killRunningProcessIsInterruptedTwiceWhileWaitingIsUnsuccessful() throws Exception {
     Process mockProcess = mock(Process.class);
 
-    when(mockProcess.isAlive()).thenReturn(true).thenReturn(true).thenReturn(true);
+    when(mockProcess.isAlive()).thenReturn(true).thenReturn(true);
     when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenThrow(new InterruptedException("test interrupt"))
       .thenThrow(new InterruptedException("test interrupt again"));
 
     assertThat(ProcessUtils.kill(mockProcess)).isFalse();
 
-    verify(mockProcess, times(3)).isAlive();
+    verify(mockProcess, times(2)).isAlive();
     verify(mockProcess, times(1)).destroy();
     verify(mockProcess, times(1)).destroyForcibly();
-    verify(mockProcess, times(2)).waitFor(eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
+    verify(mockProcess, times(2)).waitFor(
+      eq(ProcessUtils.KILL_WAIT_TIMEOUT), eq(ProcessUtils.KILL_WAIT_TIME_UNIT));
   }
 
   @Test

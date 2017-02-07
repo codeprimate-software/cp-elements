@@ -119,7 +119,6 @@ public abstract class ProcessUtils {
    * @return a boolean value indicating whether the Java Process identified by the given Process ID (PID) is running.
    * @see org.cp.elements.process.util.ProcessUtils.VirtualMachineAccessor#isRunning(int)
    */
-  @NullSafe
   public static boolean isRunning(int processId) {
     return VirtualMachineAccessor.INSTANCE.isRunning(processId);
   }
@@ -199,8 +198,8 @@ public abstract class ProcessUtils {
       try {
         alive = !process.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
       }
-      catch (Throwable ignore) {
-        alive = isAlive(process);
+      catch (InterruptedException ignore) {
+        Thread.currentThread().interrupt();
       }
       finally {
         if (alive) {
@@ -209,14 +208,14 @@ public abstract class ProcessUtils {
           try {
             alive = !process.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
           }
-          catch (Throwable ignore) {
-            alive = isAlive(process);
+          catch (InterruptedException ignore) {
+            Thread.currentThread().interrupt();
           }
         }
       }
     }
 
-    return !alive;
+    return !(alive && isAlive(process));
   }
 
   /**
@@ -228,8 +227,9 @@ public abstract class ProcessUtils {
    * @see org.cp.elements.process.ProcessAdapter
    * @see #kill(Process)
    */
+  @NullSafe
   public static boolean kill(ProcessAdapter processAdapter) {
-    return kill(processAdapter.getProcess());
+    return (processAdapter != null && kill(processAdapter.getProcess()));
   }
 
   /**
@@ -349,7 +349,7 @@ public abstract class ProcessUtils {
 
     pidFile.deleteOnExit();
 
-    PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(pidFile, false), 32), true);
+    PrintWriter writer = newPrintWriter(pidFile);
 
     try {
       writer.print(pid);
@@ -363,15 +363,22 @@ public abstract class ProcessUtils {
   }
 
   /* (non-Javadoc) */
+  private static PrintWriter newPrintWriter(File file) throws IOException {
+    return new PrintWriter(new BufferedWriter(new FileWriter(file, false), 32), true);
+  }
+
+  /* (non-Javadoc) */
   enum VirtualMachineAccessor {
     INSTANCE;
 
     public boolean isRunning(int processId) {
-      if (ObjectUtils.isPresent(VIRTUAL_MACHINE_CLASS_NAME)) {
-        for (VirtualMachineDescriptor vmDescriptor : VirtualMachine.list()) {
-          if (String.valueOf(processId).equals(vmDescriptor.id())) {
-            return true;
-          }
+      return (ObjectUtils.isPresent(VIRTUAL_MACHINE_CLASS_NAME) && doIsRunning(processId));
+    }
+
+    protected boolean doIsRunning(int processId) {
+      for (VirtualMachineDescriptor vmDescriptor : VirtualMachine.list()) {
+        if (String.valueOf(processId).equals(vmDescriptor.id())) {
+          return true;
         }
       }
 
