@@ -26,10 +26,11 @@ import java.net.URL;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
+import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The ClassUtils class provides utility methods for working with {@link Class} objects.
+ * {@link ClassUtils} is an abstract class providing utility methods for working with {@link Class} objects.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -39,6 +40,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.reflect.Constructor
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
+ * @see org.cp.elements.lang.reflect.ModifierUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -54,7 +56,7 @@ public abstract class ClassUtils {
    * Determines whether a given Class type is assignable to a declared Class type.  A given Class type is assignable to
    * a declared Class type if it is in the same Class type hierarchy, i.e. the given Class type is a subclass,
    * or sub-interface of the declared Class type.  Null is also assignable to the declared (to) Class type.
-   * 
+   *
    * @param fromType the Class type evaluated for assignment compatibility with the declared Class type.
    * @param toType the declared Class type defining the type hierarchy, or bounds on the given Class type for
    * assignment compatibility.
@@ -68,7 +70,7 @@ public abstract class ClassUtils {
 
   /**
    * Get the Class type of the specified Object.  Returns null if the Object reference is null.
-   * 
+   *
    * @param obj the Object who's Class type is being determined.
    * @return a Class object signifying the type of the specified Object.
    * @see java.lang.Object#getClass()
@@ -81,7 +83,7 @@ public abstract class ClassUtils {
   /**
    * Gets the fully-qualified name of the Class type for the specified Object.  Returns null if the Object reference
    * is null.
-   * 
+   *
    * @param obj the Object who's class name is determined.
    * @return a String value specifying the fully qualified class name of the Object.
    * @see java.lang.Class#getName()
@@ -95,7 +97,7 @@ public abstract class ClassUtils {
   /**
    * Gets the unqualified, simple name of the Class type for the specified Object.  Returns null if the Object reference
    * is null.
-   * 
+   *
    * @param obj the Object who's simple class name is determined.
    * @return a String value indicating the simple class name of the Object.
    * @see java.lang.Class#getSimpleName()
@@ -212,7 +214,7 @@ public abstract class ClassUtils {
    * Gets a Field object representing the named field on the specified class.  This method will recursively search
    * up the class hierarchy of the specified class until the Object class is reached.  If the named field is found
    * then a Field object representing the class field is returned, otherwise a NoSuchFieldException is thrown.
-   * 
+   *
    * @param type the Class type to search for the specified field.
    * @param fieldName a String indicating the name of the field on the class.
    * @return a Field object representing the named field on the specified class.
@@ -279,7 +281,7 @@ public abstract class ClassUtils {
    * Gets a Method object representing the named method on the specified class.  This method will recursively search
    * up the class hierarchy of the specified class until the Object class is reached.  If the named method is found
    * then a Method object representing the class method is returned, otherwise a NoSuchMethodException is thrown.
-   * 
+   *
    * @param type the Class type to search for the specified method.
    * @param methodName a String indicating the name of the method on the class.
    * @param parameterTypes an array of Class objects identifying the parameters and their types
@@ -386,7 +388,7 @@ public abstract class ClassUtils {
 
   /**
    * Gets the fully-qualified name of the Class.
-   * 
+   *
    * @param type the Class type to return the fully-qualified name of.
    * @return a String value with the fully-qualified name of the Class.
    * @see java.lang.Class#getName()
@@ -398,7 +400,7 @@ public abstract class ClassUtils {
 
   /**
    * Gets the simple name of the Class.
-   * 
+   *
    * @param type the Class type to return the simple name of.
    * @return a String value with the simple name of the Class.
    * @see java.lang.Class#getSimpleName()
@@ -411,7 +413,7 @@ public abstract class ClassUtils {
   /**
    * Determines whether the given Object is an instance of the specified Class.  Note, an Object cannot be an
    * instance of null, so this method returns false if the Class type is null or the Object is null.
-   * 
+   *
    * @param obj the Object to test as an instance of the specified Class type.
    * @param type the Class type used in the instanceof operation.
    * @return a boolean value indicating whether the Object is an instance of the Class type.
@@ -457,7 +459,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the specified Class object represents an array type.
-   * 
+   *
    * @param type the Class object tested as an array type.
    * @return true iff the Class object is not null and represents an array type.
    * @see java.lang.Class#isArray()
@@ -470,7 +472,7 @@ public abstract class ClassUtils {
   /**
    * Determines whether the specified Class object represents an actual class, and not an Annotation, Array, Enum,
    * Interface or Primitive type.
-   * 
+   *
    * @param type the Class object tested as an actual class.
    * @return true iff the Class object is not null and represents an actual class.
    */
@@ -481,8 +483,40 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Null-safe method to determine whether the given {@link Constructor} accepts a single argument
+   * of type {@link Object[]} used to pass arguments much like a Java {@link Class} {@literal main} method.
+   *
+   * This determination makes no effort to distinguish {@link Constructor Constructors} that accept an arbitrary
+   * {@link Object[]} that do not represent arguments.  Therefore, this method should only be used when the developer
+   * knows such a constructor exists for his/her particular UC.
+   *
+   * @param constructor {@link Constructor} to evaluate.
+   * @return a boolean value indicating whether the given {@link Constructor} accepts a {@link Object[]} of arguments.
+   * @see java.lang.reflect.Constructor
+   */
+  @NullSafe
+  public static boolean isConstructorWithArgumentArrayParameter(Constructor<?> constructor) {
+    return (constructor != null && constructor.getParameterCount() == 1
+      && Object[].class.isAssignableFrom(constructor.getParameterTypes()[0]));
+  }
+
+  /**
+   * Determines whether the given {@link Constructor} is a default constructor.
+   *
+   * A {@link Constructor} is the default constructor if it is public and has no parameters.
+   *
+   * @param constructor {@link Constructor} to evaluate.
+   * @return a boolean value indicating whether the given {@link Constructor} is the default constructor.
+   * @see java.lang.reflect.Constructor
+   */
+  @NullSafe
+  public static boolean isDefaultConstructor(Constructor<?> constructor) {
+    return (ModifierUtils.isPublic(constructor) && constructor.getParameterCount() == 0);
+  }
+
+  /**
    * Determines whether the specified Class object represents an enum type.
-   * 
+   *
    * @param type the Class object tested as an enum type.
    * @return true iff the Class object is not null and represents an enum type.
    * @see java.lang.Class#isEnum()
@@ -494,7 +528,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the specified Class object represents an interface.
-   * 
+   *
    * @param type the Class object tested as an interface.
    * @return true iff the Class object is not null and represents an interface.
    * @see java.lang.Class#isInterface()
@@ -535,7 +569,7 @@ public abstract class ClassUtils {
   /**
    * Loads the Class object for the specified, fully qualified class name using the current Thread's context ClassLoader,
    * following by initializing the class.
-   * 
+   *
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
    * @return a Class object for the specified, fully-qualified class name.
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
@@ -543,7 +577,7 @@ public abstract class ClassUtils {
    * @see java.lang.Thread#currentThread()
    * @see java.lang.Thread#getContextClassLoader()
    */
-  public static Class loadClass(String fullyQualifiedClassName) {
+  public static <T> Class<T> loadClass(String fullyQualifiedClassName) {
     return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_LOADED_CLASS,
       Thread.currentThread().getContextClassLoader());
   }
@@ -551,7 +585,7 @@ public abstract class ClassUtils {
   /**
    * Loads the Class object for the specified, fully qualified class name using the provided ClassLoader and the option
    * to initialize the class (calling any static initializers) once loaded.
-   * 
+   *
    * @param fullyQualifiedClassName a String indicating the fully qualified class name of the Class to load.
    * @param initialize a boolean value indicating whether to initialize the class after loading.
    * @param classLoader the ClassLoader used to load the class.
@@ -560,9 +594,9 @@ public abstract class ClassUtils {
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
    */
   @SuppressWarnings("all")
-  public static Class loadClass(String fullyQualifiedClassName, boolean initialize, ClassLoader classLoader) {
+  public static <T> Class<T> loadClass(String fullyQualifiedClassName, boolean initialize, ClassLoader classLoader) {
     try {
-      return Class.forName(fullyQualifiedClassName, initialize, classLoader);
+      return (Class<T>) Class.forName(fullyQualifiedClassName, initialize, classLoader);
     }
     catch (ClassNotFoundException e) {
       throw new TypeNotFoundException(String.format("Class [%s] was not found", fullyQualifiedClassName), e);
@@ -608,7 +642,7 @@ public abstract class ClassUtils {
 
   /**
    * Determines whether the Object is an instance of any of the Class types and returns false if it is.
-   * 
+   *
    * @param obj the Object of the instanceof comparison.
    * @param types an array of Class types used in the instanceof comparison.
    * @return a true boolean value iff the Object is not an instance of any of the Class types.

@@ -16,17 +16,13 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -36,11 +32,14 @@ import java.lang.annotation.Documented;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.cp.elements.lang.annotation.Id;
@@ -56,15 +55,20 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ClassUtils} class.
+ * Unit tests for {@link ClassUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Class
- * @see org.cp.elements.lang.ClassUtils
- * @see org.cp.elements.test.AbstractBaseTestSuite
- * @see org.cp.elements.test.TestUtils
+ * @see java.lang.reflect.Constructor
+ * @see java.lang.reflect.Field
+ * @see java.lang.reflect.Method
+ * @see java.lang.reflect.Modifier
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.cp.elements.lang.ClassUtils
+ * @see org.cp.elements.lang.reflect.ReflectionUtils
+ * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 public class ClassUtilsTests extends AbstractBaseTestSuite {
@@ -72,16 +76,14 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   @Rule
   public ExpectedException exception = ExpectedException.none();
 
-  protected <T> void assertConstructor(final Constructor<T> constructor, final Class<T> declaringClass, final Class<?>[] parameterTypes) {
-    assertThat(constructor, is(not(nullValue())));
-    assertThat(constructor.getDeclaringClass(), is(equalTo(declaringClass)));
+  protected <T> void assertConstructor(Constructor<T> constructor, Class<T> declaringClass, Class<?>[] parameterTypes) {
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getDeclaringClass()).isEqualTo(declaringClass);
     TestUtils.assertEquals(parameterTypes, constructor.getParameterTypes());
   }
 
   @Test
   public void assignableTo() {
-    assertFalse(ClassUtils.assignableTo(null, null));
-    assertFalse(ClassUtils.assignableTo(Object.class, null));
     assertTrue(ClassUtils.assignableTo(null, Object.class));
     assertTrue(ClassUtils.assignableTo(null, Calendar.class));
     assertTrue(ClassUtils.assignableTo(null, Number.class));
@@ -91,14 +93,19 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertTrue(ClassUtils.assignableTo(Double.class, Number.class));
     assertTrue(ClassUtils.assignableTo(Integer.class, Number.class));
     assertTrue(ClassUtils.assignableTo(java.sql.Date.class, java.util.Date.class));
+  }
+
+  @Test
+  public void notAssignableTo() {
+    assertFalse(ClassUtils.assignableTo(null, null));
+    assertFalse(ClassUtils.assignableTo(Object.class, null));
     assertFalse(ClassUtils.assignableTo(String.class, Number.class));
     assertFalse(ClassUtils.assignableTo(Character.class, String.class));
     assertFalse(ClassUtils.assignableTo(Object.class, String.class));
   }
 
   @Test
-  public void getClass$() {
-    assertNull(ClassUtils.getClass(null));
+  public void getCla$$() {
     assertEquals(Object.class, ClassUtils.getClass(new Object()));
     assertEquals(Boolean.class, ClassUtils.getClass(true));
     assertEquals(Character.class, ClassUtils.getClass('c'));
@@ -109,8 +116,12 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void getClassWithNull() {
+    assertThat(ClassUtils.getClass(null)).isNull();
+  }
+
+  @Test
   public void getClassName() {
-    assertNull(ClassUtils.getClassName(null));
     assertEquals("java.lang.Object", ClassUtils.getClassName(new Object()));
     assertEquals("java.lang.Boolean", ClassUtils.getClassName(Boolean.TRUE));
     assertEquals("java.lang.Character", ClassUtils.getClassName('$'));
@@ -121,8 +132,12 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void getClassNameWithNull() {
+    assertThat(ClassUtils.getClassName(null)).isNull();
+  }
+
+  @Test
   public void getClassSimpleName() {
-    assertNull(ClassUtils.getClassSimpleName(null));
     assertEquals("Object", ClassUtils.getClassSimpleName(new Object()));
     assertEquals("Boolean", ClassUtils.getClassSimpleName(Boolean.TRUE));
     assertEquals("Character", ClassUtils.getClassSimpleName('!'));
@@ -133,22 +148,27 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void getClassSimpleNameWithNull() {
+    assertThat(ClassUtils.getClassSimpleName(null)).isNull();
+  }
+
+  @Test
   public void getResourceName() {
-    assertThat(ClassUtils.getResourceName(Object.class), is(equalTo("java/lang/Object.class")));
-    assertThat(ClassUtils.getResourceName(Thread.class), is(equalTo("java/lang/Thread.class")));
-    assertThat(ClassUtils.getResourceName(InputStream.class), is(equalTo("java/io/InputStream.class")));
-    assertThat(ClassUtils.getResourceName(OutputStream.class), is(equalTo("java/io/OutputStream.class")));
-    assertThat(ClassUtils.getResourceName(Socket.class), is(equalTo("java/net/Socket.class")));
+    assertThat(ClassUtils.getResourceName(Object.class)).isEqualTo("java/lang/Object.class");
+    assertThat(ClassUtils.getResourceName(Thread.class)).isEqualTo("java/lang/Thread.class");
+    assertThat(ClassUtils.getResourceName(InputStream.class)).isEqualTo("java/io/InputStream.class");
+    assertThat(ClassUtils.getResourceName(OutputStream.class)).isEqualTo("java/io/OutputStream.class");
+    assertThat(ClassUtils.getResourceName(Socket.class)).isEqualTo("java/net/Socket.class");
   }
 
   @Test
   public void getResourceNameWithNull() {
-    assertThat(ClassUtils.getResourceName(null), is(nullValue()));
+    assertThat(ClassUtils.getResourceName(null)).isNull();
   }
 
   @Test
   public void findConstructor() {
-    Constructor<SubType> constructor = ClassUtils.findConstructor(SubType.class, 1l);
+    Constructor<SubType> constructor = ClassUtils.findConstructor(SubType.class, 1L);
     assertConstructor(constructor, SubType.class, ArrayUtils.<Class>asArray(Long.class));
   }
 
@@ -165,7 +185,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void findNonExistingNonMatchingConstructor() {
-    assertNull(ClassUtils.findConstructor(SubType.class, "test", 1l, false));
+    assertNull(ClassUtils.findConstructor(SubType.class, "test", 1L, false));
   }
 
   @Test
@@ -192,7 +212,8 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void resolveMatchingConstructor() {
-    Constructor<SubType> constructor = ClassUtils.resolveConstructor(SubType.class, new Class[0], true, 1l, "test");
+    Constructor<SubType> constructor = ClassUtils.resolveConstructor(SubType.class, new Class[0],
+      true, 1L, "test");
 
     assertConstructor(constructor, SubType.class, ArrayUtils.<Class>asArray(Boolean.class, Number.class, String.class));
   }
@@ -260,13 +281,13 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertEquals(SuperType.class, method.getDeclaringClass());
     assertEquals("methodTwo", method.getName());
 
-    method = ClassUtils.findMethod(SuperType.class, "methodTwo", true, 1l, "test");
+    method = ClassUtils.findMethod(SuperType.class, "methodTwo", true, 1L, "test");
 
     assertNotNull(method);
     assertEquals(SuperType.class, method.getDeclaringClass());
     assertEquals("methodTwo", method.getName());
 
-    method = ClassUtils.findMethod(SubType.class, "methodTwo", "test", 1l, false);
+    method = ClassUtils.findMethod(SubType.class, "methodTwo", "test", 1L, false);
 
     assertNotNull(method);
     assertEquals(SubType.class, method.getDeclaringClass());
@@ -275,7 +296,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void findNonExistingMethod() {
-    assertNull(ClassUtils.findMethod(SubType.class, "methodThree", true, 1l, "test"));
+    assertNull(ClassUtils.findMethod(SubType.class, "methodThree", true, 1L, "test"));
     assertNull(ClassUtils.findMethod(SuperType.class, "methodTwo", "test", 1, false));
     assertNull(ClassUtils.findMethod(SubType.class, "methodTwo", true, "test", 1));
     assertNull(ClassUtils.findMethod(SubType.class, "methodTwo", true, 1));
@@ -369,7 +390,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   public void resolveMethodToSuperClass() {
     Method method = ClassUtils.resolveMethod(SubType.class, "methodTwo",
       ArrayUtils.<Class<?>>asArray(Boolean.class, Long.class, String.class),
-        ArrayUtils.asArray(true, 1l, "test"), Void.class);
+        ArrayUtils.asArray(true, 1L, "test"), Void.class);
 
     assertNotNull(method);
     assertEquals(SuperType.class, method.getDeclaringClass());
@@ -418,7 +439,6 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getName() {
-    assertNull(ClassUtils.getName(null));
     assertEquals("java.lang.Object", ClassUtils.getName(Object.class));
     assertEquals("java.lang.Boolean", ClassUtils.getName(Boolean.class));
     assertEquals("java.lang.Character", ClassUtils.getName(Character.class));
@@ -429,8 +449,12 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void getNameWithNull() {
+    assertThat(ClassUtils.getName(null)).isNull();
+  }
+
+  @Test
   public void getSimpleName() {
-    assertNull(ClassUtils.getName(null));
     assertEquals("Object", ClassUtils.getSimpleName(Object.class));
     assertEquals("Boolean", ClassUtils.getSimpleName(Boolean.class));
     assertEquals("Character", ClassUtils.getSimpleName(Character.class));
@@ -438,6 +462,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertEquals("Integer", ClassUtils.getSimpleName(Integer.class));
     assertEquals("Double", ClassUtils.getSimpleName(Double.class));
     assertEquals("String", ClassUtils.getSimpleName(String.class));
+  }
+
+  @Test
+  public void getSimpleNameWithNull() {
+    assertNull(ClassUtils.getName(null));
   }
 
   @Test
@@ -453,6 +482,10 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertTrue(ClassUtils.instanceOf(123, Number.class));
     assertTrue(ClassUtils.instanceOf(Class.class, Object.class));
     assertTrue(ClassUtils.instanceOf(Object.class, Class.class));
+  }
+
+  @Test
+  public void notInstanceOf() {
     assertFalse(ClassUtils.instanceOf(false, Number.class));
     assertFalse(ClassUtils.instanceOf(123.0, Integer.class));
     assertFalse(ClassUtils.instanceOf("123", Number.class));
@@ -463,6 +496,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isAnnotation() {
+    assertTrue(ClassUtils.isAnnotation(Documented.class));
+  }
+
+  @Test
+  public void isNotAnnotation() {
     assertFalse(ClassUtils.isAnnotation(null));
     assertFalse(ClassUtils.isAnnotation(Object.class));
     assertFalse(ClassUtils.isAnnotation(String.class));
@@ -472,7 +510,6 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertFalse(ClassUtils.isAnnotation(Thread.State.class));
     assertFalse(ClassUtils.isAnnotation(Cloneable.class));
     assertFalse(ClassUtils.isAnnotation(Integer.TYPE));
-    assertTrue(ClassUtils.isAnnotation(Documented.class));
   }
 
   @Test
@@ -484,6 +521,10 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertTrue(ClassUtils.isAnnotationPresent(Deprecated.class,
       ReflectionUtils.getMethod(SubType.class, "deprecatedMethod")));
     assertTrue(ClassUtils.isAnnotationPresent(Resource.class, SubType.class));
+  }
+
+  @Test
+  public void isAnnotationNotPresent() {
     assertFalse(ClassUtils.isAnnotationPresent(Id.class,
       ReflectionUtils.getField(SubType.class, "nonAnnotatedField"),
       ReflectionUtils.getMethod(SubType.class, "nonAnnotatedMethod")));
@@ -496,12 +537,16 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isArray() {
-    assertFalse(ClassUtils.isArray(null));
-    assertFalse(ClassUtils.isArray(Object.class));
     assertTrue(ClassUtils.isArray(Object[].class));
     assertTrue(ClassUtils.isArray(Object[][].class));
     assertTrue(ClassUtils.isArray(String[].class));
     assertTrue(ClassUtils.isArray(int[].class));
+  }
+
+  @Test
+  public void isNotArray() {
+    assertFalse(ClassUtils.isArray(null));
+    assertFalse(ClassUtils.isArray(Object.class));
     assertFalse(ClassUtils.isArray(Documented.class));
     assertFalse(ClassUtils.isArray(Object.class));
     assertFalse(ClassUtils.isArray(Thread.State.class));
@@ -511,34 +556,223 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isClass() {
+    assertTrue(ClassUtils.isClass(Object.class)); // class!
+  }
+
+  @Test
+  public void isNotClass() {
     assertFalse(ClassUtils.isClass(null));
     assertFalse(ClassUtils.isClass(int[].class)); // array
     assertFalse(ClassUtils.isClass(Documented.class)); // annotation
-    assertTrue(ClassUtils.isClass(Object.class)); // class!
     assertFalse(ClassUtils.isClass(Thread.State.class)); // enum
     assertFalse(ClassUtils.isClass(Cloneable.class)); // interface
     assertFalse(ClassUtils.isClass(Integer.TYPE)); // primitive
   }
 
   @Test
+  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectArrayParameterIsTrue() {
+    Constructor[] constructors = TypeWithObjectArrayParameterConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(1);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object[].class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isTrue();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnConstructorWithStringArrayParameterIsTrue() {
+    Constructor[] constructors = TypeWithStringArrayParameterConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(1);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(String[].class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isTrue();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnVarargsConstructorIsTrue() {
+    Constructor[] constructors = TypeWithVarargsConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(1);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object[].class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isTrue();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnNullIsFalse() {
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(null)).isFalse();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectParameterIsFalse() {
+    Constructor[] constructors = TypeWithObjectParameterConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(1);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object.class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectArrayAndStringParameterIsFalse() {
+    Constructor[] constructors = TypeWithObjectArrayAndStringParameterConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(2);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object[].class);
+    assertThat(constructor.getParameterTypes()[1]).isEqualTo(String.class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectListParameterIsFalse() {
+    Constructor[] constructors = TypeWithObjectListParameterConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(1);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(List.class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+  }
+
+  @Test
+  public void isConstructorWithArgumentArrayParameterOnTwoArgumentConstructorIsFalse() {
+    Constructor[] constructors = TypeWithTwoArgumentConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor constructor = constructors[0];
+
+    assertThat(constructor).isNotNull();
+    assertThat(constructor.getParameterCount()).isEqualTo(2);
+    assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object.class);
+    assertThat(constructor.getParameterTypes()[1]).isEqualTo(Object.class);
+    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+  }
+
+  @Test
+  public void isDefaultConstructorWithDefaultConstructorIsTrue() {
+    Constructor[] constructors = TypeWithWithDefaultConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor<?> constructor = constructors[0];
+
+    assertThat(constructor.getParameterCount()).isEqualTo(0);
+    assertThat(Modifier.isPublic(constructor.getModifiers())).isTrue();
+    assertThat(ClassUtils.isDefaultConstructor(constructor)).isTrue();
+  }
+
+  @Test
+  public void isDefaultConstructorWithNullIsFalse() {
+    assertThat(ClassUtils.isDefaultConstructor(null)).isFalse();
+  }
+
+  @Test
+  public void isDefaultConstructorWithPrivateNoArgConstructorIsFalse() {
+    Constructor[] constructors = TypeWithPrivateNoArgConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor<?> constructor = constructors[0];
+
+    assertThat(constructor.getParameterCount()).isEqualTo(0);
+    assertThat(Modifier.isPrivate(constructor.getModifiers())).isTrue();
+    assertThat(ClassUtils.isDefaultConstructor(constructor)).isFalse();
+  }
+
+  @Test
+  public void isDefaultConstructorWithPackagePrivateNoArgConstructorIsFalse() {
+    Constructor[] constructors = TypeWithPackagePrivateNoArgConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor<?> constructor = constructors[0];
+
+    assertThat(constructor.getParameterCount()).isEqualTo(0);
+    assertThat(Modifier.isPrivate(constructor.getModifiers())).isFalse();
+    assertThat(Modifier.isProtected(constructor.getModifiers())).isFalse();
+    assertThat(Modifier.isPublic(constructor.getModifiers())).isFalse();
+    assertThat(ClassUtils.isDefaultConstructor(constructor)).isFalse();
+  }
+
+  @Test
+  public void isDefaultConstructorWithProtectedNoArgConstructorIsFalse() {
+    Constructor[] constructors = TypeWithProtectedNoArgConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor<?> constructor = constructors[0];
+
+    assertThat(constructor.getParameterCount()).isEqualTo(0);
+    assertThat(Modifier.isProtected(constructor.getModifiers())).isTrue();
+    assertThat(ClassUtils.isDefaultConstructor(constructor)).isFalse();
+  }
+
+  @Test
+  public void isDefaultConstructorWithPublicArgConstructorIsFalse() {
+    Constructor[] constructors = TypeWithPublicArgsConstructor.class.getDeclaredConstructors();
+
+    assertThat(constructors).hasSize(1);
+
+    Constructor<?> constructor = constructors[0];
+
+    assertThat(constructor.getParameterCount()).isEqualTo(1);
+    assertThat(Modifier.isPublic(constructor.getModifiers())).isTrue();
+    assertThat(ClassUtils.isDefaultConstructor(constructor)).isFalse();
+  }
+
+  @Test
   public void isEnum() {
+    assertTrue(ClassUtils.isEnum(Thread.State.class));
+  }
+
+  @Test
+  public void isNotEnum() {
     assertFalse(ClassUtils.isEnum(null));
     assertFalse(ClassUtils.isEnum(int[].class));
     assertFalse(ClassUtils.isEnum(Documented.class));
     assertFalse(ClassUtils.isEnum(Object.class));
-    assertTrue(ClassUtils.isEnum(Thread.State.class));
     assertFalse(ClassUtils.isEnum(Runnable.class));
     assertFalse(ClassUtils.isEnum(Integer.TYPE));
   }
 
   @Test
   public void isInterface() {
+    assertTrue(ClassUtils.isInterface(Documented.class)); // true, even an enum type!
+    assertTrue(ClassUtils.isInterface(Runnable.class));
+  }
+
+  @Test
+  public void isNotInterface() {
     assertFalse(ClassUtils.isInterface(null));
     assertFalse(ClassUtils.isInterface(int[].class));
-    assertTrue(ClassUtils.isInterface(Documented.class)); // true, even an enum type!
     assertFalse(ClassUtils.isInterface(Object.class));
     assertFalse(ClassUtils.isInterface(Thread.State.class));
-    assertTrue(ClassUtils.isInterface(Runnable.class));
     assertFalse(ClassUtils.isInterface(Integer.TYPE));
   }
 
@@ -578,33 +812,38 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void loadClass() {
-    assertEquals(Object.class, ClassUtils.loadClass("java.lang.Object"));
+    assertThat(ClassUtils.loadClass("java.lang.Object")).isEqualTo(Object.class);
   }
 
   @Test(expected = RuntimeException.class)
   public void loadNonExistingClass() {
     try {
-      ClassUtils.loadClass("com.company.non.existing.Class");
+      ClassUtils.loadClass("example.non.existing.Class");
     }
     catch (RuntimeException expected) {
-      assertEquals("Class [com.company.non.existing.Class] was not found", expected.getMessage());
-      assertTrue(expected.getCause() instanceof ClassNotFoundException);
+      assertThat(expected).hasMessage("Class [example.non.existing.Class] was not found");
+      assertThat(expected).hasCauseInstanceOf(ClassNotFoundException.class);
+
       throw expected;
     }
   }
 
   @Test
   public void locateClass() throws MalformedURLException {
-    assertThat(ClassUtils.locateClass(ClassUtils.class.getName()), is(equalTo(new File(getClassesDirectory(),
-      ClassUtils.class.getName().replaceAll("\\.", "/").concat(".class")).toURI().toURL())));
+    assertThat(ClassUtils.locateClass(ClassUtils.class.getName())).isEqualTo(new File(getClassesDirectory(),
+      ClassUtils.class.getName().replaceAll("\\.", "/").concat(".class")).toURI().toURL());
   }
 
   @Test
   public void nonInstanceOf() {
     assertTrue(ClassUtils.notInstanceOf(new Object(), (Class[]) null));
     assertTrue(ClassUtils.notInstanceOf(new Object(), Boolean.class, Number.class, String.class));
-    assertFalse(ClassUtils.notInstanceOf(123, Boolean.class, Number.class, String.class));
     assertTrue(ClassUtils.notInstanceOf(123.0, Boolean.class, BigDecimal.class, String.class));
+  }
+
+  @Test
+  public void notNonInstanceOf() {
+    assertFalse(ClassUtils.notInstanceOf(123, Boolean.class, Number.class, String.class));
   }
 
   @SuppressWarnings("unused")
@@ -694,5 +933,56 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
     public void nonAnnotatedMethod() {
     }
+  }
+
+  private static class TypeWithWithDefaultConstructor {
+    public TypeWithWithDefaultConstructor() { }
+  }
+
+  private static class TypeWithPublicArgsConstructor {
+    public TypeWithPublicArgsConstructor(@SuppressWarnings("unused") Object argument) { }
+  }
+
+  private static class TypeWithProtectedNoArgConstructor {
+    protected TypeWithProtectedNoArgConstructor() { }
+  }
+
+  private static class TypeWithPackagePrivateNoArgConstructor {
+    TypeWithPackagePrivateNoArgConstructor() { }
+  }
+
+  private static class TypeWithPrivateNoArgConstructor {
+    private TypeWithPrivateNoArgConstructor() { }
+  }
+
+  private static class TypeWithObjectParameterConstructor {
+    public TypeWithObjectParameterConstructor(@SuppressWarnings("unused") Object argument) { }
+  }
+
+  private static class TypeWithObjectArrayParameterConstructor {
+    private TypeWithObjectArrayParameterConstructor(@SuppressWarnings("unused") Object[] args) { }
+  }
+
+  private static class TypeWithObjectArrayAndStringParameterConstructor {
+    @SuppressWarnings("unused")
+    public TypeWithObjectArrayAndStringParameterConstructor(Object[] args, String argument) { }
+  }
+
+  private static class TypeWithObjectListParameterConstructor {
+    public TypeWithObjectListParameterConstructor(@SuppressWarnings("unused") List<Object> args) { }
+  }
+
+  private static class TypeWithStringArrayParameterConstructor {
+    public TypeWithStringArrayParameterConstructor(@SuppressWarnings("unused") String[] args) {
+    }
+  }
+
+  private static class TypeWithTwoArgumentConstructor {
+    @SuppressWarnings("unused")
+    public TypeWithTwoArgumentConstructor(Object argumentOne, Object argumentTwo) { }
+  }
+
+  private static class TypeWithVarargsConstructor {
+    public TypeWithVarargsConstructor(@SuppressWarnings("unused") Object... args) { }
   }
 }
