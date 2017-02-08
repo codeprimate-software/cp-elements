@@ -17,8 +17,8 @@
 package org.cp.elements.process;
 
 /**
- * The {@link ProcessException} class is a general {@link RuntimeException} to indicate a problem during
- * the normal execution of a program.
+ * The {@link ProcessException} class is a general {@link RuntimeException} to indicate any problem
+ * throughout the lifecycle of an executing program.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
