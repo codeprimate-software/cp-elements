@@ -51,8 +51,12 @@ import org.junit.rules.ExpectedException;
  * Unit tests for {@link ArrayUtils}.
  *
  * @author John J. Blum
+ * @see java.lang.Iterable
  * @see java.lang.reflect.Array
  * @see java.util.Arrays
+ * @see java.util.Enumeration
+ * @see java.util.Iterator
+ * @see java.util.List
  * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.junit.rules.ExpectedException
@@ -858,6 +862,44 @@ public class ArrayUtilsTests {
   @Test
   public void getFirstFromNullArrayUsingNullDefaultValueReturnsNull() {
     assertThat(ArrayUtils.defaultIfEmpty(null, null), is(nullValue()));
+  }
+
+  @Test
+  public void indexOfElementInArrayReturnsIndex() {
+    Object[] array = { "test", "testing", "tested"};
+
+    assertThat(ArrayUtils.indexOf(array, "test"), is(equalTo(0)));
+    assertThat(ArrayUtils.indexOf(array, "testing"), is(equalTo(1)));
+    assertThat(ArrayUtils.indexOf(array, "tested"), is(equalTo(2)));
+  }
+
+  @Test
+  public void indexOfNonExistingElementInArrayReturnsMinusOne() {
+    assertThat(ArrayUtils.indexOf(new Object[] { "test", "testing", "tested" }, "mock"),
+      is(equalTo(-1)));
+  }
+
+  @Test
+  public void indexOfNonNullElementInNullArrayReturnsMinusOne() {
+    assertThat(ArrayUtils.indexOf(null, "test"), is(equalTo(-1)));
+  }
+
+  @Test
+  public void indexOfNullElementInArrayReturnsMinusOne() {
+    assertThat(ArrayUtils.indexOf(new Object[] { "test", "testing", "tested" }, null),
+      is(equalTo(-1)));
+  }
+
+  @Test
+  public void indexOfRepeatingElementInArrayReturnsFirstIndexFound() {
+    assertThat(ArrayUtils.indexOf(new Object[] { "test", "testing", "testing" }, "testing"),
+      is(equalTo(1)));
+  }
+
+  @Test
+  public void indexOfRepeatingNullElementInArrayReturnsFirstIndexFound() {
+    assertThat(ArrayUtils.indexOf(new Object[] { "test", null, null, "testing", "testing", null }, null),
+      is(equalTo(1)));
   }
 
   @Test

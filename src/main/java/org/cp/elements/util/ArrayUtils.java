@@ -18,6 +18,7 @@ package org.cp.elements.util;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.lang.ObjectUtils.equalsIgnoreNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -395,6 +396,26 @@ public abstract class ArrayUtils {
    */
   public static <T> T getFirst(T[] array, T defaultValue) {
     return (isNotEmpty(array) ? array[0] : defaultValue);
+  }
+
+  /**
+   * Null-safe method to find the index of the given {@code element} in the given {@code array}.
+   *
+   * @param <T> {@link Class} type of elements in the array.
+   * @param array array used to search for {@code element}.
+   * @param element {@link Object} element to search for in the given {@code array}.
+   * @return the index of the given {@code element} in the given {@code array} or return {@literal -1}
+   * if {@code element} could not be found.
+   */
+  @NullSafe
+  public static <T> int indexOf(T[] array, T element) {
+    for (int index = 0; index < nullSafeLength(array); index++) {
+      if (equalsIgnoreNull(array[index], element)) {
+        return index;
+      }
+    }
+
+    return -1;
   }
 
   /**
