@@ -31,17 +31,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Unit tests for {@link ObjectUtils}.
  *
  * @author John J. Blum
+ * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0
  */
 public class ObjectUtilsTest {
+
+  @Rule
+  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void areAllNullReturnsTrue() {
@@ -181,6 +187,41 @@ public class ObjectUtilsTest {
   }
 
   @Test
+  public void returnValueOrThrowIfNullWithNonNullValue() {
+    assertThat(ObjectUtils.returnValueOrThrowIfNull("test", new NullPointerException("null")),
+      is(equalTo("test")));
+    assertThat(ObjectUtils.returnValueOrThrowIfNull("null", new NullPointerException("test")),
+      is(equalTo("null")));
+  }
+
+  @Test
+  public void returnValueOrThrowIfNullWithNullValue() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Value must not be null");
+
+    ObjectUtils.returnValueOrThrowIfNull(null);
+  }
+
+  @Test
+  public void returnValueOrThrowIfNullWithNullValueUsingCustomRuntimeException() {
+    exception.expect(NullPointerException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Value is null");
+
+    ObjectUtils.returnValueOrThrowIfNull(null, new NullPointerException("Value is null"));
+  }
+
+  @Test
+  public void returnValueOThrowIfNullWithNullValueAndNullRuntimeException() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("RuntimeException must not be null");
+
+    ObjectUtils.returnValueOrThrowIfNull(null, null);
+  }
+
+  @Test
   public void isNullOrEqualToReturnsTrueWhenObjectIsNull() {
     assertThat(ObjectUtils.isNullOrEqualTo(null, "test"), is(true));
   }
@@ -200,6 +241,7 @@ public class ObjectUtilsTest {
   @SuppressWarnings("all")
   public void equals() {
     Object testObject = new Object();
+
     assertTrue(ObjectUtils.equals(testObject, testObject));
     assertTrue(ObjectUtils.equals(true, Boolean.TRUE));
     assertTrue(ObjectUtils.equals('c', new Character('c')));

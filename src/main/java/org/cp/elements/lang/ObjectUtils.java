@@ -22,7 +22,6 @@ import java.lang.reflect.Constructor;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
-import org.cp.elements.util.ArrayUtils;
 
 /**
  * The ObjectUtils utility class performs various operations on {@link java.lang.Object}.
@@ -38,6 +37,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
   public static final String CLONE_METHOD_NAME = "clone";
+  public static final String MAIN_METHOD_NAME = "main";
 
   /**
    * Null-safe method to determine if all the values in the array are null.
@@ -94,7 +94,9 @@ public abstract class ObjectUtils extends ReflectionUtils {
     else if (value != null) {
       try {
         Class<T> valueType = (Class<T>) value.getClass();
+
         Constructor<T> copyConstructor = resolveConstructor(valueType, new Class<?>[] { valueType }, value);
+
         return copyConstructor.newInstance(value);
       }
       catch (ConstructorNotFoundException ignore) {
@@ -126,6 +128,40 @@ public abstract class ObjectUtils extends ReflectionUtils {
     }
 
     return null;
+  }
+
+  /**
+   * Returns the given {@code value} if not {@literal null} or throws an {@link IllegalArgumentException}.
+   *
+   * @param <T> {@link Class} type of the {@code value}.
+   * @param value {@link Object} value to evaluate.
+   * @return the given {@code value} if not {@literal null} or throws an {@link IllegalArgumentException}.
+   * @throws IllegalArgumentException if {@code value} is {@literal null}.
+   * @see #returnValueOrThrowIfNull(Object, RuntimeException)
+   */
+  @NullSafe
+  public static <T> T returnValueOrThrowIfNull(T value) {
+    return returnValueOrThrowIfNull(value, new IllegalArgumentException("Value must not be null"));
+  }
+
+  /**
+   * Returns the given {@code value} if not {@literal null} or throws the given {@link RuntimeException}.
+   *
+   * @param <T> {@link Class} type of the {@code value}.
+   * @param value {@link Object} value to evaluate.
+   * @param exception {@link RuntimeException} to throw if {@code value} is {@literal null}.
+   * @return the given {@code value} if not {@literal null} or throws the given {@link RuntimeException}.
+   * @throws IllegalArgumentException if {@code exception} is {@literal null}.
+   * @throws RuntimeException if {@code value} is {@literal null}.
+   */
+  public static <T> T returnValueOrThrowIfNull(T value, RuntimeException exception) {
+    Assert.notNull(exception, "RuntimeException must not be null");
+
+    if (value == null) {
+      throw exception;
+    }
+
+    return value;
   }
 
   /**
