@@ -44,7 +44,7 @@ public abstract class StreamUtils {
    */
   @SafeVarargs
   public static <T> Stream<T> stream(T... elements) {
-    return Arrays.asList(elements).stream();
+    return Arrays.stream(elements);
   }
 
   /**
