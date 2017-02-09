@@ -39,6 +39,7 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.test.annotation.IntegrationTest;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -59,6 +60,11 @@ public class ProcessUtilsTests {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
+
+  @AfterClass
+  public static void tearDown() {
+    Thread.interrupted();
+  }
 
   @Test
   public void getProcessIdIsSuccessful() {

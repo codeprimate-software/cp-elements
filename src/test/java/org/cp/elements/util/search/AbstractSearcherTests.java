@@ -40,7 +40,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link AbstractSearcher} class.
+ * Unit tests for {@link AbstractSearcher}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -94,6 +94,7 @@ public class AbstractSearcherTests {
     catch (IllegalArgumentException expected) {
       assertEquals(String.format("The Matcher used to match elements in the collection during the search operation by this Searcher (%1$s) cannot be null!",
         TestSearcher.class.getName()), expected.getMessage());
+
       throw expected;
     }
   }
@@ -106,6 +107,7 @@ public class AbstractSearcherTests {
     catch (IllegalStateException expected) {
       assertEquals(String.format("A reference to a Matcher used by this Searcher (%1$s) for searching and matching elements in the collection was not properly configured!",
         TestSearcher.class.getName()), expected.getMessage());
+
       throw expected;
     }
   }
@@ -249,7 +251,9 @@ public class AbstractSearcherTests {
 
     searcher.setMatcher(new AbstractMatcher() {
       int count = 0;
-      @Override public int match(final Object obj) {
+
+      @Override
+      public int match(final Object obj) {
         return (NumberUtils.isEven(++count) ? 0 : -1);
       }
     });
@@ -278,7 +282,9 @@ public class AbstractSearcherTests {
 
     searcher.setMatcher(new AbstractMatcher() {
       int count = 0;
-      @Override public int match(final Object obj) {
+
+      @Override
+      public int match(final Object obj) {
         return (NumberUtils.isOdd(++count) ? 0 : -1);
       }
     });
@@ -308,6 +314,7 @@ public class AbstractSearcherTests {
     }
     catch (IllegalArgumentException expected) {
       assertEquals("The collection to search cannot be null!", expected.getMessage());
+
       throw expected;
     }
   }
@@ -537,6 +544,7 @@ public class AbstractSearcherTests {
     catch (SearchException expected) {
       assertEquals(String.format("To search an object of type (java.lang.Object), the class must be annotated with the (%1$s) annotation!",
         org.cp.elements.util.search.annotation.Searchable.class.getName()), expected.getMessage());
+
       throw expected;
     }
   }
@@ -548,6 +556,7 @@ public class AbstractSearcherTests {
     }
     catch (IllegalArgumentException expected) {
       assertEquals("The object to search cannot be null!", expected.getMessage());
+
       throw expected;
     }
   }
@@ -641,6 +650,7 @@ public class AbstractSearcherTests {
             TestSearcher.class.getName()), expected.getMessage());
       assertTrue(expected.getCause() instanceof IllegalStateException);
       assertEquals("Construction Failed!", expected.getCause().getMessage());
+
       throw expected;
     }
   }
@@ -667,6 +677,7 @@ public class AbstractSearcherTests {
       assertEquals("Error occurred getting the list of elements to search from the (asList) method on object of type (java.lang.Object)!",
         expected.getMessage());
       assertTrue(expected.getCause() instanceof MethodNotFoundException);
+
       throw expected;
     }
   }
@@ -707,7 +718,7 @@ public class AbstractSearcherTests {
     private int powersOfTwo = 2;
 
     @Override
-    public final int match(final Object obj) {
+    public final int match(Object obj) {
       if (++count == powersOfTwo) {
         powersOfTwo *= 2;
         return 0;
@@ -732,7 +743,7 @@ public class AbstractSearcherTests {
 
     private final List<E> list;
 
-    protected TestSearchableWithDefaults(final List<E> list) {
+    protected TestSearchableWithDefaults(List<E> list) {
       this.list = list;
     }
 
@@ -744,12 +755,12 @@ public class AbstractSearcherTests {
   @org.cp.elements.util.search.annotation.Searchable(listMethod = "toCollection", matcher = TestMatcher.class)
   protected static final class TestSearchableWithOverrides<E> {
 
-    protected static final TestSearchableWithOverrides<String> INSTANCE = new TestSearchableWithOverrides<>(
-      Arrays.asList(ANIMALS));
+    protected static final TestSearchableWithOverrides<String> INSTANCE =
+      new TestSearchableWithOverrides<>(Arrays.asList(ANIMALS));
 
     private final List<E> list;
 
-    protected TestSearchableWithOverrides(final List<E> list) {
+    protected TestSearchableWithOverrides(List<E> list) {
       this.list = list;
     }
 
@@ -769,7 +780,7 @@ public class AbstractSearcherTests {
   protected static class TestSearcher extends AbstractSearcher {
 
     @Override
-    public <E> E search(final Collection<E> collection) {
+    public <E> E search(Collection<E> collection) {
       for (E element : collection) {
         if (getMatcher().accept(element)) {
           return element;
@@ -789,8 +800,10 @@ public class AbstractSearcherTests {
       super.initialize();
 
       searcher = new TestSearcher() {
-        @Override public <E> Iterable<E> searchForAll(final Collection<E> collection) {
+        @Override
+        public <E> Iterable<E> searchForAll(Collection<E> collection) {
           Iterable<E> searchResults = super.searchForAll(collection);
+
           if ("Thread One".equals(Thread.currentThread().getName())) {
             assertTrue(getMatcher() instanceof TestMatcher);
             waitForTick(2);
@@ -798,6 +811,7 @@ public class AbstractSearcherTests {
           else {
             assertFalse(getMatcher() instanceof TestMatcher);
           }
+
           return searchResults;
         }
       };
@@ -805,15 +819,14 @@ public class AbstractSearcherTests {
       searcher.setCustomMatcherAllowed(true);
 
       searcher.setMatcher(new AbstractMatcher<String>() {
-        @Override public int match(final String value) {
+        @Override
+        public int match(String value) {
           return 0;
         }
       });
     }
 
     public void thread1() {
-      assertTick(0);
-
       Thread.currentThread().setName("Thread One");
 
       assertTrue(searcher.isCustomMatcherAllowed());
@@ -838,9 +851,9 @@ public class AbstractSearcherTests {
     }
 
     public void thread2() {
-      waitForTick(1);
-
       Thread.currentThread().setName("Thread Two");
+
+      waitForTick(1);
 
       assertTrue(searcher.isCustomMatcherAllowed());
       assertNotNull(searcher.getMatcher());

@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.lang.Condition;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -48,7 +49,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The ThreadUtilsTest class is a test suite of test cases testing the contract and functionality of the 
+ * The ThreadUtilsTest class is a test suite of test cases testing the contract and functionality of the
  * ThreadUtils class.
  *
  * @author John J. Blum
@@ -80,9 +81,13 @@ public class ThreadUtilsTest {
     }
   }
 
+  @AfterClass
+  public static void tearDown() {
+    Thread.interrupted();
+  }
+
   @Before
   public void setup() {
-    // clear the interrupt status of the current Thread
     Thread.interrupted();
   }
 

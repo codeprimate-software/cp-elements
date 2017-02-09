@@ -50,9 +50,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import edu.umd.cs.mtc.MultithreadedTestCase;
-import edu.umd.cs.mtc.TestFramework;
-
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Constants;
@@ -68,6 +65,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
+
 /**
  * Unit tests for {@link ProcessAdapter}.
  *
@@ -75,6 +75,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see java.lang.Process
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.runners.MockitoJUnitRunner
@@ -97,6 +98,7 @@ public class ProcessAdapterTests {
   @AfterClass
   public static void tearDown() {
     FileSystemUtils.deleteRecursive(FileSystemUtils.WORKING_DIRECTORY, new FileExtensionFilter(".pid"));
+    Thread.interrupted();
   }
 
   @Before
