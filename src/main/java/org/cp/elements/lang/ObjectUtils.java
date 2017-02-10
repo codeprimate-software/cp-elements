@@ -19,6 +19,7 @@ package org.cp.elements.lang;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Constructor;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
@@ -128,6 +129,19 @@ public abstract class ObjectUtils extends ReflectionUtils {
     }
 
     return null;
+  }
+
+  /**
+   * Returns the given {@code value} if not {@literal null} or call the given {@link Supplier} to supply a value.
+   *
+   * @param <T> {@link Class} type of the {@code value}.
+   * @param value {@link Object} to evaluate for {@literal null}.
+   * @param supplier {@link Supplier} used to supply a value if {@code value} is {@literal null}.
+   * @return the given {@code value} if not {@literal null} or call the given {@link Supplier} to supply a value.
+   * @see java.util.function.Supplier
+   */
+  public static <T> T defaultIfNull(T value, Supplier<T> supplier) {
+    return (value != null ? value : supplier.get());
   }
 
   /**
