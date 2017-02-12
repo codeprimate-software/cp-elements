@@ -22,6 +22,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
@@ -40,7 +43,6 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.reflect.Constructor
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
- * @see org.cp.elements.lang.reflect.ModifierUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -109,22 +111,69 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets the resource name of the given {@link Class} type.  The resource name of a given {@link Class} is
-   * the pathname of the class file defining the {@link Class} type relative to the CLASSPATH.
+   * Determines all the interfaces implemented by the given object's {@link Class} type.
    *
-   * For instance, if the {@link Class} type were java.lang.Object.class, then the resource name would be...
+   * This method performs a deep analysis of the object's {@link Class} along with all interfaces
+   * implemented by the object's {@link Class superclass}, up the {@link Class} hierarchy until
+   * the {@link Object} class is reached.
    *
-   * <code>
-   *   java/lang/Object.class.
-   * </code>
+   * @param obj {@link Object} to evaluate.
+   * @return all interfaces implemented by the given object's {@link Class} and its {@link Class superclass}.
+   * Returns an empty {@link Set} if the given {@link Object} does not implement any interfaces.
+   * @see #getInterfaces(Class)
+   * @see #getClass(Object)
+   * @see java.lang.Object
+   */
+  @NullSafe
+  public static Set<Class<?>> getInterfaces(Object obj) {
+    return getInterfaces(getClass(obj));
+  }
+
+  /**
+   * Determines all the interfaces implemented by the given {@link Class} type.
    *
-   * @param type the {@link Class} type from which to construct the resource name.
-   * @return a String indicating the resource name of the given {@link Class} type.
+   * This method performs a deep analysis of all the interfaces implemented by the given {@link Class} type
+   * along with interfaces implemented by the {@link Class Class's} {@link Class superclass},
+   * up the {@link Class} hierarchy until the {@link Object} class is reached.
+   *
+   * @param type {@link Class} to evaluate.
+   * @return all interfaces implemented by the given {@link Class} and its superclass.
+   * Returns an empty {@link Set} if the given {@link Class} does not implement any interfaces.
+   * @see #getInterfaces(Class, Set)
    * @see java.lang.Class
    */
   @NullSafe
-  public static String getResourceName(Class type) {
-    return (type != null ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION) : null);
+  public static Set<Class<?>> getInterfaces(Class type) {
+    return (type != null ? getInterfaces(type, new HashSet<>()) : Collections.emptySet());
+  }
+
+  /**
+   * Determines all the interfaces implemented by the given {@link Class} type.
+   *
+   * This method performs a deep analysis of all the interfaces implemented by the given {@link Class} type
+   * along with interfaces implemented by the {@link Class Class's} {@link Class superclass},
+   * up the {@link Class} hierarchy until the {@link Object} class is reached.
+   *
+   * @param type {@link Class} to evaluate.
+   * @param interfaces {@link Set} containing all the {@link Class interfaces} implemented by
+   * the given {@link Class} type.
+   * @return all interfaces implemented by the given {@link Class} and its superclass.
+   * Returns an empty {@link Set} if the given {@link Class} does not implement any interfaces.
+   * @see java.lang.Class
+   */
+  private static Set<Class<?>> getInterfaces(Class type, Set<Class<?>> interfaces) {
+    if (type.getSuperclass() != null) {
+      getInterfaces(type.getSuperclass(), interfaces);
+    }
+
+    for (Class<?> implementedType : type.getInterfaces()) {
+      if (!interfaces.contains(implementedType)) {
+        interfaces.add(implementedType);
+        getInterfaces(implementedType, interfaces);
+      }
+    }
+
+    return interfaces;
   }
 
   /**
@@ -399,6 +448,25 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Gets the resource name of the given {@link Class} type.  The resource name of a given {@link Class} is
+   * the pathname of the class file defining the {@link Class} type relative to the CLASSPATH.
+   *
+   * For instance, if the {@link Class} type were java.lang.Object.class, then the resource name would be...
+   *
+   * <code>
+   *   java/lang/Object.class.
+   * </code>
+   *
+   * @param type the {@link Class} type from which to construct the resource name.
+   * @return a String indicating the resource name of the given {@link Class} type.
+   * @see java.lang.Class
+   */
+  @NullSafe
+  public static String getResourceName(Class type) {
+    return (type != null ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION) : null);
+  }
+
+  /**
    * Gets the simple name of the Class.
    *
    * @param type the Class type to return the simple name of.
@@ -408,6 +476,32 @@ public abstract class ClassUtils {
   @NullSafe
   public static String getSimpleName(Class type) {
     return (type != null ? type.getSimpleName() : null);
+  }
+
+  /**
+   * Determines whether the given {@link Object} implements any {@link Class interfaces}.
+   *
+   * @param obj {@link Object} to evaluate.
+   * @return a boolean value indicating whether the given {@link Object} implements any {@link Class interfaces}.
+   * @see #getInterfaces(Object)
+   * @see java.lang.Object
+   */
+  @NullSafe
+  public static boolean implementsInterfaces(Object obj) {
+    return !getInterfaces(obj).isEmpty();
+  }
+
+  /**
+   * Determines whether the given {@link Class} type implements any {@link Class interfaces}.
+   *
+   * @param type {@link Class} type to evaluate.
+   * @return a boolean value indicating whether the given {@link Class} type implements any {@link Class interfaces}.
+   * @see #getInterfaces(Class)
+   * @see java.lang.Class
+   */
+  @NullSafe
+  public static boolean implementsInterfaces(Class type) {
+    return !getInterfaces(type).isEmpty();
   }
 
   /**

@@ -17,6 +17,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
@@ -153,17 +154,69 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void getResourceName() {
-    assertThat(ClassUtils.getResourceName(Object.class)).isEqualTo("java/lang/Object.class");
-    assertThat(ClassUtils.getResourceName(Thread.class)).isEqualTo("java/lang/Thread.class");
-    assertThat(ClassUtils.getResourceName(InputStream.class)).isEqualTo("java/io/InputStream.class");
-    assertThat(ClassUtils.getResourceName(OutputStream.class)).isEqualTo("java/io/OutputStream.class");
-    assertThat(ClassUtils.getResourceName(Socket.class)).isEqualTo("java/net/Socket.class");
+  public void getInterfaceForClass() {
+    assertThat(ClassUtils.getInterfaces(ChildType.class)).containsAll(asIterable(InterfaceFive.class,
+      InterfaceFour.class, InterfaceThree.class, InterfaceTwo.class, InterfaceOne.class, InterfaceZero.class));
+
+    assertThat(ClassUtils.getInterfaces(ParentType.class)).containsAll(asIterable(InterfaceFour.class,
+      InterfaceThree.class, InterfaceTwo.class, InterfaceOne.class, InterfaceZero.class));
+
+    assertThat(ClassUtils.getInterfaces(GrandparentType.class)).containsAll(asIterable(InterfaceThree.class,
+      InterfaceTwo.class, InterfaceOne.class, InterfaceZero.class));
   }
 
   @Test
-  public void getResourceNameWithNull() {
-    assertThat(ClassUtils.getResourceName(null)).isNull();
+  public void getInterfacesForInterface() {
+    assertThat(ClassUtils.getInterfaces(InterfaceFive.class)).containsAll(asIterable(
+      InterfaceThree.class, InterfaceOne.class, InterfaceZero.class));
+
+    assertThat(ClassUtils.getInterfaces(InterfaceFour.class)).containsAll(asIterable(InterfaceTwo.class));
+
+    assertThat(ClassUtils.getInterfaces(InterfaceThree.class)).containsAll(asIterable(
+      InterfaceOne.class, InterfaceZero.class));
+
+    assertThat(ClassUtils.getInterfaces(InterfaceTwo.class)).isEmpty();
+
+    assertThat(ClassUtils.getInterfaces(InterfaceOne.class)).contains(InterfaceZero.class);
+
+    assertThat(ClassUtils.getInterfaces(InterfaceZero.class)).isEmpty();
+  }
+
+  @Test
+  public void getInterfacesForObject() {
+    ChildType child = new ChildType();
+
+    assertThat(ClassUtils.getInterfaces(child)).containsAll(asIterable(InterfaceFive.class, InterfaceFour.class,
+      InterfaceThree.class, InterfaceTwo.class, InterfaceOne.class, InterfaceZero.class));
+
+    ParentType parent = new ParentType();
+
+    assertThat(ClassUtils.getInterfaces(parent)).containsAll(asIterable(InterfaceFour.class, InterfaceThree.class,
+      InterfaceTwo.class, InterfaceOne.class, InterfaceZero.class));
+
+    GrandparentType grandparent = new GrandparentType();
+
+    assertThat(ClassUtils.getInterfaces(grandparent)).containsAll(asIterable(InterfaceThree.class, InterfaceTwo.class,
+      InterfaceOne.class, InterfaceZero.class));
+
+    InterfaceFour four = new InterfaceFour() { };
+
+    assertThat(ClassUtils.getInterfaces(four)).containsAll(asIterable(InterfaceFour.class, InterfaceTwo.class));
+  }
+
+  @Test
+  public void getInterfacesForObjectClassHasNoInterfaces() {
+    assertThat(ClassUtils.getInterfaces(new Object())).isEmpty();
+  }
+
+  @Test
+  public void getInterfacesForNullClassReturnsEmptySet() {
+    assertThat(ClassUtils.getInterfaces(null)).isEmpty();
+  }
+
+  @Test
+  public void getInterfacesForNullObjectReturnsEmptySet() {
+    assertThat(ClassUtils.getInterfaces((Object) null)).isEmpty();
   }
 
   @Test
@@ -454,6 +507,20 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void getResourceName() {
+    assertThat(ClassUtils.getResourceName(Object.class)).isEqualTo("java/lang/Object.class");
+    assertThat(ClassUtils.getResourceName(Thread.class)).isEqualTo("java/lang/Thread.class");
+    assertThat(ClassUtils.getResourceName(InputStream.class)).isEqualTo("java/io/InputStream.class");
+    assertThat(ClassUtils.getResourceName(OutputStream.class)).isEqualTo("java/io/OutputStream.class");
+    assertThat(ClassUtils.getResourceName(Socket.class)).isEqualTo("java/net/Socket.class");
+  }
+
+  @Test
+  public void getResourceNameWithNull() {
+    assertThat(ClassUtils.getResourceName(null)).isNull();
+  }
+
+  @Test
   public void getSimpleName() {
     assertEquals("Object", ClassUtils.getSimpleName(Object.class));
     assertEquals("Boolean", ClassUtils.getSimpleName(Boolean.class));
@@ -467,6 +534,36 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   @Test
   public void getSimpleNameWithNull() {
     assertNull(ClassUtils.getName(null));
+  }
+
+  @Test
+  public void implementsInterfacesWithClassReturnsTrue() {
+    assertThat(ClassUtils.implementsInterfaces(ChildType.class)).isTrue();
+  }
+
+  @Test
+  public void implementsInterfacesWithClassReturnsFalse() {
+    assertThat(ClassUtils.implementsInterfaces(Object.class)).isFalse();
+  }
+
+  @Test
+  public void implementsInterfacesWithInterfaceReturnsTrue() {
+    assertThat(ClassUtils.implementsInterfaces(InterfaceOne.class)).isTrue();
+  }
+
+  @Test
+  public void implementsInterfacesWithInterfaceReturnsFalse() {
+    assertThat(ClassUtils.implementsInterfaces(InterfaceTwo.class)).isFalse();
+  }
+
+  @Test
+  public void implementsInterfacesWithObjectReturnsTrue() {
+    assertThat(ClassUtils.implementsInterfaces(new ParentType())).isTrue();
+  }
+
+  @Test
+  public void implementsInterfacesWithObjectReturnsFalse() {
+    assertThat(ClassUtils.implementsInterfaces(new Object())).isFalse();
   }
 
   @Test
@@ -857,7 +954,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     public SuperType() {
     }
 
-    public SuperType(final Object value) {
+    public SuperType(Object value) {
       this.stringValue = String.valueOf(value);
     }
 
@@ -870,15 +967,15 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
       return stringValue;
     }
 
-    public Object methodOne(final String value) {
+    public Object methodOne(String value) {
       return value;
     }
 
-    public Object methodOne(final Integer value) {
+    public Object methodOne(Integer value) {
       return value;
     }
 
-    public void methodTwo(final Boolean conditional, final Number number, final String string) {
+    public void methodTwo(Boolean conditional, Number number, String string) {
     }
   }
 
@@ -893,18 +990,18 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
     private Object nonAnnotatedField;
 
-    public SubType(final Long id) {
+    public SubType(Long id) {
       this.id = id;
     }
 
-    public SubType(final Boolean condition, final Number number, final String string) {
+    public SubType(Boolean condition, Number number, String string) {
     }
 
     public Character getCharacterValue() {
       return charValue;
     }
 
-    public void setCharacterValue(final Character charValue) {
+    public void setCharacterValue(Character charValue) {
       this.charValue = charValue;
     }
 
@@ -913,22 +1010,22 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     }
 
     @Override
-    public String methodOne(final String value) {
+    public String methodOne(String value) {
       return "$"+value;
     }
 
-    public Object methodOne(final Character value) {
+    public Object methodOne(Character value) {
       return value;
     }
 
-    public Number methodOne(final Integer wholeNumber, final Double floatingPointNumber) {
+    public Number methodOne(Integer wholeNumber, Double floatingPointNumber) {
       return Math.max(wholeNumber, floatingPointNumber);
     }
 
-    public void methodTwo(final Boolean conditional, final Integer number, final String string) {
+    public void methodTwo(Boolean conditional, Integer number, String string) {
     }
 
-    public void methodTwo(final String string, final Number number, final Boolean conditional) {
+    public void methodTwo(String string, Number number, Boolean conditional) {
     }
 
     public void nonAnnotatedMethod() {
@@ -985,4 +1082,23 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   private static class TypeWithVarargsConstructor {
     public TypeWithVarargsConstructor(@SuppressWarnings("unused") Object... args) { }
   }
+
+  private interface InterfaceZero { }
+
+  private interface InterfaceOne extends InterfaceZero { }
+
+  private interface InterfaceTwo { }
+
+  private interface InterfaceThree extends InterfaceOne, InterfaceZero { }
+
+  private interface InterfaceFour extends InterfaceTwo { }
+
+  private interface InterfaceFive extends InterfaceThree { }
+
+  private static class GrandparentType implements InterfaceThree, InterfaceTwo { }
+
+  private static class ParentType extends GrandparentType implements InterfaceFour { }
+
+  private static class ChildType extends ParentType implements InterfaceFive { }
+
 }
