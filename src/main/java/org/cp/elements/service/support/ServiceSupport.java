@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.cp.elements.service;
+package org.cp.elements.service.support;
 
 /**
- * The ServiceSupport interface is a marker interface declaring a Service component class.
+ * The {@link ServiceSupport} interface is a marker {@link Class interface} declaring
+ * an application Service component {@link Class}.
  *
  * @author John J. Blum
  * @since 1.0.0

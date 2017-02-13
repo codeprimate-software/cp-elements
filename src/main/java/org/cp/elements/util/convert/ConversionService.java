@@ -16,19 +16,23 @@
 
 package org.cp.elements.util.convert;
 
-import org.cp.elements.service.ServiceSupport;
+import org.cp.elements.service.annotation.Service;
+import org.cp.elements.service.support.ServiceSupport;
 
 /**
- * The ConversionService interface defines a contract for Service objects responsible for performing type conversions.
+ * The {@link ConversionService} interface defines a contract for application {@link Service} components
+ * responsible for performing type conversions.
  *
  * @author John J. Blum
- * @see org.cp.elements.service.ServiceSupport
+ * @see org.cp.elements.service.annotation.Service
+ * @see org.cp.elements.service.support.ServiceSupport
  * @see org.cp.elements.util.convert.AbstractConversionService
  * @see org.cp.elements.util.convert.Converter
  * @see org.cp.elements.util.convert.ConverterRegistry
  * @see org.cp.elements.util.convert.provider.DefaultConversionService
  * @since 1.0.0
  */
+@Service
 @SuppressWarnings("unused")
 public interface ConversionService extends ConverterRegistry, ServiceSupport {
 
