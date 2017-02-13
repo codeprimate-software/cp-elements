@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package org.cp.elements.dao;
+package org.cp.elements.dao.support;
 
 /**
- * The Data Access Object Support interface defines the basic contract and functionality for the data CRUD (Create,
- * Retrieve, Update, Delete) operations.
+ * The Data Access Object (DAO) Support interface defines the basic contract and functionality
+ * for the CRUD (Create, Retrieve, Update, Delete) data access operations.
  *
  * @author John J. Blum
- * @param <T> the class type of the Bean being persisted.
+ * @param <T> {@link Class} type of the application domain object being persisted.
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface DaoSupport<T> {
+
+  /**
+   * Creates an instance of the Bean.
+   *
+   * @return a new instance of the Bean.
+   */
+  T create();
 
   /**
    * Loads the specified Bean from the data store.
@@ -46,8 +53,10 @@ public interface DaoSupport<T> {
   boolean remove(T bean);
 
   /**
-   * Saves the specified Bean to the data store.  If the Bean is new (usually indicated by the absence of an ID),
-   * then the Bean is inserted in the data store, otherwise the data store is updated with the Bean's current state.
+   * Saves the specified Bean to the data store.
+   *
+   * If the Bean is new (usually indicated by the absence of an ID), then the Bean is inserted in the data store,
+   * otherwise the data store is updated with the Bean's current state.
    *
    * @param bean the Bean object who's stated is persisted (inserted/updated) to the data store.
    * @return the Bean object in a persisted, saved state.  This is also transaction indicating the Bean is no longer
