@@ -33,9 +33,11 @@ import lombok.RequiredArgsConstructor;
  * Unit tests for the {@link MethodInterceptor} interface.
  *
  * @author John Blum
+ * @see java.lang.reflect.Method
  * @see org.junit.Test
  * @see lombok
  * @see org.cp.elements.lang.reflect.MethodInterceptor
+ * @see org.cp.elements.lang.reflect.MethodInvocation
  * @since 1.0.0
  */
 public class MethodInterceptorTests {
@@ -71,7 +73,7 @@ public class MethodInterceptorTests {
     private final LocalDate birthDate;
 
     public int getAge() {
-      return Period.between(LocalDate.now(), getBirthDate()).getYears();
+      return Period.between(getBirthDate(), LocalDate.now()).getYears();
     }
   }
 
