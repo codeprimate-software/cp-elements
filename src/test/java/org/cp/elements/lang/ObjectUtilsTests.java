@@ -248,6 +248,22 @@ public class ObjectUtilsTests {
   }
 
   @Test
+  public void safeGetValueReturnsSupplierValue() {
+    assertThat(ObjectUtils.safeGetValue(() -> "test", null)).isEqualTo("test");
+  }
+
+  @Test
+  public void safeGetValueReturnsDefaultValue() {
+    assertThat(ObjectUtils.safeGetValue(() -> { throw new RuntimeException("error"); }, "test"))
+      .isEqualTo("test");
+  }
+
+  @Test
+  public void safeGetValueReturnsNull() {
+    assertThat(ObjectUtils.<Object>safeGetValue(() -> { throw new RuntimeException("error"); })).isNull();
+  }
+
+  @Test
   public void isNullOrEqualToReturnsTrueWhenObjectIsNull() {
     assertThat(ObjectUtils.isNullOrEqualTo(null, "test")).isTrue();
   }

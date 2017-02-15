@@ -179,6 +179,40 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
+   * Safely returns the value supplied by the given {@link Supplier}.  If an {@link Exception} or {@link Error} occurs,
+   * then {@literal null} is returned.
+   *
+   * @param <T> {@link Class} type of the value to get.
+   * @param supplier {@link Supplier} of the value.
+   * @return a value from the given {@link Supplier} in an error safe manner.
+   * @see java.util.function.Supplier
+   * @see #safeGetValue(Supplier, Object)
+   */
+  public static <T> T safeGetValue(Supplier<T> supplier) {
+    return safeGetValue(supplier, null);
+  }
+
+  /**
+   * Safely returns the value supplied by the given {@link Supplier}.  If an {@link Exception} or {@link Error} occurs
+   * then the {@code defaultValue} will be returned.
+   *
+   * @param <T> {@link Class} type of the value to get.
+   * @param supplier {@link Supplier} of the value.
+   * @param defaultValue value to return if the {@link Supplier} is unable to supply the value.
+   * @return a value from the given {@link Supplier} in an error safe manner.  If an {@link Exception} or {@link Error}
+   * occurs then the {@code defaultValue} will be returned.
+   * @see java.util.function.Supplier
+   */
+  public static <T> T safeGetValue(Supplier<T> supplier, T defaultValue) {
+    try {
+      return supplier.get();
+    }
+    catch (Throwable t) {
+      return defaultValue;
+    }
+  }
+
+  /**
    * Determines whether {@code obj1} is {@literal null} or equal to {@code obj2}.
    *
    * @param obj1 {@link Object} being evaluated in the equality comparison.
