@@ -16,12 +16,13 @@
 
 package org.cp.elements.util.stream;
 
+import static org.cp.elements.util.CollectionUtils.asList;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Stream;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.util.CollectionUtils;
 
 /**
  * The StreamUtils class is a collection of utility methods for working with Java 8 {@link Stream}s
@@ -60,8 +61,6 @@ public abstract class StreamUtils {
   @SuppressWarnings("unchecked")
   public static <T> Stream<T> stream(Iterable<T> iterable) {
     Assert.notNull(iterable, "Iterable cannot be null");
-
-    return (iterable instanceof Collection ? ((Collection) iterable).stream()
-      : CollectionUtils.findAll(iterable, (element) -> true).stream());
+    return (iterable instanceof Collection ? ((Collection) iterable).stream() : asList(iterable).stream());
   }
 }
