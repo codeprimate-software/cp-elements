@@ -29,34 +29,44 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperat
 import java.util.NoSuchElementException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Unit tests for {@link RuntimeExceptionsFactory}.
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
- * @see RuntimeExceptionsFactory
+ * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.cp.elements.lang.RuntimeExceptionsFactory
  * @since 1.0.0
  */
+@RunWith(MockitoJUnitRunner.class)
 public class RuntimeExceptionsFactoryTests {
 
   @Mock
   private Throwable mockCause;
 
-  protected void assertThrowable(Throwable actual, Class<? extends Throwable> type,
-    String message, Throwable cause) {
+  protected void assertThrowable(Throwable throwable, Class<? extends Throwable> type, String message) {
+    assertThrowable(throwable, type, message, null);
+  }
 
-    assertThat(actual).isNotNull();
-    assertThat(actual).isInstanceOf(type);
-    assertThat(actual).hasCause(cause);
-    assertThat(actual).hasMessage(message);
+  protected void assertThrowable(Throwable throwable, Class<? extends Throwable> type,
+      String message, Throwable cause) {
+
+    assertThat(throwable).isNotNull();
+    assertThat(throwable).isInstanceOf(type);
+    assertThat(throwable).hasCause(cause);
+    assertThat(throwable).hasMessage(message);
   }
 
   @Test
   public void newIllegalArgumentExceptionWithMessage() {
-    assertThrowable(newIllegalArgumentException("test"), IllegalArgumentException.class, "test", null);
+    assertThrowable(newIllegalArgumentException("test"), IllegalArgumentException.class, "test");
   }
 
   @Test
@@ -67,7 +77,7 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newIllegalStateExceptionWithMessage() {
-    assertThrowable(newIllegalStateException("test"), IllegalStateException.class, "test", null);
+    assertThrowable(newIllegalStateException("test"), IllegalStateException.class, "test");
   }
 
   @Test
@@ -78,8 +88,7 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newIndexOutOfBoundsExceptionWithMessage() {
-    assertThrowable(newIndexOutOfBoundsException("test"),
-      IndexOutOfBoundsException.class, "test", null);
+    assertThrowable(newIndexOutOfBoundsException("test"), IndexOutOfBoundsException.class, "test");
   }
 
   @Test
@@ -90,7 +99,7 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newNoSuchElementExceptionWithMessage() {
-    assertThrowable(newNoSuchElementException("test"), NoSuchElementException.class, "test", null);
+    assertThrowable(newNoSuchElementException("test"), NoSuchElementException.class, "test");
   }
 
   @Test
@@ -101,7 +110,7 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newNullPointerExceptionWithMessage() {
-    assertThrowable(newNullPointerException("test"), NullPointerException.class, "test", null);
+    assertThrowable(newNullPointerException("test"), NullPointerException.class, "test");
   }
 
   @Test
@@ -112,7 +121,7 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newRuntimeExceptionWithMessage() {
-    assertThrowable(newRuntimeException("test"), RuntimeException.class, "test", null);
+    assertThrowable(newRuntimeException("test"), RuntimeException.class, "test");
   }
 
   @Test
@@ -123,8 +132,8 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newTypeNotPresentExceptionWithMessage() {
-    assertThrowable(newTypeNotPresentException("java.lang.Object"),
-      TypeNotPresentException.class, "Type java.lang.Object not present", null);
+    assertThrowable(newTypeNotPresentException("java.lang.Object"), TypeNotPresentException.class,
+      "Type java.lang.Object not present");
   }
 
   @Test
@@ -135,8 +144,7 @@ public class RuntimeExceptionsFactoryTests {
 
   @Test
   public void newUnsupportedOperationExceptionWithMessage() {
-    assertThrowable(newUnsupportedOperationException("test"),
-      UnsupportedOperationException.class, "test", null);
+    assertThrowable(newUnsupportedOperationException("test"), UnsupportedOperationException.class, "test");
   }
 
   @Test

@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * The {@link CheckedExceptionsFactory} class is an object factory class used to construct and initialize
- * common "checked" {@link Exception} classes.
+ * The {@link CheckedExceptionsFactory} class is an object factory used to construct and initialize
+ * common, "checked" {@link Exception Exceptions}.
  *
  * @author John Blum
  * @see java.lang.Exception
@@ -34,10 +34,10 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs and initializes a new {@link CloneNotSupportedException} with the given {@link String message}
-   * formatted with the given {@link Object[] args}.
+   * formatted with the given {@link Object[] arguments}.
    *
-   * @param message {@link String} describing the exception.
-   * @param args {@link Object[]} of values used to replace format placeholders in the {@link String message}.
+   * @param message {@link String} describing the {@link CloneNotSupportedException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link CloneNotSupportedException} with the given {@link String message}.
    * @see #newCloneNotSupportedException(Throwable, String, Object...)
    * @see java.lang.CloneNotSupportedException
@@ -48,11 +48,11 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs and initializes a new {@link CloneNotSupportedException} with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] args}.
+   * and {@link String message} formatted with the given {@link Object[] arguments}.
    *
-   * @param cause {@link Throwable} identified as the reason this exception was thrown.
-   * @param message {@link String} describing the exception.
-   * @param args {@link Object[]} of values used to replace format placeholders in the {@link String message}.
+   * @param cause {@link Throwable} identified as the reason this {@link CloneNotSupportedException} was thrown.
+   * @param message {@link String} describing the {@link CloneNotSupportedException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link CloneNotSupportedException} with the given {@link Throwable cause} and {@link String message}.
    * @see java.lang.CloneNotSupportedException
    */
@@ -64,10 +64,10 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs and initializes a new {@link IOException} with the given {@link String message}
-   * formatted with the given {@link Object[] args}.
+   * formatted with the given {@link Object[] arguments}.
    *
-   * @param message {@link String} describing the exception.
-   * @param args {@link Object[]} of values used to replace format placeholders in the {@link String message}.
+   * @param message {@link String} describing the {@link IOException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IOException} with the given {@link String message}.
    * @see #newIOException(Throwable, String, Object...)
    * @see java.io.IOException
@@ -78,11 +78,11 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs and initializes a new {@link IOException} with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] args}.
+   * and {@link String message} formatted with the given {@link Object[] arguments}.
    *
-   * @param cause {@link Throwable} identified as the reason this exception was thrown.
-   * @param message {@link String} describing the exception.
-   * @param args {@link Object[]} of values used to replace format placeholders in the {@link String message}.
+   * @param cause {@link Throwable} identified as the reason this {@link IOException} was thrown.
+   * @param message {@link String} describing the {@link IOException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IOException} with the given {@link Throwable cause} and {@link String message}.
    * @see java.io.IOException
    */
@@ -92,10 +92,10 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs and initializes a new {@link TimeoutException} with the given {@link String message}
-   * formatted with the given {@link Object[] args}.
+   * formatted with the given {@link Object[] arguments}.
    *
-   * @param message {@link String} describing the exception.
-   * @param args {@link Object[]} of values used to replace format placeholders in the {@link String message}.
+   * @param message {@link String} describing the {@link TimeoutException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link TimeoutException} with the given {@link String message}.
    * @see #newTimeoutException(Throwable, String, Object...)
    * @see java.util.concurrent.TimeoutException
@@ -106,11 +106,11 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs and initializes a new {@link TimeoutException} with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] args}.
+   * and {@link String message} formatted with the given {@link Object[] arguments}.
    *
-   * @param cause {@link Throwable} identified as the reason this exception was thrown.
-   * @param message {@link String} describing the exception.
-   * @param args {@link Object[]} of values used to replace format placeholders in the {@link String message}.
+   * @param cause {@link Throwable} identified as the reason this {@link TimeoutException} was thrown.
+   * @param message {@link String} describing the {@link TimeoutException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link TimeoutException} with the given {@link Throwable cause} and {@link String message}.
    * @see java.util.concurrent.TimeoutException
    */

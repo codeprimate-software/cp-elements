@@ -25,35 +25,44 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * Unit tests for {@link CheckedExceptionsFactory}.
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
- * @see CheckedExceptionsFactory
+ * @see org.mockito.Mockito
+ * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.cp.elements.lang.CheckedExceptionsFactory
  * @since 1.0.0
  */
+@RunWith(MockitoJUnitRunner.class)
 public class CheckedExceptionsFactoryTests {
 
   @Mock
   private Throwable mockCause;
 
-  protected void assertThrowable(Throwable actual, Class<? extends Throwable> type,
+  protected void assertThrowable(Throwable throwable, Class<? extends Throwable> type, String message) {
+    assertThrowable(throwable, type, message, null);
+  }
+
+  protected void assertThrowable(Throwable throwable, Class<? extends Throwable> type,
       String message, Throwable cause) {
 
-    assertThat(actual).isNotNull();
-    assertThat(actual).isInstanceOf(type);
-    assertThat(actual).hasCause(cause);
-    assertThat(actual).hasMessage(message);
+    assertThat(throwable).isNotNull();
+    assertThat(throwable).isInstanceOf(type);
+    assertThat(throwable).hasCause(cause);
+    assertThat(throwable).hasMessage(message);
   }
 
   @Test
   public void newCloneNotSupportedExceptionWithMessage() {
-    assertThrowable(newCloneNotSupportedException("test"),
-      CloneNotSupportedException.class, "test", null);
+    assertThrowable(newCloneNotSupportedException("test"), CloneNotSupportedException.class, "test");
   }
 
   @Test
@@ -64,7 +73,7 @@ public class CheckedExceptionsFactoryTests {
 
   @Test
   public void newIOExceptionWithMessage() {
-    assertThrowable(newIOException("test"), IOException.class, "test", null);
+    assertThrowable(newIOException("test"), IOException.class, "test");
   }
 
   @Test
@@ -75,7 +84,7 @@ public class CheckedExceptionsFactoryTests {
 
   @Test
   public void newTimeoutExceptionWithMessage() {
-    assertThrowable(newTimeoutException("test"), TimeoutException.class, "test", null);
+    assertThrowable(newTimeoutException("test"), TimeoutException.class, "test");
   }
 
   @Test
