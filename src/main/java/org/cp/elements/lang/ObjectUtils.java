@@ -19,6 +19,7 @@ package org.cp.elements.lang;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Constructor;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
@@ -78,30 +79,31 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Null-safe clone operation on Objects that implement the Cloneable interface or implement a copy constructor.
+   * Null-safe clone operation for {@link Object Objects} that implement the {@link Cloneable} interface
+   * or implement a copy constructor.
    *
-   * @param <T> the Cloneable class type of the value.
-   * @param value the Object value to clone.
-   * @return a "clone" of a given Cloneable Object or value if the Object is not Cloneable but implements
-   * a copy constructor.
+   * @param <T> {@link Cloneable} {@link Class} type of the object.
+   * @param obj {@link Object} to clone.
+   * @return a "clone" of a given {@link Object} if {@link Cloneable} or the given {@link Object Object's}
+   * {@link Class} type contains a copy constructor.
    * @see java.lang.Cloneable
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T clone(T value) {
-    if (value instanceof Cloneable) {
-      return (T) invoke(value, CLONE_METHOD_NAME, value.getClass());
+  public static <T> T clone(T obj) {
+    if (obj instanceof Cloneable) {
+      return (T) invoke(obj, CLONE_METHOD_NAME, obj.getClass());
     }
-    else if (value != null) {
+    else if (obj != null) {
       try {
-        Class<T> valueType = (Class<T>) value.getClass();
+        Class<T> objectType = (Class<T>) obj.getClass();
 
-        Constructor<T> copyConstructor = resolveConstructor(valueType, new Class<?>[] { valueType }, value);
+        Constructor<T> copyConstructor = resolveConstructor(objectType, new Class<?>[] { objectType }, obj);
 
-        return copyConstructor.newInstance(value);
+        return copyConstructor.newInstance(obj);
       }
       catch (ConstructorNotFoundException ignore) {
-        // a copy constructor was not found in the value's class type
+        // copy constructor was not found in the Object's class type
       }
       catch (Exception e) {
         throw new CloneException("'clone' using 'copy constructor' was unsuccessful", e);
@@ -109,7 +111,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
     }
 
     throw new UnsupportedOperationException(new CloneNotSupportedException(String.format(
-      "'clone' is not supported for (%1$s) value", getClassSimpleName(value))));
+      "'clone' is not supported for object of type [%s]", getClassSimpleName(obj))));
   }
 
   /**
@@ -141,7 +143,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.util.function.Supplier
    */
   public static <T> T defaultIfNull(T value, Supplier<T> supplier) {
-    return (value != null ? value : supplier.get());
+    return Optional.ofNullable(value).orElseGet(supplier);
   }
 
   /**
@@ -170,12 +172,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   public static <T> T returnValueOrThrowIfNull(T value, RuntimeException exception) {
     Assert.notNull(exception, "RuntimeException must not be null");
-
-    if (value == null) {
-      throw exception;
-    }
-
-    return value;
+    return Optional.ofNullable(value).orElseThrow(() -> exception);
   }
 
   /**
@@ -207,7 +204,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
     try {
       return supplier.get();
     }
-    catch (Throwable t) {
+    catch (Throwable ignore) {
       return defaultValue;
     }
   }

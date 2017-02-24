@@ -147,9 +147,9 @@ public class ObjectUtilsTests {
       ObjectUtils.clone(new Object());
     }
     catch (UnsupportedOperationException expected) {
-      assertThat(expected).hasMessageContaining("'clone' is not supported for (Object) value");
+      assertThat(expected).hasMessageContaining("'clone' is not supported for object of type [Object]");
       assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasMessage("'clone' is not supported for (Object) value");
+      assertThat(expected.getCause()).hasMessage("'clone' is not supported for object of type [Object]");
       assertThat(expected.getCause().getCause()).isNull();
 
       throw expected;
@@ -162,9 +162,9 @@ public class ObjectUtilsTests {
       ObjectUtils.clone(null);
     }
     catch (UnsupportedOperationException expected) {
-      assertThat(expected).hasMessageContaining("'clone' is not supported for (null) value");
+      assertThat(expected).hasMessageContaining("'clone' is not supported for object of type [null]");
       assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasMessage("'clone' is not supported for (null) value");
+      assertThat(expected.getCause()).hasMessage("'clone' is not supported for object of type [null]");
       assertThat(expected.getCause().getCause()).isNull();
 
       throw expected;
@@ -444,12 +444,12 @@ public class ObjectUtilsTests {
     private final String firstName;
     private final String lastName;
 
-    public Person(final String firstName, final String lastName) {
+    public Person(String firstName, String lastName) {
       this.firstName = firstName;
       this.lastName = lastName;
     }
 
-    public Person(final Person person) {
+    public Person(Person person) {
       this(person.getFirstName(), person.getLastName());
     }
 
@@ -462,7 +462,7 @@ public class ObjectUtilsTests {
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
       if (obj == this) {
         return true;
       }
