@@ -23,11 +23,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 
+import org.cp.elements.lang.Assert;
 import org.junit.Test;
 
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * Unit tests for the {@link MethodInterceptor} interface.
@@ -44,16 +43,16 @@ public class MethodInterceptorTests {
 
   @Test
   public void invocationHandlerInvokeCallsMethodInterceptorIntercept() throws Throwable {
-    AgeCalculator ageCalculator = AgeCalculator.newAgeCalculator(LocalDate.of(1974, Month.MAY, 27));
+    AgeCalculator ageCalculator = AgeCalculator.newAgeCalculator();
 
-    Method ageMethod = ageCalculator.getClass().getDeclaredMethod("getAge");
+    Method ageMethod = ageCalculator.getClass().getDeclaredMethod("getAge", LocalDate.class, LocalDate.class);
 
-    Object[] expectedArguments = { "argOne", "argTwo" };
+    Object[] expectedArguments = { LocalDate.of(1974, Month.MAY, 27), LocalDate.of(2016, Month.JULY, 1) };
 
     Object proxy = new Object();
 
-    Object methodInvocationReference = new TestMethodInterceptor(ageCalculator)
-      .invoke(proxy, ageMethod, expectedArguments);
+    Object methodInvocationReference =
+      new TestMethodInterceptor(ageCalculator).invoke(proxy, ageMethod, expectedArguments);
 
     assertThat(methodInvocationReference).isInstanceOf(MethodInvocation.class);
 
@@ -64,16 +63,16 @@ public class MethodInterceptorTests {
     assertThat(methodInvocation.getTarget()).isSameAs(ageCalculator);
   }
 
-  @Data
-  @RequiredArgsConstructor(staticName = "newAgeCalculator")
-  @SuppressWarnings("unused")
+  @NoArgsConstructor(staticName = "newAgeCalculator")
+  @SuppressWarnings("all")
   static class AgeCalculator {
 
-    @NonNull
-    private final LocalDate birthDate;
+    public int getAge(LocalDate birthDate) {
+      return getAge(birthDate, LocalDate.now());
+    }
 
-    public int getAge() {
-      return Period.between(getBirthDate(), LocalDate.now()).getYears();
+    public int getAge(LocalDate birthDate, LocalDate presentDate) {
+      return Period.between(birthDate, presentDate).getYears();
     }
   }
 
@@ -82,6 +81,7 @@ public class MethodInterceptorTests {
     private final Object target;
 
     TestMethodInterceptor(Object target) {
+      Assert.notNull(target, "Target object must not be null");
       this.target = target;
     }
 

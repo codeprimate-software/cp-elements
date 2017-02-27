@@ -35,22 +35,23 @@ import java.lang.reflect.Method;
 public interface MethodInterceptor<T> extends InvocationHandler {
 
   /**
-   * Gets the target {@link Object} on which the {@link Method} will be intercepted.
+   * Gets the target {@link Object} on which the {@link Method} invocation will be intercepted.
    *
-   * @return the target {@link Object} on which the {@link Method} will be intercepted.
+   * @return the target {@link Object} on which the {@link Method} invocation will be intercepted.
    * @see org.cp.elements.lang.reflect.MethodInvocation#getTarget()
    * @see java.lang.Object
    */
   T getTarget();
 
   /**
-   * Intercepts the {@link Method} identified and captured in the given {@link MethodInvocation}.
+   * Intercepts the {@link Method} identified and encapsulated in the given {@link MethodInvocation}.
    *
    * @param methodInvocation {@link MethodInvocation} encapsulating details of the intercepted {@link Method} invocation
    * on the {@link #getTarget() target} {@link Object}.
    * @return the result of the intercepted {@link Method} invocation.
    * @see org.cp.elements.lang.reflect.MethodInvocation
    * @see #invoke(Object, Method, Object[])
+   * @see java.lang.Object
    */
   Object intercept(MethodInvocation methodInvocation);
 
