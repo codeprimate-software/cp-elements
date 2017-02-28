@@ -26,6 +26,7 @@ import org.cp.elements.lang.reflect.MethodInvocation;
  * the {@link Method} on a specified target {@link Object}.
  *
  * @author John Blum
+ * @see java.lang.Object
  * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.MethodInvocation
@@ -37,12 +38,11 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor {
   private final Object target;
 
   /**
-   * Factory method to construct an instance of {@link MethodInvokingMethodInterceptor} initialized
+   * Factory method used to construct an instance of {@link MethodInvokingMethodInterceptor} initialized
    * with the given target {@link Object} on which the {@link Method} invocation will be called.
    *
-   * @param target target {@link Object} of the {@link Method} invocation.
-   * @return a new instance of {@link MethodInvokingMethodInterceptor} initialized with
-   * the given target {@link Object}.
+   * @param target {@link Object} on which the {@link Method} will be invoked.
+   * @return a new instance of {@link MethodInvokingMethodInterceptor} initialized with the given target {@link Object}.
    * @see org.cp.elements.lang.reflect.support.MethodInvokingMethodInterceptor
    * @see #MethodInvokingMethodInterceptor(Object)
    * @see java.lang.Object
@@ -65,7 +65,7 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor {
 
   /**
    * Constructs an instance of the {@link MethodInvokingMethodInterceptor} initialized with
-   * the given target {@link Object} used in the actual {@link Method} invocation.
+   * the given target {@link Object} on which the {@link Method} will be invoked.
    *
    * @param target {@link Object} used as the target of the {@link Method} invocation.
    * @see java.lang.Object
@@ -87,6 +87,6 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor {
    */
   @Override
   public Object intercept(MethodInvocation methodInvocation) {
-    return methodInvocation.invoke(getTarget());
+    return methodInvocation.makeAccessible().invoke(getTarget());
   }
 }

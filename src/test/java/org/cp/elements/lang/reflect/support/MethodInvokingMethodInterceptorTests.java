@@ -94,7 +94,7 @@ public class MethodInvokingMethodInterceptorTests {
   @Data
   @RequiredArgsConstructor(staticName = "newAgeCalculator")
   @SuppressWarnings("unused")
-  public static class AgeCalculator {
+  static class AgeCalculator {
 
     @NonNull
     private final LocalDate birthDate;
