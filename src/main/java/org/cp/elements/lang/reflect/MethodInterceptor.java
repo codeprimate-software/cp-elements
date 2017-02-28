@@ -20,6 +20,7 @@ import static org.cp.elements.lang.reflect.MethodInvocation.newMethodInvocation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * The {@link MethodInterceptor} class is a Java {@link InvocationHandler} for intercepting and handling
@@ -46,20 +47,23 @@ public interface MethodInterceptor<T> extends InvocationHandler {
   /**
    * Intercepts the {@link Method} identified and encapsulated in the given {@link MethodInvocation}.
    *
+   * @param <R> {@link Class} type of the {@link Method} return value.
    * @param methodInvocation {@link MethodInvocation} encapsulating details of the intercepted {@link Method} invocation
    * on the {@link #getTarget() target} {@link Object}.
-   * @return the result of the intercepted {@link Method} invocation.
+   * @return the result of the intercepted {@link Method} invocation wrapped in an {@link Optional}
+   * to guard against {@literal null}.
    * @see org.cp.elements.lang.reflect.MethodInvocation
    * @see #invoke(Object, Method, Object[])
    * @see java.lang.Object
+   * @see java.util.Optional
    */
-  Object intercept(MethodInvocation methodInvocation);
+  <R> Optional<R> intercept(MethodInvocation methodInvocation);
 
   /**
    * @inheritDoc
    */
   @Override
   default Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    return intercept(newMethodInvocation(getTarget(), method, args));
+    return intercept(newMethodInvocation(getTarget(), method, args)).orElse(null);
   }
 }

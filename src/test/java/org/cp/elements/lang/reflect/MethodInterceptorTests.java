@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
+import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.junit.Test;
@@ -42,6 +43,7 @@ import lombok.NoArgsConstructor;
 public class MethodInterceptorTests {
 
   @Test
+  @SuppressWarnings("unchecked")
   public void invocationHandlerInvokeCallsMethodInterceptorIntercept() throws Throwable {
     AgeCalculator ageCalculator = AgeCalculator.newAgeCalculator();
 
@@ -97,8 +99,8 @@ public class MethodInterceptorTests {
      * @inheritDoc
      */
     @Override
-    public Object intercept(MethodInvocation methodInvocation) {
-      return methodInvocation;
+    public Optional intercept(MethodInvocation methodInvocation) {
+      return Optional.of(methodInvocation);
     }
   }
 }
