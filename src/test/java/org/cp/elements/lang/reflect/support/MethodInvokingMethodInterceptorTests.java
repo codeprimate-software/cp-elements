@@ -65,21 +65,25 @@ public class MethodInvokingMethodInterceptorTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void interceptInvokesMethod() {
     AgeCalculator johnAgeCalculator = AgeCalculator.newAgeCalculator(LocalDate.of(1974, Month.MAY, 27));
     MethodInvocation ageMethodInvocation = newMethodInvocation(johnAgeCalculator, "getAge");
 
-    assertThat(newMethodInvokingMethodInterceptor(johnAgeCalculator).intercept(ageMethodInvocation)).isEqualTo(42);
+    assertThat(newMethodInvokingMethodInterceptor(johnAgeCalculator).intercept(ageMethodInvocation).orElse(null))
+      .isEqualTo(42);
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void interceptInvokesMethodUsingInterceptorTarget() {
     AgeCalculator ellieAgeCalculator = AgeCalculator.newAgeCalculator(LocalDate.of(2008, Month.AUGUST, 25));
     AgeCalculator johnAgeCalculator = AgeCalculator.newAgeCalculator(LocalDate.of(1974, Month.MAY, 27));
 
     MethodInvocation ageMethodInvocation = newMethodInvocation(johnAgeCalculator, "getAge");
 
-    assertThat(newMethodInvokingMethodInterceptor(ellieAgeCalculator).intercept(ageMethodInvocation)).isEqualTo(8);
+    assertThat(newMethodInvokingMethodInterceptor(ellieAgeCalculator).intercept(ageMethodInvocation).orElse(null))
+      .isEqualTo(8);
   }
 
   @Test

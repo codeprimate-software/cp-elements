@@ -17,6 +17,7 @@
 package org.cp.elements.lang.reflect.support;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
@@ -26,7 +27,6 @@ import org.cp.elements.lang.reflect.MethodInvocation;
  * the {@link Method} on a specified target {@link Object}.
  *
  * @author John Blum
- * @see java.lang.Object
  * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.MethodInvocation
@@ -86,7 +86,7 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor {
    * @inheritDoc
    */
   @Override
-  public Object intercept(MethodInvocation methodInvocation) {
+  public Optional intercept(MethodInvocation methodInvocation) {
     return methodInvocation.makeAccessible().invoke(getTarget());
   }
 }
