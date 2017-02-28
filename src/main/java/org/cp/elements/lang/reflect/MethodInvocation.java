@@ -241,19 +241,21 @@ public class MethodInvocation {
   /**
    * Invokes the {@link Method} on the target {@link Object}.
    *
+   * @param <T> {@link Class} type of the {@link Method} return value.
    * @return the result of the {@link Method} invocation on the given target {@link Object}
    * wrapped in a {@link Optional} to guard against {@literal null}.
    * @see java.util.Optional
    * @see #invoke(Object)
    * @see #getTarget()
    */
-  public Optional<Object> invoke() {
+  public <T> Optional<T> invoke() {
     return invoke(getTarget());
   }
 
   /**
    * Invokes the {@link Method} on the given target {@link Object}.
    *
+   * @param <T> {@link Class} type of the {@link Method} return value.
    * @param target {@link Object} on which the {@link Method} will be invoked.
    * @return the result of the {@link Method} invocation on the given target {@link Object}
    * wrapped in a {@link Optional} to guard against {@literal null}.
@@ -265,12 +267,13 @@ public class MethodInvocation {
    * @see #getArguments()
    * @see #getMethod()
    */
-  public Optional<Object> invoke(Object target) {
+  @SuppressWarnings("unchecked")
+  public <T> Optional<T> invoke(Object target) {
     Object resolvedTarget = resolveTarget(target);
     Method method = getMethod();
 
     try {
-      return Optional.ofNullable(method.invoke(resolvedTarget, getArguments()));
+      return Optional.ofNullable((T) method.invoke(resolvedTarget, getArguments()));
     }
     catch (IllegalAccessException | InvocationTargetException e) {
       throw new MethodInvocationException(String.format("Failed to invoke method [%1$s] on target object [%2$s]",
