@@ -70,7 +70,7 @@ public class JdkDynamicProxiesFactoryTests {
 
   @Test
   public void canProxyInterfaceIsTrue() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(null, ContactRepository.class)).isTrue();
+    assertThat(newJdkDynamicProxiesFactory().canProxy(new Object(), ContactRepository.class)).isTrue();
   }
 
   @Test
@@ -108,6 +108,11 @@ public class JdkDynamicProxiesFactoryTests {
     assertThat(proxyFactory.canProxy("test", Identifiable.class)).isFalse();
     assertThat(proxyFactory.canProxy(new Thread("test"), Identifiable.class)).isFalse();
     assertThat(proxyFactory.canProxy(new Throwable("test"), Identifiable.class)).isFalse();
+  }
+
+  @Test
+  public void cannotProxyNull() {
+    assertThat(newJdkDynamicProxiesFactory().canProxy(null, Comparable.class)).isFalse();
   }
 
   @Test

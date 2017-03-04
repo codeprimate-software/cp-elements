@@ -61,12 +61,11 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
   /**
    * @inheritDoc
    * @see #canProxy(Object)
+   * @see #canProxy(Class[])
    */
   @Override
   public boolean canProxy(Object target, Class<?>... proxyInterfaces) {
-    return canProxy(target) && stream(resolveInterfaces(target, proxyInterfaces))
-      .filter(proxyInterface -> !NON_PROXYABLE_TYPES.contains(proxyInterface))
-        .anyMatch(Class::isInterface);
+    return (canProxy(target) && canProxy(resolveInterfaces(target, proxyInterfaces)));
   }
 
   /**
@@ -79,7 +78,20 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
    * @see java.lang.Object
    */
   private boolean canProxy(Object target) {
-    return !JavaType.isJavaType(target);
+    return (target != null && !JavaType.isJavaType(target));
+  }
+
+  /**
+   * Determines whether any of the given {@link Class interfaces} can be proxied with a JDK Dynamic Proxy.
+   *
+   * @param proxyInterfaces array of {@link Class interfaces} to evaluate.
+   * @return a boolean value indicating whether any of the given {@link Class interfaces} can be proxied
+   * with a JDK Dynamic Proxy.
+   * @see java.lang.Class
+   */
+  private boolean canProxy(Class<?>... proxyInterfaces) {
+    return stream(proxyInterfaces).filter(proxyInterface -> !NON_PROXYABLE_TYPES.contains(proxyInterface))
+      .anyMatch(Class::isInterface);
   }
 
   /**
