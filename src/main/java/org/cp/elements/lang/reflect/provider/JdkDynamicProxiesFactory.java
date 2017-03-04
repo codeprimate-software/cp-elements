@@ -24,6 +24,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.cp.elements.lang.JavaType;
 import org.cp.elements.lang.reflect.ProxyFactory;
 
 /**
@@ -38,10 +39,10 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  */
 public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
 
-  private static final Set<Class<?>> NON_PROXY_INTERFACES = new HashSet<>();
+  private static final Set<Class<?>> NON_PROXYABLE_TYPES = new HashSet<>();
 
   static {
-    NON_PROXY_INTERFACES.add(Serializable.class);
+    NON_PROXYABLE_TYPES.add(Serializable.class);
   }
 
   /**
@@ -59,12 +60,26 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
 
   /**
    * @inheritDoc
+   * @see #canProxy(Object)
    */
   @Override
   public boolean canProxy(Object target, Class<?>... proxyInterfaces) {
-    return stream(resolveInterfaces(target, proxyInterfaces))
-      .filter(proxyInterface -> !NON_PROXY_INTERFACES.contains(proxyInterface))
+    return canProxy(target) && stream(resolveInterfaces(target, proxyInterfaces))
+      .filter(proxyInterface -> !NON_PROXYABLE_TYPES.contains(proxyInterface))
         .anyMatch(Class::isInterface);
+  }
+
+  /**
+   * Determines whether the given target {@link Object} can be proxied with a JDK Dynamic Proxy.
+   *
+   * @param target {@link Object} to evaluate.
+   * @return a boolean value indicating whether the given target {@link Object} can be proxied
+   * with a JDK Dynamic Proxy.
+   * @see org.cp.elements.lang.JavaType#isJavaType(Object)
+   * @see java.lang.Object
+   */
+  private boolean canProxy(Object target) {
+    return !JavaType.isJavaType(target);
   }
 
   /**

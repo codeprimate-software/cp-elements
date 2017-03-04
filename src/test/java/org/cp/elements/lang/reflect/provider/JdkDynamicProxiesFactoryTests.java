@@ -22,6 +22,8 @@ import static org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory.new
 import static org.cp.elements.lang.reflect.support.MethodInvokingMethodInterceptor.newMethodInvokingMethodInterceptor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
@@ -79,6 +81,33 @@ public class JdkDynamicProxiesFactoryTests {
   @Test
   public void cannotProxyClassOnlyImplementingSerializableInterface() {
     assertThat(newJdkDynamicProxiesFactory().canProxy(Contact.newContact("John Blum"), Serializable.class)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void cannotProxyJavaTypes() {
+    JdkDynamicProxiesFactory<?> proxyFactory = newJdkDynamicProxiesFactory();
+
+    assertThat(proxyFactory.canProxy(new BigDecimal(3.14159d), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(new BigInteger("42"), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(true, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Boolean.TRUE, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy((byte) 8, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Byte.valueOf((byte) 16), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy('x', Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Character.valueOf('X'), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Math.PI, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Double.valueOf(Math.PI), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(3.14159f, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Float.valueOf(3.14159f), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(2, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(1234567890L, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Long.valueOf(4500250125L), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy((short) 8192, Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(Short.valueOf((short) 16384), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy("test", Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(new Thread("test"), Identifiable.class)).isFalse();
+    assertThat(proxyFactory.canProxy(new Throwable("test"), Identifiable.class)).isFalse();
   }
 
   @Test
