@@ -22,10 +22,12 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
- * The GuardedBy annotation declares that a field or method is guarded by a particular lock in a multi-threaded,
- * highly concurrent application.
+ * The {@link GuardedBy} annotation declares that a Java {@link Class} {@link Field} or {@link Method}
+ * is guarded by the "named" lock in a multi-threaded, highly concurrent application.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented
@@ -39,6 +41,14 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.FIELD, ElementType.METHOD})
+@SuppressWarnings("unused")
 public @interface GuardedBy {
+
+  /**
+   * Name of the Java lock.
+   *
+   * @return a {@link String} containing the name of the Java lock.
+   */
+  String value();
 
 }
