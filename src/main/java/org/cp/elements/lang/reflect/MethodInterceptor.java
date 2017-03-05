@@ -27,6 +27,7 @@ import java.util.Optional;
  * {@link Method} invocations on a Proxy for a given target {@link Object}.
  *
  * @author John Blum
+ * @param <T> {@link Class} type of the {@link #getTarget() target} {@link Object}.
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.reflect.MethodInvocation
