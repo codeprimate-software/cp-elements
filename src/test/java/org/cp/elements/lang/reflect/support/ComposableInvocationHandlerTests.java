@@ -24,6 +24,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -156,6 +157,19 @@ public class ComposableInvocationHandlerTests {
       verify(mockInvocationHandlerOne, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
       verify(mockInvocationHandlerTwo, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
     }
+  }
+
+  @Test
+  public void iteratorIsSuccessful() {
+    InvocationHandler mockInvocationHandlerThree = mock(InvocationHandler.class);
+    ComposableInvocationHandler invocationHandler = ComposableInvocationHandler.compose(
+      mockInvocationHandlerOne, mockInvocationHandlerTwo, mockInvocationHandlerThree);
+
+    assertThat(invocationHandler).isNotNull();
+    assertThat(invocationHandler.getInvocationHandlers()).contains(
+      mockInvocationHandlerOne, mockInvocationHandlerTwo, mockInvocationHandlerThree);
+    assertThat(invocationHandler).contains(mockInvocationHandlerOne, mockInvocationHandlerTwo,
+      mockInvocationHandlerThree);
   }
 
   @Data

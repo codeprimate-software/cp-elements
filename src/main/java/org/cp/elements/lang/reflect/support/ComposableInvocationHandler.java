@@ -23,6 +23,7 @@ import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.cp.elements.lang.NullSafe;
@@ -34,11 +35,12 @@ import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
  * into a Composite object acting as a single {@link InvocationHandler}.
  *
  * @author John Blum
+ * @see java.lang.Iterable
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
  * @since 1.0.0
  */
-public class ComposableInvocationHandler implements InvocationHandler {
+public class ComposableInvocationHandler implements InvocationHandler, Iterable<InvocationHandler> {
 
   private final List<InvocationHandler> invocationHandlers;
 
@@ -100,8 +102,16 @@ public class ComposableInvocationHandler implements InvocationHandler {
    * @inheritDoc
    */
   @Override
+  public Iterator<InvocationHandler> iterator() {
+    return Collections.unmodifiableList(this.invocationHandlers).iterator();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    for (InvocationHandler invocationHandler : getInvocationHandlers()) {
+    for (InvocationHandler invocationHandler : this) {
       try {
         return invocationHandler.invoke(proxy, method, args);
       }
