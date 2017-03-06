@@ -44,7 +44,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void newProxyFactoryIsNotNull() {
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
@@ -57,7 +57,7 @@ public class ProxyFactoryTests {
   public void newProxyFactoryForTargetObjectAndInterfaces() {
     Contact johnBlum = Contact.newContact("John Blum");
 
-    ProxyFactory<?> proxyFactory = newProxyFactory(johnBlum, Auditable.class, Identifiable.class, Runnable.class);
+    ProxyFactory<Object> proxyFactory = newProxyFactory(johnBlum, Auditable.class, Identifiable.class, Runnable.class);
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
@@ -95,7 +95,7 @@ public class ProxyFactoryTests {
     MethodInterceptor mockMethodInterceptorOne = mock(MethodInterceptor.class);
     MethodInterceptor mockMethodInterceptorTwo = mock(MethodInterceptor.class);
 
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
@@ -105,17 +105,17 @@ public class ProxyFactoryTests {
 
   @Test
   public void adviseWithNullMethodInterceptors() {
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
-    assertThat(proxyFactory.adviseWith((MethodInterceptor[]) null)).isSameAs(proxyFactory);
+    assertThat(proxyFactory.adviseWith((MethodInterceptor<Object>[]) null)).isSameAs(proxyFactory);
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
   }
 
   @Test
   public void implementingInterfaces() {
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getProxyInterfaces()).isEmpty();
@@ -125,7 +125,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void implementingNoInterfaces() {
-    ProxyFactory<?> proxyFactory = newProxyFactory(target, Auditable.class, Identifiable.class);
+    ProxyFactory<Object> proxyFactory = newProxyFactory(target, Auditable.class, Identifiable.class);
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getProxyInterfaces()).contains(Auditable.class, Identifiable.class);
@@ -137,7 +137,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void proxyTarget() {
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getTarget()).isNull();
@@ -147,7 +147,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void proxyNull() {
-    ProxyFactory<?> proxyFactory = newProxyFactory(target);
+    ProxyFactory<Object> proxyFactory = newProxyFactory(target);
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getTarget()).isSameAs(target);
@@ -157,7 +157,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void usingSystemClassLoader() {
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getProxyClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
@@ -167,7 +167,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void usingThreadContextClassLoader() {
-    ProxyFactory<?> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.using(null)).isSameAs(proxyFactory);

@@ -17,6 +17,7 @@
 package org.cp.elements.lang.reflect;
 
 import static org.cp.elements.lang.ClassUtils.getInterfaces;
+import static org.cp.elements.lang.reflect.ProxyService.newProxyService;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
@@ -44,14 +45,6 @@ import org.cp.elements.lang.NullSafe;
 @SuppressWarnings("unused")
 public abstract class ProxyFactory<T> {
 
-  private Class<?>[] proxyInterfaces;
-
-  private ClassLoader proxyClassLoader;
-
-  private List<MethodInterceptor> methodInterceptors = new ArrayList<>();
-
-  private Object target;
-
   /**
    * Returns a reference to a {@link ProxyFactory} service provider implementation provided by Elements that delegates
    * all proxy operations to any/all application configured {@link ProxyFactory} service provider implementations.
@@ -61,7 +54,6 @@ public abstract class ProxyFactory<T> {
    * @see org.cp.elements.lang.reflect.ProxyFactory
    * @see org.cp.elements.lang.reflect.ProxyService
    */
-  @SuppressWarnings({ "unchecked", "unused" })
   protected static <T> ProxyFactory<T> newProxyFactory() {
 
     return new ProxyFactory<T>() {
@@ -72,10 +64,14 @@ public abstract class ProxyFactory<T> {
       }
 
       @Override
-      public Object newProxy() {
-        return stream(ProxyService.<T>newProxyService())
+      @SuppressWarnings("unchecked")
+      public <R> R newProxy(ClassLoader proxyClassLoader, T target, Class<?>[] proxyInterfaces,
+          Iterable<MethodInterceptor<T>> methodInterceptors) {
+
+        return (R) stream(newProxyService())
           .filter(proxyFactory -> proxyFactory.canProxy(getTarget(), getProxyInterfaces())).findFirst()
-            .flatMap(proxyFactory -> Optional.of(proxyFactory.newProxy())).orElse(getTarget());
+            .flatMap(proxyFactory -> Optional.of(proxyFactory.<R>newProxy(getProxyClassLoader(), getTarget(),
+              getProxyInterfaces(), getMethodInterceptors()))).orElse(getTarget());
       }
     };
   }
@@ -119,6 +115,14 @@ public abstract class ProxyFactory<T> {
     return allImplementedInterfaces.toArray(new Class<?>[allImplementedInterfaces.size()]);
   }
 
+  private Class<?>[] proxyInterfaces;
+
+  private ClassLoader proxyClassLoader;
+
+  private List<MethodInterceptor<T>> methodInterceptors = new ArrayList<>();
+
+  private T target;
+
   /**
    * Determines whether this {@link ProxyFactory} can proxy the given {@link Object}
    * with the specified {@link Class interfaces}.
@@ -142,7 +146,7 @@ public abstract class ProxyFactory<T> {
    * @see java.lang.Iterable
    */
   @NullSafe
-  protected Iterable<MethodInterceptor> getMethodInterceptors() {
+  protected Iterable<MethodInterceptor<T>> getMethodInterceptors() {
     return Collections.unmodifiableList(this.methodInterceptors);
   }
 
@@ -169,7 +173,7 @@ public abstract class ProxyFactory<T> {
    * @see java.lang.Class
    */
   @NullSafe
-  protected Class<?>[] getProxyInterfaces() {
+  public Class<?>[] getProxyInterfaces() {
     return nullSafeArray(this.proxyInterfaces, Class.class);
   }
 
@@ -179,7 +183,7 @@ public abstract class ProxyFactory<T> {
    * @return the {@link Object} to Proxy.
    * @see java.lang.Object
    */
-  protected Object getTarget() {
+  public T getTarget() {
     return this.target;
   }
 
@@ -196,7 +200,8 @@ public abstract class ProxyFactory<T> {
    * @see #getMethodInterceptors()
    */
   @NullSafe
-  public ProxyFactory<T> adviseWith(MethodInterceptor... methodInterceptors) {
+  @SuppressWarnings("all")
+  public ProxyFactory<T> adviseWith(MethodInterceptor<T>... methodInterceptors) {
     Collections.addAll(this.methodInterceptors, nullSafeArray(methodInterceptors));
     return this;
   }
@@ -224,7 +229,7 @@ public abstract class ProxyFactory<T> {
    * @see java.lang.Object
    * @see #getTarget()
    */
-  public ProxyFactory<T> proxy(Object target) {
+  public ProxyFactory<T> proxy(T target) {
     this.target = target;
     return this;
   }
@@ -246,9 +251,35 @@ public abstract class ProxyFactory<T> {
   /**
    * Constructs, configures and initializes a new Proxy.
    *
-   * @param <T> {@link Class} type of the new Proxy object.
-   * @return a new Proxy object of the given {@link Class} type T.
+   * @param <R> {@link Class} type of the new Proxy object.
+   * @return a new Proxy object of the given {@link Class} type R.
+   * @see #newProxy(ClassLoader, Object, Class[], Iterable)
+   * @see #getMethodInterceptors()
+   * @see #getProxyClassLoader()
+   * @see #getProxyInterfaces()
+   * @see #getTarget()
    */
-  public abstract<T> T newProxy();
+  public <R> R newProxy() {
+    return newProxy(getProxyClassLoader(), getTarget(), getProxyInterfaces(), getMethodInterceptors());
+  }
+
+  /**
+   * Constructs, configures and initializes a new Proxy.
+   *
+   * @param <R> {@link Class} type of the new Proxy object.
+   * @param proxyClassLoader {@link ClassLoader} used to define the Proxy {@link Class}.
+   * @param target {@link Object} to proxy.
+   * @param proxyInterfaces array of {@link Class interfaces} that will be implemented by the Proxy {@link Class}.
+   * @param methodInterceptors array of {@link MethodInterceptor MethodInterceptors} used to advise the Proxy object
+   * {@link java.lang.reflect.Method} invocation.
+   * @return a new Proxy object of the given {@link Class} type R.
+   * @see org.cp.elements.lang.reflect.MethodInterceptor
+   * @see java.lang.ClassLoader
+   * @see java.lang.Class
+   * @see java.lang.Iterable
+   * @see #newProxy()
+   */
+  protected abstract <R> R newProxy(ClassLoader proxyClassLoader, T target, Class<?>[] proxyInterfaces,
+    Iterable<MethodInterceptor<T>> methodInterceptors);
 
 }
