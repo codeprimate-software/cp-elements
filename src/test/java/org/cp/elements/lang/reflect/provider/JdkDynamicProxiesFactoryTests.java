@@ -112,19 +112,20 @@ public class JdkDynamicProxiesFactoryTests {
 
   @Test
   public void cannotProxyNull() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(null, Comparable.class)).isFalse();
+    assertThat(newJdkDynamicProxiesFactory().canProxy(null, Comparable.class)).isTrue();
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void newProxyIsSuccessful() {
     Golfer golfer = newGolfer(1L);
 
-    Identifiable<Long> golferProxy = newJdkDynamicProxiesFactory().proxy(golfer)
+    Identifiable<Long> golferProxy = (Identifiable<Long>) newJdkDynamicProxiesFactory().proxy(golfer)
       .adviseWith(newMethodInvokingMethodInterceptor(golfer))
         .newProxy();
 
     assertThat(golferProxy).isNotNull();
-    assertThat(golferProxy.getId()).isEqualTo(1l);
+    assertThat(golferProxy.getId()).isEqualTo(1L);
   }
 
   @Data

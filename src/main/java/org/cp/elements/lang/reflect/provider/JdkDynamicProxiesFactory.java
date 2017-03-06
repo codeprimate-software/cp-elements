@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.lang.JavaType;
+import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.ProxyFactory;
 
 /**
@@ -78,7 +79,7 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
    * @see java.lang.Object
    */
   private boolean canProxy(Object target) {
-    return (target != null && !JavaType.isJavaType(target));
+    return (target == null || !JavaType.isJavaType(target));
   }
 
   /**
@@ -99,8 +100,10 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public <T> T newProxy() {
-    return (T) Proxy.newProxyInstance(getProxyClassLoader(),
-      resolveInterfaces(getTarget(), getProxyInterfaces()), compose(getMethodInterceptors()));
+  public <R> R newProxy(ClassLoader proxyClassLoader, T target, Class<?>[] proxyInterfaces,
+      Iterable<MethodInterceptor<T>> methodInterceptors) {
+
+    return (R) Proxy.newProxyInstance(proxyClassLoader, resolveInterfaces(target, proxyInterfaces),
+      compose(methodInterceptors));
   }
 }
