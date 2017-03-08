@@ -51,7 +51,7 @@ import org.cp.elements.process.util.ProcessUtils;
 import org.cp.elements.util.Environment;
 
 /**
- * The {@link ProcessAdapter} class is an Adapter (wrapper) around a Java {@link Process} object.
+ * The {@link ProcessAdapter} class is an Adapter (wrapper) for a Java {@link Process} object.
  *
  * This class provides additional, convenient operations on an instance of {@link Process} that
  * are not directly available in the Java {@link Process} API itself.
@@ -61,6 +61,7 @@ import org.cp.elements.util.Environment;
  * @see java.lang.Process
  * @see java.util.concurrent.ExecutorService
  * @see java.util.concurrent.Executors
+ * @see java.util.concurrent.Future
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Initable
  * @see org.cp.elements.process.ProcessContext
@@ -89,16 +90,13 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   private final ProcessContext processContext;
 
-  private final ProcessStreamListener compositeProcessStreamListener = (line) -> {
-    for (ProcessStreamListener listener : this.listeners) {
-      listener.onInput(line);
-    }
-  };
+  private final ProcessStreamListener compositeProcessStreamListener =
+    line -> this.listeners.forEach(listener -> listener.onInput(line));
 
   /**
-   * Factory method to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}.
+   * Factory method used to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}.
    *
-   * @param process {@link Process} object to adapt/wrap with an instance of the {@link ProcessAdapter} class.
+   * @param process {@link Process} object to adapt/wrap with an instance of {@link ProcessAdapter}.
    * @return a newly constructed {@link ProcessAdapter} adapting/wrapping the given {@link Process}.
    * @throws IllegalArgumentException if {@link Process} is {@literal null}.
    * @see #newProcessAdapter(Process, ProcessContext)
@@ -110,10 +108,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * Factory method to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}
+   * Factory method used to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}
    * and corresponding {@link ProcessContext}.
    *
-   * @param process {@link Process} object to adapt/wrap with an instance of the {@link ProcessAdapter} class.
+   * @param process {@link Process} object to adapt/wrap with an instance of {@link ProcessAdapter}.
    * @param processContext {@link ProcessContext} object containing contextual information about the environment
    * in which the {@link Process} is running.
    * @return a newly constructed {@link ProcessAdapter} adapting/wrapping the given {@link Process}.
@@ -176,7 +174,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
         }
         catch (IOException ignore) {
           // Ignore IO error and just stop reading from the process input stream
-          // IO error occurred most likely because the process was terminated
+          // The IO error occurred most likely because the process was terminated
         }
         finally {
           close(reader);
@@ -226,6 +224,16 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   public boolean isAlive() {
     return ProcessUtils.isAlive(getProcess());
+  }
+
+  /**
+   * Determines whether this {@link Process} is still alive.
+   *
+   * @return a boolean value indicating whether this {@link Process} is still alive.
+   * @see #isAlive()
+   */
+  public boolean isNotAlive() {
+    return !isAlive();
   }
 
   /**
@@ -300,12 +308,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     try {
       return ProcessUtils.readPid(ProcessUtils.findPidFile(getDirectory()));
     }
-    catch (Throwable t) {
-      if (t instanceof PidUnknownException) {
-        throw (PidUnknownException) t;
+    catch (Throwable cause) {
+      if (cause instanceof PidUnknownException) {
+        throw (PidUnknownException) cause;
       }
 
-      throw new PidUnknownException("Process ID (PID) cannot be determined", t);
+      throw new PidUnknownException("Process ID (PID) cannot be determined", cause);
     }
   }
 
@@ -449,12 +457,11 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   /* (non-Javadoc) */
   protected ProcessAdapter execute(ProcessAdapter processAdapter, ProcessContext processContext) {
-    return newProcessAdapter(newProcessExecutor().execute(
-      processAdapter.getDirectory(), processAdapter.getCommandLine()), processContext);
+    return newProcessExecutor().execute(processAdapter.getDirectory(), processAdapter.getCommandLine());
   }
 
   /* (non-Javadoc) */
-  protected ProcessExecutor newProcessExecutor() {
+  protected ProcessExecutor<ProcessAdapter> newProcessExecutor() {
     return newRuntimeProcessExecutor();
   }
 

@@ -470,7 +470,7 @@ public class ProcessAdapterTests {
       "-classpath", "/class/path/to/application.jar", "mock.Application");
 
     when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
-      .thenReturn(mockRestartedProcess);
+      .thenReturn(newProcessAdapter(mockRestartedProcess, this.processContext));
 
     doNothing().when(this.mockProcess).destroy();
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running")).thenReturn(0);
@@ -521,7 +521,7 @@ public class ProcessAdapterTests {
       "-classpath", "/class/path/to/application.jar", "mock.Application");
 
     when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
-      .thenReturn(mockRestartedProcess);
+      .thenReturn(newProcessAdapter(mockRestartedProcess, this.processContext));
 
     this.processContext.ranIn(FileSystemUtils.USER_HOME_DIRECTORY).ranWith(expectedCommandLine);
 
