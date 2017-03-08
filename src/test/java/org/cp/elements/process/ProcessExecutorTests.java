@@ -41,6 +41,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author John J. Blum
  * @see java.lang.Process
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.runners.MockitoJUnitRunner
@@ -94,6 +95,6 @@ public class ProcessExecutorTests {
       argThat(stringArrayMatcher("java", "example.App", "arg")));
   }
 
-  static abstract class TestProcessExecutor implements ProcessExecutor {
+  abstract class TestProcessExecutor implements ProcessExecutor {
   }
 }

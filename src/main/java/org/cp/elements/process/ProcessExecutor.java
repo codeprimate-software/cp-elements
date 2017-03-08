@@ -27,44 +27,53 @@ import java.io.File;
  * and returning a reference to the running OS {@link Process} for program control.
  *
  * @author John Blum
+ * @param <T> {@link Class} type of the object returned from {@link ProcessExecutor#execute(File, String...)}.
  * @see java.io.File
  * @see java.lang.Process
+ * @see org.cp.elements.process.ProcessAdapter
+ * @see org.cp.elements.process.ProcessContext
  * @since 1.0.0
  */
-public interface ProcessExecutor {
+public interface ProcessExecutor<T> {
 
   /**
    * Executes the program defined by the given command-line in the given {@link File directory}.
    *
    * @param directory {@link File directory} in which the program will run.
-   * @param commandLine array of {@link String} values constituting the program and it's runtime arguments.
-   * @return a {@link Process} object representing the running program.
+   * @param commandLine array of {@link String} values constituting the program and its runtime arguments.
+   * @return an object representing the running program.
+   * @see org.cp.elements.process.ProcessAdapter
    * @see java.lang.Process
    * @see java.io.File
    */
-  Process execute(File directory, String... commandLine);
+  T execute(File directory, String... commandLine);
 
   /**
    * Executes the program defined by the given command-line in the current working {@link File directory}.
    *
-   * @param commandLine array of {@link String} values constituting the program and it's runtime arguments.
-   * @return a {@link Process} object representing the running program.
-   * @see #execute(File, String...)
+   * @param commandLine array of {@link String} values constituting the program and its runtime arguments.
+   * @return an object representing the running program.
+   * @see org.cp.elements.io.FileSystemUtils#WORKING_DIRECTORY
+   * @see org.cp.elements.process.ProcessAdapter
    * @see java.lang.Process
+   * @see #execute(File, String...)
    */
-  default Process execute(String... commandLine) {
+  default T execute(String... commandLine) {
     return execute(WORKING_DIRECTORY, commandLine);
   }
 
   /**
    * Executes the program defined by the given command-line in the current working {@link File directory}.
    *
-   * @param commandLine {@link Iterable} of {@link String} values constituting the program and it's runtime arguments.
-   * @return a {@link Process} object representing the running program.
-   * @see #execute(File, String...)
+   * @param commandLine {@link Iterable} of {@link String} values constituting the program and its runtime arguments.
+   * @return an object representing the running program.
+   * @see org.cp.elements.io.FileSystemUtils#WORKING_DIRECTORY
+   * @see org.cp.elements.process.ProcessAdapter
+   * @see java.lang.Iterable
    * @see java.lang.Process
+   * @see #execute(File, String...)
    */
-  default Process execute(Iterable<String> commandLine) {
+  default T execute(Iterable<String> commandLine) {
     return execute(WORKING_DIRECTORY, asArray(commandLine, String.class));
   }
 
@@ -72,13 +81,15 @@ public interface ProcessExecutor {
    * Executes the program defined by the given command-line in the given {@link File directory}.
    *
    * @param directory {@link File directory} in which the program will run.
-   * @param commandLine {@link Iterable} of {@link String} values constituting the program and it's runtime arguments.
-   * @return a {@link Process} object representing the running program.
-   * @see #execute(File, String...)
+   * @param commandLine {@link Iterable} of {@link String} values constituting the program and its runtime arguments.
+   * @return an object representing the running program.
+   * @see org.cp.elements.process.ProcessAdapter
+   * @see java.lang.Iterable
    * @see java.lang.Process
    * @see java.io.File
+   * @see #execute(File, String...)
    */
-  default Process execute(File directory, Iterable<String> commandLine) {
+  default T execute(File directory, Iterable<String> commandLine) {
     return execute(directory, asArray(commandLine, String.class));
   }
 }
