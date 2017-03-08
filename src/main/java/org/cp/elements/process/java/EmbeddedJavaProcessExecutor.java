@@ -27,6 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.cp.elements.io.FileSystemUtils;
@@ -44,10 +45,10 @@ import org.cp.elements.process.ProcessExecutor;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class EmbeddedJavaProcessExecutor implements ProcessExecutor {
+public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
   @Override
-  public Process execute(File directory, String... commandLine) {
+  public Void execute(File directory, String... commandLine) {
     Assert.isTrue(isNullOrEqualTo(directory, FileSystemUtils.WORKING_DIRECTORY),
       "The Java class can only be ran in the same working directory as the containing process");
 
@@ -89,7 +90,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor {
   }
 
   @SuppressWarnings("unchecked")
-  public <T> T execute(Class type, String... args) {
+  public <T> Optional<T> execute(Class type, String... args) {
     Assert.notNull(type, "Class type must not be null");
 
     if (isCallable(type)) {
@@ -108,10 +109,10 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor {
   }
 
   @SuppressWarnings("unchecked")
-  protected <T> T invokeCallable(Class type, String[] args) {
+  protected <T> Optional<T> invokeCallable(Class type, String[] args) {
     try {
       Callable<T> callable = this.<Callable<T>>constructInstance(type, args);
-      return callable.call();
+      return Optional.ofNullable(callable.call());
     }
     catch (Exception e) {
       throw new EmbeddedProcessExecutionException(String.format("Failed to execute Java class [%s]", type), e);
@@ -123,17 +124,17 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor {
   }
 
   @SuppressWarnings("unchecked")
-  protected <T> T invokeRunnable(Class type, String[] args) {
+  protected <T> Optional<T> invokeRunnable(Class type, String[] args) {
     Runnable runnable = this.<Runnable>constructInstance(type, args);
     runnable.run();
-    return null;
+    return Optional.empty();
   }
 
-  private <T> T invokeMainMethod(Class<?> type, Object[] args) {
+  private <T> Optional<T> invokeMainMethod(Class<?> type, Object[] args) {
     try {
       Method mainMethod = type.getDeclaredMethod(ObjectUtils.MAIN_METHOD_NAME, String[].class);
       mainMethod.invoke(null, args);
-      return null;
+      return Optional.empty();
     }
     catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       throw new EmbeddedProcessExecutionException(String.format("Failed to execute Java class [%s]", type), e);
