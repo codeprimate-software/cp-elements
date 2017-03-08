@@ -284,15 +284,15 @@ public abstract class ProcessUtils {
    * Searches the given {@link File} path for a {@literal .pid} {@link File}.
    *
    * If the given {@link File} is a directory then the directory is recursively searched (depth-first) until the first
-   * {@literal .pid} {@link File} is found.  If algorithm exhausts its search and no {@literal .pid} {@link File}
+   * {@literal .pid} {@link File} is found.  If the algorithm exhausts its search and no {@literal .pid} {@link File}
    * can be found, then {@literal null} is returned.
    *
-   * If the given {@link File} is a actual file then the file's containing directory is used as the base directory
+   * If the given {@link File} is a file then the file's containing directory is used as the base directory
    * for the search and the algorithm continues as described above.
    *
    * @param path base {@link File} path to begin a search for a {@literal .pid} {@link File}.
    * @return the first {@literal .pid} {@link File} found or {@literal null} if no {@literal .pid} {@link File}
-   * could be found exhausting the search.
+   * could be found starting from the given {@link File path} until the search is exhausted.
    * @throws IllegalArgumentException if the given {@link File} path is {@literal null} or does not exist.
    * @see java.io.File
    */
