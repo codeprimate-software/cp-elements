@@ -16,15 +16,22 @@
 
 package org.cp.elements.process.support;
 
+import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
+import static org.cp.elements.process.ProcessContext.newProcessContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
+import org.cp.elements.util.Environment;
 
 /**
  * The {@link RuntimeProcessExecutor} class is a {@link ProcessExecutor} using the {@link Runtime} API
@@ -38,7 +45,7 @@ import org.cp.elements.process.ProcessExecutor;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class RuntimeProcessExecutor implements ProcessExecutor {
+public class RuntimeProcessExecutor implements ProcessExecutor<ProcessAdapter> {
 
   /**
    * Factory method to construct a new instance of {@link RuntimeProcessExecutor} used to execute and run a {@link Process}
@@ -50,6 +57,8 @@ public class RuntimeProcessExecutor implements ProcessExecutor {
   public static RuntimeProcessExecutor newRuntimeProcessExecutor() {
     return new RuntimeProcessExecutor();
   }
+
+  private Environment environment;
 
   /**
    * Uses the Java {@link Runtime} to execute the program defined by the given {@code commandLine}
@@ -64,7 +73,7 @@ public class RuntimeProcessExecutor implements ProcessExecutor {
    * @see java.io.File
    */
   @Override
-  public Process execute(File directory, String... commandLine) {
+  public ProcessAdapter execute(File directory, String... commandLine) {
 
     Assert.isTrue(FileSystemUtils.isDirectory(directory), "[%s] is not a valid directory", directory);
 
@@ -72,11 +81,34 @@ public class RuntimeProcessExecutor implements ProcessExecutor {
       Arrays.toString(commandLine));
 
     try {
-      return Runtime.getRuntime().exec(commandLine, StringUtils.EMPTY_STRING_ARRAY, directory);
+      Environment environment = getEnvironment();
+
+      Process process = doExecute(commandLine, directory, environment);
+
+      ProcessContext processContext = newProcessContext(process)
+        .ranBy(SystemUtils.USERNAME)
+        .ranIn(directory)
+        .ranWith(commandLine)
+        .using(environment);
+
+      return newProcessAdapter(process, processContext);
     }
     catch (IOException e) {
       throw new ProcessExecutionException(String.format("Failed to execute program [%1$s] in directory [%2$s]",
         Arrays.toString(commandLine), directory), e);
     }
+  }
+
+  protected Process doExecute(String[] commandLine, File directory, Environment environment) throws IOException {
+    return Runtime.getRuntime().exec(commandLine, environment.toAssociativeArray(), directory);
+  }
+
+  protected Environment getEnvironment() {
+    return defaultIfNull(this.environment, Environment.fromEnvironmentVariables());
+  }
+
+  public RuntimeProcessExecutor using(Environment environment) {
+    this.environment = environment;
+    return this;
   }
 }

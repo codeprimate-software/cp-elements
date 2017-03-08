@@ -17,14 +17,22 @@
 
 package org.cp.elements.process.support;
 
+import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
+import static org.cp.elements.process.ProcessContext.newProcessContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
+import org.cp.elements.util.Environment;
 
 /**
  * The {@link ProcessBuilderProcessExecutor} class is a {@link ProcessExecutor} using the {@link ProcessBuilder} API
@@ -38,7 +46,20 @@ import org.cp.elements.process.ProcessExecutor;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ProcessBuilderProcessExecutor implements ProcessExecutor {
+public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAdapter> {
+
+  /**
+   * Factory method to construct a new instance of {@link ProcessBuilderProcessExecutor} used to execute and run
+   * a {@link Process} using Java's {@link ProcessBuilder} API.
+   *
+   * @return a new instance of {@link ProcessBuilderProcessExecutor} to execute and run {@link Process Processes}.
+   * @see org.cp.elements.process.support.ProcessBuilderProcessExecutor
+   */
+  public static ProcessBuilderProcessExecutor newProcessBuilderProcessExecutor() {
+    return new ProcessBuilderProcessExecutor();
+  }
+
+  private Environment environment;
 
   /**
    * Uses the Java {@link ProcessBuilder} to execute the program defined by the given {@code commandLine}
@@ -53,7 +74,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor {
    * @see java.io.File
    */
   @Override
-  public Process execute(File directory, String... commandLine) {
+  public ProcessAdapter execute(File directory, String... commandLine) {
 
     Assert.isTrue(FileSystemUtils.isDirectory(directory), "[%s] is not a valid directory", directory);
 
@@ -61,13 +82,45 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor {
       Arrays.toString(commandLine));
 
     try {
-      return new ProcessBuilder(commandLine)
-        .directory(directory)
-        .start();
+      Environment environment = getEnvironment();
+
+      ProcessBuilder processBuilder = newProcessBuilder(commandLine, directory, environment);
+
+      Process process = doExecute(processBuilder);
+
+      ProcessContext processContext = newProcessContext(process)
+        .ranBy(SystemUtils.USERNAME)
+        .ranIn(processBuilder.directory())
+        .ranWith(processBuilder.command())
+        .using(Environment.from(processBuilder.environment()));
+
+      return newProcessAdapter(process, processContext);
     }
     catch (IOException e) {
       throw new ProcessExecutionException(String.format("Failed to execute program [%1$s] in directory [%2$s]",
         Arrays.toString(commandLine), directory), e);
     }
+  }
+
+  protected Process doExecute(ProcessBuilder processBuilder) throws IOException {
+    return processBuilder.start();
+  }
+
+  protected ProcessBuilder newProcessBuilder(String[] commandLine, File directory, Environment environment) {
+    ProcessBuilder processBuilder = new ProcessBuilder(commandLine).directory(directory);
+
+    processBuilder.environment().clear();
+    processBuilder.environment().putAll(environment.toMap());
+
+    return processBuilder;
+  }
+
+  protected Environment getEnvironment() {
+    return defaultIfNull(this.environment, Environment.fromEnvironmentVariables());
+  }
+
+  public ProcessBuilderProcessExecutor using(Environment environment) {
+    this.environment = environment;
+    return this;
   }
 }

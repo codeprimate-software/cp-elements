@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.support.ProcessBuilderProcessExecutor;
 import org.cp.elements.util.ArrayUtils;
 
@@ -37,19 +38,19 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings("unused")
 public class JavaProcessExecutor extends ProcessBuilderProcessExecutor {
 
-  public Process execute(Class<?> type, String... args) {
+  public ProcessAdapter execute(Class<?> type, String... args) {
     return execute(FileSystemUtils.WORKING_DIRECTORY, type, args);
   }
 
-  public Process execute(File directory, Class<?> type, String... args) {
+  public ProcessAdapter execute(File directory, Class<?> type, String... args) {
     return execute(directory, toJavaCommandLine(type, args));
   }
 
-  public Process execute(File jarFile, String... args) {
+  public ProcessAdapter execute(File jarFile, String... args) {
     return execute(FileSystemUtils.WORKING_DIRECTORY, jarFile, args);
   }
 
-  public Process execute(File directory, File jarFile, String... args) {
+  public ProcessAdapter execute(File directory, File jarFile, String... args) {
     return execute(directory, toJavaCommandLine(jarFile, args));
   }
 
