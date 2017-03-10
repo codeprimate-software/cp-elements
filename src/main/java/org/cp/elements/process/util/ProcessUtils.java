@@ -133,11 +133,7 @@ public abstract class ProcessUtils {
   @NullSafe
   public static boolean isRunning(Process process) {
     try {
-      if (process != null) {
-        process.exitValue();
-      }
-
-      return false;
+      return (process != null && process.exitValue() == Double.NaN);
     }
     catch (IllegalThreadStateException ignore) {
       return true;
