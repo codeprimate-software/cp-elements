@@ -29,6 +29,7 @@ import java.util.List;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.util.Environment;
 
 /**
@@ -167,18 +168,6 @@ public class ProcessContext {
   }
 
   /**
-   * Determines whether the {@link Process Process's} standard error stream is being redirected (merged)
-   * into the {@link Process Process's} standard output stream.
-   *
-   * @return a boolean value indicating whether the {@link Process Process's} standard error stream is being merged
-   * into its standard output stream.
-   * @see #redirectErrorStream(boolean)
-   */
-  public boolean isRedirectingErrorStream() {
-    return this.redirectErrorStream;
-  }
-
-  /**
    * Returns the name of the user used to run the {@link Process}.
    *
    * @return a {@link String} containing name of the user used to run the {@link Process}.
@@ -198,6 +187,48 @@ public class ProcessContext {
    */
   public boolean inheritsIO() {
     return this.inheritIO;
+  }
+
+  /**
+   * Determines whether the {@link Process Process's} standard error stream is being redirected (merged)
+   * into the {@link Process Process's} standard output stream.
+   *
+   * @return a boolean value indicating whether the {@link Process Process's} standard error stream is being merged
+   * into its standard output stream.
+   * @see #redirectErrorStream(boolean)
+   */
+  public boolean isRedirectingErrorStream() {
+    return this.redirectErrorStream;
+  }
+
+  /**
+   * Initializes this {@link ProcessContext} from the given {@link ProcessBuilder}.
+   *
+   * Sets the run user to {@link SystemUtils#USERNAME}.
+   *
+   * @param processBuilder {@link ProcessBuilder} used to initialize this {@link ProcessContext}.
+   * @return this {@link ProcessContext}.
+   * @see java.lang.ProcessBuilder
+   * @see #ranBy(String)
+   * @see #ranIn(File)
+   * @see #ranWith(List)
+   * @see #using(Environment)
+   * @see #redirectError(Redirect)
+   * @see #redirectErrorStream(boolean)
+   * @see #redirectInput(Redirect)
+   * @see #redirectOutput(Redirect)
+   */
+  public ProcessContext from(ProcessBuilder processBuilder) {
+    ranBy(SystemUtils.USERNAME);
+    ranIn(processBuilder.directory());
+    ranWith(processBuilder.command());
+    using(Environment.from(processBuilder.environment()));
+    redirectError(processBuilder.redirectError());
+    redirectErrorStream(processBuilder.redirectErrorStream());
+    redirectInput(processBuilder.redirectInput());
+    redirectOutput(processBuilder.redirectOutput());
+
+    return this;
   }
 
   /**

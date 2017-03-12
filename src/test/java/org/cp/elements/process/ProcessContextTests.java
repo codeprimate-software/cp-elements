@@ -24,8 +24,10 @@ import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.util.Environment;
 import org.junit.Rule;
@@ -41,6 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @author John Blum
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.runners.MockitoJUnitRunner
@@ -71,9 +74,9 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     assertThat(processContext.getError()).isNull();
     assertThat(processContext.getInput()).isNull();
     assertThat(processContext.getOutput()).isNull();
-    assertThat(processContext.isRedirectingErrorStream()).isFalse();
     assertThat(processContext.getUsername()).isNull();
     assertThat(processContext.inheritsIO()).isFalse();
+    assertThat(processContext.isRedirectingErrorStream()).isFalse();
   }
 
   @Test
@@ -106,9 +109,41 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     assertThat(processContext.getError().type()).isEqualTo(ProcessBuilder.Redirect.Type.WRITE);
     assertThat(processContext.getInput().type()).isEqualTo(ProcessBuilder.Redirect.Type.READ);
     assertThat(processContext.getOutput().type()).isEqualTo(ProcessBuilder.Redirect.Type.APPEND);
-    assertThat(processContext.isRedirectingErrorStream()).isTrue();
     assertThat(processContext.getUsername()).isEqualTo("mockUser");
     assertThat(processContext.inheritsIO()).isTrue();
+    assertThat(processContext.isRedirectingErrorStream()).isTrue();
+  }
+
+  @Test
+  public void fromProcessBuilderIsSuccessful() {
+    ProcessBuilder processBuilder = new ProcessBuilder("java", "-server", "-ea", "-classpath",
+      "/class/path/to/application.jar", "example.Application");
+
+    processBuilder.directory(FileSystemUtils.USER_HOME_DIRECTORY);
+    processBuilder.environment().clear();
+    processBuilder.environment().put("testKey", "testValue");
+    processBuilder.inheritIO();
+    processBuilder.redirectError(this.mockFile);
+    processBuilder.redirectErrorStream(true);
+    processBuilder.redirectInput(this.mockFile);
+    processBuilder.redirectOutput(this.mockFile);
+
+    ProcessContext processContext = newProcessContext(this.mockProcess);
+
+    assertThat(processContext).isNotNull();
+    assertThat(processContext.from(processBuilder)).isSameAs(processContext);
+    assertThat(processContext.getCommandLine()).isEqualTo(Arrays.asList("java", "-server", "-ea", "-classpath",
+      "/class/path/to/application.jar", "example.Application"));
+    assertThat(processContext.getDirectory()).isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
+    assertThat(processContext.getEnvironment()).isEqualTo(Environment.from(
+      Collections.singletonMap("testKey", "testValue")));
+    assertThat(processContext.getError()).isEqualTo(ProcessBuilder.Redirect.to(this.mockFile));
+    assertThat(processContext.getInput()).isEqualTo(ProcessBuilder.Redirect.from(this.mockFile));
+    assertThat(processContext.getOutput()).isEqualTo(ProcessBuilder.Redirect.to(this.mockFile));
+    assertThat(processContext.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processContext.getUsername()).isSameAs(SystemUtils.USERNAME);
+    assertThat(processContext.inheritsIO()).isFalse();
+    assertThat(processContext.isRedirectingErrorStream()).isTrue();
   }
 
   @Test
