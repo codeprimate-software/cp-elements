@@ -17,6 +17,7 @@
 package org.cp.elements.process;
 
 import static org.cp.elements.io.IOUtils.close;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 import static org.cp.elements.lang.concurrent.SimpleThreadFactory.newThreadFactory;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 import static org.cp.elements.process.support.RuntimeProcessExecutor.newRuntimeProcessExecutor;
@@ -28,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -80,19 +82,6 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   protected static final long DEFAULT_TIMEOUT_MILLISECONDS = TimeUnit.SECONDS.toMillis(30);
 
-  private final AtomicBoolean initialized = new AtomicBoolean(false);
-
-  private final CopyOnWriteArraySet<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
-
-  protected final Logger logger = Logger.getLogger(getClass().getName());
-
-  private final Process process;
-
-  private final ProcessContext processContext;
-
-  private final ProcessStreamListener compositeProcessStreamListener =
-    line -> this.listeners.forEach(listener -> listener.onInput(line));
-
   /**
    * Factory method used to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}.
    *
@@ -124,11 +113,26 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     return new ProcessAdapter(process, processContext);
   }
 
+  private final AtomicBoolean initialized = new AtomicBoolean(false);
+
+  private final CopyOnWriteArraySet<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
+
+  protected final Logger logger = Logger.getLogger(getClass().getName());
+
+  private final Process process;
+
+  private final ProcessContext processContext;
+
+  private final ProcessStreamListener compositeProcessStreamListener =
+    line -> this.listeners.forEach(listener -> listener.onInput(line));
+
+  private final ThreadGroup threadGroup;
+
   /**
    * Constructs an instance of {@link ProcessAdapter} initialized with the given {@link Process}
    * and {@link ProcessContext}.
    *
-   * @param process {@link Process} object to adapt/wrap with this {@link ProcessAdapter}.
+   * @param process {@link Process} object adapted/wrapped by this {@link ProcessAdapter}.
    * @param processContext {@link ProcessContext} object containing contextual information about the environment
    * in which the {@link Process} is running.
    * @throws IllegalArgumentException if {@link Process} or {@link ProcessContext} is {@literal null}.
@@ -141,6 +145,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
     this.process = process;
     this.processContext = processContext;
+    this.threadGroup = new ThreadGroup(String.format("Process [%s] Thread Group", UUID.randomUUID()));
   }
 
   /**
@@ -190,7 +195,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   /* (non-Javadoc) */
   protected Thread newThread(String name, Runnable task) {
-    return newThreadFactory().as(DAEMON_THREAD).with(THREAD_PRIORITY).newThread(name, task);
+    return newThreadFactory().as(DAEMON_THREAD).in(resolveThreadGroup()).with(THREAD_PRIORITY).newThread(name, task);
+  }
+
+  /* (non-Javadoc) */
+  protected ThreadGroup resolveThreadGroup() {
+    return this.threadGroup;
   }
 
   /**
@@ -342,7 +352,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   @Override
   public final void setId(Integer id) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+    throw newUnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
   /**
@@ -494,7 +504,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   public synchronized int stop(long timeout, TimeUnit unit) {
     if (isRunning()) {
       ExecutorService executorService = Executors.newSingleThreadExecutor(
-        newThreadFactory().as(DAEMON_THREAD).with(THREAD_PRIORITY));
+        newThreadFactory().as(DAEMON_THREAD).in(resolveThreadGroup()).with(THREAD_PRIORITY));
 
       try {
         Future<Integer> futureExitValue = executorService.submit(() -> {
@@ -556,8 +566,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   public int stopAndWait(long timeout, TimeUnit unit) {
     stop(timeout, unit);
-    waitFor(timeout, unit);
-    return safeExitValue();
+    return (waitFor(timeout, unit) ? exitValue() : safeExitValue());
   }
 
   /**

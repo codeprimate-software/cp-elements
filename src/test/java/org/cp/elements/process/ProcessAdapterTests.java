@@ -18,6 +18,7 @@ package org.cp.elements.process;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
 import static org.cp.elements.process.ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
@@ -27,8 +28,10 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -49,6 +52,7 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
@@ -109,14 +113,14 @@ public class ProcessAdapterTests {
 
   @Test
   public void newProcessAdapterWithProcess() {
-    ProcessAdapter processAdapter = newProcessAdapter(mockProcess);
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
 
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
 
     ProcessContext processContext = processAdapter.getProcessContext();
 
-    assertThat(processContext).isInstanceOf(ProcessContext.class);
+    assertThat(processContext).isNotNull();
     assertThat(processContext).isNotSameAs(this.processContext);
     assertThat(processContext.getCommandLine()).isEmpty();
     assertThat(processContext.getDirectory()).isEqualTo(FileSystemUtils.WORKING_DIRECTORY);
@@ -124,6 +128,10 @@ public class ProcessAdapterTests {
     assertThat(processContext.getProcess()).isSameAs(this.mockProcess);
     assertThat(processContext.getUsername()).isEqualTo(SystemUtils.USERNAME);
     assertThat(processContext.isRedirectingErrorStream()).isFalse();
+    assertThat(processContext.inheritsIO()).isFalse();
+    assertThat(processContext.getError()).isNull();
+    assertThat(processContext.getInput()).isNull();
+    assertThat(processContext.getOutput()).isNull();
   }
 
   @Test
@@ -153,7 +161,120 @@ public class ProcessAdapterTests {
     newProcessAdapter(this.mockProcess, null);
   }
 
-  // test init()
+  @Test
+  public void constructProcessAdapter() {
+    ProcessAdapter processAdapter = new ProcessAdapter(this.mockProcess, this.processContext);
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
+    assertThat(processAdapter.isInitialized()).isFalse();
+
+    ThreadGroup resolvedThreadGroup = processAdapter.resolveThreadGroup();
+
+    assertThat(resolvedThreadGroup).isNotNull();
+    assertThat(resolvedThreadGroup.getName()).matches(Pattern.compile("Process \\[.*\\] Thread Group"));
+  }
+
+  @Test
+  public void initStartsBothProcessStandardInAndStandardErrorStreamThreads() {
+    InputStream mockStandardOut = mock(InputStream.class, "Process Standard Out");
+    InputStream mockStandardError = mock(InputStream.class, "Process Standard Error");
+
+    Runnable mockRunnableOne = mock(Runnable.class, "Process Standard Out Reader Runnable");
+    Runnable mockRunnableTwo = mock(Runnable.class, "Process Standard Error Reader Runnable");
+
+    Thread mockThreadOne = mock(Thread.class, "Process Standard Out Reader Thread");
+    Thread mockThreadTwo = mock(Thread.class, "Process Standard Error Reader Thread");
+
+    when(this.mockProcess.getInputStream()).thenReturn(mockStandardOut);
+    when(this.mockProcess.getErrorStream()).thenReturn(mockStandardError);
+
+    this.processContext.inheritIO(false).redirectErrorStream(false);
+
+    ProcessAdapter processAdapter = spy(newProcessAdapter(this.mockProcess, this.processContext));
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
+    assertThat(processAdapter.isInitialized()).isFalse();
+
+    doReturn(123).when(processAdapter).safeGetId();
+    doReturn(mockRunnableOne).when(processAdapter).newProcessStreamReader(eq(mockStandardOut));
+    doReturn(mockRunnableTwo).when(processAdapter).newProcessStreamReader(eq(mockStandardError));
+    doReturn(mockThreadOne).when(processAdapter)
+      .newThread(eq("Process [123] Standard Out Reader"), eq(mockRunnableOne));
+    doReturn(mockThreadTwo).when(processAdapter)
+      .newThread(eq("Process [123] Standard Error Reader"), eq(mockRunnableTwo));
+
+    processAdapter.init();
+
+    assertThat(processAdapter.isInitialized()).isTrue();
+
+    verify(processAdapter, times(2)).safeGetId();
+    verify(processAdapter, times(1)).newProcessStreamReader(eq(mockStandardOut));
+    verify(processAdapter, times(1)).newProcessStreamReader(eq(mockStandardError));
+    verify(processAdapter, times(1)).newThread(
+      eq("Process [123] Standard Out Reader"), eq(mockRunnableOne));
+    verify(processAdapter, times(1)).newThread(
+      eq("Process [123] Standard Error Reader"), eq(mockRunnableTwo));
+    verify(mockThreadOne, times(1)).start();
+    verify(mockThreadTwo, times(1)).start();
+  }
+
+  @Test
+  public void initStartsOnlyProcessStandardInStreamThread() {
+    InputStream mockStandardOut = mock(InputStream.class, "Process Standard Out");
+    Runnable mockRunnable = mock(Runnable.class, "Process Standard Out Reader Runnable");
+    Thread mockThread = mock(Thread.class, "Process Standard Out Reader Thread");
+
+    when(this.mockProcess.getInputStream()).thenReturn(mockStandardOut);
+
+    this.processContext.inheritIO(false).redirectErrorStream(true);
+
+    ProcessAdapter processAdapter = spy(newProcessAdapter(this.mockProcess, this.processContext));
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
+    assertThat(processAdapter.isInitialized()).isFalse();
+
+    doReturn(123).when(processAdapter).safeGetId();
+    doReturn(mockRunnable).when(processAdapter).newProcessStreamReader(eq(mockStandardOut));
+    doReturn(mockThread).when(processAdapter)
+      .newThread(eq("Process [123] Standard Out Reader"), eq(mockRunnable));
+
+    processAdapter.init();
+
+    assertThat(processAdapter.isInitialized()).isTrue();
+
+    verify(processAdapter, times(1)).safeGetId();
+    verify(processAdapter, times(1)).newProcessStreamReader(eq(mockStandardOut));
+    verify(processAdapter, times(1)).newThread(
+      eq("Process [123] Standard Out Reader"), eq(mockRunnable));
+    verify(processAdapter, never()).newThread(eq("Process [123] Standard Error Reader"), any(Runnable.class));
+    verify(mockThread, times(1)).start();
+  }
+
+  @Test
+  public void initDoesNotStartAnyProcessStreamThreads() {
+    this.processContext.inheritIO(true).redirectErrorStream(false);
+
+    ProcessAdapter processAdapter = spy(newProcessAdapter(this.mockProcess, this.processContext));
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
+    assertThat(processAdapter.isInitialized()).isFalse();
+
+    processAdapter.init();
+
+    assertThat(processAdapter.isInitialized()).isTrue();
+
+    verify(processAdapter, never()).safeGetId();
+    verify(processAdapter, never()).newProcessStreamReader(any(InputStream.class));
+    verify(processAdapter, never()).newThread(anyString(), any(Runnable.class));
+  }
 
   @Test
   public void newProcessStreamListenerIsInitializedCorrectly() {
@@ -164,9 +285,11 @@ public class ProcessAdapterTests {
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
 
-    StringBuilder buffer = new StringBuilder();
+    StringBuilder bufferOne = new StringBuilder();
+    StringBuilder bufferTwo = new StringBuilder();
 
-    assertThat(processAdapter.register(buffer::append)).isSameAs(processAdapter);
+    assertThat(processAdapter.register(bufferOne::append)).isSameAs(processAdapter);
+    assertThat(processAdapter.register(bufferTwo::append)).isSameAs(processAdapter);
 
     ByteArrayInputStream in = new ByteArrayInputStream("This is the end of the line!\n".getBytes());
 
@@ -176,7 +299,36 @@ public class ProcessAdapterTests {
 
     processStreamReaderRunnable.run();
 
-    assertThat(buffer.toString()).isEqualTo("This is the end of the line!");
+    assertThat(bufferOne.toString()).isEqualTo("This is the end of the line!");
+    assertThat(bufferTwo.toString()).isEqualTo("This is the end of the line!");
+
+    verify(this.mockProcess, times(1)).exitValue();
+  }
+
+  @Test
+  public void newProcessStreamListenerRunnableIsNotRunWhenProcessIsNotRunning() {
+    when(this.mockProcess.exitValue()).thenReturn(0);
+
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+
+    StringBuilder buffer = new StringBuilder();
+
+    assertThat(processAdapter.register(buffer::append)).isSameAs(processAdapter);
+    assertThat(buffer.toString()).isEmpty();
+
+    ByteArrayInputStream in =
+      new ByteArrayInputStream("Do I deserve to be and if so, if so, who answers, who answers?!".getBytes());
+
+    Runnable processStreamReaderRunnable = processAdapter.newProcessStreamReader(in);
+
+    assertThat(processStreamReaderRunnable).isNotNull();
+
+    processStreamReaderRunnable.run();
+
+    assertThat(buffer.toString()).isEmpty();
 
     verify(this.mockProcess, times(1)).exitValue();
   }
@@ -193,7 +345,8 @@ public class ProcessAdapterTests {
 
   @Test
   public void newThreadIsInitializedCorrectly() {
-    Thread testThread = newProcessAdapter(this.mockProcess).newThread("TestThread", () -> {});
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+    Thread testThread = processAdapter.newThread("TestThread", () -> {});
 
     assertThat(testThread).isNotNull();
     assertThat(testThread.isAlive()).isFalse();
@@ -202,29 +355,40 @@ public class ProcessAdapterTests {
     assertThat(testThread.getName()).isEqualTo("TestThread");
     assertThat(testThread.getPriority()).isEqualTo(ProcessAdapter.THREAD_PRIORITY);
     assertThat(testThread.getState()).isEqualTo(Thread.State.NEW);
+    assertThat(testThread.getThreadGroup()).isEqualTo(processAdapter.resolveThreadGroup());
   }
 
   @Test
   public void isAliveForRunningProcessIsTrue() {
     when(this.mockProcess.isAlive()).thenReturn(true);
 
-    assertThat(newProcessAdapter(this.mockProcess).isAlive()).isTrue();
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
-    verify(this.mockProcess, times(1)).isAlive();
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.isAlive()).isTrue();
+    assertThat(processAdapter.isNotAlive()).isFalse();
+
+    verify(this.mockProcess, times(2)).isAlive();
   }
 
   @Test
   public void isAliveForTerminatedProcessIsFalse() {
     when(this.mockProcess.isAlive()).thenReturn(false);
 
-    assertThat(newProcessAdapter(this.mockProcess).isAlive()).isFalse();
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
-    verify(this.mockProcess, times(1)).isAlive();
+    assertThat(processAdapter).isNotNull();
+    assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.isAlive()).isFalse();
+    assertThat(processAdapter.isNotAlive()).isTrue();
+
+    verify(this.mockProcess, times(2)).isAlive();
   }
 
   @Test
   public void isInitializedBeforeInitIsFalse() {
-    assertThat(newProcessAdapter(this.mockProcess).isInitialized()).isFalse();
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).isInitialized()).isFalse();
   }
 
   @Test
@@ -246,7 +410,7 @@ public class ProcessAdapterTests {
   public void isRunningForRunningProcessIsTrue() {
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
-    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
@@ -260,7 +424,7 @@ public class ProcessAdapterTests {
   public void isRunningForTerminatedProcessIsFalse() {
     when(this.mockProcess.exitValue()).thenReturn(0);
 
-    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
@@ -282,7 +446,7 @@ public class ProcessAdapterTests {
   }
 
   @Test
-  public void getDirectoryReturnsProcessWorkingDirectory() {
+  public void getDirectoryReturnsUserHomeDirectoryAsProcessWorkingDirectory() {
     this.processContext.ranIn(FileSystemUtils.USER_HOME_DIRECTORY);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).getDirectory())
@@ -327,19 +491,19 @@ public class ProcessAdapterTests {
     exception.expectCause(is(notNullValue(Throwable.class)));
     exception.expectMessage("Failed to read Process ID (PID) from file [null]");
 
-    newProcessAdapter(this.mockProcess).getId();
+    newProcessAdapter(this.mockProcess, this.processContext).getId();
   }
 
   @Test
   public void setIdThrowsUnsupportedSupportedException() {
-    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
+
+    assertThat(processAdapter).isNotNull();
 
     try {
       exception.expect(UnsupportedOperationException.class);
       exception.expectCause(is(nullValue(Throwable.class)));
       exception.expectMessage(Constants.OPERATION_NOT_SUPPORTED);
-
-      assertThat(processAdapter).isNotNull();
 
       processAdapter.setId(123);
     }
@@ -354,7 +518,8 @@ public class ProcessAdapterTests {
 
     when(this.mockProcess.getErrorStream()).thenReturn(mockErrorStream);
 
-    assertThat(newProcessAdapter(this.mockProcess).getStandardErrorStream()).isSameAs(mockErrorStream);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).getStandardErrorStream())
+      .isSameAs(mockErrorStream);
 
     verify(this.mockProcess, times(1)).getErrorStream();
     verify(this.mockProcess, never()).getInputStream();
@@ -367,11 +532,12 @@ public class ProcessAdapterTests {
 
     when(this.mockProcess.getOutputStream()).thenReturn(mockOutputStream);
 
-    assertThat(newProcessAdapter(this.mockProcess).getStandardInStream()).isSameAs(mockOutputStream);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).getStandardInStream())
+      .isSameAs(mockOutputStream);
 
-    verify(this.mockProcess, times(1)).getOutputStream();
     verify(this.mockProcess, never()).getErrorStream();
     verify(this.mockProcess, never()).getInputStream();
+    verify(this.mockProcess, times(1)).getOutputStream();
   }
 
   @Test
@@ -380,10 +546,11 @@ public class ProcessAdapterTests {
 
     when(this.mockProcess.getInputStream()).thenReturn(mockInputStream);
 
-    assertThat(newProcessAdapter(this.mockProcess).getStandardOutStream()).isSameAs(mockInputStream);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).getStandardOutStream())
+      .isSameAs(mockInputStream);
 
-    verify(this.mockProcess, times(1)).getInputStream();
     verify(this.mockProcess, never()).getErrorStream();
+    verify(this.mockProcess, times(1)).getInputStream();
     verify(this.mockProcess, never()).getOutputStream();
   }
 
@@ -403,7 +570,7 @@ public class ProcessAdapterTests {
       exception.expectCause(is(nullValue(Throwable.class)));
       exception.expectMessage("running");
 
-      newProcessAdapter(this.mockProcess).exitValue();
+      newProcessAdapter(this.mockProcess, this.processContext).exitValue();
     }
     finally {
       verify(this.mockProcess, times(1)).exitValue();
@@ -414,7 +581,7 @@ public class ProcessAdapterTests {
   public void exitValueForTerminatedProcessReturnsExitValue() {
     when(this.mockProcess.exitValue()).thenReturn(1);
 
-    assertThat(newProcessAdapter(this.mockProcess).exitValue()).isEqualTo(1);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).exitValue()).isEqualTo(1);
 
     verify(this.mockProcess, times(1)).exitValue();
   }
@@ -423,7 +590,7 @@ public class ProcessAdapterTests {
   public void safeExitValueForRunningProcessReturnsMinusOne() {
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
-    assertThat(newProcessAdapter(this.mockProcess).safeExitValue()).isEqualTo(-1);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).safeExitValue()).isEqualTo(-1);
 
     verify(this.mockProcess, times(1)).exitValue();
   }
@@ -432,7 +599,7 @@ public class ProcessAdapterTests {
   public void safeExitValueForTerminatedProcessReturnsExitValue() {
     when(this.mockProcess.exitValue()).thenReturn(1);
 
-    assertThat(newProcessAdapter(this.mockProcess).safeExitValue()).isEqualTo(1);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).safeExitValue()).isEqualTo(1);
 
     verify(this.mockProcess, times(1)).exitValue();
   }
@@ -443,7 +610,7 @@ public class ProcessAdapterTests {
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
     when(this.mockProcess.waitFor()).thenReturn(1);
 
-    assertThat(newProcessAdapter(this.mockProcess).kill()).isEqualTo(1);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).kill()).isEqualTo(1);
 
     verify(this.mockProcess, times(1)).destroyForcibly();
     verify(this.mockProcess, times(1)).exitValue();
@@ -454,7 +621,7 @@ public class ProcessAdapterTests {
   public void killTerminatedProcessIsSuccessful() throws InterruptedException {
     when(this.mockProcess.exitValue()).thenReturn(0);
 
-    assertThat(newProcessAdapter(this.mockProcess).kill()).isEqualTo(0);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).kill()).isEqualTo(0);
 
     verify(this.mockProcess, times(2)).exitValue();
     verify(this.mockProcess, never()).destroyForcibly();
@@ -466,8 +633,8 @@ public class ProcessAdapterTests {
     ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
     Process mockRestartedProcess = mock(Process.class);
 
-    List<String> expectedCommandLine = asList("java", "-server", "-ea",
-      "-classpath", "/class/path/to/application.jar", "mock.Application");
+    List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
+      "/class/path/to/application.jar", "mock.Application");
 
     when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
       .thenReturn(newProcessAdapter(mockRestartedProcess, this.processContext));
@@ -480,6 +647,7 @@ public class ProcessAdapterTests {
 
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
       @Override
+      @SuppressWarnings("unchecked")
       protected ProcessExecutor newProcessExecutor() {
         return mockProcessExecutor;
       }
@@ -517,19 +685,19 @@ public class ProcessAdapterTests {
     ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
     Process mockRestartedProcess = mock(Process.class);
 
-    List<String> expectedCommandLine = asList("java", "-server", "-ea",
-      "-classpath", "/class/path/to/application.jar", "mock.Application");
+    List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
+      "/class/path/to/application.jar", "mock.Application");
 
     when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
       .thenReturn(newProcessAdapter(mockRestartedProcess, this.processContext));
 
     this.processContext.ranIn(FileSystemUtils.USER_HOME_DIRECTORY).ranWith(expectedCommandLine);
 
-    doNothing().when(this.mockProcess).destroy();
     when(this.mockProcess.exitValue()).thenReturn(0);
 
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
       @Override
+      @SuppressWarnings("unchecked")
       protected ProcessExecutor newProcessExecutor() {
         return mockProcessExecutor;
       }
@@ -569,7 +737,7 @@ public class ProcessAdapterTests {
     doNothing().when(this.mockProcess).destroy();
 
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"))
-      .thenThrow(new IllegalThreadStateException("running"));
+      .thenThrow(new IllegalThreadStateException("still running"));
 
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
       @Override
@@ -602,15 +770,17 @@ public class ProcessAdapterTests {
       verify(this.mockProcess, times(1)).waitFor();
       verify(processAdapter, times(1)).stop(
         eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
-      verify(mockProcessExecutor, never()).execute(any(File.class), any(List.class));
+      verify(mockProcessExecutor, never()).execute(any(File.class), any(String[].class));
     }
   }
 
   @Test
   public void stopHandlesProcessDestroyRuntimeException() throws InterruptedException {
-    doThrow(new RuntimeException("test")).when(this.mockProcess).destroy();
+    doThrow(newRuntimeException("test")).when(this.mockProcess).destroy();
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running")).thenReturn(1);
-    assertThat(newProcessAdapter(this.mockProcess).stop()).isEqualTo(1);
+
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).stop()).isEqualTo(1);
+
     verify(this.mockProcess, times(1)).destroy();
     verify(this.mockProcess, times(2)).exitValue();
     verify(this.mockProcess, never()).waitFor();
@@ -624,7 +794,7 @@ public class ProcessAdapterTests {
   @Test
   public void stopNonRunningProcessIsSuccessful() {
     when(this.mockProcess.exitValue()).thenReturn(1);
-    assertThat(newProcessAdapter(this.mockProcess).stop()).isEqualTo(1);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).stop()).isEqualTo(1);
     verify(this.mockProcess, times(2)).exitValue();
   }
 
@@ -650,7 +820,7 @@ public class ProcessAdapterTests {
       @Override
       public synchronized int stop() {
         getProcess().destroy();
-        return 0;
+        return 1;
       }
 
       @Override
@@ -666,6 +836,7 @@ public class ProcessAdapterTests {
 
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
     assertThat(processAdapter.stopAndWait()).isEqualTo(0);
 
     verify(this.mockProcess, times(1)).destroy();
@@ -701,6 +872,7 @@ public class ProcessAdapterTests {
 
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
     assertThat(processAdapter.stopAndWait(15L, TimeUnit.SECONDS)).isEqualTo(1);
 
     verify(this.mockProcess, times(1)).destroy();
@@ -723,10 +895,11 @@ public class ProcessAdapterTests {
 
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
-    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess);
+    ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
     assertThat(processAdapter).isNotNull();
     assertThat(processAdapter.getProcess()).isSameAs(this.mockProcess);
+    assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
     assertThat(processAdapter.register(mockProcessStreamListenerOne)).isSameAs(processAdapter);
     assertThat(processAdapter.register(mockProcessStreamListenerTwo)).isSameAs(processAdapter);
 
@@ -757,7 +930,7 @@ public class ProcessAdapterTests {
   public void waitForCallsProcessWaitFor() throws InterruptedException {
     when(this.mockProcess.waitFor()).thenReturn(1);
 
-    assertThat(newProcessAdapter(this.mockProcess).waitFor()).isEqualTo(1);
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).waitFor()).isEqualTo(1);
 
     verify(this.mockProcess, times(1)).waitFor();
   }
@@ -771,7 +944,7 @@ public class ProcessAdapterTests {
   public void waitForWithTimeoutCallsProcessWaitForWithTimeout() throws InterruptedException {
     when(this.mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
 
-    assertThat(newProcessAdapter(this.mockProcess).waitFor(30, TimeUnit.SECONDS)).isTrue();
+    assertThat(newProcessAdapter(this.mockProcess, this.processContext).waitFor(30, TimeUnit.SECONDS)).isTrue();
 
     verify(this.mockProcess, times(1)).waitFor(eq(30L), eq(TimeUnit.SECONDS));
   }
@@ -784,9 +957,9 @@ public class ProcessAdapterTests {
   @SuppressWarnings("unused")
   protected abstract class AbstractWaitInterruptingTestCase extends MultithreadedTestCase {
 
-    protected final Object mutex = new Object();
+    final Object mutex = new Object();
 
-    protected Thread waitingThread;
+    private Thread waitingThread;
 
     public void thread1() {
       waitingThread = Thread.currentThread();
