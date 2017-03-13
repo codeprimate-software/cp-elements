@@ -17,17 +17,17 @@
 
 package org.cp.elements.process.support;
 
-import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.io.FileUtils.isDirectory;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
-import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.NullSafe;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;
@@ -50,9 +50,9 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
 
   /**
    * Factory method to construct a new instance of {@link ProcessBuilderProcessExecutor} used to execute and run
-   * a {@link Process} using Java's {@link ProcessBuilder} API.
+   * a {@link Process} with Java's {@link ProcessBuilder} API.
    *
-   * @return a new instance of {@link ProcessBuilderProcessExecutor} to execute and run {@link Process Processes}.
+   * @return a new instance of {@link ProcessBuilderProcessExecutor} to execute and run {@link Process processes}.
    * @see org.cp.elements.process.support.ProcessBuilderProcessExecutor
    */
   public static ProcessBuilderProcessExecutor newProcessBuilderProcessExecutor() {
@@ -66,19 +66,24 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
    * in the given {@link File directory}.
    *
    * @param directory {@link File directory} in which the program will run.
-   * @param commandLine array of {@link String} values constituting the program and it's runtime arguments.
+   * @param commandLine array of {@link String} values constituting the program and its runtime arguments.
    * @return a {@link Process} object representing the running program.
    * @throws IllegalArgumentException if the {@link File} reference is not a valid, existing directory
    * or the command-line is unspecified.
+   * @throws ProcessExecutionException if the {@link Process} failed to start.
+   * @see #newProcessBuilder(String[], File, Environment)
+   * @see #doExecute(ProcessBuilder)
+   * @see org.cp.elements.process.ProcessAdapter
+   * @see org.cp.elements.process.ProcessContext
    * @see java.lang.Process
    * @see java.io.File
    */
   @Override
   public ProcessAdapter execute(File directory, String... commandLine) {
 
-    Assert.isTrue(FileSystemUtils.isDirectory(directory), "[%s] is not a valid directory", directory);
+    Assert.isTrue(isDirectory(directory), "[%s] is not a valid directory", directory);
 
-    Assert.notEmpty(commandLine, "The command-line [%s] must contain at least 1 command",
+    Assert.notEmpty(commandLine, "The command-line %s must contain at least 1 command",
       Arrays.toString(commandLine));
 
     try {
@@ -88,24 +93,43 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
 
       Process process = doExecute(processBuilder);
 
-      ProcessContext processContext = newProcessContext(process)
-        .ranBy(SystemUtils.USERNAME)
-        .ranIn(processBuilder.directory())
-        .ranWith(processBuilder.command())
-        .using(Environment.from(processBuilder.environment()));
+      ProcessContext processContext = newProcessContext(process).from(processBuilder);
 
       return newProcessAdapter(process, processContext);
     }
     catch (IOException e) {
-      throw new ProcessExecutionException(String.format("Failed to execute program [%1$s] in directory [%2$s]",
+      throw new ProcessExecutionException(String.format("Failed to execute program %1$s in directory [%2$s]",
         Arrays.toString(commandLine), directory), e);
     }
   }
 
+  /**
+   * Executes the program using the given {@link ProcessBuilder}.
+   *
+   * @param processBuilder {@link ProcessBuilder} used to execute and run the program.
+   * @return a reference to the {@link Process} object representing the running program.
+   * @throws IOException if the {@link Process} fails to start.
+   * @see java.lang.ProcessBuilder#start()
+   * @see java.lang.Process
+   */
   protected Process doExecute(ProcessBuilder processBuilder) throws IOException {
     return processBuilder.start();
   }
 
+  /**
+   * Constructs, configures and initializes a new instance of {@link ProcessBuilder} used to execute and run programs.
+   *
+   * The configuration of the {@link ProcessBuilder} is based on this {@link ProcessBuilderProcessExecutor}.
+   *
+   * @param commandLine array of {@link String} values constituting the program and its runtime arguments.
+   * @param directory {@link File directory} in which the program will run.
+   * @param environment {@link Environment} configuration used to run the program.
+   * @return a new instance of {@link ProcessBuilder} configured and initialized with this
+   * {@link ProcessBuilderProcessExecutor} configuration.
+   * @see org.cp.elements.util.Environment
+   * @see java.lang.ProcessBuilder
+   * @see java.io.File
+   */
   protected ProcessBuilder newProcessBuilder(String[] commandLine, File directory, Environment environment) {
     ProcessBuilder processBuilder = new ProcessBuilder(commandLine).directory(directory);
 
@@ -115,10 +139,26 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
     return processBuilder;
   }
 
+  /**
+   * Null-safe operation to get a reference to the configured {@link Environment} used when running the program.
+   *
+   * @return a reference to the {@link Environment} configuration used when running the program.
+   * If the configured {@link Environment} is {@literal null}, then this method
+   * returns {@link Environment#fromEnvironmentVariables()}.
+   * @see org.cp.elements.util.Environment
+   */
+  @NullSafe
   protected Environment getEnvironment() {
-    return defaultIfNull(this.environment, Environment.fromEnvironmentVariables());
+    return Optional.ofNullable(this.environment).orElseGet(Environment::fromEnvironmentVariables);
   }
 
+  /**
+   * Sets the {@link Environment} configuration used when running the program.
+   *
+   * @param environment {@link Environment} configuration used when running the program.
+   * @return this {@link ProcessBuilderProcessExecutor}.
+   * @see org.cp.elements.util.Environment
+   */
   public ProcessBuilderProcessExecutor using(Environment environment) {
     this.environment = environment;
     return this;
