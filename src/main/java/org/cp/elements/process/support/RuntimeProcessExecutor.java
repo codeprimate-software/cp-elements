@@ -74,6 +74,8 @@ public class RuntimeProcessExecutor implements ProcessExecutor<ProcessAdapter> {
    * @return a {@link Process} object representing the running program.
    * @throws IllegalArgumentException if the {@link File} reference is not a valid, existing directory
    * or the command-line is unspecified.
+   * @throws ProcessExecutionException if the {@link Process} fails to start.
+   * @see #doExecute(String[], File, Environment)
    * @see org.cp.elements.process.ProcessAdapter
    * @see org.cp.elements.process.ProcessContext
    * @see java.lang.Process
@@ -125,7 +127,7 @@ public class RuntimeProcessExecutor implements ProcessExecutor<ProcessAdapter> {
   /**
    * Null-safe operation to get a reference to the configured {@link Environment} used when running the program.
    *
-   * @return a reference to the {@link Environment} configuration used when running the the program.
+   * @return a reference to the {@link Environment} configuration used when running the program.
    * If the configured {@link Environment} is {@literal null}, then this method
    * returns {@link Environment#fromEnvironmentVariables()}.
    * @see org.cp.elements.util.Environment
