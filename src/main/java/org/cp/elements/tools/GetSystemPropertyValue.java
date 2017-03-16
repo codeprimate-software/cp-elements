@@ -16,24 +16,28 @@
 
 package org.cp.elements.tools;
 
+import static org.cp.elements.data.struct.SystemPropertyValue.newSystemPropertyValue;
+
+import java.util.Arrays;
+
 /**
- * The GetSystemPropertyValue class is a command-line utility class for getting the value of a Java System Property.
+ * The {@link GetSystemPropertyValue} class is a command-line utility class for getting the value
+ * of a Java System Property.
  *
  * @author John J. Blum
  * @see java.lang.System#getProperty(String)
+ * @see org.cp.elements.data.struct.SystemPropertyValue
  * @since 1.0.0
  */
 public class GetSystemPropertyValue {
 
+  /* (non-Javadoc) */
   public static void main(final String[] args) {
     if (args.length < 1) {
-      System.err.printf(">java %1$s systemProperty [systemProperty]*%n", GetSystemPropertyValue.class.getName());
+      System.err.printf("$ java ... %s systemProperty [systemProperty]*%n", GetSystemPropertyValue.class.getName());
       System.exit(1);
     }
 
-    for (String arg : args) {
-      System.out.printf("%1$s = %2$s%n", arg, System.getProperty(arg));
-    }
+    Arrays.stream(args).forEach(systemProperty ->  System.out.println(newSystemPropertyValue(systemProperty)));
   }
-
 }
