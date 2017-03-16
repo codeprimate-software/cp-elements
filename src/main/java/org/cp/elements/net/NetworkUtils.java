@@ -16,21 +16,27 @@
 
 package org.cp.elements.net;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.lang.StringUtils.getDigits;
 import static org.cp.elements.lang.StringUtils.trim;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.Optional;
 
 import org.cp.elements.lang.NullSafe;
 
 /**
- * The NetworkUtils class encapsulates utility methods related to networking.
+ * The {@link NetworkUtils} class encapsulates utility methods related to networking.
  *
  * @author John J. Blum
+ * @see java.net.InetSocketAddress
  * @see java.net.ServerSocket
  * @see java.net.Socket
+ * @see java.net.SocketAddress
  * @since 1.0.0
  */
 public abstract class NetworkUtils {
@@ -47,8 +53,8 @@ public abstract class NetworkUtils {
       serverSocket = new ServerSocket(0);
       return serverSocket.getLocalPort();
     }
-    catch (IOException ignore) {
-      throw new NoAvailablePortException("No port available", ignore);
+    catch (IOException cause) {
+      throw new NoAvailablePortException("No port available", cause);
     }
     finally {
       close(serverSocket);
@@ -59,15 +65,15 @@ public abstract class NetworkUtils {
    * Attempts to close the given {@link ServerSocket} returning a boolean value to indicate whether the operation
    * was successful or not.
    *
-   * @param socket {@link ServerSocket} to close.
+   * @param serverSocket {@link ServerSocket} to close.
    * @return a boolean value indicating whether the {@link ServerSocket} was successfully closed or not.
    * @see java.net.ServerSocket#close()
    */
   @NullSafe
-  public static boolean close(ServerSocket socket) {
-    if (socket != null) {
+  public static boolean close(ServerSocket serverSocket) {
+    if (serverSocket != null) {
       try {
-        socket.close();
+        serverSocket.close();
         return true;
       }
       catch (IOException ignore) {
@@ -165,12 +171,37 @@ public abstract class NetworkUtils {
     try {
       return Integer.parseInt(trim(port));
     }
-    catch (NumberFormatException ignore) {
-      if (defaultPort != null) {
-        return defaultPort;
-      }
-
-      throw new IllegalArgumentException(String.format("Port [%s] is not valid", port), ignore);
+    catch (NumberFormatException cause) {
+      return Optional.ofNullable(defaultPort)
+        .orElseThrow(() -> newIllegalArgumentException(cause, "Port [%s] is not valid", port));
     }
+  }
+
+  /**
+   * Constructs a new instance of {@link SocketAddress} bound {@link Integer port}.
+   *
+   * @param port {@link Integer} specifying the port number to which the {@link SocketAddress} will bind.
+   * @return a new instance of {@link SocketAddress} bound to the given {@link Integer port}.
+   * @throws IllegalArgumentException if the port parameter is outside the range of valid port values.
+   * @see #newSocketAddress(String, int)
+   */
+  public static SocketAddress newSocketAddress(int port) {
+    return newSocketAddress(null, port);
+  }
+
+  /**
+   * Constructs a new instance of {@link SocketAddress} bound to the given {@link String host} and {@link Integer port}.
+   *
+   * @param host {@link String} containing the name of the host to whichthe {@link SocketAddress} will be bound.
+   * @param port {@link Integer} specifying the port number to which the {@link SocketAddress} will be bound.
+   * @return a new instance of {@link SocketAddress} bound to the given {@link Integer port}.
+   * @throws IllegalArgumentException if the port parameter is outside the range of valid port values.
+   * @see #newSocketAddress(String, int)
+   * @see java.net.InetSocketAddress
+   * @see java.net.SocketAddress
+   */
+  public static SocketAddress newSocketAddress(String host, int port) {
+    return Optional.ofNullable(host).map(hostname -> new InetSocketAddress(host, port))
+      .orElseGet(() -> new InetSocketAddress(port));
   }
 }

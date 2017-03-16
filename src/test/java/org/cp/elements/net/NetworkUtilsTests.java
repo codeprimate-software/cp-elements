@@ -18,6 +18,7 @@ package org.cp.elements.net;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
@@ -28,8 +29,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +42,10 @@ import org.junit.rules.ExpectedException;
  * Unit tests for {@link NetworkUtils}.
  *
  * @author John J. Blum
+ * @see java.net.InetSocketAddress
+ * @see java.net.ServerSocket
+ * @see java.net.Socket
+ * @see java.net.SocketAddress
  * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mock
@@ -159,5 +166,32 @@ public class NetworkUtilsTests {
     exception.expectMessage("Port [invalid] is not valid");
 
     NetworkUtils.parsePort("invalid");
+  }
+
+  @Test
+  public void newSocketAddressWithHostAndPort() {
+    SocketAddress socketAddress = NetworkUtils.newSocketAddress("skullbox", 9876);
+
+    assertThat(socketAddress, is(instanceOf(InetSocketAddress.class)));
+    assertThat(((InetSocketAddress) socketAddress).getHostName(), is(equalTo("skullbox")));
+    assertThat(((InetSocketAddress) socketAddress).getPort(), is(equalTo(9876)));
+  }
+
+  @Test
+  public void newSocketAddressWithNullHostAndPort() {
+    SocketAddress socketAddress = NetworkUtils.newSocketAddress(null, 9876);
+
+    assertThat(socketAddress, is(instanceOf(InetSocketAddress.class)));
+    assertThat(((InetSocketAddress) socketAddress).getHostName(), is(equalTo("0.0.0.0")));
+    assertThat(((InetSocketAddress) socketAddress).getPort(), is(equalTo(9876)));
+  }
+
+  @Test
+  public void newSocketAddressWithPort() {
+    SocketAddress socketAddress = NetworkUtils.newSocketAddress(1234);
+
+    assertThat(socketAddress, is(instanceOf(InetSocketAddress.class)));
+    assertThat(((InetSocketAddress) socketAddress).getHostName(), is(equalTo("0.0.0.0")));
+    assertThat(((InetSocketAddress) socketAddress).getPort(), is(equalTo(1234)));
   }
 }
