@@ -16,9 +16,13 @@
 
 package org.cp.elements.tools;
 
+import static org.cp.elements.data.struct.EnvironmentVariableValue.newEnvironmentVariableValue;
+
+import java.util.Arrays;
+
 /**
- * The GetEnvironmentVariableValue class is a command-line utility class for the getting the value of
- * a System Environment Variable.
+ * The {@link GetEnvironmentVariableValue} class is a command-line utility class for the getting the value
+ * of a System Environment Variable.
  *
  * @author John J. Blum
  * @see java.lang.System#getenv()
@@ -26,16 +30,15 @@ package org.cp.elements.tools;
  */
 public class GetEnvironmentVariableValue {
 
-  public static void main(final String[] args) {
+  /* (non-Javadoc) */
+  public static void main(String[] args) {
     if (args.length < 1) {
-      System.err.printf(">java %1$s environmentVariable [environmentVariable]*%n",
+      System.err.printf("$ java ... %s environmentVariable [environmentVariable]*%n",
         GetEnvironmentVariableValue.class.getName());
       System.exit(1);
     }
 
-    for (String arg : args) {
-      System.out.printf("%1$s = %2$s%n", arg, System.getenv(arg));
-    }
+    Arrays.stream(args).forEach(environmentVariable ->
+      System.out.println(newEnvironmentVariableValue(environmentVariable)));
   }
-
 }
