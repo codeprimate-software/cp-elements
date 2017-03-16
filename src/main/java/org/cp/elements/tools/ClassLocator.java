@@ -17,25 +17,33 @@
 package org.cp.elements.tools;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Optional;
 
 import org.cp.elements.lang.ClassUtils;
 
 /**
- * The ClassLocator class is command-line tool used to locate one or more classes given their binary names.
+ * The {@link ClassLocator} class is command-line tool used to locate one or more {@link Class classes}
+ * given their binary names.
  *
  * @author John J. Blum
  * @see java.lang.Class
+ * @see java.net.URL
  * @see org.cp.elements.lang.ClassUtils
  * @since 1.0.0
  */
 public class ClassLocator {
 
-  public static void main(final String[] args) {
-    for (String binaryName : args) {
-      URL url = ClassUtils.locateClass(binaryName);
-      System.out.printf("class [%1$s] %2$s%n", binaryName, (url != null ? String.format("is found in [%1$s]", url)
-        : "was not found"));
-    }
+  /* (non-Javadoc) */
+  public static void main(String[] args) {
+    Arrays.stream(args).forEach(binaryClassName -> {
+      System.out.printf("class [%1$s] %2$s%n", binaryClassName, resolve(binaryClassName)
+        .map(url -> String.format("was found in [%s]", url)).orElse("was not found"));
+    });
   }
 
+  /* (non-Javadoc) */
+  protected static Optional<URL> resolve(String binaryClassName) {
+   return Optional.ofNullable(ClassUtils.locateClass(binaryClassName));
+  }
 }
