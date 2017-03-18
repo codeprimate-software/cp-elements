@@ -17,13 +17,17 @@
 package org.cp.elements.process.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.cp.elements.process.support.RuntimeProcessExecutor.newRuntimeProcessExecutor;
+import static org.cp.elements.tools.net.ConnectionTester.newConnectionTester;
+import static org.cp.elements.tools.net.EchoClient.newEchoClient;
 
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.net.NetworkUtils;
 import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.tools.net.EchoServer;
 import org.junit.Test;
 
 /**
@@ -36,35 +40,29 @@ import org.junit.Test;
  */
 public class RuntimeProcessExecutorIntegrationTests {
 
+  private static final long TIMEOUT = 5;
+
+  private static final TimeUnit TIMEOUT_TIME_UNIT = TimeUnit.SECONDS;
+
   @Test
   public void executeProgram() {
-    String[] commandLine = { "java", "-server", "-ea", "-classpath",
-      System.getProperty("java.class.path"), TestProgram.class.getName() };
+    int availablePort = NetworkUtils.availablePort();
 
-    StringBuilder buffer = new StringBuilder();
+    String[] commandLine = { "java", "-server", "-ea", "-classpath", System.getProperty("java.class.path"),
+      EchoServer.class.getName(), String.valueOf(availablePort) };
 
     ProcessAdapter process = newRuntimeProcessExecutor().execute(FileSystemUtils.WORKING_DIRECTORY, commandLine);
 
     assertThat(process).isNotNull();
 
-    process.register(buffer::append);
-    process.init();
+    waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(500, TimeUnit.MILLISECONDS).on(process::isRunning);
+    waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(500, TimeUnit.MICROSECONDS).on(newConnectionTester(availablePort));
 
-    assertThat(process.isInitialized()).isTrue();
     assertThat(process.isRunning()).isTrue();
+    assertThat(newEchoClient(availablePort).sendMessage("test")).isEqualTo("test");
 
-    process.stopAndWait(5L, TimeUnit.SECONDS);
+    process.stopAndWait(TIMEOUT, TIMEOUT_TIME_UNIT);
 
     assertThat(process.isRunning()).isFalse();
-    assertThat(buffer.toString()).isEqualTo("I am here!");
-  }
-
-  public static final class TestProgram {
-
-    public static void main(String[] args) throws Exception {
-      System.out.println("I am here!");
-      System.out.flush();
-      new Scanner(System.in).nextLine();
-    }
   }
 }
