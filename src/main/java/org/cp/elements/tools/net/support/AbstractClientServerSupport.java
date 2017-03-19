@@ -17,6 +17,7 @@
 package org.cp.elements.tools.net.support;
 
 import static org.cp.elements.lang.NumberUtils.intValue;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
 import static org.cp.elements.net.NetworkUtils.newSocketAddress;
 
 import java.io.BufferedReader;
@@ -71,6 +72,16 @@ public abstract class AbstractClientServerSupport {
   }
 
   /**
+   * Returns a reference to the {@link Logger}.
+   *
+   * @return a reference to the {@link Logger}.
+   * @see java.util.logging.Logger
+   */
+  protected Logger getLogger() {
+    return this.logger;
+  }
+
+  /**
    * Returns a new {@link BufferedReader} to read from the {@link Socket#getInputStream()}.
    *
    * @param socket {@link Socket} from which the {@link InputStream} is read.
@@ -107,14 +118,25 @@ public abstract class AbstractClientServerSupport {
    */
   public ServerSocket newServerSocket(int port) {
     try {
-      ServerSocket serverSocket = new ServerSocket();
-      serverSocket.setReuseAddress(true);
+      ServerSocket serverSocket = newServerSocket();
+      serverSocket.setReuseAddress(DEFAULT_REUSE_ADDRESS);
       serverSocket.bind(newSocketAddress(port));
       return serverSocket;
     }
     catch (IOException cause) {
-      throw new RuntimeException(String.format("Failed to create a ServerSocket on port [%d]", port), cause);
+      throw newRuntimeException(cause, "Failed to create a ServerSocket on port [%d]", port);
     }
+  }
+
+  /**
+   * Constructs a new uninitialized instance of {@link ServerSocket}.
+   *
+   * @return a new uninitialized instance of {@link ServerSocket}.
+   * @throws IOException if the {@link ServerSocket} could not be created.
+   * @see java.net.ServerSocket
+   */
+  protected ServerSocket newServerSocket() throws IOException {
+    return new ServerSocket();
   }
 
   /**
@@ -131,17 +153,25 @@ public abstract class AbstractClientServerSupport {
    */
   public Socket newSocket(String host, int port) {
     try {
-      Socket socket = new Socket();
-      socket.setReuseAddress(true);
+      Socket socket = newSocket();
+      socket.setReuseAddress(DEFAULT_REUSE_ADDRESS);
       socket.setSoTimeout(intValue(DEFAULT_SO_TIMEOUT));
       socket.connect(newSocketAddress(host, port));
       return socket;
     }
     catch (IOException cause) {
-      throw new RuntimeException(
-        String.format("Failed to create a client Socket on host [%s] and port [%d]", host, port),
-        cause);
+      throw newRuntimeException(cause, "Failed to create a client Socket on host [%s] and port [%d]", host, port);
     }
+  }
+
+  /**
+   * Constructs an uninitialized instance of {@link Socket}.
+   *
+   * @return an uninitialized instance of {@link Socket}.
+   * @see java.net.Socket
+   */
+  protected Socket newSocket() {
+    return new Socket();
   }
 
   /**
