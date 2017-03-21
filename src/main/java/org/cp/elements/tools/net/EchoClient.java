@@ -16,6 +16,8 @@
 
 package org.cp.elements.tools.net;
 
+import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.net.NetworkUtils.close;
 import static org.cp.elements.net.NetworkUtils.lenientParsePort;
 
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import org.cp.elements.lang.ThrowableUtils;
+import org.cp.elements.net.ServicePort;
 import org.cp.elements.tools.net.support.AbstractClientServerSupport;
 import org.cp.elements.util.ArrayUtils;
 
@@ -118,8 +121,13 @@ public class EchoClient extends AbstractClientServerSupport {
    * @param host {@link String} specifying host on which the {@link EchoServer} is running.
    * @param port {@link Integer} value indicating the port number on which the {@link EchoServer} is listening
    * for {@link EchoClient} connections.
+   * @throws IllegalArgumentException if {@code port} is not valid.
    */
   public EchoClient(String host, int port) {
+    assertThat(port)
+      .throwing(newIllegalArgumentException("Port [%d] must be greater than 0 and less than equal to 65535", port))
+      .isGreaterThanAndLessThanEqualTo(ServicePort.MIN_PORT, ServicePort.MAX_PORT);
+
     this.host = host;
     this.port = port;
   }
@@ -164,14 +172,16 @@ public class EchoClient extends AbstractClientServerSupport {
   }
 
   /* (non-Javadoc) */
+  @Override
   protected Socket sendMessage(Socket socket, String message) {
     try {
       return super.sendMessage(socket, message);
     }
     catch (IOException e) {
-      logger.severe(String.format("Failed to send message [%1$s] to EchoServer [%2$s]",
+      getLogger().severe(String.format("Failed to send message [%1$s] to EchoServer [%2$s]",
         message, socket.getRemoteSocketAddress()));
-      logger.severe(ThrowableUtils.getStackTrace(e));
+
+      getLogger().severe(ThrowableUtils.getStackTrace(e));
 
       return socket;
     }
@@ -183,8 +193,11 @@ public class EchoClient extends AbstractClientServerSupport {
       return super.receiveMessage(socket);
     }
     catch (IOException e) {
-      logger.severe(String.format("Failed to receive response from EchoServer [%s]", socket.getRemoteSocketAddress()));
-      logger.severe(ThrowableUtils.getStackTrace(e));
+      getLogger().severe(String.format("Failed to receive response from EchoServer [%s]",
+        socket.getRemoteSocketAddress()));
+
+      getLogger().severe(ThrowableUtils.getStackTrace(e));
+
       return "No Reply";
     }
   }
