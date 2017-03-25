@@ -17,6 +17,7 @@
 package org.cp.elements.tools.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.net.NetworkUtils.close;
 import static org.cp.elements.net.NetworkUtils.lenientParsePort;
 
@@ -104,7 +105,8 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see #newServerSocket(int)
    */
   public EchoServer(int port) {
-    assertThat(port).stating("Port [%d] must be greater than 1024 and less than equal to 65535", port)
+    assertThat(port)
+      .throwing(newIllegalArgumentException("Port [%d] must be greater than 1024 and less than equal to 65535", port))
       .isGreaterThanAndLessThanEqualTo(ServicePort.MAX_RESERVED_PORT, ServicePort.MAX_PORT);
 
     this.port = port;
@@ -135,6 +137,16 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   }
 
   /**
+   * Returns a reference to the Echo Service.
+   *
+   * @return a reference to the Echo Service.
+   * @see java.util.concurrent.ExecutorService
+   */
+  protected ExecutorService getEchoService() {
+    return this.echoService;
+  }
+
+  /**
    * Returns the port on which this {@link EchoServer} is listening for {@link EchoClient} connections.
    *
    * @return a {@link Integer} value indicating the port number the {@link EchoServer} is using to listen
@@ -159,7 +171,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    */
   @Override
   public void run() {
-    logger.info(String.format("Starting EchoServer on port [%d]...", getPort()));
+    getLogger().info(() -> String.format("Starting EchoServer on port [%d]...", getPort()));
     runEchoService(getServerSocket());
   }
 
@@ -197,14 +209,14 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   protected void runEchoService(ServerSocket serverSocket) {
     if (isRunning(serverSocket)) {
 
-      echoService = Executors.newFixedThreadPool(EXECUTOR_THREAD_POOL_SIZE);
+      echoService = newExecutorService();
 
       echoService.submit(() -> {
         try {
           while (isRunning(serverSocket)) {
             Socket echoClient = serverSocket.accept();
 
-            logger.info(String.format("EchoClient connected from [%s]",
+            getLogger().info(() -> String.format("EchoClient connected from [%s]",
               echoClient.getRemoteSocketAddress()));
 
             echoService.submit(() -> {
@@ -213,79 +225,112 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
             });
           }
         }
-        catch (IOException e) {
+        catch (IOException cause) {
           if (isRunning(serverSocket)) {
-            logger.warning(() -> String.format("An IO error occurred while listening for EchoClients:%n%s",
-              ThrowableUtils.getStackTrace(e)));
+            getLogger().warning(() -> String.format("An IO error occurred while listening for EchoClients:%n%s",
+              ThrowableUtils.getStackTrace(cause)));
           }
         }
       });
 
-      logger.info(String.format("EchoServer running on port [%d]", getPort()));
+      getLogger().info(() -> String.format("EchoServer running on port [%d]", getPort()));
     }
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Constructs a new instance of an {@link ExecutorService} to run the Echo Service.
+   *
+   * @return a new instance of {@link ExecutorService} used to run the Echo Service.
+   * @see java.util.concurrent.Executors#newFixedThreadPool(int)
+   * @see java.util.concurrent.ExecutorService
+   * @see #runEchoService(ServerSocket)
+   */
+  protected ExecutorService newExecutorService() {
+    return Executors.newFixedThreadPool(EXECUTOR_THREAD_POOL_SIZE);
+  }
+
+  /**
+   * @inheritDoc
+   */
+  @Override
   protected String receiveMessage(Socket socket) {
     try {
       String message = super.receiveMessage(socket);
 
-      logger.fine(String.format("Received message [%1$s] from EchoClient [%2$s]",
+      getLogger().fine(() -> String.format("Received message [%1$s] from EchoClient [%2$s]",
         message, socket.getRemoteSocketAddress()));
 
       return message;
     }
     catch (IOException cause) {
-      logger.warning(() -> String.format("Failed to receive message from EchoClient [%s]",
+      getLogger().warning(() -> String.format("Failed to receive message from EchoClient [%s]",
         socket.getRemoteSocketAddress()));
 
-      logger.fine(() -> ThrowableUtils.getStackTrace(cause));
+      getLogger().fine(() -> ThrowableUtils.getStackTrace(cause));
 
       return "What?";
     }
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Sends the {@link String message} received from the Echo Client back to the Echo Client on the given {@link Socket}.
+   *
+   * @param socket {@link Socket} used to send the Echo Client's {@link String message} back to the Echo Client.
+   * @param message {@link String} containing the message to send the Echo Client.  This is the same message
+   * sent by the Echo Client and received by the Echo Server.
+   * @see AbstractClientServerSupport#sendMessage(Socket, String)
+   */
   protected void sendResponse(Socket socket, String message) {
     try {
-      logger.info(String.format("Sending response [%1$s] to EchoClient [%2$s]",
+      getLogger().info(() -> String.format("Sending response [%1$s] to EchoClient [%2$s]",
         message, socket.getRemoteSocketAddress()));
 
       sendMessage(socket, message);
     }
     catch (IOException cause) {
-      logger.warning(() -> String.format("Failed to send response [%1$s] to EchoClient [%2$s]",
+      getLogger().warning(() -> String.format("Failed to send response [%1$s] to EchoClient [%2$s]",
         message, socket.getRemoteSocketAddress()));
 
-      logger.fine(() -> ThrowableUtils.getStackTrace(cause));
+      getLogger().fine(() -> ThrowableUtils.getStackTrace(cause));
     }
   }
 
   /**
-   * Stops this {@link EchoServer} taking it out of service.
+   * Stops this {@link EchoServer} taking it offline and out-of-service.
    */
   public void shutdown() {
-    logger.info("Stopping EchoServer...");
+    getLogger().info("Stopping EchoServer...");
 
     closeServerSocket();
     stopEchoService();
 
-    logger.info("EchoServer stopped");
+    getLogger().info("EchoServer stopped");
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Closes the {@link ServerSocket} used by the {@link EchoServer} to receive {@link EchoClient} connections.
+   *
+   * @see #getServerSocket()
+   */
   protected void closeServerSocket() {
     ServerSocket serverSocket = getServerSocket();
 
     if (!close(serverSocket)) {
-      logger.warning(String.format("Failed to close ServerSocket bound to address [%s], listening on port [%d]",
-        serverSocket.getInetAddress(), serverSocket.getLocalPort()));
+      getLogger().warning(() -> String.format(
+        "Failed to close ServerSocket bound to address [%s], listening on port [%d]",
+          serverSocket.getInetAddress(), serverSocket.getLocalPort()));
     }
   }
 
-  /* (non-Javadoc) */
-  protected void stopEchoService() {
-    Optional.ofNullable(this.echoService).ifPresent(localEchoService -> {
+  /**
+   * Stops the Echo Service, taking it offline and out-of-service.
+   *
+   * @return a boolean value indicating whether the Echo Service has been shutdown successfully.
+   * @see #getEchoService()
+   */
+  protected boolean stopEchoService() {
+    return Optional.ofNullable(getEchoService()).map(localEchoService -> {
+
       localEchoService.shutdown();
 
       try {
@@ -293,15 +338,17 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
           localEchoService.shutdownNow();
 
           if (!localEchoService.awaitTermination(30, TimeUnit.SECONDS)) {
-            this.logger.warning("Failed to shutdown EchoService");
+            getLogger().warning("Failed to shutdown EchoService");
           }
         }
       }
       catch (InterruptedException ignore) {
-        localEchoService.shutdownNow();
         Thread.currentThread().interrupt();
       }
-    });
+
+      return localEchoService.isShutdown();
+
+    }).orElse(false);
   }
 
   /**
