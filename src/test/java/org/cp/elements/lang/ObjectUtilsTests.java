@@ -187,7 +187,7 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void defaultIfNullWithNullValues() {
-    assertThat(ObjectUtils.defaultIfNull((Object[]) null)).isNull();
+    assertThat(ObjectUtils.defaultIfNull((Object[][]) null)).isNull();
     assertThat(ObjectUtils.defaultIfNull(null, (Object[]) null)).isNull();
     assertThat(ObjectUtils.defaultIfNull((Object[]) null, null, null)).isNull();
   }

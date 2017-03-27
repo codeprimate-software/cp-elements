@@ -16,7 +16,6 @@
 
 package org.cp.elements.util;
 
-import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -491,7 +490,7 @@ public class CollectionUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void containsWithNullCollectionAndArrayReturnsFalse() {
-    assertThat(CollectionUtils.containsAny(null, asArray(1, 2, 3)), is(false));
+    assertThat(CollectionUtils.containsAny(null, 1, 2, 3), is(false));
   }
 
   @Test
