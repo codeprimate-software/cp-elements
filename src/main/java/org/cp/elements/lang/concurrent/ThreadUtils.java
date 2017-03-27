@@ -28,7 +28,7 @@ import org.cp.elements.lang.annotation.DSL;
 /**
  * The {@link ThreadUtils} class provides utilities for writing concurrent programs using Java {@link Thread Threads}
  * and the java.util.concurrent API.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Runnable
  * @see java.lang.Thread
@@ -196,12 +196,12 @@ public abstract class ThreadUtils {
    */
   @NullSafe
   public static long getId(Thread thread) {
-    return (thread != null ? thread.getId() : 0l);
+    return (thread != null ? thread.getId() : 0L);
   }
 
   /**
    * A null-safe method for getting the Thread's name.
-   * 
+   *
    * @param thread the Thread from which the name is returned.
    * @return a String indicating the name of the specified Thread or null if the Thread is null.
    * @see java.lang.Thread#getName()
@@ -295,7 +295,7 @@ public abstract class ThreadUtils {
    * for the specified Thread, then the current Threads interrupt bit will be set and this method will return false.
    * Otherwise, the current Thread will wait on the specified Thread until it dies, or until the time period has expired
    * and then the method will return true.
-   * 
+   *
    * @param thread the Thread that the current Thread (caller) will join.
    * @param milliseconds the number of milliseconds the current Thread will wait during the join operation.  If the
    * number of milliseconds specified is 0, then the current Thread will wait until the specified Thread dies, or the
@@ -325,7 +325,7 @@ public abstract class ThreadUtils {
   /**
    * Causes the current Thread to sleep for the specified number of milliseconds and nanoseconds.  If the current Thread
    * is interrupted, the sleep is aborted, however, the interrupt bit is reset and this method returns false.
-   * 
+   *
    * @param milliseconds the number of milliseconds to cause the current Thread to sleep (sleep).  If the number
    * of milliseconds is 0, then the current Thread will sleep (sleep) until interrupted.
    * @param nanoseconds the number of nanoseconds in addition to the milliseconds to cause the current Thread to sleep
