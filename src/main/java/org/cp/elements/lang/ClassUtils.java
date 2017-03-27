@@ -687,16 +687,13 @@ public abstract class ClassUtils {
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public static <T> Class<T> loadClass(String fullyQualifiedClassName, boolean initialize, ClassLoader classLoader) {
     try {
       return (Class<T>) Class.forName(fullyQualifiedClassName, initialize, classLoader);
     }
-    catch (ClassNotFoundException e) {
+    catch (ClassNotFoundException | NoClassDefFoundError e) {
       throw new TypeNotFoundException(String.format("Class [%s] was not found", fullyQualifiedClassName), e);
-    }
-    catch (NoClassDefFoundError err) {
-      throw new TypeNotFoundException(String.format("Class [%s] was not found", fullyQualifiedClassName), err);
     }
   }
 

@@ -172,6 +172,7 @@ public class ObjectUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void defaultIfNullWithNonNullValues() {
     assertThat(ObjectUtils.defaultIfNull("test", null, null, null)).isEqualTo("test");
     assertThat(ObjectUtils.defaultIfNull(null, "test")).isEqualTo("test");
@@ -184,6 +185,7 @@ public class ObjectUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void defaultIfNullWithNullValues() {
     assertThat(ObjectUtils.defaultIfNull((Object[]) null)).isNull();
     assertThat(ObjectUtils.defaultIfNull(null, (Object[]) null)).isNull();

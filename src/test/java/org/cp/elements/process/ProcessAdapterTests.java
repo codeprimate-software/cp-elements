@@ -629,8 +629,9 @@ public class ProcessAdapterTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void restartRunningProcessIsSuccessful() throws InterruptedException {
-    ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
+    ProcessExecutor<ProcessAdapter> mockProcessExecutor = mock(ProcessExecutor.class);
     Process mockRestartedProcess = mock(Process.class);
 
     List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
@@ -681,8 +682,9 @@ public class ProcessAdapterTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void restartTerminatedProcessIsSuccessful() throws InterruptedException {
-    ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
+    ProcessExecutor<ProcessAdapter> mockProcessExecutor = mock(ProcessExecutor.class);
     Process mockRestartedProcess = mock(Process.class);
 
     List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",

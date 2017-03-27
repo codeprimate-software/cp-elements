@@ -49,7 +49,7 @@ public interface Composite<T> {
    * @see #compose(Object, Object)
    */
   @NullSafe
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "varargs" })
   default T compose(T... objects) {
     T composite = null;
 

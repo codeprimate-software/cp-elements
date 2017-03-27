@@ -200,7 +200,7 @@ public abstract class ProxyFactory<T> {
    * @see #getMethodInterceptors()
    */
   @NullSafe
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public ProxyFactory<T> adviseWith(MethodInterceptor<T>... methodInterceptors) {
     Collections.addAll(this.methodInterceptors, nullSafeArray(methodInterceptors));
     return this;

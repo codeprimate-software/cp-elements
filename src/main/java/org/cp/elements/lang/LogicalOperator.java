@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 /**
  * The LogicalOperator class defines class representations for the standard logical operators AND ({@literal &&})
  * and OR ({@literal ||}).
- * 
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.RelationalOperator
  * @since 1.0.0
@@ -35,7 +35,7 @@ public abstract class LogicalOperator {
   /**
    * This method will negate outcome of the given logical operator when performing an evaluation on a group
    * of conditions.
-   * 
+   *
    * @param op the LogicalOperator (such as AND or OR) to negate.
    * @return the given logical operator decorated with logical not.
    * @see LogicalNot
@@ -47,7 +47,7 @@ public abstract class LogicalOperator {
   /**
    * Indicates whether this logical operator is a binary operator.  A binary operator is an operator with two operands.
    * With LogicalOperator implementations, such as AND and OR, this is expanded to mean two or more operands.
-   * 
+   *
    * @return a boolean value indicating if this logical operator is a binary operator.
    * @see #isTernary()
    * @see #isUnary()
@@ -57,7 +57,7 @@ public abstract class LogicalOperator {
   /**
    * Indicates whether this logical operator is the ternary operator, which in Java is represented as
    * (condition ? trueValue : falseValue), or as a if-then-else statement (ifTrue ? thenValue : elseValue).
-   * 
+   *
    * @return a boolean value indicating if this logical operator is the ternary operator.
    * @see #isBinary()
    * @see #isUnary()
@@ -67,7 +67,7 @@ public abstract class LogicalOperator {
   /**
    * Indicates whether this logical operator is a unary operator.  A unary operator is an operator with only
    * one operand, such as the NOT operator.
-   * 
+   *
    * @return a boolean value indicating if this logical operator is an unary operator.
    * @see #isBinary()
    * @see #isTernary()
@@ -76,7 +76,7 @@ public abstract class LogicalOperator {
 
   /**
    * Returns a description of this logical operator, such as 'and' or 'or'.
-   * 
+   *
    * @return a String value describing this logical operator.
    * @see #getSymbol()
    */
@@ -86,7 +86,7 @@ public abstract class LogicalOperator {
    * Gets the logical opposite of this logical operator.  For instance, the logical opposite of AND is OR;
    * the logical opposite of OR is AND.  The logical opposite of NOT is NOT NOT (double negative) resulting in positive.
    * For instance, NOT(NOT(TRUE)) is TRUE.
-   * 
+   *
    * @return the logical opposite of this logical operator.
    */
   public abstract LogicalOperator getOpposite();
@@ -94,7 +94,7 @@ public abstract class LogicalOperator {
   /**
    * Gets the symbolic representation of this logical operator.  For instance, the symbolic representation of AND
    * in Java is {@literal &&}, and the symbolic representation of OR in Java is {@literal ||}.
-   * 
+   *
    * @return a String value representing the symbolic representation of this logical operator.
    * @see #getDescription()
    */
@@ -102,7 +102,7 @@ public abstract class LogicalOperator {
 
   /**
    * Evaluates the given array of boolean conditions by applying this logical operator to all conditions collectively.
-   * 
+   *
    * @param conditions a boolean array of conditions to which this logical operator is applied.
    * @return a boolean value resulting from the evaluation of the given boolean conditions with this logical operator.
    */
@@ -117,12 +117,12 @@ public abstract class LogicalOperator {
    * with this logical operater.
    * @see java.util.function.Supplier
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "varargs" })
   public abstract boolean evaluate(Supplier<Boolean>... suppliers);
 
   /**
    * Gets a String representation of the logical operator.
-   * 
+   *
    * @return a String value representing the logical operator.
    * @see org.cp.elements.lang.LogicalOperator#getDescription
    */
@@ -142,7 +142,7 @@ public abstract class LogicalOperator {
     /**
      * Constructs a instance of the LogicalOperator class with the given description and symbol
      * for the logical operator.
-     * 
+     *
      * @param description a String value describing the logical operator.
      * @param symbol a String value symbolically represending the logical operator.
      * @throws IllegalArgumentException if either the description or symbol are not specified.
@@ -195,7 +195,7 @@ public abstract class LogicalOperator {
 
     /**
      * Gets a description of this logical operator, such as 'and' or 'or'.
-     * 
+     *
      * @return a String value describing this logical operator.
      * @see #getSymbol()
      */
@@ -209,7 +209,7 @@ public abstract class LogicalOperator {
      * the logical opposite of OR is AND.  The logical opposite of NOT is NOT NOT (double negative) resulting
      * in positive.
      * For instance, NOT(NOT(TRUE)) is TRUE.
-     * 
+     *
      * @return the logical opposite of this logical operator.
      */
     @Override
@@ -220,7 +220,7 @@ public abstract class LogicalOperator {
     /**
      * Gets the symbolic representation of this logical operator.  For instance, the symbolic representation of AND
      * in Java is {@literal &&}, and the symbolic representation of OR in Java is {@literal ||}.
-     * 
+     *
      * @return a String value representing the symbolic representation of this logical operator.
      * @see #getDescription()
      */
@@ -289,7 +289,7 @@ public abstract class LogicalOperator {
 
     /**
      * Constructs an instance of the LogicalNot operator.
-     * 
+     *
      * @param op the LogicalOperator to negate.
      */
     LogicalNot(LogicalOperator op) {

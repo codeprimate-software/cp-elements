@@ -51,9 +51,10 @@ public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceSup
    * @return a single instance of the {@link ProxyService} class.
    * @see org.cp.elements.lang.reflect.ProxyService
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public static synchronized <T> ProxyService<T> newProxyService() {
-    return (proxyServiceInstance = Optional.ofNullable(proxyServiceInstance).orElseGet(ProxyService::new));
+    proxyServiceInstance = Optional.ofNullable(proxyServiceInstance).orElseGet(ProxyService::new);
+    return proxyServiceInstance;
   }
 
   private final ServiceLoader<ProxyFactory> proxyFactoriesLoader;
@@ -82,7 +83,7 @@ public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceSup
    * @see java.lang.Class
    * @see java.lang.Object
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public boolean canProxy(Object target, Class<?>... proxyInterfaces) {
     return stream(this).anyMatch(proxyFactory -> proxyFactory.canProxy(target, proxyInterfaces));
   }

@@ -129,7 +129,7 @@ public abstract class LangExtensions {
     @Override
     @SuppressWarnings("unchecked")
     public T getTarget() {
-      return (T) getProxyFactory().getTarget();
+      return getProxyFactory().getTarget();
     }
 
     /**
@@ -137,8 +137,8 @@ public abstract class LangExtensions {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Optional<T> intercept(MethodInvocation methodInvocation) {
-      T nextTarget = resolveNextTarget(methodInvocation);
+    public <R> Optional<R> intercept(MethodInvocation methodInvocation) {
+      R nextTarget = resolveNextTarget(methodInvocation);
       Class<?> targetType = resolveTargetType(methodInvocation);
 
       return (canProxy(nextTarget, targetType) ? Optional.of($(nextTarget, targetType))
@@ -155,8 +155,8 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     @SuppressWarnings("unchecked")
-    private T resolveNextTarget(MethodInvocation methodInvocation) {
-      return (T) Optional.ofNullable(getTarget())
+    private <R> R resolveNextTarget(MethodInvocation methodInvocation) {
+      return (R) Optional.ofNullable(getTarget())
         .map(target -> methodInvocation.makeAccessible().invoke(target).orElse(null))
           .orElse(null);
     }

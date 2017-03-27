@@ -91,6 +91,7 @@ public class ProxyFactoryTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void adviseWithMethodInterceptors() {
     MethodInterceptor mockMethodInterceptorOne = mock(MethodInterceptor.class);
     MethodInterceptor mockMethodInterceptorTwo = mock(MethodInterceptor.class);
