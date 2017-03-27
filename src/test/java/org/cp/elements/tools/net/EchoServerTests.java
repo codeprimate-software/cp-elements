@@ -62,13 +62,17 @@ import edu.umd.cs.mtc.TestFramework;
  * @author John Blum
  * @see java.net.ServerSocket
  * @see java.net.Socket
+ * @see java.util.concurrent.ExecutorService
+ * @see org.cp.elements.test.annotation.SubjectUnderTest
+ * @see org.cp.elements.tools.net.EchoServer
  * @see org.junit.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
  * @see org.mockito.runners.MockitoJUnitRunner
- * @see org.cp.elements.tools.net.EchoServer
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -272,7 +276,7 @@ public class EchoServerTests {
     doNothing().when(testEchoServer).closeServerSocket();
     doReturn(false).when(testEchoServer).stopEchoService();
 
-    testEchoServer.shutdown();;
+    testEchoServer.shutdown();
 
     verify(testEchoServer, times(1)).closeServerSocket();
     verify(testEchoServer, times(1)).stopEchoService();
@@ -339,7 +343,7 @@ public class EchoServerTests {
 
   @Test
   public void stopEchoServiceHandlesInterruptedExceptionProperly() throws Throwable {
-    TestFramework.runOnce(new StopEchoServiceHandlesInterruptedExceptionMultithreadedTestCase());
+    TestFramework.runOnce(new StopEchoServiceInterruptedTest());
   }
 
   @Test
@@ -356,11 +360,12 @@ public class EchoServerTests {
     verify(testEchoServer, atLeast(2)).isRunning();
   }
 
-  class StopEchoServiceHandlesInterruptedExceptionMultithreadedTestCase extends MultithreadedTestCase {
+  class StopEchoServiceInterruptedTest extends MultithreadedTestCase {
 
     private final Object mutex = new Object();
 
     @Override
+    @SuppressWarnings("all")
     public void initialize() {
       try {
         super.initialize();
@@ -373,6 +378,7 @@ public class EchoServerTests {
           synchronized (mutex) {
             mutex.wait();
           }
+
           return Collections.emptyList();
         }).thenReturn(Collections.emptyList());
       }
@@ -392,6 +398,7 @@ public class EchoServerTests {
     @SuppressWarnings("unused")
     public void thread2() {
       Thread.currentThread().setName("Interrupting Thread");
+      waitForTick(1);
       getThread(1).interrupt();
     }
 
