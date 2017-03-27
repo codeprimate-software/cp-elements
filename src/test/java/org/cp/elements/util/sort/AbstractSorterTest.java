@@ -16,8 +16,7 @@
 
 package org.cp.elements.util.sort;
 
-import static org.cp.elements.test.TestUtils.assertNegative;
-import static org.cp.elements.test.TestUtils.assertPositive;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -399,8 +398,8 @@ public class AbstractSorterTest {
   @SuppressWarnings("unchecked")
   public void comparableComparatorCompare() {
     assertEquals(0, AbstractSorter.ComparableComparator.INSTANCE.compare("test", "test"));
-    assertPositive(AbstractSorter.ComparableComparator.INSTANCE.compare("testing", "test"));
-    assertNegative(AbstractSorter.ComparableComparator.INSTANCE.compare("test", "tested"));
+    assertThat(AbstractSorter.ComparableComparator.INSTANCE.compare("testing", "test")).isPositive();
+    assertThat(AbstractSorter.ComparableComparator.INSTANCE.compare("test", "tested")).isNegative();
   }
 
   @Test
