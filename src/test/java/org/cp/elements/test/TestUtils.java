@@ -17,10 +17,6 @@
 package org.cp.elements.test;
 
 import java.util.Calendar;
-import java.util.List;
-import java.util.function.Supplier;
-
-import com.apple.eawt.SystemSleepListener;
 
 import org.junit.Assert;
 
