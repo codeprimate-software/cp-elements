@@ -147,6 +147,37 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void toProcessBuilderIsSuccessful() {
+    ProcessBuilder processBuilder = new ProcessBuilder();
+
+    ProcessContext processContext = newProcessContext(this.mockProcess)
+      .ranBy(SystemUtils.USERNAME)
+      .ranIn(FileSystemUtils.USER_HOME_DIRECTORY)
+      .ranWith("java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "example.Application")
+      .redirectError(ProcessBuilder.Redirect.PIPE)
+      .redirectErrorStream(true)
+      .redirectInput(ProcessBuilder.Redirect.INHERIT)
+      .redirectOutput(ProcessBuilder.Redirect.PIPE)
+      .usingEnvironmentVariables();
+
+    assertThat(processContext).isNotNull();
+    assertThat(processContext.to(processBuilder)).isSameAs(processContext);
+    assertThat(processBuilder.command()).isEqualTo(processContext.getCommandLine());
+    assertThat(processBuilder.directory()).isEqualTo(processContext.getDirectory());
+    assertThat(processBuilder.environment()).isEqualTo(processContext.getEnvironment().toMap());
+    assertThat(processBuilder.redirectErrorStream()).isTrue();
+    assertThat(processBuilder.redirectError()).isEqualTo(processContext.getError());
+    assertThat(processBuilder.redirectInput()).isEqualTo(processContext.getInput());
+    assertThat(processBuilder.redirectOutput()).isEqualTo(processContext.getOutput());
+  }
+
+  @Test
+  public void setInDirectoryToDirectory() {
+    assertThat(newProcessContext(this.mockProcess).ranIn(FileSystemUtils.USER_HOME_DIRECTORY).getDirectory())
+      .isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
+  }
+
+  @Test
   public void setInDirectoryToFile() {
     File processContextJava = getLocation(ProcessContext.class);
 

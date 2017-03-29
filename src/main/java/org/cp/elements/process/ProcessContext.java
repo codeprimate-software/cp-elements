@@ -25,6 +25,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
@@ -40,6 +41,8 @@ import org.cp.elements.util.Environment;
  * @see java.io.File
  * @see java.lang.Process
  * @see java.lang.ProcessBuilder.Redirect
+ * @see org.cp.elements.io.FileSystemUtils
+ * @see org.cp.elements.lang.SystemUtils
  * @see org.cp.elements.util.Environment
  * @since 1.0.0
  */
@@ -348,6 +351,32 @@ public class ProcessContext {
   public ProcessContext redirectOutput(Redirect output) {
     this.output = output;
     return this;
+  }
+
+  /**
+   * Writes the current state of this {@link ProcessContext} to the given {@link ProcessBuilder}.
+   *
+   * @param processBuilder {@link ProcessBuilder} to set the state with this {@link ProcessContext}.
+   * @return this {@link ProcessContext}.
+   * @see java.lang.ProcessBuilder
+   */
+  public ProcessContext to(ProcessBuilder processBuilder) {
+    return Optional.ofNullable(processBuilder).map(localProcessBuilder -> {
+      localProcessBuilder.command(getCommandLine());
+      localProcessBuilder.directory(getDirectory());
+      localProcessBuilder.environment().clear();
+      localProcessBuilder.environment().putAll(getEnvironment().toMap());
+      localProcessBuilder.redirectError(getError());
+      localProcessBuilder.redirectInput(getInput());
+      localProcessBuilder.redirectOutput(getOutput());
+      localProcessBuilder.redirectErrorStream(isRedirectingErrorStream());
+
+      if (inheritsIO()) {
+        processBuilder.inheritIO();
+      }
+
+      return this;
+    }).orElse(this);
   }
 
   /**
