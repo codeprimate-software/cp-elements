@@ -17,7 +17,16 @@
 package org.cp.elements.process.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.io.FileUtils.newFile;
+import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.process.support.ProcessBuilderProcessExecutor.newProcessBuilderProcessExecutor;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,12 +51,16 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see org.mockito.Spy
  * @see org.mockito.runners.MockitoJUnitRunner
  * @see org.cp.elements.process.support.ProcessBuilderProcessExecutor
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessBuilderProcessExecutorTests {
+
+  @Mock
+  private File mockFile;
 
   @Mock
   private Process mockProcess;
@@ -60,16 +73,14 @@ public class ProcessBuilderProcessExecutorTests {
   }
 
   @Test
-  public void executeIsSuccessful() {
-    ProcessBuilderProcessExecutor processExecutor = new ProcessBuilderProcessExecutor() {
-      @Override
-      protected Process doExecute(ProcessBuilder processBuilder) throws IOException {
-        return ProcessBuilderProcessExecutorTests.this.mockProcess;
-      }
-    };
+  public void executeIsSuccessful() throws IOException {
+    ProcessBuilderProcessExecutor processExecutor = spy(new ProcessBuilderProcessExecutor());
 
-    String[] expectedCommandLine = { "java", "-server", "-ea", "-classpath",
-      "/class/path/to/application.jar", "test.Application" };
+    doReturn(this.mockProcess).when(processExecutor).doExecute(any(ProcessBuilder.class));
+
+    String[] expectedCommandLine = {
+      "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application"
+    };
 
     ProcessAdapter process = processExecutor.execute(FileSystemUtils.USER_HOME_DIRECTORY, expectedCommandLine);
 
@@ -85,12 +96,14 @@ public class ProcessBuilderProcessExecutorTests {
     assertThat(process.getProcessContext().getUsername()).isEqualTo(SystemUtils.USERNAME);
     assertThat(process.getProcessContext().inheritsIO()).isFalse();
     assertThat(process.getProcessContext().isRedirectingErrorStream()).isFalse();
+
+    verify(processExecutor, times(1)).doExecute(isA(ProcessBuilder.class));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void executeWithInvalidDirectoryThrowsIllegalArgumentException() {
     try {
-      newProcessBuilderProcessExecutor().execute(new File("/path/to/non/existing/directory"),
+      newProcessBuilderProcessExecutor().execute(newFile("/path/to/non/existing/directory"),
         "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application");
     }
     catch (IllegalArgumentException expected) {
@@ -115,16 +128,14 @@ public class ProcessBuilderProcessExecutorTests {
   }
 
   @Test(expected = ProcessExecutionException.class)
-  public void executeFailedProcessHandlesIOException() {
-    ProcessBuilderProcessExecutor processExecutor = new ProcessBuilderProcessExecutor() {
-      @Override
-      protected Process doExecute(ProcessBuilder processBuilder) throws IOException {
-        throw new IOException("test");
-      }
-    };
+  public void executeFailedProcessHandlesIOException() throws IOException {
+    ProcessBuilderProcessExecutor processExecutor = spy(new ProcessBuilderProcessExecutor());
 
-    String[] expectedCommandLine = { "java", "-server", "-ea", "-classpath",
-      "/class/path/to/application.jar", "test.Application" };
+    doThrow(newIOException("test")).when(processExecutor).doExecute(any(ProcessBuilder.class));
+
+    String[] expectedCommandLine = {
+      "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application"
+    };
 
     try {
       processExecutor.execute(FileSystemUtils.WORKING_DIRECTORY, expectedCommandLine);
@@ -138,12 +149,16 @@ public class ProcessBuilderProcessExecutorTests {
 
       throw expected;
     }
+    finally {
+      verify(processExecutor, times(1)).doExecute(isA(ProcessBuilder.class));
+    }
   }
 
   @Test
   public void newProcessBuilderIsInitializedCorrectly() {
-    String[] expectedCommandLine = { "java", "-server", "-ea", "-classpath",
-      "/class/path/to/application.jar", "test.Application" };
+    String[] expectedCommandLine = {
+      "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "test.Application"
+    };
 
     Environment expectedEnvironment = Environment.from(Collections.singletonMap("testKey", "testValue"));
 
@@ -154,6 +169,90 @@ public class ProcessBuilderProcessExecutorTests {
     assertThat(processBuilder.command()).isEqualTo(Arrays.asList(expectedCommandLine));
     assertThat(processBuilder.directory()).isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
     assertThat(processBuilder.environment()).isEqualTo(expectedEnvironment.toMap());
+    assertThat(processBuilder.redirectErrorStream()).isFalse();
+  }
+
+  @Test
+  public void newProcessBuilderRedirectsErrorStream() {
+    String[] expectedCommandLine = { "java", "HelloWorld" };
+
+    Environment expectedEnvironment = Environment.from(Collections.singletonMap("variable", "value"));
+
+    ProcessBuilder processBuilder = newProcessBuilderProcessExecutor().redirectErrorStream()
+      .newProcessBuilder(expectedCommandLine, FileSystemUtils.TEMPORARY_DIRECTORY, expectedEnvironment);
+
+    assertThat(processBuilder).isNotNull();
+    assertThat(processBuilder.command()).isEqualTo(Arrays.asList(expectedCommandLine));
+    assertThat(processBuilder.directory()).isEqualTo(FileSystemUtils.TEMPORARY_DIRECTORY);
+    assertThat(processBuilder.environment()).isEqualTo(expectedEnvironment.toMap());
+    assertThat(processBuilder.redirectErrorStream()).isTrue();
+  }
+
+  @Test
+  public void newProcessBuilderWithRedirectsIsInitializedCorrectly() {
+    String[] expectedCommandLine = { "java", "HelloUniverse" };
+
+    ProcessBuilder.Redirect output = ProcessBuilder.Redirect.to(this.mockFile);
+
+    Environment expectedEnvironment = Environment.from(Collections.singletonMap("abc", "123"));
+
+    ProcessBuilder processBuilder = newProcessBuilderProcessExecutor()
+      .redirectError(ProcessBuilder.Redirect.PIPE)
+      .redirectIn(ProcessBuilder.Redirect.INHERIT)
+      .redirectOut(output)
+      .newProcessBuilder(expectedCommandLine, FileSystemUtils.TEMPORARY_DIRECTORY, expectedEnvironment);
+
+    assertThat(processBuilder).isNotNull();
+    assertThat(processBuilder.command()).isEqualTo(Arrays.asList(expectedCommandLine));
+    assertThat(processBuilder.directory()).isEqualTo(FileSystemUtils.TEMPORARY_DIRECTORY);
+    assertThat(processBuilder.environment()).isEqualTo(expectedEnvironment.toMap());
+    assertThat(processBuilder.redirectErrorStream()).isFalse();
+    assertThat(processBuilder.redirectError()).isEqualTo(ProcessBuilder.Redirect.PIPE);
+    assertThat(processBuilder.redirectInput()).isEqualTo(ProcessBuilder.Redirect.INHERIT);
+    assertThat(processBuilder.redirectOutput()).isEqualTo(output);
+  }
+
+  @Test
+  public void getUnsetErrorRedirectIsNullByDefault() {
+    assertThat(newProcessBuilderProcessExecutor().getError().orElse(null)).isNull();
+  }
+
+  @Test
+  public void getUnsetInputRedirectIsNullByDefault() {
+    assertThat(newProcessBuilderProcessExecutor().getIn().orElse(null)).isNull();
+  }
+
+  @Test
+  public void getUnsetOutputRedirectIsNullByDefault() {
+    assertThat(newProcessBuilderProcessExecutor().getOut().orElse(null)).isNull();
+  }
+
+  @Test
+  public void notRedirectingErrorStreamByDefault() {
+    assertThat(newProcessBuilderProcessExecutor().isRedirectingErrorStream()).isFalse();
+  }
+
+  @Test
+  public void redirectsErrorStreamWhenSet() {
+    assertThat(newProcessBuilderProcessExecutor().redirectErrorStream().isRedirectingErrorStream()).isTrue();
+  }
+
+  @Test
+  public void setAndGetErrorRedirectIsCorrect() {
+    assertThat(newProcessBuilderProcessExecutor().redirectError(ProcessBuilder.Redirect.PIPE)
+      .getError().orElse(null)).isEqualTo(ProcessBuilder.Redirect.PIPE);
+  }
+
+  @Test
+  public void setAndGetInputRedirectIsCorrect() {
+    assertThat(newProcessBuilderProcessExecutor().redirectIn(ProcessBuilder.Redirect.INHERIT)
+      .getIn().orElse(null)).isEqualTo(ProcessBuilder.Redirect.INHERIT);
+  }
+
+  @Test
+  public void setAndGetOutputRedirectIsCorrect() {
+    assertThat(newProcessBuilderProcessExecutor().redirectOut(ProcessBuilder.Redirect.to(this.mockFile))
+      .getOut().orElse(null)).isEqualTo(ProcessBuilder.Redirect.to(this.mockFile));
   }
 
   @Test

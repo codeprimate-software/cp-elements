@@ -40,9 +40,13 @@ import org.cp.elements.util.Environment;
  * to the running OS {@link Process}.
  *
  * @author John Blum
+ * @see java.io.File
  * @see java.lang.Process
  * @see java.lang.ProcessBuilder
+ * @see org.cp.elements.process.ProcessAdapter
+ * @see org.cp.elements.process.ProcessContext
  * @see org.cp.elements.process.ProcessExecutor
+ * @see org.cp.elements.util.Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -59,7 +63,13 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
     return new ProcessBuilderProcessExecutor();
   }
 
+  private boolean redirectErrorStream;
+
   private Environment environment;
+
+  private ProcessBuilder.Redirect error;
+  private ProcessBuilder.Redirect input;
+  private ProcessBuilder.Redirect output;
 
   /**
    * Uses the Java {@link ProcessBuilder} to execute the program defined by the given {@code commandLine}
@@ -131,10 +141,16 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
    * @see java.io.File
    */
   protected ProcessBuilder newProcessBuilder(String[] commandLine, File directory, Environment environment) {
-    ProcessBuilder processBuilder = new ProcessBuilder(commandLine).directory(directory);
+    ProcessBuilder processBuilder = new ProcessBuilder(commandLine);
 
+    processBuilder.directory(directory);
     processBuilder.environment().clear();
     processBuilder.environment().putAll(environment.toMap());
+    processBuilder.redirectErrorStream(isRedirectingErrorStream());
+
+    getError().ifPresent(processBuilder::redirectError);
+    getIn().ifPresent(processBuilder::redirectInput);
+    getOut().ifPresent(processBuilder::redirectOutput);
 
     return processBuilder;
   }
@@ -150,6 +166,110 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
   @NullSafe
   protected Environment getEnvironment() {
     return Optional.ofNullable(this.environment).orElseGet(Environment::fromEnvironmentVariables);
+  }
+
+  /**
+   * Returns the {@link Process Process's} standard error stream {@link ProcessBuilder.Redirect} configuration.
+   *
+   * @return a {@link ProcessBuilder.Redirect} specifying the destination of the {@link Process} error stream.
+   * @see java.lang.Process#getErrorStream()
+   * @see java.lang.ProcessBuilder.Redirect
+   * @see java.util.Optional
+   */
+  @NullSafe
+  protected Optional<ProcessBuilder.Redirect> getError() {
+    return Optional.ofNullable(this.error);
+  }
+
+  /**
+   * Returns the {@link Process Process's} standard input stream {@link ProcessBuilder.Redirect} configuration.
+   *
+   * @return a {@link ProcessBuilder.Redirect} specifying the destination of the {@link Process} input stream.
+   * @see java.lang.Process#getInputStream()
+   * @see java.lang.ProcessBuilder.Redirect
+   * @see java.util.Optional
+   */
+  @NullSafe
+  protected Optional<ProcessBuilder.Redirect> getIn() {
+    return Optional.ofNullable(this.input);
+  }
+
+  /**
+   * Returns the {@link Process Process's} standard output stream {@link ProcessBuilder.Redirect} configuration.
+   *
+   * @return a {@link ProcessBuilder.Redirect} specifying the destination of the {@link Process} output stream.
+   * @see java.lang.Process#getOutputStream()
+   * @see java.lang.ProcessBuilder.Redirect
+   * @see java.util.Optional
+   */
+  @NullSafe
+  protected Optional<ProcessBuilder.Redirect> getOut() {
+    return Optional.ofNullable(this.output);
+  }
+
+  /**
+   * Determines whether the {@link Process Process's} standard error stream is being redirected and merged with
+   * the {@link Process Process's} standard output stream.
+   *
+   * @return a boolean value indicating whether the {@link Process Process's} standard error stream
+   * and standard input stream are being merged.
+   */
+  protected boolean isRedirectingErrorStream() {
+    return this.redirectErrorStream;
+  }
+
+  /**
+   * Configures the destination for a {@link Process Process's} standard error stream.
+   *
+   * @param error {@link ProcessBuilder.Redirect} indicating the destination for the {@link Process Process's}
+   * standard error stream.
+   * @return this {@link ProcessBuilderProcessExecutor}.
+   * @see java.lang.ProcessBuilder#redirectError(ProcessBuilder.Redirect)
+   * @see java.lang.ProcessBuilder.Redirect
+   */
+  public ProcessBuilderProcessExecutor redirectError(ProcessBuilder.Redirect error) {
+    this.error = error;
+    return this;
+  }
+
+  /**
+   * Configures the {@link Process Process's} standard error stream to be redirected and merged with
+   * the {@link Process Process's} standard output stream.
+   *
+   * @return this {@link ProcessBuilderProcessExecutor}.
+   * @see java.lang.ProcessBuilder#redirectErrorStream(boolean)
+   */
+  public ProcessBuilderProcessExecutor redirectErrorStream() {
+    this.redirectErrorStream = true;
+    return this;
+  }
+
+  /**
+   * Configures the destination for a {@link Process Process's} standard input  stream.
+   *
+   * @param in  {@link ProcessBuilder.Redirect} indicating the destination for the {@link Process Process's}
+   * standard input stream.
+   * @return this {@link ProcessBuilderProcessExecutor}.
+   * @see java.lang.ProcessBuilder#redirectInput(ProcessBuilder.Redirect)
+   * @see java.lang.ProcessBuilder.Redirect
+   */
+  public ProcessBuilderProcessExecutor redirectIn(ProcessBuilder.Redirect in) {
+    this.input = in;
+    return this;
+  }
+
+  /**
+   * Configures the destination for a {@link Process Process's} standard output stream.
+   *
+   * @param out {@link ProcessBuilder.Redirect} indicating the destination for the {@link Process Process's}
+   * standard output stream.
+   * @return this {@link ProcessBuilderProcessExecutor}.
+   * @see java.lang.ProcessBuilder#redirectOutput(ProcessBuilder.Redirect)
+   * @see java.lang.ProcessBuilder.Redirect
+   */
+  public ProcessBuilderProcessExecutor redirectOut(ProcessBuilder.Redirect out) {
+    this.output = out;
+    return this;
   }
 
   /**
