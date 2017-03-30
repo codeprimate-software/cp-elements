@@ -16,6 +16,7 @@
 
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Constructor;
@@ -30,6 +31,7 @@ import org.cp.elements.lang.reflect.ReflectionUtils;
  *
  * @author John J. Blum
  * @see java.lang.Object
+ * @see java.util.Optional
  * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @since 1.0.0
  */
@@ -134,6 +136,19 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
+   * Returns the given {@code value} if not {@literal null} or returns the {@code defaultValue}.
+   *
+   * @param <T> {@link Class} type of the {@code value} and {@code defaultValue}.
+   * @param value {@link Object} to evaluate for {@literal null}.
+   * @param defaultValue {@link Object} value to return if {@code value} is {@literal null}.
+   * @return the given {@code value} if not {@literal null} or returns the {@code defaultValue}.
+   * @see #returnValueOrDefaultIfNull(Object, Supplier)
+   */
+  public static <T> T returnValueOrDefaultIfNull(T value, T defaultValue) {
+    return returnValueOrDefaultIfNull(value, () -> defaultValue);
+  }
+
+  /**
    * Returns the given {@code value} if not {@literal null} or call the given {@link Supplier} to supply a value.
    *
    * @param <T> {@link Class} type of the {@code value}.
@@ -142,7 +157,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return the given {@code value} if not {@literal null} or call the given {@link Supplier} to supply a value.
    * @see java.util.function.Supplier
    */
-  public static <T> T defaultIfNull(T value, Supplier<T> supplier) {
+  public static <T> T returnValueOrDefaultIfNull(T value, Supplier<T> supplier) {
     return Optional.ofNullable(value).orElseGet(supplier);
   }
 
@@ -157,7 +172,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   public static <T> T returnValueOrThrowIfNull(T value) {
-    return returnValueOrThrowIfNull(value, new IllegalArgumentException("Value must not be null"));
+    return returnValueOrThrowIfNull(value, newIllegalArgumentException("Value must not be null"));
   }
 
   /**

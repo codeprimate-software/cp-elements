@@ -193,25 +193,36 @@ public class ObjectUtilsTests {
   }
 
   @Test
+  public void returnValueOrDefaultIfNullReturnsValue() {
+    assertThat(ObjectUtils.returnValueOrDefaultIfNull("value", "defaultValue")).isEqualTo("value");
+  }
+
+  @Test
+  public void returnValueOrDefaultIfNullReturnsDefaultValue() {
+    assertThat(ObjectUtils.returnValueOrDefaultIfNull(null, "defaultValue"))
+      .isEqualTo("defaultValue");
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
-  public void defaultIfNullWithSupplierReturnsValues() {
+  public void returnValueOrDefaultIfNullWithSupplierReturnsValue() {
     Supplier<Object> mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("supplier");
 
-    assertThat(ObjectUtils.defaultIfNull("value", mockSupplier)).isEqualTo("value");
+    assertThat(ObjectUtils.returnValueOrDefaultIfNull("value", mockSupplier)).isEqualTo("value");
 
     verify(mockSupplier, never()).get();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void defaultIfNullWithSupplierReturnsSupplierValue() {
+  public void returnValueOrDefaultIfNullWithSupplierReturnsSupplierValue() {
     Supplier<Object> mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("supplier");
 
-    assertThat(ObjectUtils.defaultIfNull(null, mockSupplier)).isEqualTo("supplier");
+    assertThat(ObjectUtils.returnValueOrDefaultIfNull(null, mockSupplier)).isEqualTo("supplier");
 
     verify(mockSupplier, times(1)).get();
   }

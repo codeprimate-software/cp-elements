@@ -17,7 +17,6 @@
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.SafeNavigationHandler.newSafeNavigationHandler;
-import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
 import static org.cp.elements.lang.reflect.MethodInvocation.newMethodInvocation;
 import static org.cp.elements.lang.reflect.ProxyFactory.newProxyFactory;
 
@@ -854,7 +853,7 @@ public abstract class LangExtensions {
     /* (non-Javadoc) */
     @SuppressWarnings("all")
     private void throwAssertionError(String defaultMessage, Object... args) {
-      throw defaultIfNull(cause, () -> new AssertionException(withMessage(defaultMessage, args)));
+      throw ObjectUtils.returnValueOrDefaultIfNull(cause, () -> new AssertionException(withMessage(defaultMessage, args)));
     }
 
     /* (non-Javadoc) */
