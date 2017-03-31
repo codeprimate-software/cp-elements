@@ -48,8 +48,10 @@ public class ProcessBuilderProcessExecutorIntegrationTests {
   public void executeProgram() {
     int availablePort = NetworkUtils.availablePort();
 
-    String[] commandLine = { "java", "-server", "-ea", "-classpath", System.getProperty("java.class.path"),
-      EchoServer.class.getName(), String.valueOf(availablePort) };
+    String[] commandLine = {
+      "java", "-server", "-ea", "-classpath", System.getProperty("java.class.path"), EchoServer.class.getName(),
+      String.valueOf(availablePort)
+    };
 
     ProcessAdapter process = newProcessBuilderProcessExecutor().execute(FileSystemUtils.WORKING_DIRECTORY, commandLine);
 
