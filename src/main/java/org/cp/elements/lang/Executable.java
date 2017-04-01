@@ -22,18 +22,20 @@ package org.cp.elements.lang;
  * and {@link java.util.concurrent.Callable} {@link Class interfaces}.
  *
  * @author John Blum
+ * @param <T> {@link Class} type of the executions return value.
+ * @see java.lang.FunctionalInterface
+ * @see java.lang.Runnable
+ * @see java.util.concurrent.Callable
  * @since 1.0.0
  */
 @FunctionalInterface
-@SuppressWarnings("unused")
-public interface Executable {
+public interface Executable<T> {
 
   /**
    * Callback method to execute the intended function/logic encapsulated in the execution.
    *
-   * @param <T> {@link Class} type of the executions return value.
    * @return the result of the execution.
    */
-  <T> T execute();
+  T execute();
 
 }
