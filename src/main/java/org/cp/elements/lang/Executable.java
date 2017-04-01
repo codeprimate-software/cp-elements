@@ -34,8 +34,9 @@ public interface Executable<T> {
   /**
    * Callback method to execute the intended function/logic encapsulated in the execution.
    *
+   * @param args optional array of {@link Object arguments} passed to the execution to carry out its function.
    * @return the result of the execution.
    */
-  T execute();
+  T execute(Object... args);
 
 }
