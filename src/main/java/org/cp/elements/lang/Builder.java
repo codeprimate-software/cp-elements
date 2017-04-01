@@ -20,9 +20,11 @@ package org.cp.elements.lang;
  * {@link Builder} is an interface defining a contract for objects implementing the Builder Software Design Pattern.
  *
  * @author John Blum
+ * @see java.lang.FunctionalInterface
  * @see <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder Software Design Pattern</a>
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Builder<T> {
 

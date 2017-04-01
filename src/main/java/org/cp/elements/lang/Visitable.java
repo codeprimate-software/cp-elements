@@ -17,13 +17,15 @@
 package org.cp.elements.lang;
 
 /**
- * The Visitable interface defines a contract for objects that can be visited by an object who's class implements 
- * the Visitor interface.
+ * The {@link Visitable} interface defines a contract for objects that can be visited by an object who's class
+ * implements the {@link Visitor} interface.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Visitor
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface Visitable {
 
   /**

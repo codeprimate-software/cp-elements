@@ -17,11 +17,13 @@
 package org.cp.elements.lang;
 
 /**
- * The Filter interface defines a contract for an object that functions as a filter for other objects.
+ * The {@link Filter} interface defines a contract for an object that functions as a filter for other objects.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface Filter<T> {
 
   /**

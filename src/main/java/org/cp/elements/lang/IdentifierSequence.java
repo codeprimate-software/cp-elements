@@ -17,14 +17,16 @@
 package org.cp.elements.lang;
 
 /**
- * The IdentifierSequence interface defines a contract for implementing objects to generate unique identifiers (IDs)
- * to uniquely identify some object or entity.
+ * The {@link IdentifierSequence} interface defines a contract for implementing objects to generate
+ * unique identifiers (IDs) to uniquely identify some object or entity.
  *
  * @author John J. Blum
  * @param <T> is a {@link Comparable} class type of the identifying value.
  * @see java.lang.Comparable
+ * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface IdentifierSequence<T extends Comparable<T>> {
 

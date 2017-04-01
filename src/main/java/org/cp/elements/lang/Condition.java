@@ -17,12 +17,14 @@
 package org.cp.elements.lang;
 
 /**
- * The Condition interface defines a contract for implementing objects used to evaluate a required condition
+ * The {@link Condition} interface defines a contract for implementing objects used to evaluate a required condition
  * of the application or system.
  *
  * @author John Blum
+ * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Condition {
 

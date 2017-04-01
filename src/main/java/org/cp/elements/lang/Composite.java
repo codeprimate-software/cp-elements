@@ -23,9 +23,11 @@ import org.cp.elements.util.CollectionUtils;
  * {@link Composite} is an interface defining a contract for objects implementing the Composite Software Design Pattern.
  *
  * @author John Blum
+ * @see java.lang.FunctionalInterface
  * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Compsite Software Design Pattern</a>
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Composite<T> {
 

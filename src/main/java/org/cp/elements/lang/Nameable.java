@@ -20,8 +20,10 @@ package org.cp.elements.lang;
  * The {@link Nameable} interface defines a contract for objects that have a name.
  *
  * @author John Blum
+ * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Nameable<T> {
 

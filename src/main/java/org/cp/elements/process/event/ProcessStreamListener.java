@@ -23,10 +23,12 @@ import java.util.EventListener;
  * originating from a {@link Process Process's} standard out or standard error streams.
  *
  * @author John Blum
+ * @see java.lang.FunctionalInterface
  * @see java.lang.Process
  * @see java.util.EventListener
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface ProcessStreamListener extends EventListener {
 
   /**

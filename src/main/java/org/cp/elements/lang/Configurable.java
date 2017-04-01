@@ -17,7 +17,7 @@
 package org.cp.elements.lang;
 
 /**
- * The Configurable interface defines a contract for configuring an object who's class implements this interface.
+ * The {@link Configurable} interface defines a contract for configuring an object who's class implements this interface.
  * This interface allows implementers to define parameters under which their objects will operate.  Configuration
  * meta-data can be specific to environment, runtime or other contextual information.
  *
@@ -29,19 +29,19 @@ package org.cp.elements.lang;
 public interface Configurable<T> {
 
   /**
-   * Gets the configuration meta-data of type T used to configure this object.
-   *
-   * @return the configuration meta-data used to configure this object.
-   */
-  T getConfiguration();
-
-  /**
    * Determines whether this object has been properly configured.  An object is configured when it's configure method
    * is invoked with configuration parameter.
    *
    * @return a boolean value indicating whether this object has been properly configured.
    */
   boolean isConfigured();
+
+  /**
+   * Gets the configuration meta-data of type T used to configure this object.
+   *
+   * @return the configuration meta-data used to configure this object.
+   */
+  T getConfiguration();
 
   /**
    * Configures this object with the given configuration meta-data of type T.

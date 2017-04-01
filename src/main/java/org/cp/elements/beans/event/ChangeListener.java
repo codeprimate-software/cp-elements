@@ -19,13 +19,15 @@ package org.cp.elements.beans.event;
 import java.util.EventListener;
 
 /**
- * The ChangeListener interface defines a contract for implementing classes interested in change events.
+ * The {@link ChangeListener} interface defines a contract for implementing classes interested in change events.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see java.util.EventListener
  * @see org.cp.elements.beans.event.ChangeEvent
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface ChangeListener extends EventListener {
 

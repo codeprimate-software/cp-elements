@@ -17,12 +17,15 @@
 package org.cp.elements.lang.factory;
 
 /**
- * The ObjectFactoryAware interface is a contract for implementing objects that require an instance of an ObjectFactory.
+ * The {@link ObjectFactoryAware} interface is a contract for implementing objects that require an instance
+ * of an {@link ObjectFactory}.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.factory.ObjectFactory
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface ObjectFactoryAware {
 

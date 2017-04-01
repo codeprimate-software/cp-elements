@@ -17,14 +17,16 @@
 package org.cp.elements.lang;
 
 /**
- * The Visitor interface define a contract for objects who's classes implement this interface in order to walk
+ * The {@link Visitor} interface define a contract for objects who's classes implement this interface in order to walk
  * an object graph for carrying out some operation of evalution of particular objects or types of objects.  The Visitor
  * interface is an expression of the Visitor design pattern separating algorithm from object structure.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Visitable
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface Visitor {
 
   /**

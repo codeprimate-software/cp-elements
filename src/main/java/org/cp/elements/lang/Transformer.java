@@ -17,13 +17,15 @@
 package org.cp.elements.lang;
 
 /**
- * The Transformer interface defines a contract for implementing classes who's objects transform data from one value
- * to another value of the same class type.
+ * The {@link Transformer} interface defines a contract for implementing classes who's objects transform data
+ * from one value to another value of the same class type.
  *
  * @author John J. Blum
  * @param <T> the Class type of the data value (datum) to transform.
+ * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Transformer<T> {
 

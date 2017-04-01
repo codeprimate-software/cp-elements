@@ -17,13 +17,16 @@
 package org.cp.elements.lang;
 
 /**
- * The Renderer interface defines a contract for objects responsible for rendering a target object as a String.
+ * The {@link Renderer} interface defines a contract for objects responsible for rendering a target object
+ * as a {@link String}.
  *
  * @author John J. Blum
  * @param <T> the class type of the object to render.
+ * @see java.lang.FunctionalInterface
  * @see java.lang.String
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Renderer<T> {
 

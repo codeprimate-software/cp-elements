@@ -17,13 +17,15 @@
 package org.cp.elements.util.convert;
 
 /**
- * The ConversionServiceAware interface is a contract for implementing objects that require an instance of
- * the ConversionService.
+ * The {@link ConversionServiceAware} interface is a contract for implementing objects that require an instance of
+ * the {@link ConversionService}.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.util.convert.ConversionService
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface ConversionServiceAware {
 

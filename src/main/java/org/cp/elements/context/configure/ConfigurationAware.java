@@ -17,13 +17,15 @@
 package org.cp.elements.context.configure;
 
 /**
- * The ConfigurationAware interface specifies a contract for objects that require a reference to a
- * Configuration instance.
+ * The {@link ConfigurationAware} interface specifies a contract for objects that require a reference to
+ * a {@link Configuration} instance.
  *
  * @author John J. Blum
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.context.configure.Configuration
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface ConfigurationAware {
 
