@@ -18,6 +18,7 @@ package org.cp.elements.util;
 
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -593,6 +595,25 @@ public abstract class CollectionUtils {
     }
 
     return subList;
+  }
+
+  /**
+   * Null-safe utility method to get any array for the given {@link Collection}.
+   *
+   * @param <T> {@link Class} type of the elements in the {@link Collection}.
+   * @param collection {@link Collection} to convert into an array.
+   * @param componentType {@link Class} type of the elements in the array.
+   * @return an array for the given {@link Collection}.  If the {@link Collection} is {@literal null}
+   * then an empty array of the {@link Class component type} is returned.
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
+    Object[] array = (Object[]) Array.newInstance(componentType, nullSafeSize(collection));
+
+    Optional.ofNullable(collection).ifPresent(localCollection -> collection.toArray(array));
+
+    return (T[]) array;
   }
 
   /**

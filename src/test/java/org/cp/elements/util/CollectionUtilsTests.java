@@ -17,6 +17,7 @@
 package org.cp.elements.util;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.emptyArray;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -56,12 +57,14 @@ import org.junit.rules.ExpectedException;
  *
  * @author John J. Blum
  * @see java.lang.Iterable
+ * @see java.util.Arrays
  * @see java.util.Collection
  * @see java.util.Collections
  * @see java.util.Enumeration
  * @see java.util.Iterator
  * @see java.util.List
  * @see java.util.Set
+ * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
@@ -1246,6 +1249,48 @@ public class CollectionUtilsTests {
   @Test(expected = IndexOutOfBoundsException.class)
   public void subListWithUnderFlowIndex() {
     CollectionUtils.subList(Collections.singletonList("test"), -1);
+  }
+
+  @Test
+  public void toArrayWithCollectionOfNumbers() {
+    Collection<Integer> collection = Arrays.asList(1, 2, 3);
+    Integer[] array = CollectionUtils.toArray(collection, Integer.class);
+
+    assertThat(array, is(notNullValue(Integer[].class)));
+    assertThat(array.getClass().isArray(), is(true));
+    assertThat(array.getClass().getComponentType(), is(equalTo(Integer.class)));
+    assertThat(Arrays.asList(array), contains(1, 2, 3));
+  }
+
+  @Test
+  public void toArrayWithCollectionOfStrings() {
+    Collection<String> collection = Arrays.asList("one", "two", "three");
+    String[] array = CollectionUtils.toArray(collection, String.class);
+
+    assertThat(array, is(notNullValue(String[].class)));
+    assertThat(array.getClass().isArray(), is(true));
+    assertThat(array.getClass().getComponentType(), is(equalTo(String.class)));
+    assertThat(Arrays.asList(array), contains("one", "two", "three"));
+  }
+
+  @Test
+  public void toArrayWithEmptyCollection() {
+    String[] array = CollectionUtils.toArray(Collections.emptySet(), String.class);
+
+    assertThat(array, is(notNullValue(String[].class)));
+    assertThat(array.getClass().isArray(), is(true));
+    assertThat(array.getClass().getComponentType(), is(equalTo(String.class)));
+    assertThat(array, is(emptyArray()));
+  }
+
+  @Test
+  public void toArrayWithNullCollection() {
+    Integer[] array = CollectionUtils.toArray(null, Integer.class);
+
+    assertThat(array, is(notNullValue(Integer[].class)));
+    assertThat(array.getClass().isArray(), is(true));
+    assertThat(array.getClass().getComponentType(), is(equalTo(Integer.class)));
+    assertThat(array, is(emptyArray()));
   }
 
   @Test
