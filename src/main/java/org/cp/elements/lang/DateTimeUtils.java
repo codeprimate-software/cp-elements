@@ -17,10 +17,11 @@
 package org.cp.elements.lang;
 
 import java.util.Calendar;
+import java.util.Optional;
 
 /**
  * The DateTimeUtils class contains common functionality for working with dates and time.
- * 
+ *
  * @author John J. Blum
  * @see java.util.Calendar
  * @see java.util.Date
@@ -63,23 +64,24 @@ public abstract class DateTimeUtils {
   /**
    * Clones the specified Calendar object if not null, otherwise if the date and time value is null
    * then this method returns null.
-   * 
+   *
    * @param dateTime the Calendar object to clone.
    * @return a clone of the specified Calendar object if the Calendar is not null, otherwise return null.
    * @see java.util.Calendar#clone()
    */
-  public static Calendar clone(final Calendar dateTime) {
-    return (dateTime == null ? null : (Calendar) dateTime.clone());
+  @NullSafe
+  public static Calendar clone(Calendar dateTime) {
+    return Optional.ofNullable(dateTime).map(localDateTime -> (Calendar) localDateTime.clone()).orElse(null);
   }
 
   /**
    * Creates a Calendar instance with a date and time set to the time in milliseconds.
-   * 
+   *
    * @param timeInMilliseconds a long value indicating the number of milliseconds since the EPOCH.
    * @return a Calendar instance initialized with the specified date/time in milliseconds.
    * @see java.util.Calendar
    */
-  public static Calendar create(final long timeInMilliseconds) {
+  public static Calendar create(long timeInMilliseconds) {
     Calendar dateTime = Calendar.getInstance();
     dateTime.clear();
     dateTime.setTimeInMillis(timeInMilliseconds);
@@ -89,21 +91,21 @@ public abstract class DateTimeUtils {
   /**
    * Truncates the time portion of the Calendar's date/time components.  If the Calendar object is null, then null
    * is returned.  The fields of the Calendar to be truncated include the hour of day, minute, second and milliseconds.
-   * 
+   *
    * @param dateTime the Calendar object to truncate.
    * @return the Calendar object with the time portion truncated (the corresponding time fields of this Calendar
    * are set to zero).
    * @see java.util.Calendar
    */
-  public static Calendar truncate(final Calendar dateTime) {
-    if (dateTime != null) {
-      dateTime.clear(Calendar.HOUR_OF_DAY);
-      dateTime.clear(Calendar.MINUTE);
-      dateTime.clear(Calendar.SECOND);
-      dateTime.clear(Calendar.MILLISECOND);
-    }
+  @NullSafe
+  public static Calendar truncate(Calendar dateTime) {
+    Optional.ofNullable(dateTime).ifPresent(localDateTime -> {
+      localDateTime.clear(Calendar.HOUR_OF_DAY);
+      localDateTime.clear(Calendar.MINUTE);
+      localDateTime.clear(Calendar.SECOND);
+      localDateTime.clear(Calendar.MILLISECOND);
+    });
 
     return dateTime;
   }
-
 }
