@@ -40,9 +40,6 @@ public abstract class ObjectUtils extends ReflectionUtils {
 
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-  public static final String CLONE_METHOD_NAME = "clone";
-  public static final String MAIN_METHOD_NAME = "main";
-
   /**
    * Null-safe method to determine if all the values in the array are null.
    *

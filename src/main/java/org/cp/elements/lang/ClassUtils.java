@@ -16,6 +16,8 @@
 
 package org.cp.elements.lang;
 
+import static org.cp.elements.util.stream.StreamUtils.stream;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -24,6 +26,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
@@ -53,6 +56,8 @@ public abstract class ClassUtils {
   public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
   public static final String CLASS_FILE_EXTENSION = ".class";
+  public static final String CLONE_METHOD_NAME = "clone";
+  public static final String MAIN_METHOD_NAME = "main";
 
   /**
    * Determines whether a given Class type is assignable to a declared Class type.  A given Class type is assignable to
@@ -144,7 +149,8 @@ public abstract class ClassUtils {
    */
   @NullSafe
   public static Set<Class<?>> getInterfaces(Class type) {
-    return (type != null ? getInterfaces(type, new HashSet<>()) : Collections.emptySet());
+    return Optional.ofNullable(type).map(theType -> getInterfaces(type, new HashSet<>()))
+      .orElse(Collections.emptySet());
   }
 
   /**
@@ -479,6 +485,21 @@ public abstract class ClassUtils {
   }
 
   /**
+   * Determines whether the given {@link Class} has a {@literal main} {@link Method}.
+   *
+   * @param type {@link Class} to evaluate.
+   * @return a boolean value indicating whether the given {@link Class} has a {@literal main} {@link Method}.
+   * @see java.lang.Class#getDeclaredMethods()
+   * @see #isMainMethod(Method)
+   * @see java.lang.Class
+   */
+  @NullSafe
+  public static boolean hasMainMethod(Class type) {
+    return Optional.ofNullable(type).map(theType -> type.getDeclaredMethods())
+      .map(methods -> stream(methods).anyMatch(ClassUtils::isMainMethod)).orElse(false);
+  }
+
+  /**
    * Determines whether the given {@link Object} implements any {@link Class interfaces}.
    *
    * @param obj {@link Object} to evaluate.
@@ -542,13 +563,8 @@ public abstract class ClassUtils {
    */
   @NullSafe
   public static boolean isAnnotationPresent(Class<? extends Annotation> annotation, AnnotatedElement... members) {
-    for (AnnotatedElement member : ArrayUtils.nullSafeArray(members, AnnotatedElement.class)) {
-      if (member != null && member.isAnnotationPresent(annotation)) {
-        return true;
-      }
-    }
-
-    return false;
+    return stream(ArrayUtils.nullSafeArray(members, AnnotatedElement.class))
+      .anyMatch(member -> member != null && member.isAnnotationPresent(annotation));
   }
 
   /**
@@ -589,7 +605,7 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Constructor
    */
   @NullSafe
-  public static boolean isConstructorWithArgumentArrayParameter(Constructor<?> constructor) {
+  public static boolean isConstructorWithArrayParameter(Constructor<?> constructor) {
     return (constructor != null && constructor.getParameterCount() == 1
       && Object[].class.isAssignableFrom(constructor.getParameterTypes()[0]));
   }
@@ -630,6 +646,25 @@ public abstract class ClassUtils {
   @NullSafe
   public static boolean isInterface(Class type) {
     return (type != null && type.isInterface());
+  }
+
+  /**
+   * Determines whether the given Java {@link Class} {@link Method} is the {@literal main} {@link Method}.
+   *
+   * @param method {@link Method} to evaluate.
+   * @return a boolean value indicating whether the given {@link Method}
+   * is a Java {@link Class} {@literal main} {@link Method}.
+   * @see java.lang.reflect.Method
+   */
+  @NullSafe
+  public static boolean isMainMethod(Method method) {
+    return Optional.ofNullable(method).map(localMethod -> MAIN_METHOD_NAME.equals(localMethod.getName())
+        && ModifierUtils.isPublic(localMethod)
+        && ModifierUtils.isStatic(localMethod)
+        && void.class.equals(localMethod.getReturnType())
+        && localMethod.getParameterCount() == 1
+        && localMethod.getParameterTypes()[0].equals(String[].class))
+      .orElse(false);
   }
 
   /**

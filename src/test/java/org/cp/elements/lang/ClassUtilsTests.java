@@ -537,6 +537,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void hasMainMethodIsNullSafe() {
+    assertFalse(ClassUtils.hasMainMethod(null));
+  }
+
+  @Test
   public void implementsInterfacesWithClassReturnsTrue() {
     assertThat(ClassUtils.implementsInterfaces(ChildType.class)).isTrue();
   }
@@ -667,7 +672,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectArrayParameterIsTrue() {
+  public void isConstructorWithArrayParameterOnConstructorWithObjectArrayParameterIsTrue() {
     Constructor[] constructors = TypeWithObjectArrayParameterConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -677,11 +682,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor).isNotNull();
     assertThat(constructor.getParameterCount()).isEqualTo(1);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object[].class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isTrue();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isTrue();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnConstructorWithStringArrayParameterIsTrue() {
+  public void isConstructorWithArrayParameterOnConstructorWithStringArrayParameterIsTrue() {
     Constructor[] constructors = TypeWithStringArrayParameterConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -691,11 +696,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor).isNotNull();
     assertThat(constructor.getParameterCount()).isEqualTo(1);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(String[].class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isTrue();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isTrue();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnVarargsConstructorIsTrue() {
+  public void isConstructorWithArrayParameterOnVarargsConstructorIsTrue() {
     Constructor[] constructors = TypeWithVarargsConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -705,16 +710,16 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor).isNotNull();
     assertThat(constructor.getParameterCount()).isEqualTo(1);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object[].class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isTrue();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isTrue();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnNullIsFalse() {
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(null)).isFalse();
+  public void isConstructorWithArrayParameterOnNullIsFalse() {
+    assertThat(ClassUtils.isConstructorWithArrayParameter(null)).isFalse();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectParameterIsFalse() {
+  public void isConstructorWithArrayParameterOnConstructorWithObjectParameterIsFalse() {
     Constructor[] constructors = TypeWithObjectParameterConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -724,11 +729,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor).isNotNull();
     assertThat(constructor.getParameterCount()).isEqualTo(1);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object.class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isFalse();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectArrayAndStringParameterIsFalse() {
+  public void isConstructorWithArrayParameterOnConstructorWithObjectArrayAndStringParameterIsFalse() {
     Constructor[] constructors = TypeWithObjectArrayAndStringParameterConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -739,11 +744,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor.getParameterCount()).isEqualTo(2);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object[].class);
     assertThat(constructor.getParameterTypes()[1]).isEqualTo(String.class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isFalse();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnConstructorWithObjectListParameterIsFalse() {
+  public void isConstructorWithArrayParameterOnConstructorWithListParameterIsFalse() {
     Constructor[] constructors = TypeWithObjectListParameterConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -753,11 +758,11 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor).isNotNull();
     assertThat(constructor.getParameterCount()).isEqualTo(1);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(List.class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isFalse();
   }
 
   @Test
-  public void isConstructorWithArgumentArrayParameterOnTwoArgumentConstructorIsFalse() {
+  public void isConstructorWithArrayParameterOnTwoArgumentConstructorIsFalse() {
     Constructor[] constructors = TypeWithTwoArgumentConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
@@ -768,7 +773,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(constructor.getParameterCount()).isEqualTo(2);
     assertThat(constructor.getParameterTypes()[0]).isEqualTo(Object.class);
     assertThat(constructor.getParameterTypes()[1]).isEqualTo(Object.class);
-    assertThat(ClassUtils.isConstructorWithArgumentArrayParameter(constructor)).isFalse();
+    assertThat(ClassUtils.isConstructorWithArrayParameter(constructor)).isFalse();
   }
 
   @Test
@@ -832,7 +837,7 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isDefaultConstructorWithPublicArgConstructorIsFalse() {
-    Constructor[] constructors = TypeWithPublicArgsConstructor.class.getDeclaredConstructors();
+    Constructor[] constructors = TypeWithPublicArgConstructor.class.getDeclaredConstructors();
 
     assertThat(constructors).hasSize(1);
 
@@ -871,6 +876,51 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertFalse(ClassUtils.isInterface(Object.class));
     assertFalse(ClassUtils.isInterface(Thread.State.class));
     assertFalse(ClassUtils.isInterface(Integer.TYPE));
+  }
+
+  @Test
+  public void classWithMainMethodIsTrue() {
+    assertTrue(ClassUtils.hasMainMethod(ClassWithMainMethod.class));
+  }
+
+  @Test
+  public void classWithIncorrectlyNamedMainMethodIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithMaintMethod.class));
+  }
+
+  @Test
+  public void classWithPrivateMainMethodIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithPrivateMainMethod.class));
+  }
+
+  @Test
+  public void classWithNonStaticMainMethodIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithNonStaticMainMethod.class));
+  }
+
+  @Test
+  public void classWithMainMethodReturningValueIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithMainMethodReturningValue.class));
+  }
+
+  @Test
+  public void classWithMultiArgumentMainMethodIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithMultiArgumentMainMethod.class));
+  }
+
+  @Test
+  public void classWithObjectArrayParameterMainMethodIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithObjectArrayParameterMainMethod.class));
+  }
+
+  @Test
+  public void classWithNoMainMethodIsFalse() {
+    assertFalse(ClassUtils.hasMainMethod(ClassWithNoMainMethod.class));
+  }
+
+  @Test
+  public void isMainMethodIsNullSafe() {
+    assertFalse(ClassUtils.isMainMethod(null));
   }
 
   @Test
@@ -943,6 +993,38 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertFalse(ClassUtils.notInstanceOf(123, Boolean.class, Number.class, String.class));
   }
 
+  public static class ClassWithMainMethod {
+    public static void main(String[] args) { }
+  }
+
+  public static class ClassWithMaintMethod {
+    public static void maint(String[] args) { }
+  }
+
+  public static class ClassWithPrivateMainMethod {
+    private static void main(String[] args) { }
+  }
+
+  public static class ClassWithNonStaticMainMethod {
+    public void main(String[] args) { }
+  }
+
+  public static class ClassWithMainMethodReturningValue {
+    public static Object main(String[] args) {
+      return null;
+    }
+  }
+
+  public static class ClassWithMultiArgumentMainMethod {
+    public static void main(String[] args, Object argument) { }
+  }
+
+  public static class ClassWithObjectArrayParameterMainMethod {
+    public static void main(Object[] args) { }
+  }
+
+  public static class ClassWithNoMainMethod { }
+
   @SuppressWarnings("unused")
   public static class SuperType {
 
@@ -1005,6 +1087,9 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
       this.charValue = charValue;
     }
 
+    /**
+     * @deprecated
+     */
     @Deprecated
     public void deprecatedMethod() {
     }
@@ -1036,8 +1121,8 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     public TypeWithWithDefaultConstructor() { }
   }
 
-  private static class TypeWithPublicArgsConstructor {
-    public TypeWithPublicArgsConstructor(@SuppressWarnings("unused") Object argument) { }
+  private static class TypeWithPublicArgConstructor {
+    public TypeWithPublicArgConstructor(@SuppressWarnings("unused") Object argument) { }
   }
 
   private static class TypeWithProtectedNoArgConstructor {
