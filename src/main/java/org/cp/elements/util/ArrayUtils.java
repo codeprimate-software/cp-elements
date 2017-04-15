@@ -673,6 +673,24 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Converts the given {@link Object} array into a {@link String} array.
+   *
+   * @param array array of {@link Object Objects} to convert into a {@link String} array.
+   * @return a {@link String} array for the given {@link Object} array.
+   */
+  @NullSafe
+  public static String[] toStringArray(Object... array) {
+    String[] stringArray = new String[nullSafeLength(array)];
+    int index = 0;
+
+    for (Object element : nullSafeArray(array)) {
+      stringArray[index++] = String.valueOf(element);
+    }
+
+    return stringArray;
+  }
+
+  /**
    * Transforms the elements in the array using the provided {@link Transformer}.
    *
    * @param <T> Class type of the elements in the array.

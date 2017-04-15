@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.collection.IsArrayWithSize.emptyArray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -46,6 +48,10 @@ import org.cp.elements.lang.Transformer;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Unit tests for {@link ArrayUtils}.
@@ -1372,6 +1378,41 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void toStringArrayWithObjectArray() {
+    String[] stringArray = ArrayUtils.toStringArray(Boolean.TRUE, 'x', 2, 3.14159d, "test");
+
+    assertThat(stringArray, is(notNullValue(String[].class)));
+    assertThat(stringArray.length, is(equalTo(5)));
+    assertThat(Arrays.asList(stringArray), contains("true", "x", "2", "3.14159", "test"));
+  }
+
+  @Test
+  public void toStringArrayWithStringArray() {
+    String[] stringArray = ArrayUtils.toStringArray("test", "testing", "tested");
+
+    assertThat(stringArray, is(notNullValue(String[].class)));
+    assertThat(stringArray.length, is(equalTo(3)));
+    assertThat(Arrays.asList(stringArray), contains("test", "testing", "tested"));
+  }
+
+  @Test
+  public void toStringArrayWithArrayHavingNullElements() {
+    String[] stringArray = ArrayUtils.toStringArray('x', null, "test", null, "nil");
+
+    assertThat(stringArray, is(notNullValue(String[].class)));
+    assertThat(stringArray.length, is(equalTo(5)));
+    assertThat(Arrays.asList(stringArray), contains("x", "null", "test", "null", "nil"));
+  }
+
+  @Test
+  public void toStringArrayWithNullArrayReturnsEmptyStringArray() {
+    String[] stringArray = ArrayUtils.toStringArray((Object[]) null);
+
+    assertThat(stringArray, is(notNullValue(String[].class)));
+    assertThat(stringArray, is(emptyArray()));
+  }
+
+  @Test
   public void transformArray() {
     Transformer<String> transformer = String::toUpperCase;
 
@@ -1408,30 +1449,12 @@ public class ArrayUtilsTests {
     ArrayUtils.transform(new Object[0], null);
   }
 
-  private static final class Person {
+  @Data
+  @RequiredArgsConstructor(staticName = "newPerson")
+  static class Person {
 
-    private final String firstName;
-    private final String lastName;
-
-    public static Person newPerson(String firstName, String lastName) {
-      return new Person(firstName, lastName);
-    }
-
-    public Person(String firstName, String lastName) {
-      Assert.notNull(firstName, "firstName cannot be null");
-      Assert.notNull(lastName, "lastName cannot be null");
-
-      this.firstName = firstName;
-      this.lastName = lastName;
-    }
-
-    public String getFirstName() {
-      return firstName;
-    }
-
-    public String getLastName() {
-      return lastName;
-    }
+    @NonNull final String firstName;
+    @NonNull final String lastName;
 
     @Override
     public boolean equals(Object obj) {
