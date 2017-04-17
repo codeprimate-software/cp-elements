@@ -16,10 +16,15 @@
 
 package org.cp.elements.process.java;
 
+import static java.util.Arrays.asList;
+import static org.cp.elements.lang.ClassUtils.getName;
+import static org.cp.elements.lang.ClassUtils.getSimpleName;
+import static org.cp.elements.lang.ClassUtils.isConstructorWithArrayParameter;
+import static org.cp.elements.lang.ClassUtils.isDefaultConstructor;
 import static org.cp.elements.lang.ObjectUtils.isNullOrEqualTo;
-import static org.cp.elements.lang.ObjectUtils.returnValueOrThrowIfNull;
 import static org.cp.elements.util.ArrayUtils.indexOf;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+import static org.cp.elements.util.ArrayUtils.toStringArray;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.io.File;
@@ -27,11 +32,15 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.Executable;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
@@ -47,14 +56,32 @@ import org.cp.elements.process.ProcessExecutor;
 @SuppressWarnings("unused")
 public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
+  protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS = Collections.unmodifiableList(asList(
+    new RunnableExecutor<>(), new CallableExecutor<>(), new ExecutableExecutor<>(), new MainMethodExecutor<>()));
+
+  /**
+   * Factory method used to construct an instance of the {@link EmbeddedJavaProcessExecutor}, which is used to execute
+   * Java {@link Class Classes} embedded in the currently running Java program.
+   *
+   * @return a new instance of the {@link EmbeddedJavaProcessExecutor} class.
+   * @see org.cp.elements.process.java.EmbeddedJavaProcessExecutor
+   */
+  public static EmbeddedJavaProcessExecutor newEmbeddedJavaProcessExecutor() {
+    return new EmbeddedJavaProcessExecutor();
+  }
+
+  /**
+   * @inheritDoc
+   */
   @Override
   public Void execute(File directory, String... commandLine) {
     Assert.isTrue(isNullOrEqualTo(directory, FileSystemUtils.WORKING_DIRECTORY),
-      "The Java class can only be ran in the same working directory as the containing process");
+      "The Java class can only be ran in the same working directory [%1$s] as the containing process"
+        + "; directory was [%2$s]", FileSystemUtils.WORKING_DIRECTORY, directory);
 
     Class type = resolveJavaClassFrom(commandLine);
 
-    Assert.notNull(type, "The Java class to run could not be resolved from the given command-line [%s]",
+    Assert.notNull(type, "The Java class to execute could not be resolved from the given command-line [%s]",
       Arrays.toString(commandLine));
 
     String[] args = resolveArgumentsFrom(type, commandLine);
@@ -64,6 +91,15 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     return null;
   }
 
+  /**
+   * Resolves the arguments to the Java program identified by the given {@link Class} type
+   * from the given array of {@link String arguments}.
+   *
+   * @param type Java {@link Class} containing the {@literal main} method of the Java program;
+   * must not be {@literal null}.
+   * @param args array of {@link String arguments} from which to extract the Java program arguments.
+   * @return the array of {@link String arguments} to be passed to the Java program.
+   */
   protected String[] resolveArgumentsFrom(Class type, String... args) {
     int index = indexOf(args, type.getName());
     int position = (index + 1);
@@ -79,95 +115,152 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     return arguments;
   }
 
+  /**
+   * Resolves the Java {@link Class} containing the {@literal main} method to the Java program to execute
+   * from the given array of {@link String arguments}.
+   *
+   * @param <T> {@link Class} type of the main Java program.
+   * @param args array of {@link String arguments} from which to extract the main Java {@link Class}
+   * of the Java program.
+   * @return the Java {@link Class} containing the {@literal main} method to the Java program.
+   * @see java.lang.Class
+   */
   protected <T> Class<T> resolveJavaClassFrom(String... args) {
-    for (String arg : nullSafeArray(args, String.class)) {
-      if (ObjectUtils.isPresent(arg)) {
-        return ObjectUtils.loadClass(arg);
-      }
-    }
-
-    return null;
+    return Arrays.stream(nullSafeArray(args, String.class)).filter(ObjectUtils::isPresent).findFirst()
+      .<Class<T>>map(ObjectUtils::loadClass).orElse(null);
   }
 
+  /**
+   *
+   * @param <T> {@link Class} type of the Java program return value.
+   * @param type Java {@link Class} to execute in embedded mode.
+   * @param args array of {@link String arguments} to pass to the Java {@link Class}.
+   * @return an {@link Optional} return value from the execution of the Java {@link Class}.
+   * @throws IllegalArgumentException if the Java {@link Class} is {@literal null}.
+   * @see java.lang.Class
+   * @see java.util.Optional
+   */
   @SuppressWarnings("unchecked")
   public <T> Optional<T> execute(Class type, String... args) {
     Assert.notNull(type, "Class type must not be null");
 
-    if (isCallable(type)) {
-      return invokeCallable(type, args);
+    return JAVA_CLASS_EXECUTORS.stream().filter(javaClassExecutor -> javaClassExecutor.isExecutable(type))
+      .findFirst().map(javaClassExecutor -> javaClassExecutor.execute(type, (Object[]) args)).orElseThrow(() ->
+        new EmbeddedProcessExecutionException(String.format("Unable to execute Java class [%s];"
+          + " Please verify that your class either implements Runnable, Callable, Executable or has a main method",
+            getName(type))));
+  }
+
+  interface JavaClassExecutor<T> {
+
+    boolean isExecutable(Class type);
+
+    Optional<T> execute(Class type, Object... args);
+
+    @NullSafe
+    default boolean isTargetConstructor(Constructor<?> constructor) {
+      return Optional.ofNullable(constructor).map(localConstructor ->
+        isDefaultConstructor(constructor) || isConstructorWithArrayParameter(constructor))
+          .orElse(false);
     }
-    else if (isRunnable(type)) {
-      return invokeRunnable(type, args);
+
+    @SuppressWarnings("unchecked")
+    default <T> Constructor<T> findConstructor(Class<T> type) {
+      return (Constructor<T>) stream(nullSafeArray(type.getDeclaredConstructors(), Constructor.class))
+        .filter((this::isTargetConstructor)).sorted((constructorOne, constructorTwo) ->
+          constructorTwo.getParameterCount() - constructorOne.getParameterCount())
+        .findFirst().orElseThrow(() -> new EmbeddedProcessExecutionException(String.format(
+          "No default constructor or constructor with arguments (%1$s(:Object[]) for type [%2$s] was found",
+            getSimpleName(type), getName(type))));
     }
-    else {
-      return invokeMainMethod(type, args);
+
+    default <T> T constructInstance(Class<T> type, Object[] args) {
+      try {
+        Constructor<T> constructor = findConstructor(type);
+
+        constructor.setAccessible(true);
+
+        return (isConstructorWithArrayParameter(constructor) ? constructor.newInstance((Object) args)
+          : constructor.newInstance());
+      }
+      catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        throw new EmbeddedProcessExecutionException(
+          String.format("Failed to construct an instance of Java class [%s]", type), e);
+      }
     }
   }
 
-  protected boolean isCallable(Class type) {
-    return Callable.class.isAssignableFrom(type);
-  }
+  static class CallableExecutor<T> implements JavaClassExecutor<T> {
 
-  @SuppressWarnings("unchecked")
-  protected <T> Optional<T> invokeCallable(Class type, String[] args) {
-    try {
-      Callable<T> callable = this.<Callable<T>>constructInstance(type, args);
-      return Optional.ofNullable(callable.call());
+    @Override
+    public boolean isExecutable(Class type) {
+      return Callable.class.isAssignableFrom(type);
     }
-    catch (Exception e) {
-      throw new EmbeddedProcessExecutionException(String.format("Failed to execute Java class [%s]", type), e);
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<T> execute(Class type, Object... args) {
+      try {
+        Callable<T> callable = this.<Callable<T>>constructInstance(type, args);
+        return Optional.ofNullable(callable.call());
+      }
+      catch (Exception e) {
+        throw new EmbeddedProcessExecutionException(String.format("Failed to call Java class [%s]", type), e);
+      }
     }
   }
 
-  protected boolean isRunnable(Class type) {
-    return Runnable.class.isAssignableFrom(type);
+  static class ExecutableExecutor<T> implements JavaClassExecutor<T> {
+
+    @Override
+    public boolean isExecutable(Class type) {
+      return Executable.class.isAssignableFrom(type);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Optional<T> execute(Class type, Object... args) {
+      Executable<T> executable = this.<Executable<T>>constructInstance(type, args);
+      return Optional.ofNullable(executable.execute((Object[]) args));
+    }
   }
 
-  @SuppressWarnings("unchecked")
-  protected <T> Optional<T> invokeRunnable(Class type, String[] args) {
-    Runnable runnable = this.<Runnable>constructInstance(type, args);
-    runnable.run();
-    return Optional.empty();
+  static class MainMethodExecutor<T> implements JavaClassExecutor<T> {
+
+    @Override
+    public boolean isExecutable(Class type) {
+      return Arrays.stream(type.getDeclaredMethods()).anyMatch(ClassUtils::isMainMethod);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<T> execute(Class type, Object... args) {
+      try {
+        Method mainMethod = type.getDeclaredMethod(ClassUtils.MAIN_METHOD_NAME, String[].class);
+
+        mainMethod.invoke(null, (Object) toStringArray(args));
+
+        return Optional.empty();
+      }
+      catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        throw new EmbeddedProcessExecutionException(
+          String.format("Failed to execute Java class [%s] using main method", type), e);
+      }
+    }
   }
 
-  private <T> Optional<T> invokeMainMethod(Class<?> type, Object[] args) {
-    try {
-      Method mainMethod = type.getDeclaredMethod(ObjectUtils.MAIN_METHOD_NAME, String[].class);
-      mainMethod.invoke(null, args);
+  static class RunnableExecutor<T> implements JavaClassExecutor<T> {
+
+    @Override
+    public boolean isExecutable(Class type) {
+      return Runnable.class.isAssignableFrom(type);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<T> execute(Class type, Object... args) {
+      Runnable runnable = this.<Runnable>constructInstance(type, args);
+      runnable.run();
       return Optional.empty();
     }
-    catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-      throw new EmbeddedProcessExecutionException(String.format("Failed to execute Java class [%s]", type), e);
-    }
-  }
-
-  protected <T> T constructInstance(Class<T> type, String[] args) {
-    try {
-      Constructor<T> constructor = findConstructor(type);
-      constructor.setAccessible(true);
-      return constructor.newInstance((Object[]) args);
-    }
-    catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-      throw new EmbeddedProcessExecutionException(
-        String.format("Failed to construct an instance of Java class [%s]", type), e);
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  protected <T> Constructor<T> findConstructor(Class<T> type) {
-    Constructor<T> foundConstructor = (Constructor<T>) stream(nullSafeArray(
-      type.getDeclaredConstructors(), Constructor.class)).filter((this::isTargetConstructor)).sorted(
-        (constructorOne, constructorTwo) -> constructorTwo.getParameterCount() - constructorOne.getParameterCount())
-          .findFirst().orElse(null);
-
-    return returnValueOrThrowIfNull(foundConstructor, new EmbeddedProcessExecutionException(String.format(
-      "Unable to find default constructor or a constructor with arguments (%1$s(:String[]) for type [%2$s]",
-        type.getSimpleName(), type.getName())));
-  }
-
-  @NullSafe
-  protected boolean isTargetConstructor(Constructor<?> constructor) {
-    return (constructor != null && (ObjectUtils.isDefaultConstructor(constructor)
-      || ObjectUtils.isConstructorWithArgumentArrayParameter(constructor)));
   }
 }
