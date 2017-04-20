@@ -44,7 +44,7 @@ import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Unit tests for {@link AbstractClientServerSupport}.
@@ -59,7 +59,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.tools.net.support.AbstractClientServerSupport
  * @since 1.0.0
  */

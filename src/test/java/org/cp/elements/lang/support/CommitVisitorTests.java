@@ -33,7 +33,7 @@ import org.cp.elements.lang.Visitable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * The CommitVisitorTest class is a test suite of test cases testing the contract and functionality
@@ -43,7 +43,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor

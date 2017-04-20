@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Test suite of test cases testing the contract and functionality of the {@link Identifiable} interface.
@@ -37,7 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.Identifiable
  */
 @RunWith(MockitoJUnitRunner.class)

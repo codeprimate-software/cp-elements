@@ -135,7 +135,7 @@ public class IOUtilsTests {
     when(mockInputStream.available()).thenReturn(4);
 
     when(mockInputStream.read(any(byte[].class))).thenAnswer((InvocationOnMock invocation) -> {
-      byte[] buffer = invocation.getArgumentAt(0, byte[].class);
+      byte[] buffer = invocation.getArgument(0);
 
       buffer[0] = (byte) 0xCA;
       buffer[1] = (byte) 0xFE;

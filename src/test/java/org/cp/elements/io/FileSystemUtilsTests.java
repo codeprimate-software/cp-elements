@@ -50,7 +50,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -67,7 +67,7 @@ import org.mockito.stubbing.Answer;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.FileSystemUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
@@ -375,7 +375,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     Answer<File[]> listFilesWithFilterAnswer = new Answer<File[]>() {
       @Override public File[] answer(InvocationOnMock invocationOnMock) throws Throwable {
         File directory = (File) invocationOnMock.getMock();
-        FileFilter fileFilter = invocationOnMock.getArgumentAt(0, FileFilter.class);
+        FileFilter fileFilter = invocationOnMock.getArgument(0);
 
         List<File> files = new ArrayList<>();
 
@@ -1017,7 +1017,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     Answer<File[]> listFilesWithFilterAnswer = new Answer<File[]>() {
       @Override public File[] answer(InvocationOnMock invocationOnMock) throws Throwable {
         File directory = (File) invocationOnMock.getMock();
-        FileFilter fileFilter = invocationOnMock.getArgumentAt(0, FileFilter.class);
+        FileFilter fileFilter = invocationOnMock.getArgument(0);
 
         List<File> files = new ArrayList<>();
 

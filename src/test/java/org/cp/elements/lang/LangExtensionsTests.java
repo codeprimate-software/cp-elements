@@ -50,7 +50,7 @@ import org.cp.elements.util.ComparatorUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -1751,7 +1751,7 @@ public class LangExtensionsTests {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion);
 
-    when(mockTransformer.transform(Matchers.any(AssertThat.class))).thenReturn(wrappedAssertion);
+    when(mockTransformer.transform(ArgumentMatchers.any(AssertThat.class))).thenReturn(wrappedAssertion);
 
     wrappedAssertion = wrappedAssertion.transform(mockTransformer);
 

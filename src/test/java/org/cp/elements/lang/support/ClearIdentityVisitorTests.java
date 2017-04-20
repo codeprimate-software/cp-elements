@@ -52,21 +52,22 @@ public class ClearIdentityVisitorTests {
     IdentifiableVisitable mockIdentifiableVisitable = mock(IdentifiableVisitable.class);
 
     doAnswer((invocationOnMock) -> {
-        invocationOnMock.getArgumentAt(0, Visitor.class).visit(mockIdentifiableVisitable);
+        invocationOnMock.<Visitor>getArgument(0).visit(mockIdentifiableVisitable);
         return null;
       }
     ).when(mockIdentifiableVisitable).accept(any(ClearIdentityVisitor.class));
 
     mockIdentifiableVisitable.accept(visitor);
 
-    verify(mockIdentifiableVisitable, times(1)).setId(isNull(Long.class));
+    verify(mockIdentifiableVisitable, times(1)).setId(isNull());
   }
 
   @Test
+  @SuppressWarnings("all")
   public void visitNonIdentifiableVisitable() {
     IdentifierVisitable identifier = new IdentifierVisitable();
 
-    assertThat(identifier.id.longValue(), is(equalTo(1l)));
+    assertThat(identifier.id.longValue(), is(equalTo(1L)));
 
     identifier.accept(visitor);
 

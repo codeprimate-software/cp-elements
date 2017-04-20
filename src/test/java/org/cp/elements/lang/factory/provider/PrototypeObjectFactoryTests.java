@@ -208,7 +208,7 @@ public class PrototypeObjectFactoryTests {
   protected interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable {
   }
 
-  protected static class CustomVarargsMatcher extends ArgumentMatcher<Object[]> implements VarargMatcher {
+  protected static class CustomVarargsMatcher implements ArgumentMatcher<Object[]>, VarargMatcher {
 
     private final Object[] expectedVarargs;
 
@@ -217,8 +217,8 @@ public class PrototypeObjectFactoryTests {
     }
 
     @Override
-    public boolean matches(Object actualVarargs) {
-      return Arrays.equals(expectedVarargs, (Object[]) actualVarargs);
+    public boolean matches(Object[] actualVarargs) {
+      return Arrays.equals(expectedVarargs, actualVarargs);
     }
   }
 

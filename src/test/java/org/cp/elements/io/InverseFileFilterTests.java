@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Test suite of test cases testing the contract and functionality of the {@link InverseFileFilter} class.
@@ -47,7 +47,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.runner.RunWith
  * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.InverseFileFilter
  * @since 1.0.0
  */

@@ -67,7 +67,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -82,7 +82,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.process.ProcessAdapter
@@ -1101,8 +1101,8 @@ public class ProcessAdapterTests {
         when(mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
         when(mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenAnswer(invocationOnMock -> {
-          assertThat(invocationOnMock.getArgumentAt(0, Long.class)).isEqualTo(15L);
-          assertThat(invocationOnMock.getArgumentAt(1, TimeUnit.class)).isEqualTo(TimeUnit.SECONDS);
+          assertThat(invocationOnMock.<Long>getArgument(0)).isEqualTo(15L);
+          assertThat(invocationOnMock.<TimeUnit>getArgument(1)).isEqualTo(TimeUnit.SECONDS);
 
           synchronized (mutex) {
             mutex.wait();

@@ -43,7 +43,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -58,7 +58,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.lang.concurrent.ThreadUtils

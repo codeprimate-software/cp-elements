@@ -47,7 +47,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Unit tests for {@link PropertiesAdapter}.
@@ -57,7 +57,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.util.PropertiesAdapter
  * @since 1.0.0
  */
@@ -244,7 +244,7 @@ public class PropertiesAdapterTests {
 
     when(mockProperties.getProperty(anyString(), any())).thenReturn("test");
     when(mockConversionService.convert(anyString(), eq(String.class))).thenAnswer(
-      (invocationOnMock) -> invocationOnMock.getArgumentAt(0, String.class));
+      (invocationOnMock) -> invocationOnMock.getArgument(0));
 
     PropertiesAdapter propertiesAdapter = new PropertiesAdapter(mockProperties) {
       @Override protected ConversionService getConversionService() {

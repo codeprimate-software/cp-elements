@@ -51,7 +51,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -70,7 +70,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
@@ -97,7 +97,7 @@ public class EchoServerTests {
     doReturn(mockExecutorService).when(testEchoServer).newExecutorService();
 
     when(mockExecutorService.submit(any(Runnable.class))).thenAnswer(invocationOnMock -> {
-      Runnable runnable = invocationOnMock.getArgumentAt(0, Runnable.class);
+      Runnable runnable = invocationOnMock.getArgument(0);
       runnable.run();
       return null;
     });

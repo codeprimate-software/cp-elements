@@ -17,10 +17,8 @@
 package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.test.mock.MockitoMatchers.stringArrayMatcher;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,9 +29,9 @@ import java.io.File;
 import org.cp.elements.io.FileSystemUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Unit tests for {@link ProcessExecutor}.
@@ -44,7 +42,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.process.ProcessExecutor
  * @since 1.0.0
  */
@@ -62,37 +60,37 @@ public class ProcessExecutorTests {
 
   @Test
   public void executeWithVarargs() {
-    when(processExecutor.execute(Matchers.<String[]>anyVararg())).thenCallRealMethod();
-    when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
+    when(processExecutor.execute(ArgumentMatchers.<String[]>any())).thenCallRealMethod();
+    when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
 
     assertThat(processExecutor.execute("java", "example.App", "arg")).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(FileSystemUtils.WORKING_DIRECTORY),
-      argThat(stringArrayMatcher("java", "example.App", "arg")));
+      eq("java"), eq("example.App"), eq("arg"));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void executeWithIterable() {
     when(processExecutor.execute(any(Iterable.class))).thenCallRealMethod();
-    when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
+    when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
 
     assertThat(processExecutor.execute(asIterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(FileSystemUtils.WORKING_DIRECTORY),
-      argThat(stringArrayMatcher("java", "example.App", "arg")));
+      eq("java"), eq("example.App"), eq("arg"));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void executeWithDirectoryAndIterable() {
     when(processExecutor.execute(any(File.class), any(Iterable.class))).thenCallRealMethod();
-    when(processExecutor.execute(any(File.class), Matchers.<String>anyVararg())).thenReturn(mockProcess);
+    when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
 
     assertThat(processExecutor.execute(mockDirectory, asIterable("java", "example.App", "arg"))).isEqualTo(mockProcess);
 
     verify(processExecutor, times(1)).execute(eq(mockDirectory),
-      argThat(stringArrayMatcher("java", "example.App", "arg")));
+      eq("java"), eq("example.App"), eq("arg"));
   }
 
   abstract class TestProcessExecutor implements ProcessExecutor {

@@ -68,7 +68,7 @@ import org.cp.elements.util.search.SearchException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Unit tests for {@link ElementsExceptionsFactory}.
@@ -78,7 +78,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.runners.MockitoJUnitRunner
+ * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.ElementsExceptionsFactory
  * @since 1.0.0
  */
