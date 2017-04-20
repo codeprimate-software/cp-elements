@@ -75,6 +75,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    */
   @Override
   public Void execute(File directory, String... commandLine) {
+
     Assert.isTrue(isNullOrEqualTo(directory, FileSystemUtils.WORKING_DIRECTORY),
       "The Java class can only be ran in the same working directory [%1$s] as the containing process"
         + "; directory was [%2$s]", FileSystemUtils.WORKING_DIRECTORY, directory);
@@ -131,12 +132,19 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
   }
 
   /**
+   * Executes the given Java {@link Class} passing the given array of {@link String arguments}.
+   *
+   * This execute method employs a {@link JavaClassExecutor} strategy to execute the given Java {@link Class}.
+   * The Java {@link Class} is expected to either implement {@link Runnable}, {@link Callable}, {@link Executable}
+   * or implement a {@literal main} {@link Method}.
    *
    * @param <T> {@link Class} type of the Java program return value.
    * @param type Java {@link Class} to execute in embedded mode.
    * @param args array of {@link String arguments} to pass to the Java {@link Class}.
    * @return an {@link Optional} return value from the execution of the Java {@link Class}.
    * @throws IllegalArgumentException if the Java {@link Class} is {@literal null}.
+   * @throws EmbeddedProcessExecutionException if the Java {@link Class} is not executable.
+   * @see org.cp.elements.process.java.EmbeddedJavaProcessExecutor.JavaClassExecutor
    * @see java.lang.Class
    * @see java.util.Optional
    */
@@ -151,10 +159,31 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
             getName(type))));
   }
 
+  /**
+   * Strategy interface for executing Java {@link Class Classes}.
+   *
+   * @param <T> {@link Class} type of the executions return value (result).
+   */
   interface JavaClassExecutor<T> {
 
+    /**
+     * Determines whether the given Java {@link Class} is executable by this executor.
+     *
+     * @param type Java {@link Class} to evaluate.
+     * @return a boolean value indicating whether this executor can execute the given Java {@link Class}.
+     * @see java.lang.Class
+     */
     boolean isExecutable(Class type);
 
+    /**
+     * Executes the given Java {@link Class} passing the array of {@link String arguments} used during execution.
+     *
+     * @param type Java {@link Class} to execute.
+     * @param args array of {@link String arguments} passed during execution.
+     * @return the {@link Optional} return value (result) from the execution.
+     * @see java.lang.Class
+     * @see java.util.Optional
+     */
     Optional<T> execute(Class type, Object... args);
 
     @NullSafe
@@ -167,7 +196,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     @SuppressWarnings("unchecked")
     default <T> Constructor<T> findConstructor(Class<T> type) {
       return (Constructor<T>) stream(nullSafeArray(type.getDeclaredConstructors(), Constructor.class))
-        .filter((this::isTargetConstructor)).sorted((constructorOne, constructorTwo) ->
+        .filter(this::isTargetConstructor).sorted((constructorOne, constructorTwo) ->
           constructorTwo.getParameterCount() - constructorOne.getParameterCount())
         .findFirst().orElseThrow(() -> new EmbeddedProcessExecutionException(String.format(
           "No default constructor or constructor with arguments (%1$s(:Object[]) for type [%2$s] was found",
@@ -190,13 +219,25 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     }
   }
 
+  /**
+   * Execution stragey for executing {@link Callable} Java {@link Class Classes}.
+
+   * @param <T> {@link Class} type of the executions return value (result).
+   * @see java.util.concurrent.Callable
+   */
   static class CallableExecutor<T> implements JavaClassExecutor<T> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isExecutable(Class type) {
       return Callable.class.isAssignableFrom(type);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
@@ -210,13 +251,25 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     }
   }
 
+  /**
+   * Execution stragey for executing {@link Executable} Java {@link Class Classes}.
+
+   * @param <T> {@link Class} type of the executions return value (result).
+   * @see org.cp.elements.lang.Executable
+   */
   static class ExecutableExecutor<T> implements JavaClassExecutor<T> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isExecutable(Class type) {
       return Executable.class.isAssignableFrom(type);
     }
 
+    /**
+     * @inheritDoc
+     */
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
       Executable<T> executable = this.<Executable<T>>constructInstance(type, args);
@@ -224,13 +277,24 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     }
   }
 
+  /**
+   * Execution stragey for executing Java {@link Class Classes} having a {@literal main} {@link Method}.
+
+   * @param <T> {@link Class} type of the executions return value (result).
+   */
   static class MainMethodExecutor<T> implements JavaClassExecutor<T> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isExecutable(Class type) {
       return Arrays.stream(type.getDeclaredMethods()).anyMatch(ClassUtils::isMainMethod);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
@@ -248,13 +312,25 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     }
   }
 
+  /**
+   * Execution stragey for executing {@link Runnable} Java {@link Class Classes}.
+
+   * @param <T> {@link Class} type of the executions return value (result).
+   * @see java.lang.Runnable
+   */
   static class RunnableExecutor<T> implements JavaClassExecutor<T> {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public boolean isExecutable(Class type) {
       return Runnable.class.isAssignableFrom(type);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {

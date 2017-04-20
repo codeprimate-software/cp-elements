@@ -206,14 +206,14 @@ public class EmbeddedJavaProcessExecutorTests {
   }
 
   @Test(expected = EmbeddedProcessExecutionException.class)
-  public void executeNonExecutableJavaClass() {
+  public void executeNonConstructableJavaClass() {
     try {
-      newEmbeddedJavaProcessExecutor().execute(MockApplication.class, "argOne", "argTwo");
+      newEmbeddedJavaProcessExecutor().execute(NonConstructableApplication.class, "argOne");
     }
     catch (EmbeddedProcessExecutionException expected) {
-      assertThat(expected).hasMessage("Unable to execute Java class [%s];"
-        + " Please verify that your class either implements Runnable, Callable, Executable or has a main method",
-          MockApplication.class.getName());
+      assertThat(expected).hasMessage(
+        "No default constructor or constructor with arguments (%1$s(:Object[]) for type [%2$s] was found",
+          NonConstructableApplication.class.getSimpleName(), NonConstructableApplication.class.getName());
 
       assertThat(expected).hasNoCause();
 
@@ -221,7 +221,33 @@ public class EmbeddedJavaProcessExecutorTests {
     }
   }
 
-  private static class MockApplication {
+  @Test(expected = EmbeddedProcessExecutionException.class)
+  public void executeNonExecutableJavaClass() {
+    try {
+      newEmbeddedJavaProcessExecutor().execute(NonExecutableApplication.class, "argOne", "argTwo");
+    }
+    catch (EmbeddedProcessExecutionException expected) {
+      assertThat(expected).hasMessage("Unable to execute Java class [%s];"
+        + " Please verify that your class either implements Runnable, Callable, Executable or has a main method",
+          NonExecutableApplication.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  private static class NonConstructableApplication implements Runnable {
+
+    private NonConstructableApplication(Object arg) {
+    }
+
+    @Override
+    public void run() {
+    }
+  }
+
+  private static class NonExecutableApplication {
   }
 
   public static class TestApplication {
