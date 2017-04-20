@@ -115,8 +115,8 @@ public class JavaProcessExecutorTests {
 
     assertThat(javaCommandLine).isNotNull();
     assertThat(javaCommandLine).isNotEmpty();
-    assertThat(javaCommandLine).contains(FileSystemUtils.JAVA_EXE.getAbsolutePath(), TestApplication.class.getName(),
-      "argOne", "argTwo");
+    assertThat(javaCommandLine).contains(FileSystemUtils.JAVA_EXE.getAbsolutePath(), "-server", "-classpath",
+      System.getProperty("java.class.path"), TestApplication.class.getName(), "argOne", "argTwo");
   }
 
   @Test

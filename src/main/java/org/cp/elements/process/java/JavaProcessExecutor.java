@@ -125,6 +125,9 @@ public class JavaProcessExecutor extends RuntimeProcessExecutor {
     List<String> javaCommandLine = new ArrayList<>();
 
     javaCommandLine.add(FileSystemUtils.JAVA_EXE.getAbsolutePath());
+    javaCommandLine.add("-server");
+    javaCommandLine.add("-classpath");
+    javaCommandLine.add(System.getProperty("java.class.path"));
     javaCommandLine.add(type.getName());
     javaCommandLine.addAll(Arrays.asList(ArrayUtils.nullSafeArray(args, String.class)));
 
