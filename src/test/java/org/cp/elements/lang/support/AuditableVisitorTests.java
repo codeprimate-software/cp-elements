@@ -134,7 +134,6 @@ public class AuditableVisitorTests {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(null);
-    when(mockAuditable.getCreatedOn()).thenReturn(null);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
@@ -149,7 +148,6 @@ public class AuditableVisitorTests {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(null);
-    when(mockAuditable.getCreatedOn()).thenReturn(LocalDateTime.now());
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 

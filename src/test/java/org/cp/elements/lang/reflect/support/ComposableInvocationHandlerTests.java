@@ -22,7 +22,6 @@ import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -97,8 +96,7 @@ public class ComposableInvocationHandlerTests {
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
 
-    when(mockInvocationHandlerOne.invoke(anyObject(), any(Method.class), any(Object[].class))).thenReturn("one");
-    when(mockInvocationHandlerTwo.invoke(anyObject(), any(Method.class), any(Object[].class))).thenReturn("two");
+    when(mockInvocationHandlerOne.invoke(any(), any(Method.class), any(Object[].class))).thenReturn("one");
 
     ComposableInvocationHandler invocationHandler =
       ComposableInvocationHandler.compose(mockInvocationHandlerOne, mockInvocationHandlerTwo);
@@ -107,7 +105,7 @@ public class ComposableInvocationHandlerTests {
     assertThat(invocationHandler.invoke(proxy, getName, arguments)).isEqualTo("one");
 
     verify(mockInvocationHandlerOne, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
-    verify(mockInvocationHandlerTwo, never()).invoke(anyObject(), any(Method.class), any(Object[].class));
+    verify(mockInvocationHandlerTwo, never()).invoke(any(), any(Method.class), any(Object[].class));
   }
 
   @Test
@@ -116,9 +114,9 @@ public class ComposableInvocationHandlerTests {
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
 
-    when(mockInvocationHandlerOne.invoke(anyObject(), any(Method.class), any(Object[].class)))
+    when(mockInvocationHandlerOne.invoke(any(), any(Method.class), any(Object[].class)))
       .thenThrow(new UnhandledMethodInvocationException("test"));
-    when(mockInvocationHandlerTwo.invoke(anyObject(), any(Method.class), any(Object[].class))).thenReturn("two");
+    when(mockInvocationHandlerTwo.invoke(any(), any(Method.class), any(Object[].class))).thenReturn("two");
 
     ComposableInvocationHandler invocationHandler =
       ComposableInvocationHandler.compose(mockInvocationHandlerOne, mockInvocationHandlerTwo);
@@ -136,9 +134,9 @@ public class ComposableInvocationHandlerTests {
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
 
-    when(mockInvocationHandlerOne.invoke(anyObject(), any(Method.class), any(Object[].class)))
+    when(mockInvocationHandlerOne.invoke(any(), any(Method.class), any(Object[].class)))
       .thenThrow(new UnhandledMethodInvocationException("test"));
-    when(mockInvocationHandlerTwo.invoke(anyObject(), any(Method.class), any(Object[].class)))
+    when(mockInvocationHandlerTwo.invoke(any(), any(Method.class), any(Object[].class)))
       .thenThrow(new UnhandledMethodInvocationException("test"));
 
     ComposableInvocationHandler invocationHandler =

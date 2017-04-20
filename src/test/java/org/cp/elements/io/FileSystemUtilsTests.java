@@ -36,7 +36,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +47,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -107,8 +107,9 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     when(mockDirectory.isDirectory()).thenReturn(true);
     when(mockDirectory.isFile()).thenReturn(false);
     when(mockDirectory.listFiles()).thenReturn(files);
+    when(mockDirectory.listFiles(ArgumentMatchers.<FileFilter>isNull())).thenReturn(files);
     when(mockDirectory.listFiles(any(FileFilter.class))).thenReturn(files);
-    when(mockDirectory.listFiles(any(FilenameFilter.class))).thenReturn(files);
+
     return mockDirectory;
   }
 
@@ -249,7 +250,8 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     File mockFileOne = whenFile(mockFile("MockFileOne"));
     File mockFileTwo = whenFile(mockFile("MockFileTwo"));
 
-    assertThat(FileSystemUtils.count(whenDirectory(mockFile, mockFileOne, mockFileTwo), null), is(equalTo(2)));
+    assertThat(FileSystemUtils.count(whenDirectory(mockFile, mockFileOne, mockFileTwo), null),
+      is(equalTo(2)));
 
     verify(mockFile, never()).exists();
     verify(mockFile, times(1)).isDirectory();
@@ -264,8 +266,6 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void countFilteredEmptyDirectoryReturnsZero() {
-    when(mockFileFilter.accept(any(File.class))).thenReturn(true);
-
     assertThat(FileSystemUtils.count(whenDirectory(mockFile), mockFileFilter), is(equalTo(0)));
 
     verify(mockFile, never()).exists();
@@ -603,16 +603,15 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
 
     when(mockFileOne.delete()).thenReturn(false);
     when(mockFileTwo.delete()).thenReturn(false);
-    when(mockFileFilter.accept(any(File.class))).thenReturn(true);
-    when(whenDirectory(mockFile, mockFileOne, mockFileTwo).delete()).thenReturn(true);
 
-    assertThat(FileSystemUtils.deleteRecursive(mockFile, mockFileFilter), is(false));
+    assertThat(FileSystemUtils.deleteRecursive(whenDirectory(mockFile, mockFileOne, mockFileTwo), mockFileFilter),
+      is(false));
 
     verify(mockFile, times(1)).isDirectory();
     verify(mockFile, times(1)).listFiles(eq(mockFileFilter));
     verify(mockFile, never()).exists();
     verify(mockFile, never()).delete();
-    verify(mockFileFilter, never()).accept(eq(mockFile));
+    verify(mockFileFilter, never()).accept(any(File.class));
     verify(mockFileOne, times(1)).isDirectory();
     verify(mockFileOne, times(1)).exists();
     verify(mockFileOne, times(1)).delete();
@@ -905,9 +904,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfEmptyDirectory() {
-    when(whenDirectory(mockFile).length()).thenReturn(1l);
-
-    assertThat(FileSystemUtils.size(mockFile), is(equalTo(0l)));
+    assertThat(FileSystemUtils.size(whenDirectory(mockFile)), is(equalTo(0L)));
 
     verify(mockFile, never()).exists();
     verify(mockFile, times(1)).isDirectory();
@@ -919,9 +916,9 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfDirectoryWithOneFile() {
-    File mockFileOne = whenFile(mockFile("MockFileOne"), 512l);
+    File mockFileOne = whenFile(mockFile("MockFileOne"), 512L);
 
-    assertThat(FileSystemUtils.size(whenDirectory(mockFile, mockFileOne)), is(equalTo(512l)));
+    assertThat(FileSystemUtils.size(whenDirectory(mockFile, mockFileOne)), is(equalTo(512L)));
 
     verify(mockFile, never()).exists();
     verify(mockFile, times(1)).isDirectory();
@@ -936,10 +933,10 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfDirectoryWithTwoFiles() {
-    File mockFileOne = whenFile(mockFile("MockFileOne"), 512l);
-    File mockFileTwo = whenFile(mockFile("MockFileTwo"), 512l);
+    File mockFileOne = whenFile(mockFile("MockFileOne"), 512L);
+    File mockFileTwo = whenFile(mockFile("MockFileTwo"), 512L);
 
-    assertThat(FileSystemUtils.size(whenDirectory(mockFile, mockFileOne, mockFileTwo)), is(equalTo(1024l)));
+    assertThat(FileSystemUtils.size(whenDirectory(mockFile, mockFileOne, mockFileTwo)), is(equalTo(1024L)));
 
     verify(mockFile, never()).exists();
     verify(mockFile, times(1)).isDirectory();
@@ -957,11 +954,11 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfDirectoryWithSubDirectoriesAndFiles() {
-    File mockFileOne = whenFile(mockFile("MockFileOne"), 256l);
-    File mockFileTwo = whenFile(mockFile("MockFileTwo"), 256l);
-    File mockFileThree = whenFile(mockFile("MockFileThree"), 1024l);
-    File mockFileFour = whenFile(mockFile("MockFileFour"), 512l);
-    File mockFileFive = whenFile(mockFile("MockFileFive"), 2048l);
+    File mockFileOne = whenFile(mockFile("MockFileOne"), 256L);
+    File mockFileTwo = whenFile(mockFile("MockFileTwo"), 256L);
+    File mockFileThree = whenFile(mockFile("MockFileThree"), 1024L);
+    File mockFileFour = whenFile(mockFile("MockFileFour"), 512L);
+    File mockFileFive = whenFile(mockFile("MockFileFive"), 2048L);
     File mockSubDirectoryThree = whenDirectory(mockFile("MockSubDirectoryThree"), mockFileFour, mockFileFive);
     File mockSubDirectoryTwo = whenDirectory(mockFile("MockSubDirectoryTwo"), mockFileThree);
     File mockSubDirectoryOne = whenDirectory(mockFile("MockSubDirectoryOne"), mockSubDirectoryThree, mockFileTwo);
@@ -1009,9 +1006,9 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfDirectoryWithSubDirectoriesAndFilesWhenFiltered() {
-    File mockFileOne = whenFile(mockFile("MockFileOne"), true, 1024l);
-    File mockFileTwo = whenFile(mockFile("MockFileTwo"), false, 2048l);
-    File mockFileThree = whenFile(mockFile("MockFileThree"), true, 4096l);
+    File mockFileOne = whenFile(mockFile("MockFileOne"), true, 1024L);
+    File mockFileTwo = whenFile(mockFile("MockFileTwo"), false, 2048L);
+    File mockFileThree = whenFile(mockFile("MockFileThree"), true, 4096L);
     File mockSubDirectory = whenDirectory(mockFile("MockSubDirectory"), mockFileTwo, mockFileThree);
 
     Answer<File[]> listFilesWithFilterAnswer = new Answer<File[]>() {
@@ -1038,7 +1035,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     FileFilter expectedFileFilter = ComposableFileFilter.or(DirectoriesOnlyFilter.INSTANCE, (file) -> !file.isHidden());
 
     assertThat(FileSystemUtils.size(mockFile, expectedFileFilter),
-      is(equalTo(2048l)));
+      is(equalTo(2048L)));
 
     verify(mockFile, times(1)).isDirectory();
     verify(mockFile, times(1)).isFile();

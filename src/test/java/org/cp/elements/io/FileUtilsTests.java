@@ -140,7 +140,6 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   public void createDirectoryWithExistingDirectory() {
     when(mockFile.isDirectory()).thenReturn(true);
     when(mockFile.isFile()).thenReturn(false);
-    when(mockFile.mkdir()).thenReturn(false);
 
     assertThat(FileUtils.createDirectory(mockFile), is(true));
 
@@ -184,8 +183,6 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @SuppressWarnings("all")
   public void createFileWithExistingDirectory() throws IOException {
     when(mockFile.isDirectory()).thenReturn(true);
-    when(mockFile.isFile()).thenReturn(false);
-    when(mockFile.createNewFile()).thenReturn(true);
 
     assertThat(FileUtils.createFile(mockFile), is(false));
 
@@ -199,7 +196,6 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   public void createFileWithExistingFile() throws IOException {
     when(mockFile.isDirectory()).thenReturn(false);
     when(mockFile.isFile()).thenReturn(true);
-    when(mockFile.createNewFile()).thenReturn(false);
 
     assertThat(FileUtils.createFile(mockFile), is(true));
 
@@ -560,7 +556,6 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalFileElseGetAbsoluteFile() throws IOException {
-    when(mockFile.getAbsoluteFile()).thenReturn(null);
     when(mockFile.getCanonicalFile()).thenReturn(mockFile);
 
     assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile), is(equalTo(mockFile)));

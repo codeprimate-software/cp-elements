@@ -173,7 +173,7 @@ public abstract class FileUtils extends IOUtils {
    */
   @NullSafe
   public static boolean isEmpty(File path) {
-    return (size(path) == 0l);
+    return (size(path) == 0L);
   }
 
   /**
@@ -255,7 +255,7 @@ public abstract class FileUtils extends IOUtils {
    */
   @NullSafe
   public static long size(File path) {
-    return (isFile(path) ? path.length() : 0l);
+    return (isFile(path) ? path.length() : 0L);
   }
 
   /**
