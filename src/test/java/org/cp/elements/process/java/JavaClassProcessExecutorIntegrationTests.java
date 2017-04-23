@@ -33,14 +33,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Integration tests for {@link JavaProcessExecutor}.
+ * Integration tests for {@link JavaProcessExecutor} testing the Java Class execution functionality.
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.cp.elements.process.ProcessAdapter
  * @see org.cp.elements.process.java.JavaProcessExecutor
+ * @see org.cp.elements.tools.net.EchoClient
+ * @see org.cp.elements.tools.net.EchoServer
  * @since 1.0.0
  */
-public class JavaProcessExecutorIntegrationTests {
+public class JavaClassProcessExecutorIntegrationTests {
 
   private static int availablePort;
 
@@ -58,9 +61,9 @@ public class JavaProcessExecutorIntegrationTests {
     assertThat(process).isNotNull();
 
     waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(500, TimeUnit.MILLISECONDS).on(process::isRunning);
-    waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(500, TimeUnit.MICROSECONDS).on(newConnectionTester(availablePort));
 
-    assertThat(newConnectionTester(availablePort).test()).isTrue();
+    assertThat(waitFor(TIMEOUT, TIMEOUT_TIME_UNIT).checkEvery(500, TimeUnit.MICROSECONDS)
+      .on(newConnectionTester(availablePort))).isTrue();
   }
 
   @AfterClass
@@ -71,7 +74,7 @@ public class JavaProcessExecutorIntegrationTests {
   }
 
   @Test
-  public void embeddedJavaProcessIsRunning() {
+  public void forkedJavaClassProcessIsRunning() {
     EchoClient echoClient = newEchoClient(availablePort);
 
     assertThat(echoClient.sendMessage("hello")).isEqualTo("hello");
