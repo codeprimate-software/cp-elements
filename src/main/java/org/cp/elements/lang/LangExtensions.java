@@ -530,11 +530,6 @@ public abstract class LangExtensions {
     private Transformer<AssertThat<T>> transformer;
 
     /* (non-Javadoc) */
-    private AssertThatExpression() {
-      this(null, DEFAULT_EXPECTED);
-    }
-
-    /* (non-Javadoc) */
     private AssertThatExpression(T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
