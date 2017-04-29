@@ -43,14 +43,16 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
   private final LogicalOperator op;
 
   /**
-   * Returns the single instance of {@link ComposableFilter} used to compose 2 or more individual {@link Filter} objects
-   * into a {@link Composite} {@link Filter} object.
+   * Factory methods returning a single instance of {@link ComposableFilter} used to compose 2 or more
+   * individual {@link Filter} objects into a {@link Composite} {@link Filter} object.
    *
-   * @return the single instance of {@link ComposableFilter}.
+   * @param <T> {@link Class} type of the objects evaluated by this {@link Filter}.
+   * @return a single instance of {@link ComposableFilter}.
    * @see org.cp.elements.lang.support.ComposableFilter
    */
-  public static ComposableFilter<?> getInstance() {
-    return INSTANCE;
+  @SuppressWarnings("unchecked")
+  public static <T> ComposableFilter<T> builder() {
+    return (ComposableFilter<T>) INSTANCE;
   }
 
   /**
@@ -92,7 +94,7 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @see org.cp.elements.lang.LogicalOperator
    * @see org.cp.elements.lang.Filter
    */
-  private static <T> Filter<T> compose(Filter<T> leftFilter, LogicalOperator op, Filter<T> rightFilter) {
+  protected static <T> Filter<T> compose(Filter<T> leftFilter, LogicalOperator op, Filter<T> rightFilter) {
     return (leftFilter == null ? rightFilter : (rightFilter == null ? leftFilter
       : new ComposableFilter<>(leftFilter, op, rightFilter)));
   }
