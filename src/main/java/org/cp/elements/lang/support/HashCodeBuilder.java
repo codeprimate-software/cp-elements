@@ -20,7 +20,7 @@ import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.reflect.ReflectionUtils.getValue;
 import static org.cp.elements.lang.reflect.ReflectionUtils.withFields;
 
-import java.lang.reflect.Field;
+import java.util.Optional;
 
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.NullSafe;
@@ -51,10 +51,10 @@ public class HashCodeBuilder implements Builder<Integer> {
    * for base value and multiplier.
    *
    * @return an instance of {@link HashCodeBuilder}.
-   * @see #HashCodeBuilder(int, int)
+   * @see #HashCodeBuilder()
    */
   public static HashCodeBuilder create() {
-    return new HashCodeBuilder(DEFAULT_BASE_VALUE, DEFAULT_MULTIPLIER);
+    return new HashCodeBuilder();
   }
 
   /**
@@ -94,9 +94,9 @@ public class HashCodeBuilder implements Builder<Integer> {
   public static HashCodeBuilder hashCodeFor(Object obj) {
     HashCodeBuilder builder = create();
 
-    if (obj != null) {
-      withFields().on(obj).call((Field field) -> builder.with(getValue(obj, field, field.getType())));
-    }
+    Optional.ofNullable(obj).ifPresent(object -> {
+      withFields().on(object).call(field -> builder.with(getValue(object, field, field.getType())));
+    });
 
     return builder;
   }
