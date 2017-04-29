@@ -38,13 +38,13 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 @ThreadSafe
 public class TimeBasedIdentifierSequence implements IdentifierSequence<Long> {
 
-  private static long currentIdentifier = -1l;
+  private static long currentIdentifier = -1L;
 
   /**
-   * Generates the next unique ID in sequence in a global context, across all instances of this class in the same JVM
-   * (or rather, {@link ClassLoader}).
+   * Generates the next unique identifier (ID) in sequence in a global context, across all instances of this class
+   * in the same JVM (or rather, {@link ClassLoader}).
    *
-   * @return the next unique, global Long ID in the sequence.
+   * @return the next globally unique {@link Long} identifier (ID) in the sequence.
    * @see java.lang.System#nanoTime()
    */
   protected static synchronized long nextGlobalId() {
@@ -60,6 +60,15 @@ public class TimeBasedIdentifierSequence implements IdentifierSequence<Long> {
   }
 
   /**
+   * Sets the global identifier to the current value.
+   *
+   * @param id {@link Long} value to use as the base identifier.
+   */
+  static synchronized void setGlobalId(long id) {
+    currentIdentifier = id;
+  }
+
+  /**
    * Generates the next unique ID in sequence.
    *
    * @return the next unique Long ID in the sequence.
@@ -69,5 +78,4 @@ public class TimeBasedIdentifierSequence implements IdentifierSequence<Long> {
   public synchronized Long nextId() {
     return nextGlobalId();
   }
-
 }

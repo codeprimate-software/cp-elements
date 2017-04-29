@@ -16,13 +16,11 @@
 
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
@@ -43,7 +41,20 @@ import edu.umd.cs.mtc.TestFramework;
  */
 public class TimeBasedIdentifierSequenceTest {
 
-  protected static final int COUNT = 100000;
+  private static final int COUNT = 100000;
+
+  @Test
+  public void nextIdIsUnique() {
+    long previousId = TimeBasedIdentifierSequence.nextGlobalId();
+
+    assertThat(previousId).isGreaterThan(0);
+
+    TimeBasedIdentifierSequence.setGlobalId(previousId + TimeUnit.MILLISECONDS.toNanos(500));
+
+    long nextId = TimeBasedIdentifierSequence.nextGlobalId();
+
+    assertThat(nextId).isGreaterThan(previousId);
+  }
 
   @Test
   public void nextIdGeneratesUniqueIdentifiers() {
@@ -53,7 +64,7 @@ public class TimeBasedIdentifierSequenceTest {
 
     for (int index = COUNT; index > 0; --index) {
       long newId = identifierSequence.nextId();
-      assertThat(newId, is(greaterThan(previousId)));
+      assertThat(newId).isGreaterThan(previousId);
       previousId = newId;
     }
   }
@@ -67,7 +78,7 @@ public class TimeBasedIdentifierSequenceTest {
 
     for (int index = COUNT; index > 0; --index) {
       long newId = (index % 2 == 0 ? identifierSequenceOne.nextId() : identifierSequenceTwo.nextId());
-      assertThat(newId, is(greaterThan(previousId)));
+      assertThat(newId).isGreaterThan(previousId);
       previousId = newId;
     }
   }
@@ -107,11 +118,10 @@ public class TimeBasedIdentifierSequenceTest {
 
     @Override
     public void finish() {
-      assertThat(identifiersOne.size(), is(equalTo(COUNT)));
-      assertThat(identifiersTwo.size(), is(equalTo(COUNT)));
-      assertThat(identifiersOne.removeAll(identifiersTwo), is(false));
-      assertThat(identifiersOne.size(), is(equalTo(COUNT)));
+      assertThat(identifiersOne.size()).isEqualTo(COUNT);
+      assertThat(identifiersTwo.size()).isEqualTo(COUNT);
+      assertThat(identifiersOne.removeAll(identifiersTwo)).isFalse();
+      assertThat(identifiersOne.size()).isEqualTo(COUNT);
     }
   }
-
 }
