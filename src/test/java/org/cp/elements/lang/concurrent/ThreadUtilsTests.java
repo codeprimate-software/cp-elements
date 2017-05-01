@@ -17,11 +17,12 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +31,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,10 +52,10 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The ThreadUtilsTest class is a test suite of test cases testing the contract and functionality of the
- * ThreadUtils class.
+ * Unit tests for {@link ThreadUtils}.
  *
  * @author John J. Blum
+ * @see org.junit.Ignore
  * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.junit.runner.RunWith
@@ -65,15 +68,15 @@ import edu.umd.cs.mtc.TestFramework;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ThreadUtilsTest {
+public class ThreadUtilsTests {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   @Mock
   private Thread mockThread;
 
-  protected static void sleep(final long milliseconds) {
+  private static void sleep(long milliseconds) {
     try {
       Thread.sleep(milliseconds);
     }
@@ -292,16 +295,16 @@ public class ThreadUtilsTest {
   public void getIdOfNonNullThread() {
     Thread mockThread = mock(Thread.class);
 
-    when(mockThread.getId()).thenReturn(1l);
+    when(mockThread.getId()).thenReturn(1L);
 
-    assertThat(ThreadUtils.getId(mockThread), is(equalTo(1l)));
+    assertThat(ThreadUtils.getId(mockThread), is(equalTo(1L)));
 
     verify(mockThread, times(1)).getId();
   }
 
   @Test
   public void getIdWithNull() {
-    assertThat(ThreadUtils.getId(null), is(equalTo(0l)));
+    assertThat(ThreadUtils.getId(null), is(equalTo(0L)));
   }
 
   @Test
@@ -377,6 +380,34 @@ public class ThreadUtilsTest {
   }
 
   @Test
+  public void dumpStackWasCalled() {
+    PrintStream systemErr = System.err;
+
+    try {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      PrintStream errorStream = new PrintStream(outputStream);
+
+      System.setErr(errorStream);
+      Thread.currentThread().setName("dumpStackTest");
+
+      ThreadUtils.dumpStack("Test_Tag");
+
+      errorStream.flush();
+
+      byte[] errorStreamBytes = outputStream.toByteArray();
+      String stackTrace = new String(errorStreamBytes);
+
+      assertThat(stackTrace, containsString(String.format("TEST_TAG - dumpStackTest Thread @ %d",
+        Thread.currentThread().getId())));
+      assertThat(stackTrace, containsString("java.lang.Exception: Stack trace"));
+      assertThat(stackTrace, containsString("at java.lang.Thread.dumpStack"));
+    }
+    finally {
+      System.setErr(systemErr);
+    }
+  }
+
+  @Test
   public void interruptInterruptsThread() {
     ThreadUtils.interrupt(mockThread);
     verify(mockThread, times(1)).interrupt();
@@ -389,7 +420,7 @@ public class ThreadUtilsTest {
 
   @Test
   public void join() {
-    final long expectedWait = 500l;
+    final long expectedWait = 500L;
 
     AtomicBoolean condition = new AtomicBoolean(false);
 
@@ -446,7 +477,7 @@ public class ThreadUtilsTest {
 
   @Test
   public void sleep() {
-    final long expectedWait = 500l;
+    final long expectedWait = 500L;
     final long t0 = System.currentTimeMillis();
 
     assertThat(ThreadUtils.sleep(expectedWait, 0), is(true));
@@ -465,7 +496,7 @@ public class ThreadUtilsTest {
   public void waitForDuration() {
     final long timeout = (System.currentTimeMillis() + 500);
 
-    assertThat(waitFor(500, TimeUnit.MILLISECONDS).checkEvery(100, TimeUnit.MILLISECONDS).run(), is(true));
+    assertThat(waitFor(500L).checkEvery(100L).run(), is(true));
     assertThat(System.currentTimeMillis(), is(greaterThanOrEqualTo(timeout)));
   }
 
@@ -476,7 +507,7 @@ public class ThreadUtilsTest {
     Condition countCondition = () ->  (count.incrementAndGet() > 0);
 
     assertThat(count.get(), is(equalTo(0)));
-    assertThat(waitFor(5, TimeUnit.SECONDS).checkEvery(1, TimeUnit.SECONDS).on(countCondition), is(true));
+    assertThat(waitFor(5L, TimeUnit.SECONDS).checkEvery(1L, TimeUnit.SECONDS).on(countCondition), is(true));
     assertThat(count.get(), is(equalTo(2)));
   }
 
@@ -487,29 +518,31 @@ public class ThreadUtilsTest {
 
   @Test
   public void waitForWithInvalidDuration() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("duration (-500) must be greater than 0");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("duration (-500) must be greater than 0");
 
-    waitFor(-500);
+    waitFor(-500L);
   }
 
   @Test
   public void waitForWithIntervalGreaterThanDuration() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("Interval [2 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(
+      "Interval [2 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
 
-    waitFor(500).checkEvery(2, TimeUnit.SECONDS);
+    waitFor(500L).checkEvery(2L, TimeUnit.SECONDS);
   }
 
   @Test
   public void waitForWithNegativeInterval() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("Interval [-1 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage(
+      "Interval [-1 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
 
-    waitFor(500).checkEvery(-1, TimeUnit.SECONDS);
+    waitFor(500L).checkEvery(-1L, TimeUnit.SECONDS);
   }
 
   @SuppressWarnings("unused")

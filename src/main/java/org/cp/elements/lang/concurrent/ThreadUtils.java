@@ -16,6 +16,7 @@
 
 package org.cp.elements.lang.concurrent;
 
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.lang.Assert;
@@ -285,9 +286,7 @@ public abstract class ThreadUtils {
    */
   @NullSafe
   public static void interrupt(Thread thread) {
-    if (thread != null) {
-      thread.interrupt();
-    }
+    Optional.ofNullable(thread).ifPresent(Thread::interrupt);
   }
 
   /**
@@ -352,11 +351,12 @@ public abstract class ThreadUtils {
    * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied
    * (default time unit is MILLISECONDS).
    * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
+   * @see org.cp.elements.lang.annotation.DSL
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
    */
   @DSL
   public static WaitTask waitFor(long duration) {
-    return waitFor(duration, WaitTask.DEFAULT_TIME_UNIT);
+    return WaitTask.newWaitTask().waitFor(duration);
   }
 
   /**
@@ -366,12 +366,13 @@ public abstract class ThreadUtils {
    * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied.
    * @param timeUnit the TimeUnit of the duration time value.
    * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
+   * @see org.cp.elements.lang.annotation.DSL
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
    * @see java.util.concurrent.TimeUnit
    */
   @DSL
   public static WaitTask waitFor(long duration, TimeUnit timeUnit) {
-    return new WaitTask().waitFor(duration, timeUnit);
+    return WaitTask.newWaitTask().waitFor(duration, timeUnit);
   }
 
   /**
@@ -391,33 +392,75 @@ public abstract class ThreadUtils {
     private TimeUnit durationTimeUnit;
     private TimeUnit intervalTimeUnit;
 
-    /* (non-Javadoc) */
+    /**
+     * Factory method used to construct a new, default instance of {@link WaitTask}.
+     *
+     * @return a new instance of {@link WaitTask}.
+     */
+    public static WaitTask newWaitTask() {
+      return new WaitTask();
+    }
+
+    /**
+     * Returns the duration of the wait.
+     *
+     * @return a long value representing the length in time to wait.
+     */
     public long getDuration() {
       return duration;
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Returns the unit of time for the wait duration.
+     *
+     * @return a {@link TimeUnit} indicating the unit of time used for the duration of the wait.
+     * @see java.util.concurrent.TimeUnit
+     */
     public TimeUnit getDurationTimeUnit() {
       return durationTimeUnit;
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Returns the interval of time inside the duration at which the condition is reevaluated.
+     *
+     * @return a long value representing the interval to reevaluate the condition of the wait.
+     */
     public long getInterval() {
       long duration = getDuration();
       return (interval > 0 ? Math.min(interval, duration) : duration);
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Returns the unit of time for the interval.
+     *
+     * @return a {@link TimeUnit} indicating the unit of time used for the interval.
+     * @see java.util.concurrent.TimeUnit
+     */
     public TimeUnit getIntervalTimeUnit() {
       return ObjectUtils.defaultIfNull(intervalTimeUnit, getDurationTimeUnit());
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Causes the current {@link Thread} to wait for the specified duration, or until the condition is met.
+     *
+     * @param duration long value indicating the length of time to wait.
+     * @return this {@link WaitTask} set to the specified duration.
+     * @see #waitFor(long, TimeUnit)
+     */
     public WaitTask waitFor(long duration) {
       return waitFor(duration, DEFAULT_TIME_UNIT);
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Causes the current {@link Thread} to wait for the specified duration in the given {@link TimeUnit},
+     * or until the condition is met.
+     *
+     * @param duration long value indicating the length of time to wait.
+     * @param durationTimeUnit {@link TimeUnit} used to specify the unit of time for the duration.
+     * @return this {@link WaitTask} set to the specified duration in the given {@link TimeUnit}.
+     * @throws IllegalArgumentException if the duration is less than equal to 0.
+     * @see java.util.concurrent.TimeUnit
+     */
     public WaitTask waitFor(long duration, TimeUnit durationTimeUnit) {
       Assert.argument(duration > 0, String.format("duration (%1$d) must be greater than 0", duration));
 
@@ -432,14 +475,29 @@ public abstract class ThreadUtils {
       return (interval > 0 && intervalTimeUnit.toMillis(interval) <= getDurationTimeUnit().toMillis(getDuration()));
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Causes the condition to be reevaluated every interval of time.
+     *
+     * @param interval long value indicating the interval of time to reevaluate the condition of the wait.
+     * @return this {@link WaitTask} configured with the given interval.
+     * @see #checkEvery(long, TimeUnit)
+     */
     public WaitTask checkEvery(long interval) {
       return checkEvery(interval, DEFAULT_TIME_UNIT);
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Causes the condition to be reevaluated every interval of time in the given {@link TimeUnit}.
+     *
+     * @param interval long value indicating the interval of time to reevaluate the condition of the wait.
+     * @param intervalTimeUnit {@link TimeUnit} used in the interval.
+     * @return this {@link WaitTask} configured with the given interval.
+     * @throws IllegalArgumentException if interval is less than equal to 0 or greater than the duration.
+     * @see java.util.concurrent.TimeUnit
+     * @see #isValidInterval(long, TimeUnit)
+     */
     public WaitTask checkEvery(long interval, TimeUnit intervalTimeUnit) {
-      intervalTimeUnit = ObjectUtils.defaultIfNull(intervalTimeUnit, DEFAULT_TIME_UNIT);
+      intervalTimeUnit = Optional.ofNullable(intervalTimeUnit).orElse(DEFAULT_TIME_UNIT);
 
       Assert.argument(isValidInterval(interval, intervalTimeUnit), String.format(
         "Interval [%1$d %2$s] must be greater than 0 and less than equal to duration [%3$d %4$s]",
@@ -451,13 +509,20 @@ public abstract class ThreadUtils {
       return this;
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Evaluates the given {@link Condition}, waiting up to at most the specified duration.
+     *
+     * If the provided {@link Condition} is {@literal null}, the {@link Condition#FALSE_CONDITION} is used.
+     *
+     * @param condition {@link Condition} to evaluate.
+     * @return a boolean value indicating whether the {@link Condition} was satisfied.
+     * @see org.cp.elements.lang.Condition
+     */
     public boolean on(Condition condition) {
-      final long timeout = (System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration()));
-
+      long timeout = (System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration()));
       long interval = getIntervalTimeUnit().toMillis(getInterval());
 
-      condition = ObjectUtils.defaultIfNull(condition, Condition.FALSE_CONDITION);
+      condition = Optional.ofNullable(condition).orElse(Condition.FALSE_CONDITION);
 
       try {
         while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
@@ -474,7 +539,14 @@ public abstract class ThreadUtils {
       return (Condition.FALSE_CONDITION.equals(condition) || condition.evaluate());
     }
 
-    /* (non-Javadoc) */
+    /**
+     * Runs this {@link WaitTask} with no {@link Condition}.
+     *
+     * This effectively causes the current {@link Thread} to block for the full duration of the wait.
+     *
+     * @return a boolean value indicating whether the full wait was realized.
+     * @see #on(Condition)
+     */
     public boolean run() {
       return on(null);
     }
