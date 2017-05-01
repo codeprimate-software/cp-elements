@@ -335,13 +335,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
   public static void invoke(Class<?> type, String methodName, Class<?>[] parameterTypes, Object... arguments) {
-    try {
-      invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, Void.class), arguments, Void.class);
-    }
-    catch (MethodNotFoundException e) {
-      throw new IllegalArgumentException(String.format("No method with signature (%1$s) exists on class type (%2$s)!",
-        getMethodSignature(methodName, parameterTypes, Void.class), type.getName()), e);
-    }
+    invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, Void.class), arguments, Void.class);
   }
 
   /**
@@ -473,14 +467,8 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
   public static void invoke(Object obj, String methodName, Class<?>[] parameterTypes, Object... arguments) {
-    try {
-      invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, Void.class),
-        arguments, Void.class);
-    }
-    catch (MethodNotFoundException e) {
-      throw new IllegalArgumentException(String.format("No method with signature (%1$s) exists on object of type (%2$s)!",
-        getMethodSignature(methodName, parameterTypes, Void.class), obj.getClass().getName()), e);
-    }
+    invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, Void.class),
+      arguments, Void.class);
   }
 
   /**
