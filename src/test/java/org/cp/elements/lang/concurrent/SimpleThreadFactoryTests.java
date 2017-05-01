@@ -17,16 +17,28 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.concurrent.SimpleThreadFactory.SimpleUncaughtExceptionHandler;
 import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.cp.elements.lang.ThrowableUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,6 +54,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see org.mockito.Spy
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.lang.concurrent.SimpleThreadFactory
  * @since 1.0.0
@@ -97,6 +110,7 @@ public class SimpleThreadFactoryTests {
     assertThat(thread).isNotNull();
     assertThat(thread.getName()).startsWith(String.format("%s.THREAD-", SimpleThreadFactory.class.getName()));
     assertThat(thread.getContextClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
+    assertThat(thread.isDaemon()).isTrue();
     assertThat(thread.getPriority()).isEqualTo(Thread.NORM_PRIORITY);
     assertThat(thread.getThreadGroup()).isEqualTo(SimpleThreadFactory.DEFAULT_THREAD_GROUP);
     assertThat(thread.getUncaughtExceptionHandler()).isEqualTo(
@@ -113,6 +127,7 @@ public class SimpleThreadFactoryTests {
     assertThat(thread).isNotNull();
     assertThat(thread.getName()).isEqualTo("TestThread");
     assertThat(thread.getContextClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
+    assertThat(thread.isDaemon()).isTrue();
     assertThat(thread.getPriority()).isEqualTo(Thread.NORM_PRIORITY);
     assertThat(thread.getThreadGroup()).isEqualTo(testThreadGroup);
     assertThat(thread.getUncaughtExceptionHandler()).isEqualTo(
@@ -136,9 +151,28 @@ public class SimpleThreadFactoryTests {
     assertThat(thread).isNotNull();
     assertThat(thread.getName()).isEqualTo("TestThread");
     assertThat(thread.getContextClassLoader()).isEqualTo(ClassLoader.getSystemClassLoader());
+    assertThat(thread.isDaemon()).isFalse();
     assertThat(thread.getPriority()).isEqualTo(Thread.MAX_PRIORITY);
     assertThat(thread.getThreadGroup()).isEqualTo(testThreadGroup);
     assertThat(thread.getUncaughtExceptionHandler()).isEqualTo(mockUncaughtExceptionHandler);
+  }
+
+  @Test
+  public void newThreadWithEmptyName() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Thread name must be specified");
+
+    SimpleThreadFactory.newThreadFactory().newThread("  ", mockRunnable);
+  }
+
+  @Test
+  public void newThreadWithNullName() {
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Thread name must be specified");
+
+    SimpleThreadFactory.newThreadFactory().newThread(null, mockRunnable);
   }
 
   @Test
@@ -152,33 +186,56 @@ public class SimpleThreadFactoryTests {
   }
 
   @Test
-  public void newThreadWithNullName() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Thread name must be specified");
-
-    SimpleThreadFactory.newThreadFactory().newThread(null, mockRunnable);
-  }
-
-  @Test
-  public void newThreadWithEmptyName() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Thread name must be specified");
-
-    SimpleThreadFactory.newThreadFactory().newThread("  ", mockRunnable);
-  }
-
-  @Test
   public void newThreadRunsRunnableTask() {
     AtomicBoolean ran = new AtomicBoolean(false);
 
-    Thread thread = SimpleThreadFactory.newThreadFactory()
-      .newThread("TestThread", () -> { ran.set(true); });
+    Thread thread = SimpleThreadFactory.newThreadFactory().newThread("TestThread", () -> { ran.set(true); });
 
     thread.start();
     waitFor(500, TimeUnit.MILLISECONDS).checkEvery(100, TimeUnit.MILLISECONDS).on(ran::get);
 
     assertThat(ran.get()).isTrue();
+  }
+
+  @Test
+  public void simpleUncaughtExceptionHandlerHandlesUncaughtException() {
+    SimpleUncaughtExceptionHandler uncaughtExceptionHandler = spy(SimpleUncaughtExceptionHandler.INSTANCE);
+    RuntimeException exception = new RuntimeException();
+    Logger mockLogger = mock(Logger.class);
+
+    when(uncaughtExceptionHandler.getLogger()).thenReturn(mockLogger);
+    when(mockLogger.isLoggable(any(Level.class))).thenReturn(true);
+
+    Thread.currentThread().setName("simpleUncaughtExceptionHandlerHandlesUncaughtExceptionTest");
+    uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exception);
+
+    verify(mockLogger, times(1)).warning(String.format(
+      "An unhandled error [java.lang.RuntimeException] was thrown by Thread [simpleUncaughtExceptionHandlerHandlesUncaughtExceptionTest] having ID [%d]",
+        Thread.currentThread().getId()));
+
+    verify(mockLogger, times(1)).isLoggable(eq(Level.FINE));
+
+    verify(mockLogger, times(1)).fine(ThrowableUtils.getStackTrace(exception));
+  }
+
+  @Test
+  public void simpleUncaughtExceptionHandlerOnlyLogsWarning() {
+    SimpleUncaughtExceptionHandler uncaughtExceptionHandler = spy(SimpleUncaughtExceptionHandler.INSTANCE);
+    RuntimeException exception = new RuntimeException();
+    Logger mockLogger = mock(Logger.class);
+
+    when(uncaughtExceptionHandler.getLogger()).thenReturn(mockLogger);
+    when(mockLogger.isLoggable(any(Level.class))).thenReturn(false);
+
+    Thread.currentThread().setName("simpleUncaughtExceptionHandlerOnlyLogsWarning");
+    uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), exception);
+
+    verify(mockLogger, times(1)).warning(String.format(
+      "An unhandled error [java.lang.RuntimeException] was thrown by Thread [simpleUncaughtExceptionHandlerOnlyLogsWarning] having ID [%d]",
+        Thread.currentThread().getId()));
+
+    verify(mockLogger, times(1)).isLoggable(eq(Level.FINE));
+
+    verify(mockLogger, never()).fine(anyString());
   }
 }

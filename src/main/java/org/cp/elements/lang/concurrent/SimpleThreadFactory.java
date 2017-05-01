@@ -17,8 +17,8 @@
 package org.cp.elements.lang.concurrent;
 
 import static java.lang.Thread.UncaughtExceptionHandler;
-import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -110,7 +110,6 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see java.lang.Thread
    */
   public Thread newThread(String name, Runnable task) {
-
     Assert.hasText(name, "Thread name must be specified");
     Assert.notNull(task, "Thread task must not be null");
 
@@ -134,7 +133,8 @@ public class SimpleThreadFactory implements ThreadFactory {
    */
   @NullSafe
   public ClassLoader getContextClassLoader() {
-    return defaultIfNull(this.contextClassLoader, Thread.currentThread().getContextClassLoader());
+    return Optional.ofNullable(this.contextClassLoader)
+      .orElseGet(() -> Thread.currentThread().getContextClassLoader());
   }
 
   /**
@@ -155,7 +155,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see java.lang.Thread#getPriority()
    */
   public int getPriority() {
-    return (this.priority != null ? this.priority : Thread.NORM_PRIORITY);
+    return Optional.ofNullable(this.priority).orElse(Thread.NORM_PRIORITY);
   }
 
   /**
@@ -167,7 +167,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    */
   @NullSafe
   public ThreadGroup getThreadGroup() {
-    return defaultIfNull(this.threadGroup, DEFAULT_THREAD_GROUP);
+    return Optional.ofNullable(this.threadGroup).orElse(DEFAULT_THREAD_GROUP);
   }
 
   /**
@@ -180,7 +180,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    */
   @NullSafe
   public UncaughtExceptionHandler getUncaughtExceptionHandler() {
-    return defaultIfNull(this.uncaughtExceptionHandler, SimpleUncaughtExceptionHandler.INSTANCE);
+    return Optional.ofNullable(this.uncaughtExceptionHandler).orElse(SimpleUncaughtExceptionHandler.INSTANCE);
   }
 
   /**
@@ -257,20 +257,24 @@ public class SimpleThreadFactory implements ThreadFactory {
    *
    * @see java.lang.Thread.UncaughtExceptionHandler
    */
-  protected static final class SimpleUncaughtExceptionHandler implements UncaughtExceptionHandler {
+  protected static class SimpleUncaughtExceptionHandler implements UncaughtExceptionHandler {
 
     protected static final SimpleUncaughtExceptionHandler INSTANCE = new SimpleUncaughtExceptionHandler();
+
+    protected Logger getLogger() {
+      return logger;
+    }
 
     /**
      * @inheritDoc
      */
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
-      logger.warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] having ID [%3$d]",
+      getLogger().warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] having ID [%3$d]",
         throwable.getClass().getName(), thread.getName(), thread.getId()));
 
-      if (logger.isLoggable(Level.FINE)) {
-        logger.fine(ThrowableUtils.getStackTrace(throwable));
+      if (getLogger().isLoggable(Level.FINE)) {
+        getLogger().fine(ThrowableUtils.getStackTrace(throwable));
       }
     }
   }
