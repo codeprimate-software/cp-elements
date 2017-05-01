@@ -17,6 +17,7 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
 /**
  * The ThreadAdapter class is an "Adapter" (a.k.a. wrapper) around a Thread object, providing additional, convenient
@@ -50,7 +51,7 @@ public class ThreadAdapter {
    * @see java.lang.Thread#Thread(Runnable)
    * @see #ThreadAdapter(Thread)
    */
-  public ThreadAdapter(final Runnable target) {
+  public ThreadAdapter(Runnable target) {
     this(new Thread(target));
   }
 
@@ -62,8 +63,8 @@ public class ThreadAdapter {
    * @throws NullPointerException if the Thread delegate is null.
    * @see java.lang.Thread
    */
-  public ThreadAdapter(final Thread delegate) {
-    assertThat(delegate).throwing(new IllegalArgumentException("The delegate Thread must not be null")).isNotNull();
+  public ThreadAdapter(Thread delegate) {
+    assertThat(delegate).throwing(newIllegalArgumentException("The delegate Thread must not be null")).isNotNull();
     this.delegate = delegate;
   }
 
@@ -75,7 +76,7 @@ public class ThreadAdapter {
    * @see java.lang.Thread
    */
   protected Thread getDelegate() {
-    return delegate;
+    return this.delegate;
   }
 
   /**
@@ -223,7 +224,7 @@ public class ThreadAdapter {
    * @return a reference to this Thread.
    * @see java.lang.Thread#setDaemon(boolean)
    */
-  public ThreadAdapter setDaemon(final boolean daemon) {
+  public ThreadAdapter setDaemon(boolean daemon) {
     getDelegate().setDaemon(daemon);
     return this;
   }
@@ -245,7 +246,7 @@ public class ThreadAdapter {
    * @return a reference to this Thread.
    * @see java.lang.Thread#setName(String)
    */
-  public ThreadAdapter setName(final String name) {
+  public ThreadAdapter setName(String name) {
     getDelegate().setName(name);
     return this;
   }
@@ -269,7 +270,7 @@ public class ThreadAdapter {
    * @return a reference to this Thread.
    * @see java.lang.Thread#setPriority(int)
    */
-  public ThreadAdapter setPriority(final int priority) {
+  public ThreadAdapter setPriority(int priority) {
     getDelegate().setPriority(priority);
     return this;
   }
@@ -328,7 +329,7 @@ public class ThreadAdapter {
    * @see java.lang.Thread#setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
    * @see java.lang.Thread.UncaughtExceptionHandler
    */
-  public ThreadAdapter setUncaughtExceptionHandler(final Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+  public ThreadAdapter setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
     getDelegate().setUncaughtExceptionHandler(uncaughtExceptionHandler);
     return this;
   }
@@ -391,7 +392,7 @@ public class ThreadAdapter {
    * for this Thread.
    * @see java.lang.Thread#join(long)
    */
-  public void join(final long milliseconds) throws InterruptedException {
+  public void join(long milliseconds) throws InterruptedException {
     getDelegate().join(milliseconds);
   }
 
@@ -405,7 +406,7 @@ public class ThreadAdapter {
    * for this Thread.
    * @see java.lang.Thread#join(long, int)
    */
-  public void join(final long milliseconds, final int nanoseconds) throws InterruptedException {
+  public void join(long milliseconds, int nanoseconds) throws InterruptedException {
     getDelegate().join(milliseconds, nanoseconds);
   }
 
@@ -439,5 +440,4 @@ public class ThreadAdapter {
     return String.format("{ @type = %1$s, id = %2$d, name = %3$s, daemon = %4$s, group = %5$s, priority = %6$s, state = %7$s }",
       getClass().getName(), getId(), getName(), isDaemon(), getThreadGroup(), getPriority(), getState());
   }
-
 }

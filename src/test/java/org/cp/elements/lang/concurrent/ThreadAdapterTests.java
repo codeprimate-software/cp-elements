@@ -16,6 +16,7 @@
 
 package org.cp.elements.lang.concurrent;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -23,14 +24,16 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -47,8 +50,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The ThreadAdapterTest class is a test suite of test cases testing the contract and functionality
- * of the {@link ThreadAdapter} class.
+ * Unit tests for {@link ThreadAdapter}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -60,10 +62,10 @@ import edu.umd.cs.mtc.TestFramework;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ThreadAdapterTest {
+public class ThreadAdapterTests {
 
   @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  public ExpectedException exception = ExpectedException.none();
 
   @Rule
   public Timeout globalTimeout = Timeout.seconds(5);
@@ -104,9 +106,9 @@ public class ThreadAdapterTest {
 
   @Test
   public void constructThreadAdapterWithNull() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("The delegate Thread must not be null");
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("The delegate Thread must not be null");
 
     new ThreadAdapter(null);
   }
@@ -287,8 +289,8 @@ public class ThreadAdapterTest {
 
   @Test
   public void getId() {
-    when(mockThread.getId()).thenReturn(1l);
-    assertThat(new ThreadAdapter(mockThread).getId(), is(equalTo(1l)));
+    when(mockThread.getId()).thenReturn(1L);
+    assertThat(new ThreadAdapter(mockThread).getId(), is(equalTo(1L)));
     verify(mockThread, times(1)).getId();
   }
 
@@ -387,7 +389,32 @@ public class ThreadAdapterTest {
     verify(spyThread, times(1)).checkAccess();
   }
 
-  // no test for dumpStack possible
+  @Test
+  public void dumpStackWasCalled() {
+    PrintStream systemErr = System.err;
+
+    try {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      PrintStream errorStream = new PrintStream(outputStream);
+
+      System.setErr(errorStream);
+
+      new ThreadAdapter(mockThread).dumpStack();
+
+      errorStream.flush();
+
+      byte[] errorStreamBytes = outputStream.toByteArray();
+      String stackTrace = new String(errorStreamBytes);
+
+      //System.out.println(stackTrace);
+
+      assertThat(stackTrace, containsString("java.lang.Exception: Stack trace"));
+      assertThat(stackTrace, containsString("at java.lang.Thread.dumpStack"));
+    }
+    finally {
+      System.setErr(systemErr);
+    }
+  }
 
   @Test
   public void interrupt() {
@@ -451,7 +478,7 @@ public class ThreadAdapterTest {
       joinedThread.setName("Joined Thread");
       joinedThread.setPriority(Thread.NORM_PRIORITY);
       joinedThread.start();
-      joinedThread.join(200l);
+      joinedThread.join(200L);
 
       assertThat(joinedThread.isTerminated(), is(false));
       assertThat(runCalled.get(), is(true));
@@ -495,7 +522,7 @@ public class ThreadAdapterTest {
       joinedThread.setName("Joined Thread");
       joinedThread.setPriority(Thread.NORM_PRIORITY);
       joinedThread.start();
-      joinedThread.join(200l, 500);
+      joinedThread.join(200L, 500);
 
       assertThat(joinedThread.isTerminated(), is(false));
       assertThat(runCalled.get(), is(true));
@@ -527,6 +554,24 @@ public class ThreadAdapterTest {
     verify(mockThread, times(1)).start();
   }
 
+  @Test
+  public void toStringIsCorrect() {
+    ThreadGroup testThreadGroup = new ThreadGroup("ToStringTestThreadGroup");
+    Thread testThread = spy(new Thread(testThreadGroup, () -> {}, "ToStringTestThread"));
+
+    testThread.setDaemon(true);
+    testThread.setPriority(9);
+
+    when(testThread.getState()).thenReturn(Thread.State.RUNNABLE);
+
+    ThreadAdapter testThreadAdapter = new ThreadAdapter(testThread);
+
+    assertThat(testThreadAdapter.getDelegate(), is(sameInstance(testThread)));
+    assertThat(testThreadAdapter.toString(), is(equalTo(String.format(
+      "{ @type = %s, id = %d, name = ToStringTestThread, daemon = true, group = %s, priority = 9, state = RUNNABLE }",
+        testThreadAdapter.getClass().getName(), testThread.getId(), testThreadGroup))));
+  }
+
   @SuppressWarnings("unused")
   protected static final class JoinInterruptionMultithreadedTestCase extends MultithreadedTestCase {
 
@@ -543,16 +588,16 @@ public class ThreadAdapterTest {
       this(null, null);
     }
 
-    public JoinInterruptionMultithreadedTestCase(final Long milliseconds) {
+    JoinInterruptionMultithreadedTestCase(Long milliseconds) {
       this(milliseconds, null);
     }
 
-    public JoinInterruptionMultithreadedTestCase(final Long milliseconds, final Integer nanoseconds) {
+    JoinInterruptionMultithreadedTestCase(Long milliseconds, Integer nanoseconds) {
       this.milliseconds = milliseconds;
       this.nanoseconds = nanoseconds;
     }
 
-    protected Thread.State getExpectedJoiningThreadState() {
+    Thread.State getExpectedJoiningThreadState() {
       return (milliseconds != null ? Thread.State.TIMED_WAITING : Thread.State.WAITING);
     }
 
@@ -597,5 +642,4 @@ public class ThreadAdapterTest {
       }
     }
   }
-
 }
