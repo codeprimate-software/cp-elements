@@ -47,6 +47,14 @@ import lombok.RequiredArgsConstructor;
 public class MethodInvokingMethodInterceptorTests {
 
   @Test
+  public void constructDefaultMethodInvokingMethodInterceptor() {
+    MethodInvokingMethodInterceptor methodInterceptor = new MethodInvokingMethodInterceptor();
+
+    assertThat(methodInterceptor).isNotNull();
+    assertThat(methodInterceptor.getTarget()).isNull();
+  }
+
+  @Test
   public void constructMethodInvokingMethodInterceptorWithNull() {
     MethodInvokingMethodInterceptor methodInterceptor = newMethodInvokingMethodInterceptor(null);
 
