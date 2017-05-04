@@ -40,7 +40,7 @@ public abstract class FileComparatorFactory {
    * @see java.io.File
    */
   public static Comparator<File> fileExtensionComparator() {
-    return (fileOne, fileTwo) -> FileUtils.getExtension(fileOne).compareTo(FileUtils.getExtension(fileTwo));
+    return Comparator.comparing(FileUtils::getExtension);
   }
 
   /**
@@ -65,7 +65,7 @@ public abstract class FileComparatorFactory {
    * @see java.util.Comparator
    */
   public static Comparator<File> fileNameComparator() {
-    return (fileOne, fileTwo) -> fileOne.getName().compareTo(fileTwo.getName());
+    return Comparator.comparing(File::getName);
   }
 
   /**
@@ -78,7 +78,7 @@ public abstract class FileComparatorFactory {
    * @see java.util.Comparator
    */
   public static Comparator<File> filePathComparator() {
-    return (fileOne, fileTwo) -> fileOne.getAbsolutePath().compareTo(fileTwo.getAbsolutePath());
+    return Comparator.comparing(File::getAbsolutePath);
   }
 
   /**
