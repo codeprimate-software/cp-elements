@@ -25,10 +25,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.NullSafe;
-import org.cp.elements.lang.ObjectUtils;
 
 /**
  * The IOUtils class provides basic input and output utility operations.
@@ -222,12 +222,14 @@ public abstract class IOUtils {
     /* (non-Javadoc) */
     public ClassLoaderObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
       super(in);
-      this.classLoader = ObjectUtils.defaultIfNull(classLoader, Thread.currentThread().getContextClassLoader());
+
+      this.classLoader = Optional.ofNullable(classLoader)
+        .orElseGet(() -> Thread.currentThread().getContextClassLoader());
     }
 
     /* (non-Javadoc) */
     protected ClassLoader getClassLoader() {
-      return classLoader;
+      return this.classLoader;
     }
 
     /* (non-Javadoc) */

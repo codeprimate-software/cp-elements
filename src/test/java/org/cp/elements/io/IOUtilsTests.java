@@ -16,6 +16,7 @@
 
 package org.cp.elements.io;
 
+import static org.cp.elements.io.IOUtils.ClassLoaderObjectInputStream;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -35,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
@@ -45,8 +47,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.invocation.InvocationOnMock;
 
 /**
- * The IOUtilsTests class is a test suite of test cases testing the contract and functionality
- * of the {@link IOUtils} class.
+ * Unit and integration tests for {@link IOUtils}.
  *
  * @author John J. Blum
  * @see java.io.Closeable
@@ -54,9 +55,9 @@ import org.mockito.invocation.InvocationOnMock;
  * @see java.io.OutputStream
  * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.IOUtils
+ * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
 public class IOUtilsTests {
@@ -197,5 +198,34 @@ public class IOUtilsTests {
     exception.expectMessage("The InputStream to read bytes from cannot be null");
 
     IOUtils.toByteArray(null);
+  }
+
+  @Test
+  public void constructsClassLoaderObjectInputStreamWithInputStreamAndSystemClassLoader() throws IOException {
+    InputStream in = new ByteArrayInputStream(IOUtils.serialize("test"));
+
+    ClassLoaderObjectInputStream inputStream = new ClassLoaderObjectInputStream(in, ClassLoader.getSystemClassLoader());
+
+    assertThat(inputStream, is(notNullValue(InputStream.class)));
+    assertThat(inputStream.getClassLoader(), is(equalTo(ClassLoader.getSystemClassLoader())));
+  }
+
+  @Test
+  public void constructsClassLoaderObjectInputStreamWithInputStreamAndNullClassLoader() throws IOException {
+    InputStream in = new ByteArrayInputStream(IOUtils.serialize("test"));
+
+    ClassLoaderObjectInputStream inputStream = new ClassLoaderObjectInputStream(in, null);
+
+    assertThat(inputStream, is(notNullValue(InputStream.class)));
+    assertThat(inputStream.getClassLoader(), is(equalTo(Thread.currentThread().getContextClassLoader())));
+  }
+
+  @Test
+  public void classLoaderObjectInputStreamResolvesClass() throws ClassNotFoundException, IOException {
+    InputStream in = new ByteArrayInputStream(IOUtils.serialize(1));
+    ObjectStreamClass descriptor = ObjectStreamClass.lookup(Integer.class);
+
+    assertThat(new ClassLoaderObjectInputStream(in, Thread.currentThread().getContextClassLoader())
+      .resolveClass(descriptor), is(equalTo(Integer.class)));
   }
 }
