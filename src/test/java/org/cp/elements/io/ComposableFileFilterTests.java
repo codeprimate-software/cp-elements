@@ -74,6 +74,33 @@ public class ComposableFileFilterTests {
   }
 
   @Test
+  public void composeReturnsNull() {
+    assertThat(ComposableFileFilter.builder().compose(null, null), is(nullValue(FileFilter.class)));
+  }
+
+  @Test
+  public void composeReturnsReturnsLeft() {
+    assertThat(ComposableFileFilter.builder().compose(mockFileFilterOne, null),
+      is(sameInstance(mockFileFilterOne)));
+  }
+
+  @Test
+  public void composeReturnsReturnsRight() {
+    assertThat(ComposableFileFilter.builder().compose(null, mockFileFilterTwo),
+      is(sameInstance(mockFileFilterTwo)));
+  }
+
+  @Test
+  public void composeReturnsComposableFileFilter() {
+    FileFilter fileFilter = ComposableFileFilter.builder().compose(mockFileFilterOne, mockFileFilterTwo);
+
+    assertThat(fileFilter, is(instanceOf(ComposableFileFilter.class)));
+    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand(), is(sameInstance(mockFileFilterOne)));
+    assertThat(((ComposableFileFilter) fileFilter).getOperator(), is(sameInstance(LogicalOperator.AND)));
+    assertThat(((ComposableFileFilter) fileFilter).getRightOperand(), is(sameInstance(mockFileFilterTwo)));
+  }
+
+  @Test
   public void composeAndReturnsNull() {
     assertThat(ComposableFileFilter.and(null, null), is(nullValue()));
   }
@@ -104,7 +131,7 @@ public class ComposableFileFilterTests {
   }
 
   @Test
-  public void composeAndWithNullReturnsNull() {
+  public void composeAndWithNullFileFilterArrayReturnsNull() {
     assertThat(ComposableFileFilter.and((FileFilter[]) null), is(nullValue(FileFilter.class)));
   }
 
@@ -139,7 +166,7 @@ public class ComposableFileFilterTests {
   }
 
   @Test
-  public void composeOrWithNullReturnsNull() {
+  public void composeOrWithNullFileFilterArrayReturnsNull() {
     assertThat(ComposableFileFilter.or((FileFilter[]) null), is(nullValue(FileFilter.class)));
   }
 

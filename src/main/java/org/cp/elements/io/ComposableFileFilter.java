@@ -48,13 +48,13 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
   private final LogicalOperator operator;
 
   /**
-   * Returns the single instance of {@link ComposableFileFilter} used to compose 2 or more individual {@link FileFilter}
-   * objects into a {@link Composite} {@link FileFilter} object.
+   * Factory method that returns the single instance of {@link ComposableFileFilter} used to compose 2
+   * or more individual {@link FileFilter} objects into a {@link Composite} {@link FileFilter} object.
    *
    * @return the single instance of {@link ComposableFileFilter}.
    * @see org.cp.elements.io.ComposableFileFilter
    */
-  public static ComposableFileFilter getInstance() {
+  public static ComposableFileFilter builder() {
     return INSTANCE;
   }
 
