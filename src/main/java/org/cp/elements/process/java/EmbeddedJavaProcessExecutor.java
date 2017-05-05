@@ -214,7 +214,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
       }
       catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
         throw new EmbeddedProcessExecutionException(
-          String.format("Failed to construct an instance of Java class [%s]", type), e);
+          String.format("Failed to construct an instance of Java class [%s]", getName(type)), e);
       }
     }
   }
@@ -246,7 +246,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
         return Optional.ofNullable(callable.call());
       }
       catch (Exception e) {
-        throw new EmbeddedProcessExecutionException(String.format("Failed to call Java class [%s]", type), e);
+        throw new EmbeddedProcessExecutionException(String.format("Failed to call Java class [%s]", getName(type)), e);
       }
     }
   }
@@ -307,7 +307,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
       }
       catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
         throw new EmbeddedProcessExecutionException(
-          String.format("Failed to execute Java class [%s] using main method", type), e);
+          String.format("Failed to execute Java class [%s] using main method", getName(type)), e);
       }
     }
   }

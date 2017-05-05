@@ -17,8 +17,18 @@
 package org.cp.elements.process.java;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
 import static org.cp.elements.process.java.EmbeddedJavaProcessExecutor.newEmbeddedJavaProcessExecutor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -28,6 +38,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Executable;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
+import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
@@ -171,6 +182,21 @@ public class EmbeddedJavaProcessExecutorTests {
     assertThat(returnValue.orElse(null)).isEqualTo("I was called!");
   }
 
+  @Test(expected = EmbeddedProcessExecutionException.class)
+  public void executeInvokesCallableJavaClassHandlesException() {
+    try {
+      newEmbeddedJavaProcessExecutor().execute(TestCallableThrowsException.class);
+    }
+    catch (EmbeddedProcessExecutionException expected) {
+      assertThat(expected).hasMessage("Failed to call Java class [%s]", TestCallableThrowsException.class.getName());
+      assertThat(expected).hasCauseInstanceOf(RuntimeException.class);
+      assertThat(expected.getCause()).hasMessage("test");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+  }
+
   @Test
   public void executeInvokesExecutableJavaClass() {
     Optional<String> returnValue = newEmbeddedJavaProcessExecutor().execute(TestExecutable.class);
@@ -206,6 +232,24 @@ public class EmbeddedJavaProcessExecutorTests {
   }
 
   @Test(expected = EmbeddedProcessExecutionException.class)
+  public void executeInvokesMainMethodOnJavaClassHandlesException() {
+    try {
+      newEmbeddedJavaProcessExecutor().execute(TestApplicationThrowsException.class, "argument");
+    }
+    catch (EmbeddedProcessExecutionException expected) {
+      assertThat(expected).hasMessage("Failed to execute Java class [%s] using main method",
+        TestApplicationThrowsException.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(RuntimeException.class);
+      assertThat(expected.getCause().getCause()).hasMessage("test");
+      assertThat(expected.getCause().getCause()).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = EmbeddedProcessExecutionException.class)
   public void executeNonConstructableJavaClass() {
     try {
       newEmbeddedJavaProcessExecutor().execute(NonConstructableApplication.class, "argOne");
@@ -237,8 +281,53 @@ public class EmbeddedJavaProcessExecutorTests {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  @Test(expected = EmbeddedProcessExecutionException.class)
+  public void javaClassExecutorFindsConstructorWithMostArgumentsHandlesException() {
+    EmbeddedJavaProcessExecutor.JavaClassExecutor mockJavaClassExecutor =
+      mock(EmbeddedJavaProcessExecutor.JavaClassExecutor.class);
+
+    when(mockJavaClassExecutor.constructInstance(any(), any())).thenCallRealMethod();
+    when(mockJavaClassExecutor.findConstructor(any(Class.class))).thenCallRealMethod();
+    when(mockJavaClassExecutor.isTargetConstructor(any(Constructor.class))).thenCallRealMethod();
+
+    try {
+      mockJavaClassExecutor.constructInstance(DestructableType.class, ArrayUtils.asArray("test", 1));
+    }
+    catch (EmbeddedProcessExecutionException expected) {
+      assertThat(expected).hasMessage("Failed to construct an instance of Java class [%s]",
+        DestructableType.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause().getCause()).hasMessage("test");
+      assertThat(expected.getCause().getCause()).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockJavaClassExecutor, times(1)).constructInstance(eq(DestructableType.class),
+        eq(ArrayUtils.asArray("test", 1)));
+
+      verify(mockJavaClassExecutor, times(1)).findConstructor(eq(DestructableType.class));
+    }
+  }
+
+  @SuppressWarnings("unused")
+  public static class DestructableType {
+
+    public DestructableType(Object[] arguments) {
+      throw newIllegalArgumentException("test");
+    }
+
+    public DestructableType() {
+      throw newIllegalArgumentException("default");
+    }
+  }
+
   private static class NonConstructableApplication implements Runnable {
 
+    @SuppressWarnings("unused")
     private NonConstructableApplication(Object arg) {
     }
 
@@ -259,11 +348,26 @@ public class EmbeddedJavaProcessExecutorTests {
     }
   }
 
+  public static class TestApplicationThrowsException {
+
+    public static void main(String[] args) {
+      throw newRuntimeException("test");
+    }
+  }
+
   public static class TestCallable implements Callable<String> {
 
     @Override
     public String call() throws Exception {
       return "I was called!";
+    }
+  }
+
+  public static class TestCallableThrowsException implements Callable<Object> {
+
+    @Override
+    public Object call() throws Exception {
+      throw newRuntimeException("test");
     }
   }
 
@@ -299,7 +403,8 @@ public class EmbeddedJavaProcessExecutorTests {
       run(arguments.get());
     }
 
-    public void run(String... args) {
+    @SuppressWarnings("unused")
+    void run(String... args) {
       runCalled.set(true);
     }
   }
