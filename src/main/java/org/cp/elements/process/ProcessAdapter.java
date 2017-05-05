@@ -61,6 +61,8 @@ import org.cp.elements.util.Environment;
  * @author John J. Blum
  * @see java.io.File
  * @see java.lang.Process
+ * @see java.util.UUID
+ * @see java.util.logging.Logger
  * @see java.util.concurrent.ExecutorService
  * @see java.util.concurrent.Executors
  * @see java.util.concurrent.Future
@@ -117,7 +119,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
   private final CopyOnWriteArraySet<ProcessStreamListener> listeners = new CopyOnWriteArraySet<>();
 
-  protected final Logger logger = Logger.getLogger(getClass().getName());
+  private final Logger logger = Logger.getLogger(getClass().getName());
 
   private final Process process;
 
@@ -356,6 +358,16 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
+   * Returns the configured {@link Logger} to log runtime details.
+   *
+   * @return the {@link Logger}.
+   * @see java.util.logging.Logger
+   */
+  protected Logger getLogger() {
+    return this.logger;
+  }
+
+  /**
    * Returns the standard error stream (stderr) of this process.
    *
    * @return an {@link InputStream} connected to the standard error stream (stderr) of this process.
@@ -514,19 +526,19 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
         try {
           int exitValue = futureExitValue.get(timeout, unit);
-          logger.info(String.format("Process [%d] has been stopped", safeGetId()));
+          getLogger().info(String.format("Process [%d] has been stopped", safeGetId()));
           return exitValue;
         }
-        catch (ExecutionException ignore) {
-          if (logger.isLoggable(Level.FINE)) {
-            logger.fine(ThrowableUtils.getStackTrace(ignore));
+        catch (ExecutionException e) {
+          if (getLogger().isLoggable(Level.FINE)) {
+            getLogger().fine(ThrowableUtils.getStackTrace(e));
           }
         }
-        catch (InterruptedException ignore) {
+        catch (InterruptedException e) {
           Thread.currentThread().interrupt();
         }
         catch (TimeoutException e) {
-          logger.warning(String.format("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
+          getLogger().warning(String.format("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
             safeGetId(), unit.toMillis(timeout)));
         }
       }
