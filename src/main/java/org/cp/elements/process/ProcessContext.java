@@ -366,10 +366,11 @@ public class ProcessContext {
       localProcessBuilder.directory(getDirectory());
       localProcessBuilder.environment().clear();
       localProcessBuilder.environment().putAll(getEnvironment().toMap());
-      localProcessBuilder.redirectError(getError());
-      localProcessBuilder.redirectInput(getInput());
-      localProcessBuilder.redirectOutput(getOutput());
       localProcessBuilder.redirectErrorStream(isRedirectingErrorStream());
+
+      Optional.ofNullable(getError()).ifPresent(localProcessBuilder::redirectError);
+      Optional.ofNullable(getInput()).ifPresent(localProcessBuilder::redirectInput);
+      Optional.ofNullable(getOutput()).ifPresent(localProcessBuilder::redirectOutput);
 
       if (inheritsIO()) {
         processBuilder.inheritIO();

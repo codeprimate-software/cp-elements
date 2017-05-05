@@ -172,6 +172,28 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  public void toProcessBuilderInheritsIOIsSuccessful() {
+    ProcessBuilder processBuilder = new ProcessBuilder();
+
+    ProcessContext processContext = newProcessContext(this.mockProcess)
+      .ranBy(SystemUtils.USERNAME)
+      .ranIn(FileSystemUtils.USER_HOME_DIRECTORY)
+      .ranWith("java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "example.Application")
+      .inheritIO(true)
+      .usingEnvironmentVariables();
+
+    assertThat(processContext).isNotNull();
+    assertThat(processContext.to(processBuilder)).isSameAs(processContext);
+    assertThat(processBuilder.command()).isEqualTo(processContext.getCommandLine());
+    assertThat(processBuilder.directory()).isEqualTo(processContext.getDirectory());
+    assertThat(processBuilder.environment()).isEqualTo(processContext.getEnvironment().toMap());
+    assertThat(processBuilder.redirectErrorStream()).isFalse();
+    assertThat(processBuilder.redirectError()).isEqualTo(ProcessBuilder.Redirect.INHERIT);
+    assertThat(processBuilder.redirectInput()).isEqualTo(ProcessBuilder.Redirect.INHERIT);
+    assertThat(processBuilder.redirectOutput()).isEqualTo(ProcessBuilder.Redirect.INHERIT);
+  }
+
+  @Test
   public void setInDirectoryToDirectory() {
     assertThat(newProcessContext(this.mockProcess).ranIn(FileSystemUtils.USER_HOME_DIRECTORY).getDirectory())
       .isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
