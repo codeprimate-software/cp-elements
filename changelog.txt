@@ -3,43 +3,124 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
-1.0.0.M3 - ?
-------------
-Introduces the ProcessExecutor API for forking, launching and managing processes.
+1.0.0.M3 - 2017-05-05
+---------------------
+Introduces the ProcessExecutor API in the org.cp.elements.process package for configuring, forking/launching
+and managing processes.
 
-* Renamed LangExtensions.AssertThat.using(:String, :Object[]) to LangExtensions.AssertThat.stating(:String, :Object[])
-to clearly indicate the caller is specifying a message with arguments to use in the assertion error.
-* Created the org.cp.elements.lang.support.HashCodeBuilder class for computing hash codes of an object.
-* Created the org.cp.elements.util.ComparatorResultBuilder to build a comparison expression composed of Comparable objects.
-* Introduced the ComparatorUtils.nullSafeArgumentsComparator(:Comparator) to protect against null arguments passed
-to the Comparator implementation during the comparison operation.
-* Introduced the ComparatorsUtils.nullSafeComparator(:Comparator) to guard against null Comparator reference,
-providing a null-safe, default, Comparable Comparator implementation.
-* Created the org.cp.elements.text.FormatUtils abstract utility class for working with text content.
-* Refactored and polished the org.cp.elements.lang.ThrowableUtils class; added a null-safe getCause(:Throwable) method.
-* ?
+* Applied Java 8 types and functionality throughout the codebase.
+* Annotated all functional Elements interfaces with the java.lang.FunctionalInterface annotation.
+* Created the o.c.e.beans.Describable interface used to describe an object.
+* Renamed o.c.e.biz.rules.RuleFailureException to o.c.e.biz.rules.RuleException.
+* Created the o.c.e.dao.annotation.Repository annotation to annotate/mark Data Access Objects (DAO).
+* Created the KeyValue data structure in the new o.c.e.data.struct package.
+* Created the EnvironmentVariableValue and SystemPropertyValue data structures extending the KeyValue class
+in the o.c.e.data.struct package.
+* Created the o.c.e.lang.CheckedExceptionFactory class to construct and initialize Java checked Exceptions with support
+for message formatting and optional causes.
+* Created the o.c.e.lang.ElementsExceptionFactory class to construct and initialize various Elements Exceptions
+with support for message formatting and optional causes.
+* Created the o.c.e.lang.RuntimeExceptionFactory class to construct and initialize Java RuntimeExceptions with support
+for message formatting and optional causes.
+* Created the o.c.e.lang.Builder interface for objects implementing the Builder Software Design Pattern.
+* Created the o.c.e.lang.Composite interface for objects implementing the Composite Software Design Pattern;
+additionally, refactored all Composite-like framework components to implement the Composite interface.
+* Created the o.c.e.lang.Executable functional interface to define a contract for implementing objects
+that can be executed.
+* Created the o.c.e.lang.JavaType enumeration to enumerate various Java language Class types.
+* Created the o.c.e.lang.Nameable interface to define a contract for objects that can be named.
+* Created the o.c.e.lang.Version class to model software version numbers.
+* Created the o.c.e.lang.annotation.Experimental annotation to annotate experimental features in the API/framework.
+* Created the o.c.e.lang.annotation.Immutable annotation to annotate/mark immutable objects.
+* Created the o.c.e.lang.reflect.MethodInterceptor interface to define a contract of objects
+intercepting method invocations on target object.
+* Created the o.c.e.lang.reflect.MethodInvocation class to model the invocation of a method on an object or a class.
+* Created the o.c.e.lang.reflect.MethodInvokingMethodInterceptor class implementing the MethodInterceptor interface
+to invoke the intercepted method on the target object.
+* Created the o.c.e.lang.reflect.ModifierUtils utility class to evaluate Java modifiers.
+* Created the o.c.e.lang.reflect.ProxyFactory to create proxied objects.
+* Created the o.c.e.lang.reflect.ProxyService to find and load ProxyFactory service provider implementations.
+* Created the o.c.e.lang.reflect.provider.JdkDynamicProxyFactory to create JDK Dynamic Proxies for objects.
+* Created the o.c.e.lang.reflect.support.ComposableInvocationHandler to compose a collection of
+* Created the o.c.e.lang.reflect.support.DelegatingMethodInterceptor to wrap an existing MethodInterceptor.
+java.lang.reflect.InvocationHandlers used in a proxied object to handle method invocations.
+* Created the o.c.e.lang.support.HashCodeBuilder class for computing hash codes of an object.
+* Added the valueOf(:AtomicBoolean) method to the o.c.e.lang.BooleanUtils class.
+* Added the isConstructorWithArrayParameter(:Constructor) and isDefaultConstructor(:Constructor) methods
+to the o.c.e.lang.ClassUtils class.
+* Added the hasMainMethod(:Class) and isMainMethod(:Method) methods ot the o.c.e.lang.ClassUtils class.
+* Added the getInterfaces(:Object) and getInterfaces(:Class) methods to the o.c.e.lang.ClassUtils class.
+* Added the implementsInterfaces(:Object) and implementsInterfaces(:Class) methods to the o.c.e.lang.ClassUtils class.
+* Added a Null-safe Navigation Operator to the o.c.e.lang.LangExtensions class.
+* Added the defaultIfNull(:Object, :Supplier), isNullOrEqualTo(:Object, :Object) and returnValueOrThrowIfNull() methods
+to the o.c.e.lang.ObjectUtils class.
+* Added the safeGetValue(:Supplier) method on the o.c.e.lang.ObjectUtils class.
+* Refactored and polished the o.c.e.lang.ThrowableUtils class; added a null-safe getCause(:Throwable) method.
+* Renamed o.c.e.lang.LangExtensions.AssertThat.using(:String, :Object[])
+to o.c.e.lang.LangExtensions.AssertThat.stating(:String, :Object[]) to clearly indicate the caller
+is specifying a message with arguments to use in the assertion error.
+* Added the newSocketAddress(port) and newSocketAddress(host, port) methods to the o.c.e.net.NetworkUtils class.
+* Added port parsing methods to the o.c.e.net.NetworkUtils class.
+* Fixed bug in o.c.e.net.NetworkUtils.availablePort() method to properly close the java.net.ServerSocket
+even in the event of a IOException.
+* Created the o.c.e.server.annotation.Service annotation to annotate/mark Service objects.
+* Created the o.c.e.test.Tester functional interface to define a contract for implementing objects that perform
+a single test returning a boolean value to indicate pass or fail.
+* Created the o.c.e.test.annotation.SubjectUnderTest stereotype annotation to annotate/mark the object that is
+the subject of a test.
+* Created the o.c.e.text.FormatUtils abstract utility class for formatting text content.
+* Created the ConnectionTester tool in the o.c.e.tools.net package to test the connection state of a Network Socket.
+* Created the EchoClient and EchoServer programs in the o.c.e.tools.net package.
+* Created the o.c.e.util.ComparatorResultBuilder to build a comparison expression composed of
+Comparable objects.
+* Created the o.c.e.util.Environment class to model the current system environment.
+* Created the o.c.e.util.PropertiesSetter class for setting properties on a java.util.Properties object.
+* Created the o.c.e.util.PropertiesUtils class for working with java.util.Properties objects.
+* Created the ReadOnlyException and WriteOnlyException in the org.cp.elements.util package.
+* Added the indexOf(array, element) method to the o.c.e.util.ArrayUtils class.
+* Added an overloaded sort(array, :Comparator) method to the o.c.e.util.ArrayUtils class.
+* Added the toStringArray(:Object[]) method to the o.c.e.util.ArrayUtils class.
+* Added the add(:Collection, :Iterable), asSet(array), defaultIfEmpty(:Iterable, default:Iterable), toList(:Iterable)
+and toSet(:Iterable) methods to the o.c.e.util.CollectionUtils class.
+* Added the o.c.e.util.ComparatorUtils.nullSafeArgumentsComparator(:Comparator) method to guard against null arguments
+passed to the java.util.Comparator implementation during the comparison operation.
+* Added the o.c.e.util.ComparatorsUtils.nullSafeComparator(:Comparator) method to guard against null
+java.util.Comparator references, providing a null-safe, default java.lang.Comparable java.util.Comparator
+implementation.
+* Added toString(:Map<?, ?>) method to the o.c.e.util.MapUtils class.
+* Added the fromAssociativeArray(:String[]:Map and toAssociativeArray(:Map):String[] methods to
+the o.c.e.util.MapUtils class.
+* Added a toMap() method to the o.c.e.util.PropertiesAdapter class.
+* Added the fromEnvironmentVariables() factory method to the o.c.e.util.PropertiesBuilder class.
+* Added an from(:Reader) factory method to the o.c.e.util.PropertiesBuilder class.
+* Added AssertJ and Lombok test compile dependencies to improve test code quality.
+* Upgraded to Mockito 2.7.22.
 
 
 1.0.0.M2 - 2016-09-05
-------------
+---------------------
 Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang, org.cp.elements.io,
 org.cp.elements.net and org.cp.elements.util packages.
 
-* Added additional assertions in the org.cp.elements.lang.Assert class to default the message in the thrown RuntimeException.
-* Refactored the Auditable interface to use the new Java 8, java.time.LocalDateTime API for tracking created, lastModified and modified dates and times.
+* Added additional assertions in the o.c.e.lang.Assert class to default the message in the thrown RuntimeException.
+* Refactored the Auditable interface to use the new Java 8, java.time.LocalDateTime API for tracking created,
+lastModified and modified dates and times.
 * Refactored the Auditable interface to extend Identifiable thereby improving audit tracking details and information.
-* Refactored the Auditable interface by adding builder methods to conveniently set auditing properties of application domain objects.
+* Refactored the Auditable interface by adding builder methods to conveniently set auditing properties
+of application domain objects.
 * Refactored the Auditable interface by renaming the date/time and process tracking properties.
 * Added the locateClass(:String) method to the ClassUtils class to locate a Class by name in the file system.
 * Refactored the Identifiable interface adding default, defender methods for isNew and isNotNew.
-* Refactored the Identifiable interface adding a builder method to conveniently set an application domain object's identifier.
+* Refactored the Identifiable interface adding a builder method to conveniently set an application domain object's
+identifier.
 * Reviewed, refactored and added additional test coverage to the org.cp.elements.io API...
 * Added additional FileFilters, such as the Executable, Hidden, Readable and Writable file filters.
 * Improved the utility and usefulness of the IOUtils, FileUtils and FileSystemUtils classes.
 * Reviewed, refactored and added additional test coverage to the org.cp.elements.net API...
 * Improved the utility and usefulness of the NetworkUtils class.
-* Improved the ArrayUtils, CollectionUtils and MapUtils utility classes for working with Arrays and Collections, respectively,
-  cleaning up the interface and promoting consistent functionality and operations between Arrays and Collections.
+* Improved the ArrayUtils, CollectionUtils and MapUtils utility classes for working with Arrays and Collections,
+respectively, cleaning up the interface and promoting consistent functionality and operations
+between Arrays and Collections.
 * Added the PropertiesAdapter and PropertiesBuilder utility classes for conveniently working with java.util.Properties.
 * Added a new ClassLocator tool in the org.cp.elements.tools package for locating Java classes on the classpath by name.
 * Add a Gradle build to this project.
