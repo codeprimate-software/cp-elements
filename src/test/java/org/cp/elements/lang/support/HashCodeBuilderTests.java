@@ -50,7 +50,6 @@ import lombok.RequiredArgsConstructor;
  * Unit tests for {@link HashCodeBuilder}.
  *
  * @author John J. Blum
- * @see java.util.Optional
  * @see org.junit.Rule
  * @see org.junit.Test
  * @see lombok
@@ -335,6 +334,21 @@ public class HashCodeBuilderTests {
     @NonNull /* transient */ Object objectValue;
 
     @NonNull String stringValue;
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj == this) {
+        return true;
+      }
+
+      if (!(obj instanceof ObjectWithBadHashCodeImplementation)) {
+        return false;
+      }
+
+      ObjectWithBadHashCodeImplementation that = (ObjectWithBadHashCodeImplementation) obj;
+
+      return ObjectUtils.equals(this.getStringValue(), that.getStringValue());
+    }
 
     @Override
     public int hashCode() {
