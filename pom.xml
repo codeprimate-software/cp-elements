@@ -103,7 +103,7 @@
     <profile>
       <id>code-analysis</id>
       <!-- $ mvn clean install -->
-      <!-- $ mvn -P code-analysis site -->
+      <!-- $ mvn -P code-analysis install site -->
       <build>
         <plugins>
           <plugin>
@@ -235,7 +235,7 @@
                   <type>date</type>
                   <dates>
                     <date implementation="java.lang.String">2016-09-06</date>
-                    <date implementation="java.lang.String">2016-05-07</date>
+                    <date implementation="java.lang.String">2017-05-07</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
