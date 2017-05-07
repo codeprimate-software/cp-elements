@@ -39,6 +39,7 @@ import java.io.InputStream;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -72,6 +73,11 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Mock
   private File mockFile;
+
+  @BeforeClass
+  public static void beforeTestSuite() {
+    FileSystemUtils.delete(new File(TEMPORARY_DIRECTORY, "writeToFileThenReadFromFileIsSuccessful.txt"));
+  }
 
   protected File newFile(String pathname) {
     return new File(pathname);
@@ -671,7 +677,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
     assertThat(FileUtils.write(in, testFile), is(sameInstance(testFile)));
     assertThat(testFile.isFile(), is(true));
-    assertThat(testFile.length(), is(greaterThan(0l)));
+    assertThat(testFile.length(), is(greaterThan(0L)));
 
     String actualContent = FileUtils.read(testFile);
 

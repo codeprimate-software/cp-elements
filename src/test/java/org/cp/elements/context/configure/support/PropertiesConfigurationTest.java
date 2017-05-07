@@ -16,6 +16,7 @@
 
 package org.cp.elements.context.configure.support;
 
+import static org.cp.elements.io.FileSystemUtils.WORKING_DIRECTORY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -30,7 +31,9 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+import org.cp.elements.io.FileSystemUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -47,6 +50,11 @@ public class PropertiesConfigurationTest {
   private Properties configurationSettings;
 
   private PropertiesConfiguration configuration;
+
+  @BeforeClass
+  public static void beforeTestSuite() {
+    FileSystemUtils.deleteRecursive(new File(WORKING_DIRECTORY, "test-jdbc.properties"));
+  }
 
   @Before
   public void setup() {
@@ -153,7 +161,7 @@ public class PropertiesConfigurationTest {
     testJdbcProperties.setProperty("jdbc.username", "dba");
     testJdbcProperties.setProperty("jdbc.password", "p@55W0rd");
 
-    File testJdbcPropertiesFile = new File(System.getProperty("user.dir"), "test-jdbc.properties");
+    File testJdbcPropertiesFile = new File(WORKING_DIRECTORY, "test-jdbc.properties");
 
     assertTrue(testJdbcPropertiesFile.createNewFile());
     assertTrue(testJdbcPropertiesFile.isFile());
