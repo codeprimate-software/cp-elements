@@ -30,6 +30,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -198,9 +199,16 @@ public class HashCodeBuilderTests {
 
   @Test
   public void hashCodeForPerson() {
-    Person jonDoe = Person.newPerson(2L, Gender.MALE, LocalDate.of(2000, Month.APRIL, 1), "Jon", "Doe");
+    Person jonDoe = Person.newPerson(2L, Gender.MALE, LocalDate.of(2000, Month.APRIL, 1), "transient", "Jon", "Doe");
 
     assertThat(HashCodeBuilder.hashCodeFor(jonDoe).build()).isEqualTo(jonDoe.hashCode());
+  }
+
+  @Test
+  public void hashCodeForObjectWithBadHashCodeImplementation() {
+    ObjectWithBadHashCodeImplementation object = ObjectWithBadHashCodeImplementation.create("nonTrasient", "test");
+
+    assertThat(HashCodeBuilder.hashCodeFor(object).build()).isNotEqualTo(object.hashCode());
   }
 
   @Getter
@@ -212,6 +220,8 @@ public class HashCodeBuilderTests {
     @NonNull Gender gender;
 
     @NonNull LocalDate birthDate;
+
+    @NonNull transient Object transientNonHashableField;
 
     @NonNull String firstName;
     @NonNull String lastName;
@@ -254,6 +264,28 @@ public class HashCodeBuilderTests {
     public String toString() {
       return String.format("{ @type = %1$s, firstName = %2$s, lastName = %3$s, birthDate = %4$s, gender = %5$s }",
         getClass().getName(), getFirstName(), getLastName(), getBirthDate(), getGender());
+    }
+  }
+
+  @Data
+  @RequiredArgsConstructor(staticName = "create")
+  static class ObjectWithBadHashCodeImplementation {
+
+    @NonNull /* transient */ Object objectValue;
+
+    @NonNull String stringValue;
+
+    @Override
+    public int hashCode() {
+      int hashValue = 17;
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getStringValue());
+      return hashValue;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("{ @type = %1$s, objectValue = %2$s, stringValue = %3$s }",
+        getClass().getName(), getObjectValue(), getStringValue());
     }
   }
 }

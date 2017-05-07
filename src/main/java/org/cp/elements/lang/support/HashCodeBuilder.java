@@ -21,10 +21,13 @@ import static org.cp.elements.lang.reflect.ReflectionUtils.getValue;
 import static org.cp.elements.lang.reflect.ReflectionUtils.withFields;
 
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.reflect.ModifierUtils;
+import org.cp.elements.text.FormatUtils;
 
 /**
  * The {@link HashCodeBuilder} class is a Builder used to compute the hash code of an object.
@@ -41,6 +44,8 @@ public class HashCodeBuilder implements Builder<Integer> {
 
   protected static final int DEFAULT_BASE_VALUE = 17;
   protected static final int DEFAULT_MULTIPLIER = 37;
+
+  private static final Logger logger = Logger.getLogger(HashCodeBuilder.class.getName());
 
   private final int multiplier;
 
@@ -95,7 +100,12 @@ public class HashCodeBuilder implements Builder<Integer> {
     HashCodeBuilder builder = create();
 
     Optional.ofNullable(obj).ifPresent(object -> {
-      withFields().on(object).call(field -> builder.with(getValue(object, field, field.getType())));
+      withFields().on(object).matching(field -> !ModifierUtils.isTransient(field)).call(field -> {
+        logger.fine(() -> FormatUtils.format("Hashing field [%1$s] on object [%2$s]%n",
+          field, object.getClass().getName()));
+
+        builder.with(getValue(object, field, field.getType()));
+      });
     });
 
     return builder;
