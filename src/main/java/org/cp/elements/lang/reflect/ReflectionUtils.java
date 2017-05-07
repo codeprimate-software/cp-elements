@@ -16,6 +16,8 @@
 
 package org.cp.elements.lang.reflect;
 
+import static org.cp.elements.util.stream.StreamUtils.stream;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -42,12 +44,13 @@ import org.cp.elements.util.ComparatorUtils;
  * @author John J. Blum
  * @see java.lang.Class
  * @see java.lang.Object
- * @see java.lang.reflect.AccessibleObject
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Member
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
  * @see org.cp.elements.lang.ClassUtils
+ * @see org.cp.elements.lang.annotation.DSL
+ * @see org.cp.elements.util.stream.StreamUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -648,12 +651,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     /* (non-Javadoc) */
     public WithExpression<T> call(MemberCallback<T> callback) {
-      for (T member : getMembers()) {
-        if (accepts(member)) {
-          callback.with(member);
-        }
-      }
-
+      stream(getMembers()).filter(this::accepts).forEach(callback::with);
       return this;
     }
 
@@ -689,6 +687,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
 
     /* (non-Javadoc) */
+    @SuppressWarnings("all")
     public WithExpression<T> throwing(RuntimeException e) {
       if (!accepted) {
         throw e;
@@ -725,10 +724,10 @@ public abstract class ReflectionUtils extends ClassUtils {
     @Override
     protected Set<Field> newMemberSet() {
       return new TreeSet<>(ComparatorUtils.nullSafeArgumentsComparator((Field field1, Field field2) -> {
-        String fullyQualfiedFieldOneName = field1.getDeclaringClass().getName().concat(field1.getName());
+        String fullyQualifiedFieldOneName = field1.getDeclaringClass().getName().concat(field1.getName());
         String fullyQualifiedFieldTwoName = field2.getDeclaringClass().getName().concat(field2.getName());
 
-        return fullyQualfiedFieldOneName.compareTo(fullyQualifiedFieldTwoName);
+        return fullyQualifiedFieldOneName.compareTo(fullyQualifiedFieldTwoName);
       }));
     }
   }

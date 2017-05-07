@@ -49,11 +49,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ReflectionUtils} class.
+ * Unit tests for {@link ReflectionUtils}.
  *
  * @author John J. Blum
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
+ * @see java.lang.reflect.Modifier
  * @see org.junit.Test
  * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
@@ -160,7 +161,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
     catch (NullPointerException expected) {
       // for line "boolean currentAccessible = field.isAccessible();" in getValue(:Object, :Field, :Class<T>):T
-      assertEquals(148, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(151, expected.getStackTrace()[0].getLineNumber());
 
       throw expected;
     }
@@ -290,7 +291,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
     catch (NullPointerException expected) {
       // for line "Assert.isFalse(Modifier.isFinal(field.getModifiers())..." in setField(:Object, :Field, :Object):void
-      assertEquals(223, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(226, expected.getStackTrace()[0].getLineNumber());
 
       throw expected;
     }
@@ -528,7 +529,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
       ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class);
     }
     catch (NullPointerException expected) {
-      assertEquals(532, expected.getStackTrace()[0].getLineNumber());
+      assertEquals(535, expected.getStackTrace()[0].getLineNumber());
       throw expected;
     }
   }
