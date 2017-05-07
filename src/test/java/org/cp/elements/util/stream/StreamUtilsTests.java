@@ -24,13 +24,10 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -149,18 +146,5 @@ public class StreamUtilsTests {
     assertThat(result, is(notNullValue(List.class)));
     assertThat(result.size(), is(equalTo(list.size())));
     assertThat(result.containsAll(list), is(true));
-  }
-
-  @Test
-  @Ignore
-  public void streamFromIterableUsingPureJavaApi() {
-    Iterable<String> iterable = Arrays.asList("test", "testing", "tested");
-    Iterator<String> iterator = iterable.iterator();
-
-    List<String> list = Stream.generate(() -> (iterator.hasNext() ? iterator.next() : null))
-      .collect(Collectors.toList());
-
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list.containsAll((Collection) iterable), is(true));
   }
 }
