@@ -19,9 +19,19 @@ package org.cp.elements.lang.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.AssertionException;
@@ -29,6 +39,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentMatcher;
 
 import lombok.Data;
 import lombok.Getter;
@@ -39,7 +50,14 @@ import lombok.RequiredArgsConstructor;
  * Unit tests for {@link HashCodeBuilder}.
  *
  * @author John J. Blum
+ * @see java.util.Optional
+ * @see org.junit.Rule
  * @see org.junit.Test
+ * @see lombok
+ * @see org.mockito.ArgumentMatcher
+ * @see org.mockito.Mock
+ * @see org.mockito.Mockito
+ * @see org.mockito.Spy
  * @see org.cp.elements.lang.support.HashCodeBuilder
  * @since 1.0.0
  */
@@ -206,9 +224,52 @@ public class HashCodeBuilderTests {
 
   @Test
   public void hashCodeForObjectWithBadHashCodeImplementation() {
+    HashCodeBuilder.logger = spy(HashCodeBuilder.logger);
+
+    doReturn(true).when(HashCodeBuilder.logger).isLoggable(eq(Level.FINE));
+
     ObjectWithBadHashCodeImplementation object = ObjectWithBadHashCodeImplementation.create("nonTrasient", "test");
 
     assertThat(HashCodeBuilder.hashCodeFor(object).build()).isNotEqualTo(object.hashCode());
+
+    verify(HashCodeBuilder.logger, atLeast(2)).isLoggable(eq(Level.FINE));
+
+    verify(HashCodeBuilder.logger, times(1)).fine(SupplierArgumentMatcher.equalSuppliers(
+      () -> String.format("Hashing field [objectValue] on object [%s]",
+        ObjectWithBadHashCodeImplementation.class.getName())));
+
+    verify(HashCodeBuilder.logger, times(1)).fine(SupplierArgumentMatcher.equalSuppliers(
+      () -> String.format("Hashing field [stringValue] on object [%s]",
+        ObjectWithBadHashCodeImplementation.class.getName())));
+  }
+
+  private static final class SupplierArgumentMatcher<T> implements ArgumentMatcher<Supplier<T>> {
+
+    private Object actualValue;
+    private Object expectedValue;
+
+    private static <T> Supplier<T> equalSuppliers(Supplier<T> expected) {
+      return argThat(new SupplierArgumentMatcher<>(expected));
+    }
+
+    private SupplierArgumentMatcher(Supplier<T> expected) {
+      assertThat(expected).describedAs("Expected must not be null").isNotNull();
+      this.expectedValue = expected.get();
+    }
+
+    @Override
+    public boolean matches(Supplier<T> actual) {
+      actualValue = Optional.ofNullable(actual).map(Supplier::get).orElseGet(null);
+
+      return Optional.ofNullable(actualValue)
+        .filter(localActualValue -> localActualValue.equals(expectedValue))
+        .isPresent();
+    }
+
+    @Override
+    public String toString() {
+      return String.format("Expected [%1$s]; but was [%2$s]", expectedValue, actualValue);
+    }
   }
 
   @Getter

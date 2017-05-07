@@ -45,7 +45,7 @@ public class HashCodeBuilder implements Builder<Integer> {
   protected static final int DEFAULT_BASE_VALUE = 17;
   protected static final int DEFAULT_MULTIPLIER = 37;
 
-  private static final Logger logger = Logger.getLogger(HashCodeBuilder.class.getName());
+  static Logger logger = Logger.getLogger(HashCodeBuilder.class.getName());
 
   private final int multiplier;
 
@@ -77,6 +77,17 @@ public class HashCodeBuilder implements Builder<Integer> {
   }
 
   /**
+   * Returns the {@link Logger} for the {@link HashCodeBuilder} class handling logging
+   * for all instances of {@link HashCodeBuilder}.
+   *
+   * @return the {@link HashCodeBuilder} class {@link Logger}.
+   * @see java.util.logging.Logger
+   */
+  protected static Logger getLogger() {
+    return logger;
+  }
+
+  /**
    * Factory method to construct a new instance of {@link HashCodeBuilder} used to compute the hash code
    * of the given {@link Object}.
    *
@@ -101,8 +112,8 @@ public class HashCodeBuilder implements Builder<Integer> {
 
     Optional.ofNullable(obj).ifPresent(object -> {
       withFields().on(object).matching(field -> !ModifierUtils.isTransient(field)).call(field -> {
-        logger.fine(() -> FormatUtils.format("Hashing field [%1$s] on object [%2$s]%n",
-          field, object.getClass().getName()));
+        getLogger().fine(() -> FormatUtils.format("Hashing field [%1$s] on object [%2$s]",
+          field.getName(), object.getClass().getName()));
 
         builder.with(getValue(object, field, field.getType()));
       });
