@@ -33,7 +33,6 @@ import org.junit.rules.ExpectedException;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * Unit tests for {@link HashCodeBuilder}.
@@ -205,19 +204,17 @@ public class HashCodeBuilderTests {
   }
 
   @Getter
-  @ToString
   @RequiredArgsConstructor(staticName = "newPerson")
   static class Person {
 
-    @NonNull
-    private Long id;
+    @NonNull Long id;
 
-    @NonNull private Gender gender;
+    @NonNull Gender gender;
 
-    @NonNull private LocalDate birthDate;
+    @NonNull LocalDate birthDate;
 
-    @NonNull private String firstName;
-    @NonNull private String lastName;
+    @NonNull String firstName;
+    @NonNull String lastName;
 
     public String getName() {
       return String.format("%1$s %2$s", getFirstName(), getLastName());
@@ -251,6 +248,12 @@ public class HashCodeBuilderTests {
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
       return hashValue;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("{ @type = %1$s, firstName = %2$s, lastName = %3$s, birthDate = %4$s, gender = %5$s }",
+        getClass().getName(), getFirstName(), getLastName(), getBirthDate(), getGender());
     }
   }
 }
