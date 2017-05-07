@@ -101,6 +101,7 @@
   <profiles>
     <profile>
       <id>code-analysis</id>
+      <!-- $ mvn -P code-analysis site -->
       <build>
         <plugins>
           <plugin>
