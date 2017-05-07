@@ -24,6 +24,7 @@
     yet robust and proven library built on solid OO principles, design patterns and best practices effectively solving 
     common and reoccuring problems in software development. 
   </description>
+  <inceptionYear>2011</inceptionYear>
   <url>http://www.codeprimate.org/products/cp-elements</url>
 
   <licenses>
@@ -76,16 +77,16 @@
 
   <properties>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
-    <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>2.1</maven-jxr-plugin.version>
-    <maven-pmd-plugin.version>3.6</maven-pmd-plugin.version>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-    <maven-source-plugin.version>2.4</maven-source-plugin.version>
-    <maven-surefire-report-plugin.version>2.19.1</maven-surefire-report-plugin.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+    <maven-surefire-report-plugin.version>2.20</maven-surefire-report-plugin.version>
   </properties>
 
   <dependencies>
@@ -101,6 +102,7 @@
   <profiles>
     <profile>
       <id>code-analysis</id>
+      <!-- $ mvn clean install -->
       <!-- $ mvn -P code-analysis site -->
       <build>
         <plugins>
@@ -148,6 +150,9 @@
           </plugin>
         </plugins>
       </build>
+      <properties>
+        <debugger.configuration> </debugger.configuration>
+      </properties>
       <reporting>
         <plugins>
           <plugin>
@@ -229,8 +234,8 @@
                 <configuration>
                   <type>date</type>
                   <dates>
-                    <date implementation="java.lang.String">2016-01-06</date>
                     <date implementation="java.lang.String">2016-09-06</date>
+                    <date implementation="java.lang.String">2016-05-07</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
