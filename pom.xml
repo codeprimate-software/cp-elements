@@ -77,6 +77,7 @@
 
   <properties>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
+    <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
@@ -308,6 +309,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>${maven-gpg-plugin.version}</version>
+            <configuration>
+              <keyname>${gpg.keyname}</keyname>
+            </configuration>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
