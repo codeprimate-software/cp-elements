@@ -12,7 +12,7 @@
   </parent>
 
   <artifactId>cp-elements</artifactId>
-  <version>1.0.0.SNAPSHOT</version>
+  <version>1.0.0.M3</version>
   <packaging>jar</packaging>
 
   <name>cp-elements</name>
@@ -75,6 +75,7 @@
   </issueManagement>
 
   <properties>
+    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
     <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
@@ -277,6 +278,41 @@
           </plugin>
         </plugins>
       </reporting>
+    </profile>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${build-helper-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${project.build.directory}/${project.artifactId}-${project.version}-javadoc.jar</file>
+                      <type>jar</type>
+                      <classifier>javadoc</classifier>
+                    </artifact>
+                    <artifact>
+                      <file>${project.build.directory}/${project.artifactId}-${project.version}-sources.jar</file>
+                      <type>jar</type>
+                      <classifier>sources</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
