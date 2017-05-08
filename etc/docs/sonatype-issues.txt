@@ -1,0 +1,16 @@
+Sonatype Issues @ https://issues.sonatype.org/
+
+1. OSSRH-19734 - https://issues.sonatype.org/browse/OSSRH-19734
+
+Comment by Joel Orlina on 2016-01-04 @ 09:36 AM:
+https://issues.sonatype.org/browse/OSSRH-19734?focusedCommentId=341342&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-341342
+
+Configuration has been prepared, now you can:
+
+Deploy snapshot artifacts into repository https://oss.sonatype.org/content/repositories/snapshots
+Deploy release artifacts into the staging repository https://oss.sonatype.org/service/local/staging/deploy/maven2
+Promote staged artifacts into repository 'Releases'
+Download snapshot and release artifacts from group https://oss.sonatype.org/content/groups/public
+Download snapshot, release and staged artifacts from staging group https://oss.sonatype.org/content/groups/staging
+
+Please comment on this ticket when you promoted your first release, thanks

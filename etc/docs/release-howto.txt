@@ -1,0 +1,16 @@
+To perform a release of the Codeprimate Elements (cp-elements) project, run the following script:
+
+0. Set the project's 'Major, Minor, Maintenance and Version Qualifier' for the release (e.g. 1.0.0.RELEASE)
+in both pom.xml and gradle.properties.
+
+Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate #; e.g. RC1) or RELEASE.
+
+1. `mvn -P code-analysis,prepare-release clean install site`
+
+2. `gradlew clean build install`
+
+3. Copy 'cp-elements/target/site' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+
+4. Copy 'cp-elements/build/reports' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+
+5. `mvn `
