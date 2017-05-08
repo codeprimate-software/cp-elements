@@ -8,8 +8,7 @@
   <parent>
     <groupId>org.codeprimate</groupId>
     <artifactId>cp-core</artifactId>
-    <version>1.0.0.RELEASE</version>
-    <relativePath>../cp-core/pom.xml</relativePath>
+    <version>1.1.0.RELEASE</version>
   </parent>
 
   <artifactId>cp-elements</artifactId>
@@ -77,15 +76,12 @@
 
   <properties>
     <findbugs-maven-plugin.version>3.0.3</findbugs-maven-plugin.version>
-    <gpg.keyname>Codeprimate Software</gpg.keyname>
     <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
     <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
     <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
-    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-report-plugin.version>2.20</maven-surefire-report-plugin.version>
   </properties>
@@ -220,63 +216,10 @@
     </profile>
     <profile>
       <id>prepare-release</id>
+      <!-- $ mvn -P prepare-release install site -->
       <properties>
         <skipTests>false</skipTests>
       </properties>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changelog-plugin</artifactId>
-            <version>${maven-changelog-plugin.version}</version>
-            <reportSets>
-              <reportSet>
-                <id>all-reports</id>
-                <configuration>
-                  <type>date</type>
-                  <dates>
-                    <date implementation="java.lang.String">2016-09-06</date>
-                    <date implementation="java.lang.String">2017-05-07</date>
-                  </dates>
-                  <dateFormat>yyyy-MM-dd</dateFormat>
-                </configuration>
-                <reports>
-                  <report>changelog</report>
-                  <report>dev-activity</report>
-                  <report>file-activity</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-    <profile>
-      <id>auto-release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${maven-release-plugin.version}</version>
-            <configuration>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <useReleaseProfile>false</useReleaseProfile>
-              <releaseProfiles>release</releaseProfiles>
-              <goals>deploy</goals>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
@@ -305,45 +248,35 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>${maven-gpg-plugin.version}</version>
-            <configuration>
-              <keyname>${gpg.keyname}</keyname>
-            </configuration>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>false</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
         </plugins>
       </build>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-          <id>ossrh</id>
-          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-      </distributionManagement>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changelog-plugin</artifactId>
+            <version>${maven-changelog-plugin.version}</version>
+            <reportSets>
+              <reportSet>
+                <id>all-reports</id>
+                <configuration>
+                  <type>date</type>
+                  <dates>
+                    <date implementation="java.lang.String">2016-09-06</date>
+                    <date implementation="java.lang.String">2017-05-08</date>
+                  </dates>
+                  <dateFormat>yyyy-MM-dd</dateFormat>
+                </configuration>
+                <reports>
+                  <report>changelog</report>
+                  <report>dev-activity</report>
+                  <report>file-activity</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
     </profile>
   </profiles>
 
