@@ -30,8 +30,6 @@ public class RuleException extends RuntimeException {
   /**
    * Constructs an uninitialized instance of the {@link RuleException} class with not {@link Throwable cause}
    * or {@link String message}.
-
-   * @see java.lang.RuntimeException()
    */
   public RuleException() {
   }
@@ -41,7 +39,6 @@ public class RuleException extends RuntimeException {
    * to describe the business rule error.
    *
    * @param message {@link String} describing the business rule error.
-   * @see java.lang.RuntimeException(String)
    */
   public RuleException(String message) {
     super(message);
@@ -52,7 +49,7 @@ public class RuleException extends RuntimeException {
    * of the business rule error.
    *
    * @param cause {@link Throwable} indicating the underlying cause of the business rule error.
-   * @see java.lang.RuntimeException(Throwable)
+   * @see java.lang.Throwable
    */
   public RuleException(Throwable cause) {
     super(cause);
@@ -64,7 +61,7 @@ public class RuleException extends RuntimeException {
    *
    * @param message {@link String} describing the business rule error.
    * @param cause {@link Throwable} indicating the underlying cause of the business rule error.
-   * @see java.lang.RuntimeException(String, Throwable)
+   * @see java.lang.Throwable
    */
   public RuleException(String message, Throwable cause) {
     super(message, cause);

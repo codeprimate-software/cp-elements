@@ -46,6 +46,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.reflect.Constructor
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
+ * @see java.net.URL
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -699,6 +700,7 @@ public abstract class ClassUtils {
    * Loads the Class object for the specified, fully qualified class name using the current Thread's context ClassLoader,
    * following by initializing the class.
    *
+   * @param <T> {@link Class} type of T.
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.
    * @return a Class object for the specified, fully-qualified class name.
    * @throws TypeNotFoundException if the Class identified by the fully qualified class name could not be found.
@@ -715,6 +717,7 @@ public abstract class ClassUtils {
    * Loads the Class object for the specified, fully qualified class name using the provided ClassLoader and the option
    * to initialize the class (calling any static initializers) once loaded.
    *
+   * @param <T> {@link Class} type of T.
    * @param fullyQualifiedClassName a String indicating the fully qualified class name of the Class to load.
    * @param initialize a boolean value indicating whether to initialize the class after loading.
    * @param classLoader the ClassLoader used to load the class.

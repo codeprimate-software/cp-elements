@@ -179,6 +179,7 @@ public abstract class AbstractClientServerSupport {
    *
    * @param socket {@link Socket} on which the {@link String message} is received.
    * @return a {@link String} containing the message received on the {@link Socket}.
+   * @throws IOException if an I/O error occurs while reading the message from the {@link Socket}.
    * @see #newBufferedReader(Socket)
    * @see java.io.BufferedReader#readLine()
    * @see java.net.Socket
@@ -193,6 +194,8 @@ public abstract class AbstractClientServerSupport {
    * @param socket {@link Socket} on which the {@link String message} is sent.
    * @param message {@link String} containing the message to send over the {@link Socket}.
    * @return the given {@link Socket} in order to chain multiple send operations.
+   * @throws IOException if an I/O error occurs while sending the given {@code message}
+   * using the provided {@link Socket}.
    * @see #newBufferedReader(Socket)
    * @see java.io.BufferedReader#readLine()
    * @see java.net.Socket

@@ -630,7 +630,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    *
    * @return an integer value specifying the exit value of the stopped {@link Process}.
    * @see java.lang.Process#waitFor()
-   * @see #safeExitValue();
+   * @see #safeExitValue()
    */
   public int waitFor() {
     try {

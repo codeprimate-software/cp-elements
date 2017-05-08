@@ -282,6 +282,7 @@ public class Version implements Comparable<Version> {
    * @param minor minor version number.
    * @param maintenance maintenance version number.
    * @param qualifier version {@link Qualifier}.
+   * @param qualifierNumber qualifier number (e.g. M1, RC2).
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
    */

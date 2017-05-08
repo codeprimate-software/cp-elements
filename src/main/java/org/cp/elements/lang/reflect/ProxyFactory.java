@@ -157,7 +157,8 @@ public abstract class ProxyFactory<T> {
    * will be used.
    *
    * @return the Java {@link ClassLoader} used to resolve and define the Proxy {@link Class}.
-   * @see java.lang.Thread#currentThread().getContextClassLoader()
+   * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread#getContextClassLoader()
    * @see java.lang.ClassLoader
    */
   @NullSafe

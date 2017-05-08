@@ -95,7 +95,7 @@ public class HashCodeBuilder implements Builder<Integer> {
    * overriding the {@link Object#hashCode()} method on your class type and implementing as follows...
    *
    * <code>
-   *   @Override
+   *   &#64;Override
    *   public int hashCode() {
    *     return HashCodeBuilder.hashCodeFor(this).build();
    *   }
@@ -152,6 +152,7 @@ public class HashCodeBuilder implements Builder<Integer> {
    * Combines the given integer value into the calculation of the hash code.
    *
    * @param value integer value to combine into the current calculation of the hash code.
+   * @return this {@link HashCodeBuilder}.
    * @see #multiplier()
    * @see #hashValue()
    */

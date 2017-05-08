@@ -31,12 +31,14 @@ import org.cp.elements.lang.Version;
  * in which the software application is running.
  *
  * @author John Blum
+ * @see java.io.File
  * @see java.lang.Iterable
- * @see java.lang.String[]
+ * @see java.lang.String
  * @see java.lang.System
  * @see java.util.Map
  * @see java.util.Properties
  * @see org.cp.elements.lang.Version
+ * @see org.cp.elements.util.MapUtils
  * @see org.cp.elements.util.PropertiesAdapter
  * @see org.cp.elements.util.PropertiesBuilder
  * @since 1.0.0
@@ -224,6 +226,7 @@ public class Environment implements Iterable<String> {
    * is not set, then {@code defaultValue} is returned.
    *
    * @param environmentVariableName {@link String} name of the environment variable.
+   * @param defaultValue the default value to return if the specified environment variable is not set.
    * @return the value set the environment variable identified by the given name or {@code defaultValue}
    * if the named environment variable is not set.
    * @see #environmentVariables()
@@ -235,7 +238,9 @@ public class Environment implements Iterable<String> {
   /**
    * Returns the value set for the environment variable identified by the given name as the given {@link Class} type.
    *
+   * @param <T> {@link Class} type to convert the environment variable value to.
    * @param environmentVariableName {@link String} name of the environment variable.
+   * @param type {@link Class} type to convert the environment variable value to.
    * @return the value set the environment variable identified by the given name as the given {@link Class} type.
    * @see #environmentVariables()
    */
@@ -247,7 +252,10 @@ public class Environment implements Iterable<String> {
    * Returns the value set for the environment variable identified by the given name as the given {@link Class} type.
    * Returns the {@code defaultValue} if the named environment variable is not set.
    *
+   * @param <T> {@link Class} type to convert the environment variable value to.
    * @param environmentVariableName {@link String} name of the environment variable.
+   * @param type {@link Class} type to convert the environment variable value to.
+   * @param defaultValue the default value to return if the specified environment variable is not set.
    * @return the value set the environment variable identified by the given name as the given {@link Class} type
    * or {@code defaultValue} if the named environment variable is not set.
    * @see #environmentVariables()

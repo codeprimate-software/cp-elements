@@ -52,7 +52,9 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
    *
    * @param <T> {{@link Class} type of the target {@link Object}.
    * @param delegate {@link MethodInterceptor} wrapped as the delegate for the {@link DelegatingMethodInterceptor}.
-   * @return
+   * @return a new instance of {@link DelegatingMethodInterceptor} initialized with
+   * the given {@link MethodInterceptor} delegate.
+   * @see org.cp.elements.lang.reflect.MethodInterceptor
    */
   public static <T> DelegatingMethodInterceptor newDelegatingMethodInterceptor(MethodInterceptor<T> delegate) {
     return new DelegatingMethodInterceptor<T>(delegate);

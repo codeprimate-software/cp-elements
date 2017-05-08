@@ -40,6 +40,7 @@ import org.cp.elements.util.Environment;
  * @author John Blum
  * @see java.io.File
  * @see java.lang.Process
+ * @see java.util.Optional
  * @see java.lang.ProcessBuilder.Redirect
  * @see org.cp.elements.io.FileSystemUtils
  * @see org.cp.elements.lang.SystemUtils
@@ -131,8 +132,7 @@ public class ProcessContext {
    * Returns the destination of the {@link Process Process's} standard error stream.
    *
    * @return a {@link Redirect} indicating the destination of the {@link Process Process's} standard error stream.
-   * @see java.lang.ProcessBuilder.Redirect
-   * @see #redirectError(Redirect)
+   * @see #redirectError(java.lang.ProcessBuilder.Redirect)
    */
   public Redirect getError() {
     return this.error;
@@ -142,8 +142,7 @@ public class ProcessContext {
    * Returns the source of the {@link Process Process's} standard input stream.
    *
    * @return a {@link Redirect} indicating the source of the {@link Process Process's} standard input stream.
-   * @see java.lang.ProcessBuilder.Redirect
-   * @see #redirectInput(Redirect)
+   * @see #redirectInput(java.lang.ProcessBuilder.Redirect)
    */
   public Redirect getInput() {
     return this.input;
@@ -153,8 +152,7 @@ public class ProcessContext {
    * Returns the destination of the {@link Process Process's} standard output stream.
    *
    * @return a {@link Redirect} indicating the destination of the {@link Process Process's} standard output stream.
-   * @see java.lang.ProcessBuilder.Redirect
-   * @see #redirectOutput(Redirect)
+   * @see #redirectOutput(java.lang.ProcessBuilder.Redirect)
    */
   public Redirect getOutput() {
     return this.output;
@@ -216,10 +214,10 @@ public class ProcessContext {
    * @see #ranIn(File)
    * @see #ranWith(List)
    * @see #using(Environment)
-   * @see #redirectError(Redirect)
+   * @see #redirectError(java.lang.ProcessBuilder.Redirect)
    * @see #redirectErrorStream(boolean)
-   * @see #redirectInput(Redirect)
-   * @see #redirectOutput(Redirect)
+   * @see #redirectInput(java.lang.ProcessBuilder.Redirect)
+   * @see #redirectOutput(java.lang.ProcessBuilder.Redirect)
    */
   public ProcessContext from(ProcessBuilder processBuilder) {
     ranBy(SystemUtils.USERNAME);

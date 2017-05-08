@@ -40,7 +40,10 @@ import org.cp.elements.test.Tester;
  *
  * @author John Blum
  * @see java.net.Socket
+ * @see java.util.Optional
  * @see org.cp.elements.lang.Condition
+ * @see org.cp.elements.net.NetworkUtils
+ * @see org.cp.elements.net.ServicePort
  * @see org.cp.elements.test.Tester
  * @since 1.0.0
  */
@@ -143,6 +146,7 @@ public class ConnectionTester implements Condition, Tester {
    *
    * @param connected boolean value indicating whether a network connection to the specified {@link #getHost()}
    * and {@link #getPort()} was successfully established.
+   * @return this {@link ConnectionTester}.
    * @see #isNotConnected()
    * @see #isConnected()
    */

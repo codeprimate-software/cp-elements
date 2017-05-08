@@ -390,6 +390,7 @@ public abstract class ArrayUtils {
    *
    * @param <T> {@link Class} type of the elements in the array.
    * @param array array from which to extract the first element.
+   * @param defaultValue default value to return if the given array is {@literal null} or empty.
    * @return the first element in the array or return the {@code defaultValue }
    * if {@code array} is {@literal null} or empty.
    * @see #isNotEmpty(Object[])
