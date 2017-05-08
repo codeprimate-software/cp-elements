@@ -75,7 +75,9 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor {
   }
 
   /**
-   * @inheritDoc
+   * Return the target {@link Object} on which the {@link Method} will be intercepted.
+   *
+   * @return the target {@link Object} on which the {@link Method} will be intercepted.
    */
   @Override
   public Object getTarget() {
@@ -83,7 +85,14 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor {
   }
 
   /**
-   * @inheritDoc
+   * Intercepts the given {@link MethodInvocation} on a proxied {@link Object} and in turn invokes the {@link Method}
+   * on the configured {@link #getTarget() target} object.  If {@link #getTarget() target} is {@literal null}
+   * then the {@link Method} will be invoked on the configured target of the {@link MethodInvocation}.
+   *
+   * @param methodInvocation {@link MethodInvocation} being intercepted.
+   * @return an {@link Optional} return value containing the result of the interception.
+   * @see org.cp.elements.lang.reflect.MethodInvocation
+   * @see java.util.Optional
    */
   @Override
   public Optional intercept(MethodInvocation methodInvocation) {

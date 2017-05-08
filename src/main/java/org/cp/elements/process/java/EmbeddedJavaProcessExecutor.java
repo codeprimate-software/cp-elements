@@ -71,7 +71,15 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
   }
 
   /**
-   * @inheritDoc
+   * Executes the given {@link String command-line} executable in the given {@link File directory}.
+   *
+   * @return {@link Void}.  The Java {@link Process} is run in embedded mode and therefore will not
+   * have a forked {@link Process}.
+   * @throws IllegalArgumentException if the {@link File directory} is the current working directory or {@literal null},
+   * or the Java {@link Class} could not be resolved from the given command-line.
+   * @see org.cp.elements.process.ProcessExecutor#execute(File, String...)
+   * @see #execute(Class, String...)
+   * @see java.io.File
    */
   @Override
   public Void execute(File directory, String... commandLine) {

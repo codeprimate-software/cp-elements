@@ -25,7 +25,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * of a given System environment variable.
  *
  * @author John Blum
- * @see java.lang.System#getenv(String)
+ * @see java.lang.System#getenv()
  * @see org.cp.elements.data.struct.KeyValue
  * @since 1.0.0
  */
@@ -57,7 +57,11 @@ public class EnvironmentVariableValue extends KeyValue<String, String> {
   }
 
   /**
-   * @inheritDoc
+   * Get the value of this environment variable as a {@literal null-safe} {@link Optional} value.
+   *
+   * @return the value of this environment variable as a {@literal null-safe} {@link Optional} value.
+   * @see java.lang.System#getenv(String)
+   * @see java.util.Optional
    */
   @Override
   public Optional<String> getValue() {

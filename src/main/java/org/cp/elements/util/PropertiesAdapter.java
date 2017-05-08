@@ -284,7 +284,11 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether this {@link PropertiesAdapter} is equal to the given {@link Object}.
+   *
+   * @param obj {@link Object} evaluated for equality with this {@link PropertiesAdapter}.
+   * @return a boolean value indicating whether this {@link PropertiesAdapter} is equal to the given {@link Object}.
+   * @see java.lang.Object#equals(Object)
    */
   @Override
   public boolean equals(Object obj) {
@@ -302,7 +306,10 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Computes the hash code of this {@link PropertiesAdapter}.
+   *
+   * @return an integer containing the hash code of this {@link PropertiesAdapter}.
+   * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
@@ -312,7 +319,10 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Return a {@link String} representation of this {@link PropertiesAdapter}.
+   *
+   * @return a {@link String} describing this {@link PropertiesAdapter}.
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {

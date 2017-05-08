@@ -151,7 +151,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * @inheritDoc
+   * Initializes the {@link ProcessAdapter} by starting {@link Thread Threads} to process the {@link Process Process's}
+   * input and error IO streams.
+   *
+   * @see org.cp.elements.lang.Initable#init()
    */
   @Override
   public void init() {
@@ -249,7 +252,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether this {@link ProcessAdapter} has been initialized.
+   *
+   * @return a boolean value indicating whether this {@link ProcessAdapter} has been initialized yet.
+   * @see org.cp.elements.lang.Initable#isInitialized()
    */
   @Override
   public boolean isInitialized() {
@@ -313,7 +319,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * @inheritDoc
+   * Returns the identifier of the {@link Process} (PID).
+   *
+   * @return an integer value containing the {@link Process} ID (PID).
+   * @throws PidUnknownException if the {@link Process} ID (PID) cannot be determined.
+   * @see org.cp.elements.lang.Identifiable#getId()
+   * @see org.cp.elements.process.util.ProcessUtils#findPidFile(File)
+   * @see org.cp.elements.process.util.ProcessUtils#readPid(File)
+   * @see #getDirectory()
    */
   @Override
   public Integer getId() {
@@ -350,7 +363,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   }
 
   /**
-   * @inheritDoc
+   * Throws an {@link UnsupportedOperationException} since the identifier of a {@link Process} cannot be set.
+   * It is only ever assigned by the host operating system (OS).
+   *
+   * @param id identifier.
+   * @throws UnsupportedOperationException since the ID of a {@link Process} cannot be set.
+   * @see org.cp.elements.lang.Identifiable#setId(Comparable)
    */
   @Override
   public final void setId(Integer id) {

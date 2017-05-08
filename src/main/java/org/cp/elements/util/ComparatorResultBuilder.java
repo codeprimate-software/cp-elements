@@ -50,7 +50,9 @@ public class ComparatorResultBuilder<T extends Comparable<T>> implements Builder
   }
 
   /**
-   * @inheritDoc
+   * Builds the result of the collective {@link Comparator} operations.
+   *
+   * @return an {@link Integer} value containing the result of this {@link Comparator} calculations.
    * @see #getResult()
    */
   @Override
@@ -59,7 +61,11 @@ public class ComparatorResultBuilder<T extends Comparable<T>> implements Builder
   }
 
   /**
-   * @inheritDoc
+   * Compares two {@link Comparable} objects.
+   *
+   * @param obj1 left hand side {@link Comparable} operand in the comparison expression.
+   * @param obj2 right hand side {@link Comparable} operand in the comparison expression.
+   * @return the result of comparing the {@link Comparable} objects.
    * @see org.cp.elements.util.ComparatorUtils#compareIgnoreNull(Comparable, Comparable)
    */
   @NullSafe

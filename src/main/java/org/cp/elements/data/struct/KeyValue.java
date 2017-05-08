@@ -136,7 +136,11 @@ public class KeyValue<K, V> {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether this {@link KeyValue} is equal to the given {@link Object}.
+   *
+   * @param obj {@link Object} to compare for equality with this {@link KeyValue}.
+   * @return a boolean value indicating whether this {@link KeyValue} is equal to the given {@link Object}.
+   * @see java.lang.Object#equals(Object)
    */
   @Override
   public boolean equals(Object obj) {
@@ -159,7 +163,10 @@ public class KeyValue<K, V> {
   }
 
   /**
-   * @inheritDoc
+   * Computes the hash code for this {@link KeyValue}.
+   *
+   * @return an integer value containing the computed hash code of this {@link KeyValue}.
+   * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
@@ -170,7 +177,10 @@ public class KeyValue<K, V> {
   }
 
   /**
-   * @inheritDoc
+   * Returns a {@link String} representation (view) of this {@link KeyValue}.
+   *
+   * @return a {@link String} describing this {@link KeyValue}.
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {

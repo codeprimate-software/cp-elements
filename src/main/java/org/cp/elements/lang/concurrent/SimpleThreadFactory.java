@@ -93,7 +93,14 @@ public class SimpleThreadFactory implements ThreadFactory {
   }
 
   /**
-   * @inheritDoc
+   * Constructs a new {@link Thread} with the given {@link Runnable} task.
+   *
+   * @param task {@link Runnable} task to run in a new {@link Thread}.
+   * @return a new {@link Thread} initialized with the given {@link Runnable} task to run.
+   * @see java.lang.Runnable
+   * @see java.lang.Thread
+   * @see #generateThreadName()
+   * @see #newThread(String, Runnable)
    */
   @Override
   public Thread newThread(Runnable task) {
@@ -261,20 +268,34 @@ public class SimpleThreadFactory implements ThreadFactory {
 
     protected static final SimpleUncaughtExceptionHandler INSTANCE = new SimpleUncaughtExceptionHandler();
 
+    /**
+     * Returns the {@link Logger} used to log details of the uncaught, unhandled {@link Throwable exceptions/errors}
+     * thrown by {@link Thread Threads}.
+     *
+     * @return the {@link Logger} used to log uncaught, unhandled {@link Throwable exception/error} events.
+     * @see java.util.logging.Logger
+     */
     protected Logger getLogger() {
       return logger;
     }
 
     /**
-     * @inheritDoc
+     * Handles any uncaught and unhandled {@link Throwable exceptions or errors} thrown
+     * from the given {@link Thread} of execution.
+     *
+     * @param thread {@link Thread} from which the uncaught/unhandled {@link Throwable exception/error} was thrown.
+     * @param cause the uncaught, unhandled {@link Throwable exception/error} thrown by the given {@link Thread}.
+     * @see java.lang.Thread
+     * @see java.lang.Throwable
+     * @see #getLogger()
      */
     @Override
-    public void uncaughtException(Thread thread, Throwable throwable) {
+    public void uncaughtException(Thread thread, Throwable cause) {
       getLogger().warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] having ID [%3$d]",
-        throwable.getClass().getName(), thread.getName(), thread.getId()));
+        cause.getClass().getName(), thread.getName(), thread.getId()));
 
       if (getLogger().isLoggable(Level.FINE)) {
-        getLogger().fine(ThrowableUtils.getStackTrace(throwable));
+        getLogger().fine(ThrowableUtils.getStackTrace(cause));
       }
     }
   }

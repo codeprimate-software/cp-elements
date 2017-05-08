@@ -18,6 +18,7 @@ package org.cp.elements.lang.reflect.support;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
+import java.lang.reflect.Method;
 import java.util.Optional;
 
 import org.cp.elements.lang.concurrent.GuardedBy;
@@ -25,9 +26,12 @@ import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 
 /**
- * The DelegatingMethodInterceptor class...
+ * The {@link DelegatingMethodInterceptor} class is a wrapper for an existing {@link MethodInterceptor} that delegates
+ * all {@link Method} intercepting operations to the configured delegate.
  *
  * @author John Blum
+ * @param <T> {@link Class} type of the target {@link Object}.
+ * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -104,7 +108,10 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
   }
 
   /**
-   * @inheritDoc
+   * Return the target {@link Object} on which the {@link Method} will be intercepted.
+   *
+   * @return the target {@link Object} on which the {@link Method} will be intercepted.
+   * @see #getDelegate()
    */
   @Override
   public T getTarget() {
@@ -112,7 +119,15 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
   }
 
   /**
-   * @inheritDoc
+   * Intercepts the {@link MethodInvocation} and handles it by forwarding the invocation
+   * to the required, configured {@link #getDelegate() delegate}.
+   *
+   * @param <R> {@link Class} type of the {@link Method} return value.
+   * @param methodInvocation {@link MethodInvocation} being intercepted.
+   * @see org.cp.elements.lang.reflect.MethodInterceptor#intercept(MethodInvocation)
+   * @see org.cp.elements.lang.reflect.MethodInvocation
+   * @see java.util.Optional
+   * @see #getDelegate()
    */
   @Override
   public <R> Optional<R> intercept(MethodInvocation methodInvocation) {

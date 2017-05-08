@@ -430,7 +430,19 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * @inheritDoc
+   * Compares this {@link Version} to the given {@link Version} to determine sort order, or order of precedence.
+   *
+   * In this case, the {@link Comparable#compareTo(Object)} method determines earlier and later
+   * {@link Version versions}.
+   *
+   * @param version given {@link Version} used in the comparison.
+   * @return an integer indicating the sort order, or order of predence.
+   * @see org.cp.elements.util.ComparatorResultBuilder
+   * @see #getMajor()
+   * @see #getMinor()
+   * @see #getMaintenance()
+   * @see #getQualifier()
+   * @see #getQualifierNumber()
    */
   @Override
   public int compareTo(Version version) {
@@ -444,7 +456,11 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether this {@link Version} is equal to the given {@link Object}.
+   *
+   * @param obj {@link Object} to compare for equality with this {@link Version}.
+   * @return a boolean value indicating whether this {@link Version} is equal to the given {@link Object}.
+   * @see java.lang.Object#equals(Object)
    */
   @Override
   public boolean equals(Object obj) {
@@ -467,7 +483,10 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * @inheritDoc
+   * Computes the hash code of this {@link Version}.
+   *
+   * @return the computed hash code for this {@link Version}.
+   * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
@@ -482,7 +501,10 @@ public class Version implements Comparable<Version> {
   }
 
   /**
-   * @inheritDoc
+   * Returns a {@link String} representation (view) of this {@link Version}.
+   *
+   * @return a {@link String} describing this {@link Version}.
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
@@ -752,7 +774,9 @@ public class Version implements Comparable<Version> {
     }
 
     /**
-     * @inheritDoc
+     * Return a {@link String} representation of this {@link Qualifier}.
+     *
+     * @return a {@link String} describing this {@link Qualifier}.
      */
     @Override
     public String toString() {

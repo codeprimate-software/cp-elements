@@ -123,7 +123,10 @@ public abstract class LangExtensions {
     }
 
     /**
-     * @inheritDoc
+     * Returns the target {@link Object} of the {@link Method} interception.
+     *
+     * @return the target {@link Object} of the {@link Method} interception.
+     * @see org.cp.elements.lang.reflect.MethodInterceptor#getTarget()
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -132,7 +135,16 @@ public abstract class LangExtensions {
     }
 
     /**
-     * @inheritDoc
+     * Intercepts the {@link Method} invocation on the target {@link Object} to handle {@literal null-safe} navigation.
+     *
+     * @param <R> {@link Class} type of the return value.
+     * @param methodInvocation {@link MethodInvocation} for the currently invoked {@link Method} in a chain of
+     * {@link Object} accessor invocations using dot notation to navigate the {@link Object} graph.
+     * E.g. obj.getX().getY().getZ();
+     * @return an {@link Optional} to capture the return value of the {@link Object} invocation,
+     * which might be {@literal null}.
+     * @see org.cp.elements.lang.reflect.MethodInvocation
+     * @see java.util.Optional
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -145,7 +157,21 @@ public abstract class LangExtensions {
     }
 
     /**
-     * @inheritDoc
+     * Invokes the given {@link Method} with the array of {@link Object} arguments on the resolved target.
+     *
+     * @param proxy {@link Object Proxy} on which the {@link Method} was invoked in order to
+     * intercept the {@link Method} call.
+     * @param method {@link Method} to invoke.
+     * @param args array of {@link Object} arguments to pass to the {@link Method} invocation.
+     * @return the return value of the {@link Method} invocation, or {@literal null}
+     * if the {@link Method} does not return a value.
+     * @throws Throwable if the {@link Method} invocation fails.
+     * @see org.cp.elements.lang.reflect.MethodInvocation#newMethodInvocation(Object, Method, Object...)
+     * @see #intercept(MethodInvocation)
+     * @see #resolveTarget(Object)
+     * @see java.lang.Object
+     * @see java.lang.reflect.Method
+     * @see java.util.Optional
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

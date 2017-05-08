@@ -340,7 +340,11 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Returns an {@link Iterator} over the environment variables configured in the system environment.
+   *
+   * @return an {@link Iterator} over the environment variables configured in the system environment.
+   * @see #environmentVariables()
+   * @see java.util.Iterator
    */
   @Override
   public Iterator<String> iterator() {
@@ -358,7 +362,11 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether this {@link Environment} is equal to the given {@link Object}.
+   *
+   * @param obj {@link Object} evaluated for equality with this {@link Environment} object.
+   * @return a boolean value indicating whether this {@link Environment} is equal to the given {@link Object}.
+   * @see java.lang.Object#equals(Object)
    */
   @Override
   public boolean equals(Object obj) {
@@ -376,7 +384,10 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Computes the hash code of this {@link Environment}.
+   *
+   * @return an integer containing the hash code of this {@link Environment}.
+   * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
@@ -386,7 +397,10 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * @inheritDoc
+   * Returns a {@link String} representation (view) of this {@link Environment}.
+   *
+   * @return a {@link String} describing this {@link Environment}.
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {

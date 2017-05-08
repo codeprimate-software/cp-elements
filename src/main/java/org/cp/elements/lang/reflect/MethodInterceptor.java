@@ -23,11 +23,12 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 
 /**
- * The {@link MethodInterceptor} class is a Java {@link InvocationHandler} for intercepting and handling
- * {@link Method} invocations on a Proxy for a given target {@link Object}.
+ * The {@link MethodInterceptor} interface is a Java {@link InvocationHandler} implementation that intercepts
+ * and handles {@link Method} invocations on a Proxy for a given target {@link Object}.
  *
  * @author John Blum
  * @param <T> {@link Class} type of the {@link #getTarget() target} {@link Object}.
+ * @see java.lang.Object
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.reflect.MethodInvocation
@@ -61,7 +62,19 @@ public interface MethodInterceptor<T> extends InvocationHandler {
   <R> Optional<R> intercept(MethodInvocation methodInvocation);
 
   /**
-   * @inheritDoc
+   * Invokes the given {@link Method} with the array of {@link Object} arguments.
+   *
+   * @param proxy {@link Object Proxy} on which the {@link Method} was invoked to intercept the {@link Method} call.
+   * @param method {@link Method} to invoke.
+   * @param args array of {@link Object} arguments to pass to the {@link Method} invocation.
+   * @return the return value of the {@link Method} invocation, or {@literal null}
+   * if the {@link Method} does not return a value.
+   * @throws Throwable if the {@link Method} invocation fails.
+   * @see org.cp.elements.lang.reflect.MethodInvocation#newMethodInvocation(Object, Method, Object...)
+   * @see #intercept(MethodInvocation)
+   * @see #getTarget()
+   * @see java.lang.reflect.Method
+   * @see java.lang.Object
    */
   @Override
   default Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

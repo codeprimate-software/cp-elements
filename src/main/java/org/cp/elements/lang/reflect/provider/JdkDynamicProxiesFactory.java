@@ -20,6 +20,7 @@ import static org.cp.elements.lang.reflect.support.ComposableInvocationHandler.c
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +35,9 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  *
  * @author John Blum
  * @param <T> {@link Class} type of the {@link Object} to proxy.
+ * @see java.lang.reflect.Method
  * @see java.lang.reflect.Proxy
+ * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @since 1.0.0
  */
@@ -60,7 +63,14 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether the given target {@link Object} can be proxied by this factory using JDK Dynamic Proxies.
+   *
+   * @param target {@link Object} to evaluate.
+   * @param proxyInterfaces array of {@link Class interfaces} to use in the proxy, which are also used
+   * as part of the evaluation of determining whether the target {@link Object} can be proxied.
+   * @return a boolean value indicating whether the given target {@link Object} can be proxied by this factory
+   * using JDK Dynamic Proxies.
+   * @see #resolveInterfaces(Object, Class[])
    * @see #canProxy(Object)
    * @see #canProxy(Class[])
    */
@@ -96,7 +106,15 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
   }
 
   /**
-   * @inheritDoc
+   * Constructs a new proxy for the given {@code target} {@link Object} implementing the given array of
+   * {@link Class interfaces} and using the {@link Iterable} collection of {@link MethodInterceptor} to intercept
+   * {@link Method} invocations on the proxy and handle the proxied invocation according to the interception.
+   *
+   * @param <R> desired {@link Class} type of the proxied {@link Object}.
+   * @param proxyClassLoader {@link ClassLoader} used to create the proxy {@link Class} type.
+   * @param target {@link Object} to proxy.
+   * @param proxyInterfaces array of {@link Class interfaces} for the constructed proxied {@link Object} to implement.
+   * @return a new JDK Dynamic Proxy instance.
    */
   @Override
   @SuppressWarnings("unchecked")

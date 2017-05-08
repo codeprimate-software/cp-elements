@@ -121,7 +121,10 @@ public enum JavaType {
   }
 
   /**
-   * @inheritDoc
+   * Returns a {@link String} representation (view) of this {@link JavaType}.
+   *
+   * @return a {@link String} snapshot containing the current state of this {@link JavaType}.
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {

@@ -32,7 +32,7 @@ import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 /**
  * The {@link ComposableInvocationHandler} class is an implementation of the {@link InvocationHandler}
  * {@link Class interface} composed of a collection of {@link InvocationHandler InvocationHandlers}
- * into a Composite object acting as a single {@link InvocationHandler}.
+ * forming a Composite object serving as a single instance of {@link InvocationHandler}.
  *
  * @author John Blum
  * @see java.lang.Iterable
@@ -99,7 +99,11 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
   }
 
   /**
-   * @inheritDoc
+   * Returns an {@link Iterator} over the collection of {@link InvocationHandler} objects contained in this Composite.
+   *
+   * @return an {@link Iterator} over the collection of {@link InvocationHandler} objects contained in this Composite.
+   * @see java.lang.reflect.InvocationHandler
+   * @see java.util.Iterator
    */
   @Override
   public Iterator<InvocationHandler> iterator() {
@@ -107,7 +111,21 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
   }
 
   /**
-   * @inheritDoc
+   * Composite operation that delegates the invocation of the given {@link Method} on the {@code proxy}
+   * to each {@link InvocationHandler} contained in this Composite returning the value
+   * of the first {@link InvocationHandler} in the collection to handle the {@link Method} invocation.
+   *
+   * If no {@link InvocationHandler} can successfully handle the {@link Method} invocation,
+   * then a {@link UnhandledMethodInvocationException} will be thrown.
+   *
+   * @param proxy {@link Object proxy} on which the {@link Method} was invoked.
+   * @param method {@link Method} that was called.
+   * @param args array of {@link Object arguments} passed to the {@link Method}.
+   * @return the return value of the {@link Method} or the value provided by the {@link InvocationHandler}
+   * as a result of handling the proxied {@link Method}.
+   * @throws UnhandledMethodInvocationException if all {@link Method} invocation handlers fail
+   * to handle the {@link Method}.
+   * @see java.lang.reflect.InvocationHandler#invoke(Object, Method, Object[])
    */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {

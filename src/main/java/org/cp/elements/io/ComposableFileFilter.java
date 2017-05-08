@@ -164,7 +164,13 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
   }
 
   /**
-   * @inheritDoc
+   * Compose the given {@link FileFilter} objects into a {@link Composite} object.
+   *
+   * @return a {@link FileFilter} {@link Composite} object composed of the given {@link FileFilter} objects
+   * as an instance of {@link FileFilter}.
+   * @see #compose(LogicalOperator, FileFilter, FileFilter)
+   * @see org.cp.elements.lang.LogicalOperator#AND
+   * @see java.io.FileFilter
    */
   @Override
   public FileFilter compose(FileFilter one, FileFilter two) {

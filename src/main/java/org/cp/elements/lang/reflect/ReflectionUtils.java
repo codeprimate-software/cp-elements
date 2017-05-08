@@ -711,16 +711,19 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
 
     /**
-     * @inheritDoc
+     * Returns all {@link Field} members declared on the given {@link Class} type.
+     *
+     * @param type {@link Class} type declaring the {@link Field Fields} to return.
+     * @return an array of {@link Field Fields} declared on the given {@link Class} type.
+     * @see java.lang.Class#getDeclaredFields()
+     * @see java.lang.reflect.Field
      */
     @Override
     protected Field[] members(Class<?> type) {
       return type.getDeclaredFields();
     }
 
-    /**
-     * @inheritDoc
-     */
+    /* (non-Javadoc) */
     @Override
     protected Set<Field> newMemberSet() {
       return new TreeSet<>(ComparatorUtils.nullSafeArgumentsComparator((Field field1, Field field2) -> {
@@ -746,7 +749,12 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
 
     /**
-     * @inheritDoc
+     * Returns all {@link Method} members declared on the given {@link Class} type.
+     *
+     * @param type {@link Class} type declaring the {@link Method Methods} to return.
+     * @return an array of {@link Method Methods} declared on the given {@link Class} type.
+     * @see java.lang.Class#getDeclaredFields()
+     * @see java.lang.reflect.Field
      */
     @Override
     protected Method[] members(Class<?> type) {

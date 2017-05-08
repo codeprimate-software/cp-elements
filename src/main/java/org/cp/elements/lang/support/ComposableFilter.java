@@ -143,7 +143,7 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @return a {@link Filter} implementation combining both the left and right {@link Filter} operands
    * into a compound {@link Filter} using the binary logical XOR operator.
    * @see #compose(org.cp.elements.lang.Filter, org.cp.elements.lang.LogicalOperator, org.cp.elements.lang.Filter)
-   * @see org.cp.elements.lang.LogicalOperator#OR
+   * @see org.cp.elements.lang.LogicalOperator#XOR
    * @see org.cp.elements.lang.Filter
    */
   public static <T> Filter<T> xor(Filter<T> leftFilter, Filter<T> rightFilter) {
@@ -151,7 +151,13 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
   }
 
   /**
-   * @inheritDoc
+   * Compose the given {@link Filter} objects into a {@link Composite} object.
+   *
+   * @return a {@link Filter} {@link Composite} object composed of the given {@link Filter} objects
+   * as an instance of {@link Filter}.
+   * @see #compose(Filter, LogicalOperator, Filter)
+   * @see org.cp.elements.lang.LogicalOperator#AND
+   * @see org.cp.elements.lang.Filter
    */
   @Override
   public Filter<T> compose(Filter<T> one, Filter<T> two) {
@@ -200,8 +206,9 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @see #getOp()
    * @see #getRightFilter()
    */
+  @SuppressWarnings("unchecked")
   public boolean accept(T obj) {
-    return getOp().evaluate(getLeftFilter().accept(obj), getRightFilter().accept(obj));
+    return getOp().evaluate(() -> getLeftFilter().accept(obj), () -> getRightFilter().accept(obj));
   }
 
   /**

@@ -58,7 +58,11 @@ public class ComposableVisitor implements Composite<Visitor>, Iterable<Visitor>,
   }
 
   /**
-   * @inheritDoc
+   * Compose the given {@link Visitor} objects into a {@link Composite} object.
+   *
+   * @return a {@link Visitor} {@link Composite} object composed of the given {@link Visitor} objects
+   * as an instance of {@link Visitor}.
+   * @see org.cp.elements.lang.Visitor
    */
   @NullSafe
   @Override

@@ -167,7 +167,10 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   }
 
   /**
-   * @inheritDoc
+   * Runs the {@link EchoServer}.
+   *
+   * @see #runEchoService(ServerSocket)
+   * @see #getServerSocket()
    */
   @Override
   public void run() {
@@ -250,7 +253,10 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   }
 
   /**
-   * @inheritDoc
+   * Receives a {@link String message} from a {@link EchoClient} over the given {@link Socket}.
+   *
+   * @param socket {@link Socket} used to receive the {@link EchoClient EchoClient's} {@link String message}.
+   * @return a {@link String} containing the message sent by the {@link EchoClient}.
    */
   @Override
   protected String receiveMessage(Socket socket) {
