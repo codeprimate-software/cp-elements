@@ -25,6 +25,7 @@ package org.cp.elements.enums;
  */
 @SuppressWarnings("unused")
 public enum State {
+
   ALABAMA("AL", "Alabama"),
   ALASKA("AK", "Alaska"),
   ARIZONA("AZ", "Arizona"),
@@ -33,6 +34,7 @@ public enum State {
   COLORADO("CO", "Colarado"),
   CONNECTICUT("CT", "Connecticut"),
   DELAWARE("DE", "Delaware"),
+  DISTRICT_OF_COLUMBIA("DC", "District of Columbia"),
   FLORIDA("FL", "Florida"),
   GEORGIA("GA", "Georgia"),
   HAWAII("HI", "Hawaii"),
@@ -116,5 +118,4 @@ public enum State {
   public String toString() {
     return this.name;
   }
-
 }
