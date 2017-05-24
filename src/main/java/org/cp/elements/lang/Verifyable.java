@@ -17,20 +17,36 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Validateable} interface defines a contract for implementing {@link Object objects} providing a method
- * to validate the constraints and invariants of this implementing {@link Object object}.
+ * The {@link Verifyable} interface defines a contract for implementing {@link Object objects} providing a method
+ * to validate the soft constraints and invariants (e.g. business rules) of this implementing {@link Object object}
+ * are upheld.
  *
  * @author John Blum
  * @param <T> {@link Class} type of the {@link Object} implementing this interface.
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Validateable<T> {
+public interface Verifyable<T> {
+
+  /**
+   * Determines whether this {@link Verifyable} object is valid.
+   *
+   * @return a boolean value indicating whether this {@link Verifyable} object is valid.
+   * @see #validate()
+   */
+  default boolean isValid() {
+    try {
+      return (validate() != null);
+    }
+    catch (RuntimeException ignore) {
+      return false;
+    }
+  }
 
   /**
    * Validates the constraints and invariants of this implementing {@link Object}.
    *
-   * @return this implementing {@link Validateable} {@link Object}.
+   * @return this implementing {@link Verifyable} {@link Object}.
    */
   T validate();
 
