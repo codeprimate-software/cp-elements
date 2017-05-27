@@ -63,7 +63,7 @@ is specifying a message with arguments to use in the assertion error.
 * Added port parsing methods to the o.c.e.net.NetworkUtils class.
 * Fixed bug in o.c.e.net.NetworkUtils.availablePort() method to properly close the java.net.ServerSocket
 even in the event of a IOException.
-* Created the o.c.e.server.annotation.Service annotation to annotate/mark Service objects.
+* Created the o.c.e.service.annotation.Service annotation to annotate/mark Service objects.
 * Created the o.c.e.test.Tester functional interface to define a contract for implementing objects that perform
 a single test returning a boolean value to indicate pass or fail.
 * Created the o.c.e.test.annotation.SubjectUnderTest stereotype annotation to annotate/mark the object that is

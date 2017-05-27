@@ -2,7 +2,7 @@
 
 ## Codeprimate Elements 
 
-*Codeprimate Elements* (codename *cp-elements* pronounced *see-pee elements*, or just *Elements*) is a Java Class Library 
+*Codeprimate Elements* (a.k.a. *cp-elements* pronounced *see-pee elements*, or just *Elements*) is a Java library
 and micro-framework for simplifying the development of software applications written in **Java**. 
 
 *Elements* packages several APIs handling different application concerns and aspects, such as configuration, management,
@@ -15,7 +15,7 @@ common, reoccurring problems during software development.
 
 #### Elemental Objectives  
 
-1. Function independently with no dependencies on 3rd-party libraries.
+1. Functionally independent with no dependencies on 3rd-party Java libraries.
 2. Simple, robust and proven APIs built on solid OO principles, design patterns, and best practices.
 3. Promote collaboration through "open", transparent communication and feedback.
 4. With priority on quality (over quantity) and reliability.  
@@ -24,12 +24,13 @@ common, reoccurring problems during software development.
 
 When the likes of *Apache Commons* or *Google Guava* exist?
 
-  *Elements* is a highly refined library of classes and components based on years of research and development along with 
-extensive experience in deployed enterprise applications. *Elements* maintains a high standard on quality backed by 
-extensive test coverage, peer review and trusted performance in extreme enterprise application environments.
+  *Elements* is a highly refined Java library of classes and components based on years of research and development 
+along with  extensive experience in deployed enterprise applications. *Elements* maintains a high standard on quality 
+enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme enterprise 
+application environments.
 
-  *Elements* is a foundational library, and does not introduce any additional dependencies in order to function or perform 
-properly out-of-the-box.  Good [Object-Oriented Design](https://en.wikipedia.org/wiki/Object-oriented_design)
+  *Elements* is a foundational Java library, and does not introduce any additional dependencies in order to function 
+or perform  properly out-of-the-box.  Good [Object-Oriented Design](https://en.wikipedia.org/wiki/Object-oriented_design)
  based on [SOLID design principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) coupled with
  effective use of [Software Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) makes *Elements*
  immediately familiar, highly consistent and easy to use.  Finally, development of *Elements* consists of open,
@@ -49,14 +50,14 @@ properly out-of-the-box.  Good [Object-Oriented Design](https://en.wikipedia.org
  <dependency> 
   <groupId>org.codeprimate</groupId> 
   <artifactId>cp-elements</artifactId> 
-  <version>1.0.0.M2</version> 
+  <version>1.0.0.M3</version> 
 </dependency>
 ````
 
 #### Issues
 
-  Please use [GitHub issues](https://github.com/codeprimate-software/cp-elements/issues) to report any bugs, defects,
- improvements or feature requests.   
+  Please use [GitHub issues](https://github.com/codeprimate-software/cp-elements/issues) to report any bugs,  improvements 
+or feature requests.   
 
 #### Contributions
 
