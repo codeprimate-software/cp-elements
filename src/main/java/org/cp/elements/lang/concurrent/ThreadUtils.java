@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Condition;
-import org.cp.elements.lang.DslExtension;
+import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.annotation.DSL;
+import org.cp.elements.lang.annotation.FluentApi;
 
 /**
  * The {@link ThreadUtils} class provides utilities for writing concurrent programs using Java {@link Thread Threads}
@@ -345,42 +345,42 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Waits for a specified duration on a Condition possibly checking every specified interval on whether the Condition
-   * has been satisfied.
+   * Waits for a specified duration on a {@link Condition} possibly checking every specified interval
+   * on whether the {@link Condition} has been satisfied.
    *
    * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied
    * (default time unit is MILLISECONDS).
    * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
-   * @see org.cp.elements.lang.annotation.DSL
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
+   * @see org.cp.elements.lang.annotation.FluentApi
    */
-  @DSL
+  @FluentApi
   public static WaitTask waitFor(long duration) {
     return WaitTask.newWaitTask().waitFor(duration);
   }
 
   /**
-   * Waits for a specified duration on a Condition possibly checking every specified interval on whether the Condition
-   * has been satisfied.
+   * Waits for a specified duration on a {@link Condition} possibly checking every specified interval
+   * on whether the {@link Condition} has been satisfied.
    *
    * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied.
    * @param timeUnit the TimeUnit of the duration time value.
    * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
-   * @see org.cp.elements.lang.annotation.DSL
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
+   * @see org.cp.elements.lang.annotation.FluentApi
    * @see java.util.concurrent.TimeUnit
    */
-  @DSL
+  @FluentApi
   public static WaitTask waitFor(long duration, TimeUnit timeUnit) {
     return WaitTask.newWaitTask().waitFor(duration, timeUnit);
   }
 
   /**
-   * The {@link WaitTask} class is a {@link DslExtension} specifying an API for setting up a wait condition.
+   * The {@link WaitTask} class is a {@link FluentApiExtension} specifying an API for setting up a wait condition.
    *
-   * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.FluentApiExtension
    */
-  public static class WaitTask implements DslExtension {
+  public static class WaitTask implements FluentApiExtension {
 
     protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;
 

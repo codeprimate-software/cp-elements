@@ -16,15 +16,19 @@
 
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.FluentApi;
+
 /**
- * DslExtension is a marker interface for classes the implement Domain Specific Language (DSL) Extensions
- * containing the building blocks of an expression, often expressed using the Builder Design Pattern.
+ * {@link FluentApiExtension} is a marker interface for classes that implement and have a {@link FluentApi}
+ * which serve as the building blocks of a language expression, often expressed using the Builder Design Pattern.
  *
  * @author John J. Blum
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see <a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Fluent_interface">Fluent interface</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface DslExtension {
+public interface FluentApiExtension {
 
 }

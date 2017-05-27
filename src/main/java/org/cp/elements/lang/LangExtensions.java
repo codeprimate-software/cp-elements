@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import org.cp.elements.lang.annotation.DSL;
 import org.cp.elements.lang.annotation.Experimental;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 import org.cp.elements.lang.reflect.ProxyFactory;
@@ -39,8 +39,8 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Assert
- * @see org.cp.elements.lang.DslExtension
- * @see org.cp.elements.lang.annotation.DSL
+ * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Experimental
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @since 1.0.0
@@ -65,7 +65,7 @@ public abstract class LangExtensions {
    * @see SafeNavigationHandler#newSafeNavigationHandler(ProxyFactory)
    * @see org.cp.elements.lang.reflect.ProxyFactory#newProxy()
    */
-  @DSL
+  @FluentApi
   @Experimental
   @SuppressWarnings("unchecked")
   public static <T> T $(T obj, Class<?>... interfaces) {
@@ -73,7 +73,7 @@ public abstract class LangExtensions {
     return (T) proxyFactory.adviseWith(newSafeNavigationHandler(proxyFactory)).newProxy();
   }
 
-  protected static class SafeNavigationHandler<T> implements DslExtension,
+  protected static class SafeNavigationHandler<T> implements FluentApiExtension,
       org.cp.elements.lang.reflect.MethodInterceptor<T> {
 
     private static final Object DUMMY = new Object();
@@ -203,30 +203,31 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The assertThat operator is used to assert the state of an object, such as it's equality, identity, nullity,
-   * relational value, and so on.
+   * The {@literal assertThat} operator is used to assert the state of an object, such as it's equality,
+   * identity, nullity, relational value, and so on.
    *
-   * @param <T> Class type of the object being asserted.
+   * @param <T> {@link Class} type of the object being asserted.
    * @param obj Object to be asserted.
-   * @return an instance of the AssertThat DSL expression for making assertions about an object's state.
+   * @return a new instance of the {@link AssertThat} {@link FluentApi} expression for making assertions
+   * about an @{@link Object object's} state.
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
-   * @see org.cp.elements.lang.annotation.DSL
+   * @see org.cp.elements.lang.annotation.FluentApi
    */
-  @DSL
+  @FluentApi
   public static <T> AssertThat<T> assertThat(T obj) {
     return new AssertThatExpression<>(obj);
   }
 
   /**
-   * The AssertThat interface is a contract for implementation objects that assert the state of object or component
-   * of the application or system.
+   * The {@link AssertThat} interface is a contract for implementing objects that assert the state of an {@link Object}
+   * or component of the application or system.
    *
-   * @param <T> the type of object to evaluation and perform the assertion.
+   * @param <T> {@link Class} type of the object to evaluate and assert.
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    * @see org.cp.elements.lang.LangExtensions.AssertThatWrapper
-   * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.FluentApiExtension
    */
-  public interface AssertThat<T> extends DslExtension {
+  public interface AssertThat<T> extends FluentApiExtension {
 
     /**
      * Asserts whether the object to evaluate is assignable to the given Class type.  The object evaluated
@@ -1107,27 +1108,28 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The is operator can be used to make logical determinations about an object such as boolean, equality, identity,
-   * relational or type comparisons with other objects, and so on.
+   * The {@literal is} operator can be used to make logical determinations about an object such as boolean, equality,
+   * identity, relational or type comparisons with other objects, and so on.
    *
-   * @param <T> the type of Object as the subject of the is operator.
-   * @param obj the Object that is the subject of the operation.
-   * @return an instance of the is operator.
-   * @see org.cp.elements.lang.annotation.DSL
+   * @param <T> {@link Class} type of object as the subject of the {@literal is} operator.
+   * @param obj {@link Object} that is the subject of the operation.
+   * @return an instance of the {@literal is} operator.
+   * @see org.cp.elements.lang.LangExtensions.IsExpression
+   * @see org.cp.elements.lang.annotation.FluentApi
    */
-  @DSL
+  @FluentApi
   public static <T> Is<T> is(T obj) {
     return new IsExpression<>(obj);
   }
 
   /**
-   * The Is interface defines operations to classify a single object based on it's identity, state, type or relationship
-   * to another object.
+   * The {@link Is} interface defines operations to classify a single object based on it's identity, state, type
+   * or relationship to another {@link Object}.
    *
-   * @param <T> the type of Object as the subject of the is operator.
-   * @see org.cp.elements.lang.DslExtension
+   * @param <T> {@link Class} type of objet as the subject of the {@literal is} operator.
+   * @see org.cp.elements.lang.FluentApiExtension
    */
-  public interface Is<T> extends DslExtension {
+  public interface Is<T> extends FluentApiExtension {
 
     /**
      * Determines whether the Class object provided to the is operator is assignable to the Class type parameter.

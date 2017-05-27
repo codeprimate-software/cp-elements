@@ -16,6 +16,7 @@
 
 package org.cp.elements.lang.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,16 +24,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The DSL annotation is a Java language, meta-data annotation indicating that a particular Java class method
- * implements a Domain Specific Language (DSL) 'Expression'.
+ * The {@link FluentApi} annotation is a Java language, meta-data {@link Annotation} indicating that
+ * a particular Java class method implements a {@link FluentApi fluent API}, in Builder style fasion.
  *
  * @author John J. Blum
+ * @see org.cp.elements.lang.FluentApiExtension
+ * @see <a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder pattern</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Fluent_interface">Fluent interface</a>
  * @since 1.0.0
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
 @SuppressWarnings("unused")
-public @interface DSL {
+public @interface FluentApi {
 
 }

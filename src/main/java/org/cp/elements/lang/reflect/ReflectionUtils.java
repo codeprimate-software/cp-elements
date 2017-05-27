@@ -30,16 +30,16 @@ import java.util.TreeSet;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.BooleanUtils;
 import org.cp.elements.lang.ClassUtils;
-import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.NullSafe;
-import org.cp.elements.lang.annotation.DSL;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.support.ComposableFilter;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
- * The ReflectionUtils class is an abstract utility base class encapsulating commons operations used in Java
- * Introspection and Reflection.
+ * The {@link ReflectionUtils} class is an abstract, utility base class encapsulating commons operations
+ * used in Java Introspection and Reflection.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -49,7 +49,9 @@ import org.cp.elements.util.ComparatorUtils;
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
  * @see org.cp.elements.lang.ClassUtils
- * @see org.cp.elements.lang.annotation.DSL
+ * @see org.cp.elements.lang.Filter
+ * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.util.stream.StreamUtils
  * @since 1.0.0
  */
@@ -549,29 +551,29 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * Domain-specific language (DSL) expression for performing callbacks on the given fields.
+   * {@link FluentApi} object interface for performing callbacks on the given {@link Field fields}.
    *
-   * @param fields the specific collection of Fields on which to operate; maybe null or empty.
-   * @return an instance of the WithFields DSL expression.
+   * @param fields collection of {@link Field Fields} on which to operate; maybe {@literal null} or empty.
+   * @return a new instance of the {@link WithFields} {@link FluentApi} object interface.
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithFields
+   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.NullSafe
-   * @see org.cp.elements.lang.annotation.DSL
    */
-  @DSL @NullSafe
+  @FluentApi @NullSafe
   public static WithFields withFields(Field... fields) {
     return new WithFields(fields);
   }
 
   /**
-   * Domain-specific language (DSL) expression for performing callbacks on the given methods.
+   * {@link FluentApi} object interface for performing callbacks on the given {@link Method methods}.
    *
-   * @param methods the specific collection of Methods on which to operate; maybe null or empty.
-   * @return an instance of the WithMethods DSL expression.
+   * @param methods collection of {@link Method Methods} on which to operate; maybe {@literal null} or empty.
+   * @return a new instance of the {@link WithMethods} {@link FluentApi} object interface.
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
+   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.NullSafe
-   * @see org.cp.elements.lang.annotation.DSL
    */
-  @DSL @NullSafe
+  @FluentApi @NullSafe
   public static WithMethods withMethods(Method... methods) {
     return new WithMethods(methods);
   }
@@ -606,15 +608,15 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * The WithExpression class defines the domain-specific language (DSL) expression for class/object type
-   * member callbacks.
+   * The {@link WithExpression} class defines the {@link FluentApi} object interface for {@link Class}
+   * and {@link Object} type member callbacks.
    *
-   * @param <T> the specific member class type on which the callback is performed.
-   * @see org.cp.elements.lang.DslExtension
+   * @param <T> member {@link Class} type on which the callback is performed.
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithFields
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
+   * @see org.cp.elements.lang.FluentApiExtension
    */
-  public static abstract class WithExpression<T extends Member> implements DslExtension {
+  public static abstract class WithExpression<T extends Member> implements FluentApiExtension {
 
     private volatile boolean accepted = false;
 
@@ -698,8 +700,8 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * The WithFields class defines the domain-specific language (DSL) expression for class/object type
-   * Field callbacks.
+   * The {@link WithFields} class defines the {@link FluentApi} object interface for {@link Class} and {@link Object}
+   * type {@link Field} callbacks.
    *
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithExpression
    */
@@ -736,8 +738,8 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * The WithMethods class defines the domain-specific language (DSL) expression for class/object type
-   * Method callbacks.
+   * The {@link WithMethods} class defines the {@link FluentApi} object interface for {@link Class} and {@link Object}
+   * type {@link Method} callbacks.
    *
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
    */

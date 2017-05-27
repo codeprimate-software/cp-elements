@@ -19,19 +19,20 @@ package org.cp.elements.util;
 import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.DslExtension;
-import org.cp.elements.lang.annotation.DSL;
+import org.cp.elements.lang.FluentApiExtension;
+import org.cp.elements.lang.annotation.FluentApi;
 
 /**
  * The {@link PropertiesSetter} class is abstract utility class for setting properties on a {@link Properties} object.
  *
  * @author John J. Blum
  * @see java.util.Properties
- * @see org.cp.elements.lang.DslExtension
+ * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class PropertiesSetter implements DslExtension {
+public abstract class PropertiesSetter implements FluentApiExtension {
 
   private Properties properties;
 
@@ -41,12 +42,12 @@ public abstract class PropertiesSetter implements DslExtension {
    * Factory method to construct an instance of {@link PropertiesSetter} initialized with the given property name.
    *
    * @param propertyName {@link String} indicating the name of the property to set.
-   * @return an instance of {@link PropertiesSetter} initialized with the given property name.
+   * @return a new instance of {@link PropertiesSetter} initialized with the given property name.
    * @throws IllegalArgumentException if {@code propertyName} was not specified.
-   * @see org.cp.elements.lang.annotation.DSL
+   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.util.PropertiesSetter
    */
-  @DSL
+  @FluentApi
   public static PropertiesSetter set(String propertyName) {
     return new PropertiesSetter(propertyName) {};
   }

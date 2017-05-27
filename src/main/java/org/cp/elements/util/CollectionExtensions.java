@@ -17,51 +17,58 @@
 package org.cp.elements.util;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.cp.elements.lang.DslExtension;
+import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.annotation.DSL;
+import org.cp.elements.lang.annotation.FluentApi;
 
 /**
- * The CollectionExtensions class provides methods to write natural language expressions for performing various
- * collection-oriented operations.
+ * The {@link CollectionExtensions} class provides methods to write natural language expressions for performing various
+ * {@link Collection}-oriented operations.
  *
  * @author John J. Blum
  * @see java.util.Arrays
+ * @see java.util.Collection
  * @see java.util.Collections
  * @see java.util.List
  * @see java.util.Set
+ * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class CollectionExtensions {
 
   /**
-   * The from operator performs conversions on the given array and it's elements.  For instance, the array can be
-   * converted into an ordered List of elements, or a unique Set of elements originating from the array.
+   * The {@literal from} operator performs conversions on the given array and it's elements.
    *
-   * @param <T> the type of the elements in the array.
-   * @param array the array of elements all of type T to be converted.
-   * @return a From operator to perform the conversions.
-   * @see org.cp.elements.lang.annotation.DSL
+   * For instance, the array can be converted into an ordered {@link List} of elements,
+   * or a unique {@link Set} of elements originating from the array.
+   *
+   * @param <T> {@link Class} type of the elements in the array.
+   * @param array array of elements all of {@link Class} type T to be converted.
+   * @return a {@link From} operator to perform the conversions.
+   * @see org.cp.elements.lang.annotation.FluentApi
    */
-  @DSL
+  @FluentApi
   @SafeVarargs
   public static <T> From<T> from(final T... array) {
     return new FromExpression<>(array);
   }
 
   /**
-   * The From interface defines operations for conversion of an Object array to a List, Set or String.
+   * The {@link From} interface defines operations for conversion of array to a {@link List}, {@link Set}
+   * or {@link String}.
    *
-   * @param <T> the element type of objects in the List or Set.
-   * @see org.cp.elements.lang.DslExtension
+   * @param <T> {@link Class} type of elements in the {@link List} or {@link Set}.
+   * @see org.cp.elements.lang.FluentApiExtension
    */
-  public interface From<T> extends DslExtension {
+  public interface From<T> extends FluentApiExtension {
 
     /**
      * Converts an object array to a List.
@@ -121,5 +128,4 @@ public class CollectionExtensions {
       return buffer.append("]").toString();
     }
   }
-
 }
