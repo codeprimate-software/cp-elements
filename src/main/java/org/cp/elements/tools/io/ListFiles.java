@@ -65,7 +65,7 @@ public class ListFiles {
   /* (non-Javadoc) */
   protected static void listFiles(File directory) {
 
-    System.out.printf("Listing contents for directory [%s]...%n", directory.getAbsolutePath());
+    System.out.printf("Listing contents for directory [%s]...%n%n", directory.getAbsolutePath());
 
     listFiles(directory, "");
   }
