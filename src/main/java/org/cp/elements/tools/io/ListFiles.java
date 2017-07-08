@@ -66,13 +66,13 @@ public class ListFiles implements Runnable {
   }
 
   /* (non-Javadoc) */
-  private static String resolveArgument(String[] args) {
+  static String resolveArgument(String[] args) {
     return Optional.ofNullable(args).map(ArrayUtils::getFirst).filter(StringUtils::hasText)
       .orElseThrow(() -> newIllegalArgumentException("Directory is required"));
   }
 
   /* (non-Javadoc) */
-  private static File resolveDirectory(String[] args) {
+  static File resolveDirectory(String[] args) {
     return Optional.of(resolveArgument(args)).map(File::new).filter(File::isDirectory)
       .orElseThrow(() -> newIllegalArgumentException("Argument [%s] is not a valid directory", args[0]));
   }
@@ -175,7 +175,7 @@ public class ListFiles implements Runnable {
   }
 
   /* (non-Javadoc) */
-  private String buildDirectoryContentIndent(String indent) {
+  String buildDirectoryContentIndent(String indent) {
 
     return Optional.ofNullable(indent).filter(StringUtils::hasText)
       .map(it -> it + StringUtils.SINGLE_SPACE + SUB_DIRECTORY_OFFSET + DIRECTORY_SWIM_LANE)
@@ -183,7 +183,7 @@ public class ListFiles implements Runnable {
   }
 
   /* (non-Javadoc) */
-  private String concatIndentAndDirectoryName(String indent, File directory) {
+  String concatIndentAndDirectoryName(String indent, File directory) {
 
     indent = Optional.ofNullable(indent).filter(StringUtils::hasText)
       .map(it -> it + SUB_DIRECTORY_DASH_PLUS_OFFSET)
@@ -193,7 +193,7 @@ public class ListFiles implements Runnable {
   }
 
   /* (non-Javadoc) */
-  private String concatIndentAndFileName(String indent, File file) {
+  String concatIndentAndFileName(String indent, File file) {
     return String.format(indent + SUB_DIRECTORY_OFFSET + FILE_MARKER_WITH_FILENAME, file.getName());
   }
 
@@ -214,7 +214,7 @@ public class ListFiles implements Runnable {
   }
 
   /* (non-Javadoc) */
-  private File printHeader(File directory) {
+  File printHeader(File directory) {
 
     System.out.printf("Listing contents for directory [%s]...%n%n", directory.getAbsolutePath());
 
@@ -260,8 +260,8 @@ public class ListFiles implements Runnable {
    * @see java.io.File#isDirectory()
    */
   @NullSafe
-  protected File validateDirectory(File directory) {
+  private File validateDirectory(File directory) {
     return Optional.ofNullable(directory).filter(File::isDirectory)
-      .orElseThrow(() -> newIllegalArgumentException("File [%s] is not a valid directory"));
+      .orElseThrow(() -> newIllegalArgumentException("File [%s] is not a valid directory", directory));
   }
 }
