@@ -17,6 +17,10 @@
 package org.cp.elements.data.struct;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 import org.cp.elements.lang.Assert;
@@ -25,9 +29,11 @@ import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The BloomFilter class is a probabilistic data structure to test whether an data element is a member of a set.
+ * The {@link BloomFilter} class is a probabilistic data structure to test whether a data element is a member of a set.
  *
  * @author John J. Blum
+ * @see java.lang.Number
+ * @see java.util.Random
  * @see org.cp.elements.lang.Filter
  * @see <a href="https://en.wikipedia.org/wiki/Bloom_filter">Bloom Filter</a>
  * @since 1.0.0
@@ -36,9 +42,12 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 @SuppressWarnings("unused")
 public class BloomFilter<T extends Number> implements Filter<T> {
 
-  protected static final int DEFAULT_BIT_ARRAY_SIZE = 8192;
+  protected static final int DEFAULT_BIT_ARRAY_SIZE = 16384;
+  protected static final int DEFAULT_BIT_COUNT = 32;
 
   protected static final int[] BIT_MASKS = new int[32];
+
+  protected static final Map<Class, Integer> BIT_COUNT_MAP;
 
   static {
     BIT_MASKS[0] = 0x00000001;
@@ -75,9 +84,26 @@ public class BloomFilter<T extends Number> implements Filter<T> {
     BIT_MASKS[31] = 0x80000000;
   }
 
+  static {
+
+    Map<Class, Integer> classToBitSize = new HashMap<>();
+
+    classToBitSize.put(Double.class, 64);
+    classToBitSize.put(Long.class, 64);
+    classToBitSize.put(Float.class, 32);
+    classToBitSize.put(Integer.class, 32);
+    classToBitSize.put(Short.class, 16);
+    classToBitSize.put(Byte.class, 8);
+    classToBitSize.put(null, DEFAULT_BIT_COUNT);
+
+    BIT_COUNT_MAP = Collections.unmodifiableMap(classToBitSize);
+  }
+
   private final int[] bitArray;
 
   private final Random random = new Random();
+
+  private final TypeResolver typeResolver = new SmartTypeResolver();
 
   /**
    * Constructs an instance of the {@link BloomFilter} class with the default bit array size.
@@ -93,14 +119,21 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    * @throws IllegalArgumentException if size is less than equal to 0.
    */
   public BloomFilter(int size) {
-    Assert.isTrue(size > 0, "size [%1$d] must be greater than 0", size);
-    bitArray = new int[size];
-    Arrays.fill(bitArray, 0);
+
+    Assert.isTrue(size > 0, "Size [%d] must be greater than 0", size);
+
+    this.bitArray = new int[size];
+
+    Arrays.fill(this.bitArray, 0);
   }
 
-  /* (non-Javadoc) */
-  int[] bitArray() {
-    return bitArray;
+  /**
+   * Gets a reference to the bit array used as the filter in this {@link BloomFilter}.
+   *
+   * @return a reference to the bit array used as the filter in this {@link BloomFilter}.
+   */
+  int[] getBitArray() {
+    return this.bitArray;
   }
 
   /**
@@ -110,23 +143,8 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    * @return an integer value indicating the number of bits to set in this filter based on the number's class type.
    */
   protected int getBitCount(Number number) {
-    Class<?> numberType = ClassUtils.getClass(number);
-
-    if (Long.class.equals(numberType) || Double.class.equals(numberType)) {
-      return 64;
-    }
-    else if (Integer.class.equals(numberType) || Float.class.equals(numberType)) {
-      return 32;
-    }
-    else if (Short.class.equals(numberType)) {
-      return 16;
-    }
-    else if (Byte.class.equals(numberType)){
-      return 8;
-    }
-    else {
-      return 32;
-    }
+    return Optional.ofNullable(number).map(it -> getTypeResolver().resolveType(it)).map(BIT_COUNT_MAP::get)
+      .orElse(DEFAULT_BIT_COUNT);
   }
 
   /**
@@ -137,34 +155,47 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    * @return an integer value indicating the total number of bits in this filter.
    */
   protected int getBound(T number) {
-    return (bitArray.length * 32);
+    return (getBitArray().length * 32);
   }
 
   /**
-   * Determines whether the specified number is a member of this filter set.
+   * Returns the {@link TypeResolver} used to determine the type of an object.
    *
-   * @param number the number being evaluated.
-   * @return a boolean value indicating whether the specified number is a member of this filer set.
+   * @return the {@link TypeResolver} used to determine the type of an object.
+   * @see org.cp.elements.data.struct.BloomFilter.TypeResolver
+   */
+  protected TypeResolver getTypeResolver() {
+    return this.typeResolver;
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a member of this filter set.
+   *
+   * @param number {@link Number} being evaluated.
+   * @return a boolean value indicating whether the given {@link Number} is a member of this filer set.
    * @see #add(Number)
    */
   @Override
   public synchronized boolean accept(T number) {
+
     boolean accepted = (number != null);
 
     if (accepted) {
+
       int bitCount = getBitCount(number);
       int bound = getBound(number);
 
-      random.setSeed(number.longValue());
+      this.random.setSeed(number.longValue());
 
       for (int count = 0; accepted && count < bitCount; count++) {
-        int bitIndex = random.nextInt(bound);
-        accepted = ((bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
+        int bitIndex = this.random.nextInt(bound);
+        accepted = ((this.bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
       }
     }
 
     return accepted;
   }
+
   /**
    * Adds the given number to the set of numbers tracked by this filter.
    *
@@ -172,16 +203,94 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    * @see #accept(Number)
    */
   public synchronized void add(T number) {
-    Assert.notNull(number, "number cannot be null");
+
+    Assert.notNull(number, "Number cannot be null");
 
     int bitCount = getBitCount(number);
     int bound = getBound(number);
 
-    random.setSeed(number.longValue());
+    this.random.setSeed(number.longValue());
 
     for (int count = 0; count < bitCount; count++) {
-      int bitIndex = random.nextInt(bound);
-      bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
+      int bitIndex = this.random.nextInt(bound);
+      this.bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
+    }
+  }
+
+  /**
+   * {@link TypeResolver} is a strategy interface that determines the {@link Class type} of an {@link Object}.
+   */
+  public interface TypeResolver {
+    Class resolveType(Object obj);
+  }
+
+  /**
+   * {@link SimpleTypeResolver} is a {@link TypeResolver} implementation that determines the {@link Class type}
+   * of an {@link Object} a null-safe implementation of {@link Object#getClass()}.
+   *
+   * @see org.cp.elements.data.struct.BloomFilter.TypeResolver
+   * @see org.cp.elements.lang.ClassUtils#getClass(Object)
+   */
+  public class SimpleTypeResolver implements TypeResolver {
+
+    @Override
+    public Class resolveType(Object obj) {
+      return ClassUtils.getClass(obj);
+    }
+  }
+
+  /**
+   * {@link SmartTypeResolver} is an extension of {@link SimpleTypeResolver} and an implementation
+   * of the {@link TypeResolver} interface that compresses the {@link Class type} of a {@link Number}
+   * based on its value.
+   *
+   * @see org.cp.elements.data.struct.BloomFilter.SimpleTypeResolver
+   */
+  public class SmartTypeResolver extends SimpleTypeResolver {
+
+    @Override
+    public Class resolveType(Object obj) {
+
+      if (obj instanceof Number) {
+
+        Number value = (Number) obj;
+
+        if (isDecimal(value)) {
+          return (isFloat(value) ? Float.class : Double.class);
+        }
+        else {
+          return (isByte(value) ? Byte.class
+            : (isShort(value) ? Short.class
+            : (isInteger(value) ? Integer.class : Long.class)));
+        }
+      }
+
+      return super.resolveType(obj);
+    }
+
+    /* (non-Javadoc) */
+    protected boolean isDecimal(Number value) {
+      return (value instanceof Float || value instanceof Double);
+    }
+
+    /* (non-Javadoc) */
+    protected boolean isByte(Number value) {
+      return (value.longValue() >= Byte.MIN_VALUE && value.longValue() <= Byte.MAX_VALUE);
+    }
+
+    /* (non-Javadoc) */
+    protected boolean isShort(Number value) {
+      return (value.longValue() >= Short.MIN_VALUE && value.longValue() <= Short.MAX_VALUE);
+    }
+
+    /* (non-Javadoc) */
+    protected boolean isInteger(Number value) {
+      return (value.longValue() >= Integer.MIN_VALUE && value.longValue() <= Integer.MAX_VALUE);
+    }
+
+    /* (non-Javadoc) */
+    protected boolean isFloat(Number value) {
+      return (value.doubleValue() >= Float.MIN_VALUE && value.doubleValue() <= Float.MAX_VALUE);
     }
   }
 }
