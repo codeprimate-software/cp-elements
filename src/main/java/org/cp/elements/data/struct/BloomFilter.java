@@ -32,6 +32,7 @@ import java.util.Random;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
@@ -45,6 +46,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @since 1.0.0
  */
 @ThreadSafe
+@Experimental
 @SuppressWarnings("unused")
 public class BloomFilter<T extends Number> implements Filter<T> {
 
