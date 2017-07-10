@@ -18,6 +18,9 @@ package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.junit.Test;
 
 /**
@@ -32,6 +35,7 @@ public class NumberUtilsTests {
 
   @Test
   public void getBytes() {
+
     byte[] expectedValues = { (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE };
     byte[] actualValues = NumberUtils.getBytes(0xCAFEBABE);
 
@@ -63,6 +67,31 @@ public class NumberUtilsTests {
     assertThat(NumberUtils.isDecimal(1.0d)).isFalse();
     assertThat(NumberUtils.isDecimal(-1.0d)).isFalse();
     assertThat(NumberUtils.isDecimal(100.0d)).isFalse();
+  }
+
+  @Test
+  public void isDecimalWithDouble() {
+    assertThat(NumberUtils.isDecimal(new Double(Math.PI))).isTrue();
+  }
+
+  @Test
+  public void isDecimalWithFloat() {
+    assertThat(NumberUtils.isDecimal(new Float(3.14159f))).isTrue();
+  }
+
+  @Test
+  public void isNotDecimalWithByte() {
+    assertThat(NumberUtils.isDecimal(new Byte((byte) 0))).isFalse();
+  }
+
+  @Test
+  public void isNotDecimalWithInteger() {
+    assertThat(NumberUtils.isDecimal(new Integer(1))).isFalse();
+  }
+
+  @Test
+  public void isNotDecimalWithNull() {
+    assertThat(NumberUtils.isDecimal(null)).isFalse();
   }
 
   @Test
@@ -242,6 +271,27 @@ public class NumberUtilsTests {
   }
 
   @Test
+  public void isWholeWithNumber() {
+    assertThat(NumberUtils.isWhole(new Byte((byte) 0))).isTrue();
+    assertThat(NumberUtils.isWhole(new Short((short) 256))).isTrue();
+    assertThat(NumberUtils.isWhole(new Integer(65536))).isTrue();
+    assertThat(NumberUtils.isWhole(new Long(4294967296L))).isTrue();
+    assertThat(NumberUtils.isWhole(new BigInteger("1234567890987654321"))).isTrue();
+  }
+
+  @Test
+  public void isNotWholeWithNumber() {
+    assertThat(NumberUtils.isWhole(new Float(3.14159f))).isFalse();
+    assertThat(NumberUtils.isWhole(new Double(Math.PI))).isFalse();
+    assertThat(NumberUtils.isWhole(new BigDecimal(1.234567890d))).isFalse();
+  }
+
+  @Test
+  public void isNotWholeWithNull() {
+    assertThat(NumberUtils.isWhole(null)).isFalse();
+  }
+
+  @Test
   public void isZero() {
     assertThat(NumberUtils.isZero(0.0d)).isTrue();
     assertThat(NumberUtils.isZero(-0.0d)).isTrue();
@@ -257,6 +307,190 @@ public class NumberUtilsTests {
     assertThat(NumberUtils.isZero(-1.0d)).isFalse();
     assertThat(NumberUtils.isZero(-10.0d)).isFalse();
     assertThat(NumberUtils.isZero(-100.0d)).isFalse();
+  }
+
+  @Test
+  public void isByteWithByte() {
+    assertThat(NumberUtils.isByte(Byte.MIN_VALUE)).isTrue();
+    assertThat(NumberUtils.isByte((byte) 0)).isTrue();
+    assertThat(NumberUtils.isByte((byte) 64)).isTrue();
+    assertThat(NumberUtils.isByte(Byte.MAX_VALUE)).isTrue();
+  }
+
+  @Test
+  public void isByteWithByteValue() {
+    assertThat(NumberUtils.isByte(100L)).isTrue();
+  }
+
+  @Test
+  public void isNotByteWithDouble() {
+    assertThat(NumberUtils.isByte(Math.PI)).isFalse();
+  }
+
+  @Test
+  public void isNotByteWithNull() {
+    assertThat(NumberUtils.isByte(null)).isFalse();
+  }
+
+  @Test
+  public void isNotByteWithOverflowValue() {
+    assertThat(NumberUtils.isByte(256)).isFalse();
+  }
+
+  @Test
+  public void isNotByteWithUnderflowValue() {
+    assertThat(NumberUtils.isByte(-255)).isFalse();
+  }
+
+  @Test
+  public void isShortWithShort() {
+    assertThat(NumberUtils.isShort(Short.MIN_VALUE)).isTrue();
+    assertThat(NumberUtils.isShort((short) 0)).isTrue();
+    assertThat(NumberUtils.isShort((short) 1024)).isTrue();
+    assertThat(NumberUtils.isShort(Short.MAX_VALUE)).isTrue();
+  }
+
+  @Test
+  public void isShortWithShortValue() {
+    assertThat(NumberUtils.isShort(8192L)).isTrue();
+  }
+
+  @Test
+  public void isNotShortWithDouble() {
+    assertThat(NumberUtils.isShort(Math.PI)).isFalse();
+  }
+
+  @Test
+  public void isNotShortWithNull() {
+    assertThat(NumberUtils.isShort(null)).isFalse();
+  }
+
+  @Test
+  public void isNotShortWithOverflowValue() {
+    assertThat(NumberUtils.isShort(65536)).isFalse();
+  }
+
+  @Test
+  public void isNotShortWithUnderflowValue() {
+    assertThat(NumberUtils.isShort(-65535)).isFalse();
+  }
+
+  @Test
+  public void isIntegerWithInteger() {
+    assertThat(NumberUtils.isInteger(Integer.MIN_VALUE)).isTrue();
+    assertThat(NumberUtils.isInteger(0)).isTrue();
+    assertThat(NumberUtils.isInteger(1048576)).isTrue();
+    assertThat(NumberUtils.isInteger(Integer.MAX_VALUE)).isTrue();
+  }
+
+  @Test
+  public void isIntegerWithIntegerValue() {
+    assertThat(NumberUtils.isInteger(1024000000)).isTrue();
+  }
+
+  @Test
+  public void isNotIntegerWithDouble() {
+    assertThat(NumberUtils.isInteger(Math.PI)).isFalse();
+  }
+
+  @Test
+  public void isNotIntegerWithNull() {
+    assertThat(NumberUtils.isInteger(null)).isFalse();
+  }
+
+  @Test
+  public void isNotIntegerWithOverflowValue() {
+    assertThat(NumberUtils.isInteger(4294967296L)).isFalse();
+  }
+
+  @Test
+  public void isNotIntegerWithUnderflowValue() {
+    assertThat(NumberUtils.isInteger(-4294967295L)).isFalse();
+  }
+
+  @Test
+  public void isLongWithLong() {
+    assertThat(NumberUtils.isLong(Long.MIN_VALUE)).isTrue();
+    assertThat(NumberUtils.isLong(0L)).isTrue();
+    assertThat(NumberUtils.isLong(4294967296L)).isTrue();
+    assertThat(NumberUtils.isLong(Long.MAX_VALUE)).isTrue();
+  }
+
+  @Test
+  public void isNotLongWithBigInteger() {
+    assertThat(NumberUtils.isLong(new BigInteger("1234567890987654321"))).isFalse();
+  }
+
+  @Test
+  public void isNotLongWithDouble() {
+    assertThat(NumberUtils.isLong(Math.PI)).isFalse();
+  }
+
+  @Test
+  public void isNotLongWithInteger() {
+    assertThat(NumberUtils.isLong(123456789)).isFalse();
+  }
+
+  @Test
+  public void isNotLongWithNull() {
+    assertThat(NumberUtils.isLong(null)).isFalse();
+  }
+
+  @Test
+  public void isFloatWithFloat() {
+    assertThat(NumberUtils.isFloat(Float.MIN_VALUE)).isTrue();
+    assertThat(NumberUtils.isFloat(0.0f)).isTrue();
+    assertThat(NumberUtils.isFloat(3.14159f)).isTrue();
+    assertThat(NumberUtils.isFloat(Float.MAX_VALUE)).isTrue();
+  }
+
+  @Test
+  public void isNotFloatWithBigDecimal() {
+    assertThat(NumberUtils.isFloat(new BigDecimal(3.14159f))).isFalse();
+  }
+
+  @Test
+  public void isNotFloatWithDouble() {
+    assertThat(NumberUtils.isFloat(Double.MIN_VALUE)).isFalse();
+    assertThat(NumberUtils.isFloat(Double.MAX_VALUE)).isFalse();
+  }
+
+  @Test
+  public void isNotFloatWithInteger() {
+    assertThat(NumberUtils.isFloat(101)).isFalse();
+  }
+
+  @Test
+  public void isNotFloatWithNull() {
+    assertThat(NumberUtils.isFloat(null)).isFalse();
+  }
+
+  @Test
+  public void isDoubleWithDouble() {
+    assertThat(NumberUtils.isDouble(Double.MIN_VALUE)).isTrue();
+    assertThat(NumberUtils.isDouble(0d)).isTrue();
+    assertThat(NumberUtils.isDouble(Math.PI)).isTrue();
+    assertThat(NumberUtils.isDouble(Double.MAX_VALUE)).isTrue();
+  }
+
+  @Test
+  public void isNotDoubleWithBigDecimal() {
+    assertThat(NumberUtils.isDouble(new BigDecimal(Math.PI))).isFalse();
+  }
+
+  @Test
+  public void isNotDoubleWithFloat() {
+    assertThat(NumberUtils.isDouble(3.14159f)).isFalse();
+  }
+
+  @Test
+  public void isNotDoubleWithLong() {
+    assertThat(NumberUtils.isDouble(1234567890987654321L)).isFalse();
+  }
+
+  @Test
+  public void isNotDoubleWithNull() {
+    assertThat(NumberUtils.isDouble(null)).isFalse();
   }
 
   @Test

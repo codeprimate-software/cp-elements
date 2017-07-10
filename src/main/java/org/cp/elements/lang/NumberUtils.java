@@ -16,6 +16,8 @@
 
 package org.cp.elements.lang;
 
+import java.math.BigInteger;
+
 /**
  * The {@link NumberUtils} class is an abstract utility class encapsulating common functionality
  * for working with {@link Number Numbers}.
@@ -35,6 +37,7 @@ public abstract class NumberUtils {
    * @return a byte array containing the individual bytes making up the value of the integer (int).
    */
   public static byte[] getBytes(int value) {
+
     byte[] valueBytes = new byte[4];
 
     valueBytes[0] = (byte) (value >>> 24 & 0xFF);
@@ -55,6 +58,22 @@ public abstract class NumberUtils {
    */
   public static boolean isDecimal(double value) {
     return (Math.floor(value) != value);
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a decimal value.
+   *
+   * The {@link Number} is considered a decimal value if it is instance of {@link Double} or {@link Float}.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a decimal value.
+   * @see java.lang.Double
+   * @see java.lang.Float
+   * @see java.lang.Number
+   */
+  @NullSafe
+  public static boolean isDecimal(Number value) {
+    return (value instanceof Float || value instanceof Double);
   }
 
   /**
@@ -141,6 +160,13 @@ public abstract class NumberUtils {
     return (Math.floor(value) == value);
   }
 
+  /* (non-Javadoc) */
+  @NullSafe
+  public static boolean isWhole(Number value) {
+    return (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
+      || value instanceof BigInteger);
+  }
+
   /**
    * Determines whether the given double value is zero.
    *
@@ -149,6 +175,108 @@ public abstract class NumberUtils {
    */
   public static boolean isZero(double value) {
     return (value == 0.0d);
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a {@link Byte}.
+   *
+   * If the {@link Number} is not an instance of {@link Byte} then the numerical value must be between
+   * {@link Byte#MIN_VALUE} and {@link Byte#MAX_VALUE} inclusive.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Byte}.
+   * @see #isWhole(Number)
+   * @see java.lang.Number
+   * @see java.lang.Byte
+   */
+  @NullSafe
+  public static boolean isByte(Number value) {
+    return (value instanceof Byte
+      || (isWhole(value) && value.longValue() >= Byte.MIN_VALUE && value.longValue() <= Byte.MAX_VALUE));
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a {@link Short}.
+   *
+   * If the {@link Number} is not an instance of {@link Short} then the numerical value must be between
+   * {@link Short#MIN_VALUE} and {@link Short#MAX_VALUE} inclusive.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Short}.
+   * @see #isWhole(Number)
+   * @see java.lang.Number
+   * @see java.lang.Short
+   */
+  @NullSafe
+  public static boolean isShort(Number value) {
+    return (value instanceof Short
+      || (isWhole(value) && value.longValue() >= Short.MIN_VALUE && value.longValue() <= Short.MAX_VALUE));
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a {@link Integer}.
+   *
+   * If the {@link Number} is not an instance of {@link Integer} then the numerical value must be between
+   * {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE} inclusive.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Integer`}.
+   * @see #isWhole(Number)
+   * @see java.lang.Number
+   * @see java.lang.Integer
+   */
+  @NullSafe
+  public static boolean isInteger(Number value) {
+    return (value instanceof Integer
+      || (isWhole(value) && value.longValue() >= Integer.MIN_VALUE && value.longValue() <= Integer.MAX_VALUE));
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a {@link Long}.
+   *
+   * The {@link Number} must be an instance of {@link Long}.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Long}.
+   * @see java.lang.Number
+   * @see java.lang.Long
+   */
+  @NullSafe
+  public static boolean isLong(Number value) {
+    return (value instanceof Long);
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a {@link Float}.
+   *
+   * If the {@link Number} is not an instance of {@link Float} then the numerical value must be between
+   * {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE} inclusive.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Float}.
+   * @see #isDecimal(Number)
+   * @see java.lang.Number
+   * @see java.lang.Float
+   */
+  @NullSafe
+  public static boolean isFloat(Number value) {
+    return (value instanceof Float
+      || (isDecimal(value) && value.doubleValue() >= Float.MIN_VALUE && value.doubleValue() <= Float.MAX_VALUE));
+  }
+
+  /**
+   * Determines whether the given {@link Number} is a {@link Double}.
+   *
+   * The {@link Number} must be an instance of {@link Double}.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Double}.
+   * @see java.lang.Number
+   * @see java.lang.Double
+   */
+  @NullSafe
+  public static boolean isDouble(Number value) {
+    return (value instanceof Double);
   }
 
   /**
