@@ -17,15 +17,14 @@
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.NumberUtils.isShort;
 
 import java.util.Random;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link BloomFilter} class.
+ * Unit tests for {@link BloomFilter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -34,10 +33,8 @@ import org.junit.rules.ExpectedException;
  */
 public class BloomFilterTests {
 
-  private static final int NUMBER_COUNT = 101000;
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
+  private static final int NUMBER_BOUND = 50000;
+  private static final int NUMBER_COUNT = 100000;
 
   @Test
   public void constructDefaultBloomFilter() {
@@ -150,7 +147,7 @@ public class BloomFilterTests {
   @SuppressWarnings("all")
   public void randomNumberSetIsAccepted() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>(32768);
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>(65536);
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -174,21 +171,48 @@ public class BloomFilterTests {
 
     Random random = new Random(System.currentTimeMillis());
 
+    int numbersLessThanShort = 0;
+
     for (int count = 0; count < NUMBER_COUNT; count++) {
+
+      int number = Math.abs(random.nextInt(NUMBER_BOUND));
+
+      numbersLessThanShort += isShort(number) ? 1 : 0;
+
       bloomFilter.add(random.nextInt());
     }
 
     // guilty until proven innocent
     boolean saturated = true;
 
+    /*
+    int saturatedCount = 0;
+    int unsaturatedCount = 0;
+    */
+
     int[] bitArray = bloomFilter.getBitArray();
 
-    for (int index = 0; index < bitArray.length; index++) {
-
-      int valueAtBitArrayIndex = bitArray[index];
+    for (int valueAtBitArrayIndex : bitArray) {
 
       saturated &= (valueAtBitArrayIndex == 0xFFFFFFFF);
+
+      /*
+      if (valueAtBitArrayIndex == 0xFFFFFFFF) {
+        saturatedCount++;
+      }
+      else {
+        unsaturatedCount++;
+      }
+      */
     }
+
+    /*
+    System.out.printf("%nNumbers less than short [%d]%n", numbersLessThanShort);
+
+    System.out.printf("Saturated Count [%1$d]; Unsaturated Count [%2$d]; Saturation Ratio [%3$s percent]%n",
+      saturatedCount, unsaturatedCount,
+        Double.valueOf((double) saturatedCount / (double) bitArray.length * 100d).toString());
+    */
 
     assertThat(saturated).isFalse();
   }

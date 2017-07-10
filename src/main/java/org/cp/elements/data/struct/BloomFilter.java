@@ -16,6 +16,12 @@
 
 package org.cp.elements.data.struct;
 
+import static org.cp.elements.lang.NumberUtils.isByte;
+import static org.cp.elements.lang.NumberUtils.isDecimal;
+import static org.cp.elements.lang.NumberUtils.isFloat;
+import static org.cp.elements.lang.NumberUtils.isInteger;
+import static org.cp.elements.lang.NumberUtils.isShort;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -231,8 +237,9 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    * @see org.cp.elements.data.struct.BloomFilter.TypeResolver
    * @see org.cp.elements.lang.ClassUtils#getClass(Object)
    */
-  public class SimpleTypeResolver implements TypeResolver {
+  public static class SimpleTypeResolver implements TypeResolver {
 
+    /* (non-Javadoc) */
     @Override
     public Class resolveType(Object obj) {
       return ClassUtils.getClass(obj);
@@ -246,8 +253,9 @@ public class BloomFilter<T extends Number> implements Filter<T> {
    *
    * @see org.cp.elements.data.struct.BloomFilter.SimpleTypeResolver
    */
-  public class SmartTypeResolver extends SimpleTypeResolver {
+  public static class SmartTypeResolver extends SimpleTypeResolver {
 
+    /* (non-Javadoc) */
     @Override
     public Class resolveType(Object obj) {
 
@@ -266,31 +274,6 @@ public class BloomFilter<T extends Number> implements Filter<T> {
       }
 
       return super.resolveType(obj);
-    }
-
-    /* (non-Javadoc) */
-    protected boolean isDecimal(Number value) {
-      return (value instanceof Float || value instanceof Double);
-    }
-
-    /* (non-Javadoc) */
-    protected boolean isByte(Number value) {
-      return (value.longValue() >= Byte.MIN_VALUE && value.longValue() <= Byte.MAX_VALUE);
-    }
-
-    /* (non-Javadoc) */
-    protected boolean isShort(Number value) {
-      return (value.longValue() >= Short.MIN_VALUE && value.longValue() <= Short.MAX_VALUE);
-    }
-
-    /* (non-Javadoc) */
-    protected boolean isInteger(Number value) {
-      return (value.longValue() >= Integer.MIN_VALUE && value.longValue() <= Integer.MAX_VALUE);
-    }
-
-    /* (non-Javadoc) */
-    protected boolean isFloat(Number value) {
-      return (value.doubleValue() >= Float.MIN_VALUE && value.doubleValue() <= Float.MAX_VALUE);
     }
   }
 }
