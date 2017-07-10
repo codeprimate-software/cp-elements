@@ -34,7 +34,7 @@ import org.junit.Test;
 public class BloomFilterTests {
 
   private static final int NUMBER_BOUND = 50000;
-  private static final int NUMBER_COUNT = 100000;
+  private static final int NUMBER_COUNT = 256000;
 
   @Test
   public void constructDefaultBloomFilter() {

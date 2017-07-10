@@ -50,7 +50,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 @SuppressWarnings("unused")
 public class BloomFilter<T extends Number> implements Filter<T> {
 
-  protected static final int DEFAULT_BIT_ARRAY_SIZE = 16384;
+  protected static final int DEFAULT_BIT_ARRAY_SIZE = 65536;
   protected static final int DEFAULT_BIT_COUNT = 32;
 
   protected static final int[] BIT_MASKS = new int[32];
