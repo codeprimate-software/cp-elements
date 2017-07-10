@@ -51,11 +51,11 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
 public class BloomFilter<T extends Number> implements Filter<T> {
 
   protected static final int DEFAULT_BIT_ARRAY_SIZE = 65536;
-  protected static final int DEFAULT_BIT_COUNT = 32;
+  protected static final int DEFAULT_HASH_FUNCTION_COUNT = 19;
 
   protected static final int[] BIT_MASKS = new int[32];
 
-  protected static final Map<Class, Integer> BIT_COUNT_MAP;
+  protected static final Map<Class, Integer> HASH_FUNCTION_COUNT_BY_TYPE;
 
   static {
     BIT_MASKS[0] = 0x00000001;
@@ -102,9 +102,9 @@ public class BloomFilter<T extends Number> implements Filter<T> {
     classToBitSize.put(Integer.class, 32);
     classToBitSize.put(Short.class, 16);
     classToBitSize.put(Byte.class, 8);
-    classToBitSize.put(null, DEFAULT_BIT_COUNT);
+    classToBitSize.put(null, DEFAULT_HASH_FUNCTION_COUNT);
 
-    BIT_COUNT_MAP = Collections.unmodifiableMap(classToBitSize);
+    HASH_FUNCTION_COUNT_BY_TYPE = Collections.unmodifiableMap(classToBitSize);
   }
 
   private final int[] bitArray;
@@ -145,25 +145,29 @@ public class BloomFilter<T extends Number> implements Filter<T> {
   }
 
   /**
-   * Determines the number of bits to set in this filter based on the number's class type.
+   * Returns the total number of bits in this filter.
    *
-   * @param number the number who's class type will determine the number of bits to set in this filter.
-   * @return an integer value indicating the number of bits to set in this filter based on the number's class type.
-   */
-  protected int getBitCount(Number number) {
-    return Optional.ofNullable(number).map(it -> getTypeResolver().resolveType(it)).map(BIT_COUNT_MAP::get)
-      .orElse(DEFAULT_BIT_COUNT);
-  }
-
-  /**
-   * Returns the total number of bits in this filter.  The number of bits is used as an upper bound
-   * during random number generation.
+   * The number of bits is used as an upper bound during random number generation.
    *
    * @param number the number being added or evaluated by this filter.
    * @return an integer value indicating the total number of bits in this filter.
    */
   protected int getBound(T number) {
     return (getBitArray().length * 32);
+  }
+
+  /**
+   * Determines the number of bits to set in this filter based on the number's class type.
+   *
+   * @param number the number who's class type will determine the number of bits to set in this filter.
+   * @return an integer value indicating the number of bits to set in this filter based on the number's class type.
+   */
+  protected int getHashFunctionCount(Number number) {
+
+    return Optional.ofNullable(number)
+      .map(it -> getTypeResolver().resolveType(it))
+      .map(HASH_FUNCTION_COUNT_BY_TYPE::get)
+      .orElse(DEFAULT_HASH_FUNCTION_COUNT);
   }
 
   /**
@@ -190,12 +194,12 @@ public class BloomFilter<T extends Number> implements Filter<T> {
 
     if (accepted) {
 
-      int bitCount = getBitCount(number);
       int bound = getBound(number);
+      int hashCount = getHashFunctionCount(number);
 
       this.random.setSeed(number.longValue());
 
-      for (int count = 0; accepted && count < bitCount; count++) {
+      for (int count = 0; accepted && count < hashCount; count++) {
         int bitIndex = this.random.nextInt(bound);
         accepted = ((this.bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
       }
@@ -214,12 +218,12 @@ public class BloomFilter<T extends Number> implements Filter<T> {
 
     Assert.notNull(number, "Number cannot be null");
 
-    int bitCount = getBitCount(number);
     int bound = getBound(number);
+    int hashCount = getHashFunctionCount(number);
 
     this.random.setSeed(number.longValue());
 
-    for (int count = 0; count < bitCount; count++) {
+    for (int count = 0; count < hashCount; count++) {
       int bitIndex = this.random.nextInt(bound);
       this.bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
     }

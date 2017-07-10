@@ -102,19 +102,19 @@ public class BloomFilterTests {
 
     BloomFilter<Integer> bloomFilter = new BloomFilter<>();
 
-    assertThat(bloomFilter.getBitCount(Byte.MIN_VALUE)).isEqualTo(8);
-    assertThat(bloomFilter.getBitCount(Byte.MAX_VALUE)).isEqualTo(8);
-    assertThat(bloomFilter.getBitCount(Short.MIN_VALUE)).isEqualTo(16);
-    assertThat(bloomFilter.getBitCount(Short.MAX_VALUE)).isEqualTo(16);
-    assertThat(bloomFilter.getBitCount(Integer.MIN_VALUE)).isEqualTo(32);
-    assertThat(bloomFilter.getBitCount(Integer.MAX_VALUE)).isEqualTo(32);
-    assertThat(bloomFilter.getBitCount(Float.MIN_VALUE)).isEqualTo(32);
-    assertThat(bloomFilter.getBitCount(Float.MAX_VALUE)).isEqualTo(32);
-    assertThat(bloomFilter.getBitCount(Long.MIN_VALUE)).isEqualTo(64);
-    assertThat(bloomFilter.getBitCount(Long.MAX_VALUE)).isEqualTo(64);
-    assertThat(bloomFilter.getBitCount(Double.MIN_VALUE)).isEqualTo(64);
-    assertThat(bloomFilter.getBitCount(Double.MAX_VALUE)).isEqualTo(64);
-    assertThat(bloomFilter.getBitCount(null)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount(Byte.MIN_VALUE)).isEqualTo(8);
+    assertThat(bloomFilter.getHashFunctionCount(Byte.MAX_VALUE)).isEqualTo(8);
+    assertThat(bloomFilter.getHashFunctionCount(Short.MIN_VALUE)).isEqualTo(16);
+    assertThat(bloomFilter.getHashFunctionCount(Short.MAX_VALUE)).isEqualTo(16);
+    assertThat(bloomFilter.getHashFunctionCount(Integer.MIN_VALUE)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount(Integer.MAX_VALUE)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount(Float.MIN_VALUE)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount(Float.MAX_VALUE)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount(Long.MIN_VALUE)).isEqualTo(64);
+    assertThat(bloomFilter.getHashFunctionCount(Long.MAX_VALUE)).isEqualTo(64);
+    assertThat(bloomFilter.getHashFunctionCount(Double.MIN_VALUE)).isEqualTo(64);
+    assertThat(bloomFilter.getHashFunctionCount(Double.MAX_VALUE)).isEqualTo(64);
+    assertThat(bloomFilter.getHashFunctionCount(null)).isEqualTo(BloomFilter.DEFAULT_HASH_FUNCTION_COUNT);
   }
 
   @Test
@@ -122,12 +122,12 @@ public class BloomFilterTests {
 
     BloomFilter<Long> bloomFilter = new BloomFilter<>();
 
-    assertThat(bloomFilter.getBitCount(1L)).isEqualTo(8);
-    assertThat(bloomFilter.getBitCount(16384)).isEqualTo(16);
-    assertThat(bloomFilter.getBitCount(128000)).isEqualTo(32);
-    assertThat(bloomFilter.getBitCount((long) Integer.MAX_VALUE + Integer.MAX_VALUE)).isEqualTo(64);
-    assertThat(bloomFilter.getBitCount(Math.PI)).isEqualTo(32);
-    assertThat(bloomFilter.getBitCount((double) Float.MAX_VALUE + Float.MAX_VALUE)).isEqualTo(64);
+    assertThat(bloomFilter.getHashFunctionCount(1L)).isEqualTo(8);
+    assertThat(bloomFilter.getHashFunctionCount(16384)).isEqualTo(16);
+    assertThat(bloomFilter.getHashFunctionCount(128000)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount((long) Integer.MAX_VALUE + Integer.MAX_VALUE)).isEqualTo(64);
+    assertThat(bloomFilter.getHashFunctionCount(Math.PI)).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount((double) Float.MAX_VALUE + Float.MAX_VALUE)).isEqualTo(64);
   }
 
   @Test
