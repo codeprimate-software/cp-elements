@@ -3,6 +3,21 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0.M4 - ???
+---------------------
+Introduces new types and tools.
+
+* Introduced the o.c.e.lang.Verifyable interface to validate the state of an Object post construction/initialization.
+* Renamed o.c.e.lang.DslExtension to o.c.e.lang.FluentApiExtension.
+* Renamed o.c.e.lang.annotation.DSL to o.c.e.lang.annotation.FluentApi.
+* Added isDecimal(:Number), isWhole(:Number), isByte(:Number), isShort(:Number), isInteger(:Number), isLong(:Number),
+isFloat(:Number) and isDouble:Number) to o.c.e.lang.NumberUtils.
+* Added District of Columbia (D.C.) to o.c.e.enums.State.
+* Added new tool to list the contents of a directory, o.c.e.tools.io.ListFiles.
+* Added o.c.e.data.struct.BloomFilter probabilist data structure to test the membership of an element in a set.
+* Upgraded to cp-core 1.2.0.RELEASE.
+
+
 1.0.0.M3 - 2017-05-05
 ---------------------
 Introduces the ProcessExecutor API in the org.cp.elements.process package for configuring, forking/launching
