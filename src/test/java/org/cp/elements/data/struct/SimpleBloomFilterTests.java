@@ -25,14 +25,14 @@ import org.cp.elements.lang.NumberUtils;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link BloomFilter}.
+ * Unit tests for {@link SimpleBloomFilter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
- * @see org.cp.elements.data.struct.BloomFilter
+ * @see org.cp.elements.data.struct.SimpleBloomFilter
  * @since 1.0.0
  */
-public class BloomFilterTests {
+public class SimpleBloomFilterTests {
 
   private static final int NUMBER_BOUND = 50000;
   private static final int NUMBER_COUNT = 256000;
@@ -40,15 +40,15 @@ public class BloomFilterTests {
   @Test
   public void constructDefaultBloomFilter() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
 
     assertThat(bloomFilter).isNotNull();
     assertThat(bloomFilter.getBitArray()).isNotNull();
-    assertThat(bloomFilter.getBitArray().length).isEqualTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE);
-    assertThat(bloomFilter.getBound(null)).isEqualTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
-    assertThat(bloomFilter.getBound(0)).isEqualTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
-    assertThat(bloomFilter.getBound(1)).isEqualTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
-    assertThat(bloomFilter.getBound(2)).isEqualTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
+    assertThat(bloomFilter.getBitArray().length).isEqualTo(SimpleBloomFilter.DEFAULT_BIT_ARRAY_SIZE);
+    assertThat(bloomFilter.getBound(null)).isEqualTo(SimpleBloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
+    assertThat(bloomFilter.getBound(0)).isEqualTo(SimpleBloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
+    assertThat(bloomFilter.getBound(1)).isEqualTo(SimpleBloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
+    assertThat(bloomFilter.getBound(2)).isEqualTo(SimpleBloomFilter.DEFAULT_BIT_ARRAY_SIZE * 32);
 
     int index;
 
@@ -58,13 +58,13 @@ public class BloomFilterTests {
       assertThat(bitArray[index]).isZero();
     }
 
-    assertThat(index).isEqualTo(BloomFilter.DEFAULT_BIT_ARRAY_SIZE);
+    assertThat(index).isEqualTo(SimpleBloomFilter.DEFAULT_BIT_ARRAY_SIZE);
   }
 
   @Test
   public void constructCustomBloomFilter() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>(4);
+    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>(4);
 
     assertThat(bloomFilter).isNotNull();
     assertThat(bloomFilter.getBitArray()).isNotNull();
@@ -88,7 +88,7 @@ public class BloomFilterTests {
   @Test(expected = IllegalArgumentException.class)
   public void constructBloomFilterWithIllegalSize() {
     try {
-      new BloomFilter<>(-10);
+      new SimpleBloomFilter<>(-10);
     }
     catch (IllegalArgumentException expected) {
       assertThat(expected).hasMessage("Size [-10] must be greater than 0");
@@ -103,9 +103,9 @@ public class BloomFilterTests {
 
     String expectedBinaryString = "1";
 
-    for (int index = 0; index < BloomFilter.BIT_MASKS.length; index++, expectedBinaryString += "0") {
+    for (int index = 0; index < SimpleBloomFilter.BIT_MASKS.length; index++, expectedBinaryString += "0") {
 
-      String actualBinaryString = Integer.toBinaryString(BloomFilter.BIT_MASKS[index]);
+      String actualBinaryString = Integer.toBinaryString(SimpleBloomFilter.BIT_MASKS[index]);
 
       assertThat(actualBinaryString).isEqualTo(expectedBinaryString);
     }
@@ -114,7 +114,7 @@ public class BloomFilterTests {
   @Test
   public void hashFunctionCountForNumberType() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
 
     assertThat(bloomFilter.getHashFunctionCount(Byte.MIN_VALUE)).isEqualTo(8);
     assertThat(bloomFilter.getHashFunctionCount(Byte.MAX_VALUE)).isEqualTo(8);
@@ -128,13 +128,13 @@ public class BloomFilterTests {
     assertThat(bloomFilter.getHashFunctionCount(Long.MAX_VALUE)).isEqualTo(64);
     assertThat(bloomFilter.getHashFunctionCount(Double.MIN_VALUE)).isEqualTo(64);
     assertThat(bloomFilter.getHashFunctionCount(Double.MAX_VALUE)).isEqualTo(64);
-    assertThat(bloomFilter.getHashFunctionCount(null)).isEqualTo(BloomFilter.DEFAULT_HASH_FUNCTION_COUNT);
+    assertThat(bloomFilter.getHashFunctionCount(null)).isEqualTo(SimpleBloomFilter.DEFAULT_HASH_FUNCTION_COUNT);
   }
 
   @Test
   public void hashFunctionCountForNumberValue() {
 
-    BloomFilter<Long> bloomFilter = new BloomFilter<>();
+    SimpleBloomFilter<Long> bloomFilter = new SimpleBloomFilter<>();
 
     assertThat(bloomFilter.getHashFunctionCount(1L)).isEqualTo(8);
     assertThat(bloomFilter.getHashFunctionCount(16384)).isEqualTo(16);
@@ -148,7 +148,7 @@ public class BloomFilterTests {
   @SuppressWarnings("all")
   public void randomNumberSetIsAccepted() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -168,7 +168,7 @@ public class BloomFilterTests {
   @Test
   public void evenNumbersAreAcceptedOddNumbersAreRejected() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
 
     for (int number = 0; number < 100; number++) {
       if (NumberUtils.isEven(number)) {
@@ -184,7 +184,7 @@ public class BloomFilterTests {
   @Test
   public void bloomFilterIsNotSaturated() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
 
     Random random = new Random(System.currentTimeMillis());
 
