@@ -21,6 +21,7 @@ import static org.cp.elements.lang.NumberUtils.isShort;
 
 import java.util.Random;
 
+import org.cp.elements.lang.NumberUtils;
 import org.junit.Test;
 
 /**
@@ -98,7 +99,20 @@ public class BloomFilterTests {
   }
 
   @Test
-  public void bitCountForNumberType() {
+  public void bitMasksBinaryStringsAreCorrect() {
+
+    String expectedBinaryString = "1";
+
+    for (int index = 0; index < BloomFilter.BIT_MASKS.length; index++, expectedBinaryString += "0") {
+
+      String actualBinaryString = Integer.toBinaryString(BloomFilter.BIT_MASKS[index]);
+
+      assertThat(actualBinaryString).isEqualTo(expectedBinaryString);
+    }
+  }
+
+  @Test
+  public void hashFunctionCountForNumberType() {
 
     BloomFilter<Integer> bloomFilter = new BloomFilter<>();
 
@@ -118,7 +132,7 @@ public class BloomFilterTests {
   }
 
   @Test
-  public void bitCountForNumberValue() {
+  public void hashFunctionCountForNumberValue() {
 
     BloomFilter<Long> bloomFilter = new BloomFilter<>();
 
@@ -131,23 +145,10 @@ public class BloomFilterTests {
   }
 
   @Test
-  public void bitMasksBinaryStringsAreCorrect() {
-
-    String expectedBinaryString = "1";
-
-    for (int index = 0; index < BloomFilter.BIT_MASKS.length; index++, expectedBinaryString += "0") {
-
-      String actualBinaryString = Integer.toBinaryString(BloomFilter.BIT_MASKS[index]);
-
-      assertThat(actualBinaryString).isEqualTo(expectedBinaryString);
-    }
-  }
-
-  @Test
   @SuppressWarnings("all")
   public void randomNumberSetIsAccepted() {
 
-    BloomFilter<Integer> bloomFilter = new BloomFilter<>(65536);
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -161,6 +162,22 @@ public class BloomFilterTests {
         assertThat(bloomFilter.accept(number)).describedAs("Number [%1$d] at count [%2$d] was not acceted",
           number, count).isTrue();
       }
+    }
+  }
+
+  @Test
+  public void evenNumbersAreAcceptedOddNumbersAreRejected() {
+
+    BloomFilter<Integer> bloomFilter = new BloomFilter<>();
+
+    for (int number = 0; number < 100; number++) {
+      if (NumberUtils.isEven(number)) {
+        bloomFilter.add(number);
+      }
+    }
+
+    for (int number = 0; number < 100; number++) {
+      assertThat(bloomFilter.accept(number)).isEqualTo(NumberUtils.isEven(number));
     }
   }
 
@@ -185,10 +202,8 @@ public class BloomFilterTests {
     // guilty until proven innocent
     boolean saturated = true;
 
-    /*
-    int saturatedCount = 0;
-    int unsaturatedCount = 0;
-    */
+    //int saturatedCount = 0;
+    //int unsaturatedCount = 0;
 
     int[] bitArray = bloomFilter.getBitArray();
 
