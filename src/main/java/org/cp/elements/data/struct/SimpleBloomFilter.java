@@ -16,42 +16,37 @@
 
 package org.cp.elements.data.struct;
 
-import static org.cp.elements.lang.NumberUtils.isByte;
-import static org.cp.elements.lang.NumberUtils.isDecimal;
-import static org.cp.elements.lang.NumberUtils.isFloat;
-import static org.cp.elements.lang.NumberUtils.isInteger;
-import static org.cp.elements.lang.NumberUtils.isShort;
+import static java.util.Arrays.stream;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The {@link SimpleBloomFilter} class is a probabilistic data structure testing whether a data element
- * is a member of a set.
+ * The {@link SimpleBloomFilter} class is a probabilistic data structure testing whether a given data element
+ * is a member of the set maintained by the filter.
  *
  * @author John J. Blum
  * @param <T> {@link Number type} of the elements contained by this {@link BloomFilter}.
- * @see java.lang.Number
  * @see java.util.Random
  * @see org.cp.elements.data.struct.BloomFilter
  * @see org.cp.elements.lang.concurrent.ThreadSafe
  * @see <a href="https://en.wikipedia.org/wiki/Bloom_filter">Bloom Filter</a>
+ * @see <a href="https://stackoverflow.com/questions/658439/how-many-hash-functions-does-my-bloom-filter-need">How many hash functions does my bloom filter need?</a>
  * @since 1.0.0
  */
 @ThreadSafe
 @SuppressWarnings("unused")
-public class SimpleBloomFilter<T extends Number> implements BloomFilter<T> {
+public class SimpleBloomFilter<T> implements BloomFilter<T> {
 
-  protected static final int DEFAULT_BIT_ARRAY_SIZE = 65536;
-  protected static final int DEFAULT_HASH_FUNCTION_COUNT = 19;
+  protected static final float DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE = 0.01f; // 1%
+
+  protected static final int DEFAULT_BIT_ARRAY_LENGTH = 16384;
+  protected static final int DEFAULT_NUMBER_OF_BITS = DEFAULT_BIT_ARRAY_LENGTH * 32; // 64 KB filter
+  protected static final int DEFAULT_NUMBER_OF_HASH_FUNCTIONS = 11;
 
   protected static final int[] BIT_MASKS = new int[32];
 
@@ -90,117 +85,233 @@ public class SimpleBloomFilter<T extends Number> implements BloomFilter<T> {
     BIT_MASKS[31] = 0x80000000;
   }
 
-  protected static final Map<Class, Integer> HASH_FUNCTION_COUNT_BY_TYPE;
+  private float falsePositiveRate;
 
-  static {
-
-    Map<Class, Integer> classToBitSize = new HashMap<>();
-
-    classToBitSize.put(Double.class, 64);
-    classToBitSize.put(Long.class, 64);
-    classToBitSize.put(Float.class, 32);
-    classToBitSize.put(Integer.class, 32);
-    classToBitSize.put(Short.class, 16);
-    classToBitSize.put(Byte.class, 8);
-    classToBitSize.put(null, DEFAULT_HASH_FUNCTION_COUNT);
-
-    HASH_FUNCTION_COUNT_BY_TYPE = Collections.unmodifiableMap(classToBitSize);
-  }
+  private final int hashFunctionCount;
 
   private final int[] bitArray;
 
   private final Random random = new Random();
 
-  private final TypeResolver typeResolver = new SmartTypeResolver();
-
   /**
-   * Constructs an instance of the {@link SimpleBloomFilter} class with the default bit array size.
+   * Factory method used to construct an instance of the {@link SimpleBloomFilter} class initialized with
+   * an approximate, estimated number of elements that the caller expects will be added to the {@link BloomFilter}.
+   *
+   * The acceptable, false positive rate defaults to 1%.
+   *
+   * @param <T> {@link Class type} of elements added/evaluated by this Bloom Filter.
+   * @param approximateNumberOfElements integer value indicating the approximate, estimated number of elements
+   * the user expects will be added to the returned {@link SimpleBloomFilter} instance.
+   * @return a new instance of {@link SimpleBloomFilter}.
+   * @throws IllegalArgumentException if the approximate number of elements is less than equal to 0.
+   * @see #of(int, float)
    */
-  public SimpleBloomFilter() {
-    this(DEFAULT_BIT_ARRAY_SIZE);
+  public static <T> SimpleBloomFilter<T> of(int approximateNumberOfElements) {
+    return of(approximateNumberOfElements, DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE);
   }
 
   /**
-   * Constructs an instance of the {@link SimpleBloomFilter} class initialized with the specified bit array size.
+   * Factory method used to construct an instance of the {@link SimpleBloomFilter} class initialized with
+   * an approximate, estimated number of elements that the user expects will be added to the {@link BloomFilter}
+   * along with the desired, acceptable false positive rate.
    *
-   * @param size the size of the bit array used as a filter.
-   * @throws IllegalArgumentException if size is less than equal to 0.
+   * @param <T> {@link Class type} of elements added/evaluated by this Bloom Filter.
+   * @param approximateNumberOfElements integer value indicating the approximate, estimated number of elements
+   * the user expects will be added to the returned {@link SimpleBloomFilter} instance.
+   * @param acceptableFalsePositiveRate a floating point value indicating the acceptable percentage of false positives
+   * returned by the constructed {@link SimpleBloomFilter}.
+   * @throws IllegalArgumentException if the approximate number of elements is less than equal to 0 or the acceptable,
+   * false positive rate is less than equal to 0.0 or greater than equal to 1.0.
+   * @return a new instance of {@link SimpleBloomFilter}.
+   * @see #computeRequiredNumberOfBits(double, double)
+   * @see #computeOptimalNumberOfHashFunctions(double, double)
    */
-  public SimpleBloomFilter(int size) {
+  public static <T> SimpleBloomFilter<T> of(int approximateNumberOfElements, float acceptableFalsePositiveRate) {
 
-    Assert.isTrue(size > 0, "Size [%d] must be greater than 0", size);
+    Assert.isTrue(approximateNumberOfElements > 0,
+      "The approximate number of elements [%d] to add to the filter must be greater than 0",
+      approximateNumberOfElements);
 
-    this.bitArray = new int[size];
+    Assert.isTrue(acceptableFalsePositiveRate > 0.0f && acceptableFalsePositiveRate < 1.0f,
+      "The acceptable false positive rate [%s] must be greater than 0.0 and less than 1.0",
+        String.valueOf(acceptableFalsePositiveRate));
+
+    int requiredNumberOfBits = computeRequiredNumberOfBits(approximateNumberOfElements, acceptableFalsePositiveRate);
+    int optimalNumberOfHashFunctions = computeOptimalNumberOfHashFunctions(approximateNumberOfElements,
+      requiredNumberOfBits);
+
+    SimpleBloomFilter<T> bloomFilter = new SimpleBloomFilter<>(requiredNumberOfBits, optimalNumberOfHashFunctions);
+
+    bloomFilter.falsePositiveRate = acceptableFalsePositiveRate;
+
+    return bloomFilter;
+  }
+
+  /**
+   * Computes the required number of bits needed by the Bloom Filter as a factor of the approximate number of elements
+   * to be added to the filter along with the desired, acceptable false positive rate (probability).
+   *
+   * m = n * (log p) / (log 2) ^ 2
+   *
+   * m is the required number of bits needed for the Bloom Filter.
+   * n is the approximate number of elements to be added to the bloom filter
+   * p is the acceptable false positive rate between 0.0 and 1.0 exclusive
+   *
+   * @param approximateNumberOfElements integer value indicating the approximate, estimated number of elements
+   * the user expects will be added to the Bloom Filter.
+   * @param acceptableFalsePositiveRate a floating point value indicating the acceptable percentage of false positives
+   * returned by the Bloom Filter.
+   * @return the required number of bits needed by the Bloom Filter.
+   */
+  protected static int computeRequiredNumberOfBits(double approximateNumberOfElements, double acceptableFalsePositiveRate) {
+
+    double numberOfBits = Math.abs((approximateNumberOfElements * Math.log(acceptableFalsePositiveRate))
+      / Math.pow(Math.log(2.0d), 2.0d));
+
+    return Double.valueOf(Math.ceil(numberOfBits)).intValue();
+  }
+
+  /**
+   * Computes the optimal number of hash functions to apply to each element added to the Bloom Filter as a factor
+   * of the approximate (estimated) number of elements that will be added to the filter along with
+   * the required number of bits needed by the filter, which was computed from the probability of false positives.
+   *
+   * k = m/n * log 2
+   *
+   * m is the required number of bits needed for the bloom filter
+   * n is the approximate number of elements to be added to the bloom filter
+   * k is the optimal number of hash functions to apply to the element added to the bloom filter
+   *
+   * @param approximateNumberOfElements integer value indicating the approximate, estimated number of elements
+   * the user expects will be added to the Bloom Filter.
+   * @param requiredNumberOfBits the required number of bits needed by the Bloom Filter to satify the probability
+   * of false positives.
+   * @return the optimal number of hash functions used by the Bloom Filter.
+   */
+  protected static int computeOptimalNumberOfHashFunctions(double approximateNumberOfElements, double requiredNumberOfBits) {
+
+    double numberOfHashFunctions = (requiredNumberOfBits / approximateNumberOfElements) * Math.log(2.0d);
+
+    return Double.valueOf(Math.ceil(numberOfHashFunctions)).intValue();
+  }
+
+  /**
+   * Constructs an instance of the {@link SimpleBloomFilter} class with the default number of bits
+   * and default number of hash functions.
+   *
+   * @see #SimpleBloomFilter(int, int)
+   */
+  public SimpleBloomFilter() {
+    this(DEFAULT_NUMBER_OF_BITS, DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
+  }
+
+  /**
+   * Constructs an instance of the {@link SimpleBloomFilter} class initialized with the required number of bits
+   * and optimal number of hash functions.
+   *
+   * @param numberOfBits the number of bits needed by this filter.
+   * @param numberOfHashFunctions the number of hash functions applied to each element when added to the set
+   * or evaluated against the filter.
+   * @throws IllegalArgumentException if either {@code numberOfBits} or {@code numberOfHashFunctions}
+   * is less than equal to 0.
+   */
+  public SimpleBloomFilter(int numberOfBits, int numberOfHashFunctions) {
+
+    Assert.isTrue(numberOfBits > 0, "Number of bits [%d] must be greater than 0", numberOfBits);
+
+    Assert.isTrue(numberOfHashFunctions > 0,
+      "Number of hash functions [%d] must be greater than 0", numberOfHashFunctions);
+
+    this.bitArray = new int[getBitArrayLength(numberOfBits)];
+    this.hashFunctionCount = numberOfHashFunctions;
 
     Arrays.fill(this.bitArray, 0);
   }
 
   /**
-   * Gets a reference to the bit array used as the filter in this {@link SimpleBloomFilter}.
+   * Returns a reference to the bit array used as the filter in this {@link BloomFilter}.
    *
-   * @return a reference to the bit array used as the filter in this {@link SimpleBloomFilter}.
+   * @return a reference to the bit array used as the filter in this {@link BloomFilter}.
    */
   int[] getBitArray() {
     return this.bitArray;
   }
 
   /**
-   * Returns the total number of bits in this filter.
+   * Determines the length of the bit array used as a filter in this {@link BloomFilter}, which is based on
+   * the given number of bits required by this {@link BloomFilter}.
    *
-   * The number of bits is used as an upper bound during random number generation.
+   * WARNING: This method may be overridden in subclasses but should be careful not to rely on any state
+   * in this {@link BloomFilter} class since this method is called from the constructor.
    *
-   * @param number the number being added or evaluated by this filter.
-   * @return an integer value indicating the total number of bits in this filter.
+   * @param requiredNumberOfBits integer value indicating the number of bits needed by this {@link BloomFilter}.
+   * @return an integer value with the length of the bit array required to adequately contain the number of bits
+   * needed by this {@link BloomFilter}.
+   * @see #getFilterSize()
    */
-  protected int getBound(T number) {
+  protected int getBitArrayLength(int requiredNumberOfBits) {
+
+    int remainder = (requiredNumberOfBits % 32);
+    int additionalNumberOfBits = (remainder != 0 ? 32 - remainder : 0);
+
+    return (requiredNumberOfBits + additionalNumberOfBits) / 32;
+  }
+
+  /**
+   * Returns the acceptable and probable, false positive rate allowed by this {@link BloomFilter}.
+   *
+   * @return a float value with the acceptable and probably false positive rate allowed by this {@link BloomFilter}.
+   */
+  public float getFalsePositiveRate() {
+    return this.falsePositiveRate;
+  }
+
+  /**
+   * Returns the number of bits used in this {@link BloomFilter}.
+   *
+   * @return an integer value with the number of bits used this {@link BloomFilter}.
+   * @see #getBitArrayLength(int)
+   * @see #getBitArray()
+   */
+  protected int getFilterSize() {
     return (getBitArray().length * 32);
   }
 
   /**
-   * Determines the number of bits to set in this filter based on the number's class type.
+   * Determines the number of bits to set in this {@link BloomFilter} given the specified {@link Object element} to add.
    *
-   * @param number the number who's class type will determine the number of bits to set in this filter.
-   * @return an integer value indicating the number of bits to set in this filter based on the number's class type.
+   * @param element {@link Object element} used as a basis for the number of bits to set in this {@link BloomFilter}.
+   * @return an integer value with the number of bits to set for the given {@link Object element} being added to
+   * this {@link BloomFilter}.
    */
-  protected int getHashFunctionCount(Number number) {
-
-    return Optional.ofNullable(number)
-      .map(it -> getTypeResolver().resolveType(it))
-      .map(HASH_FUNCTION_COUNT_BY_TYPE::get)
-      .orElse(DEFAULT_HASH_FUNCTION_COUNT);
+  protected int getHashFunctionCount(T element) {
+    return this.hashFunctionCount;
   }
 
   /**
-   * Returns the {@link TypeResolver} used to determine the type of an object.
+   * Determines whether the given element is a member of the set contained by this {@link BloomFilter}.
    *
-   * @return the {@link TypeResolver} used to determine the type of an object.
-   * @see SimpleBloomFilter.TypeResolver
-   */
-  protected TypeResolver getTypeResolver() {
-    return this.typeResolver;
-  }
-
-  /**
-   * Determines whether the given {@link Number} is a member of this filter set.
-   *
-   * @param number {@link Number} being evaluated.
-   * @return a boolean value indicating whether the given {@link Number} is a member of this filer set.
-   * @see #add(Number)
+   * @param element {@link Object element} to evaluate.
+   * @return a boolean value indicating whether the given element is a member of the set
+   * contained by this {@link BloomFilter}.
+   * @see java.lang.Object#hashCode()
+   * @see #getHashFunctionCount(Object)
+   * @see #add(Object)
    */
   @Override
-  public synchronized boolean accept(T number) {
+  public synchronized boolean accept(T element) {
 
-    boolean accepted = (number != null);
+    boolean accepted = (element != null);
 
     if (accepted) {
 
-      int bound = getBound(number);
-      int hashCount = getHashFunctionCount(number);
+      int filterSize = getFilterSize();
+      int hashFunctionCount = getHashFunctionCount(element);
 
-      this.random.setSeed(number.longValue());
+      this.random.setSeed(element.hashCode());
 
-      for (int count = 0; accepted && count < hashCount; count++) {
-        int bitIndex = this.random.nextInt(bound);
+      for (int count = 0; accepted && count < hashFunctionCount; count++) {
+        int bitIndex = this.random.nextInt(filterSize);
         accepted = ((this.bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
       }
     }
@@ -209,77 +320,65 @@ public class SimpleBloomFilter<T extends Number> implements BloomFilter<T> {
   }
 
   /**
-   * Adds the given number to the set of numbers tracked by this filter.
+   * Adds the given element to the set managed by this {@link BloomFilter}.
    *
-   * @param number the number to add to the set of numbers tracked by this filter.
-   * @see #accept(Number)
+   * @param element {@link Object element} to add to this {@link BloomFilter}.
+   * @see #accept(Object)
    */
-  public synchronized void add(T number) {
+  public synchronized void add(T element) {
 
-    Assert.notNull(number, "Number cannot be null");
+    Assert.notNull(element, "Element cannot be null");
 
-    int bound = getBound(number);
-    int hashCount = getHashFunctionCount(number);
+    int filterSize = getFilterSize();
+    int hashFunctionCount = getHashFunctionCount(element);
 
-    this.random.setSeed(number.longValue());
+    this.random.setSeed(element.hashCode());
 
-    for (int count = 0; count < hashCount; count++) {
-      int bitIndex = this.random.nextInt(bound);
+    for (int count = 0; count < hashFunctionCount; count++) {
+      int bitIndex = this.random.nextInt(filterSize);
       this.bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
     }
   }
 
   /**
-   * {@link TypeResolver} is a strategy interface that determines the {@link Class type} of an {@link Object}.
+   * Determines the estimated size of this {@link BloomFilter}.
+   *
+   * The estimated size is approximately the number of elements that have been added to this {@link BloomFilter},
+   * calculated as...
+   *
+   * n* = - m/n * log(1 - X/m)
+   *
+   * n* is an estimate of the number of elements in this filter
+   * m is the length (size) of this filter
+   * k is the number of hash functions
+   * X is the number of bits set to one
+   *
+   * @return an integer value with the size of this {@link BloomFilter} indicated as the estimated number of elements
+   * that have possibly been added to this {@link BloomFilter}.
    */
-  public interface TypeResolver {
-    Class resolveType(Object obj);
+  public int size() {
+
+    double filterSize = getFilterSize(); // m
+    double numberOfBitsSetToOne = countNumberOfBitsSetToOne(); // X
+    double numberOfHashFunctions = getHashFunctionCount(null); // k
+    double estimatedSize = (filterSize / numberOfHashFunctions) * Math.log(1 - (numberOfBitsSetToOne / filterSize));
+
+    return Double.valueOf(Math.abs(Math.round(estimatedSize))).intValue();
   }
 
-  /**
-   * {@link SimpleTypeResolver} is a {@link TypeResolver} implementation that determines the {@link Class type}
-   * of an {@link Object} using the null-safe implementation of {@link Object#getClass()}.
-   *
-   * @see SimpleBloomFilter.TypeResolver
-   * @see org.cp.elements.lang.ClassUtils#getClass(Object)
-   */
-  public static class SimpleTypeResolver implements TypeResolver {
+  /* (non-Javadoc) */
+  private int countNumberOfBitsSetToOne() {
 
-    /* (non-Javadoc) */
-    @Override
-    public Class resolveType(Object obj) {
-      return ClassUtils.getClass(obj);
-    }
-  }
+    AtomicInteger numberOfBitsSetToOne = new AtomicInteger(0);
 
-  /**
-   * {@link SmartTypeResolver} is an extension of {@link SimpleTypeResolver} and an implementation
-   * of the {@link TypeResolver} interface that compresses the {@link Class type} of a {@link Number}
-   * based on its value.
-   *
-   * @see SimpleBloomFilter.SimpleTypeResolver
-   */
-  public static class SmartTypeResolver extends SimpleTypeResolver {
-
-    /* (non-Javadoc) */
-    @Override
-    public Class resolveType(Object obj) {
-
-      if (obj instanceof Number) {
-
-        Number value = (Number) obj;
-
-        if (isDecimal(value)) {
-          return (isFloat(value) ? Float.class : Double.class);
-        }
-        else {
-          return (isByte(value) ? Byte.class
-            : (isShort(value) ? Short.class
-            : (isInteger(value) ? Integer.class : Long.class)));
+    stream(getBitArray()).forEach(bucket -> {
+      for (int bitMask : BIT_MASKS) {
+        if ((bucket & bitMask) != 0) {
+          numberOfBitsSetToOne.incrementAndGet();
         }
       }
+    });
 
-      return super.resolveType(obj);
-    }
+    return numberOfBitsSetToOne.get();
   }
 }
