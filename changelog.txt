@@ -8,13 +8,16 @@ https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 Introduces new types and tools.
 
 * Introduced the o.c.e.lang.Verifyable interface to validate the state of an Object post construction/initialization.
+* Moved the o.c.e.lang.NullSafe annotation to the o.c.e.lang.annotation package.
 * Renamed o.c.e.lang.DslExtension to o.c.e.lang.FluentApiExtension.
 * Renamed o.c.e.lang.annotation.DSL to o.c.e.lang.annotation.FluentApi.
 * Added isDecimal(:Number), isWhole(:Number), isByte(:Number), isShort(:Number), isInteger(:Number), isLong(:Number),
 isFloat(:Number) and isDouble:Number) to o.c.e.lang.NumberUtils.
 * Added District of Columbia (D.C.) to o.c.e.enums.State.
 * Added new tool to list the contents of a directory, o.c.e.tools.io.ListFiles.
-* Added o.c.e.data.struct.BloomFilter probabilistic data structure to test for membership of an element in a set.
+* Added the o.c.e.data.struct.BloomFilter probabilistic data structure to test for membership of an element in a set.
+* Added the o.c.e.data.struct.ScalableBloomFilter implementation to the o.c.e.data.struct package.
+* Moved the o.c.e.util.convert package to the o.c.e.data package.
 * Upgraded to cp-core 1.2.0.RELEASE.
 
 
