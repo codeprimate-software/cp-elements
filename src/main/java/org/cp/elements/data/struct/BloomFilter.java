@@ -38,4 +38,11 @@ public interface BloomFilter<T> extends Filter<T> {
    */
   void add(T element);
 
+  /**
+   * Returns the approximate, estimated number of data elements managed by this {@link BloomFilter}.
+   *
+   * @return the approximate, estimated number of data elements managed by this {@link BloomFilter}.
+   */
+  int size();
+
 }

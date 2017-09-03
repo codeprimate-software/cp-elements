@@ -14,7 +14,7 @@ Introduces new types and tools.
 isFloat(:Number) and isDouble:Number) to o.c.e.lang.NumberUtils.
 * Added District of Columbia (D.C.) to o.c.e.enums.State.
 * Added new tool to list the contents of a directory, o.c.e.tools.io.ListFiles.
-* Added o.c.e.data.struct.BloomFilter probabilist data structure to test the membership of an element in a set.
+* Added o.c.e.data.struct.BloomFilter probabilistic data structure to test for membership of an element in a set.
 * Upgraded to cp-core 1.2.0.RELEASE.
 
 
