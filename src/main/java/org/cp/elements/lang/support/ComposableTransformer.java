@@ -23,8 +23,8 @@ import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.util.Iterator;
 
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.CollectionUtils;
 
 /**

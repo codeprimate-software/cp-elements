@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;

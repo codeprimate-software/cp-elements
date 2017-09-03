@@ -16,8 +16,8 @@
 
 package org.cp.elements.dao;
 
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The CrudOperation enum type is an enumeration of CRUD data access operations.

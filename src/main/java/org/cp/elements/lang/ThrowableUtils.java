@@ -20,9 +20,11 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
-/**
+import org.cp.elements.lang.annotation.NullSafe;
+
+ /**
  * The ThrowableUtils class provides methods for working with Throwable objects (Errors and Exceptions).
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Error
  * @see java.lang.Throwable
@@ -47,7 +49,7 @@ public abstract class ThrowableUtils {
    * Returns the underlying cause of the given {@link Throwable} object if the {@link Throwable} object
    * is an instance of {@link InvocationTargetException}.  An {@link InvocationTargetException} is typically thrown
    * when a method on some object is invoked reflectively.
-   * 
+   *
    * @param throwable {@link Throwable} object to evaluate as a {@link InvocationTargetException}.
    * @return a {@link Throwable} object indicating the underlying cause of {@code throwable} if {@code throwable} is an instance
    * of {@link InvocationTargetException} otherwise return {@code throwable}.
@@ -62,7 +64,7 @@ public abstract class ThrowableUtils {
   /**
    * Null-safe method returning the message of the given {@link Throwable} object.  If the {@link Throwable} object
    * reference is {@literal null} then this method returns {@literal null}.
-   * 
+   *
    * @param throwable {@link Throwable} object who's message is returned.
    * @return the message of the given {@link Throwable} object.
    * @see java.lang.Throwable#getMessage()
@@ -74,7 +76,7 @@ public abstract class ThrowableUtils {
 
   /**
    * Determines the original, root cause of the given {@link Throwable} object.
-   * 
+   *
    * @param throwable {@link Throwable} object who's root cause will be determined.
    * @return a {@link Throwable} object indicating the root cause of the given {@link Throwable} object,
    * or {@literal null} if the {@link Throwable} object reference is {@literal null}.
@@ -93,7 +95,7 @@ public abstract class ThrowableUtils {
   /**
    * Returns the Stack Trace of the given {@link Throwable} object as a {@link String}.  Returns {@literal null}
    * if the given {@link Throwable} object reference is {@literal null}.
-   * 
+   *
    * @param throwable {@link Throwable} object who's Stack Trace is returned.
    * @return the Stack Trace of the given {@link Throwable} object as a {@link String}.
    * @see java.lang.Throwable#printStackTrace(java.io.PrintWriter)

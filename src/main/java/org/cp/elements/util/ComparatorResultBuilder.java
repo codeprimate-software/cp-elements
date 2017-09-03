@@ -21,7 +21,7 @@ import static org.cp.elements.util.ComparatorUtils.compareIgnoreNull;
 import java.util.Comparator;
 
 import org.cp.elements.lang.Builder;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link ComparatorResultBuilder} class is a {@link Comparator} implementation that builds a comparison expression

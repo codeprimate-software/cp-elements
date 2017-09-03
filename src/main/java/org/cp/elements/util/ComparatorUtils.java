@@ -18,7 +18,7 @@ package org.cp.elements.util;
 
 import java.util.Comparator;
 
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link ComparatorUtils} class is an abstract utility class providing common functionality

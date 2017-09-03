@@ -18,9 +18,11 @@ package org.cp.elements.lang;
 
 import java.math.BigInteger;
 
+import org.cp.elements.lang.annotation.NullSafe;
+
 /**
  * The MathUtils class is a utility class encapsulating common mathematical operations and calculations.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Math
  * @see <a href="http://www.math.com">math.com</a>

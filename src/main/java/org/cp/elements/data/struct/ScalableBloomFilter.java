@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link ScalableBloomFilter} class is an implementation of a {@link BloomFilter} that is scalable at runtime.

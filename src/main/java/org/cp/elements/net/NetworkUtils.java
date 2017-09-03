@@ -27,7 +27,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Optional;
 
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link NetworkUtils} class encapsulates utility methods related to networking.

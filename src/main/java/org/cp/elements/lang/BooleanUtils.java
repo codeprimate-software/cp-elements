@@ -20,6 +20,8 @@ import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.cp.elements.lang.annotation.NullSafe;
+
 /**
  * The BooleanUtils class provides utility methods for working with boolean values.
  *

@@ -21,7 +21,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * {@link ModifierUtils} is an abstract utility class for determining the language modifiers

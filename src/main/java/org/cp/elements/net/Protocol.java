@@ -16,8 +16,8 @@
 
 package org.cp.elements.net;
 
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The Protocol enum defines constants for well-known network protocols.

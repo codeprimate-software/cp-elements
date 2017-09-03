@@ -34,9 +34,9 @@ import java.util.Random;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The ArrayUtils class encapsulates utility methods and functionality for interacting with Object arrays.

@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The MapUtils class provides utility methods for working with the Java Collections Framework and specifically

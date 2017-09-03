@@ -18,6 +18,8 @@ package org.cp.elements.lang;
 
 import java.math.BigInteger;
 
+import org.cp.elements.lang.annotation.NullSafe;
+
 /**
  * The {@link NumberUtils} class is an abstract utility class encapsulating common functionality
  * for working with {@link Number Numbers}.

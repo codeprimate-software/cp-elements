@@ -23,9 +23,9 @@ import java.util.List;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Composite;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link ComposableVisitor} class is a collection of {@link Visitor} objects enabling multiple

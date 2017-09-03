@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.ClassUtils;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link ProxyFactory} class is a factory object used to create a proxy for a given target {@link Object}

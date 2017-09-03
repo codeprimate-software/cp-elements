@@ -32,8 +32,8 @@ import org.cp.elements.lang.BooleanUtils;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FluentApiExtension;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.support.ComposableFilter;
 import org.cp.elements.util.ComparatorUtils;
 
@@ -557,7 +557,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @return a new instance of the {@link WithFields} {@link FluentApi} object interface.
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithFields
    * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.lang.NullSafe
+   * @see NullSafe
    */
   @FluentApi @NullSafe
   public static WithFields withFields(Field... fields) {
@@ -571,7 +571,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @return a new instance of the {@link WithMethods} {@link FluentApi} object interface.
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
    * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.lang.NullSafe
+   * @see NullSafe
    */
   @FluentApi @NullSafe
   public static WithMethods withMethods(Method... methods) {

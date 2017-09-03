@@ -22,11 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 
 /**
  * The StringUtils class performs utility operations on Strings.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.String
  * @since 1.0.0
@@ -67,7 +68,7 @@ public abstract class StringUtils {
 
   /**
    * Concatenates the array of Strings into a single String value delimited by a comma and space.
-   * 
+   *
    * @param values an array of Strings to concatenate.
    * @return a single String value containing all Strings from the array concatenated by a comma and space.
    * @throws NullPointerException if the String array is null.
@@ -79,7 +80,7 @@ public abstract class StringUtils {
 
   /**
    * Concatenates the array of Strings into a single String value delimited by the specified delimiter.
-   * 
+   *
    * @param values an array of Strings to concatenate.
    * @param delimiter the String used as the delimiter separating the String values from the array.
    * @return a single String value containing all Strings from the array concatenated by the specified delimiter.
@@ -101,7 +102,7 @@ public abstract class StringUtils {
 
   /**
    * Determines whether the String value contains the specified text, guarding against null values.
-   * 
+   *
    * @param text {@link String} evaluated for value containment.
    * @param value {@link String} used to determine if the value is contained in the text.
    * @return a boolean value if the {@link String} text contains the value.
@@ -114,7 +115,7 @@ public abstract class StringUtils {
 
   /**
    * Determines whether the String value contains any digits, guarding against null values.
-   * 
+   *
    * @param value the String value being evaluated for digits containment.
    * @return a boolean value indicating whether the String value contains any digits.
    * @see #toCharArray(String)
@@ -133,7 +134,7 @@ public abstract class StringUtils {
 
   /**
    * Determines whether the String value contains any letters, guarding against null values.
-   * 
+   *
    * @param value the String value being evaluated for letter containment.
    * @return a boolean value indicating whether the String value contains any letters.
    * @see #toCharArray(String)
@@ -195,7 +196,7 @@ public abstract class StringUtils {
 
   /**
    * Determines whether two String values are equal in value ignoring case and guarding against null values.
-   * 
+   *
    * @param stringOne the first String value in the case-insensitive equality comparison.
    * @param stringTwo the second String value in the case-insensitive equality comparison.
    * @return a boolean value indicating if the two String values are equal in value ignore case.
@@ -208,7 +209,7 @@ public abstract class StringUtils {
 
   /**
    * Extracts numbers from the String value.
-   * 
+   *
    * @param value the String value from which to extract numbers.
    * @return only numbers from the String value.
    * @throws NullPointerException if the String value is null.
@@ -228,7 +229,7 @@ public abstract class StringUtils {
 
   /**
    * Extracts letters from the String value.
-   * 
+   *
    * @param value the String value from which to extract letters.
    * @return only letters from the String value.
    * @throws NullPointerException if the String value is null.
@@ -248,7 +249,7 @@ public abstract class StringUtils {
 
   /**
    * Constructs a String with only spaces up to the specified length.
-   * 
+   *
    * @param number an integer value indicating the number of spaces in the String.
    * @return a String containing the specified number of spaces.
    */
@@ -269,7 +270,7 @@ public abstract class StringUtils {
   /**
    * Determines whether the String value has text.  A String has text if it is not blank, implying the String is not
    * null, is not the empty String and contains at least 1 non-whitespace character.
-   * 
+   *
    * @param value the String being evaluated for containing text.
    * @return a boolean value if the String contains text.
    * @see #isBlank(String)
@@ -282,7 +283,7 @@ public abstract class StringUtils {
   /**
    * Determines the index of the first occurrence of token in the String value.  This indexOf operation is null-safe
    * and returns a -1 if the String value is null, or the token does not exist in the String value.
-   * 
+   *
    * @param text the String value used to search for the token.
    * @param value the text to search for in the String value.
    * @return the index of the first occurrence of the token in the String value, or -1 if the token does not exist, or
@@ -298,7 +299,7 @@ public abstract class StringUtils {
   /**
    * Determines whether the String value is blank.  A String is blank if it is null, an empty String or contains only
    * whitespace.
-   * 
+   *
    * @param value the String being evaluated as a blank String value.
    * @return a boolean value indicating whether the String value is blank.
    * @see #isEmpty(String)
@@ -311,7 +312,7 @@ public abstract class StringUtils {
 
   /**
    * Determines whether the String value represents a number, i.e. consists entirely of digits.
-   * 
+   *
    * @param value the String value for determination as a number.
    * @return a boolean value indicating if the String value represents a number.
    * @see java.lang.Character#isDigit(char)
@@ -332,7 +333,7 @@ public abstract class StringUtils {
   /**
    * Determines whether the String value is empty, which is true if and only if the String value is the empty String.
    * This method guards against null.
-   * 
+   *
    * @param value the String being evaluated as the empty String.
    * @return a boolean value indicating if the String value is the empty String.
    * @see StringUtils#isBlank(String)
@@ -345,7 +346,7 @@ public abstract class StringUtils {
 
   /**
    * Determines whether the String value consists entirely of letters.
-   * 
+   *
    * @param value the String value for determination as text.
    * @return a boolean value indicating if the String value consists entirely of letters.
    * @see java.lang.Character#isLetter(char)
@@ -366,7 +367,7 @@ public abstract class StringUtils {
   /**
    * Determines the index of the last occurrence of token in the String value.  This lastIndexOf operation is null-safe
    * and returns a -1 if the String value is null, or the token does not exist in the String value.
-   * 
+   *
    * @param text the String value used to search for the token.
    * @param value the text to search for in the String value.
    * @return the index of the last occurrence of the token in the String value, or -1 if the token does not exist, or
@@ -382,7 +383,7 @@ public abstract class StringUtils {
   /**
    * Determines the length of the String value, which is based on the number of characters in the String.
    * If the String value is null, then the length is zero.
-   * 
+   *
    * @param value the String who's length will be determined.
    * @return a integer value indicating the number of characters in the String.
    * @see java.lang.String#length()
@@ -502,7 +503,7 @@ public abstract class StringUtils {
 
   /**
    * Null-safe implementation to convert the String into an array of characters.
-   * 
+   *
    * @param value the String value to convert to a character array.
    * @return a character array for the String value or null if the String value is null.
    * @see java.lang.String#toCharArray()
@@ -514,7 +515,7 @@ public abstract class StringUtils {
 
   /**
    * Converts the String value to all lower case characters.  toLowerCase is a null-safe operation.
-   * 
+   *
    * @param value the String value who's characters are all converted to lower case.
    * @return the String value with all lower case characters.
    * @see #toUpperCase(String)
@@ -562,7 +563,7 @@ public abstract class StringUtils {
 
   /**
    * Converts the String value to all UPPER case characters.  toUpperCase is a null-safe operation.
-   * 
+   *
    * @param value the String value who's characters are all converted to UPPER case.
    * @return the String value with all UPPER case characters.
    * @see #toLowerCase(String)
@@ -575,7 +576,7 @@ public abstract class StringUtils {
 
   /**
    * Trims the specified String value, removing any whitespace from the beginning or end of a String.
-   * 
+   *
    * @param value the String value to trim.
    * @return a trimmed version of the specified String value.
    * @see java.lang.String#trim()
@@ -588,7 +589,7 @@ public abstract class StringUtils {
   /**
    * Trims all whitespace characters from the String value.  The whitespace can occur in any position (beginning, end,
    * between characters) within th String value.
-   * 
+   *
    * @param value the String value to fully trim.
    * @return a String value containing now whitespace.
    * @see java.lang.Character#isWhitespace(char)

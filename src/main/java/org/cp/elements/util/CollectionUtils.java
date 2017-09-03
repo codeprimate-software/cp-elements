@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.support.ToStringRenderer;
 
 /**

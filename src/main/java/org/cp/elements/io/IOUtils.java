@@ -28,7 +28,7 @@ import java.io.OutputStream;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The IOUtils class provides basic input and output utility operations.

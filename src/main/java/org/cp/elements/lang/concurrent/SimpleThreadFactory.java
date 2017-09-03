@@ -25,8 +25,8 @@ import java.util.logging.Logger;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.IdentifierSequence;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ThrowableUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.support.UUIDIdentifierSequence;
 
 /**

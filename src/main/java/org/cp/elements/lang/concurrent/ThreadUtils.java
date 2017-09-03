@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Condition;
 import org.cp.elements.lang.FluentApiExtension;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link ThreadUtils} class provides utilities for writing concurrent programs using Java {@link Thread Threads}

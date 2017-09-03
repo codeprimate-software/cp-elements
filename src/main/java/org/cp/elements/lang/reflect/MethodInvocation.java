@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link MethodInvocation} class encapsulates all the necessary information to invoke a {@link Method}

@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Filter;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The FileExtensionFilter class is a {@link FileFilter} and {@link Filter} implementation

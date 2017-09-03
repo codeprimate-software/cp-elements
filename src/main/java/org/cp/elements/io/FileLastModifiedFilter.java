@@ -24,8 +24,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.cp.elements.lang.Filter;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.RelationalOperator;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The FileLastModifiedFilter class is a {@link FileFilter} and {@link Filter} of {@link File}s implementation

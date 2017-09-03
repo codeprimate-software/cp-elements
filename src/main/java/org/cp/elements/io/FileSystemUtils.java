@@ -24,9 +24,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 
 /**

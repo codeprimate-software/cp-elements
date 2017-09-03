@@ -18,8 +18,8 @@ package org.cp.elements.jdbc;
 
 import java.sql.Types;
 
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The SqlType enum is an enumeration of SQL types from the java.sql.Types class.

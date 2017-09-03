@@ -17,9 +17,9 @@
 package org.cp.elements.net.protocols.http;
 
 import org.cp.elements.dao.CrudOperation;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The HttpMethod enum is an enumeration of all HTTP protocol methods (POST, GET, PUT, DELETE, HEADERS, etc).

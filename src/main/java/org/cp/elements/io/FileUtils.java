@@ -27,8 +27,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The FileUtils class encapsulates several utility methods for working with files.

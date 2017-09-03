@@ -34,7 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import org.cp.elements.lang.NullSafe;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * {@link AbstractClientServerSupport} is an abstract class supporting the development of simple

@@ -24,8 +24,8 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.cp.elements.lang.Builder;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.text.FormatUtils;
 

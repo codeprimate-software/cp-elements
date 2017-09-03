@@ -18,8 +18,8 @@ package org.cp.elements.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
 
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The ServicePort enum defines an enumeration of well-known named network service ports.

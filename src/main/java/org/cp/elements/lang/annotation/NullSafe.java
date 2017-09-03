@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.cp.elements.lang;
+package org.cp.elements.lang.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -19,6 +19,8 @@ package org.cp.elements.lang;
 import java.util.Calendar;
 import java.util.Optional;
 
+import org.cp.elements.lang.annotation.NullSafe;
+
 /**
  * The DateTimeUtils class contains common functionality for working with dates and time.
  *

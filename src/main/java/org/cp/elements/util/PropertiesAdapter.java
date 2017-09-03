@@ -24,8 +24,8 @@ import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
-import org.cp.elements.lang.NullSafe;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.convert.ConversionService;
 import org.cp.elements.util.convert.provider.DefaultConversionService;
 
