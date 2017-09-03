@@ -121,6 +121,7 @@ public class Version implements Comparable<Version> {
    * @see #parseMajorMinor(String[])
    */
   public static Version parse(String version) {
+
     Assert.hasText(version, "The version [%s] must be specified", version);
 
     String[] versionNumbers = version.split("\\.");
@@ -212,6 +213,7 @@ public class Version implements Comparable<Version> {
    * @see #parseInt(String)
    */
   private static int parseQualifierNumber(String qualifier) {
+
     try {
       return parseInt(qualifier);
     }
@@ -287,6 +289,7 @@ public class Version implements Comparable<Version> {
    * are less than {@literal 0}.
    */
   public Version(int major, int minor, int maintenance, Qualifier qualifier, int qualifierNumber) {
+
     assertThat(major).throwing(new IllegalArgumentException(String.format(
       "Major version [%d] must be greater than equal to 0", major)))
         .isGreaterThanEqualTo(0);
@@ -446,6 +449,7 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public int compareTo(Version version) {
+
     return ComparatorResultBuilder.<Integer>create()
       .doCompare(this.getMajor(), version.getMajor())
       .doCompare(this.getMinor(), version.getMinor())
@@ -464,7 +468,8 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (obj == this) {
+
+    if (this == obj) {
       return true;
     }
 
@@ -490,13 +495,16 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public int hashCode() {
+
     int hashValue = 17;
+
     hashValue = 37 * hashValue + ObjectUtils.hashCode(getBuildNumber());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(getMajor());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(getMinor());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(getMaintenance());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(getQualifier());
     hashValue = 37 * hashValue + ObjectUtils.hashCode(getQualifierNumber());
+
     return hashValue;
   }
 
@@ -508,7 +516,9 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public String toString() {
+
     int buildNumber = getBuildNumber();
+
     Qualifier qualifier = getQualifier();
 
     return String.format("%1$d.%2$d.%3$d%4$s%5$s%6$s", getMajor(), getMinor(), getMaintenance(),
@@ -523,6 +533,7 @@ public class Version implements Comparable<Version> {
    * @see #getBuildNumber()
    */
   private String toBuildNumberString() {
+
     int buildNumber = getBuildNumber();
 
     return (buildNumber > 0 ? String.format(" build %d", buildNumber) : StringUtils.EMPTY_STRING);
@@ -537,7 +548,9 @@ public class Version implements Comparable<Version> {
    * @see #getQualifier()
    */
   private String toQualifierString() {
+
     Qualifier qualifier = getQualifier();
+
     int qualifierNumber = getQualifierNumber();
 
     return (qualifier.isUndefined() ? StringUtils.EMPTY_STRING
@@ -552,6 +565,7 @@ public class Version implements Comparable<Version> {
    * or an empty {@link String} if the software release date and time is unknown.
    */
   private String toReleaseDateTimeString() {
+
     LocalDateTime releaseDateTime = getReleaseDateTime();
 
     return (releaseDateTime == null ? StringUtils.EMPTY_STRING
@@ -610,6 +624,7 @@ public class Version implements Comparable<Version> {
    * such as M# (Milestone), RC# (Release Candidate) or RELEASE, etc.
    */
   public enum Qualifier {
+
     ALPHA("ALPHA", "Alpha"),
     BETA("BETA", "Beta"),
     BUILD_SNAPSHOT("BUILD-SNAPSHOT", "Build Snapshot"),
@@ -633,11 +648,14 @@ public class Version implements Comparable<Version> {
      * @see #getAbbreviation()
      */
     public static Qualifier resolve(String version) {
+
       if (StringUtils.hasText(version)) {
+
         String trimmedLowerCaseVersion = version.trim().toLowerCase();
         String versionQualifier = version.substring(version.lastIndexOf(".") + 1);
 
         for (Qualifier qualifier : values()) {
+
           String qualifierName = qualifier.name().toLowerCase();
           String alternateQualifierName = qualifierName.replace("_", "-");
 
