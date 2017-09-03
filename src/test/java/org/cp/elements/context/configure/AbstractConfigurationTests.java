@@ -39,16 +39,16 @@ import static org.mockito.Mockito.when;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.cp.elements.data.convert.AbstractConversionService;
+import org.cp.elements.data.convert.ConversionException;
+import org.cp.elements.data.convert.ConversionService;
+import org.cp.elements.data.convert.Converter;
+import org.cp.elements.data.convert.ConverterAdapter;
+import org.cp.elements.data.convert.provider.DefaultConversionService;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.annotation.IntegrationTest;
-import org.cp.elements.util.convert.AbstractConversionService;
-import org.cp.elements.util.convert.ConversionException;
-import org.cp.elements.util.convert.ConversionService;
-import org.cp.elements.util.convert.Converter;
-import org.cp.elements.util.convert.ConverterAdapter;
-import org.cp.elements.util.convert.provider.DefaultConversionService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -65,7 +65,7 @@ import org.junit.rules.ExpectedException;
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.AbstractConfiguration
- * @see org.cp.elements.util.convert.ConversionService
+ * @see org.cp.elements.data.convert.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

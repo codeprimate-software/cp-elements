@@ -16,13 +16,13 @@
 
 package org.cp.elements.context.configure;
 
+import org.cp.elements.data.convert.ConversionException;
+import org.cp.elements.data.convert.ConversionService;
+import org.cp.elements.data.convert.ConversionServiceAware;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.util.convert.ConversionException;
-import org.cp.elements.util.convert.ConversionService;
-import org.cp.elements.util.convert.ConversionServiceAware;
 
 /**
  * The AbstractConfiguration class is an abstract base class encapsulating functionality common to all Configuration
@@ -30,8 +30,8 @@ import org.cp.elements.util.convert.ConversionServiceAware;
  *
  * @author John J. Blum
  * @see org.cp.elements.context.configure.Configuration
- * @see org.cp.elements.util.convert.ConversionService
- * @see org.cp.elements.util.convert.ConversionServiceAware
+ * @see org.cp.elements.data.convert.ConversionService
+ * @see org.cp.elements.data.convert.ConversionServiceAware
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -69,7 +69,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    *
    * @return a reference to a ConversionService to perform property value type conversions.
    * @throws IllegalStateException if a ConversionService reference was not provided.
-   * @see org.cp.elements.util.convert.ConversionService
+   * @see org.cp.elements.data.convert.ConversionService
    */
   protected ConversionService getConversionService() {
     Assert.state(conversionService != null, "The ConversionService was not properly initialized!");
@@ -83,7 +83,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    * @param conversionService a reference to the ConversionService used to perform configuration property value type
    * conversions.
    * @throws NullPointerException if the ConversionService reference is null.
-   * @see org.cp.elements.util.convert.ConversionService
+   * @see org.cp.elements.data.convert.ConversionService
    */
   public final void setConversionService(final ConversionService conversionService) {
     Assert.notNull(conversionService, "The ConversionService used to support this Configuration cannot be null!");
@@ -111,7 +111,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    * @throws NullPointerException if the specified conversion Class type is null.
    * @throws ConversionException if the String property value cannot be converted into an object of type T.
    * @see #getConversionService()
-   * @see org.cp.elements.util.convert.ConversionService
+   * @see org.cp.elements.data.convert.ConversionService
    */
   protected <T> T convert(final String value, final Class<T> type) {
     Assert.notNull(type, "The Class type to convert the String value to cannot be null!");

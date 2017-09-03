@@ -17,7 +17,7 @@
 package org.cp.elements.lang.factory;
 
 import org.cp.elements.context.configure.ConfigurationAware;
-import org.cp.elements.util.convert.ConversionServiceAware;
+import org.cp.elements.data.convert.ConversionServiceAware;
 
 /**
  * The ObjectFactory interface defines a contract for components that create instances of other objects.
@@ -26,7 +26,7 @@ import org.cp.elements.util.convert.ConversionServiceAware;
  * @see java.lang.Object
  * @see org.cp.elements.context.configure.ConfigurationAware
  * @see org.cp.elements.lang.factory.AbstractObjectFactory
- * @see org.cp.elements.util.convert.ConversionServiceAware
+ * @see org.cp.elements.data.convert.ConversionServiceAware
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

@@ -22,12 +22,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.cp.elements.data.convert.ConversionService;
+import org.cp.elements.data.convert.provider.DefaultConversionService;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NullSafe;
-import org.cp.elements.util.convert.ConversionService;
-import org.cp.elements.util.convert.provider.DefaultConversionService;
 
 /**
  * The {@link PropertiesAdapter} class is a wrapper around a {@link Properties} object to encapsulate functionality
@@ -36,7 +36,7 @@ import org.cp.elements.util.convert.provider.DefaultConversionService;
  * @author John J. Blum
  * @see java.lang.Iterable
  * @see java.util.Properties
- * @see org.cp.elements.util.convert.ConversionService
+ * @see org.cp.elements.data.convert.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -73,7 +73,7 @@ public class PropertiesAdapter implements Iterable<String> {
    *
    * @return a reference to the {@link ConversionService} used ot convert the property value
    * into a value of the desired class type.
-   * @see org.cp.elements.util.convert.ConversionService
+   * @see org.cp.elements.data.convert.ConversionService
    */
   protected ConversionService getConversionService() {
     return this.conversionService;
@@ -143,7 +143,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @param propertyName the name of the property to get.
    * @param type the desired {@link Class} type to convert the value of the named property to.
    * @return the value of the named property converted to an instance of the given {@link Class} type.
-   * @see org.cp.elements.util.convert.ConversionService#convert(Object, Class)
+   * @see org.cp.elements.data.convert.ConversionService#convert(Object, Class)
    * @see java.lang.Class
    * @see #getConversionService()
    * @see #get(String) \

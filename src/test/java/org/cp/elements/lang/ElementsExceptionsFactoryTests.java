@@ -50,6 +50,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyExcepti
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
+import org.cp.elements.data.convert.ConversionException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;
@@ -63,7 +64,6 @@ import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
-import org.cp.elements.util.convert.ConversionException;
 import org.cp.elements.util.search.SearchException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

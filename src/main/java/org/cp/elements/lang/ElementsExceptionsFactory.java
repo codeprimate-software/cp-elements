@@ -21,6 +21,7 @@ import static org.cp.elements.text.FormatUtils.format;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
+import org.cp.elements.data.convert.ConversionException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;
@@ -34,7 +35,6 @@ import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
-import org.cp.elements.util.convert.ConversionException;
 import org.cp.elements.util.search.SearchException;
 
 /**
@@ -69,7 +69,7 @@ import org.cp.elements.util.search.SearchException;
  * @see org.cp.elements.util.SystemException
  * @see org.cp.elements.util.UserException
  * @see org.cp.elements.util.WriteOnlyException
- * @see org.cp.elements.util.convert.ConversionException
+ * @see org.cp.elements.data.convert.ConversionException
  * @see org.cp.elements.util.search.SearchException
  * @since 1.0.0
  */
@@ -752,7 +752,7 @@ public abstract class ElementsExceptionsFactory extends RuntimeException {
    * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link ConversionException} with the given {@link String message}.
    * @see #newConversionException(Throwable, String, Object...)
-   * @see org.cp.elements.util.convert.ConversionException
+   * @see org.cp.elements.data.convert.ConversionException
    */
   public static ConversionException newConversionException(String message, Object... args) {
     return newConversionException(null, message, args);
@@ -766,7 +766,7 @@ public abstract class ElementsExceptionsFactory extends RuntimeException {
    * @param message {@link String} describing the {@link ConversionException exception}.
    * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link ConversionException} with the given {@link Throwable cause} and {@link String message}.
-   * @see org.cp.elements.util.convert.ConversionException
+   * @see org.cp.elements.data.convert.ConversionException
    */
   public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
     return new ConversionException(format(message, args), cause);

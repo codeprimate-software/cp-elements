@@ -35,10 +35,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.data.convert.ConversionService;
 import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.util.convert.ConversionService;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,7 +54,7 @@ import org.junit.rules.ExpectedException;
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.lang.factory.AbstractObjectFactory
- * @see org.cp.elements.util.convert.ConversionService
+ * @see org.cp.elements.data.convert.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

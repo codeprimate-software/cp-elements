@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.cp.elements.util.convert.ConversionService;
+import org.cp.elements.data.convert.ConversionService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
