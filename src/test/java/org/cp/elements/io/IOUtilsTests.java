@@ -74,6 +74,7 @@ public class IOUtilsTests {
 
   @Test
   public void closeWithCloseableThrowingIOExceptionReturnsFalse() throws Exception {
+
     Closeable mockCloseable = mock(Closeable.class);
 
     doThrow(new IOException("test")).when(mockCloseable).close();
@@ -91,7 +92,9 @@ public class IOUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void copyIsSuccessful() throws IOException {
+
     InputStream mockInputStream = mock(InputStream.class);
+
     OutputStream mockOutputStream = mock(OutputStream.class);
 
     when(mockInputStream.read(any(byte[].class))).thenReturn(IOUtils.DEFAULT_BUFFER_SIZE).thenReturn(8192).thenReturn(0);
@@ -108,13 +111,25 @@ public class IOUtilsTests {
   @Test
   @IntegrationTest
   public void copyActualIsSuccessful() throws IOException {
+
     InputStream source = new ByteArrayInputStream("This is an actual integration test!".getBytes());
+
     OutputStream target = new ByteArrayOutputStream(source.available());
 
     IOUtils.copy(source, target);
 
     assertThat(new String(((ByteArrayOutputStream) target).toByteArray(), Charset.forName("UTF-8")),
       is(equalTo("This is an actual integration test!")));
+  }
+
+  @Test
+  public void doIoSuccessfullyReturnsTrue() {
+    assertThat(IOUtils.doSafeIo(() -> {}), is(true));
+  }
+
+  @Test
+  public void doIoThrowingIoExceptionReturnsFalse() {
+    assertThat(IOUtils.doSafeIo(() -> { throw new IOException("test"); }), is(false));
   }
 
   @Test
@@ -131,6 +146,7 @@ public class IOUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void toByteArrayIsSuccessful() throws IOException {
+
     InputStream mockInputStream = mock(InputStream.class);
 
     when(mockInputStream.available()).thenReturn(4);
@@ -163,6 +179,7 @@ public class IOUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void toByteArrayThrowsIOException() throws IOException {
+
     InputStream mockInputStream = mock(InputStream.class);
 
     when(mockInputStream.available()).thenReturn(0);
@@ -180,6 +197,7 @@ public class IOUtilsTests {
 
   @Test
   public void toByteArrayWithEmptyInputStreamReturnEmptyByteArray() throws IOException {
+
     InputStream mockInputStream = mock(InputStream.class);
 
     when(mockInputStream.available()).thenReturn(0);
@@ -193,6 +211,7 @@ public class IOUtilsTests {
 
   @Test
   public void toByteArrayWithNull() throws IOException {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The InputStream to read bytes from cannot be null");
@@ -202,6 +221,7 @@ public class IOUtilsTests {
 
   @Test
   public void constructsClassLoaderObjectInputStreamWithInputStreamAndSystemClassLoader() throws IOException {
+
     InputStream in = new ByteArrayInputStream(IOUtils.serialize("test"));
 
     ClassLoaderObjectInputStream inputStream = new ClassLoaderObjectInputStream(in, ClassLoader.getSystemClassLoader());
@@ -212,6 +232,7 @@ public class IOUtilsTests {
 
   @Test
   public void constructsClassLoaderObjectInputStreamWithInputStreamAndNullClassLoader() throws IOException {
+
     InputStream in = new ByteArrayInputStream(IOUtils.serialize("test"));
 
     ClassLoaderObjectInputStream inputStream = new ClassLoaderObjectInputStream(in, null);
@@ -222,7 +243,9 @@ public class IOUtilsTests {
 
   @Test
   public void classLoaderObjectInputStreamResolvesClass() throws ClassNotFoundException, IOException {
+
     InputStream in = new ByteArrayInputStream(IOUtils.serialize(1));
+
     ObjectStreamClass descriptor = ObjectStreamClass.lookup(Integer.class);
 
     assertThat(new ClassLoaderObjectInputStream(in, Thread.currentThread().getContextClassLoader())

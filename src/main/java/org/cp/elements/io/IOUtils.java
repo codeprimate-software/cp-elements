@@ -58,6 +58,7 @@ public abstract class IOUtils {
    */
   @NullSafe
   public static boolean close(Closeable obj) {
+
     if (obj != null) {
       try {
         obj.close();
@@ -80,11 +81,31 @@ public abstract class IOUtils {
    * @see java.io.OutputStream
    */
   public static void copy(InputStream in, OutputStream out) throws IOException {
+
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
     for (int length = in.read(buffer); length > 0; length = in.read(buffer)) {
       out.write(buffer, 0, length);
       out.flush();
+    }
+  }
+
+  /**
+   * Performs a Input/Output (I/O) operation in a safe manner, handling any {@link IOException} that may be thrown
+   * while performing the IO.
+   *
+   * @param operation I/O operation to perform.
+   * @return a boolean value indicating whether the I/O operation was successful or not.
+   * @see org.cp.elements.io.IOUtils.IoExceptionThrowingOperation
+   */
+  public static boolean doSafeIo(IoExceptionThrowingOperation operation) {
+
+    try {
+      operation.doIo();
+      return true;
+    }
+    catch (IOException ignore) {
+      return false;
     }
   }
 
@@ -105,6 +126,7 @@ public abstract class IOUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T deserialize(byte[] serializedObjectBytes) throws ClassNotFoundException, IOException {
+
     ObjectInputStream in = null;
 
     try {
@@ -139,8 +161,8 @@ public abstract class IOUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T deserialize(byte[] serializedObjectBytes, ClassLoader classLoader)
-    throws ClassNotFoundException, IOException
-  {
+      throws ClassNotFoundException, IOException {
+
     ObjectInputStream in = null;
 
     try {
@@ -164,7 +186,9 @@ public abstract class IOUtils {
    * @see java.io.Serializable
    */
   public static byte[] serialize(Object obj) throws IOException {
+
     ByteArrayOutputStream out = new ByteArrayOutputStream();
+
     ObjectOutputStream objOut = null;
 
     try {
@@ -191,6 +215,7 @@ public abstract class IOUtils {
    */
   @NullSafe
   public static byte[] toByteArray(InputStream in) throws IOException {
+
     Assert.notNull(in, "The InputStream to read bytes from cannot be null");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream(in.available());
@@ -221,6 +246,7 @@ public abstract class IOUtils {
 
     /* (non-Javadoc) */
     public ClassLoaderObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+
       super(in);
 
       this.classLoader = Optional.ofNullable(classLoader)
@@ -237,5 +263,10 @@ public abstract class IOUtils {
     protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException , IOException {
       return Class.forName(descriptor.getName(), false, getClassLoader());
     }
+  }
+
+  @FunctionalInterface
+  public interface IoExceptionThrowingOperation {
+    void doIo() throws IOException;
   }
 }
