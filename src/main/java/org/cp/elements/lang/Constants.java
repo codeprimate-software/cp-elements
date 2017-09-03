@@ -28,5 +28,6 @@ public abstract class Constants {
   public static final String NOT_IMPLEMENTED = "Not Implemented";
   public static final String OPERATION_NOT_SUPPORTED = "Operation Not Supported";
   public static final String UNKNOWN = "Unknown";
+  public static final String UNSUPPORTED_OPERATION = "Unsupported Operation";
 
 }
