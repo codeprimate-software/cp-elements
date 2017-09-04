@@ -36,6 +36,9 @@ dependencies {
 jar {
   baseName = "$rootProject.name"
   version = "$version"
+  manifest {
+    attributes('Main-Class' : 'org.cp.elements.ElementsVersion')
+  }
 }
 
 test {
