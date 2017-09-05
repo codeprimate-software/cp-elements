@@ -121,7 +121,7 @@ public class ScalableBloomFilterTests {
   @Test
   public void addsAndAcceptsRandomNumbers() {
 
-    ScalableBloomFilter<Integer> bloomFilter = new ScalableBloomFilter<>();
+    ScalableBloomFilter<Integer> bloomFilter = ScalableBloomFilter.of(2);
 
     Random random = new Random(System.currentTimeMillis());
 

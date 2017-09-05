@@ -176,7 +176,7 @@ public class SimpleBloomFilterTests {
   private void testSimpleBloomFilterWithIllegalAcceptableFalsePositiveRate(float acceptableFalsePositiveRate) {
 
     try {
-      SimpleBloomFilter.of(100000, acceptableFalsePositiveRate);
+      SimpleBloomFilter.of(1, acceptableFalsePositiveRate);
     }
     catch (IllegalArgumentException expected) {
 
