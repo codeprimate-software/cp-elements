@@ -1,0 +1,146 @@
+= Preface
+
+The state of software development today is at the intersection of quantity vs. quality.
+
+Many software organizations race to out pace their competitors in terms of capabilities rather than doing 1 thing
+really well. Instead, they attempt to be a 1 stop shop for everything.  Yet, there is no holy grail in
+software development, no 1 size fits all.
+
+Likewise, many young, inspiring software engineers lack the experience and skill set to develop highly effective
+software solutions that are simple, easy to understand, easy to maintain and that will stand the test of time.
+Much of a software engineers' early work is throw away and they must start over.
+
+Even the Java SE platform itself is riddled with many poorly conceived APIs, lacking key functionality that offers
+too little value or simply tries to be too much.
+
+The main problems with software today can be broadly summarized as...
+
+1. Overly complex (over/under designed and implemented),
+2. Unbounded scope (misguided by breadth of functionality over depth),
+3. APIs with too much surface area,
+4. Unstructured and disorganized,
+5. Too many (required) dependencies.
+
+As a result, quality suffers and the software becomes difficult to understand and use effectively.
+
+== _Complexity_
+
+Complexity is very elusive and many software engineers equate complexity to mean big.  This is not necessarily the case.
+Complexity is a factor of how much work can be accomplished with the least amount of effort.  For example, if it takes
+many method calls and lines of code to accomplish a trivial task than the software is inherently complex.
+
+As Albert Einstein stated, "_if we cannot explain a problem simply then we simply do not understand the problem
+well enough._"
+
+Therefore, one goal for reducing complexity in piece of software should be to accomplish the most amount of work
+with the least amount of effort, in the fewest number of steps and with minimal lines of code.  Additionally, maximizing
+the amount of work accomplished in a single operation should not be confused with doing everything possible. Rather, it
+simply means doing just enough to solve the problem at hand and no more.
+
+It is also important to recognize the 2 main forms of complexity: perceived complexity and implementation complexity.
+
+Perceived complexity involves what the users of our software sees.  This includes the public interfaces and types
+exposed by our libraries and systems.  Without proper, well-conceived abstractions, a library or framework will be
+difficult to understand and use properly.  As a result, the user will abuse our software and use it in unintended ways,
+leading to unexpected consequences.
+
+With implementation complexity, the library or system seems simple on the surface, but under-the-hood, the code
+is tightly coupled with very low cohesion.  The implementation may be inefficient, non-resilient to failures,
+exhibiting unpredictable behavior during concurrent access, unreliable during load, or overall just plain incorrect
+and inaccurate.
+
+It is important to understand the meaning of these concepts.
+
+Tightly coupled code means that 1 system component relies on the implementation details of another component.
+The components state may even be partially owned or depend on the state of another component, which is characterized
+by low cohesion (i.e. a component not properly encapsulating/owning its state).  This leads to unstable software
+where a failure ripples throughout the system affecting seemingly unrelated parts of the system.
+
+Therefore, self-sufficient components and good _Separation of Concerns_ (SoC) is key to any well-designed,
+software system or library.
+
+The importance of Complexity cannot be overstated since, along with data corruption, is arguable the leading cause
+of technical debt that leads to the premature death of any software library or system.
+
+== _Scope_
+
+A library must have a single focus with intent, or a user will be left to wondering what problem(s) the library
+was meant to solve.  This problem is often characterized by no single point of entry where the user is not even
+certain where to start.
+
+With unchecked scope, the main driver of the library becomes more a matter of what the library can do vs. how well
+it accomplishes its task, or whether it even ought to do a particular thing in the first place.
+
+As a general rule of thumb, when in doubt, leave it out.  It is always easier to add it later when the need is real
+than to have to support it with the hope of replacing or removing it after the fact.
+
+== API
+
+An API should be as simple and as small as possible so that a user will immediately understand how to use it
+just by looking at the API, without the assistance from documentation if s/he must.  In a sense, an API should be
+self-describing with really well-defined interfaces and high-level types that expresses its intent.
+
+== _Organization & Structure_
+
+Even complex systems can be inherently simple if organized properly.
+
+Well-organized and structured libraries and framework typically have one programming model consistently applied
+throughout the entire library or framework.  Organizing the software in a progressivley layered architecture,
+with each subsequent layer building on the previous layer is the only sustainable approach.
+
+== _Dependencies_
+
+Finally, while it usually does not pay to reinvent any wheels, you really have to ask yourself what is the cost
+of relying on another dependency if the value it provides does not significantly outweigh the cost of introducing
+another dependency
+
+There is an associated cost for using a dependency as well as not using it (e.g. logging framework).  The moment you
+rely on functionality provided by some other software, your software is only as good as its weakest link.  Using a
+particular dependency may cause conflict with the user's application having the same dependency, but with a
+different version.
+
+The lower in the software stack you go, the fewer the number of "required" dependencies there should be.
+
+== _So what is the right balance?_
+
+Strive to employ libraries and frameworks that accomplish the most amount of work with the minimal footprint,
+that do not try to be everything, that have self-describing, intuitive APIs so you can hit the ground running quickly
+and reliably, that are well organized and don't require your applications to utilize a large number of dependencies
+to achieve its function.
+
+There are 3 phases in the lifecycle of any software system that it must evolve through to withstand the test of time:
+
+1. Correctness
+2. Maintainability
+3. Sustainability
+
+First and foremost, software must be correct and provide the right answers to be truly useful.  If it doesn't,
+forget about the next two because it does not matter anyway.
+
+Software must be maintained; there are not exceptions.  Bugs happen and enhancements need to be made to simply
+the software, make it more efficient to improve on its design, and so on.  As languages and tools evolve, as we learn
+new things, new techniques must be applied to our software to keep them relevant and evolving.
+
+Overtime, requirements and SLAs change and the software must gracefully weather the changes.  Change is the only
+constant and how well a software library or system can adapt to change determines its shelf-life.  If not, it will
+become scrap.
+
+== _Elements_
+
+_Elements_ is the culmination of years of experience and wisdom acquired through the practice of developing software,
+in many different industries, using many different languages and tools, and employing different methodologies
+(e.g. Waterfall, XP, Lean, Scrum, etc), learning what works and what does not.  It has been rewritten many times
+(maybe 7 or more times).  The core principals on which _Elements_ has been developed has be refined to focus on quality.
+
+The main prinicples on which _Elements_ has be based include:
+
+1. KISS - Keep It Simple Stupid.  Enough said.
+2. DRY - Do Not Repeat Yourself.
+3. Consistency - consistency aids understanding.
+4. Test - if it does not work, it does not matter.
+5. Refactor - change being the only constant, then software, like everything, must evolve.
+
+It is truly my masterpiece, my legacy that I leave behind, that I can give back to the software development community
+to help propel this art to the next level.
+
+Thank you for choosing _Elements_.

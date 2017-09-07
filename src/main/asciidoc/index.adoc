@@ -1,0 +1,25 @@
+= Codeprimate Elements - User Guide
+John Blum
+:revnumber: {version}
+:revdate: {localdate}
+:toc:
+:!toc-placement:
+
+Copyright (C) 2011-present. Original authors.
+
+NOTE: Copies of this document may be made for your own use and for distribution to others provided that you do not
+charge any fee for such copies and further provided that each copy contains this Copyright Notice
+whether distributed electronically or print.
+
+toc::[]
+
+[[preface]]
+include::{basedocdir}/preface.adoc
+
+ifndef::leveloffset[:leveloffset: 0]
+
+:leveloffset: +1
+
+include::{basedocdir}/introduction/requirements.adoc[]
+
+:leveloffset: -1

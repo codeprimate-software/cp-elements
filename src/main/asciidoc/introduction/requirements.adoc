@@ -1,0 +1,4 @@
+[[requirements]]
+= Requirements
+
+_Elements_ only requires the *Java SE Runtime Environment (JRE) 8.0* or later.

@@ -1,0 +1,36 @@
+[[introduction]]
+= Introduction
+
+_Codeprimate Elements_ (a.k.a. `cp-elements`, or simply "_Elements_") is a Java class library and micro-framework
+for simplifying the development of software applications written in Java.
+
+_Elememts_ is a very simple,  yet highly robust and proven library of Java classes and components built on
+fundamental OO principles, design patterns and best practices to effectively solve common and re-occurring problems
+in software development. 
+
+_Elements_ packages several APIs that solve an array of problems, handle multiple application concerns and address
+different aspects of software development all in one library.
+
+Elements has 4 elementary objectives...
+
+1. Simple, robust and proven APIs built on solid OO principles, design patterns, and best practices.
+2. Functionally independent with no dependencies on 3rd-party Java class libraries.
+3. Inherently "open" and transparent development and direction where community involvement is important.
+4. With focus on quality and reliability over quantity.
+
+There are many similarities between _Elements_ and other Java class libraries, like _Apache Commons_
+or _Google's Guava_.
+
+However,   _Elements_ is a highly refined library of Java classes and components that is rooted in years of research
+and development along with  extensive experience in deployed enterprise applications. _Elements_ maintains
+a high standard on quality enforced by extensive test coverage, code metrics, peer review along with
+trusted performance in extreme enterprise application environments.
+
+  Elements is a foundational Java library, and does not introduce any additional dependencies in order to function
+and perform  properly out-of-the-box. Good https://en.wikipedia.org/wiki/Object-oriented_design[Object-Oriented Design]
+based on https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)[SOLID design principles] along with  effective
+use of https://en.wikipedia.org/wiki/Software_design_pattern[Software Design Patterns] makes _Elements_
+immediately familiar and easy to use.
+
+Finally, _Elements_ will always be open source, developed in a transparent, open and collaborative manner
+where feedback is welcomed, where building high quality and reliable software is essential.
