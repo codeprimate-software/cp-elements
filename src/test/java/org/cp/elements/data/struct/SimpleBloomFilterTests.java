@@ -33,12 +33,16 @@ import org.junit.Test;
  */
 public class SimpleBloomFilterTests {
 
+  private static final boolean LOG_ENABLED = false;
+
   private static final int NUMBER_BOUND = 100000;
   private static final int NUMBER_COUNT = 500000;
 
   private void log(String message, Object... args) {
-    System.err.printf(message, args);
-    System.err.flush();
+    if (LOG_ENABLED) {
+      System.err.printf(message, args);
+      System.err.flush();
+    }
   }
 
   @Test
