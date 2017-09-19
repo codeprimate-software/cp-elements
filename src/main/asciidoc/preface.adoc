@@ -16,15 +16,15 @@ too little value or simply tries to be too much.
 The main problems with software today can be summarized as...
 
 1. Not Correct (software that does not work, or fails in certain contexts),
-1. Complex (over or under designed and implemented),
-2. Unbounded Scope (breadth over depth of functionality),
-3. APIs with too much surface area,
-4. Unstructured and Disorganized,
-5. Too many (required) dependencies.
+2. Overly Complex (over or under designed and implemented),
+3. Unbounded Scope (breadth over depth of functionality),
+4. APIs with too much surface area,
+5. Unstructured and Disorganized,
+6. Too many (required) dependencies.
 
 As a result, quality suffers and the software becomes difficult to understand and use effectively.
 
-== _Not Correct_
+== _Incorrect_
 
 Software that does not function as designed, upholding its contract, is not useful to anyone.  If the software returns
 an incorrect result, then it is not reliable in any sense of the word.

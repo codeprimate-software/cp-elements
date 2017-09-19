@@ -14,7 +14,7 @@ whether distributed electronically or print.
 toc::[]
 
 [[preface]]
-include::{basedocdir}/preface.adoc
+include::{basedocdir}/preface.adoc[]
 
 ifndef::leveloffset[:leveloffset: 0]
 
