@@ -82,6 +82,7 @@ public class CollectionUtilsTests {
   }
 
   protected <T> void assertShuffled(Iterable<T> source, Iterable<T> target) {
+
     assertTrue("'source' must not be null and must have elements", source != null && source.iterator().hasNext());
     assertTrue("'target' must not be null and must have elements", target != null && target.iterator().hasNext());
 
@@ -104,6 +105,7 @@ public class CollectionUtilsTests {
 
   @SafeVarargs
   protected final <T> Enumeration<T> asEnumeration(T... elements) {
+
     return new Enumeration<T>() {
 
       int index = 0;
@@ -128,6 +130,7 @@ public class CollectionUtilsTests {
 
   @SafeVarargs
   protected final <T> Iterator<T> asIterator(T... elements) {
+
     return new Iterator<T>() {
 
       int index = 0;
@@ -999,6 +1002,26 @@ public class CollectionUtilsTests {
     assertThat(CollectionUtils.isNotEmpty(asCollection(0, 1, 2)), is(true));
     assertThat(CollectionUtils.isNotEmpty(Collections.singleton("null")), is(true));
     assertThat(CollectionUtils.isNotEmpty(asCollection("test", "testing", "tested")), is(true));
+  }
+
+  @Test
+  public void isSizeOneWithNullCollectionIsFalse() {
+    assertThat(CollectionUtils.isSizeOne(null), is(false));
+  }
+
+  @Test
+  public void isSizeOneWithEmptyCollectionIsFalse() {
+    assertThat(CollectionUtils.isSizeOne(Collections.emptyList()), is(false));
+  }
+
+  @Test
+  public void isSizeOneWithCollectionHavingOneElementIsTrue() {
+    assertThat(CollectionUtils.isSizeOne(Collections.singletonList(1)), is(true));
+  }
+
+  @Test
+  public void isSizeOneWithCollectionHavingTwoElementsIsFalse() {
+    assertThat(CollectionUtils.isSizeOne(Arrays.asList(1, 2)), is(false));
   }
 
   @Test

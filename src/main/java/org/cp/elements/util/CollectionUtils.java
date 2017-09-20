@@ -76,6 +76,7 @@ public abstract class CollectionUtils {
  	 * @see java.util.Collection
  	 */
  	public static <E, T extends Collection<E>> T addAll(T collection, Iterable<E> iterable) {
+
  		Assert.notNull(collection, "Collection must not be null");
 
  		for (E element : nullSafeIterable(iterable)) {
@@ -99,7 +100,9 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Enumeration<T> asEnumeration(Iterator<T> iterator) {
+
     return (iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+
       @Override
       public boolean hasMoreElements() {
         return iterator.hasNext();
@@ -155,7 +158,9 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Iterator<T> asIterator(Enumeration<T> enumeration) {
+
     return (enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
+
       @Override
       public boolean hasNext() {
         return enumeration.hasMoreElements();
@@ -180,6 +185,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> List<T> asList(Iterable<T> iterable) {
+
     if (iterable instanceof Collection) {
       return new ArrayList<>((Collection<T>) iterable);
     }
@@ -205,8 +211,11 @@ public abstract class CollectionUtils {
   @NullSafe
   @SafeVarargs
   public static <T> Set<T> asSet(T... elements) {
+
     Set<T> set = new HashSet<>(ArrayUtils.nullSafeLength(elements));
+
     Collections.addAll(set, nullSafeArray(elements));
+
     return set;
   }
 
@@ -222,6 +231,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Set<T> asSet(Iterable<T> iterable) {
+
     if (iterable instanceof Collection) {
       return new HashSet<>((Collection<T>) iterable);
     }
@@ -247,6 +257,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static boolean containsAny(Collection<?> collection, Object... elements) {
+
     for (Object element : nullSafeArray(elements)) {
       if (nullSafeCollection(collection).contains(element)) {
         return true;
@@ -288,6 +299,7 @@ public abstract class CollectionUtils {
    * @see #nullSafeIterable(Iterable)
    */
   public static <T> int count(Iterable<T> iterable, Filter<T> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     int count = 0;
@@ -341,6 +353,7 @@ public abstract class CollectionUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> Collection<T> filter(Collection<T>  collection, Filter<T> filter) {
+
     Assert.notNull(collection, "Collection cannot be null");
     Assert.notNull(filter, "Filter cannot be null");
 
@@ -366,7 +379,9 @@ public abstract class CollectionUtils {
     Assert.notNull(collection, "Collection cannot be null");
     Assert.notNull(filteringTransformer, "FilteringTransformer cannot be null");
 
-    return collection.stream().filter(filteringTransformer::accept).map(filteringTransformer::transform)
+    return collection.stream()
+      .filter(filteringTransformer::accept)
+      .map(filteringTransformer::transform)
       .collect(Collectors.toList());
   }
 
@@ -386,6 +401,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   public static <T> T find(Iterable<T> iterable, Filter<T> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     for (T element : nullSafeIterable(iterable)) {
@@ -412,6 +428,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   public static <T> List<T> findAll(Iterable<T> iterable, Filter<T> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     List<T> acceptedElements = new ArrayList<>();
@@ -450,6 +467,19 @@ public abstract class CollectionUtils {
   @NullSafe
   public static boolean isNotEmpty(Collection<?> collection) {
     return !isEmpty(collection);
+  }
+
+  /**
+   * Null-safe operation to determine whether the size of the given {@link Collection} is 1.
+   *
+   * @param collection {@link Collection} to evaluate.
+   * @return a boolean indicating whether the size of the given {@link Collection} is 1.
+   * @see #nullSafeSize(Collection)
+   * @see java.util.Collection
+   */
+  @NullSafe
+  public static boolean isSizeOne(Collection<?> collection) {
+    return (nullSafeSize(collection) == 1);
   }
 
   /**
@@ -561,7 +591,9 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> List<T> shuffle(List<T> list) {
+
     if (isNotEmpty(list)) {
+
       Random random = new Random(System.currentTimeMillis());
 
       for (int index = 0, sizeMinusOne = count(list) - 1; index < sizeMinusOne; index++) {
@@ -585,6 +617,7 @@ public abstract class CollectionUtils {
    * @see java.util.List
    */
   public static <T> List<T> subList(List<T> list, int... indices) {
+
     Assert.notNull(list, "List cannot be null");
     Assert.notNull(indices, "Indices cannot be null");
 
@@ -609,6 +642,7 @@ public abstract class CollectionUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
+
     Object[] array = (Object[]) Array.newInstance(componentType, nullSafeSize(collection));
 
     Optional.ofNullable(collection).ifPresent(localCollection -> collection.toArray(array));
@@ -641,7 +675,9 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> String toString(Iterable<T> iterable, Renderer<T> renderer) {
+
     StringBuilder buffer = new StringBuilder("[");
+
     int count = 0;
 
     for (T element : nullSafeIterable(iterable)) {
@@ -667,6 +703,7 @@ public abstract class CollectionUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> Collection<T> transform(Collection<T> collection, Transformer<T> transformer) {
+
     Assert.notNull(collection, "Collection cannot be null");
     Assert.notNull(transformer, "Transformer cannot be null");
 
@@ -684,9 +721,11 @@ public abstract class CollectionUtils {
    * @see java.util.Iterator
    */
   public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
+
     Assert.notNull(iterator, "Iterator cannot be null");
 
     return new Iterator<T>() {
+
       @Override
       public boolean hasNext() {
         return iterator.hasNext();
