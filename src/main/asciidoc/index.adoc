@@ -21,5 +21,6 @@ ifndef::leveloffset[:leveloffset: 0]
 :leveloffset: +1
 
 include::{basedocdir}/introduction/requirements.adoc[]
+include::{basedocdir}/introduction/introduction.adoc[]
 
 :leveloffset: -1
