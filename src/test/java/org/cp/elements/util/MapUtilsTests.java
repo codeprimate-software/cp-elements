@@ -57,6 +57,7 @@ public class MapUtilsTests {
 
   @Test
   public void countMapReturnsSize() {
+
     Map<Object, Object> map = new HashMap<>();
 
     map.put("one", 1);
@@ -87,6 +88,7 @@ public class MapUtilsTests {
 
   @Test
   public void countMapWithFilter() {
+
     Map<String, Integer> map = new HashMap<>();
 
     map.put("one", 1);
@@ -105,6 +107,7 @@ public class MapUtilsTests {
 
   @Test
   public void countMapWithFilterAcceptsAll() {
+
     Map<String, Integer> map = new HashMap<>();
 
     map.put("one", 1);
@@ -115,6 +118,7 @@ public class MapUtilsTests {
 
   @Test
   public void countMapWithFilterRejectsAll() {
+
     Map<String, Integer> map = new HashMap<>();
 
     map.put("one", 1);
@@ -135,6 +139,7 @@ public class MapUtilsTests {
 
   @Test
   public void countNonNullMapWithNullFilter() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Filter cannot be null");
@@ -556,6 +561,32 @@ public class MapUtilsTests {
     assertThat(MapUtils.isNotEmpty(map), is(true));
     assertThat(MapUtils.isNotEmpty(Collections.singletonMap("one", 1)), is(true));
     assertThat(MapUtils.isNotEmpty(Collections.singletonMap(null, null)), is(true));
+  }
+
+  @Test
+  public void isSizeOneWithNullMapIsFalse() {
+    assertThat(MapUtils.isSizeOne(null), is(false));
+  }
+
+  @Test
+  public void isSizeOneWithEmptyMapIsFalse() {
+    assertThat(MapUtils.isSizeOne(Collections.emptyMap()), is(false));
+  }
+
+  @Test
+  public void isSizeOneWithMapHavingOneEntryIsTrue() {
+    assertThat(MapUtils.isSizeOne(Collections.singletonMap("one", 1)), is(true));
+  }
+
+  @Test
+  public void isSizeOneWithMapHavingTwoEntriesIsFalse() {
+
+    Map<Object, Object> map = new HashMap<>();
+
+    map.put("one", 1);
+    map.put("two", 2);
+
+    assertThat(MapUtils.isSizeOne(map), is(false));
   }
 
   @Test

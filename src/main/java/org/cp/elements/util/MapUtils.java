@@ -75,6 +75,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   public static <K, V> int count(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     int count = 0;
@@ -103,6 +104,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
+
     Assert.notNull(map, "Map cannot be null");
     Assert.notNull(filter, "Filter cannot be null");
 
@@ -161,11 +163,13 @@ public abstract class MapUtils {
    */
   @NullSafe
   public static Map<String, String> fromAssociativeArray(String[] associativeArray) {
+
     Map<String, String> map = new HashMap<>(nullSafeLength(associativeArray));
 
     int index = 0;
 
     for (String element : nullSafeArray(associativeArray, String.class)) {
+
       Assert.hasText(element, "Entry [%s] at index [%d] must be specified", element, index);
 
       String[] entry = element.split("=");
@@ -210,6 +214,19 @@ public abstract class MapUtils {
   }
 
   /**
+   * Null-safe operation to determine whether the size of the given {@link Map} is 1.
+   *
+   * @param map {@link Map} to evaluate.
+   * @return a boolean value indicating whether the size of the given {@link Map} is 1.
+   * @see #nullSafeMap(Map)
+   * @see java.util.Map
+   */
+  @NullSafe
+  public static boolean isSizeOne(Map map) {
+    return (size(map) == 1);
+  }
+
+  /**
    * Returns the given {@link Map} if not null or an empty {@link Map}.
    *
    * @param <K> Class type of the key.
@@ -251,6 +268,7 @@ public abstract class MapUtils {
    */
   @NullSafe
   public static String[] toAssociativeArray(Map<?, ?> map) {
+
     List<String> list = new ArrayList<>(size(map));
 
     for (Map.Entry<?, ?> entry : nullSafeMap(map).entrySet()) {
@@ -270,7 +288,9 @@ public abstract class MapUtils {
    */
   @NullSafe
   public static String toString(Map<?, ?> map) {
+
     StringBuilder builder = new StringBuilder("[");
+
     int count = 0;
 
     map = new TreeMap<Object, Object>(nullSafeMap(map));
@@ -301,6 +321,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   public static <K, V> Map<K, V> transform(Map<K, V> map, Transformer<V> transformer) {
+
     Assert.notNull(map, "Map cannot be null");
     Assert.notNull(transformer, "Transformer cannot be null");
 
