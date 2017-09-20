@@ -76,6 +76,7 @@ public class ArrayUtilsTests {
 
   @SafeVarargs
   protected final <T> void assertElements(T[] array, T... elements) {
+
     assertThat(array, is(notNullValue()));
     assertThat(array.length, is(equalTo(elements.length)));
 
@@ -88,6 +89,7 @@ public class ArrayUtilsTests {
 
   @SuppressWarnings("all")
   protected <T> void assertShuffled(T[] source, T[] target) {
+
     assertTrue("'source' array cannot be null or empty", source != null && source.length != 0);
     assertTrue("'target' array cannot be null or empty", target != null && target.length != 0);
     assertThat("'source' and 'target' array lengths must match", source.length, is(equalTo(target.length)));
@@ -102,6 +104,7 @@ public class ArrayUtilsTests {
   }
 
   protected <T extends Comparable<T>> void assertSorted(T[] array) {
+
     for (int index = 1; index < array.length; index++) {
       assertThat(array[index].compareTo(array[index - 1]), is(greaterThanOrEqualTo(0)));
     }
@@ -109,8 +112,11 @@ public class ArrayUtilsTests {
 
   @SuppressWarnings("unchecked")
   protected <T> T[] copy(T[] array) {
+
     T[] arrayCopy = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
+
     System.arraycopy(array, 0, arrayCopy, 0, array.length);
+
     return arrayCopy;
   }
 
@@ -121,6 +127,7 @@ public class ArrayUtilsTests {
 
   @SafeVarargs
   protected final <T> Enumeration<T> toEnumeration(T... elements) {
+
     return new Enumeration<T>() {
 
       int index = 0;
@@ -145,6 +152,7 @@ public class ArrayUtilsTests {
 
   @SafeVarargs
   protected final <T> Iterator<T> toIterator(T... elements) {
+
     return new Iterator<T>() {
 
       int index = 0;
@@ -988,6 +996,26 @@ public class ArrayUtilsTests {
     assertTrue(ArrayUtils.isNotEmpty(new Object[] { null }));
     assertTrue(ArrayUtils.isNotEmpty(new Object[] { "test" }));
     assertTrue(ArrayUtils.isNotEmpty(new Object[] { "test", "testing", "tested" }));
+  }
+
+  @Test
+  public void isSizeOneWithNullArrayIsFalse() {
+    assertThat(ArrayUtils.isSizeOne((Object[]) null), is(false));
+  }
+
+  @Test
+  public void isSizeOneWithEmptyArrayIsFalse() {
+    assertThat(ArrayUtils.isSizeOne(), is(false));
+  }
+
+  @Test
+  public void isSizeOneWithArrayHavingOneElementIsTrue() {
+    assertThat(ArrayUtils.isSizeOne(1), is(true));
+  }
+
+  @Test
+  public void isSizeOneWithArrayHavingTwoElementsIsFalse() {
+    assertThat(ArrayUtils.isSizeOne(1, 2), is(false));
   }
 
   @Test(expected = UnsupportedOperationException.class)

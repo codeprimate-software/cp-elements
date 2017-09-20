@@ -116,6 +116,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] asArray(Iterable<T> iterable, Class<T> componentType) {
+
     List<T> arrayList = new ArrayList<>();
 
     for (T element : CollectionUtils.nullSafeIterable(iterable)) {
@@ -153,6 +154,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SafeVarargs
   public static <T> Enumeration<T> asEnumeration(T... array) {
+
     return (array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
       private int index = 0;
@@ -198,6 +200,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SafeVarargs
   public static <T> Iterator<T> asIterator(T... array) {
+
     return (array == null ? Collections.emptyIterator() : new Iterator<T>() {
 
       private int index = 0;
@@ -239,6 +242,7 @@ public abstract class ArrayUtils {
    * @see org.cp.elements.lang.Filter
    */
   public static <T> int count(T[] array, Filter<T> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     int count = 0;
@@ -289,6 +293,7 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] filter(T[] array, Filter<T> filter) {
+
     Assert.notNull(array, "Array cannot be null");
     Assert.notNull(filter, "Filter cannot be null");
 
@@ -333,6 +338,7 @@ public abstract class ArrayUtils {
    * @see #findAll(Object[], Filter)
    */
   public static <T> T find(T[] array, Filter<T> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     for (T element : nullSafeArray(array)) {
@@ -358,6 +364,7 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> List<T> findAll(T[] array, Filter<T> filter) {
+
     Assert.notNull(filter, "Filter cannot be null");
 
     List<T> arrayList = new ArrayList<>();
@@ -410,6 +417,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static <T> int indexOf(T[] array, T element) {
+
     for (int index = 0; index < nullSafeLength(array); index++) {
       if (equalsIgnoreNull(array[index], element)) {
         return index;
@@ -434,6 +442,7 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] insert(T element, T[] array, int index) {
+
     Assert.notNull(array, "Array cannot be null");
 
     assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
@@ -484,6 +493,17 @@ public abstract class ArrayUtils {
   @NullSafe
   public static boolean isNotEmpty(Object[] array) {
     return !isEmpty(array);
+  }
+
+  /**
+   * Null-safe operation to determine whether the given array has a length of 1.
+   *
+   * @param array array to evaluate.
+   * @return a boolean value indicating whether the length of the array is 1.
+   */
+  @NullSafe
+  public static boolean isSizeOne(Object... array) {
+    return (array != null && array.length == 1);
   }
 
   /**
@@ -563,6 +583,7 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] remove(T[] array, int index) {
+
     Assert.notNull(array, "Array cannot be null");
 
     assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
@@ -595,7 +616,9 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static <T> T[] shuffle(T[] array) {
+
     if (isNotEmpty(array)) {
+
       Random random = new Random(System.currentTimeMillis());
 
       for (int index = 0, lengthMinusOne = array.length - 1; index < lengthMinusOne; index++) {
@@ -646,6 +669,7 @@ public abstract class ArrayUtils {
    */
   @SuppressWarnings("unchecked")
   public static <T> T[] subArray(T[] array, int... indices) {
+
     List<T> subArrayList = new ArrayList<>(indices.length);
 
     for (int index : indices) {
@@ -667,9 +691,12 @@ public abstract class ArrayUtils {
    * @throws NullPointerException if the array is null.
    */
   public static <T> T[] swap(T[] array, int indexOne, int indexTwo) {
+
     T elementAtIndexOne = array[indexOne];
+
     array[indexOne] = array[indexTwo];
     array[indexTwo] = elementAtIndexOne;
+
     return array;
   }
 
@@ -681,7 +708,9 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static String[] toStringArray(Object... array) {
+
     String[] stringArray = new String[nullSafeLength(array)];
+
     int index = 0;
 
     for (Object element : nullSafeArray(array)) {
@@ -702,6 +731,7 @@ public abstract class ArrayUtils {
    * @see org.cp.elements.lang.Transformer
    */
   public static <T> T[] transform(T[] array, Transformer<T> transformer) {
+
     Assert.notNull(array, "Array cannot be null");
     Assert.notNull(transformer, "Transformer cannot be null");
 
