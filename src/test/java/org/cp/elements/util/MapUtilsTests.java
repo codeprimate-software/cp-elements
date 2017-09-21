@@ -590,6 +590,37 @@ public class MapUtilsTests {
   }
 
   @Test
+  public void newMapEntry() {
+
+    Map.Entry<Object, Object> mapEntry = MapUtils.newMapEntry("TestKey", "TestValue");
+
+    assertThat(mapEntry, is(notNullValue()));
+    assertThat(mapEntry.getKey(), is(equalTo("TestKey")));
+    assertThat(mapEntry.getValue(), is(equalTo("TestValue")));
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void newMapEntryIsImmutable() {
+
+    Map.Entry<Object, Object> mapEntry = MapUtils.newMapEntry("aKey", "aValue");
+
+    assertThat(mapEntry, is(notNullValue()));
+    assertThat(mapEntry.getKey(), is(equalTo("aKey")));
+    assertThat(mapEntry.getValue(), is(equalTo("aValue")));
+
+    try {
+      mapEntry.setValue("junk");
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected.getMessage(), is(equalTo(Constants.OPERATION_NOT_SUPPORTED)));
+      assertThat(expected.getCause(), is(nullValue()));
+
+      throw expected;
+    }
+  }
+
+  @Test
   public void nullSafeMapWithMap() {
     Map<Object, Object> map = Collections.singletonMap("one", 1);
 

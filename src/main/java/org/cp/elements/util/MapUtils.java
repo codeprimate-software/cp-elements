@@ -28,6 +28,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.StringUtils;
@@ -224,6 +225,37 @@ public abstract class MapUtils {
   @NullSafe
   public static boolean isSizeOne(Map map) {
     return (size(map) == 1);
+  }
+
+  /**
+   * Constructs a new instance of {@link Map.Entry} initialized with the given key and value.
+   *
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
+   * @param key key of the new {@link Map.Entry}.
+   * @param value value of the new {@link Map.Entry}.
+   * @return a new {@link Map.Entry} initialized with the given key and value.
+   * @see java.util.Map.Entry
+   */
+  public static <K, V> Map.Entry<K, V> newMapEntry(K key, V value) {
+
+    return new Map.Entry<K, V>() {
+
+      @Override
+      public K getKey() {
+        return key;
+      }
+
+      @Override
+      public V getValue() {
+        return value;
+      }
+
+      @Override
+      public V setValue(V value) {
+        throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
+      }
+    };
   }
 
   /**
