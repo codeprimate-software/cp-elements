@@ -18,9 +18,13 @@ package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.data.struct.KeyValue.newKeyValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.Map;
 import java.util.Optional;
 
+import org.cp.elements.lang.Constants;
 import org.junit.Test;
 
 /**
@@ -35,6 +39,7 @@ public class KeyValueTests {
 
   @Test
   public void newKeyValueWithKey() {
+
     KeyValue<Object, Object> keyValue = newKeyValue("testKey");
 
     assertThat(keyValue).isNotNull();
@@ -45,6 +50,7 @@ public class KeyValueTests {
 
   @Test
   public void neKeyValueWithKeyAndValue() {
+
     KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
@@ -54,7 +60,39 @@ public class KeyValueTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void fromMapEntry() {
+
+    Map.Entry<Object, Object> mockMapEntry = mock(Map.Entry.class);
+
+    when(mockMapEntry.getKey()).thenReturn("TestKey");
+    when(mockMapEntry.getValue()).thenReturn("TestValue");
+
+    KeyValue<Object, Object> keyValue = KeyValue.from(mockMapEntry);
+
+    assertThat(keyValue).isNotNull();
+    assertThat(keyValue.getKey()).isEqualTo("TestKey");
+    assertThat(keyValue.getValue().orElse(null)).isEqualTo("TestValue");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void fromNullMapEntry() {
+
+    try {
+      KeyValue.from(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Map.Entry is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
   public void constructKeyValueIsSuccessful() {
+
     KeyValue<Object, Object> keyValue = new KeyValue<>("testKey", "testValue");
 
     assertThat(keyValue.getKey()).isEqualTo("testKey");
@@ -63,6 +101,7 @@ public class KeyValueTests {
 
   @Test
   public void constructKeyValueWithKeyAndNoValueIsSuccessful() {
+
     KeyValue<Object, Object> keyValue = new KeyValue<>("testKey");
 
     assertThat(keyValue).isNotNull();
@@ -73,6 +112,7 @@ public class KeyValueTests {
 
   @Test
   public void constructKeyValueWithKeyAndNullValueIsSuccessful() {
+
     KeyValue<Object, Object> keyValue = new KeyValue<>("testKey", null);
 
     assertThat(keyValue).isNotNull();
@@ -83,11 +123,13 @@ public class KeyValueTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructKeyValueWithNullKeyThrowsIllegalArgumentException() {
+
     try {
       new KeyValue<>(null);
     }
     catch (IllegalArgumentException expected) {
-      assertThat(expected).hasMessage("Key must not be null");
+
+      assertThat(expected).hasMessage("Key is required");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -117,7 +159,47 @@ public class KeyValueTests {
   }
 
   @Test
+  public void asMapEntry() {
+
+    KeyValue<Object, Object> keyValue = KeyValue.newKeyValue("TestKey", "TestValue");
+
+    assertThat(keyValue).isNotNull();
+
+    Map.Entry<Object, Object> mapEntry = keyValue.asMapEntry();
+
+    assertThat(mapEntry).isNotNull();
+    assertThat(mapEntry.getKey()).isEqualTo("TestKey");
+    assertThat(mapEntry.getValue()).isEqualTo("TestValue");
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void asImmutableMapEntry() {
+
+    Map.Entry<Object, Object> mapEntry = KeyValue.<Object, Object>newKeyValue("TestKey", "TestValue").asMapEntry();
+
+    assertThat(mapEntry).isNotNull();
+    assertThat(mapEntry.getKey()).isEqualTo("TestKey");
+    assertThat(mapEntry.getValue()).isEqualTo("TestValue");
+
+    try {
+      mapEntry.setValue("MockValue");
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasMessage(Constants.OPERATION_NOT_SUPPORTED);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(mapEntry.getKey()).isEqualTo("TestKey");
+      assertThat(mapEntry.getValue()).isEqualTo("TestValue");
+    }
+  }
+
+  @Test
   public void keyValueEqualsItself() {
+
     KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
@@ -126,6 +208,7 @@ public class KeyValueTests {
 
   @Test
   public void keyValueWithNullValueEqualsItself() {
+
     KeyValue<Object, Object> keyValue = newKeyValue("testKey", null);
 
     assertThat(keyValue).isNotNull();
@@ -134,6 +217,7 @@ public class KeyValueTests {
 
   @Test
   public void keyValuesAreEqual() {
+
     KeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValue");
     KeyValue<Object, Object> keyValueTwo = newKeyValue("testKey", "testValue");
 
@@ -145,6 +229,7 @@ public class KeyValueTests {
 
   @Test
   public void keyValuesAreNotEqual() {
+
     KeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValueOne");
     KeyValue<Object, Object> keyValueTwo = newKeyValue("testKey", "testValueTwo");
 
@@ -156,6 +241,7 @@ public class KeyValueTests {
 
   @Test
   public void keyValueIsNotEqualToTestKeyValue() {
+
     KeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValue");
     KeyValue<Object, Object> keyValueTwo = new TestKeyValue<>("testKey", "testValue");
 
@@ -169,6 +255,7 @@ public class KeyValueTests {
 
   @Test
   public void hashCodeIsSuccessful() {
+
     KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
@@ -178,6 +265,7 @@ public class KeyValueTests {
 
   @Test
   public void toStringIsSuccessful() {
+
     KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
