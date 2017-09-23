@@ -101,8 +101,8 @@ public class MapUtilsTests {
     map.put("eight", 8);
     map.put("nine", 9);
 
-    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isEven(entry.getValue())), is(equalTo(4)));
-    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isOdd(entry.getValue())), is(equalTo(5)));
+    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isEven(entry.getValue())), is(equalTo(4L)));
+    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isOdd(entry.getValue())), is(equalTo(5L)));
   }
 
   @Test
@@ -113,7 +113,7 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.count(map, (entry) -> true), is(equalTo(map.size())));
+    assertThat(MapUtils.count(map, (entry) -> true), is(equalTo((long) map.size())));
   }
 
   @Test
@@ -124,17 +124,17 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.count(map, (entry) -> false), is(equalTo(0)));
+    assertThat(MapUtils.count(map, (entry) -> false), is(equalTo(0L)));
   }
 
   @Test
   public void countEmptyMapWithFilter() {
-    assertThat(MapUtils.count(Collections.emptyMap(), (entry) -> true), is(equalTo(0)));
+    assertThat(MapUtils.count(Collections.emptyMap(), (entry) -> true), is(equalTo(0L)));
   }
 
   @Test
   public void countNullMapWithFilter() {
-    assertThat(MapUtils.count(null, (entry) -> true), is(equalTo(0)));
+    assertThat(MapUtils.count(null, (entry) -> true), is(equalTo(0L)));
   }
 
   @Test
@@ -142,7 +142,7 @@ public class MapUtilsTests {
 
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Filter cannot be null");
+    exception.expectMessage("Filter is required");
 
     MapUtils.count(Collections.emptyMap(), null);
   }
@@ -223,7 +223,7 @@ public class MapUtilsTests {
   public void filterWithNullFilter() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Filter cannot be null");
+    exception.expectMessage("Filter is required");
 
     MapUtils.filter(Collections.emptyMap(), null);
   }
@@ -232,7 +232,7 @@ public class MapUtilsTests {
   public void filterWithNullMap() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map cannot be null");
+    exception.expectMessage("Map is required");
 
     MapUtils.filter(null, (entry) -> true);
   }
@@ -376,7 +376,7 @@ public class MapUtilsTests {
   public void filterAndTransformWithNullFilter() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("FilteringTransformer cannot be null");
+    exception.expectMessage("FilteringTransformer is required");
 
     MapUtils.filterAndTransform(Collections.emptyMap(), null);
   }
@@ -386,7 +386,7 @@ public class MapUtilsTests {
   public void filterAndTransformWithNullMap() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map cannot be null");
+    exception.expectMessage("Map is required");
 
     MapUtils.filterAndTransform(null, mock(FilteringTransformer.class));
   }
@@ -457,7 +457,7 @@ public class MapUtilsTests {
   public void findAllWithNullFilter() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Filter cannot be null");
+    exception.expectMessage("Filter is required");
 
     MapUtils.findAll(Collections.emptyMap(), null);
   }
@@ -466,7 +466,7 @@ public class MapUtilsTests {
   public void findAllWithNullMap() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map cannot be null");
+    exception.expectMessage("Map is required");
 
     MapUtils.findAll(null, (entry) -> true);
   }
@@ -791,7 +791,7 @@ public class MapUtilsTests {
   public void transformWithNullMap() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map cannot be null");
+    exception.expectMessage("Map is required");
 
     MapUtils.transform(null, (value) -> null);
   }
@@ -800,7 +800,7 @@ public class MapUtilsTests {
   public void transformWithNullTransformer() {
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Transformer cannot be null");
+    exception.expectMessage("Transformer is required");
 
     MapUtils.transform(Collections.emptyMap(), null);
   }

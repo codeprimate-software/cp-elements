@@ -75,19 +75,11 @@ public abstract class MapUtils {
    * @see org.cp.elements.lang.Filter
    * @see java.util.Map
    */
-  public static <K, V> int count(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
+  public static <K, V> long count(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
 
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(filter, "Filter is required");
 
-    int count = 0;
-
-    for (Map.Entry<K, V> entry : nullSafeMap(map).entrySet()) {
-      if (filter.accept(entry)) {
-        count++;
-      }
-    }
-
-    return count;
+    return nullSafeMap(map).entrySet().stream().filter(filter::accept).count();
   }
 
   /**
@@ -106,11 +98,11 @@ public abstract class MapUtils {
    */
   public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
 
-    Assert.notNull(map, "Map cannot be null");
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(map, "Map is required");
+    Assert.notNull(filter, "Filter is required");
 
-    return map.entrySet().stream().filter(filter::accept).collect(Collectors.toMap(
-      Map.Entry::<K>getKey, Map.Entry::<V>getValue));
+    return map.entrySet().stream().filter(filter::accept)
+      .collect(Collectors.toMap(Map.Entry::<K>getKey, Map.Entry::<V>getValue));
   }
 
   /**
@@ -130,11 +122,11 @@ public abstract class MapUtils {
   public static <K, V> Map<K, V> filterAndTransform(Map<K, V> map,
       FilteringTransformer<Map.Entry<K, V>> filteringTransformer) {
 
-    Assert.notNull(map, "Map cannot be null");
-    Assert.notNull(filteringTransformer, "FilteringTransformer cannot be null");
+    Assert.notNull(map, "Map is required");
+    Assert.notNull(filteringTransformer, "FilteringTransformer is required");
 
-    return map.entrySet().stream().filter(filteringTransformer::accept).map(filteringTransformer::transform).collect(
-      Collectors.toMap(Map.Entry::<K>getKey, Map.Entry::<V>getValue));
+    return map.entrySet().stream().filter(filteringTransformer::accept).map(filteringTransformer::transform)
+      .collect(Collectors.toMap(Map.Entry::<K>getKey, Map.Entry::<V>getValue));
   }
 
   /**
@@ -223,7 +215,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static boolean isSizeOne(Map map) {
+  public static boolean isSizeOne(Map<?, ?> map) {
     return (size(map) == 1);
   }
 
@@ -354,8 +346,8 @@ public abstract class MapUtils {
    */
   public static <K, V> Map<K, V> transform(Map<K, V> map, Transformer<V> transformer) {
 
-    Assert.notNull(map, "Map cannot be null");
-    Assert.notNull(transformer, "Transformer cannot be null");
+    Assert.notNull(map, "Map is required");
+    Assert.notNull(transformer, "Transformer is required");
 
     return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::<K>getKey,
       (entry) -> transformer.transform(entry.getValue())));
