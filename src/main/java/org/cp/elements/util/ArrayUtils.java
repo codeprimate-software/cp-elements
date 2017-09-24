@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static java.util.Arrays.stream;
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
 import static org.cp.elements.lang.ObjectUtils.equalsIgnoreNull;
@@ -30,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
@@ -241,19 +243,11 @@ public abstract class ArrayUtils {
    * @throws IllegalArgumentException if {@link Filter} is null.
    * @see org.cp.elements.lang.Filter
    */
-  public static <T> int count(T[] array, Filter<T> filter) {
+  public static <T> long count(T[] array, Filter<T> filter) {
 
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(filter, "Filter is required");
 
-    int count = 0;
-
-    for (T element : nullSafeArray(array)) {
-      if (filter.accept(element)) {
-        count++;
-      }
-    }
-
-    return count;
+    return stream(nullSafeArray(array)).filter(filter::accept).count();
   }
 
   /**
@@ -294,16 +288,10 @@ public abstract class ArrayUtils {
   @SuppressWarnings("unchecked")
   public static <T> T[] filter(T[] array, Filter<T> filter) {
 
-    Assert.notNull(array, "Array cannot be null");
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(array, "Array is required");
+    Assert.notNull(filter, "Filter is required");
 
-    List<T> arrayList = new ArrayList<>();
-
-    for (T element : array) {
-      if (filter.accept(element)) {
-        arrayList.add(element);
-      }
-    }
+    List<T> arrayList = stream(array).filter(filter::accept).collect(Collectors.toList());
 
     return arrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size()));
   }
@@ -327,6 +315,26 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Searches the array returning all elements accepted by the {@link Filter}.
+   *
+   * @param <T> Class type of the elements in the array.
+   * @param array array to search.
+   * @param filter {@link Filter} used to find all elements in the array accepted by the {@link Filter}.
+   * @return a {@link List} containing all the elements from the array accepted by the {@link Filter}
+   * or an empty {@link List} if no elements were found.
+   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @see org.cp.elements.lang.Filter
+   * @see #findOne(Object[], Filter)
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> List<T> findAll(T[] array, Filter<T> filter) {
+
+    Assert.notNull(filter, "Filter is required");
+
+    return stream(nullSafeArray(array)).filter(filter::accept).collect(Collectors.toList());
+  }
+
+  /**
    * Searches the array for the first element accepted by the {@link Filter}.
    *
    * @param <T> Class type of the elements in the array.
@@ -337,53 +345,49 @@ public abstract class ArrayUtils {
    * @see org.cp.elements.lang.Filter
    * @see #findAll(Object[], Filter)
    */
-  public static <T> T find(T[] array, Filter<T> filter) {
+  public static <T> T findOne(T[] array, Filter<T> filter) {
 
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(filter, "Filter is required");
 
-    for (T element : nullSafeArray(array)) {
-      if (filter.accept(element)) {
-        return element;
-      }
-    }
-
-    return null;
+    return stream(nullSafeArray(array)).filter(filter::accept).findFirst().orElse(null);
   }
 
   /**
-   * Searches the array returning all elements accepted by the {@link Filter}.
+   * Returns the element at the given index in the {@code array}.
    *
-   * @param <T> Class type of the elements in the array.
-   * @param array array to search.
-   * @param filter {@link Filter} used to find all elements in the array accepted by the {@link Filter}.
-   * @return a {@link List} containing all the elements from the array accepted by the {@link Filter}
-   * or an empty {@link List} if no elements were found.
-   * @throws IllegalArgumentException if {@link Filter} is null.
-   * @see org.cp.elements.lang.Filter
-   * @see #find(Object[], Filter)
+   * @param <T> {@link Class} type of elements in the array.
+   * @param array array from which to extract the given element at index.
+   * @param index integer indicating the index of the element in the array to return.
+   * @return the element at the given index in the array.
+   * @see #getElementAt(Object[], int, Object)
    */
-  @SuppressWarnings("unchecked")
-  public static <T> List<T> findAll(T[] array, Filter<T> filter) {
-
-    Assert.notNull(filter, "Filter cannot be null");
-
-    List<T> arrayList = new ArrayList<>();
-
-    for (T element : nullSafeArray(array)) {
-      if (filter.accept(element)) {
-        arrayList.add(element);
-      }
-    }
-
-    return arrayList;
+  public static <T> T getElementAt(T[] array, int index) {
+    return getElementAt(array, index, null);
   }
 
   /**
-   * Returns the first element (at index 0) from the {@code array}.
+   * Returns the element at the given index in the {@code array}.
    *
-   * @param <T> {@link Class} type of the elements in the array.
+   * @param <T> {@link Class} type of elements in the array.
+   * @param array array from which to extract the given element at index.
+   * @param index integer indicating the index of the element in the array to return.
+   * @param defaultValue default value to return if the array is {@literal null}, empty
+   * or does not have an element at the given index.
+   * @return the element at the given index in the array, or returns the default value
+   * if the array is {@literal null}, empty or does not contain an element at the given index.
+   * @see #getElementAt(Object[], int, Object)
+   */
+  public static <T> T getElementAt(T[] array, int index, T defaultValue) {
+    return nullSafeLength(array) > index ? array[index] : defaultValue;
+  }
+
+  /**
+   * Returns the first element (at index 0) in the {@code array}.
+   *
+   * @param <T> {@link Class} type of elements in the array.
    * @param array array from which to extract the first element.
-   * @return the first element in the array or {@literal null} if {@code array} is {@literal null} or empty.
+   * @return the first element in the array or {@literal null}
+   * if the {@code array} is {@literal null} or empty.
    * @see #getFirst(Object[], Object)
    */
   @NullSafe
@@ -393,17 +397,45 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Returns the first element (at index 0) from the {@code array}.
+   * Returns the first element (at index 0) in the {@code array}.
    *
-   * @param <T> {@link Class} type of the elements in the array.
+   * @param <T> {@link Class} type of elements in the array.
    * @param array array from which to extract the first element.
    * @param defaultValue default value to return if the given array is {@literal null} or empty.
-   * @return the first element in the array or return the {@code defaultValue }
-   * if {@code array} is {@literal null} or empty.
-   * @see #isNotEmpty(Object[])
+   * @return the first element in the array or return the {@code defaultValue} if the {@code array}
+   * is {@literal null} or empty.
+   * @see #getElementAt(Object[], int, Object)
    */
   public static <T> T getFirst(T[] array, T defaultValue) {
-    return (isNotEmpty(array) ? array[0] : defaultValue);
+    return getElementAt(array, 0, defaultValue);
+  }
+
+  /**
+   * Returns the last element (at index array.length - 1) in the {@code array}.
+   *
+   * @param <T> {@link Class} type of elements in the array.
+   * @param array array from which to extract the last element.
+   * @return the last element in the array or {@literal null} if the {@code array} is {@literal null} or empty.
+   * @see #getLast(Object[], Object)
+   */
+  @NullSafe
+  @SafeVarargs
+  public static <T> T getLast(T... array) {
+    return getLast(array, null);
+  }
+
+  /**
+   * Returns the last element (at index 0) in the {@code array}.
+   *
+   * @param <T> {@link Class} type of elements in the array.
+   * @param array array from which to extract the last element.
+   * @param defaultValue default value to return if the given array is {@literal null} or empty.
+   * @return the last element in the array or return the {@code defaultValue} if the {@code array}
+   * is {@literal null} or empty.
+   * @see #getElementAt(Object[], int, Object)
+   */
+  public static <T> T getLast(T[] array, T defaultValue) {
+    return getElementAt(array, Math.max(0, nullSafeLength(array) - 1), defaultValue);
   }
 
   /**
@@ -418,7 +450,7 @@ public abstract class ArrayUtils {
   @NullSafe
   public static <T> int indexOf(T[] array, T element) {
 
-    for (int index = 0; index < nullSafeLength(array); index++) {
+    for (int index = 0, length = nullSafeLength(array); index < length; index++) {
       if (equalsIgnoreNull(array[index], element)) {
         return index;
       }
@@ -443,7 +475,7 @@ public abstract class ArrayUtils {
   @SuppressWarnings("unchecked")
   public static <T> T[] insert(T element, T[] array, int index) {
 
-    Assert.notNull(array, "Array cannot be null");
+    Assert.notNull(array, "Array is required");
 
     assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
       String.format("[%1$d] is not a valid index [0, %2$d] in the array", index, array.length)))
@@ -584,7 +616,7 @@ public abstract class ArrayUtils {
   @SuppressWarnings("unchecked")
   public static <T> T[] remove(T[] array, int index) {
 
-    Assert.notNull(array, "Array cannot be null");
+    Assert.notNull(array, "Array is required");
 
     assertThat(index).throwing(new ArrayIndexOutOfBoundsException(
       String.format("[%1$d] is not a valid index [0, %2$d] in the array", index, array.length)))
@@ -732,8 +764,8 @@ public abstract class ArrayUtils {
    */
   public static <T> T[] transform(T[] array, Transformer<T> transformer) {
 
-    Assert.notNull(array, "Array cannot be null");
-    Assert.notNull(transformer, "Transformer cannot be null");
+    Assert.notNull(array, "Array is required");
+    Assert.notNull(transformer, "Transformer is required");
 
     for (int index = 0; index < array.length; index++) {
       array[index] = transformer.transform(array[index]);
