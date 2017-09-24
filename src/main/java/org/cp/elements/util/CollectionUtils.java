@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static java.util.Arrays.stream;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Array;
@@ -30,6 +31,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
@@ -77,7 +79,7 @@ public abstract class CollectionUtils {
  	 */
  	public static <E, T extends Collection<E>> T addAll(T collection, Iterable<E> iterable) {
 
- 		Assert.notNull(collection, "Collection must not be null");
+ 		Assert.notNull(collection, "Collection is required");
 
  		for (E element : nullSafeIterable(iterable)) {
  			collection.add(element);
@@ -185,19 +187,8 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> List<T> asList(Iterable<T> iterable) {
-
-    if (iterable instanceof Collection) {
-      return new ArrayList<>((Collection<T>) iterable);
-    }
-    else {
-      List<T> list = new ArrayList<>();
-
-      for (T element : nullSafeIterable(iterable)) {
-        list.add(element);
-      }
-
-      return list;
-    }
+    return (iterable instanceof Collection ?  new ArrayList<>((Collection<T>) iterable)
+      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toList()));
   }
 
   /**
@@ -211,12 +202,7 @@ public abstract class CollectionUtils {
   @NullSafe
   @SafeVarargs
   public static <T> Set<T> asSet(T... elements) {
-
-    Set<T> set = new HashSet<>(ArrayUtils.nullSafeLength(elements));
-
-    Collections.addAll(set, nullSafeArray(elements));
-
-    return set;
+    return stream(nullSafeArray(elements)).collect(Collectors.toSet());
   }
 
   /**
@@ -231,19 +217,8 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Set<T> asSet(Iterable<T> iterable) {
-
-    if (iterable instanceof Collection) {
-      return new HashSet<>((Collection<T>) iterable);
-    }
-    else {
-      Set<T> set = new HashSet<>();
-
-      for (T element : nullSafeIterable(iterable)) {
-        set.add(element);
-      }
-
-      return set;
-    }
+    return (iterable instanceof Collection ? new HashSet<>((Collection<T>) iterable)
+      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toSet()));
   }
 
   /**
@@ -280,7 +255,7 @@ public abstract class CollectionUtils {
    * @see #count(Iterable, Filter)
    */
   @NullSafe
-  public static int count(Iterable<?> iterable) {
+  public static long count(Iterable<?> iterable) {
     return (iterable instanceof Collection ? ((Collection) iterable).size() : count(iterable, (element) -> true));
   }
 
@@ -298,19 +273,11 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Filter
    * @see #nullSafeIterable(Iterable)
    */
-  public static <T> int count(Iterable<T> iterable, Filter<T> filter) {
+  public static <T> long count(Iterable<T> iterable, Filter<T> filter) {
 
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(filter, "Filter is required");
 
-    int count = 0;
-
-    for (T element : nullSafeIterable(iterable)) {
-      if (filter.accept(element)) {
-        count++;
-      }
-    }
-
-    return count;
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).filter(filter::accept).count();
   }
 
   /**
@@ -354,8 +321,8 @@ public abstract class CollectionUtils {
   @SuppressWarnings("unchecked")
   public static <T> Collection<T> filter(Collection<T>  collection, Filter<T> filter) {
 
-    Assert.notNull(collection, "Collection cannot be null");
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(collection, "Collection is required");
+    Assert.notNull(filter, "Filter is required");
 
     return collection.stream().filter(filter::accept).collect(Collectors.toList());
   }
@@ -376,12 +343,32 @@ public abstract class CollectionUtils {
   public static <T> Collection<T> filterAndTransform(Collection<T> collection,
       FilteringTransformer<T> filteringTransformer) {
 
-    Assert.notNull(collection, "Collection cannot be null");
-    Assert.notNull(filteringTransformer, "FilteringTransformer cannot be null");
+    Assert.notNull(collection, "Collection is required");
+    Assert.notNull(filteringTransformer, "FilteringTransformer is required");
 
-    return collection.stream()
-      .filter(filteringTransformer::accept)
-      .map(filteringTransformer::transform)
+    return collection.stream().filter(filteringTransformer::accept).map(filteringTransformer::transform)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Searches the {@link Iterable} for all elements accepted by the {@link Filter}.
+   *
+   * @param <T> Class type of the elements in the {@link Iterable}.
+   * @param iterable {@link Iterable} collection of elements to search.
+   * @param filter {@link Filter} used to find elements from the {@link Iterable} collection accepted
+   * by the {@link Filter}.
+   * @return a {@link List} containing elements from the {@link Iterable} collection accepted by the {@link Filter}.
+   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @see #findOne(Iterable, Filter)
+   * @see #nullSafeIterable(Iterable)
+   * @see org.cp.elements.lang.Filter
+   * @see java.lang.Iterable
+   */
+  public static <T> List<T> findAll(Iterable<T> iterable, Filter<T> filter) {
+
+    Assert.notNull(filter, "Filter is required");
+
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).filter(filter::accept)
       .collect(Collectors.toList());
   }
 
@@ -400,46 +387,12 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Filter
    * @see java.lang.Iterable
    */
-  public static <T> T find(Iterable<T> iterable, Filter<T> filter) {
+  public static <T> T findOne(Iterable<T> iterable, Filter<T> filter) {
 
-    Assert.notNull(filter, "Filter cannot be null");
+    Assert.notNull(filter, "Filter is required");
 
-    for (T element : nullSafeIterable(iterable)) {
-      if (filter.accept(element)) {
-        return element;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Searches the {@link Iterable} for all elements accepted by the {@link Filter}.
-   *
-   * @param <T> Class type of the elements in the {@link Iterable}.
-   * @param iterable {@link Iterable} collection of elements to search.
-   * @param filter {@link Filter} used to find elements from the {@link Iterable} collection accepted
-   * by the {@link Filter}.
-   * @return a {@link List} containing elements from the {@link Iterable} collection accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is null.
-   * @see #find(Iterable, Filter)
-   * @see #nullSafeIterable(Iterable)
-   * @see org.cp.elements.lang.Filter
-   * @see java.lang.Iterable
-   */
-  public static <T> List<T> findAll(Iterable<T> iterable, Filter<T> filter) {
-
-    Assert.notNull(filter, "Filter cannot be null");
-
-    List<T> acceptedElements = new ArrayList<>();
-
-    for (T element : nullSafeIterable(iterable)) {
-      if (filter.accept(element)) {
-        acceptedElements.add(element);
-      }
-    }
-
-    return acceptedElements;
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).filter(filter::accept)
+      .findFirst().orElse(null);
   }
 
   /**
@@ -596,7 +549,7 @@ public abstract class CollectionUtils {
 
       Random random = new Random(System.currentTimeMillis());
 
-      for (int index = 0, sizeMinusOne = count(list) - 1; index < sizeMinusOne; index++) {
+      for (int index = 0, sizeMinusOne = nullSafeSize(list) - 1; index < sizeMinusOne; index++) {
         int randomIndex = (random.nextInt(sizeMinusOne - index) + 1);
         Collections.swap(list, index, index + randomIndex);
       }
@@ -618,8 +571,8 @@ public abstract class CollectionUtils {
    */
   public static <T> List<T> subList(List<T> list, int... indices) {
 
-    Assert.notNull(list, "List cannot be null");
-    Assert.notNull(indices, "Indices cannot be null");
+    Assert.notNull(list, "List is required");
+    Assert.notNull(indices, "Indices is required");
 
     List<T> subList = new ArrayList<>(indices.length);
 
@@ -704,8 +657,8 @@ public abstract class CollectionUtils {
   @SuppressWarnings("unchecked")
   public static <T> Collection<T> transform(Collection<T> collection, Transformer<T> transformer) {
 
-    Assert.notNull(collection, "Collection cannot be null");
-    Assert.notNull(transformer, "Transformer cannot be null");
+    Assert.notNull(collection, "Collection is required");
+    Assert.notNull(transformer, "Transformer is required");
 
     return collection.stream().map(transformer::transform).collect(Collectors.toList());
   }
@@ -722,7 +675,7 @@ public abstract class CollectionUtils {
    */
   public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
 
-    Assert.notNull(iterator, "Iterator cannot be null");
+    Assert.notNull(iterator, "Iterator is required");
 
     return new Iterator<T>() {
 
