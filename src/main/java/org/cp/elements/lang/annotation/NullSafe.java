@@ -22,11 +22,18 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 /**
- * The NullSafe annotation declares a class constructor or method to be null safe, thus allowing null arguments.
+ * The {@link NullSafe} annotation declares a class {@link Constructor} or {@link Method}
+ * to be {@literal null-safe}, thus allowing {@literal null} arguments.
  *
  * @author John J. Blum
+ * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.Inherited
+ * @see java.lang.annotation.Retention
+ * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented

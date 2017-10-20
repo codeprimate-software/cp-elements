@@ -25,7 +25,8 @@ import java.lang.annotation.Target;
 
 /**
  * The {@link FluentApi} annotation is a Java language, meta-data {@link Annotation} indicating that
- * a particular Java class method implements a {@link FluentApi fluent API}, in Builder style fasion.
+ * a particular Java class method implements a {@link FluentApi fluent API} similar in style to
+ * the Builder Software Design Pattern.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.FluentApiExtension

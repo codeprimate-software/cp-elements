@@ -23,8 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The @Id Annotation is a meta-data annotation indicating an object's field or property is an identifier
- * uniquely identifying instances of the object's class hierarchy.
+ * The {@link Id} Annotation is a meta-data annotation indicating an object's field or property is an identifier
+ * uniquely identifying instances of the object's class.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented

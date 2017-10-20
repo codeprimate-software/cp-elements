@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 import org.cp.elements.lang.Condition;
 
 /**
- * The Conditional annotation annotates an application class or component that specifies a required Condition.
+ * The {@link Conditional} annotation annotates an application class or component that specifies a required Condition.
  *
  * @author John Blum
  * @see java.lang.annotation.Documented

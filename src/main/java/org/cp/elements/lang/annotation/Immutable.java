@@ -23,8 +23,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@link Immutable} annotation is a stereotype {@link java.lang.annotation.Annotation} to annotate
- * and identify any application class or component that is immutable.
+ * The {@link Immutable} annotation is a stereotype {@link java.lang.annotation.Annotation} annotating
+ * any application class or component in order to classify it as immutable.
  *
  * @author John Blum
  * @see java.lang.annotation.Documented
