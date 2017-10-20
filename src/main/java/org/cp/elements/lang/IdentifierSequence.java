@@ -16,6 +16,10 @@
 
 package org.cp.elements.lang;
 
+import java.util.Optional;
+
+import org.cp.elements.lang.annotation.NullSafe;
+
 /**
  * The {@link IdentifierSequence} interface defines a contract for implementing objects to generate
  * unique identifiers (IDs) to uniquely identify some object or entity.
@@ -24,6 +28,7 @@ package org.cp.elements.lang;
  * @param <T> is a {@link Comparable} class type of the identifying value.
  * @see java.lang.Comparable
  * @see java.lang.FunctionalInterface
+ * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */
 @FunctionalInterface
@@ -37,4 +42,20 @@ public interface IdentifierSequence<T extends Comparable<T>> {
    */
   T nextId();
 
+  /**
+   * Sets the identifier of the given {@link Identifiable} object is not set.
+   *
+   * @param <S> {@link Class} type of the {@link Identifiable} object.
+   * @param identifiable {@link Identifiable} object to identify (set the ID).
+   * @return the given {@link Identifiable} object.
+   * @see org.cp.elements.lang.Identifiable
+   */
+  @NullSafe
+  default <S extends Identifiable<T>> S identify(S identifiable) {
+
+    return Optional.ofNullable(identifiable)
+      .filter(Identifiable::isNew)
+      .map(it -> it.<S>identifiedBy(nextId()))
+      .orElse(identifiable);
+  }
 }
