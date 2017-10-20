@@ -374,6 +374,11 @@ public class EmbeddedJavaProcessExecutorTests {
   public static class TestExecutable implements Executable<String> {
 
     @Override
+    public boolean isRunning() {
+      return false;
+    }
+
+    @Override
     public String execute(Object... args) {
       return "I was executed!";
     }

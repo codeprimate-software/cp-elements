@@ -54,7 +54,7 @@ public class EmbeddedJavaProcessExecutorIntegrationTests {
 
     newEmbeddedJavaProcessExecutor().execute(FileSystemUtils.WORKING_DIRECTORY, commandLine);
 
-    assertThat(EchoServerExecutable.isRunning()).isTrue();
+    assertThat(EchoServerExecutable.echoServer().isRunning()).isTrue();
   }
 
   @AfterClass
@@ -81,10 +81,6 @@ public class EmbeddedJavaProcessExecutorIntegrationTests {
       return echoServer;
     }
 
-    private static boolean isRunning() {
-      return echoServer().isRunning();
-    }
-
     private static int getPort() {
       return echoServer().getPort();
     }
@@ -96,7 +92,13 @@ public class EmbeddedJavaProcessExecutorIntegrationTests {
     }
 
     @Override
+    public boolean isRunning() {
+      return echoServer().isRunning();
+    }
+
+    @Override
     public Object execute(Object... args) {
+
       EchoServer echoServer = new EchoServer(parsePort(String.valueOf(args[0]))) {
         @Override protected Logger getLogger() {
           Logger logger = super.getLogger();

@@ -23,13 +23,18 @@ package org.cp.elements.lang;
  *
  * @author John Blum
  * @param <T> {@link Class} type of the executions return value.
- * @see java.lang.FunctionalInterface
  * @see java.lang.Runnable
  * @see java.util.concurrent.Callable
  * @since 1.0.0
  */
-@FunctionalInterface
 public interface Executable<T> {
+
+  /**
+   * Indicates whether this object is running.
+   *
+   * @return a boolean value indicating whether this object is running.
+   */
+  boolean isRunning();
 
   /**
    * Callback method to execute the intended function/logic encapsulated in the execution.
