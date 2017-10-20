@@ -23,22 +23,15 @@ package org.cp.elements.lang;
  *
  * @author John J. Blum
  * @param <T> the type of configuration meta-data and settings.
- * @see org.cp.elements.lang.Configurable
- * @see org.cp.elements.lang.Initable
  * @see java.lang.Runnable
- * @see org.cp.elements.lang.Interruptable
+ * @see org.cp.elements.lang.Configurable
  * @see org.cp.elements.lang.Destroyable
+ * @see org.cp.elements.lang.Executable
+ * @see org.cp.elements.lang.Initable
+ * @see org.cp.elements.lang.Interruptable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Lifecycle<T> extends Configurable<T>, Initable, Runnable, Interruptable, Destroyable {
-
-  /**
-   * Determines whether this object is currently executing.
-   *
-   * @return a boolean value indicating whether this object is running.
-   * @see java.lang.Runnable
-   */
-  boolean isRunning();
+public interface Lifecycle<T> extends Configurable<T>, Initable, Executable<T>, Runnable, Interruptable, Destroyable {
 
 }
