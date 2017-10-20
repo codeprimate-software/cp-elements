@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * The Initializer class is a utility class for performing Object initializations.
- * 
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable
  * @see org.cp.elements.lang.ParameterizedInitable
@@ -31,12 +31,13 @@ public abstract class Initializer {
 
   /**
    * Initializes an Object by calling it's init method if the Object is an instance of the Initable interface.
-   * 
+   *
    * @param initableObj the Object to be initialized.
    * @return a boolean value indicating whether the Object has been initialized.
    * @see org.cp.elements.lang.Initable#init()
    */
-  public static boolean init(final Object initableObj) {
+  public static boolean init(Object initableObj) {
+
     if (initableObj instanceof Initable) {
       ((Initable) initableObj).init();
       return true;
@@ -49,13 +50,14 @@ public abstract class Initializer {
    * Initializes an Object by calling it's init method with the array of Object arguments if the Object is an instance
    * of the ParameterizedInitable interface.  Calls the init(:Object) method with no arguments/parameters if the Object
    * is not an instance of the ParameterizedInitable interface.
-   * 
+   *
    * @param initableObj the Object to be initialized.
    * @param args an array of Object arguments used to initialize the Object.
    * @return a boolean value indicating whether the Object has been initialized.
    * @see #init(Object)
    */
-  public static boolean init(final Object initableObj, final Object... args) {
+  public static boolean init(Object initableObj, Object... args) {
+
     if (initableObj instanceof ParameterizedInitable) {
       ((ParameterizedInitable) initableObj).init(args);
       return true;
@@ -68,14 +70,15 @@ public abstract class Initializer {
    * Initializes an Object by calling it's init method with a Map of parameters if the Object is an instance of the
    * ParameterizedInitable interface.  Calls the init(:Object) method with no arguments/parameters if the Object is not
    * an instance of the ParameterizedInitable interface.
-   * 
+   *
    * @param initableObj the Object to be initialized.
    * @param parameters a Map of parameters used to initialize the Object.
    * @return a boolean value indicating whether the Object has been initialized.
    * @see java.util.Map
    * @see #init(Object)
    */
-  public static boolean init(final Object initableObj, final Map<?, ?> parameters) {
+  public static boolean init(Object initableObj, Map<?, ?> parameters) {
+
     if (initableObj instanceof ParameterizedInitable) {
       ((ParameterizedInitable) initableObj).init(parameters);
       return true;
@@ -83,5 +86,4 @@ public abstract class Initializer {
 
     return init(initableObj);
   }
-
 }
