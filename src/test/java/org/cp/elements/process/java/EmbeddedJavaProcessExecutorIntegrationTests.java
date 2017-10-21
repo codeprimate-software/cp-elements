@@ -47,6 +47,7 @@ public class EmbeddedJavaProcessExecutorIntegrationTests {
 
   @BeforeClass
   public static void setup() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", System.getProperty("java.class.path"),
       EchoServerExecutable.class.getName(), String.valueOf(availablePort())
@@ -64,6 +65,7 @@ public class EmbeddedJavaProcessExecutorIntegrationTests {
 
   @Test
   public void embeddedJavaProcessIsRunning() {
+
     EchoClient echoClient = newEchoClient(EchoServerExecutable.getPort());
 
     assertThat(echoClient.sendMessage("hello")).isEqualTo("hello");

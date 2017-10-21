@@ -60,6 +60,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void executeWithNonNullNonWorkingDirectoryThrowsIllegalArgumentException() {
+
     try {
       newEmbeddedJavaProcessExecutor().execute(FileSystemUtils.USER_HOME_DIRECTORY);
     }
@@ -76,6 +77,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void executeWithUnresolvableJavaClass() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar",
       "example.of.non.resolvable.ApplicationClass", "argOne", "argTwo"
@@ -96,6 +98,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void resolveArgumentsFromArgsWhenClassTypeIsPresentReturnsArguments() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", TestApplication.class.getName(),
       "argOne", "argTwo", "argThree"
@@ -110,6 +113,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void resolveArgumentsFromArgsWhenClassIsNotPresentReturnsNoArguments() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "non.existing.ApplicationClass",
       "argOne", "argTwo", "argThree"
@@ -123,6 +127,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void resolveArgumentsFromNoArgsWhenClassTypeIsPresentReturnsNoArguments() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", TestApplication.class.getName()
     };
@@ -135,6 +140,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void resolveArgumentsFromNullArgsReturnsNoArguments() {
+
     String[] arguments = newEmbeddedJavaProcessExecutor().resolveArgumentsFrom(TestApplication.class, (String[]) null);
 
     assertThat(arguments).isNotNull();
@@ -143,6 +149,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void resolveJavaClassFromArgumentsReturnsJavaClass() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", TestApplication.class.getName(),
       "argOne", "argTwo", "argThree"
@@ -155,6 +162,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void resolveJavaClassFromArgumentsReturnsNull() {
+
     String[] commandLine = {
       "java", "-server", "-ea", "-classpath", "/class/path/to/application.jar", "non.existing.ApplicationClass",
       "argOne", "argTwo", "argThree"
@@ -177,6 +185,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void executeInvokesCallableJavaClass() {
+
     Optional<String> returnValue = newEmbeddedJavaProcessExecutor().execute(TestCallable.class);
 
     assertThat(returnValue.orElse(null)).isEqualTo("I was called!");
@@ -184,10 +193,12 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test(expected = EmbeddedProcessExecutionException.class)
   public void executeInvokesCallableJavaClassHandlesException() {
+
     try {
       newEmbeddedJavaProcessExecutor().execute(TestCallableThrowsException.class);
     }
     catch (EmbeddedProcessExecutionException expected) {
+
       assertThat(expected).hasMessage("Failed to call Java class [%s]", TestCallableThrowsException.class.getName());
       assertThat(expected).hasCauseInstanceOf(RuntimeException.class);
       assertThat(expected.getCause()).hasMessage("test");
@@ -199,6 +210,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void executeInvokesExecutableJavaClass() {
+
     Optional<String> returnValue = newEmbeddedJavaProcessExecutor().execute(TestExecutable.class);
 
     assertThat(returnValue.orElse(null)).isEqualTo("I was executed!");
@@ -206,6 +218,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void executeInvokesRunnableJavaClass() {
+
     Optional<Object> returnValue = newEmbeddedJavaProcessExecutor().execute(TestRunnable.class);
 
     assertThat(returnValue.orElse(null)).isNull();
@@ -214,6 +227,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void executeInvokesRunnableJavaClassWithArguments() {
+
     Optional<Object> returnValue = newEmbeddedJavaProcessExecutor()
       .execute(TestRunnableWithArguments.class, "argOne", "argTwo");
 
@@ -224,6 +238,7 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test
   public void executeInvokesMainMethodOnJavaClass() {
+
     Optional<Object> returnValue = newEmbeddedJavaProcessExecutor().execute(TestApplication.class,
       "argOne", "argTwo");
 
@@ -233,10 +248,12 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test(expected = EmbeddedProcessExecutionException.class)
   public void executeInvokesMainMethodOnJavaClassHandlesException() {
+
     try {
       newEmbeddedJavaProcessExecutor().execute(TestApplicationThrowsException.class, "argument");
     }
     catch (EmbeddedProcessExecutionException expected) {
+
       assertThat(expected).hasMessage("Failed to execute Java class [%s] using main method",
         TestApplicationThrowsException.class.getName());
 
@@ -251,10 +268,12 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test(expected = EmbeddedProcessExecutionException.class)
   public void executeNonConstructableJavaClass() {
+
     try {
       newEmbeddedJavaProcessExecutor().execute(NonConstructableApplication.class, "argOne");
     }
     catch (EmbeddedProcessExecutionException expected) {
+
       assertThat(expected).hasMessage(
         "No default constructor or constructor with arguments (%1$s(:Object[]) for type [%2$s] was found",
           NonConstructableApplication.class.getSimpleName(), NonConstructableApplication.class.getName());
@@ -267,10 +286,12 @@ public class EmbeddedJavaProcessExecutorTests {
 
   @Test(expected = EmbeddedProcessExecutionException.class)
   public void executeNonExecutableJavaClass() {
+
     try {
       newEmbeddedJavaProcessExecutor().execute(NonExecutableApplication.class, "argOne", "argTwo");
     }
     catch (EmbeddedProcessExecutionException expected) {
+
       assertThat(expected).hasMessage("Unable to execute Java class [%s];"
         + " Please verify that your class either implements Runnable, Callable, Executable or has a main method",
           NonExecutableApplication.class.getName());
@@ -284,6 +305,7 @@ public class EmbeddedJavaProcessExecutorTests {
   @SuppressWarnings("unchecked")
   @Test(expected = EmbeddedProcessExecutionException.class)
   public void javaClassExecutorFindsConstructorWithMostArgumentsHandlesException() {
+
     EmbeddedJavaProcessExecutor.JavaClassExecutor mockJavaClassExecutor =
       mock(EmbeddedJavaProcessExecutor.JavaClassExecutor.class);
 
@@ -295,6 +317,7 @@ public class EmbeddedJavaProcessExecutorTests {
       mockJavaClassExecutor.constructInstance(DestructableType.class, ArrayUtils.asArray("test", 1));
     }
     catch (EmbeddedProcessExecutionException expected) {
+
       assertThat(expected).hasMessage("Failed to construct an instance of Java class [%s]",
         DestructableType.class.getName());
 

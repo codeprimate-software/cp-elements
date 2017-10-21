@@ -57,7 +57,7 @@ import org.cp.elements.process.ProcessExecutor;
 public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
   protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS = Collections.unmodifiableList(asList(
-    new RunnableExecutor<>(), new CallableExecutor<>(), new ExecutableExecutor<>(), new MainMethodExecutor<>()));
+    new ExecutableExecutor<>(), new RunnableExecutor<>(), new CallableExecutor<>(), new MainMethodExecutor<>()));
 
   /**
    * Factory method used to construct an instance of the {@link EmbeddedJavaProcessExecutor}, which is used to execute
@@ -110,6 +110,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    * @return the array of {@link String arguments} to be passed to the Java program.
    */
   protected String[] resolveArgumentsFrom(Class type, String... args) {
+
     int index = indexOf(args, type.getName());
     int position = (index + 1);
 
@@ -158,6 +159,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    */
   @SuppressWarnings("unchecked")
   public <T> Optional<T> execute(Class type, String... args) {
+
     Assert.notNull(type, "Class type must not be null");
 
     return JAVA_CLASS_EXECUTORS.stream().filter(javaClassExecutor -> javaClassExecutor.isExecutable(type))
@@ -196,6 +198,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
     @NullSafe
     default boolean isTargetConstructor(Constructor<?> constructor) {
+
       return Optional.ofNullable(constructor).map(localConstructor ->
         isDefaultConstructor(constructor) || isConstructorWithArrayParameter(constructor))
           .orElse(false);
@@ -203,6 +206,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
     @SuppressWarnings("unchecked")
     default <T> Constructor<T> findConstructor(Class<T> type) {
+
       return (Constructor<T>) stream(nullSafeArray(type.getDeclaredConstructors(), Constructor.class))
         .filter(this::isTargetConstructor).sorted((constructorOne, constructorTwo) ->
           constructorTwo.getParameterCount() - constructorOne.getParameterCount())
@@ -212,6 +216,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     }
 
     default <T> T constructInstance(Class<T> type, Object[] args) {
+
       try {
         Constructor<T> constructor = findConstructor(type);
 
@@ -249,6 +254,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
+
       try {
         Callable<T> callable = this.<Callable<T>>constructInstance(type, args);
         return Optional.ofNullable(callable.call());
@@ -306,6 +312,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
+
       try {
         Method mainMethod = type.getDeclaredMethod(ClassUtils.MAIN_METHOD_NAME, String[].class);
 
@@ -342,8 +349,11 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
+
       Runnable runnable = this.<Runnable>constructInstance(type, args);
+
       runnable.run();
+
       return Optional.empty();
     }
   }
