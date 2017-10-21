@@ -16,25 +16,31 @@
 
 package org.cp.elements.lang;
 
+import java.util.concurrent.Callable;
+
 /**
  * The {@link Executable} interface defines a contract for implementing objects enabling them to be executed.
- * This {@link Class interface} is similar in purpose and function to the {@link Runnable}
+ * This {@link Class interface} is similar in purpose and function to the {@link java.lang.Runnable}
  * and {@link java.util.concurrent.Callable} {@link Class interfaces}.
  *
  * @author John Blum
  * @param <T> {@link Class} type of the executions return value.
+ * @see java.lang.FunctionalInterface
  * @see java.lang.Runnable
  * @see java.util.concurrent.Callable
  * @since 1.0.0
  */
-public interface Executable<T> {
+@FunctionalInterface
+public interface Executable<T> extends Callable<T>, Runnable {
 
   /**
    * Indicates whether this object is running.
    *
    * @return a boolean value indicating whether this object is running.
    */
-  boolean isRunning();
+  default boolean isRunning() {
+    throw new IllegalStateException("The running state of this object has not been determined");
+  }
 
   /**
    * Callback method to execute the intended function/logic encapsulated in the execution.
@@ -44,4 +50,25 @@ public interface Executable<T> {
    */
   T execute(Object... args);
 
+  /**
+   * Computes a result or throws an {@link Exception} if the result could not be computed.
+   *
+   * @return the computed result.
+   * @throws Exception if the computation fails.
+   * @see #execute(Object...)
+   */
+  @Override
+  default T call() throws Exception {
+    return execute();
+  }
+
+  /**
+   * Runs this execution to compute a result.
+   *
+   * @see #execute(Object...)
+   */
+  @Override
+  default void run() {
+    execute();
+  }
 }
