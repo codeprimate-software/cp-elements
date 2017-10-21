@@ -26,12 +26,12 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  *
  * @author John Blum
  * @see java.lang.System#getenv()
- * @see org.cp.elements.data.struct.KeyValue
+ * @see org.cp.elements.data.struct.StringBasedKeyValue
  * @since 1.0.0
  */
 @ThreadSafe
 @SuppressWarnings("unused")
-public class EnvironmentVariableValue extends KeyValue<String, String> {
+public class EnvironmentVariableValue extends StringBasedKeyValue {
 
   /**
    * Factory method used to construct a new instance of {@link EnvironmentVariableValue} initialized with

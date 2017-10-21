@@ -26,12 +26,12 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  *
  * @author John Blum
  * @see java.lang.System#getProperties()
- * @see org.cp.elements.data.struct.KeyValue
+ * @see org.cp.elements.data.struct.StringBasedKeyValue
  * @since 1.0.0
  */
 @ThreadSafe
 @SuppressWarnings("unused")
-public class SystemPropertyValue extends KeyValue<String, String> {
+public class SystemPropertyValue extends StringBasedKeyValue {
 
   /**
    * Factory method used to construct a new instance of {@link SystemPropertyValue} initialized with
