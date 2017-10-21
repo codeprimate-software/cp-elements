@@ -17,13 +17,12 @@
 package org.cp.elements.lang;
 
 /**
- * The Lifecycle interface defines a contract for objects that live out a cycle of events from instantiation to
- * configuration and initialization, transitioning to a running state and finally reaching its end-of-life
- * and being consumed, or destroyed.
+ * The {@link Lifecycle} interface defines a contract for implementing objects that live out a cycle of events
+ * from instantiation (construction) to configuration and initialization, transitioning to a executable, runnable
+ * (running) state and finally reaching its end-of-life by being destroyed.
  *
  * @author John J. Blum
  * @param <T> the type of configuration meta-data and settings.
- * @see java.lang.Runnable
  * @see org.cp.elements.lang.Configurable
  * @see org.cp.elements.lang.Destroyable
  * @see org.cp.elements.lang.Executable
@@ -32,6 +31,6 @@ package org.cp.elements.lang;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Lifecycle<T> extends Configurable<T>, Initable, Executable<T>, Runnable, Interruptable, Destroyable {
+public interface Lifecycle<T> extends Configurable<T>, Initable, Executable<T>, Interruptable, Destroyable {
 
 }
