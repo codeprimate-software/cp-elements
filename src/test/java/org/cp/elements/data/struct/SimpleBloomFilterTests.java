@@ -36,9 +36,13 @@ public class SimpleBloomFilterTests {
   private static final boolean LOG_ENABLED = false;
 
   private static final int NUMBER_BOUND = 100000;
-  private static final int NUMBER_COUNT = 500000;
+
+  private static final int NUMBER_COUNT =
+    SystemPropertyValue.newSystemPropertyValue("cp.elements.data.struct.SimpleBloomFilter.number-count")
+      .getValueAs(Integer.class, 10000); // 500000;
 
   private void log(String message, Object... args) {
+
     if (LOG_ENABLED) {
       System.err.printf(message, args);
       System.err.flush();
@@ -124,14 +128,16 @@ public class SimpleBloomFilterTests {
   @Test
   public void simpleBloomFilterOfApproximateNumberOfElements() {
 
-    SimpleBloomFilter<Object> bloomFilter = SimpleBloomFilter.of(100000);
+    SimpleBloomFilter<Object> bloomFilter = SimpleBloomFilter.of(100);
 
     assertThat(bloomFilter).isNotNull();
     assertThat(bloomFilter.getBitArray()).isNotNull();
     assertThat(bloomFilter.getBitArray().length).isGreaterThan(0);
+    assertThat(bloomFilter.getBitArray().length).isLessThan(SimpleBloomFilter.DEFAULT_BIT_ARRAY_LENGTH);
     assertThat(bloomFilter.getFalsePositiveRate()).isEqualTo(SimpleBloomFilter.DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE);
     assertThat(bloomFilter.getFilterSize()).isEqualTo(bloomFilter.getBitArray().length * 32);
     assertThat(bloomFilter.getHashFunctionCount(null)).isGreaterThan(0);
+    assertThat(bloomFilter.getHashFunctionCount(null)).isLessThan(SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
     assertThat(bloomFilter.size()).isZero();
   }
 
@@ -139,14 +145,30 @@ public class SimpleBloomFilterTests {
   public void simpleBloomFilterOfApproximateNumberOfElementsAndAcceptableFalsePositiveRate() {
 
     SimpleBloomFilter<Object> bloomFilter =
-      SimpleBloomFilter.of(100000, 0.05f);
+      SimpleBloomFilter.of(100, 0.05f);
 
     assertThat(bloomFilter).isNotNull();
     assertThat(bloomFilter.getBitArray()).isNotNull();
     assertThat(bloomFilter.getBitArray().length).isGreaterThan(0);
+    assertThat(bloomFilter.getBitArray().length).isLessThan(SimpleBloomFilter.DEFAULT_BIT_ARRAY_LENGTH);
     assertThat(bloomFilter.getFalsePositiveRate()).isEqualTo(0.05f);
     assertThat(bloomFilter.getFilterSize()).isEqualTo(bloomFilter.getBitArray().length * 32);
     assertThat(bloomFilter.getHashFunctionCount(null)).isGreaterThan(0);
+    assertThat(bloomFilter.getHashFunctionCount(null)).isLessThan(SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
+    assertThat(bloomFilter.size()).isZero();
+  }
+
+  @Test
+  public void simpleBloomFilterOfOneAndDefaultAcceptableFalsePositiveRate() {
+
+    SimpleBloomFilter<Object> bloomFilter = SimpleBloomFilter.ofOne();
+
+    assertThat(bloomFilter).isNotNull();
+    assertThat(bloomFilter.getBitArray()).isNotNull();
+    assertThat(bloomFilter.getBitArray().length).isEqualTo(1);
+    assertThat(bloomFilter.getFalsePositiveRate()).isEqualTo(SimpleBloomFilter.DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE);
+    assertThat(bloomFilter.getFilterSize()).isEqualTo(32);
+    assertThat(bloomFilter.getHashFunctionCount(null)).isLessThan(SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
     assertThat(bloomFilter.size()).isZero();
   }
 
@@ -216,12 +238,12 @@ public class SimpleBloomFilterTests {
 
   @Test
   public void bitArrayLengthForMultipleOfThirtyTwoBitsIsCorrect() {
-    assertThat(SimpleBloomFilter.of(1).getBitArrayLength(64)).isEqualTo(2);
+    assertThat(SimpleBloomFilter.ofOne().getBitArrayLength(64)).isEqualTo(2);
   }
 
   @Test
   public void bitArrayLengthForOffNumberOfBitsIsCorrect() {
-    assertThat(SimpleBloomFilter.of(1).getBitArrayLength(200)).isEqualTo(7);
+    assertThat(SimpleBloomFilter.ofOne().getBitArrayLength(200)).isEqualTo(7);
   }
 
   @Test
@@ -288,7 +310,7 @@ public class SimpleBloomFilterTests {
   @Test
   public void evenNumbersAreAcceptedOddNumbersRejected() {
 
-    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = SimpleBloomFilter.of(100);
 
     synchronized (bloomFilter) {
 
@@ -308,14 +330,15 @@ public class SimpleBloomFilterTests {
           .isEqualTo(even);
       }
 
-      assertThat(bloomFilter.size()).isEqualTo(50);
+      assertThat(bloomFilter.size()).isGreaterThanOrEqualTo(49);
+      assertThat(bloomFilter.size()).isLessThanOrEqualTo(51);
     }
   }
 
   @Test
   public void oddNumbersAreAcceptedEvenNumbersRejected() {
 
-    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = SimpleBloomFilter.of(100);
 
     synchronized (bloomFilter) {
 
@@ -335,14 +358,15 @@ public class SimpleBloomFilterTests {
           .isEqualTo(odd);
       }
 
-      assertThat(bloomFilter.size()).isEqualTo(50);
+      assertThat(bloomFilter.size()).isGreaterThanOrEqualTo(49);
+      assertThat(bloomFilter.size()).isLessThanOrEqualTo(51);
     }
   }
 
   @Test
   public void randomNumbersAreAccepted() {
 
-    SimpleBloomFilter<Integer> bloomFilter = new SimpleBloomFilter<>();
+    SimpleBloomFilter<Integer> bloomFilter = SimpleBloomFilter.of(100);
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -350,15 +374,17 @@ public class SimpleBloomFilterTests {
 
       for (int count = 0; count < 100; count++) {
 
-        int number = Math.abs(random.nextInt());
+        int number = Math.abs(random.nextInt(NUMBER_BOUND));
 
         bloomFilter.add(number);
 
-        assertThat(bloomFilter.accept(number)).describedAs("Number [%1$d] at count [%2$d] was not accepted",
-          number, count).isTrue();
+        assertThat(bloomFilter.accept(number))
+          .describedAs("Number [%1$d] at count [%2$d] was not accepted", number, count)
+          .isTrue();
       }
 
-      assertThat(bloomFilter.size()).isEqualTo(100);
+      assertThat(bloomFilter.size()).isGreaterThan(90);
+      assertThat(bloomFilter.size()).isLessThan(110);
     }
   }
 
