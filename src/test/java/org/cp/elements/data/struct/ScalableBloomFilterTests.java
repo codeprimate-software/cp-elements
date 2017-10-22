@@ -26,16 +26,20 @@ import java.util.stream.Stream;
 import org.junit.Test;
 
 /**
- * The ScalableBloomFilterTests class...
+ * Unit tests for {@link ScalableBloomFilter}.
  *
  * @author John Blum
+ * @see org.junit.Test
+ * @see org.cp.elements.data.struct.ScalableBloomFilter
  * @since 1.0.0
  */
 public class ScalableBloomFilterTests {
 
-  protected static final int NUMBER_COUNT = 500000;
+  protected static final int NUMBER_COUNT =
+    SystemPropertyValue.newSystemPropertyValue("cp.elements.data.struct.ScalableBloomFilter.number-count")
+      .getValueAs(Integer.class, 10000); // 500000;
 
-  @SuppressWarnings("unused)")
+  @SuppressWarnings("unused")
   private void log(String message, Object... args) {
     System.err.printf(message, args);
     System.err.flush();
@@ -59,15 +63,15 @@ public class ScalableBloomFilterTests {
   @Test
   public void constructCustomizedScalableBloomFilter() {
 
-    ScalableBloomFilter<Object> bloomFilter = new ScalableBloomFilter<>(32)
-      .with(0.1f).with(256000);
+    ScalableBloomFilter<Object> bloomFilter = new ScalableBloomFilter<>(16)
+      .with(0.1f).with(10000);
 
     assertThat(bloomFilter).isNotNull();
     assertThat(bloomFilter.getAcceptableFalsePositiveRate()).isEqualTo(0.1f);
-    assertThat(bloomFilter.getApproximateNumberOfElementsPerFilter()).isEqualTo(256000);
+    assertThat(bloomFilter.getApproximateNumberOfElementsPerFilter()).isEqualTo(10000);
     assertThat(bloomFilter.getBloomFilters()).isNotNull();
-    assertThat(stream(bloomFilter).filter(Objects::isNull).count()).isEqualTo(32);
-    assertThat(bloomFilter.getScale()).isEqualTo(32);
+    assertThat(stream(bloomFilter).filter(Objects::isNull).count()).isEqualTo(16);
+    assertThat(bloomFilter.getScale()).isEqualTo(16);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -103,10 +107,10 @@ public class ScalableBloomFilterTests {
   @Test
   public void ofReturnsScalableBloomFilterInitializedWithTheGivenScale() {
 
-    ScalableBloomFilter<Object> bloomFilter = ScalableBloomFilter.of(16);
+    ScalableBloomFilter<Object> bloomFilter = ScalableBloomFilter.of(8);
 
     assertThat(bloomFilter).isNotNull();
-    assertThat(bloomFilter.getScale()).isEqualTo(16);
+    assertThat(bloomFilter.getScale()).isEqualTo(8);
   }
 
   @Test
@@ -121,7 +125,7 @@ public class ScalableBloomFilterTests {
   @Test
   public void addsAndAcceptsRandomNumbers() {
 
-    ScalableBloomFilter<Integer> bloomFilter = ScalableBloomFilter.of(2);
+    ScalableBloomFilter<Integer> bloomFilter = ScalableBloomFilter.<Integer>of(2).with(NUMBER_COUNT);
 
     Random random = new Random(System.currentTimeMillis());
 
@@ -146,7 +150,7 @@ public class ScalableBloomFilterTests {
   @Test
   public void iteratesOverAggregatedBloomFilters() {
 
-    ScalableBloomFilter<Integer> aggregateBloomFilter = ScalableBloomFilter.of(9);
+    ScalableBloomFilter<Integer> aggregateBloomFilter = ScalableBloomFilter.<Integer>of(9).with(1);
 
     Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9).forEach(aggregateBloomFilter::add);
 
@@ -159,19 +163,23 @@ public class ScalableBloomFilterTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void newBloomFilterReturnsNewBloomFilter() {
 
     BloomFilter<Object> bloomFilter = ScalableBloomFilter.ofOne()
-      .newBloomFilter(2, 0.1f);
+      .newBloomFilter(1, 0.1f);
 
     assertThat(bloomFilter).isInstanceOf(SimpleBloomFilter.class);
     assertThat(((SimpleBloomFilter) bloomFilter).getFalsePositiveRate()).isEqualTo(0.1f);
+    assertThat(((SimpleBloomFilter) bloomFilter).getFilterSize()).isEqualTo(32);
+    assertThat(((SimpleBloomFilter) bloomFilter).getHashFunctionCount(null))
+      .isLessThan(SimpleBloomFilter.DEFAULT_NUMBER_OF_HASH_FUNCTIONS);
   }
 
   @Test
   public void resolveBloomFilterWithIndexReturnsBloomFilter() {
 
-    ScalableBloomFilter<Object> aggregateBloomFilter = ScalableBloomFilter.of(2);
+    ScalableBloomFilter<Object> aggregateBloomFilter = ScalableBloomFilter.of(2).with(1);
 
     assertThat(aggregateBloomFilter).isNotNull();
     assertThat(aggregateBloomFilter.getBloomFilters()).isNotNull();
@@ -210,7 +218,6 @@ public class ScalableBloomFilterTests {
       assertThat(expected).hasNoCause();
 
       throw expected;
-
     }
   }
 
@@ -236,7 +243,6 @@ public class ScalableBloomFilterTests {
       assertThat(expected).hasNoCause();
 
       throw expected;
-
     }
   }
 }
