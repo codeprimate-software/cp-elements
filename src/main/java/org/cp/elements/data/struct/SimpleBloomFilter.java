@@ -33,6 +33,7 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @param <T> {@link Number type} of the elements contained by this {@link BloomFilter}.
  * @see java.util.Random
  * @see org.cp.elements.data.struct.BloomFilter
+ * @see org.cp.elements.data.struct.ScalableBloomFilter
  * @see org.cp.elements.lang.concurrent.ThreadSafe
  * @see <a href="https://en.wikipedia.org/wiki/Bloom_filter">Bloom Filter</a>
  * @see <a href="https://stackoverflow.com/questions/658439/how-many-hash-functions-does-my-bloom-filter-need">How many hash functions does my bloom filter need?</a>
@@ -94,6 +95,21 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   private final Random random = new Random();
 
   /**
+   * Factory method used to construct an instance of the {@link SimpleBloomFilter} class initialized with a size of
+   * 1 element expected to be added to the {@link BloomFilter}.
+   *
+   * The acceptable, false positive rate defaults to 1%.
+   *
+   * @param <T> {@link Class type} of elements added/evaluated by this Bloom Filter.
+   * @return a new instance of the {@link SimpleBloomFilter}.
+   * @see org.cp.elements.data.struct.SimpleBloomFilter
+   * @see #of(int, float)
+   */
+  public static <T> SimpleBloomFilter<T> ofOne() {
+    return of(1, DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE);
+  }
+
+  /**
    * Factory method used to construct an instance of the {@link SimpleBloomFilter} class initialized with
    * an approximate, estimated number of elements that the caller expects will be added to the {@link BloomFilter}.
    *
@@ -104,6 +120,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * the user expects will be added to the returned {@link SimpleBloomFilter} instance.
    * @return a new instance of {@link SimpleBloomFilter}.
    * @throws IllegalArgumentException if the approximate number of elements is less than equal to 0.
+   * @see org.cp.elements.data.struct.SimpleBloomFilter
    * @see #of(int, float)
    */
   public static <T> SimpleBloomFilter<T> of(int approximateNumberOfElements) {
@@ -125,6 +142,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * @return a new instance of {@link SimpleBloomFilter}.
    * @see #computeRequiredNumberOfBits(double, double)
    * @see #computeOptimalNumberOfHashFunctions(double, double)
+   * @see org.cp.elements.data.struct.SimpleBloomFilter
    */
   public static <T> SimpleBloomFilter<T> of(int approximateNumberOfElements, float acceptableFalsePositiveRate) {
 
@@ -137,6 +155,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
         String.valueOf(acceptableFalsePositiveRate));
 
     int requiredNumberOfBits = computeRequiredNumberOfBits(approximateNumberOfElements, acceptableFalsePositiveRate);
+
     int optimalNumberOfHashFunctions = computeOptimalNumberOfHashFunctions(approximateNumberOfElements,
       requiredNumberOfBits);
 
@@ -341,7 +360,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   }
 
   /**
-   * Determines the estimated size of this {@link BloomFilter}.
+   * Determines the approximate, estimated size of this {@link BloomFilter}.
    *
    * The estimated size is approximately the number of elements that have been added to this {@link BloomFilter},
    * calculated as...
