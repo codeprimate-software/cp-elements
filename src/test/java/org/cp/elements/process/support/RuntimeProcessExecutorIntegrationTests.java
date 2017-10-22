@@ -46,6 +46,7 @@ public class RuntimeProcessExecutorIntegrationTests {
 
   @Test
   public void executeProgram() {
+
     int availablePort = NetworkUtils.availablePort();
 
     String[] commandLine = {
