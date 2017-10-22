@@ -53,6 +53,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @param <T> {@link Class type} of the elements added to this {@link BloomFilter}.
  * @see java.lang.Iterable
  * @see org.cp.elements.data.struct.BloomFilter
+ * @see org.cp.elements.data.struct.SimpleBloomFilter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -82,7 +83,7 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
   }
 
   /**
-   * Factory methods used to construct an instance of the {@link ScalableBloomFilter} initialized with the given scale.
+   * Factory method used to construct an instance of {@link ScalableBloomFilter} initialized with the given scale.
    *
    * @param <T> {@link Class type} of elements added to this {@link BloomFilter}.
    * @param scale integer value indicating the maximum number of {@link BloomFilter Bloom Filters} managed by
