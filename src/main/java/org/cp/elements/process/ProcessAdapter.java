@@ -532,7 +532,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #safeExitValue()
    */
   public synchronized int stop(long timeout, TimeUnit unit) {
+
     if (isRunning()) {
+
       ExecutorService executorService = Executors.newSingleThreadExecutor(
         newThreadFactory().as(DAEMON_THREAD).in(resolveThreadGroup()).with(THREAD_PRIORITY));
 
