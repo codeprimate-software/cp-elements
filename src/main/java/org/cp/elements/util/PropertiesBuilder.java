@@ -54,6 +54,7 @@ public class PropertiesBuilder implements Builder<Properties> {
    * @see #from(InputStream)
    */
   public static PropertiesBuilder from(File properties) {
+
     try {
       return from(new FileInputStream(properties));
     }
@@ -65,7 +66,7 @@ public class PropertiesBuilder implements Builder<Properties> {
   /**
    * Factory method to load {@link Properties} from the given {@link InputStream}.
    *
-   * @param inputStream a input source containing the {@link Properties} to load.
+   * @param inputStream an input source containing the {@link Properties} to load.
    * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
    * from the given input source.
    * @throws SystemException if the properties from the given {@link InputStream} could not be loaded.
@@ -74,13 +75,14 @@ public class PropertiesBuilder implements Builder<Properties> {
    * @see #from(Properties)
    */
   public static PropertiesBuilder from(InputStream inputStream) {
+
     try {
       Properties defaults = new Properties();
       defaults.load(inputStream);
       return from(defaults);
     }
-    catch (IOException e) {
-      throw new SystemException(String.format("Failed to load properties from input stream [%s]", inputStream), e);
+    catch (IOException cause) {
+      throw new SystemException(String.format("Failed to load properties from input stream [%s]", inputStream), cause);
     }
   }
 
@@ -95,6 +97,7 @@ public class PropertiesBuilder implements Builder<Properties> {
    * @see #from(Properties)
    */
   public static PropertiesBuilder from(Map<String, ?> map) {
+
     Properties properties = new Properties();
 
     for (Map.Entry<String, ?> entry : map.entrySet()) {
@@ -129,13 +132,14 @@ public class PropertiesBuilder implements Builder<Properties> {
    * @see #from(Properties)
    */
   public static PropertiesBuilder from(Reader reader) {
+
     try {
       Properties defaults = new Properties();
       defaults.load(reader);
       return from(defaults);
     }
-    catch (IOException e) {
-      throw new SystemException(String.format("Failed to load properties from reader [%s]", reader), e);
+    catch (IOException cause) {
+      throw new SystemException(String.format("Failed to load properties from reader [%s]", reader), cause);
     }
   }
 
@@ -161,6 +165,29 @@ public class PropertiesBuilder implements Builder<Properties> {
    */
   public static PropertiesBuilder fromSystemProperties() {
     return from(System.getProperties());
+  }
+
+  /**
+   * Factory method to load {@link Properties} from the given XML {@link InputStream}.
+   *
+   * @param inputStream an XML input source containing the {@link Properties} to load.
+   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
+   * from the given XML input source.
+   * @throws SystemException if the properties from the given XML {@link InputStream} could not be loaded.
+   * @see java.util.Properties#loadFromXML(InputStream)
+   * @see java.io.InputStream
+   * @see #from(Properties)
+   */
+  public static PropertiesBuilder fromXml(InputStream inputStream) {
+
+    try {
+      Properties defaults = new Properties();
+      defaults.loadFromXML(inputStream);
+      return from(defaults);
+    }
+    catch (IOException cause) {
+      throw new SystemException(String.format("Failed to load properties from input stream [%s]", inputStream), cause);
+    }
   }
 
   /**
