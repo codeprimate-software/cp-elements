@@ -57,7 +57,7 @@ public class CollectionExtensions {
    */
   @FluentApi
   @SafeVarargs
-  public static <T> From<T> from(final T... array) {
+  public static <T> From<T> from(T... array) {
     return new FromExpression<>(array);
   }
 
@@ -99,29 +99,32 @@ public class CollectionExtensions {
     private final T[] array;
 
     @SafeVarargs
-    public FromExpression(final T... array) {
+    public FromExpression(T... array) {
       this.array = array;
     }
 
     @SuppressWarnings("unchecked")
     public List<T> toList() {
-      return (array == null ? Collections.<T>emptyList() : (array.length == 1 ? Collections.singletonList(array[0])
-        : Arrays.asList(array)));
+      return (this.array == null ? Collections.emptyList()
+        : (this.array.length == 1 ? Collections.singletonList(this.array[0])
+          : Arrays.asList(array)));
     }
 
     public Set<T> toSet() {
-      return (array == null ? Collections.<T>emptySet() : (array.length == 1 ? Collections.singleton(array[0])
-        : new HashSet<>(toList())));
+      return (this.array == null ? Collections.emptySet()
+        : (this.array.length == 1 ? Collections.singleton(this.array[0])
+          : new HashSet<>(toList())));
     }
 
     @Override
     public String toString() {
+
       StringBuilder buffer = new StringBuilder("[");
 
-      if (array != null) {
-        for (int index = 0; index < array.length; index++) {
+      if (this.array != null) {
+        for (int index = 0; index < this.array.length; index++) {
           buffer.append(index > 0 ? StringUtils.COMMA_SPACE_DELIMITER : StringUtils.EMPTY_STRING);
-          buffer.append(array[index]);
+          buffer.append(this.array[index]);
         }
       }
 
