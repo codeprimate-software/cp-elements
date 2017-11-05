@@ -7,18 +7,24 @@ https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 ---------------------
 Introduces new types and tools.
 
+* Introduced the o.c.e.ElementsVersion class to print meta-data about the cp-elements project to the command-line.
+* Introduced the o.c.e.lang.RunnableUtils abstract utility class for working with java.lang.Runnable objects.
 * Introduced the o.c.e.lang.Verifyable interface to validate the state of an Object post construction/initialization.
+* Added isDecimal(:Number), isWhole(:Number), isByte(:Number), isShort(:Number), isInteger(:Number), isLong(:Number),
+isFloat(:Number) and isDouble:Number) to o.c.e.lang.NumberUtils.
 * Moved the o.c.e.lang.NullSafe annotation to the o.c.e.lang.annotation package.
 * Renamed o.c.e.lang.DslExtension to o.c.e.lang.FluentApiExtension.
 * Renamed o.c.e.lang.annotation.DSL to o.c.e.lang.annotation.FluentApi.
-* Added isDecimal(:Number), isWhole(:Number), isByte(:Number), isShort(:Number), isInteger(:Number), isLong(:Number),
-isFloat(:Number) and isDouble:Number) to o.c.e.lang.NumberUtils.
+* Introduced the o.c.e.data.struct.BloomFilter probabilistic data structure to test for membership of an element in a set.
+* Introduced the o.c.e.data.struct.ScalableBloomFilter implementation to the o.c.e.data.struct package.
 * Added District of Columbia (D.C.) to o.c.e.enums.State.
+* Added the doSafeIo(:IoExceptionThrowingOperation) method along with IoExceptionThrowingOperation functional interface
+to the o.c.e.io.IOUtils abstract utility class.
 * Added new tool to list the contents of a directory, o.c.e.tools.io.ListFiles.
-* Added the o.c.e.data.struct.BloomFilter probabilistic data structure to test for membership of an element in a set.
-* Added the o.c.e.data.struct.ScalableBloomFilter implementation to the o.c.e.data.struct package.
+* Added the o.c.e.util.zip.ZipUtils abstract utility class to zip and unzip ZIP files.
 * Moved the o.c.e.util.convert package to the o.c.e.data package.
 * Upgraded to cp-core 1.2.0.RELEASE.
+* Wrote documentation for the cp-elements project using Asciidoc.
 
 
 1.0.0.M3 - 2017-05-05
