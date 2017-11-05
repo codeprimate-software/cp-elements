@@ -16,17 +16,19 @@
 
 package org.cp.elements.test;
 
+import static org.cp.elements.util.stream.StreamUtils.stream;
+
 import java.io.File;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The AbstractBaseTestSuite class is an abstract base class containing functionality common to all test classes
- * and test suites in the cp-elements project.
+ * The {@link AbstractBaseTestSuite} class is an abstract base class containing functionality common to
+ * all test classes and test suites in the cp-elements project.
  *
  * @author John J. Blum
+ * @see java.util.logging.Logger
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -39,15 +41,14 @@ public abstract class AbstractBaseTestSuite {
   private final Logger logger;
 
   protected AbstractBaseTestSuite() {
-    logger = Logger.getLogger(getClass().getName());
-    logger.setLevel(Level.WARNING);
-    logger.setUseParentHandlers(false);
 
-    for (Handler handler : logger.getHandlers()) {
-      logger.removeHandler(handler);
-    }
+    this.logger = Logger.getLogger(getClass().getName());
+    this.logger.setLevel(Level.WARNING);
+    this.logger.setUseParentHandlers(false);
 
-    logger.addHandler(new ConsoleHandler());
+    stream(this.logger.getHandlers()).forEach(this.logger::removeHandler);
+
+    this.logger.addHandler(new ConsoleHandler());
   }
 
   protected File getBuildDirectory() {
@@ -55,7 +56,7 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected String getBuildDirectoryName() {
-    return (Boolean.getBoolean("gradle.build") ? "build" : "target");
+    return Boolean.getBoolean("gradle.build") ? "build" : "target";
   }
 
   protected File getClassesDirectory() {
@@ -63,16 +64,20 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected String getClassesDirectoryName() {
-    return (Boolean.getBoolean("gradle.build") ? String.format("%1$s%2$s%3$s", "classes", File.separator, "main")
-      : "classes");
+
+    return Boolean.getBoolean("gradle.build") ?
+      String.format("%1$s%2$s%3$s", "classes", File.separator, "main") : "classes";
   }
 
   protected File getLocation(Class type) {
+
     String pathname = type.getName().replaceAll("\\.", "/").concat(".class");
+
     return new File(getClassesDirectory(), pathname);
   }
 
   protected File getProjectHomeDirectory() {
+
     File projectHomeDirectory = WORKING_DIRECTORY;
 
     while (projectHomeDirectory != null && !getProjectHomeDirectoryName().equals(projectHomeDirectory.getName())) {
@@ -95,43 +100,50 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected void logDebug(final String message) {
-    if (logger.isLoggable(Level.FINE) || logger.isLoggable(Level.FINER) || logger.isLoggable(Level.FINEST)) {
-      logger.fine(message);
+
+    if (this.logger.isLoggable(Level.FINE) || this.logger.isLoggable(Level.FINER)
+        || this.logger.isLoggable(Level.FINEST)) {
+
+      this.logger.fine(message);
     }
   }
 
   protected void logConfig(final String message) {
-    if (logger.isLoggable(Level.CONFIG)) {
-      logger.config(message);
+
+    if (this.logger.isLoggable(Level.CONFIG)) {
+      this.logger.config(message);
     }
   }
 
   protected void logInfo(final String message) {
-    if (logger.isLoggable(Level.INFO)) {
-      logger.info(message);
+
+    if (this.logger.isLoggable(Level.INFO)) {
+      this.logger.info(message);
     }
   }
 
   protected void logWarning(final String message) {
-    if (logger.isLoggable(Level.WARNING)) {
-      logger.warning(message);
+
+    if (this.logger.isLoggable(Level.WARNING)) {
+      this.logger.warning(message);
     }
   }
 
   protected void logError(final String message) {
-    if (logger.isLoggable(Level.SEVERE)) {
-      logger.severe(message);
+
+    if (this.logger.isLoggable(Level.SEVERE)) {
+      this.logger.severe(message);
     }
   }
 
   protected void setLogLevel(final Level logLevel) {
-    logger.setLevel(logLevel);
 
-    for (Handler logHandler : logger.getHandlers()) {
+    this.logger.setLevel(logLevel);
+
+    stream(this.logger.getHandlers()).forEach(logHandler -> {
       if (logHandler instanceof ConsoleHandler) {
         logHandler.setLevel(logLevel);
       }
-    }
+    });
   }
-
 }
