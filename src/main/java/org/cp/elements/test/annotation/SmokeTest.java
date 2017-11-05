@@ -16,6 +16,7 @@
 
 package org.cp.elements.test.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,8 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The SmokeTest annotation is a marker annotation indicating that the annotated test case or test class
- * is an integration-based smoke test.
+ * The {@link SmokeTest} annotation is a marker {@link Annotation} indicating that the annotated test case
+ * or test class is an Integration-based Smoke Test.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented
@@ -33,10 +34,10 @@ import java.lang.annotation.Target;
  * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
-@Documented
-@IntegrationTest
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@IntegrationTest
+@Documented
 @SuppressWarnings("unused")
 public @interface SmokeTest {
 

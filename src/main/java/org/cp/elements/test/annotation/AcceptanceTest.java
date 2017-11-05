@@ -16,6 +16,7 @@
 
 package org.cp.elements.test.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,8 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The AcceptanceTest annotation is a marker annotation indicating that the annotated test case or test class
- * is an User Acceptance Test (UAT), functional-based test.
+ * The {@link AcceptanceTest} annotation is a marker {@link Annotation} indicating that the annotated test case
+ * or test class is an User Acceptance Test (UAT), functional-based test.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented
@@ -33,10 +34,10 @@ import java.lang.annotation.Target;
  * @see org.cp.elements.test.annotation.FunctionalTest
  * @since 1.0.0
  */
-@Documented
-@FunctionalTest
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@FunctionalTest
+@Documented
 @SuppressWarnings("unused")
 public @interface AcceptanceTest {
 

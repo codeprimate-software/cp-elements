@@ -25,7 +25,10 @@ import java.lang.annotation.Target;
 
 /**
  * The {@link UnitTest} annotation is a marker {@link Annotation} indicating that the annotated test case
- * or test class is Unit Test.
+ * or test class is a Unit Test.
+ *
+ * Unit Tests are classified as tests testing only the subject of the test, mocking any collaborators
+ * used by the subject during the test.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented
@@ -34,9 +37,9 @@ import java.lang.annotation.Target;
  * @see org.cp.elements.test.annotation.FunctionalTest
  * @since 1.0.0
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface UnitTest {
 
 }

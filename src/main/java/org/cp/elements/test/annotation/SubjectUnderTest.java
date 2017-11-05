@@ -24,8 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@link SubjectUnderTest} annotation is a stereotype {@link Annotation} to identify an object
- * that is the subject of a test case, or an entire test class, i.e. the Subject Under Test (SUT).
+ * The {@link SubjectUnderTest} annotation is a stereotype {@link Annotation} identifying an object that is the subject
+ * of a test case or an entire test class, i.e. the Subject Under Test (SUT).
  *
  * This {@link Annotation} can be used on instance fields, instance methods, local variables or method parameters.
  *
@@ -36,9 +36,9 @@ import java.lang.annotation.Target;
  * @see java.lang.annotation.Target
  * @since 1.0.0
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PARAMETER })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
 @SuppressWarnings("unused")
 public @interface SubjectUnderTest {
 
