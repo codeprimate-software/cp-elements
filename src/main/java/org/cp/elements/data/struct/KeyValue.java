@@ -35,20 +35,20 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  */
 @ThreadSafe
 @SuppressWarnings("unused")
-public class KeyValue<K, V> {
+public class KeyValue<KEY, VALUE> {
 
   /**
    * Factory method used to construct a new instance of {@link KeyValue} initialized with the given {@code key}
    * and no value.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
-   * @param key key in the key/value mapping. Must not be {@literal null}.
+   * @param <KEY> {@link Class type} of the key.
+   * @param <VALUE> {@link Class type} of the value.
+   * @param key key in the key/value mapping; must not be {@literal null}.
    * @return a new instance of {@link KeyValue} initialized with the given {@code key} with no value.
    * @throws IllegalArgumentException if {@code key} is {@literal null}.
    * @see #KeyValue(Object)
    */
-  public static <K, V> KeyValue<K, V> newKeyValue(K key) {
+  public static <KEY, VALUE> KeyValue<KEY, VALUE> newKeyValue(KEY key) {
     return new KeyValue<>(key);
   }
 
@@ -56,57 +56,58 @@ public class KeyValue<K, V> {
    * Factory method used to construct a new instance of {@link KeyValue} initialized with the given {@code key}
    * and {@code value}.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
-   * @param key key in the key/value mapping. Must not be {@literal null}.
-   * @param value value in the key/value mapping. May be {@literal null}.
+   * @param <KEY> {@link Class type} of the key.
+   * @param <VALUE> {@link Class type} of the value.
+   * @param key key in the key/value mapping; must not be {@literal null}.
+   * @param value value in the key/value mapping; may be {@literal null}.
    * @return a new instance of {@link KeyValue} initialized with the given {@code key} with no value.
    * @throws IllegalArgumentException if {@code key} is {@literal null}.
    * @see #KeyValue(Object, Object)
    */
-  public static <K, V> KeyValue<K, V> newKeyValue(K key, V value) {
+  public static <KEY, VALUE> KeyValue<KEY, VALUE> newKeyValue(KEY key, VALUE value) {
     return new KeyValue<>(key, value);
   }
 
   /**
-   * Factory method to construct a new instance of {@link KeyValue} initialized from the given {@link Map.Entry}.
+   * Factory method used to construct a new instance of {@link KeyValue} initialized from the given {@link Map.Entry}.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
+   * @param <KEY> {@link Class type} of the key.
+   * @param <VALUE> {@link Class type} of the value.
    * @param mapEntry {@link Map.Entry} used to construct and initialize an instance of {@link KeyValue}.
    * @return a new instance of {@link KeyValue} initialized from the the given {@link Map.Entry}.
+   * @see #newKeyValue(Object, Object)
    * @see java.util.Map.Entry
    */
-  public static <K, V> KeyValue<K, V> from(Map.Entry<K, V> mapEntry) {
+  public static <KEY, VALUE> KeyValue<KEY, VALUE> from(Map.Entry<KEY, VALUE> mapEntry) {
 
     return Optional.ofNullable(mapEntry)
       .map(it -> newKeyValue(it.getKey(), it.getValue()))
       .orElseThrow(() -> newIllegalArgumentException("Map.Entry is required"));
   }
 
-  private final K key;
+  private final KEY key;
 
-  private final V value;
+  private final VALUE value;
 
   /**
    * Constructs a new instance of {@link KeyValue} initialized with the given {@code key} and a {@literal null} value.
    *
-   * @param key key in the key/value mapping. Must not be {@literal null}.
+   * @param key key in the key/value mapping; must not be {@literal null}.
    * @throws IllegalArgumentException if {@code key} is {@literal null}.
    * @see #KeyValue(Object, Object)
    */
-  public KeyValue(K key) {
+  public KeyValue(KEY key) {
     this(key, null);
   }
 
   /**
    * Constructs a new instance of {@link KeyValue} initialized with the given {@code key} and {@code value}.
    *
-   * @param key key in the key/value mapping. Must not be {@literal null}.
-   * @param value value in the key/value mapping. May be {@literal null}.
+   * @param key key in the key/value mapping; must not be {@literal null}.
+   * @param value value in the key/value mapping; may be {@literal null}.
    * @throws IllegalArgumentException if {@code key} is {@literal null}.
    */
-  public KeyValue(K key, V value) {
+  public KeyValue(KEY key, VALUE value) {
 
     Assert.notNull(key, "Key is required");
 
@@ -121,7 +122,7 @@ public class KeyValue<K, V> {
    * @see #getValue(Object)
    */
   public boolean isSet() {
-    return (getValue(null) != null);
+    return getValue(null) != null;
   }
 
   /**
@@ -129,7 +130,7 @@ public class KeyValue<K, V> {
    *
    * @return the key.
    */
-  public K getKey() {
+  public KEY getKey() {
     return this.key;
   }
 
@@ -140,7 +141,7 @@ public class KeyValue<K, V> {
    * @see java.util.Optional
    * @see #getValue(Object)
    */
-  public Optional<V> getValue() {
+  public Optional<VALUE> getValue() {
     return Optional.ofNullable(this.value);
   }
 
@@ -153,7 +154,7 @@ public class KeyValue<K, V> {
    * @return the value of the key/value mapping or {@code defaultValue} if value is {@literal null}.
    * @see #getValue()
    */
-  public V getValue(V defaultValue) {
+  public VALUE getValue(VALUE defaultValue) {
     return getValue().orElse(defaultValue);
   }
 
@@ -164,7 +165,7 @@ public class KeyValue<K, V> {
    * @see org.cp.elements.util.MapUtils#newMapEntry(Object, Object)
    * @see java.util.Map.Entry
    */
-  public Map.Entry<K, V> asMapEntry() {
+  public Map.Entry<KEY, VALUE> asMapEntry() {
     return newMapEntry(getKey(), getValue().orElse(null));
   }
 
@@ -207,8 +208,8 @@ public class KeyValue<K, V> {
 
     int hashValue = 17;
 
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getKey());
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getValue());
+    hashValue = 37 * hashValue + ObjectUtils.hashCode(getKey());
+    hashValue = 37 * hashValue + ObjectUtils.hashCode(getValue());
 
     return hashValue;
   }
