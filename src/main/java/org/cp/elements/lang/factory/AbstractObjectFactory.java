@@ -21,7 +21,7 @@ import static org.cp.elements.util.CollectionExtensions.from;
 import java.lang.reflect.Constructor;
 
 import org.cp.elements.context.configure.Configuration;
-import org.cp.elements.data.convert.ConversionService;
+import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
@@ -35,7 +35,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.reflect.Constructor
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.lang.factory.ObjectFactory
- * @see org.cp.elements.data.convert.ConversionService
+ * @see org.cp.elements.data.conversion.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

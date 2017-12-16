@@ -50,7 +50,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyExcepti
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
-import org.cp.elements.data.convert.ConversionException;
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;

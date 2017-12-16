@@ -18,8 +18,8 @@ package org.cp.elements.data.struct;
 
 import java.util.Optional;
 
-import org.cp.elements.data.convert.ConversionService;
-import org.cp.elements.data.convert.provider.DefaultConversionService;
+import org.cp.elements.data.conversion.ConversionService;
+import org.cp.elements.data.conversion.provider.DefaultConversionService;
 import org.cp.elements.lang.StringUtils;
 
 /**
@@ -28,7 +28,7 @@ import org.cp.elements.lang.StringUtils;
  *
  * @author John Blum
  * @see org.cp.elements.data.struct.KeyValue
- * @see org.cp.elements.data.convert.ConversionService
+ * @see org.cp.elements.data.conversion.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -62,7 +62,7 @@ public abstract class StringBasedKeyValue extends KeyValue<String, String> {
    * into the desired {@link Class type}.
    *
    * @return a reference to the configured {@link ConversionService}.
-   * @see org.cp.elements.data.convert.ConversionService
+   * @see org.cp.elements.data.conversion.ConversionService
    */
   protected ConversionService getConversionService() {
     return this.conversionService;
