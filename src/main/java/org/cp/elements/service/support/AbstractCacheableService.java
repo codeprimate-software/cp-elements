@@ -16,7 +16,12 @@
 
 package org.cp.elements.service.support;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
+
+import org.cp.elements.data.caching.Cache;
+import org.cp.elements.data.caching.provider.ConcurrentMapCache;
 
 /**
  * {@link AbstractCacheableService} is an abstract base class extended by application service classes
@@ -26,9 +31,47 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractCacheableService {
+public class AbstractCacheableService<KEY extends Comparable<KEY>, VALUE> {
 
   private final AtomicBoolean cacheMiss = new AtomicBoolean(false);
+
+  private final Cache<KEY, VALUE> cache = newCache();
+
+  /**
+   * Returns an {@link Optional} reference to the configured {@link Cache}.
+   *
+   * @return an {@link Optional} reference to the configured {@link Cache}.
+   * @see org.cp.elements.data.caching.Cache
+   * @see java.util.Optional
+   */
+  protected Optional<Cache<KEY, VALUE>> getCache() {
+    return Optional.ofNullable(this.cache);
+  }
+
+  /**
+   * Constructs a new instance of the {@link Cache} interface.
+   *
+   * The {@link Cache} is used to provide caching services to this application service component.
+   *
+   * @return a new instance of the {@link Cache} interface.
+   * @see org.cp.elements.data.caching.Cache
+   */
+  protected Cache<KEY, VALUE> newCache() {
+    return new ConcurrentMapCache<>();
+  }
+
+  /**
+   * Determines whether this application service component has been configured with caching enabled.
+   *
+   * The default implementation returns {@literal true} if a {@link Cache} instance is present.
+   *
+   * @return a boolean value indicating whether this application service component
+   * has been configured with caching enabled.
+   * @see #getCache()
+   */
+  protected boolean isCachingEnabled() {
+    return getCache().isPresent();
+  }
 
   /**
    * Determines whether the cacheable service operation resulted in a cache hit.
@@ -60,5 +103,29 @@ public class AbstractCacheableService {
    */
   protected boolean setCacheMiss() {
     return this.cacheMiss.compareAndSet(false, true);
+  }
+
+  /**
+   * Enables an application service method to optionally apply and use caching to carry out its function.
+   *
+   * @param key {@link KEY key} used to look up an existing {@link VALUE value} in the {@link Cache}.
+   * @param cacheLoader {@link Supplier} used to compute/execute the application serivce method function
+   * if the {@link Cache} does not contain an already computed {@link VALUE value} or caching is not enabled.
+   * @return the cached or computed {@link VALUE value}.
+   * @see org.cp.elements.data.caching.Cache#lookAsideCache(Comparable, Supplier)
+   * @see java.util.function.Supplier
+   * @see #isCachingEnabled()
+   * @see #getCache()
+   */
+  protected VALUE withCaching(KEY key, Supplier<VALUE> cacheLoader) {
+
+    return getCache()
+      .map(cache -> cache.lookAsideCache(key, () -> {
+
+        setCacheMiss();
+
+        return cacheLoader.get();
+      }))
+      .orElseGet(cacheLoader);
   }
 }
