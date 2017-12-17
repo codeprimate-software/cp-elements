@@ -25,7 +25,7 @@ import org.cp.elements.data.caching.Cache;
 import org.cp.elements.lang.Assert;
 
 /**
- * The {@link MapCacheAdapter} class is a {@link Cache} implementation backed by a {@link Map}.
+ * The {@link MapToCacheAdapter} class is a {@link Cache} implementation backed by a {@link Map}.
  *
  * This class adapts the {@link Map} interface into an instance of {@link Cache}.
  *
@@ -36,11 +36,11 @@ import org.cp.elements.lang.Assert;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class MapCacheAdapter<KEY extends Comparable<KEY>, VALUE> implements Cache<KEY, VALUE> {
+public class MapToCacheAdapter<KEY extends Comparable<KEY>, VALUE> implements Cache<KEY, VALUE> {
 
   private final Map<KEY, VALUE> map;
 
-  public MapCacheAdapter(Map<KEY, VALUE> map) {
+  public MapToCacheAdapter(Map<KEY, VALUE> map) {
 
     Assert.notNull(map, "Map is required");
 

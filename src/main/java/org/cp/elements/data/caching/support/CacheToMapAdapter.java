@@ -27,7 +27,7 @@ import org.cp.elements.data.caching.Cache;
 import org.cp.elements.lang.Assert;
 
 /**
- * The {@link CacheMapAdapter} class is a {@link Map} implementation backed by a {@link Cache}.
+ * The {@link CacheToMapAdapter} class is a {@link Map} implementation backed by a {@link Cache}.
  *
  * This class adapts the {@link Cache} interface into an instance of a {@link Map}.
  *
@@ -38,11 +38,11 @@ import org.cp.elements.lang.Assert;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CacheMapAdapter<KEY extends Comparable<KEY>, VALUE> extends AbstractMap<KEY, VALUE> {
+public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends AbstractMap<KEY, VALUE> {
 
   private final Cache<KEY, VALUE> cache;
 
-  public CacheMapAdapter(Cache<KEY, VALUE> cache) {
+  public CacheToMapAdapter(Cache<KEY, VALUE> cache) {
 
     Assert.notNull(cache, "Cache is required");
 
