@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Supplier;
 
 import org.cp.elements.data.caching.Cache;
 
@@ -68,11 +67,6 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> implements C
   @Override
   public Set<KEY> keys() {
     return Collections.unmodifiableSet(this.map.keySet());
-  }
-
-  @Override
-  public VALUE lookAsideCache(KEY key, Supplier<VALUE> cacheLoader) {
-    return this.map.computeIfAbsent(key, theKey -> cacheLoader.get());
   }
 
   @Override
