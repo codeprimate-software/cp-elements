@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -209,37 +208,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   Set<KEY> keys();
-
-  /**
-   * Implementation of the look-aside cache pattern.
-   *
-   * This cache data access operation first attempts to locate an entry in this {@link Cache}
-   * for the given {@link KEY key} returning the {@link VALUE value} of the entry if present.
-   *
-   * If an entry with the given {@link KEY key} is not present in this {@link Cache} then the supplied
-   * {@link Supplier cache loader} is invoked to load a {@link VALUE value} for the given {@link KEY key}
-   * and put into this {@link Cache}; the operation completes by returning the loaded {@link VALUE value}.
-   *
-   * @param key {@link KEY key} of the entry containing the {@link VALUE} to lookup.
-   * @param cacheLoader {@link Supplier cache loader} used to load a {@link VALUE value} for given {@link KEY key}
-   * if the data access operation initially results in a cache miss.
-   * @return the cached {@link VALUE value} for the given {@link KEY key} if present in this{@link Cache},
-   * or returns the {@link VALUE value} loaded with the {@link Supplier cache loader}.
-   * @see java.util.function.Supplier
-   * @see #get(Comparable)
-   * @see #put(Comparable, Object)
-   */
-  default VALUE lookAsideCache(KEY key, Supplier<VALUE> cacheLoader) {
-
-    return Optional.ofNullable(get(key)).orElseGet(() -> {
-
-      VALUE value = cacheLoader.get();
-
-      put(key, value);
-
-      return value;
-    });
-  }
 
   /**
    * Puts the given {@link VALUE value} mapped to the given {@link KEY key) into this {@link Cache}.
