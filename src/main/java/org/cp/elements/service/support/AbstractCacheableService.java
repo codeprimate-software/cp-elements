@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.data.caching.provider.ConcurrentMapCache;
+import org.cp.elements.data.caching.support.CachingTemplate;
 
 /**
  * {@link AbstractCacheableService} is an abstract base class extended by application service classes
@@ -112,7 +113,8 @@ public class AbstractCacheableService<KEY extends Comparable<KEY>, VALUE> {
    * @param cacheLoader {@link Supplier} used to compute/execute the application serivce method function
    * if the {@link Cache} does not contain an already computed {@link VALUE value} or caching is not enabled.
    * @return the cached or computed {@link VALUE value}.
-   * @see org.cp.elements.data.caching.Cache#lookAsideCache(Comparable, Supplier)
+   * @see org.cp.elements.data.caching.support.CachingTemplate#withCaching(Comparable, Supplier)
+   * @see org.cp.elements.data.caching.Cache
    * @see java.util.function.Supplier
    * @see #isCachingEnabled()
    * @see #getCache()
@@ -120,7 +122,8 @@ public class AbstractCacheableService<KEY extends Comparable<KEY>, VALUE> {
   protected VALUE withCaching(KEY key, Supplier<VALUE> cacheLoader) {
 
     return getCache()
-      .map(cache -> cache.lookAsideCache(key, () -> {
+      .map(CachingTemplate::with)
+      .<VALUE>map(template -> template.withCaching(key, () -> {
 
         setCacheMiss();
 
