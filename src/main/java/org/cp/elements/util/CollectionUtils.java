@@ -396,30 +396,35 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Determines if the {@link Collection} is empty.  The {@link Collection} is empty if it contains no elements
-   * or the {@link Collection} object reference is null.
+   * Determines whether the {@link Iterable} is empty.
    *
-   * @param collection {@link Collection} to evaluate.
-   * @return a boolean value indicating if the {@link Collection} is empty.
-   * @see java.util.Collection#isEmpty()
-   * @see #isNotEmpty(Collection)
+   * The {@link Iterable} is empty if it contains no elements
+   * or the {@link Iterable} object reference is {@literal null}.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @return a boolean value indicating whether the {@link Iterable} is empty.
+   * @see #isNotEmpty(Iterable)
+   * @see #isNotEmpty(Iterable)
+   * @see java.lang.Iterable
    */
   @NullSafe
-  public static boolean isEmpty(Collection<?> collection) {
-    return (collection == null || collection.isEmpty());
+  public static boolean isEmpty(Iterable<?> iterable) {
+    return iterable == null || !iterable.iterator().hasNext();
   }
 
   /**
-   * Determines if the {@link Collection} is not empty.  The {@link Collection} is not empty if it is not null
-   * and contains at least 1 element.
+   * Determines whether the {@link Iterable} is not empty.
    *
-   * @param collection {@link Collection} to evaluate.
-   * @return a boolean value indicating if the {@link Collection} is not empty.
-   * @see #isEmpty(Collection)
+   * The {@link Iterable} is not empty iff it is not {@literal null} and contains at least 1 element.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @return a boolean value indicating whether the {@link Iterable} is not empty.
+   * @see #isEmpty(Iterable)
+   * @see java.lang.Iterable
    */
   @NullSafe
-  public static boolean isNotEmpty(Collection<?> collection) {
-    return !isEmpty(collection);
+  public static boolean isNotEmpty(Iterable<?> iterable) {
+    return !isEmpty(iterable);
   }
 
   /**
