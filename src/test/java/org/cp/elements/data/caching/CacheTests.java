@@ -19,9 +19,7 @@ package org.cp.elements.data.caching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
@@ -91,117 +89,217 @@ public class CacheTests {
   @Test
   public void containsAllWithArrayReturnsTrueWhenAllKeysArePresent() {
 
-    when(this.cache.contains(any())).thenReturn(true);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(true);
     when(this.cache.containsAll(any(Comparable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAll("KeyOne", "KeyTwo", "KeyThree")).isTrue();
+
+    verify(this.cache, times(3)).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAllWithArrayReturnsFalseWhenJustOneKeyIsNotPresent() {
 
-    when(this.cache.contains(any())).thenReturn(true, false, true);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(true, false, true);
     when(this.cache.containsAll(any(Comparable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAll("KeyOne", "KeyTwo", "KeyThree")).isFalse();
+
+    verify(this.cache, times(2)).contains(any(Comparable.class));
   }
 
   @Test
-  public void containsAllWithEmptyArrayReturnsTrue() {
+  public void containsAllWithEmptyArrayReturnsFalse() {
+
     when(this.cache.containsAll(any(Comparable.class))).thenCallRealMethod();
-    assertThat(this.cache.containsAll()).isTrue();
+
+    assertThat(this.cache.containsAll()).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAllWithNullArrayIsNullSafeAndReturnsFalse() {
+
     assertThat(this.cache.containsAll((Comparable[]) null)).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAllWithIterableReturnsTrueWhenAllKeysArePresent() {
 
-    when(this.cache.contains(any())).thenReturn(true);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(true);
     when(this.cache.containsAll(any(Iterable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAll(Arrays.asList("KeyOne", "KeyTwo", "KeyThree"))).isTrue();
+
+    verify(this.cache, times(3)).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAllWithIterableReturnsFalseWhenJustOneKeyIsNotPresent() {
 
-    when(this.cache.contains(any())).thenReturn(true, false, true);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(true, false, true);
     when(this.cache.containsAll(any(Iterable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAll(Arrays.asList("KeyOne", "KeyTwo", "KeyThree"))).isFalse();
+
+    verify(this.cache, times(2)).contains(any(Comparable.class));
   }
 
   @Test
-  public void containsAllWithEmptyIterableReturnsTrue() {
+  public void containsAllWithEmptyIterableReturnsFalse() {
+
     when(this.cache.containsAll(any(Iterable.class))).thenCallRealMethod();
-    assertThat(this.cache.containsAll(Collections::emptyIterator)).isTrue();
+
+    assertThat(this.cache.containsAll(Collections::emptyIterator)).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAllWithNullIterableIsNullSafeAndReturnsFalse() {
+
     assertThat(this.cache.containsAll((Iterable) null)).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithArrayReturnsTrueWhenJustOneKeyIsPresent() {
 
-    when(this.cache.contains(any())).thenReturn(true, false, false);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(false, true, false);
     when(this.cache.containsAny(any(Comparable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAny("KeyOne", "KeyTwo", "KeyThree")).isTrue();
+
+    verify(this.cache, times(2)).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithArrayReturnsFalseWhenNoKeysArePresent() {
 
-    when(this.cache.contains(any())).thenReturn(false);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(false);
     when(this.cache.containsAny(any(Comparable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAny("KeyOne", "KeyTwo", "KeyThree")).isFalse();
+
+    verify(this.cache, times(3)).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithEmptyArrayReturnsFalse() {
+
     when(this.cache.containsAny(any(Comparable.class))).thenCallRealMethod();
+
     assertThat(this.cache.containsAny()).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithNullArrayIsNullSafeAndReturnsFalse() {
+
     assertThat(this.cache.containsAny((Comparable[]) null)).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithIterableReturnsTrueWhenJustOneKeyIsPresent() {
 
-    when(this.cache.contains(any())).thenReturn(true, false, false);
+    when(this.cache.contains(any())).thenReturn(false, true, false);
     when(this.cache.containsAny(any(Iterable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAny(Arrays.asList("KeyOne", "KeyTwo", "KeyThree"))).isTrue();
+
+    verify(this.cache, times(2)).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithIterableReturnsFalseWhenNoKeysArePresent() {
 
-    when(this.cache.contains(any())).thenReturn(false);
+    when(this.cache.contains(any(Comparable.class))).thenReturn(false);
     when(this.cache.containsAny(any(Iterable.class))).thenCallRealMethod();
 
     assertThat(this.cache.containsAny(Arrays.asList("KeyOne", "KeyTwo", "KeyThree"))).isFalse();
+
+    verify(this.cache, times(3)).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithEmptyIterableReturnsFalse() {
+
     when(this.cache.containsAny(any(Iterable.class))).thenCallRealMethod();
+
     assertThat(this.cache.containsAny(Collections::emptyIterator)).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
   }
 
   @Test
   public void containsAnyWithNullIterableIsNullSafeAndReturnsFalse() {
+
     assertThat(this.cache.containsAny((Iterable) null)).isFalse();
+
+    verify(this.cache, never()).contains(any(Comparable.class));
+  }
+
+  @Test
+  public void evictAllWithArray() {
+
+    doCallRealMethod().when(this.cache).evictAll(any(Comparable.class));
+
+    this.cache.evictAll("KeyOne", "KeyTwo", "KeyThree");
+
+    verify(this.cache, times(3)).evict(any(Comparable.class));
+  }
+
+  @Test
+  public void evictAllWithEmptyArray() {
+
+    doCallRealMethod().when(this.cache).evictAll(any(Comparable.class));
+
+    this.cache.evictAll();
+
+    verify(this.cache, never()).evict(any(Comparable.class));
+  }
+
+  @Test
+  public void evictAllWithNullArray() {
+
+    this.cache.evictAll((Comparable[]) null);
+
+    verify(this.cache, never()).evict(any(Comparable.class));
+  }
+
+  @Test
+  public void evictAllWithIterable() {
+
+    doCallRealMethod().when(this.cache).evictAll(any(Iterable.class));
+
+    this.cache.evictAll(Arrays.asList("KeyOne", "KeyTwo", "KeyThree"));
+
+    verify(this.cache, times(3)).evict(any(Comparable.class));
+  }
+
+  @Test
+  public void evictAllWithEmptyIterable() {
+
+    doCallRealMethod().when(this.cache).evictAll(any(Iterable.class));
+
+    this.cache.evictAll(Collections::emptyIterator);
+
+    verify(this.cache, never()).evict(any(Comparable.class));
+  }
+
+  @Test
+  public void evictAllWithNullIterable() {
+
+    this.cache.evictAll((Iterable) null);
+
+    verify(this.cache, never()).evict(any(Comparable.class));
   }
 
   @Test
@@ -223,63 +321,83 @@ public class CacheTests {
   }
 
   @Test
-  public void getAllWithArrayReturnsListOfValues() {
+  public void getAllWithArrayReturnsList() {
 
-    when(this.cache.get(any(Integer.class))).thenReturn("one", "two", "three");
+    when(this.cache.get(any(Comparable.class))).thenReturn("one", "two", "three");
     when(this.cache.getAll(any(Comparable.class))).thenCallRealMethod();
 
     assertThat(this.cache.getAll(1, 2, 3)).containsExactly("one", "two", "three");
+
+    verify(this.cache, times(3)).get(any(Comparable.class));
   }
 
   @Test
-  public void getAllWithArrayMayReturnListContainingNulls() {
+  public void getAllWithArrayReturnsListContainingNulls() {
 
-    when(this.cache.get(any(Integer.class))).thenReturn("one", null, "three");
+    when(this.cache.get(any(Comparable.class))).thenReturn("one", null, "three");
     when(this.cache.getAll(any(Comparable.class))).thenCallRealMethod();
 
     assertThat(this.cache.getAll(1, 2, 3)).containsExactly("one", null, "three");
+
+    verify(this.cache, times(3)).get(any(Comparable.class));
   }
 
   @Test
   public void getAllWithEmptyArrayReturnsEmptyList() {
+
     when(this.cache.getAll(any(Comparable.class))).thenCallRealMethod();
+
     assertThat(this.cache.getAll()).isEmpty();
+
+    verify(this.cache, never()).get(any(Comparable.class));
   }
 
   @Test
-  public void getAllWithNullArrayIsNullSafeAndReturnsEmptyList() {
-    when(this.cache.getAll(any(Comparable.class))).thenCallRealMethod();
-    assertThat(this.cache.getAll()).isEmpty();
+  public void getAllWithNullArrayIsNullSafeReturnsEmptyList() {
+
+    assertThat(this.cache.getAll((Comparable[]) null)).isEmpty();
+
+    verify(this.cache, never()).get(any(Comparable.class));
   }
 
   @Test
   public void getAllWithIterableReturnsList() {
 
-    when(this.cache.get(any(Integer.class))).thenReturn("one", "two", "three");
+    when(this.cache.get(any(Comparable.class))).thenReturn("one", "two", "three");
     when(this.cache.getAll(any(Iterable.class))).thenCallRealMethod();
 
     assertThat(this.cache.getAll(Arrays.asList(1, 2, 3))).containsExactly("one", "two", "three");
+
+    verify(this.cache, times(3)).get(any(Comparable.class));
   }
 
   @Test
-  public void getAllWithIterableMayReturnListContainingNulls() {
+  public void getAllWithIterableReturnsListContainingNulls() {
 
-    when(this.cache.get(any(Integer.class))).thenReturn("one", null, "three");
+    when(this.cache.get(any(Comparable.class))).thenReturn("one", null, "three");
     when(this.cache.getAll(any(Iterable.class))).thenCallRealMethod();
 
     assertThat(this.cache.getAll(Arrays.asList(1, 2, 3))).containsExactly("one", null, "three");
+
+    verify(this.cache, times(3)).get(any(Comparable.class));
   }
 
   @Test
   public void getAllWithEmptyIterableReturnsEmptyList() {
+
     when(this.cache.getAll(any(Iterable.class))).thenCallRealMethod();
+
     assertThat(this.cache.getAll(Collections::emptyIterator)).isEmpty();
+
+    verify(this.cache, never()).get(any(Comparable.class));
   }
 
   @Test
   public void getAllWithNullIterableIsNullSafeReturnsEmptyList() {
-    when(this.cache.getAll(any(Iterable.class))).thenCallRealMethod();
-    assertThat(this.cache.getAll(Collections::emptyIterator)).isEmpty();
+
+    assertThat(this.cache.getAll((Iterable) null)).isEmpty();
+
+    verify(this.cache, never()).get(any(Comparable.class));
   }
 
   @Test
@@ -295,7 +413,7 @@ public class CacheTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void putEntityHavingNullIdThrowsIllegalArgumentException() {
+  public void putEntityWithNullIdThrowsIllegalArgumentException() {
 
     doCallRealMethod().when(this.cache).put(any(Identifiable.class));
 
@@ -310,7 +428,7 @@ public class CacheTests {
       throw expected;
     }
     finally {
-      verify(this.cache, never()).put(anyLong(), any(Person.class));
+      verify(this.cache, never()).put(any(Comparable.class), any());
     }
   }
 
@@ -328,19 +446,19 @@ public class CacheTests {
       throw expected;
     }
     finally {
-      verify(this.cache, never()).put(anyLong(), any(Person.class));
+      verify(this.cache, never()).put(any(Comparable.class), any());
     }
   }
 
   @Test
   public void putAllWithArray() {
 
-    doCallRealMethod().when(this.cache).put(any(Identifiable.class));
-    doCallRealMethod().when(this.cache).putAll(any(Identifiable.class));
-
     Person jonDoe = Person.newPerson().named("Jon", "Doe").identifiedBy(1L);
     Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
     Person pieDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(3L);
+
+    doCallRealMethod().when(this.cache).put(any(Identifiable.class));
+    doCallRealMethod().when(this.cache).putAll(any(Identifiable.class));
 
     this.cache.putAll(jonDoe, janeDoe, pieDoe);
 
@@ -357,7 +475,7 @@ public class CacheTests {
 
     TestCache testCache = spy(new TestCache());
 
-    doNothing().when(testCache).put(any(), any(Identifiable.class));
+    doNothing().when(testCache).put(any(Comparable.class), any());
 
     try {
       testCache.putAll(jonDoe, null, janeDoe);
@@ -376,6 +494,29 @@ public class CacheTests {
     }
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void putAllWithArrayContainingEntityWithNullIdThrowsIllegalArgumentException() {
+
+    Person jonDoe = Person.newPerson().named("Jon", "Doe");
+    Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
+
+    TestCache testCache = spy(new TestCache());
+
+    try {
+      testCache.putAll(jonDoe, janeDoe);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Entity ID is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(testCache, never()).put(any(Comparable.class), any());
+    }
+  }
+
   @Test
   public void putAllWithEmptyArray() {
 
@@ -384,7 +525,7 @@ public class CacheTests {
     this.cache.putAll();
 
     verify(this.cache, never()).put(any(Identifiable.class));
-    verify(this.cache, never()).put(any(), any());
+    verify(this.cache, never()).put(any(Comparable.class), any());
   }
 
   @Test
@@ -395,18 +536,18 @@ public class CacheTests {
     testCache.putAll((Identifiable[]) null);
 
     verify(testCache, never()).put(any(Identifiable.class));
-    verify(testCache, never()).put(any(), any());
+    verify(testCache, never()).put(any(Comparable.class), any());
   }
 
   @Test
   public void putAllWithIterable() {
 
-    doCallRealMethod().when(this.cache).put(any(Identifiable.class));
-    doCallRealMethod().when(this.cache).putAll(any(Iterable.class));
-
     Person cookieDoe = Person.newPerson().named("Cookie", "Doe").identifiedBy(1L);
     Person joeDoe = Person.newPerson().named("Joe", "Doe").identifiedBy(2L);
     Person sourDoe = Person.newPerson().named("Sour", "Doe").identifiedBy(3L);
+
+    doCallRealMethod().when(this.cache).put(any(Identifiable.class));
+    doCallRealMethod().when(this.cache).putAll(any(Iterable.class));
 
     this.cache.putAll(Arrays.asList(cookieDoe, joeDoe, sourDoe));
 
@@ -423,7 +564,7 @@ public class CacheTests {
 
     TestCache testCache = spy(new TestCache());
 
-    doNothing().when(testCache).put(any(), any(Identifiable.class));
+    doNothing().when(testCache).put(any(Comparable.class), any());
 
     try {
       testCache.putAll(Arrays.asList(jonDoe, null, janeDoe));
@@ -436,8 +577,32 @@ public class CacheTests {
       throw expected;
     }
     finally {
-      verify(testCache, times(2)).put(isA(Identifiable.class));
+      verify(testCache, times(1)).put(eq(1L), eq(jonDoe));
       verify(testCache, times(1)).put(isNull());
+      verify(testCache, never()).put(eq(2L), eq(janeDoe));
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void putAllWithIterableContainingEntityWithNullIdThrowsIllegalArgumentException() {
+
+    Person jonDoe = Person.newPerson().named("Jon", "Doe");
+    Person janeDoe = Person.newPerson().named("Jane", "Doe").identifiedBy(2L);
+
+    TestCache testCache = spy(new TestCache());
+
+    try {
+      testCache.putAll(Arrays.asList(jonDoe, janeDoe));
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Entity ID is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(testCache, never()).put(any(Comparable.class), any());
     }
   }
 
@@ -449,7 +614,7 @@ public class CacheTests {
     this.cache.putAll(Collections::emptyIterator);
 
     verify(this.cache, never()).put(any(Identifiable.class));
-    verify(this.cache, never()).put(any(), any());
+    verify(this.cache, never()).put(any(Comparable.class), any());
   }
 
   @Test
@@ -460,14 +625,14 @@ public class CacheTests {
     testCache.putAll((Iterable) null);
 
     verify(testCache, never()).put(any(Identifiable.class));
-    verify(testCache, never()).put(any(), any());
+    verify(testCache, never()).put(any(Comparable.class), any());
   }
 
   @Test
   public void putIfAbsentWithKeyValue() {
 
     when(this.cache.contains(any(Comparable.class))).thenReturn(false);
-    doCallRealMethod().when(this.cache).putIfAbsent(any(), any());
+    doCallRealMethod().when(this.cache).putIfAbsent(any(Comparable.class), any());
 
     this.cache.putIfAbsent(1L, "test");
 
@@ -479,12 +644,12 @@ public class CacheTests {
   public void putIfAbsentWithKeyValueUsingExistingKey() {
 
     when(this.cache.contains(any(Comparable.class))).thenReturn(true);
-    doCallRealMethod().when(this.cache).putIfAbsent(any(), any());
+    doCallRealMethod().when(this.cache).putIfAbsent(any(Comparable.class), any());
 
     this.cache.putIfAbsent(1L, "test");
 
     verify(this.cache, times(1)).contains(eq(1L));
-    verify(this.cache, never()).put(any(), any());
+    verify(this.cache, never()).put(any(Comparable.class), any());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -503,8 +668,8 @@ public class CacheTests {
       throw expected;
     }
     finally {
-      verify(this.cache, never()).contains(any());
-      verify(this.cache, never()).put(any(), any());
+      verify(this.cache, never()).contains(any(Comparable.class));
+      verify(this.cache, never()).put(any(Comparable.class), any());
     }
   }
 
@@ -538,7 +703,7 @@ public class CacheTests {
       throw expected;
     }
     finally {
-      verify(this.cache, never()).contains(eq(1L));
+      verify(this.cache, never()).contains(any(Comparable.class));
       verify(this.cache, never()).put(any(Comparable.class), any());
     }
   }
@@ -549,9 +714,7 @@ public class CacheTests {
     when(this.cache.contains(any(Comparable.class))).thenReturn(true);
     doCallRealMethod().when(this.cache).putIfAbsent(any(Identifiable.class));
 
-    Person person = Person.newPerson().identifiedBy(1L);
-
-    this.cache.putIfAbsent(person);
+    this.cache.putIfAbsent(Person.newPerson().identifiedBy(1L));
 
     verify(this.cache, times(1)).contains(eq(1L));
     verify(this.cache, never()).put(any(Comparable.class), any());
@@ -571,7 +734,7 @@ public class CacheTests {
       throw expected;
     }
     finally {
-      verify(this.cache, never()).contains(eq(1L));
+      verify(this.cache, never()).contains(any(Comparable.class));
       verify(this.cache, never()).put(any(Comparable.class), any());
     }
   }
