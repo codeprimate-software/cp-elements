@@ -51,10 +51,12 @@ import lombok.NoArgsConstructor;
  *
  * @author John Blum
  * @see java.util.Map
+ * @see lombok
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.caching.Cache
+ * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -84,6 +86,34 @@ public class CacheTests {
     assertThat(this.cache.isEmpty()).isFalse();
 
     verify(this.cache, times(1)).size();
+  }
+
+  @Test
+  public void clearCache() {
+
+    when(this.cache.keys()).thenReturn(asSet("KeyOne", "KeyTwo", "KeyThree"));
+    doCallRealMethod().when(this.cache).evictAll(any(Iterable.class));
+    doCallRealMethod().when(this.cache).clear();
+
+    this.cache.clear();
+
+    verify(this.cache, times(1)).evictAll(eq(asSet("KeyOne", "KeyTwo", "KeyThree")));
+    verify(this.cache, times(1)).evict(eq("KeyOne"));
+    verify(this.cache, times(1)).evict(eq("KeyTwo"));
+    verify(this.cache, times(1)).evict(eq("KeyThree"));
+  }
+
+  @Test
+  public void clearEmptyCache() {
+
+    when(this.cache.keys()).thenReturn(Collections.emptySet());
+    doCallRealMethod().when(this.cache).evictAll(any(Iterable.class));
+    doCallRealMethod().when(this.cache).clear();
+
+    this.cache.clear();
+
+    verify(this.cache, times(1)).evictAll(eq(Collections.emptySet()));
+    verify(this.cache, never()).evict(any(Comparable.class));
   }
 
   @Test
@@ -815,12 +845,10 @@ public class CacheTests {
     when(this.cache.contains(any(Comparable.class))).thenReturn(false);
     doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
 
-    Person person = Person.newPerson().identifiedBy(1L);
-
-    this.cache.putIfPresent(person);
+    this.cache.putIfPresent(Person.newPerson().identifiedBy(1L));
 
     verify(this.cache, times(1)).contains(eq(1L));
-    verify(this.cache, never()).put(eq(1L), eq(person));
+    verify(this.cache, never()).put(any(Comparable.class), any());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -929,5 +957,6 @@ public class CacheTests {
   }
 
   static class TestCache<KEY extends Comparable<KEY>, VALUE> extends AbstractCache<KEY, VALUE> {
+
   }
 }

@@ -23,8 +23,6 @@ import static org.cp.elements.util.MapUtils.nullSafeMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -32,6 +30,8 @@ import java.util.stream.StreamSupport;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * The {@link Cache} interface is an Abstract Data Type (ADT) defining a cache data structure,
@@ -63,6 +63,16 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
   }
 
   /**
+   * Clears the entire contents (all entries) of this {@link Cache}.
+   *
+   * @see #evictAll(Iterable)
+   * @see #keys()
+   */
+  default void clear() {
+    evictAll(keys());
+  }
+
+  /**
    * Determines whether this {@link Cache} contains an entry mapped with the given {@link KEY key}.
    *
    * @param key {@link KEY key} to evaluate.
@@ -83,7 +93,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
   @NullSafe
   @SuppressWarnings("unchecked")
   default boolean containsAll(KEY... keys) {
-    return Arrays.stream(nullSafeArray(keys)).allMatch(this::contains);
+    return ArrayUtils.isNotEmpty(keys) && Arrays.stream(nullSafeArray(keys)).allMatch(this::contains);
   }
 
   /**
@@ -98,7 +108,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   default boolean containsAll(Iterable<KEY> keys) {
-    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), true).allMatch(this::contains);
+    return CollectionUtils.isNotEmpty(keys)
+      && StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).allMatch(this::contains);
   }
 
   /**
@@ -128,7 +139,39 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   default boolean containsAny(Iterable<KEY> keys) {
-    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), true).anyMatch(this::contains);
+    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).anyMatch(this::contains);
+  }
+
+  /**
+   * Removes the entry mapped to the given {@link KEY key} from this {@link Cache}.
+   *
+   * @param key {@link KEY key} identifying the entry to remove from this {@link Cache}.
+   */
+  void evict(KEY key);
+
+  /**
+   * Removes all the entries mapped to the given {@link KEY keys} from this {@link Cache}.
+   *
+   * @param keys array of {@link KEY keys} identifying entries to remove from this {@link Cache}.
+   * @see #evict(Comparable)
+   * @see #evictAll(Comparable[])
+   */
+  @SuppressWarnings("unchecked")
+  default void evictAll(KEY... keys) {
+    Arrays.stream(nullSafeArray(keys)).forEach(this::evict);
+  }
+
+  /**
+   * Removes all the entries mapped to the given {@link KEY keys} from this {@link Cache}.
+   *
+   * @param keys {@link Iterable} of {@link KEY keys} identifying entries to remove from this {@link Cache}.
+   * @see #evict(Comparable)
+   * @see #evictAll(Comparable[])
+   * @see java.lang.Iterable
+   */
+  @SuppressWarnings("unchecked")
+  default void evictAll(Iterable<KEY> keys) {
+    StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).forEach(this::evict);
   }
 
   /**
@@ -196,7 +239,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   default List<VALUE> getAll(Iterable<KEY> keys) {
-    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), true).map(this::get)
+    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).map(this::get)
       .collect(Collectors.toList());
   }
 
@@ -225,15 +268,20 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    *
    * The {@link Identifiable} object must be an instance of {@link VALUE}.
    *
-   * @param obj {@link Identifiable} object to put into this {@link Cache}.
+   * @param entity {@link Identifiable} object to put into this {@link Cache}.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
+   * @throws IllegalArgumentException if the {@link Identifiable} object or its {@link Identifiable#getId() ID}
+   * is {@literal null}.
    * @see org.cp.elements.lang.Identifiable
    * @see #put(Comparable, Object)
    */
-  @NullSafe
   @SuppressWarnings("unchecked")
-  default void put(Identifiable<KEY> obj) {
-    Optional.ofNullable(obj).map(Identifiable::getId).filter(Objects::nonNull).ifPresent(id -> put(id, (VALUE) obj));
+  default void put(Identifiable<KEY> entity) {
+
+    Assert.notNull(entity, "Entity is required");
+    Assert.notNull(entity.getId(), "Entity ID is required");
+
+    put(entity.getId(), (VALUE) entity);
   }
 
   /**
@@ -242,15 +290,22 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    *
    * All {@link Identifiable} objects must be an instance of {@link VALUE}.
    *
-   * @param objs array of {@link Identifiable} objects to put into this {@link Cache}.
+   * Warning: this putAll(..) operation is not atomic.
+   *
+   * For example, if any {@link Identifiable} object in the array is {@literal null}, then it will cause
+   * an {@link IllegalArgumentException} to be thrown.  However, any {@link Identifiable} object that came before
+   * the {@literal null} {@link Identifiable} object will still be persisted to this {@link Cache}.
+   *
+   * @param entities array of {@link Identifiable} objects to put into this {@link Cache}.
    * @throws ClassCastException if any {@link Identifiable} object is not an instance of {@link VALUE}.
+   * @throws IllegalArgumentException if any {@link Identifiable} object or their {@link Identifiable#getId() IDs}
+   * are {@literal null}.
    * @see org.cp.elements.lang.Identifiable
    * @see #put(Comparable, Object)
    */
-  @NullSafe
   @SuppressWarnings("unchecked")
-  default void putAll(Identifiable<KEY>... objs) {
-    Arrays.stream(nullSafeArray(objs, Identifiable.class)).forEach(this::put);
+  default void putAll(Identifiable<KEY>... entities) {
+    Arrays.stream(nullSafeArray(entities, Identifiable.class)).forEach(this::put);
   }
 
   /**
@@ -259,16 +314,23 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    *
    * All {@link Identifiable} objects must be an instance of {@link VALUE}.
    *
-   * @param objs {@link Iterable} of {@link Identifiable} objects to put into this {@link Cache}.
+   * Warning: this putAll(..) operation is not atomic.
+   *
+   * For example, if any {@link Identifiable} object  in the iteration is {@literal null}, then it will cause
+   * an {@link IllegalArgumentException} to be thrown.  However, any {@link Identifiable} object that came before
+   * the {@literal null} {@link Identifiable} object will still be persisted to this {@link Cache}.
+   *
+   * @param entities {@link Iterable} of {@link Identifiable} objects to put into this {@link Cache}.
    * @throws ClassCastException if any {@link Identifiable} object is not an instance of {@link VALUE}.
+   * @throws IllegalArgumentException if any {@link Identifiable} object or their {@link Identifiable#getId() IDs}
+   * are {@literal null}.
    * @see org.cp.elements.lang.Identifiable
    * @see #put(Comparable, Object)
    * @see java.lang.Iterable
    */
-  @NullSafe
   @SuppressWarnings("unchecked")
-  default void putAll(Iterable<Identifiable<KEY>> objs) {
-    StreamSupport.stream(nullSafeIterable(objs).spliterator(), true).forEach(this::put);
+  default void putAll(Iterable<Identifiable<KEY>> entities) {
+    StreamSupport.stream(nullSafeIterable(entities).spliterator(), false).forEach(this::put);
   }
 
   /**
@@ -296,7 +358,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * is not {@literal null} and the {@link Identifiable} object identified by its {@link Identifiable#getId() ID}
    * is not already present in this {@link Cache}.
    *
-   * @param obj {@link Identifiable} object to put into this {@link Cache} if not already present.
+   * @param entity {@link Identifiable} object to put into this {@link Cache} if not already present.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
    * @see org.cp.elements.lang.Identifiable
    * @see #contains(Comparable)
@@ -305,9 +367,17 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  default void putIfAbsent(Identifiable<KEY> obj) {
-    Optional.ofNullable(obj).map(Identifiable::getId).filter(Objects::nonNull).filter(id -> !contains(id))
-      .ifPresent(id -> put(id, (VALUE) obj));
+  default void putIfAbsent(Identifiable<KEY> entity) {
+
+    Assert.notNull(entity, "Entity is required");
+
+    KEY entityId = entity.getId();
+
+    Assert.notNull(entityId, "Entity ID is required");
+
+    if (!contains(entityId)) {
+      put(entityId, (VALUE) entity);
+    }
   }
 
   /**
@@ -335,7 +405,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * Puts the given {@link Identifiable} object in this {@link Cache} iff if the {@link Identifiable} object
    * is already present.
    *
-   * @param obj {@link Identifiable} object replacing the existing object with the same {@link Identifiable#getId() ID}.
+   * @param newEntity {@link Identifiable} object replacing the existing object with the same {@link Identifiable#getId() ID}.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
    * @see org.cp.elements.lang.Identifiable
    * @see #contains(Comparable)
@@ -343,40 +413,16 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #putIfAbsent(Identifiable)
    */
   @NullSafe
-  default void putIfPresent(Identifiable<KEY> obj) {
-    Optional.ofNullable(obj).filter(it -> contains(it.getId())).ifPresent(this::put);
-  }
-
-  /**
-   * Removes the entry mapped to the given {@link KEY key} from this {@link Cache}.
-   *
-   * @param key {@link KEY key} identifying the entry to remove from this {@link Cache}.
-   */
-  void remove(KEY key);
-
-  /**
-   * Removes all the entries mapped to the given {@link KEY keys} from this {@link Cache}.
-   *
-   * @param keys array of {@link KEY keys} identifying entries to remove from this {@link Cache}.
-   * @see #remove(Comparable)
-   * @see #removeAll(Iterable)
-   */
   @SuppressWarnings("unchecked")
-  default void removeAll(KEY... keys) {
-    Arrays.stream(nullSafeArray(keys)).forEach(this::remove);
-  }
+  default void putIfPresent(Identifiable<KEY> newEntity) {
 
-  /**
-   * Removes all the entries mapped to the given {@link KEY keys} from this {@link Cache}.
-   *
-   * @param keys {@link Iterable} of {@link KEY keys} identifying entries to remove from this {@link Cache}.
-   * @see #remove(Comparable)
-   * @see #removeAll(Comparable[])
-   * @see java.lang.Iterable
-   */
-  @SuppressWarnings("unchecked")
-  default void removeAll(Iterable<KEY> keys) {
-    StreamSupport.stream(nullSafeIterable(keys).spliterator(), true).forEach(this::remove);
+    Assert.notNull(newEntity, "Entity is required");
+
+    KEY entityId = newEntity.getId();
+
+    if (contains(entityId)) {
+      put(entityId, (VALUE) newEntity);
+    }
   }
 
   /**
