@@ -19,7 +19,9 @@ package org.cp.elements.data.caching.provider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.cp.elements.util.MapBuilder;
 import org.junit.Before;
@@ -29,6 +31,7 @@ import org.junit.Test;
  * Unit tests for {@link ConcurrentMapCache}.
  *
  * @author John Blum
+ * @see java.util.Map
  * @see org.junit.Test
  * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
  * @since 1.0.0
@@ -100,6 +103,11 @@ public class ConcurrentMapCacheTests {
   }
 
   @Test
+  public void containsNullKeyReturnsFalse() {
+    assertThat(this.concurrentMapCache.contains(null)).isFalse();
+  }
+
+  @Test
   public void evictExistingKeyIsSuccessful() {
 
     this.concurrentMapCache.put(1L, "one");
@@ -125,6 +133,11 @@ public class ConcurrentMapCacheTests {
   }
 
   @Test
+  public void evictNullKeyIsSuccessful() {
+    this.concurrentMapCache.evict(null);
+  }
+
+  @Test
   public void fromMapIsSuccessful() {
 
     Map<Long, String> map = MapBuilder.<Long, String>newHashMap()
@@ -143,6 +156,14 @@ public class ConcurrentMapCacheTests {
   }
 
   @Test
+  public void fromNullMapIsNullSafe() {
+
+    this.concurrentMapCache.from(null);
+
+    assertThat(this.concurrentMapCache.isEmpty()).isTrue();
+  }
+
+  @Test
   public void getWithExistingKeyReturnsValue() {
 
     this.concurrentMapCache.put(1L, "one");
@@ -153,6 +174,59 @@ public class ConcurrentMapCacheTests {
   @Test
   public void getWithNonExistingKeyReturnsNull() {
     assertThat(this.concurrentMapCache.get(1L)).isNull();
+  }
+
+  @Test
+  public void getWithNullKeyReturnsNull() {
+    assertThat(this.concurrentMapCache.get(null)).isNull();
+  }
+
+  @Test
+  public void getNameWhenUnsetReturnsNull() {
+    assertThat(this.concurrentMapCache.getName()).isNull();
+  }
+
+  @Test
+  public void getNameWhenNamed() {
+
+    assertThat(this.concurrentMapCache.named("TestCache")).isSameAs(this.concurrentMapCache);
+    assertThat(this.concurrentMapCache.getName()).isEqualTo("TestCache");
+  }
+
+  @Test
+  public void iteratorForEmptyCache() {
+
+    Iterator<?> valueIterator = this.concurrentMapCache.iterator();
+
+    assertThat(valueIterator).isNotNull();
+    assertThat(valueIterator).isEmpty();
+  }
+
+  @Test
+  public void iteratorForNonEmptyCache() {
+
+    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put(2L, "two");
+
+    assertThat(this.concurrentMapCache.iterator()).containsExactlyInAnyOrder("one", "two");
+  }
+
+  @Test
+  public void keysForEmptyCache() {
+
+    Set<Comparable<?>> keys = this.concurrentMapCache.keys();
+
+    assertThat(keys).isNotNull();
+    assertThat(keys).isEmpty();
+  }
+
+  @Test
+  public void keysForNonEmptyCache() {
+
+    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put(2L, "two");
+
+    assertThat(this.concurrentMapCache.keys()).containsExactlyInAnyOrder(1L, 2L);
   }
 
   @Test
@@ -167,6 +241,42 @@ public class ConcurrentMapCacheTests {
     assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
     assertThat(this.concurrentMapCache.contains(2L)).isTrue();
     assertThat(this.concurrentMapCache.get(2L)).isEqualTo("two");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void putWithNullKeyThrowsIllegalArgumentException() {
+
+    try {
+      this.concurrentMapCache.put(null, "value");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Key is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(this.concurrentMapCache.isEmpty()).isTrue();
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void putWithNullValueThrowsIllegalArgumentException() {
+
+    try {
+      this.concurrentMapCache.put("key", null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Value is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(this.concurrentMapCache.isEmpty()).isTrue();
+    }
   }
 
   @Test
@@ -191,6 +301,42 @@ public class ConcurrentMapCacheTests {
     assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void putIfAbsentWithNullKeyThrowsIllegalArgumentException() {
+
+    try {
+      this.concurrentMapCache.putIfAbsent(null, "value");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Key is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(this.concurrentMapCache.isEmpty()).isTrue();
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void putIfAbsentWithNullValueThrowsIllegalArgumentException() {
+
+    try {
+      this.concurrentMapCache.putIfAbsent("key", null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Value is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(this.concurrentMapCache.isEmpty()).isTrue();
+    }
+  }
+
   @Test
   public void putIfPresentWhenAbsent() {
 
@@ -211,6 +357,34 @@ public class ConcurrentMapCacheTests {
     this.concurrentMapCache.putIfPresent(1L, "two");
 
     assertThat(this.concurrentMapCache.get(1L)).isEqualTo("two");
+  }
+
+  @Test
+  public void putIfPresentWithNullKey() {
+
+    this.concurrentMapCache.putIfPresent(null, "value");
+
+    assertThat(this.concurrentMapCache.isEmpty()).isTrue();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void putIfPresentWithNullValueThrowsIllegalArgumentException() {
+
+    this.concurrentMapCache.put(1L, "one");
+
+    try {
+      this.concurrentMapCache.putIfPresent(1L, null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Value is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
+    }
   }
 
   @Test
