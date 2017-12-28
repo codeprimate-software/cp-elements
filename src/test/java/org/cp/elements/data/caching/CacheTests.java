@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
-import org.cp.elements.data.caching.support.AbstractCache;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.Id;
@@ -47,7 +46,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Unit test for {@link Cache}.
+ * Unit tests for {@link Cache}.
  *
  * @author John Blum
  * @see java.util.Map
@@ -55,6 +54,7 @@ import lombok.NoArgsConstructor;
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache
  * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0

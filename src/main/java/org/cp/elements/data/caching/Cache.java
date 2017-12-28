@@ -29,6 +29,7 @@ import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
@@ -37,19 +38,21 @@ import org.cp.elements.util.CollectionUtils;
  * The {@link Cache} interface is an Abstract Data Type (ADT) defining a cache data structure,
  * mapping keys to values in-memory for quick access.
  *
- * Caches are used in cases where, given identical input, the data access operation returns
+ * Caches are used in use cases when, given identical input, the data access operation returns
  * the same output.
  *
  * @author John Blum
  * @param <KEY> {@link Class type} of the keys used by this {@link Cache}.
  * @param <VALUE> {@link Class type} of the values stored by this {@link Cache}.
+ * @see org.cp.elements.data.caching.AbstractCache
+ * @see org.cp.elements.lang.Nameable
  * @see java.lang.Comparable
  * @see java.lang.Iterable
  * @see java.util.Map
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALUE> {
+public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALUE>, Nameable<String> {
 
   /**
    * Determines whether this {@link Cache} contains any entries.
@@ -181,7 +184,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #put(Comparable, Object)
    * @see java.util.Map
    */
-  @NullSafe
   default void from(Map<KEY, VALUE> map) {
     nullSafeMap(map).forEach(this::put);
   }
@@ -365,7 +367,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #put(Comparable, Object)
    * @see #putIfPresent(Identifiable)
    */
-  @NullSafe
   @SuppressWarnings("unchecked")
   default void putIfAbsent(Identifiable<KEY> entity) {
 
@@ -412,7 +413,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #put(Comparable, Object)
    * @see #putIfAbsent(Identifiable)
    */
-  @NullSafe
   @SuppressWarnings("unchecked")
   default void putIfPresent(Identifiable<KEY> newEntity) {
 
