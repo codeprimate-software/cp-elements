@@ -34,6 +34,17 @@ import org.cp.elements.data.caching.Cache;
 public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implements Cache<KEY, VALUE> {
 
   /**
+   * Clears the entire contents (all entries) of this {@link Cache}.
+   *
+   * @see #evictAll(Iterable)
+   * @see #keys()
+   */
+  @Override
+  public void clear() {
+    throw new UnsupportedOperationException("Clear is not supported");
+  }
+
+  /**
    * Determines whether this {@link Cache} contains an entry mapped with the given {@link KEY key}.
    *
    * @param key {@link KEY key} to evaluate.
@@ -52,7 +63,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    */
   @Override
   public void evict(KEY key) {
-    throw newUnsupportedOperationException("Removing an entry for a key is not supported");
+    throw newUnsupportedOperationException("Eviction is not supported");
   }
 
   /**
@@ -67,7 +78,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    */
   @Override
   public VALUE get(KEY key) {
-    throw newUnsupportedOperationException("Getting the value of a key is not supported");
+    throw newUnsupportedOperationException("Get is not supported");
   }
 
   /**
@@ -102,7 +113,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    */
   @Override
   public void put(KEY key, VALUE value) {
-    throw newUnsupportedOperationException("Putting a key/value is not supported");
+    throw newUnsupportedOperationException("Put is not supported");
   }
 
   /**
