@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.cp.elements.data.caching.support;
+package org.cp.elements.data.caching;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.util.Iterator;
 import java.util.Set;
-
-import org.cp.elements.data.caching.Cache;
 
 /**
  * {@link AbstractCache} is an abstract base class supporting the implementation of different {@link Cache Caches}.
@@ -32,6 +30,8 @@ import org.cp.elements.data.caching.Cache;
  * @since 1.0.0
  */
 public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implements Cache<KEY, VALUE> {
+
+  private String name;
 
   /**
    * Clears the entire contents (all entries) of this {@link Cache}.
@@ -82,6 +82,18 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   }
 
   /**
+   * Returns the {@link String name} of this {@link Cache}.
+   *
+   * The {@link String name} may be {@literal null}.
+   *
+   * @return the {@link String name} of this {@link Cache}; may be {@literal null}.
+   */
+  @Override
+  public String getName() {
+    return this.name;
+  }
+
+  /**
    * Returns an {@link Iterator} iterating over the value in this {@link Cache}.
    *
    * @return an {@link Iterator} iterating over the value in this {@link Cache}.
@@ -125,5 +137,18 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   @Override
   public int size() {
     throw newUnsupportedOperationException("Size is not supported");
+  }
+
+  /**
+   * Builder method to set the {@link String name} of this {@link Cache}.
+   *
+   * @param <T> {@link Class type} of this {@link Cache}.
+   * @param name {@link String} containing the name for this {@link Cache}.
+   * @return this {@link Cache}.
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends AbstractCache<KEY, VALUE>> T named(String name) {
+    this.name = name;
+    return (T) this;
   }
 }
