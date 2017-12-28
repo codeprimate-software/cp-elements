@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.cp.elements.data.caching.AbstractCache;
 import org.cp.elements.data.caching.Cache;
 
 /**
@@ -28,8 +29,7 @@ import org.cp.elements.data.caching.Cache;
  *
  * @author John Blum
  * @see java.lang.Comparable
- * @see org.cp.elements.data.caching.Cache
- * @see org.cp.elements.data.caching.support.AbstractCache
+ * @see org.cp.elements.data.caching.AbstractCache
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
