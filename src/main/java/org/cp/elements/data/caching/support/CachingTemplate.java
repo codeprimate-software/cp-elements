@@ -35,6 +35,8 @@ import org.cp.elements.lang.Assert;
  * environment.
  *
  * @author John Blum
+ * @see java.util.concurrent.locks.Lock
+ * @see java.util.concurrent.locks.ReadWriteLock
  * @see org.cp.elements.data.caching.Cache
  * @since 1.0.0
  */
@@ -67,7 +69,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @param cache {@link Cache} used by this template in all {@link Cache} data access operations.
    * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
-   * @see #CachingTemplate(Cache, Object)
+   * @see #CachingTemplate(Cache, ReadWriteLock)
    */
   public CachingTemplate(Cache<KEY, VALUE> cache) {
     this(cache, null);
@@ -129,10 +131,34 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * read and write data access operations.
    * @return this {@link CachingTemplate}.
    * @see java.util.concurrent.locks.ReadWriteLock
+   * @see #newReadWriteLock()
    */
   public CachingTemplate using(ReadWriteLock lock) {
     this.lock = lock != null ? lock : newReadWriteLock();
     return this;
+  }
+
+  /**
+   * Clears the entire contents of the {@link Cache}.
+   *
+   * The {@link Cache} operation acquires a write lock.
+   *
+   * @param lock {@link ReadWriteLock} used to coordinate the {@link Cache} clear operation
+   * with possibly other concurrent {@link Cache} operations.
+   * @see java.util.concurrent.locks.ReadWriteLock#writeLock()
+   * @see #getCache()
+   */
+  protected void clear(ReadWriteLock lock) {
+
+    Lock writeLock = lock.writeLock();
+
+    try {
+      writeLock.lock();
+      getCache().clear();
+    }
+    finally {
+      writeLock.unlock();
+    }
   }
 
   /**
@@ -152,7 +178,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
     try {
       writeLock.lock();
-      getCache().remove(key);
+      getCache().evict(key);
     }
     finally {
       writeLock.unlock();
@@ -243,12 +269,61 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
 
     ReadWriteLock lock = getLock();
 
-    return (T) Optional.ofNullable(read(lock, key)).orElseGet(() -> {
+    return (T) Optional.ofNullable(read(lock, key)).orElseGet(() ->
+      Optional.ofNullable(cacheableOperation.get())
+        .map(value -> write(lock, key, value))
+        .orElse(null));
+  }
 
-      VALUE value = cacheableOperation.get();
+  /**
+   * This caching data access operation invokes the supplied {@link Supplier cacheable operation} and then clears
+   * the contents of the entire {@link Cache}, but only if the {@link Supplier cacheable operation} completes
+   * successfully.
+   *
+   * @param <T> {@link Class type} of the return {@link VALUE value}.
+   * @param cacheableOperation {@link Supplier} used to compute or load a {@link VALUE value}.
+   * @return the {@link VALUE result} of the {@link Supplier cacheable operation}.
+   * @throws IllegalArgumentException if the {@link Supplier} is {@literal null}.
+   * @see java.util.function.Supplier
+   * @see #getCache()
+   * @see #getLock()
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends VALUE> T withCacheClear(Supplier<VALUE> cacheableOperation) {
 
-      return write(lock, key, value);
-    });
+    Assert.notNull(cacheableOperation, "Supplier is required");
+
+    VALUE returnValue = cacheableOperation.get();
+
+    clear(getLock());
+
+    return (T) returnValue;
+  }
+
+  /**
+   * This caching data access operation invokes the supplied {@link Supplier cacheable operation} and then evicts
+   * the entry in the {@link Cache} identified with the given {@link KEY key} if present, but only if
+   * the {@link Supplier cacheable operation} completes successfully.
+   *
+   * @param <T> {@link Class type} of the return {@link VALUE value}.
+   * @param key {@link KEY key} identifying the entry in the {@link Cache} to evict.
+   * @param cacheableOperation {@link Supplier} used to compute or load a {@link VALUE value}.
+   * @return the {@link VALUE result} of the {@link Supplier cacheable operation}.
+   * @throws IllegalArgumentException if the {@link Supplier} is {@literal null}.
+   * @see java.util.function.Supplier
+   * @see #getCache()
+   * @see #getLock()
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends VALUE> T withCacheEvict(KEY key, Supplier<VALUE> cacheableOperation) {
+
+    Assert.notNull(cacheableOperation, "Supplier is required");
+
+    VALUE result = cacheableOperation.get();
+
+    evict(getLock(), key);
+
+    return (T) result;
   }
 
   /**
@@ -278,31 +353,5 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
     return (T) Optional.ofNullable(cacheableOperation.get())
       .map(value -> write(getLock(), key, value))
       .orElse(null);
-  }
-
-  /**
-   * This caching data access operation invokes the supplied {@link Supplier cacheable operation} and then evicts
-   * the entry in the {@link Cache} identified with the given {@link KEY key} if present, but only if
-   * the {@link Supplier cacheable operation} completes successfully.
-   *
-   * @param <T> {@link Class type} of the return {@link VALUE value}.
-   * @param key {@link KEY key} identifying the entry in the {@link Cache} to evict.
-   * @param cacheableOperation {@link Supplier} used to compute or load a {@link VALUE value}.
-   * @return the {@link VALUE result} of the {@link Supplier cacheable operation}.
-   * @throws IllegalArgumentException if the {@link Supplier} is {@literal null}.
-   * @see java.util.function.Supplier
-   * @see #getCache()
-   * @see #getLock()
-   */
-  @SuppressWarnings("unchecked")
-  public <T extends VALUE> T withCacheEvict(KEY key, Supplier<VALUE> cacheableOperation) {
-
-    Assert.notNull(cacheableOperation, "Supplier is required");
-
-    VALUE result = cacheableOperation.get();
-
-    evict(getLock(), key);
-
-    return (T) result;
   }
 }
