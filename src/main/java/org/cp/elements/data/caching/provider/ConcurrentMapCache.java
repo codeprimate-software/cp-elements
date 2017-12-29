@@ -135,7 +135,7 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
   @NullSafe
   @Override
   public Iterator<VALUE> iterator() {
-    return Collections.unmodifiableCollection(this.map.values()).iterator();
+    return Collections.unmodifiableMap(this.map).values().iterator();
   }
 
   /**
@@ -147,7 +147,7 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
   @NullSafe
   @Override
   public Set<KEY> keys() {
-    return Collections.unmodifiableSet(this.map.keySet());
+    return Collections.unmodifiableMap(this.map).keySet();
   }
 
   /**

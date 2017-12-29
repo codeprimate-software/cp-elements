@@ -71,6 +71,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #evictAll(Iterable)
    * @see #keys()
    */
+  @NullSafe
   default void clear() {
     evictAll(keys());
   }
