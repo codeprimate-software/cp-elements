@@ -16,10 +16,13 @@
 
 package org.cp.elements.data.caching.support;
 
+import java.util.AbstractCollection;
 import java.util.AbstractMap;
 import java.util.AbstractSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.cp.elements.data.caching.Cache;
@@ -46,10 +49,10 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
    * the given {@link Cache} used to back the {@link Map}.
    *
    * @param <KEY> {@link Class type} of keys used by the {@link Map}.
-   * @param <VALUE> {@link Class type} of the value stored by the {@link Map}.
-   * @param cache to {@link Cache} adapt as a {@link Map}, backing the {@link Map} instance.
+   * @param <VALUE> {@link Class type} of the values stored by the {@link Map}.
+   * @param cache {@link Cache} to adapt as a {@link Map}, backing the {@link Map} instance.
    * @return a new {@link CacheToMapAdapter} initialized with the given {@link Cache}.
-   * @throws IllegalArgumentException if the {@link Cache} is {@literal null}.
+   * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
    * @see #CacheToMapAdapter(Cache)
    */
@@ -60,8 +63,8 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   /**
    * Constructs a new instance of {@link CacheToMapAdapter} initialized with the given {@link Cache}.
    *
-   * @param cache the {@link Cache} to adapt as a {@link Map}.
-   * @throws IllegalArgumentException if the {@link Cache} is {@literal null}.
+   * @param cache {@link Cache} to adapt as a {@link Map}.
+   * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
    */
   public CacheToMapAdapter(Cache<KEY, VALUE> cache) {
@@ -87,9 +90,13 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   }
 
   @Override
-  public Set<Entry<KEY, VALUE>> entrySet() {
+  @SuppressWarnings("unchecked")
+  public boolean containsKey(Object key) {
+    return getCache().contains((KEY) key);
+  }
 
-    Cache<KEY, VALUE> cache = getCache();
+  @Override
+  public Set<Entry<KEY, VALUE>> entrySet() {
 
     return new AbstractSet<Entry<KEY, VALUE>>() {
 
@@ -98,55 +105,106 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
 
         return new Iterator<Entry<KEY, VALUE>>() {
 
-          private boolean nextCalled = false;
-
-          private KEY currentKey = null;
-
-          private final Iterator<KEY> keysIterator = cache.keys().iterator();
+          private final Iterator<KEY> keys = getCache().keys().iterator();
 
           @Override
           public boolean hasNext() {
-            return this.keysIterator.hasNext();
+            return this.keys.hasNext();
           }
 
           @Override
           public Entry<KEY, VALUE> next() {
 
-            this.currentKey = this.keysIterator.next();
-            this.nextCalled = true;
-
-            return CacheEntry.of(this.currentKey, cache);
-          }
-
-          @Override
-          public void remove() {
-
-            Assert.state(this.currentKey != null && this.nextCalled,
-              "Next must be called before calling remove");
-
-            this.nextCalled = false;
-            cache.evict(this.currentKey);
+            try {
+              return CacheEntry.of(this.keys.next(), getCache());
+            }
+            catch (NoSuchElementException ignore) {
+              throw new NoSuchElementException("No more cache entries");
+            }
           }
         };
       }
 
       @Override
       public int size() {
-        return cache.size();
+        return getCache().size();
       }
     };
   }
 
   @Override
+  @SuppressWarnings("unchecked")
+  public VALUE get(Object key) {
+    return getCache().get((KEY) key);
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return getCache().isEmpty();
+  }
+
+  @Override
+  public Set<KEY> keySet() {
+    return getCache().keys();
+  }
+
+  @Override
   public VALUE put(KEY key, VALUE value) {
 
-    Cache<KEY, VALUE> cache = getCache();
+    VALUE oldValue = get(key);
 
-    VALUE oldValue = cache.get(key);
-
-    cache.put(key, value);
+    getCache().put(key, value);
 
     return oldValue;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public void putAll(Map<? extends KEY, ? extends VALUE> map) {
+    getCache().from((Map<KEY, VALUE>) map);
+  }
+
+  @Override
+  public VALUE putIfAbsent(KEY key, VALUE value) {
+
+    VALUE oldValue = get(key);
+
+    getCache().putIfAbsent(key, value);
+
+    return oldValue;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public VALUE remove(Object key) {
+
+    VALUE oldValue = get(key);
+
+    getCache().evict((KEY) key);
+
+    return oldValue;
+  }
+
+  @Override
+  public int size() {
+    return getCache().size();
+  }
+
+  @Override
+  public Collection<VALUE> values() {
+
+    return new AbstractCollection<VALUE>() {
+
+      @Override
+      public Iterator<VALUE> iterator() {
+        return getCache().iterator();
+      }
+
+      @Override
+      public int size() {
+        return getCache().size();
+      }
+    };
   }
 
   /**
@@ -199,7 +257,7 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
 
       Assert.notNull(key, "Key is required");
       Assert.notNull(cache, "Cache is required");
-      Assert.state(cache.contains(key), "Key is not contained in the ");
+      Assert.state(cache.contains(key), "Key [%1$s] is not contained in Cache [%2$s]", key, cache.getName());
 
       this.key = key;
       this.cache = cache;
@@ -250,14 +308,42 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
     @Override
     public VALUE setValue(VALUE value) {
 
-      Cache<KEY, VALUE> cache = getCache();
+      VALUE oldValue = getValue();
 
-      KEY key = getKey();
-      VALUE oldValue = cache.get(key);
+      getCache().put(getKey(), value);
 
-      getCache().put(key, value);
+      return oldValue;
+    }
 
-      return value;
+    @Override
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
+        return true;
+      }
+
+      if (!(obj instanceof Map.Entry)) {
+        return false;
+      }
+
+      Map.Entry that = (Entry) obj;
+
+      return this.getKey().equals(that.getKey());
+    }
+
+    @Override
+    public int hashCode() {
+
+      int hashValue = 17;
+
+      hashValue = 37 * hashValue + getKey().hashCode();
+
+      return hashValue;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("%1$s = %2$s", getKey(), getValue());
     }
   }
 }
