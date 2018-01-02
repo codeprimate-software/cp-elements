@@ -17,7 +17,7 @@
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.data.struct.KeyValue.newKeyValue;
+import static org.cp.elements.data.struct.SimpleKeyValue.newKeyValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,19 +28,19 @@ import org.cp.elements.lang.Constants;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link KeyValue}.
+ * Unit tests for {@link SimpleKeyValue}.
  *
  * @author John Blum
  * @see org.junit.Test
- * @see org.cp.elements.data.struct.KeyValue
+ * @see SimpleKeyValue
  * @since 1.0.0
  */
-public class KeyValueTests {
+public class SimpleKeyValueTests {
 
   @Test
   public void newKeyValueWithKey() {
 
-    KeyValue<Object, Object> keyValue = newKeyValue("testKey");
+    SimpleKeyValue<Object, Object> keyValue = newKeyValue("testKey");
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("testKey");
@@ -51,7 +51,7 @@ public class KeyValueTests {
   @Test
   public void neKeyValueWithKeyAndValue() {
 
-    KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("testKey");
@@ -68,7 +68,7 @@ public class KeyValueTests {
     when(mockMapEntry.getKey()).thenReturn("TestKey");
     when(mockMapEntry.getValue()).thenReturn("TestValue");
 
-    KeyValue<Object, Object> keyValue = KeyValue.from(mockMapEntry);
+    SimpleKeyValue<Object, Object> keyValue = SimpleKeyValue.from(mockMapEntry);
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("TestKey");
@@ -79,7 +79,7 @@ public class KeyValueTests {
   public void fromNullMapEntry() {
 
     try {
-      KeyValue.from(null);
+      SimpleKeyValue.from(null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -93,7 +93,7 @@ public class KeyValueTests {
   @Test
   public void constructKeyValueIsSuccessful() {
 
-    KeyValue<Object, Object> keyValue = new KeyValue<>("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValue = new SimpleKeyValue<>("testKey", "testValue");
 
     assertThat(keyValue.getKey()).isEqualTo("testKey");
     assertThat(keyValue.getValue("default")).isEqualTo("testValue");
@@ -102,7 +102,7 @@ public class KeyValueTests {
   @Test
   public void constructKeyValueWithKeyAndNoValueIsSuccessful() {
 
-    KeyValue<Object, Object> keyValue = new KeyValue<>("testKey");
+    SimpleKeyValue<Object, Object> keyValue = new SimpleKeyValue<>("testKey");
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("testKey");
@@ -113,7 +113,7 @@ public class KeyValueTests {
   @Test
   public void constructKeyValueWithKeyAndNullValueIsSuccessful() {
 
-    KeyValue<Object, Object> keyValue = new KeyValue<>("testKey", null);
+    SimpleKeyValue<Object, Object> keyValue = new SimpleKeyValue<>("testKey", null);
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("testKey");
@@ -125,7 +125,7 @@ public class KeyValueTests {
   public void constructKeyValueWithNullKeyThrowsIllegalArgumentException() {
 
     try {
-      new KeyValue<>(null);
+      new SimpleKeyValue<>(null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -161,7 +161,7 @@ public class KeyValueTests {
   @Test
   public void asMapEntry() {
 
-    KeyValue<Object, Object> keyValue = KeyValue.newKeyValue("TestKey", "TestValue");
+    SimpleKeyValue<Object, Object> keyValue = SimpleKeyValue.newKeyValue("TestKey", "TestValue");
 
     assertThat(keyValue).isNotNull();
 
@@ -175,7 +175,7 @@ public class KeyValueTests {
   @Test(expected = UnsupportedOperationException.class)
   public void asImmutableMapEntry() {
 
-    Map.Entry<Object, Object> mapEntry = KeyValue.<Object, Object>newKeyValue("TestKey", "TestValue").asMapEntry();
+    Map.Entry<Object, Object> mapEntry = SimpleKeyValue.<Object, Object>newKeyValue("TestKey", "TestValue").asMapEntry();
 
     assertThat(mapEntry).isNotNull();
     assertThat(mapEntry.getKey()).isEqualTo("TestKey");
@@ -200,7 +200,7 @@ public class KeyValueTests {
   @Test
   public void keyValueEqualsItself() {
 
-    KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue).isEqualTo(keyValue);
@@ -209,7 +209,7 @@ public class KeyValueTests {
   @Test
   public void keyValueWithNullValueEqualsItself() {
 
-    KeyValue<Object, Object> keyValue = newKeyValue("testKey", null);
+    SimpleKeyValue<Object, Object> keyValue = newKeyValue("testKey", null);
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue).isEqualTo(keyValue);
@@ -218,8 +218,8 @@ public class KeyValueTests {
   @Test
   public void keyValuesAreEqual() {
 
-    KeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValue");
-    KeyValue<Object, Object> keyValueTwo = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValueTwo = newKeyValue("testKey", "testValue");
 
     assertThat(keyValueOne).isNotNull();
     assertThat(keyValueTwo).isNotNull();
@@ -230,8 +230,8 @@ public class KeyValueTests {
   @Test
   public void keyValuesAreNotEqual() {
 
-    KeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValueOne");
-    KeyValue<Object, Object> keyValueTwo = newKeyValue("testKey", "testValueTwo");
+    SimpleKeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValueOne");
+    SimpleKeyValue<Object, Object> keyValueTwo = newKeyValue("testKey", "testValueTwo");
 
     assertThat(keyValueOne).isNotNull();
     assertThat(keyValueTwo).isNotNull();
@@ -242,8 +242,8 @@ public class KeyValueTests {
   @Test
   public void keyValueIsNotEqualToTestKeyValue() {
 
-    KeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValue");
-    KeyValue<Object, Object> keyValueTwo = new TestKeyValue<>("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValueOne = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValueTwo = new TestKeyValue<>("testKey", "testValue");
 
     assertThat(keyValueOne).isNotNull();
     assertThat(keyValueTwo).isNotNull();
@@ -256,7 +256,7 @@ public class KeyValueTests {
   @Test
   public void hashCodeIsSuccessful() {
 
-    KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.hashCode()).isNotZero();
@@ -266,14 +266,14 @@ public class KeyValueTests {
   @Test
   public void toStringIsSuccessful() {
 
-    KeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
+    SimpleKeyValue<Object, Object> keyValue = newKeyValue("testKey", "testValue");
 
     assertThat(keyValue).isNotNull();
     assertThat(keyValue.toString()).isEqualTo("testKey = testValue");
   }
 
   @SuppressWarnings("unused")
-  static final class TestKeyValue<K, V> extends KeyValue<K, V> {
+  static final class TestKeyValue<K, V> extends SimpleKeyValue<K, V> {
 
     TestKeyValue(K key) {
       super(key);

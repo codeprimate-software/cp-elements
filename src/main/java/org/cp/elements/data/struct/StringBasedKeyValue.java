@@ -23,16 +23,16 @@ import org.cp.elements.data.conversion.provider.DefaultConversionService;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The {@link StringBasedKeyValue} class is an implementation of the {@link KeyValue} data structure
+ * The {@link StringBasedKeyValue} class is an implementation of the {@link SimpleKeyValue} data structure
  * where the key and value are {@link String Strings}.
  *
  * @author John Blum
- * @see org.cp.elements.data.struct.KeyValue
+ * @see org.cp.elements.data.struct.SimpleKeyValue
  * @see org.cp.elements.data.conversion.ConversionService
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class StringBasedKeyValue extends KeyValue<String, String> {
+public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String> {
 
   private final ConversionService conversionService = new DefaultConversionService();
 
