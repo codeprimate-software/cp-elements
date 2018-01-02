@@ -85,7 +85,7 @@ public class CachingTemplateTests {
   }
 
   @Test
-  public void usingReadWriteLock() {
+  public void withCacheUsingReadWriteLock() {
 
     ReadWriteLock mockLock = mock(ReadWriteLock.class);
 
@@ -97,26 +97,28 @@ public class CachingTemplateTests {
   }
 
   @Test
-  public void withCachingIsSuccessful() {
+  public void withCaching() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn("testOne", "testTwo");
+    when(mockSupplier.get()).thenReturn("testOne", "testTwo", "testThree");
     when(this.mockCache.get(any())).thenReturn(null, "testOne");
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
-    template.withCaching(1L, mockSupplier);
-    template.withCaching(1L, mockSupplier);
+    assertThat(template).isNotNull();
+    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("testOne");
+    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("testOne");
+    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("testOne");
 
-    verify(this.mockCache, times(2)).get(eq(1L));
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(3)).get(eq(1));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void withCachingUsingNullKey() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     try {
       CachingTemplate.with(this.mockCache).withCaching(null, mockSupplier);
@@ -129,8 +131,8 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockCache);
       verifyZeroInteractions(mockSupplier);
+      verifyZeroInteractions(this.mockCache);
     }
   }
 
@@ -155,28 +157,28 @@ public class CachingTemplateTests {
   @Test
   public void withCachingWhenSupplierReturnsNull() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn(null);
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
-    assertThat(template.withCaching(1L, mockSupplier)).isNull();
+    assertThat(template.withCaching("key", mockSupplier)).isNull();
 
-    verify(this.mockCache, never()).put(any(Comparable.class), any());
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, never()).put(any(), any());
   }
 
   @Test(expected = RuntimeException.class)
   public void withCachingWhenSupplierThrowsException() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
 
     try {
-      CachingTemplate.with(this.mockCache).withCaching(1L, mockSupplier);
+      CachingTemplate.with(this.mockCache).withCaching("key", mockSupplier);
     }
     catch (RuntimeException expected) {
 
@@ -186,15 +188,15 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verify(this.mockCache, never()).put(any(Comparable.class), any());
       verify(mockSupplier, times(1)).get();
+      verify(this.mockCache, never()).put(any(), any());
     }
   }
 
   @Test
   public void withCacheClear() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("test");
 
@@ -203,8 +205,8 @@ public class CachingTemplateTests {
     assertThat(template).isNotNull();
     assertThat(template.withCacheClear(mockSupplier)).isEqualTo("test");
 
-    verify(this.mockCache, times(1)).clear();
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).clear();
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -225,10 +227,23 @@ public class CachingTemplateTests {
     }
   }
 
+  @Test
+  public void withCacheClearWhenSupplierReturnsNull() {
+
+    Supplier mockSupplier = mock(Supplier.class);
+
+    when(mockSupplier.get()).thenReturn(null);
+
+    assertThat(CachingTemplate.with(this.mockCache).withCacheClear(mockSupplier)).isNull();
+
+    verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).clear();
+  }
+
   @Test(expected = RuntimeException.class)
   public void withCacheClearWhenSupplierThrowsException() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
 
@@ -243,6 +258,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
+      verify(mockSupplier, times(1)).get();
       verifyZeroInteractions(this.mockCache);
     }
   }
@@ -250,17 +266,17 @@ public class CachingTemplateTests {
   @Test
   public void withCacheEvict() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("test");
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
-    assertThat(template.withCacheEvict(1L, mockSupplier)).isEqualTo("test");
+    assertThat(template.withCacheEvict("key", mockSupplier)).isEqualTo("test");
 
-    verify(this.mockCache, times(1)).evict(1L);
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).evict("key");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -281,15 +297,28 @@ public class CachingTemplateTests {
     }
   }
 
+  @Test
+  public void withCacheEvictWhenSupplierReturnsNullValue() {
+
+    Supplier mockSupplier = mock(Supplier.class);
+
+    when(mockSupplier.get()).thenReturn(null);
+
+    assertThat(CachingTemplate.with(this.mockCache).withCacheEvict("key", mockSupplier)).isNull();
+
+    verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).evict(eq("key"));
+  }
+
   @Test(expected = RuntimeException.class)
   public void withCacheEvictWhenSupplierThrowsException() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
 
     try {
-      CachingTemplate.with(this.mockCache).withCacheEvict(1L, mockSupplier);
+      CachingTemplate.with(this.mockCache).withCacheEvict("key", mockSupplier);
     }
     catch (RuntimeException expected) {
 
@@ -299,6 +328,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
+      verify(mockSupplier, times(1)).get();
       verifyZeroInteractions(this.mockCache);
     }
   }
@@ -306,23 +336,23 @@ public class CachingTemplateTests {
   @Test
   public void withCachePut() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("test");
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
-    assertThat(template.withCachePut(1L, mockSupplier)).isEqualTo("test");
+    assertThat(template.withCachePut("key", mockSupplier)).isEqualTo("test");
 
-    verify(this.mockCache, times(1)).put(eq(1L), eq("test"));
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).put(eq("key"), eq("test"));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void withCachePutUsingNullKey() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     try {
       CachingTemplate.with(this.mockCache).withCachePut(null, mockSupplier);
@@ -335,8 +365,8 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockCache);
       verifyZeroInteractions(mockSupplier);
+      verifyZeroInteractions(this.mockCache);
     }
   }
 
@@ -361,28 +391,28 @@ public class CachingTemplateTests {
   @Test
   public void withCachePutWhenSupplierReturnsNull() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn(null);
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
-    assertThat(template.withCachePut(1L, mockSupplier)).isNull();
+    assertThat(template.withCachePut("key", mockSupplier)).isNull();
 
-    verify(this.mockCache, never()).put(any(Comparable.class), any());
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, never()).put(any(), any());
   }
 
   @Test(expected = RuntimeException.class)
   public void withCachePutWhenSupplierThrowsException() {
 
-    Supplier<Object> mockSupplier = mock(Supplier.class);
+    Supplier mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
 
     try {
-      CachingTemplate.with(this.mockCache).withCachePut(1L, mockSupplier);
+      CachingTemplate.with(this.mockCache).withCachePut("key", mockSupplier);
     }
     catch (RuntimeException expected) {
 
@@ -392,6 +422,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
+      verify(mockSupplier, times(1)).get();
       verifyZeroInteractions(this.mockCache);
     }
   }

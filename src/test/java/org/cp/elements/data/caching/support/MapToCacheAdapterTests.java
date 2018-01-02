@@ -87,7 +87,7 @@ public class MapToCacheAdapterTests {
   }
 
   @Test
-  public void clearClearsNonEmptyMap() {
+  public void clearClearsMap() {
 
     MapToCacheAdapter.of(this.map).clear();
 
@@ -102,46 +102,46 @@ public class MapToCacheAdapterTests {
   @Test
   public void containsNonExistingKeyReturnsFalse() {
 
-    Map<Long, String> map = Collections.singletonMap(1L, "test");
+    Map map = Collections.singletonMap(1, "test");
 
     MapToCacheAdapter adapter = MapToCacheAdapter.of(map);
 
     assertThat(adapter).isNotNull();
     assertThat(adapter.getMap()).isEqualTo(map);
-    assertThat(adapter.contains(-1L)).isFalse();
-    assertThat(adapter.contains(0L)).isFalse();
-    assertThat(adapter.contains(1)).isFalse();
-    assertThat(adapter.contains(2L)).isFalse();
-    assertThat(adapter.contains("1L")).isFalse();
+    assertThat(adapter.contains(-1)).isFalse();
+    assertThat(adapter.contains(0)).isFalse();
+    assertThat(adapter.contains(1L)).isFalse();
+    assertThat(adapter.contains(2)).isFalse();
+    assertThat(adapter.contains("1")).isFalse();
     assertThat(adapter.contains("test")).isFalse();
   }
 
   @Test
   public void containsNullKeyReturnsFalse() {
-    assertThat(MapToCacheAdapter.of(Collections.singletonMap("null", "test")).contains(null)).isFalse();
+    assertThat(MapToCacheAdapter.of(Collections.singletonMap("null", "value")).contains(null)).isFalse();
   }
 
   @Test
   public void evictWithExistingKey() {
 
-    Map<Comparable, Object> map = MapBuilder.<Comparable, Object>newHashMap()
-      .put(1L, "one")
-      .put(2L, "two")
+    Map map = MapBuilder.newHashMap()
+      .put(1, "one")
+      .put(2, "two")
       .build();
 
-    assertThat(map).containsOnlyKeys(1L, 2L);
+    assertThat(map).containsOnlyKeys(1, 2);
 
-    MapToCacheAdapter.of(map).evict(1L);
+    MapToCacheAdapter.of(map).evict(1);
 
-    assertThat(map).containsOnlyKeys(2L);
+    assertThat(map).containsOnlyKeys(2);
   }
 
   @Test
   public void evictWithNonExistingKey() {
 
-    MapToCacheAdapter.of(this.map).evict(1L);
+    MapToCacheAdapter.of(this.map).evict("key");
 
-    verify(this.map, times(1)).remove(eq(1L));
+    verify(this.map, times(1)).remove(eq("key"));
   }
 
   @Test
@@ -155,14 +155,24 @@ public class MapToCacheAdapterTests {
   @Test
   public void fromMap() {
 
-    Map<Comparable, Object> source = MapBuilder.<Comparable, Object>newHashMap()
-      .put(1L, "one")
-      .put(2L, "two")
+    Map map = MapBuilder.newHashMap()
+      .put(1, "one")
+      .put(2, "two")
       .build();
 
-    MapToCacheAdapter.of(this.map).from(source);
+    MapToCacheAdapter.of(this.map).from(map);
 
-    verify(this.map, times(1)).putAll(eq(source));
+    verify(this.map, times(1)).putAll(eq(map));
+  }
+
+  @Test
+  public void fromEmptyMap() {
+
+    Map map = Collections.emptyMap();
+
+    MapToCacheAdapter.of(this.map).from(map);
+
+    verify(this.map, times(1)).putAll(eq(map));
   }
 
   @Test
@@ -175,28 +185,28 @@ public class MapToCacheAdapterTests {
 
   @Test
   public void getWithExistingKeyReturnsValue() {
-    assertThat(MapToCacheAdapter.of(Collections.singletonMap(1L, "test")).get(1L)).isEqualTo("test");
+    assertThat(MapToCacheAdapter.of(Collections.singletonMap("key", "value")).get("key")).isEqualTo("value");
   }
 
   @Test
   public void getWithNonExistingKeyReturnsNull() {
-    assertThat(MapToCacheAdapter.of(Collections.singletonMap(1L, "test")).get(2L)).isNull();
+    assertThat(MapToCacheAdapter.of(Collections.singletonMap("key", "value")).get("nonExistingKey")).isNull();
   }
 
   @Test
   public void getWithNullKeyReturnsNull() {
-    assertThat(MapToCacheAdapter.of(Collections.singletonMap(1L, "test")).get(null)).isNull();
+    assertThat(MapToCacheAdapter.of(Collections.singletonMap("key", "value")).get(null)).isNull();
   }
 
   @Test
   public void iteratorWithMap() {
 
-    Map<Comparable, Object> source = MapBuilder.<Comparable, Object>newHashMap()
-      .put(1L, "one")
-      .put(2L, "two")
+    Map map = MapBuilder.newHashMap()
+      .put(1, "one")
+      .put(2, "two")
       .build();
 
-    Iterator<Object> values = MapToCacheAdapter.of(source).iterator();
+    Iterator values = MapToCacheAdapter.of(map).iterator();
 
     assertThat(values).isNotNull();
     assertThat(values).containsExactlyInAnyOrder("one", "two");
@@ -210,15 +220,15 @@ public class MapToCacheAdapterTests {
   @Test
   public void keysWithMap() {
 
-    Map<Comparable, Object> source = MapBuilder.<Comparable, Object>newHashMap()
-      .put(1L, "one")
-      .put(2L, "two")
+    Map map = MapBuilder.newHashMap()
+      .put(1, "one")
+      .put(2, "two")
       .build();
 
-    Set<Comparable> keys = MapToCacheAdapter.of(source).keys();
+    Set keys = MapToCacheAdapter.of(map).keys();
 
     assertThat(keys).isNotNull();
-    assertThat(keys).containsExactlyInAnyOrder(1L, 2L);
+    assertThat(keys).containsExactlyInAnyOrder(1, 2);
   }
 
   @Test
@@ -229,9 +239,9 @@ public class MapToCacheAdapterTests {
   @Test
   public void putCallsMapPut() {
 
-    MapToCacheAdapter.of(this.map).put(1L, "test");
+    MapToCacheAdapter.of(this.map).put("key", "value");
 
-    verify(this.map, times(1)).put(eq(1L), eq("test"));
+    verify(this.map, times(1)).put(eq("key"), eq("value"));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -273,9 +283,9 @@ public class MapToCacheAdapterTests {
   @Test
   public void putIfAbsentCallsMapPutIfAbsent() {
 
-    MapToCacheAdapter.of(this.map).putIfAbsent(1L, "test");
+    MapToCacheAdapter.of(this.map).putIfAbsent("key", "value");
 
-    verify(this.map, times(1)).putIfAbsent(eq(1L), eq("test"));
+    verify(this.map, times(1)).putIfAbsent(eq("key"), eq("value"));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -317,9 +327,9 @@ public class MapToCacheAdapterTests {
   @Test
   public void putIfPresentCallsMapComputeIfPresent() {
 
-    MapToCacheAdapter.of(this.map).putIfPresent(1L, "test");
+    MapToCacheAdapter.of(this.map).putIfPresent("key", "value");
 
-    verify(this.map, times(1)).computeIfPresent(eq(1L), any());
+    verify(this.map, times(1)).computeIfPresent(eq("key"), any());
   }
 
   @Test
@@ -327,7 +337,7 @@ public class MapToCacheAdapterTests {
 
     MapToCacheAdapter.of(this.map).putIfPresent(null, "value");
 
-    verify(this.map, never()).computeIfPresent(any(Comparable.class), any());
+    verify(this.map, never()).computeIfPresent(any(), any());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -361,10 +371,10 @@ public class MapToCacheAdapterTests {
   @Test
   public void toMap() {
 
-    when(this.map.get(1L)).thenReturn("test");
+    when(this.map.get("key")).thenReturn("value");
 
-    assertThat(MapToCacheAdapter.of(this.map).toMap().get(1L)).isEqualTo("test");
+    assertThat(MapToCacheAdapter.of(this.map).toMap().get("key")).isEqualTo("value");
 
-    verify(this.map, times(1)).get(eq(1L));
+    verify(this.map, times(1)).get(eq("key"));
   }
 }

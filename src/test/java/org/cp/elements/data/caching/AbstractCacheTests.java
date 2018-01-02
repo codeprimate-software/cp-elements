@@ -39,15 +39,15 @@ public class AbstractCacheTests {
   }
 
   @Test
-  public void getNameWhenUnsetReturnsNull() {
-    assertThat(this.cache.getName()).isNull();
-  }
-
-  @Test
   public void getNameWhenNamedReturnsName() {
 
     assertThat(this.cache.named("TestCache")).isSameAs(this.cache);
     assertThat(this.cache.getName()).isEqualTo("TestCache");
+  }
+
+  @Test
+  public void getNameWhenUnsetReturnsNull() {
+    assertThat(this.cache.getName()).isNull();
   }
 
   static class TestCache<KEY extends Comparable<KEY>, VALUE> extends AbstractCache<KEY, VALUE> {

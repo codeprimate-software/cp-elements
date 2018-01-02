@@ -54,7 +54,7 @@ public class ConcurrentMapCacheTests {
   @Test
   public void isEmptyReturnsFalseWhenNotEmpty() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put("key", "value");
 
     assertThat(this.concurrentMapCache.isEmpty()).isFalse();
   }
@@ -72,8 +72,8 @@ public class ConcurrentMapCacheTests {
   @Test
   public void clearNonEmptyCacheIsSuccessful() {
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
 
     assertThat(this.concurrentMapCache.isEmpty()).isFalse();
 
@@ -85,18 +85,18 @@ public class ConcurrentMapCacheTests {
   @Test
   public void containsExistingKeyReturnsTrue() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put("key", "value");
 
-    assertThat(this.concurrentMapCache.contains(1L)).isTrue();
+    assertThat(this.concurrentMapCache.contains("key")).isTrue();
   }
 
   @Test
   public void containsNonExistingKeyReturnsFalse() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put(1, "one");
 
-    assertThat(this.concurrentMapCache.contains(-1L)).isFalse();
-    assertThat(this.concurrentMapCache.contains(1)).isFalse();
+    assertThat(this.concurrentMapCache.contains(-1)).isFalse();
+    assertThat(this.concurrentMapCache.contains(1L)).isFalse();
     assertThat(this.concurrentMapCache.contains("one")).isFalse();
     assertThat(this.concurrentMapCache.contains(2)).isFalse();
     assertThat(this.concurrentMapCache.contains("test")).isFalse();
@@ -110,26 +110,26 @@ public class ConcurrentMapCacheTests {
   @Test
   public void evictExistingKeyIsSuccessful() {
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
 
     assertThat(this.concurrentMapCache.isEmpty()).isFalse();
-    assertThat(this.concurrentMapCache.contains(1L)).isTrue();
-    assertThat(this.concurrentMapCache.contains(2L)).isTrue();
+    assertThat(this.concurrentMapCache.contains(1)).isTrue();
+    assertThat(this.concurrentMapCache.contains(2)).isTrue();
 
-    this.concurrentMapCache.evict(1L);
+    this.concurrentMapCache.evict(1);
 
     assertThat(this.concurrentMapCache.isEmpty()).isFalse();
-    assertThat(this.concurrentMapCache.contains(1L)).isFalse();
-    assertThat(this.concurrentMapCache.contains(2L)).isTrue();
+    assertThat(this.concurrentMapCache.contains(1)).isFalse();
+    assertThat(this.concurrentMapCache.contains(2)).isTrue();
   }
 
   @Test
   public void evictNonExistingKeyIsSafe() {
 
-    assertThat(this.concurrentMapCache.contains(1L)).isFalse();
+    assertThat(this.concurrentMapCache.contains("key")).isFalse();
 
-    this.concurrentMapCache.evict(1L);
+    this.concurrentMapCache.evict("key");
   }
 
   @Test
@@ -138,12 +138,12 @@ public class ConcurrentMapCacheTests {
   }
 
   @Test
-  public void fromMapIsSuccessful() {
+  public void fromMap() {
 
-    Map<Long, String> map = MapBuilder.<Long, String>newHashMap()
-      .put(1L, "one")
-      .put(2L, "two")
-      .put(3L, "three")
+    Map map = MapBuilder.newHashMap()
+      .put(1, "one")
+      .put(2, "two")
+      .put(3, "three")
       .build();
 
     assertThat(this.concurrentMapCache.isEmpty()).isTrue();
@@ -151,12 +151,23 @@ public class ConcurrentMapCacheTests {
     this.concurrentMapCache.from(map);
 
     assertThat(this.concurrentMapCache.isEmpty()).isFalse();
-    assertThat(this.concurrentMapCache.keys()).containsExactlyInAnyOrder(1L, 2L, 3L);
-    assertThat(this.concurrentMapCache.iterator()).containsExactlyInAnyOrder("one", "two", "three");
+    assertThat(this.concurrentMapCache).hasSize(3);
+    assertThat(this.concurrentMapCache.keys()).containsExactlyInAnyOrder(1, 2, 3);
+    assertThat(this.concurrentMapCache).containsExactlyInAnyOrder("one", "two", "three");
   }
 
   @Test
-  public void fromNullMapIsNullSafe() {
+  public void fromEmptyMap() {
+
+    assertThat(this.concurrentMapCache).hasSize(0);
+
+    this.concurrentMapCache.from(Collections.emptyMap());
+
+    assertThat(this.concurrentMapCache).hasSize(0);
+  }
+
+  @Test
+  public void fromNullMap() {
 
     this.concurrentMapCache.from(null);
 
@@ -166,14 +177,14 @@ public class ConcurrentMapCacheTests {
   @Test
   public void getWithExistingKeyReturnsValue() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put("key", "value");
 
-    assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
+    assertThat(this.concurrentMapCache.get("key")).isEqualTo("value");
   }
 
   @Test
   public void getWithNonExistingKeyReturnsNull() {
-    assertThat(this.concurrentMapCache.get(1L)).isNull();
+    assertThat(this.concurrentMapCache.get("key")).isNull();
   }
 
   @Test
@@ -182,15 +193,14 @@ public class ConcurrentMapCacheTests {
   }
 
   @Test
-  public void getNameWhenUnsetReturnsNull() {
-    assertThat(this.concurrentMapCache.getName()).isNull();
+  public void getNameWhenNamed() {
+    assertThat(this.concurrentMapCache.named("TestCache")).isSameAs(this.concurrentMapCache);
+    assertThat(this.concurrentMapCache.getName()).isEqualTo("TestCache");
   }
 
   @Test
-  public void getNameWhenNamed() {
-
-    assertThat(this.concurrentMapCache.named("TestCache")).isSameAs(this.concurrentMapCache);
-    assertThat(this.concurrentMapCache.getName()).isEqualTo("TestCache");
+  public void getNameWhenUnsetReturnsNull() {
+    assertThat(this.concurrentMapCache.getName()).isNull();
   }
 
   @Test
@@ -205,8 +215,8 @@ public class ConcurrentMapCacheTests {
   @Test
   public void iteratorForNonEmptyCache() {
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
 
     assertThat(this.concurrentMapCache.iterator()).containsExactlyInAnyOrder("one", "two");
   }
@@ -223,10 +233,10 @@ public class ConcurrentMapCacheTests {
   @Test
   public void keysForNonEmptyCache() {
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
 
-    assertThat(this.concurrentMapCache.keys()).containsExactlyInAnyOrder(1L, 2L);
+    assertThat(this.concurrentMapCache.keys()).containsExactlyInAnyOrder(1, 2);
   }
 
   @Test
@@ -234,13 +244,14 @@ public class ConcurrentMapCacheTests {
 
     assertThat(this.concurrentMapCache.isEmpty()).isTrue();
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
 
-    assertThat(this.concurrentMapCache.contains(1L)).isTrue();
-    assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
-    assertThat(this.concurrentMapCache.contains(2L)).isTrue();
-    assertThat(this.concurrentMapCache.get(2L)).isEqualTo("two");
+    assertThat(this.concurrentMapCache).hasSize(2);
+    assertThat(this.concurrentMapCache.contains(1)).isTrue();
+    assertThat(this.concurrentMapCache.get(1)).isEqualTo("one");
+    assertThat(this.concurrentMapCache.contains(2)).isTrue();
+    assertThat(this.concurrentMapCache.get(2)).isEqualTo("two");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -282,23 +293,23 @@ public class ConcurrentMapCacheTests {
   @Test
   public void putIfAbsentWhenAbsent() {
 
-    assertThat(this.concurrentMapCache.contains(1L)).isFalse();
+    assertThat(this.concurrentMapCache.contains("key")).isFalse();
 
-    this.concurrentMapCache.putIfAbsent(1L, "one");
+    this.concurrentMapCache.putIfAbsent("key", "value");
 
-    assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
+    assertThat(this.concurrentMapCache.get("key")).isEqualTo("value");
   }
 
   @Test
   public void putIfAbsentWhenPresent() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put("key", "value");
 
-    assertThat(this.concurrentMapCache.contains(1L)).isTrue();
+    assertThat(this.concurrentMapCache.contains("key")).isTrue();
 
-    this.concurrentMapCache.putIfAbsent(1L, "two");
+    this.concurrentMapCache.putIfAbsent("key", "test");
 
-    assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
+    assertThat(this.concurrentMapCache.get("key")).isEqualTo("value");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -340,23 +351,23 @@ public class ConcurrentMapCacheTests {
   @Test
   public void putIfPresentWhenAbsent() {
 
-    assertThat(this.concurrentMapCache.contains(1L)).isFalse();
+    assertThat(this.concurrentMapCache.contains("key")).isFalse();
 
-    this.concurrentMapCache.putIfPresent(1L, "one");
+    this.concurrentMapCache.putIfPresent("key", "value");
 
-    assertThat(this.concurrentMapCache.get(1L)).isNull();
+    assertThat(this.concurrentMapCache.get("key")).isNull();
   }
 
   @Test
   public void putIfPresentWhenPresent() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put("key", "value");
 
-    assertThat(this.concurrentMapCache.contains(1L)).isTrue();
+    assertThat(this.concurrentMapCache.contains("key")).isTrue();
 
-    this.concurrentMapCache.putIfPresent(1L, "two");
+    this.concurrentMapCache.putIfPresent("key", "test");
 
-    assertThat(this.concurrentMapCache.get(1L)).isEqualTo("two");
+    assertThat(this.concurrentMapCache.get("key")).isEqualTo("test");
   }
 
   @Test
@@ -370,10 +381,10 @@ public class ConcurrentMapCacheTests {
   @Test(expected = IllegalArgumentException.class)
   public void putIfPresentWithNullValueThrowsIllegalArgumentException() {
 
-    this.concurrentMapCache.put(1L, "one");
+    this.concurrentMapCache.put("key", "value");
 
     try {
-      this.concurrentMapCache.putIfPresent(1L, null);
+      this.concurrentMapCache.putIfPresent("key", null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -383,7 +394,7 @@ public class ConcurrentMapCacheTests {
       throw expected;
     }
     finally {
-      assertThat(this.concurrentMapCache.get(1L)).isEqualTo("one");
+      assertThat(this.concurrentMapCache.get("key")).isEqualTo("value");
     }
   }
 
@@ -395,7 +406,7 @@ public class ConcurrentMapCacheTests {
   @Test
   public void sizeIsOneWhenCacheContainsSingleEntry() {
 
-    this.concurrentMapCache.from(Collections.singletonMap(1L, "one"));
+    this.concurrentMapCache.from(Collections.singletonMap("key", "value"));
 
     assertThat(this.concurrentMapCache.size()).isEqualTo(1);
   }
@@ -403,9 +414,9 @@ public class ConcurrentMapCacheTests {
   @Test
   public void sizeIsNotZero() {
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
-    this.concurrentMapCache.put(3L, "three");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
+    this.concurrentMapCache.put(3, "three");
 
     assertThat(this.concurrentMapCache.size()).isEqualTo(3);
   }
@@ -418,16 +429,16 @@ public class ConcurrentMapCacheTests {
   @Test
   public void toMapWhenCacheIsPopulated() {
 
-    this.concurrentMapCache.put(1L, "one");
-    this.concurrentMapCache.put(2L, "two");
-    this.concurrentMapCache.put(3L, "three");
+    this.concurrentMapCache.put(1, "one");
+    this.concurrentMapCache.put(2, "two");
+    this.concurrentMapCache.put(3, "three");
 
-    Map<Long, String> map = this.concurrentMapCache.toMap();
+    Map map = this.concurrentMapCache.toMap();
 
     assertThat(map).isNotNull();
     assertThat(map).hasSize(this.concurrentMapCache.size());
-    assertThat(map).containsEntry(1L, "one");
-    assertThat(map).containsEntry(2L, "two");
-    assertThat(map).containsEntry(3L, "three");
+    assertThat(map).containsEntry(1, "one");
+    assertThat(map).containsEntry(2, "two");
+    assertThat(map).containsEntry(3, "three");
   }
 }
