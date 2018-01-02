@@ -29,7 +29,10 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.function.Supplier;
 
@@ -49,6 +52,8 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.data.caching.support.CachingTemplate
  * @since 1.0.0
  */
@@ -428,17 +433,24 @@ public class CachingTemplateTests {
   }
 
   @Test
-  public void concurrentCachePutAndCacheGetOperationsIsSuccessful() throws Throwable {
-    TestFramework.runOnce(new CacheGetWhileCachePutIsWritingToCacheTestCase());
+  public void concurrentCacheGetWhileCachePutIsSuccessful() throws Throwable {
+    TestFramework.runOnce(new CacheGetWhileCachePutIsWritingToCacheConcurrentTestCase());
+  }
+
+  @Test
+  public void concurrentCachePutWhileCacheGetIsSuccessfull() throws Throwable {
+    TestFramework.runOnce(new CachePutWhileCacheGetIsReadingFromCacheConcurrentTestCase());
   }
 
   @SuppressWarnings("unused")
-  public static class CacheGetWhileCachePutIsWritingToCacheTestCase extends MultithreadedTestCase {
+  public static class CacheGetWhileCachePutIsWritingToCacheConcurrentTestCase extends MultithreadedTestCase {
 
     private CachingTemplate template;
 
     @Override
     public void initialize() {
+
+      super.initialize();
 
       Map map = new HashMap<>();
 
@@ -448,30 +460,126 @@ public class CachingTemplateTests {
         waitForTick(2);
         map.put(invocation.getArgument(0), invocation.getArgument(1));
         return null;
-      }).when(cache).put(any(Comparable.class), any());
+      }).when(cache).put(any(), any());
 
       this.template = CachingTemplate.with(cache);
     }
 
     public void threadOne() {
 
-      Thread.currentThread().setName("Get Thread");
+      Thread.currentThread().setName("Cache Get Thread");
 
       waitForTick(1);
 
-      assertThat(this.template.withCaching(1L, () -> "GET")).isEqualTo("PUT");
+      assertThat(this.template.withCaching(1, () -> "GET")).isEqualTo("PUT");
     }
 
     public void threadTwo() {
 
-      Thread.currentThread().setName("Put Thread");
+      Thread.currentThread().setName("Cache Put Thread");
 
-      this.template.withCachePut(1L, () -> "PUT");
+      this.template.withCachePut(1, () -> "PUT");
     }
 
     @Override
-    protected void finalize() throws Throwable {
+    public void finish() {
+
+      super.finish();
+
       this.template.getCache().clear();
+    }
+  }
+
+  @SuppressWarnings("unused")
+  public static class CachePutWhileCacheGetIsReadingFromCacheConcurrentTestCase extends MultithreadedTestCase {
+
+    private CachingTemplate template;
+
+    private List<String> threadOrder = new CopyOnWriteArrayList<>();
+
+    @Override
+    public void initialize() {
+
+      super.initialize();
+
+      AtomicInteger tick = new AtomicInteger(3);
+
+      Map map = new HashMap<>();
+
+      map.put("key", "value");
+
+      Cache cache = spy(new MapToCacheAdapter(map));
+
+      doAnswer(invocation -> {
+        waitForTick(tick.getAndIncrement());
+        this.threadOrder.add(Thread.currentThread().getName());
+        return map.get(invocation.getArgument(0));
+      }).when(cache).get(any());
+
+      doAnswer(invocation -> {
+        tick.incrementAndGet();
+        waitForTick(tick.getAndIncrement());
+        this.threadOrder.add(Thread.currentThread().getName());
+        map.put(invocation.getArgument(0), invocation.getArgument(1));
+        return "value";
+      }).when(cache).put(any(), any());
+
+      this.template = CachingTemplate.with(cache);
+    }
+
+    public void threadOne() {
+
+      Thread.currentThread().setName("Cache Get Thread One");
+
+      assertTick(0);
+
+      assertThat(this.template.withCaching("key", () -> "ONE")).isEqualTo("value");
+
+      assertTick(3);
+    }
+
+    public void threadTwo() {
+
+      Thread.currentThread().setName("Cache Get Thread Two");
+
+      waitForTick(1);
+
+      assertThat(this.template.withCaching("key", () -> "TWO")).isEqualTo("value");
+
+      assertTick(4);
+    }
+
+    public void threadThree() {
+
+      Thread.currentThread().setName("Cache Put Thread");
+
+      waitForTick(2);
+
+      assertThat(this.template.withCachePut("key", () -> "test")).isEqualTo("test");
+
+      assertTick(6);
+    }
+
+    public void threadFour() {
+
+      Thread.currentThread().setName("Cache Get Thread Three");
+
+      waitForTick(5);
+
+      assertThat(this.template.withCaching("key", () -> "THREE")).isEqualTo("test");
+
+      assertTick(7);
+    }
+
+    @Override
+    public void finish() {
+
+      super.finish();
+
+      this.template.getCache().clear();
+
+      assertThat(this.threadOrder).containsExactly("Cache Get Thread One", "Cache Get Thread Two", "Cache Put Thread",
+        "Cache Get Thread Three");
     }
   }
 }

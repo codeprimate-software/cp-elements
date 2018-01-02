@@ -27,12 +27,17 @@ import org.cp.elements.util.MapBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
+
 /**
  * Unit tests for {@link ConcurrentMapCache}.
  *
  * @author John Blum
  * @see java.util.Map
  * @see org.junit.Test
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
  * @since 1.0.0
  */
@@ -440,5 +445,48 @@ public class ConcurrentMapCacheTests {
     assertThat(map).containsEntry(1, "one");
     assertThat(map).containsEntry(2, "two");
     assertThat(map).containsEntry(3, "three");
+  }
+
+  @Test
+  public void concurrentCachePutThenGetIsSuccessful() throws Throwable {
+    TestFramework.runOnce(new CachePutThenCacheGetConcurrentTestCase());
+  }
+
+  @SuppressWarnings("unused")
+  public static class CachePutThenCacheGetConcurrentTestCase extends MultithreadedTestCase {
+
+    private ConcurrentMapCache concurrentMapCache;
+
+    @Override
+    public void initialize() {
+
+      super.initialize();
+
+      this.concurrentMapCache = new ConcurrentMapCache();
+
+      assertThat(this.concurrentMapCache).isEmpty();
+    }
+
+    public void threadOne() {
+
+      Thread.currentThread().setName("Cache Put Thread");
+
+      this.concurrentMapCache.put("key", "test");
+    }
+
+    public void threadTwo() {
+
+      Thread.currentThread().setName("Cache Get Thread");
+
+      waitForTick(1);
+
+      assertThat(this.concurrentMapCache.get("key")).isEqualTo("test");
+    }
+
+    @Override
+    public void finish() {
+      this.concurrentMapCache.clear();
+      this.concurrentMapCache = null;
+    }
   }
 }
