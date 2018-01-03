@@ -25,6 +25,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.InputStream;
@@ -34,6 +38,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -72,6 +77,7 @@ import org.junit.rules.ExpectedException;
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public class ClassUtilsTests extends AbstractBaseTestSuite {
 
   @Rule
@@ -991,6 +997,28 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
   @Test
   public void notNonInstanceOf() {
     assertFalse(ClassUtils.notInstanceOf(123, Boolean.class, Number.class, String.class));
+  }
+
+  @Test
+  public void toRawTypeWithObject() {
+    assertThat(ClassUtils.toRawType(Object.class)).isEqualTo(Object.class);
+  }
+
+  @Test
+  public void toRawTypeWithNull() {
+    assertThat(ClassUtils.toRawType(null)).isNull();
+  }
+
+  @Test
+  public void toRawTypeWithParameterizedType() {
+
+    ParameterizedType mockParameterizedType = mock(ParameterizedType.class);
+
+    when(mockParameterizedType.getRawType()).thenReturn(String.class);
+
+    assertThat(ClassUtils.toRawType(mockParameterizedType)).isEqualTo(String.class);
+
+    verify(mockParameterizedType, times(1)).getRawType();
   }
 
   public static class ClassWithMainMethod {
