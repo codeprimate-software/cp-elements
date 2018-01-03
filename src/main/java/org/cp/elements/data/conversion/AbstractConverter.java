@@ -111,20 +111,4 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   public T convert(S value) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
-
-  /**
-   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class qualifying type QT}.
-   *
-   * @param <QT> {@link Class qualifying type} extending {@link Class type T}.
-   * @param value {@link Object} of {@link Class type S} to convert.
-   * @param qualifyingType the {@link Class qualifying type} of the {@link Object} resolved in the conversion.
-   * @return the converted {@link Object} of {@link Class qualifying type QT}.
-   * @throws ConversionException if the {@link Object} cannot be converted.
-   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
-   * @see #convert(Object)
-   */
-  @Override
-  public <QT extends T> QT convert(S value, Class<QT> qualifyingType) {
-    throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
-  }
 }

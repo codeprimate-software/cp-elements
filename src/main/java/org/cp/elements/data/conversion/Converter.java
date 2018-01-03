@@ -65,6 +65,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
    * @see #convert(Object)
    */
-  <QT extends T> QT convert(S value, Class<QT> qualifyingType);
-
+  default <QT extends T> QT convert(S value, Class<QT> qualifyingType) {
+    return qualifyingType.cast(convert(value));
+  }
 }
