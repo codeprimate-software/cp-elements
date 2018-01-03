@@ -16,36 +16,19 @@
 
 package org.cp.elements.data.conversion;
 
+import org.cp.elements.lang.Registry;
+
 /**
- * The ConverterRegistry interface defines a contract for classes that can register Converters.
+ * The {@link ConverterRegistry} interface defines a contract for classes
+ * that can register {@link Converter Converters}.
  *
  * @author John J. Blum
- * @see java.lang.Iterable
  * @see org.cp.elements.data.conversion.ConversionService
  * @see org.cp.elements.data.conversion.Converter
+ * @see org.cp.elements.lang.Registry
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface ConverterRegistry extends Iterable<Converter> {
-
-  /**
-   * Registers the Converter with the registry making it available to perform type conversions.  Any existing,
-   * registered Converter converting from the same source type to the same target type will simply be overridden
-   * with the incoming Converter registration.
-   *
-   * @param converter the Converter to register with the registry.
-   * @see #unregister(Converter)
-   * @see org.cp.elements.data.conversion.Converter
-   */
-  void register(Converter<?, ?> converter);
-
-  /**
-   * Unregisters the Converter from the registry.
-   *
-   * @param converter the Converter to unregister from the registry.
-   * @see #register(Converter)
-   * @see org.cp.elements.data.conversion.Converter
-   */
-  void unregister(Converter<?, ?> converter);
+public interface ConverterRegistry extends Registry<Converter<?, ?>> {
 
 }
