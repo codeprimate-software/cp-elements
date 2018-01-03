@@ -17,13 +17,13 @@
 package org.cp.elements.data.conversion;
 
 /**
- * The Converter interface defines a contract for objects that convert an Object value from one type to another.
+ * The {@link Converter} interface defines a contract for objects that convert an {@link Object}
+ * from one {@link Class type} to another.
  *
  * @author John J. Blum
- * @param <S> the source Class type to convert from.
- * @param <T> the target Class type to convert to.
+ * @param <S> the {@link Class source type} to convert from.
+ * @param <T> the {@link Class target type} to convert to.
  * @see org.cp.elements.data.conversion.AbstractConverter
- * @see org.cp.elements.data.conversion.ConverterAdapter
  * @see org.cp.elements.data.conversion.ConversionService
  * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @since 1.0.0
@@ -32,37 +32,38 @@ package org.cp.elements.data.conversion;
 public interface Converter<S, T> extends ConversionServiceAware {
 
   /**
-   * Determines whether this Converter can convert values from the source Class type into the target Class type.
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
    *
-   * @param fromType the Class type to convert from.
-   * @param toType the Class type to convert to.
-   * @return a boolean indicating whether this Converter can convert values from the source Class type
-   * into the target Class type.
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
    * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
    */
   boolean canConvert(Class<?> fromType, Class<?> toType);
 
   /**
-   * Converts a value of type S into a value of type T.
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
    *
-   * @param value the S typed value to convert into a value of type T.
-   * @return the converted value.
-   * @throws ConversionException if the value cannot be converted.
-   * @see #convert(Object, Class)
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @return the converted {@link Object} of {@link Class type T}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object, Class)
    */
   T convert(S value);
 
   /**
-   * Converts a value of type S into a value of the qualifying type QT.
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class qualifying type QT}.
    *
-   * @param <QT> qualifying Class type extending the type parameter T.
-   * @param value the S typed value to convert into a value of the qualifying type QT.
-   * @param qualifyingType the qualifying Class type to convert the value into.
-   * @return the converted value.
-   * @throws ConversionException if the value cannot be converted.
-   * @see #convert(Object)
+   * @param <QT> {@link Class qualifying type} extending {@link Class type T}.
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @param qualifyingType the {@link Class qualifying type} of the {@link Object} resolved in the conversion.
+   * @return the converted {@link Object} of {@link Class qualifying type QT}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object)
    */
   <QT extends T> QT convert(S value, Class<QT> qualifyingType);
 
