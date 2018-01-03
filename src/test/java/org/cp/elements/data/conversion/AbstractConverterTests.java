@@ -16,28 +16,21 @@
 
 package org.cp.elements.data.conversion;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
-import org.cp.elements.lang.Constants;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link AbstractConverter} class.
+ * Unit tests for {@link AbstractConverter}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
@@ -45,54 +38,92 @@ import org.junit.rules.ExpectedException;
 @SuppressWarnings("unused")
 public class AbstractConverterTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
+  protected <S, T> AbstractConverter<S, T> newConverter() {
+    return new AbstractConverter<S, T>() { };
+  }
 
   @Test
   public void setAndGetConversionService() {
-    AbstractConverter converter = new TestConverter();
+
+    AbstractConverter converter = newConverter();
+
     ConversionService mockConversionService = mock(ConversionService.class);
 
     converter.setConversionService(mockConversionService);
 
-    assertSame(mockConversionService, converter.getConversionService());
+    assertThat(converter.getConversionService()).isEqualTo(mockConversionService);
   }
 
-  @Test
-  public void getConversionService() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The ConversionService reference was not properly initialized!");
+  @Test(expected = IllegalStateException.class)
+  public void getConversionServiceWhenUnsetThrowsException() {
 
-    new TestConverter().getConversionService();
+    try {
+      newConverter().getConversionService();
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessage("No ConversionService was configured");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void isAssignableTo() {
-    AbstractConverter converter = new TestConverter();
+  public void isAssignableToReturnsTrue() {
 
-    assertTrue(converter.isAssignableTo(Character.class, Short.class, String.class, Object.class));
-    assertTrue(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class));
-    assertFalse(converter.isAssignableTo(Timestamp.class, Calendar.class, Long.class, String.class));
-    assertFalse(converter.isAssignableTo(Object.class, Boolean.class, Integer.class, String.class));
+    AbstractConverter converter = newConverter();
+
+    assertThat(converter.isAssignableTo(Character.class, Character.class, Short.class, String.class, Object.class))
+      .isTrue();
+
+    assertThat(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class))
+      .isTrue();
   }
 
-  protected static class TestConverter extends AbstractConverter<Object, Object> {
+  @Test
+  @SuppressWarnings("unchecked")
+  public void isAssignableToReturnsFalse() {
 
-    @Override
-    public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-    }
+    AbstractConverter converter = newConverter();
 
-    @Override
-    public Object convert(final Object value) {
-      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-    }
+    assertThat(converter.isAssignableTo(Timestamp.class, Calendar.class, LocalDate.class, LocalDateTime.class,
+      Long.class, String.class)) .isFalse();
 
-    @Override
-    public <QT> QT convert(final Object value, final Class<QT> qualifyingType) {
-      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-    }
+    assertThat(converter.isAssignableTo(Object.class, Boolean.class, Integer.class, String.class)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void isAssignableToWithEmptyClassTypeArrayReturnsFalse() {
+
+    AbstractConverter converter = newConverter();
+
+    assertThat(converter.isAssignableTo(Object.class)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void isAssignableToWithNullClassTypeArrayIsNullSafeAndReturnsFalse() {
+
+    AbstractConverter converter = newConverter();
+
+    assertThat(converter.isAssignableTo(Object.class, (Class[]) null)).isFalse();
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void canConvertThrowsUnsupportedOperationException() {
+    newConverter().canConvert(Object.class, String.class);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void convertThrowsUnsupportedOperationException() {
+    newConverter().convert("test");
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void convertWithQualifyingTypeThrowsUnsupportedOperationException() {
+    newConverter().convert(1, Long.class);
   }
 }
