@@ -16,10 +16,12 @@
 
 package org.cp.elements.data.conversion;
 
-import static org.cp.elements.lang.LangExtensions.is;
+import static org.cp.elements.lang.ClassUtils.assignableTo;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
-import org.cp.elements.lang.Assert;
+import java.util.Optional;
+
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -49,16 +51,26 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Returns a reference to the {@link ConversionService} used to perform conversions.
+   * Returns an {@link Optional} reference to the {@link ConversionService} used to perform conversions.
    *
-   * @return a reference to the {@link ConversionService} used to perform conversions.
+   * @return an {@link Optional} reference to the {@link ConversionService} used to perform conversions.
    * @see org.cp.elements.data.conversion.ConversionService
+   * @see java.util.Optional
    */
-  protected ConversionService getConversionService() {
+  protected Optional<ConversionService> getConversionService() {
+    return Optional.ofNullable(this.conversionService);
+  }
 
-    Assert.state(conversionService != null, "No ConversionService was configured");
-
-    return this.conversionService;
+  /**
+   * Resolves the reference to the {@link ConversionService} used to perform conversions.
+   *
+   * @return the resolved reference to the {@link ConversionService} used to perform conversions.
+   * @throws IllegalStateException if no {@link ConversionService} was configured.
+   * @see org.cp.elements.data.conversion.ConversionService
+   * @see #getConversionService()
+   */
+  protected ConversionService resolveConversionService() {
+    return getConversionService().orElseThrow(() -> newIllegalStateException("No ConversionService was configured"));
   }
 
   /**
@@ -75,7 +87,7 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   protected boolean isAssignableTo(Class<?> fromType, Class<?>... toTypes) {
 
     for (Class toType : nullSafeArray(toTypes, Class.class)) {
-      if (is(fromType).assignableTo(toType)) {
+      if (assignableTo(fromType, toType)) {
         return true;
       }
     }

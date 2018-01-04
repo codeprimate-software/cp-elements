@@ -19,6 +19,7 @@ package org.cp.elements.data.conversion;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,20 +46,25 @@ public class AbstractConverterTests {
   @Test
   public void setAndGetConversionService() {
 
-    AbstractConverter converter = newConverter();
+    AbstractConverter<?, ?> converter = newConverter();
 
     ConversionService mockConversionService = mock(ConversionService.class);
 
     converter.setConversionService(mockConversionService);
 
-    assertThat(converter.getConversionService()).isEqualTo(mockConversionService);
+    assertThat(converter.getConversionService().orElse(null)).isEqualTo(mockConversionService);
+  }
+
+  @Test
+  public void getConversionServiceWhenUnsetIsNotPresent() {
+    assertThat(newConverter().getConversionService().isPresent()).isFalse();
   }
 
   @Test(expected = IllegalStateException.class)
-  public void getConversionServiceWhenUnsetThrowsException() {
+  public void resolveConversionServiceWhenUnsetThrowsException() {
 
     try {
-      newConverter().getConversionService();
+      newConverter().resolveConversionService();
     }
     catch (IllegalStateException expected) {
 
@@ -75,11 +81,8 @@ public class AbstractConverterTests {
 
     AbstractConverter converter = newConverter();
 
-    assertThat(converter.isAssignableTo(Character.class, Character.class, Short.class, String.class, Object.class))
-      .isTrue();
-
-    assertThat(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class))
-      .isTrue();
+    assertThat(converter.isAssignableTo(Character.class, Short.class, String.class, Object.class)).isTrue();
+    assertThat(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class)).isTrue();
   }
 
   @Test
@@ -88,8 +91,8 @@ public class AbstractConverterTests {
 
     AbstractConverter converter = newConverter();
 
-    assertThat(converter.isAssignableTo(Timestamp.class, Calendar.class, LocalDate.class, LocalDateTime.class,
-      Long.class, String.class)) .isFalse();
+    assertThat(converter.isAssignableTo(Timestamp.class, Calendar.class, Date.class, LocalDate.class,
+      LocalDateTime.class, Long.class, String.class)) .isFalse();
 
     assertThat(converter.isAssignableTo(Object.class, Boolean.class, Integer.class, String.class)).isFalse();
   }
