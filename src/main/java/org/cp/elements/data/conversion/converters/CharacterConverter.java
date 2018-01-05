@@ -16,8 +16,9 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
+import org.cp.elements.data.conversion.AbstractConverter;
 
 /**
  * The CharacterConverter class converts an Object value into a Character.
@@ -25,29 +26,31 @@ import org.cp.elements.data.conversion.ConverterAdapter;
  * @author John J. Blum
  * @see java.lang.Character
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CharacterConverter extends ConverterAdapter<Object, Character> {
+public class CharacterConverter extends AbstractConverter<Object, Character> {
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, Character.class, String.class) && Character.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, Character.class, String.class) && Character.class.equals(toType);
   }
 
   @Override
-  public Character convert(final Object value) {
+  public Character convert(Object value) {
+
     if (value instanceof Character) {
       return (Character) value;
     }
     else if (value instanceof String) {
-      final String valueString = value.toString();
-      return (valueString.length() > 0 ? valueString.charAt(0) : '\0');
+
+      String valueString = value.toString();
+
+      return valueString.length() > 0 ? valueString.charAt(0) : '\0';
     }
     else {
-      throw new ConversionException(String.format("The Object value (%1$s) is not a valid character!", value));
+      throw newConversionException("[%s] is not a valid character", value);
     }
   }
-
 }

@@ -16,8 +16,9 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
+import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.factory.ObjectFactory;
@@ -29,59 +30,62 @@ import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
  *
  * @author John J. Blum
  * @see java.lang.Long
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.factory.ObjectFactory
  * @see org.cp.elements.lang.factory.ObjectFactoryAware
  * @see org.cp.elements.lang.factory.ObjectFactoryReferenceHolder
- * @see org.cp.elements.data.conversion.ConverterAdapter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class IdentifiableConverter extends ConverterAdapter<Long, Identifiable<Long>> implements ObjectFactoryAware {
+public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<Long>> implements ObjectFactoryAware {
 
   private ObjectFactory objectFactory;
 
   public IdentifiableConverter() {
+
     if (ObjectFactoryReferenceHolder.hasReference()) {
       setObjectFactory(ObjectFactoryReferenceHolder.get());
     }
   }
 
-  public IdentifiableConverter(final ObjectFactory objectFactory) {
+  public IdentifiableConverter(ObjectFactory objectFactory) {
     setObjectFactory(objectFactory);
   }
 
+  @Override
+  public final void setObjectFactory(ObjectFactory objectFactory) {
+    this.objectFactory = objectFactory;
+  }
+
   protected ObjectFactory getObjectFactory() {
-    Assert.state(objectFactory != null, "The reference to the ObjectFactory was not properly initialized!");
+
+    Assert.state(objectFactory != null, "No ObjectFactory was configured");
+
     return objectFactory;
   }
 
   @Override
-  public final void setObjectFactory(final ObjectFactory objectFactory) {
-    this.objectFactory = objectFactory;
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return Long.class.equals(fromType) && isAssignableTo(toType, Identifiable.class);
   }
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (Long.class.equals(fromType) && isAssignableTo(toType, Identifiable.class));
-  }
+  public <QT extends Identifiable<Long>> QT convert(Long value, Class<QT> identifiableType) {
 
-  @Override
-  public <QT extends Identifiable<Long>> QT convert(final Long value, final Class<QT> identifiableType) {
     try {
-      Identifiable<Long> identifiableObject = getObjectFactory().create(identifiableType, new Class[] { Long.class },
-        value);
+      Identifiable<Long> identifiableObject =
+        getObjectFactory().create(identifiableType, new Class[] { Long.class }, value);
 
-      if (identifiableObject.getId() == null) {
+      if (identifiableObject.isNew()) {
         identifiableObject.setId(value);
       }
 
       return identifiableType.cast(identifiableObject);
     }
-    catch (Exception e) {
-      throw new ConversionException(String.format("Failed to convert Long value (%1$d) into an object of type (%2$s)!",
-        value, identifiableType), e);
+    catch (Exception cause) {
+      throw newConversionException(cause, "Cannot convert Long value (%1$d) into an Object of type [%2$s]",
+        value, identifiableType);
     }
   }
-
 }

@@ -16,8 +16,9 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
+import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.lang.StringUtils;
 
 /**
@@ -26,21 +27,22 @@ import org.cp.elements.lang.StringUtils;
  * @author John J. Blum
  * @see java.lang.Float
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class FloatConverter extends ConverterAdapter<Object, Float> {
+public class FloatConverter extends AbstractConverter<Object, Float> {
 
-  protected static final String CONVERSION_EXCEPTION_MESSAGE = "The Object value (%1$s) is not a valid float!";
+  protected static final String CONVERSION_EXCEPTION_MESSAGE = "[%s] is not a valid float";
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, Number.class, String.class) && Float.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, Number.class, String.class) && Float.class.equals(toType);
   }
 
   @Override
-  public Float convert(final Object value) {
+  public Float convert(Object value) {
+
     if (value instanceof Number) {
       return ((Number) value).floatValue();
     }
@@ -48,13 +50,12 @@ public class FloatConverter extends ConverterAdapter<Object, Float> {
       try {
         return Float.parseFloat(value.toString().trim());
       }
-      catch (NumberFormatException e) {
-        throw new ConversionException(String.format(CONVERSION_EXCEPTION_MESSAGE, value), e);
+      catch (NumberFormatException cause) {
+        throw newConversionException(cause, CONVERSION_EXCEPTION_MESSAGE, value);
       }
     }
     else {
-      throw new ConversionException(String.format(CONVERSION_EXCEPTION_MESSAGE, value));
+      throw newConversionException(CONVERSION_EXCEPTION_MESSAGE, value);
     }
   }
-
 }

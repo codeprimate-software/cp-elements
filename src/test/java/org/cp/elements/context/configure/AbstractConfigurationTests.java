@@ -44,7 +44,6 @@ import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.data.conversion.Converter;
-import org.cp.elements.data.conversion.ConverterAdapter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
@@ -418,7 +417,7 @@ public class AbstractConfigurationTests {
     String getUsername();
   }
 
-  protected final class UserConverter extends ConverterAdapter<String, User> {
+  protected final class UserConverter extends org.cp.elements.data.conversion.AbstractConverter<String,User> {
 
     @Override
     public boolean canConvert(Class<?> fromType, Class<?> toType) {

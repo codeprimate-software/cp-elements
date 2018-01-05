@@ -16,12 +16,12 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import static org.cp.elements.lang.LangExtensions.is;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import java.math.BigInteger;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.lang.ObjectUtils;
 
 /**
  * The BigIntegerConverter class converts a String value into a BigInteger.
@@ -29,11 +29,11 @@ import org.cp.elements.data.conversion.ConverterAdapter;
  * @author John J. Blum
  * @see java.lang.String
  * @see java.math.BigInteger
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class BigIntegerConverter extends ConverterAdapter<String, BigInteger> {
+public class BigIntegerConverter extends AbstractConverter<String, BigInteger> {
 
   private final Integer radix;
 
@@ -41,24 +41,24 @@ public class BigIntegerConverter extends ConverterAdapter<String, BigInteger> {
     this(null);
   }
 
-  public BigIntegerConverter(final Integer radix) {
+  public BigIntegerConverter(Integer radix) {
     this.radix = radix;
   }
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (is(fromType).assignableTo(String.class) && BigInteger.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return ObjectUtils.assignableTo(fromType, String.class) && BigInteger.class.equals(toType);
   }
 
   @Override
-  public BigInteger convert(final String value) {
+  public BigInteger convert(String value) {
+
     try {
-      return (radix == null ? new BigInteger(String.valueOf(value).trim())
-        : new BigInteger(String.valueOf(value).trim(), radix));
+      return (this.radix == null ? new BigInteger(String.valueOf(value).trim())
+        : new BigInteger(String.valueOf(value).trim(), this.radix));
     }
-    catch (NumberFormatException e) {
-      throw new ConversionException(String.format("The String value (%1$s) is not a valid BigInteger!", value), e);
+    catch (NumberFormatException cause) {
+      throw newConversionException(cause, "[%s] is not a valid BigInteger", value);
     }
   }
-
 }

@@ -16,13 +16,13 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import static org.cp.elements.lang.LangExtensions.is;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.lang.ObjectUtils;
 
 /**
  * The BigDecimalConverter class converts a String value into a BigDecimal.
@@ -30,11 +30,11 @@ import org.cp.elements.data.conversion.ConverterAdapter;
  * @author John J. Blum
  * @see java.lang.String
  * @see java.math.BigDecimal
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class BigDecimalConverter extends ConverterAdapter<String, BigDecimal> {
+public class BigDecimalConverter extends AbstractConverter<String, BigDecimal> {
 
   private final MathContext mathContext;
 
@@ -42,24 +42,24 @@ public class BigDecimalConverter extends ConverterAdapter<String, BigDecimal> {
     this(null);
   }
 
-  public BigDecimalConverter(final MathContext mathContext) {
+  public BigDecimalConverter(MathContext mathContext) {
     this.mathContext = mathContext;
   }
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (is(fromType).assignableTo(String.class) && BigDecimal.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return ObjectUtils.assignableTo(fromType, String.class) && BigDecimal.class.equals(toType);
   }
 
   @Override
-  public BigDecimal convert(final String value) {
+  public BigDecimal convert(String value) {
+
     try {
-      return (mathContext == null ? new BigDecimal(String.valueOf(value).trim())
-        : new BigDecimal(String.valueOf(value).trim(), mathContext));
+      return (this.mathContext == null ? new BigDecimal(String.valueOf(value).trim())
+        : new BigDecimal(String.valueOf(value).trim(), this.mathContext));
     }
-    catch (NumberFormatException e) {
-      throw new ConversionException(String.format("The String value (%1$s) is not a valid BigDecimal!", value), e);
+    catch (NumberFormatException cause) {
+      throw newConversionException(cause, "[%s] is not a valid BigDecimal", value);
     }
   }
-
 }

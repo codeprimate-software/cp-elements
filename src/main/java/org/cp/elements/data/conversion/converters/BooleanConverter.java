@@ -16,12 +16,13 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import java.util.Arrays;
+import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+import static org.cp.elements.util.CollectionUtils.asSet;
+
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
 
 /**
  * The BooleanConverter class converts an Object value into a Boolean.
@@ -29,11 +30,11 @@ import org.cp.elements.data.conversion.ConverterAdapter;
  * @author John J. Blum
  * @see java.lang.Boolean
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class BooleanConverter extends ConverterAdapter<Object, Boolean> {
+public class BooleanConverter extends AbstractConverter<Object, Boolean> {
 
   protected final Set<String> trueValues;
 
@@ -41,18 +42,20 @@ public class BooleanConverter extends ConverterAdapter<Object, Boolean> {
     this(Boolean.TRUE.toString());
   }
 
-  public BooleanConverter(final String... trueValues) {
-    this.trueValues = (trueValues == null ? Collections.<String>emptySet()
-      : Collections.unmodifiableSet(new HashSet<>(Arrays.asList(trueValues))));
+  public BooleanConverter(String... trueValues) {
+    this.trueValues = Collections.unmodifiableSet(asSet(nullSafeArray(trueValues, String.class)));
   }
 
-  protected boolean isTrue(final Object value) {
-    final String valueString = String.valueOf(value).trim();
-    return (Boolean.parseBoolean(valueString) || isTrue(valueString));
+  protected boolean isTrue(Object value) {
+
+    String valueString = String.valueOf(value).trim();
+
+    return Boolean.parseBoolean(valueString) || isTrue(valueString);
   }
 
-  protected boolean isTrue(final String value) {
-    for (String trueValue : trueValues) {
+  protected boolean isTrue(String value) {
+
+    for (String trueValue : this.trueValues) {
       if (trueValue.equalsIgnoreCase(value)) {
         return true;
       }
@@ -62,17 +65,12 @@ public class BooleanConverter extends ConverterAdapter<Object, Boolean> {
   }
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (fromType != null && (Boolean.class.equals(toType) || Boolean.TYPE.equals(toType)));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return fromType != null && (Boolean.class.equals(toType) || Boolean.TYPE.equals(toType));
   }
 
   @Override
-  public Boolean convert(final Object value) {
-    if (value instanceof Boolean) {
-      return (Boolean) value;
-    }
-
-    return isTrue(value);
+  public Boolean convert(Object value) {
+    return value instanceof Boolean ? (Boolean) value : isTrue(value);
   }
-
 }

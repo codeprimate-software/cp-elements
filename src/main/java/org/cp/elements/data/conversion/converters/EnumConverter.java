@@ -16,8 +16,9 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
+import org.cp.elements.data.conversion.AbstractConverter;
 
 /**
  * The EnumConverter class converts a String value into an Enum of the qualifying enumerated type.
@@ -25,30 +26,31 @@ import org.cp.elements.data.conversion.ConverterAdapter;
  * @author John J. Blum
  * @see java.lang.Enum
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class EnumConverter extends ConverterAdapter<String, Enum> {
+public class EnumConverter extends AbstractConverter<String, Enum> {
 
   /* (non-Javadoc) */
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (String.class.equals(fromType) && isAssignableTo(toType, Enum.class));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return String.class.equals(fromType) && isAssignableTo(toType, Enum.class);
   }
 
   /* (non-Javadoc) */
   @Override
   @SuppressWarnings("unchecked")
-  public <QT extends Enum> QT convert(final String value, final Class<QT> enumType) {
+  public <QT extends Enum> QT convert(String value, Class<QT> enumType) {
+
     try {
+
       Enum enumInstance = Enum.valueOf(enumType, value);
+
       return enumType.cast(enumInstance);
     }
-    catch (Exception e) {
-      throw new ConversionException(String.format("(%1$s) is not a valid enumerated value of Enum (%2$s)",
-        value, enumType), e);
+    catch (Exception cause) {
+      throw newConversionException(cause, "[%1$s] is not a valid enumerated value of Enum [%2$s]", value, enumType);
     }
   }
-
 }

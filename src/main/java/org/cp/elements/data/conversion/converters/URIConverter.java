@@ -16,31 +16,33 @@
 
 package org.cp.elements.data.conversion.converters;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
 import java.net.URI;
 import java.net.URL;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
 
 /**
- * The URIConverter class converts an Object value into a URI.
+ * {@link URIConverter} converts an {@link Object} into a {@link URI}.
  *
  * @author John J. Blum
  * @see java.lang.Object
  * @see java.net.URI
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class URIConverter extends ConverterAdapter<Object, URI> {
+public class URIConverter extends AbstractConverter<Object, URI> {
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, URI.class, URL.class, String.class) && URI.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, URI.class, URL.class, String.class) && URI.class.equals(toType);
   }
 
   @Override
-  public URI convert(final Object value) {
+  public URI convert(Object value) {
+
     try {
       if (value instanceof URI) {
         return (URI) value;
@@ -52,12 +54,11 @@ public class URIConverter extends ConverterAdapter<Object, URI> {
         return URI.create(value.toString().trim());
       }
       else {
-        throw new ConversionException(String.format("The Object value (%1$s) is not a valid URI!", value));
+        throw newConversionException("[%s] is not a valid URI", value);
       }
     }
-    catch (Exception e) {
-      throw new ConversionException(String.format("The Object value (%1$s) is not a valid URI!", value), e);
+    catch (Exception cause) {
+      throw newConversionException(cause, "[%s] is not a valid URI", value);
     }
   }
-
 }

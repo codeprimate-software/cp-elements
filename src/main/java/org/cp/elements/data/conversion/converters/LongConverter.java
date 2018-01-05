@@ -16,11 +16,12 @@
 
 package org.cp.elements.data.conversion.converters;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.lang.StringUtils;
 
 /**
@@ -29,22 +30,23 @@ import org.cp.elements.lang.StringUtils;
  * @author John J. Blum
  * @see java.lang.Long
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class LongConverter extends ConverterAdapter<Object, Long> {
+public class LongConverter extends AbstractConverter<Object, Long> {
 
-  protected static final String CONVERSION_EXCEPTION_MESSAGE = "The Object value (%1$s) is not a valid long!";
+  protected static final String CONVERSION_EXCEPTION_MESSAGE = "[%s] is not a valid Long";
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, Number.class, Calendar.class, Date.class, String.class)
-      && Long.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, Number.class, Calendar.class, Date.class, String.class)
+      && Long.class.equals(toType);
   }
 
   @Override
-  public Long convert(final Object value) {
+  public Long convert(Object value) {
+
     if (value instanceof Number) {
       return ((Number) value).longValue();
     }
@@ -58,13 +60,12 @@ public class LongConverter extends ConverterAdapter<Object, Long> {
       try {
         return Long.parseLong(value.toString().trim());
       }
-      catch (NumberFormatException e) {
-        throw new ConversionException(String.format(CONVERSION_EXCEPTION_MESSAGE, value), e);
+      catch (NumberFormatException cause) {
+        throw newConversionException(cause, CONVERSION_EXCEPTION_MESSAGE, value);
       }
     }
     else {
-      throw new ConversionException(String.format(CONVERSION_EXCEPTION_MESSAGE, value));
+      throw newConversionException(CONVERSION_EXCEPTION_MESSAGE, value);
     }
   }
-
 }

@@ -16,31 +16,33 @@
 
 package org.cp.elements.data.conversion.converters;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
 import java.net.URI;
 import java.net.URL;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
 
 /**
- * The URLConverter class converts an Object value into a URL.
+ * {@link URLConverter} converts an {@link Object} into a {@link URL}.
  *
  * @author John J. Blum
  * @see java.lang.Object
  * @see java.net.URL
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class URLConverter extends ConverterAdapter<Object, URL> {
+public class URLConverter extends AbstractConverter<Object, URL> {
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, URI.class, URL.class, String.class) && URL.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, URI.class, URL.class, String.class) && URL.class.equals(toType);
   }
 
   @Override
-  public URL convert(final Object value) {
+  public URL convert(Object value) {
+
     try {
       if (value instanceof URL) {
         return (URL) value;
@@ -52,12 +54,11 @@ public class URLConverter extends ConverterAdapter<Object, URL> {
         return new URL(value.toString().trim());
       }
       else {
-        throw new ConversionException(String.format("The Object value (%1$s) is not a valid URL!", value));
+        throw newConversionException("[%s] is not a valid URL", value);
       }
     }
-    catch (Exception e) {
-      throw new ConversionException(String.format("The Object value (%1$s) is not a valid URL!", value), e);
+    catch (Exception cause) {
+      throw newConversionException(cause, "[%s] is not a valid URL", value);
     }
   }
-
 }

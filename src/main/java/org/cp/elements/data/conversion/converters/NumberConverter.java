@@ -16,13 +16,15 @@
 
 package org.cp.elements.data.conversion.converters;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
 import org.cp.elements.lang.StringUtils;
 
 /**
@@ -36,15 +38,17 @@ import org.cp.elements.lang.StringUtils;
  * @see java.math.BigInteger
  * @see java.util.concurrent.atomic.AtomicInteger
  * @see java.util.concurrent.atomic.AtomicLong
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class NumberConverter extends ConverterAdapter<Object, Number> {
+public class NumberConverter extends AbstractConverter<Object, Number> {
 
-  protected static final String CONVERSION_EXCEPTION_MESSAGE = "The Object value (%1$s) is not a valid number of the qualifying type (%2$s)!";
+  protected static final String CONVERSION_EXCEPTION_MESSAGE =
+    "[%1$s] is not a valid number of the qualifying type [%2$s]";
 
-  protected <QT extends Number> QT parseNumber(final String number, final Class<QT> numberType) {
+  protected <QT extends Number> QT parseNumber(String number, Class<QT> numberType) {
+
     if (AtomicInteger.class.isAssignableFrom(numberType)) {
       return numberType.cast(new AtomicInteger(Integer.parseInt(number)));
     }
@@ -76,10 +80,11 @@ public class NumberConverter extends ConverterAdapter<Object, Number> {
       return numberType.cast(Double.parseDouble(number));
     }
 
-    throw new ConversionException(String.format("The Class type (%1$s) is not a valid Number type!", numberType));
+    throw newConversionException("[%s] is not a valid Number type", numberType);
   }
 
-  protected <QT extends Number> QT toQualifyingNumber(final Number number, final Class<QT> numberType) {
+  protected <QT extends Number> QT toQualifyingNumber(Number number, Class<QT> numberType) {
+
     if (AtomicInteger.class.isAssignableFrom(numberType)) {
       return numberType.cast(new AtomicInteger(number.intValue()));
     }
@@ -111,16 +116,17 @@ public class NumberConverter extends ConverterAdapter<Object, Number> {
       return numberType.cast(number.doubleValue());
     }
 
-    throw new ConversionException(String.format("The Class type (%1$s) is not a valid Number type!", numberType));
+    throw newConversionException("[%s] is not a valid Number type", numberType);
   }
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, Number.class, String.class) && isAssignableTo(toType, Number.class));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, Number.class, String.class) && isAssignableTo(toType, Number.class);
   }
 
   @Override
-  public <QT extends Number> QT convert(final Object value, final Class<QT> qualifyingType) {
+  public <QT extends Number> QT convert(Object value, Class<QT> qualifyingType) {
+
     try {
       if (qualifyingType.isInstance(value)) {
         return qualifyingType.cast(value);
@@ -132,15 +138,16 @@ public class NumberConverter extends ConverterAdapter<Object, Number> {
         return parseNumber(value.toString().trim(), qualifyingType);
       }
       else {
-        throw new ConversionException(String.format(CONVERSION_EXCEPTION_MESSAGE, value, qualifyingType.getName()));
+        throw newConversionException(CONVERSION_EXCEPTION_MESSAGE, value, qualifyingType.getName());
       }
     }
-    catch (Exception e) {
-      if (e instanceof ConversionException) {
-        throw (ConversionException) e;
+    catch (Exception cause) {
+
+      if (cause instanceof ConversionException) {
+        throw (ConversionException) cause;
       }
-      throw new ConversionException(String.format(CONVERSION_EXCEPTION_MESSAGE, value, qualifyingType.getName()), e);
+
+      throw newConversionException(cause, CONVERSION_EXCEPTION_MESSAGE, value, qualifyingType.getName());
     }
   }
-
 }

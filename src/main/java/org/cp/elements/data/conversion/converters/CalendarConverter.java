@@ -16,14 +16,15 @@
 
 package org.cp.elements.data.conversion.converters;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cp.elements.data.conversion.ConversionException;
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.StringUtils;
 
@@ -33,11 +34,11 @@ import org.cp.elements.lang.StringUtils;
  * @author John J. Blum
  * @see java.lang.Object
  * @see java.util.Calendar
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CalendarConverter extends ConverterAdapter<Object, Calendar> {
+public class CalendarConverter extends AbstractConverter<Object, Calendar> {
 
   protected static final String DEFAULT_PATTERN = "MM/dd/yyyy hh:mm:ss a";
 
@@ -47,22 +48,23 @@ public class CalendarConverter extends ConverterAdapter<Object, Calendar> {
     this(DEFAULT_PATTERN);
   }
 
-  public CalendarConverter(final String pattern) {
-    dateFormat = new SimpleDateFormat(pattern);
+  public CalendarConverter(String pattern) {
+    this.dateFormat = new SimpleDateFormat(pattern);
   }
 
   public DateFormat getDateFormat() {
-    return dateFormat;
+    return this.dateFormat;
   }
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
-    return (isAssignableTo(fromType, Calendar.class, Date.class, Number.class, String.class)
-      && Calendar.class.equals(toType));
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+    return isAssignableTo(fromType, Calendar.class, Date.class, Number.class, String.class)
+      && Calendar.class.equals(toType);
   }
 
   @Override
-  public Calendar convert(final Object value) {
+  public Calendar convert(Object value) {
+
     try {
       if (value instanceof Calendar) {
         return (Calendar) value;
@@ -74,18 +76,19 @@ public class CalendarConverter extends ConverterAdapter<Object, Calendar> {
         return DateTimeUtils.create(((Number) value).longValue());
       }
       else if (value instanceof String) {
-        final String valueString = String.valueOf(value).trim();
 
-        return (StringUtils.isDigits(valueString) ? DateTimeUtils.create(Long.parseLong(valueString))
-          : DateTimeUtils.create(getDateFormat().parse(valueString).getTime()));
+        String valueString = String.valueOf(value).trim();
+
+        return StringUtils.isDigits(valueString)
+          ? DateTimeUtils.create(Long.parseLong(valueString))
+          : DateTimeUtils.create(getDateFormat().parse(valueString).getTime());
       }
       else {
-        throw new ConversionException(String.format("The Object value (%1$s) is not a valid date/time!", value));
+        throw newConversionException("[%s] is not a valid date/time", value);
       }
     }
-    catch (ParseException e) {
-      throw new ConversionException(String.format("The Object value (%1$s) is not a valid date/time!", value), e);
+    catch (ParseException cause) {
+      throw newConversionException(cause, "[%s] is not a valid date/time", value);
     }
   }
-
 }

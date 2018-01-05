@@ -16,28 +16,27 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import org.cp.elements.data.conversion.ConverterAdapter;
+import org.cp.elements.data.conversion.AbstractConverter;
 
 /**
- * The StringConverter class converts an Object value into a String.
+ * {@link StringConverter} converts an {@link Object} into a {@link String}.
  *
  * @author John J. Blum
  * @see java.lang.Object
  * @see java.lang.String
- * @see org.cp.elements.data.conversion.ConverterAdapter
+ * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class StringConverter extends ConverterAdapter<Object, String> {
+public class StringConverter extends AbstractConverter<Object, String> {
 
   @Override
-  public boolean canConvert(final Class<?> fromType, final Class<?> toType) {
+  public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return String.class.equals(toType);
   }
 
   @Override
-  public String convert(final Object value) {
+  public String convert(Object value) {
     return String.valueOf(value);
   }
-
 }
