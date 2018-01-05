@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.Converter;
-import org.cp.elements.data.conversion.support.StringConverter;
+import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.Assert;
@@ -41,7 +41,7 @@ import org.cp.elements.lang.StringUtils;
  * @author John J. Blum
  * @see org.cp.elements.data.conversion.AbstractConversionService
  * @see org.cp.elements.data.conversion.Converter
- * @see org.cp.elements.data.conversion.support.StringConverter
+ * @see org.cp.elements.data.conversion.converters.StringConverter
  * @see <a href="http://stackoverflow.com/questions/176527/how-can-i-enumerate-all-classes-in-a-package-and-add-them-to-a-list">How can I enumerate all classes in a package and add them to a List?</a>
  * @since 1.0.0
  */
