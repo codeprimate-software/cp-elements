@@ -17,9 +17,9 @@
 package org.cp.elements.data.struct;
 
 import java.util.Optional;
+import java.util.ServiceLoader;
 
 import org.cp.elements.data.conversion.ConversionService;
-import org.cp.elements.data.conversion.provider.DefaultConversionService;
 import org.cp.elements.lang.StringUtils;
 
 /**
@@ -34,7 +34,7 @@ import org.cp.elements.lang.StringUtils;
 @SuppressWarnings("unused")
 public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String> {
 
-  private final ConversionService conversionService = new DefaultConversionService();
+  private final ConversionService conversionService = ServiceLoader.load(ConversionService.class).iterator().next();
 
   /**
    * Constructs an instance of the {@link StringBasedKeyValue} initialized with the given {@link String key}

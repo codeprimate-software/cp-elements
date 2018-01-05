@@ -38,13 +38,13 @@ import static org.mockito.Mockito.when;
 
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.ServiceLoader;
 
 import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.ConverterAdapter;
-import org.cp.elements.data.conversion.provider.DefaultConversionService;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
@@ -90,8 +90,22 @@ public class AbstractConfigurationTests {
     configurationSettings = null;
   }
 
+  ConversionService loadConversionService() {
+
+    ServiceLoader<ConversionService> serviceLoader = ServiceLoader.load(ConversionService.class);
+
+    assertThat(serviceLoader, is(notNullValue()));
+
+    Iterator<ConversionService> iterator = serviceLoader.iterator();
+
+    assertThat(iterator.hasNext(), is(true));
+
+    return iterator.next();
+  }
+
   @Test
   public void construct() {
+
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
     assertNotNull(configuration);
@@ -100,7 +114,9 @@ public class AbstractConfigurationTests {
 
   @Test
   public void constructWithParent() {
+
     Configuration mockParentConfiguration = mock(Configuration.class);
+
     AbstractConfiguration configuration = new TestConfiguration(mockParentConfiguration, new Properties());
 
     assertThat(configuration, is(notNullValue(AbstractConfiguration.class)));
@@ -276,6 +292,7 @@ public class AbstractConfigurationTests {
   @Test
   @IntegrationTest
   public void getPropertyValueAs() {
+
     Properties customConfigurationSettings = new Properties();
 
     customConfigurationSettings.setProperty("boolProp", "true");
@@ -286,9 +303,9 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(customConfigurationSettings);
 
-    configuration.setConversionService(new DefaultConversionService());
+    configuration.setConversionService(loadConversionService());
 
-    assertTrue(configuration.getConversionService() instanceof DefaultConversionService);
+    assertNotNull(configuration.getConversionService());
     assertTrue(configuration.getPropertyValueAs("boolProp", Boolean.class));
     assertEquals(new Character('X'), configuration.getPropertyValueAs("charProp", Character.class));
     assertEquals(new Double(Math.PI), configuration.getPropertyValueAs("dblProp", Double.class));

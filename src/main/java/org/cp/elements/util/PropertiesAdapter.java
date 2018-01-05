@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ServiceLoader;
 
 import org.cp.elements.data.conversion.ConversionService;
-import org.cp.elements.data.conversion.provider.DefaultConversionService;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
@@ -62,9 +62,11 @@ public class PropertiesAdapter implements Iterable<String> {
    * @param properties the {@link Properties} to wrap with this wrapper.
    */
   public PropertiesAdapter(Properties properties) {
+
     Assert.notNull(properties, "The Properties to wrap cannot be null");
+
     this.delegate = properties;
-    this.conversionService = new DefaultConversionService();
+    this.conversionService = ServiceLoader.load(ConversionService.class).iterator().next();
   }
 
   /**
