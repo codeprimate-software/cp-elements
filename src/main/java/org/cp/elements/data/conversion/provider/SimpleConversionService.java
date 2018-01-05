@@ -36,7 +36,7 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The DefaultConversionService class is a Service class/component that performs value type conversions.
+ * The SimpleConversionService class is a Service class/component that performs value type conversions.
  *
  * @author John J. Blum
  * @see org.cp.elements.data.conversion.AbstractConversionService
@@ -46,7 +46,7 @@ import org.cp.elements.lang.StringUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DefaultConversionService extends AbstractConversionService {
+public class SimpleConversionService extends AbstractConversionService {
 
   protected static final Class CONVERTER_CLASS = StringConverter.class;
 
@@ -59,9 +59,9 @@ public class DefaultConversionService extends AbstractConversionService {
   private final Map<Class, Object> defaultValues = Collections.synchronizedMap(new HashMap<>(13, 0.95f));
 
   /**
-   * Constructs a instance of the DefaultConversionService class to perform type conversions.
+   * Constructs a instance of the SimpleConversionService class to perform type conversions.
    */
-  public DefaultConversionService() {
+  public SimpleConversionService() {
     String converterClassPathname = CONVERTER_CLASS.getName().replace(StringUtils.DOT_SEPARATOR, File.separator)
       .concat(CLASS_FILE_EXTENSION);
 
@@ -148,7 +148,7 @@ public class DefaultConversionService extends AbstractConversionService {
    * @param type the Class type to set the default value for.
    * @param defaultValue the default value for the specified Class type.
    * @throws NullPointerException if the Class type is null.
-   * @see #setDefaultValue(Class, org.cp.elements.data.conversion.provider.DefaultConversionService.ValueGenerator)
+   * @see #setDefaultValue(Class, SimpleConversionService.ValueGenerator)
    * @see java.lang.Class
    */
   public <T> void setDefaultValue(final Class<T> type, final T defaultValue) {
@@ -165,7 +165,7 @@ public class DefaultConversionService extends AbstractConversionService {
    * @throws NullPointerException if the Class type is null.
    * @see #setDefaultValue(Class, Object)
    * @see java.lang.Class
-   * @see org.cp.elements.data.conversion.provider.DefaultConversionService.ValueGenerator
+   * @see SimpleConversionService.ValueGenerator
    */
   public <T> void setDefaultValue(final Class<T> type, final ValueGenerator<T> valueGenerator) {
     Assert.notNull(type, "The Class type to set the value generator for cannot be null!");

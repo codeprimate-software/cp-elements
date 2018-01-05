@@ -53,17 +53,17 @@ import org.cp.elements.enums.Race;
 import org.junit.Test;
 
 /**
- * The DefaultConversionServiceTest class is a test suite of test cases testing the contract and functionality of the
- * DefaultConversionService class.
+ * Unit tests for {@link SimpleConversionService}.
  *
  * @author John J. Blum
- * @see org.cp.elements.data.conversion.provider.DefaultConversionService
  * @see org.junit.Test
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.data.conversion.provider.SimpleConversionService
  * @since 1.0.0
  */
-public class DefaultConversionServiceTest {
+public class SimpleConversionServiceTests {
 
-  private final DefaultConversionService conversionService = new DefaultConversionService();
+  private final SimpleConversionService conversionService = new SimpleConversionService();
 
   @Test
   public void testRegisteredSupportConverters() {
@@ -88,7 +88,7 @@ public class DefaultConversionServiceTest {
     expectedRegisteredSupportConverters.add(URLConverter.class);
 
     for (Converter converter : conversionService) {
-      assertTrue(String.format("Expected the Converter (%1$s) to registered in the DefaultConversionService!",
+      assertTrue(String.format("Expected the Converter (%1$s) to registered in the SimpleConversionService!",
         converter.getClass().getName()), expectedRegisteredSupportConverters.remove(converter.getClass()));
     }
 
@@ -142,7 +142,7 @@ public class DefaultConversionServiceTest {
 
   @Test
   public void testSetAndGetDefaultValue() {
-    conversionService.setDefaultValue(Number.class, new DefaultConversionService.ValueGenerator<Number>() {
+    conversionService.setDefaultValue(Number.class, new SimpleConversionService.ValueGenerator<Number>() {
       private final AtomicLong value = new AtomicLong();
       @Override public Number generateValue() {
         return value.getAndIncrement();
