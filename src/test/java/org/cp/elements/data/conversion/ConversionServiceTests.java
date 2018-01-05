@@ -20,14 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterator;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.Iterator;
 
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.Registry;
 import org.junit.Test;
 
 /**
@@ -42,12 +47,12 @@ import org.junit.Test;
 public class ConversionServiceTests {
 
   @Test
-  public void canConvertWithObjectReturnsTrue() {
+  public void canConvertObjectReturnsTrue() {
 
     ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
     when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenReturn(true);
+    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
 
     assertThat(mockConversionService.canConvert(new Object(), String.class)).isTrue();
 
@@ -55,28 +60,28 @@ public class ConversionServiceTests {
   }
 
   @Test
-  public void canConverterWithObjectReturnsFalse() {
+  public void canConverterObjectReturnsFalse() {
 
     ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
     when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenReturn(false);
+    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
 
-    assertThat(mockConversionService.canConvert("test", Enum.class)).isFalse();
+    assertThat(mockConversionService.canConvert("test", String.class)).isFalse();
 
-    verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(Enum.class));
+    verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(String.class));
   }
 
   @Test
-  public void canConvertWithNullObjectReturnsFalse() {
+  public void canConvertNullObjectIsNullSafeAndReturnsTrue() {
 
-    ConversionService mockConversionService = mock(ConversionService.class);
+    ConversionService testConversionService = spy(new TestConversionService());
 
-    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
+    doReturn(true).when(testConversionService).canConvert(any(), any(Class.class));
 
-    assertThat(mockConversionService.canConvert((Object) null, Object.class)).isFalse();
+    assertThat(testConversionService.canConvert((Object) null, Object.class)).isTrue();
 
-    verify(mockConversionService, never()).canConvert(any(Class.class), any(Class.class));
+    verify(testConversionService, times(1)).canConvert(isNull(), any(Class.class));
   }
 
   @Test
@@ -124,5 +129,23 @@ public class ConversionServiceTests {
     assertThat(mockConversionService.canConvert(String.class, Enum.class)).isFalse();
 
     verify(mockConversionService, times(1)).iterator();
+  }
+
+  static class TestConversionService implements ConversionService {
+
+    @Override
+    public <T> T convert(Object value, Class<T> toType) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public Iterator<Converter<?, ?>> iterator() {
+      return Collections.emptyIterator();
+    }
+
+    @Override
+    public <R extends Registry<Converter<?, ?>>> R register(Converter<?, ?> obj) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
   }
 }

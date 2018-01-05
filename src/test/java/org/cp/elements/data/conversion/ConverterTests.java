@@ -21,12 +21,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.cp.elements.lang.Constants;
 import org.junit.Test;
 
 /**
@@ -41,7 +44,7 @@ import org.junit.Test;
 public class ConverterTests {
 
   @Test
-  public void canConvertWithObjectReturnsTrue() {
+  public void canConvertObjectReturnsTrue() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
@@ -54,7 +57,7 @@ public class ConverterTests {
   }
 
   @Test
-  public void canConvertWithObjectReturnsFalse() {
+  public void canConvertObjectReturnsFalse() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
@@ -67,21 +70,20 @@ public class ConverterTests {
   }
 
   @Test
-  public void canConvertWithNullObjectReturnsFalse() {
+  public void canConvertNullObjectIsNullSafeAndReturnsTrue() {
 
-    Converter<?, ?> mockConverter = mock(Converter.class);
+    Converter<?, ?> mockConverter = spy(new TestConverter());
 
-    when(mockConverter.canConvert(any(Class.class), any(Class.class))).thenReturn(false);
-    when(mockConverter.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
+    doReturn(true).when(mockConverter).canConvert(any(), any(Class.class));
 
-    assertThat(mockConverter.canConvert((Object) null, String.class)).isFalse();
+    assertThat(mockConverter.canConvert((Object) null, String.class)).isTrue();
 
-    verify(mockConverter, never()).canConvert(eq(Object.class), eq(String.class));
+    verify(mockConverter, times(1)).canConvert(isNull(), eq(String.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void convertValueWithQualifyingTypeCallsUnqualifiedConvertValue() {
+  public void convertWithQualifyingTypeCallsConvertWithUnqualifiedType() {
 
     Converter<Object, String> mockConverter = mock(Converter.class);
 
@@ -102,9 +104,9 @@ public class ConverterTests {
 
   @Test(expected = IllegalArgumentException.class)
   @SuppressWarnings("unchecked")
-  public void convertValueWithNullQualifyingTypeThrowsException() {
+  public void convertWithNullQualifyingTypeThrowsException() {
 
-    Converter<String, ?> mockConverter = mock(Converter.class);
+    Converter<Object, ?> mockConverter = mock(Converter.class);
 
     when(mockConverter.convert(any(), any())).thenCallRealMethod();
 
@@ -119,14 +121,13 @@ public class ConverterTests {
       throw expected;
     }
     finally {
-      verify(mockConverter, times(1)).convert(eq("test"), isNull());
       verify(mockConverter, never()).convert(any());
     }
   }
 
   @Test(expected = ConversionException.class)
   @SuppressWarnings("unchecked")
-  public void convertValueHandlesClassCastExceptionThrowsConversionException() {
+  public void convertHandlesClassCastExceptionThrowsConversionException() {
 
     Converter<String, TestObject> mockConverter = mock(Converter.class);
 
@@ -138,7 +139,7 @@ public class ConverterTests {
     }
     catch (ConversionException expected) {
 
-      assertThat(expected).hasMessage("Could not convert [test] into an Object of type [%s]",
+      assertThat(expected).hasMessage("Cannot convert [test] into an Object of type [%s]",
         TestObject.class.getName());
 
       assertThat(expected).hasCauseInstanceOf(ClassCastException.class);
@@ -146,6 +147,27 @@ public class ConverterTests {
       assertThat(expected.getCause()).hasNoCause();
 
       throw expected;
+    }
+    finally {
+      verify(mockConverter, times(1)).convert(eq("test"));
+    }
+  }
+
+  static class TestConverter implements Converter<Object, Object> {
+
+    @Override
+    public void setConversionService(ConversionService conversionService) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public boolean canConvert(Class<?> fromType, Class<?> toType) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
+
+    @Override
+    public Object convert(Object value) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
 

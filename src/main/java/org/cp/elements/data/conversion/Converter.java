@@ -19,7 +19,7 @@ package org.cp.elements.data.conversion;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
@@ -27,8 +27,8 @@ import org.cp.elements.lang.annotation.NullSafe;
  * from one {@link Class type} to another.
  *
  * @author John J. Blum
- * @param <S> the {@link Class source type} to convert from.
- * @param <T> the {@link Class target type} to convert to.
+ * @param <S> {@link Class source type} to convert from.
+ * @param <T> {@link Class target type} to convert to.
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @see org.cp.elements.data.conversion.ConversionService
  * @see org.cp.elements.data.conversion.ConversionServiceAware
@@ -45,11 +45,12 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * @param toType {@link Class type} to convert the {@link Object} to.
    * @return a boolean value indicating whether this {@link Converter}
    * can convert the given {@link Object} to the specified {@link Class type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Object, Class)
    * @see #canConvert(Class, Class)
    */
   @NullSafe
   default boolean canConvert(Object value, Class<?> toType) {
-    return (value != null && canConvert(value.getClass(), toType));
+    return canConvert(ObjectUtils.getClass(value), toType);
   }
 
   /**
@@ -61,6 +62,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
    * {@link Class from type} {@link Class to type}.
    * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
    */
   boolean canConvert(Class<?> fromType, Class<?> toType);
 
@@ -95,8 +97,8 @@ public interface Converter<S, T> extends ConversionServiceAware {
       return qualifyingType.cast(convert(value));
     }
     catch (ClassCastException cause) {
-      throw newConversionException(cause, "Could not convert [%1$s] into an Object of type [%2$s]",
-        value, ClassUtils.getName(qualifyingType));
+      throw newConversionException(cause, "Cannot convert [%1$s] into an Object of type [%2$s]",
+        value, ObjectUtils.getName(qualifyingType));
     }
   }
 }

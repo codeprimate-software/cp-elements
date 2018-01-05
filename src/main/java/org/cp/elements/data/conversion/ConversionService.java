@@ -16,6 +16,7 @@
 
 package org.cp.elements.data.conversion;
 
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.service.annotation.Service;
 import org.cp.elements.service.support.ServiceSupport;
 
@@ -47,7 +48,7 @@ public interface ConversionService extends ConverterRegistry, ServiceSupport {
    * @see #canConvert(Class, Class)
    */
   default boolean canConvert(Object value, Class<?> toType) {
-    return (value != null && canConvert(value.getClass(), toType));
+    return canConvert(ObjectUtils.getClass(value), toType);
   }
 
   /**
@@ -81,8 +82,8 @@ public interface ConversionService extends ConverterRegistry, ServiceSupport {
    * @return the converted {@link Object} of the {@link Class target type} with the given {@code value}.
    * @throws ConversionException if the {@link Object} could not be converted into a {@link Object value}
    * of the desired {@link Class target type}.
+   * @see org.cp.elements.data.conversion.Converter#convert(Object, Class)
    * @see org.cp.elements.data.conversion.Converter#convert(Object)
-   * @see java.lang.Class
    */
   <T> T convert(Object value, Class<T> toType);
 
