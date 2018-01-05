@@ -16,6 +16,8 @@
 
 package org.cp.elements.data.conversion;
 
+import org.cp.elements.lang.annotation.NullSafe;
+
 /**
  * The {@link Converter} interface defines a contract for objects that convert an {@link Object}
  * from one {@link Class type} to another.
@@ -30,6 +32,21 @@ package org.cp.elements.data.conversion;
  */
 @SuppressWarnings("unused")
 public interface Converter<S, T> extends ConversionServiceAware {
+
+  /**
+   * Determines whether this {@link Converter} can convert the given {@link Object}
+   * to the specified {@link Class type}.
+   *
+   * @param value {@link Object} to convert.
+   * @param toType {@link Class type} to convert the {@link Object} to.
+   * @return a boolean value indicating whether this {@link Converter}
+   * can convert the given {@link Object} to the specified {@link Class type}.
+   * @see #canConvert(Class, Class)
+   */
+  @NullSafe
+  default boolean canConvert(Object value, Class<?> toType) {
+    return (value != null && canConvert(value.getClass(), toType));
+  }
 
   /**
    * Determines whether this {@link Converter} can convert {@link Object Objects}
