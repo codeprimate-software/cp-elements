@@ -16,12 +16,10 @@
 
 package org.cp.elements.data.conversion;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,13 +29,14 @@ import org.cp.elements.data.conversion.support.CharacterConverter;
 import org.cp.elements.data.conversion.support.DoubleConverter;
 import org.cp.elements.data.conversion.support.EnumConverter;
 import org.cp.elements.data.conversion.support.IntegerConverter;
+import org.cp.elements.data.conversion.support.NumberConverter;
 import org.cp.elements.data.conversion.support.StringConverter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link AbstractConversionService} class.
+ * Unit tests for {@link AbstractConversionService}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -48,107 +47,127 @@ import org.junit.Test;
 public class AbstractConversionServiceTests {
 
   protected static <T> T add(Set<T> set, T element) {
+
     if (set.add(element)) {
       return element;
     }
 
-    throw new IllegalArgumentException(String.format("Failed to add element [%1$s] to Set [%2$s]", element, set));
+    throw newIllegalArgumentException("Could not add element [%1$s] to Set [%2$s]", element, set);
+  }
+
+  protected AbstractConversionService newConversionService() {
+    return new AbstractConversionService() { };
   }
 
   @Test
-  public void canConvert() {
-    AbstractConversionService conversionService = new TestConversionService();
-
-    assertFalse(conversionService.canConvert(null, String.class));
-    assertFalse(conversionService.canConvert("test", String.class));
-
-    conversionService.register(new TestConverter());
-
-    assertFalse(conversionService.canConvert((Object) null, String.class));
-    assertTrue(conversionService.canConvert(null, String.class));
-    assertTrue(conversionService.canConvert("test", String.class));
-    assertFalse(conversionService.canConvert(String.class, Character.class));
-  }
-
-  @Test
+  @SuppressWarnings("unchecked")
   public void convert() {
-    AbstractConversionService conversionService = new TestConversionService();
 
-    conversionService.register(new TestConverter());
+    AbstractConversionService conversionService = newConversionService();
 
-    assertEquals("null", conversionService.convert(null, String.class));
-    assertEquals("true", conversionService.convert(true, String.class));
-    assertEquals("A", conversionService.convert('A', String.class));
-    assertEquals("42", conversionService.convert(42, String.class));
-    assertEquals(String.valueOf(Math.PI), conversionService.convert(Math.PI, String.class));
-    assertEquals("test", conversionService.convert("test", String.class));
+    conversionService.register(new ObjectToStringConverter());
+
+    assertThat(conversionService.convert(null, String.class)).isEqualTo("null");
+    assertThat(conversionService.convert(true, String.class)).isEqualTo("true");
+    assertThat(conversionService.convert('A', String.class)).isEqualTo("A");
+    assertThat(conversionService.convert(42, String.class)).isEqualTo("42");
+    assertThat(conversionService.convert(Math.PI, String.class)).isEqualTo(String.valueOf(Math.PI));
+    assertThat(conversionService.convert("test", String.class)).isEqualTo("test");
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void convertExact() {
-    AbstractConversionService conversionService = new TestConversionService();
+
+    AbstractConversionService conversionService = newConversionService();
+
+    conversionService.register(new GenderConverter());
+
+    assertThat(conversionService.canConvert(Object.class, Gender.class)).isTrue();
+    assertThat(conversionService.canConvert(String.class, Gender.class)).isTrue();
+    assertThat(conversionService.canConvert(Gender.class, String.class)).isFalse();
+    assertThat(conversionService.convert("female", Gender.class)).isEqualTo(Gender.FEMALE);
+    assertThat(conversionService.convert("MALE", Gender.class)).isEqualTo(Gender.MALE);
+  }
+
+  @Test
+  public void convertInexactWithEnums() {
+
+    AbstractConversionService conversionService = newConversionService();
 
     conversionService.register(new EnumConverter());
 
-    assertTrue(conversionService.canConvert(String.class, Enum.class));
-    assertTrue(conversionService.canConvert(String.class, Gender.class));
-    assertTrue(conversionService.canConvert(String.class, Race.class));
-
-    assertEquals(Gender.FEMALE, conversionService.convert("FEMALE", Gender.class));
-    assertEquals(Race.WHITE, conversionService.convert("WHITE", Race.class));
-  }
-
-  @Test(expected = ConversionException.class)
-  public void convertThrowsConversionException() {
-    AbstractConversionService conversionService = new TestConversionService();
-
-    assertFalse(conversionService.canConvert(null, String.class));
-
-    try {
-      conversionService.convert(null, String.class);
-    }
-    catch (ConversionException expected) {
-      assertEquals(String.format("Failed to convert value (%1$s) into an object of type (%2$s)!", null,
-        String.class.getName()), expected.getMessage());
-      throw expected;
-    }
-  }
-
-  @Test(expected = ConversionException.class)
-  public void convertThrowsConversionExceptionForUnsupportedConversion() {
-    AbstractConversionService conversionService = new TestConversionService();
-
-    conversionService.register(new TestConverter());
-
-    assertTrue(conversionService.canConvert(null, String.class));
-
-    try {
-      conversionService.convert(null, Character.class);
-    }
-    catch (ConversionException expected) {
-      assertEquals(String.format("Failed to convert value (%1$s) into an object of type (%2$s)!", null,
-        Character.class.getName()), expected.getMessage());
-      throw expected;
-    }
+    assertThat(conversionService.canConvert(String.class, Enum.class)).isTrue();
+    assertThat(conversionService.canConvert(String.class, Gender.class)).isTrue();
+    assertThat(conversionService.canConvert(String.class, Race.class)).isTrue();
+    assertThat(conversionService.convert("FEMALE", Gender.class)).isEqualTo(Gender.FEMALE);
+    assertThat(conversionService.convert("WHITE", Race.class)).isEqualTo(Race.WHITE);
   }
 
   @Test
-  public void describe() {
-    AbstractConversionService conversionService = new TestConversionService();
+  public void convertInexactWithNumbers() {
 
-    Converter converter = new TestConverter();
+    AbstractConversionService conversionService = newConversionService();
 
-    AbstractConversionService.ConverterDescriptor descriptor = conversionService.describe(converter);
+    conversionService.register(new NumberConverter());
 
-    assertNotNull(descriptor);
-    assertSame(converter, descriptor.getConverter());
-    assertEquals(Object.class, descriptor.getFromType());
-    assertEquals(String.class, descriptor.getToType());
+    assertThat(conversionService.canConvert(String.class, Number.class)).isTrue();
+    assertThat(conversionService.canConvert(String.class, Integer.class)).isTrue();
+    assertThat(conversionService.canConvert(String.class, Long.class)).isTrue();
+    assertThat(conversionService.convert("1", Integer.class)).isEqualTo(1);
+    assertThat(conversionService.convert("1", Long.class)).isEqualTo(1L);
+  }
+
+  @Test(expected = ConversionException.class)
+  public void convertThrowsExceptionDuringConversion() {
+
+    AbstractConversionService conversionService = newConversionService();
+
+    assertThat(conversionService.canConvert(Object.class, String.class)).isFalse();
+
+    try {
+      conversionService.convert("test", String.class);
+    }
+    catch (ConversionException expected) {
+
+      assertThat(expected).hasMessage("Cannot convert [test] into Object of type [%s]",
+        String.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = ConversionException.class)
+  public void convertThrowsExceptionForUnsupportedConversion() {
+
+    AbstractConversionService conversionService = newConversionService();
+
+    conversionService.register(new ObjectToStringConverter());
+
+    assertThat(conversionService.canConvert(null, String.class)).isTrue();
+    assertThat(conversionService.canConvert(null, Character.class)).isFalse();
+
+    try {
+      conversionService.convert("X", Character.class);
+    }
+    catch (ConversionException expected) {
+
+      assertThat(expected).hasMessage("Cannot convert [X] into Object of type [%s]",
+        Character.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void iteration() {
-    AbstractConversionService conversionService = new TestConversionService();
+
+    AbstractConversionService conversionService = newConversionService();
+
     Set<Converter> expectedConverters = new HashSet<>(5);
 
     conversionService.register(add(expectedConverters, new BooleanConverter()));
@@ -167,60 +186,20 @@ public class AbstractConversionServiceTests {
     assertTrue(expectedConverters.isEmpty());
   }
 
-  @Test
-  public void register() {
-    AbstractConversionService conversionService = new TestConversionService();
-    Converter<Object, String> testConverter = new TestConverter();
+  static class GenderConverter extends AbstractConverter<String, Gender> {
 
-    assertTrue(conversionService.getRegistry().isEmpty());
-
-    conversionService.register(testConverter);
-
-    assertFalse(conversionService.getRegistry().isEmpty());
-    assertSame(testConverter, conversionService.iterator().next());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void registerNull() {
-    try {
-      new TestConversionService().register(null);
+    @Override
+    public boolean canConvert(Class<?> fromType, Class<?> toType) {
+      return Gender.class.equals(toType);
     }
-    catch (IllegalArgumentException expected) {
-      assertEquals(String.format("The Converter to register with this ConversionService (%1$s) cannot be null!",
-        TestConversionService.class.getName()), expected.getMessage());
-      throw expected;
+
+    @Override
+    public Gender convert(String value) {
+      return Gender.valueOf(value.toUpperCase());
     }
   }
 
-  @Test
-  public void unregister() {
-    AbstractConversionService conversionService = new TestConversionService();
-    Converter testConverter = new TestConverter();
-
-    conversionService.register(testConverter);
-
-    assertFalse(conversionService.getRegistry().isEmpty());
-    assertSame(testConverter, conversionService.iterator().next());
-
-    conversionService.unregister(null);
-
-    assertFalse(conversionService.getRegistry().isEmpty());
-    assertSame(testConverter, conversionService.iterator().next());
-
-    conversionService.unregister(mock(Converter.class));
-
-    assertFalse(conversionService.getRegistry().isEmpty());
-    assertSame(testConverter, conversionService.iterator().next());
-
-    conversionService.unregister(testConverter);
-
-    assertTrue(conversionService.getRegistry().isEmpty());
-  }
-
-  protected static class TestConversionService extends AbstractConversionService {
-  }
-
-  protected static class TestConverter extends ConverterAdapter<Object, String> {
+  static class ObjectToStringConverter extends AbstractConverter<Object, String> {
 
     @Override
     public boolean canConvert(Class<?> fromType, Class<?> toType) {

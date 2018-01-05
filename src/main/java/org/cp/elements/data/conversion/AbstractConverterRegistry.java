@@ -39,6 +39,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @see java.util.Map
  * @see org.cp.elements.data.conversion.ConverterRegistry
  * @see org.cp.elements.lang.Registry
+ * @see <a href="http://stackoverflow.com/questions/8040362/class-name-of-type-parameters-in-java">Class name of type parameters in Java?</a>
  * @since 1.0.0
  */
 public abstract class AbstractConverterRegistry implements ConverterRegistry {
