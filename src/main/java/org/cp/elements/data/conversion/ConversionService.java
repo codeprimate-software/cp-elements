@@ -21,15 +21,14 @@ import org.cp.elements.service.support.ServiceSupport;
 
 /**
  * The {@link ConversionService} interface defines a contract for application {@link Service} components
- * responsible for performing type conversions.
+ * responsible for performing {@link Class type} conversions.
  *
  * @author John J. Blum
- * @see org.cp.elements.service.annotation.Service
- * @see org.cp.elements.service.support.ServiceSupport
  * @see org.cp.elements.data.conversion.AbstractConversionService
  * @see org.cp.elements.data.conversion.Converter
  * @see org.cp.elements.data.conversion.ConverterRegistry
- * @see org.cp.elements.data.conversion.provider.DefaultConversionService
+ * @see org.cp.elements.service.annotation.Service
+ * @see org.cp.elements.service.support.ServiceSupport
  * @since 1.0.0
  */
 @Service
@@ -37,38 +36,53 @@ import org.cp.elements.service.support.ServiceSupport;
 public interface ConversionService extends ConverterRegistry, ServiceSupport {
 
   /**
-   * Determines whether this ConversionService can convert a given object into a value of the desired Class type.
+   * Determines whether this {@link ConversionService} can convert the given {@link Object}
+   * into the desired {@link Class type}.
    *
-   * @param value the object to convert into a value of the target Class type.
-   * @param toType the Class type to convert the Object value into.
-   * @return a boolean value indicating whether this ConversionService can convert the object into a value of the
-   * desired Class type.
+   * @param value {@link Object} to convert.
+   * @param toType {@link Class type} to convert the {@link Object} into.
+   * @return a boolean value indicating whether this {@link ConversionService} can convert the given {@link Object}
+   * into the desired {@link Class type}.
+   * @see org.cp.elements.data.conversion.Converter#canConvert(Class, Class)
    * @see #canConvert(Class, Class)
    */
-  boolean canConvert(Object value, Class<?> toType);
+  default boolean canConvert(Object value, Class<?> toType) {
+    return (value != null && canConvert(value.getClass(), toType));
+  }
 
   /**
-   * Determines whether this ConversionService can convert values from a given Class type into the desired Class type.
+   * Determines whether this {@link ConversionService} can convert from the given {@link Class type}
+   * into the desired {@link Class type}.
    *
-   * @param fromType the Class type to convert from.
-   * @param toType the Class type to convert to.
-   * @return a boolean value indicating whether this ConversionService can convert values from a given Class type
-   * into the desired Class type.
-   * @see #canConvert(Object, Class)
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean value indicating whether this {@link ConversionService} can convert from
+   * the given {@link Class type} into the desired {@link Class type}.
    * @see org.cp.elements.data.conversion.Converter#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
    */
-  boolean canConvert(Class<?> fromType, Class<?> toType);
+  default boolean canConvert(Class<?> fromType, Class<?> toType) {
+
+    for (Converter<?, ?> converter : this) {
+      if (converter.canConvert(fromType, toType)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   /**
-   * Converts the Object value into a value of the target Class type.
+   * Converts the given {@link Object} into a {@link Object value} of the {@link Class target type}.
    *
-   * @param <T> the target Class type for the conversion.
-   * @param value the Object value to convert.
-   * @param toType the Class type to convert the Object value into.
-   * @return an instance of the Object value converted into a value of the target Class type.
-   * @throws ConversionException if converting the Object value into a value of the target Class type results in error.
-   * @see java.lang.Class
+   * @param <T> {@link Class target type} of the conversion.
+   * @param value {@link Object} to convert.
+   * @param toType {@link Class target type} to convert the {@link Object} into.
+   * @return the converted {@link Object} of the {@link Class target type} with the given {@code value}.
+   * @throws ConversionException if the {@link Object} could not be converted into a {@link Object value}
+   * of the desired {@link Class target type}.
    * @see org.cp.elements.data.conversion.Converter#convert(Object)
+   * @see java.lang.Class
    */
   <T> T convert(Object value, Class<T> toType);
 
