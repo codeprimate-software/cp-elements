@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -40,7 +41,7 @@ import org.junit.Test;
 public class ConverterTests {
 
   @Test
-  public void canConvertWithObjectAndClassTypeReturnsTrue() {
+  public void canConvertWithObjectReturnsTrue() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
@@ -53,7 +54,7 @@ public class ConverterTests {
   }
 
   @Test
-  public void canConvertWithObjectAndClassTypeReturnsFalse() {
+  public void canConvertWithObjectReturnsFalse() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
@@ -66,7 +67,7 @@ public class ConverterTests {
   }
 
   @Test
-  public void canConvertWithNullObjectAndClassTypeReturnsFalse() {
+  public void canConvertWithNullObjectReturnsFalse() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
@@ -80,7 +81,7 @@ public class ConverterTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void convertWithValueAndQualifyTypeCallsConvertValue() {
+  public void convertValueWithQualifyingTypeCallsUnqualifiedConvertValue() {
 
     Converter<Object, String> mockConverter = mock(Converter.class);
 
@@ -97,6 +98,55 @@ public class ConverterTests {
     assertThat(mockConverter.convert(new TestObject(), String.class)).isEqualTo("test");
 
     verify(mockConverter, times(1)).convert(isA(TestObject.class));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unchecked")
+  public void convertValueWithNullQualifyingTypeThrowsException() {
+
+    Converter<String, ?> mockConverter = mock(Converter.class);
+
+    when(mockConverter.convert(any(), any())).thenCallRealMethod();
+
+    try {
+      mockConverter.convert("test", null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Qualifying type is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockConverter, times(1)).convert(eq("test"), isNull());
+      verify(mockConverter, never()).convert(any());
+    }
+  }
+
+  @Test(expected = ConversionException.class)
+  @SuppressWarnings("unchecked")
+  public void convertValueHandlesClassCastExceptionThrowsConversionException() {
+
+    Converter<String, TestObject> mockConverter = mock(Converter.class);
+
+    when(mockConverter.convert(any())).thenAnswer(invocation -> invocation.getArgument(0));
+    when(mockConverter.convert(any(), any(Class.class))).thenCallRealMethod();
+
+    try {
+      mockConverter.convert("test", TestObject.class);
+    }
+    catch (ConversionException expected) {
+
+      assertThat(expected).hasMessage("Could not convert [test] into an Object of type [%s]",
+        TestObject.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(ClassCastException.class);
+
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   static class TestObject {

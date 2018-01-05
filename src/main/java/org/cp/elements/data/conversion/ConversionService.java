@@ -43,7 +43,7 @@ public interface ConversionService extends ConverterRegistry, ServiceSupport {
    * @param toType {@link Class type} to convert the {@link Object} into.
    * @return a boolean value indicating whether this {@link ConversionService} can convert the given {@link Object}
    * into the desired {@link Class type}.
-   * @see org.cp.elements.data.conversion.Converter#canConvert(Class, Class)
+   * @see org.cp.elements.data.conversion.Converter#canConvert(Object, Class)
    * @see #canConvert(Class, Class)
    */
   default boolean canConvert(Object value, Class<?> toType) {

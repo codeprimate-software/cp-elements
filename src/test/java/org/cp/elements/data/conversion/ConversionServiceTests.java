@@ -44,39 +44,39 @@ public class ConversionServiceTests {
   @Test
   public void canConvertWithObjectReturnsTrue() {
 
-    ConversionService conversionService = mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(conversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
-    when(conversionService.canConvert(any(Class.class), any(Class.class))).thenReturn(true);
+    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
+    when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenReturn(true);
 
-    assertThat(conversionService.canConvert(new Object(), String.class)).isTrue();
+    assertThat(mockConversionService.canConvert(new Object(), String.class)).isTrue();
 
-    verify(conversionService, times(1)).canConvert(eq(Object.class), eq(String.class));
+    verify(mockConversionService, times(1)).canConvert(eq(Object.class), eq(String.class));
   }
 
   @Test
   public void canConverterWithObjectReturnsFalse() {
 
-    ConversionService conversionService = mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(conversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
-    when(conversionService.canConvert(any(Class.class), any(Class.class))).thenReturn(false);
+    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
+    when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenReturn(false);
 
-    assertThat(conversionService.canConvert("test", Enum.class)).isFalse();
+    assertThat(mockConversionService.canConvert("test", Enum.class)).isFalse();
 
-    verify(conversionService, times(1)).canConvert(eq(String.class), eq(Enum.class));
+    verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(Enum.class));
   }
 
   @Test
   public void canConvertWithNullObjectReturnsFalse() {
 
-    ConversionService conversionService = mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(conversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
+    when(mockConversionService.canConvert(any(Object.class), any(Class.class))).thenCallRealMethod();
 
-    assertThat(conversionService.canConvert((Object) null, Object.class)).isFalse();
+    assertThat(mockConversionService.canConvert((Object) null, Object.class)).isFalse();
 
-    verify(conversionService, never()).canConvert(any(Class.class), any(Class.class));
+    verify(mockConversionService, never()).canConvert(any(Class.class), any(Class.class));
   }
 
   @Test
@@ -84,15 +84,15 @@ public class ConversionServiceTests {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
-    ConversionService conversionService = mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(conversionService.canConvert(any(Class.class), any(Class.class))).thenCallRealMethod();
-    when(conversionService.iterator()).thenReturn(asIterator(mockConverter));
+    when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenCallRealMethod();
+    when(mockConversionService.iterator()).thenReturn(asIterator(mockConverter));
     when(mockConverter.canConvert(any(Class.class), any(Class.class))).thenReturn(true);
 
-    assertThat(conversionService.canConvert(String.class, Enum.class)).isTrue();
+    assertThat(mockConversionService.canConvert(String.class, Enum.class)).isTrue();
 
-    verify(conversionService, times(1)).iterator();
+    verify(mockConversionService, times(1)).iterator();
     verify(mockConverter, times(1)).canConvert(eq(String.class), eq(Enum.class));
   }
 
@@ -101,28 +101,28 @@ public class ConversionServiceTests {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
-    ConversionService conversionService = mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(conversionService.canConvert(any(Class.class), any(Class.class))).thenCallRealMethod();
-    when(conversionService.iterator()).thenReturn(asIterator(mockConverter));
+    when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenCallRealMethod();
+    when(mockConversionService.iterator()).thenReturn(asIterator(mockConverter));
     when(mockConverter.canConvert(any(Class.class), any(Class.class))).thenReturn(false);
 
-    assertThat(conversionService.canConvert(String.class, Enum.class)).isFalse();
+    assertThat(mockConversionService.canConvert(String.class, Enum.class)).isFalse();
 
-    verify(conversionService, times(1)).iterator();
+    verify(mockConversionService, times(1)).iterator();
     verify(mockConverter, times(1)).canConvert(eq(String.class), eq(Enum.class));
   }
 
   @Test
   public void canConvertWithTypeWhenNoConvertersPresentReturnsFalse() {
 
-    ConversionService conversionService = mock(ConversionService.class);
+    ConversionService mockConversionService = mock(ConversionService.class);
 
-    when(conversionService.canConvert(any(Class.class), any(Class.class))).thenCallRealMethod();
-    when(conversionService.iterator()).thenReturn(Collections.emptyIterator());
+    when(mockConversionService.canConvert(any(Class.class), any(Class.class))).thenCallRealMethod();
+    when(mockConversionService.iterator()).thenReturn(Collections.emptyIterator());
 
-    assertThat(conversionService.canConvert(String.class, Enum.class)).isFalse();
+    assertThat(mockConversionService.canConvert(String.class, Enum.class)).isFalse();
 
-    verify(conversionService, times(1)).iterator();
+    verify(mockConversionService, times(1)).iterator();
   }
 }

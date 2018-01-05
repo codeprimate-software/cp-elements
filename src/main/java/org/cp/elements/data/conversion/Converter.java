@@ -16,6 +16,10 @@
 
 package org.cp.elements.data.conversion;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
+
+import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
@@ -79,10 +83,20 @@ public interface Converter<S, T> extends ConversionServiceAware {
    * @param qualifyingType the {@link Class qualifying type} of the {@link Object} resolved in the conversion.
    * @return the converted {@link Object} of {@link Class qualifying type QT}.
    * @throws ConversionException if the {@link Object} cannot be converted.
+   * @throws IllegalArgumentException if {@link Class qualifying type} is {@literal null}.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
    * @see #convert(Object)
    */
   default <QT extends T> QT convert(S value, Class<QT> qualifyingType) {
-    return qualifyingType.cast(convert(value));
+
+    Assert.notNull(qualifyingType, "Qualifying type is required");
+
+    try {
+      return qualifyingType.cast(convert(value));
+    }
+    catch (ClassCastException cause) {
+      throw newConversionException(cause, "Could not convert [%1$s] into an Object of type [%2$s]",
+        value, ClassUtils.getName(qualifyingType));
+    }
   }
 }
