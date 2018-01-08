@@ -17,8 +17,11 @@
 package org.cp.elements.data.conversion.provider;
 
 import static org.cp.elements.lang.ClassUtils.CLASS_FILE_EXTENSION;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
+import static org.cp.elements.util.CollectionUtils.asIterable;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URISyntaxException;
@@ -28,6 +31,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.ConversionException;
@@ -70,50 +75,37 @@ public class SimpleConversionService extends AbstractConversionService {
    * Constructs a new instance of {@link SimpleConversionService} initialized with all the {@link Converter Converters}
    * defined in {@link org.cp.elements.data.conversion.converters}.
    *
-   * @throws IllegalArgumentException if the resource {@link URL} of a chosen {@link Converter} cannot be resolved.
+   * @throws IllegalArgumentException if the resource {@link URL} of the chosen {@link Converter} {@link Class}
+   * cannot be resolved.
    */
   public SimpleConversionService() {
+    registerConverters();
+    initDefaultValues();
+  }
+
+  /**
+   * Registers all the {@link Converter Converters} provided by {@literal cp-elements}
+   * in {@link org.cp.elements.data.conversion.converters}.
+   *
+   * @throws IllegalArgumentException if the resource {@link URL} of the chosen {@link Converter} {@link Class}
+   * cannot be resolved.
+   */
+  private void registerConverters() {
 
     String converterClassResourceName = toResourceName(CONVERTER_CLASS);
 
     URL converterClassResourceLocation = resolveResourceLocation(converterClassResourceName);
 
     Assert.notNull(converterClassResourceLocation,
-      "Could not resolve URL for Converter class [%1$s] having resource name [%2$s]",
-        CONVERTER_CLASS.getName(), converterClassResourceName);
+        "Could not resolve URL for Converter class [%1$s] having resource name [%2$s]",
+          CONVERTER_CLASS.getName(), converterClassResourceName);
 
-    File convertersPackageDirectory;
-
-    try {
-      convertersPackageDirectory = new File(converterClassResourceLocation.toURI()).getParentFile();
-
-      Assert.isTrue(convertersPackageDirectory.isDirectory(),
-        "Directory for Converters package [%s] does not exist", convertersPackageDirectory);
+    if (isJarFile(converterClassResourceLocation)) {
+      registerConvertersFromJarFile(converterClassResourceName, converterClassResourceLocation);
     }
-    catch (URISyntaxException cause) {
-      throw new RuntimeException(String.format("Failed to create a File reference to the converters package directory (%1$s)!",
-        converterClassResourceName.substring(0, converterClassResourceName.lastIndexOf(File.separator) + 1)), cause);
+    else {
+      registerConvertersFromFileSystem(converterClassResourceName, converterClassResourceLocation);
     }
-
-    for (File classFile : convertersPackageDirectory.listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION))) {
-
-      String className = CONVERTERS_PACKAGE.getName().concat(StringUtils.DOT_SEPARATOR).concat(
-        FileUtils.getName(classFile));
-
-      Class classType = ClassUtils.loadClass(className);
-
-      if (ClassUtils.assignableTo(classType, Converter.class)) {
-        try {
-          Converter<?, ?> converter = (Converter<?, ?>) classType.newInstance();
-          register(converter);
-        }
-        catch (Exception ignore) {
-          ignore.printStackTrace(System.err);
-        }
-      }
-    }
-
-    initDefaultValues();
   }
 
   private String toResourceName(Class<?> type) {
@@ -121,8 +113,92 @@ public class SimpleConversionService extends AbstractConversionService {
   }
 
   private URL resolveResourceLocation(String resourceName) {
-    //return getClass().getResource(resourceName);
     return Thread.currentThread().getContextClassLoader().getResource(resourceName);
+  }
+
+  private boolean isJarFile(URL resourceLocation) {
+
+    String resourceLocationString = resourceLocation.toExternalForm();
+
+    return resourceLocationString.startsWith("jar:file:") || resourceLocationString.contains(".jar!");
+  }
+
+  private void registerConvertersFromJarFile(String converterClassResourceName, URL converterClassResourceLocation) {
+
+    String converterClassResourceLocationString = converterClassResourceLocation.toExternalForm();
+
+    String convertersPackageResourceName = CONVERTERS_PACKAGE.getName().replaceAll("\\.", "/");
+
+    String jarFilePathname = converterClassResourceLocationString.contains(".jar!/")
+      ? converterClassResourceLocationString.substring(0, converterClassResourceLocationString.indexOf(".jar!/")).concat(".jar")
+      : converterClassResourceLocationString;
+
+    jarFilePathname = jarFilePathname.startsWith("jar:file:")
+      ? jarFilePathname.substring("jar:file:".length())
+      : jarFilePathname;
+
+    try {
+
+      JarFile jarFile = new JarFile(new File(jarFilePathname));
+
+      for (JarEntry jarEntry : asIterable(jarFile.entries())) {
+
+        String jarEntryName = jarEntry.getName();
+
+        if (jarEntryName.startsWith(convertersPackageResourceName)
+          && jarEntryName.endsWith(ClassUtils.CLASS_FILE_EXTENSION)) {
+
+          String converterClassName = jarEntryName.replaceAll("/", ".");
+
+          converterClassName = converterClassName.endsWith(CLASS_FILE_EXTENSION)
+            ? converterClassName.substring(0, converterClassName.indexOf(CLASS_FILE_EXTENSION))
+            : converterClassName;
+
+          register(converterClassName);
+        }
+      }
+    }
+    catch (IOException cause) {
+      throw newRuntimeException(cause, "Failed to access JAR file [%s]", jarFilePathname);
+    }
+  }
+
+  @SuppressWarnings("all")
+  private void registerConvertersFromFileSystem(String converterClassResourceName, URL converterClassResourceLocation) {
+
+    try {
+
+      File convertersPackagePath = new File(converterClassResourceLocation.toURI()).getParentFile();
+
+      Assert.isTrue(convertersPackagePath.isDirectory(),
+          "Directory for Converters package [%s] does not exist", CONVERTERS_PACKAGE.getName());
+
+      for (File classFile : convertersPackagePath.listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION))) {
+
+        String converterClassName = CONVERTERS_PACKAGE.getName()
+            .concat(StringUtils.DOT_SEPARATOR).concat(FileUtils.getName(classFile));
+
+        register(converterClassName);
+      }
+    }
+    catch (URISyntaxException cause) {
+      throw newRuntimeException(cause, "Failed to create File reference to directory [%s] of Converters package",
+          converterClassResourceName.substring(0, converterClassResourceName.lastIndexOf(File.separator) + 1));
+    }
+  }
+
+  private void register(String converterClassName) {
+
+    Class<Converter> converterClass = ClassUtils.loadClass(converterClassName);
+
+    if (ClassUtils.assignableTo(converterClass, Converter.class)) {
+      try {
+        Converter<?, ?> converter = (Converter<?, ?>) converterClass.newInstance();
+        register(converter);
+      }
+      catch (Exception ignore) {
+      }
+    }
   }
 
   /**
@@ -216,20 +292,22 @@ public class SimpleConversionService extends AbstractConversionService {
   }
 
   /**
-   * Sets whether default values will be used during conversion if the value to convert is null.
+   * Sets whether {@link Object default values} will be used during conversion
+   * if the {@link Object value} to convert is {@literal null}.
    *
-   * @param defaultsEnabled a boolean value to indicate whether to use default values during conversion when
-   * the value to convert is null.
+   * @param defaultsEnabled a boolean value to indicate whether to use {@link Object default values}
+   * during conversion when the {@link Object value} to convert is {@literal null}.
    */
   public void setDefaultValuesEnabled(boolean defaultsEnabled) {
     this.defaultsEnabled = defaultsEnabled;
   }
 
   /**
-   * Determines whether default values will be used during conversion if the value to convert is null.
+   * Determines whether {@link Object default values} will be used during conversion
+   * if the {@link Object value} to convert is {@literal null}.
    *
-   * @return a boolean value indicating whether to use default values during conversion when the value to convert
-   * is null.
+   * @return a boolean value indicating whether to use {@link Object default values}
+   * during conversion when the {@link Object value} to convert is {@literal null}.
    */
   public boolean isDefaultValuesEnabled() {
     return this.defaultsEnabled;
