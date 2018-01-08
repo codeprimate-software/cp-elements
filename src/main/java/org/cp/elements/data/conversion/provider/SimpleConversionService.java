@@ -16,6 +16,8 @@
 
 package org.cp.elements.data.conversion.provider;
 
+import static org.cp.elements.lang.ClassUtils.CLASS_FILE_EXTENSION;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,18 +27,25 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.cp.elements.data.conversion.AbstractConversionService;
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.service.annotation.Service;
 
 /**
- * The SimpleConversionService class is a Service class/component that performs value type conversions.
+ * {@link SimpleConversionService} is an application {@link Service} class that performs {@link Class type} conversions
+ * using pre-canned {@link Class type} {@link Converter Converters} defined in
+ * {@link org.cp.elements.data.conversion.converters}.
  *
  * @author John J. Blum
  * @see org.cp.elements.data.conversion.AbstractConversionService
@@ -52,37 +61,42 @@ public class SimpleConversionService extends AbstractConversionService {
 
   protected static final Package CONVERTERS_PACKAGE = CONVERTER_CLASS.getPackage();
 
-  protected static final String CLASS_FILE_EXTENSION = ".class";
-
   private volatile boolean defaultsEnabled = false;
 
-  private final Map<Class, Object> defaultValues = Collections.synchronizedMap(new HashMap<>(13, 0.95f));
+  private final Map<Class, Object> defaultValues =
+    Collections.synchronizedMap(new HashMap<>(13, 0.95f));
 
   /**
-   * Constructs a instance of the SimpleConversionService class to perform type conversions.
+   * Constructs a new instance of {@link SimpleConversionService} initialized with all the {@link Converter Converters}
+   * defined in {@link org.cp.elements.data.conversion.converters}.
+   *
+   * @throws IllegalArgumentException if the resource {@link URL} of a chosen {@link Converter} cannot be resolved.
    */
   public SimpleConversionService() {
-    String converterClassPathname = CONVERTER_CLASS.getName().replace(StringUtils.DOT_SEPARATOR, File.separator)
-      .concat(CLASS_FILE_EXTENSION);
 
-    URL converterClassResource = Thread.currentThread().getContextClassLoader().getResource(converterClassPathname);
+    String converterClassResourceName = toResourceName(CONVERTER_CLASS);
 
-    Assert.notNull(converterClassResource, "The URL for the Converter class ({0}) pathname ({1}) was null!",
-      CONVERTER_CLASS.getName(), converterClassPathname);
+    URL converterClassResourceLocation = resolveResourceLocation(converterClassResourceName);
+
+    Assert.notNull(converterClassResourceLocation,
+      "Could not resolve URL for Converter class [%1$s] having resource name [%2$s]",
+        CONVERTER_CLASS.getName(), converterClassResourceName);
 
     File convertersPackageDirectory;
 
     try {
-      convertersPackageDirectory = new File(converterClassResource.toURI()).getParentFile();
-      Assert.isTrue(convertersPackageDirectory.isDirectory(), "The converters package directory ({0}) does not exist!",
-        convertersPackageDirectory);
+      convertersPackageDirectory = new File(converterClassResourceLocation.toURI()).getParentFile();
+
+      Assert.isTrue(convertersPackageDirectory.isDirectory(),
+        "Directory for Converters package [%s] does not exist", convertersPackageDirectory);
     }
-    catch (URISyntaxException e) {
+    catch (URISyntaxException cause) {
       throw new RuntimeException(String.format("Failed to create a File reference to the converters package directory (%1$s)!",
-        converterClassPathname.substring(0, converterClassPathname.lastIndexOf(File.separator) + 1)), e);
+        converterClassResourceName.substring(0, converterClassResourceName.lastIndexOf(File.separator) + 1)), cause);
     }
 
     for (File classFile : convertersPackageDirectory.listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION))) {
+
       String className = CONVERTERS_PACKAGE.getName().concat(StringUtils.DOT_SEPARATOR).concat(
         FileUtils.getName(classFile));
 
@@ -95,7 +109,6 @@ public class SimpleConversionService extends AbstractConversionService {
         }
         catch (Exception ignore) {
           ignore.printStackTrace(System.err);
-          // TODO log warning!
         }
       }
     }
@@ -103,83 +116,113 @@ public class SimpleConversionService extends AbstractConversionService {
     initDefaultValues();
   }
 
-  /**
-   * Initializes the default values per Class type to use when the value to convert is null.
-   */
-  private void initDefaultValues() {
-    defaultValues.put(BigDecimal.class, new BigDecimal(0.0d));
-    defaultValues.put(BigInteger.class, new BigInteger("0"));
-    defaultValues.put(Boolean.class, false);
-    defaultValues.put(Byte.class, (byte) 0);
-    defaultValues.put(Calendar.class, new CalendarValueGenerator());
-    defaultValues.put(Character.class, '\0');
-    defaultValues.put(Double.class, 0.0d);
-    defaultValues.put(Float.class, 0.0f);
-    defaultValues.put(Integer.class, 0);
-    defaultValues.put(Long.class, 0l);
-    defaultValues.put(Number.class, null);
-    defaultValues.put(Short.class, (short) 0);
-    defaultValues.put(String.class, null);
+  private String toResourceName(Class<?> type) {
+    return ObjectUtils.getResourceName(type);
+  }
+
+  private URL resolveResourceLocation(String resourceName) {
+    //return getClass().getResource(resourceName);
+    return Thread.currentThread().getContextClassLoader().getResource(resourceName);
   }
 
   /**
-   * Gets the default value for the specified Class type.
+   * Initializes default values to use for a specific {@link Class} type
+   * when the {@link Object value} to convert is {@literal null}.
+   */
+  private void initDefaultValues() {
+
+    this.defaultValues.put(BigDecimal.class, new BigDecimal(0.0d));
+    this.defaultValues.put(BigInteger.class, new BigInteger("0"));
+    this.defaultValues.put(Boolean.class, false);
+    this.defaultValues.put(Byte.class, (byte) 0);
+    this.defaultValues.put(Calendar.class, CalendarValueSupplier.INSTANCE);
+    this.defaultValues.put(Character.class, '\0');
+    this.defaultValues.put(Double.class, 0.0d);
+    this.defaultValues.put(Enum.class, null);
+    this.defaultValues.put(Float.class, 0.0f);
+    this.defaultValues.put(Integer.class, 0);
+    this.defaultValues.put(Identifiable.class, null);
+    this.defaultValues.put(Long.class, 0L);
+    this.defaultValues.put(Short.class, (short) 0);
+    this.defaultValues.put(String.class, null);
+  }
+
+  /**
+   * Unsets the {@link Object default value} for the specified {@link Class type}.
    *
-   * @param <T> the classification/type of objects represented by the Class.
-   * @param type the Class type to get the default value for.
-   * @return the default value for the specified Class type.
-   * @see ValueGenerator
+   * @param <T> {@link Class type} of the {@link Object default value}.
+   * @param type {@link Class type} to remove the {@link Object default value} for.
+   * @see #setDefaultValue(Class, Supplier)
+   * @see #setDefaultValue(Class, Object)
    * @see java.lang.Class
    */
-  public <T> T getDefaultValue(final Class<T> type) {
-    Object value = defaultValues.get(type);
+  @SuppressWarnings("unchecked")
+  public <T> T unsetDefaultValue(Class<?> type) {
+    return (T) this.defaultValues.remove(type);
+  }
 
-    if (value instanceof ValueGenerator) {
-      value = ((ValueGenerator) value).generateValue();
+  /**
+   * Sets the {@link Object default value} for the specified {@link Class type}.
+   *
+   * @param <T> {@link Class classification/type} of objects which may have {@link Object default values}.
+   * @param type {@link Class} type to define the {@link Object default value} for.
+   * @param defaultValue {@link Object default value} to use for the specified {@link Class} type.
+   * @throws IllegalArgumentException if {@link Class type} is {@literal null}.
+   * @see #setDefaultValue(Class, Supplier)
+   * @see java.lang.Class
+   */
+  public <T> void setDefaultValue(Class<T> type, T defaultValue) {
+    Assert.notNull(type, "Class type is required");
+    this.defaultValues.put(type, defaultValue);
+  }
+
+  /**
+   * Sets the {@link Supplier} used to supply a {@link Object default value} for the specified {@link Class type}.
+   *
+   * This overloaded method is useful for dynamically generating new {@link Object values} at runtime,
+   * such as date/time values
+   *
+   * @param <T> {@link Class classification/type} of objects which may have {@link Object default values}.
+   * @param type {@link Class} type to define the {@link Object default value} for.
+   * @param defaultValueSupplier {@link Supplier} used to supply a {@link Object default value}
+   * for the specified {@link Class} type.
+   * @throws IllegalArgumentException if {@link Class type} is {@literal null}.
+   * @see #setDefaultValue(Class, Object)
+   * @see java.util.function.Supplier
+   * @see java.lang.Class
+   */
+  public <T> void setDefaultValue(Class<T> type, Supplier<T> defaultValueSupplier) {
+    Assert.notNull(type, "Class type is required");
+    this.defaultValues.put(type, defaultValueSupplier);
+  }
+
+  /**
+   * Gets the {@link Object default value} for the specified {@link Class type}.
+   *
+   * @param <T> {@link Class classification/type} of objects which may have {@link Object default values}.
+   * @param type {@link Class} type to get the {@link Object default value} for.
+   * @return the {@link Object default value} for the specified {@link Class type}.
+   * @see java.lang.Class
+   */
+  public <T> T getDefaultValue(Class<T> type) {
+
+    Object value = this.defaultValues.get(type);
+
+    if (value instanceof Supplier) {
+      value = ((Supplier) value).get();
     }
 
     return type.cast(value);
   }
 
   /**
-   * Sets the default value for the specified Class type.
+   * Sets whether default values will be used during conversion if the value to convert is null.
    *
-   * @param <T> the classification/type of objects represented by the Class.
-   * @param type the Class type to set the default value for.
-   * @param defaultValue the default value for the specified Class type.
-   * @throws NullPointerException if the Class type is null.
-   * @see #setDefaultValue(Class, SimpleConversionService.ValueGenerator)
-   * @see java.lang.Class
+   * @param defaultsEnabled a boolean value to indicate whether to use default values during conversion when
+   * the value to convert is null.
    */
-  public <T> void setDefaultValue(final Class<T> type, final T defaultValue) {
-    Assert.notNull(type, "The Class type to set the default value for cannot be null!");
-    defaultValues.put(type, defaultValue);
-  }
-
-  /**
-   * Sets the default value for the specified Class type using value generation.
-   *
-   * @param <T> the classification/type of objects represented by the Class.
-   * @param type the Class type to set the default value for.
-   * @param valueGenerator the ValueGenerator used to generate default values for the specified Class type.
-   * @throws NullPointerException if the Class type is null.
-   * @see #setDefaultValue(Class, Object)
-   * @see java.lang.Class
-   * @see SimpleConversionService.ValueGenerator
-   */
-  public <T> void setDefaultValue(final Class<T> type, final ValueGenerator<T> valueGenerator) {
-    Assert.notNull(type, "The Class type to set the value generator for cannot be null!");
-    defaultValues.put(type, valueGenerator);
-  }
-
-  /**
-   * Unsets the default value for the specified Class type.
-   *
-   * @param type the Class type to remove the default value for.
-   * @see java.lang.Class
-   */
-  public void unsetDefaultValue(final Class type) {
-    defaultValues.remove(type);
+  public void setDefaultValuesEnabled(boolean defaultsEnabled) {
+    this.defaultsEnabled = defaultsEnabled;
   }
 
   /**
@@ -189,71 +232,67 @@ public class SimpleConversionService extends AbstractConversionService {
    * is null.
    */
   public boolean isDefaultValuesEnabled() {
-    return defaultsEnabled;
+    return this.defaultsEnabled;
   }
 
   /**
-   * Sets whether default values will be used during conversion if the value to convert is null.
+   * Converts the {@link Object value} into an {@link Object} of the speicfied target {@link Class type}.
    *
-   * @param defaultsEnabled a boolean value to indicate whether to use default values during conversion when
-   * the value to convert is null.
-   */
-  public void setDefaultValuesEnabled(final boolean defaultsEnabled) {
-    this.defaultsEnabled = defaultsEnabled;
-  }
-
-  /**
-   * Determines whether the default value for the specified Class type should be used as the conversion value.
+   * If {@link Object value} is {@literal null} and {@link Object default values} have been
+   * {@link #isDefaultValuesEnabled()} enabled}, then the {@link Object default value} will be based on
+   * the {@link Class type} to convert to and the {@link Class type} has been initialized with
+   * a {@link Object default value}.
    *
-   * @param value the Object value to convert.
-   * @param toType the Class type to convert the value to.
-   * @return a boolean value indicating whether the default value of the specified Class type should be used.
-   */
-  protected boolean useDefault(final Object value, final Class toType) {
-    return (isDefaultValuesEnabled() && value == null && defaultValues.containsKey(toType));
-  }
-
-  /**
-   * Converts the Object value into a value of the target Class type.  If the Object value is null and default values
-   * are enabled, then the default value based on the Class type to convert to will be returned if the Class type
-   * has been set with a default value.
-   *
-   * @param <T> the target Class type for the conversion.
-   * @param value the Object value to convert.
-   * @param toType the Class type to convert the Object value into.
-   * @return an instance of the Object value converted into a value of the target Class type, or a default value if
-   * the value is null, default values are enabled and the Class type has been set with a default value.
-   * @throws org.cp.elements.data.conversion.ConversionException if converting the Object value into a value of the target Class type results in error.
-   * @see #getDefaultValue(Class)
-   * @see java.lang.Class
+   * @param <T> {@link Class target type} of the conversion.
+   * @param value {@link Object value} to convert.
+   * @param toType {@link Class type} to convert the {@link Object value} into.
+   * @return the {@link Object value} converted into an instance of the desired {@link Class target type},
+   * or a {@link Object default value} if the {@link Object converted value} is {@literal null},
+   * {@link Object default values} are {@link #isDefaultValuesEnabled()} enabled} and the {@link Class type}
+   * has been set with a {@link Object default value}.
+   * @throws ConversionException if converting the {@link Object value} into an instance of
+   * the {@link Class target type} results in error.
    * @see org.cp.elements.data.conversion.AbstractConversionService#convert(Object, Class)
    * @see org.cp.elements.data.conversion.Converter#convert(Object)
+   * @see #useDefault(Object, Class)
+   * @see #getDefaultValue(Class)
+   * @see java.lang.Class
    */
   @Override
-  public <T> T convert(final Object value, final Class<T> toType) {
-    return (useDefault(value, toType) ? getDefaultValue(toType) : super.convert(value, toType));
+  public <T> T convert(Object value, final Class<T> toType) {
+    return useDefault(value, toType) ? getDefaultValue(toType) : super.convert(value, toType);
   }
 
   /**
-   * The ValueGenerator interface defines contract for implementing objects to generate default values upon request.
+   * Determines whether the {@link Object default value} for the specified {@link Class type}
+   * should be used as the converted {@link Object value} when the converted {@link Object value}
+   * is {@literal null}.
    *
-   * @param <T> the type of value to generate.
+   * @param value {@link Object value} to convert.
+   * @param toType {@link Class type} to convert the {@link Object value} into.
+   * @return a boolean value indicating whether the {@link Object default value} for the specified {@link Class type}
+   * should be used as the converted {@link Object value} when the converted {@link Object value}
+   * is {@literal null}.
+   * @see #isDefaultValuesEnabled()
    */
-  public interface ValueGenerator<T> {
-    T generateValue();
+  protected boolean useDefault(Object value, Class<?> toType) {
+    return value == null && isDefaultValuesEnabled() && this.defaultValues.containsKey(toType);
   }
 
   /**
-   * The CalendarValueGenerator class is a ValueGenerator that creates an instance of Calendar with the
-   * current date/time.
+   * The {@link CalendarValueSupplier} class is a {@link Supplier} that creates a new instance of {@link Calendar}
+   * with the current date/time for every invocaton of {@link Supplier#get()}.
    *
+   * @see java.util.function.Supplier
    * @see java.util.Calendar
    */
-  public static class CalendarValueGenerator implements ValueGenerator<Calendar> {
+  public static class CalendarValueSupplier implements Supplier<Calendar> {
+
+    public static final CalendarValueSupplier INSTANCE = new CalendarValueSupplier();
+
     @Override
-    public Calendar generateValue() {
+    public Calendar get() {
       return Calendar.getInstance();
     }
   }
-
 }

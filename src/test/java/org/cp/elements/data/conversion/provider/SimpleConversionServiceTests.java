@@ -16,18 +16,20 @@
 
 package org.cp.elements.data.conversion.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
@@ -50,6 +52,8 @@ import org.cp.elements.data.conversion.converters.URIConverter;
 import org.cp.elements.data.conversion.converters.URLConverter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
+import org.cp.elements.enums.State;
+import org.cp.elements.lang.Identifiable;
 import org.junit.Test;
 
 /**
@@ -66,203 +70,279 @@ public class SimpleConversionServiceTests {
   private final SimpleConversionService conversionService = new SimpleConversionService();
 
   @Test
-  public void testRegisteredSupportConverters() {
-    Set<Class> expectedRegisteredSupportConverters = new HashSet<>(17);
+  public void constructAndRegisterConvertersIsSuccessful() {
 
-    expectedRegisteredSupportConverters.add(BigDecimalConverter.class);
-    expectedRegisteredSupportConverters.add(BigIntegerConverter.class);
-    expectedRegisteredSupportConverters.add(BooleanConverter.class);
-    expectedRegisteredSupportConverters.add(ByteConverter.class);
-    expectedRegisteredSupportConverters.add(CalendarConverter.class);
-    expectedRegisteredSupportConverters.add(CharacterConverter.class);
-    expectedRegisteredSupportConverters.add(DoubleConverter.class);
-    expectedRegisteredSupportConverters.add(EnumConverter.class);
-    expectedRegisteredSupportConverters.add(FloatConverter.class);
-    expectedRegisteredSupportConverters.add(IdentifiableConverter.class);
-    expectedRegisteredSupportConverters.add(IntegerConverter.class);
-    expectedRegisteredSupportConverters.add(LongConverter.class);
-    expectedRegisteredSupportConverters.add(NumberConverter.class);
-    expectedRegisteredSupportConverters.add(ShortConverter.class);
-    expectedRegisteredSupportConverters.add(StringConverter.class);
-    expectedRegisteredSupportConverters.add(URIConverter.class);
-    expectedRegisteredSupportConverters.add(URLConverter.class);
+    Set<Class> expectedRegisteredConverters = new HashSet<>(17);
 
-    for (Converter converter : conversionService) {
-      assertTrue(String.format("Expected the Converter (%1$s) to registered in the SimpleConversionService!",
-        converter.getClass().getName()), expectedRegisteredSupportConverters.remove(converter.getClass()));
+    expectedRegisteredConverters.add(BigDecimalConverter.class);
+    expectedRegisteredConverters.add(BigIntegerConverter.class);
+    expectedRegisteredConverters.add(BooleanConverter.class);
+    expectedRegisteredConverters.add(ByteConverter.class);
+    expectedRegisteredConverters.add(CalendarConverter.class);
+    expectedRegisteredConverters.add(CharacterConverter.class);
+    expectedRegisteredConverters.add(DoubleConverter.class);
+    expectedRegisteredConverters.add(EnumConverter.class);
+    expectedRegisteredConverters.add(FloatConverter.class);
+    expectedRegisteredConverters.add(IdentifiableConverter.class);
+    expectedRegisteredConverters.add(IntegerConverter.class);
+    expectedRegisteredConverters.add(LongConverter.class);
+    expectedRegisteredConverters.add(NumberConverter.class);
+    expectedRegisteredConverters.add(ShortConverter.class);
+    expectedRegisteredConverters.add(StringConverter.class);
+    expectedRegisteredConverters.add(URIConverter.class);
+    expectedRegisteredConverters.add(URLConverter.class);
+
+    for (Converter converter : this.conversionService) {
+      assertThat(expectedRegisteredConverters.remove(converter.getClass()))
+        .describedAs("Converter [%s] was not registered with the SimpleConversionService", converter)
+        .isTrue();
     }
 
-    assertTrue(String.format("Expected the registered, support Converters Set to be empty; but was (%1$s)!",
-      expectedRegisteredSupportConverters), expectedRegisteredSupportConverters.isEmpty());
+    assertThat(expectedRegisteredConverters)
+      .describedAs("Converters [%s] were not registered", expectedRegisteredConverters)
+      .isEmpty();
   }
 
   @Test
-  public void testDefaultValuesInitialized() {
-    assertFalse(conversionService.isDefaultValuesEnabled());
-    assertEquals(new BigDecimal(0.0d), conversionService.getDefaultValue(BigDecimal.class));
-    assertEquals(new BigInteger("0"), conversionService.getDefaultValue(BigInteger.class));
-    assertEquals(Boolean.FALSE, conversionService.getDefaultValue(Boolean.class));
-    assertNotNull(conversionService.getDefaultValue(Calendar.class));
-    assertEquals(new Character('\0'), conversionService.getDefaultValue(Character.class));
-    assertEquals(new Byte((byte) 0), conversionService.getDefaultValue(Byte.class));
-    assertEquals(new Double(0.0d), conversionService.getDefaultValue(Double.class));
-    assertEquals(new Float(0.0f), conversionService.getDefaultValue(Float.class));
-    assertEquals(new Integer(0), conversionService.getDefaultValue(Integer.class));
-    assertEquals(new Long(0l), conversionService.getDefaultValue(Long.class));
-    assertNull(conversionService.getDefaultValue(Number.class));
-    assertEquals(new Short((short) 0), conversionService.getDefaultValue(Short.class));
-    assertNull(conversionService.getDefaultValue(String.class));
-    assertFalse(conversionService.isDefaultValuesEnabled());
+  public void enableAndDisableDefaultValuesIsSuccessful() {
+
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
+
+    this.conversionService.setDefaultValuesEnabled(true);
+
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isTrue();
+
+    this.conversionService.setDefaultValuesEnabled(false);
+
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
   }
 
   @Test
-  public void testSetGetAndUnsetDefaultValue() {
-    assertNull(conversionService.getDefaultValue(String.class));
+  @SuppressWarnings("unchecked")
+  public void initializeDefaultValuesIsSuccessful() {
 
-    conversionService.setDefaultValue(String.class, "nil");
-
-    assertEquals("nil", conversionService.getDefaultValue(String.class));
-
-    conversionService.setDefaultValue(String.class, (String) null);
-
-    assertNull(conversionService.getDefaultValue(String.class));
-    assertNull(conversionService.getDefaultValue(Gender.class));
-
-    conversionService.setDefaultValue(Gender.class, Gender.FEMALE);
-
-    assertEquals(Gender.FEMALE, conversionService.getDefaultValue(Gender.class));
-    assertNull(conversionService.getDefaultValue(Race.class));
-
-    conversionService.unsetDefaultValue(Gender.class);
-    conversionService.unsetDefaultValue(Race.class);
-
-    assertNull(conversionService.getDefaultValue(Gender.class));
-    assertNull(conversionService.getDefaultValue(Race.class));
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
+    assertThat(this.conversionService.getDefaultValue(BigDecimal.class)).isEqualTo(new BigDecimal(0.0d));
+    assertThat(this.conversionService.getDefaultValue(BigInteger.class)).isEqualTo(new BigInteger("0"));
+    assertThat(this.conversionService.getDefaultValue(Boolean.class)).isFalse();
+    assertThat(this.conversionService.getDefaultValue(Byte.class)).isEqualTo((byte) 0);
+    assertThat(this.conversionService.getDefaultValue(Calendar.class)).isNotNull();
+    assertThat(this.conversionService.getDefaultValue(Character.class)).isEqualTo('\0');
+    assertThat(this.conversionService.getDefaultValue(Double.class)).isEqualTo(0.0d);
+    assertThat(this.conversionService.getDefaultValue(Enum.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(Float.class)).isEqualTo(0.0f);
+    assertThat(this.conversionService.getDefaultValue(Identifiable.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(Integer.class)).isEqualTo(0);
+    assertThat(this.conversionService.getDefaultValue(Long.class)).isEqualTo(0L);
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(Short.class)).isEqualTo((short) 0);
+    assertThat(this.conversionService.getDefaultValue(String.class)).isNull();
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
   }
 
   @Test
-  public void testSetAndGetDefaultValue() {
-    conversionService.setDefaultValue(Number.class, new SimpleConversionService.ValueGenerator<Number>() {
-      private final AtomicLong value = new AtomicLong();
-      @Override public Number generateValue() {
-        return value.getAndIncrement();
-      }
-    });
+  public void setGetAndUnsetDefaultValueForEnum() {
 
-    assertEquals(0l, conversionService.getDefaultValue(Number.class));
-    assertEquals(1l, conversionService.getDefaultValue(Number.class));
-    assertEquals(2l, conversionService.getDefaultValue(Number.class));
-    assertEquals(3l, conversionService.getDefaultValue(Number.class));
+    assertThat(this.conversionService.getDefaultValue(Gender.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
 
-    conversionService.setDefaultValue(Number.class, (Number) null);
+    this.conversionService.setDefaultValue(Gender.class, Gender.FEMALE);
+    this.conversionService.setDefaultValue(Race.class, Race.WHITE);
 
-    assertNull(conversionService.getDefaultValue(Number.class));
+    assertThat(this.conversionService.getDefaultValue(Gender.class)).isEqualTo(Gender.FEMALE);
+    assertThat(this.conversionService.getDefaultValue(Race.class)).isEqualTo(Race.WHITE);
+    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
+    assertThat(this.conversionService.<Race>unsetDefaultValue(Race.class)).isEqualTo(Race.WHITE);
+    assertThat(this.conversionService.getDefaultValue(Gender.class)).isEqualTo(Gender.FEMALE);
+    assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
+
+    this.conversionService.setDefaultValue(Gender.class, Gender.MALE);
+
+    assertThat(this.conversionService.getDefaultValue(Gender.class)).isEqualTo(Gender.MALE);
+    assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
+    assertThat(this.conversionService.<Gender>unsetDefaultValue(Gender.class)).isEqualTo(Gender.MALE);
+    assertThat(this.conversionService.getDefaultValue(Gender.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
+    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
+  }
+
+  @Test
+  public void setGetAndUnsetDefaultValueForNumber() {
+
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isNull();
+
+    this.conversionService.setDefaultValue(Number.class, 0.0d);
+
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isEqualTo(0.0d);
+
+    this.conversionService.setDefaultValue(Number.class, 0L);
+
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isEqualTo(0L);
+
+    this.conversionService.setDefaultValue(Number.class, 0.0f);
+
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isEqualTo(0.0f);
+
+    this.conversionService.setDefaultValue(Number.class, 0);
+
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isEqualTo(0);
+    assertThat(this.conversionService.<Integer>unsetDefaultValue(Number.class)).isEqualTo(0);
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isNull();
+  }
+
+  @Test
+  public void setAndGetDefaultValueForNumber() {
+
+    AtomicInteger counter = new AtomicInteger(0);
+
+    this.conversionService.setDefaultValue(Number.class, (Supplier<Number>) counter::getAndIncrement);
+
+    for (int count = 0; count < 10; count++) {
+      assertThat(this.conversionService.getDefaultValue(Number.class)).isEqualTo(count);
+    }
+
+    assertThat(this.conversionService.<Supplier<Number>>unsetDefaultValue(Number.class).get()).isEqualTo(10);
+    assertThat(this.conversionService.getDefaultValue(Number.class)).isNull();
+  }
+
+  @Test
+  public void setGetAndUnsetDefaultValueForString() {
+
+    assertThat(this.conversionService.getDefaultValue(String.class)).isNull();
+
+    this.conversionService.setDefaultValue(String.class, "nil");
+
+    assertThat(this.conversionService.getDefaultValue(String.class)).isEqualTo("nil");
+    assertThat(this.conversionService.<String>unsetDefaultValue(String.class)).isEqualTo("nil");
+    assertThat(this.conversionService.getDefaultValue(String.class)).isNull();
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testSetDefaultValueWithNullType() {
+  public void setDefaultValueWithNullType() {
+
     try {
-      conversionService.setDefaultValue(null, "test");
+      this.conversionService.setDefaultValue(null, "test");
     }
     catch (IllegalArgumentException expected) {
-      assertEquals("The Class type to set the default value for cannot be null!", expected.getMessage());
+
+      assertThat(expected).hasMessage("Class type is required");
+      assertThat(expected).hasNoCause();
+
       throw expected;
     }
   }
 
   @Test
-  public void testSetDefaultValueWithNullValue() {
-    assertEquals(new Integer(0), conversionService.getDefaultValue(Integer.class));
+  public void setDefaultValueWithNullValue() {
 
-    conversionService.setDefaultValue(Integer.class, (Integer) null);
+    assertThat(this.conversionService.getDefaultValue(Integer.class)).isEqualTo(0);
 
-    assertNull(conversionService.getDefaultValue(Integer.class));
+    this.conversionService.setDefaultValue(Integer.class, (Integer) null);
 
-    conversionService.setDefaultValue(Integer.class, 0);
-
-    assertEquals(new Integer(0), conversionService.getDefaultValue(Integer.class));
+    assertThat(this.conversionService.getDefaultValue(Integer.class)).isNull();
   }
 
   @Test
-  public void testDefaultValuesEnabled() {
-    assertFalse(conversionService.isDefaultValuesEnabled());
+  @SuppressWarnings("all")
+  public void useDefaultWhenValueIsNotNullReturnsFalse() {
 
-    conversionService.setDefaultValuesEnabled(true);
+    SimpleConversionService conversionServiceSpy = spy(this.conversionService);
 
-    assertTrue(conversionService.isDefaultValuesEnabled());
+    this.conversionService.setDefaultValuesEnabled(true);
 
-    conversionService.setDefaultValuesEnabled(false);
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isTrue();
+    assertThat(conversionServiceSpy.useDefault("test", String.class)).isFalse();
 
-    assertFalse(conversionService.isDefaultValuesEnabled());
+    verify(conversionServiceSpy, never()).isDefaultValuesEnabled();
   }
 
   @Test
-  public void testUseDefault() {
-    assertFalse(conversionService.isDefaultValuesEnabled());
-    assertFalse(conversionService.useDefault("test", String.class));
-    assertFalse(conversionService.useDefault(null, Gender.class));
-    assertFalse(conversionService.useDefault(null, Race.class));
-    assertFalse(conversionService.useDefault(null, String.class));
+  @SuppressWarnings("all")
+  public void useDefaultWhenTypeIsNotPresentReturnsFalse() {
 
-    conversionService.setDefaultValuesEnabled(true);
+    SimpleConversionService conversionServiceSpy = spy(this.conversionService);
 
-    assertTrue(conversionService.isDefaultValuesEnabled());
-    assertFalse(conversionService.useDefault("null", String.class));
-    assertFalse(conversionService.useDefault(null, Gender.class));
-    assertFalse(conversionService.useDefault(null, Race.class));
-    assertTrue(conversionService.useDefault(null, Boolean.class));
-    assertTrue(conversionService.useDefault(null, Double.class));
-    assertTrue(conversionService.useDefault(null, Integer.class));
-    assertTrue(conversionService.useDefault(null, Number.class));
-    assertTrue(conversionService.useDefault(null, String.class));
+    this.conversionService.setDefaultValuesEnabled(true);
 
-    conversionService.setDefaultValue(Gender.class, Gender.FEMALE);
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isTrue();
+    assertThat(conversionServiceSpy.useDefault(null, Gender.class)).isFalse();
 
-    assertTrue(conversionService.useDefault(null, Gender.class));
-    assertFalse(conversionService.useDefault("MALE", Gender.class));
-    assertFalse(conversionService.useDefault(null, Race.class));
-
-    conversionService.setDefaultValuesEnabled(false);
-    conversionService.unsetDefaultValue(Gender.class);
-
-    assertFalse(conversionService.isDefaultValuesEnabled());
-    assertNull(conversionService.getDefaultValue(Gender.class));
+    verify(conversionServiceSpy, times(1)).isDefaultValuesEnabled();
   }
 
   @Test
-  public void testConvert() {
-    assertEquals(true, conversionService.convert("true", Boolean.class));
-    assertEquals(new Character('X'), conversionService.convert("X", Character.class));
-    assertEquals(new Integer(1), conversionService.convert("1", Integer.class));
-    assertEquals(new Double(Math.PI), conversionService.convert(String.valueOf(Math.PI), Double.class));
-    assertEquals("test", conversionService.convert("test", String.class));
-    assertEquals("nil", conversionService.convert("nil", String.class));
-    assertEquals("null", conversionService.convert("null", String.class));
-    assertEquals("null", conversionService.convert(null, String.class));
+  @SuppressWarnings("all")
+  public void useDefaultWhenDefaultValuesAreDisabledReturnsFalse() {
+
+    SimpleConversionService conversionServiceSpy = spy(this.conversionService);
+
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
+    assertThat(conversionServiceSpy.useDefault(null, String.class)).isFalse();
+
+    verify(conversionServiceSpy, times(1)).isDefaultValuesEnabled();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void useDefaultWhenValueIsNullDefaultValuesAreEnabledAndTypeIsPresentReturnsTrue() {
+
+    SimpleConversionService conversionServiceSpy = spy(this.conversionService);
+
+    when(conversionServiceSpy.isDefaultValuesEnabled()).thenReturn(true);
+
+    assertThat(conversionServiceSpy.useDefault(null, String.class)).isTrue();
+
+    verify(conversionServiceSpy, times(1)).isDefaultValuesEnabled();
+  }
+
+  @Test
+  public void convert() {
+
+    assertThat(this.conversionService.convert("true", Boolean.class)).isTrue();
+    assertThat(this.conversionService.convert("X", Character.class)).isEqualTo('X');
+    assertThat(this.conversionService.convert("1", Integer.class)).isEqualTo(1);
+    assertThat(this.conversionService.convert(String.valueOf(Math.PI), Double.class)).isEqualTo(Math.PI);
+    assertThat(this.conversionService.convert("test", String.class)).isEqualTo("test");
+    assertThat(this.conversionService.convert("null", String.class)).isEqualTo("null");
+    assertThat(this.conversionService.convert("nil", String.class)).isEqualTo("nil");
+    assertThat(this.conversionService.convert(null, String.class)).isEqualTo("null");
   }
 
   @Test(expected = ConversionException.class)
-  public void testConvertWithDefaultsDisabled() {
+  public void convertWithDefaultsDisabledThrowsException() {
+
+    assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
+
     try {
-      assertFalse(conversionService.isDefaultValuesEnabled());
-      conversionService.convert(null, Integer.class);
+      this.conversionService.convert(null, Integer.class);
     }
     catch (ConversionException expected) {
-      assertEquals(String.format("Failed to convert value (%1$s) into an object of type (%2$s)!", null,
-        Integer.class.getName()), expected.getMessage());
+
+      assertThat(expected).hasMessage("[null] is not a valid number of the qualifying type [%s]",
+        Integer.class.getName());
+
+      assertThat(expected).hasNoCause();
+
       throw expected;
+    }
+    finally {
+      assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
     }
   }
 
   @Test
-  public void testConvertWithDefaultsEnabled() {
-    conversionService.setDefaultValuesEnabled(true);
+  public void convertWithDefaultsEnabledPerformsConversion() {
 
-    assertTrue(conversionService.isDefaultValuesEnabled());
-    assertEquals(Boolean.FALSE, conversionService.convert(null, Boolean.class));
-    assertEquals(new Character('\0'), conversionService.convert(null, Character.class));
-    assertEquals(new Integer(0), conversionService.convert(null, Integer.class));
-    assertEquals(new Double(0.0d), conversionService.convert(null, Double.class));
-    assertNull(conversionService.convert(null, String.class));
+    this.conversionService.setDefaultValuesEnabled(true);
+
+    assertThat(conversionService.isDefaultValuesEnabled()).isTrue();
+    assertThat(this.conversionService.convert(null, Boolean.class)).isFalse();
+    assertThat(this.conversionService.convert(null, Character.class)).isEqualTo('\0');
+    assertThat(this.conversionService.convert(null, Integer.class)).isEqualTo(0);
+    assertThat(this.conversionService.convert(null, Double.class)).isEqualTo(0.0d);
+    assertThat(this.conversionService.convert(null, String.class)).isNull();
   }
 }
