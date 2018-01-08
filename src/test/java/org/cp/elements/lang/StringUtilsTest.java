@@ -16,20 +16,14 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Unit tests for {@link StringUtils}.
@@ -42,8 +36,71 @@ import org.junit.rules.ExpectedException;
  */
 public class StringUtilsTest {
 
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
+  @Test
+  public void capitalizeCharacter() {
+    assertThat(StringUtils.capitalize("x")).isEqualTo("X");
+  }
+
+  @Test
+  public void capitalizeNumberOrSymbol() {
+    assertThat(StringUtils.capitalize("1")).isEqualTo("1");
+    assertThat(StringUtils.capitalize("$")).isEqualTo("$");
+  }
+
+  @Test
+  public void capitalizeString() {
+    assertThat(StringUtils.capitalize("test")).isEqualTo("Test");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void capitalizeBlankString() {
+
+    try {
+      StringUtils.capitalize("  ");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Value [  ] is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void capitalizeEmptyString() {
+
+    try {
+      StringUtils.capitalize("");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Value [] is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void capitalizeNullString() {
+
+    try {
+      StringUtils.capitalize(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Value [null] is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void capitalizeUpperCaseString() {
+    assertThat(StringUtils.capitalize("TEST")).isEqualTo("TEST");
+  }
 
   @Test
   public void testConcat() {
@@ -156,21 +213,21 @@ public class StringUtilsTest {
 
   @Test
   public void defaultIfBlankWithBlankValues() {
-    assertThat(StringUtils.defaultIfBlank(null, "test", "testing", "tested"), is(equalTo("test")));
-    assertThat(StringUtils.defaultIfBlank("", null, "<empty/>", "  ", "tested"), is(equalTo("<empty/>")));
-    assertThat(StringUtils.defaultIfBlank("  ", null, "", "  ", "___"), is(equalTo("___")));
+    assertThat(StringUtils.defaultIfBlank(null, "test", "testing", "tested")).isEqualTo("test");
+    assertThat(StringUtils.defaultIfBlank("", null, "<empty/>", "  ", "tested")).isEqualTo("<empty/>");
+    assertThat(StringUtils.defaultIfBlank("  ", null, "", "  ", "___")).isEqualTo("___");
   }
 
   @Test
   public void defaultIfBlankWithNonBlankValues() {
-    assertThat(StringUtils.defaultIfBlank("test", "1", "2", "3"), is(equalTo("test")));
-    assertThat(StringUtils.defaultIfBlank("-1", "1", "2", "3"), is(equalTo("-1")));
-    assertThat(StringUtils.defaultIfBlank("0", "1", "2", "3"), is(equalTo("0")));
-    assertThat(StringUtils.defaultIfBlank("<empty/>", "1", "2", "3"), is(equalTo("<empty/>")));
-    assertThat(StringUtils.defaultIfBlank("___", "1", "2", "3"), is(equalTo("___")));
-    assertThat(StringUtils.defaultIfBlank("-", "1", "2", "3"), is(equalTo("-")));
-    assertThat(StringUtils.defaultIfBlank("nil", null, null, null), is(equalTo("nil")));
-    assertThat(StringUtils.defaultIfBlank("null", null, null, null), is(equalTo("null")));
+    assertThat(StringUtils.defaultIfBlank("test", "1", "2", "3")).isEqualTo("test");
+    assertThat(StringUtils.defaultIfBlank("-1", "1", "2", "3")).isEqualTo("-1");
+    assertThat(StringUtils.defaultIfBlank("0", "1", "2", "3")).isEqualTo("0");
+    assertThat(StringUtils.defaultIfBlank("<empty/>", "1", "2", "3")).isEqualTo("<empty/>");
+    assertThat(StringUtils.defaultIfBlank("___", "1", "2", "3")).isEqualTo("___");
+    assertThat(StringUtils.defaultIfBlank("-", "1", "2", "3")).isEqualTo("-");
+    assertThat(StringUtils.defaultIfBlank("nil", null, null, null)).isEqualTo("nil");
+    assertThat(StringUtils.defaultIfBlank("null", null, null, null)).isEqualTo("null");
   }
 
   @Test
@@ -436,82 +493,88 @@ public class StringUtilsTest {
 
   @Test
   public void padWithCharacter() {
-    assertThat(StringUtils.pad("", 'x', 5), is(equalTo("xxxxx")));
-    assertThat(StringUtils.pad(" ", 'x', 5), is(equalTo(" xxxx")));
-    assertThat(StringUtils.pad("   ", 'x', 5), is(equalTo("   xx")));
-    assertThat(StringUtils.pad("xxxxx", 'x', 5), is(equalTo("xxxxx")));
-    assertThat(StringUtils.pad("x", 'x', 5), is(equalTo("xxxxx")));
-    assertThat(StringUtils.pad("xxX", 'x', 5), is(equalTo("xxXxx")));
-    assertThat(StringUtils.pad("xxxxx", 'X', 10), is(equalTo("xxxxxXXXXX")));
+    assertThat(StringUtils.pad("", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.pad(" ", 'x', 5)).isEqualTo(" xxxx");
+    assertThat(StringUtils.pad("   ", 'x', 5)).isEqualTo("   xx");
+    assertThat(StringUtils.pad("xxxxx", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.pad("x", 'x', 5)).isEqualTo("xxxxx");
+    assertThat(StringUtils.pad("xxX", 'x', 5)).isEqualTo("xxXxx");
+    assertThat(StringUtils.pad("xxxxx", 'X', 10)).isEqualTo("xxxxxXXXXX");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void padWithIllegalLength() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("[-10] must be greater than equal to 0");
 
-    StringUtils.pad("test", -10);
+    try {
+      StringUtils.pad("test", -10);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("[-10] must be greater than equal to 0");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void padWithNull() {
-    assertThat(StringUtils.pad(null, 0), is(nullValue()));
-    assertThat(StringUtils.pad(null, 2), is(equalTo("  ")));
-    assertThat(StringUtils.pad(null, 'x', 5), is(equalTo("xxxxx")));
+    assertThat(StringUtils.pad(null, 0)).isNull();
+    assertThat(StringUtils.pad(null, 2)).isEqualTo("  ");
+    assertThat(StringUtils.pad(null, 'x', 5)).isEqualTo("xxxxx");
   }
 
   @Test
   public void padWithSpaces() {
-    assertThat(StringUtils.pad("test", ' ', 10), is(equalTo("test      ")));
-    assertThat(StringUtils.pad("test", ' ', 5), is(equalTo("test ")));
-    assertThat(StringUtils.pad("test", ' ', 4), is(equalTo("test")));
-    assertThat(StringUtils.pad("test", ' ', 1), is(equalTo("test")));
-    assertThat(StringUtils.pad("x", ' ', 0), is(equalTo("x")));
-    assertThat(StringUtils.pad("null", ' ', 2), is(equalTo("null")));
-    assertThat(StringUtils.pad("nil", ' ', 2), is(equalTo("nil")));
-    assertThat(StringUtils.pad("", ' ', 2), is(equalTo("  ")));
-    assertThat(StringUtils.pad(" ", ' ', 2), is(equalTo("  ")));
-    assertThat(StringUtils.pad("   ", ' ', 2), is(equalTo("   ")));
+    assertThat(StringUtils.pad("test", ' ', 10)).isEqualTo("test      ");
+    assertThat(StringUtils.pad("test", ' ', 5)).isEqualTo("test ");
+    assertThat(StringUtils.pad("test", ' ', 4)).isEqualTo("test");
+    assertThat(StringUtils.pad("test", ' ', 1)).isEqualTo("test");
+    assertThat(StringUtils.pad("x", ' ', 0)).isEqualTo("x");
+    assertThat(StringUtils.pad("null", ' ', 2)).isEqualTo("null");
+    assertThat(StringUtils.pad("nil", ' ', 2)).isEqualTo("nil");
+    assertThat(StringUtils.pad("", ' ', 2)).isEqualTo("  ");
+    assertThat(StringUtils.pad(" ", ' ', 2)).isEqualTo("  ");
+    assertThat(StringUtils.pad("   ", ' ', 2)).isEqualTo("   ");
   }
 
   @Test
   public void replaceAllModifiesString() {
-    assertThat(StringUtils.replaceAll("testing", "test", "mock"), is(equalTo("mocking")));
-    assertThat(StringUtils.replaceAll("test", "test", "mock"), is(equalTo("mock")));
-    assertThat(StringUtils.replaceAll("xxx", "x", "X"), is(equalTo("XXX")));
-    assertThat(StringUtils.replaceAll("xxx", "x", "xxx"), is(equalTo("xxxxxxxxx")));
-    assertThat(StringUtils.replaceAll("mmm", "m", "w"), is(equalTo("www")));
-    assertThat(StringUtils.replaceAll("//absolute//path//to//file.txt", "//", "/"),
-      is(equalTo("/absolute/path/to/file.txt")));
-    assertThat(StringUtils.replaceAll("///absolute/////path/to//file.txt", "/+", "/"),
-      is(equalTo("/absolute/path/to/file.txt")));
-    assertThat(StringUtils.replaceAll("//////////", "/+", "/"), is(equalTo("/")));
+    assertThat(StringUtils.replaceAll("testing", "test", "mock")).isEqualTo("mocking");
+    assertThat(StringUtils.replaceAll("test", "test", "mock")).isEqualTo("mock");
+    assertThat(StringUtils.replaceAll("xxx", "x", "X")).isEqualTo("XXX");
+    assertThat(StringUtils.replaceAll("xxx", "x", "xxx")).isEqualTo("xxxxxxxxx");
+    assertThat(StringUtils.replaceAll("mmm", "m", "w")).isEqualTo("www");
+    assertThat(StringUtils.replaceAll("//absolute//path//to//file.txt", "//", "/"))
+      .isEqualTo("/absolute/path/to/file.txt");
+    assertThat(StringUtils.replaceAll("///absolute/////path/to//file.txt", "/+", "/"))
+      .isEqualTo("/absolute/path/to/file.txt");
+    assertThat(StringUtils.replaceAll("//////////", "/+", "/")).isEqualTo("/");
   }
 
   @Test
   public void replaceAllReturnsStringUnmodified() {
-    assertThat(StringUtils.replaceAll("test", "testing", "mock"), is(equalTo("test")));
-    assertThat(StringUtils.replaceAll("test", "tset", "mock"), is(equalTo("test")));
-    assertThat(StringUtils.replaceAll("v", "x", "X"), is(equalTo("v")));
-    assertThat(StringUtils.replaceAll("v", "vv", "x"), is(equalTo("v")));
-    assertThat(StringUtils.replaceAll("www", "W", "m"), is(equalTo("www")));
-    assertThat(StringUtils.replaceAll("XOXO", "0", "x"), is(equalTo("XOXO")));
+    assertThat(StringUtils.replaceAll("test", "testing", "mock")).isEqualTo("test");
+    assertThat(StringUtils.replaceAll("test", "tset", "mock")).isEqualTo("test");
+    assertThat(StringUtils.replaceAll("v", "x", "X")).isEqualTo("v");
+    assertThat(StringUtils.replaceAll("v", "vv", "x")).isEqualTo("v");
+    assertThat(StringUtils.replaceAll("www", "W", "m")).isEqualTo("www");
+    assertThat(StringUtils.replaceAll("XOXO", "0", "x")).isEqualTo("XOXO");
   }
 
   @Test
   public void replaceAllReturnsNullWithNullValue() {
-    assertThat(StringUtils.replaceAll(null, "x", "X"), is(nullValue()));
+    assertThat(StringUtils.replaceAll(null, "x", "X")).isNull();
   }
 
   @Test
   public void replaceAllReturnsValueWithNullReplacement() {
-    assertThat(StringUtils.replaceAll("test", "x", null), is(equalTo("test")));
+    assertThat(StringUtils.replaceAll("test", "x", null)).isEqualTo("test");
   }
 
   @Test
   public void replaceAllReturnsValueWithNullPattern() {
-    assertThat(StringUtils.replaceAll("test", null, "X"), is(equalTo("test")));
+    assertThat(StringUtils.replaceAll("test", null, "X")).isEqualTo("test");
   }
 
   @Test
@@ -521,8 +584,8 @@ public class StringUtilsTest {
 
   @Test
   public void stringReplaceAllIsNotComplete() {
-    assertThat("ttesttting".replaceAll("tt", "t"), is(equalTo("testting")));
-    assertThat("tttesttttting".replaceAll("t+", "t"), is(equalTo("testing")));
+    assertThat("ttesttting".replaceAll("tt", "t")).isEqualTo("testting");
+    assertThat("tttesttttting".replaceAll("t+", "t")).isEqualTo("testing");
   }
 
   @Test
@@ -589,32 +652,28 @@ public class StringUtilsTest {
 
   @Test
   public void toStringArrayWithCommaDelimiter() {
-    assertThat(StringUtils.toStringArray(" test,testing,  tested"), is(equalTo(toArray("test", "testing", "tested"))));
-    assertThat(StringUtils.toStringArray("1, 2, 3"), is(equalTo(toArray("1", "2", "3"))));
-    assertThat(StringUtils.toStringArray(", ,  "), is(equalTo(toArray("", "", ""))));
-    assertThat(StringUtils.toStringArray("null,_,  nil "), is(equalTo(toArray("null", "_", "nil"))));
-    assertThat(StringUtils.toStringArray("  1: 2 :3  "), is(equalTo(toArray("1: 2 :3"))));
+    assertThat(StringUtils.toStringArray(" test,testing,  tested")).containsExactly("test", "testing", "tested");
+    assertThat(StringUtils.toStringArray("1, 2, 3")).containsExactly("1", "2", "3");
+    assertThat(StringUtils.toStringArray(", ,  ")).containsExactly("", "", "");
+    assertThat(StringUtils.toStringArray("null,_,  nil ")).containsExactly("null", "_", "nil");
+    assertThat(StringUtils.toStringArray("  1: 2 :3  ")).containsExactly("1: 2 :3");
   }
 
   @Test
   public void toStringArrayWithNullDelimitedValue() {
-    assertThat(StringUtils.toStringArray(null), is(equalTo(toArray(""))));
+    assertThat(StringUtils.toStringArray(null)).containsExactly("");
   }
 
   @Test
   public void toStringArrayWithNullDelimiter() {
-    assertThat(StringUtils.toStringArray("1, 2, 3", null), is(equalTo(toArray("1", "2", "3"))));
+    assertThat(StringUtils.toStringArray("1, 2, 3", null)).containsExactly("1", "2", "3");
   }
 
   @Test
   public void toStringArrayWithOtherDelimiter() {
-    assertThat(StringUtils.toStringArray("test; testing; tested", ";"), is(equalTo(toArray("test", "testing", "tested"))));
-    assertThat(StringUtils.toStringArray("1-2-3", "-"), is(equalTo(toArray("1", "2", "3"))));
-    assertThat(StringUtils.toStringArray("a:b:c", ":"), is(equalTo(toArray("a", "b", "c"))));
-  }
-
-  protected String[] toArray(String... elements) {
-    return elements;
+    assertThat(StringUtils.toStringArray("test; testing; tested", ";")).containsExactly("test", "testing", "tested");
+    assertThat(StringUtils.toStringArray("1-2-3", "-")).containsExactly("1", "2", "3");
+    assertThat(StringUtils.toStringArray("a:b:c", ":")).containsExactly("a", "b", "c");
   }
 
   @Test
@@ -659,32 +718,39 @@ public class StringUtilsTest {
 
   @Test
   public void truncateWithString() {
-    assertThat(StringUtils.truncate("test", 4), is(equalTo("test")));
-    assertThat(StringUtils.truncate("tested", 4), is(equalTo("test")));
-    assertThat(StringUtils.truncate("testing", 4), is(equalTo("test")));
-    assertThat(StringUtils.truncate("test", 8), is(equalTo("test")));
+    assertThat(StringUtils.truncate("test", 4)).isEqualTo("test");
+    assertThat(StringUtils.truncate("tested", 4)).isEqualTo("test");
+    assertThat(StringUtils.truncate("testing", 4)).isEqualTo("test");
+    assertThat(StringUtils.truncate("test", 8)).isEqualTo("test");
   }
 
   @Test
   public void truncateWithNonTextualString() {
-    assertThat(StringUtils.truncate(null, 10), is(nullValue()));
-    assertThat(StringUtils.truncate("", 5), is(""));
-    assertThat(StringUtils.truncate("  ", 5), is("  "));
-    assertThat(StringUtils.truncate("     ", 5), is("     "));
-    assertThat(StringUtils.truncate("          ", 5), is(equalTo("     ")));
+    assertThat(StringUtils.truncate(null, 10)).isNull();
+    assertThat(StringUtils.truncate("", 5)).isEmpty();
+    assertThat(StringUtils.truncate("  ", 5)).isEqualTo("  ");
+    assertThat(StringUtils.truncate("     ", 5)).isEqualTo("     ");
+    assertThat(StringUtils.truncate("          ", 5)).isEqualTo("     ");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void truncateWithIllegalLength() {
-    expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectCause(is(nullValue(Throwable.class)));
-    expectedException.expectMessage("[-2] must be greater than equal to 0");
 
-    StringUtils.truncate("test", -2);
+    try {
+      StringUtils.truncate("test", -2);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("[-2] must be greater than equal to 0");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void testWrap() {
+
     String text = "This example block of text will be wrapped at no more than 40 characters."
       .concat(" This is a test of the wrap(..) method in the org.cp.elements.StringUtils utility class.")
       .concat(" This is a test and only a test. If this were an actual emergency then this freakin test will fail")
@@ -692,15 +758,15 @@ public class StringUtilsTest {
 
     String[] lines = StringUtils.wrap(text, 40, null).split(StringUtils.LINE_SEPARATOR);
 
-    assertThat(lines, is(notNullValue()));
-    assertThat(lines.length, is(equalTo(8)));
-    assertThat(lines[0], is(equalTo("This example block of text will be")));
-    assertThat(lines[1], is(equalTo("wrapped at no more than 40 characters.")));
-    assertThat(lines[2], is(equalTo("This is a test of the wrap(..) method")));
-    assertThat(lines[3], is(equalTo("in the org.cp.elements.StringUtils")));
-    assertThat(lines[4], is(equalTo("utility class. This is a test and only")));
-    assertThat(lines[5], is(equalTo("a test. If this were an actual")));
-    assertThat(lines[6], is(equalTo("emergency then this freakin test will")));
-    assertThat(lines[7], is(equalTo("fail and will require a fix.")));
+    assertThat(lines).isNotNull();
+    assertThat(lines).hasSize(8);
+    assertThat(lines[0]).isEqualTo("This example block of text will be");
+    assertThat(lines[1]).isEqualTo("wrapped at no more than 40 characters.");
+    assertThat(lines[2]).isEqualTo("This is a test of the wrap(..) method");
+    assertThat(lines[3]).isEqualTo("in the org.cp.elements.StringUtils");
+    assertThat(lines[4]).isEqualTo("utility class. This is a test and only");
+    assertThat(lines[5]).isEqualTo("a test. If this were an actual");
+    assertThat(lines[6]).isEqualTo("emergency then this freakin test will");
+    assertThat(lines[7]).isEqualTo("fail and will require a fix.");
   }
 }

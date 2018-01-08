@@ -67,6 +67,22 @@ public abstract class StringUtils {
   };
 
   /**
+   * Capitalizes the first {@link Character letter} for the {@link String}.
+   *
+   * @param value {@link String} to capitalize.
+   * @return the given {@link String} with the first {@link Character letter} capitalized.
+   * @throws IllegalArgumentException if the {@link String value} does not contain any {@link String text}.
+   */
+  public static String capitalize(String value) {
+
+    Assert.hasText(value, "Value [%s] is required", value);
+
+    String firstCharacter = String.valueOf(value.charAt(0));
+
+    return firstCharacter.toUpperCase().concat(value.substring(1));
+  }
+
+  /**
    * Concatenates the array of Strings into a single String value delimited by a comma and space.
    *
    * @param values an array of Strings to concatenate.
@@ -88,6 +104,7 @@ public abstract class StringUtils {
    * @see java.lang.StringBuilder
    */
   public static String concat(String[] values, String delimiter) {
+
     Assert.notNull(values, "The array of String values to concatenate cannot be null!");
 
     StringBuilder buffer = new StringBuilder();
@@ -110,7 +127,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean contains(String text, String value) {
-    return (text != null && value != null && text.contains(value));
+    return text != null && value != null && text.contains(value);
   }
 
   /**
@@ -123,6 +140,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean containsDigits(String value) {
+
     for (char chr : toCharArray(value)) {
       if (Character.isDigit(chr)) {
         return true;
@@ -142,6 +160,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean containsLetters(String value) {
+
     for (char chr: toCharArray(value)) {
       if (Character.isLetter(chr)) {
         return true;
@@ -161,6 +180,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean containsWhitespace(String value) {
+
     for (char chr : toCharArray(value)) {
       if (Character.isWhitespace(chr)) {
         return true;
@@ -183,6 +203,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String defaultIfBlank(String value, String... defaultValues) {
+
     if (isBlank(value)) {
       for (String defaultValue : defaultValues) {
         if (hasText(defaultValue)) {
@@ -204,7 +225,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean equalsIgnoreCase(String stringOne, String stringTwo) {
-    return (stringOne != null && stringOne.equalsIgnoreCase(stringTwo));
+    return stringOne != null && stringOne.equalsIgnoreCase(stringTwo);
   }
 
   /**
@@ -216,6 +237,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isDigit(char)
    */
   public static String getDigits(String value) {
+
     StringBuilder digits = new StringBuilder(value.length());
 
     for (char chr : value.toCharArray()) {
@@ -236,6 +258,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isLetter(char)
    */
   public static String getLetters(String value) {
+
     StringBuilder letters = new StringBuilder(value.length());
 
     for (char chr : value.toCharArray()) {
@@ -254,6 +277,7 @@ public abstract class StringUtils {
    * @return a String containing the specified number of spaces.
    */
   public static String getSpaces(int number) {
+
     Assert.argument(number >= 0, "The number [{0}] of desired spaces must be greater than equal to 0", number);
 
     StringBuilder spaces = new StringBuilder(Math.max(number, 0));
@@ -293,7 +317,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static int indexOf(String text, String value) {
-    return (text != null && value != null ? text.indexOf(value) : -1);
+    return text != null && value != null ? text.indexOf(value) : -1;
   }
 
   /**
@@ -307,7 +331,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean isBlank(String value) {
-    return (value == null || value.trim().isEmpty());
+    return value == null || value.trim().isEmpty();
   }
 
   /**
@@ -321,6 +345,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean isDigits(String value) {
+
     for (char chr : toCharArray(value)) {
       if (!Character.isDigit(chr)) {
         return false;
@@ -355,6 +380,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static boolean isLetters(String value) {
+
     for (char chr : toCharArray(value)) {
       if (!Character.isLetter(chr)) {
         return false;
@@ -377,7 +403,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static int lastIndexOf(String text, String value) {
-    return (text != null && value != null ? text.lastIndexOf(value) : -1);
+    return text != null && value != null ? text.lastIndexOf(value) : -1;
   }
 
   /**
@@ -390,7 +416,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static int length(String value) {
-    return (value != null ? value.length() : 0);
+    return value != null ? value.length() : 0;
   }
 
   /**
@@ -418,10 +444,12 @@ public abstract class StringUtils {
   @NullSafe
   @SuppressWarnings("all")
   public static String pad(String value, char padding, int length) {
+
     assertThat(length).throwing(new IllegalArgumentException(String.format(
       "[%d] must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
 
     if (length > 0) {
+
       StringBuilder builder = new StringBuilder(ObjectUtils.defaultIfNull(value, EMPTY_STRING));
 
       while (length - builder.length() > 0) {
@@ -461,6 +489,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String replaceAll(String value, String pattern, String replacement) {
+
     if (!ObjectUtils.areAnyNull(value, pattern, replacement)) {
       value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
     }
@@ -479,6 +508,7 @@ public abstract class StringUtils {
    * @see java.lang.String#valueOf(Object)
    */
   public static String singleSpaceObjects(Object... values) {
+
     List<String> valueList = new ArrayList<>(values.length);
 
     for (Object value : values) {
@@ -496,6 +526,7 @@ public abstract class StringUtils {
    * @see #concat(String[], String)
    */
   public static String singleSpaceString(String value) {
+
     Assert.hasText(value, "String value must contain text");
 
     return trim(concat(value.split("\\s+"), SINGLE_SPACE));
@@ -510,7 +541,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static char[] toCharArray(String value) {
-    return (value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY);
+    return value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY;
   }
 
   /**
@@ -523,7 +554,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String toLowerCase(String value) {
-    return (value != null ? value.toLowerCase() : null);
+    return value != null ? value.toLowerCase() : null;
   }
 
   /**
@@ -571,7 +602,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String toUpperCase(String value) {
-    return (value != null ? value.toUpperCase() : null);
+    return value != null ? value.toUpperCase() : null;
   }
 
   /**
@@ -583,7 +614,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String trim(String value) {
-    return (value != null ? value.trim() : null);
+    return value != null ? value.trim() : null;
   }
 
   /**
@@ -596,7 +627,9 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String trimAll(String value) {
+
     if (value != null) {
+
       StringBuilder trimmedValue = new StringBuilder(value.length());
 
       for (char chr : value.toCharArray()) {
@@ -625,6 +658,7 @@ public abstract class StringUtils {
    */
   @NullSafe
   public static String truncate(String value, int length) {
+
     assertThat(length).throwing(new IllegalArgumentException(String.format(
       "[%d] must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
 
@@ -644,6 +678,7 @@ public abstract class StringUtils {
    * @throws NullPointerException if the line of text is null.
    */
   public static String wrap(String line, int widthInCharacters, String indent) {
+
     StringBuilder buffer = new StringBuilder();
 
     int lineCount = 1;
