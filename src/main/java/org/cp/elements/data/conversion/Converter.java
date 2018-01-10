@@ -98,7 +98,7 @@ public interface Converter<S, T> extends ConversionServiceAware {
     }
     catch (ClassCastException cause) {
       throw newConversionException(cause, "Cannot convert [%1$s] into an Object of type [%2$s]",
-        value, ObjectUtils.getName(qualifyingType));
+        value, qualifyingType.getName());
     }
   }
 }

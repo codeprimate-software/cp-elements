@@ -82,6 +82,18 @@ public class ConverterTests {
   }
 
   @Test
+  public void canConvertNullObjectIsNullSafeAndReturnsFalse() {
+
+    Converter<?, ?> mockConverter = spy(new TestConverter());
+
+    doReturn(false).when(mockConverter).canConvert(any(), any(Class.class));
+
+    assertThat(mockConverter.canConvert((Object) null, String.class)).isFalse();
+
+    verify(mockConverter, times(1)).canConvert(isNull(), eq(String.class));
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void convertWithQualifyingTypeCallsConvertWithUnqualifiedType() {
 
