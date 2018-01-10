@@ -16,6 +16,8 @@
 
 package org.cp.elements.lang;
 
+import java.util.Scanner;
+
 /**
  * {@link SystemUtils} is an abstract utility class designed to interact with and access properties
  * of the Java {@link java.lang.System} class.
@@ -72,6 +74,7 @@ public abstract class SystemUtils {
    * @see java.lang.System#getProperty(String)
    */
   public static boolean isJavaVersionAtLeast(String expectedVersion) {
+
     String actualVersionDigits = StringUtils.getDigits(System.getProperty("java.version"));
 
     String expectedVersionDigits = StringUtils.pad(StringUtils.getDigits(expectedVersion), '0',
@@ -105,7 +108,7 @@ public abstract class SystemUtils {
    * @see #isJvmMake(String)
    * @see #IBM_JVM_VENDOR
    */
-  public static boolean isIBMJvm() {
+  public static boolean isIbmJvm() {
     return isJvmMake(IBM_JVM_VENDOR);
   }
 
@@ -236,5 +239,13 @@ public abstract class SystemUtils {
    */
   protected static boolean isOS(final String expectedOsName) {
     return StringUtils.contains(System.getProperty("os.name"), expectedOsName);
+  }
+
+  /**
+   * Prompts the user to press the enter key to exit the JVM process.
+   */
+  public static void promptPressEnterToExit() {
+    System.err.println("Press <enter> to exit...");
+    new Scanner(System.in).nextLine();
   }
 }

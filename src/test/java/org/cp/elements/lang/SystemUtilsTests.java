@@ -16,17 +16,14 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.management.ManagementFactory;
 
 import org.junit.Test;
 
 /**
- * The SystemUtilsTest class is a test suite of test cases testing the contract and functionality
- * of the SystemUtils class.
+ * Unit tests for {@link SystemUtils}.
  *
  * @author John J. Blum
  * @see java.lang.System
@@ -37,11 +34,11 @@ import org.junit.Test;
  * @see org.cp.elements.lang.SystemUtils
  * @since 1.0.0
  */
-public class SystemUtilsTest {
+public class SystemUtilsTests {
 
   @Test
   public void isJavaVersionAtLeast180() {
-    assertThat(SystemUtils.isJavaVersionAtLeast("1.8.0_0"), is(true));
+    assertThat(SystemUtils.isJavaVersionAtLeast("1.8.0_0")).isTrue();
   }
 
   protected boolean isJvmMake(String expectedJvmVendor) {
@@ -58,53 +55,52 @@ public class SystemUtilsTest {
 
   @Test
   public void isAppleJvm() {
-    assertThat(SystemUtils.isAppleJvm(), is(equalTo(isJvmMake(SystemUtils.APPLE_JVM_VENDOR))));
+    assertThat(SystemUtils.isAppleJvm()).isEqualTo(isJvmMake(SystemUtils.APPLE_JVM_VENDOR));
   }
 
   @Test
-  public void isIBMJvm() {
-    assertThat(SystemUtils.isIBMJvm(), is(equalTo(isJvmMake(SystemUtils.IBM_JVM_VENDOR))));
+  public void isIbmJvm() {
+    assertThat(SystemUtils.isIbmJvm()).isEqualTo(isJvmMake(SystemUtils.IBM_JVM_VENDOR));
   }
 
   @Test
   public void isOracleJvm() {
-    assertThat(SystemUtils.isOracleJvm(), is(equalTo(isJvmMake(SystemUtils.ORACLE_JVM_VENDOR))));
+    assertThat(SystemUtils.isOracleJvm()).isEqualTo(isJvmMake(SystemUtils.ORACLE_JVM_VENDOR));
   }
 
   @Test
   public void isHotSpotJvm() {
-    assertThat(SystemUtils.isHotSpotJvm(), is(equalTo(isJvmModel(SystemUtils.ORACLE_HOTSPOT_JVM_NAME))));
+    assertThat(SystemUtils.isHotSpotJvm()).isEqualTo(isJvmModel(SystemUtils.ORACLE_HOTSPOT_JVM_NAME));
   }
 
   @Test
   public void isJ9Jvm() {
-    assertThat(SystemUtils.isJ9Jvm(), is(equalTo(isJvmModel(SystemUtils.IBM_J9_JVM_NAME))));
+    assertThat(SystemUtils.isJ9Jvm()).isEqualTo(isJvmModel(SystemUtils.IBM_J9_JVM_NAME));
   }
 
   @Test
   public void isJRockitJvm() {
-    assertThat(SystemUtils.isJRockitJvm(), is(equalTo(isJvmModel(SystemUtils.ORACLE_JROCKIT_JVM_NAME))));
+    assertThat(SystemUtils.isJRockitJvm()).isEqualTo(isJvmModel(SystemUtils.ORACLE_JROCKIT_JVM_NAME));
   }
 
   @Test
   public void isLinux() {
-    assertThat(SystemUtils.isLinux(), is(equalTo(isOs(SystemUtils.LINUX_OS_NAME))));
+    assertThat(SystemUtils.isLinux()).isEqualTo(isOs(SystemUtils.LINUX_OS_NAME));
   }
 
   @Test
   public void isMacOSX() {
-    assertThat(SystemUtils.isMacOSX(), is(equalTo(isOs(SystemUtils.MAC_OSX_NAME))));
+    assertThat(SystemUtils.isMacOSX()).isEqualTo(isOs(SystemUtils.MAC_OSX_NAME));
   }
 
   @Test
   public void isWindow() {
-    assertThat(SystemUtils.isWindows(), is(equalTo(isOs(SystemUtils.WINDOWS_OS_NAME))));
+    assertThat(SystemUtils.isWindows()).isEqualTo(isOs(SystemUtils.WINDOWS_OS_NAME));
   }
 
   @Test
   public void isUnixBasedOperatingSystem() {
-    boolean expected = (isOs(SystemUtils.LINUX_OS_NAME) || isOs(SystemUtils.MAC_OSX_NAME));
-    assertThat(SystemUtils.isUnixBasedOperatingSystem(), is(equalTo(expected)));
+    assertThat(SystemUtils.isUnixBasedOperatingSystem())
+      .isEqualTo(isOs(SystemUtils.LINUX_OS_NAME) || isOs(SystemUtils.MAC_OSX_NAME));
   }
-
 }
