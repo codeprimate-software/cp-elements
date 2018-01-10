@@ -17,8 +17,8 @@
 package org.cp.elements.data.conversion;
 
 /**
- * The {@link ConversionServiceAware} interface is a contract for implementing objects that require an instance of
- * the {@link ConversionService}.
+ * The {@link ConversionServiceAware} interface is a contract for implementing objects
+ * that require an instance of the {@link ConversionService}.
  *
  * @author John J. Blum
  * @see java.lang.FunctionalInterface

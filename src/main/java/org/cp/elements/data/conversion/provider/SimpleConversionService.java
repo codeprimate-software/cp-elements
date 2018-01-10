@@ -18,7 +18,6 @@ package org.cp.elements.data.conversion.provider;
 
 import static org.cp.elements.lang.ClassUtils.CLASS_FILE_EXTENSION;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
-import static org.cp.elements.util.CollectionUtils.asIterable;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,23 @@ import java.util.jar.JarFile;
 import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.data.conversion.converters.BigDecimalConverter;
+import org.cp.elements.data.conversion.converters.BigIntegerConverter;
+import org.cp.elements.data.conversion.converters.BooleanConverter;
+import org.cp.elements.data.conversion.converters.ByteConverter;
+import org.cp.elements.data.conversion.converters.CalendarConverter;
+import org.cp.elements.data.conversion.converters.CharacterConverter;
+import org.cp.elements.data.conversion.converters.DoubleConverter;
+import org.cp.elements.data.conversion.converters.EnumConverter;
+import org.cp.elements.data.conversion.converters.FloatConverter;
+import org.cp.elements.data.conversion.converters.IdentifiableConverter;
+import org.cp.elements.data.conversion.converters.IntegerConverter;
+import org.cp.elements.data.conversion.converters.LongConverter;
+import org.cp.elements.data.conversion.converters.NumberConverter;
+import org.cp.elements.data.conversion.converters.ShortConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
+import org.cp.elements.data.conversion.converters.URIConverter;
+import org.cp.elements.data.conversion.converters.URLConverter;
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.Assert;
@@ -46,6 +61,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.service.annotation.Service;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * {@link SimpleConversionService} is an application {@link Service} class that performs {@link Class type} conversions
@@ -100,22 +116,30 @@ public class SimpleConversionService extends AbstractConversionService {
         "Could not resolve URL for Converter class [%1$s] having resource name [%2$s]",
           CONVERTER_CLASS.getName(), converterClassResourceName);
 
-    if (isJarFile(converterClassResourceLocation)) {
-      registerConvertersFromJarFile(converterClassResourceName, converterClassResourceLocation);
+    try {
+      if (isJarFile(converterClassResourceLocation)) {
+        registerConvertersFromJarFile(converterClassResourceName, converterClassResourceLocation);
+      }
+      else {
+        registerConvertersFromFileSystem(converterClassResourceName, converterClassResourceLocation);
+      }
     }
-    else {
-      registerConvertersFromFileSystem(converterClassResourceName, converterClassResourceLocation);
+    catch (Exception ignore) {
+      registerConvertersFromPackage();
     }
   }
 
+  /* (non-Javadoc) */
   private String toResourceName(Class<?> type) {
     return ObjectUtils.getResourceName(type);
   }
 
+  /* (non-Javadoc) */
   private URL resolveResourceLocation(String resourceName) {
     return Thread.currentThread().getContextClassLoader().getResource(resourceName);
   }
 
+  /* (non-Javadoc) */
   private boolean isJarFile(URL resourceLocation) {
 
     String resourceLocationString = resourceLocation.toExternalForm();
@@ -123,6 +147,29 @@ public class SimpleConversionService extends AbstractConversionService {
     return resourceLocationString.startsWith("jar:file:") || resourceLocationString.contains(".jar!");
   }
 
+  /* (non-Javadoc) */
+  private void registerConvertersFromPackage() {
+
+    register(new BigDecimalConverter());
+    register(new BigIntegerConverter());
+    register(new BooleanConverter());
+    register(new ByteConverter());
+    register(new CalendarConverter());
+    register(new CharacterConverter());
+    register(new DoubleConverter());
+    register(new EnumConverter());
+    register(new FloatConverter());
+    register(new IdentifiableConverter());
+    register(new IntegerConverter());
+    register(new LongConverter());
+    register(new NumberConverter());
+    register(new ShortConverter());
+    register(new StringConverter());
+    register(new URIConverter());
+    register(new URLConverter());
+  }
+
+  /* (non-Javadoc) */
   private void registerConvertersFromJarFile(String converterClassResourceName, URL converterClassResourceLocation) {
 
     String converterClassResourceLocationString = converterClassResourceLocation.toExternalForm();
@@ -141,7 +188,7 @@ public class SimpleConversionService extends AbstractConversionService {
 
       JarFile jarFile = new JarFile(new File(jarFilePathname));
 
-      for (JarEntry jarEntry : asIterable(jarFile.entries())) {
+      for (JarEntry jarEntry : CollectionUtils.asIterable(jarFile.entries())) {
 
         String jarEntryName = jarEntry.getName();
 
@@ -163,6 +210,7 @@ public class SimpleConversionService extends AbstractConversionService {
     }
   }
 
+  /* (non-Javadoc) */
   @SuppressWarnings("all")
   private void registerConvertersFromFileSystem(String converterClassResourceName, URL converterClassResourceLocation) {
 
@@ -171,7 +219,7 @@ public class SimpleConversionService extends AbstractConversionService {
       File convertersPackagePath = new File(converterClassResourceLocation.toURI()).getParentFile();
 
       Assert.isTrue(convertersPackagePath.isDirectory(),
-          "Directory for Converters package [%s] does not exist", CONVERTERS_PACKAGE.getName());
+          "Directory for Converters package [%s] does not exist", convertersPackagePath.getAbsolutePath());
 
       for (File classFile : convertersPackagePath.listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION))) {
 
@@ -187,11 +235,12 @@ public class SimpleConversionService extends AbstractConversionService {
     }
   }
 
+  /* (non-Javadoc) */
   private void register(String converterClassName) {
 
-    Class<Converter> converterClass = ClassUtils.loadClass(converterClassName);
+    Class<Converter> converterClass = ObjectUtils.loadClass(converterClassName);
 
-    if (ClassUtils.assignableTo(converterClass, Converter.class)) {
+    if (ObjectUtils.assignableTo(converterClass, Converter.class)) {
       try {
         Converter<?, ?> converter = (Converter<?, ?>) converterClass.newInstance();
         register(converter);
