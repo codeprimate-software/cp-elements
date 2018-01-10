@@ -246,6 +246,7 @@ public abstract class RunnableUtils {
    *
    * @param <T> {@link Class} type of the return value.
    */
+  @FunctionalInterface
   public interface ReturningRunnable<T> {
 
     /**
