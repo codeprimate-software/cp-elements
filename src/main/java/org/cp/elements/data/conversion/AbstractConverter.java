@@ -16,10 +16,13 @@
 
 package org.cp.elements.data.conversion;
 
+import static java.util.Arrays.stream;
 import static org.cp.elements.lang.ClassUtils.assignableTo;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 import org.cp.elements.lang.ClassUtils;
@@ -39,6 +42,35 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class AbstractConverter<S, T> implements Converter<S, T> {
 
   private ConversionService conversionService;
+
+  private final Class<?> sourceType;
+  private final Class<?> targetType;
+
+  /**
+   * Constructs a new instance of {@link AbstractConverter}.
+   */
+  public AbstractConverter() {
+
+    ParameterizedType parameterizedType =
+      stream(nullSafeArray(getClass().getGenericInterfaces(), Type.class))
+        .filter(this::isParameterizedConverterType)
+        .findFirst()
+        .map(it -> (ParameterizedType) it)
+        .orElseGet(() -> {
+
+          Type genericSuperclass = getClass().getGenericSuperclass();
+
+          return isParameterizedConverterType(genericSuperclass) ? (ParameterizedType) genericSuperclass : null;
+        });
+
+    this.sourceType = parameterizedType != null
+      ? ClassUtils.toRawType(parameterizedType.getActualTypeArguments()[0])
+      : Object.class;
+
+    this.targetType = parameterizedType != null
+      ? ClassUtils.toRawType(parameterizedType.getActualTypeArguments()[1])
+      : Object.class;
+  }
 
   /**
    * Sets a reference to the {@link ConversionService} used to perform conversions.
@@ -93,6 +125,38 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
     }
 
     return false;
+  }
+
+  /**
+   * Determines whether the {@link Type} is a generic, parameterized {@link Converter} {@link Class type}, such as
+   * by implementing the {@link Converter} interface or extending the {@link AbstractConverter} base class.
+   *
+   * @param type {@link Type} to evaluate.
+   * @return a boolean if the {@link Type} represents a generic, parameterized {@link Converter} {@link Class type}.
+   * @see java.lang.reflect.Type
+   */
+  protected boolean isParameterizedConverterType(Type type) {
+    return type instanceof ParameterizedType && ClassUtils.assignableTo(ClassUtils.toRawType(type), Converter.class);
+  }
+
+  /**
+   * Returns the {@link Class source type} of the conversion performed by this {@link Converter}.
+   *
+   * @return the {@link Class source type} of the conversion performed by this {@link Converter}.
+   * @see java.lang.Class
+   */
+  protected Class<?> getSourceType() {
+    return this.sourceType;
+  }
+
+  /**
+   * Returns the {@link Class target type} of the conversion performed by this {@link Converter}.
+   *
+   * @return the {@link Class target type} of the conversion performed by this {@link Converter}.
+   * @see java.lang.Class
+   */
+  protected Class<?> getTargetType() {
+    return this.targetType;
   }
 
   /**

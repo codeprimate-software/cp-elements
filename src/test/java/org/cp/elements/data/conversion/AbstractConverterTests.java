@@ -19,6 +19,7 @@ package org.cp.elements.data.conversion;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -39,8 +40,8 @@ import org.junit.Test;
 @SuppressWarnings("unused")
 public class AbstractConverterTests {
 
-  protected <S, T> AbstractConverter<S, T> newConverter() {
-    return new AbstractConverter<S, T>() { };
+  protected AbstractConverter<Object, Object> newConverter() {
+    return new TestConverter();
   }
 
   @Test
@@ -58,6 +59,18 @@ public class AbstractConverterTests {
   @Test
   public void getConversionServiceWhenUnsetIsNotPresent() {
     assertThat(newConverter().getConversionService().isPresent()).isFalse();
+  }
+
+  @Test
+  public void resolveConversionServiceWhenSet() {
+
+    AbstractConverter<?, ?> converter = newConverter();
+
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    converter.setConversionService(mockConversionService);
+
+    assertThat(converter.resolveConversionService()).isEqualTo(mockConversionService);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -115,6 +128,42 @@ public class AbstractConverterTests {
     assertThat(converter.isAssignableTo(Object.class, (Class[]) null)).isFalse();
   }
 
+  @Test
+  public void getSourceAndTargetTypesWithObjectToStringConverter() {
+
+    AbstractConverter<Object, String> converter = new ObjectToStringConverter();
+
+    assertThat(converter.getSourceType()).isEqualTo(Object.class);
+    assertThat(converter.getTargetType()).isEqualTo(String.class);
+  }
+
+  @Test
+  public void getSourceAndTargetTypesWithRawTypeConverter() {
+
+    AbstractConverter<?, ?> converter = new RawTypeConverter();
+
+    assertThat(converter.getSourceType()).isEqualTo(Object.class);
+    assertThat(converter.getTargetType()).isEqualTo(Object.class);
+  }
+
+  @Test
+  public void getSourceAndTargetTypesWithStringToUrlConverter() {
+
+    AbstractConverter<?, ?> converter = new StringToUrlConverter();
+
+    assertThat(converter.getSourceType()).isEqualTo(String.class);
+    assertThat(converter.getTargetType()).isEqualTo(URL.class);
+  }
+
+  @Test
+  public void getSourceAndTargetTypesWithTimestampToLocalDateTimeConverter() {
+
+    AbstractConverter<?, ?> converter = new TimestampToLocalDateTimeConverter();
+
+    assertThat(converter.getSourceType()).isEqualTo(Timestamp.class);
+    assertThat(converter.getTargetType()).isEqualTo(LocalDateTime.class);
+  }
+
   @Test(expected = UnsupportedOperationException.class)
   public void canConvertThrowsUnsupportedOperationException() {
     newConverter().canConvert(Object.class, String.class);
@@ -129,4 +178,15 @@ public class AbstractConverterTests {
   public void convertWithQualifyingTypeThrowsUnsupportedOperationException() {
     newConverter().convert(1, Long.class);
   }
+
+  static class ObjectToStringConverter extends AbstractConverter<Object, String> { }
+
+  static class RawTypeConverter extends AbstractConverter { }
+
+  static class StringToUrlConverter extends AbstractConverter<String, URL> { }
+
+  static class TimestampToLocalDateTimeConverter extends AbstractConverter<Timestamp, LocalDateTime> { }
+
+  static class TestConverter extends AbstractConverter<Object, Object> { }
+
 }
