@@ -85,6 +85,18 @@ public class ConversionServiceTests {
   }
 
   @Test
+  public void canConvertNullObjectIsNullSafeAndReturnsFalse() {
+
+    ConversionService testConversionService = spy(new TestConversionService());
+
+    doReturn(false).when(testConversionService).canConvert(any(), any(Class.class));
+
+    assertThat(testConversionService.canConvert((Object) null, Object.class)).isFalse();
+
+    verify(testConversionService, times(1)).canConvert(isNull(), any(Class.class));
+  }
+
+  @Test
   public void canConvertWithTypeReturnsTrue() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
@@ -102,7 +114,7 @@ public class ConversionServiceTests {
   }
 
   @Test
-  public void canConvertWithTypeWhenConverterCannotConvertReturnsFalse() {
+  public void canConvertWithTypeWhenNoConverterCanConvertReturnsFalse() {
 
     Converter<?, ?> mockConverter = mock(Converter.class);
 
@@ -119,7 +131,7 @@ public class ConversionServiceTests {
   }
 
   @Test
-  public void canConvertWithTypeWhenNoConvertersPresentReturnsFalse() {
+  public void canConvertWithTypeWhenNoConvertersAreRegisteredReturnsFalse() {
 
     ConversionService mockConversionService = mock(ConversionService.class);
 
