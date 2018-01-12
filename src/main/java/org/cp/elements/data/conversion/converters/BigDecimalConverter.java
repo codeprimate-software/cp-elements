@@ -22,10 +22,11 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import org.cp.elements.data.conversion.AbstractConverter;
-import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.conversion.Converter;
 
 /**
- * The BigDecimalConverter class converts a String value into a BigDecimal.
+ * {@link BigDecimalConverter} converts a {@link String} to a {@link BigDecimal}.
  *
  * @author John J. Blum
  * @see java.lang.String
@@ -46,11 +47,31 @@ public class BigDecimalConverter extends AbstractConverter<String, BigDecimal> {
     this.mathContext = mathContext;
   }
 
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
-    return ObjectUtils.assignableTo(fromType, String.class) && BigDecimal.class.equals(toType);
+    return fromType != null && isAssignableTo(fromType, String.class) && BigDecimal.class.equals(toType);
   }
 
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
+   *
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @return the converted {@link Object} of {@link Class type T}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object, Class)
+   */
   @Override
   public BigDecimal convert(String value) {
 
