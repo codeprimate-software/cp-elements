@@ -18,7 +18,11 @@ package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
+import java.util.ServiceLoader;
+
 import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.factory.ObjectFactory;
@@ -26,7 +30,7 @@ import org.cp.elements.lang.factory.ObjectFactoryAware;
 import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
 
 /**
- * The IdentifiableConverter converts Long values into an instance of an Identifiable object.
+ * {@link IdentifiableConverter} converts a {@link Long} into an instance of an {@link Identifiable} object.
  *
  * @author John J. Blum
  * @see java.lang.Long
@@ -43,10 +47,8 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
   private ObjectFactory objectFactory;
 
   public IdentifiableConverter() {
-
-    if (ObjectFactoryReferenceHolder.hasReference()) {
-      setObjectFactory(ObjectFactoryReferenceHolder.get());
-    }
+    this(ObjectFactoryReferenceHolder.hasReference() ? ObjectFactoryReferenceHolder.get()
+      : ServiceLoader.load(ObjectFactory.class).iterator().next());
   }
 
   public IdentifiableConverter(ObjectFactory objectFactory) {
@@ -60,20 +62,44 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
 
   protected ObjectFactory getObjectFactory() {
 
-    Assert.state(objectFactory != null, "No ObjectFactory was configured");
+    Assert.state(this.objectFactory != null, "No ObjectFactory was configured");
 
-    return objectFactory;
+    return this.objectFactory;
   }
 
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
-    return Long.class.equals(fromType) && isAssignableTo(toType, Identifiable.class);
+    return Long.class.equals(fromType) && toType != null && Identifiable.class.isAssignableFrom(toType);
   }
 
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class qualifying type QT}.
+   *
+   * @param <QT> {@link Class qualifying type} extending {@link Class type T}.
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @param identifiableType the {@link Class qualifying type} of the {@link Object} resolved in the conversion.
+   * @return the converted {@link Object} of {@link Class qualifying type QT}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @throws IllegalArgumentException if {@link Class qualifying type} is {@literal null}.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object)
+   */
   @Override
   public <QT extends Identifiable<Long>> QT convert(Long value, Class<QT> identifiableType) {
 
     try {
+
       Identifiable<Long> identifiableObject =
         getObjectFactory().create(identifiableType, new Class[] { Long.class }, value);
 
@@ -83,8 +109,8 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
 
       return identifiableType.cast(identifiableObject);
     }
-    catch (Exception cause) {
-      throw newConversionException(cause, "Cannot convert Long value (%1$d) into an Object of type [%2$s]",
+    catch (Throwable cause) {
+      throw newConversionException(cause, "Cannot convert Long [%1$d] into an Object of type [%2$s]",
         value, identifiableType);
     }
   }
