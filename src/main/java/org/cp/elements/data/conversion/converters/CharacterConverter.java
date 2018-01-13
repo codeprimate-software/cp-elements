@@ -16,27 +16,47 @@
 
 package org.cp.elements.data.conversion.converters;
 
-import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
-
-import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.data.conversion.DefaultableConverter;
 
 /**
- * The CharacterConverter class converts an Object value into a Character.
+ * {@link CharacterConverter} converts an {@link Object} to a {@link Character}.
  *
  * @author John J. Blum
  * @see java.lang.Character
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.AbstractConverter
+ * @see org.cp.elements.data.conversion.DefaultableConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CharacterConverter extends AbstractConverter<Object, Character> {
+public class CharacterConverter extends DefaultableConverter<Object, Character> {
 
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return isAssignableTo(fromType, Character.class, String.class) && Character.class.equals(toType);
   }
 
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
+   *
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @return the converted {@link Object} of {@link Class type T}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object, Class)
+   */
   @Override
   public Character convert(Object value) {
 
@@ -50,7 +70,7 @@ public class CharacterConverter extends AbstractConverter<Object, Character> {
       return valueString.length() > 0 ? valueString.charAt(0) : '\0';
     }
     else {
-      throw newConversionException("[%s] is not a valid character", value);
+      return super.convert(value);
     }
   }
 }
