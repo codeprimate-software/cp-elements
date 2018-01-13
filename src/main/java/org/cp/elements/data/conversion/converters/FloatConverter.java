@@ -18,28 +18,48 @@ package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
-import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.data.conversion.DefaultableConverter;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The FloatConverter class converts an Object value into a Float.
+ * {@link FloatConverter} converts an {@link Object} to a {@link Float}.
  *
  * @author John J. Blum
  * @see java.lang.Float
  * @see java.lang.Object
- * @see org.cp.elements.data.conversion.AbstractConverter
+ * @see org.cp.elements.data.conversion.DefaultableConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class FloatConverter extends AbstractConverter<Object, Float> {
+public class FloatConverter extends DefaultableConverter<Object, Float> {
 
-  protected static final String CONVERSION_EXCEPTION_MESSAGE = "[%s] is not a valid float";
-
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return isAssignableTo(fromType, Number.class, String.class) && Float.class.equals(toType);
   }
 
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
+   *
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @return the converted {@link Object} of {@link Class type T}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object, Class)
+   */
   @Override
   public Float convert(Object value) {
 
@@ -51,11 +71,11 @@ public class FloatConverter extends AbstractConverter<Object, Float> {
         return Float.parseFloat(value.toString().trim());
       }
       catch (NumberFormatException cause) {
-        throw newConversionException(cause, CONVERSION_EXCEPTION_MESSAGE, value);
+        throw newConversionException(cause, "[%s] is not a valid float", value);
       }
     }
     else {
-      throw newConversionException(CONVERSION_EXCEPTION_MESSAGE, value);
+      return super.convert(value);
     }
   }
 }
