@@ -19,26 +19,46 @@ package org.cp.elements.data.conversion.converters;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.conversion.Converter;
 
 /**
- * The EnumConverter class converts a String value into an Enum of the qualifying enumerated type.
+ * {@link EnumConverter} converts a {@link String} to an {@link Enum} of the {@link Class qualifying enumerated type}.
  *
  * @author John J. Blum
  * @see java.lang.Enum
- * @see java.lang.Object
+ * @see java.lang.String
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class EnumConverter extends AbstractConverter<String, Enum> {
 
-  /* (non-Javadoc) */
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return String.class.equals(fromType) && isAssignableTo(toType, Enum.class);
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
+   *
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @return the converted {@link Object} of {@link Class type T}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object, Class)
+   */
   @Override
   @SuppressWarnings("unchecked")
   public <QT extends Enum> QT convert(String value, Class<QT> enumType) {
@@ -50,7 +70,8 @@ public class EnumConverter extends AbstractConverter<String, Enum> {
       return enumType.cast(enumInstance);
     }
     catch (Exception cause) {
-      throw newConversionException(cause, "[%1$s] is not a valid enumerated value of Enum [%2$s]", value, enumType);
+      throw newConversionException(cause, "[%1$s] is not a valid enumerated value of Enum [%2$s]",
+        value, enumType.getName());
     }
   }
 }
