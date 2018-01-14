@@ -45,6 +45,7 @@ public abstract class TestUtils {
     dateTime.set(Calendar.HOUR_OF_DAY, hour);
     dateTime.set(Calendar.MINUTE, minute);
     dateTime.set(Calendar.SECOND, second);
+    dateTime.set(Calendar.MILLISECOND, 0);
     return dateTime;
   }
 
