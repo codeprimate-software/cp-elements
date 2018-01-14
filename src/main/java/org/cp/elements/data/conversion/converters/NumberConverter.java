@@ -25,10 +25,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The NumberConverter class converts an Object value into a Number of a qualified numerical Class type.
+ * {@link NumberConverter} converts an {@link Object} to a {@link Number} of a {@link Class qualified numerical type}.
  *
  * @author John J. Blum
  * @see java.lang.Number
@@ -80,7 +82,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
       return numberType.cast(Double.parseDouble(number));
     }
 
-    throw newConversionException("[%s] is not a valid Number type", numberType);
+    throw newConversionException("[%s] is not a valid Number type", numberType.getName());
   }
 
   protected <QT extends Number> QT toQualifyingNumber(Number number, Class<QT> numberType) {
@@ -92,7 +94,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
       return numberType.cast(new AtomicLong(number.longValue()));
     }
     else if (BigDecimal.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new BigDecimal(number.toString()));
+      return numberType.cast(new BigDecimal(number.doubleValue()));
     }
     else if (BigInteger.class.isAssignableFrom(numberType)) {
       return numberType.cast(new BigInteger(number.toString()));
@@ -116,16 +118,42 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
       return numberType.cast(number.doubleValue());
     }
 
-    throw newConversionException("[%s] is not a valid Number type", numberType);
+    throw newConversionException("[%s] is not a valid Number type", numberType.getName());
   }
 
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
-    return isAssignableTo(fromType, Number.class, String.class) && isAssignableTo(toType, Number.class);
+    return fromType != null && isAssignableTo(fromType, Number.class, String.class)
+      && toType != null && Number.class.isAssignableFrom(toType);
   }
 
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class qualifying type QT}.
+   *
+   * @param <QT> {@link Class qualifying type} extending {@link Class type T}.
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @param qualifyingType the {@link Class qualifying type} of the {@link Object} resolved in the conversion.
+   * @return the converted {@link Object} of {@link Class qualifying type QT}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @throws IllegalArgumentException if {@link Class qualifying type} is {@literal null}.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object)
+   */
   @Override
   public <QT extends Number> QT convert(Object value, Class<QT> qualifyingType) {
+
+    Assert.notNull(qualifyingType, "Qualifying type is required");
 
     try {
       if (qualifyingType.isInstance(value)) {
