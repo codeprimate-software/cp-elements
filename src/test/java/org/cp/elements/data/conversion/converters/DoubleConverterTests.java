@@ -117,6 +117,7 @@ public class DoubleConverterTests {
 
   @Test(expected = ConversionException.class)
   public void convertInvalidDoubleStringThrowException() {
+
     try {
       this.converter.convert("oneTwentyThreePointFortyFive");
     }
@@ -131,6 +132,7 @@ public class DoubleConverterTests {
 
   @Test(expected = ConversionException.class)
   public void convertInvalidNumericStringThrowException() {
+
     try {
       this.converter.convert("$100 & 51/100 cents");
     }

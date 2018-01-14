@@ -40,8 +40,8 @@ import org.cp.elements.data.conversion.converters.BigDecimalConverter;
 import org.cp.elements.data.conversion.converters.BigIntegerConverter;
 import org.cp.elements.data.conversion.converters.BooleanConverter;
 import org.cp.elements.data.conversion.converters.ByteConverter;
-import org.cp.elements.data.conversion.converters.CalendarConverter;
 import org.cp.elements.data.conversion.converters.CharacterConverter;
+import org.cp.elements.data.conversion.converters.DateConverter;
 import org.cp.elements.data.conversion.converters.DoubleConverter;
 import org.cp.elements.data.conversion.converters.EnumConverter;
 import org.cp.elements.data.conversion.converters.FloatConverter;
@@ -154,7 +154,7 @@ public class SimpleConversionService extends AbstractConversionService {
     register(new BigIntegerConverter());
     register(new BooleanConverter());
     register(new ByteConverter());
-    register(new CalendarConverter());
+    register(new DateConverter());
     register(new CharacterConverter());
     register(new DoubleConverter());
     register(new EnumConverter());

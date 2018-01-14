@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,8 +38,8 @@ import org.cp.elements.data.conversion.converters.BigDecimalConverter;
 import org.cp.elements.data.conversion.converters.BigIntegerConverter;
 import org.cp.elements.data.conversion.converters.BooleanConverter;
 import org.cp.elements.data.conversion.converters.ByteConverter;
-import org.cp.elements.data.conversion.converters.CalendarConverter;
 import org.cp.elements.data.conversion.converters.CharacterConverter;
+import org.cp.elements.data.conversion.converters.DateConverter;
 import org.cp.elements.data.conversion.converters.DoubleConverter;
 import org.cp.elements.data.conversion.converters.EnumConverter;
 import org.cp.elements.data.conversion.converters.FloatConverter;
@@ -78,7 +79,7 @@ public class SimpleConversionServiceTests {
     expectedRegisteredConverters.add(BigIntegerConverter.class);
     expectedRegisteredConverters.add(BooleanConverter.class);
     expectedRegisteredConverters.add(ByteConverter.class);
-    expectedRegisteredConverters.add(CalendarConverter.class);
+    expectedRegisteredConverters.add(DateConverter.class);
     expectedRegisteredConverters.add(CharacterConverter.class);
     expectedRegisteredConverters.add(DoubleConverter.class);
     expectedRegisteredConverters.add(EnumConverter.class);
@@ -317,13 +318,11 @@ public class SimpleConversionServiceTests {
     assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
 
     try {
-      this.conversionService.convert(null, Integer.class);
+      this.conversionService.convert(null, Gender.class);
     }
     catch (ConversionException expected) {
 
-      assertThat(expected).hasMessage("[null] is not a valid number of the qualifying type [%s]",
-        Integer.class.getName());
-
+      assertThat(expected).hasMessage("Cannot convert [null] into Object of type [%s]", Gender.class.getName());
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -336,11 +335,17 @@ public class SimpleConversionServiceTests {
   @Test
   public void convertWithDefaultsEnabledPerformsConversion() {
 
+    Date now = new Date();
+
     this.conversionService.setDefaultValuesEnabled(true);
+    this.conversionService.setDefaultValue(Date.class, (Supplier<Date>) () -> now);
+    this.conversionService.setDefaultValue(Gender.class, (Supplier<Gender>) () -> Gender.FEMALE);
 
     assertThat(conversionService.isDefaultValuesEnabled()).isTrue();
     assertThat(this.conversionService.convert(null, Boolean.class)).isFalse();
     assertThat(this.conversionService.convert(null, Character.class)).isEqualTo('\0');
+    assertThat(this.conversionService.convert(null, Date.class)).isEqualTo(now);
+    assertThat(this.conversionService.convert(null, Gender.class)).isEqualTo(Gender.FEMALE);
     assertThat(this.conversionService.convert(null, Integer.class)).isEqualTo(0);
     assertThat(this.conversionService.convert(null, Double.class)).isEqualTo(0.0d);
     assertThat(this.conversionService.convert(null, String.class)).isNull();
