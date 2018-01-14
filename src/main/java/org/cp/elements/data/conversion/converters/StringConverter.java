@@ -17,9 +17,10 @@
 package org.cp.elements.data.conversion.converters;
 
 import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.Converter;
 
 /**
- * {@link StringConverter} converts an {@link Object} into a {@link String}.
+ * {@link StringConverter} converts an {@link Object} to a {@link String}.
  *
  * @author John J. Blum
  * @see java.lang.Object
@@ -30,11 +31,31 @@ import org.cp.elements.data.conversion.AbstractConverter;
 @SuppressWarnings("unused")
 public class StringConverter extends AbstractConverter<Object, String> {
 
+  /**
+   * Determines whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   *
+   * @param fromType {@link Class type} to convert from.
+   * @param toType {@link Class type} to convert to.
+   * @return a boolean indicating whether this {@link Converter} can convert {@link Object Objects}
+   * {@link Class from type} {@link Class to type}.
+   * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
+   * @see #canConvert(Object, Class)
+   */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
     return String.class.equals(toType);
   }
 
+  /**
+   * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
+   *
+   * @param value {@link Object} of {@link Class type S} to convert.
+   * @return the converted {@link Object} of {@link Class type T}.
+   * @throws ConversionException if the {@link Object} cannot be converted.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #convert(Object, Class)
+   */
   @Override
   public String convert(Object value) {
     return String.valueOf(value);
