@@ -22,55 +22,57 @@
 package org.cp.elements.util.paging;
 
 /**
- * The PageNotFoundException class is a RuntimeException indicating that a page could not be found 
- * in the Pageable object.
- * <p/>
+ * The {@link PageNotFoundException} class is a {@link RuntimeException} indicating that a {@link Page}
+ * could not be found in the {@link Pageable} object.
+ *
  * @author John J. Blum
+ * @see java.lang.RuntimeException
  * @see org.cp.elements.util.paging.Page
  * @see org.cp.elements.util.paging.Pageable
- * @see java.lang.RuntimeException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class PageNotFoundException extends RuntimeException {
 
   /**
-   * Default constructor creating an instance of the PageNotFoundException.
+   * Default constructor to construct a new, uninitialized instance of {@link PageNotFoundException}.
    */
   public PageNotFoundException() {
   }
 
   /**
-   * Constructor to create an instance of the PageNotFoundException with a given message to describe the page
-   * not found error.
-   * <p/>
-   * @param message a String value describing the nature of the page not found error.
+   * Constructs a new instance of {@link PageNotFoundException} initialized with a given {@link String message}
+   * to describe the {@link Page} not found error.
+   *
+   * @param message {@link String} describing the {@link Page} not found error.
+   * @see java.lang.String
    */
-  public PageNotFoundException(final String message) {
+  public PageNotFoundException(String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the PageNotFoundException with the given Throwable to indicate the cause
-   * of the page not found error.
-   * <p/>
-   * @param cause the Throwable indicating the cause of the page not found error.
+   * Constructs a new instance of {@link PageNotFoundException} initialized with the given {@link Throwable}
+   * to indicate the cause of the {@link Page} not found error.
+   *
+   * @param cause {@link Throwable} indicating the cause of the {@link Page} not found error.
    * @see java.lang.Throwable
    */
-  public PageNotFoundException(final Throwable cause) {
+  public PageNotFoundException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the PageNotFoundException with a message to describe the page not found
-   * error and a Throwable to indicate the probable cause of the page not found error.
-   * <p/>
-   * @param message a String value describing the nature of the page not found error.
-   * @param cause the Throwable indicated as the cause of the page not found error.
+   * Constructs a new instance of {@link PageNotFoundException} initialized with a given {@link String message}
+   * to describe the {@link Page} not found error and a {@link Throwable} to indicate the cause
+   * of the {@link Page} not found error.
+   *
+   * @param message {@link String} describing the {@link Page} not found error.
+   * @param cause {@link Throwable} indicating the cause of the {@link Page} not found error.
+   * @see java.lang.String
    * @see java.lang.Throwable
    */
-  public PageNotFoundException(final String message, final Throwable cause) {
+  public PageNotFoundException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }

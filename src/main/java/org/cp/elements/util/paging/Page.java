@@ -22,11 +22,11 @@
 package org.cp.elements.util.paging;
 
 /**
- * The Page interface defines an individual page in a Pageable object and is a collection of elements or items contained
- * on the page.
+ * The {@link Page} interface defines an Abstract Data Type (ADT) modeling an individual page
+ * in a {@link Pageable} object and is a collection of elements or items contained on the page.
  *
  * @author John J. Blum
- * @param <T> the Class type of the elements or items on this Page.
+ * @param <T> {@link Class type} of the elements or items contained in this {@link Page}.
  * @see java.lang.Iterable
  * @see org.cp.elements.util.paging.Pageable
  * @since 1.0.0
@@ -35,16 +35,16 @@ package org.cp.elements.util.paging;
 public interface Page<T> extends Iterable<T> {
 
   /**
-   * Gets the page number in the sequence (collection) of pages.
+   * Gets the page number of this {@link Page} in the sequence (collection) of pages.
    *
-   * @return an integer value indicating the page number of this Page.
+   * @return an integer value indicating the page number of this {@link Page}.
    */
   int getNumber();
 
   /**
-   * Indicates the number of elements or items on this page.
+   * Indicates the number of elements or items contained in this {@link Page}.
    *
-   * @return an integer value indicating the number of elements or items on this page.
+   * @return an integer value indicating the number of elements or items contained in this {@link Page}.
    */
   int size();
 

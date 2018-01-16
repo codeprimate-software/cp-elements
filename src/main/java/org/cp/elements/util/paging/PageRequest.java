@@ -24,7 +24,9 @@ package org.cp.elements.util.paging;
 import org.cp.elements.lang.Orderable;
 
 /**
- * The PageRequest class...
+ * The {@link PageRequest} class models a request in a pageable (paging) operation
+ * that indicates the starting {@link Page} as well as the number of elements or items
+ * per {@link Page}.
  *
  * @author John J. Blum
  * @see java.lang.Comparable
@@ -35,16 +37,16 @@ import org.cp.elements.lang.Orderable;
 public interface PageRequest<T extends Comparable<T>> extends Orderable<T> {
 
   /**
-   * Gets the requested size for the pages returned in the pageable.
+   * Gets the {@link Integer#TYPE requested  size} for the {@link Page pages} returned in the {@link Pageable}.
    *
-   * @return an integer value indicated the requested page size.
+   * @return an integer value indicated the desired number of elements or items per {@link Page}.
    */
   int getPageSize();
 
   /**
-   * Gets the requested starting page within the pageable.
+   * Gets the requested starting {@link Page} within the {@link Pageable}.
    *
-   * @return an integer value indicating the page number to start at in the pageable.
+   * @return an integer value indicating the {@link Page} number to start at in the {@link Pageable}.
    */
   int getStartingPageNumber();
 

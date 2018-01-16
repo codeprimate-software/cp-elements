@@ -22,11 +22,12 @@
 package org.cp.elements.util.paging;
 
 /**
- * The Pageable interface defines a contract for implementing objects that support paging over the contents of the
- * object, such as a Collection.
+ * The {@link Pageable} interface defines a contract for implementing objects that support paging
+ * over the contents of the object, such as a {@link Iterable}.
  *
  * @author John J. Blum
- * @param <T> the Class type of the elements or items on the Page at number.
+ * @param <T> {@link Class type} of the elements or items contained in the {@link Page pages}
+ * of this {@link Pageable} object.
  * @see java.lang.Iterable
  * @see org.cp.elements.util.paging.Page
  * @since 1.0.0
@@ -35,18 +36,18 @@ package org.cp.elements.util.paging;
 public interface Pageable<T> extends Iterable<Page<T>> {
 
   /**
-   * Get the total number of pages in this Pageable object.
+   * Get the total number of {@link Page pages} in this {@link Pageable} object.
    *
-   * @return an integer value indicating the total number of pages in this Pageable object.
+   * @return an integer value indicating the total number of {@link Page pages} in this {@link Pageable} object.
    */
   int count();
 
   /**
-   * Gets the Page based on it's number, starting with page one.
+   * Gets the {@link Page} for the given page {@link Integer#TYPE number}, starting with page one.
    *
-   * @param number an integer value indicating the page number of the Page to return.
-   * @return the Page with number.
-   * @throws PageNotFoundException if a page with number is not found!
+   * @param number integer value indicating the page number of the {@link Page} to return.
+   * @return the {@link Page} with {@link Integer#TYPE number}.
+   * @throws PageNotFoundException if a {@link Page} with {@link Integer#TYPE number} is not found.
    * @see org.cp.elements.util.paging.Page
    */
   Page<T> getPage(int number);
