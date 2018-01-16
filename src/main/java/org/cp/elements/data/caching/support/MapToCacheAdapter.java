@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.cp.elements.data.caching.AbstractCache;
 import org.cp.elements.data.caching.Cache;
@@ -206,18 +207,19 @@ public class MapToCacheAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
    *
    * @param key {@link KEY} used to map the {@link VALUE value} if not already present; must not be {@literal null}.
    * @param value {@link VALUE} to put into this {@link Cache} mapped to the given {@link KEY key}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if {@link KEY key} is {@literal null}.
    * @see #contains(Comparable)
    * @see #put(Comparable, Object)
    * @see #putIfPresent(Comparable, Object)
    */
   @Override
-  public void putIfAbsent(KEY key, VALUE value) {
+  public VALUE putIfAbsent(KEY key, VALUE value) {
 
     Assert.notNull(key, "Key is required");
     Assert.notNull(value, "Value is required");
 
-    getMap().putIfAbsent(key, value);
+    return getMap().putIfAbsent(key, value);
   }
 
   /**
@@ -227,19 +229,23 @@ public class MapToCacheAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
    * @param key {@link KEY key} used to map the {@link VALUE new value} in this {@link Cache}.
    * @param newValue {@link VALUE new value} replacing the existing value mapped to the given {@link KEY key}
    * in this {@link Cache}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if {@link KEY key} is {@literal null}.
    * @see #contains(Comparable)
    * @see #put(Comparable, Object)
    * @see #putIfAbsent(Comparable, Object)
    */
   @Override
-  public void putIfPresent(KEY key, VALUE newValue) {
+  public VALUE putIfPresent(KEY key, VALUE newValue) {
 
     Assert.notNull(newValue, "Value is required");
 
-    if (key != null) {
-      getMap().computeIfPresent(key, (theKey, oldValue) -> newValue);
-    }
+    AtomicReference<VALUE> oldValueRef = new AtomicReference<>(null);
+
+    return newValue.equals(this.map.computeIfPresent(key, (theKey, oldValue) -> {
+      oldValueRef.set(oldValue);
+      return newValue;
+    })) ? oldValueRef.get() : null;
   }
 
   /**

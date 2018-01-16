@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import org.cp.elements.util.MapBuilder;
 import org.junit.Test;
@@ -283,9 +284,24 @@ public class MapToCacheAdapterTests {
   @Test
   public void putIfAbsentCallsMapPutIfAbsent() {
 
-    MapToCacheAdapter.of(this.map).putIfAbsent("key", "value");
+    when(this.map.putIfAbsent(any(), any())).thenCallRealMethod();
+
+    assertThat(MapToCacheAdapter.of(this.map).putIfAbsent("key", "value")).isNull();
 
     verify(this.map, times(1)).putIfAbsent(eq("key"), eq("value"));
+    verify(this.map, times(1)).put(eq("key"), eq("value"));
+  }
+
+  @Test
+  public void putIfAbsentCallsMapPutIfAbsentReturnsExistingValue() {
+
+    when(this.map.get(any())).thenReturn("existingValue");
+    when(this.map.putIfAbsent(any(), any())).thenCallRealMethod();
+
+    assertThat(MapToCacheAdapter.of(this.map).putIfAbsent("key", "value")).isEqualTo("existingValue");
+
+    verify(this.map, times(1)).putIfAbsent(eq("key"), eq("value"));
+    verify(this.map, never()).put(any(), any());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -327,17 +343,32 @@ public class MapToCacheAdapterTests {
   @Test
   public void putIfPresentCallsMapComputeIfPresent() {
 
-    MapToCacheAdapter.of(this.map).putIfPresent("key", "value");
+    when(this.map.computeIfPresent(any(), any(BiFunction.class))).thenCallRealMethod();
+
+    assertThat(MapToCacheAdapter.of(this.map).putIfPresent("key", "value")).isNull();
 
     verify(this.map, times(1)).computeIfPresent(eq("key"), any());
+    verify(this.map, never()).put(any(), any());
+  }
+
+  @Test
+  public void putIfPresentCallsMapComputeIfPresentReturnsExistingValue() {
+
+    when(this.map.get(any())).thenReturn("existingValue");
+    when(this.map.computeIfPresent(any(), any(BiFunction.class))).thenCallRealMethod();
+
+    assertThat(MapToCacheAdapter.of(this.map).putIfPresent("key", "value")).isEqualTo("existingValue");
+
+    verify(this.map, times(1)).computeIfPresent(eq("key"), any());
+    verify(this.map, times(1)).put(eq("key"), eq("value"));
   }
 
   @Test
   public void putIfPresentWithNullKeyIgnoresCall() {
 
-    MapToCacheAdapter.of(this.map).putIfPresent(null, "value");
+    assertThat(MapToCacheAdapter.of(this.map).putIfPresent(null, "value")).isNull();
 
-    verify(this.map, never()).computeIfPresent(any(), any());
+    verify(this.map, times(1)).computeIfPresent(any(), any());
   }
 
   @Test(expected = IllegalArgumentException.class)

@@ -299,9 +299,7 @@ public class ConcurrentMapCacheTests {
   public void putIfAbsentWhenAbsent() {
 
     assertThat(this.concurrentMapCache.contains("key")).isFalse();
-
-    this.concurrentMapCache.putIfAbsent("key", "value");
-
+    assertThat(this.concurrentMapCache.putIfAbsent("key", "value")).isNull();
     assertThat(this.concurrentMapCache.get("key")).isEqualTo("value");
   }
 
@@ -311,9 +309,7 @@ public class ConcurrentMapCacheTests {
     this.concurrentMapCache.put("key", "value");
 
     assertThat(this.concurrentMapCache.contains("key")).isTrue();
-
-    this.concurrentMapCache.putIfAbsent("key", "test");
-
+    assertThat(this.concurrentMapCache.putIfAbsent("key", "test")).isEqualTo("value");
     assertThat(this.concurrentMapCache.get("key")).isEqualTo("value");
   }
 
@@ -357,9 +353,7 @@ public class ConcurrentMapCacheTests {
   public void putIfPresentWhenAbsent() {
 
     assertThat(this.concurrentMapCache.contains("key")).isFalse();
-
-    this.concurrentMapCache.putIfPresent("key", "value");
-
+    assertThat(this.concurrentMapCache.putIfPresent("key", "value")).isNull();
     assertThat(this.concurrentMapCache.get("key")).isNull();
   }
 
@@ -369,17 +363,14 @@ public class ConcurrentMapCacheTests {
     this.concurrentMapCache.put("key", "value");
 
     assertThat(this.concurrentMapCache.contains("key")).isTrue();
-
-    this.concurrentMapCache.putIfPresent("key", "test");
-
+    assertThat(this.concurrentMapCache.putIfPresent("key", "test")).isEqualTo("value");
     assertThat(this.concurrentMapCache.get("key")).isEqualTo("test");
   }
 
   @Test
   public void putIfPresentWithNullKey() {
 
-    this.concurrentMapCache.putIfPresent(null, "value");
-
+    assertThat(this.concurrentMapCache.putIfPresent(null, "value")).isNull();
     assertThat(this.concurrentMapCache.isEmpty()).isTrue();
   }
 

@@ -19,10 +19,12 @@ package org.cp.elements.data.caching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -57,6 +59,7 @@ import lombok.NoArgsConstructor;
  * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache
  * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.util.MapBuilder
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -669,6 +672,7 @@ public class CacheTests {
     this.cache.putIfAbsent(1, "test");
 
     verify(this.cache, times(1)).contains(eq(1));
+    verify(this.cache, never()).get(any());
     verify(this.cache, times(1)).put(eq(1), eq("test"));
   }
 
@@ -676,11 +680,13 @@ public class CacheTests {
   public void putIfAbsentWithKeyValueUsingExistingKey() {
 
     when(this.cache.contains(any())).thenReturn(true);
+    when(this.cache.get(any())).thenReturn("existingValue");
     doCallRealMethod().when(this.cache).putIfAbsent(any(), any());
 
-    this.cache.putIfAbsent(1, "test");
+    assertThat(this.cache.putIfAbsent(1, "test")).isEqualTo("existingValue");
 
     verify(this.cache, times(1)).contains(eq(1));
+    verify(this.cache, times(1)).get(eq(1));
     verify(this.cache, never()).put(any(), any());
   }
 
@@ -701,6 +707,7 @@ public class CacheTests {
     }
     finally {
       verify(this.cache, never()).contains(any());
+      verify(this.cache, never()).get(any());
       verify(this.cache, never()).put(any(), any());
     }
   }
@@ -713,9 +720,10 @@ public class CacheTests {
 
     Person person = Person.newPerson().identifiedBy(1L);
 
-    this.cache.putIfAbsent(person);
+    assertThat(this.cache.putIfAbsent(person)).isNull();
 
     verify(this.cache, times(1)).contains(eq(1L));
+    verify(this.cache, never()).get(anyLong());
     verify(this.cache, times(1)).put(eq(1L), eq(person));
   }
 
@@ -736,6 +744,7 @@ public class CacheTests {
     }
     finally {
       verify(this.cache, never()).contains(any());
+      verify(this.cache, never()).get(any());
       verify(this.cache, never()).put(any(), any());
     }
   }
@@ -743,12 +752,16 @@ public class CacheTests {
   @Test
   public void putIfAbsentWithExistingEntity() {
 
+    Identifiable<Long> mockIdentifiable = mock(Identifiable.class);
+
     when(this.cache.contains(any())).thenReturn(true);
+    when(this.cache.get(eq(1L))).thenReturn(mockIdentifiable);
     doCallRealMethod().when(this.cache).putIfAbsent(any(Identifiable.class));
 
-    this.cache.putIfAbsent(Person.newPerson().identifiedBy(1L));
+    assertThat(this.cache.putIfAbsent(Person.newPerson().identifiedBy(1L))).isEqualTo(mockIdentifiable);
 
     verify(this.cache, times(1)).contains(eq(1L));
+    verify(this.cache, times(1)).get(eq(1L));
     verify(this.cache, never()).put(any(), any());
   }
 
@@ -767,6 +780,7 @@ public class CacheTests {
     }
     finally {
       verify(this.cache, never()).contains(any());
+      verify(this.cache, never()).get(any());
       verify(this.cache, never()).put(any(), any());
     }
   }
@@ -775,11 +789,13 @@ public class CacheTests {
   public void putIfPresentWithKeyValue() {
 
     when(this.cache.contains(any())).thenReturn(true);
+    when(this.cache.get(any())).thenReturn("existingValue");
     doCallRealMethod().when(this.cache).putIfPresent(any(), any());
 
-    this.cache.putIfPresent(1, "test");
+    assertThat(this.cache.putIfPresent(1, "test")).isEqualTo("existingValue");
 
     verify(this.cache, times(1)).contains(eq(1));
+    verify(this.cache, times(1)).get(any());
     verify(this.cache, times(1)).put(eq(1), eq("test"));
   }
 
@@ -789,9 +805,10 @@ public class CacheTests {
     when(this.cache.contains(any())).thenReturn(false);
     doCallRealMethod().when(this.cache).putIfPresent(any(), any());
 
-    this.cache.putIfPresent(1, "test");
+    assertThat(this.cache.putIfPresent(1, "test")).isNull();
 
     verify(this.cache, times(1)).contains(eq(1));
+    verify(this.cache, never()).get(any());
     verify(this.cache, never()).put(any(), any());
   }
 
@@ -812,6 +829,7 @@ public class CacheTests {
     }
     finally {
       verify(this.cache, never()).contains(any());
+      verify(this.cache, never()).get(any());
       verify(this.cache, never()).put(any(), any());
     }
   }
@@ -819,14 +837,18 @@ public class CacheTests {
   @Test
   public void putIfPresentWithEntity() {
 
+    Identifiable<Long> mockIdentifiable = mock(Identifiable.class);
+
     when(this.cache.contains(any())).thenReturn(true);
+    when(this.cache.get(eq(1L))).thenReturn(mockIdentifiable);
     doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
 
     Person person = Person.newPerson().identifiedBy(1L);
 
-    this.cache.putIfPresent(person);
+    assertThat(this.cache.putIfPresent(person)).isEqualTo(mockIdentifiable);
 
     verify(this.cache, times(1)).contains(eq(1L));
+    verify(this.cache, times(1)).get(eq(1L));
     verify(this.cache, times(1)).put(eq(1L), eq(person));
   }
 
@@ -835,9 +857,10 @@ public class CacheTests {
 
     doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
 
-    this.cache.putIfPresent(Person.newPerson().named("Jon", "Doe"));
+    assertThat(this.cache.putIfPresent(Person.newPerson().named("Jon", "Doe"))).isNull();
 
     verify(this.cache, times(1)).contains(isNull());
+    verify(this.cache, never()).get(any());
     verify(this.cache, never()).put(any(), any());
   }
 
@@ -847,7 +870,7 @@ public class CacheTests {
     when(this.cache.contains(any())).thenReturn(false);
     doCallRealMethod().when(this.cache).putIfPresent(any(Identifiable.class));
 
-    this.cache.putIfPresent(Person.newPerson().identifiedBy(1L));
+    assertThat(this.cache.putIfPresent(Person.newPerson().identifiedBy(1L))).isNull();
 
     verify(this.cache, times(1)).contains(eq(1L));
     verify(this.cache, never()).put(any(), any());
@@ -870,6 +893,7 @@ public class CacheTests {
     }
     finally {
       verify(this.cache, never()).contains(any());
+      verify(this.cache, never()).get(any());
       verify(this.cache, never()).put(any(), any());
     }
   }

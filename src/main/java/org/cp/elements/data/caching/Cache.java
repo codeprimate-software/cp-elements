@@ -44,11 +44,13 @@ import org.cp.elements.util.CollectionUtils;
  * @author John Blum
  * @param <KEY> {@link Class type} of the keys used by this {@link Cache}.
  * @param <VALUE> {@link Class type} of the values stored by this {@link Cache}.
- * @see org.cp.elements.data.caching.AbstractCache
- * @see org.cp.elements.lang.Nameable
  * @see java.lang.Comparable
  * @see java.lang.Iterable
  * @see java.util.Map
+ * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
+ * @see org.cp.elements.data.caching.AbstractCache
+ * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -342,17 +344,22 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    *
    * @param key {@link KEY} used to map the {@link VALUE value} if not already present; must not be {@literal null}.
    * @param value {@link VALUE} to put into this {@link Cache} mapped to the given {@link KEY key}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if {@link KEY key} is {@literal null}.
    * @see #contains(Comparable)
    * @see #put(Comparable, Object)
    * @see #putIfPresent(Comparable, Object)
    */
-  default void putIfAbsent(KEY key, VALUE value) {
+  default VALUE putIfAbsent(KEY key, VALUE value) {
 
     Assert.notNull(key, "Key is required");
 
     if (!contains(key)) {
       put(key, value);
+      return null;
+    }
+    else {
+      return get(key);
     }
   }
 
@@ -362,6 +369,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * is not already present in this {@link Cache}.
    *
    * @param entity {@link Identifiable} object to put into this {@link Cache} if not already present.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
    * @see org.cp.elements.lang.Identifiable
    * @see #contains(Comparable)
@@ -369,7 +377,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #putIfPresent(Identifiable)
    */
   @SuppressWarnings("unchecked")
-  default void putIfAbsent(Identifiable<KEY> entity) {
+  default VALUE putIfAbsent(Identifiable<KEY> entity) {
 
     Assert.notNull(entity, "Entity is required");
 
@@ -379,6 +387,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
 
     if (!contains(entityId)) {
       put(entityId, (VALUE) entity);
+      return null;
+    }
+    else {
+      return get(entityId);
     }
   }
 
@@ -389,18 +401,23 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @param key {@link KEY key} used to map the {@link VALUE new value} in this {@link Cache}.
    * @param newValue {@link VALUE new value} replacing the existing value mapped to the given {@link KEY key}
    * in this {@link Cache}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if {@link KEY key} is {@literal null}.
    * @see #contains(Comparable)
    * @see #put(Comparable, Object)
    * @see #putIfAbsent(Comparable, Object)
    */
-  default void putIfPresent(KEY key, VALUE newValue) {
+  default VALUE putIfPresent(KEY key, VALUE newValue) {
 
     Assert.notNull(key, "Key is required");
 
     if (contains(key)) {
+      VALUE existingValue = get(key);
       put(key, newValue);
+      return existingValue;
     }
+
+    return null;
   }
 
   /**
@@ -408,6 +425,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * is already present.
    *
    * @param newEntity {@link Identifiable} object replacing the existing object with the same {@link Identifiable#getId() ID}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
    * @see org.cp.elements.lang.Identifiable
    * @see #contains(Comparable)
@@ -415,15 +433,19 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #putIfAbsent(Identifiable)
    */
   @SuppressWarnings("unchecked")
-  default void putIfPresent(Identifiable<KEY> newEntity) {
+  default VALUE putIfPresent(Identifiable<KEY> newEntity) {
 
     Assert.notNull(newEntity, "Entity is required");
 
     KEY entityId = newEntity.getId();
 
     if (contains(entityId)) {
+      VALUE existingValue = get(entityId);
       put(entityId, (VALUE) newEntity);
+      return existingValue;
     }
+
+    return null;
   }
 
   /**

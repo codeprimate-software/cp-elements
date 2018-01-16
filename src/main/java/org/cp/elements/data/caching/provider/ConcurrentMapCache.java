@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.cp.elements.data.caching.AbstractCache;
 import org.cp.elements.data.caching.Cache;
@@ -36,6 +37,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @author John Blum
  * @see java.lang.Comparable
  * @see java.util.Map
+ * @see java.util.concurrent.ConcurrentMap
  * @see java.util.concurrent.ConcurrentMap
  * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache
@@ -173,18 +175,19 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
    *
    * @param key {@link KEY} used to map the {@link VALUE value} if not already present; must not be {@literal null}.
    * @param value {@link VALUE} to put into this {@link Cache} mapped to the given {@link KEY key}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if the {@link KEY key} or {@link VALUE value} is {@literal null}.
    * @see #contains(Comparable)
    * @see #put(Comparable, Object)
    * @see #putIfPresent(Comparable, Object)
    */
   @Override
-  public void putIfAbsent(KEY key, VALUE value) {
+  public VALUE putIfAbsent(KEY key, VALUE value) {
 
     Assert.notNull(key, "Key is required");
     Assert.notNull(value, "Value is required");
 
-    this.map.putIfAbsent(key, value);
+    return this.map.putIfAbsent(key, value);
   }
 
   /**
@@ -194,19 +197,28 @@ public class ConcurrentMapCache<KEY extends Comparable<KEY>, VALUE> extends Abst
    * @param key {@link KEY key} used to map the {@link VALUE new value} in this {@link Cache}.
    * @param newValue {@link VALUE new value} replacing the existing value mapped to the given {@link KEY key}
    * in this {@link Cache}.
+   * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws IllegalArgumentException if the {@link VALUE value} is {@literal null}.
    * @see #contains(Comparable)
    * @see #put(Comparable, Object)
    * @see #putIfAbsent(Comparable, Object)
    */
   @Override
-  public void putIfPresent(KEY key, VALUE newValue) {
+  public VALUE putIfPresent(KEY key, VALUE newValue) {
 
     Assert.notNull(newValue, "Value is required");
 
     if (key != null) {
-      this.map.computeIfPresent(key, (theKey, theValue) -> newValue);
+
+      AtomicReference<VALUE> oldValueRef = new AtomicReference<>(null);
+
+      return newValue.equals(this.map.computeIfPresent(key, (theKey, oldValue) -> {
+        oldValueRef.set(oldValue);
+        return newValue;
+      })) ? oldValueRef.get() : null;
     }
+
+    return null;
   }
 
   /**
