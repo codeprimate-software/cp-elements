@@ -35,6 +35,7 @@ import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
+import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.search.SearchException;
 
 /**
@@ -770,6 +771,34 @@ public abstract class ElementsExceptionsFactory extends RuntimeException {
    */
   public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
     return new ConversionException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs and initializes a new {@link PageNotFoundException} with the given {@link String message}
+   * formatted with the given {@link Object[] arguments}.
+   *
+   * @param message {@link String} describing the {@link PageNotFoundException}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @return a new {@link PageNotFoundException} with the given {@link String message}.
+   * @see #newPageNotFoundException(Throwable, String, Object...)
+   * @see org.cp.elements.util.paging.PageNotFoundException
+   */
+  public static PageNotFoundException newPageNotFoundException(String message, Object... args) {
+    return newPageNotFoundException(null, message, args);
+  }
+
+  /**
+   * Constructs and initializes a new {@link PageNotFoundException} with the given {@link Throwable cause}
+   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   *
+   * @param cause {@link Throwable} identified as the reason this {@link PageNotFoundException} was thrown.
+   * @param message {@link String} describing the {@link PageNotFoundException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @return a new {@link PageNotFoundException} with the given {@link Throwable cause} and {@link String message}.
+   * @see org.cp.elements.util.paging.PageNotFoundException
+   */
+  public static PageNotFoundException newPageNotFoundException(Throwable cause, String message, Object... args) {
+    return new PageNotFoundException(format(message, args), cause);
   }
 
   /**

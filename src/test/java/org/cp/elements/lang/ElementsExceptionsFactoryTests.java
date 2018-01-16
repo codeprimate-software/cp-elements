@@ -35,6 +35,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newInitializationEx
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoAvailablePortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchFileException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newObjectNotFoundException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newPageNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newParseException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newReadOnlyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newResourceNotFoundException;
@@ -64,6 +65,7 @@ import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
+import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.search.SearchException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -363,6 +365,17 @@ public class ElementsExceptionsFactoryTests {
   public void newConversionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newConversionException(mockCause, "%s is a {1}", "This", "test"),
       ConversionException.class, "This is a test", mockCause);
+  }
+
+  @Test
+  public void newPageNotFoundExceptionWithMessage() {
+    assertThrowable(newPageNotFoundException("test"), PageNotFoundException.class, "test");
+  }
+
+  @Test
+  public void newPageNotFoundExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newPageNotFoundException(mockCause, "%s is a {1}", "This", "test"),
+      PageNotFoundException.class, "This is a test", mockCause);
   }
 
   @Test
