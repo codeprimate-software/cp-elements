@@ -37,7 +37,14 @@ import org.cp.elements.lang.Orderable;
 public interface PageRequest<T extends Comparable<T>> extends Orderable<T> {
 
   /**
-   * Gets the {@link Integer#TYPE requested  size} for the {@link Page pages} returned in the {@link Pageable}.
+   * Returns an {@link Integer#TYPE integer value} indicating the number of {@link Page pages} to prefetch.
+   *
+   * @return an {@link Integer#TYPE integer value} indicating the number of {@link Page pages} to prefetch.
+   */
+  int getFetchSize();
+
+  /**
+   * Gets the {@link Integer#TYPE requested size} for the {@link Page pages} returned in the {@link Pageable}.
    *
    * @return an integer value indicated the desired number of elements or items per {@link Page}.
    */
