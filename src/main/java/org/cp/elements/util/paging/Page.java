@@ -21,6 +21,10 @@
 
 package org.cp.elements.util.paging;
 
+import static java.util.stream.StreamSupport.stream;
+
+import java.util.Comparator;
+
 /**
  * The {@link Page} interface defines an Abstract Data Type (ADT) modeling an individual page
  * in a {@link Pageable} object and is a collection of elements or items contained on the page.
@@ -42,10 +46,52 @@ public interface Page<T> extends Iterable<T> {
   int getNumber();
 
   /**
+   * Determines whether there is a next {@link Page}.
+   *
+   * @return a boolean value indicating whether there is a next {@link Page}.
+   */
+  boolean hasNext();
+
+  /**
+   * Determines whether there is a previous {@link Page}.
+   *
+   * @return a boolean value indicating whether there is a previous {@link Page}.
+   */
+  boolean hasPrevious();
+
+  /**
+   * Returns the next {@link Page} in the sequence of {@link Page Pages}.
+   *
+   * @return the next {@link Page} in the sequence of {@link Page Pages}.
+   * @throws PageNotFoundException if there is no next {@link Page}.
+   * @see org.cp.elements.util.paging.Page
+   */
+  Page<T> next();
+
+  /**
+   * Returns the previous {@link Page} in the sequence of {@link Page Pages}.
+   *
+   * @return the previous {@link Page} in the sequence of {@link Page Pages}.
+   * @throws PageNotFoundException if there is no previous {@link Page}.
+   * @see org.cp.elements.util.paging.Page
+   */
+  Page<T> previous();
+
+  /**
    * Indicates the number of elements or items contained in this {@link Page}.
    *
    * @return an integer value indicating the number of elements or items contained in this {@link Page}.
    */
-  int size();
+  default int size() {
+    return (int) stream(this.spliterator(), false).count();
+  }
+
+  /**
+   * Sorts (orders) only the elements contained in this {@link Page}.
+   *
+   * @param orderBy {@link Comparator} used to sort (order) only the elements contained in this {@link Page}.
+   * @see java.util.Comparator
+   */
+  void sort(Comparator<T> orderBy);
 
 }
