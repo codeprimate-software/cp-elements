@@ -19,7 +19,9 @@ package org.cp.elements.util.paging;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterator;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,7 +76,75 @@ public class PageableTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void getPageWhePageExists() {
+  public void firstPageWithMultiplePagesReturnsFirstPage() {
+
+    Page<Object> mockPageOne = mock(Page.class);
+    Page<Object> mockPageTwo = mock(Page.class);
+    Page<Object> mockPageThree = mock(Page.class);
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.iterator()).thenAnswer(invocation -> asIterator(mockPageOne, mockPageTwo, mockPageThree));
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+    when(mockPageable.firstPage()).thenCallRealMethod();
+
+    assertThat(mockPageable.firstPage()).isEqualTo(mockPageOne);
+    assertThat(mockPageable.firstPage()).isEqualTo(mockPageOne);
+
+    verify(mockPageable, times(2)).getPage(eq(1));
+    verify(mockPageable, times(2)).iterator();
+  }
+
+  @Test(expected = PageNotFoundException.class)
+  @SuppressWarnings("unchecked")
+  public void firstPageWithNoPagesThrowsException() {
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.iterator()).thenReturn(Collections.emptyIterator());
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+    when(mockPageable.firstPage()).thenCallRealMethod();
+
+    try {
+      mockPageable.firstPage();
+    }
+    catch (PageNotFoundException expected) {
+
+      assertThat(expected).hasMessage("No more pages");
+      assertThat(expected).hasCauseInstanceOf(PageNotFoundException.class);
+      assertThat(expected.getCause()).hasMessage("Page with number [1] not found");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockPageable, times(1)).getPage(eq(1));
+      verify(mockPageable, times(1)).iterator();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void firstPageWithOnePageReturnsFirstPage() {
+
+    Page<Object> mockPage = mock(Page.class);
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.iterator()).thenAnswer(invocation -> asIterator(mockPage));
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+    when(mockPageable.firstPage()).thenCallRealMethod();
+
+    assertThat(mockPageable.firstPage()).isEqualTo(mockPage);
+    assertThat(mockPageable.firstPage()).isEqualTo(mockPage);
+
+    verify(mockPageable, times(2)).getPage(eq(1));
+    verify(mockPageable, times(2)).iterator();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getPageWhenPageExists() {
 
     Page<Object> mockPageOne = mock(Page.class);
     Page<Object> mockPageTwo = mock(Page.class);
@@ -94,21 +164,19 @@ public class PageableTests {
 
   @Test(expected = PageNotFoundException.class)
   @SuppressWarnings("unchecked")
-  public void getPageWhePageDoesNotExistThrowsException() {
-
-    Page<Object> mockPage = mock(Page.class);
+  public void getPageWhenPageDoesNotExistThrowsException() {
 
     Pageable<Object> mockPageable = mock(Pageable.class);
 
-    when(mockPageable.iterator()).thenReturn(asIterator(mockPage));
+    when(mockPageable.iterator()).thenReturn(Collections.emptyIterator());
     when(mockPageable.getPage(anyInt())).thenCallRealMethod();
 
     try {
-      mockPageable.getPage(2);
+      mockPageable.getPage(1);
     }
     catch (PageNotFoundException expected) {
 
-      assertThat(expected).hasMessage("Page with number [2] not found");
+      assertThat(expected).hasMessage("Page with number [1] not found");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -116,5 +184,105 @@ public class PageableTests {
     finally {
       verify(mockPageable, times(1)).iterator();
     }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  @SuppressWarnings("unchecked")
+  public void getPageWithInvalidPageNumberThrowsException() {
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+
+    try {
+      mockPageable.getPage(-1);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Page number [-1] must be greater than 0");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockPageable, never()).iterator();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void lastPageWithMultiplePagesReturnsLastPage() {
+
+    Page<Object> mockPageOne = mock(Page.class);
+    Page<Object> mockPageTwo = mock(Page.class);
+    Page<Object> mockPageThree = mock(Page.class);
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.iterator()).thenAnswer(invocation -> asIterator(mockPageOne, mockPageTwo, mockPageThree));
+    when(mockPageable.count()).thenCallRealMethod();
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+    when(mockPageable.lastPage()).thenCallRealMethod();
+    when(mockPageable.spliterator()).thenCallRealMethod();
+
+    assertThat(mockPageable.lastPage()).isEqualTo(mockPageThree);
+    assertThat(mockPageable.lastPage()).isEqualTo(mockPageThree);
+
+    verify(mockPageable, times(2)).count();
+    verify(mockPageable, times(2)).getPage(eq(3));
+    verify(mockPageable, times(4)).iterator();
+  }
+
+  @Test(expected = PageNotFoundException.class)
+  @SuppressWarnings("unchecked")
+  public void lastPageWithNoPagesThrowsException() {
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.iterator()).thenReturn(Collections.emptyIterator());
+    when(mockPageable.count()).thenCallRealMethod();
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+    when(mockPageable.lastPage()).thenCallRealMethod();
+    when(mockPageable.spliterator()).thenCallRealMethod();
+
+    try {
+      mockPageable.lastPage();
+    }
+    catch (PageNotFoundException expected) {
+
+      assertThat(expected).hasMessage("No more pages");
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasMessage("Page number [0] must be greater than 0");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockPageable, times(1)).count();
+      verify(mockPageable, times(1)).getPage(eq(0));
+      verify(mockPageable, times(1)).iterator();
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void lastPageWithOnePagesReturnsLastPage() {
+
+    Page<Object> mockPage = mock(Page.class);
+
+    Pageable<Object> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.iterator()).thenAnswer(invocation -> asIterator(mockPage));
+    when(mockPageable.count()).thenCallRealMethod();
+    when(mockPageable.getPage(anyInt())).thenCallRealMethod();
+    when(mockPageable.lastPage()).thenCallRealMethod();
+    when(mockPageable.spliterator()).thenCallRealMethod();
+
+    assertThat(mockPageable.lastPage()).isEqualTo(mockPage);
+    assertThat(mockPageable.lastPage()).isEqualTo(mockPage);
+
+    verify(mockPageable, times(2)).count();
+    verify(mockPageable, times(2)).getPage(eq(1));
+    verify(mockPageable, times(4)).iterator();
   }
 }

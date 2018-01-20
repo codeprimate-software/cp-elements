@@ -26,6 +26,8 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newPageNotFoundExce
 
 import java.util.Comparator;
 
+import org.cp.elements.lang.Assert;
+
 /**
  * The {@link Pageable} interface defines a contract for implementing objects that support paging
  * over the contents of the object, such as a {@link Iterable}.
@@ -50,14 +52,34 @@ public interface Pageable<T> extends Iterable<Page<T>> {
   }
 
   /**
+   * Jump to the first {@link Page} in this {@link Pageable} collection of {@link Page Pages}.
+   *
+   * @return the first {@link Page}.
+   * @throws PageNotFoundException if no {@link Page Pages} are available.
+   * @see #getPage(int)
+   */
+  default Page<T> firstPage() {
+
+    try {
+      return getPage(1);
+    }
+    catch (Exception cause) {
+      throw newPageNotFoundException(cause, "No more pages");
+    }
+  }
+
+  /**
    * Gets the {@link Page} for the given page {@link Integer#TYPE number}, starting with page one.
    *
    * @param number integer value indicating the page number of the {@link Page} to return.
    * @return the {@link Page} with {@link Integer#TYPE number}.
+   * @throws IllegalArgumentException if the {@link Integer#TYPE page number} is less than equal to 0.
    * @throws PageNotFoundException if a {@link Page} with {@link Integer#TYPE number} is not found.
    * @see org.cp.elements.util.paging.Page
    */
   default Page<T> getPage(int number) {
+
+    Assert.isTrue(number > 0, "Page number [%d] must be greater than 0", number);
 
     int count = 0;
 
@@ -68,6 +90,23 @@ public interface Pageable<T> extends Iterable<Page<T>> {
     }
 
     throw newPageNotFoundException("Page with number [%d] not found", number);
+  }
+
+  /**
+   * Jump to the last {@link Page} in this {@link Pageable} collection of {@link Page Pages}.
+   *
+   * @return the last {@link Page}.
+   * @throws PageNotFoundException if no {@link Page Pages} are available.
+   * @see #getPage(int)
+   */
+  default Page<T> lastPage() {
+
+    try {
+      return getPage(count());
+    }
+    catch (Exception cause) {
+      throw newPageNotFoundException(cause, "No more pages");
+    }
   }
 
   /**
