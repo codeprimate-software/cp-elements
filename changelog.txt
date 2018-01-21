@@ -5,26 +5,39 @@ https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 1.0.0.M4 - ???
 ---------------------
-Introduces new types and tools.
+Introduces new class types, data structures and tools.
 
-* Introduced the o.c.e.ElementsVersion class to print meta-data about the cp-elements project to the command-line.
-* Introduced the o.c.e.lang.RunnableUtils abstract utility class for working with java.lang.Runnable objects.
-* Introduced the o.c.e.lang.Verifyable interface to validate the state of an Object post construction/initialization.
-* Added isDecimal(:Number), isWhole(:Number), isByte(:Number), isShort(:Number), isInteger(:Number), isLong(:Number),
-isFloat(:Number) and isDouble:Number) to o.c.e.lang.NumberUtils.
-* Moved the o.c.e.lang.NullSafe annotation to the o.c.e.lang.annotation package.
+* Created the o.c.e.lang.Verifyable interface to validate the soft constraints, invariants and business rules
+of an application component are upheld.
 * Renamed o.c.e.lang.DslExtension to o.c.e.lang.FluentApiExtension.
 * Renamed o.c.e.lang.annotation.DSL to o.c.e.lang.annotation.FluentApi.
-* Introduced the o.c.e.data.struct.BloomFilter probabilistic data structure to test for membership of an element in a set.
-* Introduced the o.c.e.data.struct.ScalableBloomFilter implementation to the o.c.e.data.struct package.
-* Added District of Columbia (D.C.) to o.c.e.enums.State.
-* Added the doSafeIo(:IoExceptionThrowingOperation) method along with IoExceptionThrowingOperation functional interface
-to the o.c.e.io.IOUtils abstract utility class.
-* Added new tool to list the contents of a directory, o.c.e.tools.io.ListFiles.
-* Added the o.c.e.util.zip.ZipUtils abstract utility class to zip and unzip ZIP files.
-* Moved the o.c.e.util.convert package to the o.c.e.data package.
-* Upgraded to cp-core 1.2.0.RELEASE.
-* Wrote documentation for the cp-elements project using Asciidoc.
+* Upgraded to cp-core-1.2.0.RELEASE.
+* Created the new o.c.e.tools.io.ListFiles to recursively list the contents of a file system directory.
+* Created the o.c.e.data.struct.BloomFilter probabilistic data structure.
+* Moved o.c.e.lang.NullSafe to the o.c.e.lang.annotation package.
+* Moved the o.c.e.util.convert API to the o.c.e.data.conversion package.
+* Created the o.c.e.ElementsVersion class to print version meta-data about the cp-elements project to the command-line.
+* Started cp-elements project documentation and reference guide, written in Asciidoc.
+* Refactor the o.c.e.lang.Executable interface to extend java.lang.Runnable.
+* Implement the o.c.e.data.struct.StringBasedKeyValue data structure.
+* Created the o.c.e.lang.RunnableUtils abstract utility class for working with java.lang.Runnable objects.
+* Created the o.c.e.test.annotation.UnitTest Annotation to classify and mark Unit Tests.
+* Created the o.c.e.util.zip.ZipUtils abstract utility class for working with JAR and ZIP files.
+* Created the o.c.e.util.MapBuilder class for building java.util.Maps.
+* Created the o.c.e.service.support.AbstractCacheableService class for application service components
+that support caching.
+* Created the o.c.e.data.caching.Cache API and data structure.
+* Renamed o.c.e.jdbc.DataSourceAdapter to o.c.e.jdbc.AbstractDataSource.
+* Performed code review, refactoring, bug fixes, enhancements and added new features to the Conversion API
+based in o.c.e.data.conversion.
+* Created and defined a new o.c.e.lang.Registry interface for implementations to implement an object
+or service registry.
+* Added java.util.ServiceLoader configuration in META-INF/services for a Caching provider / Cache implementation.
+* Added java.util.ServiceLoader configuration in META-INF/services for a ConversionService provider.
+* Added java.util.ServiceLoader configuration in META-INF/services for a ObjectFactory provider.
+* Added java.util.ServiceLoader configuration in META-INF/services for a ProxyFactory provider.
+* Created the o.c.e.security.model.User interface to model an application or system user.
+* Created the Paging API in the o.c.e.util.paging package.
 
 
 1.0.0.M3 - 2017-05-05
