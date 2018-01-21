@@ -17,6 +17,7 @@
 package org.cp.elements.data.conversion.converters;
 
 import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 
 /**

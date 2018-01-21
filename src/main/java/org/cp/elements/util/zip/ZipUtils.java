@@ -115,6 +115,7 @@ public abstract class ZipUtils {
    * unzip the {@link File ZIP file}.
    * @throws IllegalArgumentException if {@link File ZIP file} is {@literal null}
    * or the specified {@link File directory} is not a valid directory.
+   * @throws IOException if an IO error occurs while reading the {@link File ZIP file}.
    * @throws SystemException if the {@link File ZIP file} could not be read or its contents unzipped.
    * @see java.util.zip.ZipFile
    * @see java.io.File

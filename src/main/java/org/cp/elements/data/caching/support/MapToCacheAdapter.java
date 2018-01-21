@@ -185,12 +185,12 @@ public class MapToCacheAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
   }
 
   /**
-   * Puts the given {@link VALUE value} mapped to the given {@link KEY key) into this {@link Cache}.
+   * Puts the given {@link VALUE value} mapped to the given {@link KEY key} into this {@link Cache}.
    *
    * @param key {@link KEY} used to map the {@link VALUE value}; must not be {@literal null}.
    * @param value {@link VALUE} put into this {@link Cache} mapped to the given {@link KEY key}.
    * @throws IllegalArgumentException if {@link KEY key} is {@literal null}.
-   * @see #get(Object)
+   * @see #get(Comparable)
    */
   @Override
   public void put(KEY key, VALUE value) {

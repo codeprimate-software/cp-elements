@@ -21,6 +21,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionExcept
 import java.beans.PropertyEditor;
 
 import org.cp.elements.data.conversion.AbstractConverter;
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.lang.Assert;
 

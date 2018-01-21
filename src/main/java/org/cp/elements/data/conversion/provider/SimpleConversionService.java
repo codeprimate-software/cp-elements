@@ -277,6 +277,7 @@ public class SimpleConversionService extends AbstractConversionService {
    *
    * @param <T> {@link Class type} of the {@link Object default value}.
    * @param type {@link Class type} to remove the {@link Object default value} for.
+   * @return the {@link Object default value} currently mapped to the given {@link Class type}.
    * @see #setDefaultValue(Class, Supplier)
    * @see #setDefaultValue(Class, Object)
    * @see java.lang.Class

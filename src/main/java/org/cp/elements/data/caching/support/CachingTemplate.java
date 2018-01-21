@@ -220,6 +220,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @param lock {@link ReadWriteLock} used to coordinate the {@link Cache} write (put) operation
    * with possibly other concurrent {@link Cache} operations.
    * @param key {@link KEY key} used to map the {@link VALUE value} in a new entry stored in the {@link Cache}.
+   * @param value {#link VALUE value} to write to the new entry stored in the {@link Cache}.
    * @return the given {@link VALUE}.
    * @see java.util.concurrent.locks.ReadWriteLock#writeLock()
    * @see #getCache()

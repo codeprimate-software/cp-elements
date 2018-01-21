@@ -222,7 +222,7 @@ public abstract class NumberUtils {
    * {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE} inclusive.
    *
    * @param value {@link Number} to evaluate.
-   * @return a boolean value indicating whether the given {@link Number} is a {@link Integer`}.
+   * @return a boolean value indicating whether the given {@link Number} is a {@link Integer}.
    * @see #isWhole(Number)
    * @see java.lang.Number
    * @see java.lang.Integer

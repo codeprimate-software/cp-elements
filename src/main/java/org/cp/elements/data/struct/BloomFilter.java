@@ -34,7 +34,7 @@ public interface BloomFilter<T> extends Filter<T> {
    * Adds the given element to the set of elements tracked by this {@link Filter}.
    *
    * @param element the element to add to the set of elements managed by this {@link Filter}.
-   * @see #accept(T)
+   * @see #accept(Object)
    */
   void add(T element);
 

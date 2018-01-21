@@ -544,7 +544,7 @@ public abstract class CollectionUtils {
    * @param list {@link List} of elements to shuffle.
    * @return the {@link List} of elements shuffled.
    * @see java.util.Collections#swap(List, int, int)
-   * @see #isNotEmpty(Collection)
+   * @see #isNotEmpty(Iterable)
    * @see java.util.List
    */
   @NullSafe
