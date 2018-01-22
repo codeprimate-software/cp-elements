@@ -24,12 +24,12 @@ common, reoccurring problems during software development.
 
 When the likes of *Apache Commons* or *Google Guava* exist?
 
-  *Elements* is a highly refined Java library of classes and components based on years of research and development 
-along with  extensive experience in deployed enterprise applications. *Elements* maintains a high standard on quality 
-enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme enterprise 
+  *Elements* is a highly refined Java library of classes and components based on years of research and development
+along with  extensive experience in deployed enterprise applications. *Elements* maintains a high standard on quality
+enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme enterprise
 application environments.
 
-  *Elements* is a foundational Java library, and does not introduce any additional dependencies in order to function 
+  *Elements* is a foundational Java library, and does not introduce any additional dependencies in order to function
 or perform  properly out-of-the-box.  Good [Object-Oriented Design](https://en.wikipedia.org/wiki/Object-oriented_design)
  based on [SOLID design principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) coupled with
  effective use of [Software Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) makes *Elements*
@@ -50,13 +50,13 @@ or perform  properly out-of-the-box.  Good [Object-Oriented Design](https://en
  <dependency> 
   <groupId>org.codeprimate</groupId> 
   <artifactId>cp-elements</artifactId> 
-  <version>1.0.0.M3</version> 
+  <version>1.0.0.M4</version> 
 </dependency>
 ````
 
 #### Issues
 
-  Please use [GitHub issues](https://github.com/codeprimate-software/cp-elements/issues) to report any bugs,  improvements 
+  Please use [GitHub issues](https://github.com/codeprimate-software/cp-elements/issues) to report any bugs,  improvements
 or feature requests.   
 
 #### Contributions
