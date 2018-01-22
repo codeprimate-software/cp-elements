@@ -43,6 +43,16 @@ import org.cp.elements.lang.Assert;
 public interface Pageable<T> extends Iterable<Page<T>> {
 
   /**
+   * Determines whether this {@link Pageable} object contains any {@link Page Pages}.
+   *
+   * @return a boolean value indicating whether this {@link Pageable} object contains any {@link Page Pages}.
+   * @see #count()
+   */
+  default boolean isEmpty() {
+    return count() < 1;
+  }
+
+  /**
    * Get the total number of {@link Page pages} in this {@link Pageable} object.
    *
    * @return an int value indicating the total number of {@link Page pages} in this {@link Pageable} object.

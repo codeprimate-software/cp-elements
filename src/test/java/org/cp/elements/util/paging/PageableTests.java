@@ -42,6 +42,58 @@ import org.junit.Test;
 public class PageableTests {
 
   @Test
+  public void isEmptyWithEmptyPageableObjectReturnsTrue() {
+
+    Pageable<?> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.count()).thenReturn(0);
+    when(mockPageable.isEmpty()).thenCallRealMethod();
+
+    assertThat(mockPageable.isEmpty()).isTrue();
+
+    verify(mockPageable, times(1)).count();
+  }
+
+  @Test
+  public void isEmptyWithNonEmptyPageableObjectReturnsFalse() {
+
+    Pageable<?> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.count()).thenReturn(2);
+    when(mockPageable.isEmpty()).thenCallRealMethod();
+
+    assertThat(mockPageable.isEmpty()).isFalse();
+
+    verify(mockPageable, times(1)).count();
+  }
+
+  @Test
+  public void isEmptyWithPageableObjectHavingNegativeCountReturnsTrue() {
+
+    Pageable<?> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.count()).thenReturn(-1);
+    when(mockPageable.isEmpty()).thenCallRealMethod();
+
+    assertThat(mockPageable.isEmpty()).isTrue();
+
+    verify(mockPageable, times(1)).count();
+  }
+
+  @Test
+  public void isEmptyWithSingleElementPageableObjectReturnsFalse() {
+
+    Pageable<?> mockPageable = mock(Pageable.class);
+
+    when(mockPageable.count()).thenReturn(1);
+    when(mockPageable.isEmpty()).thenCallRealMethod();
+
+    assertThat(mockPageable.isEmpty()).isFalse();
+
+    verify(mockPageable, times(1)).count();
+  }
+
+  @Test
   public void countWithNoPagesReturnsZero() {
 
     Pageable<?> mockPageable = mock(Pageable.class);
