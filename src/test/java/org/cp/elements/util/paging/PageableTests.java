@@ -162,7 +162,7 @@ public class PageableTests {
     }
     catch (PageNotFoundException expected) {
 
-      assertThat(expected).hasMessage("No more pages");
+      assertThat(expected).hasMessage("No first page");
       assertThat(expected).hasCauseInstanceOf(PageNotFoundException.class);
       assertThat(expected.getCause()).hasMessage("Page with number [1] not found");
       assertThat(expected.getCause()).hasNoCause();
@@ -302,7 +302,7 @@ public class PageableTests {
     }
     catch (PageNotFoundException expected) {
 
-      assertThat(expected).hasMessage("No more pages");
+      assertThat(expected).hasMessage("No last page");
       assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
       assertThat(expected.getCause()).hasMessage("Page number [0] must be greater than 0");
       assertThat(expected.getCause()).hasNoCause();

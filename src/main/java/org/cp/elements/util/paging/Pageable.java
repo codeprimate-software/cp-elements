@@ -74,7 +74,7 @@ public interface Pageable<T> extends Iterable<Page<T>> {
       return getPage(1);
     }
     catch (Exception cause) {
-      throw newPageNotFoundException(cause, "No more pages");
+      throw newPageNotFoundException(cause, "No first page");
     }
   }
 
@@ -115,7 +115,7 @@ public interface Pageable<T> extends Iterable<Page<T>> {
       return getPage(count());
     }
     catch (Exception cause) {
-      throw newPageNotFoundException(cause, "No more pages");
+      throw newPageNotFoundException(cause, "No last page");
     }
   }
 

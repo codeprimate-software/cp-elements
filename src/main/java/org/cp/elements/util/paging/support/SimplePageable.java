@@ -16,11 +16,12 @@
 
 package org.cp.elements.util.paging.support;
 
-import static java.util.Arrays.asList;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPageNotFoundException;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeList;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -32,15 +33,30 @@ import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.paging.Pageable;
 
 /**
- * The SimplePageable class...
+ * The {@link SimplePageable} class is an implementation {@link Pageable} that adapts, or wraps either an array
+ * or a {@link List} to provide paging capabilities.
  *
  * @author John Blum
+ * @see java.util.Iterator
+ * @see org.cp.elements.util.paging.Page
+ * @see org.cp.elements.util.paging.Pageable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class SimplePageable<T> implements Pageable<T> {
 
   protected static final int DEFAULT_PAGE_SIZE = 20;
+
+  /**
+   * Factory method used to construct a new empty {@link SimplePageable}.
+   *
+   * @param <T> {@link Class type} of elements contained in the returned {@link SimplePageable}.
+   * @return a new empty {@link SimplePageable}.
+   * @see #of(List)
+   */
+  public static <T> SimplePageable<T> empty() {
+    return of(Collections.emptyList());
+  }
 
   /**
    * Factory method used to construct a new instance of {@link SimplePageable} from the given array.
@@ -55,7 +71,7 @@ public class SimplePageable<T> implements Pageable<T> {
    */
   @SafeVarargs
   public static <T> SimplePageable<T> of(T... array) {
-    return new SimplePageable<>(asList(nullSafeArray(array)));
+    return new SimplePageable<>(Arrays.asList(nullSafeArray(array)));
   }
 
   /**
@@ -292,7 +308,7 @@ public class SimplePageable<T> implements Pageable<T> {
       int pageCount = pageable.count();
 
       Assert.isTrue(pageNumber <= pageCount,
-        "Page number must less than equal to the number of pages [%d]", pageCount);
+        "Page number must be less than equal to the number of pages [%d]", pageCount);
 
       List<T> list = pageable.getList();
 

@@ -17,14 +17,24 @@
 package org.cp.elements.util.paging.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.cp.elements.util.paging.Page;
+import org.cp.elements.util.paging.PageNotFoundException;
 import org.junit.Test;
 
 /**
@@ -32,6 +42,7 @@ import org.junit.Test;
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.util.paging.support.SimplePageable
  * @since 1.0.0
  */
@@ -92,6 +103,17 @@ public class SimplePageableTests {
   }
 
   @Test
+  public void emptySimplePageable() {
+
+    SimplePageable<Object> pageable = SimplePageable.empty();
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable).isEmpty();
+    assertThat(pageable.getList()).isEmpty();
+    assertThat(pageable.getPageSize()).isEqualTo(SimplePageable.DEFAULT_PAGE_SIZE);
+  }
+
+  @Test
   public void simplePageableOfNullArray() {
 
     SimplePageable<Object> pageable = SimplePageable.of((Object[]) null);
@@ -115,7 +137,7 @@ public class SimplePageableTests {
   @SuppressWarnings("unchecked")
   public void pageCountForListSizeOfZeroIsZero() {
 
-    SimplePageable pageable = SimplePageable.of();
+    SimplePageable pageable = SimplePageable.empty();
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(0);
@@ -149,6 +171,161 @@ public class SimplePageableTests {
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
+  }
+
+  @Test
+  public void isEmptyOnSimplePageableCallsListIsEmpty() {
+
+    List<?> mockList = mock(List.class);
+
+    when(mockList.isEmpty()).thenReturn(true);
+
+    SimplePageable<?> pageable = SimplePageable.of(mockList);
+
+    assertThat(pageable.isEmpty()).isTrue();
+
+    verify(mockList, times(1)).isEmpty();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void firstPageOfSinglePageSimplePageableReturnsFirstPage() {
+
+    Page<Object> mockPage = mock(Page.class);
+
+    SimplePageable<Object> pageable = spy(SimplePageable.empty());
+
+    doAnswer(invocation -> Collections.singletonList(mockPage).iterator()).when(pageable).iterator();
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.firstPage()).isEqualTo(mockPage);
+    assertThat(pageable.firstPage()).isEqualTo(mockPage);
+
+    verify(pageable, times(2)).getPage(eq(1));
+    verify(pageable, times(2)).iterator();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void firstPageOfMultiPageSimplePageableReturnsFirstPage() {
+
+    Page<Object> mockPageOne = mock(Page.class);
+    Page<Object> mockPageTwo = mock(Page.class);
+
+    SimplePageable<Object> pageable = spy(SimplePageable.empty());
+
+    doAnswer(invocation -> Arrays.asList(mockPageOne, mockPageTwo).iterator()).when(pageable).iterator();
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.firstPage()).isEqualTo(mockPageOne);
+    assertThat(pageable.firstPage()).isEqualTo(mockPageOne);
+
+    verify(pageable, times(2)).getPage(eq(1));
+    verify(pageable, times(2)).iterator();
+  }
+
+  @Test(expected = PageNotFoundException.class)
+  public void firstPageOfEmptySimplePageableThrowsException() {
+
+    try {
+      SimplePageable.empty().firstPage();
+    }
+    catch (PageNotFoundException expected) {
+
+      assertThat(expected).hasMessage("No first page");
+      assertThat(expected).hasCauseInstanceOf(PageNotFoundException.class);
+      assertThat(expected.getCause()).hasMessage("Page with number [1] not found");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void iteratorNextOnSimplePageableWithNoPagesThrowsException() {
+
+    try {
+
+      SimplePageable<Object> pageable = SimplePageable.of();
+
+      assertThat(pageable).isNotNull();
+      assertThat(pageable).isEmpty();
+
+      Iterator<Page<Object>> pages = pageable.iterator();
+
+      assertThat(pages).isNotNull();
+      assertThat(pages.hasNext()).isFalse();
+
+      pages.next();
+    }
+    catch (NoSuchElementException expected) {
+
+      assertThat(expected).hasMessage("No more pages");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void lastPageWithSinglePageSimplePageableReturnsLastPage() {
+
+    Page<Object> mockPage = mock(Page.class);
+
+    List<Page<Object>> pages = Collections.singletonList(mockPage);
+
+    SimplePageable<Object> pageable = spy(SimplePageable.empty());
+
+    doAnswer(invocation -> pages.iterator()).when(pageable).iterator();
+    doReturn(pages.size()).when(pageable).count();
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.lastPage()).isEqualTo(mockPage);
+    assertThat(pageable.lastPage()).isEqualTo(mockPage);
+
+    verify(pageable, times(2)).getPage(eq(1));
+    verify(pageable, times(2)).iterator();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void lastPageWithMultiPageSimplePageableReturnsLastPage() {
+
+    Page<Object> mockPageOne = mock(Page.class);
+    Page<Object> mockPageTwo = mock(Page.class);
+
+    List<Page<Object>> pages = Arrays.asList(mockPageOne, mockPageTwo);
+
+    SimplePageable<Object> pageable = spy(SimplePageable.empty());
+
+    doAnswer(invocation -> pages.iterator()).when(pageable).iterator();
+    doReturn(pages.size()).when(pageable).count();
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.lastPage()).isEqualTo(mockPageTwo);
+    assertThat(pageable.lastPage()).isEqualTo(mockPageTwo);
+
+    verify(pageable, times(2)).getPage(eq(2));
+    verify(pageable, times(2)).iterator();
+  }
+
+  @Test(expected = PageNotFoundException.class)
+  @SuppressWarnings("unchecked")
+  public void lastPageWithEmptySimplePageableReturnsLastPage() {
+
+    try {
+      SimplePageable.empty().lastPage();
+    }
+    catch (PageNotFoundException expected) {
+
+      assertThat(expected).hasMessage("No last page");
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasMessage("Page number [0] must be greater than 0");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
