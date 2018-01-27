@@ -83,32 +83,14 @@ public class SimplePageable<T> implements Pageable<T> {
    * @param <T> {@link Class type} of elements contained in the {@link List}.
    * @param list {@link List} to wrap and provide paging functionality for.
    * @return a new instance of {@link Pageable} wrapping the given {@link List} to provide paging functionality.
-   * @see #of(List, int)
+   * @see #SimplePageable(List)
    * @see java.util.List
    */
   public static <T> SimplePageable<T> of(List<T> list) {
-    return of(list, DEFAULT_PAGE_SIZE);
+    return new SimplePageable<>(nullSafeList(list));
   }
 
-  /**
-   * Factory method used to construct a new instance of {@link SimplePageable} for the given {@link List}
-   * with the configured {@link Page} size.
-   *
-   * The returned {@link Pageable} object wraps the given {@link List} to provide paging functionality.
-   * The {@link Pageable} object uses the given page size.
-   *
-   * @param <T> {@link Class type} of elements contained in the {@link List}.
-   * @param list {@link List} to wrap and provide paging functionality for.
-   * @param pageSize integer indicating the desired number of elements per {@link Page}
-   * @return a new instance of {@link Pageable} wrapping the given {@link List} to provide paging functionality.
-   * @see #SimplePageable(List, int)
-   * @see java.util.List
-   */
-  public static <T> SimplePageable<T> of(List<T> list, int pageSize) {
-    return new SimplePageable<>(nullSafeList(list), pageSize);
-  }
-
-  private final int pageSize;
+  private int pageSize;
 
   private final List<T> list;
 
@@ -238,6 +220,22 @@ public class SimplePageable<T> implements Pageable<T> {
   }
 
   /**
+   * Sets the size used by this {@link Pageable} for dividing elements into {@link Page Pages} using the given value.
+   *
+   * @param pageSize integer indicating the number of elements per {@link Page}.
+   * @return this {@link SimplePageable}.
+   * @throws IllegalArgumentException if {@code pageSize} is less than equal to {@literal 0}.
+   */
+  public SimplePageable<T> with(int pageSize) {
+
+    Assert.isTrue(pageSize > 0, "Page size [%d] must be greater than 0", pageSize);
+
+    this.pageSize = pageSize;
+
+    return this;
+  }
+
+  /**
    * {@link SimplePage} is an Abstract Data Type (ADT) modeling a single {@link Page} contained by
    * this {@link SimplePageable} object.
    *
@@ -307,8 +305,10 @@ public class SimplePageable<T> implements Pageable<T> {
 
       int pageCount = pageable.count();
 
+      Assert.isTrue(pageNumber > 0, "Page number [%d] must be greater than 0", pageNumber);
+
       Assert.isTrue(pageNumber <= pageCount,
-        "Page number must be less than equal to the number of pages [%d]", pageCount);
+        "Page number [%1$d] must be less than equal to the number of pages [%2$d]", pageNumber, pageCount);
 
       List<T> list = pageable.getList();
 
@@ -318,7 +318,7 @@ public class SimplePageable<T> implements Pageable<T> {
 
       this.pageable = pageable;
       this.pageNumber = pageNumber;
-      this.elements = pageable.getList().subList(fromIndex, toIndex);
+      this.elements = list.subList(fromIndex, toIndex);
     }
 
     /**
@@ -361,28 +361,7 @@ public class SimplePageable<T> implements Pageable<T> {
 
       int pageSize = getPageable().getPageSize();
 
-      return (getNumber() * pageSize + pageSize) < getPageable().getList().size();
-    }
-
-    /**
-     * Determines whether there is a previous {@link Page}.
-     *
-     * @return a boolean value indicating whether there is a previous {@link Page}.
-     */
-    @Override
-    public boolean hasPrevious() {
-      return getNumber() > 1;
-    }
-
-    /**
-     * Returns an {@link Iterator} over the elements contained this {@link Page}.
-     *
-     * @return an {@link Iterator} over the elements contained this {@link Page}.
-     * @see java.util.Iterator
-     */
-    @Override
-    public Iterator<T> iterator() {
-      return getElements().iterator();
+      return getNumber() * pageSize < getPageable().getList().size();
     }
 
     /**
@@ -398,6 +377,27 @@ public class SimplePageable<T> implements Pageable<T> {
       Assert.isTrue(hasNext(), newPageNotFoundException("No next page after [%d]", getNumber()));
 
       return getPageable().getPage(getNumber() + 1);
+    }
+
+    /**
+     * Returns an {@link Iterator} over the elements contained this {@link Page}.
+     *
+     * @return an {@link Iterator} over the elements contained this {@link Page}.
+     * @see java.util.Iterator
+     */
+    @Override
+    public Iterator<T> iterator() {
+      return getElements().iterator();
+    }
+
+    /**
+     * Determines whether there is a previous {@link Page}.
+     *
+     * @return a boolean value indicating whether there is a previous {@link Page}.
+     */
+    @Override
+    public boolean hasPrevious() {
+      return getNumber() > 1;
     }
 
     /**

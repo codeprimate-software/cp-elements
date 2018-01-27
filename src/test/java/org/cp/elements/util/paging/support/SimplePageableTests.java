@@ -49,6 +49,26 @@ import org.junit.Test;
 public class SimplePageableTests {
 
   @Test
+  public void constructSimplePageableWithArrayAndDefaultPageSize() {
+
+    SimplePageable<Object> pageable = SimplePageable.of("test", "testing", "tested");
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.getList()).containsExactly("test", "testing", "tested");
+    assertThat(pageable.getPageSize()).isEqualTo(SimplePageable.DEFAULT_PAGE_SIZE);
+  }
+
+  @Test
+  public void constructSimplePageableWithArrayAndPageSize() {
+
+    SimplePageable<Object> pageable = SimplePageable.<Object>of("test", "testing", "tested").with(1);
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.getList()).containsExactly("test", "testing", "tested");
+    assertThat(pageable.getPageSize()).isEqualTo(1);
+  }
+
+  @Test
   public void constructSimplePageableWithListAndDefaultPageSize() {
 
     List<Object> list = Arrays.asList("test", "testing", "tested");
@@ -65,11 +85,11 @@ public class SimplePageableTests {
 
     List<Object> list = Arrays.asList("test", "testing", "tested");
 
-    SimplePageable<Object> pageable = new SimplePageable<>(list, 5);
+    SimplePageable<Object> pageable = SimplePageable.of(list).with(3);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.getList()).isEqualTo(list);
-    assertThat(pageable.getPageSize()).isEqualTo(5);
+    assertThat(pageable.getPageSize()).isEqualTo(3);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -91,7 +111,7 @@ public class SimplePageableTests {
   public void constructSimplePageableWithNullList() {
 
     try {
-      new SimplePageable<>(null, 5);
+      new SimplePageable<>(null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -119,6 +139,7 @@ public class SimplePageableTests {
     SimplePageable<Object> pageable = SimplePageable.of((Object[]) null);
 
     assertThat(pageable).isNotNull();
+    assertThat(pageable).isEmpty();
     assertThat(pageable.getList()).isEmpty();
     assertThat(pageable.getPageSize()).isEqualTo(SimplePageable.DEFAULT_PAGE_SIZE);
   }
@@ -126,9 +147,10 @@ public class SimplePageableTests {
   @Test
   public void simplePageableOfNullList() {
 
-    SimplePageable<Object> pageable = SimplePageable.of(null, 10);
+    SimplePageable<Object> pageable = SimplePageable.of((List<Object>) null).with(10);
 
     assertThat(pageable).isNotNull();
+    assertThat(pageable).isEmpty();
     assertThat(pageable.getList()).isEmpty();
     assertThat(pageable.getPageSize()).isEqualTo(10);
   }
@@ -155,22 +177,36 @@ public class SimplePageableTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void pageCountForListSizeOfTwoUsingPageSizeOfTwoIsOne() {
+  public void pageCountForListSizeOfTwoTimesDefaultPageSizeUsingDefaultPageSizeIsTwo() {
 
-    SimplePageable pageable = SimplePageable.of(Arrays.asList("test", "testing"), 2);
+    List<Object> mockList = mock(List.class);
+
+    when(mockList.size()).thenReturn(SimplePageable.DEFAULT_PAGE_SIZE * 2);
+
+    SimplePageable pageable = SimplePageable.of(mockList);
 
     assertThat(pageable).isNotNull();
-    assertThat(pageable.count()).isEqualTo(1);
+    assertThat(pageable.count()).isEqualTo(2);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void pageCountForListSizeOfTwoUsingPageSizeOfOneIsTwo() {
 
-    SimplePageable pageable = SimplePageable.of(Arrays.asList("test", "testing"), 1);
+    SimplePageable pageable = SimplePageable.of(Arrays.asList("test", "testing")).with(1);
 
     assertThat(pageable).isNotNull();
     assertThat(pageable.count()).isEqualTo(2);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void pageCountForListSizeOfTwoUsingPageSizeOfTwoIsOne() {
+
+    SimplePageable pageable = SimplePageable.of(Arrays.asList("test", "testing")).with(2);
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.count()).isEqualTo(1);
   }
 
   @Test
@@ -372,7 +408,7 @@ public class SimplePageableTests {
 
     List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-    SimplePageable<Integer> pageableIntegers = SimplePageable.of(integers, 3);
+    SimplePageable<Integer> pageableIntegers = SimplePageable.of(integers).with(3);
 
     assertThat(pageableIntegers).isNotNull();
     assertThat(pageableIntegers).isNotEmpty();
@@ -403,11 +439,11 @@ public class SimplePageableTests {
   }
 
   @Test
-  public void simplePageableWithTwoFullPagesAndOnePartialPage() {
+  public void simplePageableWithTwoAndOneHalfPages() {
 
     List<Integer> integers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-    SimplePageable<Integer> pageableIntegers = SimplePageable.of(integers, 4);
+    SimplePageable<Integer> pageableIntegers = SimplePageable.of(integers).with(4);
 
     assertThat(pageableIntegers).isNotNull();
     assertThat(pageableIntegers).isNotEmpty();
@@ -442,7 +478,7 @@ public class SimplePageableTests {
 
     List<Integer> integers = Arrays.asList(4, 9, 6, 2, 8, 5, 1, 3, 7);
 
-    SimplePageable<Integer> pageableIntegers = SimplePageable.of(integers, 5);
+    SimplePageable<Integer> pageableIntegers = SimplePageable.of(integers).with(5);
 
     assertThat(pageableIntegers).isNotNull();
     assertThat(pageableIntegers).isNotEmpty();
@@ -485,5 +521,44 @@ public class SimplePageableTests {
     assertThat(pageTwo).isNotNull();
     assertThat(pageTwo).containsExactly(6, 7, 8, 9);
     assertThat(pages.hasNext()).isFalse();
+  }
+
+  @Test
+  public void withCorrectPageSize() {
+
+    SimplePageable<?> pageable = SimplePageable.empty().with(10);
+
+    assertThat(pageable).isNotNull();
+    assertThat(pageable.getPageSize()).isEqualTo(10);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void withInvalidPageSizeThrowsException() {
+
+    try {
+      SimplePageable.empty().with(-1);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Page size [-1] must be greater than 0");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void withPageSizeZeroThrowsException() {
+
+    try {
+      SimplePageable.empty().with(0);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Page size [0] must be greater than 0");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 }
