@@ -16,26 +16,28 @@
 
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import org.cp.elements.test.TestUtils;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * The AssertTests class is a test suite of test cases testing the contract and functionality
  * of the {@link }Assert} class in the org.cp.elements API and Framework.
- * 
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.test.TestUtils
@@ -47,10 +49,7 @@ public class AssertTests {
 
   private static final Object LOCK = new Object();
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  protected static Object returnsNull() {
+  private static Object returnsNull() {
     return null;
   }
 
@@ -59,45 +58,96 @@ public class AssertTests {
     Assert.argument(true);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertArgumentIsInvalid() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("argument is not valid");
 
-    Assert.argument(false);
+    try {
+      Assert.argument(false);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("argument is not valid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
-  public void assertArgumentWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is not valid");
-
-    Assert.argument(null, "[%1$s] is {1} valid {1}", null, "not");
-  }
-
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertArgumentFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[spy] is a bad argument, a bad, bad, bad argument; not good");
 
-    Assert.argument(false, "[%1$s] is a {1} argument, a %2$s, {1}, %2$s argument; {2}",
-      "spy", "bad", "not good");
+    try {
+      Assert.argument(false, "[%1$s] is a {1} argument, a %2$s, {1}, %2$s argument; {2}",
+        "spy", "bad", "not good");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("[spy] is a bad argument, a bad, bad, bad argument; not good");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertArgumentWithNullFormatsMessageWithArguments() {
+
+    try {
+      Assert.argument(null, "[%s] is {1} valid", null, "not");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("[null] is not valid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertArgumentThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertArgumentWithSuppliedMessage() {
 
-    Assert.argument(false, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.argument(true, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertArgumentUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.argument(false, () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertArgumentThrowsAssertionException() {
+
+    try {
+      Assert.argument(false, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertComparable() {
+
     Assert.comparable(true, true);
     Assert.comparable('c', 'c');
     Assert.comparable(1, 1);
@@ -105,71 +155,133 @@ public class AssertTests {
     Assert.comparable("test", "test");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotComparable() {
-    exception.expect(ComparisonException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[3.14159] is not comparable to [%1$s]", Math.PI));
 
-    Assert.comparable(3.14159d, Math.PI);
+    try {
+      Assert.comparable(3.14159d, Math.PI);
+    }
+    catch (ComparisonException expected) {
+
+      assertThat(expected).hasMessage("[3.14159] is not comparable to [%1$s]", Math.PI);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = ComparisonException.class)
   public void assertComparableWithNullArguments() {
-    exception.expect(ComparisonException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is not comparable to [null]");
 
-    Assert.comparable(null, null);
+    try {
+      Assert.comparable(null, null);
+    }
+    catch (ComparisonException expected) {
+
+      assertThat(expected).hasMessage("[null] is not comparable to [null]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = ComparisonException.class)
   public void assertComparableWithNullFirstArgument() {
-    exception.expect(ComparisonException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is not comparable to [test]");
 
-    Assert.comparable(null, "test");
+    try {
+      Assert.comparable(null, "test");
+    }
+    catch (ComparisonException expected) {
+
+      assertThat(expected).hasMessage("[null] is not comparable to [test]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = ComparisonException.class)
   public void assertComparableWithNullSecondArgument() {
-    exception.expect(ComparisonException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not comparable to [null]");
 
-    Assert.comparable("test", null);
+    try {
+      Assert.comparable("test", null);
+    }
+    catch (ComparisonException expected) {
+
+      assertThat(expected).hasMessage("[test] is not comparable to [null]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = ComparisonException.class)
   public void assertComparableFormatsMessageWithArguments() {
-    exception.expect(ComparisonException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is NOT comparable with [nil]");
 
-    Assert.comparable("null", "nil", "[%1$s] is NOT comparable with [{1}]", "null", "nil");
+    try {
+      Assert.comparable("null", "nil",
+        "[%1$s] is NOT comparable with [{1}]", "null", "nil");
+    }
+    catch (ComparisonException expected) {
+
+      assertThat(expected).hasMessage("[null] is NOT comparable with [nil]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertNotComparableThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertComparableWithSuppliedMessage() {
 
-    Assert.comparable(-1, 1, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.comparable("test", "test", mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = ComparisonException.class)
+  public void assertComparableUsesSuppliedMessageThrowsComparisonException() {
+
+    try {
+      Assert.comparable("test", "mock", () -> "test");
+    }
+    catch (ComparisonException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertComparableThrowsAssertionException() {
+
+    try {
+      Assert.comparable(-1, 1, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertEqualsWithEqualValues() {
+
     Assert.equals(Boolean.TRUE, true);
-    Assert.equals(TestUtils.createCalendar(2011, Calendar.OCTOBER, 4),
-      TestUtils.createCalendar(2011, Calendar.OCTOBER, 4));
-    Assert.equals(TestUtils.createCalendar(2013, Calendar.JANUARY, 13),
-      TestUtils.createCalendar(2013, Calendar.JANUARY, 13));
-    Assert.equals(TestUtils.createCalendar(2015, Calendar.JULY, 16),
-      TestUtils.createCalendar(2015, Calendar.JULY, 16));
-    Assert.equals(TestUtils.createCalendar(2016, Calendar.MARCH, 22),
-      TestUtils.createCalendar(2016, Calendar.MARCH, 22));
+    Assert.equals(LocalDate.of(2011, Month.OCTOBER, 4),
+      LocalDate.of(2011, Month.OCTOBER, 4));
+    Assert.equals(LocalDate.of(2016, Month.JANUARY, 5),
+      LocalDate.of(2016, Month.JANUARY, 5));
+    Assert.equals(LocalDate.of(2018, Month.FEBRUARY, 11),
+      LocalDate.of(2018, Month.FEBRUARY, 11));
     Assert.equals("c".charAt(0), 'c');
     Assert.equals(Double.valueOf(String.valueOf(Math.PI)), Math.PI);
     Assert.equals(Integer.valueOf("2"), 2);
@@ -177,108 +289,201 @@ public class AssertTests {
     Assert.equals(TestEnum.valueOf("ONE"), TestEnum.ONE);
   }
 
-  @Test
+  @Test(expected = EqualityException.class)
   public void assertEqualsWithUnequalBooleanValues() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[true] is not equal to [false]");
 
-    Assert.equals(Boolean.TRUE, false);
+    try {
+      Assert.equals(Boolean.TRUE, false);
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[true] is not equal to [false]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
-  public void assertEqualsWithUnequalCalendars() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("calendars are not equal");
-
-    Assert.equals(TestUtils.createCalendar(2011, Calendar.OCTOBER, 4), Calendar.getInstance(),
-      "calendars are not equal");
-  }
-
-  @Test
+  @Test(expected = EqualityException.class)
   public void assertEqualsWithUnequalCharacters() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[x] is not equal to [X]");
 
-    Assert.equals('x', 'X');
+    try {
+      Assert.equals('x', 'X');
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[x] is not equal to [X]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = EqualityException.class)
+  public void assertEqualsWithUnequalDateTimes() {
+
+    try {
+      Assert.equals(LocalDateTime.of(2011, Month.OCTOBER, 4, 12, 30),
+        LocalDateTime.now(), "Date/Times are not equal");
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("Date/Times are not equal");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = EqualityException.class)
   public void assertEqualsWithUnequalDoubleValues() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[3.14159] is not equal to [%1$s]", Math.PI));
 
-    Assert.equals(3.14159d, Math.PI);
+    try {
+      Assert.equals(3.14159d, Math.PI);
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[3.14159] is not equal to [%s]", Math.PI);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = EqualityException.class)
   public void assertEqualsWithUnequalIntegerValues() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[-1] is not equal to [1]");
 
-    Assert.equals(-1, 1);
+    try {
+      Assert.equals(-1, 1);
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[-1] is not equal to [1]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = EqualityException.class)
   public void assertEqualsWithUnequalStrings() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not equal to [TEST]");
 
-    Assert.equals("test", "TEST");
+    try {
+      Assert.equals("test", "TEST");
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[test] is not equal to [TEST]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
-  public void assertEqualsWithNullAndNil() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is not equal to [nil]");
-
-    Assert.equals("null", "nil");
-  }
-
-  @Test
-  public void assertEqualsWithNullValueAndNullStringLiteral() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is not equal to [null]");
-
-    Assert.equals(null, "null");
-  }
-
-  @Test
+  @Test(expected = EqualityException.class)
   public void assertEqualsWithNullValues() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is not equal to [null]");
 
-    Assert.equals(null, null);
+    try {
+      Assert.equals(null, null);
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[null] is not equal to [null]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = EqualityException.class)
+  public void assertEqualsWithNullValueAndNullStringLiteral() {
+
+    try {
+      Assert.equals(null, "null");
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[null] is not equal to [null]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = EqualityException.class)
+  public void assertEqualsWithNullAndNilStringLiterals() {
+
+    try {
+      Assert.equals("null", "nil");
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("[null] is not equal to [nil]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = EqualityException.class)
+  public void assertEqualsFormatsMessageWithArguments() {
+
+    try {
+      Assert.equals(true, false, "Expected %1$s; but was {1}", true, false);
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("Expected true; but was false");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertEqualsFormatsMessageUsingArguments() {
-    exception.expect(EqualityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Expected true; but was false");
+  @SuppressWarnings("unchecked")
+  public void assertEqualsWithSuppliedMessage() {
 
-    Assert.equals(true, false, "Expected %1$s; but was {1}", true, false);
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.equals("test", "test", mockSupplier);
+
+    verify(mockSupplier, never()).get();
   }
 
-  @Test
+  @Test(expected = EqualityException.class)
+  public void assertEqualsUsesSuppliedMessageThrowsEqualityException() {
+
+    try {
+      Assert.equals("test", "mock", () -> "test");
+    }
+    catch (EqualityException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
   public void assertEqualsThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
 
-    Assert.equals(new Object(), new Object(), new AssertionException("test"));
+    try {
+      Assert.equals(new Object(), new Object(), new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertHasTextkWithNonBlankValues() throws Exception {
+  public void assertHasTextWithStrings() throws Exception {
+
     Assert.hasText("test");
     Assert.hasText("blank");
     Assert.hasText("empty");
@@ -307,31 +512,76 @@ public class AssertTests {
     Assert.hasText("\0", "null Character is blank");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertHasTextWithSpaces() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("argument is blank");
 
-    Assert.hasText("  ");
+    try {
+      Assert.hasText("  ", "Spaces are blank");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Spaces are blank");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertHasTextWithTabSpaceCarriageReturnAndNewLineFormatsMessageWithArguments() {
+
+    try {
+      Assert.hasText("\t \r \n", "%s, spaces, carriage returns and {1} are blank",
+        "tabs", "newlines");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("tabs, spaces, carriage returns and newlines are blank");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertHasTextWithTabCarriageReturnAndNewLine() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("tab and newlines are blank");
+  @SuppressWarnings("unchecked")
+  public void assertHasTextWithSuppliedMessage() {
 
-    Assert.hasText("\t\r\n", "%1$s and {1} are blank", "tab", "newlines");
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.hasText("test", mockSupplier);
+
+    verify(mockSupplier, never()).get();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
+  public void assertHasTextUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.hasText("   ", () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
   public void assertHasTextThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
 
-    Assert.hasText("\n", new AssertionException("test"));
+    try {
+      Assert.hasText("\n", new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -341,46 +591,101 @@ public class AssertTests {
     }
   }
 
-  @Test
-  public void assertDoesNotHoldLock() {
-    exception.expect(IllegalMonitorStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("current thread [%1s] does not hold lock [%2$s]",
-      Thread.currentThread().getName(), LOCK));
+  @Test(expected = IllegalMonitorStateException.class)
+  public void assertIsNotHoldingLock() {
 
-    Assert.holdsLock(LOCK);
+    try {
+      Assert.holdsLock(LOCK);
+    }
+    catch (IllegalMonitorStateException expected) {
+
+      assertThat(expected).hasMessage("current thread [%1s] does not hold lock [%2$s]",
+        Thread.currentThread().getName(), LOCK);
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalMonitorStateException.class)
   public void assertHoldsLockWithNullLock() {
-    exception.expect(IllegalMonitorStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("current thread [%1s] does not hold lock [null]",
-      Thread.currentThread().getName()));
 
-    Assert.holdsLock(null);
+    try {
+      Assert.holdsLock(null);
+    }
+    catch (IllegalMonitorStateException expected) {
+
+      assertThat(expected).hasMessage("current thread [%s] does not hold lock [null]",
+        Thread.currentThread().getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalMonitorStateException.class)
   public void assertHoldsLockFormatsMessageWithArguments() {
-    exception.expect(IllegalMonitorStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("lock [%1$s] not held by current thread", LOCK));
 
-    Assert.holdsLock(LOCK, "lock [%1$s] not held by {1} thread", LOCK, "current");
+    try {
+      Assert.holdsLock(LOCK, "lock [%1$s] not held by {1} thread", LOCK, "current");
+    }
+    catch (IllegalMonitorStateException expected) {
+
+      assertThat(expected).hasMessage("lock [%1$s] not held by current thread", LOCK);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertHoldsLockThrowsAssertionFailedException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertHoldsLockWithSuppliedMessage() {
 
-    Assert.holdsLock(LOCK, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    synchronized (LOCK) {
+      Assert.holdsLock(LOCK, mockSupplier);
+    }
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalMonitorStateException.class)
+  public void assertHoldsLockUsesSuppliedMessageThrowsIllegalMonitorStateException() {
+
+    try {
+      Assert.holdsLock(LOCK, () -> "test");
+    }
+    catch (IllegalMonitorStateException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertHoldsLockThrowsAssertionException() {
+
+    try {
+      Assert.holdsLock(LOCK, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertIsAssignableToWithAssignableClassTypes() {
+
     Assert.isAssignableTo(Boolean.class, Boolean.class);
     Assert.isAssignableTo(Character.class, Object.class);
     Assert.isAssignableTo(java.sql.Date.class, java.util.Date.class);
@@ -390,14 +695,19 @@ public class AssertTests {
     Assert.isAssignableTo(TestEnum.class, Enum.class);
   }
 
-  @Test
+  @Test(expected = ClassCastException.class)
   public void assertIsAssignableToWithNonAssignableClassTypes() {
-    exception.expect(ClassCastException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[%1$s] is not assignable to [%2$s]",
-      Character.class, String.class));
 
-    Assert.isAssignableTo(Character.class, String.class);
+    try {
+      Assert.isAssignableTo(Character.class, String.class);
+    }
+    catch (ClassCastException expected) {
+
+      assertThat(expected).hasMessage("[%1$s] is not assignable to [%2$s]", Character.class, String.class);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -405,85 +715,184 @@ public class AssertTests {
     Assert.isAssignableTo(null, Object.class, "null is not assignable to Object");
   }
 
-  @Test
+  @Test(expected = ClassCastException.class)
   public void assertIsAssignableToWithNullToClassType() {
-    exception.expect(ClassCastException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Object is not assignable to null");
 
-    Assert.isAssignableTo(Object.class, null, "Object is not assignable to null");
+    try {
+      Assert.isAssignableTo(Object.class, null, "Object is not assignable to null");
+    }
+    catch (ClassCastException expected) {
+
+      assertThat(expected).hasMessage("Object is not assignable to null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = ClassCastException.class)
   public void assertIsAssignableToFormatsMessageWithArguments() {
-    exception.expect(ClassCastException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Object is not assignable to String");
 
-    Assert.isAssignableTo(Object.class, String.class, "%1$s is not assignable to {1}", "Object", "String");
+    try {
+      Assert.isAssignableTo(Object.class, String.class, "%1$s is not assignable to {1}",
+        "Object", "String");
+    }
+    catch (ClassCastException expected) {
+
+      assertThat(expected).hasMessage("Object is not assignable to String");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void assertIsAssignableToWithSuppliedMessage() {
+
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.isAssignableTo(String.class, Object.class, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = ClassCastException.class)
+  public void assertIsAssignableToUsesSuppliedMessageThrowsClassCastException() {
+
+    try {
+      Assert.isAssignableTo(Integer.class, Long.class, () -> "test");
+    }
+    catch (ClassCastException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
   public void assertIsAssignableToThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
 
-    Assert.isAssignableTo(Object.class, String.class, new AssertionException("test"));
+    try {
+      Assert.isAssignableTo(Object.class, String.class, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
+  @SuppressWarnings("all")
   public void assertIsFalseWithFalse() {
+
     Assert.isFalse(false);
     Assert.isFalse(Boolean.FALSE);
     Assert.isFalse(!Boolean.TRUE);
     Assert.isFalse(new Object() == new Object());
+    Assert.isFalse(new Object().equals(new Object()));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertIsFalseWithTrue() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("condition [true] is not false");
 
-    Assert.isFalse(true);
+    try {
+      Assert.isFalse(true);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("condition [true] is not false");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertIsFalseWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("null is not false");
 
-    Assert.isFalse(null, "null is not false");
+    try {
+      Assert.isFalse(null, "null is not false");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("null is not false");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertIsFalseFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("expected false; but was true");
 
-    Assert.isFalse(true, "expected %1$s; but was {1}", false, true);
+    try {
+      Assert.isFalse(true, "expected %s; but was {1}", false, true);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("expected false; but was true");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertIsFalseThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertIsFalseWithSuppliedMessage() {
 
-    Assert.isFalse(Boolean.TRUE, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.isFalse(false, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertIsFalseUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.isFalse(true, () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertIsFalseThrowsAssertionException() {
+
+    try {
+      Assert.isFalse(Boolean.TRUE, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertIsInstanceOf() throws Exception {
+
     Assert.isInstanceOf(true, Boolean.class);
     Assert.isInstanceOf('c', Character.class);
-    Assert.isInstanceOf(3.14159f, Float.class);
     Assert.isInstanceOf(Math.PI, Double.class);
+    Assert.isInstanceOf(3.14159f, Float.class);
     Assert.isInstanceOf(0, Integer.class);
-    Assert.isInstanceOf(1l, Long.class);
+    Assert.isInstanceOf(1L, Long.class);
     Assert.isInstanceOf("mock", CharSequence.class);
     Assert.isInstanceOf("spy", Serializable.class);
     Assert.isInstanceOf("test", String.class);
@@ -492,45 +901,98 @@ public class AssertTests {
     Assert.isInstanceOf(TestEnum.ONE, Enum.class);
   }
 
-  @Test
+  @Test(expected = IllegalTypeException.class)
   public void assertIsNotInstanceOf() {
-    exception.expect(IllegalTypeException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[0123456789] is not an instance of [class java.lang.Long]");
 
-    Assert.isInstanceOf("0123456789", Long.class);
+    try {
+      Assert.isInstanceOf("0123456789", Long.class);
+    }
+    catch (IllegalTypeException expected) {
+
+      assertThat(expected).hasMessage("[0123456789] is not an instance of [class java.lang.Long]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalTypeException.class)
   public void assertIsInstanceOfWithNull() {
-    exception.expect(IllegalTypeException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("null is not an instance of Object");
 
-    Assert.isInstanceOf(null, Object.class, "null is not an instance of Object", "unused", "args");
+    try {
+      Assert.isInstanceOf(null, Object.class, "null is not an instance of Object",
+        "unused", "args");
+    }
+    catch (IllegalTypeException expected) {
+
+      assertThat(expected).hasMessage("null is not an instance of Object");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalTypeException.class)
   public void assertIsInstanceOfFormatsMessageWithArguments() {
-    exception.expect(IllegalTypeException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("null is not an instance of Object");
 
-    Assert.isInstanceOf(null, Object.class, "%1$s is not an instance of {1}", null, Object.class.getSimpleName());
+    try {
+      Assert.isInstanceOf(null, Object.class, "%s is not an instance of {1}",
+        null, Object.class.getSimpleName());
+    }
+    catch (IllegalTypeException expected) {
+
+      assertThat(expected).hasMessage("null is not an instance of Object");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertIsInstanceOfThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertIsInstanceOfWithSuppliedMessage() {
 
-    Assert.isInstanceOf(new Object(), Class.class, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.isInstanceOf("test", String.class, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalTypeException.class)
+  public void assertIsInstanceOfUsesSuppliedMessageThrowsIllegalTypeException() {
+
+    try {
+      Assert.isInstanceOf('x', String.class, () -> "test");
+    }
+    catch (IllegalTypeException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertIsInstanceOfThrowsAssertionException() {
+
+    try {
+      Assert.isInstanceOf(new Object(), Class.class, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   @SuppressWarnings("all")
   public void assertIsTrueWithTrue() {
+
     Assert.isTrue(true);
     Assert.isTrue(Boolean.TRUE);
     Assert.isTrue(!Boolean.FALSE);
@@ -540,50 +1002,99 @@ public class AssertTests {
     Assert.isTrue(LOCK == LOCK);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertIsTrueWithFalse() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("condition [false] is not true");
 
-    Assert.isTrue(false);
+    try {
+      Assert.isTrue(false);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("condition [false] is not true");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertIsTrueWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("null is not true");
 
-    Assert.isTrue(null, "null is not true");
+    try {
+      Assert.isTrue(null, "null is not true");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("null is not true");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertIsTrueFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("expected true; but was false");
 
-    Assert.isTrue(false, "expected %1$s; but was {1}", true, false);
+    try {
+      Assert.isTrue(false, "expected %1$s; but was {1}", true, false);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("expected true; but was false");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertIsTrueThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertIsTrueWithSuppliedMessage() {
 
-    Assert.isTrue(Boolean.FALSE, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.isTrue(true, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertIsTrueUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.isTrue(false, () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertIsTrueThrowsAssertionException() {
+
+    try {
+      Assert.isTrue(Boolean.FALSE, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertNotEmptyStringWithNonEmptyStrings() {
-    Assert.notEmpty((String) null);
+
     Assert.notEmpty("blank");
     Assert.notEmpty("empty");
+    Assert.notEmpty("nil");
     Assert.notEmpty("null");
-    Assert.notEmpty(" ");
-    Assert.notEmpty("   ");
     Assert.notEmpty("_");
     Assert.notEmpty("___");
     Assert.notEmpty("\0");
@@ -594,165 +1105,392 @@ public class AssertTests {
   }
 
   @Test
+  public void assertNotEmptyStringWithNullString() {
+    Assert.notEmpty((String) null, "null is empty String");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyStringWithEmptyString() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("argument is empty");
 
-    Assert.notEmpty("");
+    try {
+      Assert.notEmpty("");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("argument is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
+  public void assertNotEmptyStringWithBlankStrings() {
+
+    Assert.notEmpty(" ");
+    Assert.notEmpty("  ");
+    Assert.notEmpty("   ");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyStringFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("empty String is empty");
 
-    Assert.notEmpty("", "{0} String is %1$s", "empty");
+    try {
+      Assert.notEmpty("", "{0} String is %s", "empty");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("empty String is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void assertNotEmptyStringWithSuppliedMessage() {
+
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notEmpty("test", mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyStringUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.notEmpty("", () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
   public void assertNotEmptyStringThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
 
-    Assert.notEmpty("", new AssertionException("test"));
+    try {
+      Assert.notEmpty("", new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertNotEmptyArray() {
-    Assert.notEmpty(new Object[] { "one", "two", "three" });
-    Assert.notEmpty(new String[1]);
+  public void assertNotEmptyArrayWithUninitializedSizedArray() {
+    Assert.notEmpty(new Object[1]);
   }
 
   @Test
-  public void assertNotEmptyArrayWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("array is empty");
-
-    Assert.notEmpty((Object[]) null);
+  public void assertNotEmptyArrayWithSingletonArray() {
+    Assert.notEmpty(new Object[] { "test" });
   }
 
   @Test
+  public void assertNotEmptyArrayWithInitializedArray() {
+    Assert.notEmpty(new String[] { "one", "two", "three" });
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyArrayWithNullArray() {
+
+    try {
+      Assert.notEmpty((Object[]) null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("array is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyArrayWithEmptyArray() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("array is empty");
 
-    Assert.notEmpty(new Object[0]);
+    try {
+      Assert.notEmpty(new Object[0]);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("array is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyArrayFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Object array is empty");
 
-    Assert.notEmpty(new Object[0], "%1$s is {1}", "Object array", "empty");
+    try {
+      Assert.notEmpty(new Object[0], "%s is {1}", "Object array", "empty");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Object array is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertNotEmptyArrayThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertNotEmptyArrayWithSuppliedMessage() {
 
-    Assert.notEmpty(new Object[0], new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notEmpty(new Object[1], mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyArrayUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.notEmpty(new Object[0], () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertNotEmptyArrayThrowsAssertionException() {
+
+    try {
+      Assert.notEmpty(new Object[0], new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertNotEmptyCollection() {
     Assert.notEmpty(Arrays.asList("ant", "bat", "cat", "dog", "eel"));
+  }
+
+  @Test
+  public void assertNotEmptyCollectionWithSingletonCollection() {
     Assert.notEmpty(Collections.singleton(1));
     Assert.notEmpty(Collections.singletonList("test"));
   }
 
-  @Test
-  public void assertNotEmptyCollectionWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("collection is empty");
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyCollectionWithNullCollection() {
 
-    Assert.notEmpty((Collection) null);
+    try {
+      Assert.notEmpty((Collection) null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("collection is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyCollectionWithEmptyCollection() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("collection is empty");
 
-    Assert.notEmpty(Collections.emptyList());
+    try {
+      Assert.notEmpty(Collections.emptySet());
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("collection is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyCollectionFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Set is empty");
-    Assert.notEmpty(Collections.emptySet(), "%1$s is {1}", "Set", "empty");
+
+    try {
+      Assert.notEmpty(Collections.emptySet(), "%s is {1}", "Set", "empty");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Set is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertNotEmptyCollectionThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertNotEmptyCollectionWithSuppliedMessage() {
 
-    Assert.notEmpty((Collection) null, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notEmpty(Collections.singleton(1), mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyCollectionUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.notEmpty(Collections.emptySet(), () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertNotEmptyCollectionThrowsAssertionException() {
+
+    try {
+      Assert.notEmpty((Collection) null, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertNotEmptyMap() {
+
     Map<String, String> map = new HashMap<>(2);
 
     map.put("one", "1");
     map.put("two", "2");
 
     Assert.notEmpty(map);
+  }
+
+  @Test
+  public void assertNotEmptyMapWithSingletonMap() {
     Assert.notEmpty(Collections.singletonMap("key", "value"));
   }
 
-  @Test
-  public void assertNotEmptyMapWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("map is empty");
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyMapWithNullMap() {
 
-    Assert.notEmpty((Map) null);
+    try {
+      Assert.notEmpty((Map) null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("map is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyMapWithEmptyMap() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("map is empty");
 
-    Assert.notEmpty(Collections.emptyMap());
+    try {
+      Assert.notEmpty(Collections.emptyMap());
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("map is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyMapFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map is empty");
 
-    Assert.notEmpty(Collections.emptyMap(), "%1$s is {1}", "Map", "empty");
+    try {
+      Assert.notEmpty(Collections.emptyMap(), "%s is {1}", "Map", "empty");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Map is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertNotEmptyMapThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertNotEmptyMapWithSuppliedMessage() {
 
-    Assert.notEmpty(Collections.emptyMap(), new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notEmpty(Collections.singletonMap("key", "value"), mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyMapUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.notEmpty(Collections.emptyMap(), () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertNotEmptyMapThrowsAssertionException() {
+
+    try {
+      Assert.notEmpty(Collections.emptyMap(), new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertNotNull() throws Exception {
+
     Assert.notNull(false);
     Assert.notNull('\0');
     Assert.notNull(0);
@@ -763,46 +1501,98 @@ public class AssertTests {
     Assert.notNull(new Object[0]);
     Assert.notNull(Collections.emptySet());
     Assert.notNull(Void.class);
+    Assert.notNull(TestEnum.ONE);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotNullWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("argument is null");
 
-    Assert.notNull(null);
+    try {
+      Assert.notNull(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("argument is null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotNullWithNullReturningMethod() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("argument is null");
 
-    Assert.notNull(returnsNull());
+    try {
+      Assert.notNull(returnsNull());
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("argument is null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotNullFormatsMessageWithArguments() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Object reference is null");
 
-    Assert.notNull(null, "%1$s is {1}", "Object reference", null);
+    try {
+      Assert.notNull(null, "%s is {1}", "Object reference", null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Object reference is null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertNotNullThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertNotNullWithSuppliedMessage() {
 
-    Assert.notNull(null, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notNull("test", mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotNullUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    try {
+      Assert.notNull(null, () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertNotNullThrowsAssertionException() {
+
+    try {
+      Assert.notNull(null, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void assertSameWithIdenticalObjects() {
+
     Assert.same(null, null);
     Assert.same(true, Boolean.TRUE);
     Assert.same('c', 'c');
@@ -812,51 +1602,108 @@ public class AssertTests {
     Assert.same(LOCK, LOCK);
   }
 
-  @Test
+  @Test(expected = IdentityException.class)
   public void assertSameWithCharacterAndString() {
-    exception.expect(IdentityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[x] is not the same as [x]");
 
-    Assert.same('x', "x");
+    try {
+      Assert.same('x', "x");
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[x] is not the same as [x]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IdentityException.class)
   public void assertSameWithDoubleAndInteger() {
-    exception.expect(IdentityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[1.0] is not the same as [1]");
 
-    Assert.same(1.0d, 1);
+    try {
+      Assert.same(1.0d, 1);
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[1.0] is not the same as [1]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IdentityException.class)
   public void assetSameWithNullAndObject() {
+
     Object value = new Object();
 
-    exception.expect(IdentityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[null] is not the same as [%1$s]", value));
 
-    Assert.same(null, value);
+    try {
+      Assert.same(null, value);
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[null] is not the same as [%s]", value);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertSameFormatsMessageWithArguments() {
-    exception.expect(IdentityException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Strings are not identical");
 
-    Assert.same("test", "TEST", "%1$s are not {1}", "Strings", "identical");
+    try {
+      Assert.same("test", "TEST", "%s are not {1}", "Strings", "identical");
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("Strings are not identical");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertSameThrowsAssertFailedException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertSameWithSuppliedMessage() {
 
-    Assert.same(new Object(), new Object(), new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.same("test", "test", mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertSameUsesSuppliedMessageThrowsIdentityException() {
+
+    try {
+      Assert.same(1, -1, () -> "test");
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertSameThrowsAssertFailedException() {
+
+    try {
+      Assert.same(new Object(), new Object(), new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -864,40 +1711,90 @@ public class AssertTests {
     Assert.state(true);
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void assertStateIsInvalid() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("state is invalid");
 
-    Assert.state(false);
+    try {
+      Assert.state(false);
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessage("state is invalid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void assertStateWithNull() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("state is invalid");
 
-    Assert.state(null);
+    try {
+      Assert.state(null);
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessage("state is invalid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void assertStateFormatsMessageWithArguments() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("object not initialized");
 
-    Assert.state(Boolean.FALSE, "%1$s not {1}", "object", "initialized");
+    try {
+      Assert.state(Boolean.FALSE, "%s not {1}", "object", "initialized");
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessage("object not initialized");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertStateThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertStateWithSuppliedMessage() {
 
-    Assert.state(false, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.state(true, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void assertStateUsesSuppliedMessageThrowsIllegalStateException() {
+
+    try {
+      Assert.state(false, () -> "test");
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertStateThrowsAssertionException() {
+
+    try {
+      Assert.state(false, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -905,43 +1802,93 @@ public class AssertTests {
     Assert.supported(true);
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void assertSupportedForUnsupportedOperation() {
-    exception.expect(UnsupportedOperationException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("operation not supported");
 
-    Assert.supported(false);
+    try {
+      Assert.supported(false);
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasMessage("operation not supported");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void assertSupportedWithNull() {
-    exception.expect(UnsupportedOperationException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("operation not supported");
 
-    Assert.supported(null);
+    try {
+      Assert.supported(null);
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasMessage("operation not supported");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void assertSupportedFormatsMessageWithArguments() {
-    exception.expect(UnsupportedOperationException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("write operation is unsupported");
 
-    Assert.supported(Boolean.FALSE, "%1$s is {1}", "write operation", "unsupported");
+    try {
+      Assert.supported(Boolean.FALSE, "%s is {1}", "write operation", "unsupported");
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasMessage("write operation is unsupported");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
-  public void assertSupportedThrowsAssertionException() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
+  @SuppressWarnings("unchecked")
+  public void assertSupportedUsesSuppliedMessageIsSuccessful() {
 
-    Assert.supported(false, new AssertionException("test"));
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.supported(true, mockSupplier);
+
+    verify(mockSupplier, never()).get();
   }
 
-  protected enum TestEnum {
+  @Test(expected = UnsupportedOperationException.class)
+  public void assertSupportedUsesSuppliedMessageThrowsUnsupportedOperationException() {
+
+    try {
+      Assert.supported(false, () -> "test");
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertSupportedThrowsAssertionException() {
+
+    try {
+      Assert.supported(false, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  private enum TestEnum {
     ONE,
     TWO
   }
