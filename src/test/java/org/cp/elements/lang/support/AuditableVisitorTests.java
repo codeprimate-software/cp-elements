@@ -23,9 +23,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -47,7 +47,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link AuditableVisitor} class.
+ * Unit tests for {@link AuditableVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -73,6 +73,7 @@ public class AuditableVisitorTests {
   private User mockUser;
 
   protected void assertEqualDates(LocalDate expectedDate, LocalDate actualDate) {
+
     Assert.assertEquals(expectedDate.getYear(), actualDate.getYear());
     Assert.assertEquals(expectedDate.getMonth(), actualDate.getMonth());
     Assert.assertEquals(expectedDate.getDayOfMonth(), actualDate.getDayOfMonth());
@@ -83,6 +84,7 @@ public class AuditableVisitorTests {
   }
 
   protected void assertEqualDateTimes(LocalDateTime expectedDateTime, LocalDateTime actualDateTime) {
+
     assertEqualDates(expectedDateTime.toLocalDate(), actualDateTime.toLocalDate());
     assertEquals(expectedDateTime.getHour(), actualDateTime.getHour());
     assertEquals(expectedDateTime.getMinute(), actualDateTime.getMinute());
@@ -91,6 +93,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void constructWithUserAndProcess() {
+
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
     assertNotNull(visitor);
@@ -101,6 +104,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void constructWithUserProcessAndDateTime() {
+
     LocalDateTime now = LocalDateTime.of(2014, Month.JANUARY, 16, 22, 30, 45);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
@@ -113,6 +117,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void constructWithNullUser() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("User must not be null");
@@ -122,6 +127,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void constructWithNullProcess() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Process must not be null");
@@ -131,6 +137,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void isCreatedUnsetWithCreatedByAndCreatedDateTimePropertiesUnset() {
+
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(null);
@@ -145,6 +152,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void isCreatedUnsetWithOnlyCreatedByPropertyUnset() {
+
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(null);
@@ -159,6 +167,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void isCreatedUnsetWithOnlyCreatedDateTimePropertyUnset() {
+
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
@@ -174,6 +183,7 @@ public class AuditableVisitorTests {
 
   @Test
   public void isCreatedUnsetWhenBothCreatedByAndCreatedDateTimePropertiesAreSet() {
+
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
@@ -190,6 +200,7 @@ public class AuditableVisitorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void visit() {
+
     VisitableAuditable<User, Process> mockAuditable = mock(VisitableAuditable.class);
 
     when(mockAuditable.isNew()).thenReturn(true);
@@ -219,6 +230,7 @@ public class AuditableVisitorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void visitWithNonIdentifiableObject() {
+
     VisitableAuditable<User, Process> mockAuditable = mock(VisitableAuditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
@@ -252,6 +264,7 @@ public class AuditableVisitorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void visitWhenModifiedOnly() {
+
     VisitableAuditable<User, Process> mockAuditable = mock(VisitableAuditable.class);
 
     when(mockAuditable.isNew()).thenReturn(false);
@@ -283,6 +296,7 @@ public class AuditableVisitorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void visitDoesNothing() {
+
     VisitableAuditable<User, Process> mockAuditable = mock(VisitableAuditable.class);
 
     when(mockAuditable.isNew()).thenReturn(false);
@@ -311,12 +325,10 @@ public class AuditableVisitorTests {
     verify(mockAuditable, never()).setModifiedWith(any(Process.class));
   }
 
-  interface VisitableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS, Long>, Visitable {
-  }
+  interface VisitableAuditable<USER, PROCESS> extends Auditable<USER, PROCESS, Long>, Visitable { }
 
-  interface User {
-  }
+  interface User { }
 
-  interface Process {
-  }
+  interface Process { }
+
 }

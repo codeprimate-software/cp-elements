@@ -25,9 +25,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -74,6 +74,7 @@ public class PropertiesAdapterTests {
 
   @BeforeClass
   public static void setupPropertiesAdapter() {
+
     Properties properties = new Properties();
 
     properties.setProperty("booleanProperty", "true");
@@ -87,6 +88,7 @@ public class PropertiesAdapterTests {
 
   @Before
   public void setup() {
+
     assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
     assertThat(propertiesAdapter.getProperties(), is(notNullValue()));
     assertThat(propertiesAdapter.getConversionService(), is(notNullValue()));
@@ -96,6 +98,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void constructPropertiesAdapterWithProperties() {
+
     PropertiesAdapter propertiesAdapter = new PropertiesAdapter(mockProperties);
 
     assertThat(propertiesAdapter.getProperties(), is(sameInstance(mockProperties)));
@@ -104,6 +107,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void constructPropertiesAdapterWithNull() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The Properties to wrap cannot be null");
@@ -113,6 +117,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void fromProperties() {
+
     PropertiesAdapter propertiesAdapter = from(mockProperties);
 
     assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
@@ -122,6 +127,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void containsExistingPropertiesIsTrue() {
+
     assertThat(propertiesAdapter.contains("booleanProperty"), is(true));
     assertThat(propertiesAdapter.contains("characterProperty"), is(true));
     assertThat(propertiesAdapter.contains("doubleProperty"), is(true));
@@ -131,6 +137,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void containsNonExistingPropertiesIsFalse() {
+
     assertThat(propertiesAdapter.contains("boolProperty"), is(false));
     assertThat(propertiesAdapter.contains("charProperty"), is(false));
     assertThat(propertiesAdapter.contains("floatProperty"), is(false));
@@ -141,7 +148,9 @@ public class PropertiesAdapterTests {
 
   @Test
   public void isEmpty() {
+
     Properties properties = new Properties();
+
     PropertiesAdapter propertiesAdapter = from(properties);
 
     assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
@@ -166,6 +175,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void isSetWithSetProperties() {
+
     Properties properties = new Properties();
 
     properties.setProperty("one", "test");
@@ -191,6 +201,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void isUnsetWithUnsetProperties() {
+
     Properties properties = new Properties();
 
     properties.setProperty("one", "  ");
@@ -209,6 +220,7 @@ public class PropertiesAdapterTests {
   @Test
   @SuppressWarnings("all")
   public void existingUnsetPropertiesAreNotSetAndAreUnset() {
+
     Properties properties = new Properties();
 
     properties.put("NULLProperty", "NULL");
@@ -234,12 +246,14 @@ public class PropertiesAdapterTests {
 
   @Test
   public void nonExistingPropertiesAreNotSetNorUnset() {
+
     assertThat(propertiesAdapter.isSet("nonExistingProperty"), is(false));
     assertThat(propertiesAdapter.isUnset("nonExistingProperty"), is(false));
   }
 
   @Test
   public void convertUsesConversionService() {
+
     ConversionService mockConversionService = mock(ConversionService.class);
 
     when(mockProperties.getProperty(anyString(), any())).thenReturn("test");
@@ -262,6 +276,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void defaultIfNotSetReturnsValueOfExistingProperty() {
+
     assertThat(propertiesAdapter.defaultIfNotSet("booleanProperty", "false", String.class), is(equalTo("true")));
     assertThat(propertiesAdapter.defaultIfNotSet("characterProperty", "Y", String.class), is(equalTo("X")));
     assertThat(propertiesAdapter.defaultIfNotSet("doubleProperty", "1.21", String.class), is(equalTo("3.14159")));
@@ -271,6 +286,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void defaultIfNotSetReturnsDefaultValue() {
+
     assertThat(propertiesAdapter.defaultIfNotSet("boolProperty", false, Boolean.TYPE), is(false));
     assertThat(propertiesAdapter.defaultIfNotSet("charProperty", 'Y', Character.TYPE), is('Y'));
     assertThat(propertiesAdapter.defaultIfNotSet("floatProperty", 3.14f, Float.TYPE), is(3.14f));
@@ -295,6 +311,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void filterForTextBasedProperties() {
+
     PropertiesAdapter filteredPropertiesAdapter = propertiesAdapter.filter(
       (property) -> property.startsWith("char") || property.startsWith("str"));
 
@@ -308,6 +325,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void filterForNonExistingProperties() {
+
     PropertiesAdapter filteredPropertiesAdapter = propertiesAdapter.filter((property) -> false);
 
     assertThat(filteredPropertiesAdapter, is(notNullValue()));
@@ -316,6 +334,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void getExistingPropertyReturnsValue() {
+
     assertThat(propertiesAdapter.get("booleanProperty"), is(equalTo("true")));
     assertThat(propertiesAdapter.get("characterProperty"), is(equalTo("X")));
     assertThat(propertiesAdapter.get("doubleProperty"), is(equalTo("3.14159")));
@@ -330,6 +349,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void getExistingPropertyAsTypeReturnsTypedValue() {
+
     assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class), is(equalTo(true)));
     assertThat(propertiesAdapter.getAsType("characterProperty", Character.class), is(equalTo('X')));
     assertThat(propertiesAdapter.getAsType("doubleProperty", Double.class), is(equalTo(3.14159d)));
@@ -364,6 +384,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void iterableOnPropertyNames() {
+
     Set<String> expectedPropertyNames = new HashSet<>(Arrays.asList("booleanProperty", "characterProperty",
       "doubleProperty", "integerProperty", "stringProperty"));
 
@@ -376,7 +397,9 @@ public class PropertiesAdapterTests {
 
   @Test
   public void sizeIsEqualToNumberOfProperties() {
+
     Properties properties = new Properties();
+
     PropertiesAdapter propertiesAdapter = from(properties);
 
     assertThat(propertiesAdapter, is(notNullValue()));
@@ -403,6 +426,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void equalPropertiesAdaptersIsTrue() {
+
     Properties properties = singletonProperties("one", "1");
 
     PropertiesAdapter propertiesAdapterOne = from(properties);
@@ -417,6 +441,7 @@ public class PropertiesAdapterTests {
   @Test
   @SuppressWarnings("all")
   public void equalsItselfIsTrue() {
+
     PropertiesAdapter propertiesAdapter = from(singletonProperties("one", "1"));
 
     assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
@@ -436,6 +461,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void hashCodeIsCorrect() {
+
     Properties properties = singletonProperties("one", "1");
 
     PropertiesAdapter propertiesAdapterOne = from(properties);
@@ -449,6 +475,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void toStringIsSuccessful() {
+
     String actualPropertiesString = propertiesAdapter.toString();
 
     String expectedPropertiesString = "[\n\tbooleanProperty = true,\n\tcharacterProperty = X"
@@ -459,6 +486,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void toStringWithSinglePropertyIsSuccessful() {
+
     String actualPropertiesString = from(singletonProperties("one", "1")).toString();
     String expectedPropertiesString = "[\n\tone = 1\n]";
 
@@ -467,6 +495,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void toStringWithNoPropertiesIsSuccessful() {
+
     String actualPropertiesString = from(new Properties()).toString();
     String expectedPropertiesString = "[]";
 
@@ -475,6 +504,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void toMapIsSuccessful() {
+
     Properties properties = new Properties();
 
     properties.setProperty("one", "1");
@@ -498,6 +528,7 @@ public class PropertiesAdapterTests {
 
   @Test
   public void toMapWithEmptyPropertiesIsSuccessful() {
+
     PropertiesAdapter propertiesAdapter = from(new Properties());
 
     assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));

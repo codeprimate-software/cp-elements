@@ -19,9 +19,9 @@ package org.cp.elements.tools.net.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.NumberUtils.intValue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -86,6 +86,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void isRunningWithNonClosedBoundServerSocketReturnsTrue() {
+
     when(mockServerSocket.isClosed()).thenReturn(false);
     when(mockServerSocket.isBound()).thenReturn(true);
 
@@ -97,6 +98,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void isRunningWithClosedServerSocketReturnsFalse() {
+
     when(mockServerSocket.isClosed()).thenReturn(true);
 
     assertThat(clientServerSupport.isRunning(mockServerSocket)).isFalse();
@@ -107,6 +109,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void isRunningWithUnboundServerSocketReturnsFalse() {
+
     when(mockServerSocket.isClosed()).thenReturn(false);
     when(mockServerSocket.isBound()).thenReturn(false);
 
@@ -123,6 +126,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void newBufferedReaderIsSuccessful() throws IOException {
+
     when(mockSocket.getInputStream()).thenReturn(mockInputStream);
 
     assertThat(clientServerSupport.newBufferedReader(mockSocket)).isNotNull();
@@ -132,6 +136,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void newPrintWriterIsSuccessful() throws IOException {
+
     when(mockSocket.getOutputStream()).thenReturn(mockOutputStream);
 
     assertThat(clientServerSupport.newPrintWriter(mockSocket)).isNotNull();
@@ -141,6 +146,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void newServerSocketIsSuccessful() throws IOException {
+
     doReturn(mockServerSocket).when(clientServerSupport).newServerSocket();
 
     assertThat(clientServerSupport.newServerSocket(1234)).isNotNull();
@@ -153,6 +159,7 @@ public class AbstractClientServerSupportTests {
 
   @Test(expected = RuntimeException.class)
   public void newServerSocketHandlesIOException() throws IOException {
+
     try {
       doReturn(mockServerSocket).when(clientServerSupport).newServerSocket();
       doThrow(newIOException("test")).when(mockServerSocket).bind(any(SocketAddress.class));
@@ -177,6 +184,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void newSocketIsSuccessful() throws IOException {
+
     doReturn(mockSocket).when(clientServerSupport).newSocket();
 
     assertThat(clientServerSupport.newSocket("skullbox", 1234)).isNotNull();
@@ -191,6 +199,7 @@ public class AbstractClientServerSupportTests {
 
   @Test(expected = RuntimeException.class)
   public void newSocketHandlesIOException() throws IOException {
+
     try {
       doReturn(mockSocket).when(clientServerSupport).newSocket();
       doThrow(newIOException("test")).when(mockSocket).connect(any(SocketAddress.class));
@@ -217,6 +226,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void receiveMessageIsSuccessful() throws IOException {
+
     when(mockSocket.getInputStream()).thenReturn(new ByteArrayInputStream("This is the end of the line.\n".getBytes()));
 
     assertThat(clientServerSupport.receiveMessage(mockSocket)).isEqualTo("This is the end of the line.");
@@ -226,6 +236,7 @@ public class AbstractClientServerSupportTests {
 
   @Test
   public void setMessageIsSuccessful() throws IOException {
+
     doReturn(mockPrintWriter).when(clientServerSupport).newPrintWriter(any(Socket.class));
 
     assertThat(clientServerSupport.sendMessage(mockSocket, "test")).isSameAs(mockSocket);
@@ -236,6 +247,6 @@ public class AbstractClientServerSupportTests {
     verifyZeroInteractions(mockSocket);
   }
 
-  class TestClientServerSupport extends AbstractClientServerSupport {
-  }
+  class TestClientServerSupport extends AbstractClientServerSupport { }
+
 }

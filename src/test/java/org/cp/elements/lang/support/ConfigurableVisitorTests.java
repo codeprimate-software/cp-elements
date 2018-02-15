@@ -18,7 +18,7 @@ package org.cp.elements.lang.support;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ConfigurableVisitor} class.
+ * Unit tests for {@link ConfigurableVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -57,6 +57,7 @@ public class ConfigurableVisitorTests {
 
   @Test
   public void constructWithNullConfiguration() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Configuration cannot be null");
@@ -67,8 +68,11 @@ public class ConfigurableVisitorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void visit() {
+
     Configuration mockConfiguration = mock(Configuration.class);
+
     VisitableConfigurable<Configuration> mockVisitableConfigurable = mock(VisitableConfigurable.class);
+
     ConfigurableVisitor<Configuration> visitor = new ConfigurableVisitor<>(mockConfiguration);
 
     visitor.visit(mockVisitableConfigurable);
@@ -81,6 +85,6 @@ public class ConfigurableVisitorTests {
     new ConfigurableVisitor<>(mock(Configuration.class)).visit(mock(Visitable.class));
   }
 
-  protected interface VisitableConfigurable<T> extends Configurable<T>, Visitable {
-  }
+  protected interface VisitableConfigurable<T> extends Configurable<T>, Visitable { }
+
 }

@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -818,8 +818,8 @@ public class CollectionUtilsTests {
 
     FilteringTransformer<Object> mockFilteringTransformer = mock(FilteringTransformer.class);
 
-    when(mockFilteringTransformer.accept(anyObject())).thenReturn(true);
-    when(mockFilteringTransformer.transform(anyObject())).thenReturn(null);
+    when(mockFilteringTransformer.accept(any())).thenReturn(true);
+    when(mockFilteringTransformer.transform(any())).thenReturn(null);
 
     Collection<Object> emptyCollection = Collections.emptyList();
     Collection<Object> filteredTransformedCollection = CollectionUtils.filterAndTransform(

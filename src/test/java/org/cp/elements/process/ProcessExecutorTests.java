@@ -18,8 +18,8 @@ package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -60,6 +60,7 @@ public class ProcessExecutorTests {
 
   @Test
   public void executeWithVarargs() {
+
     when(processExecutor.execute(ArgumentMatchers.<String[]>any())).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
 
@@ -72,6 +73,7 @@ public class ProcessExecutorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void executeWithIterable() {
+
     when(processExecutor.execute(any(Iterable.class))).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
 
@@ -84,6 +86,7 @@ public class ProcessExecutorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void executeWithDirectoryAndIterable() {
+
     when(processExecutor.execute(any(File.class), any(Iterable.class))).thenCallRealMethod();
     when(processExecutor.execute(any(File.class), ArgumentMatchers.<String[]>any())).thenReturn(mockProcess);
 
@@ -93,6 +96,6 @@ public class ProcessExecutorTests {
       eq("java"), eq("example.App"), eq("arg"));
   }
 
-  abstract class TestProcessExecutor implements ProcessExecutor {
-  }
+  abstract class TestProcessExecutor implements ProcessExecutor { }
+
 }

@@ -24,8 +24,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -39,11 +39,9 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.ParameterizedInitable;
 import org.cp.elements.lang.Visitable;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 /**
- * The InitableVisitorTest class is a test suite of test cases testing the contract and functionality
- * of the {@link InitableVisitor} class.
+ * Unit tests for {@link InitableVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -57,6 +55,7 @@ public class InitableVisitorTest {
 
   @Test
   public void testConstruct() {
+
     InitableVisitor visitor = new InitableVisitor();
 
     assertNotNull(visitor);
@@ -66,7 +65,9 @@ public class InitableVisitorTest {
 
   @Test
   public void testConstructWithArguments() {
+
     Object[] expectedArguments = { true, 'x', 2, Math.PI, "test" };
+
     InitableVisitor visitor = new InitableVisitor(expectedArguments);
 
     assertNotNull(visitor);
@@ -76,6 +77,7 @@ public class InitableVisitorTest {
 
   @Test
   public void testConstructWithParameters() {
+
     Map<String, String> expectedParameters = new HashMap<>(3);
 
     expectedParameters.put("param1", "value1");
@@ -96,6 +98,7 @@ public class InitableVisitorTest {
 
   @Test
   public void visitInitableCallsInit() {
+
     InitableVisitable mockInitable = mock(InitableVisitable.class);
 
     InitableVisitor visitor = new InitableVisitor(ObjectUtils.EMPTY_OBJECT_ARRAY);
@@ -111,6 +114,7 @@ public class InitableVisitorTest {
 
   @Test
   public void visitParameterizedInitableCallsInit() {
+
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
     InitableVisitor visitor = new InitableVisitor();
@@ -128,6 +132,7 @@ public class InitableVisitorTest {
 
   @Test
   public void visitParameterizedInitableCallsInitWithArguments() {
+
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
     Object[] expectedArguments = { true, 'x', 1, Math.PI, "test" };
@@ -147,6 +152,7 @@ public class InitableVisitorTest {
 
   @Test
   public void visitParameterizedInitableCallsInitWithParameters() {
+
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
     Map<String, String> expectedParameters = new HashMap<>(3);
@@ -164,14 +170,12 @@ public class InitableVisitorTest {
     visitor.visit(mockParameterizedInitable);
 
     verify(mockParameterizedInitable, times(1)).init(eq(expectedParameters));
-    verify(mockParameterizedInitable, never()).init(Matchers.any(Object[].class));
+    verify(mockParameterizedInitable, never()).init(any(Object[].class));
     verify(mockParameterizedInitable, never()).init();
   }
 
-  protected interface ParameterizedInitableVisitable extends ParameterizedInitable, Visitable {
-  }
+  protected interface ParameterizedInitableVisitable extends ParameterizedInitable, Visitable { }
 
-  protected interface InitableVisitable extends Initable, Visitable {
-  }
+  protected interface InitableVisitable extends Initable, Visitable { }
 
 }

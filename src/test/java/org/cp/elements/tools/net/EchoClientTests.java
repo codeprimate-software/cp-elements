@@ -20,9 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.NumberUtils.intValue;
 import static org.cp.elements.tools.net.EchoClient.newEchoClient;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -74,11 +74,12 @@ public class EchoClientTests {
 
   @Before
   public void setup() {
-    testEchoClient = spy(new TestEchoClient(1234));
+    this.testEchoClient = spy(new TestEchoClient(1234));
   }
 
   @Test
   public void newEchoClientWithHostAndPortIsSuccessful() {
+
     EchoClient echoClient = newEchoClient("localhost", 1234);
 
     assertThat(echoClient).isNotNull();
@@ -88,6 +89,7 @@ public class EchoClientTests {
 
   @Test
   public void newEchoClientWithNullHostIsValid() {
+
     EchoClient echoClient = newEchoClient(1234);
 
     assertThat(echoClient).isNotNull();
@@ -97,6 +99,7 @@ public class EchoClientTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void newEchoClientWithNegativePortThrowsIllegalArgumentException() {
+
     try {
       newEchoClient(-1);
     }
@@ -110,6 +113,7 @@ public class EchoClientTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void newEchoClientWithOverflowPortThrowsIllegalArgumentException() {
+
     try {
       newEchoClient(65536);
     }
@@ -123,6 +127,7 @@ public class EchoClientTests {
 
   @Test
   public void sendMessageReceiveResponse() throws IOException {
+
     PipedOutputStream pipedOutputStream = new PipedOutputStream();
     PipedInputStream pipedInputStream = new PipedInputStream(pipedOutputStream);
 
@@ -140,6 +145,7 @@ public class EchoClientTests {
 
   @Test
   public void sendMessageFailToReceiveResponse() throws IOException {
+
     when(mockSocket.getInputStream()).thenThrow(newIOException("test"));
     when(mockSocket.getOutputStream()).thenReturn(mockOutputStream);
     doNothing().when(mockSocket).connect(any(SocketAddress.class));
@@ -158,6 +164,7 @@ public class EchoClientTests {
       super(port);
     }
 
+    @SuppressWarnings("unused")
     TestEchoClient(String host, int port) {
       super(host, port);
     }

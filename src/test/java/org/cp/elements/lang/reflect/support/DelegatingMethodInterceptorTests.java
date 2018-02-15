@@ -18,8 +18,8 @@ package org.cp.elements.lang.reflect.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.reflect.support.DelegatingMethodInterceptor.newDelegatingMethodInterceptor;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,6 +59,7 @@ public class DelegatingMethodInterceptorTests {
 
   @Test
   public void newDelegatingMethodInterceptorWithDelegateIsSuccessful() {
+
     DelegatingMethodInterceptor<?> methodInterceptor = newDelegatingMethodInterceptor(mockDelegate);
 
     assertThat(methodInterceptor).isNotNull();
@@ -67,6 +68,7 @@ public class DelegatingMethodInterceptorTests {
 
   @Test(expected = IllegalStateException.class)
   public void newDelegatingMethodInterceptorWithoutDelegateIsSuccessful() {
+
     DelegatingMethodInterceptor<?> methodInterceptor = newDelegatingMethodInterceptor();
 
     assertThat(methodInterceptor).isNotNull();
@@ -77,7 +79,9 @@ public class DelegatingMethodInterceptorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void setAndGetDelegateIsSuccessful() {
+
     MethodInterceptor<?> mockMethodInterceptor = mock(MethodInterceptor.class);
+
     DelegatingMethodInterceptor methodInterceptor = newDelegatingMethodInterceptor(mockMethodInterceptor);
 
     assertThat(methodInterceptor).isNotNull();
@@ -94,10 +98,12 @@ public class DelegatingMethodInterceptorTests {
 
   @Test(expected = IllegalStateException.class)
   public void getUninitializedDelegateThrowsIllegalStateException() {
+
     try {
       newDelegatingMethodInterceptor().getDelegate();
     }
     catch (IllegalStateException expected) {
+
       assertThat(expected).hasMessage("The delegate MethodInterceptor was not properly initialized");
       assertThat(expected).hasNoCause();
 
@@ -107,6 +113,7 @@ public class DelegatingMethodInterceptorTests {
 
   @Test
   public void getTargetDelegatesToDelegateGetTarget() {
+
     when(mockDelegate.getTarget()).thenReturn("test");
 
     assertThat(newDelegatingMethodInterceptor(mockDelegate).getTarget()).isEqualTo("test");
@@ -117,6 +124,7 @@ public class DelegatingMethodInterceptorTests {
   @Test
   @SuppressWarnings("unchecked")
   public void interceptDelegatesToDelegateInvoke() {
+
     when(mockDelegate.intercept(any(MethodInvocation.class))).thenReturn(Optional.of("test"));
 
     assertThat(newDelegatingMethodInterceptor(mockDelegate).intercept(mockMethodInvocation).orElse(null))

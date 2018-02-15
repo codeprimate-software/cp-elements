@@ -31,17 +31,17 @@ import org.junit.Test;
  */
 public class AbstractCacheTests {
 
-  private AbstractCache cache;
+  private AbstractCache<Long, Object> cache;
 
   @Before
   public void setup() {
-    this.cache = new TestCache();
+    this.cache = new TestCache<>();
   }
 
   @Test
   public void getNameWhenNamedReturnsName() {
 
-    assertThat(this.cache.named("TestCache")).isSameAs(this.cache);
+    assertThat(this.cache.<TestCache<Long, Object>>named("TestCache")).isSameAs(this.cache);
     assertThat(this.cache.getName()).isEqualTo("TestCache");
   }
 

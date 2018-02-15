@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ChangeSupport} class.
+ * Unit tests for {@link ChangeSupport}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -60,11 +60,12 @@ public class ChangeSupportTests {
 
   @Before
   public void setup() {
-    changeSupport = new ChangeSupport(source);
+    this.changeSupport = new ChangeSupport(source);
   }
 
   @Test
   public void createChangeSupport() {
+
     ChangeSupport changeSupport = new ChangeSupport(source);
 
     assertThat(changeSupport, is(notNullValue(ChangeSupport.class)));
@@ -75,6 +76,7 @@ public class ChangeSupportTests {
 
   @Test
   public void createChangeSupportWithNullSource() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Source cannot be null");
@@ -84,6 +86,7 @@ public class ChangeSupportTests {
 
   @Test
   public void addChangeListener() {
+
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
     assertThat(changeSupport.add(mockChangeListener), is(true));
@@ -92,6 +95,7 @@ public class ChangeSupportTests {
 
   @Test
   public void addChangeListenerTwiceIsAllowed() {
+
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
     assertThat(changeSupport.add(mockChangeListener), is(true));
@@ -104,6 +108,7 @@ public class ChangeSupportTests {
 
   @Test
   public void addNullChangeListener() {
+
     assertThat(changeSupport.add(null), is(false));
     assertThat(changeSupport.contains(null), is(false));
     assertThat(changeSupport.hasListeners(), is(false));
@@ -112,6 +117,7 @@ public class ChangeSupportTests {
 
   @Test
   public void containsChangeListener()  {
+
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
     assertThat(changeSupport.contains(mockChangeListener), is(false));
@@ -123,7 +129,9 @@ public class ChangeSupportTests {
 
   @Test
   public void createChangeEvent() {
+
     Object alternateSource = new Object();
+
     ChangeEvent changeEvent = changeSupport.createChangeEvent(alternateSource);
 
     assertThat(changeEvent, is(notNullValue(ChangeEvent.class)));
@@ -133,6 +141,7 @@ public class ChangeSupportTests {
 
   @Test
   public void fireChangeEvent() {
+
     ChangeListener mockChangeListenerOne = mock(ChangeListener.class, "MockChangeListenerOne");
     ChangeListener mockChangeListenerTwo = mock(ChangeListener.class, "MockChangeListenerTwo");
 
@@ -147,6 +156,7 @@ public class ChangeSupportTests {
 
   @Test
   public void hasListeners() {
+
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
     assertThat(changeSupport.hasListeners(), is(false));
@@ -162,6 +172,7 @@ public class ChangeSupportTests {
 
   @Test
   public void iterator() {
+
     ChangeListener mockChangeListenerOne = mock(ChangeListener.class, "MockChangeListenerOne");
     ChangeListener mockChangeListenerTwo = mock(ChangeListener.class, "MockChangeListenerTwo");
     ChangeListener mockChangeListenerThree = mock(ChangeListener.class, "MockChangeListenerThree");
@@ -186,6 +197,7 @@ public class ChangeSupportTests {
 
   @Test
   public void immutableIterator() {
+
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
     assertThat(changeSupport.add(mockChangeListener), is(true));
@@ -210,6 +222,7 @@ public class ChangeSupportTests {
 
   @Test
   public void remove() {
+
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
     assertThat(changeSupport.contains(mockChangeListener), is(false));
@@ -225,6 +238,7 @@ public class ChangeSupportTests {
 
   @Test
   public void size() {
+
     ChangeListener mockChangeListenerOne = mock(ChangeListener.class);
     ChangeListener mockChangeListenerTwo = mock(ChangeListener.class);
 

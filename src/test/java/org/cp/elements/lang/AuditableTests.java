@@ -19,9 +19,9 @@ package org.cp.elements.lang;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and default functionality of the {@link Auditable} interface.
+ * Unit tests for the {@link Auditable} interface.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -45,6 +45,7 @@ public class AuditableTests {
 
   @Test
   public void createdByCallsSetCreatedByReturnsThis() {
+
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
 
     when(mockAuditable.createdBy(anyString())).thenCallRealMethod();
@@ -56,7 +57,9 @@ public class AuditableTests {
 
   @Test
   public void createdOnCallsSetCreateOnReturnsThis() {
+
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
+
     LocalDateTime now = LocalDateTime.now();
 
     when(mockAuditable.createdOn(any(LocalDateTime.class))).thenCallRealMethod();
@@ -68,6 +71,7 @@ public class AuditableTests {
 
   @Test
   public void createdWithCallsSetCreatedWithReturnsThis() {
+
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
 
     when(mockAuditable.createdWith(anyString())).thenCallRealMethod();
@@ -79,6 +83,7 @@ public class AuditableTests {
 
   @Test
   public void modifiedByCallsSetModifiedByReturnsThis() {
+
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
 
     when(mockAuditable.modifiedBy(anyString())).thenCallRealMethod();
@@ -90,7 +95,9 @@ public class AuditableTests {
 
   @Test
   public void modifiedOnCallsSetModifiedOnReturnsThis() {
+
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
+
     LocalDateTime now = LocalDateTime.now();
 
     when(mockAuditable.modifiedOn(any(LocalDateTime.class))).thenCallRealMethod();
@@ -102,6 +109,7 @@ public class AuditableTests {
 
   @Test
   public void modifiedWithCallsSetModifiedWithReturnsThis() {
+
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
 
     when(mockAuditable.modifiedWith(anyString())).thenCallRealMethod();
@@ -111,6 +119,6 @@ public class AuditableTests {
     verify(mockAuditable, times(1)).setModifiedWith(eq("test"));
   }
 
-  abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> implements Auditable<USER, PROCESS, ID> {
-  }
+  abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> implements Auditable<USER, PROCESS, ID> { }
+
 }

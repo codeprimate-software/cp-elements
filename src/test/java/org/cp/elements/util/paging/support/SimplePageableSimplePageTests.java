@@ -48,7 +48,7 @@ import org.junit.Test;
 public class SimplePageableSimplePageTests {
 
   @Test
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "all" })
   public void constructSimplePageForPageOneInPageable() {
 
     List<Object> mockElements = mock(List.class);
@@ -76,7 +76,7 @@ public class SimplePageableSimplePageTests {
   }
 
   @Test
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "all" })
   public void constructSimplePageForPageTwoInPageable() {
 
     List<Object> mockElements = mock(List.class);

@@ -110,7 +110,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
    */
   @NullSafe
   @Override
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public <R extends Registry<Converter<?, ?>>> R unregister(Converter<?, ?> converter) {
 
     for (Iterator<Converter<?, ?>> iterator = iterator(); iterator.hasNext(); ) {

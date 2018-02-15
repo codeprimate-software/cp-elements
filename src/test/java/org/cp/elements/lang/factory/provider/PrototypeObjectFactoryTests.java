@@ -25,8 +25,8 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -48,7 +48,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.internal.matchers.VarargMatcher;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link PrototypeObjectFactory} class.
+ * Unit tests for {@link PrototypeObjectFactory}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -65,12 +65,15 @@ public class PrototypeObjectFactoryTests {
 
   @After
   public void tearDown() {
+
     ObjectFactoryReferenceHolder.clear();
+
     assertFalse(ObjectFactoryReferenceHolder.hasReference());
   }
 
   @Test
   public void constructionAndReference() {
+
     PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
 
     assertNotNull(objectFactory);
@@ -80,6 +83,7 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void constructionAndNoReference() {
+
     ObjectFactory mockObjectFactory = mock(ObjectFactory.class);
     ObjectFactoryReferenceHolder.set(mockObjectFactory);
 
@@ -96,6 +100,7 @@ public class PrototypeObjectFactoryTests {
   @Test
   @SuppressWarnings("unchecked")
   public void configure() {
+
     Configuration mockConfiguration = mock(Configuration.class);
     Configurable mockObject = mock(Configurable.class);
 
@@ -112,6 +117,7 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void configureWithAvailableConfigurationAndNonConfigurableObject() {
+
     Configuration mockConfiguration = mock(Configuration.class);
 
     Object bean = new Object();
@@ -128,7 +134,9 @@ public class PrototypeObjectFactoryTests {
   @Test
   @SuppressWarnings("unchecked")
   public void configureWithConfigurableObjectAndUnavailableConfiguration() {
+
     Configurable mockConfigurable = mock(Configurable.class);
+
     TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
 
     assertThat(objectFactory.isConfigurationAvailable(), is(false));
@@ -139,7 +147,9 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void configureWithNonConfigurableObjectAndUnavailableConfiguration() {
+
     Object bean = new Object();
+
     TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
 
     assertFalse(objectFactory.isConfigurationAvailable());
@@ -148,7 +158,9 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void initializeWithArguments() {
+
     Object[] arguments = new Object[0];
+
     ParameterizedInitable mockParameterizedInitable = mock(ParameterizedInitable.class);
 
     assertThat(new PrototypeObjectFactory().initialize(mockParameterizedInitable, arguments),
@@ -159,7 +171,9 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void initializeWithNamedParameters() {
+
     Map parameters = Collections.emptyMap();
+
     ParameterizedInitable mockParameterizedInitable = mock(ParameterizedInitable.class);
 
     PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
@@ -172,6 +186,7 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void initializeWithNoParametersOrArguments() {
+
     Initable mockInitable = mock(Initable.class);
 
     assertThat(new PrototypeObjectFactory().initialize(mockInitable), is(sameInstance(mockInitable)));
@@ -181,6 +196,7 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void initialize() {
+
     Object bean = new Object();
 
     assertThat(new PrototypeObjectFactory().initialize(bean, Collections.emptyMap()), is(sameInstance(bean)));
@@ -188,8 +204,11 @@ public class PrototypeObjectFactoryTests {
 
   @Test
   public void postConstruct() {
+
     ConfigurableInitable mockConfigurableInitable = mock(ConfigurableInitable.class);
+
     Configuration mockConfiguration = mock(Configuration.class);
+
     Object[] arguments = new Object[0];
 
     TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
@@ -205,8 +224,7 @@ public class PrototypeObjectFactoryTests {
     verify(mockConfigurableInitable, times(1)).init(equalVarargs(arguments));
   }
 
-  protected interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable {
-  }
+  protected interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable { }
 
   protected static class CustomVarargsMatcher implements ArgumentMatcher<Object[]>, VarargMatcher {
 

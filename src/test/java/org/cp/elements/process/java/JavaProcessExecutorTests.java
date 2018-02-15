@@ -19,9 +19,8 @@ package org.cp.elements.process.java;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.java.JavaProcessExecutor.newJavaProcessExecutor;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyVararg;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -79,7 +78,7 @@ public class JavaProcessExecutorTests {
   public void executeWithClassAndArgumentsCallsExecuteWithDirectoryClassAndArguments() {
     JavaProcessExecutor processExecutor = spy(newJavaProcessExecutor());
 
-    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(Class.class), anyVararg());
+    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(Class.class), any());
 
     assertThat(processExecutor.execute(TestApplication.class, "argOne", "argTwo")).isEqualTo(processAdapter);
 
@@ -91,7 +90,7 @@ public class JavaProcessExecutorTests {
   public void executeWithJarFileAndArgumentsCallsExecuteWithDirectoryJarFileAndArguments() {
     JavaProcessExecutor processExecutor = spy(newJavaProcessExecutor());
 
-    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(File.class), anyVararg());
+    doReturn(processAdapter).when(processExecutor).execute(any(File.class), any(File.class), any());
 
     assertThat(processExecutor.execute(mockFile, "argOne", "argTwo")).isEqualTo(processAdapter);
 

@@ -20,9 +20,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,7 +32,7 @@ import org.cp.elements.lang.Filter;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link InverseFilter} class.
+ * Unit tests for {@link InverseFilter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -46,7 +46,9 @@ public class InverseFilterTests {
 
   @Test
   public void createInverseFilter() {
+
     Filter<Object> mockFilter = mock(Filter.class);
+
     InverseFilter<?> inverseFilter = new InverseFilter<>(mockFilter);
 
     assertNotNull(inverseFilter);
@@ -60,7 +62,9 @@ public class InverseFilterTests {
 
   @Test
   public void acceptReturnsFalse() {
+
     Object value = new Object();
+
     Filter<Object> mockFilter = mock(Filter.class);
 
     when(mockFilter.accept(same(value))).thenReturn(true);
@@ -76,10 +80,12 @@ public class InverseFilterTests {
 
   @Test
   public void acceptReturnsTrue() {
+
     Object value = new Object();
+
     Filter<Object> mockFilter = mock(Filter.class);
 
-    when(mockFilter.accept(anyObject())).thenReturn(false);
+    when(mockFilter.accept(any())).thenReturn(false);
 
     InverseFilter<Object> inverseFilter = new InverseFilter<>(mockFilter);
 

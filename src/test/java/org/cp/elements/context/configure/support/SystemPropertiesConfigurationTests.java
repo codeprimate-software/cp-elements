@@ -23,8 +23,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,7 +37,7 @@ import org.cp.elements.context.configure.Configuration;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link SystemPropertiesConfiguration} class.
+ * Unit tests for {@link SystemPropertiesConfiguration}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -52,6 +52,7 @@ public class SystemPropertiesConfigurationTests {
 
   @Test
   public void isPresent() {
+
     assertTrue(configuration.isPresent("java.class.path"));
     assertTrue(configuration.isPresent("java.home"));
     assertTrue(configuration.isPresent("java.version"));
@@ -63,6 +64,7 @@ public class SystemPropertiesConfigurationTests {
 
   @Test
   public void doGetPropertyValue() {
+
     assertEquals(System.getProperty("java.class.path"), configuration.doGetPropertyValue("java.class.path"));
     assertEquals(System.getProperty("java.home"), configuration.doGetPropertyValue("java.home"));
     assertEquals(System.getProperty("java.version"), configuration.doGetPropertyValue("java.version"));
@@ -73,6 +75,7 @@ public class SystemPropertiesConfigurationTests {
 
   @Test
   public void getParentPropertyValue() {
+
     Configuration mockParentConfiguration = mock(Configuration.class);
 
     when(mockParentConfiguration.getPropertyValue(eq("custom.system.property"), anyBoolean())).thenReturn("test");
@@ -89,6 +92,7 @@ public class SystemPropertiesConfigurationTests {
 
   @Test
   public void iterator() {
+
     Set<String> expectedSystemPropertyNames = new HashSet<>(System.getProperties().stringPropertyNames());
 
     assertFalse(expectedSystemPropertyNames.isEmpty());

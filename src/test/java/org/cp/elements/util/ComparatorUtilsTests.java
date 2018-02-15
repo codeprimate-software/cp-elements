@@ -17,8 +17,8 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,6 +48,7 @@ public class ComparatorUtilsTests {
 
   @Test
   public void compareIgnoreNull() throws Exception {
+
     assertThat(ComparatorUtils.compareIgnoreNull(NULL, NULL)).isGreaterThan(0);
     assertThat(ComparatorUtils.compareIgnoreNull(null, "null")).isGreaterThan(0);
     assertThat(ComparatorUtils.compareIgnoreNull("null", null)).isLessThan(0);
@@ -60,11 +60,12 @@ public class ComparatorUtilsTests {
 
   @Test
   public void invertAscending() {
+
     List<Number> numbers = new ArrayList<>(Arrays.asList(2, 1, 3));
 
     Comparator<Number> ascendingComparator = (numberOne, numberTwo) -> (numberOne.intValue() - numberTwo.intValue());
 
-    Collections.sort(numbers,  ascendingComparator);
+    numbers.sort(ascendingComparator);
 
     int currentNumber = Integer.MIN_VALUE;
 
@@ -73,7 +74,7 @@ public class ComparatorUtilsTests {
       currentNumber = number.intValue();
     }
 
-    Collections.sort(numbers, ComparatorUtils.invert(ascendingComparator));
+    numbers.sort(ComparatorUtils.invert(ascendingComparator));
 
     currentNumber = Integer.MAX_VALUE;
 
@@ -85,11 +86,12 @@ public class ComparatorUtilsTests {
 
   @Test
   public void invertDescending() {
+
     List<Number> numbers = new ArrayList<>(Arrays.asList(2, 1, 3));
 
     Comparator<Number> descendingComparator = (numberOne, numberTwo) -> (numberTwo.intValue() - numberOne.intValue());
 
-    Collections.sort(numbers,  descendingComparator);
+    numbers.sort(descendingComparator);
 
     int currentNumber = Integer.MAX_VALUE;
 
@@ -98,7 +100,7 @@ public class ComparatorUtilsTests {
       currentNumber = number.intValue();
     }
 
-    Collections.sort(numbers, ComparatorUtils.invert(descendingComparator));
+    numbers.sort(ComparatorUtils.invert(descendingComparator));
 
     currentNumber = Integer.MIN_VALUE;
 
@@ -111,6 +113,7 @@ public class ComparatorUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void nullSafeArgumentComparatorWithNullValues() {
+
     Comparator<String> mockComparator = mock(Comparator.class);
 
     assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare(null, null)).isEqualTo(1);
@@ -123,6 +126,7 @@ public class ComparatorUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void nullSafeArgumentComparatorWithNonNullValues() {
+
     Comparator<String> mockComparator = mock(Comparator.class);
 
     when(mockComparator.compare(anyString(), anyString())).thenReturn(0);
@@ -135,6 +139,7 @@ public class ComparatorUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void nullSafeComparatorWithNonNullComparator() {
+
     Comparator<Comparable> mockComparator = mock(Comparator.class);
 
     assertThat(ComparatorUtils.nullSafeComparator(mockComparator)).isSameAs(mockComparator);
@@ -143,6 +148,7 @@ public class ComparatorUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void nullSafeComparatorWithNullComparator() {
+
     Comparator<Comparable> comparator = ComparatorUtils.nullSafeComparator(null);
 
     assertThat(comparator).isNotNull();

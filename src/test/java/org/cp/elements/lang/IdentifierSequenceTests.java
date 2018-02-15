@@ -47,7 +47,7 @@ public class IdentifierSequenceTests {
   @Mock
   private Identifiable<Long> mockIdentifiable;
 
-  private final IdentifierSequence identifierSequence = new TestIdentifierSequence();
+  private final IdentifierSequence<Long> identifierSequence = new TestIdentifierSequence();
 
   @Test
   public void setsIdOnNewIdentifiableObject() {
@@ -80,7 +80,7 @@ public class IdentifierSequenceTests {
 
   @Test
   public void identifyIsNullSafe() {
-    assertThat(this.identifierSequence.identify(null)).isNull();
+    assertThat(this.identifierSequence.<Identifiable<Long>>identify(null)).isNull();
   }
 
   static class TestIdentifierSequence implements IdentifierSequence<Long> {

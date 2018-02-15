@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.test.TestUtils.timeIt;
 import static org.cp.elements.tools.net.EchoServer.newEchoServer;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -92,7 +92,8 @@ public class EchoServerTests {
 
   @Before
   public void setup() {
-    testEchoServer = spy(new TestEchoServer(1234));
+
+    this.testEchoServer = spy(new TestEchoServer(1234));
 
     doReturn(mockExecutorService).when(testEchoServer).newExecutorService();
 
@@ -105,6 +106,7 @@ public class EchoServerTests {
 
   @Test
   public void constructServerSocketIsSuccessful() {
+
     EchoServer echoServer = new EchoServer(1234) {
       @Override public ServerSocket newServerSocket(int port) {
         when(mockServerSocket.getLocalPort()).thenReturn(port);
@@ -120,6 +122,7 @@ public class EchoServerTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void newEchoServerWithNegativePortThrowsIllegalArgumentException() {
+
     try  {
       newEchoServer(-1);
     }
@@ -133,6 +136,7 @@ public class EchoServerTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void newEchoServerWithOverflowPortThrowsIllegalArgumentException() {
+
     try  {
       newEchoServer(123456789);
     }
@@ -146,6 +150,7 @@ public class EchoServerTests {
 
   @Test
   public void newEchoServerIsNotRunning() {
+
     when(mockServerSocket.isClosed()).thenReturn(false);
     when(mockServerSocket.isBound()).thenReturn(false);
 
@@ -158,6 +163,7 @@ public class EchoServerTests {
 
   @Test
   public void newEchoServerIsRunning() {
+
     when(mockServerSocket.isClosed()).thenReturn(false);
     when(mockServerSocket.isBound()).thenReturn(true);
 
@@ -170,6 +176,7 @@ public class EchoServerTests {
 
   @Test
   public void runCallsRunEchoServiceWithServerSocket() {
+
     doNothing().when(testEchoServer).runEchoService(any(ServerSocket.class));
 
     testEchoServer.run();
@@ -179,6 +186,7 @@ public class EchoServerTests {
 
   @Test
   public void runAndWaitForCallsRunAndWaitForWithDefaultDuration() {
+
     doReturn(testEchoServer).when(testEchoServer).runAndWaitFor(anyLong());
 
     assertThat(testEchoServer.runAndWaitFor()).isSameAs(testEchoServer);
@@ -189,6 +197,7 @@ public class EchoServerTests {
 
   @Test
   public void runAndWaitForWithDurationCallsRunThenWaitForWithDuration() {
+
     doNothing().when(testEchoServer).runEchoService(any(ServerSocket.class));
     doReturn(true).when(testEchoServer).waitFor(anyLong());
 
@@ -201,6 +210,7 @@ public class EchoServerTests {
 
   @Test
   public void runEchoServiceRunsCorrectly() throws IOException {
+
     String expectedMessage = "This is the end of the line!";
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(expectedMessage.getBytes().length);
@@ -226,6 +236,7 @@ public class EchoServerTests {
 
   @Test
   public void runEchoServiceQuietlyHandlesIOException() throws IOException {
+
     when(mockServerSocket.accept()).thenThrow(newIOException("test"));
     doReturn(true).when(mockServerSocket).isBound();
     doReturn(false).doReturn(false).doReturn(true).when(mockServerSocket).isClosed();
@@ -242,6 +253,7 @@ public class EchoServerTests {
 
   @Test
   public void receiveMessageSaysHello() throws IOException {
+
     doReturn(new ByteArrayInputStream("Hello".getBytes())).when(mockSocket).getInputStream();
 
     assertThat(testEchoServer.receiveMessage(mockSocket)).isEqualTo("Hello");
@@ -251,6 +263,7 @@ public class EchoServerTests {
 
   @Test
   public void receiveMessageSaysWhat() throws IOException {
+
     doThrow(newIOException("test")).when(mockSocket).getInputStream();
 
     assertThat(testEchoServer.receiveMessage(mockSocket)).isEqualTo("What?");
@@ -260,6 +273,7 @@ public class EchoServerTests {
 
   @Test
   public void sendResponseCallsSendMessage() throws IOException {
+
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
     doReturn(outputStream).when(mockSocket).getOutputStream();
@@ -273,6 +287,7 @@ public class EchoServerTests {
 
   @Test
   public void shutdownClosesServerSocketAndStopsEchoService() {
+
     doNothing().when(testEchoServer).closeServerSocket();
     doReturn(false).when(testEchoServer).stopEchoService();
 
@@ -284,7 +299,8 @@ public class EchoServerTests {
 
   @Test
   public void closeServerSocketIsCorrect() throws IOException {
-    testEchoServer.closeServerSocket();
+
+    this.testEchoServer.closeServerSocket();
 
     verify(mockServerSocket, times(1)).close();
   }
@@ -292,13 +308,16 @@ public class EchoServerTests {
   @Test
   @SuppressWarnings("all")
   public void stopEchoServiceDoesNothingWhenEchoServiceIsNull() {
+
     doReturn(null).when(testEchoServer).getEchoService();
+
     assertThat(testEchoServer.stopEchoService()).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void stopEchoServiceStopsOnShutdown() throws InterruptedException {
+
     doReturn(mockExecutorService).when(testEchoServer).getEchoService();
     when(mockExecutorService.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(true);
     when(mockExecutorService.isShutdown()).thenReturn(true);
@@ -314,6 +333,7 @@ public class EchoServerTests {
   @Test
   @SuppressWarnings("all")
   public void stopEchoServiceAwaitsTerminationThenStopsOnShutdownNow() throws InterruptedException {
+
     doReturn(mockExecutorService).when(testEchoServer).getEchoService();
     when(mockExecutorService.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(false).thenReturn(true);
     when(mockExecutorService.isShutdown()).thenReturn(true);
@@ -329,6 +349,7 @@ public class EchoServerTests {
   @Test
   @SuppressWarnings("all")
   public void stopEchoServiceFailsToShutdown() throws InterruptedException {
+
     doReturn(mockExecutorService).when(testEchoServer).getEchoService();
     when(mockExecutorService.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(false).thenReturn(false);
     when(mockExecutorService.isShutdown()).thenReturn(false);
@@ -348,15 +369,21 @@ public class EchoServerTests {
 
   @Test
   public void waitForCallsWaitForWithDuration() {
+
     doReturn(true).when(testEchoServer).waitFor(anyLong());
+
     assertThat(testEchoServer.waitFor()).isTrue();
+
     verify(testEchoServer, times(1)).waitFor(eq(EchoServer.DEFAULT_DURATION_MILLISECONDS));
   }
 
   @Test
   public void waitForWaitsForDuration() {
+
     doReturn(false).when(testEchoServer).isRunning();
+
     assertThat(timeIt(() -> testEchoServer.waitFor(750L))).isGreaterThanOrEqualTo(750L);
+
     verify(testEchoServer, atLeast(2)).isRunning();
   }
 
@@ -367,6 +394,7 @@ public class EchoServerTests {
     @Override
     @SuppressWarnings("all")
     public void initialize() {
+
       try {
         super.initialize();
 
@@ -388,6 +416,7 @@ public class EchoServerTests {
 
     @SuppressWarnings("unused")
     public void thread1() {
+
       Thread.currentThread().setName("Stop EchoService Thread");
 
       assertThat(Thread.currentThread().isInterrupted()).isFalse();
@@ -397,6 +426,7 @@ public class EchoServerTests {
 
     @SuppressWarnings("unused")
     public void thread2() {
+
       Thread.currentThread().setName("Interrupting Thread");
       waitForTick(1);
       getThread(1).interrupt();
@@ -404,6 +434,7 @@ public class EchoServerTests {
 
     @Override
     public void finish() {
+
       try {
         verify(mockExecutorService, times(1)).shutdown();
         verify(mockExecutorService, times(1)).awaitTermination(eq(30L), eq(TimeUnit.SECONDS));

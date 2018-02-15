@@ -18,8 +18,8 @@ package org.cp.elements.lang;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,7 +31,7 @@ import java.util.Map;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link Initializer} class.
+ * Unit tests for {@link Initializer}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -44,6 +44,7 @@ public class InitializerTests {
 
   @Test
   public void initInitableObject() {
+
     Initable mockInitable = mock(Initable.class);
 
     assertThat(Initializer.init(mockInitable), is(true));
@@ -58,7 +59,9 @@ public class InitializerTests {
 
   @Test
   public void initUsingArgumentsWithInitableObject() {
+
     Object[] args = { "arg1", "arg2", "arg3" };
+
     Initable mockInitable = mock(Initable.class);
 
     assertThat(Initializer.init(mockInitable, args), is(true));
@@ -73,16 +76,20 @@ public class InitializerTests {
 
   @Test
   public void initUsingArgumentsWithParameterizedInitableObject() {
+
     Object[] args = { "arg1", "arg2", "arg3" };
+
     ParameterizedInitable mockParameterizedInitable = mock(ParameterizedInitable.class);
 
     assertThat(Initializer.init(mockParameterizedInitable, args), is(true));
 
-    verify(mockParameterizedInitable, times(1)).init(eq("arg1"), eq("arg2"), eq("arg3"));
+    verify(mockParameterizedInitable, times(1))
+      .init(eq("arg1"), eq("arg2"), eq("arg3"));
   }
 
   @Test
   public void initUsingParametersWithInitableObject() {
+
     Map<String, String> parameters = new HashMap<>(3);
 
     parameters.put("param1", "arg1");
@@ -103,6 +110,7 @@ public class InitializerTests {
 
   @Test
   public void initUsingParametersWithParameterizedInitableObject() {
+
     Map<String, String> parameters = new HashMap<>(3);
 
     parameters.put("param1", "arg1");

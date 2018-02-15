@@ -20,8 +20,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link InverseFileFilter} class.
+ * Unit tests for {@link InverseFileFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -65,6 +65,7 @@ public class InverseFileFilterTests {
 
   @Test
   public void constructInverseFileFilter() {
+
     InverseFileFilter inverseFileFilter = new InverseFileFilter(mockFileFilter);
 
     assertThat(inverseFileFilter.getDelegate(), is(sameInstance(mockFileFilter)));
@@ -72,6 +73,7 @@ public class InverseFileFilterTests {
 
   @Test
   public void constructInverseFileFilterWithNullDelegate() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("FileFilter must not be null");
@@ -81,6 +83,7 @@ public class InverseFileFilterTests {
 
   @Test
   public void accept() {
+
     InverseFileFilter inverseFileFilter = new InverseFileFilter(mockFileFilter);
 
     when(mockFileFilter.accept(any(File.class))).thenReturn(false);
@@ -92,6 +95,7 @@ public class InverseFileFilterTests {
 
   @Test
   public void reject() {
+
     InverseFileFilter inverseFileFilter = new InverseFileFilter(mockFileFilter);
 
     when(mockFileFilter.accept(any(File.class))).thenReturn(true);

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,8 +34,7 @@ import org.cp.elements.context.configure.Configuration;
 import org.junit.Test;
 
 /**
- * The EnvironmentVariablesConfigurationTest class is a test suite of test cases testing the contract and functionality
- * of the {@link EnvironmentVariablesConfiguration} class.
+ * Unit tests for {@link EnvironmentVariablesConfiguration}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -49,6 +48,7 @@ public class EnvironmentVariablesConfigurationTest {
 
   @Test
   public void testIsPresent() {
+
     assertTrue(System.getenv().containsKey("PATH"));
     assumeTrue(System.getenv().containsKey("USER"));
     assertTrue(configuration.isPresent("PATH"));
@@ -58,6 +58,7 @@ public class EnvironmentVariablesConfigurationTest {
 
   @Test
   public void testDoGetPropertyValue() {
+
     assertEquals(System.getenv("HOST"), configuration.doGetPropertyValue("HOST"));
     assertEquals(System.getenv("PATH"), configuration.doGetPropertyValue("PATH"));
     assertEquals(System.getenv("USER"), configuration.doGetPropertyValue("USER"));
@@ -65,6 +66,7 @@ public class EnvironmentVariablesConfigurationTest {
 
   @Test
   public void getParentPropertyValue() {
+
     Configuration mockParentConfiguration = mock(Configuration.class);
 
     when(mockParentConfiguration.getPropertyValue(eq("CUSTOM_ENVIRONMENT_VARIABLE"), eq(true))).thenReturn("test");
@@ -80,6 +82,7 @@ public class EnvironmentVariablesConfigurationTest {
 
   @Test
   public void testIterator() {
+
     Set<String> expectedEnvironmentVariableNames = new HashSet<>(System.getenv().keySet());
 
     assertFalse(expectedEnvironmentVariableNames.isEmpty());
@@ -90,5 +93,4 @@ public class EnvironmentVariablesConfigurationTest {
 
     assertTrue(expectedEnvironmentVariableNames.isEmpty());
   }
-
 }

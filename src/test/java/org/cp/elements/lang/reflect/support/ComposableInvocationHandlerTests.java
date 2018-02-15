@@ -21,8 +21,8 @@ import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -72,6 +72,7 @@ public class ComposableInvocationHandlerTests {
 
   @Test
   public void composeArrayOfInvocationHandlers() {
+
     ComposableInvocationHandler invocationHandlers =
       ComposableInvocationHandler.compose(mockInvocationHandlerOne, mockInvocationHandlerTwo);
 
@@ -82,6 +83,7 @@ public class ComposableInvocationHandlerTests {
 
   @Test
   public void composeIterableOfInvocationHandlers() {
+
     ComposableInvocationHandler invocationHandlers =
       ComposableInvocationHandler.compose(asIterable(mockInvocationHandlerOne));
 
@@ -92,6 +94,7 @@ public class ComposableInvocationHandlerTests {
 
   @Test
   public void invokeHandledByFirstInvocationHandler() throws Throwable {
+
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
@@ -110,6 +113,7 @@ public class ComposableInvocationHandlerTests {
 
   @Test
   public void invokeHandledBySecondInvocationHandler() throws Throwable {
+
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
@@ -130,6 +134,7 @@ public class ComposableInvocationHandlerTests {
 
   @Test
   public void invokeThrowsUnhandledMethodInvocationException() throws Throwable {
+
     Object proxy = new Object();
     Method getName = Contact.class.getMethod("getName");
     Object[] arguments = asArray("argOne", "argTwo");
@@ -159,6 +164,7 @@ public class ComposableInvocationHandlerTests {
 
   @Test
   public void iteratorIsSuccessful() {
+
     InvocationHandler mockInvocationHandlerThree = mock(InvocationHandler.class);
     ComposableInvocationHandler invocationHandler = ComposableInvocationHandler.compose(
       mockInvocationHandlerOne, mockInvocationHandlerTwo, mockInvocationHandlerThree);

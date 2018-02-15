@@ -19,8 +19,8 @@ package org.cp.elements.lang.support;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,7 +32,7 @@ import org.cp.elements.lang.Visitor;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ClearIdentityVisitor} class.
+ * Unit tests for {@link ClearIdentityVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -49,6 +49,7 @@ public class ClearIdentityVisitorTests {
 
   @Test
   public void visitIdentifiableVisitable() {
+
     IdentifiableVisitable mockIdentifiableVisitable = mock(IdentifiableVisitable.class);
 
     doAnswer((invocationOnMock) -> {
@@ -65,6 +66,7 @@ public class ClearIdentityVisitorTests {
   @Test
   @SuppressWarnings("all")
   public void visitNonIdentifiableVisitable() {
+
     IdentifierVisitable identifier = new IdentifierVisitable();
 
     assertThat(identifier.id.longValue(), is(equalTo(1L)));
@@ -76,7 +78,7 @@ public class ClearIdentityVisitorTests {
 
   @Test
   public void visitNull() {
-    visitor.visit(null);
+    this.visitor.visit(null);
   }
 
   public interface IdentifiableVisitable extends Identifiable<Long>, Visitable {

@@ -28,8 +28,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -55,7 +55,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link AbstractConfiguration} class.
+ * Unit tests for {@link AbstractConfiguration}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -77,6 +77,7 @@ public class AbstractConfigurationTests {
 
   @Before
   public void setup() {
+
     configurationSettings.setProperty("jdbc.driverClassName", "com.mysql.jdbc.Driver");
     configurationSettings.setProperty("jdbc.url", "jdbc:mysql://localhost:3306/appDataStore");
     configurationSettings.setProperty("jdbc.username", "");
@@ -85,6 +86,7 @@ public class AbstractConfigurationTests {
 
   @After
   public void tearDown() {
+
     configurationSettings.clear();
     configurationSettings = null;
   }
@@ -124,6 +126,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void constructUninitializedConversionService() {
+
     exception.expect(IllegalStateException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The ConversionService was not properly initialized!");
@@ -133,6 +136,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void setConversionServiceToNull() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The ConversionService used to support this Configuration cannot be null!");
@@ -142,7 +146,9 @@ public class AbstractConfigurationTests {
 
   @Test
   public void setAndGetConversionService() {
+
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
+
     ConversionService mockConversionService = mock(ConversionService.class);
 
     configuration.setConversionService(mockConversionService);
@@ -152,6 +158,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void convert() {
+
     ConversionService mockConversionService = mock(ConversionService.class);
 
     when(mockConversionService.canConvert(eq(String.class), eq(Gender.class))).thenReturn(true);
@@ -170,6 +177,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void convertWithNullType() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The Class type to convert the String value to cannot be null!");
@@ -179,6 +187,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void convertWithUnsupportedConversion() {
+
     ConversionService mockConversionService = mock(ConversionService.class);
 
     when(mockConversionService.canConvert(eq(String.class), eq(Process.class))).thenReturn(false);
@@ -205,6 +214,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void defaultIfUnset() {
+
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
     assertEquals("val", configuration.defaultIfUnset("val", "test"));
@@ -217,6 +227,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void isPresent() {
+
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     assertTrue(configuration.isPresent("jdbc.driverClassName"));
@@ -231,6 +242,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void isSet() {
+
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     assertTrue(configuration.isPresent("jdbc.driverClassName"));
@@ -253,6 +265,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void getPropertyValue() {
+
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     assertEquals("com.mysql.jdbc.Driver", configuration.getPropertyValue("jdbc.driverClassName"));
@@ -265,6 +278,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void getParentPropertyValue() {
+
     Properties parentConfigurationSettings = new Properties();
 
     parentConfigurationSettings.setProperty("jdbc.username", "root");
@@ -281,6 +295,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void getRequiredUnsetPropertyValue() {
+
     exception.expect(ConfigurationException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("The property (jdbc.username) is required!");
@@ -315,6 +330,7 @@ public class AbstractConfigurationTests {
   @Test
   @IntegrationTest
   public void getConvertedPropertyValueAs() {
+
     Properties customConfigurationProperties = new Properties();
 
     customConfigurationProperties.setProperty("os.admin.user", "root");
@@ -333,6 +349,7 @@ public class AbstractConfigurationTests {
 
   @Test
   public void getDefaultPropertyValueAs() {
+
     User guestUser = () -> "GUEST";
 
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
@@ -346,6 +363,7 @@ public class AbstractConfigurationTests {
   @Test
   @IntegrationTest
   public void getNonRequiredPropertyValueAs() {
+
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
     configuration.setConversionService(new TestConversionService(new UserConverter()));
@@ -357,6 +375,7 @@ public class AbstractConfigurationTests {
   @Test(expected = ConfigurationException.class)
   // NOTE integration test!
   public void testGetRequiredPropertyValueAs() {
+
     try {
       AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
@@ -368,6 +387,7 @@ public class AbstractConfigurationTests {
       configuration.getPropertyValueAs("jdbc.username", true, User.class);
     }
     catch (ConfigurationException expected) {
+
       assertEquals(String.format("Failed to get the value of configuration setting property (%1$s) as type (%2$s)!",
         "jdbc.username", User.class.getName()), expected.getMessage());
       assertTrue(expected.getCause() instanceof ConversionException);

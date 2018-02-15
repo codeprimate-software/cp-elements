@@ -20,10 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.NumberUtils.intValue;
 import static org.cp.elements.tools.net.ConnectionTester.newConnectionTester;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -57,6 +57,7 @@ public class ConnectionTesterTests {
 
   @Test
   public void newConnectionTestWithPort() {
+
     ConnectionTester connectionTester = newConnectionTester(1234);
 
     assertThat(connectionTester).isNotNull();
@@ -66,6 +67,7 @@ public class ConnectionTesterTests {
 
   @Test
   public void newConnectionTesterWithHostAndPort() {
+
     ConnectionTester connectionTester = newConnectionTester("skullbox", 1234);
 
     assertThat(connectionTester).isNotNull();
@@ -75,6 +77,7 @@ public class ConnectionTesterTests {
 
   @Test
   public void constructConnectionTester() {
+
     ConnectionTester connectionTester = new ConnectionTester("localhost", 9876);
 
     assertThat(connectionTester.getHost()).isEqualTo("localhost");
@@ -83,6 +86,7 @@ public class ConnectionTesterTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructConnectionTesterWithNegativePortThrowsIllegalArgumentException() {
+
     try {
       new ConnectionTester("localhost", -1);
     }
@@ -96,6 +100,7 @@ public class ConnectionTesterTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructConnectionTesterWithPortExceedingMaximumThrowsIllegalArgumentException() {
+
     try {
       new ConnectionTester("localhost", 123456789);
     }
@@ -119,6 +124,7 @@ public class ConnectionTesterTests {
 
   @Test
   public void setGetAndIsConnected() {
+
     ConnectionTester connectionTester = newConnectionTester(1234);
 
     assertThat(connectionTester).isNotNull();
@@ -134,6 +140,7 @@ public class ConnectionTesterTests {
 
   @Test
   public void evaluateCallsTest() {
+
     ConnectionTester connectionTester = spy(newConnectionTester(1234));
 
     assertThat(connectionTester).isNotNull();
@@ -147,6 +154,7 @@ public class ConnectionTesterTests {
 
   @Test
   public void retestCallsSetConnectedWithFalseAndTest() {
+
     ConnectionTester connectionTester = spy(newConnectionTester(1234));
 
     assertThat(connectionTester).isNotNull();
@@ -165,7 +173,9 @@ public class ConnectionTesterTests {
 
   @Test
   public void testConnectsSuccessfully() throws IOException {
+
     ConnectionTester connectionTester = spy(newConnectionTester(1234));
+
     Socket mockSocket = mock(Socket.class);
 
     assertThat(connectionTester).isNotNull();
@@ -191,7 +201,9 @@ public class ConnectionTesterTests {
 
   @Test
   public void testFailsToConnect() throws IOException {
+
     ConnectionTester connectionTester = spy(newConnectionTester(1234));
+
     Socket mockSocket = mock(Socket.class);
 
     assertThat(connectionTester).isNotNull();
@@ -217,7 +229,9 @@ public class ConnectionTesterTests {
 
   @Test
   public void testHandlesIOException() throws IOException {
+
     ConnectionTester connectionTester = spy(newConnectionTester(1234));
+
     Socket mockSocket = mock(Socket.class);
 
     assertThat(connectionTester).isNotNull();
