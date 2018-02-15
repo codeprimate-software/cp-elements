@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.annotation.FluentApi;
@@ -69,7 +70,9 @@ public abstract class LangExtensions {
   @Experimental
   @SuppressWarnings("unchecked")
   public static <T> T $(T obj, Class<?>... interfaces) {
+
     ProxyFactory<T> proxyFactory = newProxyFactory(obj, interfaces);
+
     return (T) proxyFactory.adviseWith(newSafeNavigationHandler(proxyFactory)).newProxy();
   }
 
@@ -241,14 +244,30 @@ public abstract class LangExtensions {
     void isAssignableTo(Class type);
 
     /**
-     * Asserts whether the object to evaluate is comparable to the given object.  This assertion performs
-     * an equality comparison as determined by the Comparable criteria of the Class type of the objects.
+     * Asserts whether the {@link Object} to evaluate is {@link Comparable} to the given {@link Object}.
      *
-     * @param obj the Comparable object to compare with the object being evaluated.
-     * @throws AssertionException if the object being evaluated is not comparable to the Comparable object.
+     * This assertion performs an equality comparison as determined by the {@link Comparable} criteria
+     * based on the {@link Comparable} {@link Class type} of the {@link Object objects}.
+     *
+     * @param obj {@link Comparable} object to compare with the {@link Object} being evaluated.
+     * @throws AssertionException if the {@link Object} being evaluated is not comparable
+     * to the given {@link Comparable} object.
      * @see java.lang.Comparable#compareTo(Object)
      */
     void isComparableTo(Comparable<T> obj);
+
+    /**
+     * Asserts whether the {@link Object} to evaluate is {@link Comparable} to the given {@link Object}.
+     *
+     * This assertion performs an equality comparison as determined by the {@link Comparable} criteria
+     * based on the {@link Comparable} {@link Class type} of the {@link Object objects}.
+     *
+     * @param obj {@link Comparable} object to compare with the {@link Object} being evaluated.
+     * @throws AssertionException if the {@link Object} being evaluated is not comparable
+     * to the given {@link Comparable} object.
+     * @see java.lang.Comparable#compareTo(Object)
+     */
+    void isNotComparableTo(Comparable<T> obj);
 
     /**
      * Asserts whether the object to evaluate is equal to the given object.  The objects are deemed equal
@@ -495,13 +514,23 @@ public abstract class LangExtensions {
     AssertThat<T> not();
 
     /**
-     * Uses the provided message and message arguments in the AssertionException thrown when an assertion fails.
+     * Uses the provided {@link String message} and {@link Object message arguments} in the {@link AssertionException}
+     * thrown when an assertion fails.
      *
-     * @param message the String message used in the AssertionException.
-     * @param args an array of object arguments used to populate the placeholders of the message.
+     * @param message {@link String} containing the message used in the {@link AssertionException}.
+     * @param args array of {@link Object arguments} used to populate the placeholders of the {@link String message}.
      * @return this assertion instance.
      */
     AssertThat<T> stating(String message, Object... args);
+
+    /**
+     * Uses the supplied {@link Supplier message} in the {@link AssertionException} thrown when an assertion fails.
+     *
+     * @param message {@link Supplier} containing the message used in the {@link AssertionException}.
+     * @return this assertion instance.
+     * @see java.util.function.Supplier
+     */
+    AssertThat<T> stating(Supplier<String> message);
 
     /**
      * Throws the provided RuntimeException when an assertion fails.
@@ -522,9 +551,9 @@ public abstract class LangExtensions {
     AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer);
 
     /**
-     * Enables or disables this assertion based on the provided Condition.
+     * Enables or disables this assertion based on the provided {@link Condition}.
      *
-     * @param condition the Condition used to enable or disable this assertion at runtime.
+     * @param condition {@link Condition} used to enable or disable this assertion at runtime.
      * @return this assertion instance.
      * @see org.cp.elements.lang.Condition
      */
@@ -552,7 +581,7 @@ public abstract class LangExtensions {
 
     private RuntimeException cause;
 
-    private String message;
+    private Supplier<String> message;
 
     private Transformer<AssertThat<T>> transformer;
 
@@ -563,6 +592,7 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     private AssertThatExpression(T obj, boolean expected) {
+
       this.obj = obj;
       this.expected = expected;
       this.condition = () -> true;
@@ -570,20 +600,21 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     private boolean conditionHolds() {
-      return condition.evaluate();
+      return this.condition.evaluate();
     }
 
     /* (non-Javadoc) */
     private boolean notEqualToExpected(boolean actual) {
-      return !(actual == expected);
+      return !(actual == this.expected);
     }
 
     /* (non-Javadoc) */
     public void isAssignableTo(Class type) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).assignableTo(type))) {
+        if (notEqualToExpected(is(this.obj).assignableTo(type))) {
           throwAssertionError("[%1$s] is %2$sassignable to [%3$s]",
-            obj, negate(NOT), ObjectUtils.getName(type));
+            this.obj, negate(NOT), ObjectUtils.getName(type));
         }
       }
     }
@@ -591,15 +622,22 @@ public abstract class LangExtensions {
     /* (non-Javadoc) */
     @SuppressWarnings("unchecked")
     public void isComparableTo(Comparable<T> comparable) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is((Comparable<T>) obj).comparableTo(comparable))) {
-          throwAssertionError("[%1$s] is %2$scomparable to [%3$s]", obj, negate(NOT), comparable);
+        if (notEqualToExpected(is((Comparable<T>) this.obj).comparableTo(comparable))) {
+          throwAssertionError("[%1$s] is %2$scomparable to [%3$s]", this.obj, negate(NOT), comparable);
         }
       }
     }
 
     /* (non-Javadoc) */
+    public void isNotComparableTo(Comparable<T> comparable) {
+      not().isComparableTo(comparable);
+    }
+
+    /* (non-Javadoc) */
     public void isEqualTo(T obj) {
+
       if (conditionHolds()) {
         if (notEqualToExpected(is(this.obj).equalTo(obj))) {
           throwAssertionError("[%1$s] is %2$sequal to [%3$s]", this.obj, negate(NOT), obj);
@@ -614,67 +652,75 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     public void isFalse() {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).False())) {
-          throwAssertionError("[%1$s] is %2$sfalse", obj, negate(NOT));
+        if (notEqualToExpected(is(this.obj).False())) {
+          throwAssertionError("[%1$s] is %2$sfalse", this.obj, negate(NOT));
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isGreaterThan(T lowerBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).greaterThan(lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than [%3$s]", obj, negate(NOT), lowerBound);
+        if (notEqualToExpected(is(this.obj).greaterThan(lowerBound))) {
+          throwAssertionError("[%1$s] is %2$sgreater than [%3$s]", this.obj, negate(NOT), lowerBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isGreaterThanAndLessThan(T lowerBound, T upperBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).greaterThanAndLessThan(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(this.obj).greaterThanAndLessThan(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than [%3$s] and less than [%4$s]",
-            obj, negate(NOT), lowerBound, upperBound);
+            this.obj, negate(NOT), lowerBound, upperBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(this.obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than [%3$s] and less than equal to [%4$s]",
-            obj, negate(NOT), lowerBound, upperBound);
+            this.obj, negate(NOT), lowerBound, upperBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isGreaterThanEqualTo(T lowerBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).greaterThanEqualTo(lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s]", obj, negate(NOT), lowerBound);
+        if (notEqualToExpected(is(this.obj).greaterThanEqualTo(lowerBound))) {
+          throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s]",
+            this.obj, negate(NOT), lowerBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(this.obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s] and less than [%4$s]",
-            obj, negate(NOT), lowerBound, upperBound);
+            this.obj, negate(NOT), lowerBound, upperBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(this.obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s] and less than equal to [%4$s]",
-            obj, negate(NOT), lowerBound, upperBound);
+            this.obj, negate(NOT), lowerBound, upperBound);
         }
       }
     }
@@ -689,93 +735,105 @@ public abstract class LangExtensions {
       if (conditionHolds()) {
         if (notEqualToExpected(Thread.holdsLock(lock))) {
           throwAssertionError("[%1$s] %2$slock [%3$s]", Thread.currentThread(),
-            (expected ? "does not hold " : "holds "), lock);
+            this.expected ? "does not hold " : "holds ", lock);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isInstanceOf(Class type) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).instanceOf(type))) {
+        if (notEqualToExpected(is(this.obj).instanceOf(type))) {
           throwAssertionError("[%1$s] is %2$san instance of [%3$s]",
-            obj, negate(NOT), ObjectUtils.getName(type));
+            this.obj, negate(NOT), ObjectUtils.getName(type));
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isLessThan(T upperBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).lessThan(upperBound))) {
-          throwAssertionError("[%1$s] is %2$sless than [%3$s]", obj, negate(NOT), upperBound);
+        if (notEqualToExpected(is(this.obj).lessThan(upperBound))) {
+          throwAssertionError("[%1$s] is %2$sless than [%3$s]", this.obj, negate(NOT), upperBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isLessThanOrGreaterThan(T upperBound, T lowerBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(this.obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than [%3$s] or greater than [%4$s]",
-            obj, negate(NOT), upperBound, lowerBound);
+            this.obj, negate(NOT), upperBound, lowerBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(this.obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than [%3$s] or greater than equal to [%4$s]",
-            obj, negate(NOT), upperBound, lowerBound);
+            this.obj, negate(NOT), upperBound, lowerBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isLessThanEqualTo(T upperBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).lessThanEqualTo(upperBound))) {
-          throwAssertionError("[%1$s] is %2$sless than equal to [%3$s]", obj, negate(NOT), upperBound);
+        if (notEqualToExpected(is(this.obj).lessThanEqualTo(upperBound))) {
+          throwAssertionError("[%1$s] is %2$sless than equal to [%3$s]",
+            this.obj, negate(NOT), upperBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(this.obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than equal to [%3$s] or greater than [%4$s]",
-            obj, negate(NOT), upperBound, lowerBound);
+            this.obj, negate(NOT), upperBound, lowerBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(this.obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than equal to [%3$s] or greater than equal to [%4$s]",
-            obj, negate(NOT), upperBound, lowerBound);
+            this.obj, negate(NOT), upperBound, lowerBound);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isNotBlank() {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).notBlank())) {
-          throwAssertionError("[%1$s] is %2$sblank", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+        if (notEqualToExpected(is(this.obj).notBlank())) {
+          throwAssertionError("[%1$s] is %2$sblank", this.obj,
+            this.expected ? StringUtils.EMPTY_STRING : NOT);
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isNotEmpty() {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).notEmpty())) {
-          throwAssertionError("[%1$s] is %2$sempty", obj, (expected ? StringUtils.EMPTY_STRING : NOT));
+        if (notEqualToExpected(is(this.obj).notEmpty())) {
+          throwAssertionError("[%1$s] is %2$sempty", this.obj,
+            this.expected ? StringUtils.EMPTY_STRING : NOT);
         }
       }
     }
@@ -787,15 +845,17 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     public void isNull() {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).Null())) {
-          throwAssertionError("[%1$s] is %2$snull", obj, negate(NOT));
+        if (notEqualToExpected(is(this.obj).Null())) {
+          throwAssertionError("[%1$s] is %2$snull", this.obj, negate(NOT));
         }
       }
     }
 
     /* (non-Javadoc) */
     public void isSameAs(T obj) {
+
       if (conditionHolds()) {
         if (notEqualToExpected(is(this.obj).sameAs(obj))) {
           throwAssertionError("[%1$s] is %2$sthe same as [%3$s]", this.obj, negate(NOT), obj);
@@ -810,26 +870,35 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     public void isTrue() {
+
       if (conditionHolds()) {
-        if (notEqualToExpected(is(obj).True())) {
-          throwAssertionError("[%1$s] is %2$strue", obj, negate(NOT));
+        if (notEqualToExpected(is(this.obj).True())) {
+          throwAssertionError("[%1$s] is %2$strue", this.obj, negate(NOT));
         }
       }
     }
 
     /* (non-Javadoc) */
     public AssertThat<T> not() {
-      AssertThat<T> expression = new AssertThatExpression<>(obj, !expected);
-      expression = (transformer != null ? transformer.transform(expression) : expression);
-      expression = expression.throwing(cause);
-      expression = (message != null ? expression.stating(message) : expression);
+
+      AssertThat<T> expression = new AssertThatExpression<>(this.obj, !this.expected);
+
+      expression = this.transformer != null ? this.transformer.transform(expression) : expression;
+      expression = expression.throwing(this.cause);
+      expression = this.message != null ? expression.stating(this.message) : expression;
       expression = expression.when(this.condition);
+
       return expression;
     }
 
     /* (non-Javadoc) */
     public AssertThat<T> stating(String message, Object... args) {
-      this.message = format(message, args);
+      return stating(() -> format(message, args));
+    }
+
+    /* (non-Javadoc) */
+    public AssertThat<T> stating(Supplier<String> message) {
+      this.message = message;
       return this;
     }
 
@@ -848,7 +917,7 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     public AssertThat<T> when(Condition condition) {
-      this.condition = (condition != null ? condition : () -> true);
+      this.condition = condition != null ? condition : () -> true;
       return this;
     }
 
@@ -869,18 +938,22 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     private String negate(String value) {
-      return (expected ? value : "");
+      return this.expected ? value : "";
     }
 
     /* (non-Javadoc) */
     @SuppressWarnings("all")
     private void throwAssertionError(String defaultMessage, Object... args) {
-      throw ObjectUtils.returnValueOrDefaultIfNull(cause, () -> new AssertionException(withMessage(defaultMessage, args)));
+      throw ObjectUtils.returnValueOrDefaultIfNull(this.cause,
+        () -> new AssertionException(withMessage(defaultMessage, args)));
     }
 
     /* (non-Javadoc) */
     private String withMessage(String defaultMessage, Object... args) {
-      return (is(message).notBlank() ? message : format(defaultMessage, args));
+
+      String suppliedMessage = Optional.ofNullable(this.message).map(Supplier::get).orElse(null);
+
+      return is(suppliedMessage).notBlank() ? suppliedMessage : format(defaultMessage, args);
     }
   }
 
@@ -908,7 +981,7 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     protected AssertThat<T> getDelegate() {
-      return delegate;
+      return this.delegate;
     }
 
     /* (non-Javadoc) */
@@ -921,6 +994,12 @@ public abstract class LangExtensions {
     @Override
     public void isComparableTo(Comparable<T> obj) {
       getDelegate().isComparableTo(obj);
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    public void isNotComparableTo(Comparable<T> obj) {
+      getDelegate().isNotComparableTo(obj);
     }
 
     /* (non-Javadoc) */
@@ -1097,6 +1176,13 @@ public abstract class LangExtensions {
     public AssertThat<T> stating(String message, Object... args) {
       getDelegate().stating(message, args);
       return this;
+    }
+
+    /* (non-Javadoc) */
+    @Override
+    public AssertThat<T> stating(Supplier<String> message) {
+      getDelegate().stating(message);
+      return null;
     }
 
     /* (non-Javadoc) */
@@ -1549,15 +1635,18 @@ public abstract class LangExtensions {
 
     /* (non-Javadoc) */
     public boolean notBlank() {
-      return StringUtils.hasText(ObjectUtils.toString(obj));
+      return StringUtils.hasText(ObjectUtils.toString(this.obj));
     }
 
     /* (non-Javadoc) */
     public boolean notEmpty() {
-      boolean result = (obj instanceof Object[] && ((Object[]) obj).length != 0);
-      result |= (obj instanceof Collection && !((Collection) obj).isEmpty());
-      result |= (obj instanceof Map && !((Map) obj).isEmpty());
-      result |= (obj instanceof String && !obj.toString().isEmpty());
+
+      boolean result = (this.obj instanceof Object[] && ((Object[]) this.obj).length != 0);
+
+      result |= (this.obj instanceof Collection && !((Collection) this.obj).isEmpty());
+      result |= (this.obj instanceof Map && !((Map) this.obj).isEmpty());
+      result |= (this.obj instanceof String && !this.obj.toString().isEmpty());
+
       return result;
     }
 

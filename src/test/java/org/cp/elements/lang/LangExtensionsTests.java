@@ -81,6 +81,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatClassIsAssignableToClassType() {
+
     assertThat(Boolean.class).isAssignableTo(Boolean.class);
     assertThat(Boolean.class).isAssignableTo(Object.class);
     assertThat(Character.class).isAssignableTo(Character.class);
@@ -100,6 +101,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatClassIsNotAssignableToClassType() {
+
     assertThat(Boolean.class).not().isAssignableTo(Boolean.TYPE);
     assertThat(Character.class).not().isAssignableTo(String.class);
     assertThat(Float.class).not().isAssignableTo(Double.class);
@@ -110,6 +112,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsAssignableToClassType() {
+
     assertThat(true).isAssignableTo(Boolean.class);
     assertThat('c').isAssignableTo(Character.class);
     assertThat(Math.PI).isAssignableTo(Double.class);
@@ -120,6 +123,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsNotAssignableToClassType() {
+
     assertThat("false").not().isAssignableTo(Boolean.class);
     assertThat("test").not().isAssignableTo(Character.class);
     assertThat(3.14159d).not().isAssignableTo(Float.class);
@@ -132,6 +136,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsAssignableToStringThrowsAssertionExceptionWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -141,6 +146,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatDoubleIsAssignableToIntegerThrowsAssertionException() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage(String.format("[%1$s] is not assignable to [java.lang.Integer]", Math.PI));
@@ -150,6 +156,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatCharacterIsAssignableToStringThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -159,6 +166,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringIsNotAssignableToObjectThrowsAssertionException() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[class java.lang.String] is assignable to [java.lang.Object]");
@@ -168,6 +176,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsComparableWithObject() {
+
     assertThat(true).isComparableTo(Boolean.TRUE);
     assertThat('c').isComparableTo('c');
     assertThat(3.14159d).isComparableTo(3.14159d);
@@ -177,15 +186,17 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsNotComparableWithObject() {
-    assertThat(Boolean.FALSE).not().isComparableTo(true);
-    assertThat('c').not().isComparableTo('C');
-    assertThat(3.14159d).not().isComparableTo(Math.PI);
-    assertThat(123).not().isComparableTo(-123);
-    assertThat("test").not().isComparableTo("mock");
+
+    assertThat(Boolean.FALSE).isNotComparableTo(true);
+    assertThat('c').isNotComparableTo('C');
+    assertThat(3.14159d).isNotComparableTo(Math.PI);
+    assertThat(123).isNotComparableTo(-123);
+    assertThat("test").isNotComparableTo("mock");
   }
 
   @Test
   public void assertThatObjectsAreNotComparableThrowsAssertionException() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[queue] is not comparable to [Q]");
@@ -195,6 +206,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectsAreNotComparableThrowsAssertionExceptionWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -204,6 +216,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectsAreNotComparableThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -213,6 +226,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatComparableObjectsAreNotComparableThrowsAssertionException() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is comparable to [test]");
@@ -223,6 +237,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings("all")
   public void assertThatObjectsIsEqualToObject() {
+
     assertThat(true).isEqualTo(Boolean.TRUE);
     assertThat('c').isEqualTo(Character.valueOf('c'));
     assertThat(Math.PI).isEqualTo(Double.valueOf(Math.PI));
@@ -232,6 +247,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsNotEqualToObject() {
+
     assertThat(false).isNotEqualTo(Boolean.TRUE);
     assertThat('c').isNotEqualTo('C');
     assertThat(3.14159d).isNotEqualTo(Math.PI);
@@ -241,6 +257,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsEqualToObjectThrowsAssertionException() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is not equal to [mock]");
@@ -250,6 +267,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsEqualToObjectThrowsAssertionExceptionWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -259,6 +277,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsEqualToObjectThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -268,6 +287,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsNotEqualToObjectThrowsAssertionException() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is equal to [test]");
@@ -277,6 +297,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatFalseIsFalse() {
+
     assertThat(false).isFalse();
     assertThat(Boolean.FALSE).isFalse();
   }
@@ -288,6 +309,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatTrueIsFalseThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[true] is not false");
@@ -297,6 +319,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatTrueIsFalseThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -306,6 +329,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatTrueIsFalseThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -315,6 +339,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatFalseIsNotFalseThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[false] is false");
@@ -324,12 +349,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThan() {
+
     assertThat(2).isGreaterThan(-4);
     assertThat(2).isGreaterThan(1);
   }
 
   @Test
   public void assertThatIsNotGreaterThan() {
+
     assertThat(2).not().isGreaterThan(2);
     assertThat(2).not().isGreaterThan(3);
     assertThat(-2).not().isGreaterThan(1);
@@ -337,6 +364,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not greater than [2]");
@@ -346,6 +374,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -355,6 +384,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -364,6 +394,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is greater than [1]");
@@ -373,12 +404,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThan() {
+
     assertThat(2).isGreaterThanAndLessThan(-4, 4);
     assertThat(2).isGreaterThanAndLessThan(1, 3);
   }
 
   @Test
   public void assertThatIsNotGreaterThanAndLessThan() {
+
     assertThat(2).not().isGreaterThanAndLessThan(2, 2);
     assertThat(2).not().isGreaterThanAndLessThan(2, 3);
     assertThat(2).not().isGreaterThanAndLessThan(1, 2);
@@ -389,6 +422,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not greater than [2] and less than [2]");
@@ -398,6 +432,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -407,6 +442,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -416,6 +452,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanAndLessThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is greater than [1] and less than [3]");
@@ -425,6 +462,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanEqualTo() {
+
     assertThat(2).isGreaterThanAndLessThanEqualTo(-4, 4);
     assertThat(2).isGreaterThanAndLessThanEqualTo(1, 3);
     assertThat(2).isGreaterThanAndLessThanEqualTo(1, 2);
@@ -432,6 +470,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanAndLessThanEqualTo() {
+
     assertThat(2).not().isGreaterThanAndLessThanEqualTo(3, 1);
     assertThat(2).not().isGreaterThanAndLessThanEqualTo(2, 1);
     assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 1);
@@ -441,6 +480,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not greater than [2] and less than equal to [2]");
@@ -450,6 +490,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -459,6 +500,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -468,6 +510,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanAndLessThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is greater than [1] and less than equal to [2]");
@@ -477,6 +520,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualTo() {
+
     assertThat(2).isGreaterThanEqualTo(-3);
     assertThat(2).isGreaterThanEqualTo(1);
     assertThat(2).isGreaterThanEqualTo(2);
@@ -484,6 +528,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanEqualTo() {
+
     assertThat(2).not().isGreaterThanEqualTo(3);
     assertThat(-2).not().isGreaterThanEqualTo(-1);
     assertThat(-2).not().isGreaterThanEqualTo(0);
@@ -493,6 +538,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not greater than equal to [3]");
@@ -502,6 +548,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -511,6 +558,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -520,6 +568,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is greater than equal to [1]");
@@ -529,6 +578,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThan() {
+
     assertThat(2).isGreaterThanEqualToAndLessThan(1, 3);
     assertThat(2).isGreaterThanEqualToAndLessThan(2, 3);
     assertThat(2).isGreaterThanEqualToAndLessThan(-4, 3);
@@ -536,6 +586,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThan() {
+
     assertThat(2).not().isGreaterThanEqualToAndLessThan(3, 1);
     assertThat(2).not().isGreaterThanEqualToAndLessThan(3, 4);
     assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 1);
@@ -545,6 +596,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not greater than equal to [3] and less than [1]");
@@ -554,6 +606,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -563,6 +616,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -572,6 +626,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is greater than equal to [1] and less than [3]");
@@ -581,6 +636,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualTo() {
+
     assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(1, 3);
     assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(2, 3);
     assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(1, 2);
@@ -590,12 +646,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanEqualTo() {
+
     assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(3, 1);
     assertThat(-2).not().isGreaterThanEqualToAndLessThanEqualTo(1, -3);
   }
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not greater than equal to [3] and less than equal to [1]");
@@ -605,6 +663,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -614,6 +673,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -623,6 +683,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is greater than equal to [1] and less than equal to [3]");
@@ -632,6 +693,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringsHaveText() {
+
     assertThat("test").hasText();
     assertThat("null").isNotBlank();
     assertThat("empty").hasText();
@@ -642,6 +704,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringsDoNotHaveText() {
+
     assertThat(null).not().hasText();
     assertThat("").not().isNotBlank();
     assertThat("  ").not().hasText();
@@ -651,6 +714,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatBlankStringHasTextThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[ ] is blank");
@@ -660,6 +724,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatEmptyStringHasTextThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -669,6 +734,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNullStringHasTextThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -678,6 +744,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringDoesNotHaveTextThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is not blank");
@@ -687,6 +754,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatCurrentThreadHoldsLock() {
+
     synchronized (lock) {
       assertThat(Thread.currentThread()).holdsLock(lock);
     }
@@ -699,6 +767,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatCurrentThreadHoldsLockThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage(String.format("[%1$s] does not hold lock [%2$s]", Thread.currentThread(), lock));
@@ -708,6 +777,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatCurrentThreadHoldsLockThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -717,6 +787,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatCurrentThreadHoldsLockThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -726,6 +797,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage(String.format("[%1$s] holds lock [%2$s]", Thread.currentThread(), lock));
@@ -737,6 +809,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsInstanceOfClassType() {
+
     assertThat(true).isInstanceOf(Boolean.class);
     assertThat('c').isInstanceOf(Character.class);
     assertThat(3.14159d).isInstanceOf(Double.class);
@@ -750,6 +823,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsNotInstanceOfClassType() {
+
     assertThat("false").not().isInstanceOf(Boolean.class);
     assertThat("C").not().isInstanceOf(Character.class);
     assertThat(123).not().isInstanceOf(Double.class);
@@ -760,6 +834,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is not an instance of [java.lang.Character]");
@@ -769,6 +844,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -778,6 +854,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringIsInstanceOfCharacterThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -787,6 +864,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatStringIsNotInstanceOfStringThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is an instance of [java.lang.String]");
@@ -796,12 +874,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThan() {
+
     assertThat(2).isLessThan(3);
     assertThat(-2).isLessThan(1);
   }
 
   @Test
   public void assertThatIsNotLessThan() {
+
     assertThat(2).not().isLessThan(2);
     assertThat(2).not().isLessThan(1);
     assertThat(2).not().isLessThan(0);
@@ -812,6 +892,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not less than [1]");
@@ -821,6 +902,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -830,6 +912,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -839,6 +922,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[1] is less than [2]");
@@ -848,12 +932,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThan() {
+
     assertThat(2).isLessThanOrGreaterThan(-1, 1);
     assertThat(-2).isLessThanOrGreaterThan(-1, 1);
   }
 
   @Test
   public void assertThatIsNotLessThanOrGreaterThan() {
+
     assertThat(-1).not().isLessThanOrGreaterThan(-1, 1);
     assertThat(0).not().isLessThanOrGreaterThan(-1, 1);
     assertThat(1).not().isLessThanOrGreaterThan(-1, 1);
@@ -861,6 +947,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[0] is not less than [-1] or greater than [1]");
@@ -870,6 +957,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -879,6 +967,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -888,6 +977,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanOrGreaterThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[3] is less than [-1] or greater than [1]");
@@ -897,6 +987,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanEqualTo() {
+
     assertThat(-2).isLessThanOrGreaterThanEqualTo(-1, 1);
     assertThat(1).isLessThanOrGreaterThanEqualTo(-1, 1);
     assertThat(2).isLessThanOrGreaterThanEqualTo(-1, 1);
@@ -904,12 +995,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanOrGreaterThanEqualTo() {
+
     assertThat(-1).not().isLessThanOrGreaterThanEqualTo(-1, 1);
     assertThat(0).not().isLessThanOrGreaterThanEqualTo(-1, 1);
   }
 
   @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[0] is not less than [-1] or greater than equal to [1]");
@@ -919,6 +1012,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -928,6 +1022,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -937,6 +1032,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanOrGreaterThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[1] is less than [-1] or greater than equal to [1]");
@@ -946,6 +1042,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualTo() {
+
     assertThat(2).isLessThanEqualTo(3);
     assertThat(2).isLessThanEqualTo(2);
     assertThat(-2).isLessThanEqualTo(-1);
@@ -954,6 +1051,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanEqualTo() {
+
     assertThat(2).not().isLessThanEqualTo(1);
     assertThat(2).not().isLessThanEqualTo(0);
     assertThat(-2).not().isLessThanEqualTo(-3);
@@ -961,6 +1059,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is not less than equal to [-3]");
@@ -970,6 +1069,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -979,6 +1079,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -988,6 +1089,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is less than equal to [3]");
@@ -997,6 +1099,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThan() {
+
     assertThat(-2).isLessThanEqualToOrGreaterThan(-1, 1);
     assertThat(-1).isLessThanEqualToOrGreaterThan(-1, 1);
     assertThat(2).isLessThanEqualToOrGreaterThan(-1, 1);
@@ -1004,12 +1107,14 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThan() {
+
     assertThat(0).not().isLessThanEqualToOrGreaterThan(-1, 1);
     assertThat(1).not().isLessThanEqualToOrGreaterThan(-1, 1);
   }
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[0] is not less than equal to [-1] or greater than [1]");
@@ -1019,6 +1124,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -1028,6 +1134,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1037,6 +1144,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThanThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is less than equal to [-1] or greater than [1]");
@@ -1046,6 +1154,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualTo() {
+
     assertThat(-2).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
     assertThat(-1).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
     assertThat(1).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
@@ -1059,6 +1168,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[0] is not less than equal to [-1] or greater than equal to [1]");
@@ -1068,6 +1178,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -1077,6 +1188,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1086,6 +1198,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIsNotLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[2] is less than equal to [-1] or greater than equal to [1]");
@@ -1095,18 +1208,21 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNullObjectIsNull() {
+
     assertThat(null).isNull();
     assertThat(null).not().isNotNull();
   }
 
   @Test
   public void assertThatNonNullObjectIsNotNull() {
+
     assertThat(new Object()).isNotNull();
     assertThat("test").not().isNull();
   }
 
   @Test
   public void assertThatNonNullObjectIsNullThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is not null");
@@ -1116,6 +1232,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonNullObjectIsNullThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -1125,6 +1242,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonNullObjectIsNullThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1134,6 +1252,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNullObjectIsNotNullThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[null] is null");
@@ -1143,6 +1262,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonEmptyStringsAreNotEmpty() {
+
     assertThat("test").isNotEmpty();
     assertThat("null").isNotEmpty();
     assertThat("empty").isNotEmpty();
@@ -1163,6 +1283,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[] is empty");
@@ -1172,6 +1293,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -1181,6 +1303,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatEmptyStringIsNotEmptyThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1190,6 +1313,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonEmptyStringIsEnptyThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[ ] is not empty");
@@ -1199,6 +1323,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsSameAsObject() {
+
     assertThat(true).isSameAs(Boolean.TRUE);
     assertThat('c').isSameAs('c');
     //assertThat(Math.PI).isSameAs(Math.PI);
@@ -1208,6 +1333,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatObjectIsNotSameAsObject() {
+
     assertThat(false).isNotSameAs(Boolean.TRUE);
     assertThat('c').isNotSameAs('C');
     assertThat(3.14159d).isNotSameAs(Math.PI);
@@ -1217,6 +1343,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is not the same as [TEST]");
@@ -1226,6 +1353,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -1235,6 +1363,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatNonIdenticalObjectsAreTheSameThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1244,6 +1373,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[test] is the same as [test]");
@@ -1253,6 +1383,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatTrueIsTrue() {
+
     assertThat(true).isTrue();
     assertThat(Boolean.TRUE).isTrue();
   }
@@ -1264,6 +1395,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatFalseIsTrueThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[false] is not true");
@@ -1273,6 +1405,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatFalseIsTrueThrowsAssertionErrorWithCustomMessage() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("This is a test!");
@@ -1282,6 +1415,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatFalseIsTrueThrowsIllegalArgumentException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1291,6 +1425,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertThatTrueIsNotTrueThrowsAssertionError() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[true] is true");
@@ -1300,6 +1435,7 @@ public class LangExtensionsTests {
 
   @Test
   public void assertionTransformationIgnoresCondition() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("[false] is not true");
@@ -1453,6 +1589,7 @@ public class LangExtensionsTests {
 
   @Test
   public void negatedAssertThatRetainsThrowable() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("test");
@@ -1462,6 +1599,7 @@ public class LangExtensionsTests {
 
   @Test
   public void negatedAssertThatRetainsTransformer() {
+
     AtomicInteger holdsLockCallCount = new AtomicInteger(0);
 
     Object lock = new Object();
@@ -1481,6 +1619,7 @@ public class LangExtensionsTests {
 
   @Test
   public void negatedAssertThatRetainsExceptionMessageAndArgs() {
+
     exception.expect(AssertionException.class);
     exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
     exception.expectMessage("Object cannot be null");
@@ -1496,219 +1635,303 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsAssignableToDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isAssignableTo(Object.class);
+
     verify(mockAssertion, times(1)).isAssignableTo(eq(Object.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsComparableToDelegatesToWrappedAssertion() {
+
     Comparable mockComparable = mock(Comparable.class);
+
     AssertThat<Comparable> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isComparableTo(mockComparable);
+
     verify(mockAssertion, times(1)).isComparableTo(eq(mockComparable));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsEqualToDelegatesToWrappedAssertion() {
+
     Object obj = new Object();
+
     AssertThat<Object> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isEqualTo(obj);
+
     verify(mockAssertion, times(1)).isEqualTo(eq(obj));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsNotEqualToDelegatesToWrappedAssertion() {
+
     Object obj = new Object();
+
     AssertThat<Object> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isNotEqualTo(obj);
+
     verify(mockAssertion, times(1)).isNotEqualTo(eq(obj));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsFalseDelegatesToWrappedAssertion() {
+
     AssertThat<Boolean> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isFalse();
+
     verify(mockAssertion, times(1)).isFalse();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsGreaterThanDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isGreaterThan(0);
+
     verify(mockAssertion, times(1)).isGreaterThan(eq(0));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsGreaterThanOrLessThanDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanAndLessThan(-1, 1);
+
     verify(mockAssertion, times(1)).isGreaterThanAndLessThan(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsGreaterThanOrLessThanEqualToDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanAndLessThanEqualTo(-1, 1);
+
     verify(mockAssertion, times(1)).isGreaterThanAndLessThanEqualTo(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsGreaterThanEqualToDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualTo(0);
+
     verify(mockAssertion, times(1)).isGreaterThanEqualTo(eq(0));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsGreaterThanEqualToAndLessThanDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThan(-1, 1);
+
     verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThan(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsGreaterThanEqualToAndLessThanEqualToDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThanEqualTo(-1, 1);
+
     verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThanEqualTo(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatHasTextDelegatesToWrappedAssertion() {
+
     AssertThat<String> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).hasText();
+
     verify(mockAssertion, times(1)).hasText();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatHoldsLockDelegatesToWrappedAssertion() {
+
     AssertThat<Thread> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).holdsLock(lock);
+
     verify(mockAssertion, times(1)).holdsLock(eq(lock));
   }
 
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsInstanceOfDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isInstanceOf(Object.class);
+
     verify(mockAssertion, times(1)).isInstanceOf(eq(Object.class));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsLessThanDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isLessThan(0);
+
     verify(mockAssertion, times(1)).isLessThan(eq(0));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsLessThanOrGreaterThanDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isLessThanOrGreaterThan(-1, 1);
+
     verify(mockAssertion, times(1)).isLessThanOrGreaterThan(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsLessThanOrGreaterThanEqualToDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isLessThanOrGreaterThanEqualTo(-1, 1);
+
     verify(mockAssertion, times(1)).isLessThanOrGreaterThanEqualTo(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsLessThanEqualToDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualTo(0);
+
     verify(mockAssertion, times(1)).isLessThanEqualTo(eq(0));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsLessThanEqualToOrGreaterThanDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThan(-1, 1);
+
     verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThan(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsLessThanEqualToOrGreaterThanEqualToDelegatesToWrappedAssertion() {
+
     AssertThat<Integer> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+
     verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThanEqualTo(eq(-1), eq(1));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsNotBlankDelegatesToWrappedAssertion() {
+
     AssertThat<String> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isNotBlank();
+
     verify(mockAssertion, times(1)).isNotBlank();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsNotEmptyDelegatesToWrappedAssertion() {
+
     AssertThat<String> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isNotEmpty();
+
     verify(mockAssertion, times(1)).isNotEmpty();
   }
 
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsNotNullDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isNotNull();
+
     verify(mockAssertion, times(1)).isNotNull();
   }
 
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsNullDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isNull();
+
     verify(mockAssertion, times(1)).isNull();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsNotSameAsDelegatesToWrappedAssertion() {
+
     Object obj = new Object();
+
     AssertThat mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isNotSameAs(obj);
+
     verify(mockAssertion, times(1)).isNotSameAs(eq(obj));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsSameAsDelegatesToWrappedAssertion() {
+
     Object obj = new Object();
+
     AssertThat mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isSameAs(obj);
+
     verify(mockAssertion, times(1)).isSameAs(eq(obj));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatIsTrueDelegatesToWrappedAssertion() {
+
     AssertThat<Boolean> mockAssertion = mock(AssertThat.class);
     AssertThatWrapper.wrap(mockAssertion).isTrue();
     verify(mockAssertion, times(1)).isTrue();
@@ -1717,6 +1940,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatNotDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
 
     when(mockAssertion.not()).thenReturn(mockAssertion);
@@ -1732,6 +1956,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatThrowingDelegatesToWrappedAssertion() {
+
     RuntimeException illegalArgument = new IllegalArgumentException("test");
 
     AssertThat mockAssertion = mock(AssertThat.class);
@@ -1746,6 +1971,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void wrappedAssertThatTransformDelegatesToWrappedAssertion() {
+
     Transformer<AssertThat> mockTransformer = mock(Transformer.class);
 
     AssertThat mockAssertion = mock(AssertThat.class);
@@ -1764,6 +1990,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatUsingDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).stating("message", "args");
 
@@ -1776,6 +2003,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatWhenDelegatesToWrappedAssertion() {
+
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).when(ENABLE_DISABLE_CONDITION);
 
@@ -1787,6 +2015,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isAssignableTo() {
+
     assertTrue(is(Object.class).assignableTo(Object.class));
     assertTrue(is(Boolean.class).assignableTo(Object.class));
     assertTrue(is(Character.class).assignableTo(Object.class));
@@ -1799,6 +2028,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isAssignableToIsFalse() {
+
     assertFalse(is(Object.class).assignableTo(String.class));
     assertFalse(is(Boolean.TYPE).assignableTo(Boolean.class));
     assertFalse(is(Double.class).assignableTo(BigDecimal.class));
@@ -1812,6 +2042,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotAssignableTo() {
+
     assertTrue(is(Boolean.TYPE).not().assignableTo(Boolean.class));
     assertTrue(is(Character.class).not().assignableTo(String.class));
     assertTrue(is(Double.TYPE).not().assignableTo(Double.class));
@@ -1821,6 +2052,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isComparableTo() {
+
     Person jonDoe1 = new Person(1L, "Jon", "Doe");
     Person jonDoe2 = new Person(2L, "Jon", "Doe");
 
@@ -1831,6 +2063,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotComparableTo() {
+
     Person johnBlum = new Person(1L, "John", "Blum");
     Person jonBloom = new Person(1L, "Jon", "Bloom");
 
@@ -1841,6 +2074,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isEqualTo() {
+
     assertTrue(is(true).equalTo(Boolean.TRUE));
     assertTrue(is('c').equalTo('c'));
     assertTrue(is(2).equalTo(2));
@@ -1850,6 +2084,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isEqualToWithUnequalValues() {
+
     assertFalse(is(NULL).equalTo(NULL));
     assertFalse(is("null").equalTo(null));
     assertFalse(is("null").equalTo("nil"));
@@ -1862,6 +2097,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotEqualTo() {
+
     assertTrue((is(NULL).not().equalTo(NULL)));
     assertTrue(is((String) null).not().equalTo("null"));
     assertTrue(is("null").not().equalTo(null));
@@ -1876,6 +2112,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isFalse() {
+
     assertTrue(is(false).False());
     assertTrue(is(Boolean.FALSE).False());
     assertTrue(is(!Boolean.TRUE).False());
@@ -1883,6 +2120,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotFalse() {
+
     assertTrue(is(true).not().False());
     assertTrue(is(Boolean.TRUE).not().False());
     assertTrue(is(!Boolean.FALSE).not().False());
@@ -1891,6 +2129,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isGreaterThan() {
+
     assertTrue(is(3).greaterThan(1));
     assertTrue(is(3).greaterThan(2));
     assertFalse(is(3).greaterThan(3));
@@ -1900,6 +2139,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotGreaterThan() {
+
     assertFalse(is(3).not().greaterThan(1));
     assertFalse(is(3).not().greaterThan(2));
     assertTrue(is(3).not().greaterThan(3));
@@ -1909,6 +2149,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isGreaterThanAndLessThan() {
+
     assertFalse(is(1).greaterThanAndLessThan(2, 4));
     assertFalse(is(2).greaterThanAndLessThan(2, 4));
     assertTrue(is(3).greaterThanAndLessThan(2, 4));
@@ -1918,6 +2159,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotGreaterThanAndLessThan() {
+
     assertTrue(is(1).not().greaterThanAndLessThan(2, 4));
     assertTrue(is(2).not().greaterThanAndLessThan(2, 4));
     assertFalse(is(3).not().greaterThanAndLessThan(2, 4));
@@ -1927,6 +2169,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isGreaterThanAndLessThanEqualTo() {
+
     assertFalse(is(1).greaterThanAndLessThanEqualTo(2, 4));
     assertFalse(is(2).greaterThanAndLessThanEqualTo(2, 4));
     assertTrue(is(3).greaterThanAndLessThanEqualTo(2, 4));
@@ -1936,6 +2179,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotGreaterThanAndLessThanEqualTo() {
+
     assertTrue(is(1).not().greaterThanAndLessThanEqualTo(2, 4));
     assertTrue(is(2).not().greaterThanAndLessThanEqualTo(2, 4));
     assertFalse(is(3).not().greaterThanAndLessThanEqualTo(2, 4));
@@ -1945,6 +2189,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isGreaterThanEqualTo() {
+
     assertTrue(is(3).greaterThanEqualTo(1));
     assertTrue(is(3).greaterThanEqualTo(2));
     assertTrue(is(3).greaterThanEqualTo(3));
@@ -1954,6 +2199,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotGreaterThanEqualTo() {
+
     assertFalse(is(3).not().greaterThanEqualTo(1));
     assertFalse(is(3).not().greaterThanEqualTo(2));
     assertFalse(is(3).not().greaterThanEqualTo(3));
@@ -1963,6 +2209,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isGreaterThanEqualToAndLessThan() {
+
     assertFalse(is(1).greaterThanEqualToAndLessThan(2, 4));
     assertTrue(is(2).greaterThanEqualToAndLessThan(2, 4));
     assertTrue(is(3).greaterThanEqualToAndLessThan(2, 4));
@@ -1972,6 +2219,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotGreaterThanEqualToAndLessThan() {
+
     assertTrue(is(1).not().greaterThanEqualToAndLessThan(2, 4));
     assertFalse(is(2).not().greaterThanEqualToAndLessThan(2, 4));
     assertFalse(is(3).not().greaterThanEqualToAndLessThan(2, 4));
@@ -1981,6 +2229,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isGreaterThanEqualToAndLessThanEqualTo() {
+
     assertFalse(is(1).greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertTrue(is(2).greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertTrue(is(3).greaterThanEqualToAndLessThanEqualTo(2, 4));
@@ -1990,6 +2239,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotGreaterThanEqualToAndLessThanEqualTo() {
+
     assertTrue(is(1).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertFalse(is(2).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
     assertFalse(is(3).not().greaterThanEqualToAndLessThanEqualTo(2, 4));
@@ -1999,6 +2249,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isInstanceOf() {
+
     assertTrue(is(false).instanceOf(Boolean.class));
     assertTrue(is(Boolean.TRUE).instanceOf(Boolean.class));
     assertTrue(is(Calendar.getInstance()).instanceOf(Calendar.class));
@@ -2014,6 +2265,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotInstanceOf() {
+
     assertTrue(is("false").not().instanceOf(Boolean.class));
     assertTrue(is(Calendar.getInstance()).not().instanceOf(Date.class));
     assertTrue(is("c").not().instanceOf(Character.class));
@@ -2026,6 +2278,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isLessThan() {
+
     assertFalse(is(3).lessThan(1));
     assertFalse(is(3).lessThan(2));
     assertFalse(is(3).lessThan(3));
@@ -2035,6 +2288,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotLessThan() {
+
     assertTrue(is(3).not().lessThan(1));
     assertTrue(is(3).not().lessThan(2));
     assertTrue(is(3).not().lessThan(3));
@@ -2044,6 +2298,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isLessThanOrGreaterThan() {
+
     assertTrue(is(1).lessThanOrGreaterThan(2, 4));
     assertFalse(is(2).lessThanOrGreaterThan(2, 4));
     assertFalse(is(3).lessThanOrGreaterThan(2, 4));
@@ -2053,6 +2308,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotLessThanOrGreaterThan() {
+
     assertFalse(is(1).not().lessThanOrGreaterThan(2, 4));
     assertTrue(is(2).not().lessThanOrGreaterThan(2, 4));
     assertTrue(is(3).not().lessThanOrGreaterThan(2, 4));
@@ -2062,6 +2318,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isLessThanOrGreaterThanEqualTo() {
+
     assertTrue(is(1).lessThanOrGreaterThanEqualTo(2, 4));
     assertFalse(is(2).lessThanOrGreaterThanEqualTo(2, 4));
     assertFalse(is(3).lessThanOrGreaterThanEqualTo(2, 4));
@@ -2071,6 +2328,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotLessThanOrGreaterThanEqualTo() {
+
     assertFalse(is(1).not().lessThanOrGreaterThanEqualTo(2, 4));
     assertTrue(is(2).not().lessThanOrGreaterThanEqualTo(2, 4));
     assertTrue(is(3).not().lessThanOrGreaterThanEqualTo(2, 4));
@@ -2080,6 +2338,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isLessThanEqualTo() {
+
     assertFalse(is(3).lessThanEqualTo(1));
     assertFalse(is(3).lessThanEqualTo(2));
     assertTrue(is(3).lessThanEqualTo(3));
@@ -2089,6 +2348,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotLessThanEqualTo() {
+
     assertTrue(is(3).not().lessThanEqualTo(1));
     assertTrue(is(3).not().lessThanEqualTo(2));
     assertFalse(is(3).not().lessThanEqualTo(3));
@@ -2098,6 +2358,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isLessThanEqualToOrGreaterThan() {
+
     assertTrue(is(1).lessThanEqualToOrGreaterThan(2, 4));
     assertTrue(is(2).lessThanEqualToOrGreaterThan(2, 4));
     assertFalse(is(3).lessThanEqualToOrGreaterThan(2, 4));
@@ -2107,6 +2368,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotLessThanEqualToOrGreaterThan() {
+
     assertFalse(is(1).not().lessThanEqualToOrGreaterThan(2, 4));
     assertFalse(is(2).not().lessThanEqualToOrGreaterThan(2, 4));
     assertTrue(is(3).not().lessThanEqualToOrGreaterThan(2, 4));
@@ -2116,6 +2378,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isLessThanEqualToOrGreaterThanEqualTo() {
+
     assertTrue(is(1).lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertTrue(is(2).lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertFalse(is(3).lessThanEqualToOrGreaterThanEqualTo(2, 4));
@@ -2125,6 +2388,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotLessThanEqualToOrGreaterThanEqualTo() {
+
     assertFalse(is(1).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertFalse(is(2).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
     assertTrue(is(3).not().lessThanEqualToOrGreaterThanEqualTo(2, 4));
@@ -2134,6 +2398,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotNull() {
+
     assertTrue(is(Boolean.FALSE).notNull());
     assertTrue(is(Calendar.getInstance()).notNull());
     assertTrue(is('\0').notNull());
@@ -2149,6 +2414,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isSameAs() {
+
     assertTrue(is(NULL).sameAs(NULL));
     assertTrue(is(Boolean.TRUE).sameAs(Boolean.TRUE));
     assertTrue(is("test").sameAs("test"));
@@ -2157,6 +2423,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings("all")
   public void isNotSameAs() {
+
     assertTrue(is(NULL).notSameAs("null"));
     assertTrue(is(Boolean.TRUE).notSameAs(Boolean.FALSE));
     assertTrue(is("test").notSameAs(new String("test")));
@@ -2164,6 +2431,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isTrue() {
+
     assertTrue(is(true).True());
     assertTrue(is(Boolean.TRUE).True());
     assertTrue(is(!Boolean.FALSE).True());
@@ -2171,6 +2439,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isNotTrue() {
+
     assertTrue(is(false).not().True());
     assertTrue(is(Boolean.FALSE).not().True());
     assertTrue(is(!Boolean.TRUE).not().True());
@@ -2179,6 +2448,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isReuse() {
+
     Is<String> isOperator = is("test");
 
     assertNotNull(isOperator);
@@ -2193,6 +2463,7 @@ public class LangExtensionsTests {
 
   @Test
   public void isDoubleNegative() {
+
     assertTrue(is(true).not().not().True());
     assertTrue(is(false).not().not().False());
   }
@@ -2200,6 +2471,7 @@ public class LangExtensionsTests {
   @Test
   @SuppressWarnings("all")
   public void safeNavigationWithNonNullObjectChain() {
+
     Invoice invoice = TestInvoice.of(asList(
       TestLineItem.newLineItem(TestProduct.newProduct("coffee", BigDecimal.valueOf(4.50d)), 2),
       TestLineItem.newLineItem(TestProduct.newProduct("donut", BigDecimal.valueOf(3.00d)), 4)));
@@ -2211,6 +2483,7 @@ public class LangExtensionsTests {
 
   @Test
   public void safeNavigationWithNullBreakInObjectChain() {
+
     Invoice invoice = TestInvoice.of(asList(
       TestLineItem.newLineItem(TestProduct.newProduct("coffee", BigDecimal.valueOf(4.50d)), 2),
       TestLineItem.newLineItem(TestProduct.newProduct("donut", BigDecimal.valueOf(3.00d)), 4)));
@@ -2246,7 +2519,9 @@ public class LangExtensionsTests {
     @Override
     @SuppressWarnings("all")
     public int compareTo(Person person) {
+
       int compareValue = ComparatorUtils.compareIgnoreNull(getFirstName(), person.getFirstName());
+
       return (compareValue != 0 ? compareValue : ComparatorUtils.compareIgnoreNull(getLastName(),
         person.getLastName()));
     }
@@ -2256,7 +2531,8 @@ public class LangExtensionsTests {
      */
     @Override
     public boolean equals(Object obj) {
-      if (obj == this) {
+
+      if (this == obj) {
         return true;
       }
 
@@ -2276,10 +2552,13 @@ public class LangExtensionsTests {
      */
     @Override
     public int hashCode() {
+
       int hashValue = 17;
+
       hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getId());
       //hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getFirstName());
       //hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getLastName());
+
       return hashValue;
     }
 
@@ -2302,6 +2581,7 @@ public class LangExtensionsTests {
     BigDecimal getTotal();
 
     BigDecimal getTotal(String... productNames);
+
   }
 
   @Data
@@ -2341,6 +2621,7 @@ public class LangExtensionsTests {
     Integer getQuantity();
 
     BigDecimal getCost();
+
   }
 
   @Data
@@ -2365,6 +2646,7 @@ public class LangExtensionsTests {
     BigDecimal getPrice();
 
     BigDecimal getCost(int quantity);
+
   }
 
   @Data
