@@ -49,7 +49,12 @@ public class ComposableTransformerTests {
   @Test
   @SuppressWarnings("unchecked")
   public void composeWithArray() {
-    Transformer[] transformerArray = { mockTransformer("one"), mockTransformer("two"), mockTransformer("three") };
+
+    Transformer[] transformerArray = {
+      mockTransformer("one"),
+      mockTransformer("two"),
+      mockTransformer("three")
+    };
 
     Transformer compositeTransformer = ComposableTransformer.compose(transformerArray);
 
@@ -72,6 +77,7 @@ public class ComposableTransformerTests {
 
   @Test
   public void composeWithOneElementArray() {
+
     Transformer<?> mockTransformer = mockTransformer();
 
     assertThat(ComposableTransformer.compose(mockTransformer)).isSameAs(mockTransformer);
@@ -80,6 +86,7 @@ public class ComposableTransformerTests {
   @Test
   @SuppressWarnings("unchecked")
   public void composeWithTwoElementArray() {
+
     Transformer mockTransformerOne = mockTransformer("one");
     Transformer mockTransformerTwo = mockTransformer("two");
 
@@ -106,6 +113,7 @@ public class ComposableTransformerTests {
   @Test
   @SuppressWarnings("unchecked")
   public void composeWithIterable() {
+
     Iterable<Transformer<Object>> iterable =
       asIterable(mockTransformer("one"), mockTransformer("two"), mockTransformer("three"));
 
@@ -128,6 +136,7 @@ public class ComposableTransformerTests {
 
   @Test
   public void composeWithSingleElementIterable() {
+
     Transformer<Object> mockTransformer = mockTransformer();
 
     assertThat(ComposableTransformer.compose(asIterable(mockTransformer))).isSameAs(mockTransformer);
@@ -136,14 +145,15 @@ public class ComposableTransformerTests {
   @Test
   @SuppressWarnings("unchecked")
   public void transform() {
+
     Transformer<Integer> dividingTransformer = (value) -> (value / 2);
     Transformer<Integer> doublingTransformer = (value) -> (value * 2);
     Transformer<Integer> incrementingTransformer = (value) -> (value + 1);
     Transformer<Integer> multiplyingTransformer = (value) -> (value * value);
     Transformer<Integer> squareRootTransformer = (value) -> (int) Math.sqrt(value);
 
-    Transformer<Integer> compositeTransformer = ComposableTransformer.compose(incrementingTransformer,
-      incrementingTransformer, incrementingTransformer);
+    Transformer<Integer> compositeTransformer =
+      ComposableTransformer.compose(incrementingTransformer, incrementingTransformer, incrementingTransformer);
 
     compositeTransformer = ComposableTransformer.compose(compositeTransformer, doublingTransformer);
     compositeTransformer = ComposableTransformer.compose(compositeTransformer, multiplyingTransformer);
