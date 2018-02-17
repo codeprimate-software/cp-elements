@@ -61,6 +61,7 @@ public class ComposableFilterTests {
 
   @Test
   public void acceptUsingAndReturnsFalse() {
+
     assertThat(ComposableFilter.and(falseFilter, falseFilter).accept("test")).isFalse();
     assertThat(ComposableFilter.and(falseFilter, trueFilter).accept("test")).isFalse();
     assertThat(ComposableFilter.and(trueFilter, falseFilter).accept("test")).isFalse();
@@ -78,6 +79,7 @@ public class ComposableFilterTests {
 
   @Test
   public void acceptUsingOrReturnsTrue() {
+
     assertThat(ComposableFilter.or(falseFilter, trueFilter).accept("test")).isTrue();
     assertThat(ComposableFilter.or(trueFilter, falseFilter).accept("test")).isTrue();
     assertThat(ComposableFilter.or(trueFilter, trueFilter).accept("test")).isTrue();
@@ -85,18 +87,21 @@ public class ComposableFilterTests {
 
   @Test
   public void acceptUsingXorReturnsFalse() {
+
     assertThat(ComposableFilter.xor(falseFilter, falseFilter).accept("test")).isFalse();
     assertThat(ComposableFilter.xor(trueFilter, trueFilter).accept("test")).isFalse();
   }
 
   @Test
   public void acceptUsingXorReturnsTrue() {
+
     assertThat(ComposableFilter.xor(falseFilter, trueFilter).accept("test")).isTrue();
     assertThat(ComposableFilter.xor(trueFilter, falseFilter).accept("test")).isTrue();
   }
 
   @Test
   public void acceptUsingAndWithOr() {
+
     Filter<Driver> driverFilter = ComposableFilter.or(new DrivingAgeFilter(16),
       ComposableFilter.and(new DrivingAgeFilter(14), new ParentRequiredFilter()));
 
@@ -121,6 +126,7 @@ public class ComposableFilterTests {
 
   @Test
   public void composeAndWithOneFilterReturnsTheOneFilter() {
+
     assertThat(ComposableFilter.and(null, falseFilter)).isSameAs(falseFilter);
     assertThat(ComposableFilter.and(trueFilter, null)).isSameAs(trueFilter);
   }
@@ -128,15 +134,16 @@ public class ComposableFilterTests {
   @Test
   @SuppressWarnings("all")
   public void composeAndWithTwoFiltersReturnsComposedFilter() {
+
     Filter<Object> composedFilter = ComposableFilter.and(trueFilter, falseFilter);
 
     assertThat(composedFilter).isNotNull();
     assertThat(composedFilter).isNotSameAs(trueFilter);
     assertThat(composedFilter).isNotSameAs(falseFilter);
     assertThat(composedFilter instanceof ComposableFilter).isTrue();
-    assertThat(((ComposableFilter) composedFilter).getLeftFilter()).isSameAs(trueFilter);
-    assertThat(((ComposableFilter) composedFilter).getRightFilter()).isSameAs(falseFilter);
-    assertThat(((ComposableFilter) composedFilter).getOp()).isEqualTo(LogicalOperator.AND);
+    assertThat(((ComposableFilter<Object>) composedFilter).getLeftFilter()).isSameAs(trueFilter);
+    assertThat(((ComposableFilter<Object>) composedFilter).getRightFilter()).isSameAs(falseFilter);
+    assertThat(((ComposableFilter<Object>) composedFilter).getOp()).isEqualTo(LogicalOperator.AND);
   }
 
   @Test
@@ -146,6 +153,7 @@ public class ComposableFilterTests {
 
   @Test
   public void composeOrWithOneFilterReturnsTheOneFilter() {
+
     assertThat(ComposableFilter.or(null, falseFilter)).isSameAs(falseFilter);
     assertThat(ComposableFilter.or(trueFilter, null)).isSameAs(trueFilter);
   }
@@ -153,15 +161,16 @@ public class ComposableFilterTests {
   @Test
   @SuppressWarnings("all")
   public void composeOrWithTwoFiltersReturnsComposedFilter() {
+
     Filter<Object> composedFilter = ComposableFilter.or(trueFilter, falseFilter);
 
     assertThat(composedFilter).isNotNull();
     assertThat(composedFilter).isNotSameAs(trueFilter);
     assertThat(composedFilter).isNotSameAs(falseFilter);
     assertThat(composedFilter instanceof ComposableFilter).isTrue();
-    assertThat(((ComposableFilter) composedFilter).getLeftFilter()).isSameAs(trueFilter);
-    assertThat(((ComposableFilter) composedFilter).getRightFilter()).isSameAs(falseFilter);
-    assertThat(((ComposableFilter) composedFilter).getOp()).isEqualTo(LogicalOperator.OR);
+    assertThat(((ComposableFilter<Object>) composedFilter).getLeftFilter()).isSameAs(trueFilter);
+    assertThat(((ComposableFilter<Object>) composedFilter).getRightFilter()).isSameAs(falseFilter);
+    assertThat(((ComposableFilter<Object>) composedFilter).getOp()).isEqualTo(LogicalOperator.OR);
   }
 
   @Test
@@ -171,6 +180,7 @@ public class ComposableFilterTests {
 
   @Test
   public void composeXorWithOneFilterReturnsTheOneFilter() {
+
     assertThat(ComposableFilter.xor(null, falseFilter)).isSameAs(falseFilter);
     assertThat(ComposableFilter.xor(trueFilter, null)).isSameAs(trueFilter);
   }
@@ -178,19 +188,21 @@ public class ComposableFilterTests {
   @Test
   @SuppressWarnings("all")
   public void composeXorWithTwoFiltersReturnsComposedFilter() {
+
     Filter<Object> composedFilter = ComposableFilter.xor(trueFilter, falseFilter);
 
     assertThat(composedFilter).isNotNull();
     assertThat(composedFilter).isNotSameAs(trueFilter);
     assertThat(composedFilter).isNotSameAs(falseFilter);
     assertThat(composedFilter instanceof ComposableFilter).isTrue();
-    assertThat(((ComposableFilter) composedFilter).getLeftFilter()).isSameAs(trueFilter);
-    assertThat(((ComposableFilter) composedFilter).getRightFilter()).isSameAs(falseFilter);
-    assertThat(((ComposableFilter) composedFilter).getOp()).isEqualTo(LogicalOperator.XOR);
+    assertThat(((ComposableFilter<Object>) composedFilter).getLeftFilter()).isSameAs(trueFilter);
+    assertThat(((ComposableFilter<Object>) composedFilter).getRightFilter()).isSameAs(falseFilter);
+    assertThat(((ComposableFilter<Object>) composedFilter).getOp()).isEqualTo(LogicalOperator.XOR);
   }
 
   @Test
   public void composeFiltersWithBuilder() {
+
     Filter<Object> filter = ComposableFilter.builder().compose(null, null);
 
     assertThat(filter).isNull();
