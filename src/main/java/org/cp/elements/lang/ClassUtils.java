@@ -16,6 +16,8 @@
 
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.ObjectUtils.safeGetValue;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.lang.annotation.Annotation;
@@ -25,6 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
@@ -825,10 +828,20 @@ public abstract class ClassUtils {
    *
    * @param type {@link Type} to resolve as a {@link Class}.
    * @return the resolved {@link Class} type {@link Type}.
+   * @throws IllegalArgumentException if the given {@link Type} cannot be resolved as a {@link Class} type.
    * @see java.lang.reflect.ParameterizedType
    * @see java.lang.reflect.Type
    */
+  @NullSafe
   public static Class<?> toRawType(Type type) {
-    return Class.class.cast(type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType() : type);
+
+    Type resolvedType = type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType()
+      : type instanceof TypeVariable ? safeGetValue(() -> loadClass(((TypeVariable) type).getName()), Object.class)
+      : type;
+
+    return Class.class.cast(Optional.ofNullable(resolvedType)
+      .filter(it -> it instanceof Class)
+      .orElseThrow(() -> newIllegalArgumentException("[%1$s] is not resolvable as a %2$s",
+        type, Class.class.getName())));
   }
 }

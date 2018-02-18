@@ -39,9 +39,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.Socket;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -1004,9 +1006,19 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(ClassUtils.toRawType(Object.class)).isEqualTo(Object.class);
   }
 
-  @Test
-  public void toRawTypeWithNull() {
-    assertThat(ClassUtils.toRawType(null)).isNull();
+  @Test(expected = IllegalArgumentException.class)
+  public void toRawTypeWithNullThrowsIllegalArgumentException() {
+
+    try {
+      ClassUtils.toRawType(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("[null] is not resolvable as a java.lang.Class");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -1019,6 +1031,30 @@ public class ClassUtilsTests extends AbstractBaseTestSuite {
     assertThat(ClassUtils.toRawType(mockParameterizedType)).isEqualTo(String.class);
 
     verify(mockParameterizedType, times(1)).getRawType();
+  }
+
+  @Test
+  public void toRawTypeWithTypeVariableHavingResolvableClassType() {
+
+    TypeVariable<?> mockTypeVariable = mock(TypeVariable.class);
+
+    when(mockTypeVariable.getName()).thenReturn("java.time.Instant");
+
+    assertThat(ClassUtils.toRawType(mockTypeVariable)).isEqualTo(Instant.class);
+
+    verify(mockTypeVariable, times(1)).getName();
+  }
+
+  @Test
+  public void toRawTypeWithTypeVariableHavingUnresolvableClassTypeReturnsObjectClass() {
+
+    TypeVariable<?> mockTypeVariable = mock(TypeVariable.class);
+
+    when(mockTypeVariable.getName()).thenReturn("T");
+
+    assertThat(ClassUtils.toRawType(mockTypeVariable)).isEqualTo(Object.class);
+
+    verify(mockTypeVariable, times(1)).getName();
   }
 
   public static class ClassWithMainMethod {
