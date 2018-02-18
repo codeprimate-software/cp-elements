@@ -18,6 +18,7 @@ package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -29,6 +30,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.function.Function;
+
 import org.cp.elements.lang.Constants;
 import org.junit.Test;
 
@@ -36,6 +39,7 @@ import org.junit.Test;
  * Unit tests for {@link Converter}.
  *
  * @author John Blum
+ * @see java.util.function.Function
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.Converter
@@ -116,7 +120,7 @@ public class ConverterTests {
 
   @Test(expected = IllegalArgumentException.class)
   @SuppressWarnings("unchecked")
-  public void convertWithNullQualifyingTypeThrowsException() {
+  public void convertWithNullQualifyingTypeThrowsIllegalArgumentException() {
 
     Converter<Object, ?> mockConverter = mock(Converter.class);
 
@@ -139,7 +143,7 @@ public class ConverterTests {
 
   @Test(expected = ConversionException.class)
   @SuppressWarnings("unchecked")
-  public void convertHandlesClassCastExceptionThrowsConversionException() {
+  public void convertHandlesClassCastExceptionByThrowingConversionException() {
 
     Converter<String, TestObject> mockConverter = mock(Converter.class);
 
@@ -163,6 +167,68 @@ public class ConverterTests {
     finally {
       verify(mockConverter, times(1)).convert(eq("test"));
     }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void functionApplyCallsConverterConvert() {
+
+    Converter<String, Number> mockConverter = mock(Converter.class);
+
+    when(mockConverter.apply(any())).thenCallRealMethod();
+    when(mockConverter.convert(any())).thenReturn(1);
+
+    assertThat(mockConverter.apply("one")).isEqualTo(1);
+
+    verify(mockConverter, times(1)).apply(eq("one"));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void functionAndThenIsCorrect() {
+
+    Converter<String, Integer> toIntegerConverter = mock(Converter.class);
+    Converter<Number, Double> andThenConverter = mock(Converter.class);
+
+    when(toIntegerConverter.apply(anyString())).thenCallRealMethod();
+    when(toIntegerConverter.andThen(any(Function.class))).thenCallRealMethod();
+
+    when(toIntegerConverter.convert(anyString()))
+      .thenAnswer(invocation -> Integer.parseInt(invocation.getArgument(0)));
+
+    when(andThenConverter.apply(any(Number.class))).thenCallRealMethod();
+
+    when(andThenConverter.convert(any(Number.class)))
+      .thenAnswer(invocation -> invocation.<Number>getArgument(0).doubleValue() * 2.0d);
+
+    assertThat(toIntegerConverter.andThen(andThenConverter).apply("1")).isEqualTo(2.0d);
+
+    verify(toIntegerConverter, times(1)).apply(eq("1"));
+    verify(andThenConverter, times(1)).apply(eq(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void functionComposeIsCorrect() {
+
+    Converter<String, Integer> beforeConverter = mock(Converter.class);
+    Converter<Number, Double> doublingConverter = mock(Converter.class);
+
+    when(beforeConverter.apply(anyString())).thenCallRealMethod();
+
+    when(beforeConverter.convert(anyString()))
+      .thenAnswer(invocation -> Integer.parseInt(invocation.getArgument(0)));
+
+    when(doublingConverter.apply(isA(Number.class))).thenCallRealMethod();
+    when(doublingConverter.compose(any(Function.class))).thenCallRealMethod();
+
+    when(doublingConverter.convert(any(Integer.class)))
+      .thenAnswer(invocation -> invocation.<Integer>getArgument(0).doubleValue() * 2.0d);
+
+    assertThat(doublingConverter.compose(beforeConverter).apply("1")).isEqualTo(2.0d);
+
+    verify(beforeConverter, times(1)).apply(eq("1"));
+    verify(doublingConverter, times(1)).apply(eq(1));
   }
 
   static class TestConverter implements Converter<Object, Object> {

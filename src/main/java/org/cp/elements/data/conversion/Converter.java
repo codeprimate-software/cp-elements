@@ -18,6 +18,8 @@ package org.cp.elements.data.conversion;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
+import java.util.function.Function;
+
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -29,13 +31,27 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @author John J. Blum
  * @param <S> {@link Class source type} to convert from.
  * @param <T> {@link Class target type} to convert to.
+ * @see java.util.function.Function
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @see org.cp.elements.data.conversion.ConversionService
  * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
-public interface Converter<S, T> extends ConversionServiceAware {
+public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> {
+
+  /**
+   * Applies this {@link Converter} / {@link Function} to the given {@link S argument}.
+   *
+   * @param value {@link Object} on which to apply this {@link Converter} / {@link Function}.
+   * @return the converted {@link T value} from applying this {@link Converter} /  {@link Function}
+   * to the given {@link S value}.
+   * @see java.util.function.Function#apply(Object)
+   * @see #convert(Object)
+   */
+  @Override
+  default T apply(S value) {
+    return convert(value);
+  }
 
   /**
    * Determines whether this {@link Converter} can convert the given {@link Object}
