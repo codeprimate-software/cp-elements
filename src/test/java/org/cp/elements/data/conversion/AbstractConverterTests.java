@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.function.Function;
 
 import org.junit.Test;
 
@@ -40,8 +41,12 @@ import org.junit.Test;
 @SuppressWarnings("unused")
 public class AbstractConverterTests {
 
-  protected AbstractConverter<Object, Object> newConverter() {
+  private AbstractConverter<Object, Object> newConverter() {
     return new TestConverter();
+  }
+
+  private AbstractConverter<Object, Object> newConverter(Class<?> type) {
+    return new TestConverter(type);
   }
 
   @Test
@@ -74,7 +79,7 @@ public class AbstractConverterTests {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void resolveConversionServiceWhenUnsetThrowsException() {
+  public void resolveConversionServiceWhenUnsetThrowsIllegalStateException() {
 
     try {
       newConverter().resolveConversionService();
@@ -95,7 +100,8 @@ public class AbstractConverterTests {
     AbstractConverter converter = newConverter();
 
     assertThat(converter.isAssignableTo(Character.class, Short.class, String.class, Object.class)).isTrue();
-    assertThat(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class)).isTrue();
+    assertThat(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class,
+      Object.class)).isTrue();
   }
 
   @Test
@@ -107,25 +113,59 @@ public class AbstractConverterTests {
     assertThat(converter.isAssignableTo(Timestamp.class, Calendar.class, Date.class, LocalDate.class,
       LocalDateTime.class, Long.class, String.class)) .isFalse();
 
-    assertThat(converter.isAssignableTo(Object.class, Boolean.class, Integer.class, String.class)).isFalse();
+    assertThat(converter.isAssignableTo(Object.class, Boolean.class, Double.class, Integer.class,
+      String.class)).isFalse();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void isAssignableToWithEmptyClassTypeArrayReturnsFalse() {
-
-    AbstractConverter converter = newConverter();
-
-    assertThat(converter.isAssignableTo(Object.class)).isFalse();
+    assertThat(newConverter().isAssignableTo(Object.class)).isFalse();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void isAssignableToWithNullClassTypeArrayIsNullSafeAndReturnsFalse() {
+    assertThat(newConverter().isAssignableTo(Object.class, (Class[]) null)).isFalse();
+  }
 
-    AbstractConverter converter = newConverter();
+  @Test
+  public void isParameterizedFunctionTypeWithParameterizedConverterReturnsTrue() {
 
-    assertThat(converter.isAssignableTo(Object.class, (Class[]) null)).isFalse();
+    AbstractConverter<?, ?> converter = newConverter();
+
+    assertThat(converter.isParameterizedFunctionType(ObjectToStringConverter.class.getGenericSuperclass())).isTrue();
+    assertThat(converter.isParameterizedFunctionType(StringToUrlConverter.class.getGenericSuperclass())).isTrue();
+    assertThat(converter.isParameterizedFunctionType(TestConverter.class.getGenericSuperclass())).isTrue();
+    assertThat(converter.isParameterizedFunctionType(TimestampToLocalDateTimeConverter.class.getGenericSuperclass()))
+      .isTrue();
+  }
+
+  @Test
+  public void isParameterizedFunctionTypeWithParameterizedFunctionReturnsTrue() {
+    assertThat(newConverter().isParameterizedFunctionType(ObjectToStringFunction.class.getGenericInterfaces()[0]))
+      .isTrue();
+  }
+
+  @Test
+  public void isParameterizedFunctionTypeWithRawTypeReturnsFalse() {
+
+    AbstractConverter<?, ?> converter = newConverter();
+
+    assertThat(converter.isParameterizedFunctionType(ObjectToStringConverter.class)).isFalse();
+    assertThat(converter.isParameterizedFunctionType(ObjectToStringFunction.class)).isFalse();
+    assertThat(converter.isParameterizedFunctionType(RawTypeConverter.class)).isFalse();
+    assertThat(converter.isParameterizedFunctionType(RawTypeConverter.class.getGenericSuperclass())).isFalse();
+  }
+
+  @Test
+  public void isParameterizedFunctionTypeWithObjectClassReturnsFalse() {
+    assertThat(newConverter().isParameterizedFunctionType(Object.class)).isFalse();
+  }
+
+  @Test
+  public void isParameterizedFunctionTypeWithNullReturnsFalse() {
+    assertThat(newConverter().isParameterizedFunctionType(null)).isFalse();
   }
 
   @Test
@@ -133,8 +173,18 @@ public class AbstractConverterTests {
 
     AbstractConverter<Object, String> converter = new ObjectToStringConverter();
 
-    assertThat(converter.getSourceType()).isEqualTo(Object.class);
-    assertThat(converter.getTargetType()).isEqualTo(String.class);
+    assertThat(converter.getSourceType().orElse(null)).isEqualTo(Object.class);
+    assertThat(converter.getTargetType().orElse(null)).isEqualTo(String.class);
+  }
+
+  @Test
+  public void getSourceAndTargetTypesWithObjectToStringFunction() {
+
+    AbstractConverter<Object, Object> function = newConverter(ObjectToStringFunction.class);
+
+    assertThat(function).isNotNull();
+    assertThat(function.getSourceType().orElse(null)).isEqualTo(Object.class);
+    assertThat(function.getTargetType().orElse(null)).isEqualTo(String.class);
   }
 
   @Test
@@ -142,8 +192,8 @@ public class AbstractConverterTests {
 
     AbstractConverter<?, ?> converter = new RawTypeConverter();
 
-    assertThat(converter.getSourceType()).isEqualTo(Object.class);
-    assertThat(converter.getTargetType()).isEqualTo(Object.class);
+    assertThat(converter.getSourceType().orElse(null)).isEqualTo(Object.class);
+    assertThat(converter.getTargetType().orElse(null)).isEqualTo(Object.class);
   }
 
   @Test
@@ -151,8 +201,8 @@ public class AbstractConverterTests {
 
     AbstractConverter<?, ?> converter = new StringToUrlConverter();
 
-    assertThat(converter.getSourceType()).isEqualTo(String.class);
-    assertThat(converter.getTargetType()).isEqualTo(URL.class);
+    assertThat(converter.getSourceType().orElse(null)).isEqualTo(String.class);
+    assertThat(converter.getTargetType().orElse(null)).isEqualTo(URL.class);
   }
 
   @Test
@@ -160,13 +210,53 @@ public class AbstractConverterTests {
 
     AbstractConverter<?, ?> converter = new TimestampToLocalDateTimeConverter();
 
-    assertThat(converter.getSourceType()).isEqualTo(Timestamp.class);
-    assertThat(converter.getTargetType()).isEqualTo(LocalDateTime.class);
+    assertThat(converter.getSourceType().orElse(null)).isEqualTo(Timestamp.class);
+    assertThat(converter.getTargetType().orElse(null)).isEqualTo(LocalDateTime.class);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
-  public void canConvertThrowsUnsupportedOperationException() {
-    newConverter().canConvert(Object.class, String.class);
+  @Test
+  @SuppressWarnings("unchecked")
+  public void canConvertStringToAnythingUsingRawTypeConverterReturnsTrue() {
+
+    RawTypeConverter converter = new RawTypeConverter();
+
+    assertThat(converter.canConvert(Object.class, String.class)).isTrue();
+    assertThat(converter.canConvert(String.class, Boolean.class)).isTrue();
+    assertThat(converter.canConvert(String.class, Character.class)).isTrue();
+    assertThat(converter.canConvert(String.class, Double.class)).isTrue();
+    assertThat(converter.canConvert(String.class, Integer.class)).isTrue();
+    assertThat(converter.canConvert(String.class, Timestamp.class)).isTrue();
+  }
+
+  @Test
+  public void canConvertObjectToStringUsingObjectToStringConverterReturnsTrue() {
+    assertThat(new ObjectToStringConverter().canConvert(Object.class, String.class)).isTrue();
+  }
+
+  @Test
+  public void canConvertObjectToStringUsingObjectToStringFunctionReturnsTrue() {
+    assertThat(newConverter(ObjectToStringFunction.class).canConvert(Object.class, String.class)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void canConvertObjectToStringUsingRawTypeConverterReturnsTrue() {
+    assertThat(new RawTypeConverter().canConvert(Object.class, String.class)).isTrue();
+  }
+
+  @Test
+  public void canConvertStringToNumberUsingStringToIntegerConverterReturnsTrue() {
+    assertThat(new StringToIntegerConverter().canConvert(String.class, Number.class)).isTrue();
+  }
+
+  @Test
+  public void canConvertStringToIntegerUsingStringToNumberConverterReturnsFalse() {
+    assertThat(new StringToNumberConverter().canConvert(String.class, Integer.class)).isFalse();
+  }
+
+  @Test
+  public void canConverterStringToCharacterUsingObjectToStringConverterReturnsFalse() {
+    assertThat(new ObjectToStringConverter().canConvert(String.class, Character.class)).isFalse();
   }
 
   @Test(expected = UnsupportedOperationException.class)
@@ -181,12 +271,30 @@ public class AbstractConverterTests {
 
   static class ObjectToStringConverter extends AbstractConverter<Object, String> { }
 
+  static class ObjectToStringFunction implements Function<Object, String> {
+
+    @Override
+    public String apply(Object obj) {
+      return String.valueOf(obj);
+    }
+  }
+
   static class RawTypeConverter extends AbstractConverter { }
+
+  static class StringToIntegerConverter extends AbstractConverter<String, Integer> { }
+
+  static class StringToNumberConverter extends AbstractConverter<String, Number> { }
 
   static class StringToUrlConverter extends AbstractConverter<String, URL> { }
 
   static class TimestampToLocalDateTimeConverter extends AbstractConverter<Timestamp, LocalDateTime> { }
 
-  static class TestConverter extends AbstractConverter<Object, Object> { }
+  static class TestConverter extends AbstractConverter<Object, Object> {
 
+    TestConverter() { }
+
+    TestConverter(Class<?> type) {
+      super(type);
+    }
+  }
 }

@@ -18,6 +18,8 @@ package org.cp.elements.data.conversion;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
+import org.cp.elements.lang.Constants;
+
 /**
  * The {@link DefaultableConverter} class is an abstract {@link Converter} implementation supporting
  * the use {@link Object default values} if the {@link Object value} to convert is {@literal null}.
@@ -83,7 +85,8 @@ public abstract class DefaultableConverter<S, T> extends AbstractConverter<S, T>
       return defaultValue;
     }
 
-    throw newConversionException("Cannot convert [%1$s] to [%2$s]", value, getTargetType().getName());
+    throw newConversionException("Cannot convert [%1$s] to [%2$s]",
+      value, getTargetType().map(Class::getName).orElse(Constants.UNKNOWN));
   }
 
   /**
