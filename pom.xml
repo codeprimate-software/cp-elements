@@ -85,6 +85,7 @@
       <groupId>com.sun.tools</groupId>
       <artifactId>attach-api</artifactId>
       <version>${java.version}</version>
+      <optional>true</optional>
       <scope>system</scope>
       <systemPath>${java.home}/../lib/tools.jar</systemPath>
     </dependency>
