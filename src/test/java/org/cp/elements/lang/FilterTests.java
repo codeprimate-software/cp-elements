@@ -40,71 +40,71 @@ public class FilterTests {
   @Test
   public void acceptingFilterAcceptsAll() {
 
-    assertThat(Filter.ACCEPTING.accept(false)).isTrue();
-    assertThat(Filter.ACCEPTING.accept('X')).isTrue();
-    assertThat(Filter.ACCEPTING.accept(Math.PI)).isTrue();
-    assertThat(Filter.ACCEPTING.accept(-1)).isTrue();
-    assertThat(Filter.ACCEPTING.accept("test")).isTrue();
+    assertThat(Filter.accepting().accept(false)).isTrue();
+    assertThat(Filter.accepting().accept('X')).isTrue();
+    assertThat(Filter.accepting().accept(Math.PI)).isTrue();
+    assertThat(Filter.accepting().accept(-1)).isTrue();
+    assertThat(Filter.accepting().accept("test")).isTrue();
   }
 
   @Test
   public void acceptingAndAcceptingReturnsTrue() {
-    assertThat(Filter.ACCEPTING.and(Filter.ACCEPTING).test("test")).isTrue();
+    assertThat(Filter.accepting().and(Filter.accepting()).test("test")).isTrue();
   }
 
   @Test
   public void acceptingAndRejectingReturnsFalse() {
-    assertThat(Filter.ACCEPTING.and(Filter.REJECTING).test("test")).isFalse();
+    assertThat(Filter.accepting().and(Filter.rejecting()).test("test")).isFalse();
   }
 
   @Test
   public void acceptingNegatedReturnsFalse() {
-    assertThat(Filter.ACCEPTING.negate().test("test")).isFalse();
+    assertThat(Filter.accepting().negate().test("test")).isFalse();
   }
 
   @Test
   public void acceptingOrAcceptingReturnsTrue() {
-    assertThat(Filter.ACCEPTING.or(Filter.ACCEPTING).test("test")).isTrue();
+    assertThat(Filter.accepting().or(Filter.accepting()).test("test")).isTrue();
   }
 
   @Test
   public void acceptingOrRejectingReturnsTrue() {
-    assertThat(Filter.ACCEPTING.or(Filter.REJECTING).test("test")).isTrue();
+    assertThat(Filter.accepting().or(Filter.rejecting()).test("test")).isTrue();
   }
 
   @Test
   public void rejectingFilterRejectsAll() {
 
-    assertThat(Filter.REJECTING.accept(true)).isFalse();
-    assertThat(Filter.REJECTING.accept('O')).isFalse();
-    assertThat(Filter.REJECTING.accept(Math.PI)).isFalse();
-    assertThat(Filter.REJECTING.accept(1)).isFalse();
-    assertThat(Filter.REJECTING.accept("test")).isFalse();
+    assertThat(Filter.rejecting().accept(true)).isFalse();
+    assertThat(Filter.rejecting().accept('O')).isFalse();
+    assertThat(Filter.rejecting().accept(Math.PI)).isFalse();
+    assertThat(Filter.rejecting().accept(1)).isFalse();
+    assertThat(Filter.rejecting().accept("test")).isFalse();
   }
 
   @Test
   public void rejectingAndAcceptingReturnsFalse() {
-    assertThat(Filter.REJECTING.and(Filter.ACCEPTING).test("test")).isFalse();
+    assertThat(Filter.rejecting().and(Filter.accepting()).test("test")).isFalse();
   }
 
   @Test
   public void rejectingAndRejectingReturnsFalse() {
-    assertThat(Filter.REJECTING.and(Filter.REJECTING).test("test")).isFalse();
+    assertThat(Filter.rejecting().and(Filter.rejecting()).test("test")).isFalse();
   }
 
   @Test
   public void rejectingNegatedReturnsTrue() {
-    assertThat(Filter.REJECTING.negate().test("test")).isTrue();
+    assertThat(Filter.rejecting().negate().test("test")).isTrue();
   }
 
   @Test
   public void rejectingOrAcceptingReturnsTrue() {
-    assertThat(Filter.REJECTING.or(Filter.ACCEPTING).test("test")).isTrue();
+    assertThat(Filter.rejecting().or(Filter.accepting()).test("test")).isTrue();
   }
 
   @Test
   public void rejectingOrRejectingReturnsFalse() {
-    assertThat(Filter.REJECTING.or(Filter.REJECTING).test("test")).isFalse();
+    assertThat(Filter.rejecting().or(Filter.rejecting()).test("test")).isFalse();
   }
 
   @Test

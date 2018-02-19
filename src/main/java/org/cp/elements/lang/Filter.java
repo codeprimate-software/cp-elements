@@ -30,8 +30,27 @@ import java.util.function.Predicate;
 @FunctionalInterface
 public interface Filter<T> extends Predicate<T>  {
 
-  Filter<Object> ACCEPTING = obj -> true;
-  Filter<Object> REJECTING = obj -> false;
+  /**
+   * Returns a {@link Filter} implementation that accepts all {@link Object objects}.
+   *
+   * @param <T> {@link Class type} of {@link Object objects} being accepted.
+   * @return a {@link Filter} implementation accepting all {@link Object objects}.
+   * @see org.cp.elements.lang.Filter
+   */
+  static <T> Filter<T> accepting() {
+    return obj -> true;
+  }
+
+  /**
+   * Returns a {@link Filter} implementation that rejects all {@link Object objects}.
+   *
+   * @param <T> {@link Class type} of {@link Object objects} being rejected.
+   * @return a {@link Filter} implementation rejecting all {@link Object objects}.
+   * @see org.cp.elements.lang.Filter
+   */
+  static <T> Filter<T> rejecting() {
+    return obj -> false;
+  }
 
   /**
    * Determines whether the specified object meets the criteria (rules) defined by this Filter.
