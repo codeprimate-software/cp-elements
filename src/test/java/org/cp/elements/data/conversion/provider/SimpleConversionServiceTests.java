@@ -53,7 +53,6 @@ import org.cp.elements.data.conversion.converters.URIConverter;
 import org.cp.elements.data.conversion.converters.URLConverter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
-import org.cp.elements.enums.State;
 import org.cp.elements.lang.Identifiable;
 import org.junit.Test;
 
@@ -146,28 +145,23 @@ public class SimpleConversionServiceTests {
 
     assertThat(this.conversionService.getDefaultValue(Gender.class)).isNull();
     assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
-    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
 
     this.conversionService.setDefaultValue(Gender.class, Gender.FEMALE);
     this.conversionService.setDefaultValue(Race.class, Race.WHITE);
 
     assertThat(this.conversionService.getDefaultValue(Gender.class)).isEqualTo(Gender.FEMALE);
     assertThat(this.conversionService.getDefaultValue(Race.class)).isEqualTo(Race.WHITE);
-    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
     assertThat(this.conversionService.<Race>unsetDefaultValue(Race.class)).isEqualTo(Race.WHITE);
     assertThat(this.conversionService.getDefaultValue(Gender.class)).isEqualTo(Gender.FEMALE);
     assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
-    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
 
     this.conversionService.setDefaultValue(Gender.class, Gender.MALE);
 
     assertThat(this.conversionService.getDefaultValue(Gender.class)).isEqualTo(Gender.MALE);
     assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
-    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
     assertThat(this.conversionService.<Gender>unsetDefaultValue(Gender.class)).isEqualTo(Gender.MALE);
     assertThat(this.conversionService.getDefaultValue(Gender.class)).isNull();
     assertThat(this.conversionService.getDefaultValue(Race.class)).isNull();
-    assertThat(this.conversionService.getDefaultValue(State.class)).isNull();
   }
 
   @Test
