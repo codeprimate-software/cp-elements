@@ -16,10 +16,11 @@
 
 package org.cp.elements.enums;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
- * The Month enum defines enumerated values (constants) for months in the year.
+ * The {@link Month} enum is an {@link Enum enumeration} of the months in a year.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -29,6 +30,7 @@ import java.util.Calendar;
  */
 @SuppressWarnings("unused")
 public enum Month {
+
   JANUARY("Jan", "January", 1, Calendar.JANUARY, java.time.Month.JANUARY),
   FEBRUARY("Feb", "February", 2, Calendar.FEBRUARY, java.time.Month.FEBRUARY),
   MARCH("Mar", "March", 3, Calendar.MARCH, java.time.Month.MARCH),
@@ -41,6 +43,46 @@ public enum Month {
   OCTOBER("Oct", "October", 10, Calendar.OCTOBER, java.time.Month.OCTOBER),
   NOVEMBER("Nov", "November", 11, Calendar.NOVEMBER, java.time.Month.NOVEMBER),
   DECEMBER("Dec", "December", 12, Calendar.DECEMBER, java.time.Month.DECEMBER);
+
+  public static Month valueOfAbbreviation(String abbreviation) {
+
+    return Arrays.stream(values())
+      .filter(month -> month.getAbbreviation().equalsIgnoreCase(abbreviation))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Month valueOfCalendarMonth(int calendarMonth) {
+
+    return Arrays.stream(values())
+      .filter(month -> month.getCalendarMonth() == calendarMonth)
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Month valueOfJavaTimeMonth(java.time.Month javaTimeMonth) {
+
+    return Arrays.stream(values())
+      .filter(month -> month.getJavaTimeMonth().equals(javaTimeMonth))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Month valueOfName(String name) {
+
+    return Arrays.stream(values())
+      .filter(month -> month.getName().equalsIgnoreCase(name))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Month valueOfPosition(int position) {
+
+    return Arrays.stream(values())
+      .filter(month -> month.getPosition() == position)
+      .findFirst()
+      .orElse(null);
+  }
 
   private final int calendarMonth;
   private final int position;
@@ -60,61 +102,12 @@ public enum Month {
    * @param month {@link java.time.Month} value of this {@link Month} enum (e.g. {@link java.time.Month#JANUARY}.
    */
   Month(String abbreviation, String name, int position, int calendarMonth, java.time.Month month) {
+
     this.abbreviation = abbreviation;
     this.name = name;
     this.position = position;
     this.calendarMonth = calendarMonth;
     this.month = month;
-  }
-
-  public static Month valueOfAbbreviation(String abbreviation) {
-    for (Month month : values()) {
-      if (month.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return month;
-      }
-    }
-
-    return null;
-  }
-
-  public static Month valueOfCalendarMonth(int calendarMonth) {
-    for (Month month : values()) {
-      if (month.getCalendarMonth() == calendarMonth) {
-        return month;
-      }
-    }
-
-    return null;
-  }
-
-  public static Month valueOfJavaTimeMonth(java.time.Month javaTimeMonth) {
-    for (Month month : values()) {
-      if (month.getJavaTimeMonth().equals(javaTimeMonth)) {
-        return month;
-      }
-    }
-
-    return null;
-  }
-
-  public static Month valueOfName(String name) {
-    for (Month month : values()) {
-      if (month.getName().equalsIgnoreCase(name)) {
-        return month;
-      }
-    }
-
-    return null;
-  }
-
-  public static Month valueOfPosition(int position) {
-    for (Month month : values()) {
-      if (month.getPosition() == position) {
-        return month;
-      }
-    }
-
-    return null;
   }
 
   public String getAbbreviation() {
@@ -139,6 +132,6 @@ public enum Month {
 
   @Override
   public String toString() {
-    return this.name;
+    return getName();
   }
 }

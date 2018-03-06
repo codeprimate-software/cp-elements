@@ -16,8 +16,10 @@
 
 package org.cp.elements.enums;
 
+import java.util.Arrays;
+
 /**
- * The Race enum defines constants (enumerated values) for different ethnicity and nationality.
+ * The {@link Race} enum is an {@link Enum enumeration} for different ethnicity and nationalities.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -25,6 +27,7 @@ package org.cp.elements.enums;
  */
 @SuppressWarnings("unused")
 public enum Race {
+
   AFRICAN_AMERICAN("Black", "African American"),
   ALASKAN_NATIVE("Eskimo", "Alaskan Native"),
   ASIAN("Asian", "Asian"),
@@ -34,45 +37,40 @@ public enum Race {
   NATIVE_AMERICAN("Indian", "Native American"),
   WHITE("White", "White");
 
+  public static Race valueOfAbbreviation(String abbreviation) {
+
+    return Arrays.stream(values())
+      .filter(race -> race.getAbbreviation().equalsIgnoreCase(abbreviation))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Race valueOfName(String name) {
+
+    return Arrays.stream(values())
+      .filter(race -> race.getName().equalsIgnoreCase(name))
+      .findFirst()
+      .orElse(null);
+  }
+
   private final String abbreviation;
   private final String name;
 
-  Race(final String abbreviation, final String name) {
+  Race(String abbreviation, String name) {
     this.abbreviation = abbreviation;
     this.name = name;
   }
 
-  public static Race valueOfAbbreviation(final String abbreviation) {
-    for (Race race : values()) {
-      if (race.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return race;
-      }
-    }
-
-    return null;
-  }
-
-  public static Race valueOfName(final String name) {
-    for (Race race : values()) {
-      if (race.getName().equalsIgnoreCase(name)) {
-        return race;
-      }
-    }
-
-    return null;
-  }
-
   public String getAbbreviation() {
-    return abbreviation;
+    return this.abbreviation;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return getName();
   }
-
 }

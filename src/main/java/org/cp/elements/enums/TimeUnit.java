@@ -16,8 +16,10 @@
 
 package org.cp.elements.enums;
 
+import java.util.Arrays;
+
 /**
- * The TimeUnit enum defines constants (enumerated values) for units of time.
+ * The {@link TimeUnit} enum is an {@link Enum enumeration} for units of time.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -25,6 +27,7 @@ package org.cp.elements.enums;
  */
 @SuppressWarnings("unused")
 public enum TimeUnit {
+
   NANOSECOND("ns", "Nanosecond", "1 billionth of a second"),
   MICROSECOND("us", "Microsecond", "1 millionth of a second"),
   MILLISECOND("ms", "Millisecond", "1 thousandth of a second"),
@@ -40,51 +43,46 @@ public enum TimeUnit {
   CENTURY("cent", "Century", "100 years"),
   MILLENIA("Millenia", "Millenia", "1000 years");
 
+  public static TimeUnit valueOfAbbreviation(String abbreviation) {
+
+    return Arrays.stream(values())
+      .filter(unit -> unit.getAbbreviation().equalsIgnoreCase(abbreviation))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static TimeUnit valueOfName(String name) {
+
+    return Arrays.stream(values())
+      .filter(unit -> unit.getName().equalsIgnoreCase(name))
+      .findFirst()
+      .orElse(null);
+  }
+
   private final String abbreviation;
   private final String description;
   private final String name;
 
-  TimeUnit(final String abbreviation, final String name, final String description) {
+  TimeUnit(String abbreviation, String name, String description) {
     this.abbreviation = abbreviation;
     this.name = name;
     this.description = description;
   }
 
-  public static TimeUnit valueOfAbbreviation(final String abbreviation) {
-    for (TimeUnit unit : values()) {
-      if (unit.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return unit;
-      }
-    }
-
-    return null;
-  }
-
-  public static TimeUnit valueOfName(final String name) {
-    for (TimeUnit unit : values()) {
-      if (unit.getName().equalsIgnoreCase(name)) {
-        return unit;
-      }
-    }
-
-    return null;
-  }
-
   public String getAbbreviation() {
-    return abbreviation;
+    return this.abbreviation;
   }
 
   public String getDescription() {
-    return description;
+    return this.description;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return getName();
   }
-
 }

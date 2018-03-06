@@ -18,17 +18,20 @@ package org.cp.elements.enums;
 
 import static org.cp.elements.util.CollectionExtensions.from;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
- * The Weekday enum defines constants (enumerated values) for all the days of a week.
+ * The {@link Weekday} enum is an {@link Enum enumeration} for all the days in a week.
  *
  * @author John J. Blum
  * @see java.lang.Enum
+ * @see java.util.Calendar
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum Weekday {
+
   SUNDAY("Sun", "Sunday", 1, Calendar.SUNDAY),
   MONDAY("Mon", "Monday", 2, Calendar.MONDAY),
   TUESDAY("Tue", "Tuesday", 3, Calendar.TUESDAY),
@@ -37,73 +40,66 @@ public enum Weekday {
   FRIDAY("Fri", "Friday", 6, Calendar.FRIDAY),
   SATURDAY("Sat", "Saturday", 7, Calendar.SATURDAY);
 
+  public static Weekday valueOfAbbreviation(String abbreviation) {
+
+    return Arrays.stream(values())
+      .filter(day -> day.getAbbreviation().equalsIgnoreCase(abbreviation))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Weekday valueOfCalendarConstant(int calendarConstant) {
+
+    return Arrays.stream(values())
+      .filter(day -> day.getCalendarConstant() == calendarConstant)
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Weekday valueOfName(String name) {
+
+    return Arrays.stream(values())
+      .filter(day -> day.getName().equalsIgnoreCase(name))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Weekday valueOfPosition(int position) {
+
+    return Arrays.stream(values())
+      .filter(day -> day.getPosition() == position)
+      .findFirst()
+      .orElse(null);
+  }
+
   private final int calendarConstant;
   private final int position;
 
   private final String abbreviation;
   private final String name;
 
-  Weekday(final String abbreviation, final String name, final int position, final int calendarConstant) {
+  Weekday(String abbreviation, String name, int position, int calendarConstant) {
+
     this.abbreviation = abbreviation;
     this.name = name;
     this.position = position;
     this.calendarConstant = calendarConstant;
   }
 
-  public static Weekday valueOfAbbreviation(final String abbreviation) {
-    for (Weekday day : values()) {
-      if (day.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return day;
-      }
-    }
-
-    return null;
-  }
-
-  public static Weekday valueOfCalendarConstant(final int calendarConstant) {
-    for (Weekday day : values()) {
-      if (day.getCalendarConstant() == calendarConstant) {
-        return day;
-      }
-    }
-
-    return null;
-  }
-
-  public static Weekday valueOfName(final String name) {
-    for (Weekday day : values()) {
-      if (day.getName().equalsIgnoreCase(name)) {
-        return day;
-      }
-    }
-
-    return null;
-  }
-
-  public static Weekday valueOfPosition(final int position) {
-    for (Weekday day : values()) {
-      if (day.getPosition() == position) {
-        return day;
-      }
-    }
-
-    return null;
-  }
-
   public String getAbbreviation() {
-    return abbreviation;
+    return this.abbreviation;
   }
 
   public int getCalendarConstant() {
-    return calendarConstant;
+    return this.calendarConstant;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   public int getPosition() {
-    return position;
+    return this.position;
   }
 
   public boolean isWeekday() {
@@ -116,7 +112,6 @@ public enum Weekday {
 
   @Override
   public String toString() {
-    return this.name;
+    return getName();
   }
-
 }

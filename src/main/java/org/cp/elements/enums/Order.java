@@ -16,56 +16,55 @@
 
 package org.cp.elements.enums;
 
+import java.util.Arrays;
+
 /**
- * The Order enum defines constants (enumeration values) for sort order/order by.
+ * The {@link Order} enum is an {@link Enum enumeration} for sort order, or order by.
  *
  * @author John J. Blum
+ * @see java.lang.Enum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum Order {
+
   ASCENDING("ASC", "Ascending"),
   DESCENDING("DESC", "Descending");
+
+  public static Order valueOfAbbreviation(String abbreviation) {
+
+    return Arrays.stream(values())
+      .filter(order -> order.getAbbreviation().equalsIgnoreCase(abbreviation))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Order valueOfName(String name) {
+
+    return Arrays.stream(values())
+      .filter(order -> order.getName().equalsIgnoreCase(name))
+      .findFirst()
+      .orElse(null);
+  }
 
   private final String abbreviation;
   private final String name;
 
-  Order(final String abbreviation, final String name) {
+  Order(String abbreviation, String name) {
     this.abbreviation = abbreviation;
     this.name = name;
   }
 
-  public static Order valueOfAbbreviation(final String abbreviation) {
-    for (Order order : values()) {
-      if (order.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return order;
-      }
-    }
-
-    return null;
-  }
-
-  public static Order valueOfName(final String name) {
-    for (Order order : values()) {
-      if (order.getName().equalsIgnoreCase(name)) {
-        return order;
-      }
-    }
-
-    return null;
-  }
-
   public String getAbbreviation() {
-    return abbreviation;
+    return this.abbreviation;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return getName();
   }
-
 }
