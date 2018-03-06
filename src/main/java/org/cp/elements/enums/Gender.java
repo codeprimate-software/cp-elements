@@ -16,8 +16,10 @@
 
 package org.cp.elements.enums;
 
+import java.util.Arrays;
+
 /**
- * The Gender enum defines constants (enumerated values) for the two sexes (male and female).
+ * The {@link Gender} enum is an {@link Enum enumeration} of the two sexes ({@literal male} and {@literal female}).
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -25,48 +27,44 @@ package org.cp.elements.enums;
  */
 @SuppressWarnings("unused")
 public enum Gender {
+
   FEMALE("F", "Female"),
   MALE("M", "Male");
+
+  public static Gender valueOfAbbreviation(String abbreviation) {
+
+    return Arrays.stream(values())
+      .filter(gender -> gender.getAbbreviation().equalsIgnoreCase(abbreviation))
+      .findFirst()
+      .orElse(null);
+  }
+
+  public static Gender valueOfName(String name) {
+
+    return Arrays.stream(values())
+      .filter(gender -> gender.getName().equalsIgnoreCase(name))
+      .findFirst()
+      .orElse(null);
+  }
 
   private final String abbreviation;
   private final String name;
 
-  Gender(final String abbreviation, final String name) {
+  Gender(String abbreviation, String name) {
     this.abbreviation = abbreviation;
     this.name = name;
   }
 
-  public static Gender valueOfAbbreviation(final String abbreviation) {
-    for (Gender gender : values()) {
-      if (gender.getAbbreviation().equalsIgnoreCase(abbreviation)) {
-        return gender;
-      }
-    }
-
-    return null;
-  }
-
-  public static Gender valueOfName(final String name) {
-    for (Gender gender : values()) {
-      if (gender.getName().equalsIgnoreCase(name)) {
-        return gender;
-      }
-    }
-
-    return null;
-  }
-
   public String getAbbreviation() {
-    return abbreviation;
+    return this.abbreviation;
   }
 
   public String getName() {
-    return name;
+    return this.name;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return getName();
   }
-
 }
