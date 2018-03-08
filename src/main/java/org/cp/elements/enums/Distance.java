@@ -37,7 +37,8 @@ public enum Distance {
   KILOMETER("km"),
   INCH("in"),
   FOOT("ft"),
-  YARD("yd");
+  YARD("yd"),
+  MILE("mi");
 
   /**
    * Factory method used to find or lookup a {@link Distance} by {@link String abbreviation}.

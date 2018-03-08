@@ -34,14 +34,26 @@ import org.junit.Test;
 public class DistanceTests {
 
   @Test
-  public void valueOfAbbreviationsIsCorrect() {
+  public void valueOfReturnsDistance() {
+
+    Arrays.stream(Distance.values()).forEach(distance ->
+      assertThat(Distance.valueOf(distance.name())).isEqualTo(distance));
+  }
+
+  @Test
+  public void valueOfAbbreviationsReturnsDistance() {
 
     Arrays.stream(Distance.values()).forEach(distance ->
       assertThat(Distance.valueOfAbbreviation(distance.getAbbreviation())).isEqualTo(distance));
   }
 
   @Test
-  public void valueOfMixedCaseAbbreviationsIsCorrect() {
+  public void valueOfNullAbbreviationReturnsNull() {
+    assertThat(Distance.valueOfAbbreviation(null)).isNull();
+  }
+
+  @Test
+  public void valueOfMixedCaseAbbreviationsReturnsDistance() {
 
     assertThat(Distance.valueOfAbbreviation("NM")).isEqualTo(Distance.NANOMETER);
     assertThat(Distance.valueOfAbbreviation("Um")).isEqualTo(Distance.MICROMETER);
@@ -51,7 +63,23 @@ public class DistanceTests {
   }
 
   @Test
-  public void valueOfMixedCaseNamesIsCorrect() {
+  public void valueOfInvalidAbbreviationReturnsNull() {
+
+    assertThat(Distance.valueOfAbbreviation("mile")).isNull();
+    assertThat(Distance.valueOfAbbreviation("inches")).isNull();
+    assertThat(Distance.valueOfAbbreviation("FEET")).isNull();
+    assertThat(Distance.valueOfAbbreviation("1/4INCH")).isNull();
+  }
+
+  @Test
+  public void valueOfInvalidNamesReturnsNull() {
+
+    assertThat(Distance.valueOfName("MEETR")).isNull();
+    assertThat(Distance.valueOfName("Mileage")).isNull();
+  }
+
+  @Test
+  public void valueOfMixedCaseNamesReturnsDistance() {
 
     assertThat(Distance.valueOfName(Distance.NANOMETER.name())).isEqualTo(Distance.NANOMETER);
     assertThat(Distance.valueOfName("Micrometer")).isEqualTo(Distance.MICROMETER);
@@ -61,10 +89,16 @@ public class DistanceTests {
     assertThat(Distance.valueOfName("INch")).isEqualTo(Distance.INCH);
     assertThat(Distance.valueOfName("fOOt")).isEqualTo(Distance.FOOT);
     assertThat(Distance.valueOfName("YarD")).isEqualTo(Distance.YARD);
+    assertThat(Distance.valueOfName("MILE")).isEqualTo(Distance.MILE);
   }
 
   @Test
-  public void valueOfNamesIsCorrect() {
+  public void valueOfNullNameReturnsNull() {
+    assertThat(Distance.valueOfName(null)).isNull();
+  }
+
+  @Test
+  public void valueOfNamesReturnsDistance() {
 
     Arrays.stream(Distance.values()).forEach(distance ->
       assertThat(Distance.valueOfName(distance.name())).isEqualTo(distance));
