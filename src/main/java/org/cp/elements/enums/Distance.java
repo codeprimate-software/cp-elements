@@ -98,6 +98,16 @@ public enum Distance {
   }
 
   /**
+   * Returns the pluralized {@link #name()} of this {@link Distance} enumerated value.
+   *
+   * @return the pluralized {@link #name()} of this {@link Distance} enumerated value.
+   * @see #name()
+   */
+  public String getPluralName() {
+    return this == FOOT ? "FEET" : this == INCH ? "INCHES" : name().concat("S");
+  }
+
+  /**
    * Returns a {@link String} representation of this {@link Distance}.
    *
    * @return a {@link String} describing this {@link Distance}.

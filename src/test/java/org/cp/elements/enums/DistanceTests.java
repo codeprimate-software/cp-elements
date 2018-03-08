@@ -63,7 +63,7 @@ public class DistanceTests {
   }
 
   @Test
-  public void valueOfInvalidAbbreviationReturnsNull() {
+  public void valueOfInvalidAbbreviationsReturnsNull() {
 
     assertThat(Distance.valueOfAbbreviation("mile")).isNull();
     assertThat(Distance.valueOfAbbreviation("inches")).isNull();
@@ -72,10 +72,15 @@ public class DistanceTests {
   }
 
   @Test
-  public void valueOfInvalidNamesReturnsNull() {
+  public void valueOfNamesReturnsDistance() {
 
-    assertThat(Distance.valueOfName("MEETR")).isNull();
-    assertThat(Distance.valueOfName("Mileage")).isNull();
+    Arrays.stream(Distance.values()).forEach(distance ->
+      assertThat(Distance.valueOfName(distance.name())).isEqualTo(distance));
+  }
+
+  @Test
+  public void valueOfNullNameReturnsNull() {
+    assertThat(Distance.valueOfName(null)).isNull();
   }
 
   @Test
@@ -93,15 +98,25 @@ public class DistanceTests {
   }
 
   @Test
-  public void valueOfNullNameReturnsNull() {
-    assertThat(Distance.valueOfName(null)).isNull();
+  public void valueOfInvalidNamesReturnsNull() {
+
+    assertThat(Distance.valueOfName("KillOMeter")).isNull();
+    assertThat(Distance.valueOfName("MEETR")).isNull();
+    assertThat(Distance.valueOfName("Mileage")).isNull();
   }
 
   @Test
-  public void valueOfNamesReturnsDistance() {
+  public void pluralizedNamesAreCorrect() {
 
-    Arrays.stream(Distance.values()).forEach(distance ->
-      assertThat(Distance.valueOfName(distance.name())).isEqualTo(distance));
+    assertThat(Distance.NANOMETER.getPluralName()).isEqualTo(Distance.NANOMETER.name().concat("S"));
+    assertThat(Distance.MICROMETER.getPluralName()).isEqualTo(Distance.MICROMETER.name().concat("S"));
+    assertThat(Distance.MILLIMETER.getPluralName()).isEqualTo(Distance.MILLIMETER.name().concat("S"));
+    assertThat(Distance.METER.getPluralName()).isEqualTo(Distance.METER.name().concat("S"));
+    assertThat(Distance.KILOMETER.getPluralName()).isEqualTo(Distance.KILOMETER.name().concat("S"));
+    assertThat(Distance.INCH.getPluralName()).isEqualTo("INCHES");
+    assertThat(Distance.FOOT.getPluralName()).isEqualTo("FEET");
+    assertThat(Distance.YARD.getPluralName()).isEqualTo(Distance.YARD.name().concat("S"));
+    assertThat(Distance.MILE.getPluralName()).isEqualTo(Distance.MILE.name().concat("S"));
   }
 
   @Test
