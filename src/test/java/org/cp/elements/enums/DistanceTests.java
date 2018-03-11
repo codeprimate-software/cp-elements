@@ -19,6 +19,8 @@ package org.cp.elements.enums;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.Optional;
 
 import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
@@ -32,6 +34,19 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class DistanceTests {
+
+  @Test
+  public void getDefaultDistanceIsCorrect() {
+
+    // US
+    //assertThat(Distance.getDefault()).isEqualTo(Distance.FOOT);
+
+    assertThat(Distance.getDefault())
+      .isEqualTo(Optional.of(Locale.getDefault().getCountry())
+        .filter(Locale.US.getCountry()::equals)
+        .map(it -> Distance.FOOT)
+        .orElse(Distance.METER));
+  }
 
   @Test
   public void valueOfReturnsDistance() {

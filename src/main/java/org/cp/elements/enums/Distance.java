@@ -17,6 +17,8 @@
 package org.cp.elements.enums;
 
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.Optional;
 
 import org.cp.elements.lang.StringUtils;
 
@@ -39,6 +41,20 @@ public enum Distance {
   FOOT("ft"),
   YARD("yd"),
   MILE("mi");
+
+  /**
+   * Factory method used to get the default {@link Distance} based in the current, default {@link Locale}.
+   *
+   * @return the default {@link Distance} based in current, default {@link Locale}.
+   * @see java.util.Locale#getCountry()
+   */
+  public static Distance getDefault() {
+
+    return Optional.of(Locale.getDefault().getCountry())
+      .filter(Locale.US.getCountry()::equals)
+      .map(country -> Distance.FOOT)
+      .orElse(Distance.METER);
+  }
 
   /**
    * Factory method used to find or lookup a {@link Distance} by {@link String abbreviation}.
