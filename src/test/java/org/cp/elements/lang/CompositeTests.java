@@ -17,13 +17,15 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.StreamSupport;
 
+import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
@@ -38,15 +40,16 @@ import org.junit.Test;
  */
 public class CompositeTests {
 
-  protected Doable mockDoable(String name) {
+  private Doable mockDoable(String name) {
     return mock(Doable.class, name);
   }
 
   @Test
   public void composeTwo() {
+
     Doable mockDoableOne = mockDoable("one");
     Doable mockDoableTwo = mockDoable("two");
-    Doable composite = CompositeDoable.getInstance().compose(mockDoableOne, mockDoableTwo);
+    Doable composite = CompositeDoable.builder().compose(mockDoableOne, mockDoableTwo);
 
     assertThat(composite).isNotNull();
 
@@ -58,82 +61,88 @@ public class CompositeTests {
 
   @Test
   public void composeArray() {
+
     Doable[] mockDoables = { mockDoable("one"), mockDoable("two"), mockDoable("three") };
-    Doable composite = CompositeDoable.getInstance().compose(mockDoables);
+
+    Doable composite = CompositeDoable.builder().compose(mockDoables);
 
     assertThat(composite).isNotNull();
 
     composite.doIt();
 
-    for (Doable mockDoable : mockDoables) {
-      verify(mockDoable, times(1)).doIt();
-    }
+    Arrays.stream(mockDoables).forEach(mockDoable ->
+      verify(mockDoable, times(1)).doIt());
   }
 
   @Test
   public void composeSingleElementArray() {
+
     Doable[] mockDoables = { mockDoable("one") };
-    Doable composite = CompositeDoable.getInstance().compose(mockDoables);
+
+    Doable composite = CompositeDoable.builder().compose(mockDoables);
 
     assertThat(composite).isNotNull();
     assertThat(composite).isEqualTo(mockDoables[0]);
 
     composite.doIt();
 
-    for (Doable mockDoable : mockDoables) {
-      verify(mockDoable, times(1)).doIt();
-    }
+    Arrays.stream(mockDoables).forEach(mockDoable ->
+      verify(mockDoable, times(1)).doIt());
   }
 
   @Test
   public void composeNullArray() {
-    assertThat(CompositeDoable.getInstance().compose((Doable[]) null)).isNull();
+    assertThat(CompositeDoable.builder().compose((Doable[]) null)).isNull();
   }
 
   @Test
   public void composeEmptyArray() {
-    assertThat(CompositeDoable.getInstance().compose()).isNull();
+    assertThat(CompositeDoable.builder().compose()).isNull();
   }
 
   @Test
   public void composeIterable() {
-    Iterable<Doable> mockDoables = asIterable(mockDoable("one"), mockDoable("two"), mockDoable("three"));
-    Doable composite = CompositeDoable.getInstance().compose(mockDoables);
+
+    Iterable<Doable> mockDoables =
+      ArrayUtils.asIterable(mockDoable("one"), mockDoable("two"), mockDoable("three"));
+
+    Doable composite = CompositeDoable.builder().compose(mockDoables);
 
     assertThat(composite).isNotNull();
 
     composite.doIt();
 
-    for (Doable mockDoable : mockDoables) {
-      verify(mockDoable, times(1)).doIt();
-    }
+    StreamSupport.stream(mockDoables.spliterator(), false).forEach(mockDoable ->
+      verify(mockDoable, times(1)).doIt());
   }
 
   @Test
   public void composeSingleElementIterable() {
-    Iterable<Doable> mockDoables = asIterable(mockDoable("one"));
-    Doable composite = CompositeDoable.getInstance().compose(mockDoables);
+
+    Iterable<Doable> mockDoables = ArrayUtils.asIterable(mockDoable("one"));
+
+    Doable composite = CompositeDoable.builder().compose(mockDoables);
 
     assertThat(composite).isNotNull();
     assertThat(composite).isEqualTo(mockDoables.iterator().next());
 
     composite.doIt();
 
-    for (Doable mockDoable : mockDoables) {
-      verify(mockDoable, times(1)).doIt();
-    }
+    StreamSupport.stream(mockDoables.spliterator(), false).forEach(mockDoable ->
+      verify(mockDoable, times(1)).doIt());
   }
 
   @Test
   public void composeNullIterable() {
-    assertThat(CompositeDoable.getInstance().compose((Iterable<Doable>) null)).isNull();
+    assertThat(CompositeDoable.builder().compose((Iterable<Doable>) null)).isNull();
   }
 
   @Test
   public void composeEmptyIterable() {
-    assertThat(CompositeDoable.getInstance().compose(Collections::emptyIterator)).isNull();
+    assertThat(CompositeDoable.builder().compose(Collections::emptyIterator)).isNull();
   }
 
+  @FunctionalInterface
   interface Doable {
     void doIt();
   }
@@ -141,6 +150,7 @@ public class CompositeTests {
   static class CompositeDoable implements Composite<Doable>, Doable {
 
     private static final CompositeDoable INSTANCE = new CompositeDoable() {
+
       @Override public void doIt() {
         throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
       }
@@ -149,12 +159,12 @@ public class CompositeTests {
     private final Doable one;
     private final Doable two;
 
-    static CompositeDoable getInstance() {
+    static CompositeDoable builder() {
       return INSTANCE;
     }
 
     private CompositeDoable() {
-      one = two = null;
+      one = two = () -> {};
     }
 
     CompositeDoable(Doable one, Doable two) {
@@ -164,7 +174,7 @@ public class CompositeTests {
 
     @Override
     public Doable compose(Doable one, Doable two) {
-      return (one == null ? two : (two == null ? one : new CompositeDoable(one, two)));
+      return one == null ? two : (two == null ? one : new CompositeDoable(one, two));
     }
 
     @Override

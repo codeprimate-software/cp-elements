@@ -21,7 +21,7 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * {@link Composite} is an interface defining a contract for objects implementing the Composite Software Design Pattern.
+ * The {@link Composite} interface defines a contract for objects implementing the Composite Software Design Pattern.
  *
  * @author John Blum
  * @see java.lang.FunctionalInterface
@@ -33,27 +33,28 @@ import org.cp.elements.util.CollectionUtils;
 public interface Composite<T> {
 
   /**
-   * Composes the two objects of type {@code T} into a single Composite object of type {@code T}
-   * composed of the two given objects but acting as a single instance of {@code T}.
+   * Composes two {@link Object objects} of type {@link T} into a single {@link Composite} object of type {@link T}.
    *
-   * @param one object to compose.
-   * @param two object to compose.
-   * @return an object of type {@code T} composed of the two given objects, both of type {@code T}.
+   * @param one {@link Object} to compose.
+   * @param two {@link Object} to compose.
+   * @return an {@link Object} of type {@link T} composed of the two given {@link Object objects},
+   * both of type {@link T}.
    */
   T compose(T one, T two);
 
   /**
-   * Composes the array of objects of type {@code T} into a single Composite object of type {@code T}
-   * composed of the array of objects but acting as a single instance of {@code T}.
+   * Composes the array of {@link Object objects} of type {@link T} into a single {@link Composite}
+   * object of type {@link T} acting like a single {@link Object} of type {@link T}.
    *
-   * @param objects array of objects to compose.
-   * @return an object of type {@code T} composed of the array of objects of type {@code T}. Returns {@literal null}
-   * if the array is {@literal null} or empty.
+   * @param objects array of {@link Object objects} to compose.
+   * @return an {@link Object} of type {@link T} composed of the array of {@link Object objects} of type {@link T}.
+   * Returns {@literal null} if the array is {@literal null} or empty.
    * @see #compose(Object, Object)
    */
   @NullSafe
   @SuppressWarnings({ "unchecked", "varargs" })
   default T compose(T... objects) {
+
     T composite = null;
 
     for (T object : ArrayUtils.nullSafeArray(objects)) {
@@ -64,15 +65,17 @@ public interface Composite<T> {
   }
 
   /**
-   * Composes the {@link Iterable} objects of type {@code T} into a single Composite object of type {@code T}
-   * composed of the {@link Iterable} objects but acting as a single instance of {@code T}.
+   * Composes an {@link Iterable} collection of {@link Object objects} of type {@link T} into a single
+   * {@link Composite} object of type {@link T} acting like a single {@link Object} of type {@link T}.
    *
-   * @param iterable array of objects to compose.
-   * @return an object of type {@code T} composed of the {@link Iterable} objects of type {@code T}.
-   * Returns {@literal null} if the {@link Iterable} is {@literal null} or empty.
+   * @param iterable {@link Iterable} collection of objects to compose.
+   * @return an {@link Object} of type {@link T} composed of the {@link Iterable} collection of {@link Object objects}
+   * of type {@link T}. Returns {@literal null} if the {@link Iterable} collection of {@link Object objects}
+   * is {@literal null} or empty.
    * @see #compose(Object, Object)
    */
   default T compose(Iterable<T> iterable) {
+
     T composite = null;
 
     for (T object : CollectionUtils.nullSafeIterable(iterable)) {
