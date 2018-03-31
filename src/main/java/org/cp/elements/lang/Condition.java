@@ -38,4 +38,36 @@ public interface Condition {
    */
   boolean evaluate();
 
+  /**
+   * Composes this {@link Condition} with the given {@link Condition} using the logical AND operator.
+   *
+   * @param condition {@link Condition} to compose with this {@link Condition} using logical AND.
+   * @return a new {@link Condition} composed of this {@link Condition} with the given {@link Condition}
+   * using the logical AND operator.
+   */
+  default Condition andThen(Condition condition) {
+    return () -> this.evaluate() && condition.evaluate();
+  }
+
+  /**
+   * Composes this {@link Condition} with the given {@link Condition} using the logical OR operator.
+   *
+   * @param condition {@link Condition} to compose with this {@link Condition} using logical OR.
+   * @return a new {@link Condition} composed of this {@link Condition} with the given {@link Condition}
+   * using the logical OR operator.
+   */
+  default Condition orElse(Condition condition) {
+    return () -> this.evaluate() || condition.evaluate();
+  }
+
+  /**
+   * Composes this {@link Condition} with the given {@link Condition} using the XOR operator.
+   *
+   * @param condition {@link Condition} to compose with this {@link Condition} using the XOR operator.
+   * @return a new {@link Condition} composed of this {@link Condition} with the given {@link Condition}
+   * using the XOR operator.
+   */
+  default Condition xor(Condition condition) {
+    return () -> this.evaluate() ^ condition.evaluate();
+  }
 }

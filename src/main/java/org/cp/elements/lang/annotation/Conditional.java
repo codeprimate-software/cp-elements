@@ -26,7 +26,8 @@ import java.lang.annotation.Target;
 import org.cp.elements.lang.Condition;
 
 /**
- * The {@link Conditional} annotation annotates an application class or component that specifies a required Condition.
+ * The {@link Conditional} annotation annotates an application class or component
+ * that specifies a required {@link Condition}.
  *
  * @author John Blum
  * @see java.lang.annotation.Documented
@@ -36,10 +37,10 @@ import org.cp.elements.lang.Condition;
  * @see org.cp.elements.lang.Condition
  * @since 1.0.0
  */
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
 @SuppressWarnings("unused")
 public @interface Conditional {
 
