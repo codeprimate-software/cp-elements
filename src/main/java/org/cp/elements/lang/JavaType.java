@@ -29,10 +29,12 @@ import java.math.BigInteger;
  *
  * @author John Blum
  * @see java.lang.Class
+ * @see org.cp.elements.lang.ClassUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum JavaType {
+
   BIG_DECIMAL(BigDecimal.class),
   BIG_INTEGER(BigInteger.class),
   BOOLEAN(Boolean.class),
@@ -92,6 +94,7 @@ public enum JavaType {
    * @see java.lang.Class
    */
   public static JavaType valueOf(Class<?> type) {
+
     return stream(values()).filter(javaType -> javaType.getType().equals(type)).findFirst()
       .orElseThrow(() -> newTypeNotFoundException("No JavaType found for class type [%s]", getName(type)));
   }
@@ -106,7 +109,9 @@ public enum JavaType {
    * @see java.lang.Class
    */
   JavaType(Class type) {
+
     Assert.notNull(type, "Class type cannot be null");
+
     this.type = type;
   }
 
