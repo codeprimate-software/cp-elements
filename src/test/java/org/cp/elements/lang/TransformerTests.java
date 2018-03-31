@@ -17,8 +17,12 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.function.Function;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 
@@ -33,13 +37,27 @@ import org.junit.Test;
 public class TransformerTests {
 
   @Test
-  public void asFunctionIsSuccessful() {
+  @SuppressWarnings("unchecked")
+  public void applyCallsTransform() {
 
-    Transformer<String> uppercaseTransformer = String::toUpperCase;
+    Transformer<Object> mockTransformer = mock(Transformer.class);
 
-    Function<String, String> function = uppercaseTransformer.asFunction();
+    when(mockTransformer.apply(any())).thenCallRealMethod();
 
-    assertThat(function).isNotNull();
-    assertThat(function.apply("test")).isEqualTo("TEST");
+    mockTransformer.apply("test");
+
+    verify(mockTransformer, times(1)).transform(eq("test"));
+  }
+
+  @Test
+  public void identityTransformerReturnsValueUnaltered() {
+
+    Transformer<Object> identityTransformer = Transformer.identity();
+
+    assertThat(identityTransformer.transform(true)).isEqualTo(true);
+    assertThat(identityTransformer.transform('x')).isEqualTo('x');
+    assertThat(identityTransformer.transform(1)).isEqualTo(1);
+    assertThat(identityTransformer.transform(Math.PI)).isEqualTo(Math.PI);
+    assertThat(identityTransformer.transform("test")).isEqualTo("test");
   }
 }

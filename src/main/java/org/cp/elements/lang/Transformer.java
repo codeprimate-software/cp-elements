@@ -16,7 +16,7 @@
 
 package org.cp.elements.lang;
 
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import org.cp.elements.data.conversion.Converter;
 
@@ -25,9 +25,9 @@ import org.cp.elements.data.conversion.Converter;
  * who's {@link Object implementations} transform data from one value to another value
  * of the same {@link Class type}.
  *
- * The transformed value {@link Class type T} could be a more qualified, precise or accurate {@link Object value}
- * than the {@link Object original value}.  For example, converting an {@link Integer} into a {@link Double}
- * using a {@link Transformer Transformer<Number>}.
+ * The transformed value of {@link Class type T} could be a more qualified, precise or accurate {@link Object value}
+ * than the {@link Object original value}.  For example, transforming an {@link Integer} into a {@link Double}
+ * with more precision using a {@link Transformer Transformer<Number>}.
  *
  * Another use case for a {@link Transformer} might be to {@literal Decorate}, or enhance the functionality
  * of an {@link Object} yet still retain the same {@link Class interface}.
@@ -35,29 +35,48 @@ import org.cp.elements.data.conversion.Converter;
  * Use a {@link Converter Converter<S, T>} if you want to "convert", or adapt a value from one {@link Class type}
  * to another {@link Class type}.
  *
+ * The {@link Transformer} interface is equivalent to the {@link UnaryOperator} in Java.
+ *
  * @author John J. Blum
  * @param <T> {@link Class type} of the data value (datum) to transform as well as the transformed data value (datum).
  * @see java.lang.FunctionalInterface
+ * @see java.util.function.UnaryOperator
  * @since 1.0.0
  */
 @FunctionalInterface
-public interface Transformer<T> {
+public interface Transformer<T> extends UnaryOperator<T> {
 
   /**
-   * Transforms the given value of {@link Class type T} into another value of the same {@link Class type T}.
+   * Identify {@link Transformer} returning the {@link Object value} to transform unaltered.
+   *
+   * @param <T> {@link Class type} of the {@link Object value} to transform.
+   * @return the Identity {@link Transformer}.
+   * @see java.util.function.UnaryOperator#identity()
+   */
+  static <T> Transformer<T> identity() {
+    return value -> value;
+  }
+
+  /**
+   * Applies this {@link Transformer} to the given {@link T value} producing a new result
+   * of the same {@link Class type T}.
+   *
+   * @param value {@link T value} to transform.
+   * @return the {@link T transformed value}.
+   * @see #transform(Object)
+   */
+  @Override
+  default T apply(T value) {
+    return transform(value);
+  }
+
+  /**
+   * Transforms the given {@link T value} of {@link Class type T} into another {@link T value}
+   * of the same {@link Class type T}.
    *
    * @param value {@link T value} to transform.
    * @return the {@link T transformed value}.
    */
   T transform(T value);
 
-  /**
-   * Returns this {@link Transformer} as an instance of a {@link Function}.
-   *
-   * @return a {@link Function} implementation wrapping this {@link Transformer}.
-   * @see java.util.function.Function
-   */
-  default Function<T, T> asFunction() {
-    return this::transform;
-  }
 }
