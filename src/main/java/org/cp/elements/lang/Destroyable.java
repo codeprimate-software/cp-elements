@@ -17,8 +17,8 @@
 package org.cp.elements.lang;
 
 /**
- * The Destroyable interface defines a contract for destroying an object and releasing any resources held prior to
- * destruction and garbage collection by the JVM.
+ * The {@link Destroyable} interface defines a contract for destroying an object and releasing any resources
+ * held prior to destruction and garbage collection by the JVM.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable
@@ -36,8 +36,22 @@ public interface Destroyable {
   boolean isDestroyed();
 
   /**
-   * Destroys this object and releases any and all resources held by this object.
+   * Destroys this {@link Object} releasing any and all resources held by this {@link Destroyable object}.
+   *
+   * @see #destroy(Runnable)
    */
-  void destroy();
+  default void destroy() {
+    destroy(RunnableUtils.NOOP_RUNNABLE);
+  }
+
+  /**
+   * Destroys this {@link Object} releasing any and all resources held by this {@link Destroyable object}.
+   *
+   * The implementation must invoke the given {@link Runnable} at the end of the destruction operation.
+   *
+   * @param runnable {@link Runnable} callback to invoke at the end of the destruction operation.
+   * @see java.lang.Runnable
+   */
+  void destroy(Runnable runnable);
 
 }
