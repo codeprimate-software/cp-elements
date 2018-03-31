@@ -39,7 +39,7 @@ public interface Executable<T> extends Callable<T>, Runnable {
    * @return a boolean value indicating whether this object is running.
    */
   default boolean isRunning() {
-    throw new IllegalStateException("The running state of this object has not been determined");
+    throw new IllegalStateException("The runnable state of this object cannot be determined");
   }
 
   /**

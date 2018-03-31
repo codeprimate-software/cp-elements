@@ -77,7 +77,7 @@ public class ExecutableTests {
     }
     catch (IllegalStateException expected) {
 
-      assertThat(expected).hasMessage("The running state of this object has not been determined");
+      assertThat(expected).hasMessage("The runnable state of this object cannot be determined");
       assertThat(expected).hasNoCause();
 
       throw expected;
