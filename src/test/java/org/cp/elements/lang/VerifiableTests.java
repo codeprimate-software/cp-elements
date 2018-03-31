@@ -18,6 +18,9 @@ package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +31,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link Verifyable}
+ * Unit tests for {@link Verifiable}
  *
  * @author John Blum
  * @see org.junit.Test
@@ -36,31 +39,47 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
+ * @see org.cp.elements.lang.Verifiable
+ * @see org.cp.elements.lang.Verifier
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class VerifyableTests {
+public class VerifiableTests {
 
   @Mock
-  private Verifyable<Verifyable> mockVerifyable;
+  private Verifiable<Verifiable> mockVerifiable;
 
   @Test
-  public void isValidIsTrue() {
-    when(mockVerifyable.isValid()).thenCallRealMethod();
-    when(mockVerifyable.validate()).thenReturn(mockVerifyable);
+  public void isValidReturnsTrue() {
 
-    assertThat(mockVerifyable.isValid()).isTrue();
+    when(this.mockVerifiable.isValid()).thenCallRealMethod();
+    when(this.mockVerifiable.validate()).thenReturn(this.mockVerifiable);
 
-    verify(mockVerifyable, times(1)).validate();
+    assertThat(this.mockVerifiable.isValid()).isTrue();
+
+    verify(this.mockVerifiable, times(1)).validate();
   }
 
   @Test
-  public void isValidIsFalse() {
-    when(mockVerifyable.isValid()).thenCallRealMethod();
-    when(mockVerifyable.validate()).thenThrow(newIllegalStateException("Invalid"));
+  public void isValidReturnsFalse() {
 
-    assertThat(mockVerifyable.isValid()).isFalse();
+    when(this.mockVerifiable.isValid()).thenCallRealMethod();
+    when(this.mockVerifiable.validate()).thenThrow(newIllegalStateException("Invalid"));
 
-    verify(mockVerifyable, times(1)).validate();
+    assertThat(this.mockVerifiable.isValid()).isFalse();
+
+    verify(this.mockVerifiable, times(1)).validate();
+  }
+
+  @Test
+  public void verifyCallsVerifierVerifyWithThis() {
+
+    Verifier mockVerifier = mock(Verifier.class);
+
+    when(this.mockVerifiable.verify(any(Verifier.class))).thenCallRealMethod();
+
+    assertThat(this.mockVerifiable.verify(mockVerifier)).isSameAs(this.mockVerifiable);
+
+    verify(mockVerifier, times(1)).verify(eq(this.mockVerifiable));
   }
 }
