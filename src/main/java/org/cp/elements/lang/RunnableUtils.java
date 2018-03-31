@@ -31,6 +31,8 @@ import org.cp.elements.lang.concurrent.ThreadUtils;
 @SuppressWarnings("unused")
 public abstract class RunnableUtils {
 
+  public static final Runnable NOOP_RUNNABLE = () -> {};
+
   /**
    * Runs the given {@link Runnable} object and then causes the current, calling {@link Thread} to sleep
    * for the given number of milliseconds.
