@@ -46,7 +46,7 @@ public interface Identifiable<T extends Comparable<T>> {
    * @return a boolean value indicating whether this {@link Identifiable} object is new.
    */
   default boolean isNew() {
-    return (getId() == null);
+    return getId() == null;
   }
 
   /**

@@ -47,61 +47,61 @@ public class IdentifiableTests {
   private AbstractIdentifiable<Long> mockIdentifiable;
 
   @Test
-  public void isNewIsTrueWhenGetIdReturnsNull() {
+  public void isNewWhenGetIdReturnsNullReurnsTrue() {
 
-    when(mockIdentifiable.getId()).thenReturn(null);
-    when(mockIdentifiable.isNew()).thenCallRealMethod();
+    when(this.mockIdentifiable.getId()).thenReturn(null);
+    when(this.mockIdentifiable.isNew()).thenCallRealMethod();
 
-    assertThat(mockIdentifiable.isNew(), is(true));
+    assertThat(this.mockIdentifiable.isNew(), is(true));
 
-    verify(mockIdentifiable, times(1)).getId();
+    verify(this.mockIdentifiable, times(1)).getId();
   }
 
   @Test
-  public void isNewIsFalseWhenGetIdReturnsNonNullValue() {
+  public void isNewWhenGetIdReturnsNonNullValueReturnsFalse() {
 
-    when(mockIdentifiable.getId()).thenReturn(1L);
-    when(mockIdentifiable.isNew()).thenCallRealMethod();
+    when(this.mockIdentifiable.getId()).thenReturn(1L);
+    when(this.mockIdentifiable.isNew()).thenCallRealMethod();
 
-    assertThat(mockIdentifiable.isNew(), is(false));
+    assertThat(this.mockIdentifiable.isNew(), is(false));
 
-    verify(mockIdentifiable, times(1)).getId();
+    verify(this.mockIdentifiable, times(1)).getId();
   }
 
   @Test
-  public void isNotNewIsTrueWhenGetIdReturnsNonNullValue() {
+  public void isNotNewWhenGetIdReturnsNonNullValueReturnsTrue() {
 
-    when(mockIdentifiable.getId()).thenReturn(1L);
-    when(mockIdentifiable.isNew()).thenCallRealMethod();
-    when(mockIdentifiable.isNotNew()).thenCallRealMethod();
+    when(this.mockIdentifiable.getId()).thenReturn(1L);
+    when(this.mockIdentifiable.isNew()).thenCallRealMethod();
+    when(this.mockIdentifiable.isNotNew()).thenCallRealMethod();
 
-    assertThat(mockIdentifiable.isNotNew(), is(true));
+    assertThat(this.mockIdentifiable.isNotNew(), is(true));
 
-    verify(mockIdentifiable, times(1)).isNew();
-    verify(mockIdentifiable, times(1)).getId();
+    verify(this.mockIdentifiable, times(1)).isNew();
+    verify(this.mockIdentifiable, times(1)).getId();
   }
 
   @Test
-  public void isNotNewIsFalseWhenGetIdReturnsNull() {
+  public void isNotNewWhenGetIdReturnsNullReturnsFalse() {
 
-    when(mockIdentifiable.getId()).thenReturn(null);
-    when(mockIdentifiable.isNew()).thenCallRealMethod();
-    when(mockIdentifiable.isNotNew()).thenCallRealMethod();
+    when(this.mockIdentifiable.getId()).thenReturn(null);
+    when(this.mockIdentifiable.isNew()).thenCallRealMethod();
+    when(this.mockIdentifiable.isNotNew()).thenCallRealMethod();
 
-    assertThat(mockIdentifiable.isNotNew(), is(false));
+    assertThat(this.mockIdentifiable.isNotNew(), is(false));
 
-    verify(mockIdentifiable, times(1)).isNew();
-    verify(mockIdentifiable, times(1)).getId();
+    verify(this.mockIdentifiable, times(1)).isNew();
+    verify(this.mockIdentifiable, times(1)).getId();
   }
 
   @Test
   public void identifiedByReturnsThis() {
 
-    when(mockIdentifiable.identifiedBy(anyLong())).thenCallRealMethod();
+    when(this.mockIdentifiable.identifiedBy(anyLong())).thenCallRealMethod();
 
-    assertThat(mockIdentifiable.identifiedBy(1L), is(sameInstance(mockIdentifiable)));
+    assertThat(this.mockIdentifiable.identifiedBy(1L), is(sameInstance(this.mockIdentifiable)));
 
-    verify(mockIdentifiable, times(1)).setId(eq(1L));
+    verify(this.mockIdentifiable, times(1)).setId(eq(1L));
   }
 
   abstract class AbstractIdentifiable<T extends Comparable<T>> implements Identifiable<T> { }
