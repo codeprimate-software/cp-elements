@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
 
 /**
@@ -60,9 +61,12 @@ public enum LengthUnit {
   LIGHT_YEAR("ly");
 
   /**
-   * Factory method used to get the default {@link LengthUnit} based in the current, default {@link Locale}.
+   * Factory method used to get the default unit of length based in the current, default {@link Locale}.
    *
-   * @return the default {@link LengthUnit} based in current, default {@link Locale}.
+   * Returns {@link LengthUnit#FOOT} if this is the {@literal United States},
+   * otherwise returns {@link LengthUnit#METER}.
+   *
+   * @return the default {@link LengthUnit} based in the current, default {@link Locale}.
    * @see java.util.Locale#getCountry()
    */
   public static LengthUnit getDefault() {
@@ -115,8 +119,12 @@ public enum LengthUnit {
    * Construct a new instance of {@link LengthUnit} initialized with the given {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the abbreviation for this {@link LengthUnit}.
+   * @throws IllegalArgumentException if {@link String abbreviation} is {@literal null} or empty.
    */
   LengthUnit(String abbreviation) {
+
+    Assert.hasText(abbreviation, "Abbreviation is required");
+
     this.abbreviation = abbreviation;
   }
 

@@ -36,7 +36,7 @@ import org.junit.Test;
 public class LengthUnitTests {
 
   @Test
-  public void getDefaultDistanceIsCorrect() {
+  public void defaultLenghtUnitIsCorrect() {
 
     // US
     //assertThat(LengthUnit.getDefault()).isEqualTo(LengthUnit.FOOT);
@@ -49,17 +49,17 @@ public class LengthUnitTests {
   }
 
   @Test
-  public void valueOfReturnsDistance() {
+  public void valueOfReturnsLengthUnit() {
 
-    Arrays.stream(LengthUnit.values()).forEach(distance ->
-      assertThat(LengthUnit.valueOf(distance.name())).isEqualTo(distance));
+    Arrays.stream(LengthUnit.values()).forEach(it ->
+      assertThat(LengthUnit.valueOf(it.name())).isEqualTo(it));
   }
 
   @Test
-  public void valueOfAbbreviationsReturnsDistance() {
+  public void valueOfAbbreviationsReturnsLengthUnit() {
 
-    Arrays.stream(LengthUnit.values()).forEach(distance ->
-      assertThat(LengthUnit.valueOfAbbreviation(distance.getAbbreviation())).isEqualTo(distance));
+    Arrays.stream(LengthUnit.values()).forEach(it ->
+      assertThat(LengthUnit.valueOfAbbreviation(it.getAbbreviation())).isEqualTo(it));
   }
 
   @Test
@@ -84,10 +84,10 @@ public class LengthUnitTests {
   }
 
   @Test
-  public void valueOfNamesReturnsDistance() {
+  public void valueOfNamesReturnsLengthUnit() {
 
-    Arrays.stream(LengthUnit.values()).forEach(distance ->
-      assertThat(LengthUnit.valueOfName(distance.name())).isEqualTo(distance));
+    Arrays.stream(LengthUnit.values()).forEach(it ->
+      assertThat(LengthUnit.valueOfName(it.name())).isEqualTo(it));
   }
 
   @Test
@@ -108,7 +108,7 @@ public class LengthUnitTests {
   }
 
   @Test
-  public void valueOfMixedCaseNamesReturnsDistance() {
+  public void valueOfMixedCaseNamesReturnsLengthUnit() {
 
     assertThat(LengthUnit.valueOfName(LengthUnit.NANOMETER.name())).isEqualTo(LengthUnit.NANOMETER);
     assertThat(LengthUnit.valueOfName("Micrometer")).isEqualTo(LengthUnit.MICROMETER);
@@ -131,8 +131,8 @@ public class LengthUnitTests {
   public void pluralizedNamesAreCorrect() {
 
     Arrays.stream(LengthUnit.values())
-      .filter(distance -> !(LengthUnit.INCH.equals(distance) || LengthUnit.FOOT.equals(distance)))
-      .forEach(distance -> assertThat(distance.getPluralName()).isEqualTo(distance.name().concat("S")));
+      .filter(it -> !(LengthUnit.INCH.equals(it) || LengthUnit.FOOT.equals(it)))
+      .forEach(it -> assertThat(it.getPluralName()).isEqualTo(it.name().concat("S")));
 
     assertThat(LengthUnit.INCH.getPluralName()).isEqualTo("INCHES");
     assertThat(LengthUnit.FOOT.getPluralName()).isEqualTo("FEET");
@@ -141,7 +141,7 @@ public class LengthUnitTests {
   @Test
   public void toStringReturnsName() {
 
-    Arrays.stream(LengthUnit.values()).forEach(distance ->
-      assertThat(distance.toString()).isEqualTo(StringUtils.capitalize(distance.name().toLowerCase())));
+    Arrays.stream(LengthUnit.values()).forEach(it ->
+      assertThat(it.toString()).isEqualTo(StringUtils.capitalize(it.name().toLowerCase())));
   }
 }
