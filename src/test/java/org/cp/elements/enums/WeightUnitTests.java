@@ -55,15 +55,53 @@ public class WeightUnitTests {
   @Test
   public void valueOfAbbreviationReturnsWeightUnit() {
 
-    Arrays.stream(WeightUnit.values()).forEach(it ->
-      assertThat(WeightUnit.valueOfAbbreviation(it.getAbbreviation())).isEqualTo(it));
+    Arrays.stream(WeightUnit.values()).forEach(it -> {
+      assertThat(WeightUnit.valueOfAbbreviation(it.getAbbreviation().toLowerCase())).isEqualTo(it);
+      assertThat(WeightUnit.valueOfAbbreviation(StringUtils.capitalize(it.getAbbreviation().toLowerCase()))).isEqualTo(it);
+      assertThat(WeightUnit.valueOfAbbreviation(it.getAbbreviation().toUpperCase())).isEqualTo(it);
+    });
+  }
+
+  @Test
+  public void valueOfInvalidAbbreviationsReturnsNull() {
+
+    assertThat(WeightUnit.valueOfAbbreviation("GR")).isNull();
+    assertThat(WeightUnit.valueOfAbbreviation("GRM")).isNull();
+    assertThat(WeightUnit.valueOfAbbreviation("ounce")).isNull();
+    assertThat(WeightUnit.valueOfAbbreviation("one")).isNull();
+    assertThat(WeightUnit.valueOfAbbreviation("pond")).isNull();
+    assertThat(WeightUnit.valueOfAbbreviation("TT")).isNull();
+  }
+
+  @Test
+  public void valueOfNullAbbreviationReturnsNull() {
+    assertThat(WeightUnit.valueOfAbbreviation(null)).isNull();
   }
 
   @Test
   public void valueOfNameReturnsWeightUnit() {
 
-    Arrays.stream(WeightUnit.values()).forEach(it ->
-      assertThat(WeightUnit.valueOfName(it.name())).isEqualTo(it));
+    Arrays.stream(WeightUnit.values()).forEach(it -> {
+      assertThat(WeightUnit.valueOfName(it.name().toLowerCase())).isEqualTo(it);
+      assertThat(WeightUnit.valueOfName(StringUtils.capitalize(it.name().toLowerCase()))).isEqualTo(it);
+      assertThat(WeightUnit.valueOfName(it.name().toUpperCase())).isEqualTo(it);
+    });
+  }
+
+  @Test
+  public void valueOfInvalidNamesReturnsNull() {
+
+    assertThat(WeightUnit.valueOfName("milliram")).isNull();
+    assertThat(WeightUnit.valueOfName("gramcracker")).isNull();
+    assertThat(WeightUnit.valueOfName("killogram")).isNull();
+    assertThat(WeightUnit.valueOfName("one")).isNull();
+    assertThat(WeightUnit.valueOfName("pond")).isNull();
+    assertThat(WeightUnit.valueOfName("t")).isNull();
+  }
+
+  @Test
+  public void valueOfNullNameReturnsNull() {
+    assertThat(WeightUnit.valueOfName(null)).isNull();
   }
 
   @Test
