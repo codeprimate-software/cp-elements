@@ -37,11 +37,6 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
 
   protected static final ComposableFilter<?> INSTANCE = new ComposableFilter<>();
 
-  private final Filter<T> leftFilter;
-  private final Filter<T> rightFilter;
-
-  private final LogicalOperator op;
-
   /**
    * Factory methods returning a single instance of {@link ComposableFilter} used to compose 2 or more
    * individual {@link Filter} objects into a {@link Composite} {@link Filter} object.
@@ -56,104 +51,120 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
   }
 
   /**
-   * Default, private constructor used to construct a Singleton instance of {@link ComposableFilter} used to compose
-   * 2 or more individual {@link Filter} objects into a {@link Composite} {@link Filter} object.
-   */
-  private ComposableFilter() {
-    this.leftFilter = (obj) -> false;
-    this.rightFilter = (obj) -> false;
-    this.op = LogicalOperator.AND;
-  }
-
-  /**
-   * Constructs an instance of the ComposableFilter class with a given Filter for the left operand, the LogicalOperator
-   * used to combine the left and right Filters into a compound Filter, and the given Filter for the right operand.
-   *
-   * @param leftFilter the Filter in the left operand of the binary logical operator.
-   * @param op the LogicalOperator used to combine the two Filters constituting the left and right operands in the
-   * binary logical operation into a compound Filter.
-   * @param rightFilter the Filter in the right operand of the binary logical operator.
-   */
-  private ComposableFilter(Filter<T> leftFilter, LogicalOperator op, Filter<T> rightFilter) {
-    this.leftFilter = leftFilter;
-    this.op = op;
-    this.rightFilter = rightFilter;
-  }
-
-  /**
    * Composes two {@link Filter} objects into a compound {@link Filter}, where the {@link Filter Filters} constitute
    * both the left and right operands in the specified binary logical expression.
    *
-   * @param <T> {@link Class} type of the object being filtered by this {@link Filter}.
-   * @param leftFilter {@link Filter} in the left operand of the binary logical expression.
+   * @param <T> {@link Class type} of the object being filtered by this {@link Filter}.
+   * @param filterOne {@link Filter} in the left operand of the binary logical expression.
    * @param op {@link LogicalOperator} used to combine the two {@link Filter} objects, which constitute
    * the left and right operands in the binary logical expression.
-   * @param rightFilter {@link Filter} in the right operand of the binary logical expression.
-   * @return a {@link Filter} implementation combining both the left and right {@link Filter} operands
+   * @param filterTwo {@link Filter} in the right operand of the binary logical expression.
+   * @return a {@link Filter} implementation combining both the {@link Filter} operands
    * into a compound {@link Filter} using the given binary {@link LogicalOperator}.
    * @see org.cp.elements.lang.LogicalOperator
    * @see org.cp.elements.lang.Filter
    */
-  protected static <T> Filter<T> compose(Filter<T> leftFilter, LogicalOperator op, Filter<T> rightFilter) {
-    return (leftFilter == null ? rightFilter : (rightFilter == null ? leftFilter
-      : new ComposableFilter<>(leftFilter, op, rightFilter)));
+  protected static <T> Filter<T> compose(Filter<T> filterOne, LogicalOperator op, Filter<T> filterTwo) {
+
+    return filterOne == null ? filterTwo : (filterTwo == null ? filterOne
+      : new ComposableFilter<>(filterOne, op, filterTwo));
   }
 
   /**
    * Composes two {@link Filter} objects into a compound {@link Filter}, where the {@link Filter Filters} constitute
    * both the left and right operands in the binary logical AND expression.
    *
-   * @param <T> {@link Class} type of the object being filtered by this {@link Filter}.
-   * @param leftFilter {@link Filter} in the left operand of the binary logical expression.
-   * @param rightFilter {@link Filter} in the right operand of the binary logical expression.
-   * @return a {@link Filter} implementation combining both the left and right {@link Filter} operands
+   * @param <T> {@link Class type} of the object being filtered by this {@link Filter}.
+   * @param filterOne {@link Filter} in the left operand of the binary logical expression.
+   * @param filterTwo {@link Filter} in the right operand of the binary logical expression.
+   * @return a {@link Filter} implementation combining both the {@link Filter} operands
    * into a compound {@link Filter} using the binary logical AND operator.
    * @see #compose(org.cp.elements.lang.Filter, org.cp.elements.lang.LogicalOperator, org.cp.elements.lang.Filter)
    * @see org.cp.elements.lang.LogicalOperator#AND
    * @see org.cp.elements.lang.Filter
    */
-  public static <T> Filter<T> and(Filter<T> leftFilter, Filter<T> rightFilter) {
-    return compose(leftFilter, LogicalOperator.AND, rightFilter);
+  public static <T> Filter<T> and(Filter<T> filterOne, Filter<T> filterTwo) {
+    return compose(filterOne, LogicalOperator.AND, filterTwo);
   }
 
   /**
    * Composes two {@link Filter} objects into a compound {@link Filter}, where the {@link Filter Filters} constitute
    * both the left and right operands in the binary logical OR expression.
    *
-   * @param <T> {@link Class} type of the object being filtered by this {@link Filter}.
-   * @param leftFilter {@link Filter} in the left operand of the binary logical expression.
-   * @param rightFilter {@link Filter} in the right operand of the binary logical expression.
-   * @return a {@link Filter} implementation combining both the left and right {@link Filter} operands
+   * @param <T> {@link Class type} of the object being filtered by this {@link Filter}.
+   * @param filterOne {@link Filter} in the left operand of the binary logical expression.
+   * @param filterTwo {@link Filter} in the right operand of the binary logical expression.
+   * @return a {@link Filter} implementation combining both {@link Filter} operands
    * into a compound {@link Filter} using the binary logical OR operator.
    * @see #compose(org.cp.elements.lang.Filter, org.cp.elements.lang.LogicalOperator, org.cp.elements.lang.Filter)
    * @see org.cp.elements.lang.LogicalOperator#OR
    * @see org.cp.elements.lang.Filter
    */
-  public static <T> Filter<T> or(Filter<T> leftFilter, Filter<T> rightFilter) {
-    return compose(leftFilter, LogicalOperator.OR, rightFilter);
+  public static <T> Filter<T> or(Filter<T> filterOne, Filter<T> filterTwo) {
+    return compose(filterOne, LogicalOperator.OR, filterTwo);
   }
 
   /**
    * Composes two {@link Filter} objects into a compound {@link Filter}, where the {@link Filter Filters} constitute
    * both the left and right operands in the binary logical XOR expression.
    *
-   * @param <T> {@link Class} type of the object being filtered by this {@link Filter}.
-   * @param leftFilter {@link Filter} in the left operand of the binary logical expression.
-   * @param rightFilter {@link Filter} in the right operand of the binary logical expression.
-   * @return a {@link Filter} implementation combining both the left and right {@link Filter} operands
+   * @param <T> {@link Class type} of the object being filtered by this {@link Filter}.
+   * @param filterOne {@link Filter} in the left operand of the binary logical expression.
+   * @param filterTwo {@link Filter} in the right operand of the binary logical expression.
+   * @return a {@link Filter} implementation combining both {@link Filter} operands
    * into a compound {@link Filter} using the binary logical XOR operator.
    * @see #compose(org.cp.elements.lang.Filter, org.cp.elements.lang.LogicalOperator, org.cp.elements.lang.Filter)
    * @see org.cp.elements.lang.LogicalOperator#XOR
    * @see org.cp.elements.lang.Filter
    */
-  public static <T> Filter<T> xor(Filter<T> leftFilter, Filter<T> rightFilter) {
-    return compose(leftFilter, LogicalOperator.XOR, rightFilter);
+  public static <T> Filter<T> xor(Filter<T> filterOne, Filter<T> filterTwo) {
+    return compose(filterOne, LogicalOperator.XOR, filterTwo);
+  }
+
+  private final Filter<T> filterOne;
+  private final Filter<T> filterTwo;
+
+  private final LogicalOperator op;
+
+  /**
+   * Default, private constructor used to construct a new, single instance of {@link ComposableFilter}
+   * used to compose 2 or more individual {@link Filter} objects into a {@link Composite} {@link Filter}
+   * object.
+   *
+   * @see org.cp.elements.lang.Filter#rejecting()
+   * @see org.cp.elements.lang.LogicalOperator#AND
+   */
+  private ComposableFilter() {
+
+    this.filterOne = Filter.rejecting();
+    this.op = LogicalOperator.AND;
+    this.filterTwo = Filter.rejecting();
   }
 
   /**
-   * Compose the given {@link Filter} objects into a {@link Composite} object.
+   * Constructs a new instance of {@link ComposableFilter} with a given {@link Filter} for the left operand,
+   * the {@link LogicalOperator} combining the two {@link Filter Filters} into a compound {@link Filter},
+   * and the given {@link Filter} for the right operand.
    *
-   * @return a {@link Filter} {@link Composite} object composed of the given {@link Filter} objects
+   * @param filterOne {@link Filter} in the left operand of the binary logical operator.
+   * @param op {@link LogicalOperator} used to combine the two {@link Filter Filters}
+   * constituting the left and right operands in the binary logical operation into
+   * a compound {@link Filter}.
+   * @param filterTwo {@link Filter} in the right operand of the binary logical operator.
+   * @see org.cp.elements.lang.LogicalOperator
+   * @see org.cp.elements.lang.Filter
+   */
+  private ComposableFilter(Filter<T> filterOne, LogicalOperator op, Filter<T> filterTwo) {
+
+    this.filterOne = filterOne;
+    this.op = op;
+    this.filterTwo = filterTwo;
+  }
+
+  /**
+   * Compose the given {@link Filter} objects into a {@link Composite} {@link Filter} object.
+   *
+   * @return a {@link Composite} {@link Filter} object composed of the given {@link Filter} objects
    * as an instance of {@link Filter}.
    * @see #compose(Filter, LogicalOperator, Filter)
    * @see org.cp.elements.lang.LogicalOperator#AND
@@ -170,8 +181,8 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @return the {@link Filter} in the left operand of the binary logical expression.
    * @see org.cp.elements.lang.Filter
    */
-  protected Filter<T> getLeftFilter() {
-    return leftFilter;
+  protected Filter<T> getFilterOne() {
+    return this.filterOne;
   }
 
   /**
@@ -183,7 +194,7 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @see org.cp.elements.lang.LogicalOperator
    */
   protected LogicalOperator getOp() {
-    return op;
+    return this.op;
   }
 
   /**
@@ -192,8 +203,8 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @return the {@link Filter} in the right operand of the binary logical expression.
    * @see org.cp.elements.lang.Filter
    */
-  protected Filter<T> getRightFilter() {
-    return rightFilter;
+  protected Filter<T> getFilterTwo() {
+    return this.filterTwo;
   }
 
   /**
@@ -202,13 +213,13 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @param obj {@link Object} evaluated by this {@link Filter}.
    * @return a boolean value indicating whether the specified {@link Object} satisfies the criteria (rules)
    * of this {@link Filter}.
-   * @see #getLeftFilter()
+   * @see #getFilterOne()
    * @see #getOp()
-   * @see #getRightFilter()
+   * @see #getFilterTwo()
    */
   @SuppressWarnings("unchecked")
   public boolean accept(T obj) {
-    return getOp().evaluate(() -> getLeftFilter().accept(obj), () -> getRightFilter().accept(obj));
+    return getOp().evaluate(() -> getFilterOne().accept(obj), () -> getFilterTwo().accept(obj));
   }
 
   /**
