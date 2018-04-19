@@ -17,15 +17,9 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.cp.elements.util.ArrayUtils.getFirst;
-import static org.cp.elements.util.CollectionUtils.asList;
-import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.mockito.Mockito.mock;
 
-import java.util.Arrays;
-import java.util.Iterator;
-
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
 import org.junit.Test;
 
@@ -41,110 +35,40 @@ import org.junit.Test;
  */
 public class ComposableTransformerTests {
 
-  @SuppressWarnings("unchecked")
-  protected <T> Transformer<T> mockTransformer(String... name) {
-    return mock(Transformer.class, getFirst(name, "MockTransformer"));
+  @Test
+  public void composeNullTransformersWithBuilderReturnsNull() {
+    assertThat(ComposableTransformer.builder().compose(null, null)).isNull();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void composeWithArray() {
+  public void composeSingleTransformersWithBuilderReturnsSingleTransformer() {
 
-    Transformer[] transformerArray = {
-      mockTransformer("one"),
-      mockTransformer("two"),
-      mockTransformer("three")
-    };
+    Transformer mockTransformer = mock(Transformer.class);
 
-    Transformer compositeTransformer = ComposableTransformer.compose(transformerArray);
-
-    assertThat(compositeTransformer).isNotNull();
-    assertThat(compositeTransformer).isInstanceOf(ComposableTransformer.class);
-    assertThat(asSet((ComposableTransformer) compositeTransformer).containsAll(Arrays.asList(transformerArray)))
-      .isTrue();
+    assertThat(ComposableTransformer.builder().compose(mockTransformer, null)).isEqualTo(mockTransformer);
+    assertThat(ComposableTransformer.builder().compose(null, mockTransformer)).isEqualTo(mockTransformer);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void composeWithEmptyArray() {
-    assertThat(ComposableTransformer.compose(new Transformer[0])).isNull();
-  }
+  public void composeTransformersWithBuilderReturnsCompositeTransformer() {
 
-  @Test
-  public void composeWithNullArray() {
-    assertThat(ComposableTransformer.compose((Transformer<Object>[]) null)).isNull();
-  }
+    Transformer mockTransformerOne = mock(Transformer.class);
+    Transformer mockTransformerTwo = mock(Transformer.class);
+    Transformer composite = ComposableTransformer.builder().compose(mockTransformerOne, mockTransformerTwo);
 
-  @Test
-  public void composeWithOneElementArray() {
-
-    Transformer<?> mockTransformer = mockTransformer();
-
-    assertThat(ComposableTransformer.compose(mockTransformer)).isSameAs(mockTransformer);
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void composeWithTwoElementArray() {
-
-    Transformer mockTransformerOne = mockTransformer("one");
-    Transformer mockTransformerTwo = mockTransformer("two");
-
-    Transformer[] transformerArray = { mockTransformerOne, mockTransformerTwo };
-
-    Transformer compositeTransformer = ComposableTransformer.compose(transformerArray);
-
-    transformerArray[0] = null;
-    transformerArray[1] = null;
-
-    assertThat(compositeTransformer).isNotNull();
-    assertThat(compositeTransformer).isInstanceOf(ComposableTransformer.class);
-
-    Iterator<Transformer> transformerIterator = ((ComposableTransformer) compositeTransformer).iterator();
-
-    assertThat(transformerIterator).isNotNull();
-    assertThat(transformerIterator.hasNext()).isTrue();
-    assertThat(transformerIterator.next()).isSameAs(mockTransformerOne);
-    assertThat(transformerIterator.hasNext()).isTrue();
-    assertThat(transformerIterator.next()).isSameAs(mockTransformerTwo);
-    assertThat(transformerIterator.hasNext()).isFalse();
+    assertThat(composite).isNotNull();
+    assertThat(composite).isNotSameAs(mockTransformerOne);
+    assertThat(composite).isNotSameAs(mockTransformerTwo);
+    assertThat(composite).isInstanceOf(ComposableTransformer.class);
+    assertThat(((ComposableTransformer) composite).getTransformerOne()).isEqualTo(mockTransformerOne);
+    assertThat(((ComposableTransformer) composite).getTransformerTwo()).isEqualTo(mockTransformerTwo);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void composeWithIterable() {
-
-    Iterable<Transformer<Object>> iterable =
-      asIterable(mockTransformer("one"), mockTransformer("two"), mockTransformer("three"));
-
-    Transformer<Object> compositeTransformer = ComposableTransformer.compose(iterable);
-
-    assertThat(compositeTransformer).isNotNull();
-    assertThat(compositeTransformer).isInstanceOf(ComposableTransformer.class);
-    assertThat(asSet((ComposableTransformer) compositeTransformer).containsAll(asList(iterable)));
-  }
-
-  @Test
-  public void composeWithEmptyIterable() {
-    assertThat(ComposableTransformer.compose(asIterable())).isNull();
-  }
-
-  @Test
-  public void composeWithNullIterable() {
-    assertThat(ComposableTransformer.compose((Iterable<Transformer<Object>>) null)).isNull();
-  }
-
-  @Test
-  public void composeWithSingleElementIterable() {
-
-    Transformer<Object> mockTransformer = mockTransformer();
-
-    assertThat(ComposableTransformer.compose(asIterable(mockTransformer))).isSameAs(mockTransformer);
-  }
-
-  @Test
-  @SuppressWarnings("unchecked")
-  public void transform() {
+  public void transformComplex() {
 
     Transformer<Integer> dividingTransformer = (value) -> (value / 2);
     Transformer<Integer> doublingTransformer = (value) -> (value * 2);
@@ -152,23 +76,40 @@ public class ComposableTransformerTests {
     Transformer<Integer> multiplyingTransformer = (value) -> (value * value);
     Transformer<Integer> squareRootTransformer = (value) -> (int) Math.sqrt(value);
 
-    Transformer<Integer> compositeTransformer =
-      ComposableTransformer.compose(incrementingTransformer, incrementingTransformer, incrementingTransformer);
+    Transformer<Integer> compositeTransformer = ComposableTransformer.<Integer>builder()
+      .compose(incrementingTransformer, incrementingTransformer, incrementingTransformer);
 
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, doublingTransformer);
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, multiplyingTransformer);
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, doublingTransformer);
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, dividingTransformer);
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, squareRootTransformer);
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, incrementingTransformer,
-      incrementingTransformer);
-    compositeTransformer = ComposableTransformer.compose(compositeTransformer, dividingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, doublingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, multiplyingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, doublingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, dividingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, squareRootTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, incrementingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, incrementingTransformer);
+    compositeTransformer = ComposableTransformer.<Integer>builder().compose(compositeTransformer, dividingTransformer);
 
     assertThat(compositeTransformer).isNotNull();
+    assertThat(compositeTransformer).isInstanceOf(ComposableTransformer.class);
 
     Integer value = compositeTransformer.transform(1);
 
     assertThat(value).isNotNull();
     assertThat(value.intValue()).isEqualTo(5);
+  }
+
+  @Test
+  public void transformSimple() {
+
+    Transformer<String> lowercaseTransformer = String::toLowerCase;
+    Transformer<String> nullSafeTransformer = String::valueOf;
+    Transformer<String> titleCaseTransformer = StringUtils::capitalize;
+    Transformer<String> composite = ComposableTransformer.<String>builder().compose(nullSafeTransformer,
+      ComposableTransformer.<String>builder().compose(lowercaseTransformer, titleCaseTransformer));
+
+    assertThat(composite).isInstanceOf(ComposableTransformer.class);
+    assertThat(composite.transform("TEST")).isEqualTo("Test");
+    assertThat(composite.transform("Mock")).isEqualTo("Mock");
+    assertThat(composite.transform("value")).isEqualTo("Value");
+    assertThat(composite.transform(null)).isEqualTo("Null");
   }
 }
