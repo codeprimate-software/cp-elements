@@ -1,25 +1,20 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.cp.elements.data.struct;
+package org.cp.elements.data.struct.tabular;
 
 import org.cp.elements.lang.Assert;
 
@@ -29,10 +24,10 @@ import org.cp.elements.lang.Assert;
  *
  * @author John J. Blum
  * @param <T> the Class type of the values in this Column of the Table.
- * @see org.cp.elements.data.struct.Column
- * @see org.cp.elements.data.struct.Row
- * @see org.cp.elements.data.struct.Table
- * @see org.cp.elements.data.struct.View
+ * @see Column
+ * @see Row
+ * @see Table
+ * @see View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -67,9 +62,9 @@ public abstract class AbstractColumn<T> implements Column<T> {
    * Constructs an instance of the AbstractColumn class by copying the contents of the specified Column.
    *
    * @param column the Column to copy.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @throws NullPointerException if the specified Column to copy is null.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    */
   public AbstractColumn(final Column<T> column) {
     Assert.notNull(column, "The Column to copy cannot be null!");
@@ -139,7 +134,7 @@ public abstract class AbstractColumn<T> implements Column<T> {
    *
    * @return an integer value specifying the index of this Column in the View.  Returns a -1 if this Column has not
    * been added to a Table or is not part of any View.
-   * @see org.cp.elements.data.struct.View#indexOf(Column)
+   * @see View#indexOf(Column)
    * @see #getView()
    */
   @Override
@@ -171,7 +166,7 @@ public abstract class AbstractColumn<T> implements Column<T> {
    *
    * @return the View to which this Column belongs or null if this Column is not part of any View.
    * @throws IllegalStateException if a reference to the containing View was not properly configured.
-   * @see org.cp.elements.data.struct.View
+   * @see View
    * @see #setView(View)
    */
   @Override
@@ -185,7 +180,7 @@ public abstract class AbstractColumn<T> implements Column<T> {
    *
    * @param view the View to which this Column belongs or null if this Column is not part of any View.
    * @see #getView()
-   * @see org.cp.elements.data.struct.View
+   * @see View
    */
   public void setView(final View view) {
     this.view = view;

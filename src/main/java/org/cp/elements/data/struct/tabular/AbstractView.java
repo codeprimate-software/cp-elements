@@ -1,25 +1,20 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.cp.elements.data.struct;
+package org.cp.elements.data.struct.tabular;
 
 import java.util.Iterator;
 
@@ -30,10 +25,10 @@ import org.cp.elements.lang.Assert;
  * functionality common to all View implementations.
  *
  * @author John J. Blum
- * @see org.cp.elements.data.struct.Column
- * @see org.cp.elements.data.struct.Row
- * @see org.cp.elements.data.struct.Table
- * @see org.cp.elements.data.struct.View
+ * @see Column
+ * @see Row
+ * @see Table
+ * @see View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -56,7 +51,7 @@ public abstract class AbstractView implements View {
    *
    * @param column the Column being determined for containment by this View.
    * @return a boolean value indicating whether this View contains the specified Column.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #columns()
    */
   @Override
@@ -75,7 +70,7 @@ public abstract class AbstractView implements View {
    *
    * @param index an integer value specifying the index of the Column in this View to return.
    * @return the Column in this View at the specified index.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #columns()
    */
   @Override
@@ -100,7 +95,7 @@ public abstract class AbstractView implements View {
    *
    * @param name a String value specifying the name of the Column in this View to return.
    * @return the Column in this View with the specified name or null if no Column with name exists in this View.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #columns()
    */
   @Override
@@ -119,7 +114,7 @@ public abstract class AbstractView implements View {
    *
    * @param index an integer value specifying the index of the Row in this View to return.
    * @return the Row in this View at the specified index.
-   * @see org.cp.elements.data.struct.Row
+   * @see Row
    * @see #rows()
    */
   @Override
@@ -147,7 +142,7 @@ public abstract class AbstractView implements View {
    * @param columnIndex an integer value indicating the column index of the value to get.
    * @return the value at the specified row and column index in this View.
    * @see #getRow(int)
-   * @see org.cp.elements.data.struct.Row#getValue(int)
+   * @see Row#getValue(int)
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -163,7 +158,7 @@ public abstract class AbstractView implements View {
    * @param columnName a String value indicating the name of the column from which to get the value.
    * @return the value at the specified row index and named column in this View.
    * @see #getRow(int)
-   * @see org.cp.elements.data.struct.Row#getValue(String)
+   * @see Row#getValue(String)
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -179,8 +174,8 @@ public abstract class AbstractView implements View {
    * @param column the Column from which to get the value.
    * @return the value at the specified row index and Column in this View.
    * @see #getRow(int)
-   * @see org.cp.elements.data.struct.Column
-   * @see org.cp.elements.data.struct.Row#getValue(Column)
+   * @see Column
+   * @see Row#getValue(Column)
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -220,7 +215,7 @@ public abstract class AbstractView implements View {
    * @param rowIndex an integer value indicating the row index.
    * @param column a Column in this View.
    * @return a boolean value indicating whether a value exists at the specified row index and Column in this View.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #getValue(int, Column)
    */
   @Override
@@ -258,7 +253,7 @@ public abstract class AbstractView implements View {
    * @param column a Column in this View.
    * @return an integer value indicating the index of the Column in this View, or -1 if the Column is not contained
    * in this View.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #columns()
    */
   @Override
@@ -283,7 +278,7 @@ public abstract class AbstractView implements View {
    * @param row a Row in this View.
    * @return an integer value indicating the index of the Row in this View, or -1 if the Row is not contained
    * in this View.
-   * @see org.cp.elements.data.struct.Row
+   * @see Row
    * @see #rows()
    */
   @Override
@@ -309,7 +304,7 @@ public abstract class AbstractView implements View {
    * @see #rows()
    * @see java.lang.Iterable#iterator()
    * @see java.util.Iterator
-   * @see org.cp.elements.data.struct.Row
+   * @see Row
    */
   @Override
   public Iterator<Row> iterator() {

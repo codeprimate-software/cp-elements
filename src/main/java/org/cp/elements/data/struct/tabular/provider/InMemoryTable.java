@@ -19,7 +19,7 @@
  * the EULA @ ...
  */
 
-package org.cp.elements.data.struct.support;
+package org.cp.elements.data.struct.tabular.provider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,13 +29,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.cp.elements.data.struct.AbstractColumn;
-import org.cp.elements.data.struct.AbstractRow;
-import org.cp.elements.data.struct.AbstractTable;
-import org.cp.elements.data.struct.AbstractView;
-import org.cp.elements.data.struct.Column;
-import org.cp.elements.data.struct.Row;
-import org.cp.elements.data.struct.View;
+import org.cp.elements.data.struct.tabular.AbstractColumn;
+import org.cp.elements.data.struct.tabular.AbstractRow;
+import org.cp.elements.data.struct.tabular.AbstractTable;
+import org.cp.elements.data.struct.tabular.AbstractView;
+import org.cp.elements.data.struct.tabular.Column;
+import org.cp.elements.data.struct.tabular.Row;
+import org.cp.elements.data.struct.tabular.View;
+import org.cp.elements.data.struct.tabular.Table;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Filter;
@@ -43,15 +44,15 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The InMemoryTable class is an implementation of the {@link org.cp.elements.data.struct.Table} interface
+ * The InMemoryTable class is an implementation of the {@link Table} interface
  * implementing a table (tabular) data structure in the Java VM Heap.
  *
  * @author John J. Blum
- * @see org.cp.elements.data.struct.AbstractTable
- * @see org.cp.elements.data.struct.Column
- * @see org.cp.elements.data.struct.Row
- * @see org.cp.elements.data.struct.Table
- * @see org.cp.elements.data.struct.View
+ * @see AbstractTable
+ * @see Column
+ * @see Row
+ * @see Table
+ * @see View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

@@ -1,25 +1,20 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.cp.elements.data.struct;
+package org.cp.elements.data.struct.tabular;
 
 import java.util.Iterator;
 
@@ -30,11 +25,11 @@ import org.cp.elements.util.ArrayUtils;
  * common to all Table implementations.
  * <p/>
  * @author John J. Blum
- * @see org.cp.elements.data.struct.AbstractView
- * @see org.cp.elements.data.struct.Column
- * @see org.cp.elements.data.struct.Row
- * @see org.cp.elements.data.struct.Table
- * @see org.cp.elements.data.struct.View
+ * @see AbstractView
+ * @see Column
+ * @see Row
+ * @see Table
+ * @see View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -45,7 +40,7 @@ public abstract class AbstractTable extends AbstractView implements Table {
    *
    * @param row an array of Objects containing the values (contents) for the new row of this Table.
    * @return a boolean value indicating whether the row added successfully modified the structure of this Table.
-   * @see org.cp.elements.data.struct.AbstractRow
+   * @see AbstractRow
    */
   @Override
   public boolean add(final Object... row) {
@@ -99,7 +94,7 @@ public abstract class AbstractTable extends AbstractView implements Table {
    * @param column the Column to remove from this Table.
    * @return a boolean value indicating whether the specified Column was successfully removed from this Table modifying
    * it's structure.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see java.util.Iterator#remove()
    * @see #columns()
    */
@@ -135,7 +130,7 @@ public abstract class AbstractTable extends AbstractView implements Table {
    * @param row the Row to remove from this Table.
    * @return a boolean value indicating whether the specified Row was successfully removed from this Table modifying
    * it's structure.
-   * @see org.cp.elements.data.struct.Row
+   * @see Row
    * @see java.util.Iterator#remove()
    * @see #rows()
    */
@@ -159,7 +154,7 @@ public abstract class AbstractTable extends AbstractView implements Table {
    * @param columnIndex an integer value indicating the column index.
    * @param value the Object value to add at the given row and column in this Table.
    * @see #getRow(int)
-   * @see org.cp.elements.data.struct.Row#setValue(int, Object)
+   * @see Row#setValue(int, Object)
    */
   @Override
   public void setValue(final int rowIndex, final int columnIndex, final Object value) {
@@ -173,7 +168,7 @@ public abstract class AbstractTable extends AbstractView implements Table {
    * @param columnName a String value indicating the column name.
    * @param value the Object value to add at the given row and column in this Table.
    * @see #getRow(int)
-   * @see org.cp.elements.data.struct.Row#setValue(String, Object)
+   * @see Row#setValue(String, Object)
    */
   @Override
   public void setValue(final int rowIndex, final String columnName, final Object value) {
@@ -186,9 +181,9 @@ public abstract class AbstractTable extends AbstractView implements Table {
    * @param rowIndex an integer value indicating the row index.
    * @param column a Column in this Table.
    * @param value the Object value to add at the given row and column in this Table.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #getRow(int)
-   * @see org.cp.elements.data.struct.Row#setValue(Column, Object)
+   * @see Row#setValue(Column, Object)
    */
   @Override
   public void setValue(final int rowIndex, final Column column, final Object value) {

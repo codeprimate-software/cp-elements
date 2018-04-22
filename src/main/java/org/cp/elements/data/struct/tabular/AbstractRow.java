@@ -1,25 +1,20 @@
 /*
- * Copyright (c) 2011-Present. Codeprimate, LLC and authors.  All Rights Reserved.
- * <p/>
- * This software is licensed under the Codeprimate End User License Agreement (EULA).
- * This software is proprietary and confidential in addition to an intellectual asset
- * of the aforementioned authors.
- * <p/>
- * By using the software, the end-user implicitly consents to and agrees to be in compliance
- * with all terms and conditions of the EULA.  Failure to comply with the EULA will result in
- * the maximum penalties permissible by law.
- * <p/>
- * In short, this software may not be reverse engineered, reproduced, copied, modified
- * or distributed without prior authorization of the aforementioned authors, permissible
- * and expressed only in writing.  The authors grant the end-user non-exclusive, non-negotiable
- * and non-transferable use of the software "as is" without expressed or implied WARRANTIES,
- * EXTENSIONS or CONDITIONS of any kind.
- * <p/>
- * For further information on the software license, the end user is encouraged to read
- * the EULA @ ...
+ * Copyright 2016 Author or Authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.cp.elements.data.struct;
+package org.cp.elements.data.struct.tabular;
 
 import org.cp.elements.lang.Assert;
 
@@ -28,10 +23,10 @@ import org.cp.elements.lang.Assert;
  * to all Row implementations.
  *
  * @author John J. Blum
- * @see org.cp.elements.data.struct.Column
- * @see org.cp.elements.data.struct.Row
- * @see org.cp.elements.data.struct.Table
- * @see org.cp.elements.data.struct.View
+ * @see Column
+ * @see Row
+ * @see Table
+ * @see View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -45,7 +40,7 @@ public abstract class AbstractRow implements Row {
    * @return the View to which this Row belongs or null if this Row is not part of any View.
    * @throws IllegalStateException if a reference to the containing View was not properly configured.
    * @see #setView(View)
-   * @see org.cp.elements.data.struct.View
+   * @see View
    */
   @Override
   public View getView() {
@@ -58,7 +53,7 @@ public abstract class AbstractRow implements Row {
    *
    * @param view the View to which this Row belongs or null if this Row is not part of any View.
    * @see #getView()
-   * @see org.cp.elements.data.struct.View
+   * @see View
    */
   public void setView(final View view) {
     this.view = view;
@@ -93,7 +88,7 @@ public abstract class AbstractRow implements Row {
    *
    * @param column the Column in this Row of the Table.
    * @return a boolean value indicating whether this Row has a value in the given Column.
-   * @see org.cp.elements.data.struct.Column
+   * @see Column
    * @see #getValue(Column)
    */
   @Override
@@ -106,7 +101,7 @@ public abstract class AbstractRow implements Row {
    *
    * @param columnName a String value indicating the name of the column.
    * @return an Object value at the given named column in this Row.
-   * @see org.cp.elements.data.struct.View#indexOf(String)
+   * @see View#indexOf(String)
    * @see #getValue(int)
    * @see #getView()
    */
@@ -120,8 +115,8 @@ public abstract class AbstractRow implements Row {
    *
    * @param column a Column in this Row of the Table.
    * @return an Object value at the given Column in this Row.
-   * @see org.cp.elements.data.struct.Column
-   * @see org.cp.elements.data.struct.View#indexOf(Column)
+   * @see Column
+   * @see View#indexOf(Column)
    * @see #getValue(int)
    * @see #getView()
    */
@@ -136,7 +131,7 @@ public abstract class AbstractRow implements Row {
    * @param columnName a String value indicating the name of the column.
    * @param value the Object value to set at the given named column in this Row.
    * @return the original Object value at the given named column in this Row.
-   * @see org.cp.elements.data.struct.View#indexOf(String)
+   * @see View#indexOf(String)
    * @see #setValue(int, Object)
    * @see #getView()
    */
@@ -151,8 +146,8 @@ public abstract class AbstractRow implements Row {
    * @param column the Column in this Row of the Table.
    * @param value the Object value to set at the given Column in this Row.
    * @return the original Object value at the given Column in this Row.
-   * @see org.cp.elements.data.struct.Column
-   * @see org.cp.elements.data.struct.View#indexOf(Column)
+   * @see Column
+   * @see View#indexOf(Column)
    * @see #setValue(int, Object)
    * @see #getView()
    */
@@ -166,7 +161,7 @@ public abstract class AbstractRow implements Row {
    *
    * @return an integer value indicating the index of this Row in the View.  Returns a -1 if this Row has not been
    * added to a View.
-   * @see org.cp.elements.data.struct.View#indexOf(Row)
+   * @see View#indexOf(Row)
    * @see #getView()
    */
   @Override
