@@ -32,8 +32,8 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
 
   protected static final ComposableRunnable INSTANCE = new ComposableRunnable();
 
-  private final Runnable leftRunnable;
-  private final Runnable rightRunnable;
+  private final Runnable runnableOne;
+  private final Runnable runnableTwo;
 
   /**
    * Returns the single instance of {@link ComposableRunnable} used to compose 2 or more indiviudal {@link Runnable}
@@ -42,7 +42,7 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
    * @return the single instance of {@link ComposableRunnable}.
    * @see org.cp.elements.lang.support.ComposableRunnable
    */
-  public static ComposableRunnable getInstance() {
+  public static ComposableRunnable builder() {
     return INSTANCE;
   }
 
@@ -51,39 +51,62 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
    * compose 2 or more individual {@link Runnable} objects into a Composite {@link Runnable} object.
    */
   private ComposableRunnable() {
-    this.leftRunnable = () -> {};
-    this.rightRunnable = () -> {};
+
+    this.runnableOne = () -> {};
+    this.runnableTwo = () -> {};
   }
 
   /**
    * Constructs an instance of the ComposableRunnable class composed an initialized with 2 Runnable objects.
    *
-   * @param leftRunnable the left Runnable node in the composed graph.
-   * @param rightRunnable the right Runnable node in the composed graph.
+   * @param runnableOne the left Runnable node in the composed graph.
+   * @param runnableTwo the right Runnable node in the composed graph.
    * @throws NullPointerException if either the left or right Runnable object is null.
    */
-  private ComposableRunnable(Runnable leftRunnable, Runnable rightRunnable) {
-    Assert.notNull(leftRunnable, "The left Runnable object cannot be null");
-    Assert.notNull(rightRunnable, "The right Runnable object cannot be null");
+  private ComposableRunnable(Runnable runnableOne, Runnable runnableTwo) {
 
-    this.leftRunnable = leftRunnable;
-    this.rightRunnable = rightRunnable;
+    Assert.notNull(runnableOne, "Runnable one is required");
+    Assert.notNull(runnableTwo, "Runnable two is required");
+
+    this.runnableOne = runnableOne;
+    this.runnableTwo = runnableTwo;
   }
 
   /**
    * Composes two {@link Runnable} objects into a single, compound {@link Runnable} object.
    *
-   * Returns the {@code leftRunnable} if {@code rightRunnable} is {@literal null}
-   * and {@code rightRunnable} if the {@code leftRunnable} is {@literal null}.
+   * Returns the {@code runnableOne} if {@code runnableTwo} is {@literal null}
+   * and {@code runnableTwo} if the {@code runnableOne} is {@literal null}.
    *
-   * @param leftRunnable {@link Runnable} object in the composition.
-   * @param rightRunnable {@link Runnable} object in the composition.
+   * @param runnableOne {@link Runnable} object in the composition.
+   * @param runnableTwo {@link Runnable} object in the composition.
    * @return a {@link Runnable} object composed with the given left and right {@link Runnable} objects.
    * @see java.lang.Runnable
    */
-  public Runnable compose(Runnable leftRunnable, Runnable rightRunnable) {
-    return (leftRunnable == null ? rightRunnable : (rightRunnable == null ? leftRunnable
-      : new ComposableRunnable(leftRunnable, rightRunnable)));
+  public Runnable compose(Runnable runnableOne, Runnable runnableTwo) {
+
+    return runnableOne == null ? runnableTwo : (runnableTwo == null ? runnableOne
+      : new ComposableRunnable(runnableOne, runnableTwo));
+  }
+
+  /**
+   * Returns a reference to the first {@link Runnable} in this composition.
+   *
+   * @return a reference to the first {@link Runnable} in this composition.
+   * @see java.lang.Runnable
+   */
+  protected Runnable getRunnableOne() {
+    return this.runnableOne;
+  }
+
+  /**
+   * Returns a reference to the second {@link Runnable} in this composition.
+   *
+   * @return a reference to the second {@link Runnable} in this composition.
+   * @see java.lang.Runnable
+   */
+  protected Runnable getRunnableTwo() {
+    return this.runnableTwo;
   }
 
   /**
@@ -93,7 +116,7 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
    */
   @Override
   public void run() {
-    leftRunnable.run();
-    rightRunnable.run();
+    getRunnableOne().run();
+    getRunnableTwo().run();
   }
 }

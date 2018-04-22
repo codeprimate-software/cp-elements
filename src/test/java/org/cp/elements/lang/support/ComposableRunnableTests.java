@@ -38,60 +38,75 @@ import org.junit.Test;
 @SuppressWarnings("unused")
 public class ComposableRunnableTests {
 
-  protected Runnable mockRunnable(String... name) {
+  private Runnable mockRunnable(String... name) {
     return mock(Runnable.class, getFirst(name, "MockRunnable"));
   }
 
   @Test
+  public void composeNoRunnables() {
+    assertThat(ComposableRunnable.builder().compose(null, null)).isNull();
+  }
+
+  @Test
+  public void composeSingleRunnable() {
+
+    Runnable mockRunnable = mockRunnable("MockRunnable");
+
+    assertThat(ComposableRunnable.builder().compose(mockRunnable, null)).isSameAs(mockRunnable);
+    assertThat(ComposableRunnable.builder().compose(null, mockRunnable)).isSameAs(mockRunnable);
+  }
+
+  @Test
   public void composeTwoRunnables() {
-    Runnable mockRunnableLeft = mockRunnable("left");
-    Runnable mockRunnableRight = mockRunnable("right");
 
-    assertThat(ComposableRunnable.getInstance().compose(null, null)).isNull();
-    assertThat(ComposableRunnable.getInstance().compose(mockRunnableLeft, null)).isSameAs(mockRunnableLeft);
-    assertThat(ComposableRunnable.getInstance().compose(null, mockRunnableRight)).isSameAs(mockRunnableRight);
-
-    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableLeft, mockRunnableRight);
+    Runnable mockRunnableOne = mockRunnable("one");
+    Runnable mockRunnableTwo = mockRunnable("two");
+    Runnable composedRunnable = ComposableRunnable.builder().compose(mockRunnableOne, mockRunnableTwo);
 
     assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
+    assertThat(((ComposableRunnable) composedRunnable).getRunnableOne()).isEqualTo(mockRunnableOne);
+    assertThat(((ComposableRunnable) composedRunnable).getRunnableTwo()).isEqualTo(mockRunnableTwo);
   }
 
   @Test
   public void composeRunnableArray() {
+
     Runnable mockRunnableZero = mockRunnable("zero");
     Runnable mockRunnableOne = mockRunnable("one");
     Runnable mockRunnableTwo = mockRunnable("two");
     Runnable mockRunnableThree = mockRunnable("three");
 
-    assertThat(ComposableRunnable.getInstance().compose((Runnable[]) null)).isNull();
-    assertThat(ComposableRunnable.getInstance().compose(mockRunnableZero)).isSameAs(mockRunnableZero);
+    assertThat(ComposableRunnable.builder().compose((Runnable[]) null)).isNull();
+    assertThat(ComposableRunnable.builder().compose(mockRunnableZero)).isSameAs(mockRunnableZero);
 
-    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
-      mockRunnableTwo, mockRunnableThree);
+    Runnable composedRunnable =
+      ComposableRunnable.builder().compose(mockRunnableZero, mockRunnableOne, mockRunnableTwo, mockRunnableThree);
 
     assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
   }
 
   @Test
-  public void composeIterableRunnable() {
+  public void composeRunnableIterable() {
+
     Runnable mockRunnableZero = mockRunnable("zero");
     Runnable mockRunnableOne = mockRunnable("one");
     Runnable mockRunnableTwo = mockRunnable("two");
     Runnable mockRunnableThree = mockRunnable("three");
 
-    assertThat(ComposableRunnable.getInstance().compose((Iterable<Runnable>) null)).isNull();
-    assertThat(ComposableRunnable.getInstance().compose(asIterable(mockRunnableOne))).isSameAs(mockRunnableOne);
+    assertThat(ComposableRunnable.builder().compose((Iterable<Runnable>) null)).isNull();
+    assertThat(ComposableRunnable.builder().compose(asIterable(mockRunnableOne))).isSameAs(mockRunnableOne);
 
-    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
-      mockRunnableTwo, mockRunnableThree);
+    Runnable composedRunnable =
+      ComposableRunnable.builder().compose(mockRunnableZero, mockRunnableOne, mockRunnableTwo, mockRunnableThree);
 
     assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
   }
 
   @Test
   public void runOne() {
+
     Runnable mockRunnable = mockRunnable("one");
-    Runnable actualRunnable = ComposableRunnable.getInstance().compose(mockRunnable);
+    Runnable actualRunnable = ComposableRunnable.builder().compose(mockRunnable);
 
     assertThat(actualRunnable).isSameAs(mockRunnable);
 
@@ -102,27 +117,29 @@ public class ComposableRunnableTests {
 
   @Test
   public void runTwo() {
-    Runnable mockRunnableLeft = mockRunnable("left");
-    Runnable mockRunnableRight = mockRunnable("right");
-    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableLeft, mockRunnableRight);
+
+    Runnable mockRunnableOne = mockRunnable("left");
+    Runnable mockRunnableTwo = mockRunnable("right");
+    Runnable composedRunnable = ComposableRunnable.builder().compose(mockRunnableOne, mockRunnableTwo);
 
     assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
 
     composedRunnable.run();
 
-    verify(mockRunnableLeft, times(1)).run();
-    verify(mockRunnableRight, times(1)).run();
+    verify(mockRunnableOne, times(1)).run();
+    verify(mockRunnableTwo, times(1)).run();
   }
 
   @Test
   public void runFour() {
+
     Runnable mockRunnableZero = mockRunnable("zero");
     Runnable mockRunnableOne = mockRunnable("one");
     Runnable mockRunnableTwo = mockRunnable("two");
     Runnable mockRunnableThree = mockRunnable("three");
 
-    Runnable composedRunnable = ComposableRunnable.getInstance().compose(mockRunnableZero, mockRunnableOne,
-      mockRunnableTwo, mockRunnableThree);
+    Runnable composedRunnable =
+      ComposableRunnable.builder().compose(mockRunnableZero, mockRunnableOne, mockRunnableTwo, mockRunnableThree);
 
     assertThat(composedRunnable).isInstanceOf(ComposableRunnable.class);
 
