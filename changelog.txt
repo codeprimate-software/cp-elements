@@ -5,7 +5,27 @@ https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 1.0.0.M5 - ?
 ---------------------
+Introduces the new Tabular data structure.
 
+* Created the o.c.e.util.paging.support.SimplePageable class wrapping a java.util.List to provide paging support.
+* Upgraded to Project Lombok 1.16.20.
+* Added support classes for the o.c.e.lang.Auditable and o.c.e.lang.Identifiable interfaces
+in the o.c.e.lang.support package.
+* Added the o.c.e.lang.support.PredicateToFilterAdapter class to adapt a java.util.function.Predicate
+as a o.c.e.lang.Filter.
+* Added the o.c.e.lang.support.FunctionToTransformerAdapter class to adapt a java.util.function.Function
+as a o.c.e.lang.Transformer.
+* Changed the o.c.e.data.conversion.Converter interface to extend the java.util.function.Function interface.
+* Added the o.c.e.data.conversion.support.FunctionToConverterAdapter class to adapt a java.util.function.Function
+as a o.c.e.data.conversion.Converter.
+* Changed the com.sun.tools:attach-api to an optional dependency.
+* Remove the o.c.e.enums.Country enumerated type to the cp-domain project.
+* Added the o.c.e.lang.Renderable interface accepting a o.c.e.lang.Renderer to render the Renderable as a String.
+* Added the o.c.e.lang.Verifier interface to verify o.c.e.lang.Verifiable objects.
+* Renamed o.c.e.lang.Verifyable to o.c.e.lang.Verifiable.
+* Added the o.c.e.enums.LengthUnit enumerated type to define an enumeration of length measurements.
+* Added the o.c.e.enums.WeightUnit enumerated type to define an enumeration of weight measurements.
+*
 
 
 1.0.0.M4 - 2018-01-21
