@@ -34,42 +34,42 @@ public interface Column<T> {
    *
    * @return a String value for the alias (alternate name) of this Column.
    */
-  public String getAlias();
+  String getAlias();
 
   /**
    * Sets the alias, or alternate name of this Column.
    *
    * @param alias a String value indicating the alias for this Column.
    */
-  public void setAlias(String alias);
+  void setAlias(String alias);
 
   /**
    * Gets the default value to use when a value is not specified for this Column.
    *
    * @return the default value of this Column when a value is not specified.
    */
-  public T getDefaultValue();
+  T getDefaultValue();
 
   /**
    * Sets the default value to use when a value is not specified for this Column.
    *
    * @param defaultValue the default value to use for this Column when a value is not specified.
    */
-  public void setDefaultValue(T defaultValue);
+  void setDefaultValue(T defaultValue);
 
   /**
    * Gets a description of this Column.
    *
    * @return a String value describing this Column.
    */
-  public String getDescription();
+  String getDescription();
 
   /**
    * Sets the description of this Column.
    *
    * @param description a String value describing this Column.
    */
-  public void setDescription(String description);
+  void setDescription(String description);
 
   /**
    * Gets the index of this Column in the Table.
@@ -77,14 +77,14 @@ public interface Column<T> {
    * @return an integer value specifying the index of this Column in the View.  Returns a -1 if this Column has not
    * been added to a Table or is not part of any View.
    */
-  public int getIndex();
+  int getIndex();
 
   /**
    * Gets the name of this Column, which must be unique when adding this Column to a Table.
    *
    * @return a String value indicating the immutable name of this Column.
    */
-  public String getName();
+  String getName();
 
   /**
    * Gets the Class type for values stored in this Column of the Table.
@@ -92,7 +92,7 @@ public interface Column<T> {
    * @return the Class type of values in this Column of the Table.
    * @see java.lang.Class
    */
-  public Class<T> getType();
+  Class<T> getType();
 
   /**
    * Gets the View to which this Column belongs.
@@ -100,6 +100,6 @@ public interface Column<T> {
    * @return the View to which this Column belongs or null if this Column is not part of any View.
    * @see View
    */
-  public View getView();
+  View getView();
 
 }

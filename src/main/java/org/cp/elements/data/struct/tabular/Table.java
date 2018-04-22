@@ -35,7 +35,7 @@ public interface Table extends View {
    * @return a boolean value indicating whether the added Column successfully modified the structure of this Table.
    * @see Column
    */
-  public boolean add(Column column);
+  boolean add(Column column);
 
   /**
    * Adds the array of Object values as a new row in this Table.
@@ -43,7 +43,7 @@ public interface Table extends View {
    * @param row an array of Objects containing the values (contents) for the new row of this Table.
    * @return a boolean value indicating whether the row added successfully modified the structure of this Table.
    */
-  public boolean add(Object... row);
+  boolean add(Object... row);
 
   /**
    * Adds the specified Row to this Table.
@@ -52,7 +52,7 @@ public interface Table extends View {
    * @return a boolean value whether the added Row successfully modified the structure of this Table.
    * @see Row
    */
-  public boolean add(Row row);
+  boolean add(Row row);
 
   /**
    * Removes the column at the specified index from this Table.
@@ -60,7 +60,7 @@ public interface Table extends View {
    * @param index an integer value specifying the index of the column to remove from this Table.
    * @return a boolean value indicating whether the specified column at index was successfully removed.
    */
-  public boolean removeColumn(int index);
+  boolean removeColumn(int index);
 
   /**
    * Removes the column with the specified name from this Table.
@@ -68,7 +68,7 @@ public interface Table extends View {
    * @param name a String value specifying the name of the column to remove from this Table.
    * @return a boolean value indicating whether the specified column with name was successfully removed.
    */
-  public boolean removeColumn(String name);
+  boolean removeColumn(String name);
 
   /**
    * Removes the specified Column from this Table.
@@ -78,7 +78,7 @@ public interface Table extends View {
    * it's structure.
    * @see Column
    */
-  public boolean remove(Column column);
+  boolean remove(Column column);
 
   /**
    * Removes the row at the specified index from this Table.
@@ -86,7 +86,7 @@ public interface Table extends View {
    * @param index an integer value specifying the index of the row to remove from this Table.
    * @return a boolean value indicating whether the specified row at index was successfully removed.
    */
-  public boolean removeRow(int index);
+  boolean removeRow(int index);
 
   /**
    * Removes the specified Row from this Table.
@@ -96,7 +96,7 @@ public interface Table extends View {
    * it's structure.
    * @see Row
    */
-  public boolean remove(Row row);
+  boolean remove(Row row);
 
   /**
    * Sets the value at the given row and column index in this Table.
@@ -105,7 +105,7 @@ public interface Table extends View {
    * @param columnIndex an integer value indicating the column index.
    * @param value the Object value to add at the given row and column in this Table.
    */
-  public void setValue(int rowIndex, int columnIndex, Object value);
+  void setValue(int rowIndex, int columnIndex, Object value);
 
   /**
    * Sets the value at the given row index and named column in this Table.
@@ -114,7 +114,7 @@ public interface Table extends View {
    * @param columnName a String value indicating the column name.
    * @param value the Object value to add at the given row and column in this Table.
    */
-  public void setValue(int rowIndex, String columnName, Object value);
+  void setValue(int rowIndex, String columnName, Object value);
 
   /**
    * Sets the value at the given row index and Column in this Table.
@@ -124,6 +124,6 @@ public interface Table extends View {
    * @param value the Object value to add at the given row and column in this Table.
    * @see Column
    */
-  public void setValue(int rowIndex, Column column, Object value);
+  void setValue(int rowIndex, Column column, Object value);
 
 }

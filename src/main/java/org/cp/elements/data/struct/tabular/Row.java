@@ -35,7 +35,7 @@ public interface Row extends Iterable<Object> {
    * @return the View to which this Row belongs or null if this Row is not part of any View.
    * @see View
    */
-  public View getView();
+  View getView();
 
   /**
    * Determines whether this Row has a value at the given column index.
@@ -43,7 +43,7 @@ public interface Row extends Iterable<Object> {
    * @param columnIndex an integer value indicating the column index.
    * @return a boolean value indicating whether this Row has a value at the given column index.
    */
-  public boolean hasValue(int columnIndex);
+  boolean hasValue(int columnIndex);
 
   /**
    * Determines whether this Row has a value in the given named column.
@@ -51,7 +51,7 @@ public interface Row extends Iterable<Object> {
    * @param columnName a String value indicating the name of the column.
    * @return a boolean value indicating whether this Row has a value in the given named column.
    */
-  public boolean hasValue(String columnName);
+  boolean hasValue(String columnName);
 
   /**
    * Determines whether this Row has a value in the given Column.
@@ -60,7 +60,7 @@ public interface Row extends Iterable<Object> {
    * @return a boolean value indicating whether this Row has a value in the given Column.
    * @see Column
    */
-  public boolean hasValue(Column column);
+  boolean hasValue(Column column);
 
   /**
    * Gets the value at the given column index in this Row.
@@ -68,7 +68,7 @@ public interface Row extends Iterable<Object> {
    * @param columnIndex an integer value indicating the index of the column.
    * @return an Object value at the given column index in this Row.
    */
-  public Object getValue(int columnIndex);
+  Object getValue(int columnIndex);
 
   /**
    * Gets the value at the given named column in this Row.
@@ -76,7 +76,7 @@ public interface Row extends Iterable<Object> {
    * @param columnName a String value indicating the name of the column.
    * @return an Object value at the given named column in this Row.
    */
-  public Object getValue(String columnName);
+  Object getValue(String columnName);
 
   /**
    * Gets the value at the given Column in this Row.
@@ -85,7 +85,7 @@ public interface Row extends Iterable<Object> {
    * @return an Object value at the given Column in this Row.
    * @see Column
    */
-  public Object getValue(Column column);
+  Object getValue(Column column);
 
   /**
    * Sets the value in this Row at the given column index.
@@ -94,7 +94,7 @@ public interface Row extends Iterable<Object> {
    * @param value the Object value to set at the given column index in this Row.
    * @return the original Object value at the given column index in this Row.
    */
-  public Object setValue(int columnIndex, Object value);
+  Object setValue(int columnIndex, Object value);
 
   /**
    * Sets the value in this Row in the given named column.
@@ -103,7 +103,7 @@ public interface Row extends Iterable<Object> {
    * @param value the Object value to set at the given named column in this Row.
    * @return the original Object value at the given named column in this Row.
    */
-  public Object setValue(String columnName, Object value);
+  Object setValue(String columnName, Object value);
 
   /**
    * Sets the value in this Row at the given Column.
@@ -113,7 +113,7 @@ public interface Row extends Iterable<Object> {
    * @return the original Object value at the given Column in this Row.
    * @see Column
    */
-  public Object setValue(Column column, Object value);
+  Object setValue(Column column, Object value);
 
   /**
    * Gets the index of this Row in the View.
@@ -121,20 +121,20 @@ public interface Row extends Iterable<Object> {
    * @return an integer value indicating the index of this Row in the View.  Returns a -1 if this Row has not been
    * added to a View.
    */
-  public int index();
+  int index();
 
   /**
    * Determines the number of values in this Row (the same as the number of columns in this Row).
    *
    * @return an integer value indicating the number of values (columns) in this Row.
    */
-  public int size();
+  int size();
 
   /**
    * Returns this Row as an array of Object values.
    *
    * @return an array of Object values contained this Row.
    */
-  public Object[] values();
+  Object[] values();
 
 }

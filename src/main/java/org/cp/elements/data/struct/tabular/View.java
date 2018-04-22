@@ -39,7 +39,7 @@ public interface View extends Iterable<Row> {
    * @see java.lang.Iterable
    * @see Column
    */
-  public Iterable<Column> columns();
+  Iterable<Column> columns();
 
   /**
    * Determines whether this View contains a Column with name.
@@ -47,7 +47,7 @@ public interface View extends Iterable<Row> {
    * @param columnName a String value indicating the name of the Column in question.
    * @return a boolean value indicating whether this View contains a Column with the specified name.
    */
-  public boolean contains(String columnName);
+  boolean contains(String columnName);
 
   /**
    * Determines whether this View contains the specified Column.
@@ -56,7 +56,7 @@ public interface View extends Iterable<Row> {
    * @return a boolean value indicating whether this View contains the specified Column.
    * @see Column
    */
-  public boolean contains(Column column);
+  boolean contains(Column column);
 
   /**
    * Gets the Column in this View at the specified index.
@@ -65,7 +65,7 @@ public interface View extends Iterable<Row> {
    * @return the Column in this View at the specified index.
    * @see Column
    */
-  public Column<?> getColumn(int index);
+  Column<?> getColumn(int index);
 
   /**
    * Gets the Column with the specified name in this View.
@@ -74,7 +74,7 @@ public interface View extends Iterable<Row> {
    * @return the Column in this View with the specified name or null if no Column with name exists in this View.
    * @see Column
    */
-  public Column<?> getColumn(String name);
+  Column<?> getColumn(String name);
 
   /**
    * Gets the Row in this View at the specified index.
@@ -83,7 +83,7 @@ public interface View extends Iterable<Row> {
    * @return the Row in this View at the specified index.
    * @see Row
    */
-  public Row getRow(int index);
+  Row getRow(int index);
 
   /**
    * Gets the value at the specified row and column index in this View.
@@ -93,7 +93,7 @@ public interface View extends Iterable<Row> {
    * @param columnIndex an integer value indicating the column index of the value to get.
    * @return the value at the specified row and column index in this View.
    */
-  public <T> T getValue(int rowIndex, int columnIndex);
+  <T> T getValue(int rowIndex, int columnIndex);
 
   /**
    * Gets the value at the specified row index and named column in this View.
@@ -103,7 +103,7 @@ public interface View extends Iterable<Row> {
    * @param columnName a String value indicating the name of the column from which to get the value.
    * @return the value at the specified row index and named column in this View.
    */
-  public <T> T getValue(int rowIndex, String columnName);
+  <T> T getValue(int rowIndex, String columnName);
 
   /**
    * Gets the value at the specified row index and Column in this View.
@@ -114,7 +114,7 @@ public interface View extends Iterable<Row> {
    * @return the value at the specified row index and Column in this View.
    * @see Column
    */
-  public <T> T getValue(int rowIndex, Column column);
+  <T> T getValue(int rowIndex, Column column);
 
   /**
    * Determines whether a value exists at the specified row and column index in this View.
@@ -123,7 +123,7 @@ public interface View extends Iterable<Row> {
    * @param columnIndex an integer value indicating the column index.
    * @return a boolean value indicating whether a value exists at the specified row and column index in this View.
    */
-  public boolean hasValue(int rowIndex, int columnIndex);
+  boolean hasValue(int rowIndex, int columnIndex);
 
   /**
    * Determines whether a value exists at the specified row index and named column in this View.
@@ -132,7 +132,7 @@ public interface View extends Iterable<Row> {
    * @param columnName a String value indicating the name of the column.
    * @return a boolean value indicating whether a value exists at the specified row index and named column in this View.
    */
-  public boolean hasValue(int rowIndex, String columnName);
+  boolean hasValue(int rowIndex, String columnName);
 
   /**
    * Determines whether a value exists at the specified row index and Column in this View.
@@ -142,7 +142,7 @@ public interface View extends Iterable<Row> {
    * @return a boolean value indicating whether a value exists at the specified row index and Column in this View.
    * @see Column
    */
-  public boolean hasValue(int rowIndex, Column column);
+  boolean hasValue(int rowIndex, Column column);
 
   /**
    * Determines the index of the named column in this View.
@@ -151,7 +151,7 @@ public interface View extends Iterable<Row> {
    * @return an integer value indicating the index of the named column in this View, or -1 if the named column is not
    * contained in this View.
    */
-  public int indexOf(String columnName);
+  int indexOf(String columnName);
 
   /**
    * Determines the index of the Column in this View.
@@ -161,7 +161,7 @@ public interface View extends Iterable<Row> {
    * in this View.
    * @see Column
    */
-  public int indexOf(Column column);
+  int indexOf(Column column);
 
   /**
    * Determines the index of the Row in this View.
@@ -171,7 +171,7 @@ public interface View extends Iterable<Row> {
    * in this View.
    * @see Row
    */
-  public int indexOf(Row row);
+  int indexOf(Row row);
 
   /**
    * Queries this View, filtering data (rows) with the specified Filter (predicate), returning a View ordered
@@ -186,7 +186,7 @@ public interface View extends Iterable<Row> {
    * @see Row
    * @see View
    */
-  public View query(Filter<Row> predicate, Comparator<Row> orderBy, Column... projection);
+  View query(Filter<Row> predicate, Comparator<Row> orderBy, Column... projection);
 
   /**
    * Gets an Iterable object to iterate over the Rows in this View.
@@ -195,13 +195,13 @@ public interface View extends Iterable<Row> {
    * @see java.lang.Iterable
    * @see Row
    */
-  public Iterable<Row> rows();
+  Iterable<Row> rows();
 
   /**
    * Gets the number of Rows in this View.
    *
    * @return an integer value indicating the number of Rows in this View.
    */
-  public int size();
+  int size();
 
 }
