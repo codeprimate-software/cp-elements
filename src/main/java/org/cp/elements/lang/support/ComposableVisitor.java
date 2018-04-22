@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Composite;
@@ -53,8 +55,10 @@ public class ComposableVisitor implements Composite<Visitor>, Iterable<Visitor>,
    * @see #contains(org.cp.elements.lang.Visitor)
    */
   public boolean add(Visitor visitor) {
+
     Assert.notNull(visitor, "The Visitor to add to this composite cannot be null");
-    return (visitor != this && !contains(visitor) && visitors.add(visitor));
+
+    return visitor != this && !contains(visitor) && visitors.add(visitor);
   }
 
   /**
@@ -67,13 +71,9 @@ public class ComposableVisitor implements Composite<Visitor>, Iterable<Visitor>,
   @NullSafe
   @Override
   public Visitor compose(Visitor one, Visitor two) {
-    if (one != null) {
-      add(one);
-    }
 
-    if (two != null) {
-      add(two);
-    }
+    Optional.ofNullable(one).ifPresent(this::add);
+    Optional.ofNullable(two).ifPresent(this::add);
 
     return this;
   }
@@ -132,8 +132,6 @@ public class ComposableVisitor implements Composite<Visitor>, Iterable<Visitor>,
    * @param visitable the Visitable object visited by this Visitor.
    */
   public void visit(Visitable visitable) {
-    for (Visitor visitor : this) {
-      visitor.visit(visitable);
-    }
+    StreamSupport.stream(this.spliterator(), false).forEach(visitor -> visitor.visit(visitable));
   }
 }

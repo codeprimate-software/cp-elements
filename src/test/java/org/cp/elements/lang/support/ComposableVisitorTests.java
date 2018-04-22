@@ -17,11 +17,10 @@
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Fail.fail;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.ArrayUtils.getFirst;
 import static org.cp.elements.util.CollectionUtils.asSet;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -33,9 +32,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.util.CollectionUtils;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Unit tests for {@link ComposableVisitor}.
@@ -51,10 +48,7 @@ import org.junit.rules.ExpectedException;
  */
 public class ComposableVisitorTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  protected Visitor mockVisitor(String... name) {
+  private Visitor mockVisitor(String... name) {
     return mock(Visitor.class, getFirst(name, "MockVisitor"));
   }
 
@@ -64,7 +58,16 @@ public class ComposableVisitorTests {
   }
 
   @Test
+  public void addComposableVisitorReturnsFalse() {
+
+    ComposableVisitor visitors = new ComposableVisitor();
+
+    assertThat(visitors.add(visitors)).isFalse();
+  }
+
+  @Test
   public void addExistingVisitorReturnsFalse() {
+
     Visitor mockVisitor = mockVisitor();
 
     ComposableVisitor visitors = new ComposableVisitor();
@@ -73,24 +76,24 @@ public class ComposableVisitorTests {
     assertThat(visitors.add(mockVisitor)).isFalse();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void addNullVisitorThrowsIllegalArgumentException() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The Visitor to add to this composite cannot be null");
 
-    new ComposableVisitor().add(null);
-  }
+    try {
+      new ComposableVisitor().add(null);
+    }
+    catch (IllegalArgumentException expected) {
 
-  @Test
-  public void addSelfReturnsFalse() {
-    ComposableVisitor visitors = new ComposableVisitor();
+      assertThat(expected).hasMessage("The Visitor to add to this composite cannot be null");
+      assertThat(expected).hasNoCause();
 
-    assertThat(visitors.add(visitors)).isFalse();
+      throw expected;
+    }
   }
 
   @Test
   public void containsAddedVisitorIsTrue() {
+
     Visitor mockVisitor = mockVisitor();
 
     ComposableVisitor visitors = new ComposableVisitor();
@@ -112,6 +115,7 @@ public class ComposableVisitorTests {
   }
   @Test
   public void isEmptyAfterAddIsFalse() {
+
     ComposableVisitor visitors = new ComposableVisitor();
 
     assertThat(visitors.add(mockVisitor())).isTrue();
@@ -125,6 +129,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void iterator() {
+
     Visitor[] expectedVisitors = {
       mockVisitor("one"),
       mockVisitor("two"),
@@ -144,6 +149,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void iteratorRemoveThrowsUnsupportedOperationException() {
+
     Visitor mockVisitor = mockVisitor();
 
     ComposableVisitor visitors = new ComposableVisitor();
@@ -156,14 +162,18 @@ public class ComposableVisitorTests {
     assertThat(iterator.hasNext()).isTrue();
     assertThat(iterator.next()).isEqualTo(mockVisitor);
 
-    exception.expect(UnsupportedOperationException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-
-    iterator.remove();
+    try {
+      iterator.remove();
+      fail("Remove is not supported");
+    }
+    catch (UnsupportedOperationException expected) {
+      assertThat(expected).hasNoCause();
+    }
   }
 
   @Test
   public void iteratorWithNoVisitors() {
+
     ComposableVisitor composableVisitor = new ComposableVisitor();
 
     assertThat(composableVisitor.isEmpty()).isTrue();
@@ -176,6 +186,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void remove() {
+
     Visitor mockVisitor = mockVisitor();
 
     ComposableVisitor visitors = new ComposableVisitor();
@@ -190,6 +201,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void size() {
+
     Visitor mockVisitor = mockVisitor();
 
     ComposableVisitor visitors = new ComposableVisitor();
@@ -209,6 +221,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void visit() {
+
     TestVisitable visitableThree = new TestVisitable(3);
     TestVisitable visitableTwo = new TestVisitable(2, visitableThree);
     TestVisitable visitableOne = new TestVisitable(1, visitableTwo);
@@ -252,6 +265,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void composeArray() {
+
     Visitor[] visitorArray = {
       mockVisitor("one"),
       mockVisitor("two"),
@@ -268,7 +282,9 @@ public class ComposableVisitorTests {
 
   @Test
   public void composeIterable() {
-    Iterable<Visitor> iterable = Arrays.asList(mockVisitor("one"), mockVisitor("two"), mockVisitor("three"));
+
+    Iterable<Visitor> iterable =
+      Arrays.asList(mockVisitor("one"), mockVisitor("two"), mockVisitor("three"));
 
     ComposableVisitor visitors = new ComposableVisitor();
 
@@ -280,6 +296,7 @@ public class ComposableVisitorTests {
 
   @Test
   public void composeOne() {
+
     Visitor mockVisitor = mockVisitor("one");
 
     ComposableVisitor visitors = new ComposableVisitor();

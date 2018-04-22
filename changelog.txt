@@ -3,7 +3,12 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
-1.0.0.M4 - ???
+1.0.0.M5 - ?
+---------------------
+
+
+
+1.0.0.M4 - 2018-01-21
 ---------------------
 Introduces new class types, data structures and tools.
 
