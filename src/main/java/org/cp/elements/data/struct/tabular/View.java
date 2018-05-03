@@ -25,12 +25,12 @@ import java.util.stream.StreamSupport;
 
 import org.cp.elements.data.struct.tabular.query.Query;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NullSafe;
-import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The {@link View} interface defines a limited view (or projection) of a tabular data structure.
+ * The {@link View} interface defines a limited view (or projection), or image of a tabular data structure.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -40,15 +40,16 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see org.cp.elements.data.struct.tabular.Row
  * @see org.cp.elements.data.struct.tabular.Table
  * @see org.cp.elements.data.struct.tabular.query.Query
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface View extends Iterable<Row> {
+public interface View extends Iterable<Row>, Nameable<String> {
 
   /**
    * Returns an {@link Iterable> to iterate over the {@link Column Columns} in this {@link View}.
    *
-   * @return {@link Iterable} to iterate over the {@link Column Columnns} in this {@link View}.
+   * @return an {@link Iterable} to iterate over the {@link Column Columns} in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see java.lang.Iterable
    */
@@ -65,7 +66,11 @@ public interface View extends Iterable<Row> {
    */
   @NullSafe
   default boolean contains(Column column) {
-    return Optional.ofNullable(column).map(Column::getName).filter(this::contains).isPresent();
+
+    return Optional.ofNullable(column)
+      .map(Column::getName)
+      .filter(this::contains)
+      .isPresent();
   }
 
   /**
@@ -83,6 +88,24 @@ public interface View extends Iterable<Row> {
       .filter(it -> StreamSupport.stream(columns().spliterator(), false)
         .anyMatch(column -> column.getName().equals(columnName)))
       .isPresent();
+  }
+
+  /**
+   * Counts the {@link Row Rows} in this {@link View} that match the given {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} used to match {@link Row Rows}.
+   * @return a count of the number of {@link Row Rows} matching the given {@link Predicate}.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see java.util.function.Predicate
+   */
+  default int count(Predicate<Row> predicate) {
+
+    Assert.notNull(predicate, "Predicate is required");
+
+    return Long.valueOf(StreamSupport.stream(rows().spliterator(), false)
+      .filter(predicate)
+      .count()).intValue();
   }
 
   /**
@@ -123,7 +146,10 @@ public interface View extends Iterable<Row> {
    * @see #getColumn(int)
    */
   default Optional<Column<?>> getColumn(String name) {
-    return Optional.of(indexOf(name)).filter(index -> index > -1).map(this::getColumn);
+
+    return Optional.of(indexOf(name))
+      .filter(index -> index > -1)
+      .map(this::getColumn);
   }
 
   /**
@@ -168,13 +194,9 @@ public interface View extends Iterable<Row> {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    for (Row row : rows()) {
-      if (predicate.test(row)) {
-        return Optional.of(row);
-      }
-    }
-
-    return Optional.empty();
+    return StreamSupport.stream(rows().spliterator(), false)
+      .filter(predicate)
+      .findFirst();
   }
 
   /**
@@ -302,7 +324,7 @@ public interface View extends Iterable<Row> {
    * @see #size()
    */
   default boolean isEmpty() {
-    return size() > 0;
+    return size() == 0;
   }
 
   /**
@@ -341,9 +363,9 @@ public interface View extends Iterable<Row> {
    * Returns the number of {@link Row Rows} in this {@link View}.
    *
    * @return an integer value indicating the number of {@link Row Rows} in this {@link View}.
-   * @see #spliterator()
+   * @see #count(Predicate)
    */
   default int size() {
-    return Long.valueOf(StreamUtils.stream(this.spliterator(), false).count()).intValue();
+    return count(row -> true);
   }
 }

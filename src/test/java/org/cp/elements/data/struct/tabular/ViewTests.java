@@ -21,8 +21,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -33,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.cp.elements.data.struct.tabular.query.Query;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 
@@ -57,7 +61,7 @@ public class ViewTests {
   }
 
   @Test
-  public void containsColumnReturnsTrue() {
+  public void containsExistingColumnReturnsTrue() {
 
     Column mockColumn = mock(Column.class);
 
@@ -74,7 +78,7 @@ public class ViewTests {
   }
 
   @Test
-  public void containsColumnReturnsFalse() {
+  public void containsNonExistingColumnReturnsFalse() {
 
     Column mockColumn = mock(Column.class);
 
@@ -197,6 +201,95 @@ public class ViewTests {
     verify(mockView, never()).columns();
     verify(mockColumnOne, never()).getName();
     verify(mockColumnTwo, never()).getName();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void countReturnsZero() {
+
+    Row mockRowOne = mock(Row.class);
+    Row mockRowTwo = mock(Row.class);
+
+    View mockView = mock(View.class);
+
+    when(mockView.rows()).thenReturn(Arrays.asList(mockRowOne, mockRowTwo));
+    when(mockView.count(any(Predicate.class))).thenCallRealMethod();
+
+    assertThat(mockView.count(row -> false)).isEqualTo(0);
+
+    verify(mockView, times(1)).rows();
+    verifyZeroInteractions(mockRowOne);
+    verifyZeroInteractions(mockRowTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void countReturnsSize() {
+
+    Row mockRowOne = mock(Row.class);
+    Row mockRowTwo = mock(Row.class);
+
+    View mockView = mock(View.class);
+
+    when(mockView.rows()).thenReturn(Arrays.asList(mockRowOne, mockRowTwo));
+    when(mockView.count(any(Predicate.class))).thenCallRealMethod();
+
+    assertThat(mockView.count(row -> true)).isEqualTo(2);
+
+    verify(mockView, times(1)).rows();
+    verifyZeroInteractions(mockRowOne);
+    verifyZeroInteractions(mockRowTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void countReturnsNumberOfMatchingRows() {
+
+    Predicate mockPredicate = mock(Predicate.class);
+
+    Row mockRowOne = mock(Row.class);
+    Row mockRowTwo = mock(Row.class);
+    Row mockRowThree = mock(Row.class);
+
+    View mockView = mock(View.class);
+
+    when(mockView.rows()).thenReturn(Arrays.asList(mockRowOne, mockRowTwo, mockRowThree));
+    when(mockView.count(any(Predicate.class))).thenCallRealMethod();
+
+    when(mockPredicate.test(any(Row.class))).thenAnswer(invocation ->
+      Arrays.asList(mockRowOne, mockRowTwo).contains(invocation.<Row>getArgument(0)));
+
+    assertThat(mockView.count(mockPredicate)).isEqualTo(2);
+
+    verify(mockView, times(1)).rows();
+    verify(mockPredicate, times(1)).test(eq(mockRowOne));
+    verify(mockPredicate, times(1)).test(eq(mockRowTwo));
+    verify(mockPredicate, times(1)).test(eq(mockRowThree));
+    verifyZeroInteractions(mockRowOne);
+    verifyZeroInteractions(mockRowTwo);
+    verifyZeroInteractions(mockRowThree);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void countWithNullPredicateThrowsIllegalArgumentException() {
+
+    View mockView = mock(View.class);
+
+    when(mockView.count(any())).thenCallRealMethod();
+
+    try {
+      mockView.count(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Predicate is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally  {
+      verify(mockView, never()).rows();
+    }
   }
 
   @Test
@@ -692,9 +785,63 @@ public class ViewTests {
   @Test
   public void queryReturnsResults() {
 
+    Column mockColumnOne = mockColumn("One");
+    Column mockColumnTwo = mockColumn("Two");
+
     View mockViewOne = mock(View.class);
     View mockViewTwo = mock(View.class);
 
-    assertThat(mockViewOne.query()).isEqualTo(mockViewTwo);
+    Query query = spy(Query.select(mockColumnOne, mockColumnTwo)
+      .from(mockViewOne));
+
+    when(mockViewOne.query(any(Query.class))).thenCallRealMethod();
+    doReturn(mockViewTwo).when(query).execute();
+
+    assertThat(mockViewOne.query(query)).isEqualTo(mockViewTwo);
+
+    verify(query, times(1)).execute();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void queryWithNullQueryThrowsIllegalArgumenException() {
+
+    View mockView = mock(View.class);
+
+    when(mockView.query(any())).thenCallRealMethod();
+
+    try {
+      mockView.query(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Query is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void rowsReturnsThis() {
+
+    View mockView = mock(View.class);
+
+    when(mockView.rows()).thenCallRealMethod();
+
+    assertThat(mockView.rows()).isSameAs(mockView);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void sizeReturnsCount() {
+
+    View mockView = mock(View.class);
+
+    when(mockView.count(any(Predicate.class))).thenReturn(2);
+    when(mockView.size()).thenCallRealMethod();
+
+    assertThat(mockView.size()).isEqualTo(2);
+
+    verify(mockView, times(1)).count(isA(Predicate.class));
   }
 }
