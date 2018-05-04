@@ -16,316 +16,114 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+import static org.cp.elements.util.CollectionUtils.nullSafeIterable;
+
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.cp.elements.lang.Assert;
 
 /**
- * The AbstractView class is an abstract base class implementing the View interface in order to encapsulate
- * functionality common to all View implementations.
+ * {@link AbstractView} is an abstract base class implementing the {@link View} interface to provide functionality
+ * common to all {@link View} implementations.
  *
  * @author John J. Blum
- * @see Column
- * @see Row
- * @see Table
- * @see View
+ * @see org.cp.elements.data.struct.tabular.Column
+ * @see org.cp.elements.data.struct.tabular.Row
+ * @see org.cp.elements.data.struct.tabular.Table
+ * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class AbstractView implements View {
 
   /**
-   * Determines whether this View contains a Column with name.
+   * Factory method constructing a new {@link View} initialized with the given {@link Column Columns}
+   * and {@link Row Rows}.
    *
-   * @param columnName a String value indicating the name of the Column in question.
-   * @return a boolean value indicating whether this View contains a Column with the specified name.
-   * @see #getColumn(String)
+   * @param columns {@link Column Columns} defining the projection of the {@link View}.
+   * @param rows {@link Row Rows} defining the contents of thew {@link View}.
+   * @return a new {@link View} initialized with the given {@link Column Columns} and {@link Row Rows}.
+   * @throws IllegalArgumentException if {@link Column Columns} are {@literal null} or empty.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see java.lang.Iterable
    */
-  @Override
-  public boolean contains(final String columnName) {
-    return (getColumn(columnName) != null);
-  }
+  public static View of(Iterable<Column> columns, Iterable<Row> rows) {
 
-  /**
-   * Determines whether this View contains the specified Column.
-   *
-   * @param column the Column being determined for containment by this View.
-   * @return a boolean value indicating whether this View contains the specified Column.
-   * @see Column
-   * @see #columns()
-   */
-  @Override
-  public boolean contains(final Column column) {
-    for (Column viewColumn : columns()) {
-      if (viewColumn.equals(column)) {
-        return true;
+    Assert.notNull(columns, "Columns [null] are required");
+    Assert.isTrue(columns.iterator().hasNext(), "Columns [empty] are required");
+
+    return new AbstractView() {
+
+      @Override
+      public Iterable<Column> columns() {
+        return columns;
       }
-    }
 
-    return false;
-  }
-
-  /**
-   * Gets the Column in this View at the specified index.
-   *
-   * @param index an integer value specifying the index of the Column in this View to return.
-   * @return the Column in this View at the specified index.
-   * @see Column
-   * @see #columns()
-   */
-  @Override
-  public Column<?> getColumn(final int index) {
-    Assert.argument(index > -1, new IndexOutOfBoundsException(String.format(
-      "Index (%1$d) must be greater than equal to 0!", index)));
-
-    int currentIndex = 0;
-
-    for (Column column : columns()) {
-      if (currentIndex++ == index) {
-        return column;
+      @Override
+      public Iterator<Row> iterator() {
+        return nullSafeIterable(rows).iterator();
       }
-    }
+    };
+  }
 
-    throw new IndexOutOfBoundsException(String.format("Index (%1$d) exceeds the number of columns (%2$d) in this View!",
-      index, currentIndex));
+  private String name;
+
+  /**
+   * Sets the {@link String name} of this {@link View}.
+   *
+   * @param name {@link String} containing the name of this {@link View}.
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**
-   * Gets the Column with the specified name in this View.
+   * Returns the {@link String name} of this {@link View}.
    *
-   * @param name a String value specifying the name of the Column in this View to return.
-   * @return the Column in this View with the specified name or null if no Column with name exists in this View.
-   * @see Column
-   * @see #columns()
+   * @return a {@link String} containing the name of this {@link View}.
    */
   @Override
-  public Column<?> getColumn(final String name) {
-    for (Column column : columns()) {
-      if (column.getName().equals(name)) {
-        return column;
-      }
-    }
-
-    return null;
+  public String getName() {
+    return this.name;
   }
 
   /**
-   * Gets the Row in this View at the specified index.
+   * Returns an {@link Iterable> to iterate over the {@link Column Columns} in this {@link View}.
    *
-   * @param index an integer value specifying the index of the Row in this View to return.
-   * @return the Row in this View at the specified index.
-   * @see Row
-   * @see #rows()
+   * @return an {@link Iterable} to iterate over the {@link Column Columns} in this {@link View}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see java.lang.Iterable
    */
   @Override
-  public Row getRow(final int index) {
-    Assert.argument(index > -1, new IndexOutOfBoundsException(String.format(
-      "Index (%1$d) must be greater than equal to 0!", index)));
-
-    int currentIndex = 0;
-
-    for (Row row : rows()) {
-      if (currentIndex++ == index) {
-        return row;
-      }
-    }
-
-    throw new IndexOutOfBoundsException(String.format("Index (%1$d) exceeds the number of rows (%2$d) in this View!",
-      index, currentIndex));
+  public Iterable<Column> columns() {
+    throw newIllegalStateException("Columns for this View have not been defined");
   }
 
   /**
-   * Gets the value at the specified row and column index in this View.
+   * Returns an {@link Iterator} to iterate over the rows in this {@link View}.
    *
-   * @param <T> the Class type of the value.
-   * @param rowIndex an integer value indicating the row index of the value to get.
-   * @param columnIndex an integer value indicating the column index of the value to get.
-   * @return the value at the specified row and column index in this View.
-   * @see #getRow(int)
-   * @see Row#getValue(int)
-   */
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T getValue(final int rowIndex, final int columnIndex) {
-    return (T) getRow(rowIndex).getValue(columnIndex);
-  }
-
-  /**
-   * Gets the value at the specified row index and named column in this View.
-   *
-   * @param <T> the Class type of the value.
-   * @param rowIndex an integer value indicating the row index of the value to get.
-   * @param columnName a String value indicating the name of the column from which to get the value.
-   * @return the value at the specified row index and named column in this View.
-   * @see #getRow(int)
-   * @see Row#getValue(String)
-   */
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T getValue(final int rowIndex, final String columnName) {
-    return (T) getRow(rowIndex).getValue(columnName);
-  }
-
-  /**
-   * Gets the value at the specified row index and Column in this View.
-   *
-   * @param <T> the Class type of the value.
-   * @param rowIndex an integer value indicating the row index of the value to get.
-   * @param column the Column from which to get the value.
-   * @return the value at the specified row index and Column in this View.
-   * @see #getRow(int)
-   * @see Column
-   * @see Row#getValue(Column)
-   */
-  @Override
-  @SuppressWarnings("unchecked")
-  public <T> T getValue(final int rowIndex, final Column column) {
-    return (T) getRow(rowIndex).getValue(column);
-  }
-
-  /**
-   * Determines whether a value exists at the specified row and column index in this View.
-   *
-   * @param rowIndex an integer value indicating the row index.
-   * @param columnIndex an integer value indicating the column index.
-   * @return a boolean value indicating whether a value exists at the specified row and column index in this View.
-   * @see #getValue(int, int)
-   */
-  @Override
-  public boolean hasValue(final int rowIndex, final int columnIndex) {
-    return (getValue(rowIndex, columnIndex) != null);
-  }
-
-  /**
-   * Determines whether a value exists at the specified row index and named column in this View.
-   *
-   * @param rowIndex an integer value indicating the row index.
-   * @param columnName a String value indicating the name of the column.
-   * @return a boolean value indicating whether a value exists at the specified row index and named column in this View.
-   * @see #getValue(int, String)
-   */
-  @Override
-  public boolean hasValue(final int rowIndex, final String columnName) {
-    return (getValue(rowIndex, columnName) != null);
-  }
-
-  /**
-   * Determines whether a value exists at the specified row index and Column in this View.
-   *
-   * @param rowIndex an integer value indicating the row index.
-   * @param column a Column in this View.
-   * @return a boolean value indicating whether a value exists at the specified row index and Column in this View.
-   * @see Column
-   * @see #getValue(int, Column)
-   */
-  @Override
-  public boolean hasValue(final int rowIndex, final Column column) {
-    return (getValue(rowIndex, column) != null);
-  }
-
-  /**
-   * Determines the index of the named column in this View.
-   *
-   * @param columnName a String value indicating the name of the column.
-   * @return an integer value indicating the index of the named column in this View, or -1 if the named column is not
-   * contained in this View.
-   * @see #columns()
-   */
-  @Override
-  public int indexOf(final String columnName) {
-    int index = 0;
-
-    for (Column column : columns()) {
-      if (column.getName().equals(columnName)) {
-        return index;
-      }
-      else {
-        index++;
-      }
-    }
-
-    return -1;
-  }
-
-  /**
-   * Determines the index of the Column in this View.
-   *
-   * @param column a Column in this View.
-   * @return an integer value indicating the index of the Column in this View, or -1 if the Column is not contained
-   * in this View.
-   * @see Column
-   * @see #columns()
-   */
-  @Override
-  public int indexOf(final Column column) {
-    int index = 0;
-
-    for (Column viewColumn : columns()) {
-      if (viewColumn.equals(column)) {
-        return index;
-      }
-      else {
-        index++;
-      }
-    }
-
-    return -1;
-  }
-
-  /**
-   * Determines the index of the Row in this View.
-   *
-   * @param row a Row in this View.
-   * @return an integer value indicating the index of the Row in this View, or -1 if the Row is not contained
-   * in this View.
-   * @see Row
-   * @see #rows()
-   */
-  @Override
-  public int indexOf(final Row row) {
-    int index = 0;
-
-    for (Row viewRow : this) {
-      if (viewRow.equals(row)) {
-        return index;
-      }
-      else {
-        index++;
-      }
-    }
-
-    return -1;
-  }
-
-  /**
-   * Gets an Iterator to iterate over all the Rows in this View.
-   *
-   * @return an Iterator object iterating over all the Rows in this View.
-   * @see #rows()
-   * @see java.lang.Iterable#iterator()
+   * @return an {@link Iterator} to iterate over the rows in this {@link View}.
    * @see java.util.Iterator
-   * @see Row
    */
   @Override
   public Iterator<Row> iterator() {
-    return rows().iterator();
+    return Collections.emptyIterator();
   }
 
   /**
-   * Gets the number of Rows in this View.
+   * Builder method used to set the {@link String name} of this {@link View}.
    *
-   * @return an integer value indicating the number of Rows in this View.
-   * @see #rows()
+   * @param <T> {@link Class sub-type} of this {@link View}.
+   * @param name {@link String} containing the name of this {@link View}.
+   * @return this {@link View}.
+   * @see #setName(String)
    */
-  @Override
-  public int size() {
-    int count = 0;
-
-    for (Row row : this) {
-      count++;
-    }
-
-    return count;
+  @SuppressWarnings("unchecked")
+  public <T extends AbstractView> T named(String name) {
+    setName(name);
+    return (T) this;
   }
-
 }
