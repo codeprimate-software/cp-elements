@@ -187,7 +187,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> List<T> asList(Iterable<T> iterable) {
-    return (iterable instanceof Collection ?  new ArrayList<>((Collection<T>) iterable)
+    return (iterable instanceof Collection ? new ArrayList<>((Collection<T>) iterable)
       : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toList()));
   }
 
