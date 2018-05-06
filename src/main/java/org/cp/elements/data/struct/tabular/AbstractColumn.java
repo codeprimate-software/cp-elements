@@ -16,22 +16,28 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import java.util.Optional;
+
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.StringUtils;
 
 /**
- * The AbstractColumn class is an abstract base class implementing the Column interface, defining a column
- * in a table data structure.
+ * The {@link AbstractColumn} class is an abstract base class implementing the {@link Column} interface,
+ * encapsulating common state and functionality for implementing {@link Column} types.
  *
  * @author John J. Blum
- * @param <T> the Class type of the values in this Column of the Table.
- * @see Column
- * @see Row
- * @see Table
- * @see View
+ * @param <T> {@link Class type} of {@link Object values} stored in this {@link Column}.
+ * @see org.cp.elements.data.struct.tabular.Column
+ * @see org.cp.elements.data.struct.tabular.Row
+ * @see org.cp.elements.data.struct.tabular.Table
+ * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class AbstractColumn<T> implements Column<T> {
+
+  protected static final String COLUMN_TO_STRING =
+    "{ @type = %1$s, name = %2$s, alias = %3$s, description = %4$s, type = %5$s, defaultValue = %6$s }";
 
   private T defaultValue;
 
@@ -45,157 +51,202 @@ public abstract class AbstractColumn<T> implements Column<T> {
   private View view;
 
   /**
-   * Constructs an instance of the AbstractColumn class with the given name and Class type.
+   * Constructs a new instance of {@link AbstractColumn} initialized with
+   * the given {@link String name} and {@link Class type}.
    *
-   * @param name a String value indicating the name of this Column.
-   * @param type a Class object indicating the type of values stored in this Column.
-   * @throws NullPointerException if the name or type are null.
+   * @param name {@link String} containing the name for this {@link Column}; must not be {@literal null}.
+   * @param type {@link Class} specifying the type of {@link Object values} stored by this {@link Column};
+   * must not be {@literal null}.
+   * @throws IllegalArgumentException if either {@link String name} or {@link Class type} are {@literal null}.
    */
-  public AbstractColumn(final String name, final Class<T> type) {
-    Assert.notBlank(name, "The name of this Column must be specified!");
-    Assert.notNull(type, "The Class type of values stored in this Column must be specified!");
+  public AbstractColumn(String name, Class<T> type) {
+
+    Assert.hasText(name, "Column name is required");
+    Assert.notNull(type, "Column type is required");
+
     this.name = name;
     this.type = type;
   }
 
   /**
-   * Constructs an instance of the AbstractColumn class by copying the contents of the specified Column.
+   * Constructs a new instance of {@link AbstractColumn} initialized with the given {@link Column}.
    *
-   * @param column the Column to copy.
-   * @see Column
-   * @throws NullPointerException if the specified Column to copy is null.
-   * @see Column
+   * @param column {@link Column} to copy; must not be {@literal null}.
+   * @throws IllegalArgumentException if the given {@link Column} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.Column
    */
-  public AbstractColumn(final Column<T> column) {
-    Assert.notNull(column, "The Column to copy cannot be null!");
+  public AbstractColumn(Column<T> column) {
+
+    Assert.notNull(column, "The Column to copy is required");
+
     this.name = column.getName();
     this.type = column.getType();
-    setAlias(column.getAlias());
-    setDefaultValue(column.getDefaultValue());
-    setDescription(column.getDescription());
+
+    column.getAlias().ifPresent(this::setAlias);
+    column.getDefaultValue().ifPresent(this::setDefaultValue);
+    column.getDescription().ifPresent(this::setDescription);
   }
 
   /**
-   * Gets the alias, or alternate name of this Column.
+   * Sets the {@link String alias}, or alternate name for referring to this {@link Column}.
    *
-   * @return a String value for the alias (alternate name) of this Column.
+   * @param alias {@link String} containing the alias, or alternate name for this {@link Column}.
    */
-  public String getAlias() {
-    return alias;
-  }
-
-  /**
-   * Sets the alias, or alternate name of this Column.
-   *
-   * @param alias a String value indicating the alias for this Column.
-   */
-  public void setAlias(final String alias) {
+  public void setAlias(String alias) {
     this.alias = alias;
   }
 
   /**
-   * Gets the default value to use when a value is not specified for this Column.
+   * Returns an {@link Optional} {@link String alias}, or alternate name for referring to this {@link Column}.
    *
-   * @return the default value of this Column when a value is not specified.
+   * @return an {@link Optional} {@link String alias}, or alternate name for referring to this {@link Column}.
+   * @see java.util.Optional
+   * @see #getName()
    */
-  public T getDefaultValue() {
-    return defaultValue;
+  public Optional<String> getAlias() {
+    return Optional.ofNullable(this.alias).filter(StringUtils::hasText);
   }
 
   /**
-   * Sets the default value to use when a value is not specified for this Column.
+   * Sets the {@link Object default value} used when a {@link Object value} is not specified for this {@link Column}.
    *
-   * @param defaultValue the default value to use for this Column when a value is not specified.
+   * @param defaultValue {@link Object default value} used when a {@link Object value} is not specified
+   * for this {@link Column}.
    */
-  public void setDefaultValue(final T defaultValue) {
+  public void setDefaultValue(T defaultValue) {
     this.defaultValue = defaultValue;
   }
 
   /**
-   * Gets a description of this Column.
+   * Returns an {@link Optional} {@link Object default value} used when a {@link Object value}
+   * is not specified for this {@link Column}.
    *
-   * @return a String value describing this Column.
+   * @return an {@link Optional} {@link Object default value} used when a {@link Object value}
+   * is not specified for this {@link Column}.
+   * @see java.util.Optional
    */
-  public String getDescription() {
-    return description;
+  public Optional<T> getDefaultValue() {
+    return Optional.ofNullable(this.defaultValue);
   }
 
   /**
-   * Sets the description of this Column.
+   * Sets a {@link String} to describe the data stored by this {@link Column}.
    *
-   * @param description a String value describing this Column.
+   * @param description {@link String} containing the description for this {@link Column}.
    */
-  public void setDescription(final String description) {
+  public void setDescription(String description) {
     this.description = description;
   }
 
   /**
-   * Gets the index of this Column in the Table.
+   * Returns an {@link Optional} {@link String} to describe the data stored by this {@link Column}.
    *
-   * @return an integer value specifying the index of this Column in the View.  Returns a -1 if this Column has not
-   * been added to a Table or is not part of any View.
-   * @see View#indexOf(Column)
-   * @see #getView()
+   * @return an {@link Optional} {@link String} to describe the data stored by this {@link Column}.
+   * @see java.util.Optional
+   * @see #getAlias()
+   * @see #getName()
    */
-  @Override
-  public int getIndex() {
-    return getView().indexOf(this);
+  public Optional<String> getDescription() {
+    return Optional.ofNullable(this.description).filter(StringUtils::hasText);
   }
 
   /**
-   * Gets the name of this Column, which must be unique when adding this Column to a Table.
+   * Returns the {@link String name} of this {@link Column}.
    *
-   * @return a String value indicating the immutable name of this Column.
+   * @return the {@link String name} of this {@link Column}.
+   * @see org.cp.elements.lang.Nameable#getName()
    */
   public String getName() {
-    return name;
+    return this.name;
   }
 
   /**
-   * Gets the Class type for values stored in this Column of the Table.
+   * Returns the {@link Class type} of {@link Object values} stored in this {@link Column}.
    *
-   * @return the Class type of values in this Column of the Table.
+   * @return {@link Class type} of {@link Object values} stored in this {@link Column}.
    * @see java.lang.Class
    */
   public Class<T> getType() {
-    return type;
+    return this.type;
   }
 
   /**
-   * Gets the View to which this Column belongs.
+   * Set the {@link View} containing this {@link Column}.
    *
-   * @return the View to which this Column belongs or null if this Column is not part of any View.
-   * @throws IllegalStateException if a reference to the containing View was not properly configured.
-   * @see View
-   * @see #setView(View)
+   * @param view {@link View} containing this {@link Column}.
+   * @see org.cp.elements.data.struct.tabular.View
    */
-  @Override
-  public View getView() {
-    Assert.state(view != null, "A reference to the View containing this Column has not been properly configured!");
-    return view;
-  }
-
-  /**
-   * Sets the View to which this Column belongs.
-   *
-   * @param view the View to which this Column belongs or null if this Column is not part of any View.
-   * @see #getView()
-   * @see View
-   */
-  public void setView(final View view) {
+  public void setView(View view) {
     this.view = view;
   }
 
   /**
-   * Determines whether the specified Object is equal to this Column.
+   * Returns an {@link Optional} {@link View} containing this {@link Column}.
    *
-   * @param obj the Object compared for equality with this Column.
-   * @return a boolean value if the specified Object is equal to this Column.
+   * @return an {@link Optional} {@link View} containing this {@link Column}.
+   * @see org.cp.elements.data.struct.tabular.View
+   * @see java.util.Optional
+   */
+  public Optional<View> getView() {
+    return Optional.ofNullable(this.view);
+  }
+
+  /**
+   * Builder method used to set a {@link String description} of this {@link Column}.
+   *
+   * @param <S> {@link Class Sub-type} of this {@link Column}.
+   * @param description {@link String} describing this {@link Column}.
+   * @return this {@link Column}.
+   * @see #setDescription(String)
+   */
+  @SuppressWarnings("unchecked")
+  public <S extends AbstractColumn<T>> S describedAs(String description) {
+    setDescription(description);
+    return (S) this;
+  }
+
+  /**
+   * Builder methods used to set the {@link Object default value} used when a {@link Object value}
+   * is not specified for this {@link Column}.
+   *
+   * @param <S> {@link Class Sub-type} of this {@link Column}.
+   * @param defaultValue {@link Object default value} used when a {@link Object value}
+   * is not specified for this {@link Column}.
+   * @return this {@link Column}.
+   * @see #setDefaultValue(Object)
+   */
+  @SuppressWarnings("unchecked")
+  public <S extends AbstractColumn<T>> S usingDefaultValue(T defaultValue) {
+    setDefaultValue(defaultValue);
+    return (S) this;
+  }
+
+  /**
+   * Builder method used to set the {@link String alias}, or alternate name for this {@link Column}.
+   *
+   * @param <S> {@link Class Sub-type} of this {@link Column}.
+   * @param alias {@link String} containing the alias, or alternate name for this {@link Column}.
+   * @return this {@link Column}.
+   * @see #setAlias(String)
+   */
+  @SuppressWarnings("unchecked")
+  public <S extends AbstractColumn<T>> S withAlias(String alias) {
+    setAlias(alias);
+    return (S) this;
+  }
+
+  /**
+   * Determines whether this {@link Column} is equal to the given {@link Object}.
+   *
+   * @param obj {@link Object} to compare for equality with this {@link Column}.
+   * @return a boolean value indicating whether this {@link Column} is equal to
+   * the given {@link Object}
    * @see java.lang.Object#equals(Object)
    */
   @Override
-  public boolean equals(final Object obj) {
-    if (obj == this) {
+  public boolean equals(Object obj) {
+
+    if (this == obj) {
       return true;
     }
 
@@ -209,28 +260,32 @@ public abstract class AbstractColumn<T> implements Column<T> {
   }
 
   /**
-   * Gets the hash value of this Column.
+   * Computes the {@link Integer hash value} for this {@link Column}.
    *
-   * @return an integer value indicating the hash value of this Column.
+   * @return the computed {@link Integer hash value} for this {@link Column}.
    * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
+
     int hashValue = 17;
+
     hashValue = 37 * hashValue + getName().hashCode();
+
     return hashValue;
   }
 
   /**
-   * Gets a String representation of this Column.
+   * Returns a {@link String} representation of this {@link Column}.
    *
-   * @return a String representing this Column.
+   * @return a {@link String} describing this {@link Column}.
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
-    return String.format("{ @type = %1$s, name = %2$s, alias = %3$s, description = %4$s, type = %5$s, defaultValue = %6$s }",
-      getClass().getName(), getName(), getAlias(), getDescription(), getType(), getDefaultValue());
-  }
 
+    return String.format(COLUMN_TO_STRING,
+      getClass().getName(), getName(), getAlias().orElse(null), getDescription().orElse(null), getType(),
+        getDefaultValue().orElse(null));
+  }
 }

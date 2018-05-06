@@ -16,90 +16,114 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import java.util.Optional;
+
+import org.cp.elements.lang.Nameable;
+
 /**
- * The Column interface defines a column in a Table data structure.
+ * The {@link Column} interface is an Abstract Data Type (ADT) modeling a column in a tabular data structure.
  *
  * @author John J. Blum
- * @param <T> the Class type of values store in this column of the Table.
- * @see Row
- * @see Table
- * @see View
+ * @param <T> {@link Class type} of {@link Object values} stored in this {@link Column}.
+ * @see org.cp.elements.data.struct.tabular.Row
+ * @see org.cp.elements.data.struct.tabular.Table
+ * @see org.cp.elements.data.struct.tabular.View
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Column<T> {
+public interface Column<T> extends Nameable<String> {
 
   /**
-   * Gets the alias, or alternate name of this Column.
+   * Sets the {@link String alias}, or alternate name for referring to this {@link Column}.
    *
-   * @return a String value for the alias (alternate name) of this Column.
-   */
-  String getAlias();
-
-  /**
-   * Sets the alias, or alternate name of this Column.
-   *
-   * @param alias a String value indicating the alias for this Column.
+   * @param alias {@link String} containing the alias, or alternate name for this {@link Column}.
    */
   void setAlias(String alias);
 
   /**
-   * Gets the default value to use when a value is not specified for this Column.
+   * Returns an {@link Optional} {@link String alias}, or alternate name for referring to this {@link Column}.
    *
-   * @return the default value of this Column when a value is not specified.
+   * @return an {@link Optional} {@link String alias}, or alternate name for referring to this {@link Column}.
+   * @see java.util.Optional
+   * @see #getName()
    */
-  T getDefaultValue();
+  Optional<String> getAlias();
 
   /**
-   * Sets the default value to use when a value is not specified for this Column.
+   * Sets the {@link Object default value} used when a {@link Object value} is not specified for this {@link Column}.
    *
-   * @param defaultValue the default value to use for this Column when a value is not specified.
+   * @param defaultValue {@link Object default value} used when a {@link Object value} is not specified
+   * for this {@link Column}.
    */
   void setDefaultValue(T defaultValue);
 
   /**
-   * Gets a description of this Column.
+   * Returns an {@link Optional} {@link Object default value} used when a {@link Object value}
+   * is not specified for this {@link Column}.
    *
-   * @return a String value describing this Column.
+   * @return an {@link Optional} {@link Object default value} used when a {@link Object value}
+   * is not specified for this {@link Column}.
+   * @see java.util.Optional
    */
-  String getDescription();
+  Optional<T> getDefaultValue();
 
   /**
-   * Sets the description of this Column.
+   * Sets a {@link String} to describe the data stored by this {@link Column}.
    *
-   * @param description a String value describing this Column.
+   * @param description {@link String} containing the description for this {@link Column}.
    */
   void setDescription(String description);
 
   /**
-   * Gets the index of this Column in the Table.
+   * Returns an {@link Optional} {@link String} to describe the data stored by this {@link Column}.
    *
-   * @return an integer value specifying the index of this Column in the View.  Returns a -1 if this Column has not
-   * been added to a Table or is not part of any View.
+   * @return an {@link Optional} {@link String} to describe the data stored by this {@link Column}.
+   * @see java.util.Optional
+   * @see #getAlias()
+   * @see #getName()
    */
-  int getIndex();
+  Optional<String> getDescription();
 
   /**
-   * Gets the name of this Column, which must be unique when adding this Column to a Table.
+   * Returns the {@link String name} of this {@link Column}.
    *
-   * @return a String value indicating the immutable name of this Column.
+   * @return the {@link String name} of this {@link Column}.
+   * @see org.cp.elements.lang.Nameable#getName()
+   * @see #getDescription()
+   * @see #getAlias()
    */
+  @Override
   String getName();
 
   /**
-   * Gets the Class type for values stored in this Column of the Table.
+   * Returns the {@link Class type} of {@link Object values} stored in this {@link Column}.
    *
-   * @return the Class type of values in this Column of the Table.
+   * @return {@link Class type} of {@link Object values} stored in this {@link Column}.
    * @see java.lang.Class
    */
   Class<T> getType();
 
   /**
-   * Gets the View to which this Column belongs.
+   * Returns the {@link View} containing this {@link Column}.
    *
-   * @return the View to which this Column belongs or null if this Column is not part of any View.
-   * @see View
+   * @return the {@link View} containing this {@link Column}.
+   * @see org.cp.elements.data.struct.tabular.View
    */
-  View getView();
+  Optional<View> getView();
 
+  /**
+   * Returns the {@link Integer index} of this {@link Column} in the {@link View}.
+   *
+   * @return the {@link Integer index} of this {@link Column} in the {@link View}, or a {@literal -1}
+   * this {@link Column} is not presently contained by a {@link View}.
+   * @see org.cp.elements.data.struct.tabular.View#indexOf(Column)
+   * @see #getView()
+   */
+  default int index() {
+
+    return getView()
+      .map(view -> view.indexOf(this))
+      .orElse(-1);
+  }
 }
