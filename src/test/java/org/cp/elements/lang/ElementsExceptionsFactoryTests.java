@@ -32,6 +32,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newIdentityExceptio
 import static org.cp.elements.lang.ElementsExceptionsFactory.newIllegalTypeException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newImmutableObjectException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newInitializationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newMappingException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoAvailablePortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newNoSuchFileException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newObjectNotFoundException;
@@ -52,6 +53,7 @@ import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;
@@ -90,12 +92,12 @@ public class ElementsExceptionsFactoryTests {
   @Mock
   private Throwable mockCause;
 
-  protected void assertThrowable(Throwable throwable, Class<? extends Throwable> type, String message) {
+  private void assertThrowable(Throwable throwable, Class<? extends Throwable> type, String message) {
     assertThrowable(throwable, type, message, null);
   }
 
-  protected void assertThrowable(Throwable throwable, Class<? extends Throwable> type,
-    String message, Throwable cause) {
+  private void assertThrowable(Throwable throwable, Class<? extends Throwable> type,
+      String message, Throwable cause) {
 
     assertThat(throwable).isNotNull();
     assertThat(throwable).isInstanceOf(type);
@@ -134,6 +136,17 @@ public class ElementsExceptionsFactoryTests {
   public void newDataAccessExceptionWithFormattedMessageAndCause() {
     assertThrowable(newDataAccessException(mockCause, "%s is a {1}", "This", "test"),
       DataAccessException.class, "This is a test", mockCause);
+  }
+
+  @Test
+  public void newMappingExceptionWithMessage() {
+    assertThrowable(newMappingException("test"), MappingException.class, "test");
+  }
+
+  @Test
+  public void newMappingExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newMappingException(mockCause, "%s is a {1}", "This", "test"),
+      MappingException.class, "This is a test", mockCause);
   }
 
   @Test

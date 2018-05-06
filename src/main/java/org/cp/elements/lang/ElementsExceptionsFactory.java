@@ -22,6 +22,7 @@ import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;
@@ -165,6 +166,36 @@ public abstract class ElementsExceptionsFactory extends RuntimeException {
    */
   public static DataAccessException newDataAccessException(Throwable cause, String message, Object... args) {
     return new DataAccessException(format(message, args), cause);
+  }
+
+  // package org.cp.elements.data
+
+  /**
+   * Constructs and initializes a new {@link MappingException} with the given {@link String message}
+   * formatted with the given {@link Object[] arguments}.
+   *
+   * @param message {@link String} describing the {@link MappingException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @return a new {@link MappingException} with the given {@link String message}.
+   * @see #newMappingException(Throwable, String, Object...)
+   * @see org.cp.elements.data.mapping.MappingException
+   */
+  public static MappingException newMappingException(String message, Object... args) {
+    return newMappingException(null, message, args);
+  }
+
+  /**
+   * Constructs and initializes a new {@link MappingException} with the given {@link Throwable cause}
+   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   *
+   * @param cause {@link Throwable} identified as the reason this {@link MappingException} was thrown.
+   * @param message {@link String} describing the {@link MappingException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @return a new {@link MappingException} with the given {@link Throwable cause} and {@link String message}.
+   * @see org.cp.elements.data.mapping.MappingException
+   */
+  public static MappingException newMappingException(Throwable cause, String message, Object... args) {
+    return new MappingException(format(message, args), cause);
   }
 
   // package org.cp.elements.io
