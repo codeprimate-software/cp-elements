@@ -111,6 +111,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
   /**
    * Returns the {@link Column} at the given {@link Integer#TYPE index} in this {@link View}.
    *
+   * @param <T> {@link Class type} of {@link Object values} stored by the {@link Column}.
    * @param index {@link Integer} specifying the index of the {@link Column} in this {@link View} to return.
    * @return the {@link Column} in this {@link View} at the specified {@link Integer#TYPE index}.
    * @throws IllegalArgumentException if index is less than {@literal 0}.
@@ -119,7 +120,8 @@ public interface View extends Iterable<Row>, Nameable<String> {
    * @see org.cp.elements.data.struct.tabular.Column
    * @see #columns()
    */
-  default Column<?> getColumn(int index) {
+  @SuppressWarnings("unchecked")
+  default <T> Column<T> getColumn(int index) {
 
     Assert.isTrue(index > -1, () -> String.format("Index [%d] is not valid", index));
 
@@ -137,6 +139,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
   /**
    * Optionally returns a {@link Column} with the given {@link String name} from this {@link View}.
    *
+   * @param <T> {@link Class type} of {@link Object values} stored by the {@link Column}.
    * @param name {@link String} containing the {@link String name} of the {@link Column} in this {@link View} to return.
    * @return an {@link Optional} {@link Column} with the given {@link String} name from this {@link View}
    * or an {@link Optional#EMPTY} if no {@link Column} with the given {@link String name} in this {@link View} exists.
@@ -145,7 +148,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
    * @see #indexOf(Column)
    * @see #getColumn(int)
    */
-  default Optional<Column<?>> getColumn(String name) {
+  default <T> Optional<Column<T>> getColumn(String name) {
 
     return Optional.of(indexOf(name))
       .filter(index -> index > -1)
