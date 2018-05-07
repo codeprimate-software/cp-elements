@@ -16,124 +16,167 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+
+import java.lang.reflect.Constructor;
+import java.util.Optional;
+
 /**
- * The Row interface defines a row in a Table data structure.
+ * The {@link Row} interface is an Abstract Data Type (ADT) defining a row in a tabular data structure.
  *
  * @author John J. Blum
- * @see java.lang.Iterable
- * @see Column
- * @see Table
- * @see View
+ * @see org.cp.elements.data.struct.tabular.Column
+ * @see org.cp.elements.data.struct.tabular.Table
+ * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Row extends Iterable<Object> {
+public interface Row {
 
   /**
-   * Gets the View to which this Row belongs.
+   * Returns the {@link Object value} at the given {@link Integer column index} in this {@link Row}.
    *
-   * @return the View to which this Row belongs or null if this Row is not part of any View.
-   * @see View
+   * @param <T> {@link Class type} of the {@link Column} {@link Object value}.
+   * @param columnIndex {@link Integer index} of the {@link Column} from which to get the {@link Object value}.
+   * @throws IndexOutOfBoundsException if the {@link Integer column index} is out of bounds.
+   * @return the {@link Object value} at the given {@link Integer column index} in this {@link Row}.
    */
-  View getView();
+  <T> T getValue(int columnIndex);
 
   /**
-   * Determines whether this Row has a value at the given column index.
+   * Returns the {@link Object value} for the given {@link String named} {@link Column} in this {@link Row}.
    *
-   * @param columnIndex an integer value indicating the column index.
-   * @return a boolean value indicating whether this Row has a value at the given column index.
+   * This {@link Row} must be associated with a {@link View} in order to get the {@link Object value}
+   * by {@link Column} {@link String name}.
+   *
+   * @param columnName {@link String} containing the name of the {@link Column}.
+   * @return the {@link Object value} for the given {@link String named} {@link Column}.
+   * @throws IllegalStateException if this {@link Row} is not associated with a {@link View}.
+   * @throws IndexOutOfBoundsException if the index of the {@link String named} {@link Column} is out of bounds.
+   * @see org.cp.elements.data.struct.tabular.View#indexOf(String)
+   * @see #getValue(int)
+   * @see #getView()
    */
-  boolean hasValue(int columnIndex);
+  default <T> T getValue(String columnName) {
+
+    return getView()
+      .map(view -> view.indexOf(columnName))
+      .<T>map(this::getValue)
+      .orElseThrow(() -> newIllegalStateException("This Row is not associated with a View"));
+  }
 
   /**
-   * Determines whether this Row has a value in the given named column.
+   * Returns the {@link Object value} for the given {@link Column} in this {@link Row}.
    *
-   * @param columnName a String value indicating the name of the column.
-   * @return a boolean value indicating whether this Row has a value in the given named column.
+   * @param column {@link Column} in this {@link Row}.
+   * @return the {@link Object value} for the given {@link Column}.
+   * @throws IllegalArgumentException if the {@link Column} is {@literal null} or the {@link Column}
+   * is not a valid {@link String named} {@link Column} of this {@link Row}.
+   * @throws IllegalStateException if this {@link Row} is not associated with a {@link View}.
+   * @throws IndexOutOfBoundsException if the index of the given {@link Column} is out of bounds.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #getValue(String)
    */
-  boolean hasValue(String columnName);
+  default <T> T getValue(Column column) {
+
+    return Optional.ofNullable(column)
+      .map(Column::getName)
+      .<T>map(this::getValue)
+      .orElseThrow(() -> newIllegalArgumentException("[%s] is not a valid Column in this Row", column));
+  }
 
   /**
-   * Determines whether this Row has a value in the given Column.
+   * Returns an {@link Optional} {@link View} to which this {@link Row} is associated.
    *
-   * @param column the Column in this Row of the Table.
-   * @return a boolean value indicating whether this Row has a value in the given Column.
-   * @see Column
+   * @return an {@link Optional} {@link View} containing this {@link Row}.
+   * @see org.cp.elements.data.struct.tabular.View
+   * @see java.util.Optional
    */
-  boolean hasValue(Column column);
+  Optional<View> getView();
 
   /**
-   * Gets the value at the given column index in this Row.
+   * Sets the {@link Object value} of the {@link Column} at the given {@link Integer index} in this {@link Row}.
    *
-   * @param columnIndex an integer value indicating the index of the column.
-   * @return an Object value at the given column index in this Row.
+   * @param columnIndex {@link Integer index} of the {@link Column} to set the given {@link Object value}.
+   * @param value {@link Object value} to set at the given {@link Integer column index} in this {@link Row}.
+   * @return the current {@link Object value} of the {@link Column} at the given {@link Integer index}
+   * in this {@link Row}.
+   * @throws IndexOutOfBoundsException if the {@link Integer column index} is out of bounds.
    */
-  Object getValue(int columnIndex);
+  <T> T setValue(int columnIndex, T value);
 
   /**
-   * Gets the value at the given named column in this Row.
+   * Sets the {@link Object value} of the {@link String named} {@link Column} in this {@link Row}.
    *
-   * @param columnName a String value indicating the name of the column.
-   * @return an Object value at the given named column in this Row.
+   * @param columnName {@link String} containing the name of the {@link Column}.
+   * @param value {@link Object value} to set for the given {@link String named} {@link Column}.
+   * @return the current {@link Object value} of the {@link String named} {@link Column}.
+   * @throws IllegalStateException if this {@link Row} is not associated with a {@link View}.
+   * @throws IndexOutOfBoundsException if the {@link Integer column index} is out of bounds.
+   * @see org.cp.elements.data.struct.tabular.View#indexOf(String)
+   * @see #setValue(int, Object)
+   * @see #getView()
    */
-  Object getValue(String columnName);
+  default <T> T setValue(String columnName, T value) {
+
+    return getView()
+      .map(view -> view.indexOf(columnName))
+      .map(index -> this.setValue(index, value))
+      .orElseThrow(() -> newIllegalStateException("This Row is not associated with a View"));
+  }
 
   /**
-   * Gets the value at the given Column in this Row.
+   * Sets the {@link Object value} of the given {@link Column} in this {@link Row}.
    *
-   * @param column a Column in this Row of the Table.
-   * @return an Object value at the given Column in this Row.
-   * @see Column
+   * @param column {@link Column} in this {@link Row}.
+   * @param value {@link Object value} to set for the given {@link Column}.
+   * @return the current {@link Object value} for the given {@link Column} in this {@link Row}.
+   * @throws IllegalArgumentException if the {@link Column} is not a valid {@link Column} in this {@link Row}.
+   * @throws IllegalStateException if this {@link Row} is not associated with a {@link View}.
+   * @throws IndexOutOfBoundsException if the {@link Integer column index} is out of bounds.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #setValue(String, Object)
    */
-  Object getValue(Column column);
+  default <T> T setValue(Column column, T value) {
+
+    return Optional.ofNullable(column)
+      .map(Column::getName)
+      .map(columnName -> this.setValue(columnName, value))
+      .orElseThrow(() -> newIllegalArgumentException("[%s] is not a valid Column in this Row", column));
+  }
 
   /**
-   * Sets the value in this Row at the given column index.
+   * Returns the {@link Integer index} of this {@link Row} in the associated {@link View}.
    *
-   * @param columnIndex an integer value indicating the index of the column.
-   * @param value the Object value to set at the given column index in this Row.
-   * @return the original Object value at the given column index in this Row.
+   * @return the {@link Integer index} of this {@link Row} in the associated {@link View},
+   * or a {@literal -1} this {@link Row} is not currently contained by a {@link View}.
+   * @see org.cp.elements.data.struct.tabular.View#indexOf(Row)
+   * @see #getView()
    */
-  Object setValue(int columnIndex, Object value);
+  default int index() {
+
+    return getView()
+      .map(view -> view.indexOf(this))
+      .orElse(-1);
+  }
 
   /**
-   * Sets the value in this Row in the given named column.
+   * Maps the {@link Object values} of this {@link Row} to the given {@link Object}.
    *
-   * @param columnName a String value indicating the name of the column.
-   * @param value the Object value to set at the given named column in this Row.
-   * @return the original Object value at the given named column in this Row.
+   * The {@link Class type} must have a default, public no argument {@link Constructor}.
+   *
+   * @param <T> {@link Class type} of the {@link Object} to map with the {@link Object value} from this {@link Row}.
+   * @param type {@link Class type} of the {@link Object} to map with the {@link Object values} from this {@link Row}.
+   * @return the {@link Object} populated with the {@link Object values} of this {@link Row}.
+   * @see java.lang.Class
    */
-  Object setValue(String columnName, Object value);
+  <T> T map(Class<T> type);
 
   /**
-   * Sets the value in this Row at the given Column.
+   * Returns the {@link Object values} of this {@link Row} in an array.
    *
-   * @param column the Column in this Row of the Table.
-   * @param value the Object value to set at the given Column in this Row.
-   * @return the original Object value at the given Column in this Row.
-   * @see Column
-   */
-  Object setValue(Column column, Object value);
-
-  /**
-   * Gets the index of this Row in the View.
-   *
-   * @return an integer value indicating the index of this Row in the View.  Returns a -1 if this Row has not been
-   * added to a View.
-   */
-  int index();
-
-  /**
-   * Determines the number of values in this Row (the same as the number of columns in this Row).
-   *
-   * @return an integer value indicating the number of values (columns) in this Row.
-   */
-  int size();
-
-  /**
-   * Returns this Row as an array of Object values.
-   *
-   * @return an array of Object values contained this Row.
+   * @return the {@link Object values} of this {@link Row} in an array.
    */
   Object[] values();
 
