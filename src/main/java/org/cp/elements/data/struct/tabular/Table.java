@@ -16,114 +16,176 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import java.util.function.Predicate;
+
+import org.cp.elements.lang.Assert;
+
 /**
- * The Table interface defines a tabular data structure.
+ * The {@link Table} interface is an Abstract Data Type (ADT) modeling a tabular data structure.
  *
  * @author John J. Blum
- * @see Column
- * @see Row
- * @see View
+ * @see org.cp.elements.data.struct.tabular.Column
+ * @see org.cp.elements.data.struct.tabular.Row
+ * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface Table extends View {
 
   /**
-   * Adds the specified Column to this Table.
+   * Adds the given {@link Column} to this {@link Table}.
    *
-   * @param column the Column to add to this Table.
-   * @return a boolean value indicating whether the added Column successfully modified the structure of this Table.
-   * @see Column
+   * @param column {@link Column} to add.
+   * @return a boolean value indicating whether the added {@link Column}
+   * successfully modified the structure of this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Column
    */
   boolean add(Column column);
 
   /**
-   * Adds the array of Object values as a new row in this Table.
+   * Adds the given {@link Row} to this {@link Table}.
    *
-   * @param row an array of Objects containing the values (contents) for the new row of this Table.
-   * @return a boolean value indicating whether the row added successfully modified the structure of this Table.
-   */
-  boolean add(Object... row);
-
-  /**
-   * Adds the specified Row to this Table.
-   *
-   * @param row the Row to add to this Table.
-   * @return a boolean value whether the added Row successfully modified the structure of this Table.
-   * @see Row
+   * @param row {@link Row} to add.
+   * @return a boolean value indicating whether the added {@link Row}
+   * successfully modified the structure of this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Row
    */
   boolean add(Row row);
 
   /**
-   * Removes the column at the specified index from this Table.
+   * Removes the {@link Column} at the given {@link Integer index} from this {@link Table}.
    *
-   * @param index an integer value specifying the index of the column to remove from this Table.
-   * @return a boolean value indicating whether the specified column at index was successfully removed.
+   * @param index {@link Integer} value indicating the index of the {@link Column} to remove.
+   * @return a boolean value indicating whether the {@link Column} at {@link Integer index}
+   * was successfully removed.
+   * @throws IndexOutOfBoundsException if the given {@link Integer index} is out of bounds.
    */
   boolean removeColumn(int index);
 
   /**
-   * Removes the column with the specified name from this Table.
+   * Removes the {@link Column with the given {@link String name} from this {@link Table}.
    *
-   * @param name a String value specifying the name of the column to remove from this Table.
-   * @return a boolean value indicating whether the specified column with name was successfully removed.
+   * @param name {@link String} containing the name of the {@link Column} to remove.
+   * @return a boolean value indicating whether the given {@link Column} with {@link String name}
+   * was successfully removed.
+   * @throws IndexOutOfBoundsException if the {@link Integer index} determined from
+   * the {@link Column} {@link String name} is out of bounds.
+   * @see #indexOf(String)
+   * @see #removeColumn(int)
    */
-  boolean removeColumn(String name);
+  default boolean removeColumn(String name) {
+    return removeColumn(indexOf(name));
+  }
 
   /**
-   * Removes the specified Column from this Table.
+   * Removes the given {@link Column} from this {@link Table}.
    *
-   * @param column the Column to remove from this Table.
-   * @return a boolean value indicating whether the specified Column was successfully removed from this Table modifying
-   * it's structure.
-   * @see Column
+   * @param column {@link Column} to remove.
+   * @return a boolean value indicating whether the given {@link Column} was successfully removed.
+   * @throws IndexOutOfBoundsException if the {@link Integer index} determined from the {@link Column}
+   * is out of bounds.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #indexOf(Column)
+   * @see #removeColumn(int)
    */
-  boolean remove(Column column);
+  default boolean remove(Column column) {
+    return removeColumn(indexOf(column));
+  }
 
   /**
-   * Removes the row at the specified index from this Table.
+   * Removes the {@link Row} at the given {@link Integer index} from this {@link Table}.
    *
-   * @param index an integer value specifying the index of the row to remove from this Table.
-   * @return a boolean value indicating whether the specified row at index was successfully removed.
+   * @param index {@link Integer} value indicating the index of the {@link Row} to remove.
+   * @return a boolean value indicating whether the given {@link Row} at {@link Integer index}
+   * was successfully removed.
    */
   boolean removeRow(int index);
 
   /**
-   * Removes the specified Row from this Table.
+   * Removes all {@link Row Rows} from this {@link Table} matching the given {@link Predicate}.
    *
-   * @param row the Row to remove from this Table.
-   * @return a boolean value indicating whether the specified Row was successfully removed from this Table modifying
-   * it's structure.
-   * @see Row
+   * @param predicate {@link Predicate} used to match {@link Row Rows} to remove from this {@link Table}.
+   * @return a boolean value indicating whether the remove operation modified the structure of this {@link Table}.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @throws IllegalStateException if the removal of a {@link Row} matching the {@link Predicate}
+   * was not successful.
+   * @see java.util.function.Predicate
+   * @see #remove(Row)
+   * @see #rows()
    */
-  boolean remove(Row row);
+  default boolean removeRows(Predicate<Row> predicate) {
+
+    Assert.notNull(predicate, "Predicate is required");
+
+    boolean result = false;
+
+    for (Row row : rows()) {
+      if (predicate.test(row)) {
+        boolean rowRemoved = remove(row);
+        Assert.state(rowRemoved, "Row [%1$s] matching Predicate [%1$s] was not successfully deleted");
+        result |= rowRemoved;
+      }
+    }
+
+    return result;
+  }
 
   /**
-   * Sets the value at the given row and column index in this Table.
+   * Removes the given {@link Row} from this {@link Table}.
    *
-   * @param rowIndex an integer value indicating the row index.
-   * @param columnIndex an integer value indicating the column index.
-   * @param value the Object value to add at the given row and column in this Table.
+   * @param row {@link Row} to remove.
+   * @return a boolean value indicating whether the given {@link Row} was successfully removed.
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see #indexOf(Row)
+   * @see #removeRow(int)
    */
-  void setValue(int rowIndex, int columnIndex, Object value);
+  default boolean remove(Row row) {
+    return removeRow(indexOf(row));
+  }
 
   /**
-   * Sets the value at the given row index and named column in this Table.
+   * Sets the {@link Object value} at the given {@link Row} and {@link Column} {@link Integer index}
+   * in this {@link Table}.
    *
-   * @param rowIndex an integer value indicating the row index.
-   * @param columnName a String value indicating the column name.
-   * @param value the Object value to add at the given row and column in this Table.
+   * @param rowIndex {@link Integer} value indicating the row index.
+   * @param columnIndex {@link Integer} value indicating the column index.
+   * @param value the {@link Object value} to set at the referenced {@link Row} and {@link Column}
+   * in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Row#setValue(int, Object)
+   * @see #getRow(int)
    */
-  void setValue(int rowIndex, String columnName, Object value);
+  default void setValue(int rowIndex, int columnIndex, Object value) {
+    getRow(rowIndex).setValue(columnIndex, value);
+  }
 
   /**
-   * Sets the value at the given row index and Column in this Table.
+   * Sets the {@link Object value} at the given {@link Row} {@link Integer index}
+   * and {@link String named} {@link Column} in this {@link Table}.
    *
-   * @param rowIndex an integer value indicating the row index.
-   * @param column a Column in this Table.
-   * @param value the Object value to add at the given row and column in this Table.
-   * @see Column
+   * @param rowIndex {@link Integer} value indicating the row index.
+   * @param columnName {@link String} containing the name of the {@link Column}.
+   * @param value the {@link Object value} to set at the referenced {@link Row} and {@link Column}
+   * in this {@link Table}.
+   * @see #setValue(int, int, Object)
+   * @see #indexOf(String)
    */
-  void setValue(int rowIndex, Column column, Object value);
+  default void setValue(int rowIndex, String columnName, Object value) {
+    setValue(rowIndex, indexOf(columnName), value);
+  }
 
+  /**
+   * Sets the {@link Object value} at the given {@link Row} {@link Integer index} and {@link Column}
+   * in this {@link Table}.
+   *
+   * @param rowIndex {@link Integer} value indicating the row index.
+   * @param column {@link Column} in this {@link Table}.
+   * @param value the {@link Object value} to set at the referenced {@link Row} and {@link Column}
+   * in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #setValue(int, int, Object)
+   * @see #indexOf(Column)
+   */
+  default void setValue(int rowIndex, Column column, Object value) {
+    setValue(rowIndex, indexOf(column), value);
+  }
 }
