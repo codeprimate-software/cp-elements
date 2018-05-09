@@ -16,6 +16,7 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.cp.elements.lang.Assert;
@@ -58,7 +59,8 @@ public interface Table extends View {
    * @param index {@link Integer} value indicating the index of the {@link Column} to remove.
    * @return a boolean value indicating whether the {@link Column} at {@link Integer index}
    * was successfully removed.
-   * @throws IndexOutOfBoundsException if the given {@link Integer index} is out of bounds.
+   * @throws IndexOutOfBoundsException if the given {@link Integer index} is not a valid {@link Column} index
+   * in this {@link Table}.
    */
   boolean removeColumn(int index);
 
@@ -68,13 +70,16 @@ public interface Table extends View {
    * @param name {@link String} containing the name of the {@link Column} to remove.
    * @return a boolean value indicating whether the given {@link Column} with {@link String name}
    * was successfully removed.
-   * @throws IndexOutOfBoundsException if the {@link Integer index} determined from
    * the {@link Column} {@link String name} is out of bounds.
    * @see #indexOf(String)
    * @see #removeColumn(int)
    */
   default boolean removeColumn(String name) {
-    return removeColumn(indexOf(name));
+
+    return Optional.of(indexOf(name))
+      .filter(index -> index > -1)
+      .map(this::removeColumn)
+      .orElse(false);
   }
 
   /**
@@ -82,14 +87,16 @@ public interface Table extends View {
    *
    * @param column {@link Column} to remove.
    * @return a boolean value indicating whether the given {@link Column} was successfully removed.
-   * @throws IndexOutOfBoundsException if the {@link Integer index} determined from the {@link Column}
-   * is out of bounds.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see #indexOf(Column)
    * @see #removeColumn(int)
    */
   default boolean remove(Column column) {
-    return removeColumn(indexOf(column));
+
+    return Optional.of(indexOf(column))
+      .filter(index ->  index > -1)
+      .map(this::removeColumn)
+      .orElse(false);
   }
 
   /**

@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,7 +41,7 @@ import org.junit.Test;
 public class TableTests {
 
   @Test
-  public void removeColumnByNameRemovesColumnAtIndex() {
+  public void removeColumnByNameRemovesColumnAtIndexReturnsTrue() {
 
     Table mockTable = mock(Table.class);
 
@@ -54,8 +55,8 @@ public class TableTests {
     verify(mockTable, times(1)).removeColumn(eq(2));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void removeColumnByNameThrowsIndexOutOfBoundsException() {
+  @Test
+  public void removeColumnByNonExistingNameReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
@@ -63,24 +64,14 @@ public class TableTests {
     when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
     when(mockTable.removeColumn(anyString())).thenCallRealMethod();
 
-    try {
-      mockTable.removeColumn("TestColumn");
-    }
-    catch (IndexOutOfBoundsException expected) {
+    assertThat(mockTable.removeColumn("TestColumn")).isFalse();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockTable, times(1)).indexOf(eq("TestColumn"));
-      verify(mockTable, times(1)).removeColumn(eq(-1));
-    }
+    verify(mockTable, times(1)).indexOf(eq("TestColumn"));
+    verify(mockTable, never()).removeColumn(eq(-1));
   }
 
   @Test
-  public void removeColumnRemovesColumnAtIndex() {
+  public void removeColumnRemovesColumnAtIndexReturnsTrue() {
 
     Column mockColumn = mock(Column.class);
 
@@ -96,8 +87,8 @@ public class TableTests {
     verify(mockTable, times(1)).removeColumn(eq(2));
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void removeColumnThrowsIndexOutOfBoundsException() {
+  @Test
+  public void removeNonExistingColumnReturnsFalse() {
 
     Column mockColumn = mock(Column.class);
 
@@ -107,19 +98,26 @@ public class TableTests {
     when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
     when(mockTable.remove(any(Column.class))).thenCallRealMethod();
 
-    try {
-      mockTable.remove(mockColumn);
-    }
-    catch (IndexOutOfBoundsException expected) {
+    assertThat(mockTable.remove(mockColumn)).isFalse();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
+    verify(mockTable, times(1)).indexOf(eq(mockColumn));
+    verify(mockTable, never()).removeColumn(eq(-1));
+  }
 
-      throw expected;
-    }
-    finally {
-      verify(mockTable, times(1)).indexOf(eq(mockColumn));
-      verify(mockTable, times(1)).removeColumn(eq(-1));
-    }
+  @Test
+  public void removeRowRemovesRowAtIndexReturnsTrue() {
+
+    Row mockRow = mock(Row.class);
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.indexOf(any(Row.class))).thenReturn(1);
+    when(mockTable.removeRow(anyInt())).thenReturn(true);
+    when(mockTable.remove(any(Row.class))).thenCallRealMethod();
+
+    assertThat(mockTable.remove(mockRow)).isTrue();
+
+    verify(mockTable, times(1)).indexOf(eq(mockRow));
+    verify(mockTable, times(1)).removeRow(eq(1));
   }
 }
