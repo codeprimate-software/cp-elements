@@ -135,6 +135,17 @@ public class AbstractViewTests {
     assertThat(view.iterator().hasNext()).isFalse();
   }
 
+  @Test
+  public void toStringReturnsName() {
+
+    AbstractView view = new TestView();
+
+    view.setName("TestView");
+
+    assertThat(view.getName()).isEqualTo("TestView");
+    assertThat(view.toString()).isEqualTo("TestView");
+  }
+
   static class TestView extends AbstractView {}
 
 }

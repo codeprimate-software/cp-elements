@@ -126,4 +126,19 @@ public abstract class AbstractView implements View {
     setName(name);
     return (T) this;
   }
+
+  /**
+   * Returns a {@link String} representation of this {@link View}.
+   *
+   * By default, this method returns the {@link String name} of this {@link View}
+   * by calling {@link #getName()}.
+   *
+   * @return a {@link String} describing this {@link View}.
+   * @see java.lang.Object#toString()
+   * @see #getName()
+   */
+  @Override
+  public String toString() {
+    return getName();
+  }
 }
