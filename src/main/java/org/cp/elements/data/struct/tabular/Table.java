@@ -16,7 +16,9 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import java.util.Iterator;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.cp.elements.lang.Assert;
@@ -124,17 +126,19 @@ public interface Table extends View {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    boolean result = false;
+    AtomicBoolean result = new AtomicBoolean(false);
 
-    for (Row row : rows()) {
-      if (predicate.test(row)) {
-        boolean rowRemoved = remove(row);
-        Assert.state(rowRemoved, "Row [%1$s] matching Predicate [%1$s] was not successfully deleted");
-        result |= rowRemoved;
-      }
+    for (Iterator<Row> rows = rows().iterator(); rows.hasNext(); ) {
+
+      Optional.of(rows.next())
+        .filter(predicate)
+        .ifPresent(row -> {
+          rows.remove();
+          result.set(true);
+        });
     }
 
-    return result;
+    return result.get();
   }
 
   /**
@@ -147,7 +151,12 @@ public interface Table extends View {
    * @see #removeRow(int)
    */
   default boolean remove(Row row) {
-    return removeRow(indexOf(row));
+
+    return Optional.ofNullable(row)
+      .map(this::indexOf)
+      .filter(index -> index > -1)
+      .map(this::removeRow)
+      .orElse(false);
   }
 
   /**
@@ -161,8 +170,8 @@ public interface Table extends View {
    * @see org.cp.elements.data.struct.tabular.Row#setValue(int, Object)
    * @see #getRow(int)
    */
-  default void setValue(int rowIndex, int columnIndex, Object value) {
-    getRow(rowIndex).setValue(columnIndex, value);
+  default Object setValue(int rowIndex, int columnIndex, Object value) {
+    return getRow(rowIndex).setValue(columnIndex, value);
   }
 
   /**
@@ -176,8 +185,8 @@ public interface Table extends View {
    * @see #setValue(int, int, Object)
    * @see #indexOf(String)
    */
-  default void setValue(int rowIndex, String columnName, Object value) {
-    setValue(rowIndex, indexOf(columnName), value);
+  default Object setValue(int rowIndex, String columnName, Object value) {
+    return setValue(rowIndex, indexOf(columnName), value);
   }
 
   /**
@@ -192,7 +201,7 @@ public interface Table extends View {
    * @see #setValue(int, int, Object)
    * @see #indexOf(Column)
    */
-  default void setValue(int rowIndex, Column column, Object value) {
-    setValue(rowIndex, indexOf(column), value);
+  default Object setValue(int rowIndex, Column column, Object value) {
+    return setValue(rowIndex, indexOf(column), value);
   }
 }
