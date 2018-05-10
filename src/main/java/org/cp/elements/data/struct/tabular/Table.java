@@ -16,12 +16,16 @@
 
 package org.cp.elements.data.struct.tabular;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
 
 /**
  * The {@link Table} interface is an Abstract Data Type (ADT) modeling a tabular data structure.
@@ -76,6 +80,7 @@ public interface Table extends View {
    * @see #indexOf(String)
    * @see #removeColumn(int)
    */
+  @NullSafe
   default boolean removeColumn(String name) {
 
     return Optional.of(indexOf(name))
@@ -93,6 +98,7 @@ public interface Table extends View {
    * @see #indexOf(Column)
    * @see #removeColumn(int)
    */
+  @NullSafe
   default boolean remove(Column column) {
 
     return Optional.of(indexOf(column))
@@ -150,6 +156,7 @@ public interface Table extends View {
    * @see #indexOf(Row)
    * @see #removeRow(int)
    */
+  @NullSafe
   default boolean remove(Row row) {
 
     return Optional.ofNullable(row)
@@ -160,13 +167,16 @@ public interface Table extends View {
   }
 
   /**
-   * Sets the {@link Object value} at the given {@link Row} and {@link Column} {@link Integer index}
+   * Sets the {@link Object value} at the given {@link Row} and {@link Column} {@link Integer indexes}
    * in this {@link Table}.
    *
-   * @param rowIndex {@link Integer} value indicating the row index.
-   * @param columnIndex {@link Integer} value indicating the column index.
+   * @param rowIndex {@link Integer} value indicating the {@link Row} index.
+   * @param columnIndex {@link Integer} value indicating the {@link Column} index.
    * @param value the {@link Object value} to set at the referenced {@link Row} and {@link Column}
    * in this {@link Table}.
+   * @return the current {@link Object} value at the given {@link Row} and {@link Column}.
+   * @throws IndexOutOfBoundsException if either the {@link Row} or {@link Column} {@link Integer index}
+   * are invalid.
    * @see org.cp.elements.data.struct.tabular.Row#setValue(int, Object)
    * @see #getRow(int)
    */
@@ -178,30 +188,51 @@ public interface Table extends View {
    * Sets the {@link Object value} at the given {@link Row} {@link Integer index}
    * and {@link String named} {@link Column} in this {@link Table}.
    *
-   * @param rowIndex {@link Integer} value indicating the row index.
+   * @param rowIndex {@link Integer} value indicating the {@link Row} index.
    * @param columnName {@link String} containing the name of the {@link Column}.
    * @param value the {@link Object value} to set at the referenced {@link Row} and {@link Column}
    * in this {@link Table}.
+   * @return the current {@link Object} value at the given {@link Row} and {@link Column}.
+   * @throws IllegalArgumentException if the {@link String named} {@link Column}
+   * is not a valid {@link Column} in this {@link Table}.
+   * @throws IndexOutOfBoundsException if the {@link Row} {@link Integer index} is not valid.
    * @see #setValue(int, int, Object)
    * @see #indexOf(String)
    */
+  @NullSafe
   default Object setValue(int rowIndex, String columnName, Object value) {
-    return setValue(rowIndex, indexOf(columnName), value);
+
+    return Optional.ofNullable(columnName)
+      .filter(StringUtils::hasText)
+      .map(this::indexOf)
+      .filter(columnIndex -> columnIndex > -1)
+      .map(columnIndex -> setValue(rowIndex, columnIndex, value))
+      .orElseThrow(() -> newIllegalArgumentException("Column [%s] is not valid", columnName));
   }
 
   /**
    * Sets the {@link Object value} at the given {@link Row} {@link Integer index} and {@link Column}
    * in this {@link Table}.
    *
-   * @param rowIndex {@link Integer} value indicating the row index.
+   * @param rowIndex {@link Integer} value indicating the {@link Row} index.
    * @param column {@link Column} in this {@link Table}.
    * @param value the {@link Object value} to set at the referenced {@link Row} and {@link Column}
    * in this {@link Table}.
+   * @return the current {@link Object} value at the given {@link Row} and {@link Column}.
+   * @throws IllegalArgumentException if {@link Column} is {@literal null}
+   * or is not a valid {@link Column} in this {@link Table}.
+   * @throws IndexOutOfBoundsException if the {@link Row} {@link Integer index} is not valid.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see #setValue(int, int, Object)
    * @see #indexOf(Column)
    */
+  @NullSafe
   default Object setValue(int rowIndex, Column column, Object value) {
-    return setValue(rowIndex, indexOf(column), value);
+
+    return Optional.ofNullable(column)
+      .map(this::indexOf)
+      .filter(columnIndex -> columnIndex > -1)
+      .map(columnIndex -> setValue(rowIndex, columnIndex, value))
+      .orElseThrow(() -> newIllegalArgumentException("Column [%s] is not valid", column));
   }
 }

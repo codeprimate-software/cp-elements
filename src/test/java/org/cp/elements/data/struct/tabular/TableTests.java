@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 
@@ -74,7 +75,7 @@ public class TableTests {
 
   @Test
   public void removeColumnByNonExistingNameReturnsFalse() {
-    testRemoveColumnByInvalidNameReturnsFalse("TestColumn");
+    testRemoveColumnByInvalidNameReturnsFalse("NonExistingColumn");
   }
 
   @Test
@@ -92,7 +93,7 @@ public class TableTests {
     verify(mockTable, never()).removeColumn(anyInt());
   }
 
-  private void testRemoveColumnByInvalidNameReturnsFalse(String name) {
+  private void testRemoveColumnByInvalidNameReturnsFalse(String columnName) {
 
     Table mockTable = mock(Table.class);
 
@@ -100,9 +101,9 @@ public class TableTests {
     when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
     when(mockTable.removeColumn(anyString())).thenCallRealMethod();
 
-    assertThat(mockTable.removeColumn(name)).isFalse();
+    assertThat(mockTable.removeColumn(columnName)).isFalse();
 
-    verify(mockTable, times(1)).indexOf(eq(name));
+    verify(mockTable, times(1)).indexOf(eq(columnName));
     verify(mockTable, never()).removeColumn(anyInt());
   }
 
@@ -289,19 +290,255 @@ public class TableTests {
   }
 
   @Test
-  public void setValueWithRowAndColumnIndex() {
+  public void setValueWithRowAndColumnIndexReturnsCurrentValue() {
 
     Row mockRow = mock(Row.class);
 
     Table mockTable = mock(Table.class);
 
-    when(mockRow.setValue(anyInt(), any())).thenReturn("test");
+    when(mockRow.setValue(anyInt(), any())).thenReturn("mock");
     when(mockTable.getRow(anyInt())).thenReturn(mockRow);
     when(mockTable.setValue(anyInt(), anyInt(), any())).thenCallRealMethod();
 
-    assertThat(mockTable.setValue(2, 8, "tested")).isEqualTo("test");
+    assertThat(mockTable.setValue(1, 1, "test")).isEqualTo("mock");
 
-    verify(mockRow, times(1)).setValue(eq(8), eq("tested"));
-    verify(mockTable, times(1)).getRow(eq(2));
+    verify(mockRow, times(1)).setValue(eq(1), eq("test"));
+    verify(mockTable, times(1)).getRow(eq(1));
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void setValueWithRowAndColumnIndexUsingInvalidColumnIndexThrowsIndexOutOfBoundsException() {
+
+    Row mockRow = mock(Row.class);
+
+    Table mockTable = mock(Table.class);
+
+    when(mockRow.setValue(anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
+    when(mockTable.getRow(anyInt())).thenReturn(mockRow);
+    when(mockTable.setValue(anyInt(), anyInt(), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(0, -1, "test");
+    }
+    catch (IndexOutOfBoundsException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockTable, times(1)).getRow(eq(0));
+      verify(mockRow, times(1)).setValue(eq(-1), eq("test"));
+    }
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void setValueWithRowAndColumnIndexUsingInvalidRowIndexThrowsIndexOutOfBoundsException() {
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.getRow(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
+    when(mockTable.setValue(anyInt(), anyInt(), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(-1, 0, "test");
+    }
+    catch (IndexOutOfBoundsException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockTable, times(1)).getRow(eq(-1));
+    }
+  }
+
+  @Test
+  public void setValueWithRowIndexAndColumnNameReturnsCurrentValue() {
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.indexOf(anyString())).thenReturn(2);
+    when(mockTable.setValue(anyInt(), anyInt(), any())).thenReturn("mock");
+    when(mockTable.setValue(anyInt(), anyString(), any())).thenCallRealMethod();
+
+    assertThat(mockTable.setValue(1, "TestColumn", "test")).isEqualTo("mock");
+
+    verify(mockTable, times(1)).indexOf(eq("TestColumn"));
+    verify(mockTable, times(1)).setValue(eq(1), eq(2), eq("test"));
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void setValueWithInvalidRowIndexAndColumnNameThrowsIndexOutOfBoundsException() {
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.indexOf(anyString())).thenReturn(1);
+    when(mockTable.setValue(anyInt(), anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
+    when(mockTable.setValue(anyInt(), anyString(), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(-1, "TestColumn", "test");
+    }
+    catch (IndexOutOfBoundsException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockTable, times(1)).indexOf(eq("TestColumn"));
+      verify(mockTable, times(1)).setValue(eq(-1), eq(1), eq("test"));
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueWithRowIndexAndBlankColumnNameThrowsIllegalArgumentException() {
+    testSetValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException("  ");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueWithRowIndexAndEmptyColumnNameThrowsIllegalArgumentException() {
+    testSetValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException("");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueWithRowIndexAndNonExistingColumnNameThrowsIllegalArgumentException() {
+    testSetValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException("NonExistingColumn");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueWithRowIndexAndNullColumnNameThrowsIllegalArgumentException() {
+    testSetValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException(null);
+  }
+
+  private void testSetValueWithRowIndexAndInvalidColumnNameThrowsIllegalArgumentException(String columnName) {
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.indexOf(anyString())).thenReturn(-1);
+    when(mockTable.setValue(anyInt(), ArgumentMatchers.<String>any(), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(1, columnName, "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Column [%s] is not valid", columnName);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+
+      if (StringUtils.hasText(columnName)) {
+        verify(mockTable, times(1)).indexOf(eq(columnName));
+      }
+      else {
+        verify(mockTable, never()).indexOf(anyString());
+      }
+
+      verify(mockTable, never()).setValue(anyInt(), anyInt(), any());
+    }
+  }
+
+  @Test
+  public void setValueWithRowIndexAndColumnReturnsCurrentValue() {
+
+    Column mockColumn = mock(Column.class);
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.indexOf(any(Column.class))).thenReturn(2);
+    when(mockTable.setValue(anyInt(), anyInt(), any())).thenReturn("mock");
+    when(mockTable.setValue(anyInt(), any(Column.class), any())).thenCallRealMethod();
+
+    assertThat(mockTable.setValue(1, mockColumn, "test")).isEqualTo("mock");
+
+    verify(mockTable, times(1)).indexOf(eq(mockColumn));
+    verify(mockTable, times(1)).setValue(eq(1), eq(2), eq("test"));
+    verifyZeroInteractions(mockColumn);
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void setValueWithInvalidRowIndexAndColumnThrowsIndexOutOfBoundsException() {
+
+    Column mockColumn = mock(Column.class);
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.indexOf(any(Column.class))).thenReturn(1);
+    when(mockTable.setValue(anyInt(), anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
+    when(mockTable.setValue(anyInt(), any(Column.class), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(-1, mockColumn, "test");
+    }
+    catch (IndexOutOfBoundsException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockTable, times(1)).indexOf(eq(mockColumn));
+      verify(mockTable, times(1)).setValue(eq(-1), eq(1), eq("test"));
+      verifyZeroInteractions(mockColumn);
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueWithRowIndexAndInvalidColumnThrowsIllegalArgumentException() {
+
+    Column mockColumn = mock(Column.class);
+
+    Table mockTable = mock(Table.class);
+
+    when(mockColumn.toString()).thenReturn("TestColumn");
+    when(mockTable.indexOf(any(Column.class))).thenReturn(-1);
+    when(mockTable.setValue(anyInt(), any(Column.class), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(1, mockColumn, "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Column [TestColumn] is not valid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockTable, times(1)).indexOf(eq(mockColumn));
+      verify(mockTable, never()).setValue(anyInt(), anyInt(), any());
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueWithRowIndexAndNullColumnThrowsIllegalArgumentException() {
+
+    Table mockTable = mock(Table.class);
+
+    when(mockTable.setValue(anyInt(), ArgumentMatchers.<Column>any(), any())).thenCallRealMethod();
+
+    try {
+      mockTable.setValue(0, (Column) null, "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Column [null] is not valid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockTable, never()).indexOf(ArgumentMatchers.<Column>any());
+      verify(mockTable, never()).setValue(anyInt(), anyInt(), any());
+    }
   }
 }
