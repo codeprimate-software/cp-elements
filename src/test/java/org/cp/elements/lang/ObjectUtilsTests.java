@@ -49,6 +49,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void areAllNullReturnsTrue() {
+
     assertThat(ObjectUtils.areAllNull(new Object[] { null })).isTrue();
     assertThat(ObjectUtils.areAllNull(null, null, null)).isTrue();
   }
@@ -65,12 +66,14 @@ public class ObjectUtilsTests {
 
   @Test
   public void areAllNullReturnsFalseWithNonNullValue() {
+
     assertThat(ObjectUtils.areAllNull(null, "null", null)).isFalse();
     assertThat(ObjectUtils.areAllNull("test", "testing", "tested")).isFalse();
   }
 
   @Test
   public void areAnyNullReturnsTrue() {
+
     assertThat(ObjectUtils.areAnyNull(new Object[] { null })).isTrue();
     assertThat(ObjectUtils.areAnyNull("test", null, "tested")).isTrue();
     assertThat(ObjectUtils.areAnyNull(null, "testing", null)).isTrue();
@@ -89,6 +92,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void areAnyNullReturnsFalseWhenNoNullValuesExist() {
+
     assertThat(ObjectUtils.areAnyNull("test", "testing", "tested")).isFalse();
     assertThat(ObjectUtils.areAnyNull("test", "null", "nil")).isFalse();
     assertThat(ObjectUtils.areAnyNull("nil", "null")).isFalse();
@@ -97,6 +101,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void cloneWithCloneableObject() {
+
     CloneableObject<String> cloneableObject = new CloneableObject<>("test");
     CloneableObject<String> cloneableObjectClone = ObjectUtils.clone(cloneableObject);
 
@@ -107,6 +112,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void cloneWithCopyableObject() {
+
     CopyableObject<Object> copyableObject = new CopyableObject<>("test");
     CopyableObject<Object> copyableObjectClone = ObjectUtils.clone(copyableObject);
 
@@ -117,6 +123,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void cloneWithAssignmentCompatibleArgumentTypeCopyConstructor() {
+
     SoftwareEngineer jonDoe = new SoftwareEngineer("Jon", "Doe");
     SoftwareEngineer jonDoeClone = ObjectUtils.clone(jonDoe);
 
@@ -127,11 +134,13 @@ public class ObjectUtilsTests {
 
   @Test(expected = CloneException.class)
   public void cloneWithExceptionThrowingCopyConstructor() {
+
     try {
       ObjectUtils.clone(new ExceptionThrowingCopyConstructorObject<>("test"));
     }
     catch (CloneException expected) {
-      assertThat(expected).hasMessage("'clone' using 'copy constructor' was unsuccessful");
+
+      assertThat(expected).hasMessage("[clone] using [copy constructor] was unsuccessful");
       assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
       assertThat(expected.getCause()).hasCauseInstanceOf(IllegalArgumentException.class);
       assertThat(expected.getCause().getCause()).hasMessage("test");
@@ -143,13 +152,15 @@ public class ObjectUtilsTests {
 
   @Test(expected = UnsupportedOperationException.class)
   public void cloneWithNonCloneableNonCopyableObject() {
+
     try {
       ObjectUtils.clone(new Object());
     }
     catch (UnsupportedOperationException expected) {
-      assertThat(expected).hasMessageContaining("'clone' is not supported for object of type [Object]");
+
+      assertThat(expected).hasMessageContaining("[clone] is not supported for object of type [Object]");
       assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasMessage("'clone' is not supported for object of type [Object]");
+      assertThat(expected.getCause()).hasMessage("[clone] is not supported for object of type [Object]");
       assertThat(expected.getCause().getCause()).isNull();
 
       throw expected;
@@ -158,13 +169,15 @@ public class ObjectUtilsTests {
 
   @Test(expected = UnsupportedOperationException.class)
   public void cloneWithNullObject() {
+
     try {
       ObjectUtils.clone(null);
     }
     catch (UnsupportedOperationException expected) {
-      assertThat(expected).hasMessageContaining("'clone' is not supported for object of type [null]");
+
+      assertThat(expected).hasMessageContaining("[clone] is not supported for object of type [null]");
       assertThat(expected).hasCauseInstanceOf(CloneNotSupportedException.class);
-      assertThat(expected.getCause()).hasMessage("'clone' is not supported for object of type [null]");
+      assertThat(expected.getCause()).hasMessage("[clone] is not supported for object of type [null]");
       assertThat(expected.getCause().getCause()).isNull();
 
       throw expected;
@@ -174,6 +187,7 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void defaultIfNullWithNonNullValues() {
+
     assertThat(ObjectUtils.defaultIfNull("test", null, null, null)).isEqualTo("test");
     assertThat(ObjectUtils.defaultIfNull(null, "test")).isEqualTo("test");
     assertThat(ObjectUtils.defaultIfNull(null, null, null, "test")).isEqualTo("test");
@@ -187,9 +201,63 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void defaultIfNullWithNullValues() {
+
     assertThat(ObjectUtils.defaultIfNull((Object[][]) null)).isNull();
     assertThat(ObjectUtils.defaultIfNull(null, (Object[]) null)).isNull();
     assertThat(ObjectUtils.defaultIfNull((Object[]) null, null, null)).isNull();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void doOperationSafelyReturnsValue() throws Exception {
+    assertThat(ObjectUtils.doOperationSafely(() -> "test")).isEqualTo("test");
+  }
+
+  @Test(expected = IllegalStateException.class)
+  @SuppressWarnings("unchecked")
+  public void doOperationSafelyThrowsIllegalStateException() throws Exception {
+
+    try {
+      ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); });
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessageStartingWith("Failed to execute operation");
+      assertThat(expected).hasCauseInstanceOf(Exception.class);
+      assertThat(expected.getCause()).hasMessage("test");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void doOperationSafelyWithDefaultValueReturnsValue() {
+    assertThat(ObjectUtils.doOperationSafely(() -> "test", "default")).isEqualTo("test");
+  }
+
+  @Test
+  public void doOperationSafelyWithDefaultValueReturnsDefaultValue() {
+    assertThat(ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); }, "default"))
+      .isEqualTo("default");
+  }
+
+  @Test(expected = IllegalStateException.class)
+  @SuppressWarnings("unchecked")
+  public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() throws Exception {
+
+    try {
+      ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); }, null);
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessageStartingWith("Failed to execute operation");
+      assertThat(expected).hasCauseInstanceOf(Exception.class);
+      assertThat(expected.getCause()).hasMessage("test");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -206,6 +274,7 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void returnValueOrDefaultIfNullWithSupplierReturnsValue() {
+
     Supplier<Object> mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("supplier");
@@ -218,6 +287,7 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void returnValueOrDefaultIfNullWithSupplierReturnsSupplierValue() {
+
     Supplier<Object> mockSupplier = mock(Supplier.class);
 
     when(mockSupplier.get()).thenReturn("supplier");
@@ -229,12 +299,14 @@ public class ObjectUtilsTests {
 
   @Test
   public void returnValueOrThrowIfNullWithNonNullValue() {
+
     assertThat(ObjectUtils.returnValueOrThrowIfNull("test", new NullPointerException("null"))).isEqualTo("test");
     assertThat(ObjectUtils.returnValueOrThrowIfNull("null", new NullPointerException("test"))).isEqualTo("null");
   }
 
   @Test
   public void returnValueOrThrowIfNullWithNullValue() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Value must not be null");
@@ -244,6 +316,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void returnValueOrThrowIfNullWithNullValueUsingCustomRuntimeException() {
+
     exception.expect(NullPointerException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Value is null");
@@ -253,6 +326,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void returnValueOThrowIfNullWithNullValueAndNullRuntimeException() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("RuntimeException must not be null");
@@ -288,6 +362,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void isNullOrEqualToReturnsFalseWhenObjectsAreNotEqual() {
+
     assertThat(ObjectUtils.isNullOrEqualTo("test", null)).isFalse();
     assertThat(ObjectUtils.isNullOrEqualTo("test", "mock")).isFalse();
   }
@@ -295,6 +370,7 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void equals() {
+
     Object testObject = new Object();
 
     assertThat(ObjectUtils.equals(testObject, testObject)).isTrue();
@@ -307,6 +383,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void equalsWithUnequalValues() {
+
     assertThat(ObjectUtils.equals(null, null)).isFalse();
     assertThat(ObjectUtils.equals("test", null)).isFalse();
     assertThat(ObjectUtils.equals(null, "test")).isFalse();
@@ -326,6 +403,7 @@ public class ObjectUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void equalsIgnoreNull() {
+
     assertThat(ObjectUtils.equalsIgnoreNull(null, null)).isTrue();
     assertThat(ObjectUtils.equalsIgnoreNull("null", "null")).isTrue();
     assertThat(ObjectUtils.equalsIgnoreNull("nil", "nil")).isTrue();
@@ -339,6 +417,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void equalsIgnoreNullWithUnequalValues() {
+
     assertThat(ObjectUtils.equalsIgnoreNull(null, "null")).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull("null", null)).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull("null", "nil")).isFalse();
@@ -368,6 +447,7 @@ public class ObjectUtilsTests {
 
   @Test
   public void toStringWithValues() {
+
     assertThat(ObjectUtils.toString(Boolean.TRUE)).isEqualTo("true");
     assertThat(ObjectUtils.toString('\0')).isEqualTo("\0");
     assertThat(ObjectUtils.toString('c')).isEqualTo("c");
@@ -467,15 +547,16 @@ public class ObjectUtilsTests {
     }
 
     public String getFirstName() {
-      return firstName;
+      return this.firstName;
     }
 
     public String getLastName() {
-      return lastName;
+      return this.lastName;
     }
 
     @Override
     public boolean equals(Object obj) {
+
       if (obj == this) {
         return true;
       }
@@ -492,9 +573,12 @@ public class ObjectUtilsTests {
 
     @Override
     public int hashCode() {
+
       int hashValue = 17;
+
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
+
       return hashValue;
     }
 

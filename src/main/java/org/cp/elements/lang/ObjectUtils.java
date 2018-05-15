@@ -16,7 +16,9 @@
 
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.CheckedExceptionsFactory.newCloneNotSupportedException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Constructor;
@@ -51,6 +53,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   @NullSafe
   @SuppressWarnings("all")
   public static boolean areAllNull(Object... values) {
+
     for (Object value : nullSafeArray(values)) {
       if (value != null) {
         return false;
@@ -69,6 +72,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   public static boolean areAnyNull(Object... values) {
+
     for (Object value : nullSafeArray(values)) {
       if (value == null) {
         return true;
@@ -91,6 +95,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T clone(T obj) {
+
     if (obj instanceof Cloneable) {
       return (T) invoke(obj, CLONE_METHOD_NAME, obj.getClass());
     }
@@ -106,12 +111,12 @@ public abstract class ObjectUtils extends ReflectionUtils {
         // copy constructor was not found in the Object's class type
       }
       catch (Exception e) {
-        throw new CloneException("'clone' using 'copy constructor' was unsuccessful", e);
+        throw new CloneException("[clone] using [copy constructor] was unsuccessful", e);
       }
     }
 
-    throw new UnsupportedOperationException(new CloneNotSupportedException(String.format(
-      "'clone' is not supported for object of type [%s]", getClassSimpleName(obj))));
+    throw new UnsupportedOperationException(newCloneNotSupportedException(
+      "[clone] is not supported for object of type [%s]", getClassSimpleName(obj)));
   }
 
   /**
@@ -124,6 +129,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   @NullSafe
   @SuppressWarnings({ "unchecked", "varargs" })
   public static <T> T defaultIfNull(T... values) {
+
     for (T value : nullSafeArray(values)) {
       if (value != null) {
         return value;
@@ -131,6 +137,45 @@ public abstract class ObjectUtils extends ReflectionUtils {
     }
 
     return null;
+  }
+
+  /**
+   * Safely executes the given {@link ExceptionThrowingOperation} handling any checked {@link Exception}
+   * thrown during the normal execution of the operation by rethrowing an {@link IllegalStateException}.
+   *
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @param operation {@link ExceptionThrowingOperation} to execute.
+   * @return the {@link Object result} of the {@link ExceptionThrowingOperation}.
+   * @see org.cp.elements.lang.ObjectUtils.ExceptionThrowingOperation
+   * @see #doOperationSafely(ExceptionThrowingOperation, Object)
+   */
+  public static <T> T doOperationSafely(ExceptionThrowingOperation<T> operation) {
+    return doOperationSafely(operation, null);
+  }
+
+  /**
+   * Safely executes the given {@link ExceptionThrowingOperation} handling any checked {@link Exception}
+   * thrown during the normal execution of the operation by returning the given {@link default value}
+   * or rethrowing an {@link IllegalStateException} if the {@link Object default value} is {@literal null}.
+   *
+   * @param <T> {@link Class type} of the return value.
+   * @param operation {@link ExceptionThrowingOperation} to execute.
+   * @param defaultValue {@link Object} to return if the {@link ExceptionThrowingOperation}
+   * throws a checked {@link Exception}.
+   * @return the {@link Object result} of the {@link ExceptionThrowingOperation} or {@link Object default value}
+   * if the {@link ExceptionThrowingOperation} throws a checked {@link Exception}.
+   * @see org.cp.elements.lang.ObjectUtils.ExceptionThrowingOperation
+   * @see #returnValueOrThrowIfNull(Object, RuntimeException)
+   */
+  public static <T> T doOperationSafely(ExceptionThrowingOperation<T> operation, T defaultValue) {
+
+    try {
+      return operation.doExceptionThrowingOperation();
+    }
+    catch (Exception cause) {
+      return returnValueOrThrowIfNull(defaultValue,
+        newIllegalStateException(cause, "Failed to execute operation [%s]", operation));
+    }
   }
 
   /**
@@ -184,7 +229,9 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @throws RuntimeException if {@code value} is {@literal null}.
    */
   public static <T> T returnValueOrThrowIfNull(T value, RuntimeException exception) {
+
     Assert.notNull(exception, "RuntimeException must not be null");
+
     return Optional.ofNullable(value).orElseThrow(() -> exception);
   }
 
@@ -214,6 +261,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.util.function.Supplier
    */
   public static <T> T safeGetValue(Supplier<T> supplier, T defaultValue) {
+
     try {
       return supplier.get();
     }
@@ -230,8 +278,9 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return a boolean value indicating whether {@code obj1} is {@literal null} or equal to {@code obj2}.
    * @see java.lang.Object#equals(Object)
    */
+  @NullSafe
   public static boolean isNullOrEqualTo(Object obj1, Object obj2) {
-    return (obj1 == null || obj1.equals(obj2));
+    return obj1 == null || obj1.equals(obj2);
   }
 
   /**
@@ -246,7 +295,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   public static boolean equals(Object obj1, Object obj2) {
-    return (obj1 != null && obj1.equals(obj2));
+    return obj1 != null && obj1.equals(obj2);
   }
 
   /**
@@ -261,7 +310,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   public static boolean equalsIgnoreNull(Object obj1, Object obj2) {
-    return (obj1 == null ? obj2 == null : obj1.equals(obj2));
+    return obj1 == null ? obj2 == null : obj1.equals(obj2);
   }
 
   /**
@@ -274,7 +323,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   public static int hashCode(Object obj) {
-    return (obj != null ? obj.hashCode() : 0);
+    return obj != null ? obj.hashCode() : 0;
   }
 
   /**
@@ -287,6 +336,13 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   public static String toString(Object obj) {
-    return (obj != null ? obj.toString() : null);
+    return obj != null ? obj.toString() : null;
+  }
+
+  @FunctionalInterface
+  public interface ExceptionThrowingOperation<T> {
+
+    T doExceptionThrowingOperation() throws Exception;
+
   }
 }
