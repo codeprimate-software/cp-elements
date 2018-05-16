@@ -21,77 +21,76 @@
 
 package org.cp.elements.data.struct.tabular.provider;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import org.cp.elements.data.struct.tabular.AbstractColumn;
 import org.cp.elements.data.struct.tabular.AbstractRow;
 import org.cp.elements.data.struct.tabular.AbstractTable;
-import org.cp.elements.data.struct.tabular.AbstractView;
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Row;
-import org.cp.elements.data.struct.tabular.View;
 import org.cp.elements.data.struct.tabular.Table;
+import org.cp.elements.data.struct.tabular.View;
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.Filter;
-import org.cp.elements.util.ArrayUtils;
-import org.cp.elements.util.CollectionUtils;
 
 /**
- * The InMemoryTable class is an implementation of the {@link Table} interface
- * implementing a table (tabular) data structure in the Java VM Heap.
+ * The {@link InMemoryTable} class is an implementation of the {@link Table} interface
+ * implementing a tabular data structure and storing data in the JVM Heap.
  *
  * @author John J. Blum
- * @see AbstractTable
- * @see Column
- * @see Row
- * @see Table
- * @see View
+ * @see org.cp.elements.data.struct.tabular.AbstractTable
+ * @see org.cp.elements.data.struct.tabular.Column
+ * @see org.cp.elements.data.struct.tabular.Row
+ * @see org.cp.elements.data.struct.tabular.Table
+ * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class InMemoryTable extends AbstractTable {
 
-  protected static final int DEFAULT_INITIAL_CAPACITY = 51;
-
   private final List<Column> columns;
   private final List<Row> rows;
 
-  public InMemoryTable() {
-    this(DEFAULT_INITIAL_CAPACITY);
-  }
-
-  public InMemoryTable(final int initialCapacity) {
-    this(initialCapacity, new Column[0]);
-  }
-
-  public InMemoryTable(final Column... columns) {
-    this(DEFAULT_INITIAL_CAPACITY, columns);
-  }
-
+  /**
+   * Constructs a new instance of {@link InMemoryTable} initialized with the given array of {@link Column Columns}
+   * defining the {@link Table} structure.
+   *
+   * @param columns array of {@link Column Columns} defining the structure of this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Table
+   */
   @SuppressWarnings("unchecked")
-  public InMemoryTable(final int initialCapacity, final Column... columns) {
-    Assert.isTrue(initialCapacity >= 0, "The initial capacity ({0}) must be greater than equal to 0!", initialCapacity);
+  public InMemoryTable(Column... columns) {
 
-    List<Column> inMemoryColumns = new ArrayList<>(columns.length);
-
-    for (Column column : columns) {
-      inMemoryColumns.add(new InMemoryColumn(column));
-    }
+    List<Column> inMemoryColumns = (List<Column>) Arrays.stream(nullSafeArray(columns, Column.class))
+      .map(InMemoryColumn::new)
+      .collect(Collectors.toList());
 
     this.columns = new CopyOnWriteArrayList<>(inMemoryColumns);
-    this.rows = Collections.synchronizedList(new ArrayList<>(initialCapacity));
+    this.rows = Collections.synchronizedList(new ArrayList<>());
   }
 
+  /**
+   * Adds a new {@link Column} to this {@link Table}.
+   *
+   * @param column {@link Column} to add.
+   * @return a boolean value indicating whether the {@link Column} addition
+   * successfully modified the structure of this {@link Table}.
+   * @throws IllegalArgumentException if {@link Column} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow#resize()
+   * @see org.cp.elements.data.struct.tabular.Column
+   */
   @Override
-  public boolean add(final Column column) {
-    if (columns.add(column)) {
+  public boolean add(Column column) {
+
+    if (this.columns.add(validateColumn(column))) {
       for (Row row : this) {
         ((InMemoryRow) row).resize();
       }
@@ -102,91 +101,127 @@ public class InMemoryTable extends AbstractTable {
     return false;
   }
 
+  /**
+   * Adds the given {@link Row} to the end of this {@link Table}.
+   *
+   * @param row {@link Row} to add.
+   * @return a boolean value indicating whether the given {@link Row}
+   * was successfully added to this {@link Table}.
+   * @throws IllegalArgumentException if {@link Row} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   */
   @Override
-  public boolean add(final Row row) {
-    return rows.add(new InMemoryRow(validateRow(row)));
+  public boolean add(Row row) {
+    return this.rows.add(new InMemoryRow(validateRow(row)));
   }
 
+  /**
+   * Iterates over the {@link Column Columns} in this {@link Table}.
+   *
+   * @return an unmodifiable, {@link Iterable} object over the {@link Column Columns} in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see java.lang.Iterable
+   * @see #rows()
+   */
   @Override
   public Iterable<Column> columns() {
-    return Collections.unmodifiableList(columns);
+    return Collections.unmodifiableList(this.columns);
   }
 
+  /**
+   * Removes the {@link Column} at the given {@link Integer index} from this {@link Table}.
+   *
+   * @param index {@link Integer} value indicating the index of the {@link Column} to remove.
+   * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Column} index
+   * in this {@link Table}
+   * @return a boolean value if the {@link Column} was successfully removed.
+   */
   @Override
-  public View query(final Filter<Row> predicate, final Comparator<Row> orderBy, final Column... projection) {
-    Assert.isTrue(columns.containsAll(Arrays.asList(projection)), "The Columns must be part of this Table!");
-
-    final List<Integer> rowIndices = new ArrayList<>(size());
-
-    for (int rowIndex = 0, size = size(); rowIndex < size; rowIndex++) {
-      if (predicate.accept(getRow(rowIndex))) {
-        rowIndices.add(rowIndex);
-      }
-    }
-
-    return new AbstractView() {
-      @Override public Iterable<Column> columns() {
-        return ArrayUtils.iterable(projection);
-      }
-
-      @Override
-      public View query(final Filter<Row> predicate, final Comparator<Row> orderBy, final Column... projection) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-      }
-
-      @Override public Iterable<Row> rows() {
-        return CollectionUtils.iterable(
-          new Iterator<Row>() {
-            int index = 0;
-
-            @Override public boolean hasNext() {
-              return (index < rowIndices.size());
-            }
-
-            @Override public Row next() {
-              return InMemoryTable.this.getRow(rowIndices.get(index));
-            }
-
-            @Override public void remove() {
-              throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-            }
-          }
-        );
-      }
-    };
+  public boolean removeColumn(int index) {
+    return this.columns.remove(index) != null;
   }
 
+  /**
+   * Removes the {@link Row} at the given {@link Integer index} from this {@link Table}.
+   *
+   * @param index {@link Integer} value indicating the index of the {@link Row} to remove.
+   * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Row} index
+   * in this {@link Table}
+   * @return a boolean value if the {@link Row} was successfully removed.
+   */
+  @Override
+  public boolean removeRow(int index) {
+    return this.rows.remove(index) != null;
+  }
+
+  /**
+   * Iterates over the {@link Row Rows} in this {@link Table}.
+   *
+   * @return an unmodifiable, {@link Iterable} object over the {@link Row Rows} in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see java.lang.Iterable
+   * @see #columns()
+   */
   @Override
   public Iterable<Row> rows() {
-    return Collections.unmodifiableList(rows);
+    return Collections.unmodifiableList(this.rows);
   }
 
-  private Row validateRow(final Row row) {
-    Assert.notNull(row, "Cannot add a null row to this table!");
-    Assert.isTrue(row.size() == columns.size(), "The size of the Row ({0}) must be equal to the number of Columns ({1}) in this Table!",
-      row.size(), columns.size());
+  /**
+   * Validates the given {@link Column}.
+   *
+   * @param column {@link Column} to validate.
+   * @return the given {@link Column}.
+   * @throws IllegalArgumentException if the {@link Column} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   */
+  protected Column validateColumn(Column column) {
+
+    Assert.notNull(column, "Column is required");
+
+    return column;
+  }
+
+  /**
+   * Validates the given {@link Row}.
+   *
+   * @param row {@link Row} to validate.
+   * @return the given {@link Row}.
+   * @throws IllegalArgumentException if the {@link Row} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   */
+  protected Row validateRow(Row row) {
+
+    Assert.notNull(row, "Row is required");
+
     return row;
   }
 
-  private Object validateValue(final Object value) {
+  /**
+   * Validates the given {@link Object value} to insert into this {@link Table}.
+   *
+   * @param value {@link Object} to evaluate.
+   * @return the given {@link Object value}.
+   * @see java.lang.Object
+   */
+  protected Object validateValue(Object value) {
     return value;
   }
 
   protected class InMemoryColumn<T> extends AbstractColumn<T> {
 
-    public InMemoryColumn(final Column<T> column) {
+    public InMemoryColumn(Column<T> column) {
       super(column);
     }
 
     @Override
-    public final View getView() {
-      return InMemoryTable.this;
+    public final Optional<View> getView() {
+      return Optional.of(InMemoryTable.this);
     }
 
     @Override
-    public final void setView(final View view) {
-      throw new UnsupportedOperationException(String.format("The View for this Column (%1$s) cannot be changed!",
-        getName()));
+    public final void setView(View view) {
+      throw newUnsupportedOperationException("The View for this Column [%s] cannot be changed!", getName());
     }
   }
 
@@ -194,48 +229,50 @@ public class InMemoryTable extends AbstractTable {
 
     private volatile Object[] values;
 
-    public InMemoryRow(final Row row) {
-      values = new Object[columns.size()];
-      for (int index = 0; index < values.length; index++) {
-        values[index] = validateValue(row.getValue(index));
+    public InMemoryRow(Row row) {
+
+      this.values = new Object[InMemoryTable.this.columns.size()];
+
+      for (int index = 0; index < this.values.length; index++) {
+        this.values[index] = validateValue(row.getValue(index));
       }
     }
 
-    @Override
-    public Object getValue(final int columnIndex) {
-      return values[columnIndex];
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(int columnIndex) {
+      return (T) this.values[columnIndex];
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T setValue(int columnIndex, T value) {
+
+      Object currentValue = this.values[columnIndex];
+
+      this.values[columnIndex] = validateValue(value);
+
+      return (T) currentValue;
     }
 
     @Override
-    public Object setValue(final int columnIndex, final Object value) {
-      Object currentValue = values[columnIndex];
-      values[columnIndex] = validateValue(value);
-      return currentValue;
+    public final Optional<View> getView() {
+      return Optional.of(InMemoryTable.this);
     }
 
     @Override
-    public final View getView() {
-      return InMemoryTable.this;
-    }
-
-    @Override
-    public final void setView(final View view) {
-      throw new UnsupportedOperationException(String.format("The View for this Row (%1$d) cannot be changed!",
-        index()));
-    }
-
-    @Override
-    public Iterator<Object> iterator() {
-      return ArrayUtils.iterator(values);
+    public final void setView(View view) {
+      throw newUnsupportedOperationException("The View for this Row [%d] cannot be changed", index());
     }
 
     void resize() {
-      if (values.length < columns.size()) {
-        Object[] localValues = new Object[columns.size()];
-        System.arraycopy(values, 0, localValues, 0, values.length);
-        values = localValues;
+
+      if (this.values.length < InMemoryTable.this.columns.size()) {
+
+        Object[] localValues = new Object[InMemoryTable.this.columns.size()];
+
+        System.arraycopy(this.values, 0, localValues, 0, this.values.length);
+
+        this.values = localValues;
       }
     }
   }
-
 }
