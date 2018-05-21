@@ -22,7 +22,6 @@
 package org.cp.elements.data.struct.tabular.provider;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,12 +63,15 @@ public class InMemoryTable extends AbstractTable {
    * defining the {@link Table} structure.
    *
    * @param columns array of {@link Column Columns} defining the structure of this {@link Table}.
-   * @see org.cp.elements.data.struct.tabular.Table
+   * @throws IllegalArgumentException if the array of {@link Column Columns} are {@literal null} or empty.
+   * @see org.cp.elements.data.struct.tabular.Column
    */
   @SuppressWarnings("unchecked")
   public InMemoryTable(Column... columns) {
 
-    List<Column> inMemoryColumns = (List<Column>) Arrays.stream(nullSafeArray(columns, Column.class))
+    Assert.notEmpty(columns, "Columns are required");
+
+    List<Column> inMemoryColumns = (List<Column>) Arrays.stream(columns)
       .map(InMemoryColumn::new)
       .collect(Collectors.toList());
 
@@ -84,7 +86,7 @@ public class InMemoryTable extends AbstractTable {
    * @return a boolean value indicating whether the {@link Column} addition
    * successfully modified the structure of this {@link Table}.
    * @throws IllegalArgumentException if {@link Column} is {@literal null}.
-   * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow#resize()
+   * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow#addColumn()
    * @see org.cp.elements.data.struct.tabular.Column
    */
   @Override
@@ -92,7 +94,7 @@ public class InMemoryTable extends AbstractTable {
 
     if (this.columns.add(validateColumn(column))) {
       for (Row row : this) {
-        ((InMemoryRow) row).resize();
+        ((InMemoryRow) row).addColumn();
       }
 
       return true;
@@ -138,7 +140,16 @@ public class InMemoryTable extends AbstractTable {
    */
   @Override
   public boolean removeColumn(int index) {
-    return this.columns.remove(index) != null;
+
+    if (this.columns.remove(index) != null) {
+      for (Row row : this) {
+        ((InMemoryRow) row).removeColumn(index);
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -221,7 +232,7 @@ public class InMemoryTable extends AbstractTable {
 
     @Override
     public final void setView(View view) {
-      throw newUnsupportedOperationException("The View for this Column [%s] cannot be changed!", getName());
+      throw newUnsupportedOperationException("The View for this Column [%s] cannot be changed", getName());
     }
   }
 
@@ -263,16 +274,39 @@ public class InMemoryTable extends AbstractTable {
       throw newUnsupportedOperationException("The View for this Row [%d] cannot be changed", index());
     }
 
-    void resize() {
+    void addColumn() {
 
-      if (this.values.length < InMemoryTable.this.columns.size()) {
+      int columnsSize = InMemoryTable.this.columns.size();
+      int valuesLength = this.values.length;
 
-        Object[] localValues = new Object[InMemoryTable.this.columns.size()];
+      if (valuesLength < columnsSize) {
 
-        System.arraycopy(this.values, 0, localValues, 0, this.values.length);
+        Object[] localValues = new Object[columnsSize];
+
+        System.arraycopy(this.values, 0, localValues, 0, valuesLength);
 
         this.values = localValues;
       }
+    }
+
+    void removeColumn(int index) {
+
+      int valuesLength = this.values.length;
+
+      Object[] localValues = new Object[valuesLength - 1];
+
+      if (index > 0) {
+        System.arraycopy(this.values, 0, localValues, 0, index);
+      }
+
+      int adjustedIndex = index + 1;
+      int remainingLength = valuesLength - adjustedIndex;
+
+      if (remainingLength > 0) {
+        System.arraycopy(this.values, adjustedIndex, localValues, index, remainingLength);
+      }
+
+      this.values = localValues;
     }
   }
 }
