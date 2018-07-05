@@ -244,8 +244,7 @@ public abstract class IOUtils {
 
     private final ClassLoader classLoader;
 
-    /* (non-Javadoc) */
-    public ClassLoaderObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+    protected ClassLoaderObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
 
       super(in);
 
@@ -253,12 +252,10 @@ public abstract class IOUtils {
         .orElseGet(() -> Thread.currentThread().getContextClassLoader());
     }
 
-    /* (non-Javadoc) */
     protected ClassLoader getClassLoader() {
       return this.classLoader;
     }
 
-    /* (non-Javadoc) */
     @Override
     protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException , IOException {
       return Class.forName(descriptor.getName(), false, getClassLoader());
