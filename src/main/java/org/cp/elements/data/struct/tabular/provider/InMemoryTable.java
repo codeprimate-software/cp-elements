@@ -26,6 +26,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperat
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,12 +40,16 @@ import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.data.struct.tabular.Table;
 import org.cp.elements.data.struct.tabular.View;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The {@link InMemoryTable} class is an implementation of the {@link Table} interface
  * implementing a tabular data structure and storing data in the JVM Heap.
  *
  * @author John J. Blum
+ * @see java.util.List
+ * @see org.cp.elements.data.struct.tabular.AbstractColumn
+ * @see org.cp.elements.data.struct.tabular.AbstractRow
  * @see org.cp.elements.data.struct.tabular.AbstractTable
  * @see org.cp.elements.data.struct.tabular.Column
  * @see org.cp.elements.data.struct.tabular.Row
@@ -57,6 +62,40 @@ public class InMemoryTable extends AbstractTable {
 
   private final List<Column> columns;
   private final List<Row> rows;
+
+  /**
+   * Factory method used to construct a new instance of {@link InMemoryTable} initialized with
+   * the given array of {@link Column columns}.
+   *
+   * @param columns {@link Column Columns} defining the structure of the {@link Table}.
+   * @return a new instance of {@link InMemoryTable} initialized with {@link Column Columns}.
+   * @throws IllegalArgumentException if {@link Column Columns} are {@literal null} or empty.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #InMemoryTable(Column[])
+   */
+  public static InMemoryTable of(Column... columns) {
+    return new InMemoryTable(columns);
+  }
+
+  /**
+   * Factory method used to construct a new instance of {@link InMemoryTable} initialized with
+   * the given {@literal Iterable} of {@link Column columns}.
+   *
+   * @param columns {@link Column Columns} defining the structure of the {@link Table}.
+   * @return a new instance of {@link InMemoryTable} initialized with {@link Column Columns}.
+   * @throws IllegalArgumentException if {@link Column Columns} are {@literal null} or empty.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #InMemoryTable(Column[])
+   * @see java.lang.Iterable
+   */
+  public static InMemoryTable of(Iterable<Column> columns) {
+
+    Assert.notNull(columns,"Columns are required");
+
+    Column[] columnArray = ArrayUtils.asArray(columns, Column.class);
+
+    return new InMemoryTable(columnArray);
+  }
 
   /**
    * Constructs a new instance of {@link InMemoryTable} initialized with the given array of {@link Column Columns}
@@ -80,6 +119,28 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
+   * Returns the {@link Column Columns} in this {@link Table}.
+   *
+   * @return a {@link List} of {@link Column Columns} in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see java.util.List
+   */
+  protected List<Column> getColumns() {
+    return this.columns;
+  }
+
+  /**
+   * Returns the {@link Row Rows} in this {@link Table}.
+   *
+   * @return a {@link List} of {@link Row Rows} in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see java.util.List
+   */
+  protected List<Row> getRows() {
+    return this.rows;
+  }
+
+  /**
    * Adds a new {@link Column} to this {@link Table}.
    *
    * @param column {@link Column} to add.
@@ -92,7 +153,7 @@ public class InMemoryTable extends AbstractTable {
   @Override
   public boolean add(Column column) {
 
-    if (this.columns.add(validateColumn(column))) {
+    if (getColumns().add(validateColumn(column))) {
       for (Row row : this) {
         ((InMemoryRow) row).addColumn();
       }
@@ -114,7 +175,22 @@ public class InMemoryTable extends AbstractTable {
    */
   @Override
   public boolean add(Row row) {
-    return this.rows.add(new InMemoryRow(validateRow(row)));
+    return getRows().add(newRow(validateRow(row)));
+  }
+
+  /**
+   * Constructs a new instance of {@link InMemoryTable.InMemoryRow} initialized with
+   * a copy of the existing {@link Row}.
+   *
+   * @param <T> {@link Class sub-type} of the {@link Row}.
+   * @param row {@link Row} to copy.
+   * @return a new instance of {@link InMemoryRow}.
+   * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow
+   * @see org.cp.elements.data.struct.tabular.Row
+   */
+  @SuppressWarnings("unchecked")
+  protected <T extends Row> T newRow(Row row) {
+    return (T) new InMemoryRow(row);
   }
 
   /**
@@ -127,7 +203,18 @@ public class InMemoryTable extends AbstractTable {
    */
   @Override
   public Iterable<Column> columns() {
-    return Collections.unmodifiableList(this.columns);
+    return Collections.unmodifiableList(getColumns());
+  }
+
+  /**
+   * Returns an {@literal Iterator} over the {@link Row Rows} in this {@link Table}.
+   *
+   * @return an {@literal Iterator} over the {@link Row Rows} in this {@link Table}.
+   * @see #rows()
+   */
+  @Override
+  public Iterator<Row> iterator() {
+    return rows().iterator();
   }
 
   /**
@@ -141,7 +228,7 @@ public class InMemoryTable extends AbstractTable {
   @Override
   public boolean removeColumn(int index) {
 
-    if (this.columns.remove(index) != null) {
+    if (getColumns().remove(index) != null) {
       for (Row row : this) {
         ((InMemoryRow) row).removeColumn(index);
       }
@@ -162,7 +249,7 @@ public class InMemoryTable extends AbstractTable {
    */
   @Override
   public boolean removeRow(int index) {
-    return this.rows.remove(index) != null;
+    return getRows().remove(index) != null;
   }
 
   /**
@@ -175,7 +262,7 @@ public class InMemoryTable extends AbstractTable {
    */
   @Override
   public Iterable<Row> rows() {
-    return Collections.unmodifiableList(this.rows);
+    return Collections.unmodifiableList(getRows());
   }
 
   /**
@@ -211,7 +298,7 @@ public class InMemoryTable extends AbstractTable {
   /**
    * Validates the given {@link Object value} to insert into this {@link Table}.
    *
-   * @param value {@link Object} to evaluate.
+   * @param value {@link Object} value to evaluate.
    * @return the given {@link Object value}.
    * @see java.lang.Object
    */
@@ -221,7 +308,7 @@ public class InMemoryTable extends AbstractTable {
 
   protected class InMemoryColumn<T> extends AbstractColumn<T> {
 
-    public InMemoryColumn(Column<T> column) {
+    protected InMemoryColumn(Column<T> column) {
       super(column);
     }
 
@@ -240,20 +327,24 @@ public class InMemoryTable extends AbstractTable {
 
     private volatile Object[] values;
 
-    public InMemoryRow(Row row) {
+    protected InMemoryRow(Row row) {
 
-      this.values = new Object[InMemoryTable.this.columns.size()];
+      int columnSize = InMemoryTable.this.getColumns().size();
 
-      for (int index = 0; index < this.values.length; index++) {
+      this.values = new Object[columnSize];
+
+      for (int index = 0; index < columnSize; index++) {
         this.values[index] = validateValue(row.getValue(index));
       }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getValue(int columnIndex) {
       return (T) this.values[columnIndex];
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T setValue(int columnIndex, T value) {
 
@@ -274,9 +365,9 @@ public class InMemoryTable extends AbstractTable {
       throw newUnsupportedOperationException("The View for this Row [%d] cannot be changed", index());
     }
 
-    void addColumn() {
+    synchronized void addColumn() {
 
-      int columnsSize = InMemoryTable.this.columns.size();
+      int columnsSize = InMemoryTable.this.getColumns().size();
       int valuesLength = this.values.length;
 
       if (valuesLength < columnsSize) {
@@ -289,7 +380,7 @@ public class InMemoryTable extends AbstractTable {
       }
     }
 
-    void removeColumn(int index) {
+    synchronized void removeColumn(int index) {
 
       int valuesLength = this.values.length;
 
@@ -307,6 +398,16 @@ public class InMemoryTable extends AbstractTable {
       }
 
       this.values = localValues;
+    }
+
+    @Override
+    public synchronized Object[] values() {
+
+      Object[] valuesCopy = new Object[this.values.length];
+
+      System.arraycopy(this.values, 0, valuesCopy, 0, valuesCopy.length);
+
+      return valuesCopy;
     }
   }
 }
