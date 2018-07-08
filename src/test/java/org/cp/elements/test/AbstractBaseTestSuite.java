@@ -66,7 +66,7 @@ public abstract class AbstractBaseTestSuite {
   protected String getClassesDirectoryName() {
 
     return Boolean.getBoolean("gradle.build") ?
-      String.format("%1$s%2$s%3$s", "classes", File.separator, "main") : "classes";
+      String.format("%1$s%2$s%3$s%4$s%5$s", "classes", File.separator, "java", File.separator, "main") : "classes";
   }
 
   protected File getLocation(Class type) {
