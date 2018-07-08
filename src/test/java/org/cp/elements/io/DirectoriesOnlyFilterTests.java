@@ -39,12 +39,13 @@ public class DirectoriesOnlyFilterTests extends AbstractBaseTestSuite {
 
   private final DirectoriesOnlyFilter directoriesOnlyFilter = DirectoriesOnlyFilter.INSTANCE;
 
-  protected File newFile(File parent, String pathname) {
+  private File newFile(File parent, String pathname) {
     return new File(parent, pathname);
   }
 
   @Test
   public void acceptsDirectories() {
+
     assertTrue(directoriesOnlyFilter.accept(TEMPORARY_DIRECTORY));
     assertTrue(directoriesOnlyFilter.accept(USER_HOME));
     assertTrue(directoriesOnlyFilter.accept(WORKING_DIRECTORY));
@@ -52,6 +53,7 @@ public class DirectoriesOnlyFilterTests extends AbstractBaseTestSuite {
 
   @Test
   public void rejectsFile() {
+
     File directoriesOnlyFilterClass = getLocation(DirectoriesOnlyFilter.class);
 
     assertTrue(directoriesOnlyFilterClass.isFile());
@@ -60,6 +62,7 @@ public class DirectoriesOnlyFilterTests extends AbstractBaseTestSuite {
 
   @Test
   public void rejectsNonExistingDirectory() {
+
     File nonExistingDirectory = newFile(WORKING_DIRECTORY, "relative/path/to/non/existing/directory/");
 
     assertFalse(nonExistingDirectory.exists());
@@ -68,6 +71,7 @@ public class DirectoriesOnlyFilterTests extends AbstractBaseTestSuite {
 
   @Test
   public void rejectsNonExistingFile() {
+
     File nonExistingFile = newFile(USER_HOME, "relative/path/to/non/existing/file.ext");
 
     assertFalse(nonExistingFile.exists());

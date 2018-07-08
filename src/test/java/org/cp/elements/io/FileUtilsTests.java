@@ -95,13 +95,17 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void assertExistsWithExistingFile() throws FileNotFoundException {
+
     when(mockFile.exists()).thenReturn(true);
+
     assertThat(FileUtils.assertExists(mockFile), is(equalTo(mockFile)));
+
     verify(mockFile, times(1)).exists();
   }
 
   @Test
   public void assertExistsWithNonExistingDirectory() throws FileNotFoundException {
+
     exception.expect(FileNotFoundException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[/absolute/path/to/non/existing/directory] was not found");
@@ -111,6 +115,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void assertExistsWithNonExistingFile() throws FileNotFoundException {
+
     exception.expect(FileNotFoundException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[relative/path/to/non/existing/file.ext] was not found");
@@ -120,6 +125,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void assertExistsWithNull() throws FileNotFoundException {
+
     exception.expect(FileNotFoundException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[null] was not found");
@@ -130,6 +136,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createDirectoryWithNonExistingDirectory() {
+
     when(mockFile.isDirectory()).thenReturn(false);
     when(mockFile.isFile()).thenReturn(false);
     when(mockFile.mkdirs()).thenReturn(true);
@@ -144,6 +151,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createDirectoryWithExistingDirectory() {
+
     when(mockFile.isDirectory()).thenReturn(true);
     when(mockFile.isFile()).thenReturn(false);
 
@@ -157,6 +165,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createDirectoryWithExistingFile() {
+
     when(mockFile.isFile()).thenReturn(true);
 
     assertThat(FileUtils.createDirectory(mockFile), is(false));
@@ -174,6 +183,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createFileWithNonExistingFile() throws IOException {
+
     when(mockFile.isDirectory()).thenReturn(false);
     when(mockFile.isFile()).thenReturn(false);
     when(mockFile.createNewFile()).thenReturn(true);
@@ -188,6 +198,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createFileWithExistingDirectory() throws IOException {
+
     when(mockFile.isDirectory()).thenReturn(true);
 
     assertThat(FileUtils.createFile(mockFile), is(false));
@@ -200,6 +211,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createFileWithExistingFile() throws IOException {
+
     when(mockFile.isDirectory()).thenReturn(false);
     when(mockFile.isFile()).thenReturn(true);
 
@@ -218,6 +230,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void createFileThrowsIOExceptionOnFileCreateNewFile() throws IOException {
+
     when(mockFile.isDirectory()).thenReturn(false);
     when(mockFile.isFile()).thenReturn(false);
     when(mockFile.createNewFile()).thenThrow(new IOException("test"));
@@ -232,6 +245,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void deleteExistingFileIsSuccessful() {
+
     when(mockFile.exists()).thenReturn(true);
     when(mockFile.delete()).thenReturn(true);
 
@@ -244,6 +258,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void deleteExistingFileIsUnsuccessful() {
+
     when(mockFile.exists()).thenReturn(true);
     when(mockFile.delete()).thenReturn(false);
 
@@ -256,6 +271,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void deleteNonExistingFileIsUnsuccessful() {
+
     when(mockFile.exists()).thenReturn(false);
 
     assertThat(FileUtils.delete(mockFile), is(false));
@@ -271,6 +287,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getExtensionOfFilesWithExtension() {
+
     assertThat(FileUtils.getExtension(newFile("/absolute/path/to/file.ext")), is(equalTo("ext")));
     assertThat(FileUtils.getExtension(newFile("relative/path/to/file.ext")), is(equalTo("ext")));
     assertThat(FileUtils.getExtension(newFile("FileUtils.java")), is(equalTo("java")));
@@ -283,6 +300,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getExtensionOfFilesWithNoExtension() {
+
     assertThat(FileUtils.getExtension(newFile("file")), is(equalTo(StringUtils.EMPTY_STRING)));
     assertThat(FileUtils.getExtension(newFile("file.")), is(equalTo(StringUtils.EMPTY_STRING)));
     assertThat(FileUtils.getExtension(newFile("exe")), is(equalTo(StringUtils.EMPTY_STRING)));
@@ -290,6 +308,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getExtensionWithNull() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
@@ -299,6 +318,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getLocationOfFilesWithLocation() {
+
     assertThat(FileUtils.getLocation(newFile("/absolute/path/to/file.ext")), is(equalTo("/absolute/path/to")));
     assertThat(FileUtils.getLocation(newFile("relative/path/to/file.ext")), is(equalTo(String.format(
       "%1$s%2$srelative/path/to", WORKING_DIRECTORY.getAbsolutePath(), File.separator))));
@@ -309,6 +329,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getLocationOfFileWithNoLocation() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Unable to determine the location of file [file.ext]");
@@ -318,6 +339,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getLocationWithNull() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
@@ -327,6 +349,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getNameOfFilesWithName() {
+
     assertThat(FileUtils.getName(newFile("/absolute/path/to/file.ext")), is(equalTo("file")));
     assertThat(FileUtils.getName(newFile("relative/path/to/file.ext")), is(equalTo("file")));
     assertThat(FileUtils.getName(newFile("FileUtilsTests.java")), is(equalTo("FileUtilsTests")));
@@ -339,12 +362,14 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getNameOfFilesWithNoName() {
+
     assertThat(FileUtils.getName(newFile(".exe")), is(equalTo(StringUtils.EMPTY_STRING)));
     assertThat(FileUtils.getName(newFile(".")), is(equalTo(StringUtils.EMPTY_STRING)));
   }
 
   @Test
   public void getNameWithNull() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
@@ -354,6 +379,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isDirectoryWithDirectories() {
+
     assertThat(FileUtils.isDirectory(TEMPORARY_DIRECTORY), is(true));
     assertThat(FileUtils.isDirectory(USER_HOME), is(true));
     assertThat(FileUtils.isDirectory(WORKING_DIRECTORY), is(true));
@@ -361,6 +387,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isDirectoryWithNonDirectories() {
+
     assertThat(FileUtils.isDirectory(newFile(TEMPORARY_DIRECTORY, "non_existing_directory/")), is(false));
     assertThat(FileUtils.isDirectory(newFile(USER_HOME, "nonExistingFile.ext")), is(false));
     assertThat(FileUtils.isDirectory(newFile(WORKING_DIRECTORY, "cp-elements-1.0.0.SNAPSHOT.jar")), is(false));
@@ -379,6 +406,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void isEmptyWithExistingNonEmptyFileIsFalse() {
+
     when(mockFile.isFile()).thenReturn(true);
     when(mockFile.length()).thenReturn(1l);
 
@@ -391,6 +419,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void isEmptyWithNonExistingFileIsTrue() {
+
     when(mockFile.isFile()).thenReturn(false);
 
     assertThat(FileUtils.isEmpty(mockFile), is(true));
@@ -412,6 +441,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void isExistingWithExistingFile() {
+
     when(mockFile.exists()).thenReturn(true);
 
     assertThat(FileUtils.isExisting(mockFile), is(true));
@@ -439,6 +469,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void isFileWithFile() {
+
     when(mockFile.isFile()).thenReturn(true);
 
     assertThat(FileUtils.isFile(mockFile), is(true));
@@ -450,6 +481,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void isFileWithNonFiles() {
+
     assertThat(FileUtils.isFile(WORKING_DIRECTORY), is(false));
     assertThat(FileUtils.isFile(newFile("/absolute/path/to/non/existing/directory/")), is(false));
     assertThat(FileUtils.isFile(newFile("relative/path/to/non/existing/file.ext")), is(false));
@@ -462,6 +494,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void newFileWithNonNullNonExistingPathnameIsSuccessful() {
+
     File file = FileUtils.newFile("/absolute/path/to/file.ext");
 
     assertThat(file, is(notNullValue()));
@@ -472,6 +505,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @IntegrationTest
   public void newFileWithNonNullExistingDirectoryIsSuccessful() {
+
     assertThat(WORKING_DIRECTORY.isDirectory(), is(true));
     assertThat(FileUtils.newFile(WORKING_DIRECTORY.getAbsolutePath()), is(equalTo(WORKING_DIRECTORY)));
   }
@@ -479,6 +513,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @IntegrationTest
   public void newFileWithNonNullExistingFileIsSuccessful() {
+
     File fileUtilsClass = getLocation(FileUtils.class);
 
     assertThat(fileUtilsClass, is(notNullValue()));
@@ -488,6 +523,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void newFileWithNullPathnameIsUnsuccessful() {
+
     exception.expect(NullPointerException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage(is(nullValue(String.class)));
@@ -497,6 +533,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void readFromNonFile() throws IOException {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("[null] must be a valid file");
@@ -507,6 +544,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void readFromUnreadableFile() throws IOException {
+
     when(mockFile.isFile()).thenReturn(true);
     when(mockFile.canRead()).thenReturn(false);
     when(mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
@@ -534,6 +572,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfExistingFile() {
+
     when(mockFile.isFile()).thenReturn(true);
     when(mockFile.length()).thenReturn(1l);
 
@@ -546,6 +585,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void sizeOfNonExistingFile() {
+
     when(mockFile.isFile()).thenReturn(false);
 
     assertThat(FileUtils.size(mockFile), is(equalTo(0l)));
@@ -562,6 +602,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalFileElseGetAbsoluteFile() throws IOException {
+
     when(mockFile.getCanonicalFile()).thenReturn(mockFile);
 
     assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile), is(equalTo(mockFile)));
@@ -573,6 +614,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalFileElseGetAbsoluteFileWhenGetCanonicalFileThrowsIOException() throws IOException {
+
     File expectedMockAbsoluteFile = mock(File.class, "expectedMockAbsoluteFile");
 
     when(mockFile.getAbsoluteFile()).thenReturn(expectedMockAbsoluteFile);
@@ -587,6 +629,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalPathElseGetAbsolutePath() throws IOException {
+
     when(mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
 
     assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile), is(equalTo("/path/to/file.ext")));
@@ -598,6 +641,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalPathElseGetAbsolutePathWhenGetCanonicalPathThrowsIOException() throws IOException {
+
     when(mockFile.getAbsolutePath()).thenReturn("/path/to/file.ext");
     when(mockFile.getCanonicalPath()).thenThrow(new IOException("test"));
 
@@ -609,6 +653,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void writeNullInputStreamToFile() throws IOException {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("InputStream cannot be null");
@@ -623,6 +668,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void writeInputStreamToNullFile() throws IOException {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("File cannot be null");
@@ -640,6 +686,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void writeToExistingUnwritableFile() throws IOException {
+
     when(mockFile.exists()).thenReturn(true);
     when(mockFile.canWrite()).thenReturn(false);
     when(mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
@@ -664,6 +711,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
   @Test
   @IntegrationTest
   public void writeToFileThenReadFromFileIsSuccessful() throws IOException {
+
     String expectedContent = "This is a test of the read/write File operations in FileUtils!";
 
     InputStream in = new ByteArrayInputStream(expectedContent.getBytes());

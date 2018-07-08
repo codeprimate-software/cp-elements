@@ -68,6 +68,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
 
   @Before
   public void setup() {
+
     availablePort = NetworkUtils.availablePort();
     process = newJavaProcessExecutor().execute(buildJarFile(), String.valueOf(availablePort));
 
@@ -81,6 +82,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
   }
 
   private File buildJarFile() {
+
     jarFile = newJarFile("echoServer.jar");
 
     JarOutputStream jarFileOutputStream = null;
@@ -102,12 +104,16 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
   }
 
   private File newJarFile(String name) {
+
     File jarFile = new File(getBuildDirectory(), name);
+
     jarFile.deleteOnExit();
+
     return jarFile;
   }
 
   private Manifest newManifest(File jarFileDirectory) {
+
     Manifest manifest = new Manifest();
 
     Attributes mainAttributes = manifest.getMainAttributes();
@@ -122,6 +128,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
   }
 
   private String resolveClassPath(File jarFileDirectory) {
+
     String relativeClassPath = getProjectHomeDirectory().equals(jarFileDirectory)
       ? getBuildDirectoryName() : "";
 
@@ -134,6 +141,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
 
   @After
   public void tearDown() {
+
     process.stopAndWait();
 
     assertThat(process.isRunning()).isFalse();
@@ -141,6 +149,7 @@ public class JarFileProcessExecutorIntegrationTests extends AbstractBaseTestSuit
 
   @Test
   public void forkedJarFileProcessIsRunning() {
+
     EchoClient echoClient = newEchoClient(availablePort);
 
     assertThat(echoClient.sendMessage("Hello")).isEqualTo("Hello");
