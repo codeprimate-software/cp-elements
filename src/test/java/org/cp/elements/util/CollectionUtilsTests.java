@@ -75,14 +75,14 @@ public class CollectionUtilsTests {
   public ExpectedException exception = ExpectedException.none();
 
   @SafeVarargs
-  protected final <T> void assertElements(Collection<T> collection, T... elements) {
+  private final <T> void assertElements(Collection<T> collection, T... elements) {
 
     assertThat(collection, is(notNullValue(Collection.class)));
     assertThat(collection.size(), is(equalTo(elements.length)));
     assertThat(collection.containsAll(asCollection(elements)), is(true));
   }
 
-  protected <T> void assertShuffled(Iterable<T> source, Iterable<T> target) {
+  private <T> void assertShuffled(Iterable<T> source, Iterable<T> target) {
 
     assertTrue("'source' must not be null and must have elements", source != null && source.iterator().hasNext());
     assertTrue("'target' must not be null and must have elements", target != null && target.iterator().hasNext());
@@ -100,12 +100,12 @@ public class CollectionUtilsTests {
   }
 
   @SafeVarargs
-  protected final <T> Collection<T> asCollection(T... elements) {
+  private final <T> Collection<T> asCollection(T... elements) {
     return Arrays.asList(elements);
   }
 
   @SafeVarargs
-  protected final <T> Enumeration<T> asEnumeration(T... elements) {
+  private final <T> Enumeration<T> asEnumeration(T... elements) {
 
     return new Enumeration<T>() {
 
@@ -125,12 +125,12 @@ public class CollectionUtilsTests {
   }
 
   @SafeVarargs
-  protected final <T> Iterable<T> asIterable(T... elements) {
+  private final <T> Iterable<T> asIterable(T... elements) {
     return () -> asIterator(elements);
   }
 
   @SafeVarargs
-  protected final <T> Iterator<T> asIterator(T... elements) {
+  private final <T> Iterator<T> asIterator(T... elements) {
 
     return new Iterator<T>() {
 
@@ -391,6 +391,40 @@ public class CollectionUtilsTests {
   }
 
   @Test
+  public void asListWithArray() {
+
+    List<Object> list = CollectionUtils.asList("test", "testing", "tested");
+
+    assertThat(list, is(notNullValue()));
+    assertThat(list.size(), is(equalTo(3)));
+    assertThat(list.containsAll(asCollection("test", "testing", "tested")), is(true));
+
+    for (int index = 0, size = list.size(); index < size; index++) {
+      list.set(index, list.get(index).toString().toUpperCase());
+    }
+
+    assertThat(list.containsAll(asCollection("TEST", "TESTING", "TESTED")), is(true));
+  }
+
+  @Test
+  public void asListWithEmptyArray() {
+
+    List<Object> list = CollectionUtils.asList();
+
+    assertThat(list, is(notNullValue()));
+    assertThat(list.isEmpty(), is(true));
+  }
+
+  @Test
+  public void asListWithNullArray() {
+
+    List<Object> list = CollectionUtils.asList((Object[]) null);
+
+    assertThat(list, is(notNullValue()));
+    assertThat(list.isEmpty(), is(true));
+  }
+
+  @Test
   public void asListWithCollection() {
 
     Collection<String> collection = asCollection("test", "testing", "tested");
@@ -426,7 +460,7 @@ public class CollectionUtilsTests {
   @Test
   public void asListWithNullIterable() {
 
-    List<?> list = CollectionUtils.asList(null);
+    List<?> list = CollectionUtils.asList((Iterable<?>) null);
 
     assertThat(list, is(notNullValue(List.class)));
     assertThat(list.isEmpty(), is(true));

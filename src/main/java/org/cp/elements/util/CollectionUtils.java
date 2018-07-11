@@ -21,6 +21,7 @@ import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -176,6 +177,21 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Converts the given {@link Object array} into a mutable {@link List}.
+   *
+   * @param <T> {@link Class type} of the array elements.
+   * @param array array to convert into a {@link List}.
+   * @return a mutable {@link List} containing the array elements.
+   * @see org.cp.elements.util.ArrayUtils#nullSafeArray(Object[])
+   * @see java.util.List
+   */
+  @NullSafe
+  @SafeVarargs
+  public static <T> List<T> asList(T... array) {
+    return new ArrayList<>(Arrays.asList(nullSafeArray(array)));
+  }
+
+  /**
    * Null-safe method to convert the given {@link Iterable} collection of elements into a {@link List}.
    *
    * @param <T> {@link Class} type of the elements in the {@link Iterable}.
@@ -187,8 +203,10 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> List<T> asList(Iterable<T> iterable) {
-    return (iterable instanceof Collection ? new ArrayList<>((Collection<T>) iterable)
-      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toList()));
+
+    return iterable instanceof Collection
+      ? new ArrayList<>((Collection<T>) iterable)
+      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toList());
   }
 
   /**
@@ -217,8 +235,10 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Set<T> asSet(Iterable<T> iterable) {
-    return (iterable instanceof Collection ? new HashSet<>((Collection<T>) iterable)
-      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toSet()));
+
+    return iterable instanceof Collection
+      ? new HashSet<>((Collection<T>) iterable)
+      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toSet());
   }
 
   /**
@@ -256,7 +276,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static long count(Iterable<?> iterable) {
-    return (iterable instanceof Collection ? ((Collection) iterable).size() : count(iterable, (element) -> true));
+    return iterable instanceof Collection ? ((Collection) iterable).size() : count(iterable, (element) -> true);
   }
 
   /**
@@ -277,7 +297,9 @@ public abstract class CollectionUtils {
 
     Assert.notNull(filter, "Filter is required");
 
-    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).filter(filter::accept).count();
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+      .filter(filter::accept)
+      .count();
   }
 
   /**
@@ -291,7 +313,7 @@ public abstract class CollectionUtils {
  	 * @see java.lang.Iterable
  	 */
   public static <E, T extends Iterable<E>> T defaultIfEmpty(T iterable, T defaultIterable) {
-    return (iterable != null && iterable.iterator().hasNext() ? iterable : defaultIterable);
+    return iterable != null && iterable.iterator().hasNext() ? iterable : defaultIterable;
   }
 
   /**
@@ -346,7 +368,9 @@ public abstract class CollectionUtils {
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(filteringTransformer, "FilteringTransformer is required");
 
-    return collection.stream().filter(filteringTransformer::accept).map(filteringTransformer::transform)
+    return collection.stream()
+      .filter(filteringTransformer::accept)
+      .map(filteringTransformer::transform)
       .collect(Collectors.toList());
   }
 
@@ -368,7 +392,8 @@ public abstract class CollectionUtils {
 
     Assert.notNull(filter, "Filter is required");
 
-    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).filter(filter::accept)
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+      .filter(filter::accept)
       .collect(Collectors.toList());
   }
 
@@ -391,7 +416,8 @@ public abstract class CollectionUtils {
 
     Assert.notNull(filter, "Filter is required");
 
-    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).filter(filter::accept)
+    return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+      .filter(filter::accept)
       .findFirst().orElse(null);
   }
 
@@ -437,7 +463,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static boolean isSizeOne(Collection<?> collection) {
-    return (nullSafeSize(collection) == 1);
+    return nullSafeSize(collection) == 1;
   }
 
   /**
@@ -451,7 +477,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Collection<T> nullSafeCollection(Collection<T> collection) {
-    return (collection != null ? collection : Collections.emptyList());
+    return collection != null ? collection : Collections.emptyList();
   }
 
   /**
@@ -465,7 +491,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Enumeration<T> nullSafeEnumeration(Enumeration<T> enumeration) {
-    return (enumeration != null ? enumeration : Collections.emptyEnumeration());
+    return enumeration != null ? enumeration : Collections.emptyEnumeration();
   }
 
   /**
@@ -479,7 +505,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Iterable<T> nullSafeIterable(Iterable<T> iterable) {
-    return (iterable != null ? iterable : emptyIterable());
+    return iterable != null ? iterable : emptyIterable();
   }
 
   /**
@@ -493,7 +519,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Iterator<T> nullSafeIterator(Iterator<T> iterator) {
-    return (iterator != null ? iterator : Collections.emptyIterator());
+    return iterator != null ? iterator : Collections.emptyIterator();
   }
 
   /**
@@ -507,7 +533,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> List<T> nullSafeList(List<T> list) {
-    return (list != null ? list : Collections.emptyList());
+    return list != null ? list : Collections.emptyList();
   }
 
   /**
@@ -521,7 +547,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Set<T> nullSafeSet(Set<T> set) {
-    return (set != null ? set : Collections.emptySet());
+    return set != null ? set : Collections.emptySet();
   }
 
   /**
@@ -533,7 +559,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static int nullSafeSize(Collection<?> collection) {
-    return (collection != null ? collection.size() : 0);
+    return collection != null ? collection.size() : 0;
   }
 
   /**
