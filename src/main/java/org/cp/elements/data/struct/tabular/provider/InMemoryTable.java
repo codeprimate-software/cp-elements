@@ -402,12 +402,7 @@ public class InMemoryTable extends AbstractTable {
 
     @Override
     public synchronized Object[] values() {
-
-      Object[] valuesCopy = new Object[this.values.length];
-
-      System.arraycopy(this.values, 0, valuesCopy, 0, valuesCopy.length);
-
-      return valuesCopy;
+      return ArrayUtils.shallowCopy(this.values);
     }
   }
 }

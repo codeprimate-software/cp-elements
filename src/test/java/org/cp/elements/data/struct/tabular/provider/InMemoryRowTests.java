@@ -306,4 +306,41 @@ public class InMemoryRowTests {
     assertThat(rowOne.values()).containsExactly("1A", "1C");
     assertThat(rowTwo.values()).containsExactly("2A", "2C");
   }
+
+  @Test
+  public void inMemoryRowValuesAreCorrect() {
+
+    Column mockColumnOne = mockColumn("One");
+    Column mockColumnTwo = mockColumn("Two");
+
+    InMemoryTable table = InMemoryTable.of(mockColumnOne, mockColumnTwo);
+
+    assertThat(table).isNotNull();
+    assertThat(table).isEmpty();
+    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
+      .containsExactly("One", "Two");
+
+    Row mockRow = mock(Row.class, "MockRow");
+
+    when(mockRow.getValue(eq(0))).thenReturn("one");
+    when(mockRow.getValue(eq(1))).thenReturn("two");
+
+    assertThat(table.add(mockRow)).isTrue();
+    assertThat(table).hasSize(1);
+
+    Row row = table.getRows().get(0);
+
+    assertThat(row).isNotNull();
+    assertThat(row).isNotSameAs(mockRow);
+    assertThat(row.getView().orElse(null)).isSameAs(table);
+    assertThat(row.index()).isEqualTo(0);
+
+    Object[] rowValues = row.values();
+
+    assertThat(rowValues).isNotNull();
+    assertThat(rowValues).hasSize(2);
+    assertThat(rowValues).containsExactly("one", "two");
+    assertThat(rowValues[0]).isSameAs("one");
+    assertThat(rowValues[1]).isSameAs("two");
+  }
 }
