@@ -2,6 +2,7 @@
 John Blum
 :revnumber: {version}
 :revdate: {localdate}
+:doctype: book
 :toc:
 :!toc-placement:
 
