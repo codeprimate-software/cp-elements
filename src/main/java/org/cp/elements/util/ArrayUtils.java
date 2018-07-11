@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
@@ -41,15 +42,20 @@ import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The ArrayUtils class encapsulates utility methods and functionality for interacting with Object arrays.
+ * {@link ArrayUtils} encapsulates utility methods and functionality for interacting with {@link Object} arrays.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
  * @see java.lang.reflect.Array
  * @see java.util.ArrayList
+ * @see java.util.Arrays
+ * @see java.util.Collections
+ * @see java.util.Comparator
  * @see java.util.Enumeration
  * @see java.util.Iterator
  * @see java.util.List
+ * @see java.util.function.Function
+ * @see java.util.stream.Collectors
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.FilteringTransformer
  * @see org.cp.elements.lang.Transformer
@@ -168,7 +174,9 @@ public abstract class ArrayUtils {
 
       @Override
       public T nextElement() {
+
         Assert.isTrue(hasMoreElements(), new NoSuchElementException("No more elements"));
+
         return array[index++];
       }
     });
@@ -214,7 +222,9 @@ public abstract class ArrayUtils {
 
       @Override
       public T next() {
+
         Assert.isTrue(hasNext(), new NoSuchElementException("No more elements"));
+
         return array[index++];
       }
     });
@@ -229,7 +239,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static <T> int count(T[] array) {
-    return (array != null ? array.length : 0);
+    return array != null ? array.length : 0;
   }
 
   /**
@@ -251,6 +261,56 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Deeply copies the given array into a new array of the same {@link Class type}.
+   *
+   * This function performs a deep copy by {@literal cloning} each element from the original array.
+   *
+   * @param <T> {@link Class type} of the array elements.
+   * @param array array to copy.
+   * @return a deep copy of the given array.
+   * @throws IllegalArgumentException if the given array is {@literal null}, or an individual element
+   * from the original array is not {@link Cloneable}.
+   * @see #deepCopy(Object[], Function)
+   * @see #shallowCopy(Object[])
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] deepCopy(T[] array) {
+
+    Assert.notNull(array, "Array is required");
+
+    return deepCopy(array, element -> element != null ? ObjectUtils.clone(element) : null);
+  }
+
+  /**
+   * Deeply copies the given array into a new array of the same {@link Class type}.
+   *
+   * This function performs a deep copy by applying the provided {@link Function}
+   * used to copy each element from the original array.
+   *
+   * @param <T> {@link Class type} of the array elements.
+   * @param array array to copy.
+   * @param copyFunction {@link Function} used to copy, or clone an element from the original array.
+   * @return a deep copy of the given array.
+   * @throws IllegalArgumentException if the given array or {@link Function copy function} is {@literal null}.
+   * @see #deepCopy(Object[])
+   * @see #shallowCopy(Object[])
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] deepCopy(T[] array, Function<T, T> copyFunction) {
+
+    Assert.notNull(array, "Array is required");
+    Assert.notNull(copyFunction, "Copy Function is required");
+
+    T[] arrayCopy = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
+
+    for (int index = 0, size = array.length; index < size; index++) {
+      arrayCopy[index] = copyFunction.apply(array[index]);
+    }
+
+    return arrayCopy;
+  }
+
+  /**
  	 * Returns the given {@code array} if not {@literal null} or empty, otherwise returns the {@code defaultArray}.
  	 *
  	 * @param <T> {@link Class} type of the elements in the array.
@@ -259,7 +319,7 @@ public abstract class ArrayUtils {
  	 * @return the given {@code array} if not {@literal null} or empty otherwise return the {@code defaultArray}.
  	 */
   public static <T> T[] defaultIfEmpty(T[] array, T[] defaultArray) {
-    return (isNotEmpty(array) ? array : defaultArray);
+    return isNotEmpty(array) ? array : defaultArray;
   }
 
   /**
@@ -511,7 +571,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static boolean isEmpty(Object[] array) {
-    return (count(array) == 0);
+    return count(array) == 0;
   }
 
   /**
@@ -535,7 +595,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   public static boolean isSizeOne(Object... array) {
-    return (array != null && array.length == 1);
+    return array != null && array.length == 1;
   }
 
   /**
@@ -565,14 +625,14 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] nullSafeArray(T[] array, Class<?> componentType) {
-    return (array != null ? array : (T[]) Array.newInstance(defaultIfNull(componentType, Object.class), 0));
+    return array != null ? array : (T[]) Array.newInstance(defaultIfNull(componentType, Object.class), 0);
   }
 
   /* non-Javadoc */
   @NullSafe
   @SuppressWarnings("unchecked")
   static <T> Class<?> componentType(T[] array) {
-    return (array != null ? array.getClass().getComponentType() : Object.class);
+    return array != null ? array.getClass().getComponentType() : Object.class;
   }
 
   /**
@@ -638,6 +698,27 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Shallowly copies the given array into a new array of the same {@link Class type}.
+   *
+   * @param <T> {@link Class type} of the array elements.
+   * @param array array to copy.
+   * @return a shallow copy of the original array.
+   * @throws IllegalArgumentException if the array is {@literal null}.
+   * @see #deepCopy(Object[])
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T[] shallowCopy(T[] array) {
+
+    Assert.notNull(array, "Array is required");
+
+    T[] arrayCopy = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
+
+    System.arraycopy(array, 0, arrayCopy, 0, array.length);
+
+    return arrayCopy;
+  }
+
+  /**
    * Shuffles the elements in the array.  This method guarantees a random, uniform shuffling of the array elements
    * with an operational efficiency of O(n).
    *
@@ -654,7 +735,9 @@ public abstract class ArrayUtils {
       Random random = new Random(System.currentTimeMillis());
 
       for (int index = 0, lengthMinusOne = array.length - 1; index < lengthMinusOne; index++) {
+
         int randomIndex = (random.nextInt(lengthMinusOne - index) + 1);
+
         swap(array, index, index + randomIndex);
       }
     }
@@ -685,7 +768,9 @@ public abstract class ArrayUtils {
    * @see java.util.Comparator
    */
   public static <T> T[] sort(T[] array, Comparator<T> comparator) {
+
     Arrays.sort(array, comparator);
+
     return array;
   }
 

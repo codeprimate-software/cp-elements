@@ -16,6 +16,7 @@
 
 package org.cp.elements.util;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -38,6 +39,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
@@ -45,6 +47,8 @@ import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -75,7 +79,7 @@ public class ArrayUtilsTests {
   public ExpectedException exception = ExpectedException.none();
 
   @SafeVarargs
-  protected final <T> void assertElements(T[] array, T... elements) {
+  private final <T> void assertElements(T[] array, T... elements) {
 
     assertThat(array, is(notNullValue()));
     assertThat(array.length, is(equalTo(elements.length)));
@@ -88,7 +92,7 @@ public class ArrayUtilsTests {
   }
 
   @SuppressWarnings("all")
-  protected <T> void assertShuffled(T[] source, T[] target) {
+  private <T> void assertShuffled(T[] source, T[] target) {
 
     assertTrue("'source' array cannot be null or empty", source != null && source.length != 0);
     assertTrue("'target' array cannot be null or empty", target != null && target.length != 0);
@@ -103,7 +107,7 @@ public class ArrayUtilsTests {
     assertTrue(String.format("target array [%1$s] was not shuffled", Arrays.toString(target)), shuffled);
   }
 
-  protected <T extends Comparable<T>> void assertSorted(T[] array) {
+  private <T extends Comparable<T>> void assertSorted(T[] array) {
 
     for (int index = 1; index < array.length; index++) {
       assertThat(array[index].compareTo(array[index - 1]), is(greaterThanOrEqualTo(0)));
@@ -111,7 +115,7 @@ public class ArrayUtilsTests {
   }
 
   @SuppressWarnings("unchecked")
-  protected <T> T[] copy(T[] array) {
+  private <T> T[] copy(T[] array) {
 
     T[] arrayCopy = (T[]) Array.newInstance(array.getClass().getComponentType(), array.length);
 
@@ -121,12 +125,12 @@ public class ArrayUtilsTests {
   }
 
   @SafeVarargs
-  protected final <T> T[] toArray(T... elements) {
+  private final <T> T[] toArray(T... elements) {
     return elements;
   }
 
   @SafeVarargs
-  protected final <T> Enumeration<T> toEnumeration(T... elements) {
+  private final <T> Enumeration<T> toEnumeration(T... elements) {
 
     return new Enumeration<T>() {
 
@@ -146,12 +150,12 @@ public class ArrayUtilsTests {
   }
 
   @SafeVarargs
-  protected final <T> Iterable<T> toIterable(T... elements) {
+  private final <T> Iterable<T> toIterable(T... elements) {
     return () -> toIterator(elements);
   }
 
   @SafeVarargs
-  protected final <T> Iterator<T> toIterator(T... elements) {
+  private final <T> Iterator<T> toIterator(T... elements) {
 
     return new Iterator<T>() {
 
@@ -550,6 +554,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void countWithNullFilter() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage(is(equalTo("Filter is required")));
@@ -558,7 +563,139 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void deepCopyWithArray() {
+
+    Object[] array = { "test", "testing", "tested" };
+    Object[] arrayCopy = ArrayUtils.deepCopy(array);
+
+    assertThat(arrayCopy, is(notNullValue()));
+    assertThat(arrayCopy, is(not(sameInstance(array))));
+    assertThat(arrayCopy.length, is(equalTo(array.length)));
+
+    for (int index = 0, size = arrayCopy.length; index < size; index++) {
+      assertThat(arrayCopy[index], is(equalTo(array[index])));
+      assertThat(arrayCopy[index], is(not(sameInstance(array[index]))));
+    }
+  }
+
+  @Test
+  public void deepCopyWithArrayContainingNonCloneableElementsThrowsUnsupportedOperationException() {
+
+    Object[] array = { "test", Person.newPerson("Jon", "Doe") };
+
+    exception.expect(UnsupportedOperationException.class);
+    exception.expectCause(is(instanceOf(CloneNotSupportedException.class)));
+    exception.expectMessage(new BaseMatcher<String>() {
+
+      @Override
+      public boolean matches(Object obj) {
+        return String.valueOf(obj).contains("[clone] is not supported for object of type [Person]");
+      }
+
+      @Override
+      public void describeTo(Description description) {
+        description.appendText("Expected UnsupportedOperationException wrapping CloneNotSupportedException.");
+      }
+    });
+
+    ArrayUtils.deepCopy(array);
+  }
+
+  @Test
+  public void deepCopyWithArrayHandlesNulls() {
+
+    Object[] array = { null, "one", null, "three", null };
+    Object[] arrayCopy = ArrayUtils.deepCopy(array);
+
+    assertThat(arrayCopy, is(notNullValue()));
+    assertThat(arrayCopy.length, is(equalTo(array.length)));
+
+    for (int index = 0, size = arrayCopy.length; index < size; index++) {
+      assertThat(arrayCopy[index], is(equalTo(array[index])));
+    }
+  }
+
+  @Test
+  public void deepCopyWithNullArrayThrowsIllegalArgumentException() {
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Array is required");
+
+    ArrayUtils.deepCopy(null);
+  }
+
+  @Test
+  public void deepCopyWithArrayAndCopyFunction() {
+
+    Person[] people = { Person.newPerson("Jon", "Doe"), Person.newPerson("Jane", "Doe") };
+
+    Object[] peopleCopy = ArrayUtils.deepCopy(people,
+      person -> Person.newPerson(person.getFirstName(), person.getLastName()));
+
+    assertThat(peopleCopy, is(notNullValue()));
+    assertThat(peopleCopy, is(not(sameInstance(people))));
+    assertThat(peopleCopy.length, is(equalTo(people.length)));
+
+    for (int index = 0, size = people.length; index < size; index++) {
+      assertThat(peopleCopy[index], is(equalTo(people[index])));
+      assertThat(peopleCopy[index], is(not(sameInstance(people[index]))));
+    }
+  }
+
+  @Test
+  public void deepCopyWithNullArrayAndCopyFunctionThrowsIllegalArgumentException() {
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Array is required");
+
+    ArrayUtils.deepCopy(null, Function.identity());
+  }
+
+  @Test
+  public void deepCopyWithArrayAndNullCopyFunctionThrowsIllegalArgumentException() {
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Copy Function is required");
+
+    ArrayUtils.deepCopy(ArrayUtils.emptyArray(), null);
+  }
+
+  @Test
+  public void defaultIfEmptyWithNonNullNonEmptyArrayReturnsArray() {
+
+    Object[] array = { "test" };
+    Object[] defaultArray = { "tested" };
+
+    assertThat(ArrayUtils.defaultIfEmpty(array,defaultArray), is(sameInstance(array)));
+  }
+
+  @Test
+  public void defaultIfEmptyArrayWithEmptyArrayReturnsDefault() {
+
+    Object[] defaultArray = { "test" };
+
+    assertThat(ArrayUtils.defaultIfEmpty(new Object[0], defaultArray), is(sameInstance(defaultArray)));
+  }
+
+  @Test
+  public void defaultIfEmptyArrayWithNullArrayReturnsDefault() {
+
+    Object[] defaultArray = { "test" };
+
+    assertThat(ArrayUtils.defaultIfEmpty(null, defaultArray), is(sameInstance(defaultArray)));
+  }
+
+  @Test
+  public void defaultIfEmptyWithNullArrayAndNullDefaultArrayReturnsNull() {
+    assertThat(ArrayUtils.defaultIfEmpty(null, null), is(nullValue()));
+  }
+
+  @Test
   public void emptyArrayIsClonedProperly() {
+
     Object[] emptyArray = ArrayUtils.emptyArray();
 
     assertThat(emptyArray, is(notNullValue(Object[].class)));
@@ -572,34 +709,8 @@ public class ArrayUtilsTests {
   }
 
   @Test
-  public void defaultIfEmptyWithNonNullNonEmptyArrayReturnsArray() {
-    Object[] array = { "test" };
-    Object[] defaultArray = { "tested" };
-
-    assertThat(ArrayUtils.defaultIfEmpty(array,defaultArray), is(sameInstance(array)));
-  }
-
-  @Test
-  public void defaultIfEmptyArrayWithEmptyArrayReturnsDefault() {
-    Object[] defaultArray = { "test" };
-
-    assertThat(ArrayUtils.defaultIfEmpty(new Object[0], defaultArray), is(sameInstance(defaultArray)));
-  }
-
-  @Test
-  public void defaultIfEmptyArrayWithNullArrayReturnsDefault() {
-    Object[] defaultArray = { "test" };
-
-    assertThat(ArrayUtils.defaultIfEmpty(null, defaultArray), is(sameInstance(defaultArray)));
-  }
-
-  @Test
-  public void defaultIfEmptyWithNullArrayAndNullDefaultArrayReturnsNull() {
-    assertThat(ArrayUtils.defaultIfEmpty(null, null), is(nullValue()));
-  }
-
-  @Test
   public void filter() {
+
     Filter<Integer> evenNumberFilter = NumberUtils::isEven;
     Filter<Integer> oddNumberFilter = NumberUtils::isOdd;
 
@@ -620,6 +731,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterAllAndNothing() {
+
     Filter<Integer> negativeNumberFilter = NumberUtils::isNegative;
     Filter<Integer> positiveNumberFilter = NumberUtils::isPositive;
 
@@ -640,6 +752,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterEmptyArray() {
+
     String[] strings = {};
     String[] actualStrings = ArrayUtils.filter(strings, (element) -> true);
 
@@ -650,6 +763,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterNullArray() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Array is required");
@@ -659,6 +773,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterWithNullFilter() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Filter is required");
@@ -668,7 +783,9 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterAndTransform() {
+
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
+
       @Override
       public boolean accept(String value) {
         return !(value == null || value.trim().isEmpty());
@@ -692,7 +809,9 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterArrayAndTransformEmptyArray() {
+
     FilteringTransformer<String> filteringTransformer = new FilteringTransformer<String>() {
+
       @Override
       public boolean accept(String value) {
         return false;
@@ -716,6 +835,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void filterAndTransformEmptyArray() {
+
     FilteringTransformer<String> mockFilteringTransformer = mock(FilteringTransformer.class);
 
     String[] array = {};
@@ -731,6 +851,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void filterAndTransformNullArray() {
+
     FilteringTransformer<Object> mockFilteringTransformer = mock(FilteringTransformer.class);
 
     try {
@@ -747,6 +868,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void filterAndTransformWithNullFilteringTransformer() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Filter is required");
@@ -756,6 +878,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void find() {
+
     Person cookieDoe = Person.newPerson("Cookie", "Doe");
     Person froDoe = Person.newPerson("Fro", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
@@ -777,6 +900,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findWithNonMatchingFilter() {
+
     Person cookieDoe = Person.newPerson("Cookie", "Doe");
     Person froDoe = Person.newPerson("Fro", "Doe");
     Person janeDoe = Person.newPerson("Jane", "Doe");
@@ -800,6 +924,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void findWithEmptyArray() {
+
     Filter<Object> mockFilter = mock(Filter.class);
 
     assertThat(ArrayUtils.findOne(toArray(), mockFilter), is(nullValue()));
@@ -810,6 +935,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("unchecked")
   public void findWithNullArray() {
+
     Filter<Object> mockFilter = mock(Filter.class);
 
     assertThat(ArrayUtils.findOne(null, mockFilter), is(nullValue()));
@@ -819,6 +945,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findWithNullFilter() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Filter is required");
@@ -828,6 +955,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findAll() {
+
     Integer[] numbers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     Filter<Integer> evenNumberFilter = NumberUtils::isEven;
@@ -841,6 +969,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findAllFromEmptyArray() {
+
     List<?> matches = ArrayUtils.findAll(toArray(), (element) -> true);
 
     assertThat(matches, is(notNullValue(List.class)));
@@ -849,6 +978,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findAllFromNullArray() {
+
     List<?> matches = ArrayUtils.findAll(null, (element) -> true);
 
     assertThat(matches, is(notNullValue(List.class)));
@@ -857,6 +987,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findAllWithNonMatchingFilter() {
+
     Integer[] numbers = { 0, 2, 4, 8, 16, 32, 64 };
 
     Filter<Integer> oddNumberFilter = NumberUtils::isOdd;
@@ -869,6 +1000,7 @@ public class ArrayUtilsTests {
 
   @Test
   public void findAllWithNullFilter() {
+
     exception.expect(IllegalArgumentException.class);
     exception.expectCause(is(nullValue(Throwable.class)));
     exception.expectMessage("Filter is required");
@@ -1388,6 +1520,48 @@ public class ArrayUtilsTests {
     exception.expectMessage("Array is required");
 
     ArrayUtils.remove(null, 0);
+  }
+
+  @Test
+  public void shallowCopyWithArrayContainingObjectTypes() {
+
+    Object[] array = { Person.newPerson("Jon", "Doe"), Person.newPerson("Jane", "Doe") };
+    Object[] arrayCopy = ArrayUtils.shallowCopy(array);
+
+    assertThat(arrayCopy, is(notNullValue()));
+    assertThat(arrayCopy, is(not(sameInstance(array))));
+    assertThat(arrayCopy.length, is(equalTo(array.length)));
+
+    for (int index = 0, size = array.length; index < size; index++) {
+      assertThat(arrayCopy[index], is(equalTo(array[index])));
+      assertThat(arrayCopy[index], is(sameInstance(array[index])));
+    }
+  }
+
+  @Test
+  public void shallowCopyWithArrayContainingPrimitiveTypes() {
+
+    Object[] array = { "test", "testing", "tested" };
+    Object[] arrayCopy = ArrayUtils.shallowCopy(array);
+
+    assertThat(arrayCopy, is(notNullValue()));
+    assertThat(arrayCopy, is(not(sameInstance(array))));
+    assertThat(arrayCopy.length, is(equalTo(array.length)));
+
+    for (int index = 0, size = array.length; index < size; index++) {
+      assertThat(arrayCopy[index], is(equalTo(array[index])));
+      assertThat(arrayCopy[index], is(sameInstance(array[index])));
+    }
+  }
+
+  @Test
+  public void shallowCopyWithNullArray() {
+
+    exception.expect(IllegalArgumentException.class);
+    exception.expectCause(is(nullValue(Throwable.class)));
+    exception.expectMessage("Array is required");
+
+    ArrayUtils.shallowCopy(null);
   }
 
   @Test
