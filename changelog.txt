@@ -3,6 +3,13 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0.M6 - ?
+------------
+Description here...
+
+* Tasks completed here...
+
+
 1.0.0.M5 - 2018-07-11
 ---------------------
 Introduces the new Tabular data structure.
