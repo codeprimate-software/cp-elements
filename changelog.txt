@@ -3,7 +3,7 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
-1.0.0.M5 - ?
+1.0.0.M5 - 2018-07-11
 ---------------------
 Introduces the new Tabular data structure.
 
@@ -35,12 +35,11 @@ and handles any checked Exceptions.
 * Upgraded to AssertJ 3.10.0.
 * Upgraded to Project Lombok 1.18.0.
 * Upgraded to Mockito 2.19.0.
-*
 
 
 1.0.0.M4 - 2018-01-21
 ---------------------
-Introduces new class types, data structures and tools.
+Introduces new class types, data structures (e.g Caching) and tools.
 
 * Created the o.c.e.lang.Verifyable interface to validate the soft constraints, invariants and business rules
 of an application component are upheld.

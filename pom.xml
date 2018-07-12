@@ -12,7 +12,7 @@
   </parent>
 
   <artifactId>cp-elements</artifactId>
-  <version>1.0.0.SNAPSHOT</version>
+  <version>1.0.0.M5</version>
   <packaging>jar</packaging>
 
   <name>cp-elements</name>
@@ -132,7 +132,7 @@
                   <type>date</type>
                   <dates>
                     <date implementation="java.lang.String">2018-01-22</date>
-                    <date implementation="java.lang.String">2018-07-11</date>
+                    <date implementation="java.lang.String">2018-07-12</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
