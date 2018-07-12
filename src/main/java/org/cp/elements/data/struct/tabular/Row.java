@@ -37,7 +37,8 @@ public interface Row {
   /**
    * Returns the {@link Object value} at the given {@link Integer column index} in this {@link Row}.
    *
-   * @param <T> {@link Class type} of the {@link Column} {@link Object value}.
+   * @param <T> {@link Class type} of the {@link Column} {@link Object value} at the given {@link Integer column index}
+   * in this {@link Row}.
    * @param columnIndex {@link Integer index} of the {@link Column} from which to get the {@link Object value}.
    * @throws IndexOutOfBoundsException if the {@link Integer column index} is out of bounds.
    * @return the {@link Object value} at the given {@link Integer column index} in this {@link Row}.
@@ -50,6 +51,8 @@ public interface Row {
    * This {@link Row} must be associated with a {@link View} in order to get the {@link Object value}
    * by {@link Column} {@link String name}.
    *
+   * @param <T> {@link Class type} of the {@link Object value} at the {@link String named} {@link Column}
+   * in this {@link Row}.
    * @param columnName {@link String} containing the name of the {@link Column}.
    * @return the {@link Object value} for the given {@link String named} {@link Column}.
    * @throws IllegalStateException if this {@link Row} is not associated with a {@link View}.
@@ -69,6 +72,7 @@ public interface Row {
   /**
    * Returns the {@link Object value} for the given {@link Column} in this {@link Row}.
    *
+   * @param <T> {@link Class type} of the {@link Object value} at the {@link Column} in this {@link Row}.
    * @param column {@link Column} in this {@link Row}.
    * @return the {@link Object value} for the given {@link Column}.
    * @throws IllegalArgumentException if the {@link Column} is {@literal null} or the {@link Column}
@@ -98,6 +102,7 @@ public interface Row {
   /**
    * Sets the {@link Object value} of the {@link Column} at the given {@link Integer index} in this {@link Row}.
    *
+   * @param <T> {@link Class type} of the {@link Object value} at the {@link Column} in this {@link Row}.
    * @param columnIndex {@link Integer index} of the {@link Column} to set the given {@link Object value}.
    * @param value {@link Object value} to set at the given {@link Integer column index} in this {@link Row}.
    * @return the current {@link Object value} of the {@link Column} at the given {@link Integer index}
@@ -109,6 +114,8 @@ public interface Row {
   /**
    * Sets the {@link Object value} of the {@link String named} {@link Column} in this {@link Row}.
    *
+   * @param <T> {@link Class type} of the {@link Object value} at the {@link String named} {@link Column}
+   * in this {@link Row}.
    * @param columnName {@link String} containing the name of the {@link Column}.
    * @param value {@link Object value} to set for the given {@link String named} {@link Column}.
    * @return the current {@link Object value} of the {@link String named} {@link Column}.
@@ -129,6 +136,7 @@ public interface Row {
   /**
    * Sets the {@link Object value} of the given {@link Column} in this {@link Row}.
    *
+   * @param <T> {@link Class type} of the {@link Object value} at the {@link Column} in this {@link Row}.
    * @param column {@link Column} in this {@link Row}.
    * @param value {@link Object value} to set for the given {@link Column}.
    * @return the current {@link Object value} for the given {@link Column} in this {@link Row}.

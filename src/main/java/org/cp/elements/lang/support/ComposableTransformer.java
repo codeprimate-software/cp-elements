@@ -112,7 +112,6 @@ public class ComposableTransformer<T> implements Composite<Transformer<T>>, Tran
    *
    * @param value {@link Object} value to transform.
    * @return the transformed value.
-   * @see #iterator()
    */
   public T transform(T value) {
     return getTransformerTwo().apply(getTransformerOne().apply(value));

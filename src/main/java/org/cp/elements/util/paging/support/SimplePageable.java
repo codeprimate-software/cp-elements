@@ -37,6 +37,8 @@ import org.cp.elements.util.paging.Pageable;
  * or a {@link List} to provide paging capabilities.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the elements or items contained in the {@link Page pages}
+ * of this {@link Pageable} object.
  * @see java.util.Iterator
  * @see org.cp.elements.util.paging.Page
  * @see org.cp.elements.util.paging.Pageable
@@ -258,7 +260,9 @@ public class SimplePageable<T> implements Pageable<T> {
      * This factory method constructs a new {@link SimplePage} for the first {@link Page}
      * in the {@link Pageable} object.
      *
+     * @param <T> {@link Class type} of the elements contained in this {@link Page}.
      * @param pageable reference to the {@link SimplePageable} object that contains this {@link Page}.
+     * @return a new {@link SimplePage} linked to the given {@link SimplePageable}.
      * @throws IllegalArgumentException if the {@link SimplePageable} object is {@literal null}
      * or the {@link Pageable} object is empty.
      * @see org.cp.elements.util.paging.support.SimplePageable
@@ -273,14 +277,14 @@ public class SimplePageable<T> implements Pageable<T> {
      * underlying {@link SimplePageable} object containing this {@link Page} and this {@link Page Page's}
      * page number.
      *
+     * @param <T> {@link Class type} of the elements contained in this {@link Page}.
      * @param pageable reference to the {@link SimplePageable} object that contains this {@link Page}.
      * @param pageNumber integer value indicating this {@link Page Page's} page number in
      * the collection of {@link Page Pages} contained by the {@link SimplePageable} object.
+     * @return a new {@link SimplePage} linked to the given {@link SimplePageable}.
      * @throws IllegalArgumentException if the {@link SimplePageable} object is {@literal null},
      * the {@link Pageable} object is empty or the page number exceeds the number of {@link Page Pages}
      * contained by the given {@link Pageable} object.
-     * @see org.cp.elements.util.paging.support.SimplePageable
-     * @see #SimplePage(SimplePageable, int)
      */
     protected static <T> SimplePage<T> of(SimplePageable<T> pageable, int pageNumber) {
       return new SimplePage<>(pageable, pageNumber);

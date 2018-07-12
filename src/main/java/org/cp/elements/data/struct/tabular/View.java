@@ -47,7 +47,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 public interface View extends Iterable<Row>, Nameable<String> {
 
   /**
-   * Returns an {@link Iterable> to iterate over the {@link Column Columns} in this {@link View}.
+   * Returns an {@link Iterable} to iterate over the {@link Column Columns} in this {@link View}.
    *
    * @return an {@link Iterable} to iterate over the {@link Column Columns} in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Column

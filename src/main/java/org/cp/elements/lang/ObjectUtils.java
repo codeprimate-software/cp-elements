@@ -155,7 +155,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
 
   /**
    * Safely executes the given {@link ExceptionThrowingOperation} handling any checked {@link Exception}
-   * thrown during the normal execution of the operation by returning the given {@link default value}
+   * thrown during the normal execution of the operation by returning the given {@link Object default value}
    * or rethrowing an {@link IllegalStateException} if the {@link Object default value} is {@literal null}.
    *
    * @param <T> {@link Class type} of the return value.

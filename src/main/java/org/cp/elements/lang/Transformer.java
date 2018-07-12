@@ -27,12 +27,12 @@ import org.cp.elements.data.conversion.Converter;
  *
  * The transformed value of {@link Class type T} could be a more qualified, precise or accurate {@link Object value}
  * than the {@link Object original value}.  For example, transforming an {@link Integer} into a {@link Double}
- * with more precision using a {@link Transformer Transformer<Number>}.
+ * with more precision using a {@link Transformer Transformer&lt;Number&gt;}.
  *
  * Another use case for a {@link Transformer} might be to {@literal Decorate}, or enhance the functionality
  * of an {@link Object} yet still retain the same {@link Class interface}.
  *
- * Use a {@link Converter Converter<S, T>} if you want to "convert", or adapt a value from one {@link Class type}
+ * Use a {@link Converter Converter&lt;S, T&gt;} if you want to "convert", or adapt a value from one {@link Class type}
  * to another {@link Class type}.
  *
  * The {@link Transformer} interface is equivalent to the {@link UnaryOperator} in Java.

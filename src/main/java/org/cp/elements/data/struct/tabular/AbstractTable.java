@@ -19,9 +19,9 @@ package org.cp.elements.data.struct.tabular;
 import org.cp.elements.lang.Constants;
 
 /**
- * The AbstractTable class is an abstract base class implementation of the Table interface encapsulating functionality
- * common to all Table implementations.
- * <p/>
+ * The {@link AbstractTable} class is an abstract base class implementation of the {@link Table} interface
+ * encapsulating functionality common to all {@link Table} implementations.
+ *
  * @author John J. Blum
  * @see AbstractView
  * @see Column

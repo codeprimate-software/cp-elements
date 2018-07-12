@@ -46,9 +46,11 @@ public abstract class Assert {
    *
    * For example, application code might assert that:
    *
-   * <code>
-   *   Assert.argument(age >= 21, "Person must be 21 years of age to enter");
-   * </code>
+   * <pre>
+   *   <code>
+   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *   </code>
+   * </pre>
    *
    * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
    * to determine the validity of the argument.
@@ -66,9 +68,11 @@ public abstract class Assert {
    *
    * For example, application code might assert that:
    *
-   * <code>
-   *   Assert.argument(age >= 21, "Person must be 21 years of age to enter");
-   * </code>
+   * <pre>
+   *   <code>
+   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *   </code>
+   * </pre>
    *
    * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
    * to determine the validity of the argument.
@@ -90,9 +94,11 @@ public abstract class Assert {
    *
    * For example, application code might assert that:
    *
-   * <code>
-   *   Assert.argument(age >= 21, "Person must be 21 years of age to enter");
-   * </code>
+   * <pre>
+   *   <code>
+   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *   </code>
+   * </pre>
    *
    * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
    * to determine the validity of the argument.
@@ -114,9 +120,11 @@ public abstract class Assert {
    *
    * For example, application code might assert that:
    *
-   * <code>
-   *   Assert.argument(age >= 21, "Person must be 21 years of age to enter");
-   * </code>
+   * <pre>
+   *   <code>
+   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *   </code>
+   * </pre>
    *
    * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
    * to determine the validity of the argument.

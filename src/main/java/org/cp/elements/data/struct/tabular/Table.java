@@ -71,7 +71,7 @@ public interface Table extends View {
   boolean removeColumn(int index);
 
   /**
-   * Removes the {@link Column with the given {@link String name} from this {@link Table}.
+   * Removes the {@link Column} with the given {@link String name} from this {@link Table}.
    *
    * @param name {@link String} containing the name of the {@link Column} to remove.
    * @return a boolean value indicating whether the given {@link Column} with {@link String name}
