@@ -18,10 +18,10 @@ package org.cp.elements.data.caching.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.data.caching.support.CacheToMapAdapter.CacheEntry;
-import static org.cp.elements.util.ArrayUtils.asIterator;
 import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.data.caching.Cache;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.MapBuilder;
 import org.cp.elements.util.MapUtils;
 import org.junit.Test;
@@ -583,17 +584,21 @@ public class CacheToMapAdapterTests {
 
     Cache mockCache = mock(Cache.class);
 
-    when(mockCache.iterator()).thenReturn(asIterator("one", "two", "three"));
+    when(mockCache.iterator()).thenReturn(ArrayUtils.asIterator("one", "two", "three"));
     when(mockCache.size()).thenReturn(3);
 
-    Collection<Object> values = CacheToMapAdapter.of(mockCache).values();
+    Map<Object, Object> map = CacheToMapAdapter.of(mockCache);
 
-    assertThat(values).isNotNull();
-    assertThat(values).hasSize(3);
-    assertThat(values).containsExactlyInAnyOrder("one", "two", "three");
+    assertThat(map).isNotNull();
+
+    Collection<Object> mapValues = map.values();
+
+    assertThat(mapValues).isNotNull();
+    assertThat(mapValues).hasSize(3);
+    assertThat(mapValues).containsExactlyInAnyOrder("one", "two", "three");
 
     verify(mockCache, times(1)).iterator();
-    verify(mockCache, times(1)).size();
+    verify(mockCache, atLeastOnce()).size();
   }
 
   @Test
