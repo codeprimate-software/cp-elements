@@ -25,8 +25,6 @@ import static org.cp.elements.process.ProcessAdapter.DEFAULT_TIMEOUT_MILLISECOND
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 import static org.cp.elements.util.ArrayUtils.asArray;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -48,6 +46,7 @@ import static org.mockito.Mockito.when;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,9 +67,8 @@ import org.cp.elements.process.support.RuntimeProcessExecutor;
 import org.cp.elements.util.Environment;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -97,24 +95,34 @@ import edu.umd.cs.mtc.TestFramework;
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessAdapterTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
+  private static final FileFilter PID_FILE_EXTENSION_FILTER = new FileExtensionFilter(".pid");
 
   @Mock
   private Process mockProcess;
 
   private ProcessContext processContext;
 
+  @BeforeClass
+  public static void setupBeforeTests() {
+    FileSystemUtils.deleteRecursive(FileSystemUtils.TEMPORARY_DIRECTORY, PID_FILE_EXTENSION_FILTER);
+  }
+
   @AfterClass
-  public static void tearDown() {
-    FileSystemUtils.deleteRecursive(FileSystemUtils.WORKING_DIRECTORY, new FileExtensionFilter(".pid"));
+  public static void tearDownAfterTests() {
+
+    FileSystemUtils.deleteRecursive(FileSystemUtils.WORKING_DIRECTORY, PID_FILE_EXTENSION_FILTER);
+
     Thread.interrupted();
   }
 
   @Before
   public void setup() {
-    this.processContext = spy(newProcessContext(this.mockProcess).ranBy(SystemUtils.USERNAME)
-      .ranIn(FileSystemUtils.WORKING_DIRECTORY));
+
+    this.processContext = newProcessContext(this.mockProcess)
+      .ranBy(SystemUtils.USERNAME)
+      .ranIn(FileSystemUtils.WORKING_DIRECTORY);
+
+    this.processContext = spy(this.processContext);
   }
 
   @Test
@@ -149,22 +157,34 @@ public class ProcessAdapterTests {
     assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void newProcessAdapterWithNullProcess() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Process cannot be null");
 
-    newProcessAdapter(null, this.processContext);
+    try {
+      newProcessAdapter(null, this.processContext);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Process cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void newProcessAdapterWithNullProcessContext() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("ProcessContext cannot be null");
 
-    newProcessAdapter(this.mockProcess, null);
+    try {
+      newProcessAdapter(this.mockProcess, null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("ProcessContext cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -531,11 +551,13 @@ public class ProcessAdapterTests {
 
   @Test(expected = PidUnknownException.class)
   public void getIdThrowsPidUnknownExceptionForNonExistingPidFile() {
+
     try {
       this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
       newProcessAdapter(this.mockProcess, this.processContext).getId();
     }
     catch (PidUnknownException expected) {
+
       assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [null]");
       assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
       assertThat(expected.getCause()).hasMessage("[null] must be a valid file");
@@ -547,24 +569,29 @@ public class ProcessAdapterTests {
 
   @Test
   public void safeGetIdForNonExistingPidFileHandlesPidUnknownExceptionAndReturnsMinusOne() {
+
     this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).safeGetId()).isEqualTo(-1);
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void setIdThrowsUnsupportedSupportedException() {
+
     ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
     assertThat(processAdapter).isNotNull();
 
     try {
-      exception.expect(UnsupportedOperationException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage(Constants.OPERATION_NOT_SUPPORTED);
-
       this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
       processAdapter.setId(123);
+    }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasMessage(Constants.OPERATION_NOT_SUPPORTED);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
       assertThat(processAdapter.safeGetId()).isEqualTo(-1);
@@ -573,6 +600,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void getStandardErrorStream() {
+
     InputStream mockErrorStream = mock(InputStream.class, "Standard Error Stream");
 
     when(this.mockProcess.getErrorStream()).thenReturn(mockErrorStream);
@@ -587,6 +615,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void getStandardInStream() {
+
     OutputStream mockOutputStream = mock(OutputStream.class, "Standard In Stream");
 
     when(this.mockProcess.getOutputStream()).thenReturn(mockOutputStream);
@@ -601,6 +630,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void getStandardOutStream() {
+
     InputStream mockInputStream = mock(InputStream.class, "Standard Out Stream");
 
     when(this.mockProcess.getInputStream()).thenReturn(mockInputStream);
@@ -615,21 +645,27 @@ public class ProcessAdapterTests {
 
   @Test
   public void getUsernameReturnsNameOfUserUsedToRunProcess() {
+
     this.processContext.ranBy("jblum");
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).getUsername()).isEqualTo("jblum");
   }
 
-  @Test
+  @Test(expected = IllegalThreadStateException.class)
   public void exitValueFoRunningProcessThrowsIllegalThreadStateException() {
+
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
     try {
-      exception.expect(IllegalThreadStateException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage("running");
 
       newProcessAdapter(this.mockProcess, this.processContext).exitValue();
+    }
+    catch (IllegalThreadStateException expected) {
+
+      assertThat(expected).hasMessage("running");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
       verify(this.mockProcess, times(1)).exitValue();
@@ -638,6 +674,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void exitValueForTerminatedProcessReturnsExitValue() {
+
     when(this.mockProcess.exitValue()).thenReturn(1);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).exitValue()).isEqualTo(1);
@@ -647,6 +684,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void safeExitValueForRunningProcessReturnsMinusOne() {
+
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).safeExitValue()).isEqualTo(-1);
@@ -656,6 +694,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void safeExitValueForTerminatedProcessReturnsExitValue() {
+
     when(this.mockProcess.exitValue()).thenReturn(1);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).safeExitValue()).isEqualTo(1);
@@ -665,6 +704,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void killRunningProcessIsSuccessful() throws InterruptedException {
+
     when(this.mockProcess.destroyForcibly()).thenReturn(this.mockProcess);
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
     when(this.mockProcess.waitFor()).thenReturn(1);
@@ -678,6 +718,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void killTerminatedProcessIsSuccessful() throws InterruptedException {
+
     when(this.mockProcess.exitValue()).thenReturn(0);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).kill()).isEqualTo(0);
@@ -690,7 +731,9 @@ public class ProcessAdapterTests {
   @Test
   @SuppressWarnings("unchecked")
   public void restartRunningProcessIsSuccessful() throws InterruptedException {
+
     ProcessExecutor<ProcessAdapter> mockProcessExecutor = mock(ProcessExecutor.class);
+
     Process mockRestartedProcess = mock(Process.class);
 
     List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
@@ -706,6 +749,7 @@ public class ProcessAdapterTests {
     this.processContext.ranIn(FileSystemUtils.USER_HOME_DIRECTORY).ranWith(expectedCommandLine);
 
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+
       @Override
       @SuppressWarnings("unchecked")
       protected ProcessExecutor newProcessExecutor() {
@@ -733,17 +777,19 @@ public class ProcessAdapterTests {
     verify(this.mockProcess, times(2)).exitValue();
     verify(this.mockProcess, times(1)).destroy();
     verify(this.mockProcess, times(1)).waitFor();
-    verify(processAdapter, times(1)).stop(
-      eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
-    verify(mockProcessExecutor, times(1)).execute(
-      eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
+    verify(processAdapter, times(1))
+      .stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+    verify(mockProcessExecutor, times(1))
+      .execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
     verifyZeroInteractions(mockRestartedProcess);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void restartTerminatedProcessIsSuccessful() throws InterruptedException {
+
     ProcessExecutor<ProcessAdapter> mockProcessExecutor = mock(ProcessExecutor.class);
+
     Process mockRestartedProcess = mock(Process.class);
 
     List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
@@ -790,17 +836,20 @@ public class ProcessAdapterTests {
     verifyZeroInteractions(mockRestartedProcess);
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   @SuppressWarnings("unchecked")
   public void restartUnstoppableProcessThrowsIllegalStateException() throws InterruptedException {
+
     ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);
 
     doNothing().when(this.mockProcess).destroy();
 
-    when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"))
+    when(this.mockProcess.exitValue())
+      .thenThrow(new IllegalThreadStateException("running"))
       .thenThrow(new IllegalThreadStateException("still running"));
 
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+
       @Override
       protected ProcessExecutor newProcessExecutor() {
         return mockProcessExecutor;
@@ -819,18 +868,22 @@ public class ProcessAdapterTests {
     });
 
     try {
-      exception.expect(IllegalStateException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage("Process [123] failed to stop");
-
       processAdapter.restart();
     }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessage("Process [123] failed to stop");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
     finally {
+
       verify(this.mockProcess, times(2)).exitValue();
       verify(this.mockProcess, times(1)).destroy();
       verify(this.mockProcess, times(1)).waitFor();
-      verify(processAdapter, times(1)).stop(
-        eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+      verify(processAdapter, times(1))
+        .stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
       verify(mockProcessExecutor, never()).execute(any(File.class), any(String[].class));
     }
   }
@@ -844,6 +897,7 @@ public class ProcessAdapterTests {
   @Test
   @SuppressWarnings("all")
   public void stopHandlesProcessDestroyRuntimeException() throws InterruptedException {
+
     Logger mockLogger = mock(Logger.class);
 
     doThrow(newRuntimeException("test")).when(this.mockProcess).destroy();
@@ -869,6 +923,7 @@ public class ProcessAdapterTests {
   @Test
   @SuppressWarnings("all")
   public void stopHandlesProcessWaitForTimeoutException() throws InterruptedException {
+
     Logger mockLogger = mock(Logger.class);
 
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
@@ -902,13 +957,17 @@ public class ProcessAdapterTests {
 
   @Test
   public void stopNonRunningProcessIsSuccessful() {
+
     when(this.mockProcess.exitValue()).thenReturn(1);
+
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).stop()).isEqualTo(1);
+
     verify(this.mockProcess, times(2)).exitValue();
   }
 
   @Test
   public void stopRunningProcessIsSuccessful() throws InterruptedException {
+
     doNothing().when(this.mockProcess).destroy();
     when(this.mockProcess.exitValue()).thenThrow(new IllegalThreadStateException("running"));
     when(this.mockProcess.waitFor()).thenReturn(0);
@@ -922,6 +981,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void stopAndWaitCallsProcessAdapterStopAndWait() throws InterruptedException {
+
     doNothing().when(this.mockProcess).destroy();
     when(this.mockProcess.waitFor()).thenReturn(0);
 
@@ -957,6 +1017,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void stopAndWaitWithTimeoutCallsProcessAdapterStopAndWaitWithTimeout() throws InterruptedException {
+
     doNothing().when(this.mockProcess).destroy();
     when(this.mockProcess.exitValue()).thenReturn(1);
     when(this.mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
@@ -996,6 +1057,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void registerAndUnregisterProcessStreamListenerIsCorrect() {
+
     ProcessStreamListener mockProcessStreamListenerOne = mock(ProcessStreamListener.class,
       "MockProcessStreamListenerOne");
 
@@ -1037,6 +1099,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void waitForCallsProcessWaitFor() throws InterruptedException {
+
     when(this.mockProcess.waitFor()).thenReturn(1);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).waitFor()).isEqualTo(1);
@@ -1051,6 +1114,7 @@ public class ProcessAdapterTests {
 
   @Test
   public void waitForWithTimeoutCallsProcessWaitForWithTimeout() throws InterruptedException {
+
     when(this.mockProcess.waitFor(anyLong(), any(TimeUnit.class))).thenReturn(true);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).waitFor(30, TimeUnit.SECONDS)).isTrue();

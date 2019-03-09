@@ -142,6 +142,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see java.lang.Process
    */
   public ProcessAdapter(Process process, ProcessContext processContext) {
+
     Assert.notNull(process, "Process cannot be null");
     Assert.notNull(processContext, "ProcessContext cannot be null");
 
@@ -158,11 +159,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   @Override
   public void init() {
+
     if (!getProcessContext().inheritsIO()) {
+
       newThread(String.format("Process [%d] Standard Out Reader", safeGetId()),
         newProcessStreamReader(getProcess().getInputStream())).start();
 
       if (!getProcessContext().isRedirectingErrorStream()) {
+
         newThread(String.format("Process [%d] Standard Error Reader", safeGetId()),
           newProcessStreamReader(getProcess().getErrorStream())).start();
       }
@@ -171,10 +175,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     initialized.set(true);
   }
 
-  /* (non-Javadoc) */
   protected Runnable newProcessStreamReader(InputStream in) {
+
     return () -> {
+
       if (isRunning()) {
+
         BufferedReader reader = newReader(in);
 
         try {
@@ -193,17 +199,19 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     };
   }
 
-  /* (non-Javadoc) */
   protected BufferedReader newReader(InputStream in) {
     return new BufferedReader(new InputStreamReader(in));
   }
 
-  /* (non-Javadoc) */
   protected Thread newThread(String name, Runnable task) {
-    return newThreadFactory().as(DAEMON_THREAD).in(resolveThreadGroup()).with(THREAD_PRIORITY).newThread(name, task);
+
+    return newThreadFactory()
+      .as(DAEMON_THREAD)
+      .in(resolveThreadGroup())
+      .with(THREAD_PRIORITY)
+      .newThread(name, task);
   }
 
-  /* (non-Javadoc) */
   protected ThreadGroup resolveThreadGroup() {
     return this.threadGroup;
   }
@@ -330,10 +338,12 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   @Override
   public Integer getId() {
+
     try {
       return ProcessUtils.readPid(ProcessUtils.findPidFile(getDirectory()));
     }
     catch (Throwable cause) {
+
       if (cause instanceof PidUnknownException) {
         throw (PidUnknownException) cause;
       }
@@ -354,6 +364,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #getId()
    */
   public Integer safeGetId() {
+
     try {
       return getId();
     }
@@ -451,6 +462,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #exitValue()
    */
   public int safeExitValue() {
+
     try {
       return exitValue();
     }
@@ -469,8 +481,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #isRunning()
    */
   public synchronized int kill() {
-    return (isRunning() ? newProcessAdapter(getProcess().destroyForcibly(), getProcessContext()).waitFor()
-      : safeExitValue());
+
+    return isRunning()
+      ? newProcessAdapter(getProcess().destroyForcibly(), getProcessContext()).waitFor()
+      : safeExitValue();
   }
 
   /**
@@ -486,6 +500,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #stopAndWait()
    */
   public synchronized ProcessAdapter restart() {
+
     if (isRunning()) {
       stopAndWait();
     }
@@ -495,12 +510,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     return execute(this, getProcessContext());
   }
 
-  /* (non-Javadoc) */
   protected ProcessAdapter execute(ProcessAdapter processAdapter, ProcessContext processContext) {
     return newProcessExecutor().execute(processAdapter.getDirectory(), processAdapter.getCommandLine());
   }
 
-  /* (non-Javadoc) */
   protected ProcessExecutor<ProcessAdapter> newProcessExecutor() {
     return newRuntimeProcessExecutor();
   }
@@ -539,6 +552,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
         newThreadFactory().as(DAEMON_THREAD).in(resolveThreadGroup()).with(THREAD_PRIORITY));
 
       try {
+
         Future<Integer> futureExitValue = executorService.submit(() -> {
           getProcess().destroy();
           return getProcess().waitFor();
@@ -581,7 +595,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #waitFor()
    */
   public int stopAndWait() {
+
     stop();
+
     return waitFor();
   }
 
@@ -597,7 +613,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #safeExitValue()
    */
   public int stopAndWait(long timeout, TimeUnit unit) {
+
     stop(timeout, unit);
+
     return (waitFor(timeout, unit) ? exitValue() : safeExitValue());
   }
 
@@ -610,7 +628,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see org.cp.elements.process.event.ProcessStreamListener
    */
   public ProcessAdapter register(ProcessStreamListener listener) {
+
     this.listeners.add(listener);
+
     return this;
   }
 
@@ -623,8 +643,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #stop()
    */
   public ProcessAdapter registerShutdownHook() {
-    Runtime.getRuntime().addShutdownHook(
-      newThread(String.format("Process [%d] Runtime Shutdown Hook", safeGetId()), this::stop));
+
+    Runtime.getRuntime()
+      .addShutdownHook(newThread(String.format("Process [%d] Runtime Shutdown Hook", safeGetId()), this::stop));
 
     return this;
   }
@@ -638,7 +659,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see org.cp.elements.process.event.ProcessStreamListener
    */
   public ProcessAdapter unregister(ProcessStreamListener listener) {
+
     this.listeners.remove(listener);
+
     return this;
   }
 
@@ -653,11 +676,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #safeExitValue()
    */
   public int waitFor() {
+
     try {
       return getProcess().waitFor();
     }
     catch (InterruptedException ignore) {
+
       Thread.currentThread().interrupt();
+
       return safeExitValue();
     }
   }
@@ -675,11 +701,14 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @see #isNotRunning()
    */
   public boolean waitFor(long timeout, TimeUnit unit) {
+
     try {
       return getProcess().waitFor(timeout, unit);
     }
     catch (InterruptedException ignore) {
+
       Thread.currentThread().interrupt();
+
       return isNotRunning();
     }
   }
