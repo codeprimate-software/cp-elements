@@ -77,7 +77,9 @@ public abstract class ProcessUtils {
    * @throws PidUnknownException if the Process ID (PID) of this Java {@link Process} cannot be determined.
    */
   public static int getProcessId() {
+
     RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+
     String runtimeMxBeanName = runtimeMxBean.getName();
 
     Throwable cause = null;
@@ -109,7 +111,7 @@ public abstract class ProcessUtils {
    */
   @NullSafe
   public static boolean isAlive(Process process) {
-    return (process != null && process.isAlive());
+    return process != null && process.isAlive();
   }
 
   /**
@@ -132,8 +134,9 @@ public abstract class ProcessUtils {
    */
   @NullSafe
   public static boolean isRunning(Process process) {
+
     try {
-      return (process != null && process.exitValue() == Double.NaN);
+      return process != null && process.exitValue() == Double.NaN;
     }
     catch (IllegalThreadStateException ignore) {
       return true;
@@ -150,7 +153,7 @@ public abstract class ProcessUtils {
    */
   @NullSafe
   public static boolean isRunning(ProcessAdapter processAdapter) {
-    return (processAdapter != null && isRunning(processAdapter.getProcess()));
+    return processAdapter != null && isRunning(processAdapter.getProcess());
   }
 
   /**
@@ -162,11 +165,14 @@ public abstract class ProcessUtils {
    * @see Runtime#exec(String)
    */
   public static boolean kill(int processId) {
-    String killCommand = String.format("%s %d",
-      (SystemUtils.isWindows() ? WINDOWS_KILL_COMMAND : UNIX_KILL_COMMAND), processId);
+
+    String killCommand =
+      String.format("%s %d", SystemUtils.isWindows() ? WINDOWS_KILL_COMMAND : UNIX_KILL_COMMAND, processId);
 
     try {
+
       Process killProcess = Runtime.getRuntime().exec(killCommand);
+
       return killProcess.waitFor(KILL_WAIT_TIMEOUT, KILL_WAIT_TIME_UNIT);
     }
     catch (Throwable ignore) {
@@ -186,9 +192,11 @@ public abstract class ProcessUtils {
    */
   @NullSafe
   public static boolean kill(Process process) {
+
     boolean alive = isAlive(process);
 
     if (alive) {
+
       process.destroy();
 
       try {
@@ -198,7 +206,9 @@ public abstract class ProcessUtils {
         Thread.currentThread().interrupt();
       }
       finally {
+
         if (alive) {
+
           process.destroyForcibly();
 
           try {
@@ -225,7 +235,7 @@ public abstract class ProcessUtils {
    */
   @NullSafe
   public static boolean kill(ProcessAdapter processAdapter) {
-    return (processAdapter != null && kill(processAdapter.getProcess()));
+    return processAdapter != null && kill(processAdapter.getProcess());
   }
 
   /**
@@ -294,12 +304,14 @@ public abstract class ProcessUtils {
    */
   @SuppressWarnings("all")
   public static File findPidFile(File path) {
+
     Assert.isTrue(FileSystemUtils.isExisting(path),
       "The path [%s] to search for the .pid file must not be null and must actually exist", path);
 
-    File searchDirectory = (path.isDirectory() ? path : path.getParentFile());
+    File searchDirectory = path.isDirectory() ? path : path.getParentFile();
 
     for (File file : searchDirectory.listFiles(DIRECTORY_PID_FILE_FILTER)) {
+
       if (file.isDirectory()) {
         file = findPidFile(file);
       }
@@ -323,11 +335,12 @@ public abstract class ProcessUtils {
    * @see #writePid(int)
    */
   public static int readPid(File pid) {
+
     try {
       return Integer.parseInt(FileSystemUtils.read(pid));
     }
-    catch (IOException | IllegalArgumentException | IllegalStateException e) {
-      throw new PidUnknownException(String.format("Failed to read Process ID (PID) from file [%s]", pid), e);
+    catch (IOException | IllegalArgumentException | IllegalStateException cause) {
+      throw new PidUnknownException(String.format("Failed to read Process ID (PID) from file [%s]", pid), cause);
     }
   }
 
@@ -341,6 +354,7 @@ public abstract class ProcessUtils {
    * @see #readPid(File)
    */
   public static File writePid(int pid) throws IOException {
+
     File pidFile = FileSystemUtils.newFile(PROCESS_ID_FILENAME);
 
     pidFile.deleteOnExit();
@@ -358,13 +372,12 @@ public abstract class ProcessUtils {
     }
   }
 
-  /* (non-Javadoc) */
   private static PrintWriter newPrintWriter(File file) throws IOException {
     return new PrintWriter(new BufferedWriter(new FileWriter(file, false), 32), true);
   }
 
-  /* (non-Javadoc) */
   enum VirtualMachineAccessor {
+
     INSTANCE;
 
     public boolean isRunning(int processId) {

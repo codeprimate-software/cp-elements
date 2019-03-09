@@ -160,7 +160,7 @@ public abstract class FileUtils extends IOUtils {
    */
   @NullSafe
   public static boolean isDirectory(File path) {
-    return (path != null && path.isDirectory());
+    return path != null && path.isDirectory();
   }
 
   /**
@@ -173,7 +173,7 @@ public abstract class FileUtils extends IOUtils {
    */
   @NullSafe
   public static boolean isEmpty(File path) {
-    return (size(path) == 0L);
+    return size(path) == 0L;
   }
 
   /**
@@ -185,7 +185,7 @@ public abstract class FileUtils extends IOUtils {
    */
   @NullSafe
   public static boolean isExisting(File path) {
-    return (path != null && path.exists());
+    return path != null && path.exists();
   }
 
   /**
@@ -197,7 +197,7 @@ public abstract class FileUtils extends IOUtils {
    */
   @NullSafe
   public static boolean isFile(File path) {
-    return (path != null && path.isFile());
+    return path != null && path.isFile();
   }
 
   /**
@@ -224,10 +224,12 @@ public abstract class FileUtils extends IOUtils {
    * @see #isFile(File)
    */
   public static String read(File file) throws IOException {
-    Assert.isTrue(isFile(file), "[%1$s] must be a valid file", file);
-    Assert.state(file.canRead(), "[%1$s] is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
+
+    Assert.isTrue(isFile(file), "[%s] must be a valid file", file);
+    Assert.state(file.canRead(), "[%s] is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
     BufferedReader fileReader = new BufferedReader(new FileReader(file));
+
     StringBuilder buffer = new StringBuilder();
 
     try {
