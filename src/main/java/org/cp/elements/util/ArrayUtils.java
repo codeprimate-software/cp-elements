@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static java.util.Arrays.stream;
@@ -42,7 +41,7 @@ import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * {@link ArrayUtils} encapsulates utility methods and functionality for interacting with {@link Object} arrays.
+ * An abstract utility {@link Class} providing methods and functionality for working with {@link Object} arrays.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -630,7 +629,6 @@ public abstract class ArrayUtils {
 
   /* non-Javadoc */
   @NullSafe
-  @SuppressWarnings("unchecked")
   static <T> Class<?> componentType(T[] array) {
     return array != null ? array.getClass().getComponentType() : Object.class;
   }
