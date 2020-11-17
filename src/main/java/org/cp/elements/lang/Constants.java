@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The Constants class defines useful constants used throughout the cp-elements Java Class Library and APIs.
+ * The {@link Constants} class defines useful constants used throughout the cp-elements Java Class Library and APIs.
  *
  * @author John J. Blum
  * @since 1.0.0
