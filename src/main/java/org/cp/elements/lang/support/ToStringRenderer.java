@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Renderer;
 
 /**
- * The ToStringRenderer class is an implementation of the Renderer interface that calls Object.toString on the
- * specified Object to render.
+ * Implementation of the {@link Renderer} interface that calls {@link Object#toString()}
+ * on the specified {@link Object} to render.
  *
  * @author John J. Blum
- * @param <T> the class type of the object to render.
+ * @param <T> {@link Class} type of the {@link Object} to render.
  * @see java.lang.String
  * @see org.cp.elements.lang.Renderer
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class ToStringRenderer<T> implements Renderer<T> {
+
+  public static final ToStringRenderer<Object> INSTANCE = new ToStringRenderer<>();
 
   /**
    * Renders the specified Object using the Object.toString method.
