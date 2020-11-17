@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -35,24 +29,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * The FileUtilsTests class is a test suite of test cases testing the contract and functionality
- * of the {@link FileUtils} class.
+ * Unit Tests for {@link FileUtils}.
  *
  * @author John J. Blum
  * @see java.io.File
+ * @see java.net.URL
  * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.junit.rules.ExpectedException
@@ -68,9 +62,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class FileUtilsTests extends AbstractBaseTestSuite {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Mock
   private File mockFile;
 
@@ -79,417 +70,480 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
     FileSystemUtils.delete(new File(TEMPORARY_DIRECTORY, "writeToFileThenReadFromFileIsSuccessful.txt"));
   }
 
-  protected File newFile(String pathname) {
+  private File newFile(String pathname) {
     return new File(pathname);
   }
 
-  protected File newFile(File parent, String pathname) {
+  private File newFile(File parent, String pathname) {
     return new File(parent, pathname);
   }
 
   @Test
   public void assertExistsWithExistingDirectory() throws FileNotFoundException {
-    assertThat(FileUtils.assertExists(WORKING_DIRECTORY), is(equalTo(WORKING_DIRECTORY)));
+    assertThat(FileUtils.assertExists(WORKING_DIRECTORY)).isEqualTo(WORKING_DIRECTORY);
   }
 
   @Test
   @SuppressWarnings("all")
   public void assertExistsWithExistingFile() throws FileNotFoundException {
 
-    when(mockFile.exists()).thenReturn(true);
+    when(this.mockFile.exists()).thenReturn(true);
 
-    assertThat(FileUtils.assertExists(mockFile), is(equalTo(mockFile)));
+    assertThat(FileUtils.assertExists(this.mockFile)).isEqualTo(this.mockFile);
 
-    verify(mockFile, times(1)).exists();
+    verify(this.mockFile, times(1)).exists();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
-  @Test
+  @Test(expected = FileNotFoundException.class)
   public void assertExistsWithNonExistingDirectory() throws FileNotFoundException {
 
-    exception.expect(FileNotFoundException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[/absolute/path/to/non/existing/directory] was not found");
+    try {
+      FileUtils.assertExists(newFile("/absolute/path/to/non/existing/directory"));
+    }
+    catch (FileNotFoundException expected) {
 
-    FileUtils.assertExists(newFile("/absolute/path/to/non/existing/directory"));
+      assertThat(expected).hasMessage("[/absolute/path/to/non/existing/directory] was not found");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = FileNotFoundException.class)
   public void assertExistsWithNonExistingFile() throws FileNotFoundException {
 
-    exception.expect(FileNotFoundException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[relative/path/to/non/existing/file.ext] was not found");
+    try {
+      FileUtils.assertExists(newFile("relative/path/to/non/existing/file.ext"));
+    }
+    catch (FileNotFoundException expected) {
 
-    FileUtils.assertExists(newFile("relative/path/to/non/existing/file.ext"));
+      assertThat(expected).hasMessage("[relative/path/to/non/existing/file.ext] was not found");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = FileNotFoundException.class)
   public void assertExistsWithNull() throws FileNotFoundException {
 
-    exception.expect(FileNotFoundException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] was not found");
+    try {
+      FileUtils.assertExists(null);
+    }
+    catch (FileNotFoundException expected) {
 
-    FileUtils.assertExists(null);
+      assertThat(expected).hasMessage("[null] was not found");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   @SuppressWarnings("all")
   public void createDirectoryWithNonExistingDirectory() {
 
-    when(mockFile.isDirectory()).thenReturn(false);
-    when(mockFile.isFile()).thenReturn(false);
-    when(mockFile.mkdirs()).thenReturn(true);
+    when(this.mockFile.isDirectory()).thenReturn(false);
+    when(this.mockFile.isFile()).thenReturn(false);
+    when(this.mockFile.mkdirs()).thenReturn(true);
 
-    assertThat(FileUtils.createDirectory(mockFile), is(true));
+    assertThat(FileUtils.createDirectory(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, times(1)).mkdirs();
+    verify(this.mockFile, times(1)).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, times(1)).mkdirs();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void createDirectoryWithExistingDirectory() {
 
-    when(mockFile.isDirectory()).thenReturn(true);
-    when(mockFile.isFile()).thenReturn(false);
+    when(this.mockFile.isDirectory()).thenReturn(true);
+    when(this.mockFile.isFile()).thenReturn(false);
 
-    assertThat(FileUtils.createDirectory(mockFile), is(true));
+    assertThat(FileUtils.createDirectory(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, never()).mkdirs();
+    verify(this.mockFile, times(1)).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, never()).mkdirs();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void createDirectoryWithExistingFile() {
 
-    when(mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.isFile()).thenReturn(true);
 
-    assertThat(FileUtils.createDirectory(mockFile), is(false));
+    assertThat(FileUtils.createDirectory(this.mockFile)).isFalse();
 
-    verify(mockFile, never()).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, never()).mkdirs();
+    verify(this.mockFile, never()).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, never()).mkdirs();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void createDirectoryWithNull() {
-    assertThat(FileUtils.createDirectory(null), is(false));
+    assertThat(FileUtils.createDirectory(null)).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void createFileWithNonExistingFile() throws IOException {
 
-    when(mockFile.isDirectory()).thenReturn(false);
-    when(mockFile.isFile()).thenReturn(false);
-    when(mockFile.createNewFile()).thenReturn(true);
+    when(this.mockFile.isDirectory()).thenReturn(false);
+    when(this.mockFile.isFile()).thenReturn(false);
+    when(this.mockFile.createNewFile()).thenReturn(true);
 
-    assertThat(FileUtils.createFile(mockFile), is(true));
+    assertThat(FileUtils.createFile(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, times(1)).createNewFile();
+    verify(this.mockFile, times(1)).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, times(1)).createNewFile();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void createFileWithExistingDirectory() throws IOException {
 
-    when(mockFile.isDirectory()).thenReturn(true);
+    when(this.mockFile.isDirectory()).thenReturn(true);
 
-    assertThat(FileUtils.createFile(mockFile), is(false));
+    assertThat(FileUtils.createFile(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, never()).isFile();
-    verify(mockFile, never()).createNewFile();
+    verify(this.mockFile, times(1)).isDirectory();
+    verify(this.mockFile, never()).isFile();
+    verify(this.mockFile, never()).createNewFile();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void createFileWithExistingFile() throws IOException {
 
-    when(mockFile.isDirectory()).thenReturn(false);
-    when(mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.isDirectory()).thenReturn(false);
+    when(this.mockFile.isFile()).thenReturn(true);
 
-    assertThat(FileUtils.createFile(mockFile), is(true));
+    assertThat(FileUtils.createFile(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, never()).createNewFile();
+    verify(this.mockFile, times(1)).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, never()).createNewFile();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void createFileWithNull() {
-    assertThat(FileUtils.createFile(null), is(false));
+    assertThat(FileUtils.createFile(null)).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void createFileThrowsIOExceptionOnFileCreateNewFile() throws IOException {
 
-    when(mockFile.isDirectory()).thenReturn(false);
-    when(mockFile.isFile()).thenReturn(false);
-    when(mockFile.createNewFile()).thenThrow(new IOException("test"));
+    when(this.mockFile.isDirectory()).thenReturn(false);
+    when(this.mockFile.isFile()).thenReturn(false);
+    when(this.mockFile.createNewFile()).thenThrow(new IOException("test"));
 
-    assertThat(FileUtils.createFile(mockFile), is(false));
+    assertThat(FileUtils.createFile(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, times(1)).createNewFile();
+    verify(this.mockFile, times(1)).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, times(1)).createNewFile();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void deleteExistingFileIsSuccessful() {
 
-    when(mockFile.exists()).thenReturn(true);
-    when(mockFile.delete()).thenReturn(true);
+    when(this.mockFile.exists()).thenReturn(true);
+    when(this.mockFile.delete()).thenReturn(true);
 
-    assertThat(FileUtils.delete(mockFile), is(true));
+    assertThat(FileUtils.delete(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).exists();
-    verify(mockFile, times(1)).delete();
+    verify(this.mockFile, times(1)).exists();
+    verify(this.mockFile, times(1)).delete();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void deleteExistingFileIsUnsuccessful() {
 
-    when(mockFile.exists()).thenReturn(true);
-    when(mockFile.delete()).thenReturn(false);
+    when(this.mockFile.exists()).thenReturn(true);
+    when(this.mockFile.delete()).thenReturn(false);
 
-    assertThat(FileUtils.delete(mockFile), is(false));
+    assertThat(FileUtils.delete(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).exists();
-    verify(mockFile, times(1)).delete();
+    verify(this.mockFile, times(1)).exists();
+    verify(this.mockFile, times(1)).delete();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void deleteNonExistingFileIsUnsuccessful() {
 
-    when(mockFile.exists()).thenReturn(false);
+    when(this.mockFile.exists()).thenReturn(false);
 
-    assertThat(FileUtils.delete(mockFile), is(false));
+    assertThat(FileUtils.delete(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).exists();
-    verify(mockFile, never()).delete();
+    verify(this.mockFile, times(1)).exists();
+    verify(this.mockFile, never()).delete();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void deleteNullIsUnsuccessful() {
-    assertThat(FileUtils.delete(null), is(false));
+    assertThat(FileUtils.delete(null)).isFalse();
   }
 
   @Test
   public void getExtensionOfFilesWithExtension() {
 
-    assertThat(FileUtils.getExtension(newFile("/absolute/path/to/file.ext")), is(equalTo("ext")));
-    assertThat(FileUtils.getExtension(newFile("relative/path/to/file.ext")), is(equalTo("ext")));
-    assertThat(FileUtils.getExtension(newFile("FileUtils.java")), is(equalTo("java")));
-    assertThat(FileUtils.getExtension(newFile("FileUtilsTests.class")), is(equalTo("class")));
-    assertThat(FileUtils.getExtension(newFile("search.c")), is(equalTo("c")));
-    assertThat(FileUtils.getExtension(newFile("sort.cpp")), is(equalTo("cpp")));
-    assertThat(FileUtils.getExtension(newFile("/path/to/file/with/two/extensions/test.java.class")),
-      is(equalTo("java.class")));
+    assertThat(FileUtils.getExtension(newFile("/absolute/path/to/file.ext"))).isEqualTo("ext");
+    assertThat(FileUtils.getExtension(newFile("relative/path/to/file.ext"))).isEqualTo("ext");
+    assertThat(FileUtils.getExtension(newFile("FileUtils.java"))).isEqualTo("java");
+    assertThat(FileUtils.getExtension(newFile("FileUtilsTests.class"))).isEqualTo("class");
+    assertThat(FileUtils.getExtension(newFile("search.c"))).isEqualTo("c");
+    assertThat(FileUtils.getExtension(newFile("sort.cpp"))).isEqualTo("cpp");
+    assertThat(FileUtils.getExtension(newFile("/path/to/file/with/two/extensions/test.java.class")))
+      .isEqualTo("java.class");
   }
 
   @Test
   public void getExtensionOfFilesWithNoExtension() {
 
-    assertThat(FileUtils.getExtension(newFile("file")), is(equalTo(StringUtils.EMPTY_STRING)));
-    assertThat(FileUtils.getExtension(newFile("file.")), is(equalTo(StringUtils.EMPTY_STRING)));
-    assertThat(FileUtils.getExtension(newFile("exe")), is(equalTo(StringUtils.EMPTY_STRING)));
+    assertThat(FileUtils.getExtension(newFile("file"))).isEqualTo(StringUtils.EMPTY_STRING);
+    assertThat(FileUtils.getExtension(newFile("file."))).isEqualTo(StringUtils.EMPTY_STRING);
+    assertThat(FileUtils.getExtension(newFile("exe"))).isEqualTo(StringUtils.EMPTY_STRING);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void getExtensionWithNull() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("File cannot be null");
+    try {
+      FileUtils.getExtension(null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    FileUtils.getExtension(null);
+      assertThat(expected).hasMessage("File cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void getLocationOfFilesWithLocation() {
 
-    assertThat(FileUtils.getLocation(newFile("/absolute/path/to/file.ext")), is(equalTo("/absolute/path/to")));
-    assertThat(FileUtils.getLocation(newFile("relative/path/to/file.ext")), is(equalTo(String.format(
-      "%1$s%2$srelative/path/to", WORKING_DIRECTORY.getAbsolutePath(), File.separator))));
-    assertThat(FileUtils.getLocation(newFile("/location/to/a/file/system/directory")),
-      is(equalTo("/location/to/a/file/system")));
-    assertThat(FileUtils.getLocation(WORKING_DIRECTORY), is(equalTo(WORKING_DIRECTORY.getParent())));
+    assertThat(FileUtils.getLocation(newFile("/absolute/path/to/file.ext"))).isEqualTo("/absolute/path/to");
+    assertThat(FileUtils.getLocation(newFile("relative/path/to/file.ext"))).isEqualTo(String.format(
+      "%1$s%2$srelative/path/to", WORKING_DIRECTORY.getAbsolutePath(), File.separator));
+    assertThat(FileUtils.getLocation(newFile("/location/to/a/file/system/directory"))).isEqualTo(
+      "/location/to/a/file/system");
+    assertThat(FileUtils.getLocation(WORKING_DIRECTORY)).isEqualTo(WORKING_DIRECTORY.getParent());
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void getLocationOfFileWithNoLocation() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Unable to determine the location of file [file.ext]");
+    try {
+      FileUtils.getLocation(newFile("file.ext"));
+    }
+    catch (IllegalArgumentException expected) {
 
-    FileUtils.getLocation(newFile("file.ext"));
+      assertThat(expected).hasMessage("Unable to determine the location of file [file.ext]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void getLocationWithNull() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("File cannot be null");
+    try {
+      FileUtils.getLocation(null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    FileUtils.getLocation(null);
+      assertThat(expected).hasMessage("File cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void getNameOfFilesWithName() {
 
-    assertThat(FileUtils.getName(newFile("/absolute/path/to/file.ext")), is(equalTo("file")));
-    assertThat(FileUtils.getName(newFile("relative/path/to/file.ext")), is(equalTo("file")));
-    assertThat(FileUtils.getName(newFile("FileUtilsTests.java")), is(equalTo("FileUtilsTests")));
-    assertThat(FileUtils.getName(newFile("FileUtils.class")), is(equalTo("FileUtils")));
-    assertThat(FileUtils.getName(newFile("search.c")), is(equalTo("search")));
-    assertThat(FileUtils.getName(newFile("sort.cpp")), is(equalTo("sort")));
-    assertThat(FileUtils.getName(newFile("/path/to/file/with/two/extensions/test.java.class")),
-      is(equalTo("test")));
+    assertThat(FileUtils.getName(newFile("/absolute/path/to/file.ext"))).isEqualTo("file");
+    assertThat(FileUtils.getName(newFile("relative/path/to/file.ext"))).isEqualTo("file");
+    assertThat(FileUtils.getName(newFile("FileUtilsTests.java"))).isEqualTo("FileUtilsTests");
+    assertThat(FileUtils.getName(newFile("FileUtils.class"))).isEqualTo("FileUtils");
+    assertThat(FileUtils.getName(newFile("search.c"))).isEqualTo("search");
+    assertThat(FileUtils.getName(newFile("sort.cpp"))).isEqualTo("sort");
+    assertThat(FileUtils.getName(newFile("/path/to/file/with/two/extensions/test.java.class"))).isEqualTo("test");
   }
 
   @Test
   public void getNameOfFilesWithNoName() {
 
-    assertThat(FileUtils.getName(newFile(".exe")), is(equalTo(StringUtils.EMPTY_STRING)));
-    assertThat(FileUtils.getName(newFile(".")), is(equalTo(StringUtils.EMPTY_STRING)));
+    assertThat(FileUtils.getName(newFile(".exe"))).isEqualTo(StringUtils.EMPTY_STRING);
+    assertThat(FileUtils.getName(newFile("."))).isEqualTo(StringUtils.EMPTY_STRING);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void getNameWithNull() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("File cannot be null");
+    try {
+      FileUtils.getName(null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    FileUtils.getName(null);
+      assertThat(expected).hasMessage("File cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void isDirectoryWithDirectories() {
 
-    assertThat(FileUtils.isDirectory(TEMPORARY_DIRECTORY), is(true));
-    assertThat(FileUtils.isDirectory(USER_HOME), is(true));
-    assertThat(FileUtils.isDirectory(WORKING_DIRECTORY), is(true));
+    assertThat(FileUtils.isDirectory(TEMPORARY_DIRECTORY)).isTrue();
+    assertThat(FileUtils.isDirectory(USER_HOME)).isTrue();
+    assertThat(FileUtils.isDirectory(WORKING_DIRECTORY)).isTrue();
   }
 
   @Test
   public void isDirectoryWithNonDirectories() {
 
-    assertThat(FileUtils.isDirectory(newFile(TEMPORARY_DIRECTORY, "non_existing_directory/")), is(false));
-    assertThat(FileUtils.isDirectory(newFile(USER_HOME, "nonExistingFile.ext")), is(false));
-    assertThat(FileUtils.isDirectory(newFile(WORKING_DIRECTORY, "cp-elements-1.0.0.SNAPSHOT.jar")), is(false));
+    assertThat(FileUtils.isDirectory(newFile(TEMPORARY_DIRECTORY, "non_existing_directory/"))).isFalse();
+    assertThat(FileUtils.isDirectory(newFile(USER_HOME, "nonExistingFile.ext"))).isFalse();
+    assertThat(FileUtils.isDirectory(newFile(WORKING_DIRECTORY, "cp-elements-1.0.0.SNAPSHOT.jar"))).isFalse();
   }
 
   @Test
   public void isDirectoryWithNull() {
-    assertThat(FileUtils.isDirectory(null), is(false));
+    assertThat(FileUtils.isDirectory(null)).isFalse();
   }
 
   @Test
   public void isEmptyWithExistingNonEmptyDirectoryIsTrue() {
-    assertThat(FileUtils.isEmpty(WORKING_DIRECTORY), is(true));
+    assertThat(FileUtils.isEmpty(WORKING_DIRECTORY)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isEmptyWithExistingNonEmptyFileIsFalse() {
 
-    when(mockFile.isFile()).thenReturn(true);
-    when(mockFile.length()).thenReturn(1l);
+    when(this.mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.length()).thenReturn(1L);
 
-    assertThat(FileUtils.isEmpty(mockFile), is(false));
+    assertThat(FileUtils.isEmpty(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, times(1)).length();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, times(1)).length();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void isEmptyWithExistingEmptyFileIsTrue() {
+
+    when(this.mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.length()).thenReturn(0L);
+
+    assertThat(FileUtils.isEmpty(this.mockFile)).isTrue();
+
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, times(1)).length();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void isEmptyWithNonExistingFileIsTrue() {
 
-    when(mockFile.isFile()).thenReturn(false);
+    when(this.mockFile.isFile()).thenReturn(false);
 
-    assertThat(FileUtils.isEmpty(mockFile), is(true));
+    assertThat(FileUtils.isEmpty(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, never()).length();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, never()).length();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void isEmptyWithNullIsTrue() {
-    assertThat(FileUtils.isEmpty(null), is(true));
+    assertThat(FileUtils.isEmpty(null)).isTrue();
   }
 
   @Test
   public void isExistingWithExistingDirectory() {
-    assertThat(FileUtils.isExisting(WORKING_DIRECTORY), is(true));
+    assertThat(FileUtils.isExisting(WORKING_DIRECTORY)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isExistingWithExistingFile() {
 
-    when(mockFile.exists()).thenReturn(true);
+    when(this.mockFile.exists()).thenReturn(true);
 
-    assertThat(FileUtils.isExisting(mockFile), is(true));
+    assertThat(FileUtils.isExisting(this.mockFile)).isTrue();
 
-    verify(mockFile, never()).isDirectory();
-    verify(mockFile, never()).isFile();
-    verify(mockFile, times(1)).exists();
+    verify(this.mockFile, never()).isDirectory();
+    verify(this.mockFile, never()).isFile();
+    verify(this.mockFile, times(1)).exists();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void isExistingWithNonExistingDirectory() {
-    assertThat(FileUtils.isExisting(newFile("/absolute/path/to/non/existing/directory")), is(false));
+    assertThat(FileUtils.isExisting(newFile("/absolute/path/to/non/existing/directory"))).isFalse();
   }
 
   @Test
   public void isExistingWithNonExistingFile() {
-    assertThat(FileUtils.isExisting(newFile("relative/path/to/non/existing/file.ext")), is(false));
+    assertThat(FileUtils.isExisting(newFile("relative/path/to/non/existing/file.ext"))).isFalse();
   }
 
   @Test
   public void isExistingWithNull() {
-    assertThat(FileUtils.isExisting(null), is(false));
+    assertThat(FileUtils.isExisting(null)).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isFileWithFile() {
 
-    when(mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.isFile()).thenReturn(true);
 
-    assertThat(FileUtils.isFile(mockFile), is(true));
+    assertThat(FileUtils.isFile(this.mockFile)).isTrue();
 
-    verify(mockFile, never()).isDirectory();
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, never()).exists();
+    verify(this.mockFile, never()).isDirectory();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, never()).exists();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void isFileWithNonFiles() {
 
-    assertThat(FileUtils.isFile(WORKING_DIRECTORY), is(false));
-    assertThat(FileUtils.isFile(newFile("/absolute/path/to/non/existing/directory/")), is(false));
-    assertThat(FileUtils.isFile(newFile("relative/path/to/non/existing/file.ext")), is(false));
+    assertThat(FileUtils.isFile(WORKING_DIRECTORY)).isFalse();
+    assertThat(FileUtils.isFile(newFile("/absolute/path/to/non/existing/directory/"))).isFalse();
+    assertThat(FileUtils.isFile(newFile("relative/path/to/non/existing/file.ext"))).isFalse();
   }
 
   @Test
   public void isFileWithNull() {
-    assertThat(FileUtils.isFile(null), is(false));
+    assertThat(FileUtils.isFile(null)).isFalse();
   }
 
   @Test
@@ -497,17 +551,22 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
     File file = FileUtils.newFile("/absolute/path/to/file.ext");
 
-    assertThat(file, is(notNullValue()));
-    assertThat(file.exists(), is(false));
-    assertThat(file.getAbsolutePath(), is(equalTo("/absolute/path/to/file.ext")));
+    assertThat(file).isNotNull();
+    assertThat(file.exists()).isFalse();
+    assertThat(file.getAbsolutePath()).isEqualTo("/absolute/path/to/file.ext");
   }
 
   @Test
   @IntegrationTest
   public void newFileWithNonNullExistingDirectoryIsSuccessful() {
 
-    assertThat(WORKING_DIRECTORY.isDirectory(), is(true));
-    assertThat(FileUtils.newFile(WORKING_DIRECTORY.getAbsolutePath()), is(equalTo(WORKING_DIRECTORY)));
+    assertThat(WORKING_DIRECTORY.isDirectory()).isTrue();
+
+    File workingDirectory = FileUtils.newFile(WORKING_DIRECTORY.getAbsolutePath());
+
+    assertThat(workingDirectory).isNotNull();
+    assertThat(workingDirectory.isDirectory()).isTrue();
+    assertThat(workingDirectory).isEqualTo(WORKING_DIRECTORY);
   }
 
   @Test
@@ -516,99 +575,138 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
     File fileUtilsClass = getLocation(FileUtils.class);
 
-    assertThat(fileUtilsClass, is(notNullValue()));
-    assertThat(fileUtilsClass.isFile(), is(true));
-    assertThat(FileUtils.newFile(fileUtilsClass.getAbsolutePath()), is(equalTo(fileUtilsClass)));
+    assertThat(fileUtilsClass).isNotNull();
+    assertThat(fileUtilsClass.isFile()).isTrue();
+    assertThat(FileUtils.newFile(fileUtilsClass.getAbsolutePath())).isEqualTo(fileUtilsClass);
   }
 
-  @Test
+  @Test(expected = NullPointerException.class)
   public void newFileWithNullPathnameIsUnsuccessful() {
 
-    exception.expect(NullPointerException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(is(nullValue(String.class)));
+    try {
+      FileUtils.newFile(null);
+    }
+    catch (NullPointerException expected) {
 
-    FileUtils.newFile(null);
+      assertThat(expected).hasMessage(null);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
+  public void readFromFile() throws IOException, URISyntaxException {
+
+    URL testFileTxtUrl = getClass().getClassLoader().getResource("testFile.txt");
+
+    assertThat(testFileTxtUrl).isNotNull();
+
+    File testFileTxt = new File(testFileTxtUrl.toURI());
+
+    assertThat(testFileTxt).isNotNull();
+    assertThat(testFileTxt.isFile()).isTrue();
+
+    String contents = FileUtils.read(testFileTxt);
+
+    assertThat(contents).isNotEmpty();
+    assertThat(contents).isEqualTo(String.format("I solemnly swear that I am up to no good!%sMischief Managed!",
+      StringUtils.LINE_SEPARATOR));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void readFromNonFile() throws IOException {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] must be a valid file");
+    try {
+      FileUtils.read(null);
+    }
+    catch (IOException expected) {
 
-    FileUtils.read(null);
+      assertThat(expected).hasMessage("[null] must be a valid file");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
   @SuppressWarnings("all")
+  @Test(expected = IllegalStateException.class)
   public void readFromUnreadableFile() throws IOException {
 
-    when(mockFile.isFile()).thenReturn(true);
-    when(mockFile.canRead()).thenReturn(false);
-    when(mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
+    when(this.mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.canRead()).thenReturn(false);
+    when(this.mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
 
     try {
-      exception.expect(IllegalStateException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage("[/path/to/file.ext] is unreadable");
+      FileUtils.read(this.mockFile);
+    }
+    catch (IllegalStateException expected) {
 
-      FileUtils.read(mockFile);
+      assertThat(expected).hasMessage("[/path/to/file.ext] is unreadable");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
-      verify(mockFile, times(1)).isFile();
-      verify(mockFile, times(1)).canRead();
-      verify(mockFile, times(1)).getCanonicalPath();
+      verify(this.mockFile, times(1)).isFile();
+      verify(this.mockFile, times(1)).canRead();
+      verify(this.mockFile, times(1)).getCanonicalPath();
+      verifyNoMoreInteractions(this.mockFile);
     }
   }
 
   @Test
-  @SuppressWarnings("all")
   public void sizeOfExistingDirectory() {
-    assertThat(FileUtils.size(WORKING_DIRECTORY), is(equalTo(0l)));
+    assertThat(FileUtils.size(WORKING_DIRECTORY)).isEqualTo(0L);
   }
 
   @Test
   @SuppressWarnings("all")
   public void sizeOfExistingFile() {
 
-    when(mockFile.isFile()).thenReturn(true);
-    when(mockFile.length()).thenReturn(1l);
+    when(this.mockFile.isFile()).thenReturn(true);
+    when(this.mockFile.length()).thenReturn(1L);
 
-    assertThat(FileUtils.size(mockFile), is(equalTo(1l)));
+    assertThat(FileUtils.size(this.mockFile)).isEqualTo(1L);
 
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, times(1)).length();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, times(1)).length();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  public void sizeOfNonExistingDirectory() {
+    assertThat(FileUtils.size(new File("/absolute/path/to/non/existing/directory"))).isZero();
   }
 
   @Test
   @SuppressWarnings("all")
   public void sizeOfNonExistingFile() {
 
-    when(mockFile.isFile()).thenReturn(false);
+    when(this.mockFile.isFile()).thenReturn(false);
 
-    assertThat(FileUtils.size(mockFile), is(equalTo(0l)));
+    assertThat(FileUtils.size(this.mockFile)).isEqualTo(0L);
 
-    verify(mockFile, times(1)).isFile();
-    verify(mockFile, never()).length();
+    verify(this.mockFile, times(1)).isFile();
+    verify(this.mockFile, never()).length();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   public void sizeOfNull() {
-    assertThat(FileUtils.size(null), is(equalTo(0l)));
+    assertThat(FileUtils.size(null)).isEqualTo(0L);
   }
 
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalFileElseGetAbsoluteFile() throws IOException {
 
-    when(mockFile.getCanonicalFile()).thenReturn(mockFile);
+    when(this.mockFile.getCanonicalFile()).thenReturn(this.mockFile);
 
-    assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile), is(equalTo(mockFile)));
+    assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(this.mockFile)).isEqualTo(this.mockFile);
 
-    verify(mockFile, never()).getAbsoluteFile();
-    verify(mockFile, times(1)).getCanonicalFile();
+    verify(this.mockFile, never()).getAbsoluteFile();
+    verify(this.mockFile, times(1)).getCanonicalFile();
   }
 
   @Test
@@ -617,93 +715,102 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
     File expectedMockAbsoluteFile = mock(File.class, "expectedMockAbsoluteFile");
 
-    when(mockFile.getAbsoluteFile()).thenReturn(expectedMockAbsoluteFile);
-    when(mockFile.getCanonicalFile()).thenThrow(new IOException("test"));
+    when(this.mockFile.getAbsoluteFile()).thenReturn(expectedMockAbsoluteFile);
+    when(this.mockFile.getCanonicalFile()).thenThrow(new IOException("test"));
 
-    assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(mockFile), is(equalTo(expectedMockAbsoluteFile)));
+    assertThat(FileUtils.tryGetCanonicalFileElseGetAbsoluteFile(this.mockFile)).isEqualTo(expectedMockAbsoluteFile);
 
-    verify(mockFile, times(1)).getAbsoluteFile();
-    verify(mockFile, times(1)).getCanonicalFile();
+    verify(this.mockFile, times(1)).getAbsoluteFile();
+    verify(this.mockFile, times(1)).getCanonicalFile();
   }
 
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalPathElseGetAbsolutePath() throws IOException {
 
-    when(mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
+    when(this.mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
 
-    assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile), is(equalTo("/path/to/file.ext")));
+    assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(this.mockFile)).isEqualTo("/path/to/file.ext");
 
-    verify(mockFile, never()).getAbsolutePath();
-    verify(mockFile, times(1)).getCanonicalPath();
+    verify(this.mockFile, never()).getAbsolutePath();
+    verify(this.mockFile, times(1)).getCanonicalPath();
   }
 
   @Test
   @SuppressWarnings("all")
   public void tryGetCanonicalPathElseGetAbsolutePathWhenGetCanonicalPathThrowsIOException() throws IOException {
 
-    when(mockFile.getAbsolutePath()).thenReturn("/path/to/file.ext");
-    when(mockFile.getCanonicalPath()).thenThrow(new IOException("test"));
+    when(this.mockFile.getAbsolutePath()).thenReturn("/path/to/file.ext");
+    when(this.mockFile.getCanonicalPath()).thenThrow(new IOException("test"));
 
-    assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(mockFile), is(equalTo("/path/to/file.ext")));
+    assertThat(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(this.mockFile)).isEqualTo("/path/to/file.ext");
 
-    verify(mockFile, times(1)).getAbsolutePath();
-    verify(mockFile, times(1)).getCanonicalPath();
+    verify(this.mockFile, times(1)).getAbsolutePath();
+    verify(this.mockFile, times(1)).getCanonicalPath();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void writeNullInputStreamToFile() throws IOException {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("InputStream cannot be null");
-
     try {
-      FileUtils.write(null, mockFile);
+      FileUtils.write(null, this.mockFile);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("InputStream cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
-      verifyZeroInteractions(mockFile);
+      verifyZeroInteractions(this.mockFile);
     }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void writeInputStreamToNullFile() throws IOException {
-
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("File cannot be null");
 
     InputStream mockInputStream = mock(InputStream.class);
 
     try {
       FileUtils.write(mockInputStream, null);
     }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("File cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
     finally {
       verifyZeroInteractions(mockInputStream);
     }
   }
 
-  @Test
   @SuppressWarnings("all")
+  @Test(expected = IllegalStateException.class)
   public void writeToExistingUnwritableFile() throws IOException {
 
-    when(mockFile.exists()).thenReturn(true);
-    when(mockFile.canWrite()).thenReturn(false);
-    when(mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
+    when(this.mockFile.exists()).thenReturn(true);
+    when(this.mockFile.canWrite()).thenReturn(false);
+    when(this.mockFile.getCanonicalPath()).thenReturn("/path/to/file.ext");
 
     InputStream mockInputStream = mock(InputStream.class);
 
     try {
-      exception.expect(IllegalStateException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage("[/path/to/file.ext] is not writable");
+      FileUtils.write(mockInputStream, this.mockFile);
+    }
+    catch (IllegalStateException expected) {
 
-      FileUtils.write(mockInputStream, mockFile);
+      assertThat(expected).hasMessage("[/path/to/file.ext] is not writable");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
-      verify(mockFile, times(1)).exists();
-      verify(mockFile, times(1)).canWrite();
-      verify(mockFile, times(1)).getCanonicalPath();
+      verify(this.mockFile, times(1)).exists();
+      verify(this.mockFile, times(1)).canWrite();
+      verify(this.mockFile, times(1)).getCanonicalPath();
       verifyZeroInteractions(mockInputStream);
     }
   }
@@ -718,17 +825,17 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
 
     File testFile = newFile(TEMPORARY_DIRECTORY, "writeToFileThenReadFromFileIsSuccessful.txt");
 
-    assertThat(testFile, is(notNullValue()));
-    assertThat(testFile.exists(), is(false));
+    assertThat(testFile).isNotNull();
+    assertThat(testFile.exists()).isFalse();
 
     testFile.deleteOnExit();
 
-    assertThat(FileUtils.write(in, testFile), is(sameInstance(testFile)));
-    assertThat(testFile.isFile(), is(true));
-    assertThat(testFile.length(), is(greaterThan(0L)));
+    assertThat(FileUtils.write(in, testFile)).isSameAs(testFile);
+    assertThat(testFile.isFile()).isTrue();
+    assertThat(testFile.length()).isGreaterThan(0L);
 
     String actualContent = FileUtils.read(testFile);
 
-    assertThat(actualContent, is(equalTo(expectedContent)));
+    assertThat(actualContent).isEqualTo(expectedContent);
   }
 }
