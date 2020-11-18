@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
-
-import static java.util.Arrays.stream;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -28,6 +24,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -44,8 +41,8 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.support.ToStringRenderer;
 
 /**
- * The CollectionUtils class provides utility methods for working with the Java Collections Framework
- * and specifically the Collection classes.
+ * An abstract utility {@link Class} providing methods and functionality for working with the Java Collections Framework
+ * and specifically the {@link Collection} classes.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -67,16 +64,39 @@ import org.cp.elements.lang.support.ToStringRenderer;
 public abstract class CollectionUtils {
 
   /**
- 	 * Adds all elements from the given {@link Iterable} to the {@link Collection}.
+   * Adds all elements from the given array to the given {@link Collection}.
+   *
+   * @param <E> {@link Class} type of the elements in the array and {@link Collection}.
+   * @param <T> {@link Class} type of the target {@link Collection}.
+   * @param collection {@link Collection} in which to add the elements from the array; must not be {@literal null}.
+   * @param array array containing the elements to add to the target {@link Collection}.
+   * @return the given {@link Collection}.
+   * @throws IllegalArgumentException if the {@link Collection} is {@literal null}.
+   * @see #addAll(Collection, Iterable)
+   * @see java.util.Collection
+   */
+  @SuppressWarnings("unchecked")
+  public static <E, T extends Collection<E>> T addAll(T collection, E... array) {
+
+    Assert.notNull(collection, "Collection is required");
+
+    Collections.addAll(collection, ArrayUtils.nullSafeArray(array));
+
+    return collection;
+  }
+
+  /**
+ 	 * Adds all elements from the given {@link Iterable} to the given {@link Collection}.
  	 *
  	 * @param <E> {@link Class} type of the elements in the {@link Collection} and {@link Iterable}.
- 	 * @param <T> concrete {@link Class} type of the {@link Collection}.
- 	 * @param collection {@link Collection} in which to add the elements from the {@link Iterable}.
- 	 * @param iterable {@link Iterable} containing the elements to add to the {@link Collection}.
+ 	 * @param <T> {@link Class} type of the target {@link Collection}.
+ 	 * @param collection {@link Collection} in which to add the elements from the {@link Iterable};
+   * must not be {@literal null}.
+ 	 * @param iterable {@link Iterable} containing the elements to add to the target {@link Collection}.
  	 * @return the given {@link Collection}.
  	 * @throws IllegalArgumentException if {@link Collection} is {@literal null}.
- 	 * @see java.lang.Iterable
  	 * @see java.util.Collection
+ 	 * @see java.lang.Iterable
  	 */
  	public static <E, T extends Collection<E>> T addAll(T collection, Iterable<E> iterable) {
 
@@ -104,7 +124,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static <T> Enumeration<T> asEnumeration(Iterator<T> iterator) {
 
-    return (iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+    return iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
       @Override
       public boolean hasMoreElements() {
@@ -115,7 +135,7 @@ public abstract class CollectionUtils {
       public T nextElement() {
         return iterator.next();
       }
-    });
+    };
   }
 
   /**
@@ -162,7 +182,7 @@ public abstract class CollectionUtils {
   @NullSafe
   public static <T> Iterator<T> asIterator(Enumeration<T> enumeration) {
 
-    return (enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
+    return enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
 
       @Override
       public boolean hasNext() {
@@ -173,7 +193,7 @@ public abstract class CollectionUtils {
       public T next() {
         return enumeration.nextElement();
       }
-    });
+    };
   }
 
   /**
@@ -188,7 +208,7 @@ public abstract class CollectionUtils {
   @NullSafe
   @SafeVarargs
   public static <T> List<T> asList(T... array) {
-    return new ArrayList<>(Arrays.asList(nullSafeArray(array)));
+    return new ArrayList<>(Arrays.asList(ArrayUtils.nullSafeArray(array)));
   }
 
   /**
@@ -206,7 +226,8 @@ public abstract class CollectionUtils {
 
     return iterable instanceof Collection
       ? new ArrayList<>((Collection<T>) iterable)
-      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toList());
+      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -220,7 +241,7 @@ public abstract class CollectionUtils {
   @NullSafe
   @SafeVarargs
   public static <T> Set<T> asSet(T... elements) {
-    return stream(nullSafeArray(elements)).collect(Collectors.toSet());
+    return Arrays.stream(ArrayUtils.nullSafeArray(elements)).collect(Collectors.toSet());
   }
 
   /**
@@ -238,7 +259,8 @@ public abstract class CollectionUtils {
 
     return iterable instanceof Collection
       ? new HashSet<>((Collection<T>) iterable)
-      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false).collect(Collectors.toSet());
+      : StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
+        .collect(Collectors.toSet());
   }
 
   /**
@@ -253,9 +275,11 @@ public abstract class CollectionUtils {
   @NullSafe
   public static boolean containsAny(Collection<?> collection, Object... elements) {
 
-    for (Object element : nullSafeArray(elements)) {
-      if (nullSafeCollection(collection).contains(element)) {
-        return true;
+    if (Objects.nonNull(collection)) {
+      for (Object element : ArrayUtils.nullSafeArray(elements)) {
+        if (collection.contains(element)) {
+          return true;
+        }
       }
     }
 
@@ -263,35 +287,40 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Counts the number of elements in the {@link Iterable} collection.  If {@link Iterable} is null or contains
-   * no elements, then count will be 0.  If the {@link Iterable} is a {@link Collection}, then {@link Collection#size()}
-   * is returned, otherwise the elements of the {@link Iterable} are iterated over, counting the number of elements
-   * in the iteration in order to determine it's size.
+   * Counts the number of elements in the {@link Iterable} collection.
+   *
+   * If {@link Iterable} is {@literal null} or contains no elements, then count will be {@literal 0}.
+   * If the {@link Iterable} is a {@link Collection}, then {@link Collection#size()} is returned,
+   * otherwise the elements of the {@link Iterable} are iterated over, counting the number of elements
+   * in the iteration to determine it's size.
    *
    * @param iterable {@link Iterable} collection of elements being evaluated.
    * @return an integer value indicating the number of elements in the {@link Iterable} collection (i.e. size).
-   * @see java.lang.Iterable
-   * @see java.util.Collection#size()
    * @see #count(Iterable, Filter)
+   * @see java.util.Collection#size()
+   * @see java.lang.Iterable
    */
   @NullSafe
   public static long count(Iterable<?> iterable) {
-    return iterable instanceof Collection ? ((Collection) iterable).size() : count(iterable, (element) -> true);
+
+    return iterable instanceof Collection
+      ? ((Collection<?>) iterable).size()
+      : count(iterable, (element) -> true);
   }
 
   /**
    * Counts the number of elements in the {@link Iterable} collection accepted by the {@link Filter}.
    *
-   * @param <T> Class type of the elements in the {@link Iterable} collection.
+   * @param <T> {@link Class} type of the elements in the {@link Iterable} collection.
    * @param iterable {@link Iterable} collection of elements being evaluated.
-   * @param filter {@link Filter} used to determine the count of elements in the {@link Iterable} collection
+   * @param filter {@link Filter} used to determine the number of elements (count)
+   * in the {@link Iterable} collection accepted by the {@link Filter}.
+   * @return an integer value indicating the number of elements in the {@link Iterable} collection
    * accepted by the {@link Filter}.
-   * @return an integer value indicating the number of elements in the {@link Iterable} collection accepted
-   * by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is null.
-   * @see java.lang.Iterable
-   * @see org.cp.elements.lang.Filter
+   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
    * @see #nullSafeIterable(Iterable)
+   * @see org.cp.elements.lang.Filter
+   * @see java.lang.Iterable
    */
   public static <T> long count(Iterable<T> iterable, Filter<T> filter) {
 
@@ -306,7 +335,7 @@ public abstract class CollectionUtils {
  	 * Returns the given {@link Iterable} if not {@literal null} or empty, otherwise returns the {@code defaultIterable}.
  	 *
  	 * @param <E> {@link Class} type of the elements in the {@link Iterable Iterables}.
- 	 * @param <T> concrete {@link Class} type of the {@link Iterable}.
+ 	 * @param <T> {@link Class} type of the {@link Iterable}.
  	 * @param iterable {@link Iterable} to evaluate.
  	 * @param defaultIterable {@link Iterable} to return if the given {@code iterable} is {@literal null} or empty.
  	 * @return {@code iterable} if not {@literal null} or empty otherwise return {@code defaultIterable}.
@@ -326,7 +355,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   public static <T> Iterable<T> emptyIterable() {
-    return Collections::<T>emptyIterator;
+    return Collections::emptyIterator;
   }
 
   /**
@@ -340,13 +369,14 @@ public abstract class CollectionUtils {
    * @throws IllegalArgumentException if either the {@link Collection} or {@link Filter} are null.
    * @see org.cp.elements.lang.Filter
    */
-  @SuppressWarnings("unchecked")
   public static <T> Collection<T> filter(Collection<T>  collection, Filter<T> filter) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(filter, "Filter is required");
 
-    return collection.stream().filter(filter::accept).collect(Collectors.toList());
+    return collection.stream()
+      .filter(filter::accept)
+      .collect(Collectors.toList());
   }
 
   /**
@@ -361,7 +391,6 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.FilteringTransformer
    * @see java.util.Collection
    */
-  @SuppressWarnings("unchecked")
   public static <T> Collection<T> filterAndTransform(Collection<T> collection,
       FilteringTransformer<T> filteringTransformer) {
 
@@ -377,12 +406,13 @@ public abstract class CollectionUtils {
   /**
    * Searches the {@link Iterable} for all elements accepted by the {@link Filter}.
    *
-   * @param <T> Class type of the elements in the {@link Iterable}.
+   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to search.
-   * @param filter {@link Filter} used to find elements from the {@link Iterable} collection accepted
-   * by the {@link Filter}.
-   * @return a {@link List} containing elements from the {@link Iterable} collection accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @param filter {@link Filter} used to find elements from the {@link Iterable} collection
+   * accepted by the {@link Filter}.
+   * @return a {@link List} containing elements from the {@link Iterable} collection
+   * accepted by the {@link Filter}.
+   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
    * @see #findOne(Iterable, Filter)
    * @see #nullSafeIterable(Iterable)
    * @see org.cp.elements.lang.Filter
@@ -400,13 +430,13 @@ public abstract class CollectionUtils {
   /**
    * Searches the {@link Iterable} for the first element accepted by the {@link Filter}.
    *
-   * @param <T> Class type of the elements in the {@link Iterable}.
+   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to search.
-   * @param filter {@link Filter} used to find the first element from the {@link Iterable} accepted
-   * by the {@link Filter}.
-   * @return the first element from the {@link Iterable} accepted by the {@link Filter}, or {@literal null}
-   * if no such element is found.
-   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @param filter {@link Filter} used to find the first element from the {@link Iterable}
+   * accepted by the {@link Filter}.
+   * @return the first element from the {@link Iterable} accepted by the {@link Filter},
+   * or {@literal null} if no such element is found.
+   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
    * @see #findAll(Iterable, Filter)
    * @see #nullSafeIterable(Iterable)
    * @see org.cp.elements.lang.Filter
@@ -418,7 +448,8 @@ public abstract class CollectionUtils {
 
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
       .filter(filter::accept)
-      .findFirst().orElse(null);
+      .findFirst()
+      .orElse(null);
   }
 
   /**
@@ -429,7 +460,6 @@ public abstract class CollectionUtils {
    *
    * @param iterable {@link Iterable} to evaluate.
    * @return a boolean value indicating whether the {@link Iterable} is empty.
-   * @see #isNotEmpty(Iterable)
    * @see #isNotEmpty(Iterable)
    * @see java.lang.Iterable
    */
@@ -454,16 +484,31 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Determines whether the give {@link Collection} has the given {@link Integer#TYPE size}.
+   *
+   * @param collection {@link Collection} to evaluate.
+   * @param size {@link Integer} specifying the expected size of the {@link Collection}.
+   * @return a boolean value indicating whether the given {@link Collection} has the given {@link Integer#TYPE size}.
+   * @see #nullSafeSize(Collection)
+   * @see #isSizeOne(Collection)
+   * @see java.util.Collection
+   */
+  public static boolean isSize(Collection<?> collection, int size) {
+    return nullSafeSize(collection) == size;
+  }
+
+  /**
    * Null-safe operation to determine whether the size of the given {@link Collection} is 1.
    *
    * @param collection {@link Collection} to evaluate.
    * @return a boolean indicating whether the size of the given {@link Collection} is 1.
    * @see #nullSafeSize(Collection)
+   * @see #isSize(Collection, int)
    * @see java.util.Collection
    */
   @NullSafe
   public static boolean isSizeOne(Collection<?> collection) {
-    return nullSafeSize(collection) == 1;
+    return isSize(collection, 1);
   }
 
   /**
@@ -551,10 +596,11 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Determines the size of the Collection.
+   * Determines the size of the {@link Collection}.
    *
    * @param collection {@link Collection} to evaluate.
-   * @return the size of, or number of elements in the {@link Collection}.
+   * @return the size of, or number of elements in the {@link Collection},
+   * return {@literal 0} if the {@link Collection} is {@literal null}.
    * @see java.util.Collection#size()
    */
   @NullSafe
@@ -603,7 +649,7 @@ public abstract class CollectionUtils {
   public static <T> List<T> subList(List<T> list, int... indices) {
 
     Assert.notNull(list, "List is required");
-    Assert.notNull(indices, "Indices is required");
+    Assert.notNull(indices, "Indices are required");
 
     List<T> subList = new ArrayList<>(indices.length);
 
@@ -615,13 +661,15 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Null-safe utility method to get any array for the given {@link Collection}.
+   * Null-safe utility method returning an array from the given {@link Collection}.
    *
    * @param <T> {@link Class} type of the elements in the {@link Collection}.
    * @param collection {@link Collection} to convert into an array.
    * @param componentType {@link Class} type of the elements in the array.
-   * @return an array for the given {@link Collection}.  If the {@link Collection} is {@literal null}
-   * then an empty array of the {@link Class component type} is returned.
+   * @return an array from the given {@link Collection}.  If the {@link Collection} is {@literal null}
+   * then an empty array of {@link Class component type} is returned.
+   * @see java.lang.reflect.Array#newInstance(Class, int)
+   * @see java.util.Collection
    */
   @NullSafe
   @SuppressWarnings("unchecked")
@@ -629,7 +677,7 @@ public abstract class CollectionUtils {
 
     Object[] array = (Object[]) Array.newInstance(componentType, nullSafeSize(collection));
 
-    Optional.ofNullable(collection).ifPresent(localCollection -> collection.toArray(array));
+    Optional.ofNullable(collection).ifPresent(it -> it.toArray(array));
 
     return (T[]) array;
   }
@@ -638,7 +686,8 @@ public abstract class CollectionUtils {
    * Returns a {@link String} representation of the {@link Iterable}.
    *
    * @param iterable {@link Iterable} to render as a {@link String}.
-   * @return a String representation of the {@link Iterable}.
+   * @return a {@link String} representation of the {@link Iterable}.
+   * @see org.cp.elements.lang.support.ToStringRenderer
    * @see #toString(Iterable, Renderer)
    * @see java.lang.Iterable
    */
@@ -685,23 +734,24 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Transformer
    * @see java.util.Collection
    */
-  @SuppressWarnings("unchecked")
   public static <T> Collection<T> transform(Collection<T> collection, Transformer<T> transformer) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(transformer, "Transformer is required");
 
-    return collection.stream().map(transformer::transform).collect(Collectors.toList());
+    return collection.stream()
+      .map(transformer::transform)
+      .collect(Collectors.toList());
   }
 
   /**
    * Returns an immutable {@link Iterator} implementation wrapping the given {@link Iterator} to prevent modifications
    * through invocations of the {@link Iterator#remove()} method.
    *
-   * @param <T> Class type of the elements in the {@link Iterator}.
+   * @param <T> {@link Class} type of the elements in the {@link Iterator}.
    * @param iterator {@link Iterator} to make immutable.
    * @return an immutable {@link Iterator} implementation wrapping the given {@link Iterator}.
-   * @throws IllegalArgumentException if {@link Iterator} is null.
+   * @throws IllegalArgumentException if {@link Iterator} is {@literal null}.
    * @see java.util.Iterator
    */
   public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
