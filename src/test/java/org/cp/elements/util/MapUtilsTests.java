@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -34,26 +27,19 @@ import java.util.TreeMap;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link MapUtils}.
+ * Unit Tests for {@link MapUtils}.
  *
  * @author John J. Blum
  * @see java.util.Collections
  * @see java.util.Map
  * @see org.junit.Test
- * @see org.junit.Rule
- * @see org.junit.rules.ExpectedException
  * @see org.cp.elements.util.MapUtils
  * @since 1.0.0
  */
 public class MapUtilsTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void countMapReturnsSize() {
@@ -63,27 +49,27 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.count(map), is(equalTo(map.size())));
+    assertThat(MapUtils.count(map)).isEqualTo(map.size());
   }
 
   @Test
   public void countMapWithInitialCapacityReturnsZero() {
-    assertThat(MapUtils.count(new HashMap<>(10)), is(equalTo(0)));
+    assertThat(MapUtils.count(new HashMap<>(10))).isEqualTo(0);
   }
 
   @Test
   public void countEmptyMapReturnsZero() {
-    assertThat(MapUtils.count(Collections.emptyMap()), is(equalTo(0)));
+    assertThat(MapUtils.count(Collections.emptyMap())).isEqualTo(0);
   }
 
   @Test
   public void countNullMapReturnsZero() {
-    assertThat(MapUtils.count(null), is(equalTo(0)));
+    assertThat(MapUtils.count(null)).isEqualTo(0);
   }
 
   @Test
   public void countSingleEntryMapReturnsOne() {
-    assertThat(MapUtils.count(Collections.singletonMap("one", 1)), is(equalTo(1)));
+    assertThat(MapUtils.count(Collections.singletonMap("one", 1))).isEqualTo(1);
   }
 
   @Test
@@ -101,8 +87,8 @@ public class MapUtilsTests {
     map.put("eight", 8);
     map.put("nine", 9);
 
-    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isEven(entry.getValue())), is(equalTo(4L)));
-    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isOdd(entry.getValue())), is(equalTo(5L)));
+    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isEven(entry.getValue()))).isEqualTo(4L);
+    assertThat(MapUtils.count(map, (entry) -> NumberUtils.isOdd(entry.getValue()))).isEqualTo(5L);
   }
 
   @Test
@@ -113,7 +99,7 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.count(map, (entry) -> true), is(equalTo((long) map.size())));
+    assertThat(MapUtils.count(map, (entry) -> true)).isEqualTo((long) map.size());
   }
 
   @Test
@@ -124,31 +110,37 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.count(map, (entry) -> false), is(equalTo(0L)));
+    assertThat(MapUtils.count(map, (entry) -> false)).isEqualTo(0L);
   }
 
   @Test
   public void countEmptyMapWithFilter() {
-    assertThat(MapUtils.count(Collections.emptyMap(), (entry) -> true), is(equalTo(0L)));
+    assertThat(MapUtils.count(Collections.emptyMap(), (entry) -> true)).isEqualTo(0L);
   }
 
   @Test
   public void countNullMapWithFilter() {
-    assertThat(MapUtils.count(null, (entry) -> true), is(equalTo(0L)));
+    assertThat(MapUtils.count(null, (entry) -> true)).isEqualTo(0L);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void countNonNullMapWithNullFilter() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Filter is required");
+    try {
+      MapUtils.count(Collections.emptyMap(), null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    MapUtils.count(Collections.emptyMap(), null);
+      assertThat(expected).hasMessage("Filter is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void filter() {
+
     Map<String, Integer> map = new HashMap<>(3);
 
     map.put("one", 1);
@@ -157,28 +149,29 @@ public class MapUtilsTests {
 
     Map<String, Integer> evenMap = MapUtils.filter(map, (entry) -> NumberUtils.isEven(entry.getValue()));
 
-    assertThat(evenMap, is(notNullValue(Map.class)));
-    assertThat(evenMap, is(not(sameInstance(map))));
-    assertThat(evenMap.size(), is(equalTo(1)));
-    assertThat(evenMap.containsKey("one"), is(false));
-    assertThat(evenMap.containsKey("two"), is(true));
-    assertThat(evenMap.containsKey("three"), is(false));
-    assertThat(evenMap.get("two"), is(equalTo(2)));
+    assertThat(evenMap).isNotNull();
+    assertThat(evenMap).isNotSameAs(map);
+    assertThat(evenMap.size()).isEqualTo(1);
+    assertThat(evenMap.containsKey("one")).isFalse();
+    assertThat(evenMap.containsKey("two")).isTrue();
+    assertThat(evenMap.containsKey("three")).isFalse();
+    assertThat(evenMap.get("two")).isEqualTo(2);
 
     Map<String, Integer> oddMap = MapUtils.filter(map, (entry) -> NumberUtils.isOdd(entry.getValue()));
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(oddMap, is(not(sameInstance(map))));
-    assertThat(oddMap.size(), is(equalTo(2)));
-    assertThat(oddMap.containsKey("one"), is(true));
-    assertThat(oddMap.containsKey("two"), is(false));
-    assertThat(oddMap.containsKey("three"), is(true));
-    assertThat(oddMap.get("one"), is(equalTo(1)));
-    assertThat(oddMap.get("three"), is(equalTo(3)));
+    assertThat(map).isNotNull();
+    assertThat(oddMap).isNotSameAs(map);
+    assertThat(oddMap.size()).isEqualTo(2);
+    assertThat(oddMap.containsKey("one")).isTrue();
+    assertThat(oddMap.containsKey("two")).isFalse();
+    assertThat(oddMap.containsKey("three")).isTrue();
+    assertThat(oddMap.get("one")).isEqualTo(1);
+    assertThat(oddMap.get("three")).isEqualTo(3);
   }
 
   @Test
   public void filterAcceptsAll() {
+
     Map<String, Integer> map = new HashMap<>(2);
 
     map.put("one", 1);
@@ -186,17 +179,18 @@ public class MapUtilsTests {
 
     Map<String, Integer> resultMap = MapUtils.filter(map, (entry) -> true);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(map.size())));
-    assertThat(resultMap.containsKey("one"), is(true));
-    assertThat(resultMap.containsKey("two"), is(true));
-    assertThat(resultMap.get("one"), is(equalTo(1)));
-    assertThat(resultMap.get("two"), is(equalTo(2)));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(map.size());
+    assertThat(resultMap.containsKey("one")).isTrue();
+    assertThat(resultMap.containsKey("two")).isTrue();
+    assertThat(resultMap.get("one")).isEqualTo(1);
+    assertThat(resultMap.get("two")).isEqualTo(2);
   }
 
   @Test
   public void filterRejectsAll() {
+
     Map<String, Integer> map = new HashMap<>(2);
 
     map.put("one", 1);
@@ -204,41 +198,55 @@ public class MapUtilsTests {
 
     Map<String, Integer> resultMap = MapUtils.filter(map, (entry) -> false);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
   @Test
   public void filterEmptyMap() {
+
     Map<Object, Object> emptyMap = Collections.emptyMap();
     Map<Object, Object> resultMap = MapUtils.filter(emptyMap, (entry) -> true);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(emptyMap))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(emptyMap);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void filterWithNullFilter() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Filter is required");
 
-    MapUtils.filter(Collections.emptyMap(), null);
+    try {
+      MapUtils.filter(Collections.emptyMap(), null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Filter is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void filterWithNullMap() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map is required");
 
-    MapUtils.filter(null, (entry) -> true);
+    try {
+      MapUtils.filter(null, (entry) -> true);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Map is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void filterAndTransform() {
+
     Map<String, Integer> map = new HashMap<>(3);
 
     map.put("one", 1);
@@ -259,13 +267,13 @@ public class MapUtilsTests {
         }
       });
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(1)));
-    assertThat(resultMap.containsKey("one"), is(false));
-    assertThat(resultMap.containsKey("two"), is(true));
-    assertThat(resultMap.containsKey("three"), is(false));
-    assertThat(resultMap.get("two"), is(equalTo(4)));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(1);
+    assertThat(resultMap.containsKey("one")).isFalse();
+    assertThat(resultMap.containsKey("two")).isTrue();
+    assertThat(resultMap.containsKey("three")).isFalse();
+    assertThat(resultMap.get("two")).isEqualTo(4);
 
     resultMap = MapUtils.filterAndTransform(map, new FilteringTransformer<Map.Entry<String, Integer>>() {
       @Override
@@ -280,18 +288,19 @@ public class MapUtilsTests {
       }
     });
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(2)));
-    assertThat(resultMap.containsKey("one"), is(true));
-    assertThat(resultMap.containsKey("two"), is(false));
-    assertThat(resultMap.containsKey("three"), is(true));
-    assertThat(resultMap.get("one"), is(equalTo(1)));
-    assertThat(resultMap.get("three"), is(equalTo(9)));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(2);
+    assertThat(resultMap.containsKey("one")).isTrue();
+    assertThat(resultMap.containsKey("two")).isFalse();
+    assertThat(resultMap.containsKey("three")).isTrue();
+    assertThat(resultMap.get("one")).isEqualTo(1);
+    assertThat(resultMap.get("three")).isEqualTo(9);
   }
 
   @Test
   public void filterAndTransformAcceptsAll() {
+
     Map<String, String> map = Collections.singletonMap("key", "test");
 
     Map<String, String> resultMap = MapUtils.filterAndTransform(map,
@@ -322,15 +331,16 @@ public class MapUtilsTests {
         }
       });
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(1)));
-    assertThat(resultMap.containsKey("key"), is(true));
-    assertThat(resultMap.get("key"), is(equalTo("TEST")));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(1);
+    assertThat(resultMap.containsKey("key")).isTrue();
+    assertThat(resultMap.get("key")).isEqualTo("TEST");
   }
 
   @Test
   public void filterAndTransformRejectsAll() {
+
     Map<String, String> map = Collections.singletonMap("key", "test");
 
     Map<String, String> resultMap = MapUtils.filterAndTransform(map,
@@ -346,13 +356,14 @@ public class MapUtilsTests {
         }
       });
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
   @Test
   public void filterAndTransformEmptyMap() {
+
     Map<Object, Object> emptyMap = Collections.emptyMap();
 
     Map<Object, Object> resultMap = MapUtils.filterAndTransform(emptyMap, new FilteringTransformer<Map.Entry<Object, Object>>() {
@@ -367,32 +378,45 @@ public class MapUtilsTests {
       }
     });
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(emptyMap))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(emptyMap);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void filterAndTransformWithNullFilter() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("FilteringTransformer is required");
 
-    MapUtils.filterAndTransform(Collections.emptyMap(), null);
+    try {
+      MapUtils.filterAndTransform(Collections.emptyMap(), null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("FilteringTransformer is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
   @SuppressWarnings("unchecked")
+  @Test(expected = IllegalArgumentException.class)
   public void filterAndTransformWithNullMap() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map is required");
 
-    MapUtils.filterAndTransform(null, mock(FilteringTransformer.class));
+    try {
+      MapUtils.filterAndTransform(null, mock(FilteringTransformer.class));
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Map is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void findAll() {
+
     Map<String, String> map = new HashMap<>(3);
 
     map.put("one", "test");
@@ -401,154 +425,189 @@ public class MapUtilsTests {
 
     Map<String, String> resultMap = MapUtils.findAll(map, (entry) -> "test".equals(entry.getValue()));
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(1)));
-    assertThat(resultMap.containsKey("one"), is(true));
-    assertThat(resultMap.containsKey("two"), is(false));
-    assertThat(resultMap.containsKey("three"), is(false));
-    assertThat(resultMap.get("one"), is(equalTo("test")));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(1);
+    assertThat(resultMap.containsKey("one")).isTrue();
+    assertThat(resultMap.containsKey("two")).isFalse();
+    assertThat(resultMap.containsKey("three")).isFalse();
+    assertThat(resultMap.get("one")).isEqualTo("test");
 
     resultMap = MapUtils.findAll(map, (entry) -> entry.getValue().endsWith("ing") || entry.getValue().endsWith("ed"));
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(2)));
-    assertThat(resultMap.containsKey("one"), is(false));
-    assertThat(resultMap.containsKey("two"), is(true));
-    assertThat(resultMap.containsKey("three"), is(true));
-    assertThat(resultMap.get("two"), is(equalTo("testing")));
-    assertThat(resultMap.get("three"), is(equalTo("tested")));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(2);
+    assertThat(resultMap.containsKey("one")).isFalse();
+    assertThat(resultMap.containsKey("two")).isTrue();
+    assertThat(resultMap.containsKey("three")).isTrue();
+    assertThat(resultMap.get("two")).isEqualTo("testing");
+    assertThat(resultMap.get("three")).isEqualTo("tested");
   }
 
   @Test
   public void findAllAcceptsAll() {
+
     Map<String, String> map = Collections.singletonMap("one", "test");
     Map<String, String> resultMap = MapUtils.findAll(map, (entry) -> true);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(1)));
-    assertThat(resultMap.containsKey("one"), is(true));
-    assertThat(resultMap.get("one"), is(equalTo("test")));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(1);
+    assertThat(resultMap.containsKey("one")).isTrue();
+    assertThat(resultMap.get("one")).isEqualTo("test");
   }
 
   @Test
   public void findAllRejectsAll() {
+
     Map<String, String> map = Collections.singletonMap("one", "test");
     Map<String, String> resultMap = MapUtils.findAll(map, (entry) -> false);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
   @Test
   public void findAllWithEmptyMap() {
+
     Map<String, String> emptyMap = Collections.emptyMap();
     Map<String, String> resultMap = MapUtils.findAll(emptyMap, (entry) -> true);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(emptyMap))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(emptyMap);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullFilter() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Filter is required");
 
-    MapUtils.findAll(Collections.emptyMap(), null);
+    try {
+      MapUtils.findAll(Collections.emptyMap(), null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Filter is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void findAllWithNullMap() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map is required");
 
-    MapUtils.findAll(null, (entry) -> true);
+    try {
+      MapUtils.findAll(null, (entry) -> true);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Map is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void fromAssociativeArray() {
+
     String[] associativeArray = { "keyOne=valueOne", "keyTwo=valueTwo" };
 
     Map<String, String> map = MapUtils.fromAssociativeArray(associativeArray);
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(map.size(), is(equalTo(associativeArray.length)));
-    assertThat(map.containsKey("keyOne"), is(true));
-    assertThat(map.get("keyOne"), is(equalTo("valueOne")));
-    assertThat(map.containsKey("keyTwo"), is(true));
-    assertThat(map.get("keyTwo"), is(equalTo("valueTwo")));
+    assertThat(map).isNotNull();
+    assertThat(map.size()).isEqualTo(associativeArray.length);
+    assertThat(map.containsKey("keyOne")).isTrue();
+    assertThat(map.get("keyOne")).isEqualTo("valueOne");
+    assertThat(map.containsKey("keyTwo")).isTrue();
+    assertThat(map.get("keyTwo")).isEqualTo("valueTwo");
   }
 
   @Test
   public void fromEmptyAssociativeArray() {
+
     Map<String, String> map = MapUtils.fromAssociativeArray(new String[0]);
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(map.isEmpty(), is(true));
+    assertThat(map).isNotNull();
+    assertThat(map.isEmpty()).isTrue();
   }
 
   @Test
   public void fromSingleEntryAssociativeArray() {
+
     Map<String, String> map = MapUtils.fromAssociativeArray(new String[] { "key=value" });
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(map.size(), is(equalTo(1)));
-    assertThat(map.containsKey("key"), is(true));
-    assertThat(map.get("key"), is(equalTo("value")));
+    assertThat(map).isNotNull();
+    assertThat(map.size()).isEqualTo(1);
+    assertThat(map.containsKey("key")).isTrue();
+    assertThat(map.get("key")).isEqualTo("value");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void fromInvalidAssociateArray() {
+
     String[] associativeArray = { "keyOne=valueOne", "", "keyThree" };
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Entry [] at index [1] must be specified");
+    try {
+      MapUtils.fromAssociativeArray(associativeArray);
+    }
+    catch (IllegalArgumentException expected) {
 
-    MapUtils.fromAssociativeArray(associativeArray);
+      assertThat(expected).hasMessage("Entry [] at index [1] must be specified");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void fromInvalidEntryInAssociateArray() {
+
     String[] associativeArray = { "keyOne=valueOne", "keyTwo=valueTwo", "keyThree" };
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Entry [keyThree] at index [2] must have both a key and a value");
+    try {
+      MapUtils.fromAssociativeArray(associativeArray);
+    }
+    catch (IllegalArgumentException expected) {
 
-    MapUtils.fromAssociativeArray(associativeArray);
+      assertThat(expected).hasMessage("Entry [keyThree] at index [2] must have both a key and a value");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isEmptyMapWithEmptyMap() {
-    assertThat(MapUtils.isEmpty(new HashMap<>(10)), is(true));
-    assertThat(MapUtils.isEmpty(Collections.emptyMap()), is(true));
-    assertThat(MapUtils.isEmpty(null), is(true));
+
+    assertThat(MapUtils.isEmpty(new HashMap<>(10))).isTrue();
+    assertThat(MapUtils.isEmpty(Collections.emptyMap())).isTrue();
+    assertThat(MapUtils.isEmpty(null)).isTrue();
   }
 
   @Test
   public void isEmptyWithNonEmptyMap() {
+
     Map<String, Integer> map = new HashMap<>();
 
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.isEmpty(map), is(false));
-    assertThat(MapUtils.isEmpty(Collections.singletonMap("one", 1)), is(false));
-    assertThat(MapUtils.isEmpty(Collections.singletonMap(null, null)), is(false));
+    assertThat(MapUtils.isEmpty(map)).isFalse();
+    assertThat(MapUtils.isEmpty(Collections.singletonMap("one", 1))).isFalse();
+    assertThat(MapUtils.isEmpty(Collections.singletonMap(null, null))).isFalse();
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotEmptyMapWithEmptyMap() {
-    assertThat(MapUtils.isNotEmpty(new HashMap<>(10)), is(false));
-    assertThat(MapUtils.isNotEmpty(Collections.emptyMap()), is(false));
-    assertThat(MapUtils.isNotEmpty(null), is(false));
+
+    assertThat(MapUtils.isNotEmpty(new HashMap<>(10))).isFalse();
+    assertThat(MapUtils.isNotEmpty(Collections.emptyMap())).isFalse();
+    assertThat(MapUtils.isNotEmpty(null)).isFalse();
   }
 
   @Test
@@ -558,24 +617,24 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.isNotEmpty(map), is(true));
-    assertThat(MapUtils.isNotEmpty(Collections.singletonMap("one", 1)), is(true));
-    assertThat(MapUtils.isNotEmpty(Collections.singletonMap(null, null)), is(true));
+    assertThat(MapUtils.isNotEmpty(map)).isTrue();
+    assertThat(MapUtils.isNotEmpty(Collections.singletonMap("one", 1))).isTrue();
+    assertThat(MapUtils.isNotEmpty(Collections.singletonMap(null, null))).isTrue();
   }
 
   @Test
   public void isSizeOneWithNullMapIsFalse() {
-    assertThat(MapUtils.isSizeOne(null), is(false));
+    assertThat(MapUtils.isSizeOne(null)).isFalse();
   }
 
   @Test
   public void isSizeOneWithEmptyMapIsFalse() {
-    assertThat(MapUtils.isSizeOne(Collections.emptyMap()), is(false));
+    assertThat(MapUtils.isSizeOne(Collections.emptyMap())).isFalse();
   }
 
   @Test
   public void isSizeOneWithMapHavingOneEntryIsTrue() {
-    assertThat(MapUtils.isSizeOne(Collections.singletonMap("one", 1)), is(true));
+    assertThat(MapUtils.isSizeOne(Collections.singletonMap("one", 1))).isTrue();
   }
 
   @Test
@@ -586,7 +645,45 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.isSizeOne(map), is(false));
+    assertThat(MapUtils.isSizeOne(map)).isFalse();
+  }
+
+  @Test
+  public void isSizeXWithMapOfSizeXIsTrue() {
+
+    assertThat(MapUtils.isSize(Collections.singletonMap("key", "value"), 1)).isTrue();
+
+    Map<?, ?> twoEntryMap = MapBuilder.newHashMap()
+      .put("keyOne", "valueOne")
+      .put("keyTwo", "valueTwo")
+      .build();
+
+    assertThat(MapUtils.isSize(twoEntryMap, 2)).isTrue();
+  }
+
+  @Test
+  public void isSizeXWithMapOfSizeYIsFalse() {
+    assertThat(MapUtils.isSize(Collections.singletonMap("key", "value"), 2)).isFalse();
+  }
+
+  @Test
+  public void isSizeXWithEmptyMapIsFalse() {
+    assertThat(MapUtils.isSize(Collections.emptyMap(), 1)).isFalse();
+  }
+
+  @Test
+  public void isSizeZeroWithEmptyMapIsTrue() {
+    assertThat(MapUtils.isSize(Collections.emptyMap(), 0)).isTrue();
+  }
+
+  @Test
+  public void isSizeXWithNullMapIsFalse() {
+    assertThat(MapUtils.isSize(null, 1)).isFalse();
+  }
+
+  @Test
+  public void isSizeZeroWithNullMapIsFalse() {
+    assertThat(MapUtils.isSize(null, 0)).isTrue();
   }
 
   @Test
@@ -594,9 +691,9 @@ public class MapUtilsTests {
 
     Map.Entry<Object, Object> mapEntry = MapUtils.newMapEntry("TestKey", "TestValue");
 
-    assertThat(mapEntry, is(notNullValue()));
-    assertThat(mapEntry.getKey(), is(equalTo("TestKey")));
-    assertThat(mapEntry.getValue(), is(equalTo("TestValue")));
+    assertThat(mapEntry).isNotNull();
+    assertThat(mapEntry.getKey()).isEqualTo("TestKey");
+    assertThat(mapEntry.getValue()).isEqualTo("TestValue");
   }
 
   @Test(expected = UnsupportedOperationException.class)
@@ -604,17 +701,17 @@ public class MapUtilsTests {
 
     Map.Entry<Object, Object> mapEntry = MapUtils.newMapEntry("aKey", "aValue");
 
-    assertThat(mapEntry, is(notNullValue()));
-    assertThat(mapEntry.getKey(), is(equalTo("aKey")));
-    assertThat(mapEntry.getValue(), is(equalTo("aValue")));
+    assertThat(mapEntry).isNotNull();
+    assertThat(mapEntry.getKey()).isEqualTo("aKey");
+    assertThat(mapEntry.getValue()).isEqualTo("aValue");
 
     try {
       mapEntry.setValue("junk");
     }
     catch (UnsupportedOperationException expected) {
 
-      assertThat(expected.getMessage(), is(equalTo(Constants.OPERATION_NOT_SUPPORTED)));
-      assertThat(expected.getCause(), is(nullValue()));
+      assertThat(expected.getMessage()).isEqualTo(Constants.OPERATION_NOT_SUPPORTED);
+      assertThat(expected.getCause()).isNull();
 
       throw expected;
     }
@@ -622,64 +719,70 @@ public class MapUtilsTests {
 
   @Test
   public void nullSafeMapWithMap() {
+
     Map<Object, Object> map = Collections.singletonMap("one", 1);
 
-    assertThat(MapUtils.nullSafeMap(map), is(sameInstance(map)));
+    assertThat(MapUtils.nullSafeMap(map)).isSameAs(map);
   }
 
   @Test
   public void nullSafeMapWithEmptyMap() {
+
     Map<Object, Object> emptyMap = Collections.emptyMap();
 
-    assertThat(MapUtils.nullSafeMap(emptyMap), is(sameInstance(emptyMap)));
+    assertThat(MapUtils.nullSafeMap(emptyMap)).isSameAs(emptyMap);
   }
 
   @Test
   public void nullSafeMapWithNullMap() {
+
     Map<?, ?> map = MapUtils.nullSafeMap(null);
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(map.isEmpty(), is(true));
+    assertThat(map).isNotNull();
+    assertThat(map.isEmpty()).isTrue();
   }
 
   @Test
+  @SuppressWarnings("all")
   public void sizeOfMapReturnsSize() {
+
     Map<Object, Object> map = new HashMap<>();
 
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.size(map), is(equalTo(map.size())));
+    assertThat(MapUtils.size(map)).isEqualTo(map.size());
 
     map = new HashMap<>();
     map.put("one", 1);
     map.put("one", 2);
 
-    assertThat(MapUtils.size(map), is(equalTo(1)));
+    assertThat(MapUtils.size(map)).isEqualTo(1);
   }
 
   @Test
   public void sizeOfMapWithInitialCapacityReturnsZero() {
-    assertThat(MapUtils.size(new HashMap<>(10)), is(equalTo(0)));
+    assertThat(MapUtils.size(new HashMap<>(10))).isEqualTo(0);
   }
 
   @Test
   public void sizeOfEmptyMapReturnsZero() {
-    assertThat(MapUtils.size(Collections.emptyMap()), is(equalTo(0)));
+    assertThat(MapUtils.size(Collections.emptyMap())).isEqualTo(0);
   }
 
   @Test
   public void sizeOfNullMapReturnsZero() {
-    assertThat(MapUtils.size(null), is(equalTo(0)));
+    assertThat(MapUtils.size(null)).isEqualTo(0);
   }
 
   @Test
   public void sizeOfSingleEntryMapReturnsOne() {
-    assertThat(MapUtils.size(Collections.singletonMap("one", 1)), is(equalTo(1)));
+    assertThat(MapUtils.size(Collections.singletonMap("one", 1))).isEqualTo(1);
   }
 
   @Test
   public void toAssociativeArrayFromMap() {
+
     Map<String, String> map = new TreeMap<>();
 
     map.put("keyOne", "valueOne");
@@ -688,47 +791,53 @@ public class MapUtilsTests {
 
     String[] associativeArray = MapUtils.toAssociativeArray(map);
 
-    assertThat(associativeArray, is(notNullValue(String[].class)));
-    assertThat(associativeArray.length, is(equalTo(3)));
-    assertThat(Arrays.toString(associativeArray), is(equalTo("[keyOne=valueOne, keyTwo=valueTwo, keyZero=valueZero]")));
+    assertThat(associativeArray).isNotNull();
+    assertThat(associativeArray.length).isEqualTo(3);
+    assertThat(Arrays.toString(associativeArray)).isEqualTo("[keyOne=valueOne, keyTwo=valueTwo, keyZero=valueZero]");
   }
 
   @Test
   public void toAssociativeArrayFromSingleElementMap() {
+
     Map<String, String> map = Collections.singletonMap("keyOne", "valueOne");
+
     String[] associativeArray = MapUtils.toAssociativeArray(map);
 
-    assertThat(associativeArray, is(notNullValue(String[].class)));
-    assertThat(associativeArray.length, is(equalTo(1)));
-    assertThat(Arrays.toString(associativeArray), is(equalTo("[keyOne=valueOne]")));
+    assertThat(associativeArray).isNotNull();
+    assertThat(associativeArray.length).isEqualTo(1);
+    assertThat(Arrays.toString(associativeArray)).isEqualTo("[keyOne=valueOne]");
   }
 
   @Test
   public void toAssociativeArrayFromEmptyMap() {
+
     Map<String, String> map = Collections.emptyMap();
+
     String[] associativeArray = MapUtils.toAssociativeArray(map);
 
-    assertThat(associativeArray, is(notNullValue(String[].class)));
-    assertThat(associativeArray.length, is(equalTo(0)));
-    assertThat(Arrays.toString(associativeArray), is(equalTo("[]")));
+    assertThat(associativeArray).isNotNull();
+    assertThat(associativeArray.length).isEqualTo(0);
+    assertThat(Arrays.toString(associativeArray)).isEqualTo("[]");
   }
 
   @Test
   public void toAssociativeArrayFromNullMap() {
+
     String[] associativeArray = MapUtils.toAssociativeArray(null);
 
-    assertThat(associativeArray, is(notNullValue(String[].class)));
-    assertThat(associativeArray.length, is(equalTo(0)));
-    assertThat(Arrays.toString(associativeArray), is(equalTo("[]")));
+    assertThat(associativeArray).isNotNull();
+    assertThat(associativeArray.length).isEqualTo(0);
+    assertThat(Arrays.toString(associativeArray)).isEqualTo("[]");
   }
 
   @Test
   public void toStringWithEmptyMap() {
-    assertThat(MapUtils.toString(Collections.emptyMap()), is(equalTo("[]")));
+    assertThat(MapUtils.toString(Collections.emptyMap())).isEqualTo("[]");
   }
 
   @Test
   public void toStringWithNonEmptyMap() {
+
     Map<String, Integer> map = new HashMap<>(3);
 
     map.put("one", 1);
@@ -743,21 +852,22 @@ public class MapUtilsTests {
       .concat("\n\t").concat("two = 2")
       .concat("\n]");
 
-    assertThat(mapString, is(equalTo(expected)));
+    assertThat(mapString).isEqualTo(expected);
   }
 
   @Test
   public void toStringWithNullMap() {
-    assertThat(MapUtils.toString(null), is(equalTo("[]")));
+    assertThat(MapUtils.toString(null)).isEqualTo("[]");
   }
 
   @Test
   public void toStringWithSingleEntryMap() {
-    assertThat(MapUtils.toString(Collections.singletonMap("one", 1)), is(equalTo("[\n\tone = 1\n]")));
+    assertThat(MapUtils.toString(Collections.singletonMap("one", 1))).isEqualTo("[\n\tone = 1\n]");
   }
 
   @Test
   public void transform() {
+
     Map<Integer, String> map = new HashMap<>(3);
 
     map.put(1, "test");
@@ -766,42 +876,55 @@ public class MapUtilsTests {
 
     Map<Integer, String> resultMap = MapUtils.transform(map, String::toUpperCase);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(map))));
-    assertThat(resultMap.size(), is(equalTo(3)));
-    assertThat(resultMap.containsKey(1), is(true));
-    assertThat(resultMap.containsKey(2), is(true));
-    assertThat(resultMap.containsKey(3), is(true));
-    assertThat(resultMap.get(1), is(equalTo("TEST")));
-    assertThat(resultMap.get(2), is(equalTo("TESTING")));
-    assertThat(resultMap.get(3), is(equalTo("TESTED")));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(map);
+    assertThat(resultMap.size()).isEqualTo(3);
+    assertThat(resultMap.containsKey(1)).isTrue();
+    assertThat(resultMap.containsKey(2)).isTrue();
+    assertThat(resultMap.containsKey(3)).isTrue();
+    assertThat(resultMap.get(1)).isEqualTo("TEST");
+    assertThat(resultMap.get(2)).isEqualTo("TESTING");
+    assertThat(resultMap.get(3)).isEqualTo("TESTED");
   }
 
   @Test
   public void transformEmptyMap() {
+
     Map<Object, Object> emptyMap = Collections.emptyMap();
     Map<Object, Object> resultMap =  MapUtils.transform(emptyMap, (value) -> null);
 
-    assertThat(resultMap, is(notNullValue(Map.class)));
-    assertThat(resultMap, is(not(sameInstance(emptyMap))));
-    assertThat(resultMap.isEmpty(), is(true));
+    assertThat(resultMap).isNotNull();
+    assertThat(resultMap).isNotSameAs(emptyMap);
+    assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void transformWithNullMap() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Map is required");
 
-    MapUtils.transform(null, (value) -> null);
+    try {
+      MapUtils.transform(null, (value) -> null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Map is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void transformWithNullTransformer() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Transformer is required");
 
-    MapUtils.transform(Collections.emptyMap(), null);
+    try {
+      MapUtils.transform(Collections.emptyMap(), null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Transformer is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 }

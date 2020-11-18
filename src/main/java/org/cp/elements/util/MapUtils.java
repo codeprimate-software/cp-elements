@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
-
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
-import static org.cp.elements.util.ArrayUtils.nullSafeLength;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,42 +32,50 @@ import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The MapUtils class provides utility methods for working with the Java Collections Framework and specifically
- * the {@link Map} class.
+ * An abstract utility {@link Class} providing methods and functionality for working with the Java Collections Framework
+ * and specifically the {@link Map} class.
  *
  * @author John J. Blum
  * @see java.util.Collections
  * @see java.util.Map
  * @see java.util.stream.Collectors
+ * @see org.cp.elements.lang.Constants
+ * @see org.cp.elements.lang.Filter
+ * @see org.cp.elements.lang.FilteringTransformer
+ * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class MapUtils {
 
   /**
-   * Determines the number of entries (key-value pairs) in the {@link Map}.  This method is null-safe and will
-   * return 0 if the {@link Map} is null or empty.
+   * Determines the number of {@link Map.Entry entries} in the {@link Map}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
+   * This method is null-safe and will return {@literal 0} if the {@link Map} is {@literal null} or {@literal empty}.
+   *
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
    * @param map {@link Map} to evaluate.
-   * @return the size, or number of elements in the {@link Map}, returning 0 if the {@link Map} is null or empty.
+   * @return the size, or number of elements, in the {@link Map}, returning {@literal 0} if the {@link Map}
+   * is {@literal null} or {@literal empty}.
+   * @see java.util.Map
    */
   @NullSafe
   public static <K, V> int count(Map<K, V> map) {
-    return (map != null ? map.size() : 0);
+    return map != null ? map.size() : 0;
   }
 
   /**
-   * Counts the number of entries (key-value pairs) in the {@link Map} accepted by the {@link Filter}.
+   * Counts the number of {@link Map.Entry entries} in the {@link Map} accepted by the {@link Filter}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
    * @param map {@link Map} to evaluate.
-   * @param filter {@link Filter} used to determine the number of entries in the {@link Map} accepted by
-   * the {@link Filter}.
-   * @return an integer value indicating the number of entries in the {@link Map} accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is null.
+   * @param filter {@link Filter} used to determine the number of {@link Map.Entry entries} in the {@link Map}
+   * accepted by the {@link Filter}; must not be {@literal null}.
+   * @return an integer value indicating the number of {@link Map.Entry entries} in the {@link Map}
+   * accepted by the {@link Filter}.
+   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
    * @see org.cp.elements.lang.Filter
    * @see java.util.Map
    */
@@ -79,20 +83,22 @@ public abstract class MapUtils {
 
     Assert.notNull(filter, "Filter is required");
 
-    return nullSafeMap(map).entrySet().stream().filter(filter::accept).count();
+    return nullSafeMap(map).entrySet().stream()
+      .filter(filter::accept)
+      .count();
   }
 
   /**
-   * Returns a filtered {@link Map} containing only the key-value entries from the given {@link Map} that are accepted
-   * by the {@link Filter}.
+   * Returns a filtered {@link Map} containing only the {@link Map.Entry Key/Value entries} from the given {@link Map}
+   * that are accepted by the {@link Filter}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
-   * @param map {@link Map} to filter.
-   * @param filter {@link Filter} used to filter the {@link Map}.
-   * @return a filtered {@link Map} containing only the key-value entries from the given {@link Map} }accepted by
-   * the {@link Filter}.
-   * @throws IllegalArgumentException if either the {@link Map} or {@link Filter} are null.
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
+   * @param map {@link Map} to filter; must not be {@literal null}.
+   * @param filter {@link Filter} used to filter the {@link Map}; must not be {@literal null}.
+   * @return a filtered {@link Map} containing only the {@link Map.Entry Key/Value entries} from the given {@link Map}
+   * accepted by the {@link Filter}.
+   * @throws IllegalArgumentException if either the {@link Map} or {@link Filter} are {@literal null}.
    * @see org.cp.elements.lang.Filter
    * @see java.util.Map
    */
@@ -101,23 +107,26 @@ public abstract class MapUtils {
     Assert.notNull(map, "Map is required");
     Assert.notNull(filter, "Filter is required");
 
-    return map.entrySet().stream().filter(filter::accept)
-      .collect(Collectors.toMap(Map.Entry::<K>getKey, Map.Entry::<V>getValue));
+    return map.entrySet().stream()
+      .filter(filter::accept)
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
-   * Filters and transform the entries in the given {@link Map} using the provided {@link FilteringTransformer}.
+   * Filters and transform the {@link Map.Entry entries} in the given {@link Map}
+   * using the provided {@link FilteringTransformer}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
-   * @param map {@link Map} to filter and transform.
-   * @param filteringTransformer {@link FilteringTransformer} used to filter and transform the given {@link Map}.
-   * @return a filtered, transformed {@link Map} of entries from the given {@link Map}.
-   * @throws IllegalArgumentException if the {@link Map} or {@link FilteringTransformer} are null.
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
+   * @param map {@link Map} to filter and transform; must not be {@literal null}.
+   * @param filteringTransformer {@link FilteringTransformer} used to filter and transform the given {@link Map};
+   * must not be {@literal null}.
+   * @return a filtered, transformed {@link Map} of {@link Map.Entry entries} from the given {@link Map}.
+   * @throws IllegalArgumentException if the {@link Map} or {@link FilteringTransformer} are {@literal null}.
    * @see org.cp.elements.lang.FilteringTransformer
-   * @see java.util.Map
-   * @see #filter(Map, Filter)
    * @see #transform(Map, Transformer)
+   * @see #filter(Map, Filter)
+   * @see java.util.Map
    */
   public static <K, V> Map<K, V> filterAndTransform(Map<K, V> map,
       FilteringTransformer<Map.Entry<K, V>> filteringTransformer) {
@@ -125,22 +134,26 @@ public abstract class MapUtils {
     Assert.notNull(map, "Map is required");
     Assert.notNull(filteringTransformer, "FilteringTransformer is required");
 
-    return map.entrySet().stream().filter(filteringTransformer::accept).map(filteringTransformer::transform)
-      .collect(Collectors.toMap(Map.Entry::<K>getKey, Map.Entry::<V>getValue));
+    return map.entrySet().stream()
+      .filter(filteringTransformer::accept)
+      .map(filteringTransformer::transform)
+      .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   /**
-   * Finds all key-value entries from the given {@link Map} accepted by the {@link Filter}.
+   * Finds all {@link Map.Entry Key/Value entries} from the given {@link Map} accepted by the {@link Filter}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
-   * @param map {@link Map} to search.
-   * @param filter {@link Filter} used to find matching key-value entries from the {@link Map}.
-   * @return a new {@link Map} containing key-value entries from the given {@link Map} accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if either the {@link Map} or {@link Filter} are null.
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
+   * @param map {@link Map} to search; must not be {@literal null}.
+   * @param filter {@link Filter} used to find matching {@link Map.Entry Key/Value entries} from the {@link Map};
+   * must not be {@literal null}.
+   * @return a new {@link Map} containing {@link Map.Entry Key/Value entries} from the given {@link Map}
+   * accepted by the {@link Filter}.
+   * @throws IllegalArgumentException if either the {@link Map} or {@link Filter} are {@literal null}.
    * @see org.cp.elements.lang.Filter
-   * @see java.util.Map
    * @see #filter(Map, Filter)
+   * @see java.util.Map
    */
   public static <K, V> Map<K, V> findAll(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
     return filter(map, filter);
@@ -150,29 +163,30 @@ public abstract class MapUtils {
    * Converts the given associative array into a {@link Map}.
    *
    * @param associativeArray associate array to convert into a {@link Map}.
-   * @return a {@link Map} populated with the key/value pairs in the associate array.
-   * @see ArrayUtils#nullSafeArray(Object[], Class)
-   * @see ArrayUtils#nullSafeLength(Object[])
+   * @return a {@link Map} populated with the Key/Value pairs in the associate array.
+   * @see java.util.Map
    */
   @NullSafe
   public static Map<String, String> fromAssociativeArray(String[] associativeArray) {
 
-    Map<String, String> map = new HashMap<>(nullSafeLength(associativeArray));
+    Map<String, String> map = new HashMap<>(ArrayUtils.nullSafeLength(associativeArray));
 
     int index = 0;
 
-    for (String element : nullSafeArray(associativeArray, String.class)) {
+    for (String element : ArrayUtils.nullSafeArray(associativeArray, String.class)) {
 
       Assert.hasText(element, "Entry [%s] at index [%d] must be specified", element, index);
 
       String[] entry = element.split("=");
 
-      Assert.isTrue(entry.length == 2, "Entry [%s] at index [%d] must have both a key and a value", element, index);
+      Assert.isTrue(entry.length == 2,
+        "Entry [%s] at index [%d] must have both a key and a value", element, index);
 
       String key = StringUtils.trim(entry[0]);
       String value = StringUtils.trim(entry[1]);
 
       map.put(key, value);
+
       index++;
     }
 
@@ -180,7 +194,9 @@ public abstract class MapUtils {
   }
 
   /**
-   * Determines whether the given {@link Map} is empty.  A {@link Map} is empty if it contains no entries or is null.
+   * Determines whether the given {@link Map} is empty.
+   *
+   * A {@link Map} is considered empty if it contains no entries or is {@literal null}.
    *
    * @param map {@link Map} to evaluate.
    * @return a boolean value indicating whether the {@link Map} is empty.
@@ -188,13 +204,14 @@ public abstract class MapUtils {
    * @see #isNotEmpty(Map)
    */
   @NullSafe
-  public static boolean isEmpty(Map map) {
-    return (map == null || map.isEmpty());
+  public static boolean isEmpty(Map<?, ?> map) {
+    return map == null || map.isEmpty();
   }
 
   /**
-   * Determines whether the given {@link Map} is not empty.  A {@link Map} is considered non-empty if it is not null
-   * and contains at least 1 entry.
+   * Determines whether the given {@link Map} is not empty.
+   *
+   * A {@link Map} is considered non-empty if it is not {@literal null} and contains at least 1 entry.
    *
    * @param map {@link Map} to evaluate.
    * @return a boolean value indicating whether the {@link Map} is not empty.
@@ -202,31 +219,45 @@ public abstract class MapUtils {
    * @see #isEmpty(Map)
    */
   @NullSafe
-  public static boolean isNotEmpty(Map map) {
+  public static boolean isNotEmpty(Map<?, ?> map) {
     return !isEmpty(map);
   }
 
   /**
-   * Null-safe operation to determine whether the size of the given {@link Map} is 1.
+   * Determines whether the given {@link Map} has the expected size.
    *
    * @param map {@link Map} to evaluate.
-   * @return a boolean value indicating whether the size of the given {@link Map} is 1.
-   * @see #nullSafeMap(Map)
+   * @param size {@link Integer#TYPE} indicating the expected size of the {@link Map}.
+   * @return a boolean value indicating whether the {@link Map} size equals the expected size.
+   * @see #isSizeOne(Map)
+   * @see java.util.Map
+   */
+  public static boolean isSize(Map<?, ?> map, int size) {
+    return size(map) == size;
+  }
+
+  /**
+   * Null-safe operation to determine whether the size of the given {@link Map} is {@literal 1}.
+   *
+   * @param map {@link Map} to evaluate.
+   * @return a boolean value indicating whether the size of the given {@link Map} is {@literal 1}.
+   * @see #isSize(Map, int)
    * @see java.util.Map
    */
   @NullSafe
   public static boolean isSizeOne(Map<?, ?> map) {
-    return (size(map) == 1);
+    return size(map) == 1;
   }
 
   /**
-   * Constructs a new instance of {@link Map.Entry} initialized with the given key and value.
+   * Constructs a new instance of {@link Map.Entry} initialized with the given {@link Object key}
+   * and {@link Object value}.
    *
    * @param <K> {@link Class} type of the key.
    * @param <V> {@link Class} type of the value.
    * @param key key of the new {@link Map.Entry}.
    * @param value value of the new {@link Map.Entry}.
-   * @return a new {@link Map.Entry} initialized with the given key and value.
+   * @return a new {@link Map.Entry} initialized with the {@link Object key} and {@link Object value}.
    * @see java.util.Map.Entry
    */
   public static <K, V> Map.Entry<K, V> newMapEntry(K key, V value) {
@@ -251,25 +282,26 @@ public abstract class MapUtils {
   }
 
   /**
-   * Returns the given {@link Map} if not null or an empty {@link Map}.
+   * Returns the given {@link Map} if not {@literal null} or returns an empty {@link Map}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
-   * @param map the {@link Map} to evaluate.
-   * @return the given {@link Map} if not null or an empty {@link Map} otherwise.
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
+   * @param map {@link Map} to evaluate.
+   * @return the given {@link Map} if not {@literal null} or return an empty {@link Map} otherwise.
    * @see java.util.Collections#emptyMap()
    * @see java.util.Map
    */
   @NullSafe
   public static <K, V> Map<K, V> nullSafeMap(Map<K, V> map) {
-    return (map != null ? map : Collections.emptyMap());
+    return map != null ? map : Collections.emptyMap();
   }
 
   /**
-   * Determines the size, or number of entries in the {@link Map}, returning 0 if the {@link Map} is null or empty.
+   * Determines the size, or number of {@link Map.Entry entries}, in the {@link Map}, returning {@literal 0}
+   * if the {@link Map} is {@literal null} or {@literal empty}.
    *
    * @param map {@link Map} to evaluate.
-   * @return an integer value indicating the size or number of entries in the {@link Map}.
+   * @return an integer value indicating the size or number of {@link Map.Entry entries} in the {@link Map}.
    * @see java.util.Map#size()
    * @see #count(Map)
    */
@@ -286,9 +318,9 @@ public abstract class MapUtils {
    * @param map {@link Map} to convert into an associative array.
    * @return an associative {@link String} array containing the keys and values
    * from the given {@link Map}.
-   * @see java.util.Map
-   * @see #size(Map)
    * @see #nullSafeMap(Map)
+   * @see #size(Map)
+   * @see java.util.Map
    */
   @NullSafe
   public static String[] toAssociativeArray(Map<?, ?> map) {
@@ -296,10 +328,10 @@ public abstract class MapUtils {
     List<String> list = new ArrayList<>(size(map));
 
     for (Map.Entry<?, ?> entry : nullSafeMap(map).entrySet()) {
-      list.add(String.format("%1$s=%2$s", String.valueOf(entry.getKey()), entry.getValue()));
+      list.add(String.format("%1$s=%2$s", entry.getKey(), entry.getValue()));
     }
 
-    return list.toArray(new String[list.size()]);
+    return list.toArray(new String[0]);
   }
 
   /**
@@ -333,14 +365,14 @@ public abstract class MapUtils {
   }
 
   /**
-   * Transforms the values of the given Map with the specified Transformer.
+   * Transforms the values of the given {@link Map} with the specified {@link Transformer}.
    *
-   * @param <K> Class type of the key.
-   * @param <V> Class type of the value.
-   * @param map {@link Map} to transform.
-   * @param transformer {@link Transformer} used to transform the {@link Map}'s values.
+   * @param <K> {@link Class} type of the key.
+   * @param <V> {@link Class} type of the value.
+   * @param map {@link Map} to transform; must not be {@literal null}.
+   * @param transformer {@link Transformer} used to transform the {@link Map}'s values; must not be {@literal null}.
    * @return a new {@link Map} from the given {@link Map} transformed by the {@link Transformer}.
-   * @throws IllegalArgumentException if either the {@link Map} or {@link Transformer} are null.
+   * @throws IllegalArgumentException if either the {@link Map} or {@link Transformer} are {@literal null}.
    * @see org.cp.elements.lang.Transformer
    * @see java.util.Map
    */
@@ -349,7 +381,7 @@ public abstract class MapUtils {
     Assert.notNull(map, "Map is required");
     Assert.notNull(transformer, "Transformer is required");
 
-    return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::<K>getKey,
-      (entry) -> transformer.transform(entry.getValue())));
+    return map.entrySet().stream()
+      .collect(Collectors.toMap(Map.Entry::getKey, (entry) -> transformer.transform(entry.getValue())));
   }
 }
