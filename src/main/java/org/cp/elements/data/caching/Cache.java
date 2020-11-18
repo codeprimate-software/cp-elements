@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching;
 
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
@@ -175,7 +174,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #evictAll(Comparable[])
    * @see java.lang.Iterable
    */
-  @SuppressWarnings("unchecked")
   default void evictAll(Iterable<KEY> keys) {
     StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).forEach(this::evict);
   }
@@ -333,7 +331,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see #put(Comparable, Object)
    * @see java.lang.Iterable
    */
-  @SuppressWarnings("unchecked")
   default void putAll(Iterable<Identifiable<KEY>> entities) {
     StreamSupport.stream(nullSafeIterable(entities).spliterator(), false).forEach(this::put);
   }
