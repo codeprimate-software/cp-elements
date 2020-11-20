@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.time.LocalDateTime;
 
 /**
- * The Auditable interface defines a contract for objects that need to be audited, allowing all changes to be tracked
- * in fine-grained detail by specifying who, when and what made changes to this object.
+ * The {@link Auditable} interface defines a contract for objects that need to be audited, enabling changes
+ * to be tracked in fine-grained detail capturing who, when and what made changes to this object.
  *
  * @author John J. Blum
- * @param <USER> Class type for tracking the user.
- * @param <PROCESS> Class type for tracking the process.
- * @param <ID> Class type of the {@link} Identifiable object's identifier.
+ * @param <USER> {@link Class} type for tracking the user.
+ * @param <PROCESS> {@link Class} type for tracking the process.
+ * @param <ID> {@link Class} type of the {@link Identifiable} object's identifier.
  * @see java.lang.Comparable
  * @see java.time.LocalDateTime
  * @see org.cp.elements.lang.Identifiable

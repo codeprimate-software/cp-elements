@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.Map;
 
 /**
- * The ParameterizedInitale interface extends Initable and defines a contract for implementing classes whose objects
- * can be initialized.
+ * The {@link ParameterizedInitable} interface extends the {@link Initable} interface and defines a contract
+ * for implementing objects that can be initialized using arguments.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable

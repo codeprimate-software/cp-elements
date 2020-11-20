@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Configurable} interface defines a contract for configuring an object who's class implements this interface.
- * This interface allows implementers to define parameters under which their objects will operate.  Configuration
- * meta-data can be specific to environment, runtime or other contextual information.
+ * The {@link Configurable} interface defines a contract for objects that can be configured.
+ *
+ * This {@link Class interface} allows implementers to define parameters under which their objects will operate.
+ * Configuration metadata can be specific to context, environment or runtime.
  *
  * @author John J. Blum
- * @param <T> the type of configuration meta-data and settings.
+ * @param <T> {@link Class} type of configuration metadata and settings.
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

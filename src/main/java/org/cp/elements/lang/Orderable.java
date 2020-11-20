@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Orderable} interface defines a contract for classes whose objects can be organized in an ordered context,
- * such as an ordered data structure using arrays or Lists.  In general, the order of objects can be applied
- * in many different * ways including sort order, prioritization, or to ascertain precedence between
- * {@link Orderable} objects of the same type.
+ * The {@link Orderable} interface defines a contract for objects that can be organized in an ordered context,
+ * such as an ordered data structure using arrays or {@link java.util.List Lists}.
+ *
+ * In general, the order of objects can be applied in many different ways including sort order, prioritization,
+ * or to ascertain precedence between {@link Orderable} objects of the same type.
  *
  * @author John J. Blum
- * @param <T> {@link Class} type parameter indicating the class of the {@link Orderable} type.
+ * @param <T> {@link Class} type parameter specifying the class of the {@link Comparable} type.
  * @see java.lang.Comparable
  * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Ordered

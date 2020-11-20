@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Destroyable} interface defines a contract for destroying an object and releasing any resources
- * held prior to destruction and garbage collection by the JVM.
+ * The {@link Destroyable} interface defines a contract for objects that can be destroyed, releasing any resources
+ * held prior to destruction followed by garbage collection by the JVM.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable

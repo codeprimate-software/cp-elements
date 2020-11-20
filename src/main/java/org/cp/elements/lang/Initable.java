@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The Initable interface defines a contract for initializing an object who's class implements this interface.
+ * The {@link Initable} interface defines a contract for objects that can be initialized.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Destroyable

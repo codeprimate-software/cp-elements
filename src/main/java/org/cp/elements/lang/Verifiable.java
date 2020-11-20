@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Verifiable} interface defines a contract for implementing {@link Object objects} capable of
- * validating that any soft constraints, invariants and business rules of this implementing {@link Object object}
- * are upheld.
+ * The {@link Verifiable} interface defines a contract for implementing objects capable of validating that any soft
+ * constraints, invariants and business rules of this implementing object are upheld.
  *
  * @author John Blum
  * @param <T> {@link Class type} of the {@link Object} implementing this interface.
+ * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Verifier
  * @since 1.0.0
  */
+@FunctionalInterface
 @SuppressWarnings("unused")
 public interface Verifiable<T> {
 

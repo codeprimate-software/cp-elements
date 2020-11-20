@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Renderable} interface defines a contract for {@link Object Objects} that can be rendered
+ * The {@link Renderable} interface defines a contract for objects that can be rendered as a {@link String}
  * using the given {@link Renderer}.
  *
  * @author John Blum
@@ -33,7 +32,7 @@ public interface Renderable {
    * @return a {@link String} rendered from this {@link Object} using the given {@link Renderer}.
    * @see org.cp.elements.lang.Renderer#render(Object)
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   default String render(Renderer renderer) {
     return renderer.render(this);
   }

@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The Interruptable interface defines a contract for objects that perform some complex or long running computation
- * that can be interrupted while processing.
+ * The {@link Interruptable} interface defines a contract for objects that perform some complex or long running
+ * computation that can be interrupted while processing.
  *
  * @author John J. Blum
+ * @see java.lang.Runnable
+ * @see java.util.concurrent.Callable
+ * @see org.cp.elements.lang.Executable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

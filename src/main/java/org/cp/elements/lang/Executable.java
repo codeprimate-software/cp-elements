@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.concurrent.Callable;
 
 /**
- * The {@link Executable} interface defines a contract for implementing objects enabling them to be executed.
+ * The {@link Executable} interface defines a contract for objects that can be executed.
+ *
  * This {@link Class interface} is similar in purpose and function to the {@link java.lang.Runnable}
  * and {@link java.util.concurrent.Callable} {@link Class interfaces}.
  *
@@ -54,11 +54,10 @@ public interface Executable<T> extends Callable<T>, Runnable {
    * Computes a result or throws an {@link Exception} if the result could not be computed.
    *
    * @return the computed result.
-   * @throws Exception if the computation fails.
    * @see #execute(Object...)
    */
   @Override
-  default T call() throws Exception {
+  default T call() {
     return execute();
   }
 

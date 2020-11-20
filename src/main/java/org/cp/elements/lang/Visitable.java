@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Visitable} interface defines a contract for {@link Object objects} that can be visited
- * by another {@link Object} who's {@link Class type} implements the {@link Visitor} interface.
+ * The {@link Visitable} interface defines a contract for objects that can be visited by a {@link Visitor}.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Visitor
