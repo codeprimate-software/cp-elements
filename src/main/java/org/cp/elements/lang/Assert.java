@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.text.MessageFormat;
@@ -24,9 +23,8 @@ import java.util.function.Supplier;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The {@link Assert} class is a more capable replacement for Java's assert facility, providing functionality
- * to make assertions about pre-conditions and state in order to ensure that an object's invariants
- * are upheld and enforced.
+ * The {@link Assert} class is a more capable replacement for Java's assert keyword, providing functionality
+ * to make assertions about pre-conditions and state in order to ensure an object's invariants are upheld and enforced.
  *
  * @author John J. Blum
  * @see java.lang.String#format(String, Object...)
@@ -151,7 +149,7 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the two {@link Object objects} are comparable.
+   * Asserts that two {@link Object objects} are comparable.
    *
    * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
    *
@@ -168,7 +166,7 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the two {@link Object objects} are comparable.
+   * Asserts that two {@link Object objects} are comparable.
    *
    * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
    *
@@ -189,7 +187,7 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the two {@link Object objects} are comparable.
+   * Asserts that two {@link Object objects} are comparable.
    *
    * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
    *
@@ -210,7 +208,7 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts the two {@link Object objects} are comparable.
+   * Asserts that two {@link Object objects} are comparable.
    *
    * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
    *
