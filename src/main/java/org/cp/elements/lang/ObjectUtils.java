@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.CheckedExceptionsFactory.newCloneNotSupportedException;
@@ -30,9 +29,10 @@ import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
 
 /**
- * The ObjectUtils utility class performs various operations on {@link java.lang.Object}.
+ * The {@link ObjectUtils} class is an abstract utility class used to perform operations on {@link Object Objects}.
  *
  * @author John J. Blum
+ * @see java.lang.reflect.Constructor
  * @see java.lang.Object
  * @see java.util.Optional
  * @see org.cp.elements.lang.reflect.ReflectionUtils
@@ -44,10 +44,12 @@ public abstract class ObjectUtils extends ReflectionUtils {
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
   /**
-   * Null-safe method to determine if all the values in the array are null.
+   * Null-safe method whether the array is {@literal null}, {@literal empty} or all values in the array
+   * are {@literal null}.
    *
    * @param values an array of values being evaluated for null.
-   * @return true if and only if the array is null, empty or all elements in the array are null.
+   * @return {@literal true} if and only if the array is {@literal null}, {@literal empty}
+   * or all elements in the array are {@literal null}.
    * @see #areAnyNull(Object...)
    */
   @NullSafe
@@ -110,8 +112,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
       catch (ConstructorNotFoundException ignore) {
         // copy constructor was not found in the Object's class type
       }
-      catch (Exception e) {
-        throw new CloneException("[clone] using [copy constructor] was unsuccessful", e);
+      catch (Exception cause) {
+        throw new CloneException("[clone] using [copy constructor] was unsuccessful", cause);
       }
     }
 
@@ -140,40 +142,62 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Safely executes the given {@link ExceptionThrowingOperation} handling any checked {@link Exception}
+   * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
    * thrown during the normal execution of the operation by rethrowing an {@link IllegalStateException}.
    *
    * @param <T> {@link Class type} of the {@link Object return value}.
-   * @param operation {@link ExceptionThrowingOperation} to execute.
-   * @return the {@link Object result} of the {@link ExceptionThrowingOperation}.
-   * @see org.cp.elements.lang.ObjectUtils.ExceptionThrowingOperation
-   * @see #doOperationSafely(ExceptionThrowingOperation, Object)
+   * @param operation {@link ThrowableOperation} to execute.
+   * @return the {@link Object result} of the {@link ThrowableOperation}.
+   * @see org.cp.elements.lang.ObjectUtils.ThrowableOperation
+   * @see #doOperationSafely(ThrowableOperation, Object)
    */
-  public static <T> T doOperationSafely(ExceptionThrowingOperation<T> operation) {
-    return doOperationSafely(operation, null);
+  public static <T> T doOperationSafely(ThrowableOperation<T> operation) {
+    return doOperationSafely(operation, (T) null);
   }
 
   /**
-   * Safely executes the given {@link ExceptionThrowingOperation} handling any checked {@link Exception}
+   * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
    * thrown during the normal execution of the operation by returning the given {@link Object default value}
    * or rethrowing an {@link IllegalStateException} if the {@link Object default value} is {@literal null}.
    *
-   * @param <T> {@link Class type} of the return value.
-   * @param operation {@link ExceptionThrowingOperation} to execute.
-   * @param defaultValue {@link Object} to return if the {@link ExceptionThrowingOperation}
-   * throws a checked {@link Exception}.
-   * @return the {@link Object result} of the {@link ExceptionThrowingOperation} or {@link Object default value}
-   * if the {@link ExceptionThrowingOperation} throws a checked {@link Exception}.
-   * @see org.cp.elements.lang.ObjectUtils.ExceptionThrowingOperation
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @param operation {@link ThrowableOperation} to execute.
+   * @param defaultValue {@link Object} to return if the {@link ThrowableOperation} throws a {@link Throwable}.
+   * @return the {@link Object result} of the {@link ThrowableOperation} or {@link Object default value}
+   * if the {@link ThrowableOperation} throws a {@link Throwable}.
+   * @see org.cp.elements.lang.ObjectUtils.ThrowableOperation
+   * @see #doOperationSafely(ThrowableOperation, Supplier)
    * @see #returnValueOrThrowIfNull(Object, RuntimeException)
    */
-  public static <T> T doOperationSafely(ExceptionThrowingOperation<T> operation, T defaultValue) {
+  public static <T> T doOperationSafely(ThrowableOperation<T> operation, T defaultValue) {
+
+    Supplier<T> valueSupplier = () -> defaultValue;
+
+    return doOperationSafely(operation, valueSupplier);
+  }
+
+  /**
+   * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
+   * thrown during the normal execution of the operation by returning the given {@link Object default value}
+   * or rethrowing an {@link IllegalStateException} if the {@link Object default value} is {@literal null}.
+   *
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @param operation {@link ThrowableOperation} to execute.
+   * @param valueSupplier {@link Supplier} used to supply a {@link Object value}
+   * if the {@link ThrowableOperation} throws a {@link Throwable}.
+   * @return the {@link Object result} of the {@link ThrowableOperation} or a {@link Object value} supplied by
+   * the {@link Supplier} if the {@link ThrowableOperation} throws a {@link Throwable}.
+   * @throws IllegalStateException if the {@link Supplier} supplies a {@literal null} {@link Object value}.
+   * @see org.cp.elements.lang.ObjectUtils.ThrowableOperation
+   * @see #returnValueOrThrowIfNull(Object, RuntimeException)
+   */
+  public static <T> T doOperationSafely(ThrowableOperation<T> operation, Supplier<T> valueSupplier) {
 
     try {
-      return operation.doExceptionThrowingOperation();
+      return operation.run();
     }
-    catch (Exception cause) {
-      return returnValueOrThrowIfNull(defaultValue,
+    catch (Throwable cause) {
+      return returnValueOrThrowIfNull(valueSupplier.get(),
         newIllegalStateException(cause, "Failed to execute operation [%s]", operation));
     }
   }
@@ -196,12 +220,12 @@ public abstract class ObjectUtils extends ReflectionUtils {
    *
    * @param <T> {@link Class} type of the {@code value}.
    * @param value {@link Object} to evaluate for {@literal null}.
-   * @param supplier {@link Supplier} used to supply a value if {@code value} is {@literal null}.
+   * @param valueSupplier {@link Supplier} used to supply a value if {@code value} is {@literal null}.
    * @return the given {@code value} if not {@literal null} or call the given {@link Supplier} to supply a value.
    * @see java.util.function.Supplier
    */
-  public static <T> T returnValueOrDefaultIfNull(T value, Supplier<T> supplier) {
-    return Optional.ofNullable(value).orElseGet(supplier);
+  public static <T> T returnValueOrDefaultIfNull(T value, Supplier<T> valueSupplier) {
+    return Optional.ofNullable(value).orElseGet(valueSupplier);
   }
 
   /**
@@ -240,13 +264,13 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * then {@literal null} is returned.
    *
    * @param <T> {@link Class} type of the value to get.
-   * @param supplier {@link Supplier} of the value.
+   * @param valueSupplier {@link Supplier} of the value.
    * @return a value from the given {@link Supplier} in an error safe manner.
    * @see java.util.function.Supplier
    * @see #safeGetValue(Supplier, Object)
    */
-  public static <T> T safeGetValue(Supplier<T> supplier) {
-    return safeGetValue(supplier, null);
+  public static <T> T safeGetValue(Supplier<T> valueSupplier) {
+    return safeGetValue(valueSupplier, null);
   }
 
   /**
@@ -254,33 +278,20 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * then the {@code defaultValue} will be returned.
    *
    * @param <T> {@link Class} type of the value to get.
-   * @param supplier {@link Supplier} of the value.
+   * @param valueSupplier {@link Supplier} of the value.
    * @param defaultValue value to return if the {@link Supplier} is unable to supply the value.
    * @return a value from the given {@link Supplier} in an error safe manner.  If an {@link Exception} or {@link Error}
    * occurs then the {@code defaultValue} will be returned.
    * @see java.util.function.Supplier
    */
-  public static <T> T safeGetValue(Supplier<T> supplier, T defaultValue) {
+  public static <T> T safeGetValue(Supplier<T> valueSupplier, T defaultValue) {
 
     try {
-      return supplier.get();
+      return valueSupplier.get();
     }
     catch (Throwable ignore) {
       return defaultValue;
     }
-  }
-
-  /**
-   * Determines whether {@code obj1} is {@literal null} or equal to {@code obj2}.
-   *
-   * @param obj1 {@link Object} being evaluated in the equality comparison.
-   * @param obj2 {@link Object} to compare for equality with {@code obj1} if {@code obj1} is not {@literal null}.
-   * @return a boolean value indicating whether {@code obj1} is {@literal null} or equal to {@code obj2}.
-   * @see java.lang.Object#equals(Object)
-   */
-  @NullSafe
-  public static boolean isNullOrEqualTo(Object obj1, Object obj2) {
-    return obj1 == null || obj1.equals(obj2);
   }
 
   /**
@@ -314,6 +325,19 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
+   * Determines whether {@code obj1} is {@literal null} or equal to {@code obj2}.
+   *
+   * @param obj1 {@link Object} being evaluated in the equality comparison.
+   * @param obj2 {@link Object} to compare for equality with {@code obj1} if {@code obj1} is not {@literal null}.
+   * @return a boolean value indicating whether {@code obj1} is {@literal null} or equal to {@code obj2}.
+   * @see java.lang.Object#equals(Object)
+   */
+  @NullSafe
+  public static boolean isNullOrEqualTo(Object obj1, Object obj2) {
+    return obj1 == null || obj1.equals(obj2);
+  }
+
+  /**
    * Calculates the hash code of an object by invoking Object.hashCode for non-null objects and returning 0 if the
    * object is null.
    *
@@ -340,9 +364,9 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   @FunctionalInterface
-  public interface ExceptionThrowingOperation<T> {
+  public interface ThrowableOperation<T> {
 
-    T doExceptionThrowingOperation() throws Exception;
+    T run() throws Throwable;
 
   }
 }

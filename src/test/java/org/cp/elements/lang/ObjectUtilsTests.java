@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -28,24 +25,18 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link ObjectUtils}.
+ * Unit Tests for {@link ObjectUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0
  */
 public class ObjectUtilsTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void areAllNullReturnsTrue() {
@@ -209,13 +200,13 @@ public class ObjectUtilsTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void doOperationSafelyReturnsValue() throws Exception {
+  public void doOperationSafelyReturnsValue() {
     assertThat(ObjectUtils.doOperationSafely(() -> "test")).isEqualTo("test");
   }
 
   @Test(expected = IllegalStateException.class)
   @SuppressWarnings("unchecked")
-  public void doOperationSafelyThrowsIllegalStateException() throws Exception {
+  public void doOperationSafelyThrowsIllegalStateException() {
 
     try {
       ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); });
@@ -244,10 +235,10 @@ public class ObjectUtilsTests {
 
   @Test(expected = IllegalStateException.class)
   @SuppressWarnings("unchecked")
-  public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() throws Exception {
+  public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() {
 
     try {
-      ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); }, null);
+      ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); }, (Object) null);
     }
     catch (IllegalStateException expected) {
 
@@ -304,34 +295,49 @@ public class ObjectUtilsTests {
     assertThat(ObjectUtils.returnValueOrThrowIfNull("null", new NullPointerException("test"))).isEqualTo("null");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void returnValueOrThrowIfNullWithNullValue() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Value must not be null");
+    try {
+      ObjectUtils.returnValueOrThrowIfNull(null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    ObjectUtils.returnValueOrThrowIfNull(null);
+      assertThat(expected).hasMessage("Value must not be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = NullPointerException.class)
   public void returnValueOrThrowIfNullWithNullValueUsingCustomRuntimeException() {
 
-    exception.expect(NullPointerException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Value is null");
+    try {
+      ObjectUtils.returnValueOrThrowIfNull(null, new NullPointerException("Value is null"));
+    }
+    catch (NullPointerException expected) {
 
-    ObjectUtils.returnValueOrThrowIfNull(null, new NullPointerException("Value is null"));
+      assertThat(expected).hasMessage("Value is null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void returnValueOThrowIfNullWithNullValueAndNullRuntimeException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("RuntimeException must not be null");
+    try {
+      ObjectUtils.returnValueOrThrowIfNull(null, null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    ObjectUtils.returnValueOrThrowIfNull(null, null);
+      assertThat(expected).hasMessage("RuntimeException must not be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -480,6 +486,7 @@ public class ObjectUtilsTests {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public boolean equals(final Object obj) {
       if (obj == this) {
         return true;
