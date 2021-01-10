@@ -36,7 +36,7 @@ import org.junit.Test;
  * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0
  */
-public class ObjectUtilsTests {
+public class ObjectUtilsUnitTests {
 
   @Test
   public void areAllNullReturnsTrue() {
