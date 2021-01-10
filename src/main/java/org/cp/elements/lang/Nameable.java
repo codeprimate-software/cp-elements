@@ -16,9 +16,10 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Nameable} interface defines a contract for objects that have a name.
+ * The {@link Nameable} interface defines a contract for {@link Object Objects} that have a name.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object} naming {@literal this} {@link Object}.
  * @see java.lang.FunctionalInterface
  * @since 1.0.0
  */
@@ -27,9 +28,9 @@ package org.cp.elements.lang;
 public interface Nameable<T> {
 
   /**
-   * Returns the name of this object.
+   * Returns the name of {@literal this} {@link Object}.
    *
-   * @return the name of this object.
+   * @return the name of {@literal this} {@link Object}.
    */
   T getName();
 
