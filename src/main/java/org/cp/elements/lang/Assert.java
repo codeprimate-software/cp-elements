@@ -38,9 +38,9 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class Assert {
 
   /**
-   * Asserts that an argument is valid.
+   * Asserts that an {@literal argument} is valid.
    *
-   * The assertion holds if and only if {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
    *
    * For example, application code might assert that:
    *
@@ -50,19 +50,19 @@ public abstract class Assert {
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
    * to determine the validity of the argument.
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
    * @see #argument(Boolean, String, Object...)
    */
   public static void argument(Boolean valid) {
-    argument(valid, "argument is not valid");
+    argument(valid, "Argument is not valid");
   }
 
   /**
    * Asserts that an argument is valid.
    *
-   * The assertion holds if and only if {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
    *
    * For example, application code might assert that:
    *
@@ -72,10 +72,10 @@ public abstract class Assert {
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
    * to determine the validity of the argument.
-   * @param message {@link String} containing the message for the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message for the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
@@ -88,7 +88,7 @@ public abstract class Assert {
   /**
    * Asserts that an argument is valid.
    *
-   * The assertion holds if and only if {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
    *
    * For example, application code might assert that:
    *
@@ -98,10 +98,10 @@ public abstract class Assert {
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
    * to determine the validity of the argument.
-   * @param message {@link Supplier} containing the message for the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link Supplier} containing the message for the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
    * @see java.util.function.Supplier
    */
@@ -114,7 +114,7 @@ public abstract class Assert {
   /**
    * Asserts that an argument is valid.
    *
-   * The assertion holds if and only if {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
    *
    * For example, application code might assert that:
    *
@@ -124,7 +124,7 @@ public abstract class Assert {
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
    * to determine the validity of the argument.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the argument is invalid.
@@ -136,11 +136,12 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link Boolean valid} argument evaluates to {@link Boolean#TRUE}.
-   *
-   * @param valid {@link Boolean} value to evaluate.
-   * @return a boolean value to evaluate whether the given {@link Boolean valid} argument
+   * Null-safe method to determine whether the given {@link Boolean valid argument}
    * evaluates to {@link Boolean#TRUE}.
+   *
+   * @param valid {@link Boolean value} to evaluate.
+   * @return a boolean value indicating whether the given {@link Boolean valid argument}
+   * evaluates to {@link Boolean#TRUE}, i.e. is {@literal true}.
    * @see java.lang.Boolean#TRUE
    */
   @NullSafe
@@ -151,34 +152,34 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are comparable.
    *
-   * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
+   * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
-   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} in the comparison.
+   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
    * @param obj1 first {@link Comparable Comparable object} in the relational comparison.
    * @param obj2 second {@link Comparable Comparable object} in the relational comparison.
-   * @throws org.cp.elements.lang.ComparisonException if the assertion fails
-   * and the two {@link Object objects} are not comparable.
-   * @see #comparable(Comparable, Comparable, String, Object...)
+   * @throws org.cp.elements.lang.ComparisonException if the assertion fails and the two {@link Object objects}
+   * are not comparable.
+   * @see #comparable(Comparable, Comparable, Supplier)
    * @see java.lang.Comparable#compareTo(Object)
    */
   public static <T extends Comparable<T>> void comparable(T obj1, T obj2) {
-    comparable(obj1, obj2, "[%1$s] is not comparable to [%2$s]", obj1, obj2);
+    comparable(obj1, obj2, () -> format("[%1$s] is not comparable to [%2$s]", obj1, obj2));
   }
 
   /**
    * Asserts that two {@link Object objects} are comparable.
    *
-   * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
+   * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
-   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} in the comparison.
+   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
    * @param obj1 first {@link Comparable Comparable object} in the relational comparison.
    * @param obj2 second {@link Comparable Comparable object} in the relational comparison.
-   * @param message {@link String} containing the message used in the {@link ComparisonException} thrown
-   * if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
-   * when formatting the {@link String message}.
-   * @throws org.cp.elements.lang.ComparisonException if the assertion fails
-   * and the two {@link Object objects} are not comparable.
+   * @param message {@link String} containing the message used in the {@link ComparisonException}
+   * thrown if the assertion fails.
+   * @param arguments array of {@link Object arguments} used as placeholder values when formatting
+   * the {@link String message}.
+   * @throws org.cp.elements.lang.ComparisonException if the assertion fails and the two {@link Object objects}
+   * are not comparable.
    * @see #comparable(Comparable, Comparable, RuntimeException)
    * @see java.lang.Comparable#compareTo(Object)
    */
@@ -189,15 +190,15 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are comparable.
    *
-   * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
+   * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
-   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} in the comparison.
+   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
    * @param obj1 first {@link Comparable Comparable object} in the relational comparison.
    * @param obj2 second {@link Comparable Comparable object} in the relational comparison.
-   * @param message {@link Supplier} containing the message used in the {@link ComparisonException} thrown
-   * if the assertion fails.
-   * @throws org.cp.elements.lang.ComparisonException if the assertion fails
-   * and the two {@link Object objects} are not comparable.
+   * @param message {@link Supplier} containing the message used in the {@link ComparisonException}
+   * thrown if the assertion fails.
+   * @throws org.cp.elements.lang.ComparisonException if the assertion fails and the two {@link Object objects}
+   * are not comparable.
    * @see java.lang.Comparable#compareTo(Object)
    * @see java.util.function.Supplier
    */
@@ -210,9 +211,9 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are comparable.
    *
-   * The assertion holds if and only if the {@link Comparable Comparable objects} are equal by comparison.
+   * The assertion holds if and only if the (iff) {@link Comparable Comparable objects} are equal by comparison.
    *
-   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} in the comparison.
+   * @param <T> {@link Comparable Comparable class type} of the {@link Object objects} to compare.
    * @param obj1 first {@link Comparable Comparable object} in the relational comparison.
    * @param obj2 second {@link Comparable Comparable object} in the relational comparison.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -226,13 +227,14 @@ public abstract class Assert {
   }
 
   /**
-   * Evaluates the given {@link Comparable Comparable objects} to determine whether they are equal by comparison.
+   * Null-safe method to evaluate the given {@link Comparable Comparable objects} to determine
+   * whether they are equal by comparison.
    *
    * @param <T> {@link Comparable Comparable class type} of the given {@link Object objects}.
    * @param obj1 {@link Object} to compare for equality with {@link Object object 2}.
    * @param obj2 {@link Object} to compare for equality with {@link Object object 1}.
    * @return a boolean value indicating whether the given {@link Comparable Comparable objects}
-   * to determine whether they are equal by comparison.
+   * are equal by comparison.
    * @see java.lang.Comparable#compareTo(Object)
    */
   @NullSafe
@@ -243,30 +245,30 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
    * @param obj2 {@link Object right operand} in the equality comparison.
    * @throws org.cp.elements.lang.EqualityException if the assertion fails
    * and the two {@link Object objects} are not equal.
-   * @see #equals(Object, Object, String, Object...)
+   * @see #equals(Object, Object, Supplier)
    * @see java.lang.Object#equals(Object)
    */
   public static void equals(Object obj1, Object obj2) {
-    equals(obj1, obj2, "[%1$s] is not equal to [%2$s]", obj1, obj2);
+    equals(obj1, obj2, () -> format("[%1$s] is not equal to [%2$s]", obj1, obj2));
   }
 
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
    * @param obj2 {@link Object right operand} in the equality comparison.
-   * @param message {@link String} containing the message used in the {@link EqualityException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link EqualityException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.EqualityException if the assertion fails
@@ -281,13 +283,13 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
    * @param obj2 {@link Object right operand} in the equality comparison.
-   * @param message {@link Supplier} containing the message used in the {@link EqualityException} thrown
-   * if the assertion fails.
+   * @param message {@link Supplier} containing the message used in the {@link EqualityException}
+   * thrown if the assertion fails.
    * @throws org.cp.elements.lang.EqualityException if the assertion fails
    * and the two {@link Object objects} are not equal.
    * @see java.lang.Object#equals(Object)
@@ -302,7 +304,7 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
@@ -318,7 +320,7 @@ public abstract class Assert {
   }
 
   /**
-   * Evaluate the given {@link Object objects} or equality.
+   * Null-safe method to evaluate the given {@link Object objects} or equality.
    *
    * @param obj1 {@link Object} to evaluate for equality with {@link Object object 1}.
    * @param obj2 {@link Object} to evaluate for equality with {@link Object object 2}.
@@ -331,32 +333,34 @@ public abstract class Assert {
   }
 
   /**
-   * Assert that the given {@link String} is not blank.
+   * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
    * or contains only {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
-   * @throws java.lang.IllegalArgumentException if the {@link String} is blank.
-   * @see #hasText(String, String, Object...)
+   * @throws java.lang.IllegalArgumentException if the {@link String} is {@literal blank}, {@literal empty}
+   * or {@literal null}.
+   * @see #hasText(String, Supplier)
    * @see java.lang.String
    */
   public static void hasText(String value) {
-    hasText(value, "argument is blank");
+    hasText(value, () -> format("Argument [%s] is blank", value));
   }
 
   /**
-   * Assert that the given {@link String} is not blank.
+   * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
    * or contains only {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the {@link String} is blank.
+   * @throws java.lang.IllegalArgumentException if the {@link String} is {@literal blank}, {@literal empty}
+   * or {@literal null}.
    * @see #hasText(String, RuntimeException)
    * @see java.lang.String
    */
@@ -365,15 +369,16 @@ public abstract class Assert {
   }
 
   /**
-   * Assert that the given {@link String} is not blank.
+   * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
    * or contains only {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the {@link String} is blank.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link String} is {@literal blank}, {@literal empty}
+   * or {@literal null}.
    * @see java.util.function.Supplier
    * @see java.lang.String
    */
@@ -384,14 +389,14 @@ public abstract class Assert {
   }
 
   /**
-   * Assert that the given {@link String} is not blank.
+   * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
    * or contains only {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link String} is blank.
+   * @throws java.lang.RuntimeException if the {@link String} is {@literal blank}, {@literal empty} or {@literal null}.
    * @see java.lang.String
    */
   public static void hasText(String value, RuntimeException cause) {
@@ -401,10 +406,12 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link String} is blank.
+   * Null-safe method to determine whether the given {@link String} is {@literal blank}, {@literal empty}
+   * or {@literal null}.
    *
    * @param value {@link String} to evaluate.
-   * @return a boolean value indicating whether the given {@link String} is blank.
+   * @return a boolean value indicating whether the given {@link String} is {@literal blank}, {@literal empty}
+   * or {@literal null}.
    * @see java.lang.String#isEmpty()
    */
   @NullSafe
@@ -415,28 +422,29 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
-   * The assertion holds if and only if the {@link Object lock} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
    *
-   * @param lock {@link Object} used as the lock, monitor or mutex in the synchronization.
+   * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
    * @throws java.lang.IllegalMonitorStateException if the {@link Thread#currentThread() current Thread}
    * does not hold the {@link Object lock} or the {@link Object lock} is {@literal null}.
-   * @see #holdsLock(Object, String, Object...)
    * @see java.lang.Thread#holdsLock(Object)
+   * @see #holdsLock(Object, Supplier)
    */
   public static void holdsLock(Object lock) {
-    holdsLock(lock, "current thread [%1$s] does not hold lock [%2$s]", Thread.currentThread().getName(), lock);
+    holdsLock(lock, () -> format("The current thread [%1$s] does not hold lock [%2$s]",
+      Thread.currentThread().getName(), lock));
   }
 
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
-   * The assertion holds if and only if the {@link Object lock} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
    *
-   * @param lock {@link Object} used as the lock, monitor or mutex in the synchronization.
-   * @param message {@link String} containing the message used in the {@link IllegalMonitorStateException} thrown
-   * if the assertion fails.
+   * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
+   * @param message {@link String} containing the message used in the {@link IllegalMonitorStateException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalMonitorStateException if the {@link Thread#currentThread() current Thread}
@@ -451,12 +459,12 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
-   * The assertion holds if and only if the {@link Object lock} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
    *
-   * @param lock {@link Object} used as the lock, monitor or mutex in the synchronization.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalMonitorStateException} thrown
-   * if the assertion fails.
+   * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalMonitorStateException}
+   * thrown if the assertion fails.
    * @throws java.lang.IllegalMonitorStateException if the {@link Thread#currentThread() current Thread}
    * does not hold the {@link Object lock} or the {@link Object lock} is {@literal null}.
    * @see java.lang.Thread#holdsLock(Object)
@@ -471,10 +479,10 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
-   * The assertion holds if and only if the {@link Object lock} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
    * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
    *
-   * @param lock {@link Object} used as the lock, monitor or mutex in the synchronization.
+   * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the {@link Thread#currentThread() current Thread}
    * does not hold the {@link Object lock} or the {@link Object lock} is {@literal null}.
@@ -487,8 +495,8 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the {@link Thread#currentThread() current Thread} is the holder
-   * of the given {@link Object lock}.
+   * Null-safe method to determine whether the {@link Thread#currentThread() current Thread}
+   * is the holder of the given {@link Object lock}.
    *
    * @param lock {@link Object} to evaluate as the lock.
    * @return a boolean value indicating whether the {@link Thread#currentThread() current Thread}
@@ -503,38 +511,38 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Class 'from' class type} is assignable to the {@link Class 'to' class type}.
    *
-   * The assertion holds if and only if the {@link Class 'from' class type} is the same as or a subclass
-   * of the {@link Class 'to' class type}.
+   * The assertion holds if and only if (iff) the {@link Class 'from' class type} is the same as
+   * or a subclass of the {@link Class 'to' class type}.
    *
-   * @param from {@link Class class type} being evaluated for assignment compatibility
-   * with the {@link Class 'to' class type}.
+   * @param from {@link Class class type} being evaluated for assignment compatibility with
+   * the {@link Class 'to' class type}.
    * @param to {@link Class class type} used to determine if the {@link Class 'from' class type}
    * is assignment compatible.
-   * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible
-   * with the {@link Class 'to' class type}.
-   * @see #isAssignableTo(Class, Class, String, Object...)
+   * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible with
+   * the {@link Class 'to' class type}.
+   * @see #isAssignableTo(Class, Class, Supplier)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
   public static void isAssignableTo(Class<?> from, Class<?> to) {
-    isAssignableTo(from, to, "[%1$s] is not assignable to [%2$s]", from, to);
+    isAssignableTo(from, to, () -> format("[%1$s] is not assignable to [%2$s]", from, to));
   }
 
   /**
    * Asserts that the {@link Class 'from' class type} is assignable to the {@link Class 'to' class type}.
    *
-   * The assertion holds if and only if the {@link Class 'from' class type} is the same as or a subclass
-   * of the {@link Class 'to' class type}.
+   * The assertion holds if and only if (iff) the {@link Class 'from' class type} is the same as
+   * or a subclass of the {@link Class 'to' class type}.
    *
-   * @param from {@link Class class type} being evaluated for assignment compatibility
-   * with the {@link Class 'to' class type}.
+   * @param from {@link Class class type} being evaluated for assignment compatibility with
+   * the {@link Class 'to' class type}.
    * @param to {@link Class class type} used to determine if the {@link Class 'from' class type}
    * is assignment compatible.
-   * @param message {@link String} containing the message used in the {@link ClassCastException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link ClassCastException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible
-   * with the {@link Class 'to' class type}.
+   * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible with
+   * the {@link Class 'to' class type}.
    * @see #isAssignableTo(Class, Class, RuntimeException)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
@@ -545,18 +553,19 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Class 'from' class type} is assignable to the {@link Class 'to' class type}.
    *
-   * The assertion holds if and only if the {@link Class 'from' class type} is the same as or a subclass
-   * of the {@link Class 'to' class type}.
+   * The assertion holds if and only if (iff) the {@link Class 'from' class type} is the same as
+   * or a subclass of the {@link Class 'to' class type}.
    *
-   * @param from {@link Class class type} being evaluated for assignment compatibility
-   * with the {@link Class 'to' class type}.
+   * @param from {@link Class class type} being evaluated for assignment compatibility with
+   * the {@link Class 'to' class type}.
    * @param to {@link Class class type} used to determine if the {@link Class 'from' class type}
    * is assignment compatible.
-   * @param message {@link String} containing the message used in the {@link ClassCastException} thrown
-   * if the assertion fails.
-   * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible
-   * with the {@link Class 'to' class type}.
+   * @param message {@link Supplier} containing the message used in the {@link ClassCastException}
+   * thrown if the assertion fails.
+   * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible with
+   * the {@link Class 'to' class type}.
    * @see java.lang.Class#isAssignableFrom(Class)
+   * @see java.util.function.Supplier
    */
   public static void isAssignableTo(Class<?> from, Class<?> to, Supplier<String> message) {
     if (isNotAssignableTo(from, to)) {
@@ -567,16 +576,16 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Class 'from' class type} is assignable to the {@link Class 'to' class type}.
    *
-   * The assertion holds if and only if the {@link Class 'from' class type} is the same as or a subclass
-   * of the {@link Class 'to' class type}.
+   * The assertion holds if and only if (iff) the {@link Class 'from' class type} is the same as
+   * or a subclass of the {@link Class 'to' class type}.
    *
-   * @param from {@link Class class type} being evaluated for assignment compatibility
-   * with the {@link Class 'to' class type}.
+   * @param from {@link Class class type} being evaluated for assignment compatibility with
+   * the {@link Class 'to' class type}.
    * @param to {@link Class class type} used to determine if the {@link Class 'from' class type}
    * is assignment compatible.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link Class 'from' class type} is not assignment compatible
-   * with the {@link Class 'to' class type}.
+   * @throws java.lang.RuntimeException if the {@link Class 'from' class type} is not assignment compatible with
+   * the {@link Class 'to' class type}.
    * @see java.lang.Class#isAssignableFrom(Class)
    */
   public static void isAssignableTo(Class<?> from, Class<?> to, RuntimeException cause) {
@@ -586,10 +595,14 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the {@link Class 'from' class type} is assignable to the {@link Class 'to' class type}.
+   * Null-safe method to determine whether the {@link Class 'from' class type} is assignable to
+   * the {@link Class 'to' class type}.
    *
-   * @param from {@link Class class type} being evaluated for assignment compatibility
-   * with the {@link Class 'to' class type}.
+   * The {@link Class 'from' class type} cannot be assigned to {@literal null}. However {@literal null}
+   * can be assigned to the {@link Class 'to' class type}.
+   *
+   * @param from {@link Class class type} being evaluated for assignment compatibility with
+   * the {@link Class 'to' class type}.
    * @param to {@link Class class type} used to determine if the {@link Class 'from' class type}
    * is assignment compatible.
    * @return a boolean value indicating whether the {@link Class 'from' class type} is assignable to
@@ -604,28 +617,28 @@ public abstract class Assert {
   /**
    * Asserts that the condition is {@literal false}.
    *
-   * The assertion holds if and only if the value is equal to {@literal false}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
-   * @param condition {@link Boolean} value being evaluated.
-   * @throws java.lang.IllegalArgumentException if the value is not {@literal false}.
-   * @see #isFalse(Boolean, String, Object...)
+   * @param condition {@link Boolean value} being evaluated.
+   * @throws java.lang.IllegalArgumentException if the {@link Boolean value} is not {@literal false}.
+   * @see #isFalse(Boolean, Supplier)
    * @see java.lang.Boolean#FALSE
    */
   public static void isFalse(Boolean condition) {
-    isFalse(condition, "condition [%1$s] is not false", condition);
+    isFalse(condition, () -> format("Condition [%1$s] is not false", condition));
   }
 
   /**
    * Asserts that the condition is {@literal false}.
    *
-   * The assertion holds if and only if the value is equal to {@literal false}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
-   * @param condition {@link Boolean} value being evaluated.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param condition {@link Boolean value} being evaluated.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the value is not {@literal false}.
+   * @throws java.lang.IllegalArgumentException if the {@link Boolean value} is not {@literal false}.
    * @see #isFalse(Boolean, RuntimeException)
    * @see java.lang.Boolean#FALSE
    */
@@ -636,12 +649,13 @@ public abstract class Assert {
   /**
    * Asserts that the condition is {@literal false}.
    *
-   * The assertion holds if and only if the value is equal to {@literal false}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
-   * @param condition {@link Boolean} value being evaluated.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the value is not {@literal false}.
+   * @param condition {@link Boolean value} being evaluated.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link Boolean value} is not {@literal false}.
+   * @see java.util.function.Supplier
    * @see java.lang.Boolean#FALSE
    */
   public static void isFalse(Boolean condition, Supplier<String> message) {
@@ -653,11 +667,11 @@ public abstract class Assert {
   /**
    * Asserts that the condition is {@literal false}.
    *
-   * The assertion holds if and only if the value is equal to {@literal false}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal false}.
    *
-   * @param condition {@link Boolean} value being evaluated.
+   * @param condition {@link Boolean value} being evaluated.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the value is not {@literal false}.
+   * @throws java.lang.RuntimeException if the {@link Boolean value} is not {@literal false}.
    * @see java.lang.Boolean#FALSE
    */
   public static void isFalse(Boolean condition, RuntimeException cause) {
@@ -667,10 +681,10 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given condition is {@literal false}.
+   * Null-safe method to determine whether the given {@link Boolean condition} is {@literal false}.
    *
-   * @param condition {@link Boolean} value to evaluate.
-   * @return a boolean indicating whether the given condition is {@literal false}.
+   * @param condition {@link Boolean value} to evaluate.
+   * @return a boolean indicating whether the given {@link Boolean condition} is {@literal false}.
    * @see java.lang.Boolean#FALSE
    */
   @NullSafe
@@ -681,32 +695,34 @@ public abstract class Assert {
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
    *
-   * The assertion holds if and only if the {@link Object} is not {@literal null} and is an instance of
-   * the specified {@link Class type}.  This assertion functions exactly the same as
-   * the Java {@literal instanceof} operator.
+   * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
+   * and is an instance of the specified {@link Class type}.
+   *
+   * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of the {@link Class type}.
    * @param type {@link Class type} used to evaluate the {@link Object} in the {@literal instanceof} operator.
    * @throws org.cp.elements.lang.IllegalTypeException if the {@link Object} is not an instance of
    * the specified {@link Class type}.
-   * @see #isInstanceOf(Object, Class, String, Object...)
+   * @see #isInstanceOf(Object, Class, Supplier)
    * @see java.lang.Class#isInstance(Object)
    */
   public static void isInstanceOf(Object obj, Class<?> type) {
-    isInstanceOf(obj, type, "[%1$s] is not an instance of [%2$s]", obj, type);
+    isInstanceOf(obj, type, () -> format("[%1$s] is not an instance of [%2$s]", obj, type));
   }
 
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
    *
-   * The assertion holds if and only if the {@link Object} is not {@literal null} and is an instance of
-   * the specified {@link Class type}.  This assertion functions exactly the same as
-   * the Java {@literal instanceof} operator.
+   * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
+   * and is an instance of the specified {@link Class type}.
+   *
+   * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of the {@link Class type}.
    * @param type {@link Class type} used to evaluate the {@link Object} in the {@literal instanceof} operator.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalTypeException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.IllegalTypeException if the {@link Object} is not an instance of
@@ -721,17 +737,19 @@ public abstract class Assert {
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
    *
-   * The assertion holds if and only if the {@link Object} is not {@literal null} and is an instance of
-   * the specified {@link Class type}.  This assertion functions exactly the same as
-   * the Java {@literal instanceof} operator.
+   * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
+   * and is an instance of the specified {@link Class type}.
+   *
+   * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of the {@link Class type}.
    * @param type {@link Class type} used to evaluate the {@link Object} in the {@literal instanceof} operator.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalTypeException}
+   * thrown if the assertion fails.
    * @throws org.cp.elements.lang.IllegalTypeException if the {@link Object} is not an instance of
    * the specified {@link Class type}.
    * @see java.lang.Class#isInstance(Object)
+   * @see java.util.function.Supplier
    */
   public static void isInstanceOf(Object obj, Class<?> type, Supplier<String> message) {
     if (isNotInstanceOf(obj, type)) {
@@ -742,9 +760,10 @@ public abstract class Assert {
   /**
    * Asserts that the given {@link Object} is an instance of the specified {@link Class type}.
    *
-   * The assertion holds if and only if the {@link Object} is not {@literal null} and is an instance of
-   * the specified {@link Class type}.  This assertion functions exactly the same as
-   * the Java {@literal instanceof} operator.
+   * The assertion holds if and only if (iff) the {@link Object} is not {@literal null}
+   * and is an instance of the specified {@link Class type}.
+   *
+   * This assertion functions exactly the same as the Java {@literal instanceof} operator.
    *
    * @param obj {@link Object} evaluated as an instance of the {@link Class type}.
    * @param type {@link Class type} used to evaluate the {@link Object} in the {@literal instanceof} operator.
@@ -759,43 +778,44 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link Object} is an instance of {@link Class type}.
+   * Null-safe method to determine whether the given {@link Object} is an instance of {@link Class type}.
    *
    * @param obj {@link Object} to evaluate.
-   * @param type {@link Class type} to use in the instance of operation.
+   * @param type {@link Class type} used in the instance of operation.
    * @return a boolean value indicating whether the given {@link Object} is an instance of {@link Class type}.
    * @see java.lang.Class#isInstance(Object)
    * @see java.lang.Object
    */
+  @NullSafe
   private static boolean isNotInstanceOf(Object obj, Class<?> type) {
-    return !type.isInstance(obj);
+    return type == null || !type.isInstance(obj);
   }
 
   /**
-   * Asserts that the condition is {@literal true}.
+   * Asserts that the {@link Boolean condition} is {@literal true}.
    *
-   * The assertion holds if and only if the value is equal to {@literal true}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
-   * @param condition {@link Boolean} value being evaluated as a {@literal true} condition.
-   * @throws java.lang.IllegalArgumentException if the value is not {@literal true}.
-   * @see #isTrue(Boolean, String, Object...)
+   * @param condition {@link Boolean value} value being evaluated.
+   * @throws java.lang.IllegalArgumentException if the {@link Boolean condition} is not {@literal true}.
+   * @see #isTrue(Boolean, Supplier)
    * @see java.lang.Boolean#TRUE
    */
   public static void isTrue(Boolean condition) {
-    isTrue(condition, "condition [%1$s] is not true", condition);
+    isTrue(condition, () -> format("Condition [%1$s] is not true", condition));
   }
 
   /**
-   * Asserts that the condition is {@literal true}.
+   * Asserts that the {@link Boolean condition} is {@literal true}.
    *
-   * The assertion holds if and only if the value is equal to {@literal true}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
-   * @param condition {@link Boolean} value being evaluated as a {@literal true} condition.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param condition {@link Boolean value} value being evaluated.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the value is not {@literal true}.
+   * @throws java.lang.IllegalArgumentException if the {@link Boolean condition} is not {@literal true}.
    * @see #isTrue(Boolean, RuntimeException)
    * @see java.lang.Boolean#TRUE
    */
@@ -804,14 +824,15 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the condition is {@literal true}.
+   * Asserts that the {@link Boolean condition} is {@literal true}.
    *
-   * The assertion holds if and only if the value is equal to {@literal true}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
-   * @param condition {@link Boolean} value being evaluated as a {@literal true} condition.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the value is not {@literal true}.
+   * @param condition {@link Boolean value} value being evaluated.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link Boolean condition} is not {@literal true}.
+   * @see java.util.function.Supplier
    * @see java.lang.Boolean#TRUE
    */
   public static void isTrue(Boolean condition, Supplier<String> message) {
@@ -821,13 +842,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the condition is {@literal true}.
+   * Asserts that the {@link Boolean condition} is {@literal true}.
    *
-   * The assertion holds if and only if the value is equal to {@literal true}.
+   * The assertion holds if and only if (iff) the {@link Boolean condition} is equal to {@literal true}.
    *
-   * @param condition {@link Boolean} value being evaluated as a {@literal true} condition.
+   * @param condition {@link Boolean value} value being evaluated.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the value is not {@literal true}.
+   * @throws java.lang.RuntimeException if the {@link Boolean condition} is not {@literal true}.
    * @see java.lang.Boolean#TRUE
    */
   public static void isTrue(Boolean condition, RuntimeException cause) {
@@ -837,9 +858,9 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the {@link Boolean condition} is {@literal true}.
+   * Null-safe method to determine whether the {@link Boolean condition} is {@literal true}.
    *
-   * @param condition {@link Boolean} value to evaluate.
+   * @param condition {@link Boolean value} to evaluate.
    * @return a boolean value indicating whether the {@link Boolean condition} is {@literal true}.
    * @see java.lang.Boolean#TRUE
    */
@@ -849,30 +870,32 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the given {@link String} is not empty.
+   * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link String String} is not the {@link String#isEmpty() empty String}.
+   * The assertion holds if and only if (iff) the {@link String String}
+   * is not the {@link String#isEmpty() empty String}.
    *
    * @param value {@link String} to evaluate.
-   * @throws java.lang.IllegalArgumentException if the {@link String} is empty.
+   * @throws java.lang.IllegalArgumentException if the {@link String} is {@link String#isEmpty() empty}.
    * @see #notEmpty(String, String, Object...)
    * @see java.lang.String
    */
   public static void notEmpty(String value) {
-    notEmpty(value, "argument is empty");
+    notEmpty(value, "String value is empty");
   }
 
   /**
-   * Asserts that the given {@link String} is not empty.
+   * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link String String} is not the {@link String#isEmpty() empty String}.
+   * The assertion holds if and only if (iff) the {@link String String}
+   * is not the {@link String#isEmpty() empty String}.
    *
    * @param value {@link String} to evaluate.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the {@link String} is empty.
+   * @throws java.lang.IllegalArgumentException if the {@link String} is {@link String#isEmpty() empty}.
    * @see #notEmpty(String, RuntimeException)
    * @see java.lang.String
    */
@@ -881,14 +904,16 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the given {@link String} is not empty.
+   * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link String String} is not the {@link String#isEmpty() empty String}.
+   * The assertion holds if and only if (iff) the {@link String String}
+   * is not the {@link String#isEmpty() empty String}.
    *
    * @param value {@link String} to evaluate.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the {@link String} is empty.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link String} is {@link String#isEmpty() empty}.
+   * @see java.util.function.Supplier
    * @see java.lang.String
    */
   public static void notEmpty(String value, Supplier<String> message) {
@@ -898,13 +923,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the given {@link String} is not empty.
+   * Asserts that the given {@link String} is not {@link String#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link String String} is not the {@link String#isEmpty() empty String}.
+   * The assertion holds if and only if (iff) the {@link String String}
+   * is not the {@link String#isEmpty() empty String}.
    *
    * @param value {@link String} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link String} is empty.
+   * @throws java.lang.RuntimeException if the {@link String} is {@link String#isEmpty()} empty}.
    * @see java.lang.String
    */
   public static void notEmpty(String value, RuntimeException cause) {
@@ -914,7 +940,7 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link String} is {@link String#isEmpty() empty}.
+   * Null-safe method to determine whether the given {@link String} is {@link String#isEmpty() empty}.
    *
    * @param value {@link String} to evaluate.
    * @return a boolean value indicating whether the given {@link String} is {@link String#isEmpty() empty}.
@@ -926,30 +952,32 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Object array} is not empty.
+   * Asserts that the {@link Object array} is not {@literal empty}.
    *
-   * The assertion holds if and only if the {@link Object array} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param array {@link Object array} to evaluate.
-   * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or empty.
+   * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see #notEmpty(Object[], String, Object...)
    * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array) {
-    notEmpty(array, "array is empty");
+    notEmpty(array, "Array is empty");
   }
 
   /**
-   * Asserts that the {@link Object array} is not empty.
+   * Asserts that the {@link Object array} is not {@literal empty}.
    *
-   * The assertion holds if and only if the {@link Object array} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param array {@link Object array} to evaluate.
-   * @param message {@link String} containing the message using in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or empty.
+   * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see #notEmpty(Object[], RuntimeException)
    * @see java.lang.Object[]
    */
@@ -958,14 +986,16 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Object array} is not empty.
+   * Asserts that the {@link Object array} is not {@literal empty}.
    *
-   * The assertion holds if and only if the {@link Object array} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param array {@link Object array} to evaluate.
-   * @param message {@link Supplier} containing the message using in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or empty.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
+   * @see java.util.function.Supplier
    * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array, Supplier<String> message) {
@@ -975,13 +1005,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Object array} is not empty.
+   * Asserts that the {@link Object array} is not {@literal empty}.
    *
-   * The assertion holds if and only if the {@link Object array} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param array {@link Object array} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link Object array} is {@literal null} or empty.
+   * @throws java.lang.RuntimeException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array, RuntimeException cause) {
@@ -991,10 +1022,10 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link Object array} is empty.
+   * Null-safe method to determine whether the given {@link Object array} is {@literal empty}.
    *
    * @param array {@link Object array} to evaluate.
-   * @return a boolean value indicating whether the given {@link Object array} is empty.
+   * @return a boolean value indicating whether the given {@link Object array} is {@literal empty}.
    */
   @NullSafe
   private static boolean isEmpty(Object[] array) {
@@ -1002,30 +1033,34 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Collection} is not empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
    *
-   * The assertion holds if and only if the {@link Collection} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param collection {@link Collection} to evaluate.
-   * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null} or empty.
+   * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null}
+   * or {@link Collection#isEmpty() empty}.
    * @see #notEmpty(Collection, String, Object...)
    * @see java.util.Collection#isEmpty()
    */
   public static void notEmpty(Collection<?> collection) {
-    notEmpty(collection, "collection is empty");
+    notEmpty(collection, "Collection is empty");
   }
 
   /**
-   * Asserts that the {@link Collection} is not empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
    *
-   * The assertion holds if and only if the {@link Collection} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param collection {@link Collection} to evaluate.
-   * @param message {@link String} containing the message using in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null} or empty.
+   * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null}
+   * or {@link Collection#isEmpty() empty}.
    * @see #notEmpty(java.util.Collection, RuntimeException)
    * @see java.util.Collection#isEmpty()
    */
@@ -1034,15 +1069,18 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Collection} is not empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
    *
-   * The assertion holds if and only if the {@link Collection} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param collection {@link Collection} to evaluate.
-   * @param message {@link Supplier} containing the message using in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null} or empty.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null}
+   * or {@link Collection#isEmpty() empty}.
    * @see java.util.Collection#isEmpty()
+   * @see java.util.function.Supplier
    */
   public static void notEmpty(Collection<?> collection, Supplier<String> message) {
     if (isEmpty(collection)) {
@@ -1051,13 +1089,15 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Collection} is not empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
    *
-   * The assertion holds if and only if the {@link Collection} is not {@literal null} and contains at least 1 element.
+   * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
+   * and contains at least 1 element.
    *
    * @param collection {@link Collection} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link Collection} is {@literal null} or empty.
+   * @throws java.lang.RuntimeException if the {@link Collection} is {@literal null}
+   * or {@link Collection#isEmpty() empty}.
    * @see java.util.Collection#isEmpty()
    */
   public static void notEmpty(Collection<?> collection, RuntimeException cause) {
@@ -1067,10 +1107,12 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link Collection} is {@link Collection#isEmpty() empty}.
+   * Null-safe method to determine whether the given {@link Collection} is {@literal null}
+   * or {@link Collection#isEmpty() empty}.
    *
    * @param collection {@link Collection} to evaluate.
-   * @return a boolean value indicating whether the given {@link Collection} is {@link Collection#isEmpty() empty}.
+   * @return a boolean value indicating whether the given {@link Collection} is {@literal null}
+   * or {@link Collection#isEmpty() empty}.
    * @see java.util.Collection#isEmpty()
    */
   @NullSafe
@@ -1079,32 +1121,32 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Map} is not empty.
+   * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link Map} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping.
    *
    * @param map {@link Map} to evaluate.
-   * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or empty.
+   * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    * @see #notEmpty(Map, String, Object...)
    * @see java.util.Map#isEmpty()
    */
   public static void notEmpty(Map<?, ?> map) {
-    notEmpty(map, "map is empty");
+    notEmpty(map, "Map is empty");
   }
 
   /**
-   * Asserts that the {@link Map} is not empty.
+   * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link Map} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping.
    *
    * @param map {@link Map} to evaluate.
-   * @param message {@link String} containing the message using in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or empty.
+   * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    * @see #notEmpty(java.util.Map, RuntimeException)
    * @see java.util.Map#isEmpty()
    */
@@ -1113,15 +1155,16 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Map} is not empty.
+   * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link Map} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping.
    *
    * @param map {@link Map} to evaluate.
-   * @param message {@link Supplier} containing the message using in the {@link IllegalArgumentException} thrown
-   * if the assertion fails.
-   * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or empty.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
+   * @see java.util.function.Supplier
    * @see java.util.Map#isEmpty()
    */
   public static void notEmpty(Map<?, ?> map, Supplier<String> message) {
@@ -1131,14 +1174,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Map} is not empty.
+   * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
-   * The assertion holds if and only if the {@link Map} is not {@literal null}
+   * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
    * and contains at least 1 key/value mapping.
    *
    * @param map {@link Map} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link Map} is {@literal null} or empty.
+   * @throws java.lang.RuntimeException if the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    * @see java.util.Map#isEmpty()
    */
   public static void notEmpty(Map<?, ?> map, RuntimeException cause) {
@@ -1148,10 +1191,10 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link Map} is {@link Map#isEmpty() empty}.
+   * Null-safe method to determine whether the given {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    *
    * @param map {@link Map} to evaluate.
-   * @return a boolean value indicating whether the given {@link Map} is {@link Map#isEmpty() empty}.
+   * @return a boolean value indicating whether the given {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    * @see java.util.Map#isEmpty()
    */
   @NullSafe
@@ -1162,7 +1205,7 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
    *
-   * The assertion holds if and only if the {@link Object} reference is not {@literal null}.
+   * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
    * @throws java.lang.IllegalArgumentException if the {@link Object} reference is {@literal null}.
@@ -1170,17 +1213,17 @@ public abstract class Assert {
    * @see java.lang.Object
    */
   public static void notNull(Object obj) {
-    notNull(obj, "argument is null");
+    notNull(obj, "Argument is null");
   }
 
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
    *
-   * The assertion holds if and only if the {@link Object} reference is not {@literal null}.
+   * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
-   * @param message {@link String} containing the message using in the {@link NullPointerException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Object} reference is {@literal null}.
@@ -1194,12 +1237,13 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
    *
-   * The assertion holds if and only if the {@link Object} reference is not {@literal null}.
+   * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
-   * @param message {@link Supplier} containing the message using in the {@link NullPointerException} thrown
-   * if the assertion fails.
+   * @param message {@link Supplier} containing the message used in the {@link NullPointerException}
+   * thrown if the assertion fails.
    * @throws java.lang.IllegalArgumentException if the {@link Object} reference is {@literal null}.
+   * @see java.util.function.Supplier
    * @see java.lang.Object
    */
   public static void notNull(Object obj, Supplier<String> message) {
@@ -1211,7 +1255,7 @@ public abstract class Assert {
   /**
    * Asserts that the {@link Object} reference is not {@literal null}.
    *
-   * The assertion holds if and only if the {@link Object} reference is not {@literal null}.
+   * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -1225,7 +1269,7 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the given {@link Object} reference is {@literal null}.
+   * Null-safe method to determine whether the {@link Object} reference is {@literal null}.
    *
    * @param obj {@link Object} to evaluate.
    * @return a boolean value indicating whether the {@link Object} reference is {@literal null}.
@@ -1239,27 +1283,27 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
    * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are not the same.
-   * @see #same(Object, Object, String, Object...)
+   * @see #same(Object, Object, Supplier)
    * @see java.lang.Object
    */
   public static void same(Object obj1, Object obj2) {
-    same(obj1, obj2, "[%1$s] is not the same as [%2$s]", obj1, obj2);
+    same(obj1, obj2, () -> format("[%1$s] is not the same as [%2$s]", obj1, obj2));
   }
 
   /**
    * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
-   * @param message {@link String} containing the message used in the {@link IdentityException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link IdentityException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are not the same.
@@ -1273,17 +1317,18 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
-   * @param message {@link Supplier} containing the message used in the {@link IdentityException} thrown
-   * if the assertion fails.
+   * @param message {@link Supplier} containing the message used in the {@link IdentityException}
+   * thrown if the assertion fails.
    * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are not the same.
+   * @see java.util.function.Supplier
    * @see java.lang.Object
    */
   public static void same(Object obj1, Object obj2, Supplier<String> message) {
-    if (obj1 != obj2) {
+    if (isNotSame(obj1, obj2)) {
       throw new IdentityException(message.get());
     }
   }
@@ -1291,7 +1336,7 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
@@ -1300,13 +1345,13 @@ public abstract class Assert {
    * @see java.lang.Object
    */
   public static void same(Object obj1, Object obj2, RuntimeException cause) {
-    if (obj1 != obj2) {
+    if (isNotSame(obj1, obj2)) {
       throw cause;
     }
   }
 
   /**
-   * Determines whether the given {@link Object objects} are the same {@link Object}.
+   * Null-safe method to determine whether the given {@link Object objects} are the same {@link Object}.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
@@ -1321,24 +1366,24 @@ public abstract class Assert {
   /**
    * Asserts that the state is valid.
    *
-   * The assertion holds if and only if valid is {@literal true}.
+   * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean} value indicating whether the state is valid.
+   * @param valid {@link Boolean value} indicating whether the state is valid.
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, String, Object...)
    */
   public static void state(Boolean valid) {
-    state(valid, "state is invalid");
+    state(valid, "State is invalid");
   }
 
   /**
    * Asserts that the state is valid.
    *
-   * The assertion holds if and only if valid is {@literal true}.
+   * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean} value indicating whether the state is valid.
-   * @param message {@link String} containing the message used in the {@link IllegalStateException} thrown
-   * if the assertion fails.
+   * @param valid {@link Boolean value} indicating whether the state is valid.
+   * @param message {@link String} containing the message used in the {@link IllegalStateException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalStateException if the state is invalid.
@@ -1351,12 +1396,13 @@ public abstract class Assert {
   /**
    * Asserts that the state is valid.
    *
-   * The assertion holds if and only if valid is {@literal true}.
+   * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean} value indicating whether the state is valid.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalStateException} thrown
-   * if the assertion fails.
+   * @param valid {@link Boolean value} indicating whether the state is valid.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalStateException}
+   * thrown if the assertion fails.
    * @throws java.lang.IllegalStateException if the state is invalid.
+   * @see java.util.function.Supplier
    */
   public static void state(Boolean valid, Supplier<String> message) {
     if (isNotValid(valid)) {
@@ -1367,9 +1413,9 @@ public abstract class Assert {
   /**
    * Asserts that the state is valid.
    *
-   * The assertion holds if and only if valid is {@literal true}.
+   * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean} value indicating whether the state is valid.
+   * @param valid {@link Boolean value} indicating whether the state is valid.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the state is invalid.
    */
@@ -1382,7 +1428,7 @@ public abstract class Assert {
   /**
    * Asserts that an operation is supported.
    *
-   * The assertion holds if and only if supported is {@literal true}.
+   * The assertion holds if and only if (iff) supported is {@literal true}.
    *
    * For example, the application code might assert that:
    *
@@ -1390,19 +1436,19 @@ public abstract class Assert {
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
    *
-   * @param supported {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
    * @throws java.lang.UnsupportedOperationException if the operation is unsupported.
    * @see #supported(Boolean, String, Object...)
    */
   public static void supported(Boolean supported) {
-    supported(supported, "operation not supported");
+    supported(supported, "Operation not supported");
   }
 
   /**
    * Asserts that an operation is supported.
    *
-   * The assertion holds if and only if supported is {@literal true}.
+   * The assertion holds if and only if (iff) supported is {@literal true}.
    *
    * For example, the application code might assert that:
    *
@@ -1410,10 +1456,10 @@ public abstract class Assert {
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
    *
-   * @param supported {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
-   * @param message {@link String} containing the message used in the {@link UnsupportedOperationException} thrown
-   * if the assertion fails.
+   * @param message {@link String} containing the message used in the {@link UnsupportedOperationException}
+   * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
@@ -1426,7 +1472,7 @@ public abstract class Assert {
   /**
    * Asserts that an operation is supported.
    *
-   * The assertion holds if and only if supported is {@literal true}.
+   * The assertion holds if and only if (iff) supported is {@literal true}.
    *
    * For example, the application code might assert that:
    *
@@ -1434,10 +1480,10 @@ public abstract class Assert {
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
    *
-   * @param supported {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
-   * @param message {@link Supplier} containing the message used in the {@link UnsupportedOperationException} thrown
-   * if the assertion fails.
+   * @param message {@link Supplier} containing the message used in the {@link UnsupportedOperationException}
+   * thrown if the assertion fails.
    * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
    * @see java.util.function.Supplier
    */
@@ -1450,7 +1496,7 @@ public abstract class Assert {
   /**
    * Asserts that an operation is supported.
    *
-   * The assertion holds if and only if supported is {@literal true}.
+   * The assertion holds if and only if (iff) supported is {@literal true}.
    *
    * For example, the application code might assert that:
    *
@@ -1458,7 +1504,7 @@ public abstract class Assert {
    *   Assert.supported(dataAccessOperations.isCacheable(), "Data Access Operations (DAO) are not cacheable");
    * </code>
    *
-   * @param supported {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the operation is unsupported.
@@ -1470,23 +1516,24 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether an application operation is supported.
+   * Null-safe method to determine whether an application operation is supported.
    *
-   * @param supported {@link Boolean} value resulting from the evaluation of the criteria used by the application
+   * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
    * @return a boolean value indicating whether an application operation is supported.
    * @see java.lang.Boolean#TRUE
    */
+  @NullSafe
   private static boolean isNotSupported(Boolean supported) {
     return !Boolean.TRUE.equals(supported);
   }
 
   /**
-   * Formats the specified {@link String message} with the given {@link Object arguments}.
+   * Formats the specified {@link String message} with the array of {@link Object arguments}.
    *
    * @param message {@link String} containing the message to format.
    * @param arguments array of {@link Object arguments} used when formatting the {@link String message}.
-   * @return the {@link String message} formatted with the {@link Object arguments}.
+   * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see #messageFormat(String, Object...)
    * @see #stringFormat(String, Object...)
    */
@@ -1495,19 +1542,21 @@ public abstract class Assert {
   }
 
   /**
-   * Formats the specified {@link String message} containing possible placeholders as defined by {@link MessageFormat}.
+   * Formats the specified {@link String message} containing possible placeholders
+   * as defined by the Java {@link MessageFormat} class.
    *
    * @param message {@link String} containing the message to format.
    * @param arguments array of {@link Object arguments} used when formatting the {@link String message}.
-   * @return the {@link String message} formatted with the {@link Object arguments}.
+   * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see java.text.MessageFormat#format(String, Object...)
    */
   private static String messageFormat(String message, Object... arguments) {
-    return (arguments == null ? message : MessageFormat.format(message, arguments));
+    return arguments != null ? MessageFormat.format(message, arguments) : message;
   }
 
   /**
-   * Formats the specified {@link String message} containing possible placeholders as defined by {@link String}.
+   * Formats the specified {@link String message} containing possible placeholders
+   * as defined by the Java {@link String} class.
    *
    * @param message {@link String} containing the message to format.
    * @param arguments array of {@link Object arguments} used when formatting the {@link String message}.

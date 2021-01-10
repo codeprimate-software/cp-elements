@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -35,14 +35,13 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 /**
- * The AssertTests class is a test suite of test cases testing the contract and functionality
- * of the {@link }Assert} class in the org.cp.elements API and Framework.
+ * Unit Tests for {@link Assert}.
  *
  * @author John J. Blum
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.test.TestUtils
- * @see org.junit.Test
- * @since 1.0.0
  * @version 1.0.0
  */
 public class AssertTests {
@@ -66,7 +65,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("argument is not valid");
+      assertThat(expected).hasMessage("Argument is not valid");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -90,7 +89,7 @@ public class AssertTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertArgumentWithNullFormatsMessageWithArguments() {
+  public void assertArgumentWithNullIsNullSafeAndFormatsMessageWithArguments() {
 
     try {
       Assert.argument(null, "[%s] is {1} valid", null, "not");
@@ -113,6 +112,7 @@ public class AssertTests {
     Assert.argument(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -163,7 +163,7 @@ public class AssertTests {
     }
     catch (ComparisonException expected) {
 
-      assertThat(expected).hasMessage("[3.14159] is not comparable to [%1$s]", Math.PI);
+      assertThat(expected).hasMessage("[3.14159] is not comparable to [%s]", Math.PI);
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -220,7 +220,7 @@ public class AssertTests {
 
     try {
       Assert.comparable("null", "nil",
-        "[%1$s] is NOT comparable with [{1}]", "null", "nil");
+        "[%s] is NOT comparable with [{1}]", "null", "nil");
     }
     catch (ComparisonException expected) {
 
@@ -240,6 +240,7 @@ public class AssertTests {
     Assert.comparable("test", "test", mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = ComparisonException.class)
@@ -449,6 +450,7 @@ public class AssertTests {
     Assert.equals("test", "test", mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = EqualityException.class)
@@ -482,9 +484,10 @@ public class AssertTests {
   }
 
   @Test
-  public void assertHasTextWithStrings() throws Exception {
+  public void assertHasTextWithStrings() {
 
     Assert.hasText("test");
+    Assert.hasText("TEXT");
     Assert.hasText("blank");
     Assert.hasText("empty");
     Assert.hasText("null");
@@ -498,18 +501,33 @@ public class AssertTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertHasTextWithEmptyString() {
-    Assert.hasText("", "empty String is blank");
+  public void assertHasTextWithNoString() {
+
+    try {
+      Assert.hasText(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Argument [null] is blank");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertHasTextWithNull() {
-    Assert.hasText(null, "null is blank");
+  public void assertHasTextWithEmptyString() {
+    Assert.hasText("", "Empty String is blank");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void assertHasTextWithNullCharacter() {
-    Assert.hasText("\0", "null Character is blank");
+    Assert.hasText("\0", "Null Character is blank");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertHasTextWithNullString() {
+    Assert.hasText(null, "Null String is blank");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -552,6 +570,7 @@ public class AssertTests {
     Assert.hasText("test", mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -585,7 +604,7 @@ public class AssertTests {
   }
 
   @Test
-  public void assertHoldsLock() {
+  public void assertIsHoldingLock() {
     synchronized (LOCK) {
       Assert.holdsLock(LOCK);
     }
@@ -599,7 +618,7 @@ public class AssertTests {
     }
     catch (IllegalMonitorStateException expected) {
 
-      assertThat(expected).hasMessage("current thread [%1s] does not hold lock [%2$s]",
+      assertThat(expected).hasMessage("The current thread [%1s] does not hold lock [%2$s]",
         Thread.currentThread().getName(), LOCK);
 
       assertThat(expected).hasNoCause();
@@ -616,7 +635,7 @@ public class AssertTests {
     }
     catch (IllegalMonitorStateException expected) {
 
-      assertThat(expected).hasMessage("current thread [%s] does not hold lock [null]",
+      assertThat(expected).hasMessage("The current thread [%s] does not hold lock [null]",
         Thread.currentThread().getName());
 
       assertThat(expected).hasNoCause();
@@ -629,11 +648,11 @@ public class AssertTests {
   public void assertHoldsLockFormatsMessageWithArguments() {
 
     try {
-      Assert.holdsLock(LOCK, "lock [%1$s] not held by {1} thread", LOCK, "current");
+      Assert.holdsLock(LOCK, "lock [%1$s] is not held by {1} thread", LOCK, "loose");
     }
     catch (IllegalMonitorStateException expected) {
 
-      assertThat(expected).hasMessage("lock [%1$s] not held by current thread", LOCK);
+      assertThat(expected).hasMessage("lock [%1$s] is not held by loose thread", LOCK);
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -651,6 +670,7 @@ public class AssertTests {
     }
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalMonitorStateException.class)
@@ -696,7 +716,22 @@ public class AssertTests {
   }
 
   @Test(expected = ClassCastException.class)
-  public void assertIsAssignableToWithNonAssignableClassTypes() {
+  public void assertIsAssignableToWithNonAssignableNumericClassTypes() {
+
+    try {
+      Assert.isAssignableTo(Double.class, Integer.class);
+    }
+    catch (ClassCastException expected) {
+
+      assertThat(expected).hasMessage("[%1$s] is not assignable to [%2$s]", Double.class, Integer.class);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = ClassCastException.class)
+  public void assertIsAssignableToWithNonAssignableTextualClassTypes() {
 
     try {
       Assert.isAssignableTo(Character.class, String.class);
@@ -712,7 +747,7 @@ public class AssertTests {
 
   @Test
   public void assertIsAssignableToWithNullFromClassType() {
-    Assert.isAssignableTo(null, Object.class, "null is not assignable to Object");
+    Assert.isAssignableTo(null, Object.class, "Null is assignable to Object");
   }
 
   @Test(expected = ClassCastException.class)
@@ -755,6 +790,7 @@ public class AssertTests {
     Assert.isAssignableTo(String.class, Object.class, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = ClassCastException.class)
@@ -794,8 +830,8 @@ public class AssertTests {
     Assert.isFalse(false);
     Assert.isFalse(Boolean.FALSE);
     Assert.isFalse(!Boolean.TRUE);
-    Assert.isFalse(new Object() == new Object());
     Assert.isFalse(new Object().equals(new Object()));
+    Assert.isFalse(new Object() == new Object());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -806,7 +842,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("condition [true] is not false");
+      assertThat(expected).hasMessage("Condition [true] is not false");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -852,6 +888,7 @@ public class AssertTests {
     Assert.isFalse(false, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -885,14 +922,14 @@ public class AssertTests {
   }
 
   @Test
-  public void assertIsInstanceOf() throws Exception {
+  public void assertIsInstanceOf() {
 
     Assert.isInstanceOf(true, Boolean.class);
     Assert.isInstanceOf('c', Character.class);
     Assert.isInstanceOf(Math.PI, Double.class);
     Assert.isInstanceOf(3.14159f, Float.class);
     Assert.isInstanceOf(0, Integer.class);
-    Assert.isInstanceOf(1L, Long.class);
+    Assert.isInstanceOf(9876543210L, Long.class);
     Assert.isInstanceOf("mock", CharSequence.class);
     Assert.isInstanceOf("spy", Serializable.class);
     Assert.isInstanceOf("test", String.class);
@@ -933,6 +970,22 @@ public class AssertTests {
   }
 
   @Test(expected = IllegalTypeException.class)
+  public void assertIsInstanceOfWithNullClassType() {
+
+    try {
+      Assert.isInstanceOf(new Object(), null, "Object is not an instance of null",
+        "unused", "args");
+    }
+    catch (IllegalTypeException expected) {
+
+      assertThat(expected).hasMessage("Object is not an instance of null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalTypeException.class)
   public void assertIsInstanceOfFormatsMessageWithArguments() {
 
     try {
@@ -957,6 +1010,7 @@ public class AssertTests {
     Assert.isInstanceOf("test", String.class, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalTypeException.class)
@@ -1010,7 +1064,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("condition [false] is not true");
+      assertThat(expected).hasMessage("Condition [false] is not true");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1036,11 +1090,11 @@ public class AssertTests {
   public void assertIsTrueFormatsMessageWithArguments() {
 
     try {
-      Assert.isTrue(false, "expected %1$s; but was {1}", true, false);
+      Assert.isTrue(false, "Expected %1$s; but was {1}", true, false);
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("expected true; but was false");
+      assertThat(expected).hasMessage("Expected true; but was false");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1056,6 +1110,7 @@ public class AssertTests {
     Assert.isTrue(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1091,6 +1146,8 @@ public class AssertTests {
   @Test
   public void assertNotEmptyStringWithNonEmptyStrings() {
 
+    Assert.notEmpty("text");
+    Assert.notEmpty("test");
     Assert.notEmpty("blank");
     Assert.notEmpty("empty");
     Assert.notEmpty("nil");
@@ -1101,12 +1158,11 @@ public class AssertTests {
     Assert.notEmpty("\n");
     Assert.notEmpty("\r");
     Assert.notEmpty("\t");
-    Assert.notEmpty("test");
   }
 
   @Test
   public void assertNotEmptyStringWithNullString() {
-    Assert.notEmpty((String) null, "null is empty String");
+    Assert.notEmpty((String) null, "Null is not an empty String");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1117,7 +1173,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("argument is empty");
+      assertThat(expected).hasMessage("String value is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1136,11 +1192,11 @@ public class AssertTests {
   public void assertNotEmptyStringFormatsMessageWithArguments() {
 
     try {
-      Assert.notEmpty("", "{0} String is %s", "empty");
+      Assert.notEmpty("", "%1$s is {1}", "String", "empty");
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("empty String is empty");
+      assertThat(expected).hasMessage("String is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1156,6 +1212,7 @@ public class AssertTests {
     Assert.notEmpty("test", mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1211,7 +1268,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("array is empty");
+      assertThat(expected).hasMessage("Array is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1226,7 +1283,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("array is empty");
+      assertThat(expected).hasMessage("Array is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1237,7 +1294,7 @@ public class AssertTests {
   public void assertNotEmptyArrayFormatsMessageWithArguments() {
 
     try {
-      Assert.notEmpty(new Object[0], "%s is {1}", "Object array", "empty");
+      Assert.notEmpty(new Object[0], "%1$s is {1}", "Object array", "empty");
     }
     catch (IllegalArgumentException expected) {
 
@@ -1257,6 +1314,7 @@ public class AssertTests {
     Assert.notEmpty(new Object[1], mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1296,6 +1354,7 @@ public class AssertTests {
 
   @Test
   public void assertNotEmptyCollectionWithSingletonCollection() {
+
     Assert.notEmpty(Collections.singleton(1));
     Assert.notEmpty(Collections.singletonList("test"));
   }
@@ -1304,11 +1363,25 @@ public class AssertTests {
   public void assertNotEmptyCollectionWithNullCollection() {
 
     try {
-      Assert.notEmpty((Collection) null);
+      Assert.notEmpty((Collection<?>) null);
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("collection is empty");
+      assertThat(expected).hasMessage("Collection is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  private void testAssertNotEmptyCollectionWithEmptyCollection(Collection<?> collection) {
+
+    try {
+      Assert.notEmpty(collection);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Collection is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1316,25 +1389,20 @@ public class AssertTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotEmptyCollectionWithEmptyCollection() {
+  public void assertNotEmptyCollectionWithEmptyList() {
+    testAssertNotEmptyCollectionWithEmptyCollection(Collections.emptyList());
+  }
 
-    try {
-      Assert.notEmpty(Collections.emptySet());
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("collection is empty");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyCollectionWithEmptySet() {
+    testAssertNotEmptyCollectionWithEmptyCollection(Collections.emptySet());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyCollectionFormatsMessageWithArguments() {
 
     try {
-      Assert.notEmpty(Collections.emptySet(), "%s is {1}", "Set", "empty");
+      Assert.notEmpty(Collections.emptySet(), "%1$s is {1}", "Set", "empty");
     }
     catch (IllegalArgumentException expected) {
 
@@ -1354,6 +1422,7 @@ public class AssertTests {
     Assert.notEmpty(Collections.singleton(1), mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1375,7 +1444,7 @@ public class AssertTests {
   public void assertNotEmptyCollectionThrowsAssertionException() {
 
     try {
-      Assert.notEmpty((Collection) null, new AssertionException("test"));
+      Assert.notEmpty((Collection<?>) null, new AssertionException("test"));
     }
     catch (AssertionException expected) {
 
@@ -1389,10 +1458,10 @@ public class AssertTests {
   @Test
   public void assertNotEmptyMap() {
 
-    Map<String, String> map = new HashMap<>(2);
+    Map<Integer, String> map = new HashMap<>(2);
 
-    map.put("one", "1");
-    map.put("two", "2");
+    map.put(1, "1");
+    map.put(2, "2");
 
     Assert.notEmpty(map);
   }
@@ -1406,11 +1475,11 @@ public class AssertTests {
   public void assertNotEmptyMapWithNullMap() {
 
     try {
-      Assert.notEmpty((Map) null);
+      Assert.notEmpty((Map<?, ?>) null);
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("map is empty");
+      assertThat(expected).hasMessage("Map is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1425,7 +1494,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("map is empty");
+      assertThat(expected).hasMessage("Map is empty");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1436,7 +1505,7 @@ public class AssertTests {
   public void assertNotEmptyMapFormatsMessageWithArguments() {
 
     try {
-      Assert.notEmpty(Collections.emptyMap(), "%s is {1}", "Map", "empty");
+      Assert.notEmpty(Collections.emptyMap(), "%1$s is {1}", "Map", "empty");
     }
     catch (IllegalArgumentException expected) {
 
@@ -1456,6 +1525,7 @@ public class AssertTests {
     Assert.notEmpty(Collections.singletonMap("key", "value"), mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1489,7 +1559,7 @@ public class AssertTests {
   }
 
   @Test
-  public void assertNotNull() throws Exception {
+  public void assertNotNull() {
 
     Assert.notNull(false);
     Assert.notNull('\0');
@@ -1497,6 +1567,7 @@ public class AssertTests {
     Assert.notNull(0.0d);
     Assert.notNull("nil");
     Assert.notNull("null");
+    Assert.notNull("test");
     Assert.notNull(new Object());
     Assert.notNull(new Object[0]);
     Assert.notNull(Collections.emptySet());
@@ -1512,7 +1583,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("argument is null");
+      assertThat(expected).hasMessage("Argument is null");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1527,7 +1598,7 @@ public class AssertTests {
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("argument is null");
+      assertThat(expected).hasMessage("Argument is null");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1538,7 +1609,7 @@ public class AssertTests {
   public void assertNotNullFormatsMessageWithArguments() {
 
     try {
-      Assert.notNull(null, "%s is {1}", "Object reference", null);
+      Assert.notNull(null, "%1$s is {1}", "Object reference", null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -1558,6 +1629,7 @@ public class AssertTests {
     Assert.notNull("test", mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1597,7 +1669,7 @@ public class AssertTests {
     Assert.same(true, Boolean.TRUE);
     Assert.same('c', 'c');
     Assert.same(1, 1);
-    //Assert.same(Math.PI, Math.PI, "PI should be the same as PI!");
+    //Assert.same(3.14159d, 3.14159d);
     Assert.same("test", "test");
     Assert.same(LOCK, LOCK);
   }
@@ -1637,7 +1709,6 @@ public class AssertTests {
 
     Object value = new Object();
 
-
     try {
       Assert.same(null, value);
     }
@@ -1654,7 +1725,7 @@ public class AssertTests {
   public void assertSameFormatsMessageWithArguments() {
 
     try {
-      Assert.same("test", "TEST", "%s are not {1}", "Strings", "identical");
+      Assert.same("test", "TEST", "%1$s are not {1}", "Strings", "identical");
     }
     catch (IdentityException expected) {
 
@@ -1674,6 +1745,7 @@ public class AssertTests {
     Assert.same("test", "test", mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IdentityException.class)
@@ -1692,7 +1764,7 @@ public class AssertTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertSameThrowsAssertFailedException() {
+  public void assertSameThrowsAssertionException() {
 
     try {
       Assert.same(new Object(), new Object(), new AssertionException("test"));
@@ -1719,7 +1791,7 @@ public class AssertTests {
     }
     catch (IllegalStateException expected) {
 
-      assertThat(expected).hasMessage("state is invalid");
+      assertThat(expected).hasMessage("State is invalid");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1727,14 +1799,14 @@ public class AssertTests {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void assertStateWithNull() {
+  public void assertStateWithNullIsNullSafe() {
 
     try {
       Assert.state(null);
     }
     catch (IllegalStateException expected) {
 
-      assertThat(expected).hasMessage("state is invalid");
+      assertThat(expected).hasMessage("State is invalid");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1745,11 +1817,11 @@ public class AssertTests {
   public void assertStateFormatsMessageWithArguments() {
 
     try {
-      Assert.state(Boolean.FALSE, "%s not {1}", "object", "initialized");
+      Assert.state(Boolean.FALSE, "%1$s not {1}", "Object", "initialized");
     }
     catch (IllegalStateException expected) {
 
-      assertThat(expected).hasMessage("object not initialized");
+      assertThat(expected).hasMessage("Object not initialized");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1765,6 +1837,7 @@ public class AssertTests {
     Assert.state(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -1810,7 +1883,7 @@ public class AssertTests {
     }
     catch (UnsupportedOperationException expected) {
 
-      assertThat(expected).hasMessage("operation not supported");
+      assertThat(expected).hasMessage("Operation not supported");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1818,14 +1891,14 @@ public class AssertTests {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void assertSupportedWithNull() {
+  public void assertSupportedWithNullIsNullSafe() {
 
     try {
       Assert.supported(null);
     }
     catch (UnsupportedOperationException expected) {
 
-      assertThat(expected).hasMessage("operation not supported");
+      assertThat(expected).hasMessage("Operation not supported");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1836,11 +1909,11 @@ public class AssertTests {
   public void assertSupportedFormatsMessageWithArguments() {
 
     try {
-      Assert.supported(Boolean.FALSE, "%s is {1}", "write operation", "unsupported");
+      Assert.supported(Boolean.FALSE, "%1$s is {1}", "Write operation", "unsupported");
     }
     catch (UnsupportedOperationException expected) {
 
-      assertThat(expected).hasMessage("write operation is unsupported");
+      assertThat(expected).hasMessage("Write operation is unsupported");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1856,6 +1929,7 @@ public class AssertTests {
     Assert.supported(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
+    verifyZeroInteractions(mockSupplier);
   }
 
   @Test(expected = UnsupportedOperationException.class)
