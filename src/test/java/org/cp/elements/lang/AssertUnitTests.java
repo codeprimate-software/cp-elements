@@ -44,7 +44,7 @@ import org.junit.Test;
  * @see org.cp.elements.test.TestUtils
  * @version 1.0.0
  */
-public class AssertTests {
+public class AssertUnitTests {
 
   private static final Object LOCK = new Object();
 
