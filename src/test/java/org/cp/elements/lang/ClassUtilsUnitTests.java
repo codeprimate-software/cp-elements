@@ -78,7 +78,7 @@ import org.junit.Test;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ClassUtilsTests extends AbstractBaseTestSuite {
+public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
   private <T> void assertConstructor(Constructor<T> constructor, Class<T> declaringClass, Class<?>[] parameterTypes) {
     assertThat(constructor).isNotNull();
