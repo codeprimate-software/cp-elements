@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.ObjectUtils.safeGetValue;
@@ -42,7 +41,7 @@ import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * {@link ClassUtils} is an abstract class providing utility methods for working with {@link Class} objects.
+ * {@link ClassUtils} is an abstract utility class providing methods for working with {@link Class} types.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -61,6 +60,7 @@ public abstract class ClassUtils {
 
   protected static final boolean DEFAULT_INITIALIZE_LOADED_CLASS = true;
 
+  @SuppressWarnings("rawtypes")
   public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
   public static final String CLASS_FILE_EXTENSION = ".class";
@@ -157,7 +157,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static Set<Class<?>> getInterfaces(Class type) {
+  public static Set<Class<?>> getInterfaces(Class<?> type) {
     return Optional.ofNullable(type).map(theType -> getInterfaces(type, new HashSet<>()))
       .orElse(Collections.emptySet());
   }
@@ -176,7 +176,7 @@ public abstract class ClassUtils {
    * Returns an empty {@link Set} if the given {@link Class} does not implement any interfaces.
    * @see java.lang.Class
    */
-  private static Set<Class<?>> getInterfaces(Class type, Set<Class<?>> interfaces) {
+  private static Set<Class<?>> getInterfaces(Class<?> type, Set<Class<?>> interfaces) {
 
     if (type.getSuperclass() != null) {
       getInterfaces(type.getSuperclass(), interfaces);
@@ -476,7 +476,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getName()
    */
   @NullSafe
-  public static String getName(Class type) {
+  public static String getName(Class<?> type) {
     return type != null ? type.getName() : null;
   }
 
@@ -495,7 +495,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static String getResourceName(Class type) {
+  public static String getResourceName(Class<?> type) {
     return type != null ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION) : null;
   }
 
@@ -507,7 +507,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getSimpleName()
    */
   @NullSafe
-  public static String getSimpleName(Class type) {
+  public static String getSimpleName(Class<?> type) {
     return type != null ? type.getSimpleName() : null;
   }
 
@@ -521,7 +521,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static boolean hasMainMethod(Class type) {
+  public static boolean hasMainMethod(Class<?> type) {
     return Optional.ofNullable(type).map(theType -> type.getDeclaredMethods())
       .map(methods -> stream(methods).anyMatch(ClassUtils::isMainMethod)).orElse(false);
   }
@@ -548,7 +548,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static boolean implementsInterfaces(Class type) {
+  public static boolean implementsInterfaces(Class<?> type) {
     return !getInterfaces(type).isEmpty();
   }
 
@@ -575,7 +575,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isAnnotation()
    */
   @NullSafe
-  public static boolean isAnnotation(Class type) {
+  public static boolean isAnnotation(Class<?> type) {
     return type != null && type.isAnnotation();
   }
 
@@ -584,14 +584,14 @@ public abstract class ClassUtils {
    * such as fields and methods.
    *
    * @param annotation the Annotation used in the detection for presence on the given members.
-   * @param members the members of a class type or object to inspect for the presence of the specified Annotation.
+   * @param elements the members of a class type or object to inspect for the presence of the specified Annotation.
    * @return a boolean value indicating whether the specified Annotation is present on any of the given members.
    * @see java.lang.annotation.Annotation
    * @see java.lang.reflect.AccessibleObject#isAnnotationPresent(Class)
    */
   @NullSafe
-  public static boolean isAnnotationPresent(Class<? extends Annotation> annotation, AnnotatedElement... members) {
-    return stream(ArrayUtils.nullSafeArray(members, AnnotatedElement.class))
+  public static boolean isAnnotationPresent(Class<? extends Annotation> annotation, AnnotatedElement... elements) {
+    return stream(ArrayUtils.nullSafeArray(elements, AnnotatedElement.class))
       .anyMatch(member -> member != null && member.isAnnotationPresent(annotation));
   }
 
@@ -603,7 +603,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isArray()
    */
   @NullSafe
-  public static boolean isArray(Class type) {
+  public static boolean isArray(Class<?> type) {
     return type != null && type.isArray();
   }
 
@@ -615,7 +615,7 @@ public abstract class ClassUtils {
    * @return true iff the Class object is not null and represents an actual class.
    */
   @NullSafe
-  public static boolean isClass(Class type) {
+  public static boolean isClass(Class<?> type) {
     return type != null && !(type.isAnnotation() || type.isArray() || type.isEnum() || type.isInterface()
       || type.isPrimitive());
   }
@@ -660,7 +660,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isEnum()
    */
   @NullSafe
-  public static boolean isEnum(Class type) {
+  public static boolean isEnum(Class<?> type) {
     return type != null && type.isEnum();
   }
 
@@ -672,7 +672,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isInterface()
    */
   @NullSafe
-  public static boolean isInterface(Class type) {
+  public static boolean isInterface(Class<?> type) {
     return type != null && type.isInterface();
   }
 
@@ -721,7 +721,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isPrimitive()
    */
   @NullSafe
-  public static boolean isPrimitive(Class type) {
+  public static boolean isPrimitive(Class<?> type) {
     return type != null && type.isPrimitive();
   }
 
@@ -833,10 +833,11 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Type
    */
   @NullSafe
+  @SuppressWarnings("all")
   public static Class<?> toRawType(Type type) {
 
     Type resolvedType = type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType()
-      : type instanceof TypeVariable ? safeGetValue(() -> loadClass(((TypeVariable) type).getName()), Object.class)
+      : type instanceof TypeVariable ? safeGetValue(() -> loadClass(((TypeVariable<?>) type).getName()), Object.class)
       : type;
 
     return Class.class.cast(Optional.ofNullable(resolvedType)
