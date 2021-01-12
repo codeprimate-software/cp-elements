@@ -29,7 +29,7 @@ import org.junit.Test;
  * @see org.cp.elements.dao.CrudOperation
  * @since 1.0.0
  */
-public class CrudOperationTest {
+public class CrudOperationUnitTests {
 
   @Test
   public void valueOfIgnoreCaseWithEnumeratedValuesIsCorrect() {
