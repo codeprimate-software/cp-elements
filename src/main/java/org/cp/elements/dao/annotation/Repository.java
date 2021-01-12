@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.dao.annotation;
 
 import java.lang.annotation.Documented;
@@ -24,13 +23,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The {@link Repository} annotation marks an application component/bean as a {@link Repository} {@link Class}.
+ * The {@link Repository} annotation marks an application component/bean as a {@literal data repository}
  *
- * An application {@link Repository} {@link Class} is a Data Access Object (DAO) defining data access operations
- * such as CRUD (Create, Read, Update, Delete) as well as querying operations.  Additionally, a {@link Repository}
- * may define additional operations that correspond to data store specified procedures and functions.
+ * An application {@link Repository} is a Data Access Object (DAO) defining basic CRUD (CREATE, READ, UPDATE, DELETE)
+ * as well as simple query data access operations.  Additionally, a {@link Repository} may define additional operations
+ * that correspond to data store specific procedures and functions.
  *
  * @author John Blum
+ * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.Inherited
+ * @see java.lang.annotation.Retention
+ * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented
