@@ -13,44 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.dao;
+
+import java.util.Optional;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The CrudOperation enum type is an enumeration of CRUD data access operations.
+ * The {@link CrudOperation} enumerated type is an enumeration of CRUD (CREATE, READ, UPDATE, DELETE)
+ * data access operations.
  *
  * @author John J. Blum
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum CrudOperation {
+
   CREATE,
   READ,
   UPDATE,
   DELETE;
 
   /**
-   * Returns the CrudOperation enumerated value matching the given String name or null if no match was found.  A match
-   * is found by ignoring case and trimming leading/trailing whitespace in the String name.
+   * Returns a {@link CrudOperation} enumerated value matching the given {@link String name} or {@link Optional#empty()}
+   * if no match was found.
    *
-   * @param name the String name used to match the CrudOperation.
-   * @return a CrudOperation enumerated value matching the String name or null if no match was found.
-   * @see java.lang.String#equalsIgnoreCase(String)
+   * A match is performed by ignoring case and trimming all leading and trailing whitespace
+   * in the given {@link String name}.
+   *
+   * @param name {@link String} containing the {@literal name} used to match the {@link CrudOperation} enumerated value.
+   * @return a {@link CrudOperation} enumerated value matching the {@link String name} or {@link Optional#empty()}
+   * if no match was found.
    * @see org.cp.elements.dao.CrudOperation#name()
    * @see org.cp.elements.lang.StringUtils#trim(String)
+   * @see java.lang.String#equalsIgnoreCase(String)
    */
   @NullSafe
-  public static CrudOperation valueOfIgnoreCase(final String name) {
+  public static Optional<CrudOperation> valueOfIgnoreCase(String name) {
+
     for (CrudOperation crudOperation : values()) {
       if (crudOperation.name().equalsIgnoreCase(StringUtils.trim(name))) {
-        return crudOperation;
+        return Optional.of(crudOperation);
       }
     }
 
-    return null;
+    return Optional.empty();
   }
-
 }
