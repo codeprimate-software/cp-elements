@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.dao;
 
 /**
- * The DataAccessException class is a RuntimeException indicating that a data access operation was unsuccessful.
+ * The {@link DataAccessException} class is a {@link RuntimeException} indicating a data access operation failed.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -27,37 +26,43 @@ package org.cp.elements.dao;
 public class DataAccessException extends RuntimeException {
 
   /**
-   * Default constructor creating an instance of the DataAccessException.
+   * Default constructor used to create a new instance of the {@link DataAccessException}.
+   *
+   * The {@link DataAccessException} is uninitialized, with no {@link String message} or {@link Throwable cause}.
    */
   public DataAccessException() {
   }
 
   /**
-   * Constructor to create an instance of the DataAccessException with a given message to describe the
-   * data access error.
+   * Constructs a new instance of {@link DataAccessException} initialized with the given {@link String message}
+   * to describe the data access error.
    *
-   * @param message a String value describing the nature of the data access error.
+   * @param message {@link String} describing the cause of the data access error.
+   * @see java.lang.String
    */
-  public DataAccessException(final String message) {
+  public DataAccessException(String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the DataAccessException with the given Throwable indicating the cause
-   * of the data access error.
+   * Constructs a new instance of {@link DataAccessException} initialized with the given {@link Throwable}
+   * to indicate the {@literal cause} of the data access error.
    *
-   * @param cause a Throwable indicated as the cause of this data access error.
+   * @param cause {@link Throwable} indicating the cause of the data access error.
+   * @see java.lang.Throwable
    */
-  public DataAccessException(final Throwable cause) {
+  public DataAccessException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the DataAccessException with both a message to describe the
-   * data access error along with a Throwable indicating the probably cause of the data access error.
+   * Constructs a new instance of {@link DataAccessException} initialized with the given {@link String message}
+   * to describe the data access error and the given {@link Throwable} as the {@literal cause} of the data access error.
    *
-   * @param message a String value describing the nature of the data access error.
-   * @param cause a Throwable indicated as the cause of this data access error.
+   * @param message {@link String} describing the cause of the data access error.
+   * @param cause {@link Throwable} indicating the cause of the data access error.
+   * @see java.lang.Throwable
+   * @see java.lang.String
    */
   public DataAccessException(final String message, final Throwable cause) {
     super(message, cause);
