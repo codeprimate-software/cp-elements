@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +38,7 @@ import org.cp.elements.data.struct.tabular.Row;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link InMemoryTable}.
+ * Unit Tests for {@link InMemoryTable}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -53,7 +52,7 @@ import org.junit.Test;
  */
 public class InMemoryTableTests {
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private <T> Column<T> mockColumn(String name) {
 
     Column<T> mockColumn = mock(Column.class, name);
@@ -109,7 +108,7 @@ public class InMemoryTableTests {
   public void constructNewInMemoryTableWithNullColumnsThrowsIllegalArgumentException() {
 
     try {
-      new InMemoryTable((Column[]) null);
+      new InMemoryTable((Column<?>[]) null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -123,8 +122,8 @@ public class InMemoryTableTests {
   @Test
   public void ofColumnArray() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     InMemoryTable table = InMemoryTable.of(mockColumnOne, mockColumnTwo);
 
@@ -153,7 +152,7 @@ public class InMemoryTableTests {
   public void ofNullColumnArrayThrowsIllegalArgumentException() {
 
     try {
-      InMemoryTable.of((Column[]) null);
+      InMemoryTable.of((Column<?>[]) null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -167,8 +166,8 @@ public class InMemoryTableTests {
   @Test
   public void ofIterableColumns() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     InMemoryTable table = InMemoryTable.of(Arrays.asList(mockColumnOne, mockColumnTwo));
 
@@ -193,6 +192,7 @@ public class InMemoryTableTests {
     }
   }
 
+  @SuppressWarnings("rawtypes")
   @Test(expected = IllegalArgumentException.class)
   public void ofNullIterableColumnsThrowsIllegalArgumentException() {
 
@@ -280,7 +280,7 @@ public class InMemoryTableTests {
   @Test
   public void addRowIsSuccessful() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
@@ -303,7 +303,7 @@ public class InMemoryTableTests {
   @Test(expected = IllegalArgumentException.class)
   public void addInvalidRowThrowsIllegalArgumentException() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
@@ -330,8 +330,8 @@ public class InMemoryTableTests {
   @Test
   public void columnsReturnsTableColumns() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     InMemoryTable table = InMemoryTable.of(mockColumnOne, mockColumnTwo);
 
@@ -346,13 +346,13 @@ public class InMemoryTableTests {
   @Test
   public void iteratorReturnsNoRowsWhenTableIsEmpty() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
-    assertThat(table.iterator()).isEmpty();
+    assertThat(table).isEmpty();
   }
 
   @Test
@@ -370,7 +370,7 @@ public class InMemoryTableTests {
 
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
-    assertThat(table.iterator()).containsExactly(mockRowOne, mockRowTwo);
+    assertThat(table).containsExactly(mockRowOne, mockRowTwo);
 
     verify(table, times(1)).getRows();
   }
@@ -445,7 +445,7 @@ public class InMemoryTableTests {
   @Test
   public void removeRowIsSuccessful() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     Row mockRow = mock(Row.class);
 
@@ -462,7 +462,7 @@ public class InMemoryTableTests {
   @Test(expected = IndexOutOfBoundsException.class)
   public void removeInvalidRowThrowsIndexOutOfBoundsException() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
@@ -495,7 +495,7 @@ public class InMemoryTableTests {
   @Test
   public void rowsReturnsEmptyIterableWhenTableIsEmpty() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumn));
 

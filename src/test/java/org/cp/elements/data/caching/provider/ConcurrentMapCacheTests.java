@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +30,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link ConcurrentMapCache}.
+ * Unit Tests for {@link ConcurrentMapCache}.
  *
  * @author John Blum
  * @see java.util.Map
@@ -41,10 +40,14 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
  * @since 1.0.0
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ConcurrentMapCacheTests {
 
   private ConcurrentMapCache concurrentMapCache;
+
+  private static <T> Iterable<T> asIterable(Iterator<T> iterator) {
+    return () -> iterator;
+  }
 
   @Before
   public void setup() {
@@ -214,7 +217,7 @@ public class ConcurrentMapCacheTests {
     Iterator<?> valueIterator = this.concurrentMapCache.iterator();
 
     assertThat(valueIterator).isNotNull();
-    assertThat(valueIterator).isEmpty();
+    assertThat(asIterable(valueIterator)).isEmpty();
   }
 
   @Test
@@ -223,7 +226,9 @@ public class ConcurrentMapCacheTests {
     this.concurrentMapCache.put(1, "one");
     this.concurrentMapCache.put(2, "two");
 
-    assertThat(this.concurrentMapCache.iterator()).containsExactlyInAnyOrder("one", "two");
+    Iterator<String> valueIterator = this.concurrentMapCache.iterator();
+
+    assertThat(asIterable(valueIterator)).containsExactlyInAnyOrder("one", "two");
   }
 
   @Test

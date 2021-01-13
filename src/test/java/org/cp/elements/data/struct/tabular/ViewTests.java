@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -41,7 +40,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 
 /**
- * Unit tests for {@link View}.
+ * Unit Tests for {@link View}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -51,9 +50,9 @@ import org.mockito.ArgumentMatchers;
  */
 public class ViewTests {
 
-  private Column mockColumn(String name) {
+  private Column<?> mockColumn(String name) {
 
-    Column mockColumn = mock(Column.class, name);
+    Column<?> mockColumn = mock(Column.class, name);
 
     when(mockColumn.getName()).thenReturn(name);
 
@@ -63,7 +62,7 @@ public class ViewTests {
   @Test
   public void containsExistingColumnReturnsTrue() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     View mockView = mock(View.class);
 
@@ -80,7 +79,7 @@ public class ViewTests {
   @Test
   public void containsNonExistingColumnReturnsFalse() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     View mockView = mock(View.class);
 
@@ -101,7 +100,7 @@ public class ViewTests {
 
     when(mockView.contains(any(Column.class))).thenCallRealMethod();
 
-    assertThat(mockView.contains((Column) null)).isFalse();
+    assertThat(mockView.contains((Column<?>) null)).isFalse();
 
     verify(mockView, never()).contains(anyString());
   }
@@ -109,9 +108,9 @@ public class ViewTests {
   @Test
   public void containsColumnNameReturnsTrue() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
-    Column mockColumnThree = mockColumn("Three");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnThree = mockColumn("Three");
 
     View mockView = mock(View.class);
 
@@ -131,8 +130,8 @@ public class ViewTests {
   @Test
   public void containsColumnNameReturnsFalse() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -152,8 +151,8 @@ public class ViewTests {
   @Test
   public void containsBlankColumnNameReturnsFalse() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -170,8 +169,8 @@ public class ViewTests {
   @Test
   public void containsEmptyColumnNameReturnsFalse() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -188,8 +187,8 @@ public class ViewTests {
   @Test
   public void containsNullColumnNameReturnsFalse() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -218,8 +217,8 @@ public class ViewTests {
     assertThat(mockView.count(row -> false)).isEqualTo(0);
 
     verify(mockView, times(1)).rows();
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test
@@ -237,12 +236,12 @@ public class ViewTests {
     assertThat(mockView.count(row -> true)).isEqualTo(2);
 
     verify(mockView, times(1)).rows();
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void countReturnsNumberOfMatchingRows() {
 
     Predicate mockPredicate = mock(Predicate.class);
@@ -265,9 +264,9 @@ public class ViewTests {
     verify(mockPredicate, times(1)).test(eq(mockRowOne));
     verify(mockPredicate, times(1)).test(eq(mockRowTwo));
     verify(mockPredicate, times(1)).test(eq(mockRowThree));
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
-    verifyZeroInteractions(mockRowThree);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowThree);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -295,8 +294,8 @@ public class ViewTests {
   @Test
   public void getColumnWithIndexReturnsColumn() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -307,8 +306,8 @@ public class ViewTests {
     assertThat(mockView.getColumn(1)).isEqualTo(mockColumnTwo);
 
     verify(mockView, times(2)).columns();
-    verifyZeroInteractions(mockColumnOne);
-    verifyZeroInteractions(mockColumnTwo);
+    verifyNoInteractions(mockColumnOne);
+    verifyNoInteractions(mockColumnTwo);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -336,8 +335,8 @@ public class ViewTests {
   @Test(expected = IndexOutOfBoundsException.class)
   public void getColumnWithOutOfBoundsIndexThrowsException() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -356,13 +355,13 @@ public class ViewTests {
     }
     finally {
       verify(mockView, times(1)).columns();
-      verifyZeroInteractions(mockColumnOne);
-      verifyZeroInteractions(mockColumnTwo);
+      verifyNoInteractions(mockColumnOne);
+      verifyNoInteractions(mockColumnTwo);
     }
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void getColumnWithNameReturnsColumn() {
 
     Column mockColumnOne = mockColumn("One");
@@ -417,8 +416,8 @@ public class ViewTests {
     assertThat(mockView.getRow(1)).isEqualTo(mockRowTwo);
 
     verify(mockView, times(2)).rows();
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -491,8 +490,8 @@ public class ViewTests {
     }
     finally {
       verify(mockView, times(1)).rows();
-      verifyZeroInteractions(mockRowOne);
-      verifyZeroInteractions(mockRowTwo);
+      verifyNoInteractions(mockRowOne);
+      verifyNoInteractions(mockRowTwo);
     }
   }
 
@@ -512,8 +511,8 @@ public class ViewTests {
     assertThat(mockView.getRow(row -> row.equals(mockRowTwo)).orElse(null)).isEqualTo(mockRowTwo);
 
     verify(mockView, times(2)).rows();
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test
@@ -531,8 +530,8 @@ public class ViewTests {
     assertThat(mockView.getRow(row -> false).orElse(null)).isNull();
 
     verify(mockView, times(1)).rows();
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -592,7 +591,7 @@ public class ViewTests {
   @Test
   public void getValueFromRowIndexAndColumnReturnsValue() {
 
-    Column mockColumn = mockColumn("One");
+    Column<?> mockColumn = mockColumn("One");
 
     View mockView = mock(View.class);
 
@@ -609,7 +608,7 @@ public class ViewTests {
   @Test
   public void indexOfColumnReturnsIndex() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     View mockView = mock(View.class);
 
@@ -626,7 +625,7 @@ public class ViewTests {
   @Test
   public void indexOfNonExistingColumnReturnsMinusOne() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     View mockView = mock(View.class);
 
@@ -645,9 +644,9 @@ public class ViewTests {
 
     View mockView = mock(View.class);
 
-    when(mockView.indexOf(ArgumentMatchers.<Column>any())).thenCallRealMethod();
+    when(mockView.indexOf(ArgumentMatchers.<Column<?>>any())).thenCallRealMethod();
 
-    assertThat(mockView.indexOf((Column) null)).isEqualTo(-1);
+    assertThat(mockView.indexOf((Column<?>) null)).isEqualTo(-1);
 
     verify(mockView, never()).indexOf(anyString());
   }
@@ -655,8 +654,8 @@ public class ViewTests {
   @Test
   public void indexOfColumnNameReturnsIndex() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -674,8 +673,8 @@ public class ViewTests {
   @Test
   public void indexOfNonExistingColumnNameReturnsMinusOne() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -694,8 +693,8 @@ public class ViewTests {
   @Test
   public void indexOfNullColumnNameReturnsMinusOne() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockView = mock(View.class);
 
@@ -785,8 +784,8 @@ public class ViewTests {
   @Test
   public void queryReturnsResults() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("One");
+    Column<?> mockColumnTwo = mockColumn("Two");
 
     View mockViewOne = mock(View.class);
     View mockViewTwo = mock(View.class);

@@ -18,7 +18,7 @@ package org.cp.elements.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -930,7 +930,7 @@ public class CollectionUtilsTests {
     assertThat(filteredTransformedCollection).isNotSameAs(emptyCollection);
     assertThat(filteredTransformedCollection.isEmpty()).isTrue();
 
-    verifyZeroInteractions(mockFilteringTransformer);
+    verifyNoInteractions(mockFilteringTransformer);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -950,7 +950,7 @@ public class CollectionUtilsTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(mockFilteringTransformer);
+      verifyNoInteractions(mockFilteringTransformer);
     }
   }
 

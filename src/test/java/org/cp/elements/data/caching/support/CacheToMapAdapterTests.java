@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Collection;
@@ -45,7 +44,7 @@ import org.cp.elements.util.MapUtils;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link CacheToMapAdapter}.
+ * Unit Tests for {@link CacheToMapAdapter}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -53,7 +52,7 @@ import org.junit.Test;
  * @see org.cp.elements.data.caching.support.CacheToMapAdapter
  * @since 1.0.0
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CacheToMapAdapterTests {
 
   @Test
@@ -348,8 +347,7 @@ public class CacheToMapAdapterTests {
 
     when(mockCache.get(any())).thenReturn(1);
 
-    assertThat(CacheToMapAdapter.of(mockCache).merge("sum", 2, (oldValue, newValue) -> oldValue + newValue))
-      .isEqualTo(3);
+    assertThat(CacheToMapAdapter.of(mockCache).merge("sum", 2, Integer::sum)).isEqualTo(3);
 
     verify(mockCache, times(2)).get(eq("sum"));
     verify(mockCache, times(1)).put(eq("sum"), eq(3));
@@ -635,7 +633,7 @@ public class CacheToMapAdapterTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(mockCache);
+      verifyNoInteractions(mockCache);
     }
   }
 

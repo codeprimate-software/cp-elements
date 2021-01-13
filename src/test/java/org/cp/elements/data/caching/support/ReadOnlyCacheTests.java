@@ -13,25 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Iterator;
+
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ReadOnlyCache}.
+ * Unit Tests for {@link ReadOnlyCache}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.elements.data.caching.support.ReadOnlyCache
  * @since 1.0.0
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ReadOnlyCacheTests {
 
   private ReadOnlyCache cache = new ReadOnlyCache() { };
+
+  private static <T> Iterable<T> asIterable(Iterator<T> iterator) {
+    return () -> iterator;
+  }
 
   @Test
   public void isEmptyReturnsTrue() {
@@ -80,7 +85,7 @@ public class ReadOnlyCacheTests {
 
   @Test
   public void iteratorReturnsEmptyIterator() {
-    assertThat(this.cache.iterator()).isEmpty();
+    assertThat(asIterable(this.cache.iterator())).isEmpty();
   }
 
   @Test

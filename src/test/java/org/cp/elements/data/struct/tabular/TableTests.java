@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 
 /**
- * Unit tests for {@link Table}.
+ * Unit Tests for {@link Table}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -110,7 +109,7 @@ public class TableTests {
   @Test
   public void removeColumnRemovesColumnAtIndexReturnsTrue() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Table mockTable = mock(Table.class);
 
@@ -127,7 +126,7 @@ public class TableTests {
   @Test
   public void removeNonExistingColumnReturnsFalse() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Table mockTable = mock(Table.class);
 
@@ -146,13 +145,13 @@ public class TableTests {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(ArgumentMatchers.<Column>any())).thenReturn(-1);
+    when(mockTable.indexOf(ArgumentMatchers.<Column<?>>any())).thenReturn(-1);
     when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.remove(ArgumentMatchers.<Column>any())).thenCallRealMethod();
+    when(mockTable.remove(ArgumentMatchers.<Column<?>>any())).thenCallRealMethod();
 
-    assertThat(mockTable.remove((Column) null)).isFalse();
+    assertThat(mockTable.remove((Column<?>) null)).isFalse();
 
-    verify(mockTable, times(1)).indexOf(ArgumentMatchers.<Column>isNull());
+    verify(mockTable, times(1)).indexOf(ArgumentMatchers.<Column<?>>isNull());
     verify(mockTable, never()).removeColumn(anyInt());
   }
 
@@ -180,8 +179,8 @@ public class TableTests {
 
     verify(mockTable, times(1)).rows();
     verify(mockTable, never()).remove(ArgumentMatchers.<Row>any());
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test
@@ -215,8 +214,8 @@ public class TableTests {
     verify(mockPredicate, times(1)).test(eq(mockRowTwo));
     verify(mockTable, times(1)).rows();
     verify(mockTable, never()).remove(ArgumentMatchers.<Row>any());
-    verifyZeroInteractions(mockRowOne);
-    verifyZeroInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne);
+    verifyNoInteractions(mockRowTwo);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -449,7 +448,7 @@ public class TableTests {
   @Test
   public void setValueWithRowIndexAndColumnReturnsCurrentValue() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Table mockTable = mock(Table.class);
 
@@ -461,13 +460,13 @@ public class TableTests {
 
     verify(mockTable, times(1)).indexOf(eq(mockColumn));
     verify(mockTable, times(1)).setValue(eq(1), eq(2), eq("test"));
-    verifyZeroInteractions(mockColumn);
+    verifyNoInteractions(mockColumn);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void setValueWithInvalidRowIndexAndColumnThrowsIndexOutOfBoundsException() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Table mockTable = mock(Table.class);
 
@@ -488,14 +487,14 @@ public class TableTests {
     finally {
       verify(mockTable, times(1)).indexOf(eq(mockColumn));
       verify(mockTable, times(1)).setValue(eq(-1), eq(1), eq("test"));
-      verifyZeroInteractions(mockColumn);
+      verifyNoInteractions(mockColumn);
     }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setValueWithRowIndexAndInvalidColumnThrowsIllegalArgumentException() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Table mockTable = mock(Table.class);
 
@@ -524,10 +523,10 @@ public class TableTests {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.setValue(anyInt(), ArgumentMatchers.<Column>any(), any())).thenCallRealMethod();
+    when(mockTable.setValue(anyInt(), ArgumentMatchers.<Column<?>>any(), any())).thenCallRealMethod();
 
     try {
-      mockTable.setValue(0, (Column) null, "test");
+      mockTable.setValue(0, (Column<?>) null, "test");
     }
     catch (IllegalArgumentException expected) {
 
@@ -537,7 +536,7 @@ public class TableTests {
       throw expected;
     }
     finally {
-      verify(mockTable, never()).indexOf(ArgumentMatchers.<Column>any());
+      verify(mockTable, never()).indexOf(ArgumentMatchers.<Column<?>>any());
       verify(mockTable, never()).setValue(anyInt(), anyInt(), any());
     }
   }

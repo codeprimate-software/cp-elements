@@ -25,8 +25,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,7 +181,7 @@ public class DaoSupportUnitTests {
 
     verifyNoMoreInteractions(this.mockDao);
 
-    verifyZeroInteractions(mockComparator);
+    verifyNoInteractions(mockComparator);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -256,7 +256,7 @@ public class DaoSupportUnitTests {
 
     verifyNoMoreInteractions(this.mockDao);
 
-    verifyZeroInteractions(mockPredicate);
+    verifyNoInteractions(mockPredicate);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -306,7 +306,7 @@ public class DaoSupportUnitTests {
 
     verifyNoMoreInteractions(this.mockDao);
 
-    verifyZeroInteractions(mockPredicate);
+    verifyNoInteractions(mockPredicate);
   }
 
   @Test
@@ -330,7 +330,7 @@ public class DaoSupportUnitTests {
 
     verifyNoMoreInteractions(this.mockDao);
 
-    verifyZeroInteractions(mockPredicate, mockComparator);
+    verifyNoInteractions(mockPredicate, mockComparator);
   }
 
   @SuppressWarnings("unchecked")
@@ -353,7 +353,7 @@ public class DaoSupportUnitTests {
     }
     finally {
       verify(this.mockDao, never()).findAll(isA(Predicate.class));
-      verifyZeroInteractions(mockComparator);
+      verifyNoInteractions(mockComparator);
     }
   }
 
@@ -377,7 +377,7 @@ public class DaoSupportUnitTests {
     }
     finally {
       verify(this.mockDao, never()).findAll(eq(mockPredicate));
-      verifyZeroInteractions(mockPredicate);
+      verifyNoInteractions(mockPredicate);
     }
   }
 
@@ -398,7 +398,7 @@ public class DaoSupportUnitTests {
 
     verifyNoMoreInteractions(this.mockDao);
 
-    verifyZeroInteractions(mockPredicate);
+    verifyNoInteractions(mockPredicate);
   }
 
   @Test
@@ -427,7 +427,7 @@ public class DaoSupportUnitTests {
 
     verifyNoMoreInteractions(this.mockDao);
 
-    verifyZeroInteractions(mockPredicate);
+    verifyNoInteractions(mockPredicate);
   }
 
   @SuppressWarnings("unchecked")

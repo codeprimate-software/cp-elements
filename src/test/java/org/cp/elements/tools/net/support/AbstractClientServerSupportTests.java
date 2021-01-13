@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -47,7 +46,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link AbstractClientServerSupport}.
+ * Unit Tests for {@link AbstractClientServerSupport}.
  *
  * @author John Blum
  * @see java.io.InputStream
@@ -244,9 +243,9 @@ public class AbstractClientServerSupportTests {
     verify(clientServerSupport, times(1)).newPrintWriter(eq(mockSocket));
     verify(mockPrintWriter, times(1)).println(eq("test"));
     verify(mockPrintWriter, times(1)).flush();
-    verifyZeroInteractions(mockSocket);
+    verifyNoInteractions(mockSocket);
   }
 
-  class TestClientServerSupport extends AbstractClientServerSupport { }
+  static class TestClientServerSupport extends AbstractClientServerSupport { }
 
 }

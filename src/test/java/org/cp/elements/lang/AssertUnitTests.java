@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -112,7 +112,7 @@ public class AssertUnitTests {
     Assert.argument(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -240,7 +240,7 @@ public class AssertUnitTests {
     Assert.comparable("test", "test", mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = ComparisonException.class)
@@ -450,7 +450,7 @@ public class AssertUnitTests {
     Assert.equals("test", "test", mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = EqualityException.class)
@@ -570,7 +570,7 @@ public class AssertUnitTests {
     Assert.hasText("test", mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -670,7 +670,7 @@ public class AssertUnitTests {
     }
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalMonitorStateException.class)
@@ -790,7 +790,7 @@ public class AssertUnitTests {
     Assert.isAssignableTo(String.class, Object.class, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = ClassCastException.class)
@@ -888,7 +888,7 @@ public class AssertUnitTests {
     Assert.isFalse(false, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1010,7 +1010,7 @@ public class AssertUnitTests {
     Assert.isInstanceOf("test", String.class, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalTypeException.class)
@@ -1110,7 +1110,7 @@ public class AssertUnitTests {
     Assert.isTrue(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1212,7 +1212,7 @@ public class AssertUnitTests {
     Assert.notEmpty("test", mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1314,7 +1314,7 @@ public class AssertUnitTests {
     Assert.notEmpty(new Object[1], mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1422,7 +1422,7 @@ public class AssertUnitTests {
     Assert.notEmpty(Collections.singleton(1), mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1525,7 +1525,7 @@ public class AssertUnitTests {
     Assert.notEmpty(Collections.singletonMap("key", "value"), mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1629,7 +1629,7 @@ public class AssertUnitTests {
     Assert.notNull("test", mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -1745,7 +1745,7 @@ public class AssertUnitTests {
     Assert.same("test", "test", mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IdentityException.class)
@@ -1837,7 +1837,7 @@ public class AssertUnitTests {
     Assert.state(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = IllegalStateException.class)
@@ -1929,7 +1929,7 @@ public class AssertUnitTests {
     Assert.supported(true, mockSupplier);
 
     verify(mockSupplier, never()).get();
-    verifyZeroInteractions(mockSupplier);
+    verifyNoInteractions(mockSupplier);
   }
 
   @Test(expected = UnsupportedOperationException.class)

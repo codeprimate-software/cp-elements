@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -46,7 +45,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link CachingTemplate}.
+ * Unit Tests for {@link CachingTemplate}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -58,7 +57,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CachingTemplateTests {
 
   @Mock
@@ -136,8 +135,8 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(mockSupplier);
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(mockSupplier);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -155,7 +154,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -228,7 +227,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -264,7 +263,7 @@ public class CachingTemplateTests {
     }
     finally {
       verify(mockSupplier, times(1)).get();
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -298,7 +297,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -334,7 +333,7 @@ public class CachingTemplateTests {
     }
     finally {
       verify(mockSupplier, times(1)).get();
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -370,8 +369,8 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(mockSupplier);
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(mockSupplier);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -389,7 +388,7 @@ public class CachingTemplateTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 
@@ -428,7 +427,7 @@ public class CachingTemplateTests {
     }
     finally {
       verify(mockSupplier, times(1)).get();
-      verifyZeroInteractions(this.mockCache);
+      verifyNoInteractions(this.mockCache);
     }
   }
 

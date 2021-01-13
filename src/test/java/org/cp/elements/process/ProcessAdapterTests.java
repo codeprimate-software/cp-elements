@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 import static java.util.Arrays.asList;
@@ -39,8 +38,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
@@ -77,7 +76,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link ProcessAdapter}.
+ * Unit Tests for {@link ProcessAdapter}.
  *
  * @author John Blum
  * @see java.lang.Process
@@ -108,6 +107,7 @@ public class ProcessAdapterTests {
   }
 
   @AfterClass
+  @SuppressWarnings("all")
   public static void tearDownAfterTests() {
 
     FileSystemUtils.deleteRecursive(FileSystemUtils.WORKING_DIRECTORY, PID_FILE_EXTENSION_FILTER);
@@ -388,12 +388,13 @@ public class ProcessAdapterTests {
 
   @Test
   public void newReaderIsInitializedCorrectly() {
+
     InputStream mockInputStream = mock(InputStream.class);
     Reader reader = newProcessAdapter(this.mockProcess).newReader(mockInputStream);
 
     assertThat(reader).isInstanceOf(BufferedReader.class);
 
-    verifyZeroInteractions(mockInputStream);
+    verifyNoInteractions(mockInputStream);
   }
 
   @Test
@@ -751,7 +752,7 @@ public class ProcessAdapterTests {
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
 
       @Override
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings({ "rawtypes", "unchecked" })
       protected ProcessExecutor newProcessExecutor() {
         return mockProcessExecutor;
       }
@@ -781,7 +782,7 @@ public class ProcessAdapterTests {
       .stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
     verify(mockProcessExecutor, times(1))
       .execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
-    verifyZeroInteractions(mockRestartedProcess);
+    verifyNoInteractions(mockRestartedProcess);
   }
 
   @Test
@@ -803,8 +804,9 @@ public class ProcessAdapterTests {
     when(this.mockProcess.exitValue()).thenReturn(0);
 
     ProcessAdapter processAdapter = spy(new ProcessAdapter(this.mockProcess, this.processContext) {
+
       @Override
-      @SuppressWarnings("unchecked")
+      @SuppressWarnings({ "rawtypes", "unchecked" })
       protected ProcessExecutor newProcessExecutor() {
         return mockProcessExecutor;
       }
@@ -833,11 +835,11 @@ public class ProcessAdapterTests {
     verify(processAdapter, never()).stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
     verify(mockProcessExecutor, times(1)).execute(
       eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
-    verifyZeroInteractions(mockRestartedProcess);
+    verifyNoInteractions(mockRestartedProcess);
   }
 
   @Test(expected = IllegalStateException.class)
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void restartUnstoppableProcessThrowsIllegalStateException() throws InterruptedException {
 
     ProcessExecutor mockProcessExecutor = mock(ProcessExecutor.class);

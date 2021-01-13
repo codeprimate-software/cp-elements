@@ -20,8 +20,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -763,7 +763,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.mockFile);
+      verifyNoInteractions(this.mockFile);
     }
   }
 
@@ -783,7 +783,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(mockInputStream);
+      verifyNoInteractions(mockInputStream);
     }
   }
 
@@ -811,7 +811,7 @@ public class FileUtilsTests extends AbstractBaseTestSuite {
       verify(this.mockFile, times(1)).exists();
       verify(this.mockFile, times(1)).canWrite();
       verify(this.mockFile, times(1)).getCanonicalPath();
-      verifyZeroInteractions(mockInputStream);
+      verifyNoInteractions(mockInputStream);
     }
   }
 

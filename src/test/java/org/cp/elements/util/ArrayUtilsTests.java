@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -31,7 +30,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -58,7 +57,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link ArrayUtils}.
+ * Unit Tests for {@link ArrayUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -845,7 +844,7 @@ public class ArrayUtilsTests {
     assertThat(actualArray, is(not(sameInstance(array))));
     assertThat(actualArray.length, is(equalTo(0)));
 
-    verifyZeroInteractions(mockFilteringTransformer);
+    verifyNoInteractions(mockFilteringTransformer);
   }
 
   @Test
@@ -862,7 +861,7 @@ public class ArrayUtilsTests {
       ArrayUtils.filterAndTransform(null, mockFilteringTransformer);
     }
     finally {
-      verifyZeroInteractions(mockFilteringTransformer);
+      verifyNoInteractions(mockFilteringTransformer);
     }
   }
 
@@ -929,7 +928,7 @@ public class ArrayUtilsTests {
 
     assertThat(ArrayUtils.findOne(toArray(), mockFilter), is(nullValue()));
 
-    verifyZeroInteractions(mockFilter);
+    verifyNoInteractions(mockFilter);
   }
 
   @Test
@@ -940,7 +939,7 @@ public class ArrayUtilsTests {
 
     assertThat(ArrayUtils.findOne(null, mockFilter), is(nullValue()));
 
-    verifyZeroInteractions(mockFilter);
+    verifyNoInteractions(mockFilter);
   }
 
   @Test

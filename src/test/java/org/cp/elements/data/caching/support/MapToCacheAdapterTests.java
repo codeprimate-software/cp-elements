@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
@@ -38,7 +37,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link MapToCacheAdapter}.
+ * Unit Tests for {@link MapToCacheAdapter}.
  *
  * @author John Blum
  * @see java.util.Map
@@ -47,11 +46,15 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MapToCacheAdapterTests {
 
   @Mock
   private Map map;
+
+  private static <T> Iterable<T> asIterable(Iterator<T> iterator) {
+    return () -> iterator;
+  }
 
   @Test
   public void constructMapToCacheAdapterWithMap() {
@@ -150,7 +153,7 @@ public class MapToCacheAdapterTests {
 
     MapToCacheAdapter.of(this.map).evict(null);
 
-    verifyZeroInteractions(this.map);
+    verifyNoInteractions(this.map);
   }
 
   @Test
@@ -210,12 +213,12 @@ public class MapToCacheAdapterTests {
     Iterator values = MapToCacheAdapter.of(map).iterator();
 
     assertThat(values).isNotNull();
-    assertThat(values).containsExactlyInAnyOrder("one", "two");
+    assertThat(asIterable(values)).containsExactlyInAnyOrder("one", "two");
   }
 
   @Test
   public void iteratorWithEmptyMap() {
-    assertThat(MapToCacheAdapter.of(Collections.<Comparable, Object>emptyMap()).iterator()).isEmpty();
+    assertThat(asIterable(MapToCacheAdapter.of(Collections.<Comparable, Object>emptyMap()).iterator())).isEmpty();
   }
 
   @Test
@@ -259,7 +262,7 @@ public class MapToCacheAdapterTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.map);
+      verifyNoInteractions(this.map);
     }
   }
 
@@ -277,7 +280,7 @@ public class MapToCacheAdapterTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.map);
+      verifyNoInteractions(this.map);
     }
   }
 
@@ -318,7 +321,7 @@ public class MapToCacheAdapterTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.map);
+      verifyNoInteractions(this.map);
     }
   }
 
@@ -336,7 +339,7 @@ public class MapToCacheAdapterTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.map);
+      verifyNoInteractions(this.map);
     }
   }
 
@@ -385,7 +388,7 @@ public class MapToCacheAdapterTests {
       throw expected;
     }
     finally {
-      verifyZeroInteractions(this.map);
+      verifyNoInteractions(this.map);
     }
   }
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,7 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import java.util.List;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ComparatorUtils}.
+ * Unit Tests for {@link ComparatorUtils}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -47,7 +46,7 @@ public class ComparatorUtilsTests {
   private static final String NULL = null;
 
   @Test
-  public void compareIgnoreNull() throws Exception {
+  public void compareIgnoreNull() {
 
     assertThat(ComparatorUtils.compareIgnoreNull(NULL, NULL)).isGreaterThan(0);
     assertThat(ComparatorUtils.compareIgnoreNull(null, "null")).isGreaterThan(0);
@@ -63,7 +62,7 @@ public class ComparatorUtilsTests {
 
     List<Number> numbers = new ArrayList<>(Arrays.asList(2, 1, 3));
 
-    Comparator<Number> ascendingComparator = (numberOne, numberTwo) -> (numberOne.intValue() - numberTwo.intValue());
+    Comparator<Number> ascendingComparator = Comparator.comparingInt(Number::intValue);
 
     numbers.sort(ascendingComparator);
 
@@ -120,11 +119,11 @@ public class ComparatorUtilsTests {
     assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare(null, "test")).isEqualTo(1);
     assertThat(ComparatorUtils.nullSafeArgumentsComparator(mockComparator).compare("test", null)).isEqualTo(-1);
 
-    verifyZeroInteractions(mockComparator);
+    verifyNoInteractions(mockComparator);
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("all")
   public void nullSafeArgumentComparatorWithNonNullValues() {
 
     Comparator<String> mockComparator = mock(Comparator.class);
@@ -137,7 +136,7 @@ public class ComparatorUtilsTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void nullSafeComparatorWithNonNullComparator() {
 
     Comparator<Comparable> mockComparator = mock(Comparator.class);
@@ -146,7 +145,7 @@ public class ComparatorUtilsTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void nullSafeComparatorWithNullComparator() {
 
     Comparator<Comparable> comparator = ComparatorUtils.nullSafeComparator(null);

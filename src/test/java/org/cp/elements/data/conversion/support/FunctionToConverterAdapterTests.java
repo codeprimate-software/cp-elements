@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.function.Function;
 
 import org.junit.Test;
 
 /**
- * Unit tests for {@link FunctionToConverterAdapter}.
+ * Unit Tests for {@link FunctionToConverterAdapter}.
  *
  * @author John Blum
  * @see java.util.function.Function
@@ -47,7 +46,7 @@ public class FunctionToConverterAdapterTests {
     assertThat(converter).isNotNull();
     assertThat(converter.getFunction()).isEqualTo(mockFunction);
 
-    verifyZeroInteractions(mockFunction);
+    verifyNoInteractions(mockFunction);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -76,7 +75,7 @@ public class FunctionToConverterAdapterTests {
     assertThat(converter).isNotNull();
     assertThat(converter.getFunction()).isEqualTo(mockFunction);
 
-    verifyZeroInteractions(mockFunction);
+    verifyNoInteractions(mockFunction);
   }
 
   @Test(expected = IllegalArgumentException.class)

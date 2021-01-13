@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -29,8 +28,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -53,7 +52,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 /**
- * Unit tests for {@link FileSystemUtils}.
+ * Unit Tests for {@link FileSystemUtils}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -293,7 +292,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     verify(mockFile, times(1)).isDirectory();
     verify(mockFile, times(1)).isFile();
     verify(mockFile, times(1)).listFiles(eq(mockFileFilter));
-    verifyZeroInteractions(mockFileFilter);
+    verifyNoInteractions(mockFileFilter);
   }
 
   @Test
@@ -310,7 +309,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     verify(mockFile, times(1)).listFiles(eq(mockFileFilter));
     verify(mockFileOne, times(1)).isDirectory();
     verify(mockFileOne, never()).listFiles(any(FileFilter.class));
-    verifyZeroInteractions(mockFileFilter);
+    verifyNoInteractions(mockFileFilter);
   }
 
   @Test
@@ -379,7 +378,7 @@ public class FileSystemUtilsTests extends AbstractBaseTestSuite {
     verify(mockFileThree, never()).listFiles(any(FileFilter.class));
     verify(mockFileFour, times(1)).isDirectory();
     verify(mockFileFour, never()).listFiles(any(FileFilter.class));
-    verifyZeroInteractions(mockFileFilter);
+    verifyNoInteractions(mockFileFilter);
   }
 
   @Test
