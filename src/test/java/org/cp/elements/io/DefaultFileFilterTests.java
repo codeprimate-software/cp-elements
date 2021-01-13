@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
@@ -28,8 +23,7 @@ import org.cp.elements.test.AbstractBaseTestSuite;
 import org.junit.Test;
 
 /**
- * The DefaultFileFilterTests class is a test suite of test cases testing the contract and functionality
- * of the {@link DefaultFileFilter} class.
+ * Unit Tests for {@link DefaultFileFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -47,29 +41,31 @@ public class DefaultFileFilterTests extends AbstractBaseTestSuite {
 
   @Test
   public void getInstanceWithFalseReturnsDefaultReject() {
-    assertThat(DefaultFileFilter.getInstance(false), is(sameInstance(DefaultFileFilter.DEFAULT_REJECT)));
+    assertThat(DefaultFileFilter.getInstance(false)).isSameAs(DefaultFileFilter.DEFAULT_REJECT);
   }
 
   @Test
   public void getInstanceWithTrueReturnsDefaultAccept() {
-    assertThat(DefaultFileFilter.getInstance(true), is(sameInstance(DefaultFileFilter.DEFAULT_ACCEPT)));
+    assertThat(DefaultFileFilter.getInstance(true)).isSameAs(DefaultFileFilter.DEFAULT_ACCEPT);
   }
 
   @Test
   public void acceptsAllFiles() {
-    assertTrue(DefaultFileFilter.DEFAULT_ACCEPT.accept(WORKING_DIRECTORY));
-    assertTrue(DefaultFileFilter.DEFAULT_ACCEPT.accept(getLocation(DefaultFileFilter.class)));
-    assertTrue(DefaultFileFilter.DEFAULT_ACCEPT.accept(newFile("/absolute/path/to/non/existing/directory")));
-    assertTrue(DefaultFileFilter.DEFAULT_ACCEPT.accept(newFile("relative/path/to/non/existing/file.ext")));
-    assertTrue(DefaultFileFilter.DEFAULT_ACCEPT.accept(null));
+
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(WORKING_DIRECTORY)).isTrue();
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(getLocation(DefaultFileFilter.class))).isTrue();
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(newFile("/absolute/path/to/non/existing/directory"))).isTrue();
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(newFile("relative/path/to/non/existing/file.ext"))).isTrue();
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(null)).isTrue();
   }
 
   @Test
   public void rejectsAllFiles() {
-    assertFalse(DefaultFileFilter.DEFAULT_REJECT.accept(WORKING_DIRECTORY));
-    assertFalse(DefaultFileFilter.DEFAULT_REJECT.accept(getLocation(DefaultFileFilter.class)));
-    assertFalse(DefaultFileFilter.DEFAULT_REJECT.accept(newFile("/absolute/path/to/non/existing/directory")));
-    assertFalse(DefaultFileFilter.DEFAULT_REJECT.accept(newFile("relative/path/to/non/existing/file.ext")));
-    assertFalse(DefaultFileFilter.DEFAULT_REJECT.accept(null));
+
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(WORKING_DIRECTORY)).isFalse();
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(getLocation(DefaultFileFilter.class))).isFalse();
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(newFile("/absolute/path/to/non/existing/directory"))).isFalse();
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(newFile("relative/path/to/non/existing/file.ext"))).isFalse();
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(null)).isFalse();
   }
 }
