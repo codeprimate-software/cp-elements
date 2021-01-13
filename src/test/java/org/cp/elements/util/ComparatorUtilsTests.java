@@ -123,7 +123,7 @@ public class ComparatorUtilsTests {
   }
 
   @Test
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public void nullSafeArgumentComparatorWithNonNullValues() {
 
     Comparator<String> mockComparator = mock(Comparator.class);
