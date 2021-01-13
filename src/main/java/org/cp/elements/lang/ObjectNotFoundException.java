@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.cp.elements.lang;
 /**
  * The ObjectNotFoundException class is a ResourceNotFoundException indicating that a object could not be found
  * in Java heap memory.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Object
  * @see org.cp.elements.lang.ResourceNotFoundException
@@ -37,7 +37,7 @@ public class ObjectNotFoundException extends ResourceNotFoundException {
   /**
    * Constructor to create an instance of the ObjectNotFoundException with a given message to describe the object
    * not found error.
-   * 
+   *
    * @param message a String value describing the nature of the object not found error.
    */
   public ObjectNotFoundException(final String message) {
@@ -47,7 +47,7 @@ public class ObjectNotFoundException extends ResourceNotFoundException {
   /**
    * Constructor to create an instance of the ObjectNotFoundException with the given Throwable to indicate the cause
    * of the object not found error.
-   * 
+   *
    * @param cause the Throwable indicating the cause of the object not found error.
    * @see java.lang.Throwable
    */
@@ -58,7 +58,7 @@ public class ObjectNotFoundException extends ResourceNotFoundException {
   /**
    * Constructor to create an instance of the ObjectNotFoundException with a message to describe the object not found
    * error and a Throwable to indicate the probable cause of the object not found error.
-   * 
+   *
    * @param message a String value describing the nature of the object not found error.
    * @param cause the Throwable indicated as the cause of the object not found error.
    * @see java.lang.Throwable

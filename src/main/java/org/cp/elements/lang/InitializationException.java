@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package org.cp.elements.lang;
 
 /**
- * The InitializationException class is a RuntimeException indicating an error during initialization 
+ * The InitializationException class is a RuntimeException indicating an error during initialization
  * of a runtime application class or component.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.RuntimeException
  * @since 1.0.0

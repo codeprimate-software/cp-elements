@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.junit.Test;
 /**
  * The SearchTypeTest class is a test suite of test cases testing the contract and functionality of the SearchType
  * enumerated type.
- * 
+ *
  * @author John J. Blum
  * @see org.cp.elements.util.search.SearchType
  * @see org.junit.Test

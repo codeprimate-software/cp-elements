@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package org.cp.elements.lang;
 
 /**
- * The ImmutableObjectException class is a RuntimeException indicating that a mutation operation was attempted 
+ * The ImmutableObjectException class is a RuntimeException indicating that a mutation operation was attempted
  * on an immutable object.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.RuntimeException
  * @since 1.0.0

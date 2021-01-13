@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.cp.elements.lang;
 
 /**
  * The EqualityException class is an IllegalArgumentException indicating that two objects are not equal.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.IllegalArgumentException
  * @since 1.0.0
@@ -35,7 +35,7 @@ public class EqualityException extends IllegalArgumentException {
   /**
    * Constructor to create an instance of the EqualityException with the given message to describe the equality
    * comparison error.
-   * 
+   *
    * @param message a String value describing the nature of the equality comparison error.
    */
   public EqualityException(final String message) {
@@ -45,7 +45,7 @@ public class EqualityException extends IllegalArgumentException {
   /**
    * Constructor to create an instance of the EqualityException with the given Throwable to indicate the cause
    * of the equality comparison error.
-   * 
+   *
    * @param cause the Throwable indicated as the cause of this equality comparison error.
    */
   public EqualityException(final Throwable cause) {
@@ -55,7 +55,7 @@ public class EqualityException extends IllegalArgumentException {
   /**
    * Constructor to create an instance of the EqualityException with a message to describe the equality comparison error
    * and a Throwable to indicate the probable cause of the equality comparison error.
-   * 
+   *
    * @param message a String value describing the nature of the equality comparison error.
    * @param cause the Throwable indicated as the cause of this equality comparison error.
    */

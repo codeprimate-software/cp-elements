@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.cp.elements.lang.reflect;
 /**
  * ConstructorNotFoundException is a RuntimeException type indicating that a constructor with the specified signature
  * could not be found on a given class type.
- * 
+ *
  * @author John J. Blum
  * @see org.cp.elements.lang.reflect.MethodNotFoundException
  * @since 1.0.0

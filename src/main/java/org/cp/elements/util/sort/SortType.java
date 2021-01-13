@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.cp.elements.util.sort;
 
 /**
  * The SortType enum is an enumeration of different type of sorting algorithms.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Enum
  * @since 1.0.0

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class ComparisonException extends IllegalArgumentException {
 
   /**
    * Constructs an instance of ComparisonException with the given message describing the relational comparison error.
-   * 
+   *
    * @param message a String value describing the nature of the relational comparison error.
    */
   public ComparisonException(final String message) {
@@ -45,7 +45,7 @@ public class ComparisonException extends IllegalArgumentException {
   /**
    * Constructs an instance of ComparisonException with the given Throwable indicating the cause
    * of the relational comparison error.
-   * 
+   *
    * @param cause the Throwable indicated as the cause of this relational comparison error.
    */
   public ComparisonException(final Throwable cause) {
@@ -55,7 +55,7 @@ public class ComparisonException extends IllegalArgumentException {
   /**
    * Constructs an instance of ComparisonException with a message describing the relational comparison error
    * and a Throwable indicating the probable cause of the relational comparison error.
-   * 
+   *
    * @param message a String value describing the nature of the relational comparison error.
    * @param cause the Throwable indicated as the cause of this relational comparison error.
    */

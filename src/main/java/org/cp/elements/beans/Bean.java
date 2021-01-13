@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.cp.elements.lang.Visitable;
 /**
  * The Bean interface defines a contract for an application domain model object representing/modeling data
  * in a software application.
- * 
+ *
  * @author John J. Blum
  * @param <ID> the Comparable class type of the identifier uniquely identifying this Bean.
  * @param <USER> the class type of the object signifying the user for auditing information.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.cp.elements.lang;
 
 /**
  * The LogicUtils class is a utility class for implementing logic operations.
- * 
+ *
  * @author John J. Blum
  * @since 1.0.0
  */
@@ -28,7 +28,7 @@ public abstract class LogicUtils {
   /**
    * Implementation of exclusive OR (XOR), meaning 1 and only 1 value can be true.  If both values are true or both
    * values are false the result of XOR is false.
-   * 
+   *
    * @param value1 the first value in the XOR expression.
    * @param value2 the second value in the XOR expression.
    * @return true if an only if 1 of the 2 values is true.

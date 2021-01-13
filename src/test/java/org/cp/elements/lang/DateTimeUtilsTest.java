@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 
 /**
- * The DateTimeUtilsTest class is a test suite of test cases testing the contract and functionality of the DateTimeUtils 
+ * The DateTimeUtilsTest class is a test suite of test cases testing the contract and functionality of the DateTimeUtils
  * class.
  *
  * @author John J. Blum

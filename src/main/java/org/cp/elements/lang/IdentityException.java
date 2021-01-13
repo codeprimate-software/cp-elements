@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class IdentityException extends IllegalArgumentException {
   /**
    * Constructor to create an instance of the IdentityException with the given message to describe the identity
    * comparison error.
-   * 
+   *
    * @param message a String value describing the nature of the identity comparison error.
    */
   public IdentityException(final String message) {
@@ -45,7 +45,7 @@ public class IdentityException extends IllegalArgumentException {
   /**
    * Constructor to create an instance of the IdentityException with the given Throwable to indicate the cause
    * of the identity comparison error.
-   * 
+   *
    * @param cause the Throwable indicated as the cause of this equality comparison error.
    */
   public IdentityException(final Throwable cause) {
@@ -55,7 +55,7 @@ public class IdentityException extends IllegalArgumentException {
   /**
    * Constructor to create an instance of the IdentityException with a message to describe the identity comparison error
    * and a Throwable to indicate the probable cause of the identity comparison error.
-   * 
+   *
    * @param message a String value describing the nature of the identity comparison error.
    * @param cause the Throwable indicated as the cause of this identity comparison error.
    */

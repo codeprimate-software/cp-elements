@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Author or Authors.
+ * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 package org.cp.elements.lang;
 
 /**
- * The TypeNotFoundException class is a ResourceNotFoundException indicating that a class specified by name 
+ * The TypeNotFoundException class is a ResourceNotFoundException indicating that a class specified by name
  * cannot be found in the CLASSPATH.  This is the unchecked, runtime equivalent of the checked ClassNotFoundException.
- * 
+ *
  * @author John J. Blum
  * @see java.lang.Class
  * @see java.lang.ClassNotFoundException
@@ -38,7 +38,7 @@ public class TypeNotFoundException extends ResourceNotFoundException {
   /**
    * Constructor to create an instance of the TypeNotFoundException with a given message to describe the class not found
    * error.
-   * 
+   *
    * @param message a String value describing the nature of the class not found error.
    */
   public TypeNotFoundException(final String message) {
@@ -48,7 +48,7 @@ public class TypeNotFoundException extends ResourceNotFoundException {
   /**
    * Constructor to create an instance of the TypeNotFoundException with the given Throwable to indicate the cause
    * of the class not found error.
-   * 
+   *
    * @param cause the Throwable indicating the cause of the class not found error.
    * @see java.lang.Throwable
    */
@@ -59,7 +59,7 @@ public class TypeNotFoundException extends ResourceNotFoundException {
   /**
    * Constructor to create an instance of the TypeNotFoundException with a message to describe the class not found error
    * and a Throwable to indicate the probable cause of the class not found error.
-   * 
+   *
    * @param message a String value describing the nature of the class not found error.
    * @param cause the Throwable indicated as the cause of the class not found error.
    * @see java.lang.Throwable
