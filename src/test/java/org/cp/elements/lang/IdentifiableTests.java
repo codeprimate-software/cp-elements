@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -31,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for the {@link Identifiable} interface.
+ * Unit Tests for the {@link Identifiable} interface.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -52,7 +49,7 @@ public class IdentifiableTests {
     when(this.mockIdentifiable.getId()).thenReturn(null);
     when(this.mockIdentifiable.isNew()).thenCallRealMethod();
 
-    assertThat(this.mockIdentifiable.isNew(), is(true));
+    assertThat(this.mockIdentifiable.isNew()).isTrue();
 
     verify(this.mockIdentifiable, times(1)).getId();
   }
@@ -63,7 +60,7 @@ public class IdentifiableTests {
     when(this.mockIdentifiable.getId()).thenReturn(1L);
     when(this.mockIdentifiable.isNew()).thenCallRealMethod();
 
-    assertThat(this.mockIdentifiable.isNew(), is(false));
+    assertThat(this.mockIdentifiable.isNew()).isFalse();
 
     verify(this.mockIdentifiable, times(1)).getId();
   }
@@ -75,7 +72,7 @@ public class IdentifiableTests {
     when(this.mockIdentifiable.isNew()).thenCallRealMethod();
     when(this.mockIdentifiable.isNotNew()).thenCallRealMethod();
 
-    assertThat(this.mockIdentifiable.isNotNew(), is(true));
+    assertThat(this.mockIdentifiable.isNotNew()).isTrue();
 
     verify(this.mockIdentifiable, times(1)).isNew();
     verify(this.mockIdentifiable, times(1)).getId();
@@ -88,7 +85,7 @@ public class IdentifiableTests {
     when(this.mockIdentifiable.isNew()).thenCallRealMethod();
     when(this.mockIdentifiable.isNotNew()).thenCallRealMethod();
 
-    assertThat(this.mockIdentifiable.isNotNew(), is(false));
+    assertThat(this.mockIdentifiable.isNotNew()).isFalse();
 
     verify(this.mockIdentifiable, times(1)).isNew();
     verify(this.mockIdentifiable, times(1)).getId();
@@ -99,11 +96,11 @@ public class IdentifiableTests {
 
     when(this.mockIdentifiable.identifiedBy(anyLong())).thenCallRealMethod();
 
-    assertThat(this.mockIdentifiable.identifiedBy(1L), is(sameInstance(this.mockIdentifiable)));
+    assertThat((Identifiable<Long>) this.mockIdentifiable.identifiedBy(1L)).isSameAs(this.mockIdentifiable);
 
     verify(this.mockIdentifiable, times(1)).setId(eq(1L));
   }
 
-  abstract class AbstractIdentifiable<T extends Comparable<T>> implements Identifiable<T> { }
+  static abstract class AbstractIdentifiable<T extends Comparable<T>> implements Identifiable<T> { }
 
 }

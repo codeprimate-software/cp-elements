@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link Protocol} enum.
+ * Unit Tests for the {@link Protocol} enum.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -35,116 +31,128 @@ public class ProtocolTests {
 
   @Test
   public void protocolPortNumber() {
-    assertThat(Protocol.FTP.portNumber(), is(equalTo(ServicePort.FTP.portNumber())));
-    assertThat(Protocol.HTTP.portNumber(), is(equalTo(ServicePort.HTTP.portNumber())));
-    assertThat(Protocol.HTTPS.portNumber(), is(equalTo(ServicePort.HTTPS.portNumber())));
-    assertThat(Protocol.LDAP.portNumber(), is(equalTo(ServicePort.LDAP.portNumber())));
-    assertThat(Protocol.SFTP.portNumber(), is(equalTo(ServicePort.SFTP.portNumber())));
-    assertThat(Protocol.SMTP.portNumber(), is(equalTo(ServicePort.SMTP.portNumber())));
+
+    assertThat(Protocol.FTP.portNumber()).isEqualTo(ServicePort.FTP.portNumber());
+    assertThat(Protocol.HTTP.portNumber()).isEqualTo(ServicePort.HTTP.portNumber());
+    assertThat(Protocol.HTTPS.portNumber()).isEqualTo(ServicePort.HTTPS.portNumber());
+    assertThat(Protocol.LDAP.portNumber()).isEqualTo(ServicePort.LDAP.portNumber());
+    assertThat(Protocol.SFTP.portNumber()).isEqualTo(ServicePort.SFTP.portNumber());
+    assertThat(Protocol.SMTP.portNumber()).isEqualTo(ServicePort.SMTP.portNumber());
   }
 
   @Test
   public void protocolServicePort() {
-    assertThat(Protocol.FTP.servicePort(), is(equalTo(ServicePort.FTP)));
-    assertThat(Protocol.HTTP.servicePort(), is(equalTo(ServicePort.HTTP)));
-    assertThat(Protocol.HTTPS.servicePort(), is(equalTo(ServicePort.HTTPS)));
-    assertThat(Protocol.LDAP.servicePort(), is(equalTo(ServicePort.LDAP)));
-    assertThat(Protocol.SFTP.servicePort(), is(equalTo(ServicePort.SFTP)));
-    assertThat(Protocol.SMTP.servicePort(), is(equalTo(ServicePort.SMTP)));
+
+    assertThat(Protocol.FTP.servicePort()).isEqualTo(ServicePort.FTP);
+    assertThat(Protocol.HTTP.servicePort()).isEqualTo(ServicePort.HTTP);
+    assertThat(Protocol.HTTPS.servicePort()).isEqualTo(ServicePort.HTTPS);
+    assertThat(Protocol.LDAP.servicePort()).isEqualTo(ServicePort.LDAP);
+    assertThat(Protocol.SFTP.servicePort()).isEqualTo(ServicePort.SFTP);
+    assertThat(Protocol.SMTP.servicePort()).isEqualTo(ServicePort.SMTP);
   }
 
   @Test
   public void protocolScheme() {
-    assertThat(Protocol.FTP.scheme(), is(equalTo("ftp://")));
-    assertThat(Protocol.HTTP.scheme(), is(equalTo("http://")));
-    assertThat(Protocol.HTTPS.scheme(), is(equalTo("https://")));
-    assertThat(Protocol.LDAP.scheme(), is(equalTo("ldap://")));
-    assertThat(Protocol.SFTP.scheme(), is(equalTo("sftp://")));
-    assertThat(Protocol.SMTP.scheme(), is(equalTo("smtp://")));
+
+    assertThat(Protocol.FTP.scheme()).isEqualTo("ftp://");
+    assertThat(Protocol.HTTP.scheme()).isEqualTo("http://");
+    assertThat(Protocol.HTTPS.scheme()).isEqualTo("https://");
+    assertThat(Protocol.LDAP.scheme()).isEqualTo("ldap://");
+    assertThat(Protocol.SFTP.scheme()).isEqualTo("sftp://");
+    assertThat(Protocol.SMTP.scheme()).isEqualTo("smtp://");
   }
 
   @Test
   public void protocolToString() {
-    assertThat(Protocol.FTP.toString(), is(equalTo("File Transfer Protocol")));
-    assertThat(Protocol.HTTP.toString(), is(equalTo("Hypertext Transfer Protocol")));
-    assertThat(Protocol.HTTPS.toString(), is(equalTo("Secure Hypertext Transfer Protocol")));
-    assertThat(Protocol.LDAP.toString(), is(equalTo("Lightweight Directory Access Protocol")));
-    assertThat(Protocol.SFTP.toString(), is(equalTo("Secure File Transfer Protocol")));
-    assertThat(Protocol.SMTP.toString(), is(equalTo("Simple Mail Transfer Protocol")));
+
+    assertThat(Protocol.FTP.toString()).isEqualTo("File Transfer Protocol");
+    assertThat(Protocol.HTTP.toString()).isEqualTo("Hypertext Transfer Protocol");
+    assertThat(Protocol.HTTPS.toString()).isEqualTo("Secure Hypertext Transfer Protocol");
+    assertThat(Protocol.LDAP.toString()).isEqualTo("Lightweight Directory Access Protocol");
+    assertThat(Protocol.SFTP.toString()).isEqualTo("Secure File Transfer Protocol");
+    assertThat(Protocol.SMTP.toString()).isEqualTo("Simple Mail Transfer Protocol");
   }
 
   @Test
   public void valueOfIgnoreCaseReturnsProtocol() {
-    assertThat(Protocol.valueOfIgnoreCase("FTP"), is(equalTo(Protocol.FTP)));
-    assertThat(Protocol.valueOfIgnoreCase("Http "), is(equalTo(Protocol.HTTP)));
-    assertThat(Protocol.valueOfIgnoreCase(" HtTpS"), is(equalTo(Protocol.HTTPS)));
-    assertThat(Protocol.valueOfIgnoreCase(" LDaP "), is(equalTo(Protocol.LDAP)));
-    assertThat(Protocol.valueOfIgnoreCase("sFTP"), is(equalTo(Protocol.SFTP)));
-    assertThat(Protocol.valueOfIgnoreCase(" smtp  "), is(equalTo(Protocol.SMTP)));
+
+    assertThat(Protocol.valueOfIgnoreCase("FTP")).isEqualTo(Protocol.FTP);
+    assertThat(Protocol.valueOfIgnoreCase("Http ")).isEqualTo(Protocol.HTTP);
+    assertThat(Protocol.valueOfIgnoreCase(" HtTpS")).isEqualTo(Protocol.HTTPS);
+    assertThat(Protocol.valueOfIgnoreCase(" LDaP ")).isEqualTo(Protocol.LDAP);
+    assertThat(Protocol.valueOfIgnoreCase("sFTP")).isEqualTo(Protocol.SFTP);
+    assertThat(Protocol.valueOfIgnoreCase(" smtp  ")).isEqualTo(Protocol.SMTP);
   }
 
   @Test
   public void valueOfIgnoreCaseWithInvalidValueReturnsNull() {
-    assertThat(Protocol.valueOfIgnoreCase("FTPS"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("Htp "), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase(" shttp"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("PLAD"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("RMI"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase(" Rpc   "), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("sCP"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("SSH"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("  Snmp "), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase("  "), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase(""), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfIgnoreCase(null), is(nullValue(Protocol.class)));
+
+    assertThat(Protocol.valueOfIgnoreCase("FTPS")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("Htp ")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase(" shttp")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("PLAD")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("RMI")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase(" Rpc   ")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("sCP")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("SSH")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("  Snmp ")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("  ")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase("")).isNull();
+    assertThat(Protocol.valueOfIgnoreCase(null)).isNull();
   }
 
   @Test
   public void valueOfPortNumberReturnsProtocol() {
+
     for (Protocol protocol : Protocol.values()) {
-      assertThat(Protocol.valueOfPortNumber(protocol.portNumber()), is(equalTo(protocol)));
+      assertThat(Protocol.valueOfPortNumber(protocol.portNumber())).isEqualTo(protocol);
     }
   }
 
   @Test
   public void valueOfInvalidPortNumberReturnsNull() {
-    assertThat(Protocol.valueOfPortNumber(Integer.MIN_VALUE), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfPortNumber(-1), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfPortNumber(ServicePort.EPHEMERAL.portNumber()), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfPortNumber(Integer.MAX_VALUE), is(nullValue(Protocol.class)));
+
+    assertThat(Protocol.valueOfPortNumber(Integer.MIN_VALUE)).isNull();
+    assertThat(Protocol.valueOfPortNumber(-1)).isNull();
+    assertThat(Protocol.valueOfPortNumber(ServicePort.EPHEMERAL.portNumber())).isNull();
+    assertThat(Protocol.valueOfPortNumber(Integer.MAX_VALUE)).isNull();
   }
 
   @Test
   public void valueOfSchemeReturnsProtocol() {
+
     for (Protocol protocol : Protocol.values()) {
-      assertThat(Protocol.valueOfScheme(protocol.scheme()), is(equalTo(protocol)));
+      assertThat(Protocol.valueOfScheme(protocol.scheme())).isEqualTo(protocol);
     }
 
-    assertThat(Protocol.valueOfScheme(" http://   "), is(equalTo(Protocol.HTTP)));
+    assertThat(Protocol.valueOfScheme(" http://   ")).isEqualTo(Protocol.HTTP);
   }
 
   @Test
   public void valueOfSchemeWithInvalidValueReturnsNull() {
-    assertThat(Protocol.valueOfScheme("FTP://"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme("hTTp://"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme("shttp://"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme("sFtp://"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme("snmp://"), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme("  "), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme(""), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfScheme(null), is(nullValue(Protocol.class)));
+
+    assertThat(Protocol.valueOfScheme("FTP://")).isNull();
+    assertThat(Protocol.valueOfScheme("hTTp://")).isNull();
+    assertThat(Protocol.valueOfScheme("shttp://")).isNull();
+    assertThat(Protocol.valueOfScheme("sFtp://")).isNull();
+    assertThat(Protocol.valueOfScheme("snmp://")).isNull();
+    assertThat(Protocol.valueOfScheme("  ")).isNull();
+    assertThat(Protocol.valueOfScheme("")).isNull();
+    assertThat(Protocol.valueOfScheme(null)).isNull();
   }
 
   @Test
   public void valueOfServicePortReturnsProtocol() {
+
     for (Protocol protocol : Protocol.values()) {
-      assertThat(Protocol.valueOfServicePort(protocol.servicePort()), is(equalTo(protocol)));
+      assertThat(Protocol.valueOfServicePort(protocol.servicePort())).isEqualTo(protocol);
     }
   }
 
   @Test
   public void valueOfServicePortWithInvalidValueReturnsNull() {
-    assertThat(Protocol.valueOfServicePort(null), is(nullValue(Protocol.class)));
-    assertThat(Protocol.valueOfServicePort(ServicePort.SSH), is(nullValue(Protocol.class)));
+
+    assertThat(Protocol.valueOfServicePort(null)).isNull();
+    assertThat(Protocol.valueOfServicePort(ServicePort.SSH)).isNull();
   }
 }

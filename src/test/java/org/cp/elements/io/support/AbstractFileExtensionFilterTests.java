@@ -13,40 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
 
 import org.cp.elements.io.FileExtensionFilter;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * AbstractFileExtensionFilterTests is an abstract base class containing test cases common to all
+ * {@link AbstractFileExtensionFilterTests} is an abstract base class containing test cases common to all
  * {@link org.cp.elements.io.FileExtensionFilter} tests in the {@link org.cp.elements.io.support} package.
  *
  * @author John Blum
  * @see java.io.File
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
 public abstract class AbstractFileExtensionFilterTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   protected abstract String[] expectedFileExtensions();
 
@@ -66,28 +54,34 @@ public abstract class AbstractFileExtensionFilterTests {
   public void acceptIsSuccessfulWithExpectedFileExtensions() {
     Set<String> fileExtensions = fileExtensionFilter().getFileExtensions();
 
-    assertThat(fileExtensions, is(notNullValue(Set.class)));
-    assertThat(fileExtensions.size(), is(equalTo(expectedSize())));
-    assertThat(fileExtensions.containsAll(Arrays.asList(expectedFileExtensions())), is(true));
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions.size()).isEqualTo(expectedSize());
+    assertThat(fileExtensions.containsAll(Arrays.asList(expectedFileExtensions()))).isTrue();
 
     for (String fileExtension : fileExtensions) {
-      assertThat(fileExtensionFilter().accept(newFile(String.format("file.%s", fileExtension))), is(true));
+      assertThat(fileExtensionFilter().accept(newFile(String.format("file.%s", fileExtension)))).isTrue();
     }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void acceptWithNullThrowsIllegalArgumentException() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("File cannot be null");
 
-    fileExtensionFilter().accept(null);
+    try {
+      fileExtensionFilter().accept(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("File cannot be null");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
   public void rejectIsSuccessfulWithUnexpectedFileExtensions() {
     for (String fileExtension : unexpectedFileExtensions()) {
-      assertThat(fileExtensionFilter().accept(newFile(fileExtension)), is(false));
+      assertThat(fileExtensionFilter().accept(newFile(fileExtension))).isFalse();
     }
   }
 }

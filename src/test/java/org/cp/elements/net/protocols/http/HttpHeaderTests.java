@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net.protocols.http;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link HttpHeader} enum.
+ * Unit Tests for the {@link HttpHeader} enum.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -35,30 +31,33 @@ public class HttpHeaderTests {
 
   @Test
   public void valueOfIgnoreCaseForAllNamesReturnsHttpHeader() {
+
     for (HttpHeader httpHeader : HttpHeader.values()) {
-      assertThat(HttpHeader.valueOfIgnoreCase(httpHeader.getName()), is(equalTo(httpHeader)));
+      assertThat(HttpHeader.valueOfIgnoreCase(httpHeader.getName())).isEqualTo(httpHeader);
     }
   }
 
   @Test
   public void valueOfIgnoreCaseReturnsHttpHeader() {
-    assertThat(HttpHeader.valueOfIgnoreCase("ACCEPT"), is(equalTo(HttpHeader.ACCEPT)));
-    assertThat(HttpHeader.valueOfIgnoreCase("Allow"), is(equalTo(HttpHeader.ALLOW)));
-    assertThat(HttpHeader.valueOfIgnoreCase("content-length"), is(equalTo(HttpHeader.CONTENT_LENGTH)));
-    assertThat(HttpHeader.valueOfIgnoreCase(" dATE   "), is(equalTo(HttpHeader.DATE)));
-    assertThat(HttpHeader.valueOfIgnoreCase(" eTag "), is(equalTo(HttpHeader.ETAG)));
-    assertThat(HttpHeader.valueOfIgnoreCase("hOsT "), is(equalTo(HttpHeader.HOST)));
+
+    assertThat(HttpHeader.valueOfIgnoreCase("ACCEPT")).isEqualTo(HttpHeader.ACCEPT);
+    assertThat(HttpHeader.valueOfIgnoreCase("Allow")).isEqualTo(HttpHeader.ALLOW);
+    assertThat(HttpHeader.valueOfIgnoreCase("content-length")).isEqualTo(HttpHeader.CONTENT_LENGTH);
+    assertThat(HttpHeader.valueOfIgnoreCase(" dATE   ")).isEqualTo(HttpHeader.DATE);
+    assertThat(HttpHeader.valueOfIgnoreCase(" eTag ")).isEqualTo(HttpHeader.ETAG);
+    assertThat(HttpHeader.valueOfIgnoreCase("hOsT ")).isEqualTo(HttpHeader.HOST);
   }
 
   @Test
   public void valueOfIgnoreCaseWithInvalidValuesReturnsNull() {
-    assertThat(HttpHeader.valueOfIgnoreCase("EXPIRE"), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase("if-not-match"), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase("last_modified"), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase("locate"), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase("loser-agent"), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase("  "), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase(""), is(nullValue(HttpHeader.class)));
-    assertThat(HttpHeader.valueOfIgnoreCase(null), is(nullValue(HttpHeader.class)));
+
+    assertThat(HttpHeader.valueOfIgnoreCase("EXPIRE")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase("if-not-match")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase("last_modified")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase("locate")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase("loser-agent")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase("  ")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase("")).isNull();
+    assertThat(HttpHeader.valueOfIgnoreCase(null)).isNull();
   }
 }

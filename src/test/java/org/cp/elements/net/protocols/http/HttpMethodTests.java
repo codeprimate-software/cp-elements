@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net.protocols.http;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cp.elements.dao.CrudOperation;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link HttpMethod} enum.
+ * Unit Tests for the {@link HttpMethod} enum.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -36,61 +32,67 @@ public class HttpMethodTests {
 
   @Test
   public void httpMethodWithCrudOperation() {
-    assertThat(HttpMethod.POST.crudOperation(), is(equalTo(CrudOperation.CREATE)));
-    assertThat(HttpMethod.GET.crudOperation(), is(equalTo(CrudOperation.READ)));
-    assertThat(HttpMethod.PUT.crudOperation(), is(equalTo(CrudOperation.UPDATE)));
-    assertThat(HttpMethod.DELETE.crudOperation(), is(equalTo(CrudOperation.DELETE)));
+
+    assertThat(HttpMethod.POST.crudOperation()).isEqualTo(CrudOperation.CREATE);
+    assertThat(HttpMethod.GET.crudOperation()).isEqualTo(CrudOperation.READ);
+    assertThat(HttpMethod.PUT.crudOperation()).isEqualTo(CrudOperation.UPDATE);
+    assertThat(HttpMethod.DELETE.crudOperation()).isEqualTo(CrudOperation.DELETE);
   }
 
   @Test
   public void httpMethodWithNoCrudOperationReturnsNull() {
-    assertThat(HttpMethod.CONNECT.crudOperation(), is(nullValue(CrudOperation.class)));
-    assertThat(HttpMethod.HEAD.crudOperation(), is(nullValue(CrudOperation.class)));
-    assertThat(HttpMethod.OPTIONS.crudOperation(), is(nullValue(CrudOperation.class)));
-    assertThat(HttpMethod.TRACE.crudOperation(), is(nullValue(CrudOperation.class)));
+
+    assertThat(HttpMethod.CONNECT.crudOperation()).isNull();
+    assertThat(HttpMethod.HEAD.crudOperation()).isNull();
+    assertThat(HttpMethod.OPTIONS.crudOperation()).isNull();
+    assertThat(HttpMethod.TRACE.crudOperation()).isNull();
   }
 
   @Test
   public void valueOfCrudOperationReturnsHttpMethod() {
-    assertThat(HttpMethod.valueOf(CrudOperation.CREATE), is(equalTo(HttpMethod.POST)));
-    assertThat(HttpMethod.valueOf(CrudOperation.READ), is(equalTo(HttpMethod.GET)));
-    assertThat(HttpMethod.valueOf(CrudOperation.UPDATE), is(equalTo(HttpMethod.PUT)));
-    assertThat(HttpMethod.valueOf(CrudOperation.DELETE), is(equalTo(HttpMethod.DELETE)));
+
+    assertThat(HttpMethod.valueOf(CrudOperation.CREATE)).isEqualTo(HttpMethod.POST);
+    assertThat(HttpMethod.valueOf(CrudOperation.READ)).isEqualTo(HttpMethod.GET);
+    assertThat(HttpMethod.valueOf(CrudOperation.UPDATE)).isEqualTo(HttpMethod.PUT);
+    assertThat(HttpMethod.valueOf(CrudOperation.DELETE)).isEqualTo(HttpMethod.DELETE);
   }
 
   @Test
   public void valueOfCrudOperationReturnsNull() {
-    assertThat(HttpMethod.valueOf((CrudOperation) null), is(nullValue(HttpMethod.class)));
+    assertThat(HttpMethod.valueOf((CrudOperation) null)).isNull();
   }
 
   @Test
   public void valueOfIgnoreCaseReturnsHttpMethod() {
-    assertThat(HttpMethod.valueOfIgnoreCase("CONNECT"), is(equalTo(HttpMethod.CONNECT)));
-    assertThat(HttpMethod.valueOfIgnoreCase(" Delete"), is(equalTo(HttpMethod.DELETE)));
-    assertThat(HttpMethod.valueOfIgnoreCase("get  "), is(equalTo(HttpMethod.GET)));
-    assertThat(HttpMethod.valueOfIgnoreCase("  HEad   "), is(equalTo(HttpMethod.HEAD)));
-    assertThat(HttpMethod.valueOfIgnoreCase("   OPTionS "), is(equalTo(HttpMethod.OPTIONS)));
-    assertThat(HttpMethod.valueOfIgnoreCase(" POST "), is(equalTo(HttpMethod.POST)));
+
+    assertThat(HttpMethod.valueOfIgnoreCase("CONNECT")).isEqualTo(HttpMethod.CONNECT);
+    assertThat(HttpMethod.valueOfIgnoreCase(" Delete")).isEqualTo(HttpMethod.DELETE);
+    assertThat(HttpMethod.valueOfIgnoreCase("get  ")).isEqualTo(HttpMethod.GET);
+    assertThat(HttpMethod.valueOfIgnoreCase("  HEad   ")).isEqualTo(HttpMethod.HEAD);
+    assertThat(HttpMethod.valueOfIgnoreCase("   OPTionS ")).isEqualTo(HttpMethod.OPTIONS);
+    assertThat(HttpMethod.valueOfIgnoreCase(" POST ")).isEqualTo(HttpMethod.POST);
   }
 
   @Test
   public void valueOfIgnoreCaseReturnsNull() {
-    assertThat(HttpMethod.valueOfIgnoreCase("DISCONNECT"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("Remove"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("GETit"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("giveMe"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("grab"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("PUTS"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("OPT"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("Postage"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase("PUTT"), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase(" debug  "), is(nullValue(HttpMethod.class)));
+
+    assertThat(HttpMethod.valueOfIgnoreCase("DISCONNECT")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("Remove")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("GETit")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("giveMe")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("grab")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("PUTS")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("OPT")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("Postage")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("PUTT")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase(" debug  ")).isNull();
   }
 
   @Test
   public void valueOfIgnoreCaseWithNullEmptyAndBlankReturnsNull() {
-    assertThat(HttpMethod.valueOfIgnoreCase("  "), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase(""), is(nullValue(HttpMethod.class)));
-    assertThat(HttpMethod.valueOfIgnoreCase(null), is(nullValue(HttpMethod.class)));
+
+    assertThat(HttpMethod.valueOfIgnoreCase("  ")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase("")).isNull();
+    assertThat(HttpMethod.valueOfIgnoreCase(null)).isNull();
   }
 }
