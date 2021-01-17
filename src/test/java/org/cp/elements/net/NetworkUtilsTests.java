@@ -53,6 +53,7 @@ public class NetworkUtilsTests {
 
     for (int count = 0, port = NetworkUtils.availablePort(); count < COUNT;
          count++, port = NetworkUtils.availablePort()) {
+
       assertThat(port).isGreaterThan(ServicePort.MIN_PORT);
       assertThat(port).isLessThanOrEqualTo(ServicePort.MAX_PORT);
     }
@@ -160,7 +161,7 @@ public class NetworkUtilsTests {
     assertThat(NetworkUtils.parsePort(" 1  23 4", 5678)).isEqualTo(5678);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void parsePortWithInvalidPortNumberThrowsIllegalArgumentException() {
 
     try {
