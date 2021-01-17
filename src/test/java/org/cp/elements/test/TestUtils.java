@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.test;
 
-import java.util.Calendar;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Calendar;
+import java.util.function.Supplier;
+
+import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Assert;
 
 @SuppressWarnings("unused")
 public abstract class TestUtils {
 
-  public static <T> void assertEquals(T[] expected, T[] actual) {
+  public static <T> void assertEquals(@NotNull T[] expected, @NotNull T[] actual) {
+
     Assert.assertEquals(expected.getClass(), actual.getClass());
     Assert.assertEquals(expected.getClass().getComponentType(), actual.getClass().getComponentType());
     Assert.assertEquals(expected.length, actual.length);
@@ -33,25 +37,58 @@ public abstract class TestUtils {
     }
   }
 
-  public static Calendar createCalendar(int year, int month, int day) {
+  public static @NotNull Calendar createCalendar(int year, int month, int day) {
+
     Calendar dateTime = Calendar.getInstance();
+
     dateTime.clear();
     dateTime.set(year, month, day);
+
     return dateTime;
   }
 
-  public static Calendar createCalendar(int year, int month, int day, int hour, int minute, int second) {
+  public static @NotNull Calendar createCalendar(int year, int month, int day, int hour, int minute, int second) {
+
     Calendar dateTime = createCalendar(year, month, day);
+
     dateTime.set(Calendar.HOUR_OF_DAY, hour);
     dateTime.set(Calendar.MINUTE, minute);
     dateTime.set(Calendar.SECOND, second);
     dateTime.set(Calendar.MILLISECOND, 0);
+
     return dateTime;
   }
 
-  public static long timeIt(Runnable runnable) {
+  public static <T> void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
+      @NotNull Supplier<String> message) {
+
+    doIllegalArgumentExceptionThrowingOperation(operation, message, () -> { });
+  }
+
+  public static <T> void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
+      @NotNull Supplier<String> message, @NotNull Runnable verifications) {
+
+    try {
+      operation.run();
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage(message.get());
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verifications.run();
+    }
+  }
+
+  public static long timeIt(@NotNull Runnable runnable) {
+
     long t0 = System.currentTimeMillis();
+
     runnable.run();
+
     return (System.currentTimeMillis() - t0);
   }
 }

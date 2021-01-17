@@ -13,21 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -50,56 +38,53 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link AbstractConfiguration}.
+ * Unit Tests for {@link AbstractConfiguration}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
+ * @see java.util.Properties
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.AbstractConfiguration
+ * @see org.cp.elements.data.conversion.AbstractConversionService
  * @see org.cp.elements.data.conversion.ConversionService
+ * @see org.cp.elements.data.conversion.Converter
+ * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class AbstractConfigurationTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   private Properties configurationSettings = new Properties();
 
   @Before
   public void setup() {
 
-    configurationSettings.setProperty("jdbc.driverClassName", "com.mysql.jdbc.Driver");
-    configurationSettings.setProperty("jdbc.url", "jdbc:mysql://localhost:3306/appDataStore");
-    configurationSettings.setProperty("jdbc.username", "");
-    configurationSettings.setProperty("jdbc.password", "");
+    this.configurationSettings.setProperty("jdbc.driverClassName", "com.mysql.jdbc.Driver");
+    this.configurationSettings.setProperty("jdbc.url", "jdbc:mysql://localhost:3306/appDataStore");
+    this.configurationSettings.setProperty("jdbc.username", "");
+    this.configurationSettings.setProperty("jdbc.password", "");
   }
 
   @After
   public void tearDown() {
 
-    configurationSettings.clear();
-    configurationSettings = null;
+    this.configurationSettings.clear();
+    this.configurationSettings = null;
   }
 
   ConversionService loadConversionService() {
 
     ServiceLoader<ConversionService> serviceLoader = ServiceLoader.load(ConversionService.class);
 
-    assertThat(serviceLoader, is(notNullValue()));
+    assertThat(serviceLoader).isNotNull();
 
     Iterator<ConversionService> iterator = serviceLoader.iterator();
 
-    assertThat(iterator.hasNext(), is(true));
+    assertThat(iterator.hasNext()).isTrue();
 
     return iterator.next();
   }
@@ -109,8 +94,8 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
-    assertNotNull(configuration);
-    assertNull(configuration.getParent());
+    assertThat(configuration).isNotNull();
+    assertThat(configuration.getParent()).isNull();
   }
 
   @Test
@@ -120,28 +105,38 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(mockParentConfiguration, new Properties());
 
-    assertThat(configuration, is(notNullValue(AbstractConfiguration.class)));
-    assertThat(configuration.getParent(), is(sameInstance(mockParentConfiguration)));
+    assertThat(configuration).isNotNull();
+    assertThat(configuration.getParent()).isSameAs(mockParentConfiguration);
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void constructUninitializedConversionService() {
 
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The ConversionService was not properly initialized!");
+    try {
+      new TestConfiguration(new Properties()).getConversionService();
+    }
+    catch (IllegalStateException expected) {
 
-    new TestConfiguration(new Properties()).getConversionService();
+      assertThat(expected).hasMessage("The ConversionService was not properly initialized!");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void setConversionServiceToNull() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The ConversionService used to support this Configuration cannot be null!");
+    try {
+      new TestConfiguration(new Properties()).setConversionService(null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    new TestConfiguration(new Properties()).setConversionService(null);
+      assertThat(expected).hasMessage("The ConversionService used to support this Configuration cannot be null!");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -153,7 +148,7 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(mockConversionService);
 
-    assertThat(configuration.getConversionService(), is(sameInstance(mockConversionService)));
+    assertThat(configuration.getConversionService()).isSameAs(mockConversionService);
   }
 
   @Test
@@ -168,24 +163,29 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(mockConversionService);
 
-    assertThat(configuration.getConversionService(), is(sameInstance(mockConversionService)));
-    assertThat(configuration.convert("FEMALE", Gender.class), is(equalTo(Gender.FEMALE)));
+    assertThat(configuration.getConversionService()).isSameAs(mockConversionService);
+    assertThat(configuration.convert("FEMALE", Gender.class)).isEqualTo(Gender.FEMALE);
 
     verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(Gender.class));
     verify(mockConversionService, times(1)).convert(eq("FEMALE"), eq(Gender.class));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void convertWithNullType() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The Class type to convert the String value to cannot be null!");
+    try {
+      new TestConfiguration(new Properties()).convert("test", null);
+    }
+    catch (IllegalArgumentException expected) {
 
-    new TestConfiguration(new Properties()).convert("test", null);
+      assertThat(expected).hasMessage("The Class type to convert the String value to cannot be null!");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
+  @Test(expected = ConversionException.class)
   public void convertWithUnsupportedConversion() {
 
     ConversionService mockConversionService = mock(ConversionService.class);
@@ -196,15 +196,19 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(mockConversionService);
 
-    assertThat(configuration.getConversionService(), is(sameInstance(mockConversionService)));
+    assertThat(configuration.getConversionService()).isSameAs(mockConversionService);
 
     try {
-      exception.expect(ConversionException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage(String.format("Cannot convert String value (12345) into a value of type (%1$s)!",
-        Process.class.getName()));
-
       configuration.convert("12345", Process.class);
+    }
+    catch (ConversionException expected) {
+
+      assertThat(expected).hasMessage("Cannot convert String value (12345) into a value of type (%1$s)!",
+        Process.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
       verify(mockConversionService, times(1)).canConvert(eq(String.class), eq(Process.class));
@@ -217,12 +221,12 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(new Properties());
 
-    assertEquals("val", configuration.defaultIfUnset("val", "test"));
-    assertEquals("nil", configuration.defaultIfUnset("nil", "test"));
-    assertEquals("null", configuration.defaultIfUnset("null", "test"));
-    assertEquals("test", configuration.defaultIfUnset(null, "test"));
-    assertEquals("test", configuration.defaultIfUnset("", "test"));
-    assertEquals("test", configuration.defaultIfUnset("  ", "test"));
+    assertThat(configuration.defaultIfUnset("val", "test")).isEqualTo("val");
+    assertThat(configuration.defaultIfUnset("nil", "test")).isEqualTo("nil");
+    assertThat(configuration.defaultIfUnset("null", "test")).isEqualTo("null");
+    assertThat(configuration.defaultIfUnset(null, "test")).isEqualTo("test");
+    assertThat(configuration.defaultIfUnset("", "test")).isEqualTo("test");
+    assertThat(configuration.defaultIfUnset("  ", "test")).isEqualTo("test");
   }
 
   @Test
@@ -230,14 +234,14 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
-    assertTrue(configuration.isPresent("jdbc.driverClassName"));
-    assertTrue(configuration.isPresent("jdbc.url"));
-    assertTrue(configuration.isPresent("jdbc.username"));
-    assertTrue(configuration.isPresent("jdbc.password"));
-    assertFalse(configuration.isPresent("jdbc.driver.class.name"));
-    assertFalse(configuration.isPresent("jdbc.URL"));
-    assertFalse(configuration.isPresent("jdbc.user.name"));
-    assertFalse(configuration.isPresent("jdbc.pwd"));
+    assertThat(configuration.isPresent("jdbc.driverClassName")).isTrue();
+    assertThat(configuration.isPresent("jdbc.url")).isTrue();
+    assertThat(configuration.isPresent("jdbc.username")).isTrue();
+    assertThat(configuration.isPresent("jdbc.password")).isTrue();
+    assertThat(configuration.isPresent("jdbc.driver.class.name")).isFalse();
+    assertThat(configuration.isPresent("jdbc.URL")).isFalse();
+    assertThat(configuration.isPresent("jdbc.user.name")).isFalse();
+    assertThat(configuration.isPresent("jdbc.pwd")).isFalse();
   }
 
   @Test
@@ -245,22 +249,22 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
-    assertTrue(configuration.isPresent("jdbc.driverClassName"));
-    assertTrue(configuration.isSet("jdbc.driverClassName"));
-    assertTrue(configuration.isPresent("jdbc.url"));
-    assertTrue(configuration.isSet("jdbc.url"));
-    assertTrue(configuration.isPresent("jdbc.username"));
-    assertFalse(configuration.isSet("jdbc.username"));
-    assertTrue(configuration.isPresent("jdbc.password"));
-    assertFalse(configuration.isSet("jdbc.password"));
-    assertFalse(configuration.isPresent("jdbc.driver.class.name"));
-    assertFalse(configuration.isSet("jdbc.driver.class.name"));
-    assertFalse(configuration.isPresent("jdbc.URL"));
-    assertFalse(configuration.isSet("jdbc.URL"));
-    assertFalse(configuration.isPresent("jdbc.user.name"));
-    assertFalse(configuration.isSet("jdbc.user.name"));
-    assertFalse(configuration.isPresent("jdbc.pwd"));
-    assertFalse(configuration.isSet("jdbc.pwd"));
+    assertThat(configuration.isPresent("jdbc.driverClassName")).isTrue();
+    assertThat(configuration.isSet("jdbc.driverClassName")).isTrue();
+    assertThat(configuration.isPresent("jdbc.url")).isTrue();
+    assertThat(configuration.isSet("jdbc.url")).isTrue();
+    assertThat(configuration.isPresent("jdbc.username")).isTrue();
+    assertThat(configuration.isSet("jdbc.username")).isFalse();
+    assertThat(configuration.isPresent("jdbc.password")).isTrue();
+    assertThat(configuration.isSet("jdbc.password")).isFalse();
+    assertThat(configuration.isPresent("jdbc.driver.class.name")).isFalse();
+    assertThat(configuration.isSet("jdbc.driver.class.name")).isFalse();
+    assertThat(configuration.isPresent("jdbc.URL")).isFalse();
+    assertThat(configuration.isSet("jdbc.URL")).isFalse();
+    assertThat(configuration.isPresent("jdbc.user.name")).isFalse();
+    assertThat(configuration.isSet("jdbc.user.name")).isFalse();
+    assertThat(configuration.isPresent("jdbc.pwd")).isFalse();
+    assertThat(configuration.isSet("jdbc.pwd")).isFalse();
   }
 
   @Test
@@ -268,12 +272,12 @@ public class AbstractConfigurationTests {
 
     AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
-    assertEquals("com.mysql.jdbc.Driver", configuration.getPropertyValue("jdbc.driverClassName"));
-    assertEquals("jdbc:mysql://localhost:3306/appDataStore", configuration.getPropertyValue("jdbc.url"));
-    assertNull(configuration.getPropertyValue("jdbc.username", false));
-    assertNull(configuration.getPropertyValue("jdbc.password", false));
-    assertEquals("admin", configuration.getPropertyValue("jdbc.username", "admin"));
-    assertEquals("s3CuR3!", configuration.getPropertyValue("jdbc.username", "s3CuR3!"));
+    assertThat(configuration.getPropertyValue("jdbc.driverClassName")).isEqualTo("com.mysql.jdbc.Driver");
+    assertThat(configuration.getPropertyValue("jdbc.url")).isEqualTo("jdbc:mysql://localhost:3306/appDataStore");
+    assertThat(configuration.getPropertyValue("jdbc.username", false)).isNull();
+    assertThat(configuration.getPropertyValue("jdbc.password", false)).isNull();
+    assertThat(configuration.getPropertyValue("jdbc.username", "admin")).isEqualTo("admin");
+    assertThat(configuration.getPropertyValue("jdbc.username", "s3CuR3!")).isEqualTo("s3CuR3!");
   }
 
   @Test
@@ -287,20 +291,25 @@ public class AbstractConfigurationTests {
     AbstractConfiguration parentConfiguration = new TestConfiguration(parentConfigurationSettings);
     AbstractConfiguration configuration = new TestConfiguration(parentConfiguration, configurationSettings);
 
-    assertNull(parentConfiguration.getParent());
-    assertSame(parentConfiguration, configuration.getParent());
-    assertEquals("root", configuration.getPropertyValue("jdbc.username"));
-    assertEquals("p@5s5sW0rDd!", configuration.getPropertyValue("jdbc.password"));
+    assertThat(parentConfiguration.getParent()).isNull();
+    assertThat(configuration.getParent()).isSameAs(parentConfiguration);
+    assertThat(configuration.getPropertyValue("jdbc.username")).isEqualTo("root");
+    assertThat(configuration.getPropertyValue("jdbc.password")).isEqualTo("p@5s5sW0rDd!");
   }
 
-  @Test
+  @Test(expected = ConfigurationException.class)
   public void getRequiredUnsetPropertyValue() {
 
-    exception.expect(ConfigurationException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The property (jdbc.username) is required!");
+    try {
+      new TestConfiguration(configurationSettings).getPropertyValue("jdbc.username");
+    }
+    catch (ConfigurationException expected) {
 
-    new TestConfiguration(configurationSettings).getPropertyValue("jdbc.username");
+      assertThat(expected).hasMessage("The property (jdbc.username) is required!");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -319,12 +328,12 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(loadConversionService());
 
-    assertNotNull(configuration.getConversionService());
-    assertTrue(configuration.getPropertyValueAs("boolProp", Boolean.class));
-    assertEquals(new Character('X'), configuration.getPropertyValueAs("charProp", Character.class));
-    assertEquals(new Double(Math.PI), configuration.getPropertyValueAs("dblProp", Double.class));
-    assertEquals(new Integer(123), configuration.getPropertyValueAs("intProp", Integer.class));
-    assertEquals("test", configuration.getPropertyValueAs("strProp", String.class));
+    assertThat(configuration.getConversionService()).isNotNull();
+    assertThat(configuration.getPropertyValueAs("boolProp", Boolean.class)).isTrue();
+    assertThat(configuration.getPropertyValueAs("charProp", Character.class)).isEqualTo(new Character('X'));
+    assertThat(configuration.getPropertyValueAs("dblProp", Double.class)).isEqualTo(new Double(Math.PI));
+    assertThat(configuration.getPropertyValueAs("intProp", Integer.class)).isEqualTo(new Integer(123));
+    assertThat(configuration.getPropertyValueAs("strProp", String.class)).isEqualTo("test");
   }
 
   @Test
@@ -339,12 +348,12 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(new TestConversionService(new UserConverter()));
 
-    assertTrue(configuration.getConversionService() instanceof TestConversionService);
+    assertThat(configuration.getConversionService() instanceof TestConversionService).isTrue();
 
     User root = configuration.getPropertyValueAs("os.admin.user", User.class);
 
-    assertNotNull(root);
-    assertEquals("root", root.getUsername());
+    assertThat(root).isNotNull();
+    assertThat(root.getName()).isEqualTo("root");
   }
 
   @Test
@@ -356,8 +365,8 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(new TestConversionService(new UserConverter()));
 
-    assertTrue(configuration.getConversionService() instanceof TestConversionService);
-    assertSame(guestUser, configuration.getPropertyValueAs("os.user", guestUser, User.class));
+    assertThat(configuration.getConversionService() instanceof TestConversionService).isTrue();
+    assertThat(configuration.getPropertyValueAs("os.user", guestUser, User.class)).isSameAs(guestUser);
   }
 
   @Test
@@ -368,8 +377,8 @@ public class AbstractConfigurationTests {
 
     configuration.setConversionService(new TestConversionService(new UserConverter()));
 
-    assertTrue(configuration.getConversionService() instanceof TestConversionService);
-    assertNull(configuration.getPropertyValueAs("jdbc.username", false, User.class));
+    assertThat(configuration.getConversionService() instanceof TestConversionService).isTrue();
+    assertThat(configuration.getPropertyValueAs("jdbc.username", false, User.class)).isNull();
   }
 
   @Test(expected = ConfigurationException.class)
@@ -377,28 +386,30 @@ public class AbstractConfigurationTests {
   public void testGetRequiredPropertyValueAs() {
 
     try {
+
       AbstractConfiguration configuration = new TestConfiguration(configurationSettings);
 
       configurationSettings.setProperty("jdbc.username", "hacker123");
       configuration.setConversionService(new TestConversionService(new UserConverter()));
 
-      assertThat(configuration.getConversionService() instanceof TestConversionService, is(true));
+      assertThat(configuration.getConversionService() instanceof TestConversionService).isTrue();
 
       configuration.getPropertyValueAs("jdbc.username", true, User.class);
     }
     catch (ConfigurationException expected) {
 
-      assertEquals(String.format("Failed to get the value of configuration setting property (%1$s) as type (%2$s)!",
-        "jdbc.username", User.class.getName()), expected.getMessage());
-      assertTrue(expected.getCause() instanceof ConversionException);
-      assertEquals(String.format("Failed to convert username (%1$s) into a User", "hacker123"),
-        expected.getCause().getMessage());
+      assertThat(expected.getMessage()).isEqualTo(
+        String.format("Failed to get the value of configuration setting property (%1$s) as type (%2$s)!",
+          "jdbc.username", User.class.getName()));
+      assertThat(expected.getCause() instanceof ConversionException).isTrue();
+      assertThat(expected.getCause().getMessage()).isEqualTo(
+        String.format("Failed to convert username [%s] into a User", "hacker123"));
 
       throw expected;
     }
   }
 
-  protected static final class TestConfiguration extends AbstractConfiguration {
+  private static final class TestConfiguration extends AbstractConfiguration {
 
     private final Properties properties;
 
@@ -414,16 +425,16 @@ public class AbstractConfigurationTests {
 
     @Override
     protected String doGetPropertyValue(String propertyName) {
-      return properties.getProperty(propertyName);
+      return this.properties.getProperty(propertyName);
     }
 
     @Override
     public Iterator<String> iterator() {
-      return properties.stringPropertyNames().iterator();
+      return this.properties.stringPropertyNames().iterator();
     }
   }
 
-  protected final class TestConversionService extends AbstractConversionService {
+  private static final class TestConversionService extends AbstractConversionService {
 
     public TestConversionService() {
     }
@@ -433,11 +444,11 @@ public class AbstractConfigurationTests {
     }
   }
 
-  protected interface User {
-    String getUsername();
+  private interface User {
+    String getName();
   }
 
-  protected final class UserConverter extends org.cp.elements.data.conversion.AbstractConverter<String,User> {
+  private static final class UserConverter extends org.cp.elements.data.conversion.AbstractConverter<String,User> {
 
     @Override
     public boolean canConvert(Class<?> fromType, Class<?> toType) {
@@ -446,12 +457,13 @@ public class AbstractConfigurationTests {
 
     @Override
     public User convert(String value) {
+
       Assert.isTrue(StringUtils.isLetters(value), new ConversionException(String.format(
-        "Failed to convert username (%1$s) into a User", value)));
+        "Failed to convert username [%s] into a User", value)));
 
       User mockUser = mock(User.class);
 
-      when(mockUser.getUsername()).thenReturn(value);
+      when(mockUser.getName()).thenReturn(value);
 
       return mockUser;
     }

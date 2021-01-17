@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -37,7 +30,7 @@ import org.cp.elements.context.configure.Configuration;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link SystemPropertiesConfiguration}.
+ * Unit Tests for {@link SystemPropertiesConfiguration}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -53,24 +46,24 @@ public class SystemPropertiesConfigurationTests {
   @Test
   public void isPresent() {
 
-    assertTrue(configuration.isPresent("java.class.path"));
-    assertTrue(configuration.isPresent("java.home"));
-    assertTrue(configuration.isPresent("java.version"));
-    assertTrue(configuration.isPresent("user.dir"));
-    assertTrue(configuration.isPresent("user.home"));
-    assertTrue(configuration.isPresent("user.name"));
-    assertFalse(configuration.isPresent("unset.system.property"));
+    assertThat(this.configuration.isPresent("java.class.path")).isTrue();
+    assertThat(this.configuration.isPresent("java.home")).isTrue();
+    assertThat(this.configuration.isPresent("java.version")).isTrue();
+    assertThat(this.configuration.isPresent("user.dir")).isTrue();
+    assertThat(this.configuration.isPresent("user.home")).isTrue();
+    assertThat(this.configuration.isPresent("user.name")).isTrue();
+    assertThat(this.configuration.isPresent("unset.system.property")).isFalse();
   }
 
   @Test
   public void doGetPropertyValue() {
 
-    assertEquals(System.getProperty("java.class.path"), configuration.doGetPropertyValue("java.class.path"));
-    assertEquals(System.getProperty("java.home"), configuration.doGetPropertyValue("java.home"));
-    assertEquals(System.getProperty("java.version"), configuration.doGetPropertyValue("java.version"));
-    assertEquals(System.getProperty("user.dir"), configuration.doGetPropertyValue("user.dir"));
-    assertEquals(System.getProperty("user.home"), configuration.doGetPropertyValue("user.home"));
-    assertEquals(System.getProperty("user.name"), configuration.doGetPropertyValue("user.name"));
+    assertThat(this.configuration.doGetPropertyValue("java.class.path")).isEqualTo(System.getProperty("java.class.path"));
+    assertThat(this.configuration.doGetPropertyValue("java.home")).isEqualTo(System.getProperty("java.home"));
+    assertThat(this.configuration.doGetPropertyValue("java.version")).isEqualTo(System.getProperty("java.version"));
+    assertThat(this.configuration.doGetPropertyValue("user.dir")).isEqualTo(System.getProperty("user.dir"));
+    assertThat(this.configuration.doGetPropertyValue("user.home")).isEqualTo(System.getProperty("user.home"));
+    assertThat(this.configuration.doGetPropertyValue("user.name")).isEqualTo(System.getProperty("user.name"));
   }
 
   @Test
@@ -82,9 +75,9 @@ public class SystemPropertiesConfigurationTests {
 
     SystemPropertiesConfiguration configuration = new SystemPropertiesConfiguration(mockParentConfiguration);
 
-    assertThat(configuration.getPropertyValue("java.version"), is(equalTo(System.getProperty("java.version"))));
-    assertThat(configuration.getPropertyValue("custom.system.property"), is(equalTo("test")));
-    assertThat(configuration.getPropertyValue("unset.system.property", false), is(nullValue()));
+    assertThat(configuration.getPropertyValue("java.version")).isEqualTo(System.getProperty("java.version"));
+    assertThat(configuration.getPropertyValue("custom.system.property")).isEqualTo("test");
+    assertThat(configuration.getPropertyValue("unset.system.property", false)).isNull();
 
     verify(mockParentConfiguration, times(1)).getPropertyValue(eq("custom.system.property"), eq(true));
     verify(mockParentConfiguration, times(1)).getPropertyValue(eq("unset.system.property"), anyBoolean());
@@ -95,12 +88,12 @@ public class SystemPropertiesConfigurationTests {
 
     Set<String> expectedSystemPropertyNames = new HashSet<>(System.getProperties().stringPropertyNames());
 
-    assertFalse(expectedSystemPropertyNames.isEmpty());
+    assertThat(expectedSystemPropertyNames.isEmpty()).isFalse();
 
-    for (String actualSystemPropertyName : configuration) {
-      assertTrue(expectedSystemPropertyNames.remove(actualSystemPropertyName));
+    for (String actualSystemPropertyName : this.configuration) {
+      assertThat(expectedSystemPropertyNames.remove(actualSystemPropertyName)).isTrue();
     }
 
-    assertTrue(expectedSystemPropertyNames.isEmpty());
+    assertThat(expectedSystemPropertyNames.isEmpty()).isTrue();
   }
 }
