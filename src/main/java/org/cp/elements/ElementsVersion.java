@@ -21,12 +21,15 @@ import java.util.Properties;
 
 import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * The {@link ElementsVersion} class declares the version of the Codeprimate Elements project.
  *
  * @author John Blum
+ * @see java.time.LocalDate
  * @see java.lang.Runnable
+ * @see java.util.Properties
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -44,7 +47,7 @@ public class ElementsVersion implements Runnable {
   public static final String PROJECT_ARTIFACT_ID = "cp-elements";
   public static final String PROJECT_LICENSE = "Apache License, version 2.0";
   public static final String PROJECT_NAME = "Codeprimate Elements";
-  public static final String PROJECT_VERSION = "version 1.0.0.M4";
+  public static final String PROJECT_VERSION = "version 1.0.0.M5";
 
   private Properties maven;
 
@@ -52,13 +55,16 @@ public class ElementsVersion implements Runnable {
     new ElementsVersion().run();
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public void run() {
     log("%1$s (%2$s) %3$s - Copyright \u00A9 %4$d%n%5$s%n", PROJECT_NAME, resolveProjectArtifactId(),
       resolveProjectVersion(), resolveYear(), PROJECT_LICENSE);
   }
 
-  private Properties loadMavenProperties() {
+  private @NotNull Properties loadMavenProperties() {
 
     Properties maven = new Properties();
 
@@ -68,33 +74,42 @@ public class ElementsVersion implements Runnable {
     return maven;
   }
 
-  private void log(String message, Object... args) {
+  private void log(@NotNull String message, @NotNull Object... args) {
     System.err.printf(message, args);
     System.err.flush();
   }
 
-  private Properties resolveMavenProperties() {
-    return Optional.ofNullable(maven).orElseGet(() -> maven = loadMavenProperties());
+  private @NotNull Properties resolveMavenProperties() {
+
+    if (this.maven == null) {
+      this.maven = loadMavenProperties();
+    }
+
+    return this.maven;
   }
 
-  private String resolveProjectArtifactId() {
+  private @NotNull String resolveProjectArtifactId() {
     return resolveProjectArtifactId(PROJECT_ARTIFACT_ID);
   }
 
-  private String resolveProjectArtifactId(String defaultArtifactId) {
+  private @NotNull String resolveProjectArtifactId(@NotNull String defaultArtifactId) {
 
-    return Optional.ofNullable(resolveMavenProperties().getProperty(MAVEN_ARTIFACT_ID_PROPERTY))
+    String artifactId = resolveMavenProperties().getProperty(MAVEN_ARTIFACT_ID_PROPERTY);
+
+    return Optional.ofNullable(artifactId)
       .filter(StringUtils::hasText)
       .orElse(defaultArtifactId);
   }
 
-  private String resolveProjectVersion() {
+  private @NotNull String resolveProjectVersion() {
     return resolveProjectVersion(PROJECT_VERSION);
   }
 
-  private String resolveProjectVersion(String defaultVersion) {
+  private @NotNull String resolveProjectVersion(@NotNull String defaultVersion) {
 
-    return Optional.ofNullable(resolveMavenProperties().getProperty(MAVEN_VERSION_PROPERTY))
+    String version = resolveMavenProperties().getProperty(MAVEN_VERSION_PROPERTY);
+
+    return Optional.ofNullable(version)
       .filter(StringUtils::hasText)
       .orElse(defaultVersion);
   }
