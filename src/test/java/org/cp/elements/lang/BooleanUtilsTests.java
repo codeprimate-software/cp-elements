@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 
 /**
- * Unit tests for {@link BooleanUtils}.
+ * Unit Tests for {@link BooleanUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Boolean
@@ -39,169 +34,206 @@ import org.junit.Test;
 public class BooleanUtilsTests {
 
   @Test
-  public void andIsFalse() {
-    assertFalse(BooleanUtils.and(true, true, true, false));
-    assertFalse(BooleanUtils.and(true, true, true, Boolean.FALSE));
-    assertFalse(BooleanUtils.and(false, true, true, true));
-    assertFalse(BooleanUtils.and(Boolean.FALSE, true, true, true));
-    assertFalse(BooleanUtils.and(true, false, true));
-    assertFalse(BooleanUtils.and(true, Boolean.FALSE, true));
-    assertFalse(BooleanUtils.and(false));
-    assertFalse(BooleanUtils.and(Boolean.FALSE));
-    assertFalse(BooleanUtils.and(!Boolean.TRUE));
-    assertFalse(BooleanUtils.and(!Boolean.TRUE, !Boolean.TRUE));
-    assertFalse(BooleanUtils.and(!Boolean.TRUE, false));
+  @SuppressWarnings("all")
+  public void andIsTrue() {
+
+    assertThat(BooleanUtils.and(true)).isTrue();
+    assertThat(BooleanUtils.and(Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.and(true, true, true)).isTrue();
+    assertThat(BooleanUtils.and(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.and(!Boolean.FALSE)).isTrue();
+    assertThat(BooleanUtils.and(true, !Boolean.FALSE)).isTrue();
+    assertThat(BooleanUtils.and(!Boolean.FALSE, !false, !Boolean.FALSE)).isTrue();
   }
 
   @Test
-  public void andIsTrue() {
-    assertTrue(BooleanUtils.and(true));
-    assertTrue(BooleanUtils.and(Boolean.TRUE));
-    assertTrue(BooleanUtils.and(true, true, true));
-    assertTrue(BooleanUtils.and(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE));
-    assertTrue(BooleanUtils.and(!Boolean.FALSE));
-    assertTrue(BooleanUtils.and(true, !Boolean.FALSE));
-    assertTrue(BooleanUtils.and(!Boolean.FALSE, !Boolean.FALSE));
+  @SuppressWarnings("all")
+  public void andIsFalse() {
+
+    assertThat(BooleanUtils.and(true, true, true, false)).isFalse();
+    assertThat(BooleanUtils.and(true, true, true, Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.and(false, true, true, true)).isFalse();
+    assertThat(BooleanUtils.and(Boolean.FALSE, true, true, true)).isFalse();
+    assertThat(BooleanUtils.and(true, false, true)).isFalse();
+    assertThat(BooleanUtils.and(true, Boolean.FALSE, true)).isFalse();
+    assertThat(BooleanUtils.and(false)).isFalse();
+    assertThat(BooleanUtils.and(Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.and(!Boolean.TRUE)).isFalse();
+    assertThat(BooleanUtils.and(!Boolean.TRUE, !Boolean.TRUE)).isFalse();
+    assertThat(BooleanUtils.and(!Boolean.TRUE, !true, false)).isFalse();
   }
 
   @Test
   public void andNullIsFalse() {
-    assertFalse(BooleanUtils.and((Boolean[]) null));
-    assertFalse(BooleanUtils.and(null, null));
-    assertFalse(BooleanUtils.and(true, null));
-    assertFalse(BooleanUtils.and(null, true));
-    assertFalse(BooleanUtils.and(true, true, true, null));
+
+    assertThat(BooleanUtils.and((Boolean[]) null)).isFalse();
+    assertThat(BooleanUtils.and(null, null)).isFalse();
+    assertThat(BooleanUtils.and(true, null)).isFalse();
+    assertThat(BooleanUtils.and(null, true)).isFalse();
+    assertThat(BooleanUtils.and(true, true, true, null)).isFalse();
+    assertThat(BooleanUtils.and(null, true, true, true)).isFalse();
   }
 
   @Test
   public void negateFalseIsTrue() {
-    assertTrue(BooleanUtils.negate(false));
-    assertTrue(BooleanUtils.negate(Boolean.FALSE));
+
+    assertThat(BooleanUtils.negate(false)).isTrue();
+    assertThat(BooleanUtils.negate(Boolean.FALSE)).isTrue();
   }
 
   @Test
   public void negateNullIsTrue() {
-    assertTrue(BooleanUtils.negate(null));
+    assertThat(BooleanUtils.negate(null)).isFalse();
   }
 
   @Test
   public void negateTrueIsFalse() {
-    assertFalse(BooleanUtils.negate(true));
-    assertFalse(BooleanUtils.negate(Boolean.TRUE));
+
+    assertThat(BooleanUtils.negate(true)).isFalse();
+    assertThat(BooleanUtils.negate(Boolean.TRUE)).isFalse();
+  }
+
+  @Test
+  public void notFalseIsTrue() {
+
+    assertThat(BooleanUtils.not(false)).isTrue();
+    assertThat(BooleanUtils.not(Boolean.FALSE)).isTrue();
+  }
+
+  @Test
+  public void notNullIsFalse() {
+    assertThat(BooleanUtils.not(null)).isFalse();
+  }
+
+  @Test
+  public void notTrueIsFalse() {
+
+    assertThat(BooleanUtils.not(true)).isFalse();
+    assertThat(BooleanUtils.not(Boolean.TRUE)).isFalse();
   }
 
   @Test
   public void orIsFalse() {
-    assertFalse(BooleanUtils.or(false));
-    assertFalse(BooleanUtils.or(Boolean.FALSE));
-    assertFalse(BooleanUtils.or(false, false, false));
-    assertFalse(BooleanUtils.or(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE));
-    assertFalse(BooleanUtils.or(!Boolean.TRUE, false));
-    assertFalse(BooleanUtils.or(!Boolean.TRUE, Boolean.FALSE));
+
+    assertThat(BooleanUtils.or(false)).isFalse();
+    assertThat(BooleanUtils.or(Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.or(false, false, false)).isFalse();
+    assertThat(BooleanUtils.or(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.or(!Boolean.TRUE, false)).isFalse();
+    assertThat(BooleanUtils.or(!Boolean.TRUE, Boolean.FALSE)).isFalse();
   }
 
   @Test
   public void orIsTrue() {
-    assertTrue(BooleanUtils.or(true));
-    assertTrue(BooleanUtils.or(Boolean.TRUE));
-    assertTrue(BooleanUtils.or(false, true));
-    assertTrue(BooleanUtils.or(true, false));
-    assertTrue(BooleanUtils.or(true, false, false, false));
-    assertTrue(BooleanUtils.or(false, false, false, true));
-    assertTrue(BooleanUtils.or(!Boolean.FALSE));
-    assertTrue(BooleanUtils.or(!Boolean.FALSE, false));
+
+    assertThat(BooleanUtils.or(true)).isTrue();
+    assertThat(BooleanUtils.or(Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.or(false, true)).isTrue();
+    assertThat(BooleanUtils.or(true, false)).isTrue();
+    assertThat(BooleanUtils.or(true, false, false, false)).isTrue();
+    assertThat(BooleanUtils.or(false, false, false, true)).isTrue();
+    assertThat(BooleanUtils.or(!Boolean.FALSE)).isTrue();
+    assertThat(BooleanUtils.or(!Boolean.FALSE, false)).isTrue();
   }
 
   @Test
   public void orNullIsFalse() {
-    assertFalse(BooleanUtils.or((Boolean[]) null));
-    assertFalse(BooleanUtils.or(null, null));
+
+    assertThat(BooleanUtils.or((Boolean[]) null)).isFalse();
+    assertThat(BooleanUtils.or(null, null)).isFalse();
   }
 
   @Test
   public void toBooleanIsSuccessful() {
-    assertSame(Boolean.FALSE, BooleanUtils.toBoolean(false));
-    assertSame(Boolean.TRUE, BooleanUtils.toBoolean(true));
+
+    assertThat(BooleanUtils.toBoolean(false)).isSameAs(Boolean.FALSE);
+    assertThat(BooleanUtils.toBoolean(true)).isSameAs(Boolean.TRUE);
   }
 
   @Test
   public void toStringIsSuccessful() {
-    assertEquals("true", BooleanUtils.toString(true, "true", "false"));
-    assertEquals("false", BooleanUtils.toString(false, "true", "false"));
-    assertEquals("Yes", BooleanUtils.toString(true, "Yes", "No"));
-    assertEquals("No", BooleanUtils.toString(false, "Yes", "No"));
-    assertEquals("1", BooleanUtils.toString(true, "1", "0"));
-    assertEquals("0", BooleanUtils.toString(false, "1", "0"));
-    assertEquals("false", BooleanUtils.toString(true, "false", "true"));
-    assertEquals("true", BooleanUtils.toString(false, "false", "true"));
-    assertEquals("null", BooleanUtils.toString(true, "null", null));
-    assertNull(BooleanUtils.toString(false, "null", null));
-    assertEquals("not null", BooleanUtils.toString(Boolean.TRUE, "not null", "null"));
-    assertEquals("null", BooleanUtils.toString(Boolean.FALSE, "not null", "null"));
-    assertEquals("null", BooleanUtils.toString(null, "not null", "null"));
+
+    assertThat(BooleanUtils.toString(true, "true", "false")).isEqualTo("true");
+    assertThat(BooleanUtils.toString(false, "true", "false")).isEqualTo("false");
+    assertThat(BooleanUtils.toString(true, "Yes", "No")).isEqualTo("Yes");
+    assertThat(BooleanUtils.toString(false, "Yes", "No")).isEqualTo("No");
+    assertThat(BooleanUtils.toString(true, "1", "0")).isEqualTo("1");
+    assertThat(BooleanUtils.toString(false, "1", "0")).isEqualTo("0");
+    assertThat(BooleanUtils.toString(true, "false", "true")).isEqualTo("false");
+    assertThat(BooleanUtils.toString(false, "false", "true")).isEqualTo("true");
+    assertThat(BooleanUtils.toString(true, "null", null)).isEqualTo("null");
+    assertThat(BooleanUtils.toString(false, "null", null)).isNull();
+    assertThat(BooleanUtils.toString(Boolean.TRUE, "not null", "null")).isEqualTo("not null");
+    assertThat(BooleanUtils.toString(Boolean.FALSE, "not null", "null")).isEqualTo("null");
+    assertThat(BooleanUtils.toString(null, "not null", "null")).isEqualTo("null");
   }
 
   @Test
   public void valueOfAtomicBooleanIsFalse() {
-    assertFalse(BooleanUtils.valueOf(new AtomicBoolean(false)));
+    assertThat(BooleanUtils.valueOf(new AtomicBoolean(false))).isFalse();
   }
 
   @Test
   public void valueOfAtomicBooleanIsTrue() {
-    assertTrue(BooleanUtils.valueOf(new AtomicBoolean(true)));
+    assertThat(BooleanUtils.valueOf(new AtomicBoolean(true))).isTrue();
   }
 
   @Test
   public void valueOfNullAtomicBooleanIsFalse() {
-    assertFalse(BooleanUtils.valueOf((AtomicBoolean) null));
+    assertThat(BooleanUtils.valueOf((AtomicBoolean) null)).isFalse();
   }
 
   @Test
   public void valueOfBooleanIsFalse() {
-    assertFalse(BooleanUtils.valueOf(false));
-    assertFalse(BooleanUtils.valueOf(Boolean.FALSE));
+
+    assertThat(BooleanUtils.valueOf(false)).isFalse();
+    assertThat(BooleanUtils.valueOf(Boolean.FALSE)).isFalse();
   }
 
   @Test
   public void valueOfBooleanIsTrue() {
-    assertTrue(BooleanUtils.valueOf(true));
-    assertTrue(BooleanUtils.valueOf(Boolean.TRUE));
+
+    assertThat(BooleanUtils.valueOf(true)).isTrue();
+    assertThat(BooleanUtils.valueOf(Boolean.TRUE)).isTrue();
   }
 
   @Test
   public void valueOfNullBooleanIsFalse() {
-    assertFalse(BooleanUtils.valueOf((Boolean) null));
+    assertThat(BooleanUtils.valueOf((Boolean) null)).isFalse();
   }
 
   @Test
   public void xorIsFalse() {
-    assertFalse(BooleanUtils.xor(false));
-    assertFalse(BooleanUtils.xor(Boolean.FALSE));
-    assertFalse(BooleanUtils.xor(false, false, false));
-    assertFalse(BooleanUtils.xor(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE));
-    assertFalse(BooleanUtils.xor(false, !Boolean.TRUE, false));
-    assertFalse(BooleanUtils.xor(true, false, true));
-    assertFalse(BooleanUtils.xor(true, true));
-    assertFalse(BooleanUtils.xor(true, Boolean.TRUE));
-    assertFalse(BooleanUtils.xor(Boolean.TRUE, Boolean.TRUE));
+
+    assertThat(BooleanUtils.xor(false)).isFalse();
+    assertThat(BooleanUtils.xor(Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.xor(false, false, false)).isFalse();
+    assertThat(BooleanUtils.xor(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.xor(false, !Boolean.TRUE, false)).isFalse();
+    assertThat(BooleanUtils.xor(true, false, true)).isFalse();
+    assertThat(BooleanUtils.xor(true, true)).isFalse();
+    assertThat(BooleanUtils.xor(true, Boolean.TRUE)).isFalse();
+    assertThat(BooleanUtils.xor(Boolean.TRUE, Boolean.TRUE)).isFalse();
   }
 
   @Test
   public void xorIsTrue() {
-    assertTrue(BooleanUtils.xor(true));
-    assertTrue(BooleanUtils.xor(Boolean.TRUE));
-    assertTrue(BooleanUtils.xor(true, null));
-    assertTrue(BooleanUtils.xor(true, false));
-    assertTrue(BooleanUtils.xor(true, Boolean.FALSE));
-    assertTrue(BooleanUtils.xor(true, !Boolean.TRUE));
-    assertTrue(BooleanUtils.xor(true, false, false, false));
-    assertTrue(BooleanUtils.xor(false, true));
-    assertTrue(BooleanUtils.xor(false, false, false, true));
+
+    assertThat(BooleanUtils.xor(true)).isTrue();
+    assertThat(BooleanUtils.xor(Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.xor(true, null)).isTrue();
+    assertThat(BooleanUtils.xor(true, false)).isTrue();
+    assertThat(BooleanUtils.xor(true, Boolean.FALSE)).isTrue();
+    assertThat(BooleanUtils.xor(true, !Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.xor(true, false, false, false)).isTrue();
+    assertThat(BooleanUtils.xor(false, true)).isTrue();
+    assertThat(BooleanUtils.xor(false, false, false, true)).isTrue();
   }
 
   @Test
   public void xorNullIsFalse() {
-    assertFalse(BooleanUtils.xor((Boolean[]) null));
-    assertFalse(BooleanUtils.xor(null, null));
+
+    assertThat(BooleanUtils.xor((Boolean[]) null)).isFalse();
+    assertThat(BooleanUtils.xor(null, null)).isFalse();
   }
 }
