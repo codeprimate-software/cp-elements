@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
 /**
- * The TimeUnitComparatorTest class is a test suite of test cases testing the contract and functionality
- * of the TimeUnitComparator class.
+ * Unit Tests for {@link TimeUnitComparator}.
  *
  * @author John J. Blum
  * @see java.util.concurrent.TimeUnit
@@ -40,36 +34,38 @@ public class TimeUnitComparatorTest {
 
   @Test
   public void compareTimeUnitsAllEqualTo() {
-    assertThat(TimeUnitComparator.INSTANCE.compare(null, null), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, TimeUnit.DAYS), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.HOURS, TimeUnit.HOURS), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MINUTES, TimeUnit.MINUTES), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.SECONDS, TimeUnit.SECONDS), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.MICROSECONDS), is(equalTo(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS), is(equalTo(0)));
+
+    assertThat(TimeUnitComparator.INSTANCE.compare(null, null)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, TimeUnit.DAYS)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.HOURS, TimeUnit.HOURS)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MINUTES, TimeUnit.MINUTES)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.SECONDS, TimeUnit.SECONDS)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MILLISECONDS, TimeUnit.MILLISECONDS)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.MICROSECONDS)).isZero();
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.NANOSECONDS, TimeUnit.NANOSECONDS)).isZero();
   }
 
   @Test
   public void compareTimeUnitsAllGreaterThan() {
-    assertThat(TimeUnitComparator.INSTANCE.compare(null, TimeUnit.DAYS), is(greaterThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, TimeUnit.HOURS), is(greaterThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.HOURS, TimeUnit.MINUTES), is(greaterThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MINUTES, TimeUnit.SECONDS), is(greaterThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.SECONDS, TimeUnit.MILLISECONDS), is(greaterThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MILLISECONDS, TimeUnit.MICROSECONDS), is(greaterThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.NANOSECONDS), is(greaterThan(0)));
+
+    assertThat(TimeUnitComparator.INSTANCE.compare(null, TimeUnit.DAYS)).isGreaterThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, TimeUnit.HOURS)).isGreaterThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.HOURS, TimeUnit.MINUTES)).isGreaterThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MINUTES, TimeUnit.SECONDS)).isGreaterThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.SECONDS, TimeUnit.MILLISECONDS)).isGreaterThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MILLISECONDS, TimeUnit.MICROSECONDS)).isGreaterThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.NANOSECONDS)).isGreaterThan(0);
   }
 
   @Test
   public void compareTimeUnitsAllLessThan() {
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.NANOSECONDS, TimeUnit.MICROSECONDS), is(lessThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.MILLISECONDS), is(lessThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MILLISECONDS, TimeUnit.SECONDS), is(lessThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.SECONDS, TimeUnit.MINUTES), is(lessThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MINUTES, TimeUnit.HOURS), is(lessThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.HOURS, TimeUnit.DAYS), is(lessThan(0)));
-    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, null), is(lessThan(0)));
-  }
 
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.NANOSECONDS, TimeUnit.MICROSECONDS)).isLessThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MICROSECONDS, TimeUnit.MILLISECONDS)).isLessThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MILLISECONDS, TimeUnit.SECONDS)).isLessThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.SECONDS, TimeUnit.MINUTES)).isLessThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.MINUTES, TimeUnit.HOURS)).isLessThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.HOURS, TimeUnit.DAYS)).isLessThan(0);
+    assertThat(TimeUnitComparator.INSTANCE.compare(TimeUnit.DAYS, null)).isLessThan(0);
+  }
 }

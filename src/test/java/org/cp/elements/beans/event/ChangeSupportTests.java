@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans.event;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -32,27 +25,21 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.cp.elements.test.TestUtils;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link ChangeSupport}.
+ * Unit Tests for {@link ChangeSupport}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mockito
- * @see org.junit.rules.ExpectedException
  * @see org.cp.elements.beans.event.ChangeSupport
- * @see org.cp.elements.lang.DateTimeUtils
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 public class ChangeSupportTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   private Object source = new Object();
 
@@ -68,20 +55,17 @@ public class ChangeSupportTests {
 
     ChangeSupport changeSupport = new ChangeSupport(source);
 
-    assertThat(changeSupport, is(notNullValue(ChangeSupport.class)));
-    assertThat(changeSupport.getSource(), is(sameInstance(source)));
-    assertThat(changeSupport.hasListeners(), is(false));
-    assertThat(changeSupport.size(), is(equalTo(0)));
+    assertThat(changeSupport).isNotNull();
+    assertThat(changeSupport.getSource()).isSameAs(source);
+    assertThat(changeSupport.hasListeners()).isFalse();
+    assertThat(changeSupport.size()).isEqualTo(0);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void createChangeSupportWithNullSource() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Source cannot be null");
-
-    new ChangeSupport(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new ChangeSupport(null),
+      () -> "Source cannot be null");
   }
 
   @Test
@@ -89,8 +73,8 @@ public class ChangeSupportTests {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
   }
 
   @Test
@@ -98,21 +82,21 @@ public class ChangeSupportTests {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
-    assertThat(changeSupport.size(), is(equalTo(1)));
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
-    assertThat(changeSupport.size(), is(equalTo(2)));
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(1);
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(2);
   }
 
   @Test
   public void addNullChangeListener() {
 
-    assertThat(changeSupport.add(null), is(false));
-    assertThat(changeSupport.contains(null), is(false));
-    assertThat(changeSupport.hasListeners(), is(false));
-    assertThat(changeSupport.size(), is(equalTo(0)));
+    assertThat(changeSupport.add(null)).isFalse();
+    assertThat(changeSupport.contains(null)).isFalse();
+    assertThat(changeSupport.hasListeners()).isFalse();
+    assertThat(changeSupport.size()).isEqualTo(0);
   }
 
   @Test
@@ -120,11 +104,11 @@ public class ChangeSupportTests {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
-    assertThat(changeSupport.contains(mockChangeListener), is(false));
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
-    assertThat(changeSupport.remove(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(false));
+    assertThat(changeSupport.contains(mockChangeListener)).isFalse();
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
+    assertThat(changeSupport.remove(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isFalse();
   }
 
   @Test
@@ -134,9 +118,9 @@ public class ChangeSupportTests {
 
     ChangeEvent changeEvent = changeSupport.createChangeEvent(alternateSource);
 
-    assertThat(changeEvent, is(notNullValue(ChangeEvent.class)));
-    assertThat(changeEvent.getSource(), is(sameInstance(alternateSource)));
-    assertThat(changeEvent.getSource(), is(not(equalTo(changeSupport.getSource()))));
+    assertThat(changeEvent).isNotNull();
+    assertThat(changeEvent.getSource()).isSameAs(alternateSource);
+    assertThat(changeEvent.getSource()).isNotEqualTo(changeSupport.getSource());
   }
 
   @Test
@@ -145,8 +129,8 @@ public class ChangeSupportTests {
     ChangeListener mockChangeListenerOne = mock(ChangeListener.class, "MockChangeListenerOne");
     ChangeListener mockChangeListenerTwo = mock(ChangeListener.class, "MockChangeListenerTwo");
 
-    assertThat(changeSupport.add(mockChangeListenerOne), is(true));
-    assertThat(changeSupport.add(mockChangeListenerTwo), is(true));
+    assertThat(changeSupport.add(mockChangeListenerOne)).isTrue();
+    assertThat(changeSupport.add(mockChangeListenerTwo)).isTrue();
 
     changeSupport.fireChangeEvent();
 
@@ -159,15 +143,15 @@ public class ChangeSupportTests {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
-    assertThat(changeSupport.hasListeners(), is(false));
-    assertThat(changeSupport.add(null), is(false));
-    assertThat(changeSupport.hasListeners(), is(false));
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.hasListeners(), is(true));
-    assertThat(changeSupport.remove(null), is(false));
-    assertThat(changeSupport.hasListeners(), is(true));
-    assertThat(changeSupport.remove(mockChangeListener), is(true));
-    assertThat(changeSupport.hasListeners(), is(false));
+    assertThat(changeSupport.hasListeners()).isFalse();
+    assertThat(changeSupport.add(null)).isFalse();
+    assertThat(changeSupport.hasListeners()).isFalse();
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.hasListeners()).isTrue();
+    assertThat(changeSupport.remove(null)).isFalse();
+    assertThat(changeSupport.hasListeners()).isTrue();
+    assertThat(changeSupport.remove(mockChangeListener)).isTrue();
+    assertThat(changeSupport.hasListeners()).isFalse();
   }
 
   @Test
@@ -177,11 +161,11 @@ public class ChangeSupportTests {
     ChangeListener mockChangeListenerTwo = mock(ChangeListener.class, "MockChangeListenerTwo");
     ChangeListener mockChangeListenerThree = mock(ChangeListener.class, "MockChangeListenerThree");
 
-    assertThat(changeSupport.add(mockChangeListenerOne), is(true));
-    assertThat(changeSupport.add(mockChangeListenerTwo), is(true));
-    assertThat(changeSupport.add(mockChangeListenerThree), is(true));
-    assertThat(changeSupport.hasListeners(), is(true));
-    assertThat(changeSupport.size(), is(equalTo(3)));
+    assertThat(changeSupport.add(mockChangeListenerOne)).isTrue();
+    assertThat(changeSupport.add(mockChangeListenerTwo)).isTrue();
+    assertThat(changeSupport.add(mockChangeListenerThree)).isTrue();
+    assertThat(changeSupport.hasListeners()).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(3);
 
     List<ChangeListener> expectedChangeListeners = Arrays.asList(mockChangeListenerOne, mockChangeListenerTwo,
       mockChangeListenerThree);
@@ -189,34 +173,37 @@ public class ChangeSupportTests {
     int index = 0;
 
     for (ChangeListener changeListener : changeSupport) {
-      assertThat(changeListener, is(equalTo(expectedChangeListeners.get(index++))));
+      assertThat(changeListener).isEqualTo(expectedChangeListeners.get(index++));
     }
 
-    assertThat(index, is(equalTo(3)));
+    assertThat(index).isEqualTo(3);
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void immutableIterator() {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
 
     Iterator<ChangeListener> iterator = changeSupport.iterator();
 
-    assertThat(iterator, is(notNullValue(Iterator.class)));
-    assertThat(iterator.hasNext(), is(true));
-    assertThat(iterator.next(), is(equalTo(mockChangeListener)));
+    assertThat(iterator).isNotNull();
+    assertThat(iterator.hasNext()).isTrue();
+    assertThat(iterator.next()).isEqualTo(mockChangeListener);
 
     try {
-      exception.expect(UnsupportedOperationException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-
       iterator.remove();
     }
+    catch (UnsupportedOperationException expected) {
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
     finally {
-      assertThat(changeSupport.contains(mockChangeListener), is(true));
+      assertThat(changeSupport.contains(mockChangeListener)).isTrue();
     }
   }
 
@@ -225,15 +212,15 @@ public class ChangeSupportTests {
 
     ChangeListener mockChangeListener = mock(ChangeListener.class);
 
-    assertThat(changeSupport.contains(mockChangeListener), is(false));
-    assertThat(changeSupport.remove(mockChangeListener), is(false));
-    assertThat(changeSupport.add(mockChangeListener), is(true));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
-    assertThat(changeSupport.remove(null), is(false));
-    assertThat(changeSupport.contains(mockChangeListener), is(true));
-    assertThat(changeSupport.remove(mockChangeListener), is(true));
-    assertThat(changeSupport.remove(mockChangeListener), is(false));
-    assertThat(changeSupport.contains(mockChangeListener), is(false));
+    assertThat(changeSupport.contains(mockChangeListener)).isFalse();
+    assertThat(changeSupport.remove(mockChangeListener)).isFalse();
+    assertThat(changeSupport.add(mockChangeListener)).isTrue();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
+    assertThat(changeSupport.remove(null)).isFalse();
+    assertThat(changeSupport.contains(mockChangeListener)).isTrue();
+    assertThat(changeSupport.remove(mockChangeListener)).isTrue();
+    assertThat(changeSupport.remove(mockChangeListener)).isFalse();
+    assertThat(changeSupport.contains(mockChangeListener)).isFalse();
   }
 
   @Test
@@ -242,21 +229,21 @@ public class ChangeSupportTests {
     ChangeListener mockChangeListenerOne = mock(ChangeListener.class);
     ChangeListener mockChangeListenerTwo = mock(ChangeListener.class);
 
-    assertThat(changeSupport.size(), is(equalTo(0)));
-    assertThat(changeSupport.add(null), is(false));
-    assertThat(changeSupport.size(), is(equalTo(0)));
-    assertThat(changeSupport.add(mockChangeListenerOne), is(true));
-    assertThat(changeSupport.size(), is(equalTo(1)));
-    assertThat(changeSupport.add(mockChangeListenerTwo), is(true));
-    assertThat(changeSupport.size(), is(equalTo(2)));
-    assertThat(changeSupport.add(mockChangeListenerOne), is(true));
-    assertThat(changeSupport.size(), is(equalTo(3)));
-    assertThat(changeSupport.remove(null), is(false));
-    assertThat(changeSupport.size(), is(equalTo(3)));
-    assertThat(changeSupport.remove(mockChangeListenerOne), is(true));
-    assertThat(changeSupport.remove(mockChangeListenerTwo), is(true));
-    assertThat(changeSupport.size(), is(equalTo(1)));
-    assertThat(changeSupport.remove(mockChangeListenerOne), is(true));
-    assertThat(changeSupport.size(), is(equalTo(0)));
+    assertThat(changeSupport.size()).isEqualTo(0);
+    assertThat(changeSupport.add(null)).isFalse();
+    assertThat(changeSupport.size()).isEqualTo(0);
+    assertThat(changeSupport.add(mockChangeListenerOne)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(1);
+    assertThat(changeSupport.add(mockChangeListenerTwo)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(2);
+    assertThat(changeSupport.add(mockChangeListenerOne)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(3);
+    assertThat(changeSupport.remove(null)).isFalse();
+    assertThat(changeSupport.size()).isEqualTo(3);
+    assertThat(changeSupport.remove(mockChangeListenerOne)).isTrue();
+    assertThat(changeSupport.remove(mockChangeListenerTwo)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(1);
+    assertThat(changeSupport.remove(mockChangeListenerOne)).isTrue();
+    assertThat(changeSupport.size()).isEqualTo(0);
   }
 }

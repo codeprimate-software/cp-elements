@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -35,7 +33,7 @@ import org.cp.elements.enums.Month;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link FileLastModifiedFilter} class.
+ * Unit Tests for {@link FileLastModifiedFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -51,42 +49,46 @@ import org.junit.Test;
 @SuppressWarnings("all")
 public class FileLastModifiedFilterTests {
 
-  protected File mockFile(String name) {
+  private File mockFile(String name) {
     return mock(File.class, name);
   }
 
-  protected Calendar newCalendar(int year, Month month, int day) {
+  private Calendar newCalendar(int year, Month month, int day) {
+
     Calendar dateTime = Calendar.getInstance();
+
     dateTime.clear();
     dateTime.set(year, month.getCalendarMonth(), day);
+
     return dateTime;
   }
 
-  protected Date newDate(int year, Month month, int day) {
+  private Date newDate(int year, Month month, int day) {
     return newCalendar(year, month, day).getTime();
   }
 
-  protected LocalDateTime newLocalDateTime(int year, Month month, int day) {
+  private LocalDateTime newLocalDateTime(int year, Month month, int day) {
     return LocalDateTime.of(year, month.getJavaTimeMonth(), day, 0, 0, 0, 0);
   }
 
-  protected long toMilliseconds(int year, Month month, int day) {
+  private long toMilliseconds(int year, Month month, int day) {
     return newCalendar(year, month, day).getTimeInMillis();
   }
 
-  protected String toString(Calendar dateTime) {
+  private String toString(Calendar dateTime) {
     return toString(dateTime.getTime());
   }
 
-  protected String toString(Date dateTime) {
+  private String toString(Date dateTime) {
     return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(dateTime);
   }
 
-  protected String toString(LocalDateTime dateTime) {
+  private String toString(LocalDateTime dateTime) {
     return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S.n"));
   }
 
-  protected void acceptTest(FileFilter fileFilter, boolean before, boolean on, boolean after) {
+  private void acceptTest(FileFilter fileFilter, boolean before, boolean on, boolean after) {
+
     File mockFileAfter = mockFile("fileAfter");
     File mockFileBefore = mockFile("fileBefore");
     File mockFileOn = mockFile("fileOn");
@@ -95,9 +97,9 @@ public class FileLastModifiedFilterTests {
     when(mockFileOn.lastModified()).thenReturn(toMilliseconds(2014, Month.DECEMBER, 6));
     when(mockFileAfter.lastModified()).thenReturn(toMilliseconds(2024, Month.APRIL, 1));
 
-    assertThat(fileFilter.accept(mockFileBefore), is(before));
-    assertThat(fileFilter.accept(mockFileOn), is(on));
-    assertThat(fileFilter.accept(mockFileAfter), is(after));
+    assertThat(fileFilter.accept(mockFileBefore)).isEqualTo(before);
+    assertThat(fileFilter.accept(mockFileOn)).isEqualTo(on);
+    assertThat(fileFilter.accept(mockFileAfter)).isEqualTo(after);
 
     verify(mockFileAfter, atLeast(1)).lastModified();
     verify(mockFileBefore, atLeast(1)).lastModified();
@@ -119,11 +121,11 @@ public class FileLastModifiedFilterTests {
     when(fileOnEnd.lastModified()).thenReturn(toMilliseconds(2016, Month.DECEMBER, 5));
     when(fileAfter.lastModified()).thenReturn(toMilliseconds(2024, Month.APRIL, 1));
 
-    assertThat(fileFilter.accept(fileBefore), is(before));
-    assertThat(fileFilter.accept(fileOnBegin), is(onBegin));
-    assertThat(fileFilter.accept(fileDuring), is(during));
-    assertThat(fileFilter.accept(fileOnEnd), is(onEnd));
-    assertThat(fileFilter.accept(fileAfter), is(after));
+    assertThat(fileFilter.accept(fileBefore)).isEqualTo(before);
+    assertThat(fileFilter.accept(fileOnBegin)).isEqualTo(onBegin);
+    assertThat(fileFilter.accept(fileDuring)).isEqualTo(during);
+    assertThat(fileFilter.accept(fileOnEnd)).isEqualTo(onEnd);
+    assertThat(fileFilter.accept(fileAfter)).isEqualTo(after);
 
     verify(fileAfter, atLeast(1)).lastModified();
     verify(fileBefore, atLeast(1)).lastModified();
@@ -224,6 +226,7 @@ public class FileLastModifiedFilterTests {
 
   @Test
   public void acceptOnOrAfter() {
+
     long lastModified  = toMilliseconds(2014, Month.DECEMBER, 6);
 
     acceptTest(ComposableFileFilter.or(FileLastModifiedFilter.on(lastModified),
@@ -232,6 +235,7 @@ public class FileLastModifiedFilterTests {
 
   @Test
   public void acceptOnOrBefore() {
+
     long lastModified  = toMilliseconds(2014, Month.DECEMBER, 6);
 
     acceptTest(ComposableFileFilter.or(FileLastModifiedFilter.on(lastModified),

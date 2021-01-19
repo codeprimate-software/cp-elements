@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
 import java.util.List;
 
 import org.cp.elements.util.sort.AbstractSorter;
+import org.cp.elements.util.sort.Sorter;
 
 /**
- * The ShellSort class is an implementation of the Shell Sort algorithm
- * and the {@link org.cp.elements.util.sort.Sorter} interface.
+ * The {@link ShellSort} class is an implementation of the {@literal Shell Sort algorithm}
+ * and the {@link Sorter} interface.
  *
  * @author John J. Blum
  * @see java.util.List
@@ -41,8 +41,8 @@ public class ShellSort extends AbstractSorter {
    * @return an integer value defining the gap to use in the Shell Sort algorithm.
    * @see java.util.List
    */
-  protected int getGap(final List elements) {
-    return (elements.size() / 3);
+  protected int getGap(List<?> elements) {
+    return elements.size() / 3;
   }
 
   /**
@@ -55,10 +55,13 @@ public class ShellSort extends AbstractSorter {
    * @see java.util.List
    */
   @Override
-  public <E> List<E> sort(final List<E> elements) {
+  public <E> List<E> sort(List<E> elements) {
+
     for (int gap = getGap(elements); gap > 0; gap /= 2) {
       for (int i = gap, size = elements.size(); i < size; i++) {
+
         E elementAtI = elements.get(i);
+
         int j = i;
 
         for ( ; j >= gap && getOrderBy().compare(elements.get(j - gap), elementAtI) > 0; j -= gap) {
@@ -71,5 +74,4 @@ public class ShellSort extends AbstractSorter {
 
     return elements;
   }
-
 }

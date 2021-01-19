@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -30,8 +26,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The SimpleIdentifierSequenceTest class is a test suite of test cases testing the contract and functionality
- * of the SimpleIdentifierSequence class.
+ * Unit Tests for {@link SimpleIdentifierSequence}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -47,19 +42,21 @@ public class SimpleIdentifierSequenceTest {
 
   @Test
   public void nextIdGeneratesUniqueIdentifiers() {
+
     SimpleIdentifierSequence identifierSequence = new SimpleIdentifierSequence();
 
     long previousId = -1;
 
     for (int index = COUNT; index > 0; --index) {
       long newId = identifierSequence.nextId();
-      assertThat(newId, is(greaterThan(previousId)));
+      assertThat(newId).isGreaterThan(previousId);
       previousId = newId;
     }
   }
 
   @Test
   public void multipleInstancesOfSimpleIdentifierSequenceGenerateUniqueIdentifiers() {
+
     SimpleIdentifierSequence identifierSequenceOne = new SimpleIdentifierSequence();
     SimpleIdentifierSequence identifierSequenceTwo = new SimpleIdentifierSequence();
 
@@ -67,7 +64,7 @@ public class SimpleIdentifierSequenceTest {
 
     for (int index = COUNT; index > 0; --index) {
       long newId = (index % 2 == 0 ? identifierSequenceOne.nextId() : identifierSequenceTwo.nextId());
-      assertThat(newId, is(greaterThan(previousId)));
+      assertThat(newId).isGreaterThan(previousId);
       previousId = newId;
     }
   }
@@ -86,6 +83,7 @@ public class SimpleIdentifierSequenceTest {
     private final SimpleIdentifierSequence identifierSequence = new SimpleIdentifierSequence();
 
     public void thread1() {
+
       assertTick(0);
 
       Thread.currentThread().setName("Simple Identifier Sequence Thread 1");
@@ -96,6 +94,7 @@ public class SimpleIdentifierSequenceTest {
     }
 
     public void thread2() {
+
       assertTick(0);
 
       Thread.currentThread().setName("Simple Identifier Sequence Thread 2");
@@ -107,11 +106,11 @@ public class SimpleIdentifierSequenceTest {
 
     @Override
     public void finish() {
-      assertThat(identifiersOne.size(), is(equalTo(COUNT)));
-      assertThat(identifiersTwo.size(), is(equalTo(COUNT)));
-      assertThat(identifiersOne.removeAll(identifiersTwo), is(false));
-      assertThat(identifiersOne.size(), is(equalTo(COUNT)));
+
+      assertThat(identifiersOne.size()).isEqualTo(COUNT);
+      assertThat(identifiersTwo.size()).isEqualTo(COUNT);
+      assertThat(identifiersOne.removeAll(identifiersTwo)).isFalse();
+      assertThat(identifiersOne.size()).isEqualTo(COUNT);
     }
   }
-
 }

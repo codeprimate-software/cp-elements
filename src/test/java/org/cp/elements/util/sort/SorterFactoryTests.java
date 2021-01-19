@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.sort.support.BubbleSort;
 import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
@@ -31,59 +27,59 @@ import org.cp.elements.util.sort.support.MergeSort;
 import org.cp.elements.util.sort.support.QuickSort;
 import org.cp.elements.util.sort.support.SelectionSort;
 import org.cp.elements.util.sort.support.ShellSort;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link SorterFactory} class.
+ * Unit Tests for {@link SorterFactory}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.SorterFactory
  * @see org.cp.elements.util.sort.SortType
+ * @see org.cp.elements.util.sort.support.BubbleSort
+ * @see org.cp.elements.util.sort.support.CombSort
+ * @see org.cp.elements.util.sort.support.HeapSort
+ * @see org.cp.elements.util.sort.support.InsertionSort
+ * @see org.cp.elements.util.sort.support.MergeSort
+ * @see org.cp.elements.util.sort.support.QuickSort
+ * @see org.cp.elements.util.sort.support.SelectionSort
+ * @see org.cp.elements.util.sort.support.ShellSort
  * @since 1.0.0
  */
 public class SorterFactoryTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void create() {
-    assertTrue(SorterFactory.createSorter(SortType.BUBBLE_SORT) instanceof BubbleSort);
-    assertTrue(SorterFactory.createSorter(SortType.COMB_SORT) instanceof CombSort);
-    assertTrue(SorterFactory.createSorter(SortType.HEAP_SORT) instanceof HeapSort);
-    assertTrue(SorterFactory.createSorter(SortType.INSERTION_SORT) instanceof InsertionSort);
-    assertTrue(SorterFactory.createSorter(SortType.MERGE_SORT) instanceof MergeSort);
-    assertTrue(SorterFactory.createSorter(SortType.QUICK_SORT) instanceof QuickSort);
-    assertTrue(SorterFactory.createSorter(SortType.SELECTION_SORT) instanceof SelectionSort);
-    assertTrue(SorterFactory.createSorter(SortType.SHELL_SORT) instanceof ShellSort);
+
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.BUBBLE_SORT)).isInstanceOf(BubbleSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.COMB_SORT)).isInstanceOf(CombSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.HEAP_SORT)).isInstanceOf(HeapSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.INSERTION_SORT)).isInstanceOf(InsertionSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.MERGE_SORT)).isInstanceOf(MergeSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.QUICK_SORT)).isInstanceOf(QuickSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.SELECTION_SORT)).isInstanceOf(SelectionSort.class);
+    assertThat(SorterFactory.<Sorter>createSorter(SortType.SHELL_SORT)).isInstanceOf(ShellSort.class);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void createWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("The SortType (null) is not supported by the %1$s!",
-      SorterFactory.class.getSimpleName()));
-
-    SorterFactory.createSorter(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> SorterFactory.createSorter(null),
+      () -> String.format("The SortType (null) is not supported by the %s!", SorterFactory.class.getSimpleName()));
   }
 
   @Test
   public void createSorterElseDefault() {
-    assertTrue(SorterFactory.createSorterElseDefault(SortType.HEAP_SORT, null) instanceof HeapSort);
+    assertThat(SorterFactory.<Sorter>createSorterElseDefault(SortType.HEAP_SORT, null))
+      .isInstanceOf(HeapSort.class);
   }
 
   @Test
   public void createSorterElseDefaultWithUnknownSortAlgorithm() {
+
     Sorter mockDefaultSorter = mock(Sorter.class);
 
-    assertSame(mockDefaultSorter, SorterFactory.createSorterElseDefault(SortType.UNKONWN, mockDefaultSorter));
-    assertNull(SorterFactory.createSorterElseDefault(SortType.UNKONWN, null));
+    assertThat(SorterFactory.createSorterElseDefault(SortType.UNKONWN, mockDefaultSorter)).isSameAs(mockDefaultSorter);
+    assertThat(SorterFactory.<Sorter>createSorterElseDefault(SortType.UNKONWN, null)).isNull();
   }
 }

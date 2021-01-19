@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -38,28 +34,24 @@ import java.util.concurrent.TimeUnit;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.test.TestUtils;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.AfterClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link ProcessUtils}.
+ * Unit Tests for {@link ProcessUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Process
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.process.util.ProcessUtils
+ * @see org.cp.elements.test.TestUtils
  * @see org.cp.elements.test.annotation.IntegrationTest
  * @since 1.0.0
  */
 public class ProcessUtilsTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @AfterClass
   public static void tearDown() {
@@ -320,8 +312,8 @@ public class ProcessUtilsTests {
     }
   }
 
-  @Test
   @IntegrationTest
+  @Test(expected = PidUnknownException.class)
   public void readPidFromEmptyFileThrowsPidUnknownExceptionCausedByNumberFormatException() throws IOException {
 
     File tmpPid = File.createTempFile("tempFile", ".pid");
@@ -331,16 +323,23 @@ public class ProcessUtilsTests {
 
     tmpPid.deleteOnExit();
 
-    exception.expect(PidUnknownException.class);
-    exception.expectCause(isA(NumberFormatException.class));
-    exception.expectMessage(String.format("Failed to read Process ID (PID) from file [%s]",
-      tmpPid.getAbsolutePath()));
+    try {
+      ProcessUtils.readPid(tmpPid);
+    }
+    catch (PidUnknownException expected) {
 
-    ProcessUtils.readPid(tmpPid);
+      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [%s]",
+        tmpPid.getAbsolutePath());
+
+      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
-  @Test
   @SuppressWarnings("all")
+  @Test(expected = PidUnknownException.class)
   public void readPidFromNonExistingFileThrowsPidUnknownExceptionCausedByIllegalArgumentException() {
 
     File mockFile = mock(File.class);
@@ -349,11 +348,15 @@ public class ProcessUtilsTests {
     when(mockFile.toString()).thenReturn("mockFile.pid");
 
     try {
-      exception.expect(PidUnknownException.class);
-      exception.expectCause(isA(IllegalArgumentException.class));
-      exception.expectMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
-
       ProcessUtils.readPid(mockFile);
+    }
+    catch (PidUnknownException expected) {
+
+      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
     }
     finally {
       verify(mockFile, times(1)).isFile();
@@ -361,8 +364,8 @@ public class ProcessUtilsTests {
     }
   }
 
-  @Test
   @SuppressWarnings("all")
+  @Test(expected = PidUnknownException.class)
   public void readPidFromUnreadableFileThrowsPidUnknownExceptionCausedByIllegalStateException() {
 
     File mockFile = mock(File.class);
@@ -372,11 +375,15 @@ public class ProcessUtilsTests {
     when(mockFile.toString()).thenReturn("mockFile.pid");
 
     try {
-      exception.expect(PidUnknownException.class);
-      exception.expectCause(isA(IllegalStateException.class));
-      exception.expectMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
-
       ProcessUtils.readPid(mockFile);
+    }
+    catch (PidUnknownException expected) {
+
+      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [mockFile.pid]");
+      assertThat(expected).hasCauseInstanceOf(IllegalStateException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
     }
     finally {
       verify(mockFile, times(1)).isFile();
@@ -389,25 +396,19 @@ public class ProcessUtilsTests {
     assertThat(ProcessUtils.findPidFile(FileSystemUtils.WORKING_DIRECTORY)).isNull();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void findPidFileWithNonExistingPathThrowsIllegalArgumentException() {
 
     File nonExistingFile = new File("/absolute/path/to/non/existing/file");
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The path [/absolute/path/to/non/existing/file] to search for the .pid file must not be null and must actually exist");
-
-    ProcessUtils.findPidFile(nonExistingFile);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ProcessUtils.findPidFile(nonExistingFile),
+      () -> "The path [/absolute/path/to/non/existing/file] to search for the .pid file must not be null and must actually exist");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void findPidFileWithNullThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The path [null] to search for the .pid file must not be null and must actually exist");
-
-    ProcessUtils.findPidFile(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ProcessUtils.findPidFile(null),
+      () -> "The path [null] to search for the .pid file must not be null and must actually exist");
   }
 }

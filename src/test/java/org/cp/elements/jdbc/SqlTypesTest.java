@@ -13,15 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.jdbc;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -29,8 +23,7 @@ import java.lang.reflect.Modifier;
 import org.junit.Test;
 
 /**
- * The SqlTypesTest class is a test suite of test cases testing the mapping between the cp-elements JDBC SqlTypes
- * enumerated type and the java.sql.Types constants.
+ * Unit Tests for {@link SqlType}.
  *
  * @author John J. Blum
  * @see java.sql.Types
@@ -40,64 +33,67 @@ import org.junit.Test;
  */
 public class SqlTypesTest {
 
-  private boolean isPublicStatic(final int modifiers) {
-    return (Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers));
+  private boolean isPublicStatic(int modifiers) {
+    return Modifier.isPublic(modifiers) && Modifier.isStatic(modifiers);
   }
 
-  private boolean isJavaSqlTypesConstant(final Field field) {
-    return (isPublicStatic(field.getModifiers()) && Integer.TYPE.equals(field.getType()));
+  private boolean isJavaSqlTypesConstant(Field field) {
+    return isPublicStatic(field.getModifiers()) && Integer.TYPE.equals(field.getType());
   }
 
   @Test
-  @SuppressWarnings("all")
   public void valueOfAllJavaSqlTypes() throws IllegalAccessException {
+
     int count = 0;
 
     for (Field field : java.sql.Types.class.getDeclaredFields()) {
       if (isJavaSqlTypesConstant(field)) {
+
         int value = field.getInt(null);
 
         SqlType sqlType = SqlType.valueOf(value);
 
-        assertThat(String.format("Expected %1$s for %2$s.%3$s!", SqlType.class.getName(),
-          java.sql.Types.class.getName(), field.getName()), sqlType, is(notNullValue()));
+        assertThat(sqlType).as(String.format("Expected %1$s for %2$s.%3$s!", SqlType.class.getName(),
+          java.sql.Types.class.getName(), field.getName())).isNotNull();
 
-        assertThat(sqlType.getType(), is(equalTo(value)));
+        assertThat(sqlType.getType()).isEqualTo(value);
 
         count++;
       }
     }
 
-    assertEquals(count, SqlType.values().length);
+    assertThat(SqlType.values().length).isEqualTo(count);
   }
 
   @Test
   public void valueOfInvalidValue() {
-    assertNull(SqlType.valueOf(Integer.MIN_VALUE));
-    assertNull(SqlType.valueOf(-123456789));
+
+    assertThat(SqlType.valueOf(Integer.MIN_VALUE)).isNull();
+    assertThat(SqlType.valueOf(-123456789)).isNull();
   }
 
   @Test
   public void valueOfInvalidValuesIgnoringCase() {
-    assertNull(SqlType.valueOfIgnoreCase("  character"));
-    assertNull(SqlType.valueOfIgnoreCase("Fake"));
-    assertNull(SqlType.valueOfIgnoreCase("FixedChar "));
-    assertNull(SqlType.valueOfIgnoreCase("LONG"));
-    assertNull(SqlType.valueOfIgnoreCase("Nil"));
-    assertNull(SqlType.valueOfIgnoreCase("Ruby_Object"));
-    assertNull(SqlType.valueOfIgnoreCase("  "));
-    assertNull(SqlType.valueOfIgnoreCase(""));
-    assertNull(SqlType.valueOfIgnoreCase(null));
+
+    assertThat(SqlType.valueOfIgnoreCase("  character")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("Fake")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("FixedChar ")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("LONG")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("Nil")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("Ruby_Object")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("  ")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase("")).isNull();
+    assertThat(SqlType.valueOfIgnoreCase(null)).isNull();
   }
 
   @Test
   public void valueOfJavaSqlTypesIgnoringCase() {
-    assertEquals(SqlType.ARRAY, SqlType.valueOfIgnoreCase("ARRAY"));
-    assertEquals(SqlType.BINARY, SqlType.valueOfIgnoreCase("binary"));
-    assertEquals(SqlType.BLOB, SqlType.valueOfIgnoreCase("bLOB"));
-    assertEquals(SqlType.CLOB, SqlType.valueOfIgnoreCase(" Clob"));
-    assertEquals(SqlType.VARCHAR, SqlType.valueOfIgnoreCase("VARchar"));
-    assertEquals(SqlType.TIMESTAMP, SqlType.valueOfIgnoreCase(" TiMeSTamp  "));
-  }
 
+    assertThat(SqlType.valueOfIgnoreCase("ARRAY")).isEqualTo(SqlType.ARRAY);
+    assertThat(SqlType.valueOfIgnoreCase("binary")).isEqualTo(SqlType.BINARY);
+    assertThat(SqlType.valueOfIgnoreCase("bLOB")).isEqualTo(SqlType.BLOB);
+    assertThat(SqlType.valueOfIgnoreCase(" Clob")).isEqualTo(SqlType.CLOB);
+    assertThat(SqlType.valueOfIgnoreCase("VARchar")).isEqualTo(SqlType.VARCHAR);
+    assertThat(SqlType.valueOfIgnoreCase(" TiMeSTamp  ")).isEqualTo(SqlType.TIMESTAMP);
+  }
 }

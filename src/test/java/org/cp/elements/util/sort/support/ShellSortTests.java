@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.List;
 
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ShellSort} class
- * and the Shell Sort algorithm.
+ * Unit Tests for {@link ShellSort} and the {@literal Shell Sort algorithm}.
  *
  * @author John J. Blum
  * @see org.cp.elements.util.sort.Sorter
@@ -47,14 +44,16 @@ public class ShellSortTests extends CommonSortTestSuite {
 
   @Test
   public void getGap() {
-    List mockList = mock(List.class, "Sortable List");
 
-    when(mockList.size()).thenReturn(300);
+    List<?> mockList = mock(List.class, "Sortable List");
+
+    doReturn(300).when(mockList).size();
 
     ShellSort sorter = getSorter();
 
-    assertThat(sorter.getGap(mockList), is(equalTo(100)));
+    assertThat(sorter.getGap(mockList)).isEqualTo(100);
 
     verify(mockList, times(1)).size();
+    verifyNoMoreInteractions(mockList);
   }
 }

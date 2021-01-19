@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
@@ -26,7 +23,7 @@ import org.cp.elements.test.AbstractBaseTestSuite;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link FilesOnlyFilter} class.
+ * Unit Tests for {@link FilesOnlyFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -48,17 +45,17 @@ public class FilesOnlyFilterTests extends AbstractBaseTestSuite {
 
     File filesOnlyFilterClass = getLocation(FilesOnlyFilter.class);
 
-    assertThat(filesOnlyFilterClass, is(notNullValue(File.class)));
-    assertThat(filesOnlyFilterClass.isFile(), is(true));
-    assertThat(filesOnlyFilter.accept(filesOnlyFilterClass), is(true));
+    assertThat(filesOnlyFilterClass).isNotNull();
+    assertThat(filesOnlyFilterClass.isFile()).isTrue();
+    assertThat(filesOnlyFilter.accept(filesOnlyFilterClass)).isTrue();
   }
 
   @Test
   public void rejectsDirectories() {
 
-    assertThat(filesOnlyFilter.accept(TEMPORARY_DIRECTORY), is(false));
-    assertThat(filesOnlyFilter.accept(USER_HOME), is(false));
-    assertThat(filesOnlyFilter.accept(WORKING_DIRECTORY), is(false));
+    assertThat(filesOnlyFilter.accept(TEMPORARY_DIRECTORY)).isFalse();
+    assertThat(filesOnlyFilter.accept(USER_HOME)).isFalse();
+    assertThat(filesOnlyFilter.accept(WORKING_DIRECTORY)).isFalse();
   }
 
   @Test
@@ -66,9 +63,9 @@ public class FilesOnlyFilterTests extends AbstractBaseTestSuite {
 
     File nonExistingDirectory = newFile(USER_HOME, "relative/path/to/non/existing/directory/");
 
-    assertThat(nonExistingDirectory, is(notNullValue(File.class)));
-    assertThat(nonExistingDirectory.exists(), is(false));
-    assertThat(filesOnlyFilter.accept(nonExistingDirectory), is(false));
+    assertThat(nonExistingDirectory).isNotNull();
+    assertThat(nonExistingDirectory.exists()).isFalse();
+    assertThat(filesOnlyFilter.accept(nonExistingDirectory)).isFalse();
   }
 
   @Test
@@ -76,13 +73,13 @@ public class FilesOnlyFilterTests extends AbstractBaseTestSuite {
 
     File nonExistingFile = newFile(WORKING_DIRECTORY, "relative/path/to/non/existing/file.ext");
 
-    assertThat(nonExistingFile, is(notNullValue(File.class)));
-    assertThat(nonExistingFile.exists(), is(false));
-    assertThat(filesOnlyFilter.accept(nonExistingFile), is(false));
+    assertThat(nonExistingFile).isNotNull();
+    assertThat(nonExistingFile.exists()).isFalse();
+    assertThat(filesOnlyFilter.accept(nonExistingFile)).isFalse();
   }
 
   @Test
   public void rejectsNull() {
-    assertThat(filesOnlyFilter.accept(null), is(false));
+    assertThat(filesOnlyFilter.accept(null)).isFalse();
   }
 }

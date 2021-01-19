@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
@@ -38,19 +31,16 @@ import java.time.Month;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
-import org.junit.Assert;
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link AuditableVisitor}.
+ * Unit Tests for {@link AuditableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
@@ -63,9 +53,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AuditableVisitorTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Mock
   private Process mockProcess;
 
@@ -74,9 +61,9 @@ public class AuditableVisitorTests {
 
   protected void assertEqualDates(LocalDate expectedDate, LocalDate actualDate) {
 
-    Assert.assertEquals(expectedDate.getYear(), actualDate.getYear());
-    Assert.assertEquals(expectedDate.getMonth(), actualDate.getMonth());
-    Assert.assertEquals(expectedDate.getDayOfMonth(), actualDate.getDayOfMonth());
+    assertThat(actualDate.getYear()).isEqualTo(expectedDate.getYear());
+    assertThat(actualDate.getMonth()).isEqualTo(expectedDate.getMonth());
+    assertThat(actualDate.getDayOfMonth()).isEqualTo(expectedDate.getDayOfMonth());
   }
 
   protected void assertEqualDates(LocalDate expectedDate, LocalDateTime actualDateTime) {
@@ -86,9 +73,9 @@ public class AuditableVisitorTests {
   protected void assertEqualDateTimes(LocalDateTime expectedDateTime, LocalDateTime actualDateTime) {
 
     assertEqualDates(expectedDateTime.toLocalDate(), actualDateTime.toLocalDate());
-    assertEquals(expectedDateTime.getHour(), actualDateTime.getHour());
-    assertEquals(expectedDateTime.getMinute(), actualDateTime.getMinute());
-    assertEquals(expectedDateTime.getSecond(), actualDateTime.getSecond());
+    assertThat(actualDateTime.getHour()).isEqualTo(expectedDateTime.getHour());
+    assertThat(actualDateTime.getMinute()).isEqualTo(expectedDateTime.getMinute());
+    assertThat(actualDateTime.getSecond()).isEqualTo(expectedDateTime.getSecond());
   }
 
   @Test
@@ -96,9 +83,9 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
-    assertNotNull(visitor);
-    assertSame(mockUser, visitor.getUser());
-    assertSame(mockProcess, visitor.getProcess());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getUser()).isSameAs(mockUser);
+    assertThat(visitor.getProcess()).isSameAs(mockProcess);
     assertEqualDates(LocalDate.now(), visitor.getDateTime());
   }
 
@@ -109,33 +96,30 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
-    assertNotNull(visitor);
-    assertSame(mockUser, visitor.getUser());
-    assertSame(mockProcess, visitor.getProcess());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getUser()).isSameAs(mockUser);
+    assertThat(visitor.getProcess()).isSameAs(mockProcess);
     assertEqualDateTimes(now, visitor.getDateTime());
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructWithNullUser() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("User must not be null");
-
-    new AuditableVisitor<User, Process>(null, mockProcess);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> new AuditableVisitor<User, Process>(null, mockProcess),
+        () -> "User must not be null");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructWithNullProcess() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Process must not be null");
-
-    new AuditableVisitor<User, Process>(mockUser, null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> new AuditableVisitor<User, Process>(mockUser, null),
+        () -> "Process must not be null");
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void isCreatedUnsetWithCreatedByAndCreatedDateTimePropertiesUnset() {
 
     Auditable mockAuditable = mock(Auditable.class);
@@ -144,13 +128,14 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
-    assertTrue(visitor.isCreatedUnset(mockAuditable));
+    assertThat(visitor.isCreatedUnset(mockAuditable)).isTrue();
 
     verify(mockAuditable, times(1)).getCreatedBy();
     verify(mockAuditable, never()).getCreatedOn();
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void isCreatedUnsetWithOnlyCreatedByPropertyUnset() {
 
     Auditable mockAuditable = mock(Auditable.class);
@@ -159,13 +144,14 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
-    assertTrue(visitor.isCreatedUnset(mockAuditable));
+    assertThat(visitor.isCreatedUnset(mockAuditable)).isTrue();
 
     verify(mockAuditable, times(1)).getCreatedBy();
     verify(mockAuditable, never()).getCreatedOn();
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void isCreatedUnsetWithOnlyCreatedDateTimePropertyUnset() {
 
     Auditable mockAuditable = mock(Auditable.class);
@@ -175,13 +161,14 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
-    assertTrue(visitor.isCreatedUnset(mockAuditable));
+    assertThat(visitor.isCreatedUnset(mockAuditable)).isTrue();
 
     verify(mockAuditable, times(1)).getCreatedBy();
     verify(mockAuditable, times(1)).getCreatedOn();
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void isCreatedUnsetWhenBothCreatedByAndCreatedDateTimePropertiesAreSet() {
 
     Auditable mockAuditable = mock(Auditable.class);
@@ -191,7 +178,7 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
-    assertFalse(visitor.isCreatedUnset(mockAuditable));
+    assertThat(visitor.isCreatedUnset(mockAuditable)).isFalse();
 
     verify(mockAuditable, times(1)).getCreatedBy();
     verify(mockAuditable, times(1)).getCreatedOn();
@@ -210,9 +197,9 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
-    assertNotNull(visitor);
-    assertSame(mockUser, visitor.getUser());
-    assertSame(mockProcess, visitor.getProcess());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getUser()).isSameAs(mockUser);
+    assertThat(visitor.getProcess()).isSameAs(mockProcess);
     assertEqualDateTimes(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
@@ -240,9 +227,9 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
-    assertNotNull(visitor);
-    assertSame(mockUser, visitor.getUser());
-    assertSame(mockProcess, visitor.getProcess());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getUser()).isSameAs(mockUser);
+    assertThat(visitor.getProcess()).isSameAs(mockProcess);
     assertEqualDateTimes(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
@@ -276,9 +263,9 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
-    assertNotNull(visitor);
-    assertSame(mockUser, visitor.getUser());
-    assertSame(mockProcess, visitor.getProcess());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getUser()).isSameAs(mockUser);
+    assertThat(visitor.getProcess()).isSameAs(mockProcess);
     assertEqualDateTimes(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);
@@ -308,9 +295,9 @@ public class AuditableVisitorTests {
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
-    assertNotNull(visitor);
-    assertSame(mockUser, visitor.getUser());
-    assertSame(mockProcess, visitor.getProcess());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getUser()).isSameAs(mockUser);
+    assertThat(visitor.getProcess()).isSameAs(mockProcess);
     assertEqualDateTimes(now, visitor.getDateTime());
 
     visitor.visit(mockAuditable);

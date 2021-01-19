@@ -13,164 +13,164 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * The InOutParameterTest class is a test suite of test cases testing the contract and functionality
- * of the InOutParameter class.
+ * Unit Tests for {@link InOutParameter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
+ * @see org.cp.elements.lang.InOutParameter
  * @since 1.0.0
  */
 public class InOutParameterTest {
 
   @Test
   public void constructUninitializedInOutParameter() {
+
     InOutParameter<Object> parameter = new InOutParameter<>();
 
-    assertThat(parameter, is(notNullValue()));
-    assertThat(parameter.getValue(), is(nullValue()));
+    assertThat(parameter).isNotNull();
+    assertThat(parameter.getValue()).isNull();
   }
 
   @Test
   public void constructInOutParameterWithValue() {
+
     InOutParameter<String> parameter = new InOutParameter<>("test");
 
-    assertThat(parameter, is(notNullValue()));
-    assertThat(parameter.getValue(), is(equalTo("test")));
+    assertThat(parameter).isNotNull();
+    assertThat(parameter.getValue()).isEqualTo("test");
   }
 
   @Test
   public void setAndGetValue() {
+
     InOutParameter<Object> parameter = new InOutParameter<>();
 
-    assertThat(parameter.getValue(), is(nullValue()));
+    assertThat(parameter.getValue()).isNull();
 
     parameter.setValue("test");
 
-    assertThat(parameter.getValue(), is(equalTo("test")));
+    assertThat(parameter.getValue()).isEqualTo("test");
 
     parameter.setValue(Math.PI);
 
-    assertThat(parameter.getValue(), is(equalTo(Math.PI)));
+    assertThat(parameter.getValue()).isEqualTo(Math.PI);
 
     parameter.setValue(2);
 
-    assertThat(parameter.getValue(), is(equalTo(2)));
+    assertThat(parameter.getValue()).isEqualTo(2);
 
     parameter.setValue('A');
 
-    assertThat(parameter.getValue(), is(equalTo('A')));
+    assertThat(parameter.getValue()).isEqualTo('A');
 
     parameter.setValue(Boolean.TRUE);
 
-    assertThat(parameter.getValue(), is(true));
+    assertThat(parameter.getValue()).isEqualTo(true);
 
     parameter.setValue(null);
 
-    assertThat(parameter.getValue(), is(nullValue()));
+    assertThat(parameter.getValue()).isNull();
   }
 
   @Test
   public void equalsDifferentParameterWithSameValue() {
+
     InOutParameter<Object> parameterOne = new InOutParameter<>("test");
     InOutParameter<Object> parameterTwo = new InOutParameter<>("test");
 
-    assertThat(parameterOne, is(not(sameInstance(parameterTwo))));
-    assertThat(parameterOne.equals(parameterTwo), is(true));
+    assertThat(parameterOne).isNotSameAs(parameterTwo);
+    assertThat(parameterOne.equals(parameterTwo)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void equalsItself() {
+
     InOutParameter<Object> parameter = new InOutParameter<>("test");
 
-    assertThat(parameter.equals(parameter), is(true));
+    assertThat(parameter.equals(parameter)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void equalsValue() {
-    assertThat(new InOutParameter<>("test").equals("test"), is(true));
+    assertThat(new InOutParameter<>("test").equals("test")).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void equalsWithNull() {
-    assertThat(new InOutParameter<>().equals(new InOutParameter<>(null)), is(true));
-    assertThat(new InOutParameter<>().equals(null), is(true));
+
+    assertThat(new InOutParameter<>().equals(new InOutParameter<>(null))).isTrue();
+    assertThat(new InOutParameter<>().equals(null)).isTrue();
   }
 
   @Test
   @SuppressWarnings("all")
   public void unequalParameters() {
+
     InOutParameter<Object> parameter = new InOutParameter<>();
 
-    assertThat(parameter.equals(new InOutParameter<>("null")), is(false));
-    assertThat(parameter.equals("test"), is(false));
+    assertThat(parameter.equals(new InOutParameter<>("null"))).isFalse();
+    assertThat(parameter.equals("test")).isFalse();
   }
 
   @Test
   public void hashCodeWithNull() {
-    assertThat(new InOutParameter<>().hashCode(), is(equalTo(0)));
+    assertThat(new InOutParameter<>().hashCode()).isEqualTo(0);
   }
 
   @Test
   public void hashCodeWithValue() {
-    assertThat(new InOutParameter<>("test").hashCode(), is(equalTo("test".hashCode())));
+    assertThat(new InOutParameter<>("test").hashCode()).isEqualTo("test".hashCode());
   }
 
   @Test
   public void toStringWithNull() {
-    assertThat(new InOutParameter<>().toString(), is(equalTo("null")));
+    assertThat(new InOutParameter<>().toString()).isEqualTo("null");
   }
 
   @Test
   public void toStringWithValue() {
-    assertThat(new InOutParameter<>("test").toString(), is(equalTo("test")));
+    assertThat(new InOutParameter<>("test").toString()).isEqualTo("test");
   }
 
   @Test
   public void inOutParameterIsMutable() {
-    assertThat(increment(new InOutParameter<>(0)).getValue(), is(equalTo(1)));
+    assertThat(increment(new InOutParameter<>(0)).getValue()).isEqualTo(1);
   }
 
-  protected InOutParameter<Integer> increment(InOutParameter<Integer> parameter) {
+  private InOutParameter<Integer> increment(InOutParameter<Integer> parameter) {
+
     parameter.setValue(parameter.getValue() + 1);
+
     return parameter;
   }
 
   @Test
   public void inOutParameterIsThreadSafe() throws Exception {
+
     InOutParameter<Integer> parameter = new InOutParameter<>(0);
 
-    Thread incrementThread = new Thread(() -> {
-      parameter.setValue(parameter.getValue() + 1);
-    });
+    Thread incrementThread = new Thread(() -> parameter.setValue(parameter.getValue() + 1));
 
     incrementThread.setDaemon(true);
     incrementThread.setName("Parameter Increment Thread");
     incrementThread.setPriority(Thread.NORM_PRIORITY);
 
-    assertThat(parameter.getValue(), is(equalTo(0)));
+    assertThat(parameter.getValue()).isEqualTo(0);
 
     incrementThread.start();
     incrementThread.join();
 
-    assertThat(incrementThread.isAlive(), is(false));
-    assertThat(parameter.getValue(), is(equalTo(1)));
+    assertThat(incrementThread.isAlive()).isFalse();
+    assertThat(parameter.getValue()).isEqualTo(1);
   }
-
 }

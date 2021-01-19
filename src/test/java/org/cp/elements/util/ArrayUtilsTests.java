@@ -31,12 +31,12 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
-import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
 import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -55,20 +55,6 @@ import lombok.RequiredArgsConstructor;
  * @since 1.0.0
  */
 public class ArrayUtilsTests {
-
-  private void noSuchElementExceptionThrowingOperation(Runnable operation) {
-
-    try {
-      operation.run();
-    }
-    catch (NoSuchElementException expected) {
-
-      assertThat(expected).hasMessage("No more elements");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
 
   @SafeVarargs
   private final <T> void assertElements(T[] array, T... elements) {
@@ -114,6 +100,20 @@ public class ArrayUtilsTests {
     System.arraycopy(array, 0, arrayCopy, 0, array.length);
 
     return arrayCopy;
+  }
+
+  private void noSuchElementExceptionThrowingOperation(Runnable operation) {
+
+    try {
+      operation.run();
+    }
+    catch (NoSuchElementException expected) {
+
+      assertThat(expected).hasMessage("No more elements");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @SafeVarargs
@@ -1739,7 +1739,8 @@ public class ArrayUtilsTests {
       () -> "Transformer is required");
   }
 
-  @Data
+  @Getter
+  @EqualsAndHashCode
   @RequiredArgsConstructor(staticName = "newPerson")
   static class Person {
 
@@ -1747,36 +1748,8 @@ public class ArrayUtilsTests {
     @NonNull final String lastName;
 
     @Override
-    public boolean equals(Object obj) {
-
-      if (this == obj) {
-        return true;
-      }
-
-      if (!(obj instanceof Person)) {
-        return false;
-      }
-
-      Person that = (Person) obj;
-
-      return ObjectUtils.equals(this.getFirstName(), that.getFirstName())
-        && ObjectUtils.equals(this.getLastName(), that.getLastName());
-    }
-
-    @Override
-    public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
-
-      return hashValue;
-    }
-
-    @Override
     public String toString() {
-      return getFirstName().concat(" ").concat(getLastName());
+      return String.format("%1$s %2$s", getFirstName(), getLastName());
     }
   }
 }

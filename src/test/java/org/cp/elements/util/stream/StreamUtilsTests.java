@@ -13,74 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link StreamUtils} class.
+ * Unit Tests for {@link StreamUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
+ * @see java.util.stream.Stream
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.cp.elements.util.stream.StreamUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unchecked")
 public class StreamUtilsTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void streamFromArray() {
+
     String[] array = { "test", "testing", "tested" };
+
     Stream<String> stream = StreamUtils.stream(array);
 
-    assertThat(stream, is(notNullValue(Stream.class)));
+    assertThat(stream).isNotNull();
 
     List<String> list = stream.collect(Collectors.toList());
 
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list.size(), is(equalTo(array.length)));
-    assertThat(list.containsAll(Arrays.asList(array)), is(true));
+    assertThat(list).isNotNull();
+    assertThat(list.size()).isEqualTo(array.length);
+    assertThat(list.containsAll(Arrays.asList(array))).isTrue();
   }
 
   @Test
   public void streamFromSingleElementArray() {
+
     Stream<String> stream = StreamUtils.stream("test");
 
-    assertThat(stream, is(notNullValue(Stream.class)));
+    assertThat(stream).isNotNull();
 
     List<String> list = stream.collect(Collectors.toList());
 
-    assertThat(list, is(notNullValue(List.class)));
-    assertThat(list.size(), is(equalTo(1)));
-    assertThat(list.get(0), is(equalTo("test")));
+    assertThat(list).isNotNull();
+    assertThat(list.size()).isEqualTo(1);
+    assertThat(list.get(0)).isEqualTo("test");
   }
 
   @Test
   public void streamFromEmptyArray() {
+
     Stream<Object> stream = StreamUtils.stream();
 
-    assertThat(stream, is(notNullValue(Stream.class)));
-    assertThat(stream.count(), is(equalTo(0l)));
+    assertThat(stream).isNotNull();
+    assertThat(stream.count()).isEqualTo(0L);
   }
 
   @Test(expected = NullPointerException.class)
@@ -90,61 +84,62 @@ public class StreamUtilsTests {
 
   @Test
   public void streamFromIterable() {
+
     Stream<Integer> stream = StreamUtils.stream(asIterable(1, 2, 3));
 
-    assertThat(stream, is(notNullValue(Stream.class)));
+    assertThat(stream).isNotNull();
 
     Object[] array = stream.toArray();
 
-    assertThat(array, is(notNullValue(Object[].class)));
-    assertThat(array.length, is(equalTo(3)));
+    assertThat(array).isNotNull();
+    assertThat(array.length).isEqualTo(3);
 
     for (int index = 0; index < array.length; index++) {
-      assertThat(array[index], is(equalTo(index + 1)));
+      assertThat(array[index]).isEqualTo(index + 1);
     }
   }
 
   @Test
   public void streamFromSingleElementIterable() {
+
     Stream<Integer> stream = StreamUtils.stream(asIterable(1));
 
-    assertThat(stream, is(notNullValue(Stream.class)));
+    assertThat(stream).isNotNull();
 
     Object[] array = stream.toArray();
 
-    assertThat(array, is(notNullValue(Object[].class)));
-    assertThat(array.length, is(equalTo(1)));
-    assertThat(array[0], is(equalTo(1)));
+    assertThat(array).isNotNull();
+    assertThat(array.length).isEqualTo(1);
+    assertThat(array[0]).isEqualTo(1);
   }
 
   @Test
   public void streamFromEmptyIterable() {
+
     Stream<Object> stream = StreamUtils.stream(asIterable());
 
-    assertThat(stream, is(notNullValue(Stream.class)));
-    assertThat(stream.count(), is(equalTo(0l)));
+    assertThat(stream).isNotNull();
+    assertThat(stream.count()).isEqualTo(0L);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void streamFromNullIterable() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(is(equalTo("Iterable cannot be null")));
-
-    StreamUtils.stream((Iterable) null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> StreamUtils.stream((Iterable<?>) null),
+      () -> "Iterable cannot be null");
   }
 
   @Test
   public void streamFromCollection() {
+
     List<Integer> list = Arrays.asList(1, 2, 3);
     Stream<Integer> stream = StreamUtils.stream(list);
 
-    assertThat(stream, is(notNullValue(Stream.class)));
+    assertThat(stream).isNotNull();
 
     List<Integer> result = stream.collect(Collectors.toList());
 
-    assertThat(result, is(notNullValue(List.class)));
-    assertThat(result.size(), is(equalTo(list.size())));
-    assertThat(result.containsAll(list), is(true));
+    assertThat(result).isNotNull();
+    assertThat(result.size()).isEqualTo(list.size());
+    assertThat(result.containsAll(list)).isTrue();
   }
 }

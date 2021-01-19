@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
 import java.util.Arrays;
@@ -29,32 +26,28 @@ import java.util.Collections;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.Environment;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link ProcessContext}.
+ * Unit Tests for {@link ProcessContext}.
  *
  * @author John Blum
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.test.AbstractBaseTestSuite
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessContextTests extends AbstractBaseTestSuite {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Mock
   private File mockFile;
@@ -64,6 +57,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
 
   @Test
   public void newProcessContextWithNonNullProcessIsSuccessful() {
+
     ProcessContext processContext = newProcessContext(this.mockProcess);
 
     assertThat(processContext).isNotNull();
@@ -79,17 +73,16 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
     assertThat(processContext.isRedirectingErrorStream()).isFalse();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void newProcessContextWithNullProcessThrowsIllegalArgumentException() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Process cannot be null");
 
-    newProcessContext(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> newProcessContext(null),
+      () -> "Process cannot be null");
   }
 
   @Test
   public void constructFullyInitializedProcessContext() {
+
     ProcessContext processContext = new ProcessContext(this.mockProcess)
       .inheritIO(true)
       .ranBy("mockUser")
@@ -116,6 +109,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
 
   @Test
   public void fromProcessBuilderIsSuccessful() {
+
     ProcessBuilder processBuilder = new ProcessBuilder("java", "-server", "-ea", "-classpath",
       "/class/path/to/application.jar", "example.Application");
 
@@ -148,6 +142,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
 
   @Test
   public void toProcessBuilderIsSuccessful() {
+
     ProcessBuilder processBuilder = new ProcessBuilder();
 
     ProcessContext processContext = newProcessContext(this.mockProcess)
@@ -173,6 +168,7 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
 
   @Test
   public void toProcessBuilderInheritsIOIsSuccessful() {
+
     ProcessBuilder processBuilder = new ProcessBuilder();
 
     ProcessContext processContext = newProcessContext(this.mockProcess)
@@ -199,32 +195,28 @@ public class ProcessContextTests extends AbstractBaseTestSuite {
       .isEqualTo(FileSystemUtils.USER_HOME_DIRECTORY);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void setInDirectoryToFile() {
+
     File processContextJava = getLocation(ProcessContext.class);
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[%s] must be a valid directory", processContextJava.getAbsolutePath()));
-
-    newProcessContext(this.mockProcess).ranIn(processContextJava);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> newProcessContext(this.mockProcess).ranIn(processContextJava),
+        () -> String.format("[%s] must be a valid directory", processContextJava.getAbsolutePath()));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void setInDirectoryToNonExistingDirectory() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[/absolute/path/to/non/existing/directory] must be a valid directory");
 
-    newProcessContext(this.mockProcess).ranIn(newFile("/absolute/path/to/non/existing/directory"));
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> newProcessContext(this.mockProcess).ranIn(newFile("/absolute/path/to/non/existing/directory")),
+        () -> "[/absolute/path/to/non/existing/directory] must be a valid directory");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void setInDirectoryToNullDirectory() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] must be a valid directory");
 
-    newProcessContext(this.mockProcess).ranIn(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> newProcessContext(this.mockProcess).ranIn(null),
+      () -> "[null] must be a valid directory");
   }
 }

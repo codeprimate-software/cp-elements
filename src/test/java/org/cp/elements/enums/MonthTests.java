@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.enums;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
 
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link Month} Enum.
+ * Unit Tests for {@link Month}.
  *
  * @author John J. Blum
  * @see java.time.Month
@@ -54,103 +50,115 @@ public class MonthTests {
 
   @Test
   public void valueOf() {
+
     int index = 0;
 
     for (Month month : Month.values()) {
-      assertThat(Month.valueOf(month.name()), is(equalTo(month)));
-      assertThat(month.ordinal(), is(equalTo(index)));
-      assertThat(month.getCalendarMonth(), is(equalTo(CALENDAR_MONTHS[index])));
-      assertThat(month.getPosition(), is(equalTo(++index)));
+      assertThat(Month.valueOf(month.name())).isEqualTo(month);
+      assertThat(month.ordinal()).isEqualTo(index);
+      assertThat(month.getCalendarMonth()).isEqualTo(CALENDAR_MONTHS[index]);
+      assertThat(month.getPosition()).isEqualTo(++index);
     }
   }
 
   @Test
   public void valueOfAbbreviationReturnsMonth() {
+
     for (Month month : Month.values()) {
-      assertThat(Month.valueOfAbbreviation(month.getAbbreviation()), is(equalTo(month)));
+      assertThat(Month.valueOfAbbreviation(month.getAbbreviation())).isEqualTo(month);
     }
   }
 
   @Test
   public void valueOfAbbreviationIgnoresCaseReturnsMonth() {
-    assertThat(Month.valueOfAbbreviation("jan"), is(equalTo(Month.JANUARY)));
-    assertThat(Month.valueOfAbbreviation("May"), is(equalTo(Month.MAY)));
-    assertThat(Month.valueOfAbbreviation("AUG"), is(equalTo(Month.AUGUST)));
+
+    assertThat(Month.valueOfAbbreviation("jan")).isEqualTo(Month.JANUARY);
+    assertThat(Month.valueOfAbbreviation("May")).isEqualTo(Month.MAY);
+    assertThat(Month.valueOfAbbreviation("AUG")).isEqualTo(Month.AUGUST);
   }
 
   @Test
   public void valueOfAbbreviationReturnsNull() {
-    assertThat(Month.valueOfAbbreviation("Ju"), is(nullValue(Month.class)));
-    assertThat(Month.valueOfAbbreviation("Sept"), is(nullValue(Month.class)));
-    assertThat(Month.valueOfAbbreviation("December"), is(nullValue(Month.class)));
+
+    assertThat(Month.valueOfAbbreviation("Ju")).isNull();
+    assertThat(Month.valueOfAbbreviation("Sept")).isNull();
+    assertThat(Month.valueOfAbbreviation("December")).isNull();
   }
 
   @Test
   public void valueOfCalendarMonthReturnsMonth() {
+
     int index = 0;
 
     for (Month month : Month.values()) {
-      assertThat(Month.valueOfCalendarMonth(CALENDAR_MONTHS[index++]), is(equalTo(month)));
+      assertThat(Month.valueOfCalendarMonth(CALENDAR_MONTHS[index++])).isEqualTo(month);
     }
 
-    assertThat(index, is(equalTo(12)));
+    assertThat(index).isEqualTo(12);
   }
 
   @Test
   public void valueOfInvalidCalendarMonthIsNull() {
-    assertThat(Month.valueOfCalendarMonth(-11), is(nullValue(Month.class)));
-    assertThat(Month.valueOfCalendarMonth(12), is(nullValue(Month.class)));
-    assertThat(Month.valueOfCalendarMonth(13), is(nullValue(Month.class)));
+
+    assertThat(Month.valueOfCalendarMonth(-11)).isNull();
+    assertThat(Month.valueOfCalendarMonth(12)).isNull();
+    assertThat(Month.valueOfCalendarMonth(13)).isNull();
   }
 
   @Test
   public void valueOfJavaTimeMonthReturnsMonth() {
+
     for (Month month : Month.values()) {
-      assertThat(Month.valueOfJavaTimeMonth(month.getJavaTimeMonth()), is(equalTo(month)));
+      assertThat(Month.valueOfJavaTimeMonth(month.getJavaTimeMonth())).isEqualTo(month);
     }
   }
 
   @Test
   public void valueOfJavaTimeMonthReturnsNull() {
-    assertThat(Month.valueOfJavaTimeMonth(null), is(nullValue(Month.class)));
+    assertThat(Month.valueOfJavaTimeMonth(null)).isNull();
   }
 
   @Test
   public void valueOfNameReturnsMonth() {
+
     for (Month month : Month.values()) {
-      assertThat(Month.valueOfName(month.getName()), is(equalTo(month)));
+      assertThat(Month.valueOfName(month.getName())).isEqualTo(month);
     }
   }
 
   @Test
   public void valueOfNameIgnoresCaseReturnsMonth() {
-    assertThat(Month.valueOfName("january"), is(equalTo(Month.JANUARY)));
-    assertThat(Month.valueOfName("May"), is(equalTo(Month.MAY)));
-    assertThat(Month.valueOfName("AUGUST"), is(equalTo(Month.AUGUST)));
+
+    assertThat(Month.valueOfName("january")).isEqualTo(Month.JANUARY);
+    assertThat(Month.valueOfName("May")).isEqualTo(Month.MAY);
+    assertThat(Month.valueOfName("AUGUST")).isEqualTo(Month.AUGUST);
   }
 
   @Test
   public void valueOfNameReturnsNull() {
-    assertThat(Month.valueOfName("Jul"), is(nullValue(Month.class)));
-    assertThat(Month.valueOfName("Octobre"), is(nullValue(Month.class)));
-    assertThat(Month.valueOfName("Daycember"), is(nullValue(Month.class)));
+
+    assertThat(Month.valueOfName("Jul")).isNull();
+    assertThat(Month.valueOfName("Octobre")).isNull();
+    assertThat(Month.valueOfName("Daycember")).isNull();
   }
 
   @Test
   public void valueOfPositionReturnsMonth() {
+
     int position = 0;
 
     for (Month month : Month.values()) {
-      assertThat(Month.valueOfPosition(++position), is(equalTo(month)));
+      assertThat(Month.valueOfPosition(++position)).isEqualTo(month);
     }
 
-    assertThat(position, is(equalTo(12)));
+    assertThat(position).isEqualTo(12);
   }
 
   @Test
   public void valueOfPositionReturnsNull() {
-    assertThat(Month.valueOfPosition(0), is(nullValue(Month.class)));
-    assertThat(Month.valueOfPosition(-7), is(nullValue(Month.class)));
-    assertThat(Month.valueOfPosition(13), is(nullValue(Month.class)));
+
+    assertThat(Month.valueOfPosition(0)).isNull();
+    assertThat(Month.valueOfPosition(-7)).isNull();
+    assertThat(Month.valueOfPosition(13)).isNull();
   }
 }

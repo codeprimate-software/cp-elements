@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * The DefaultTransformerTests class is a test suite of test cases testing the contract and functionality
- * of the {@link DefaultTransformer} class.
+ * Unit Tests for {@link DefaultTransformer}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -38,11 +33,12 @@ public class DefaultTransformerTests {
 
   @Test
   public void transformReturnsObjectUnaltered() {
-    assertThat(transformer.transform(null), is(nullValue()));
-    assertThat(transformer.transform(Boolean.TRUE), is(equalTo(Boolean.TRUE)));
-    assertThat(transformer.transform('x'), is(equalTo('x')));
-    assertThat(transformer.transform(2), is(equalTo(2)));
-    assertThat(transformer.transform(Math.PI), is(equalTo(Math.PI)));
-    assertThat(transformer.transform("test"), is(equalTo("test")));
+
+    assertThat(transformer.transform(null)).isNull();
+    assertThat(transformer.transform(Boolean.TRUE)).isEqualTo(Boolean.TRUE);
+    assertThat(transformer.transform('x')).isEqualTo('x');
+    assertThat(transformer.transform(2)).isEqualTo(2);
+    assertThat(transformer.transform(Math.PI)).isEqualTo(Math.PI);
+    assertThat(transformer.transform("test")).isEqualTo("test");
   }
 }

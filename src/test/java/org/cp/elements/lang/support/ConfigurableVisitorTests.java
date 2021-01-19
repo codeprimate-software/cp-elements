@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -26,43 +23,35 @@ import static org.mockito.Mockito.verify;
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.Configurable;
 import org.cp.elements.lang.Visitable;
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link ConfigurableVisitor}.
+ * Unit Tests for {@link ConfigurableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.lang.Configurable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.support.ConfigurableVisitor
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class ConfigurableVisitorTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void construct() {
     new ConfigurableVisitor<>(mock(Configuration.class));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructWithNullConfiguration() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Configuration cannot be null");
-
-    new ConfigurableVisitor<Configuration>(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new ConfigurableVisitor<Configuration>(null),
+      () -> "Configuration cannot be null!");
   }
 
   @Test
@@ -85,6 +74,6 @@ public class ConfigurableVisitorTests {
     new ConfigurableVisitor<>(mock(Configuration.class)).visit(mock(Visitable.class));
   }
 
-  protected interface VisitableConfigurable<T> extends Configurable<T>, Visitable { }
+  private interface VisitableConfigurable<T> extends Configurable<T>, Visitable { }
 
 }

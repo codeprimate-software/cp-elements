@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -49,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ReflectionUtils}.
+ * Unit Tests for {@link ReflectionUtils}.
  *
  * @author John J. Blum
  * @see java.lang.reflect.Field
@@ -95,25 +87,30 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getArgumentTypesWithNullArguments() {
-    assertNull(ReflectionUtils.getArgumentTypes((Object[]) null));
+    assertThat(ReflectionUtils.getArgumentTypes((Object[]) null)).isNull();
   }
 
   @Test
   public void getValueOfClassField() {
-    assertEquals(42L, ReflectionUtils.getValue(SuperType.class, "serialVersionUID", Long.class).longValue());
-    assertEquals(42L, ReflectionUtils.getValue(DerivedType.class, "serialVersionUID", Long.class).longValue());
+
+    assertThat(ReflectionUtils.getValue(SuperType.class, "serialVersionUID", Long.class).longValue()).isEqualTo(42L);
+    assertThat(ReflectionUtils.getValue(DerivedType.class, "serialVersionUID", Long.class).longValue()).isEqualTo(42L);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getValueOfNonExistingClassField() {
+
     try {
       ReflectionUtils.getValue(SuperType.class, "DEFAULT_ID", Long.class);
     }
     catch (IllegalArgumentException expected) {
-      assertEquals(String.format("Field with name (DEFAULT_ID) does not exist on class type (%1$s)!",
-        SuperType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof FieldNotFoundException);
+      assertThat(expected).hasMessage("Field with name (DEFAULT_ID) does not exist on class type (%s)!",
+        SuperType.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
+      assertThat(expected.getCause().getCause()).hasNoCause();
 
       throw expected;
     }
@@ -121,19 +118,23 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void getValueOfObjectField() {
-    assertEquals(1L, ReflectionUtils.getValue(new DerivedType(), "id", Long.class).longValue());
+    assertThat(ReflectionUtils.getValue(new DerivedType(), "id", Long.class).longValue()).isEqualTo(1L);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getValueOfNonExistingObjectField() {
+
     try {
       ReflectionUtils.getValue(new DerivedType(), "name", String.class);
     }
     catch (IllegalArgumentException expected) {
-      assertEquals(String.format("Field with name (name) does not exist on object of type (%1$s)!",
-        DerivedType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof FieldNotFoundException);
+      assertThat(expected).hasMessage("Field with name (name) does not exist on object of type (%s)!",
+        DerivedType.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
+      assertThat(expected.getCause().getCause()).hasNoCause();
 
       throw expected;
     }
@@ -141,14 +142,16 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test(expected = FieldAccessException.class)
   public void getValueThrowsFieldAccessException() {
+
     try {
       ReflectionUtils.getValue(new Object(), ReflectionUtils.getField(DerivedType.class, "id"), Object.class);
     }
     catch (FieldAccessException expected) {
-      assertEquals(String.format("Failed to get value of field (id) from object of type (%1$s)!",
-          Object.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof IllegalArgumentException);
+      assertThat(expected).hasMessage("Failed to get value of field (id) from object of type (%1$s)!",
+        Object.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
 
       throw expected;
     }
@@ -156,12 +159,13 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test(expected = NullPointerException.class)
   public void getValueThrowsNullPointerException() {
+
     try {
       ReflectionUtils.getValue(new Object(), (Field) null, Object.class);
     }
     catch (NullPointerException expected) {
       // for line "boolean currentAccessible = field.isAccessible();" in getValue(:Object, :Field, :Class<T>):T
-      assertEquals(153, expected.getStackTrace()[0].getLineNumber());
+      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(153);
 
       throw expected;
     }
@@ -169,44 +173,49 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void setClassField() {
-    assertNull(SuperType.stringField);
+
+    assertThat(SuperType.stringField).isNull();
 
     ReflectionUtils.setField(SuperType.class, "stringField", "test");
 
-    assertEquals("test", SuperType.stringField);
+    assertThat(SuperType.stringField).isEqualTo("test");
   }
 
   @Test(expected = FieldAccessException.class)
   public void setFinalClassField() {
+
     try {
-      assertEquals(42L, SuperType.serialVersionUID);
+      assertThat(SuperType.serialVersionUID).isEqualTo(42L);
       ReflectionUtils.setField(SuperType.class, "serialVersionUID", 24L);
     }
     catch (FieldAccessException expected) {
-      assertEquals(String.format("Cannot set the value of a final field (serialVersionUID) on class type (%1$s)!",
-        SuperType.class.getName()), expected.getMessage());
 
-      assertNull(expected.getCause());
+      assertThat(expected).hasMessage("Cannot set the value of a final field (serialVersionUID) on class type (%s)!",
+        SuperType.class.getName());
+
+      assertThat(expected).hasNoCause();
 
       throw expected;
     }
     finally {
-      assertEquals(42L, SuperType.serialVersionUID);
+      assertThat(SuperType.serialVersionUID).isEqualTo(42L);
     }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setNonExistingClassField() {
+
     try {
       ReflectionUtils.setField(SuperType.class, "nonExistingField", "test");
     }
     catch (IllegalArgumentException expected) {
-      assertEquals(String.format("Field with name (nonExistingField) does not exist on class type (%1$s)!",
-        SuperType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof FieldNotFoundException);
+      assertThat(expected).hasMessage("Field with name (nonExistingField) does not exist on class type (%s)!",
+        SuperType.class.getName());
 
-      assertTrue(expected.getCause().getCause() instanceof NoSuchFieldException);
+      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
+      assertThat(expected.getCause().getCause()).hasNoCause();
 
       throw expected;
     }
@@ -214,49 +223,54 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test
   public void setObjectField() {
+
     DerivedType derivedType = new DerivedType();
 
-    assertNull(derivedType.booleanField);
+    assertThat(derivedType.booleanField).isNull();
 
     ReflectionUtils.setField(derivedType, "booleanField", true);
 
-    assertTrue(derivedType.booleanField);
+    assertThat(derivedType.booleanField).isTrue();
   }
 
   @Test(expected = FieldAccessException.class)
   public void setFinalObjectField() {
+
     DerivedType derivedType = new DerivedType();
 
     try {
-      assertEquals(0xCAFEBABE, derivedType.magicNumber.intValue());
+      assertThat(derivedType.magicNumber.intValue()).isEqualTo(0xCAFEBABE);
 
       ReflectionUtils.setField(derivedType, "magicNumber", 0x0);
     }
     catch (FieldAccessException expected) {
-      assertEquals(String.format("Cannot set the value of a final field (magicNumber) on object of type (%1$s)!",
-        derivedType.getClass().getName()), expected.getMessage());
 
-      assertNull(expected.getCause());
+      assertThat(expected).hasMessage("Cannot set the value of a final field (magicNumber) on object of type (%s)!",
+        derivedType.getClass().getName());
+
+      assertThat(expected).hasNoCause();
 
       throw expected;
     }
     finally {
-      assertEquals(0xCAFEBABE, derivedType.magicNumber.intValue());
+      assertThat(derivedType.magicNumber.intValue()).isEqualTo(0xCAFEBABE);
     }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setNonExistingObjectField() {
+
     try {
       ReflectionUtils.setField(new DerivedType(), "nonExistingField", "test");
     }
     catch (IllegalArgumentException expected) {
-      assertEquals(String.format("Field with name (nonExistingField) does not exist on object of type (%1$s)!",
-        DerivedType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof FieldNotFoundException);
+      assertThat(expected).hasMessage("Field with name (nonExistingField) does not exist on object of type (%s)!",
+        DerivedType.class.getName());
 
-      assertTrue(expected.getCause().getCause() instanceof NoSuchFieldException);
+      assertThat(expected).hasCauseInstanceOf(FieldNotFoundException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
+      assertThat(expected.getCause().getCause()).hasNoCause();
 
       throw expected;
     }
@@ -264,314 +278,346 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   @Test(expected = FieldAccessException.class)
   public void setObjectFieldWithIllegalValue() {
+
     DerivedType derivedType = new DerivedType();
 
     try {
-      assertNull(derivedType.booleanField);
+      assertThat(derivedType.booleanField).isNull();
 
       ReflectionUtils.setField(derivedType, "booleanField", 1);
     }
     catch (FieldAccessException expected) {
-      assertEquals(String.format("Failed to set field (booleanField) to value (1) on object of type (%1$s)!",
-        derivedType.getClass().getName()), expected.getMessage());
 
-      assertNotNull(expected.getCause());
+      assertThat(expected).hasMessage("Failed to set field (booleanField) to value (1) on object of type (%s)!",
+        derivedType.getClass().getName());
+
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasNoCause();
 
       throw expected;
     }
     finally {
-      assertNull(derivedType.booleanField);
+      assertThat(derivedType.booleanField).isNull();
     }
   }
 
   @Test(expected = NullPointerException.class)
   public void setFieldThrowsNullPointerException() {
+
     try {
       ReflectionUtils.setField(new Object(), (Field) null, "test");
     }
     catch (NullPointerException expected) {
       // for line "Assert.isFalse(Modifier.isFinal(field.getModifiers())..." in setField(:Object, :Field, :Object):void
-      assertEquals(228, expected.getStackTrace()[0].getLineNumber());
+      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(228);
 
       throw expected;
     }
   }
 
   @Test
+  @SuppressWarnings("all")
   public void nullCastToVoid() {
-    assertNull(Void.class.cast(null));
+    assertThat(Void.class.cast(null)).isNull();
   }
 
   @Test
   public void invokeClassMethod() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     ReflectionUtils.invoke(SuperType.class, "methodOne");
 
-    assertEquals("methodOne", METHOD_NAME.get());
+    assertThat(METHOD_NAME.get()).isEqualTo("methodOne");
   }
 
   @Test
   public void invokeClassMethodWithArguments() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     ReflectionUtils.invoke(SuperType.class, "methodTwo", "test");
 
-    assertEquals("methodTwo(test)", METHOD_NAME.get());
+    assertThat(METHOD_NAME.get()).isEqualTo("methodTwo(test)");
   }
 
   @Test
   public void invokeClassMethodWithReturnValue() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     String returnValue = ReflectionUtils.invoke(SuperType.class, "methodThree", String.class);
 
-    assertEquals("methodThree():test", METHOD_NAME.get());
-    assertEquals("test", returnValue);
+    assertThat(METHOD_NAME.get()).isEqualTo("methodThree():test");
+    assertThat(returnValue).isEqualTo("test");
   }
 
   @Test
   public void invokeClassMethodWithArgumentsAndReturnValue() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     String greeting = ReflectionUtils.invoke(SuperType.class, "methodFour",
       ArrayUtils.asArray("John"), String.class);
 
-    assertEquals("Hello John", greeting);
-    assertEquals("methodFour", METHOD_NAME.get());
+    assertThat(greeting).isEqualTo("Hello John");
+    assertThat(METHOD_NAME.get()).isEqualTo("methodFour");
   }
 
   @Test
   public void invokeClassMethodWithArgumentsAndArgumentTypes() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     ReflectionUtils.invoke(SuperType.class, "methodFour", ArrayUtils.asArray(Integer.TYPE), 1);
 
-    assertEquals("methodFour(1)", METHOD_NAME.get());
+    assertThat(METHOD_NAME.get()).isEqualTo("methodFour(1)");
   }
 
   @Test
   public void invokeClassMethodWithArgumentsArgumentTypesAndReturnValue() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     Integer sum = ReflectionUtils.invoke(SuperType.class, "methodFour",
       ArrayUtils.<Class<?>>asArray(Integer.TYPE, Integer.TYPE), ArrayUtils.asArray(5, 7), Integer.class);
 
-    assertEquals(12, NumberUtils.valueOf(sum));
-    assertEquals("methodFour", METHOD_NAME.get());
+    assertThat(NumberUtils.valueOf(sum)).isEqualTo(12);
+    assertThat(METHOD_NAME.get()).isEqualTo("methodFour");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void invokeNoSuchClassMethod() {
+
     try {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
 
       ReflectionUtils.invoke(SuperType.class, "methodSix", "test");
     }
     catch (IllegalArgumentException expected) {
-      assertEquals(String.format("No method with signature (methodSix(:String):void) exists on class type (%1$s)!",
-        SuperType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof MethodNotFoundException);
+      assertThat(expected).hasMessage("No method with signature (methodSix(:String):void) exists on class type (%s)!",
+        SuperType.class.getName());
 
-      assertTrue(expected.getCause().getCause() instanceof NoSuchMethodException);
+      assertThat(expected).hasCauseInstanceOf(MethodNotFoundException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchMethodException.class);
 
       throw expected;
     }
     finally {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
     }
   }
 
   @Test
   public void invokeObjectMethod() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     ReflectionUtils.invoke(new DerivedType(), "methodFive");
 
-    assertEquals("methodFive", METHOD_NAME.get());
+    assertThat(METHOD_NAME.get()).isEqualTo("methodFive");
   }
 
   @Test
   public void invokeObjectMethodWithArguments() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     ReflectionUtils.invoke(new DerivedType(), "methodSix", "string");
 
-    assertEquals("methodSix(string)", METHOD_NAME.get());
+    assertThat(METHOD_NAME.get()).isEqualTo("methodSix(string)");
   }
 
   @Test
   public void invokeObjectMethodWithReturnValue() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     String returnValue = ReflectionUtils.invoke(new DerivedType(), "methodSeven", String.class);
 
-    assertEquals("string", returnValue);
-    assertEquals("methodSeven():string", METHOD_NAME.get());
+    assertThat(returnValue).isEqualTo("string");
+    assertThat(METHOD_NAME.get()).isEqualTo("methodSeven():string");
   }
 
   @Test
   public void invokeObjectWithArgumentsAndArgumentTypes() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     ReflectionUtils.invoke(new DerivedType(), "methodEight",
       ArrayUtils.asArray(Integer.TYPE), 1);
 
-    assertEquals("methodEight(1)", METHOD_NAME.get());
+    assertThat(METHOD_NAME.get()).isEqualTo("methodEight(1)");
   }
 
   @Test
   public void invokeObjectMethodWithArgumentsAndReturnValue() {
-    assertNull(METHOD_NAME.get());
+
+    assertThat(METHOD_NAME.get()).isNull();
 
     String returnValue = ReflectionUtils.invoke(new DerivedType(), "methodEight",
       ArrayUtils.asArray("test", "ing"), String.class);
 
-    assertEquals("testing", returnValue);
-    assertEquals("methodEight", METHOD_NAME.get());
+    assertThat(returnValue).isEqualTo("testing");
+    assertThat(METHOD_NAME.get()).isEqualTo("methodEight");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void invokeNoSuchObjectMethod() {
+
     try {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
 
       ReflectionUtils.invoke(new DerivedType(), "methodEight", ArrayUtils.asArray('A', 'C'), String.class);
     }
     catch (IllegalArgumentException expected) {
-      assertEquals(String.format(
-        "No method with signature (methodEight(:Character, :Character):String) exists on object of type (%1$s)!",
-          DerivedType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof MethodNotFoundException);
+      assertThat(expected)
+        .hasMessage("No method with signature (methodEight(:Character, :Character):String) exists on object of type (%s)!",
+          DerivedType.class.getName());
 
-      assertTrue(expected.getCause().getCause() instanceof NoSuchMethodException);
+      assertThat(expected).hasCauseInstanceOf(MethodNotFoundException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(NoSuchMethodException.class);
+      assertThat(expected.getCause().getCause()).hasNoCause();
 
       throw expected;
     }
     finally {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
     }
   }
 
   @Test(expected = MethodInvocationException.class)
   public void invokeMethodWithWrongNumberOfArguments() {
+
     try {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
 
       ReflectionUtils.invoke(SuperType.class, "methodFour", ArrayUtils.<Class<?>>asArray(String.class),
         ArrayUtils.asArray("Jon", "Doe"), String.class);
     }
     catch (MethodInvocationException expected) {
-      assertEquals(String.format("Failed to invoke method (methodFour(:String):String) on class type (%1$s)!",
-        SuperType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof IllegalArgumentException);
+      assertThat(expected).hasMessage("Failed to invoke method (methodFour(:String):String) on class type (%s)!",
+        SuperType.class.getName());
 
-      assertEquals("wrong number of arguments", expected.getCause().getMessage());
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasMessage("wrong number of arguments");
 
       throw expected;
     }
     finally {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
     }
   }
 
   @Test(expected = MethodInvocationException.class)
   public void invokeMethodWithArgumentParameterTypeMismatch() {
+
     try {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
 
       ReflectionUtils.invoke(SuperType.class, "methodFour",
         ArrayUtils.<Class<?>>asArray(Integer.TYPE, Integer.TYPE), ArrayUtils.asArray(5.4d, 4.5d), Integer.TYPE);
     }
     catch (MethodInvocationException expected) {
-      assertEquals(String.format("Failed to invoke method (methodFour(:int, :int):int) on class type (%1$s)!",
-        SuperType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof IllegalArgumentException);
+      assertThat(expected).hasMessage("Failed to invoke method (methodFour(:int, :int):int) on class type (%s)!",
+        SuperType.class.getName());
 
-      assertEquals("argument type mismatch", expected.getCause().getMessage());
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasMessage("argument type mismatch");
+      assertThat(expected.getCause()).hasNoCause();
 
       throw expected;
     }
     finally {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
     }
   }
 
   @Test(expected = MethodInvocationException.class)
   public void invokeMethodThrowsMethodInvocationException() {
+
     try {
-      assertNull(METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isNull();
 
       ReflectionUtils.invoke(new DerivedType(), "methodNine", ArrayUtils.asArray("test"), Object.class);
     }
     catch (MethodInvocationException expected) {
-      assertEquals(String.format("Failed to invoke method (methodNine(:String):Object) on object of type (%1$s)!",
-        DerivedType.class.getName()), expected.getMessage());
 
-      assertTrue(expected.getCause() instanceof InvocationTargetException);
-      assertTrue(expected.getCause().getCause() instanceof IllegalArgumentException);
-      assertEquals("test", expected.getCause().getCause().getMessage());
+      assertThat(expected).hasMessage("Failed to invoke method (methodNine(:String):Object) on object of type (%s)!",
+        DerivedType.class.getName());
+
+      assertThat(expected).hasCauseInstanceOf(InvocationTargetException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause().getCause()).hasMessage("test");
 
       throw expected;
     }
     finally {
-      assertEquals("methodNine", METHOD_NAME.get());
+      assertThat(METHOD_NAME.get()).isEqualTo("methodNine");
     }
   }
 
   @Test(expected = NullPointerException.class)
   public void invokeMethodThrowsNullPointerException() {
+
     try {
       ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class);
     }
     catch (NullPointerException expected) {
-      assertEquals(537, expected.getStackTrace()[0].getLineNumber());
+
+      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(537);
+
       throw expected;
     }
   }
 
   @Test
   public void withFieldsOnClass() {
+
     Set<String> fieldNames = new HashSet<>(2);
 
     ReflectionUtils.withFields().on(SuperType.class).call((field) -> fieldNames.add(field.getName()))
       .throwing(new FieldNotFoundException());
 
-    assertThat(fieldNames.size(), is(greaterThanOrEqualTo(2)));
-    assertThat(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField")), is(true));
+    assertThat(fieldNames.size()).isGreaterThanOrEqualTo(2);
+    assertThat(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField"))).isTrue();
   }
 
   @Test
   public void withFieldsOnObject() {
+
     Set<String> fieldNames = new HashSet<>(5);
 
     ReflectionUtils.withFields().on(new DerivedType()).call((field) -> fieldNames.add(field.getName()))
       .throwing(new FieldNotFoundException());
 
-    assertThat(fieldNames.size(), is(greaterThanOrEqualTo(5)));
+    assertThat(fieldNames.size()).isGreaterThanOrEqualTo(5);
     assertThat(fieldNames.containsAll(Arrays.asList("serialVersionUID", "stringField",
-      "booleanField", "magicNumber", "id")), is(true));
+      "booleanField", "magicNumber", "id"))).isTrue();
   }
 
   @Test
+  @SuppressWarnings("all")
   public void withPublicInstanceFieldsOnly() {
+
     Set<String> fieldNames = new HashSet<>(2);
 
     ReflectionUtils.withFields().on(DerivedType.class).matching((field) -> Modifier.isPublic(field.getModifiers()))
       .call((field) -> fieldNames.add(field.getName())).throwing(new FieldNotFoundException());
 
-    assertNotNull(fieldNames);
-    assertFalse(fieldNames.isEmpty());
-    assertEquals(1, fieldNames.size());
-    assertTrue(fieldNames.containsAll(Collections.singletonList("magicNumber")));
+    assertThat(fieldNames).isNotNull();
+    assertThat(fieldNames.isEmpty()).isFalse();
+    assertThat(fieldNames.size()).isEqualTo(1);
+    assertThat(fieldNames.containsAll(Collections.singletonList("magicNumber"))).isTrue();
   }
 
   @Test(expected = FieldNotFoundException.class)
   public void withPublicProtectedNonFinalInstanceFields() {
+
     AtomicInteger count = new AtomicInteger(0);
 
     try {
@@ -585,30 +631,33 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
       }).throwing(new FieldNotFoundException());
     }
     finally {
-      assertEquals(0, count.get());
+      assertThat(count.get()).isEqualTo(0);
     }
   }
 
   @Test
+  @SuppressWarnings("all")
   public void withNullFields() {
     ReflectionUtils.withFields(null, null, null).call((field) -> new NullPointerException("The Field must not be null!"));
   }
 
   @Test
   public void withMethodsOnClass() {
+
     Set<String> methods = new HashSet<>(5);
 
     ReflectionUtils.withMethods().on(SuperType.class).matching((method) -> SuperType.class.equals(method.getDeclaringClass()))
       .call((method) -> methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length)))
         .throwing(new MethodNotFoundException());
 
-    assertThat(methods.size(), is(greaterThanOrEqualTo(5)));
+    assertThat(methods.size()).isGreaterThanOrEqualTo(5);
     assertThat(methods.containsAll(Arrays.asList("methodOne(0)", "methodTwo(1)", "methodThree(0)",
-      "methodFour(1)", "methodFour(2)")), is(true));
+      "methodFour(1)", "methodFour(2)"))).isTrue();
   }
 
   @Test
   public void withMethodsOnObject() {
+
     Set<String> methods = new HashSet<>(10);
 
     ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->
@@ -618,35 +667,38 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
         methods.add(String.format("%1$s(%2$d)", method.getName(), method.getParameterTypes().length));
       }).throwing(new MethodNotFoundException());
 
-    assertThat(methods.size(), is(greaterThanOrEqualTo(5)));
+    assertThat(methods.size()).isGreaterThanOrEqualTo(5);
     assertThat(methods.containsAll(Arrays.asList("methodFive(0)", "methodSix(1)", "methodSeven(0)", "methodEight(2)",
-      "methodNine(1)")), is(true));
+      "methodNine(1)"))).isTrue();
   }
 
   @Test
   public void withMethodTenOnObject() {
-    final AtomicInteger count = new AtomicInteger(0);
+
+    AtomicInteger count = new AtomicInteger(0);
 
     ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->  "methodTen".equals(method.getName()))
       .call((method) -> count.incrementAndGet());
 
-    assertEquals(0, count.get());
+    assertThat(count.get()).isEqualTo(0);
   }
 
   @Test(expected = MethodNotFoundException.class)
   public void withNonMatchingMethodOnObjectThrowsMethodNotFoundException() {
-    final AtomicInteger count = new AtomicInteger(0);
+
+    AtomicInteger count = new AtomicInteger(0);
 
     try {
       ReflectionUtils.withMethods().on(new DerivedType()).matching((method) ->  false)
         .call((method) ->  count.incrementAndGet()).throwing(new MethodNotFoundException());
     }
     finally {
-      assertEquals(0, count.get());
+      assertThat(count.get()).isEqualTo(0);
     }
   }
 
   @Test
+  @SuppressWarnings("all")
   public void withNullMethods() {
     ReflectionUtils.withMethods(null, null, null).call((method) -> new NullPointerException("Method must not be null"));
   }

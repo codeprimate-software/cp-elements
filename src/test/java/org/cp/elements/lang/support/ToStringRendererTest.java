@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * The ToStringRendererTest class is a test suite of test cases testing the contract and functionality
- * of the {@link ToStringRenderer} class.
+ * Unit Tests for {@link ToStringRenderer}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -35,7 +31,6 @@ public class ToStringRendererTest {
 
   @Test
   public void render() {
-    assertThat(new ToStringRenderer<String>().render("test"), is(equalTo("test")));
+    assertThat(new ToStringRenderer<String>().render("test")).isEqualTo("test");
   }
-
 }

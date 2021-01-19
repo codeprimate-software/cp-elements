@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -32,15 +29,16 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 
 /**
- * Unit tests for the {@link Auditable} interface.
+ * Unit Tests for the {@link Auditable} interface.
  *
  * @author John J. Blum
+ * @see java.time.LocalDateTime
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Auditable
  * @since 1.0.0
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class AuditableTests {
 
   @Test
@@ -50,7 +48,7 @@ public class AuditableTests {
 
     when(mockAuditable.createdBy(anyString())).thenCallRealMethod();
 
-    assertThat(mockAuditable.createdBy("test"), is(equalTo(mockAuditable)));
+    assertThat(mockAuditable.<Auditable>createdBy("test")).isEqualTo(mockAuditable);
 
     verify(mockAuditable, times(1)).setCreatedBy(eq("test"));
   }
@@ -64,7 +62,7 @@ public class AuditableTests {
 
     when(mockAuditable.createdOn(any(LocalDateTime.class))).thenCallRealMethod();
 
-    assertThat(mockAuditable.createdOn(now), is(equalTo(mockAuditable)));
+    assertThat(mockAuditable.<Auditable>createdOn(now)).isEqualTo(mockAuditable);
 
     verify(mockAuditable, times(1)).setCreatedOn(eq(now));
   }
@@ -76,7 +74,7 @@ public class AuditableTests {
 
     when(mockAuditable.createdWith(anyString())).thenCallRealMethod();
 
-    assertThat(mockAuditable.createdWith("test"), is(equalTo(mockAuditable)));
+    assertThat(mockAuditable.<Auditable>createdWith("test")).isEqualTo(mockAuditable);
 
     verify(mockAuditable, times(1)).setCreatedWith(eq("test"));
   }
@@ -88,7 +86,7 @@ public class AuditableTests {
 
     when(mockAuditable.modifiedBy(anyString())).thenCallRealMethod();
 
-    assertThat(mockAuditable.modifiedBy("test"), is(equalTo(mockAuditable)));
+    assertThat(mockAuditable.<Auditable>modifiedBy("test")).isEqualTo(mockAuditable);
 
     verify(mockAuditable, times(1)).setModifiedBy(eq("test"));
   }
@@ -102,7 +100,7 @@ public class AuditableTests {
 
     when(mockAuditable.modifiedOn(any(LocalDateTime.class))).thenCallRealMethod();
 
-    assertThat(mockAuditable.modifiedOn(now), is(equalTo(mockAuditable)));
+    assertThat(mockAuditable.<Auditable>modifiedOn(now)).isEqualTo(mockAuditable);
 
     verify(mockAuditable, times(1)).setModifiedOn(eq(now));
   }
@@ -114,11 +112,11 @@ public class AuditableTests {
 
     when(mockAuditable.modifiedWith(anyString())).thenCallRealMethod();
 
-    assertThat(mockAuditable.modifiedWith("test"), is(equalTo(mockAuditable)));
+    assertThat(mockAuditable.<Auditable>modifiedWith("test")).isEqualTo(mockAuditable);
 
     verify(mockAuditable, times(1)).setModifiedWith(eq("test"));
   }
 
-  abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> implements Auditable<USER, PROCESS, ID> { }
+  static abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> implements Auditable<USER, PROCESS, ID> { }
 
 }

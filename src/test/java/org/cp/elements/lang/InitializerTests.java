@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
@@ -31,7 +29,7 @@ import java.util.Map;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link Initializer}.
+ * Unit Tests for {@link Initializer}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -47,14 +45,14 @@ public class InitializerTests {
 
     Initable mockInitable = mock(Initable.class);
 
-    assertThat(Initializer.init(mockInitable), is(true));
+    assertThat(Initializer.init(mockInitable)).isTrue();
 
     verify(mockInitable, times(1)).init();
   }
 
   @Test
   public void initNonInitableObject() {
-    assertThat(Initializer.init(new Object()), is(false));
+    assertThat(Initializer.init(new Object())).isFalse();
   }
 
   @Test
@@ -64,14 +62,14 @@ public class InitializerTests {
 
     Initable mockInitable = mock(Initable.class);
 
-    assertThat(Initializer.init(mockInitable, args), is(true));
+    assertThat(Initializer.init(mockInitable, args)).isTrue();
 
     verify(mockInitable, times(1)).init();
   }
 
   @Test
   public void initUsingArgumentsWithNonInitableObject() {
-    assertThat(Initializer.init(new Object(), "arg1", "arg2", "arg3"), is(false));
+    assertThat(Initializer.init(new Object(), "arg1", "arg2", "arg3")).isFalse();
   }
 
   @Test
@@ -81,7 +79,7 @@ public class InitializerTests {
 
     ParameterizedInitable mockParameterizedInitable = mock(ParameterizedInitable.class);
 
-    assertThat(Initializer.init(mockParameterizedInitable, args), is(true));
+    assertThat(Initializer.init(mockParameterizedInitable, args)).isTrue();
 
     verify(mockParameterizedInitable, times(1))
       .init(eq("arg1"), eq("arg2"), eq("arg3"));
@@ -98,14 +96,14 @@ public class InitializerTests {
 
     Initable mockInitable = mock(Initable.class);
 
-    assertThat(Initializer.init(mockInitable, parameters), is(true));
+    assertThat(Initializer.init(mockInitable, parameters)).isTrue();
 
     verify(mockInitable, times(1)).init();
   }
 
   @Test
   public void initUsingParametersWithNonInitableObject() {
-    assertThat(Initializer.init(new Object(), Collections.emptyMap()), is(false));
+    assertThat(Initializer.init(new Object(), Collections.emptyMap())).isFalse();
   }
 
   @Test
@@ -119,7 +117,7 @@ public class InitializerTests {
 
     ParameterizedInitable mockParameterizedInitable = mock(ParameterizedInitable.class);
 
-    assertThat(Initializer.init(mockParameterizedInitable, parameters), is(true));
+    assertThat(Initializer.init(mockParameterizedInitable, parameters)).isTrue();
 
     verify(mockParameterizedInitable, times(1)).init(same(parameters));
   }

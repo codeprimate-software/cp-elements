@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,8 +23,7 @@ import java.util.Set;
 import org.junit.Test;
 
 /**
- * The UUIDIdentifierSequenceTest class is a test suite of test cases testing the contract and functionality
- * of the UUIDIdentifierSequence class.
+ * Unit Tests for {@link UUIDIdentifierSequence}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -41,14 +37,15 @@ public class UUIDIdentifierSequenceTest {
 
   @Test
   public void nextIdGeneratedUniqueIds() {
+
     UUIDIdentifierSequence identifierSequence = new UUIDIdentifierSequence();
+
     Set<String> identifiers = new HashSet<>(COUNT);
 
     for (int index = COUNT; index > 0; --index) {
       identifiers.add(identifierSequence.nextId());
     }
 
-    assertThat(identifiers.size(), is(equalTo(COUNT)));
+    assertThat(identifiers.size()).isEqualTo(COUNT);
   }
-
 }

@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
@@ -34,9 +31,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * The CommonSortTestSuite class is an abstract base class encapsulating test functionality and logic common to all
- * Sorter based test classes.  In addition, this abstract test suite class setups a sortable data structure and basic
- * test case to test sort order functionality of the Sorter.
+ * The {@link CommonSortTestSuite} class is an abstract base class encapsulating test functionality and logic
+ * common to all {@link Sorter} based test classes.
+ *
+ * In addition, this abstract test suite class setups a sortable data structure and basic test case
+ * to test sort order functionality of the {@link Sorter}.
  *
  * @author John J. Blum
  * @see java.util.Random
@@ -68,11 +67,14 @@ public abstract class CommonSortTestSuite {
   }
 
   protected void assertSorted(Iterable<Integer> numbers) {
+
     Integer previousNumber = -1;
 
     for (Integer currentNumber : numbers) {
-      assertTrue(String.format("%1$d is not less than equal to %2$d", previousNumber, currentNumber),
-        previousNumber <= currentNumber);
+
+      assertThat(previousNumber).as("%1$d is not less than equal to %2$d", previousNumber, currentNumber)
+        .isLessThanOrEqualTo(currentNumber);
+
       previousNumber = currentNumber;
     }
   }
@@ -98,8 +100,8 @@ public abstract class CommonSortTestSuite {
 
       numbers = new Integer[getNumberOfElementsToSort()];
 
-      assertNotNull(numbers);
-      assertEquals(getNumberOfElementsToSort(), numbers.length);
+      assertThat(numbers).isNotNull();
+      assertThat(numbers.length).isEqualTo(getNumberOfElementsToSort());
 
       for (int index = 0; index < numbers.length; index++) {
         numbers[index] = numberGenerator.nextInt(getMaximumNumberValue());
@@ -107,8 +109,8 @@ public abstract class CommonSortTestSuite {
 
       TestSorter.TestSortableArrayList<Integer> numberList = new TestSorter.TestSortableArrayList<>(numbers);
 
-      assertNotNull(numberList);
-      assertEquals(numbers.length, numberList.size());
+      assertThat(numberList).isNotNull();
+      assertThat(numberList.size()).isEqualTo(numbers.length);
 
       Collections.shuffle(numberList, numberGenerator);
 
@@ -125,12 +127,12 @@ public abstract class CommonSortTestSuite {
   public void sort() {
     Sorter sorter = getSorter();
 
-    assertNotNull("The Sorter implementation was not configured and initialized properly!", sorter);
+    assertThat(sorter).as("The Sorter implementation was not configured and initialized properly!").isNotNull();
 
     Integer[] sortedNumbers = sorter.sort(numbers);
 
-    assertNotNull(sortedNumbers);
-    assertEquals(getNumberOfElementsToSort(), sortedNumbers.length);
+    assertThat(sortedNumbers).isNotNull();
+    assertThat(sortedNumbers.length).isEqualTo(getNumberOfElementsToSort());
     assertSorted(asIterable(sortedNumbers));
   }
 

@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 
 import org.cp.elements.lang.Version.Qualifier;
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link Version} and {@link Version.Qualifier}.
+ * Unit Tests for {@link Version} and {@link Version.Qualifier}.
  *
  * @author John Blum
  * @see org.junit.Rule
@@ -40,11 +36,9 @@ import org.junit.rules.ExpectedException;
  */
 public class VersionTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void fromMajorMinorVersionNumbers() {
+
     Version version = Version.from(1, 2);
 
     assertThat(version).isNotNull();
@@ -59,6 +53,7 @@ public class VersionTests {
 
   @Test
   public void fromMajorMinorMaintenanceVersionNumbers() {
+
     Version version = Version.from(1, 2, 4);
 
     assertThat(version).isNotNull();
@@ -73,6 +68,7 @@ public class VersionTests {
 
   @Test
   public void fromMajorMinorMaintenanceVersionNumbersWithQualifier() {
+
     Version version = Version.from(1, 2, 4, Qualifier.RELEASE);
 
     assertThat(version).isNotNull();
@@ -87,6 +83,7 @@ public class VersionTests {
 
   @Test
   public void fromMajorMinorMaintenanceVersionNumbersWithQualifierAndQualifierNumber() {
+
     Version version = Version.from(1, 2, 4, Qualifier.SNAPSHOT, 8);
 
     assertThat(version).isNotNull();
@@ -101,6 +98,7 @@ public class VersionTests {
 
   @Test
   public void parseVersion() {
+
     Version version = Version.parse("1.2.4.M3");
 
     assertThat(version).isNotNull();
@@ -115,6 +113,7 @@ public class VersionTests {
 
   @Test
   public void parseMajorMinorVersion() {
+
     Version version = Version.parse("1.2");
 
     assertThat(version).isNotNull();
@@ -129,6 +128,7 @@ public class VersionTests {
 
   @Test
   public void parseMajorMinorMaintenanceVersion() {
+
     Version version = Version.parse("1.2.4");
 
     assertThat(version).isNotNull();
@@ -143,6 +143,7 @@ public class VersionTests {
 
   @Test
   public void parseMajorMinorMaintenanceWithQualifierVersion() {
+
     Version version = Version.parse("1.2.4.BUILD-SNAPSHOT");
 
     assertThat(version).isNotNull();
@@ -155,44 +156,33 @@ public class VersionTests {
     assertThat(version.getReleaseDateTime()).isNull();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void parseUnrecognizedVersion() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Unrecognized format for version [1.2.3.4.5]");
-
-    Version.parse("1.2.3.4.5");
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("1.2.3.4.5"),
+      () -> "Unrecognized format for version [1.2.3.4.5]");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void parseNullVersion() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The version [null] must be specified");
-
-    Version.parse(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse(null),
+      () -> "The version [null] must be specified");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void parseIllegalVersion() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Version [1] must minimally consist of major and minor version numbers");
-
-    Version.parse("1");
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("1"),
+      () -> "Version [1] must minimally consist of major and minor version numbers");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void parseEmptyVersion() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The version [  ] must be specified");
-
-    Version.parse("  ");
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("  "),
+      () -> "The version [  ] must be specified");
   }
 
   @Test
   public void constructVersion() {
+
     Version version = new Version(1, 2, 4, null, -1);
 
     assertThat(version).isNotNull();
@@ -205,36 +195,29 @@ public class VersionTests {
     assertThat(version.getReleaseDateTime()).isNull();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructVersionWithIllegalMajorVersionNumber() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Major version [-1] must be greater than equal to 0");
-
-    new Version(-1, 0);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Version(-1, 0),
+      () -> "Major version [-1] must be greater than equal to 0");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructVersionWithIllegalMinorVersionNumber() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Minor version [-2] must be greater than equal to 0");
-
-    new Version(0, -2);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Version(0, -2),
+      () -> "Minor version [-2] must be greater than equal to 0");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructVersionWithIllegalMaintenanceVersionNumber() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Maintenance version [-4] must be greater than equal to 0");
-
-    new Version(0, 0, -4);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Version(0, 0, -4),
+      () -> "Maintenance version [-4] must be greater than equal to 0");
   }
 
   @Test
   public void constructVersionWithBuilderNumberAndReleaseDate() {
+
     LocalDateTime releaseDateTime = LocalDateTime.of(2016, Month.DECEMBER, 22, 14, 0, 30);
+
     Version version = Version.from(1, 2, 4, Qualifier.RELEASE).with(1024).on(releaseDateTime);
 
     assertThat(version).isNotNull();
@@ -248,7 +231,9 @@ public class VersionTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void compareToIsCorrect() {
+
     Version milestoneOne = Version.from(1, 2, 4, Qualifier.MILESTONE, 1);
     Version milestoneTwo = Version.from(1, 2, 4, Qualifier.MILESTONE, 2);
     Version releaseCandidateOne = Version.from(1, 2, 4, Qualifier.RELEASE_CANDIDATE);
@@ -270,6 +255,7 @@ public class VersionTests {
   @Test
   @SuppressWarnings("all")
   public void equalsIsCorrect() {
+
     Version majorMinorVersion = Version.from(1, 2);
     Version majorMinorMaintenanceVersion = Version.from(1, 2, 4);
     Version majorMinorMaintenanceQualifierVersion = Version.from(1, 2, 4, Qualifier.MILESTONE);
@@ -286,6 +272,7 @@ public class VersionTests {
 
   @Test
   public void notEqualsIsCorrect() {
+
     Version versionOne = Version.from(1, 2, 4, Qualifier.RELEASE).with(1234);
     Version versionTwo = Version.from(1, 2, 4, Qualifier.RELEASE).with(6789);
 
@@ -306,6 +293,7 @@ public class VersionTests {
 
   @Test
   public void hashCodeIsCorrect() {
+
     Version majorMinorVersion = Version.from(1, 2);
     Version majorMinorMaintenanceVersion = Version.from(1, 2, 4);
     Version majorMinorMaintenanceQualifierVersion = Version.from(1, 2, 4, Qualifier.MILESTONE);
@@ -322,6 +310,7 @@ public class VersionTests {
 
   @Test
   public void toStringIsCorrect() {
+
     Version version = Version.from(1, 2, 4);
 
     assertThat(version.toString()).isEqualTo("1.2.4");
@@ -329,6 +318,7 @@ public class VersionTests {
 
   @Test
   public void toStringWithBuildNumberIsCorrect() {
+
     Version version = Version.from(1, 0, 1).with(1234);
 
     assertThat(version.toString()).isEqualTo("1.0.1 build 1234");
@@ -336,6 +326,7 @@ public class VersionTests {
 
   @Test
   public void toStringWithQualifierIsCorrect() {
+
     Version version = Version.from(1, 0, 1, Qualifier.SNAPSHOT);
 
     assertThat(version.toString()).isEqualTo("1.0.1.SNAPSHOT");
@@ -343,7 +334,9 @@ public class VersionTests {
 
   @Test
   public void toStringWithReleaseDateTimeIsCorrect() {
+
     LocalDateTime releaseDateTime = LocalDateTime.of(2016, Month.DECEMBER, 22, 14, 30, 15);
+
     Version version = Version.from(1, 0, 1).on(releaseDateTime);
 
     assertThat(version.toString()).isEqualTo("1.0.1 on 2016-December-22-14-30-15");
@@ -351,6 +344,7 @@ public class VersionTests {
 
   @Test
   public void toStringWithBuildNumberAndQualifierIsCorrect() {
+
     Version version = Version.from(1, 0, 1, Qualifier.MILESTONE, 4).with(1234);
 
     assertThat(version.toString()).isEqualTo("1.0.1.M4 build 1234");
@@ -358,7 +352,9 @@ public class VersionTests {
 
   @Test
   public void toStringWithQualifierAndReleaseDateTimeIsCorrect() {
+
     LocalDateTime releaseDateTime = LocalDateTime.of(2016, Month.DECEMBER, 22, 14, 35, 0);
+
     Version version = Version.from(1, 0, 1, Qualifier.RELEASE_CANDIDATE, 2).on(releaseDateTime);
 
     assertThat(version.toString()).isEqualTo("1.0.1.RC2 on 2016-December-22-14-35-00");
@@ -366,7 +362,9 @@ public class VersionTests {
 
   @Test
   public void toStringWithBuildNumberQualifierAndReleaseDateTimeIsCorrect() {
+
     LocalDateTime releaseDateTime = LocalDateTime.of(2016, Month.DECEMBER, 22, 14, 30, 45);
+
     Version version = Version.from(1, 0, 1, Qualifier.MILESTONE, 2).on(releaseDateTime).with(5678);
 
     assertThat(version.toString()).isEqualTo("1.0.1.M2 build 5678 on 2016-December-22-14-30-45");
@@ -374,6 +372,7 @@ public class VersionTests {
 
   @Test
   public void qualifierIdentityIsCorrect() {
+
     assertThat(Qualifier.ALPHA.isAlpha()).isTrue();
     assertThat(Qualifier.BETA.isBeta()).isTrue();
     assertThat(Qualifier.BUILD_SNAPSHOT.isBuildSnapshot()).isTrue();
@@ -396,6 +395,7 @@ public class VersionTests {
 
   @Test
   public void qualifierResolveIsCorrect() {
+
     assertThat(Qualifier.resolve("1.0.0.ALPHA")).isEqualTo(Qualifier.ALPHA);
     assertThat(Qualifier.resolve("1.0.0.BETA")).isEqualTo(Qualifier.BETA);
     assertThat(Qualifier.resolve("1.0.0.BUILD-SNAPSHOT")).isEqualTo(Qualifier.BUILD_SNAPSHOT);
@@ -432,6 +432,7 @@ public class VersionTests {
 
   @Test
   public void qualifierResolvesToUndefined() {
+
     assertThat(Qualifier.resolve("1.0.0.ALPH")).isEqualTo(Qualifier.UNDEFINED);
     assertThat(Qualifier.resolve("1.0.0.BET")).isEqualTo(Qualifier.UNDEFINED);
     assertThat(Qualifier.resolve("1.0.0.BLD-SNPSHT")).isEqualTo(Qualifier.UNDEFINED);

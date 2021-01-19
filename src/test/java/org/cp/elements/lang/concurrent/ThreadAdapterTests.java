@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
@@ -38,9 +30,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.cp.elements.test.TestUtils;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -50,22 +42,24 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit tests for {@link ThreadAdapter}.
+ * Unit Tests for {@link ThreadAdapter}.
  *
  * @author John J. Blum
+ * @see java.util.concurrent.CountDownLatch
+ * @see java.util.concurrent.TimeUnit
  * @see org.junit.Rule
  * @see org.junit.Test
+ * @see org.junit.rules.Timeout
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
+ * @see edu.umd.cs.mtc.MultithreadedTestCase
+ * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ThreadAdapterTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Rule
   public Timeout globalTimeout = Timeout.seconds(5);
@@ -78,20 +72,21 @@ public class ThreadAdapterTests {
 
     ThreadAdapter threadAdapter = new ThreadAdapter();
 
-    assertThat(threadAdapter, is(notNullValue()));
-    assertThat(threadAdapter.getDelegate(), is(equalTo(Thread.currentThread())));
+    assertThat(threadAdapter).isNotNull();
+    assertThat(threadAdapter.getDelegate()).isEqualTo(Thread.currentThread());
   }
 
   @Test
+  @SuppressWarnings("all")
   public void constructThreadAdapterWithRunnable() {
 
     Runnable mockRunnable = mock(Runnable.class);
 
     ThreadAdapter threadAdapter = new ThreadAdapter(mockRunnable);
 
-    assertThat(threadAdapter, is(notNullValue()));
-    assertThat(threadAdapter.getDelegate(), is(notNullValue()));
-    assertThat(threadAdapter.getDelegate(), is(not(equalTo(Thread.currentThread()))));
+    assertThat(threadAdapter).isNotNull();
+    assertThat(threadAdapter.getDelegate()).isNotNull();
+    assertThat(threadAdapter.getDelegate()).isNotEqualTo(Thread.currentThread());
 
     threadAdapter.getDelegate().run();
 
@@ -103,23 +98,21 @@ public class ThreadAdapterTests {
 
     ThreadAdapter threadAdapter = new ThreadAdapter(mockThread);
 
-    assertThat(threadAdapter, is(notNullValue()));
-    assertThat(threadAdapter.getDelegate(), is(sameInstance(mockThread)));
+    assertThat(threadAdapter).isNotNull();
+    assertThat(threadAdapter.getDelegate()).isSameAs(mockThread);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructThreadAdapterWithNull() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The delegate Thread must not be null");
-
-    new ThreadAdapter(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> new ThreadAdapter(null),
+        () -> "The delegate Thread must not be null");
   }
 
   @Test
   public void isAliveReturnsFalseForNonStartedThread() {
-    assertThat(new ThreadAdapter(mockThread).isAlive(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isAlive()).isFalse();
   }
 
   @Test
@@ -127,7 +120,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.BLOCKED);
 
-    assertThat(new ThreadAdapter(mockThread).isBlocked(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isBlocked()).isTrue();
 
     verify(mockThread, times(1)).getState();
   }
@@ -137,7 +130,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
 
-    assertThat(new ThreadAdapter(mockThread).isBlocked(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isBlocked()).isFalse();
 
     verify(mockThread, times(1)).getState();
   }
@@ -151,7 +144,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(testThread);
 
-    assertThat(new ThreadAdapter(spyThread).isDaemon(), is(true));
+    assertThat(new ThreadAdapter(spyThread).isDaemon()).isTrue();
 
     verify(spyThread, times(1)).isDaemon();
   }
@@ -165,7 +158,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(testThread);
 
-    assertThat(new ThreadAdapter(spyThread).isDaemon(), is(false));
+    assertThat(new ThreadAdapter(spyThread).isDaemon()).isFalse();
 
     verify(spyThread, times(1)).isDaemon();
   }
@@ -179,7 +172,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(testThread);
 
-    assertThat(new ThreadAdapter(spyThread).isNonDaemon(), is(true));
+    assertThat(new ThreadAdapter(spyThread).isNonDaemon()).isTrue();
 
     verify(spyThread, times(1)).isDaemon();
   }
@@ -193,7 +186,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(testThread);
 
-    assertThat(new ThreadAdapter(spyThread).isNonDaemon(), is(false));
+    assertThat(new ThreadAdapter(spyThread).isNonDaemon()).isFalse();
 
     verify(spyThread, times(1)).isDaemon();
   }
@@ -203,7 +196,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.isInterrupted()).thenReturn(true);
 
-    assertThat(new ThreadAdapter(mockThread).isInterrupted(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isInterrupted()).isTrue();
 
     verify(mockThread, times(1)).isInterrupted();
   }
@@ -213,7 +206,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.isInterrupted()).thenReturn(false);
 
-    assertThat(new ThreadAdapter(mockThread).isInterrupted(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isInterrupted()).isFalse();
 
     verify(mockThread, times(1)).isInterrupted();
   }
@@ -223,7 +216,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.NEW);
 
-    assertThat(new ThreadAdapter(mockThread).isNew(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isNew()).isTrue();
 
     verify(mockThread, times(1)).getState();
   }
@@ -233,7 +226,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.TERMINATED);
 
-    assertThat(new ThreadAdapter(mockThread).isNew(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isNew()).isFalse();
 
     verify(mockThread, times(1)).getState();
   }
@@ -243,7 +236,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
 
-    assertThat(new ThreadAdapter(mockThread).isRunnable(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isRunnable()).isTrue();
 
     verify(mockThread, times(1)).getState();
   }
@@ -253,7 +246,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.WAITING);
 
-    assertThat(new ThreadAdapter(mockThread).isRunnable(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isRunnable()).isFalse();
 
     verify(mockThread, times(1)).getState();
   }
@@ -263,7 +256,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.TERMINATED);
 
-    assertThat(new ThreadAdapter(mockThread).isTerminated(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isTerminated()).isTrue();
 
     verify(mockThread, times(1)).getState();
   }
@@ -273,7 +266,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.NEW);
 
-    assertThat(new ThreadAdapter(mockThread).isTerminated(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isTerminated()).isFalse();
 
     verify(mockThread, times(1)).getState();
   }
@@ -283,7 +276,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.TIMED_WAITING);
 
-    assertThat(new ThreadAdapter(mockThread).isTimedWaiting(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isTimedWaiting()).isTrue();
 
     verify(mockThread, times(1)).getState();
   }
@@ -293,7 +286,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
 
-    assertThat(new ThreadAdapter(mockThread).isTimedWaiting(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isTimedWaiting()).isFalse();
 
     verify(mockThread, times(1)).getState();
   }
@@ -303,7 +296,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.WAITING);
 
-    assertThat(new ThreadAdapter(mockThread).isWaiting(), is(true));
+    assertThat(new ThreadAdapter(mockThread).isWaiting()).isTrue();
 
     verify(mockThread, times(1)).getState();
   }
@@ -313,7 +306,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
 
-    assertThat(new ThreadAdapter(mockThread).isWaiting(), is(false));
+    assertThat(new ThreadAdapter(mockThread).isWaiting()).isFalse();
 
     verify(mockThread, times(1)).getState();
   }
@@ -326,8 +319,8 @@ public class ThreadAdapterTests {
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(mockThread);
     ThreadAdapter actualThreadAdatper = expectedThreadAdapter.setContextClassLoader(expectedClassLoader);
 
-    assertThat(expectedClassLoader, is(notNullValue()));
-    assertThat(actualThreadAdatper, is(sameInstance(expectedThreadAdapter)));
+    assertThat(expectedClassLoader).isNotNull();
+    assertThat(actualThreadAdatper).isSameAs(expectedThreadAdapter);
 
     verify(mockThread, times(1)).setContextClassLoader(same(expectedClassLoader));
   }
@@ -339,7 +332,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getContextClassLoader()).thenReturn(expectedClassLoader);
 
-    assertThat(new ThreadAdapter(mockThread).getContextClassLoader(), is(sameInstance(expectedClassLoader)));
+    assertThat(new ThreadAdapter(mockThread).getContextClassLoader()).isSameAs(expectedClassLoader);
 
     verify(mockThread, times(1)).getContextClassLoader();
   }
@@ -350,8 +343,8 @@ public class ThreadAdapterTests {
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(mockThread);
     ThreadAdapter actualThreadAdapter = expectedThreadAdapter.setDaemon(true);
 
-    assertThat(expectedThreadAdapter, is(notNullValue()));
-    assertThat(actualThreadAdapter, is(sameInstance(expectedThreadAdapter)));
+    assertThat(expectedThreadAdapter).isNotNull();
+    assertThat(actualThreadAdapter).isSameAs(expectedThreadAdapter);
 
     verify(mockThread, times(1)).setDaemon(eq(true));
   }
@@ -361,7 +354,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getId()).thenReturn(1L);
 
-    assertThat(new ThreadAdapter(mockThread).getId(), is(equalTo(1L)));
+    assertThat(new ThreadAdapter(mockThread).getId()).isEqualTo(1L);
 
     verify(mockThread, times(1)).getId();
   }
@@ -374,8 +367,8 @@ public class ThreadAdapterTests {
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(spyThread);
     ThreadAdapter actualThreadAdapter = expectedThreadAdapter.setName("test");
 
-    assertThat(expectedThreadAdapter, is(notNullValue()));
-    assertThat(actualThreadAdapter, is(sameInstance(expectedThreadAdapter)));
+    assertThat(expectedThreadAdapter).isNotNull();
+    assertThat(actualThreadAdapter).isSameAs(expectedThreadAdapter);
 
     verify(spyThread, times(1)).setName("test");
   }
@@ -385,7 +378,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(new Thread("test"));
 
-    assertThat(new ThreadAdapter(spyThread).getName(), is(equalTo("test")));
+    assertThat(new ThreadAdapter(spyThread).getName()).isEqualTo("test");
 
     verify(spyThread, times(1)).getName();
   }
@@ -398,8 +391,8 @@ public class ThreadAdapterTests {
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(spyThread);
     ThreadAdapter actualThreadAdapter = expectedThreadAdapter.setPriority(1);
 
-    assertThat(expectedThreadAdapter, is(notNullValue()));
-    assertThat(actualThreadAdapter, is(sameInstance(expectedThreadAdapter)));
+    assertThat(expectedThreadAdapter).isNotNull();
+    assertThat(actualThreadAdapter).isSameAs(expectedThreadAdapter);
 
     verify(spyThread, times(1)).setPriority(1);
   }
@@ -413,7 +406,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(testThread);
 
-    assertThat(new ThreadAdapter(spyThread).getPriority(), is(equalTo(10)));
+    assertThat(new ThreadAdapter(spyThread).getPriority()).isEqualTo(10);
 
     verify(spyThread, times(1)).getPriority();
   }
@@ -425,7 +418,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getStackTrace()).thenReturn(expectedStackTrace);
 
-    assertThat(new ThreadAdapter(mockThread).getStackTrace(), is(equalTo(expectedStackTrace)));
+    assertThat(new ThreadAdapter(mockThread).getStackTrace()).isEqualTo(expectedStackTrace);
 
     verify(mockThread, times(1)).getStackTrace();
   }
@@ -435,7 +428,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
 
-    assertThat(new ThreadAdapter(mockThread).getState(), is(equalTo(Thread.State.RUNNABLE)));
+    assertThat(new ThreadAdapter(mockThread).getState()).isEqualTo(Thread.State.RUNNABLE);
 
     verify(mockThread, times(1)).getState();
   }
@@ -447,7 +440,7 @@ public class ThreadAdapterTests {
 
     Thread spyThread = spy(new Thread(testThreadGroup, "test"));
 
-    assertThat(new ThreadAdapter(spyThread).getThreadGroup(), is(equalTo(testThreadGroup)));
+    assertThat(new ThreadAdapter(spyThread).getThreadGroup()).isEqualTo(testThreadGroup);
 
     verify(spyThread, times(1)).getThreadGroup();
   }
@@ -460,8 +453,8 @@ public class ThreadAdapterTests {
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(mockThread);
     ThreadAdapter actualThreadAdapter = expectedThreadAdapter.setUncaughtExceptionHandler(mockUncaughtExceptionHandler);
 
-    assertThat(expectedThreadAdapter, is(notNullValue()));
-    assertThat(actualThreadAdapter, is(sameInstance(expectedThreadAdapter)));
+    assertThat(expectedThreadAdapter).isNotNull();
+    assertThat(actualThreadAdapter).isSameAs(expectedThreadAdapter);
 
     verify(mockThread, times(1)).setUncaughtExceptionHandler(eq(mockUncaughtExceptionHandler));
   }
@@ -473,7 +466,7 @@ public class ThreadAdapterTests {
 
     when(mockThread.getUncaughtExceptionHandler()).thenReturn(mockUncaughtExceptionHandler);
 
-    assertThat(new ThreadAdapter(mockThread).getUncaughtExceptionHandler(), is(equalTo(mockUncaughtExceptionHandler)));
+    assertThat(new ThreadAdapter(mockThread).getUncaughtExceptionHandler()).isEqualTo(mockUncaughtExceptionHandler);
 
     verify(mockThread, times(1)).getUncaughtExceptionHandler();
   }
@@ -508,8 +501,8 @@ public class ThreadAdapterTests {
 
       //System.out.println(stackTrace);
 
-      assertThat(stackTrace, containsString("java.lang.Exception: Stack trace"));
-      assertThat(stackTrace, containsString("at java.lang.Thread.dumpStack"));
+      assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
+      assertThat(stackTrace).contains("at java.lang.Thread.dumpStack");
     }
     finally {
       System.setErr(systemErr);
@@ -549,8 +542,8 @@ public class ThreadAdapterTests {
     latch.countDown();
     joinedThread.join();
 
-    assertThat(joinedThread.isTerminated(), is(true));
-    assertThat(runCalled.get(), is(true));
+    assertThat(joinedThread.isTerminated()).isTrue();
+    assertThat(runCalled.get()).isTrue();
   }
 
   @Test
@@ -585,16 +578,16 @@ public class ThreadAdapterTests {
       joinedThread.start();
       joinedThread.join(200L);
 
-      assertThat(joinedThread.isTerminated(), is(false));
-      assertThat(runCalled.get(), is(true));
-      assertThat(runFinished.get(), is(false));
+      assertThat(joinedThread.isTerminated()).isFalse();
+      assertThat(runCalled.get()).isTrue();
+      assertThat(runFinished.get()).isFalse();
     }
     finally {
       latch.countDown();
       joinedThread.join();
 
-      assertThat(joinedThread.isTerminated(), is(true));
-      assertThat(runFinished.get(), is(true));
+      assertThat(joinedThread.isTerminated()).isTrue();
+      assertThat(runFinished.get()).isTrue();
     }
   }
 
@@ -630,16 +623,16 @@ public class ThreadAdapterTests {
       joinedThread.start();
       joinedThread.join(200L, 500);
 
-      assertThat(joinedThread.isTerminated(), is(false));
-      assertThat(runCalled.get(), is(true));
-      assertThat(runFinished.get(), is(false));
+      assertThat(joinedThread.isTerminated()).isFalse();
+      assertThat(runCalled.get()).isTrue();
+      assertThat(runFinished.get()).isFalse();
     }
     finally {
       latch.countDown();
       joinedThread.join();
 
-      assertThat(joinedThread.isTerminated(), is(true));
-      assertThat(runFinished.get(), is(true));
+      assertThat(joinedThread.isTerminated()).isTrue();
+      assertThat(runFinished.get()).isTrue();
     }
   }
 
@@ -649,6 +642,7 @@ public class ThreadAdapterTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void run() {
 
     new ThreadAdapter(mockThread).run();
@@ -678,10 +672,10 @@ public class ThreadAdapterTests {
 
     ThreadAdapter testThreadAdapter = new ThreadAdapter(testThread);
 
-    assertThat(testThreadAdapter.getDelegate(), is(sameInstance(testThread)));
-    assertThat(testThreadAdapter.toString(), is(equalTo(String.format(
+    assertThat(testThreadAdapter.getDelegate()).isSameAs(testThread);
+    assertThat(testThreadAdapter.toString()).isEqualTo(String.format(
       "{ @type = %s, id = %d, name = ToStringTestThread, daemon = true, group = %s, priority = 9, state = RUNNABLE }",
-        testThreadAdapter.getClass().getName(), testThread.getId(), testThreadGroup))));
+      testThreadAdapter.getClass().getName(), testThread.getId(), testThreadGroup));
   }
 
   @SuppressWarnings("unused")
@@ -714,29 +708,31 @@ public class ThreadAdapterTests {
     }
 
     public void thread1() {
+
       assertTick(0);
 
       interruptingThread = new ThreadAdapter(Thread.currentThread()).setName("Interrupting Thread");
 
       waitForTick(2);
 
-      assertThat(joiningThread.getState(), is(equalTo(getExpectedJoiningThreadState())));
-      assertThat(interrupted.get(), is(false));
+      assertThat(joiningThread.getState()).isEqualTo(getExpectedJoiningThreadState());
+      assertThat(interrupted.get()).isFalse();
 
       joiningThread.interrupt();
 
       waitForTick(3);
 
-      assertThat(interrupted.get(), is(true));
-      assertThat(joiningThread.isTerminated(), is(true));
+      assertThat(interrupted.get()).isTrue();
+      assertThat(joiningThread.isTerminated()).isTrue();
     }
 
     public void thread2() {
+
       waitForTick(1);
 
       joiningThread = new ThreadAdapter(Thread.currentThread()).setName("Joining Thread");
 
-      assertThat(interruptingThread, is(notNullValue()));
+      assertThat(interruptingThread).isNotNull();
 
       try {
         if (milliseconds != null && nanoseconds != null) {

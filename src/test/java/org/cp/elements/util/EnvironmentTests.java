@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,8 +20,6 @@ import static org.cp.elements.io.FileUtils.newFile;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,18 +29,15 @@ import java.util.Properties;
 import java.util.TreeMap;
 
 import org.cp.elements.lang.Version;
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link Environment}.
+ * Unit Tests for {@link Environment}.
  *
  * @author John Blum
- * @see java.lang.String[]
  * @see java.util.Map
  * @see java.util.Properties
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.cp.elements.lang.Version
  * @see org.cp.elements.util.Environment
@@ -51,12 +45,11 @@ import org.junit.rules.ExpectedException;
  */
 public class EnvironmentTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void fromAssociativeArray() {
+
     String[] associativeArray = { "one=1", "two=2" };
+
     Environment environment = Environment.from(associativeArray);
 
     assertThat(environment).isNotNull();
@@ -66,6 +59,7 @@ public class EnvironmentTests {
 
   @Test
   public void fromMap() {
+
     Map<String, String> map = new HashMap<>();
 
     map.put("one", "1");
@@ -84,6 +78,7 @@ public class EnvironmentTests {
 
   @Test
   public void fromProperties() {
+
     Properties properties = new Properties();
 
     properties.setProperty("one", "1");
@@ -102,6 +97,7 @@ public class EnvironmentTests {
 
   @Test
   public void fromEnvironmentVariables() {
+
     Environment environment = Environment.fromEnvironmentVariables();
 
     assertThat(environment).isNotNull();
@@ -113,6 +109,7 @@ public class EnvironmentTests {
 
   @Test
   public void constructsEnvironment() {
+
     Environment environment = new Environment(PropertiesAdapter.from(new Properties()));
 
     assertThat(environment).isNotNull();
@@ -121,13 +118,10 @@ public class EnvironmentTests {
     assertThat(environment.systemProperties()).isInstanceOf(PropertiesAdapter.class);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructsEnvironmentWithNull() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The initial environment cannot be null");
-
-    new Environment(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new Environment(null),
+      () -> "The initial environment cannot be null");
   }
 
   @Test
@@ -142,6 +136,7 @@ public class EnvironmentTests {
 
   @Test
   public void isSetGetAndGetAsIsCorrect() {
+
     Map<String, String> map = new HashMap<>();
 
     map.put("booleanProperty", "true");
@@ -178,6 +173,7 @@ public class EnvironmentTests {
 
   @Test
   public void copyToMap() {
+
     Map<String, String> env = new HashMap<>();
 
     env.put("one", "1");
@@ -208,6 +204,7 @@ public class EnvironmentTests {
 
   @Test
   public void copyToProperties() {
+
     Properties env = new Properties();
 
     env.setProperty("one", "1");
@@ -323,6 +320,7 @@ public class EnvironmentTests {
 
   @Test
   public void iterationIsSuccessful() {
+
     Properties properties = new Properties();
 
     properties.setProperty("one", "1");
@@ -354,6 +352,7 @@ public class EnvironmentTests {
 
   @Test
   public void equalEnvironmentsIsTrue() {
+
     Environment environmentOne = Environment.from(Collections.singletonMap("one", "1"));
     Environment environmentTwo = Environment.from(singletonProperties("one", "1"));
 
@@ -366,6 +365,7 @@ public class EnvironmentTests {
   @Test
   @SuppressWarnings("all")
   public void equalsItselfIsTrue() {
+
     Environment environment = Environment.fromEnvironmentVariables();
 
     assertThat(environment).isNotNull();
@@ -385,6 +385,7 @@ public class EnvironmentTests {
 
   @Test
   public void hashCodeIsCorrect() {
+
     Environment environmentArray = Environment.from(new String[] { "key=test" });
     Environment environmentMap = Environment.from(Collections.singletonMap("key", "test"));
     Environment environmentProperties = Environment.from(singletonProperties("key", "test"));
@@ -401,6 +402,7 @@ public class EnvironmentTests {
 
   @Test
   public void toAssociativeArrayFromEnvironment() {
+
     Map<String, String> map = new TreeMap<>();
 
     map.put("one", "1");
@@ -429,7 +431,9 @@ public class EnvironmentTests {
 
   @Test
   public void toMapFromEnvironment() {
+
     String[] associativeArray = { "one=1", "two=2" };
+
     Environment environment = Environment.from(associativeArray);
 
     assertThat(environment).isNotNull();
@@ -447,6 +451,7 @@ public class EnvironmentTests {
 
   @Test
   public void toPropertiesFromEnvironment() {
+
     Properties env = new Properties();
 
     env.setProperty("one", "1");

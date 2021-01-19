@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * The DefaultFilterTests class is a test suite of test cases testing the contract and functionality
- * of the {@link DefaultFilter} class.
+ * Unit Tests for {@link DefaultFilter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -37,45 +31,47 @@ public class DefaultFilterTests {
 
   @Test
   public void getInstanceWithTrueReturnsAccept() {
-    assertThat(DefaultFilter.getInstance(true), is(sameInstance(DefaultFilter.ACCEPT)));
+    assertThat(DefaultFilter.getInstance(true)).isSameAs(DefaultFilter.ACCEPT);
   }
 
   @Test
   public void getInstanceWithFalseReturnsReject() {
-    assertThat(DefaultFilter.getInstance(false), is(sameInstance(DefaultFilter.REJECT)));
+    assertThat(DefaultFilter.getInstance(false)).isSameAs(DefaultFilter.REJECT);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void accept() {
+
     DefaultFilter<Object> defaultFilter = DefaultFilter.ACCEPT;
 
-    assertTrue(defaultFilter.isAccepting());
-    assertTrue(defaultFilter.accept(null));
-    assertTrue(defaultFilter.accept(Boolean.FALSE));
-    assertTrue(defaultFilter.accept('\0'));
-    assertTrue(defaultFilter.accept(0));
-    assertTrue(defaultFilter.accept(-0.0d));
-    assertTrue(defaultFilter.accept(""));
-    assertTrue(defaultFilter.accept("  "));
-    assertTrue(defaultFilter.accept("test"));
-    assertTrue(defaultFilter.accept(new Object()));
+    assertThat(defaultFilter.isAccepting()).isTrue();
+    assertThat(defaultFilter.accept(null)).isTrue();
+    assertThat(defaultFilter.accept(Boolean.FALSE)).isTrue();
+    assertThat(defaultFilter.accept('\0')).isTrue();
+    assertThat(defaultFilter.accept(0)).isTrue();
+    assertThat(defaultFilter.accept(-0.0d)).isTrue();
+    assertThat(defaultFilter.accept("")).isTrue();
+    assertThat(defaultFilter.accept("  ")).isTrue();
+    assertThat(defaultFilter.accept("test")).isTrue();
+    assertThat(defaultFilter.accept(new Object())).isTrue();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void reject() {
+
     DefaultFilter<Object> defaultFilter = DefaultFilter.REJECT;
 
-    assertFalse(defaultFilter.isAccepting());
-    assertFalse(defaultFilter.accept(null));
-    assertFalse(defaultFilter.accept(Boolean.TRUE));
-    assertFalse(defaultFilter.accept('a'));
-    assertFalse(defaultFilter.accept(1));
-    assertFalse(defaultFilter.accept(Math.PI));
-    assertFalse(defaultFilter.accept(""));
-    assertFalse(defaultFilter.accept("  "));
-    assertFalse(defaultFilter.accept("test"));
-    assertFalse(defaultFilter.accept(new Object()));
+    assertThat(defaultFilter.isAccepting()).isFalse();
+    assertThat(defaultFilter.accept(null)).isFalse();
+    assertThat(defaultFilter.accept(Boolean.TRUE)).isFalse();
+    assertThat(defaultFilter.accept('a')).isFalse();
+    assertThat(defaultFilter.accept(1)).isFalse();
+    assertThat(defaultFilter.accept(Math.PI)).isFalse();
+    assertThat(defaultFilter.accept("")).isFalse();
+    assertThat(defaultFilter.accept("  ")).isFalse();
+    assertThat(defaultFilter.accept("test")).isFalse();
+    assertThat(defaultFilter.accept(new Object())).isFalse();
   }
 }

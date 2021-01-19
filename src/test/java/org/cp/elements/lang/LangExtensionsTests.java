@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static java.util.Arrays.asList;
@@ -25,7 +24,6 @@ import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.LangExtensions.is;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeList;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -47,9 +45,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentMatchers;
 
 import lombok.Data;
@@ -70,12 +66,10 @@ import lombok.RequiredArgsConstructor;
  */
 public class LangExtensionsTests {
 
+  @SuppressWarnings("rawtypes")
   private final Comparable NULL = null;
 
   private final Condition ENABLE_DISABLE_CONDITION = Condition.FALSE_CONDITION;
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   private final Object lock = new Object();
 
@@ -134,44 +128,34 @@ public class LangExtensionsTests {
     assertThat(new Object()).not().isAssignableTo(String.class);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatObjectIsAssignableToStringThrowsAssertionExceptionWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(Object.class).stating("This is a %1$s{1}", "test", "!").isAssignableTo(String.class);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(Object.class).stating("This is a %1$s{1}", "test", "!").isAssignableTo(String.class),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatDoubleIsAssignableToIntegerThrowsAssertionException() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[%1$s] is not assignable to [java.lang.Integer]", Math.PI));
-
-    assertThat(Math.PI).isAssignableTo(Integer.class);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(Math.PI).isAssignableTo(Integer.class),
+      () -> String.format("[%1$s] is not assignable to [java.lang.Integer]", Math.PI));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatCharacterIsAssignableToStringThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(Character.class).throwing(new IllegalArgumentException("test")).isAssignableTo(String.class);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(Character.class).throwing(new IllegalArgumentException("test")).isAssignableTo(String.class),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatStringIsNotAssignableToObjectThrowsAssertionException() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[class java.lang.String] is assignable to [java.lang.Object]");
-
-    assertThat(String.class).not().isAssignableTo(Object.class);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(String.class).not().isAssignableTo(Object.class),
+      () -> "[class java.lang.String] is assignable to [java.lang.Object]");
   }
 
   @Test
@@ -194,44 +178,34 @@ public class LangExtensionsTests {
     assertThat("test").isNotComparableTo("mock");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatObjectsAreNotComparableThrowsAssertionException() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[queue] is not comparable to [Q]");
-
-    assertThat("queue").isComparableTo("Q");
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("queue").isComparableTo("Q"),
+      () -> "[queue] is not comparable to [Q]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatObjectsAreNotComparableThrowsAssertionExceptionWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("c").stating("This is a %1$s{1}", "test", "!").isComparableTo("see");
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("c").stating("This is a %1$s{1}", "test", "!").isComparableTo("see"),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatObjectsAreNotComparableThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat("c").throwing(new IllegalArgumentException("test")).isComparableTo("see");
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat("c").throwing(new IllegalArgumentException("test")).isComparableTo("see"),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatComparableObjectsAreNotComparableThrowsAssertionException() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is comparable to [test]");
-
-    assertThat("test").not().isComparableTo("test");
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isComparableTo("test"),
+      () -> "[test] is comparable to [test]");
   }
 
   @Test
@@ -255,44 +229,34 @@ public class LangExtensionsTests {
     assertThat("test").isNotEqualTo("TEST");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatObjectIsEqualToObjectThrowsAssertionException() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not equal to [mock]");
-
-    assertThat("test").isEqualTo("mock");
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isEqualTo("mock"),
+      () -> "[test] is not equal to [mock]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatObjectIsEqualToObjectThrowsAssertionExceptionWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("r").stating("This is a %1$s{1}", "test", "!").isEqualTo("are");
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("r").stating("This is a %1$s{1}", "test", "!").isEqualTo("are"),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatObjectIsEqualToObjectThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat("r").throwing(new IllegalArgumentException("test")).isEqualTo("are");
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat("r").throwing(new IllegalArgumentException("test")).isEqualTo("are"),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatObjectIsNotEqualToObjectThrowsAssertionException() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is equal to [test]");
-
-    assertThat("test").isNotEqualTo("test");
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNotEqualTo("test"),
+      () -> "[test] is equal to [test]");
   }
 
   @Test
@@ -307,44 +271,32 @@ public class LangExtensionsTests {
     assertThat(true).not().isFalse();
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatTrueIsFalseThrowsAssertionError() {
-
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[true] is not false");
-
-    assertThat(true).isFalse();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).isFalse(), () -> "[true] is not false");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatTrueIsFalseThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(true).stating("This is a %1$s{1}", "test", "!").isFalse();
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(true).stating("This is a %1$s{1}", "test", "!").isFalse(),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatTrueIsFalseThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(true).throwing(new IllegalArgumentException("test")).isFalse();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(true).throwing(new IllegalArgumentException("test")).isFalse(),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatFalseIsNotFalseThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[false] is false");
-
-    assertThat(false).not().isFalse();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(false).not().isFalse(),
+      () -> "[false] is false");
   }
 
   @Test
@@ -362,44 +314,34 @@ public class LangExtensionsTests {
     assertThat(-2).not().isGreaterThan(1);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not greater than [2]");
-
-    assertThat(2).isGreaterThan(2);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isGreaterThan(2),
+      () -> "[2] is not greater than [2]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThan(3);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThan(3),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsGreaterThanThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThan(3);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThan(3),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotGreaterThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is greater than [1]");
-
-    assertThat(2).not().isGreaterThan(1);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isGreaterThan(1),
+      () -> "[2] is greater than [1]");
   }
 
   @Test
@@ -420,44 +362,36 @@ public class LangExtensionsTests {
     assertThat(2).not().isGreaterThanAndLessThan(3, 2);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not greater than [2] and less than [2]");
-
-    assertThat(2).isGreaterThanAndLessThan(2, 2);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).isGreaterThanAndLessThan(2, 2),
+        () -> "[2] is not greater than [2] and less than [2]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanAndLessThanThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThan(2, 2);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThan(2, 2),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsGreaterThanAndLessThanThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThan(2, 2);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThan(2, 2),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotGreaterThanAndLessThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is greater than [1] and less than [3]");
-
-    assertThat(2).not().isGreaterThanAndLessThan(1, 3);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).not().isGreaterThanAndLessThan(1, 3),
+        () -> "[2] is greater than [1] and less than [3]");
   }
 
   @Test
@@ -478,44 +412,36 @@ public class LangExtensionsTests {
     assertThat(2).not().isGreaterThanAndLessThanEqualTo(3, 4);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not greater than [2] and less than equal to [2]");
-
-    assertThat(2).isGreaterThanAndLessThanEqualTo(2, 2);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).isGreaterThanAndLessThanEqualTo(2, 2),
+        () -> "[2] is not greater than [2] and less than equal to [2]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThanEqualTo(2, 2);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThanEqualTo(2, 2),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThanEqualTo(2, 2);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThanEqualTo(2, 2),
+      () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotGreaterThanAndLessThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is greater than [1] and less than equal to [2]");
-
-    assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 2);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 2),
+        () -> "[2] is greater than [1] and less than equal to [2]");
   }
 
   @Test
@@ -536,44 +462,34 @@ public class LangExtensionsTests {
     assertThat(-2).not().isGreaterThanEqualTo(2);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not greater than equal to [3]");
-
-    assertThat(2).isGreaterThanEqualTo(3);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isGreaterThanEqualTo(3),
+      () -> "[2] is not greater than equal to [3]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsGreaterThanEqualToThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualTo(3);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualTo(3),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotGreaterThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is greater than equal to [1]");
-
-    assertThat(2).not().isGreaterThanEqualTo(1);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isGreaterThanEqualTo(1),
+      () -> "[2] is greater than equal to [1]");
   }
 
   @Test
@@ -594,44 +510,36 @@ public class LangExtensionsTests {
     assertThat(-2).not().isGreaterThanEqualToAndLessThan(1, -3);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not greater than equal to [3] and less than [1]");
-
-    assertThat(2).isGreaterThanEqualToAndLessThan(3, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).isGreaterThanEqualToAndLessThan(3, 1),
+        () -> "[2] is not greater than equal to [3] and less than [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1s{1}", "test", "!").isGreaterThanEqualToAndLessThan(3, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1s{1}", "test", "!").isGreaterThanEqualToAndLessThan(3, 1),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThan(3, 1);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThan(3, 1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotGreaterThanEqualToAndLessThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is greater than equal to [1] and less than [3]");
-
-    assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 3);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 3),
+        () -> "[2] is greater than equal to [1] and less than [3]");
   }
 
   @Test
@@ -651,44 +559,36 @@ public class LangExtensionsTests {
     assertThat(-2).not().isGreaterThanEqualToAndLessThanEqualTo(1, -3);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not greater than equal to [3] and less than equal to [1]");
-
-    assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(3, 1),
+        () -> "[2] is not greater than equal to [3] and less than equal to [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualToAndLessThanEqualTo(3, 1),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThanEqualTo(3, 1);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThanEqualTo(3, 1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is greater than equal to [1] and less than equal to [3]");
-
-    assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(1, 3);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(1, 3),
+        () -> "[2] is greater than equal to [1] and less than equal to [3]");
   }
 
   @Test
@@ -712,44 +612,33 @@ public class LangExtensionsTests {
     assertThat("\n").not().hasText();
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatBlankStringHasTextThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[ ] is blank");
-
-    assertThat(" ").hasText();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(" ").hasText(), () -> "[ ] is blank");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatEmptyStringHasTextThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank();
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank(),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatNullStringHasTextThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(null).throwing(new IllegalArgumentException("test")).hasText();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(null).throwing(new IllegalArgumentException("test")).hasText(),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatStringDoesNotHaveTextThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not blank");
-
-    assertThat("test").not().hasText();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().hasText(),
+      () -> "[test] is not blank");
   }
 
   @Test
@@ -765,46 +654,37 @@ public class LangExtensionsTests {
     assertThat(Thread.currentThread()).not().holdsLock(lock);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatCurrentThreadHoldsLockThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[%1$s] does not hold lock [%2$s]", Thread.currentThread(), lock));
-
-    assertThat(Thread.currentThread()).holdsLock(lock);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(Thread.currentThread()).holdsLock(lock),
+      () -> String.format("[%1$s] does not hold lock [%2$s]", Thread.currentThread(), lock));
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatCurrentThreadHoldsLockThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(Thread.currentThread()).stating("This is a %1$s{1}", "test", "!").holdsLock(lock);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(Thread.currentThread()).stating("This is a %1$s{1}", "test", "!").holdsLock(lock),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatCurrentThreadHoldsLockThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(Thread.currentThread()).throwing(new IllegalArgumentException("test")).holdsLock(lock);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(Thread.currentThread()).throwing(new IllegalArgumentException("test")).holdsLock(lock),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage(String.format("[%1$s] holds lock [%2$s]", Thread.currentThread(), lock));
-
-    synchronized (lock) {
-      assertThat(Thread.currentThread()).not().holdsLock(lock);
-    }
+    TestUtils.doAssertionExceptionThrowingOperation(() -> {
+      synchronized (lock) {
+        assertThat(Thread.currentThread()).not().holdsLock(lock);
+      }
+    }, () -> String.format("[%1$s] holds lock [%2$s]", Thread.currentThread(), lock));
   }
 
   @Test
@@ -832,44 +712,34 @@ public class LangExtensionsTests {
     assertThat(null).not().isInstanceOf(Object.class);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not an instance of [java.lang.Character]");
-
-    assertThat("test").isInstanceOf(Character.class);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isInstanceOf(Character.class),
+      () -> "[test] is not an instance of [java.lang.Character]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatStringIsInstanceOfCharacterThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("test").stating("This is a %1$s{1}", "test", "!").isInstanceOf(Character.class);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("test").stating("This is a %1$s{1}", "test", "!").isInstanceOf(Character.class),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatStringIsInstanceOfCharacterThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat("test").throwing(new IllegalArgumentException("test")).isInstanceOf(Character.class);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat("test").throwing(new IllegalArgumentException("test")).isInstanceOf(Character.class),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatStringIsNotInstanceOfStringThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is an instance of [java.lang.String]");
-
-    assertThat("test").not().isInstanceOf(String.class);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isInstanceOf(String.class),
+      () -> "[test] is an instance of [java.lang.String]");
   }
 
   @Test
@@ -890,44 +760,34 @@ public class LangExtensionsTests {
     assertThat(2).not().isLessThan(-3);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not less than [1]");
-
-    assertThat(2).isLessThan(1);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isLessThan(1),
+      () -> "[2] is not less than [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThan(1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThan(1),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsLessThanThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isLessThan(1);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isLessThan(1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotLessThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[1] is less than [2]");
-
-    assertThat(1).not().isLessThan(2);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(1).not().isLessThan(2),
+      () -> "[1] is less than [2]");
   }
 
   @Test
@@ -945,44 +805,36 @@ public class LangExtensionsTests {
     assertThat(1).not().isLessThanOrGreaterThan(-1, 1);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[0] is not less than [-1] or greater than [1]");
-
-    assertThat(0).isLessThanOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).isLessThanOrGreaterThan(-1, 1),
+        () -> "[0] is not less than [-1] or greater than [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThan(-1, 1),
+        ()  -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsLessThanOrGreaterThanThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanOrGreaterThan(-1, 1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotLessThanOrGreaterThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[3] is less than [-1] or greater than [1]");
-
-    assertThat(3).not().isLessThanOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(3).not().isLessThanOrGreaterThan(-1, 1),
+        () -> "[3] is less than [-1] or greater than [1]");
   }
 
   @Test
@@ -1000,44 +852,36 @@ public class LangExtensionsTests {
     assertThat(0).not().isLessThanOrGreaterThanEqualTo(-1, 1);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[0] is not less than [-1] or greater than equal to [1]");
-
-    assertThat(0).isLessThanOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () ->  assertThat(0).isLessThanOrGreaterThanEqualTo(-1, 1),
+        () -> "[0] is not less than [-1] or greater than equal to [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThanEqualTo(-1, 1),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanOrGreaterThanEqualTo(-1, 1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotLessThanOrGreaterThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[1] is less than [-1] or greater than equal to [1]");
-
-    assertThat(1).not().isLessThanOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(1).not().isLessThanOrGreaterThanEqualTo(-1, 1),
+        () -> "[1] is less than [-1] or greater than equal to [1]");
   }
 
   @Test
@@ -1057,44 +901,34 @@ public class LangExtensionsTests {
     assertThat(-2).not().isLessThanEqualTo(-3);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is not less than equal to [-3]");
-
-    assertThat(2).isLessThanEqualTo(-3);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isLessThanEqualTo(-3),
+      () -> "[2] is not less than equal to [-3]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsLessThanEqualToThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(2).throwing(new IllegalArgumentException("test")).isLessThanEqualTo(-3);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isLessThanEqualTo(-3),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotLessThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is less than equal to [3]");
-
-    assertThat(2).not().isLessThanEqualTo(3);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isLessThanEqualTo(3),
+      () -> "[2] is less than equal to [3]");
   }
 
   @Test
@@ -1112,44 +946,36 @@ public class LangExtensionsTests {
     assertThat(1).not().isLessThanEqualToOrGreaterThan(-1, 1);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[0] is not less than equal to [-1] or greater than [1]");
-
-    assertThat(0).isLessThanEqualToOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).isLessThanEqualToOrGreaterThan(-1, 1),
+        () -> "[0] is not less than equal to [-1] or greater than [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThan(-1, 1),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanEqualToOrGreaterThan(-1, 1);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanEqualToOrGreaterThan(-1, 1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotLessThanEqualToOrGreaterThanThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is less than equal to [-1] or greater than [1]");
-
-    assertThat(2).not().isLessThanEqualToOrGreaterThan(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).not().isLessThanEqualToOrGreaterThan(-1, 1),
+        () -> "[2] is less than equal to [-1] or greater than [1]");
   }
 
   @Test
@@ -1166,44 +992,36 @@ public class LangExtensionsTests {
     assertThat(0).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[0] is not less than equal to [-1] or greater than equal to [1]");
-
-    assertThat(0).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
+        () -> "[0] is not less than equal to [-1] or greater than equal to [1]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
+        ()  -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIsNotLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[2] is less than equal to [-1] or greater than equal to [1]");
-
-    assertThat(2).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(2).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
+        () -> "[2] is less than equal to [-1] or greater than equal to [1]");
   }
 
   @Test
@@ -1220,44 +1038,31 @@ public class LangExtensionsTests {
     assertThat("test").not().isNull();
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatNonNullObjectIsNullThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not null");
-
-    assertThat("test").isNull();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNull(), () -> "[test] is not null");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatNonNullObjectIsNullThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("test").stating("This is a %1$s{1}", "test", "!").isNull();
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("test").stating("This is a %1$s{1}", "test", "!").isNull(),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatNonNullObjectIsNullThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat("test").throwing(new IllegalArgumentException("test")).isNull();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat("test").throwing(new IllegalArgumentException("test")).isNull(),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatNullObjectIsNotNullThrowsAssertionError() {
-
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[null] is null");
-
-    assertThat(null).isNotNull();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(null).isNotNull(), () -> "[null] is null");
   }
 
   @Test
@@ -1281,44 +1086,32 @@ public class LangExtensionsTests {
     assertThat("").not().isNotEmpty();
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionError() {
-
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[] is empty");
-
-    assertThat("").isNotEmpty();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("").isNotEmpty(), () -> "[] is empty");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatEmptyStringIsNotEmptyThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank();
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank(),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatEmptyStringIsNotEmptyThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat("").throwing(new IllegalArgumentException("test")).isNotBlank();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat("").throwing(new IllegalArgumentException("test")).isNotBlank(),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatNonEmptyStringIsEnptyThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[ ] is not empty");
-
-    assertThat(" ").not().isNotEmpty();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(" ").not().isNotEmpty(),
+      () -> "[ ] is not empty");
   }
 
   @Test
@@ -1341,44 +1134,34 @@ public class LangExtensionsTests {
     assertThat("test").isNotSameAs("TEST");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is not the same as [TEST]");
-
-    assertThat("test").isSameAs("TEST");
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isSameAs("TEST"),
+      () -> "[test] is not the same as [TEST]");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat("test").stating("This is a %1$s{1}", "test", "!").isSameAs("TEST");
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat("test").stating("This is a %1$s{1}", "test", "!").isSameAs("TEST"),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatNonIdenticalObjectsAreTheSameThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat("test").throwing(new IllegalArgumentException("test")).isSameAs("TEST");
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat("test").throwing(new IllegalArgumentException("test")).isSameAs("TEST"),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionError() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[test] is the same as [test]");
-
-    assertThat("test").isNotSameAs("test");
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNotSameAs("test"),
+      () -> "[test] is the same as [test]");
   }
 
   @Test
@@ -1393,63 +1176,46 @@ public class LangExtensionsTests {
     assertThat(false).not().isTrue();
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatFalseIsTrueThrowsAssertionError() {
-
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[false] is not true");
-
-    assertThat(false).isTrue();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(false).isTrue(), () -> "[false] is not true");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatFalseIsTrueThrowsAssertionErrorWithCustomMessage() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("This is a test!");
-
-    assertThat(false).stating("This is a %1$s{1}", "test", "!").isTrue();
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(false).stating("This is a %1$s{1}", "test", "!").isTrue(),
+        () -> "This is a test!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void assertThatFalseIsTrueThrowsIllegalArgumentException() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(false).throwing(new IllegalArgumentException("test")).isTrue();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(false).throwing(new IllegalArgumentException("test")).isTrue(),
+        () -> "test");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertThatTrueIsNotTrueThrowsAssertionError() {
-
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[true] is true");
-
-    assertThat(true).not().isTrue();
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).not().isTrue(), () -> "[true] is true");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void assertionTransformationIgnoresCondition() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("[false] is not true");
-
-    assertThat(false).transform(new Transformer<AssertThat<Boolean>>() {
-      @Override public AssertThat<Boolean> transform(final AssertThat<Boolean> assertion) {
-        return new AssertThatWrapper<Boolean>(assertion) {
-          @Override public AssertThat<Boolean> when(final Condition condition) {
-            assertion.when(Condition.TRUE_CONDITION);
-            return this;
-          }
-        };
-      }
-    }).when(ENABLE_DISABLE_CONDITION).isTrue();
+    TestUtils.doAssertionExceptionThrowingOperation(() ->
+      assertThat(false).transform(new Transformer<AssertThat<Boolean>>() {
+        @Override public AssertThat<Boolean> transform(final AssertThat<Boolean> assertion) {
+          return new AssertThatWrapper<Boolean>(assertion) {
+            @Override public AssertThat<Boolean> when(final Condition condition) {
+              assertion.when(Condition.TRUE_CONDITION);
+              return this;
+            }
+          };
+        }
+      }).when(ENABLE_DISABLE_CONDITION).isTrue(), () -> "[false] is not true");
   }
 
   @Test
@@ -1587,14 +1353,12 @@ public class LangExtensionsTests {
     assertThat(false).when(ENABLE_DISABLE_CONDITION).isTrue();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void negatedAssertThatRetainsThrowable() {
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("test");
-
-    assertThat(true).throwing(new IllegalArgumentException("test")).not().isTrue();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> assertThat(true).throwing(new IllegalArgumentException("test")).not().isTrue(),
+        () -> "test");
   }
 
   @Test
@@ -1617,14 +1381,12 @@ public class LangExtensionsTests {
     assertEquals(1, holdsLockCallCount.get());
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void negatedAssertThatRetainsExceptionMessageAndArgs() {
 
-    exception.expect(AssertionException.class);
-    exception.expectCause(org.hamcrest.Matchers.is(nullValue(Throwable.class)));
-    exception.expectMessage("Object cannot be null");
-
-    assertThat(null).stating("%1$s cannot be {1}", "Object", "null").isNotNull();
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(null).stating("%1$s cannot be {1}", "Object", "null").isNotNull(),
+        () -> "Object cannot be null");
   }
 
   @Test
@@ -1644,7 +1406,7 @@ public class LangExtensionsTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsComparableToDelegatesToWrappedAssertion() {
 
     Comparable mockComparable = mock(Comparable.class);
@@ -1903,7 +1665,7 @@ public class LangExtensionsTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsNotSameAsDelegatesToWrappedAssertion() {
 
     Object obj = new Object();
@@ -1916,7 +1678,7 @@ public class LangExtensionsTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsSameAsDelegatesToWrappedAssertion() {
 
     Object obj = new Object();
@@ -1969,7 +1731,7 @@ public class LangExtensionsTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatTransformDelegatesToWrappedAssertion() {
 
     Transformer<AssertThat> mockTransformer = mock(Transformer.class);
@@ -2083,6 +1845,7 @@ public class LangExtensionsTests {
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void isEqualToWithUnequalValues() {
 
     assertFalse(is(NULL).equalTo(NULL));
@@ -2096,6 +1859,7 @@ public class LangExtensionsTests {
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void isNotEqualTo() {
 
     assertTrue((is(NULL).not().equalTo(NULL)));

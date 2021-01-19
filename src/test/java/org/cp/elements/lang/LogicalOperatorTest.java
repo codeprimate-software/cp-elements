@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -35,54 +27,55 @@ import java.util.function.Supplier;
 import org.junit.Test;
 
 /**
- * The LogicalOperatorTest class is a test suite of test cases testing the contract and functionality of the
- * {@link LogicalOperator} class.
+ * Unit Tests for {@link LogicalOperator}.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.LogicalOperator
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @see org.cp.elements.lang.LogicalOperator
  * @since 1.0.0
  */
 public class LogicalOperatorTest {
 
   @SuppressWarnings("unchecked")
-  protected <T> Supplier<T> mockSupplier(String name) {
+  private <T> Supplier<T> mockSupplier(String name) {
     return mock(Supplier.class, name);
   }
 
   @Test
   public void andOperator() {
-    assertThat(LogicalOperator.AND, is(notNullValue()));
-    assertThat(LogicalOperator.AND.getDescription(), is(equalTo("and")));
-    assertThat(LogicalOperator.AND.getOpposite(), is(equalTo(LogicalOperator.OR)));
-    assertThat(LogicalOperator.AND.getSymbol(), is(equalTo("&&")));
-    assertThat(LogicalOperator.AND.isBinary(), is(true));
-    assertThat(LogicalOperator.AND.isTernary(), is(false));
-    assertThat(LogicalOperator.AND.isUnary(), is(false));
+
+    assertThat(LogicalOperator.AND).isNotNull();
+    assertThat(LogicalOperator.AND.getDescription()).isEqualTo("and");
+    assertThat(LogicalOperator.AND.getOpposite()).isEqualTo(LogicalOperator.OR);
+    assertThat(LogicalOperator.AND.getSymbol()).isEqualTo("&&");
+    assertThat(LogicalOperator.AND.isBinary()).isTrue();
+    assertThat(LogicalOperator.AND.isTernary()).isFalse();
+    assertThat(LogicalOperator.AND.isUnary()).isFalse();
   }
 
   @Test
   public void andOperatorEvaluation() {
-    assertTrue(LogicalOperator.AND.evaluate(true));
-    assertTrue(LogicalOperator.AND.evaluate(true, true));
-    assertTrue(LogicalOperator.AND.evaluate(true, true, true));
-    assertFalse(LogicalOperator.AND.evaluate(true, false, true));
-    assertFalse(LogicalOperator.AND.evaluate(false, true));
-    assertFalse(LogicalOperator.AND.evaluate(true, false));
-    assertFalse(LogicalOperator.AND.evaluate(false));
+
+    assertThat(LogicalOperator.AND.evaluate(true)).isTrue();
+    assertThat(LogicalOperator.AND.evaluate(true, true)).isTrue();
+    assertThat(LogicalOperator.AND.evaluate(true, true, true)).isTrue();
+    assertThat(LogicalOperator.AND.evaluate(true, false, true)).isFalse();
+    assertThat(LogicalOperator.AND.evaluate(false, true)).isFalse();
+    assertThat(LogicalOperator.AND.evaluate(true, false)).isFalse();
+    assertThat(LogicalOperator.AND.evaluate(false)).isFalse();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void andOperatorSupplierEvaluation() {
+
     Supplier<Boolean> mockSupplierOne = mockSupplier("MockSupplierOne");
     Supplier<Boolean> mockSupplierTwo = mockSupplier("MockSupplierTwo");
 
     when(mockSupplierOne.get()).thenReturn(true);
     when(mockSupplierTwo.get()).thenReturn(true);
 
-    assertThat(LogicalOperator.AND.evaluate(mockSupplierOne, mockSupplierTwo), is(true));
+    assertThat(LogicalOperator.AND.evaluate(mockSupplierOne, mockSupplierTwo)).isTrue();
 
     verify(mockSupplierOne, times(1)).get();
     verify(mockSupplierTwo, times(1)).get();
@@ -91,13 +84,14 @@ public class LogicalOperatorTest {
   @Test
   @SuppressWarnings("unchecked")
   public void andOperatorSupplierEvaluationShortCircuits() {
+
     Supplier<Boolean> mockSupplierOne = mockSupplier("MockSupplierOne");
     Supplier<Boolean> mockSupplierTwo = mockSupplier("MockSupplierTwo");
 
     when(mockSupplierOne.get()).thenReturn(false);
     when(mockSupplierTwo.get()).thenReturn(true);
 
-    assertThat(LogicalOperator.AND.evaluate(mockSupplierOne, mockSupplierTwo), is(false));
+    assertThat(LogicalOperator.AND.evaluate(mockSupplierOne, mockSupplierTwo)).isFalse();
 
     verify(mockSupplierOne, times(1)).get();
     verify(mockSupplierTwo, never()).get();
@@ -105,58 +99,63 @@ public class LogicalOperatorTest {
 
   @Test
   public void negateAndOperatorEvaluation() {
-    assertFalse(LogicalOperator.negate(LogicalOperator.AND).evaluate(true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, true, true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, false, true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.AND).evaluate(false, true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.AND).evaluate(false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.AND).evaluate(false, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.AND).evaluate(false, false, false));
+
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, true, true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, false, true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(false, true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(true, false)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(false, false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.AND).evaluate(false, false, false)).isTrue();
   }
 
   @Test
   public void notOperator() {
+
     LogicalOperator NOT = new LogicalOperator.LogicalNot(LogicalOperator.AND);
 
-    assertThat(NOT, is(instanceOf(LogicalOperator.LogicalNot.class)));
-    assertThat(NOT.getDescription(), is(equalTo("not")));
-    assertThat(NOT.getOpposite(), is(sameInstance(NOT)));
-    assertThat(NOT.getSymbol(), is(equalTo("!")));
-    assertThat(NOT.isBinary(), is(false));
-    assertThat(NOT.isTernary(), is(false));
-    assertThat(NOT.isUnary(), is(true));
+    assertThat(NOT).isInstanceOf(LogicalOperator.LogicalNot.class);
+    assertThat(NOT.getDescription()).isEqualTo("not");
+    assertThat(NOT.getOpposite()).isSameAs(NOT);
+    assertThat(NOT.getSymbol()).isEqualTo("!");
+    assertThat(NOT.isBinary()).isFalse();
+    assertThat(NOT.isTernary()).isFalse();
+    assertThat(NOT.isUnary()).isTrue();
   }
 
   @Test
   public void orOperator() {
-    assertThat(LogicalOperator.OR, is(notNullValue()));
-    assertThat(LogicalOperator.OR.getDescription(), is(equalTo("or")));
-    assertThat(LogicalOperator.OR.getOpposite(), is(equalTo(LogicalOperator.AND)));
-    assertThat(LogicalOperator.OR.getSymbol(), is(equalTo("||")));
-    assertThat(LogicalOperator.OR.isBinary(), is(true));
-    assertThat(LogicalOperator.OR.isTernary(), is(false));
-    assertThat(LogicalOperator.OR.isUnary(), is(false));
+
+    assertThat(LogicalOperator.OR).isNotNull();
+    assertThat(LogicalOperator.OR.getDescription()).isEqualTo("or");
+    assertThat(LogicalOperator.OR.getOpposite()).isEqualTo(LogicalOperator.AND);
+    assertThat(LogicalOperator.OR.getSymbol()).isEqualTo("||");
+    assertThat(LogicalOperator.OR.isBinary()).isTrue();
+    assertThat(LogicalOperator.OR.isTernary()).isFalse();
+    assertThat(LogicalOperator.OR.isUnary()).isFalse();
   }
 
   @Test
   public void orOperatorEvaluation() {
-    assertTrue(LogicalOperator.OR.evaluate(true));
-    assertTrue(LogicalOperator.OR.evaluate(true, true));
-    assertTrue(LogicalOperator.OR.evaluate(true, true, true));
-    assertTrue(LogicalOperator.OR.evaluate(false, false, true));
-    assertTrue(LogicalOperator.OR.evaluate(false, true, false));
-    assertTrue(LogicalOperator.OR.evaluate(true, false));
-    assertTrue(LogicalOperator.OR.evaluate(false, true));
-    assertFalse(LogicalOperator.OR.evaluate(false));
-    assertFalse(LogicalOperator.OR.evaluate(false, false));
-    assertFalse(LogicalOperator.OR.evaluate(false, false, false));
+
+    assertThat(LogicalOperator.OR.evaluate(true)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(true, true)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(true, true, true)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(false, false, true)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(false, true, false)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(true, false)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(false, true)).isTrue();
+    assertThat(LogicalOperator.OR.evaluate(false)).isFalse();
+    assertThat(LogicalOperator.OR.evaluate(false, false)).isFalse();
+    assertThat(LogicalOperator.OR.evaluate(false, false, false)).isFalse();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void orOperatorSupplierEvaluation() {
+
     Supplier<Boolean> mockSupplierOne = mockSupplier("MockSupplierOne");
     Supplier<Boolean> mockSupplierTwo = mockSupplier("MockSupplierTwo");
     Supplier<Boolean> mockSupplierThree = mockSupplier("MockSupplierThree");
@@ -165,7 +164,7 @@ public class LogicalOperatorTest {
     when(mockSupplierTwo.get()).thenReturn(false);
     when(mockSupplierThree.get()).thenReturn(false);
 
-    assertThat(LogicalOperator.OR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree), is(false));
+    assertThat(LogicalOperator.OR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree)).isFalse();
 
     verify(mockSupplierOne, times(1)).get();
     verify(mockSupplierTwo, times(1)).get();
@@ -175,6 +174,7 @@ public class LogicalOperatorTest {
   @Test
   @SuppressWarnings("unchecked")
   public void orOperatorSupplierEvaluationShortcircuits() {
+
     Supplier<Boolean> mockSupplierOne = mockSupplier("MockSupplierOne");
     Supplier<Boolean> mockSupplierTwo = mockSupplier("MockSupplierTwo");
     Supplier<Boolean> mockSupplierThree = mockSupplier("MockSupplierThree");
@@ -183,7 +183,7 @@ public class LogicalOperatorTest {
     when(mockSupplierTwo.get()).thenReturn(false);
     when(mockSupplierThree.get()).thenReturn(false);
 
-    assertThat(LogicalOperator.OR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree), is(true));
+    assertThat(LogicalOperator.OR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree)).isTrue();
 
     verify(mockSupplierOne, times(1)).get();
     verify(mockSupplierTwo, never()).get();
@@ -192,45 +192,49 @@ public class LogicalOperatorTest {
 
   @Test
   public void negateOrOperatorEvaluation() {
-    assertFalse(LogicalOperator.negate(LogicalOperator.OR).evaluate(true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, true, true));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, false, true));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, false, true));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, true));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, false, false));
+
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, true, true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, false, true)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, false, true)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(true, false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, true)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.OR).evaluate(false, false, false)).isTrue();
   }
 
   @Test
   public void xorOperator() {
-    assertThat(LogicalOperator.XOR, is(notNullValue()));
-    assertThat(LogicalOperator.XOR.getDescription(), is(equalTo("xor")));
-    assertThat(LogicalOperator.XOR.getOpposite(), is(sameInstance(LogicalOperator.XOR)));
-    assertThat(LogicalOperator.XOR.getSymbol(), is(equalTo("^")));
-    assertThat(LogicalOperator.XOR.isBinary(), is(true));
-    assertThat(LogicalOperator.XOR.isTernary(), is(false));
-    assertThat(LogicalOperator.XOR.isUnary(), is(false));
+
+    assertThat(LogicalOperator.XOR).isNotNull();
+    assertThat(LogicalOperator.XOR.getDescription()).isEqualTo("xor");
+    assertThat(LogicalOperator.XOR.getOpposite()).isSameAs(LogicalOperator.XOR);
+    assertThat(LogicalOperator.XOR.getSymbol()).isEqualTo("^");
+    assertThat(LogicalOperator.XOR.isBinary()).isTrue();
+    assertThat(LogicalOperator.XOR.isTernary()).isFalse();
+    assertThat(LogicalOperator.XOR.isUnary()).isFalse();
   }
 
   @Test
   public void xorOperatorEvaluation() {
-    assertTrue(LogicalOperator.XOR.evaluate(true));
-    assertTrue(LogicalOperator.XOR.evaluate(true, false));
-    assertTrue(LogicalOperator.XOR.evaluate(true, false, false));
-    assertFalse(LogicalOperator.XOR.evaluate(false));
-    assertFalse(LogicalOperator.XOR.evaluate(false, false));
-    assertFalse(LogicalOperator.XOR.evaluate(false, false, false));
-    assertFalse(LogicalOperator.XOR.evaluate(true, false, true));
-    assertFalse(LogicalOperator.XOR.evaluate(false, true, true));
-    assertFalse(LogicalOperator.XOR.evaluate(true, true, true));
+
+    assertThat(LogicalOperator.XOR.evaluate(true)).isTrue();
+    assertThat(LogicalOperator.XOR.evaluate(true, false)).isTrue();
+    assertThat(LogicalOperator.XOR.evaluate(true, false, false)).isTrue();
+    assertThat(LogicalOperator.XOR.evaluate(false)).isFalse();
+    assertThat(LogicalOperator.XOR.evaluate(false, false)).isFalse();
+    assertThat(LogicalOperator.XOR.evaluate(false, false, false)).isFalse();
+    assertThat(LogicalOperator.XOR.evaluate(true, false, true)).isFalse();
+    assertThat(LogicalOperator.XOR.evaluate(false, true, true)).isFalse();
+    assertThat(LogicalOperator.XOR.evaluate(true, true, true)).isFalse();
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void xorOperatorSupplierEvaluation() {
+
     Supplier<Boolean> mockSupplierOne = mockSupplier("MockSupplierOne");
     Supplier<Boolean> mockSupplierTwo = mockSupplier("MockSupplierTwo");
     Supplier<Boolean> mockSupplierThree = mockSupplier("MockSupplierThree");
@@ -241,8 +245,8 @@ public class LogicalOperatorTest {
     when(mockSupplierThree.get()).thenReturn(false);
     when(mockSupplierFour.get()).thenReturn(false);
 
-    assertThat(LogicalOperator.XOR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree, mockSupplierFour),
-      is(true));
+    assertThat(LogicalOperator.XOR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree, mockSupplierFour))
+      .isTrue();
 
     verify(mockSupplierOne, times(1)).get();
     verify(mockSupplierTwo, times(1)).get();
@@ -253,6 +257,7 @@ public class LogicalOperatorTest {
   @Test
   @SuppressWarnings("unchecked")
   public void xorOperatorSupplierEvaluationShortCircuits() {
+
     Supplier<Boolean> mockSupplierOne = mockSupplier("MockSupplierOne");
     Supplier<Boolean> mockSupplierTwo = mockSupplier("MockSupplierTwo");
     Supplier<Boolean> mockSupplierThree = mockSupplier("MockSupplierThree");
@@ -263,8 +268,8 @@ public class LogicalOperatorTest {
     when(mockSupplierThree.get()).thenReturn(false);
     when(mockSupplierFour.get()).thenReturn(false);
 
-    assertThat(LogicalOperator.XOR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree, mockSupplierFour),
-      is(false));
+    assertThat(LogicalOperator.XOR.evaluate(mockSupplierOne, mockSupplierTwo, mockSupplierThree, mockSupplierFour))
+      .isFalse();
 
     verify(mockSupplierOne, times(1)).get();
     verify(mockSupplierTwo, times(1)).get();
@@ -274,15 +279,15 @@ public class LogicalOperatorTest {
 
   @Test
   public void negateXorOperatorEvaluation() {
-    assertFalse(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true));
-    assertFalse(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, false));
-    assertFalse(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, false, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false, false, false));
-    assertTrue(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, false, true));
-    assertTrue(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false, true, true));
-    assertTrue(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, true, true));
-  }
 
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, false)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, false, false)).isFalse();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false, false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false, false, false)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, false, true)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(false, true, true)).isTrue();
+    assertThat(LogicalOperator.negate(LogicalOperator.XOR).evaluate(true, true, true)).isTrue();
+  }
 }

@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
@@ -32,7 +29,7 @@ import org.cp.elements.lang.Visitor;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ClearIdentityVisitor}.
+ * Unit Tests for {@link ClearIdentityVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -69,11 +66,11 @@ public class ClearIdentityVisitorTests {
 
     IdentifierVisitable identifier = new IdentifierVisitable();
 
-    assertThat(identifier.id.longValue(), is(equalTo(1L)));
+    assertThat(identifier.id.longValue()).isEqualTo(1L);
 
     identifier.accept(visitor);
 
-    assertThat(identifier.id.longValue(), is(equalTo(1l)));
+    assertThat(identifier.id.longValue()).isEqualTo(1L);
   }
 
   @Test
@@ -81,12 +78,11 @@ public class ClearIdentityVisitorTests {
     this.visitor.visit(null);
   }
 
-  public interface IdentifiableVisitable extends Identifiable<Long>, Visitable {
-  }
+  public interface IdentifiableVisitable extends Identifiable<Long>, Visitable { }
 
   protected static class IdentifierVisitable implements Visitable {
 
-    private Long id = 1l;
+    private Long id = 1L;
 
     @Override
     public void accept(final Visitor visitor) {

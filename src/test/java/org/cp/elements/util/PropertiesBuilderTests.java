@@ -13,16 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -44,26 +37,23 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.cp.elements.io.NoSuchFileException;
-import org.cp.elements.lang.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link PropertiesBuilder}.
+ * Unit Tests for {@link PropertiesBuilder}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.PropertiesBuilder
  * @since 1.0.0
  */
 public class PropertiesBuilderTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Test
   public void fromFileLoadsProperties() throws IOException {
@@ -80,20 +70,26 @@ public class PropertiesBuilderTests {
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(testProperties);
 
-    assertThat(propertiesBuilder, is(notNullValue()));
-    assertThat(propertiesBuilder.build(), is(equalTo(expected)));
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEqualTo(expected);
   }
 
-  @Test
+  @Test(expected = NoSuchFileException.class)
   public void fromNonExistingFile() {
 
     File nonExistingFile = new File("/absolute/path/to/non/existing/file.properties");
 
-    exception.expect(NoSuchFileException.class);
-    exception.expectCause(is(instanceOf(FileNotFoundException.class)));
-    exception.expectMessage(String.format("[%s] not found", nonExistingFile));
+    try {
+      PropertiesBuilder.from(nonExistingFile);
+    }
+    catch (NoSuchFileException expected) {
 
-    PropertiesBuilder.from(nonExistingFile);
+      assertThat(expected).hasMessage(String.format("[%s] not found", nonExistingFile));
+      assertThat(expected).hasCauseInstanceOf(FileNotFoundException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -111,11 +107,11 @@ public class PropertiesBuilderTests {
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(new ByteArrayInputStream(buffer));
 
-    assertThat(propertiesBuilder, is(notNullValue()));
-    assertThat(propertiesBuilder.build(), is(equalTo(expected)));
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEqualTo(expected);
   }
 
-  @Test
+  @Test(expected = SystemException.class)
   public void fromInputStreamThrowingIOExceptionIsHandledProperly() throws IOException {
 
     InputStream mockInputStream = mock(InputStream.class);
@@ -126,11 +122,17 @@ public class PropertiesBuilderTests {
     when(mockInputStream.read(any(byte[].class))).thenThrow(ioException);
     when(mockInputStream.read(any(byte[].class), anyInt(), anyInt())).thenThrow(ioException);
 
-    exception.expect(SystemException.class);
-    exception.expectCause(is(instanceOf(IOException.class)));
-    exception.expectMessage(String.format("Failed to load properties from input stream [%s]", mockInputStream));
+    try {
+      PropertiesBuilder.from(mockInputStream);
+    }
+    catch (SystemException expected) {
 
-    PropertiesBuilder.from(mockInputStream);
+      assertThat(expected).hasMessage("Failed to load properties from input stream [%s]", mockInputStream);
+      assertThat(expected).hasCauseInstanceOf(IOException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -147,15 +149,15 @@ public class PropertiesBuilderTests {
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(expected);
 
-    assertThat(propertiesBuilder, is(notNullValue()));
+    assertThat(propertiesBuilder).isNotNull();
 
     Properties actual = propertiesBuilder.build();
 
-    assertThat(actual, is(notNullValue()));
-    assertThat(actual.size(), is(equalTo(expected.size())));
+    assertThat(actual).isNotNull();
+    assertThat(actual.size()).isEqualTo(expected.size());
 
     for (String propertyName : expected.keySet()) {
-      assertThat(actual.getProperty(propertyName), is(equalTo(String.valueOf(expected.get(propertyName)))));
+      assertThat(actual.getProperty(propertyName)).isEqualTo(String.valueOf(expected.get(propertyName)));
     }
   }
 
@@ -169,8 +171,8 @@ public class PropertiesBuilderTests {
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(expected);
 
-    assertThat(propertiesBuilder, is(notNullValue()));
-    assertThat(propertiesBuilder.build(), is(equalTo(expected)));
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEqualTo(expected);
   }
 
   @Test
@@ -188,11 +190,11 @@ public class PropertiesBuilderTests {
 
     Properties actual = PropertiesBuilder.from(new InputStreamReader(new ByteArrayInputStream(buffer))).build();
 
-    assertThat(actual, is(notNullValue(Properties.class)));
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isNotNull();
+    assertThat(actual).isEqualTo(expected);
   }
 
-  @Test
+  @Test(expected = SystemException.class)
   public void fromReaderThrowingIOExceptionIsHandledProperly() throws IOException {
 
     Reader mockReader = mock(Reader.class);
@@ -204,11 +206,17 @@ public class PropertiesBuilderTests {
     when(mockReader.read(any(char[].class), anyInt(), anyInt())).thenThrow(ioException);
     when(mockReader.read(any(CharBuffer.class))).thenThrow(ioException);
 
-    exception.expect(SystemException.class);
-    exception.expectCause(is(instanceOf(IOException.class)));
-    exception.expectMessage(String.format("Failed to load properties from reader [%s]", mockReader));
+    try {
+      PropertiesBuilder.from(mockReader);
+    }
+    catch (SystemException expected) {
 
-    PropertiesBuilder.from(mockReader);
+      assertThat(expected).hasMessage("Failed to load properties from reader [%s]", mockReader);
+      assertThat(expected).hasCauseInstanceOf(IOException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -216,8 +224,8 @@ public class PropertiesBuilderTests {
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromEnvironmentVariables();
 
-    assertThat(propertiesBuilder, is(notNullValue(PropertiesBuilder.class)));
-    assertThat(propertiesBuilder.build(), is(equalTo(System.getenv())));
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEqualTo(System.getenv());
   }
 
   @Test
@@ -225,8 +233,8 @@ public class PropertiesBuilderTests {
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromSystemProperties();
 
-    assertThat(propertiesBuilder, is(notNullValue(PropertiesBuilder.class)));
-    assertThat(propertiesBuilder.build(), is(equalTo(System.getProperties())));
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEqualTo(System.getProperties());
   }
 
   @Test
@@ -247,12 +255,12 @@ public class PropertiesBuilderTests {
 
     Properties target = PropertiesBuilder.fromXml(inputStream).build();
 
-    assertThat(target, is(notNullValue(Properties.class)));
-    assertThat(target.size(), is(equalTo(source.size())));
-    assertThat(target, is(equalTo(source)));
+    assertThat(target).isNotNull();
+    assertThat(target.size()).isEqualTo(source.size());
+    assertThat(target).isEqualTo(source);
   }
 
-  @Test
+  @Test(expected = SystemException.class)
   public void fromXmlThrowingIOExceptionIsHandledProperly() throws IOException {
 
     InputStream mockInputStream = mock(InputStream.class);
@@ -263,11 +271,17 @@ public class PropertiesBuilderTests {
     when(mockInputStream.read(any(byte[].class))).thenThrow(ioException);
     when(mockInputStream.read(any(byte[].class), anyInt(), anyInt())).thenThrow(ioException);
 
-    exception.expect(SystemException.class);
-    exception.expectCause(is(instanceOf(IOException.class)));
-    exception.expectMessage(String.format("Failed to load properties from input stream [%s]", mockInputStream));
+    try {
+      PropertiesBuilder.fromXml(mockInputStream);
+    }
+    catch (SystemException expected) {
 
-    PropertiesBuilder.fromXml(mockInputStream);
+      assertThat(expected).hasMessage("Failed to load properties from input stream [%s]", mockInputStream);
+      assertThat(expected).hasCauseInstanceOf(IOException.class);
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -276,8 +290,8 @@ public class PropertiesBuilderTests {
     PropertiesBuilder propertiesBuilder = new PropertiesBuilder();
     Properties properties = propertiesBuilder.getProperties();
 
-    assertThat(properties, is(notNullValue()));
-    assertThat(properties.isEmpty(), is(true));
+    assertThat(properties).isNotNull();
+    assertThat(properties.isEmpty()).isTrue();
   }
 
   @Test
@@ -292,9 +306,9 @@ public class PropertiesBuilderTests {
 
     Properties actual = propertiesBuilder.getProperties();
 
-    assertThat(actual, is(notNullValue()));
-    assertThat(actual, is(not(sameInstance(expected))));
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isNotNull();
+    assertThat(actual).isNotSameAs(expected);
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
@@ -320,8 +334,8 @@ public class PropertiesBuilderTests {
     expected.setProperty("enumProperty", "ZERO");
     expected.setProperty("personProperty", "Jon Doe");
 
-    assertThat(actual, is(notNullValue()));
-    assertThat(actual, is(equalTo(expected)));
+    assertThat(actual).isNotNull();
+    assertThat(actual).isEqualTo(expected);
   }
 
   @Test
@@ -337,13 +351,13 @@ public class PropertiesBuilderTests {
       .set("personProperty", Person.newPerson("Jon", "Doe"))
       .buildPropertiesAdapter();
 
-    assertThat(propertiesAdapter, is(notNullValue()));
-    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class), is(equalTo(false)));
-    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class), is(equalTo('A')));
-    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.class), is(equalTo(3.14159d)));
-    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.class), is(equalTo(0)));
-    assertThat(propertiesAdapter.getAsType("stringProperty", String.class), is(equalTo("test")));
-    assertThat(propertiesAdapter.getAsType("enumProperty", Numbers.class), is(equalTo(Numbers.ZERO)));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class)).isFalse();
+    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class)).isEqualTo('A');
+    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.class)).isEqualTo(3.14159d);
+    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.class)).isEqualTo(0);
+    assertThat(propertiesAdapter.getAsType("stringProperty", String.class)).isEqualTo("test");
+    assertThat(propertiesAdapter.getAsType("enumProperty", Numbers.class)).isEqualTo(Numbers.ZERO);
     //assertThat(propertiesAdapter.getAsType("personProperty", Person.class), is(equalTo(Person.newPerson("Jon", "Doe"))));
   }
 
@@ -354,74 +368,27 @@ public class PropertiesBuilderTests {
 
     Properties properties = propertiesBuilder.set("propertyName", "propertyValue").getProperties();
 
-    assertThat(propertiesBuilder.toString(), is(equalTo(properties.toString())));
+    assertThat(propertiesBuilder.toString()).isEqualTo(properties.toString());
   }
 
   enum Numbers {
     ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE
   }
 
+  @Getter
+  @EqualsAndHashCode
+  @RequiredArgsConstructor(staticName = "newPerson")
   static class Person {
 
+    @NonNull
     private final String firstName;
+
+    @NonNull
     private final String lastName;
-
-    static Person newPerson(String firstName, String lastName) {
-      return new Person(firstName, lastName);
-    }
-
-    Person(String firstName, String lastName) {
-
-      Assert.notNull(firstName, "firstName must not be null");
-      Assert.notNull(lastName, "lastName must not be null");
-
-      this.firstName = firstName;
-      this.lastName = lastName;
-    }
-
-    String getFirstName() {
-      return firstName;
-    }
-
-    String getLastName() {
-      return lastName;
-    }
-
-    String getName() {
-      return String.format("%1$s %2$s", getFirstName(), getLastName());
-    }
-
-    @Override
-    public boolean equals(final Object obj) {
-
-      if (this == obj) {
-        return true;
-      }
-
-      if (!(obj instanceof Person)) {
-        return false;
-      }
-
-      Person that = (Person) obj;
-
-      return this.getFirstName().equals(that.getFirstName())
-        && this.getLastName().equals(that.getLastName());
-    }
-
-    @Override
-    public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + getFirstName().hashCode();
-      hashValue = 37 * hashValue + getLastName().hashCode();
-
-      return hashValue;
-    }
 
     @Override
     public String toString() {
-      return getName();
+      return String.format("%1$s %2$s", getFirstName(), getLastName());
     }
   }
 }

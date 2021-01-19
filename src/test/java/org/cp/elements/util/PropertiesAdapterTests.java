@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.PropertiesAdapter.from;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -40,20 +33,20 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.cp.elements.data.conversion.ConversionService;
+import org.cp.elements.test.TestUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link PropertiesAdapter}.
+ * Unit Tests for {@link PropertiesAdapter}.
 
  * @author John J. Blum
- * @see org.junit.Rule
+ * @see java.util.Map
+ * @see java.util.Properties
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
@@ -65,9 +58,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class PropertiesAdapterTests {
 
   private static PropertiesAdapter propertiesAdapter;
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Mock
   private Properties mockProperties;
@@ -89,11 +79,11 @@ public class PropertiesAdapterTests {
   @Before
   public void setup() {
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.getProperties(), is(notNullValue()));
-    assertThat(propertiesAdapter.getConversionService(), is(notNullValue()));
-    assertThat(propertiesAdapter.isEmpty(), is(false));
-    assertThat(propertiesAdapter.size(), is(equalTo(5)));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.getProperties()).isNotNull();
+    assertThat(propertiesAdapter.getConversionService()).isNotNull();
+    assertThat(propertiesAdapter.isEmpty()).isFalse();
+    assertThat(propertiesAdapter.size()).isEqualTo(5);
   }
 
   @Test
@@ -101,18 +91,14 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = new PropertiesAdapter(mockProperties);
 
-    assertThat(propertiesAdapter.getProperties(), is(sameInstance(mockProperties)));
-    assertThat(propertiesAdapter.getConversionService(), is(notNullValue(ConversionService.class)));
+    assertThat(propertiesAdapter.getProperties()).isSameAs(mockProperties);
+    assertThat(propertiesAdapter.getConversionService()).isNotNull();
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructPropertiesAdapterWithNull() {
-
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The Properties to wrap cannot be null");
-
-    new PropertiesAdapter(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new PropertiesAdapter(null),
+      () -> "The Properties to wrap cannot be null");
   }
 
   @Test
@@ -120,30 +106,30 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(mockProperties);
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.getProperties(), is(sameInstance(mockProperties)));
-    assertThat(propertiesAdapter.getConversionService(), is(notNullValue(ConversionService.class)));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.getProperties()).isSameAs(mockProperties);
+    assertThat(propertiesAdapter.getConversionService()).isNotNull();
   }
 
   @Test
   public void containsExistingPropertiesIsTrue() {
 
-    assertThat(propertiesAdapter.contains("booleanProperty"), is(true));
-    assertThat(propertiesAdapter.contains("characterProperty"), is(true));
-    assertThat(propertiesAdapter.contains("doubleProperty"), is(true));
-    assertThat(propertiesAdapter.contains("integerProperty"), is(true));
-    assertThat(propertiesAdapter.contains("stringProperty"), is(true));
+    assertThat(propertiesAdapter.contains("booleanProperty")).isTrue();
+    assertThat(propertiesAdapter.contains("characterProperty")).isTrue();
+    assertThat(propertiesAdapter.contains("doubleProperty")).isTrue();
+    assertThat(propertiesAdapter.contains("integerProperty")).isTrue();
+    assertThat(propertiesAdapter.contains("stringProperty")).isTrue();
   }
 
   @Test
   public void containsNonExistingPropertiesIsFalse() {
 
-    assertThat(propertiesAdapter.contains("boolProperty"), is(false));
-    assertThat(propertiesAdapter.contains("charProperty"), is(false));
-    assertThat(propertiesAdapter.contains("floatProperty"), is(false));
-    assertThat(propertiesAdapter.contains("intProperty"), is(false));
-    assertThat(propertiesAdapter.contains("strProperty"), is(false));
-    assertThat(propertiesAdapter.contains("STRINGPROPERTY"), is(false));
+    assertThat(propertiesAdapter.contains("boolProperty")).isFalse();
+    assertThat(propertiesAdapter.contains("charProperty")).isFalse();
+    assertThat(propertiesAdapter.contains("floatProperty")).isFalse();
+    assertThat(propertiesAdapter.contains("intProperty")).isFalse();
+    assertThat(propertiesAdapter.contains("strProperty")).isFalse();
+    assertThat(propertiesAdapter.contains("STRINGPROPERTY")).isFalse();
   }
 
   @Test
@@ -153,24 +139,24 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(properties);
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.isEmpty(), is(true));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.isEmpty()).isTrue();
 
     properties.setProperty("one", "1");
 
-    assertThat(propertiesAdapter.isEmpty(), is(false));
+    assertThat(propertiesAdapter.isEmpty()).isFalse();
 
     properties.remove("1");
 
-    assertThat(propertiesAdapter.isEmpty(), is(false));
+    assertThat(propertiesAdapter.isEmpty()).isFalse();
 
     properties.setProperty("one", "null");
 
-    assertThat(propertiesAdapter.isEmpty(), is(false));
+    assertThat(propertiesAdapter.isEmpty()).isFalse();
 
     properties.clear();
 
-    assertThat(propertiesAdapter.isEmpty(), is(true));
+    assertThat(propertiesAdapter.isEmpty()).isTrue();
   }
 
   @Test
@@ -188,15 +174,15 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(properties);
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.size(), is(equalTo(7)));
-    assertThat(propertiesAdapter.isSet("one"), is(true));
-    assertThat(propertiesAdapter.isSet("two"), is(false));
-    assertThat(propertiesAdapter.isSet("three"), is(true));
-    assertThat(propertiesAdapter.isSet("four"), is(true));
-    assertThat(propertiesAdapter.isSet("five"), is(true));
-    assertThat(propertiesAdapter.isSet("six"), is(true));
-    assertThat(propertiesAdapter.isSet("seven"), is(true));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.size()).isEqualTo(7);
+    assertThat(propertiesAdapter.isSet("one")).isTrue();
+    assertThat(propertiesAdapter.isSet("two")).isFalse();
+    assertThat(propertiesAdapter.isSet("three")).isTrue();
+    assertThat(propertiesAdapter.isSet("four")).isTrue();
+    assertThat(propertiesAdapter.isSet("five")).isTrue();
+    assertThat(propertiesAdapter.isSet("six")).isTrue();
+    assertThat(propertiesAdapter.isSet("seven")).isTrue();
   }
 
   @Test
@@ -210,11 +196,11 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(properties);
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.size(), is(equalTo(3)));
-    assertThat(propertiesAdapter.isUnset("one"), is(true));
-    assertThat(propertiesAdapter.isUnset("two"), is(true));
-    assertThat(propertiesAdapter.isUnset("three"), is(true));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.size()).isEqualTo(3);
+    assertThat(propertiesAdapter.isUnset("one")).isTrue();
+    assertThat(propertiesAdapter.isUnset("two")).isTrue();
+    assertThat(propertiesAdapter.isUnset("three")).isTrue();
   }
 
   @Test
@@ -229,26 +215,26 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(properties);
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.size(), is(equalTo(properties.size())));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.size()).isEqualTo(properties.size());
 
     int count = 0;
 
     for (String property : propertiesAdapter) {
-      assertThat(propertiesAdapter.contains(property), is(true));
-      assertThat(propertiesAdapter.isSet(property), is(false));
-      assertThat(propertiesAdapter.isUnset(property), is(true));
+      assertThat(propertiesAdapter.contains(property)).isTrue();
+      assertThat(propertiesAdapter.isSet(property)).isFalse();
+      assertThat(propertiesAdapter.isUnset(property)).isTrue();
       count++;
     }
 
-    assertThat(count, is(equalTo(properties.size())));
+    assertThat(count).isEqualTo(properties.size());
   }
 
   @Test
   public void nonExistingPropertiesAreNotSetNorUnset() {
 
-    assertThat(propertiesAdapter.isSet("nonExistingProperty"), is(false));
-    assertThat(propertiesAdapter.isUnset("nonExistingProperty"), is(false));
+    assertThat(propertiesAdapter.isSet("nonExistingProperty")).isFalse();
+    assertThat(propertiesAdapter.isUnset("nonExistingProperty")).isFalse();
   }
 
   @Test
@@ -266,9 +252,9 @@ public class PropertiesAdapterTests {
       }
     };
 
-    assertThat(propertiesAdapter.getConversionService(), is(sameInstance(mockConversionService)));
-    assertThat(propertiesAdapter.getProperties(), is(sameInstance(mockProperties)));
-    assertThat(propertiesAdapter.convert("propertyName", String.class), is(equalTo("test")));
+    assertThat(propertiesAdapter.getConversionService()).isSameAs(mockConversionService);
+    assertThat(propertiesAdapter.getProperties()).isSameAs(mockProperties);
+    assertThat(propertiesAdapter.convert("propertyName", String.class)).isEqualTo("test");
 
     verify(mockProperties, times(1)).getProperty(eq("propertyName"), eq(null));
     verify(mockConversionService, times(1)).convert(eq("test"), eq(String.class));
@@ -277,36 +263,36 @@ public class PropertiesAdapterTests {
   @Test
   public void defaultIfNotSetReturnsValueOfExistingProperty() {
 
-    assertThat(propertiesAdapter.defaultIfNotSet("booleanProperty", "false", String.class), is(equalTo("true")));
-    assertThat(propertiesAdapter.defaultIfNotSet("characterProperty", "Y", String.class), is(equalTo("X")));
-    assertThat(propertiesAdapter.defaultIfNotSet("doubleProperty", "1.21", String.class), is(equalTo("3.14159")));
-    assertThat(propertiesAdapter.defaultIfNotSet("integerProperty", "4", String.class), is(equalTo("2")));
-    assertThat(propertiesAdapter.defaultIfNotSet("stringProperty", "mock", String.class), is(equalTo("test")));
+    assertThat(propertiesAdapter.defaultIfNotSet("booleanProperty", "false", String.class)).isEqualTo("true");
+    assertThat(propertiesAdapter.defaultIfNotSet("characterProperty", "Y", String.class)).isEqualTo("X");
+    assertThat(propertiesAdapter.defaultIfNotSet("doubleProperty", "1.21", String.class)).isEqualTo("3.14159");
+    assertThat(propertiesAdapter.defaultIfNotSet("integerProperty", "4", String.class)).isEqualTo("2");
+    assertThat(propertiesAdapter.defaultIfNotSet("stringProperty", "mock", String.class)).isEqualTo("test");
   }
 
   @Test
   public void defaultIfNotSetReturnsDefaultValue() {
 
-    assertThat(propertiesAdapter.defaultIfNotSet("boolProperty", false, Boolean.TYPE), is(false));
-    assertThat(propertiesAdapter.defaultIfNotSet("charProperty", 'Y', Character.TYPE), is('Y'));
-    assertThat(propertiesAdapter.defaultIfNotSet("floatProperty", 3.14f, Float.TYPE), is(3.14f));
-    assertThat(propertiesAdapter.defaultIfNotSet("intProperty", 4, Integer.TYPE), is(4));
-    assertThat(propertiesAdapter.defaultIfNotSet("strProperty", "TEST", String.class), is("TEST"));
+    assertThat(propertiesAdapter.defaultIfNotSet("boolProperty", false, Boolean.TYPE)).isFalse();
+    assertThat(propertiesAdapter.defaultIfNotSet("charProperty", 'Y', Character.TYPE)).isEqualTo('Y');
+    assertThat(propertiesAdapter.defaultIfNotSet("floatProperty", 3.14f, Float.TYPE)).isEqualTo(3.14f);
+    assertThat(propertiesAdapter.defaultIfNotSet("intProperty", 4, Integer.TYPE)).isEqualTo(4);
+    assertThat(propertiesAdapter.defaultIfNotSet("strProperty", "TEST", String.class)).isEqualTo("TEST");
   }
 
   @Test
   public void valueOfStringIsString() {
-    assertThat(propertiesAdapter.valueOf("test"), is(equalTo("test")));
+    assertThat(propertiesAdapter.valueOf("test")).isEqualTo("test");
   }
 
   @Test
   public void valueOfNullStringIsNull() {
-    assertThat(propertiesAdapter.valueOf(" null  "), is(nullValue(String.class)));
+    assertThat(propertiesAdapter.valueOf(" null  ")).isNull();
   }
 
   @Test
   public void valueOfNullIsNull() {
-    assertThat(propertiesAdapter.valueOf(null), is(nullValue(String.class)));
+    assertThat(propertiesAdapter.valueOf(null)).isNull();
   }
 
   @Test
@@ -315,12 +301,12 @@ public class PropertiesAdapterTests {
     PropertiesAdapter filteredPropertiesAdapter = propertiesAdapter.filter(
       (property) -> property.startsWith("char") || property.startsWith("str"));
 
-    assertThat(filteredPropertiesAdapter, is(notNullValue()));
-    assertThat(filteredPropertiesAdapter.contains("characterProperty"), is(true));
-    assertThat(filteredPropertiesAdapter.contains("stringProperty"), is(true));
-    assertThat(filteredPropertiesAdapter.contains("booleanProperty"), is(false));
-    assertThat(filteredPropertiesAdapter.contains("doubleProperty"), is(false));
-    assertThat(filteredPropertiesAdapter.contains("integerProperty"), is(false));
+    assertThat(filteredPropertiesAdapter).isNotNull();
+    assertThat(filteredPropertiesAdapter.contains("characterProperty")).isTrue();
+    assertThat(filteredPropertiesAdapter.contains("stringProperty")).isTrue();
+    assertThat(filteredPropertiesAdapter.contains("booleanProperty")).isFalse();
+    assertThat(filteredPropertiesAdapter.contains("doubleProperty")).isFalse();
+    assertThat(filteredPropertiesAdapter.contains("integerProperty")).isFalse();
   }
 
   @Test
@@ -328,58 +314,58 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter filteredPropertiesAdapter = propertiesAdapter.filter((property) -> false);
 
-    assertThat(filteredPropertiesAdapter, is(notNullValue()));
-    assertThat(filteredPropertiesAdapter.isEmpty(), is(true));
+    assertThat(filteredPropertiesAdapter).isNotNull();
+    assertThat(filteredPropertiesAdapter.isEmpty()).isTrue();
   }
 
   @Test
   public void getExistingPropertyReturnsValue() {
 
-    assertThat(propertiesAdapter.get("booleanProperty"), is(equalTo("true")));
-    assertThat(propertiesAdapter.get("characterProperty"), is(equalTo("X")));
-    assertThat(propertiesAdapter.get("doubleProperty"), is(equalTo("3.14159")));
-    assertThat(propertiesAdapter.get("integerProperty"), is(equalTo("2")));
-    assertThat(propertiesAdapter.get("stringProperty"), is(equalTo("test")));
+    assertThat(propertiesAdapter.get("booleanProperty")).isEqualTo("true");
+    assertThat(propertiesAdapter.get("characterProperty")).isEqualTo("X");
+    assertThat(propertiesAdapter.get("doubleProperty")).isEqualTo("3.14159");
+    assertThat(propertiesAdapter.get("integerProperty")).isEqualTo("2");
+    assertThat(propertiesAdapter.get("stringProperty")).isEqualTo("test");
   }
 
   @Test
   public void getExistingPropertyWithDefaultValueReturnsPropertyValue() {
-    assertThat(propertiesAdapter.get("stringProperty", "MOCK"), is(equalTo("test")));
+    assertThat(propertiesAdapter.get("stringProperty", "MOCK")).isEqualTo("test");
   }
 
   @Test
   public void getExistingPropertyAsTypeReturnsTypedValue() {
 
-    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class), is(equalTo(true)));
-    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class), is(equalTo('X')));
-    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.class), is(equalTo(3.14159d)));
-    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.class), is(equalTo(2)));
-    assertThat(propertiesAdapter.getAsType("stringProperty", String.class), is(equalTo("test")));
+    assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class)).isTrue();
+    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class)).isEqualTo('X');
+    assertThat(propertiesAdapter.getAsType("doubleProperty", Double.class)).isEqualTo(3.14159d);
+    assertThat(propertiesAdapter.getAsType("integerProperty", Integer.class)).isEqualTo(2);
+    assertThat(propertiesAdapter.getAsType("stringProperty", String.class)).isEqualTo("test");
   }
 
   @Test
   public void getExistingPropertyAsTypeWithDefaultValueReturnsTypedPropertyValue() {
-    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class, 'Y'), is(equalTo('X')));
+    assertThat(propertiesAdapter.getAsType("characterProperty", Character.class, 'Y')).isEqualTo('X');
   }
 
   @Test
   public void getNonExistingPropertyReturnsNull() {
-    assertThat(propertiesAdapter.get("nonExistingProperty"), is(nullValue()));
+    assertThat(propertiesAdapter.get("nonExistingProperty")).isNull();
   }
 
   @Test
   public void getNonExistingPropertyWithDefaultValueReturnsDefaultValue() {
-    assertThat(propertiesAdapter.get("nonExistingProperty", "TEST"), is(equalTo("TEST")));
+    assertThat(propertiesAdapter.get("nonExistingProperty", "TEST")).isEqualTo("TEST");
   }
 
   @Test
   public void getNonExistingPropertyAsTypeReturnsNull() {
-    assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE), is(nullValue()));
+    assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE)).isNull();
   }
 
   @Test
   public void getNonExistingPropertyAsTypeWithDefaultValueReturnsDefaultValue() {
-    assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE, 123.45d), is(equalTo(123.45d)));
+    assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE, 123.45d)).isEqualTo(123.45d);
   }
 
   @Test
@@ -392,7 +378,7 @@ public class PropertiesAdapterTests {
       expectedPropertyNames.remove(propertyName);
     }
 
-    assertThat(expectedPropertyNames.isEmpty(), is(true));
+    assertThat(expectedPropertyNames.isEmpty()).isTrue();
   }
 
   @Test
@@ -402,26 +388,26 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(properties);
 
-    assertThat(propertiesAdapter, is(notNullValue()));
-    assertThat(propertiesAdapter.size(), is(equalTo(0)));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.size()).isEqualTo(0);
 
     properties.setProperty("one", "1");
 
-    assertThat(propertiesAdapter.size(), is(equalTo(1)));
+    assertThat(propertiesAdapter.size()).isEqualTo(1);
 
     properties.setProperty("two", "2");
     properties.setProperty("three", "3");
 
-    assertThat(propertiesAdapter.size(), is(equalTo(3)));
+    assertThat(propertiesAdapter.size()).isEqualTo(3);
 
     properties.remove("three");
     properties.setProperty("two", "null");
 
-    assertThat(propertiesAdapter.size(), is(equalTo(2)));
+    assertThat(propertiesAdapter.size()).isEqualTo(2);
 
     properties.clear();
 
-    assertThat(propertiesAdapter.size(), is(equalTo(0)));
+    assertThat(propertiesAdapter.size()).isEqualTo(0);
   }
 
   @Test
@@ -432,10 +418,10 @@ public class PropertiesAdapterTests {
     PropertiesAdapter propertiesAdapterOne = from(properties);
     PropertiesAdapter propertiesAdapterTwo = from(properties);
 
-    assertThat(propertiesAdapterOne, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapterTwo, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapterOne, is(not(sameInstance(propertiesAdapterTwo))));
-    assertThat(propertiesAdapterOne.equals(propertiesAdapterTwo), is(true));
+    assertThat(propertiesAdapterOne).isNotNull();
+    assertThat(propertiesAdapterTwo).isNotNull();
+    assertThat(propertiesAdapterOne).isNotSameAs(propertiesAdapterTwo);
+    assertThat(propertiesAdapterOne.equals(propertiesAdapterTwo)).isTrue();
   }
 
   @Test
@@ -444,19 +430,19 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(singletonProperties("one", "1"));
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.equals(propertiesAdapter), is(true));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.equals(propertiesAdapter)).isTrue();
   }
 
   @Test
   public void equalsObjectIsFalse() {
-    assertThat(from(mockProperties).equals(new Object()), is(false));
+    assertThat(from(mockProperties).equals(new Object())).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void equalsNullIsFalse() {
-    assertThat(from(mockProperties).equals(null), is(false));
+    assertThat(from(mockProperties).equals(null)).isFalse();
   }
 
   @Test
@@ -468,9 +454,9 @@ public class PropertiesAdapterTests {
     PropertiesAdapter propertiesAdapterTwo = from(properties);
     PropertiesAdapter propertiesAdapterThree = from(singletonProperties("two", "2"));
 
-    assertThat(propertiesAdapterOne.hashCode(), is(not(equalTo(0))));
-    assertThat(propertiesAdapterOne.hashCode(), is(equalTo(propertiesAdapterTwo.hashCode())));
-    assertThat(propertiesAdapterOne.hashCode(), is(not(equalTo(propertiesAdapterThree.hashCode()))));
+    assertThat(propertiesAdapterOne.hashCode()).isNotEqualTo(0);
+    assertThat(propertiesAdapterOne.hashCode()).isEqualTo(propertiesAdapterTwo.hashCode());
+    assertThat(propertiesAdapterOne.hashCode()).isNotEqualTo(propertiesAdapterThree.hashCode());
   }
 
   @Test
@@ -481,7 +467,7 @@ public class PropertiesAdapterTests {
     String expectedPropertiesString = "[\n\tbooleanProperty = true,\n\tcharacterProperty = X"
       + ",\n\tdoubleProperty = 3.14159,\n\tintegerProperty = 2,\n\tstringProperty = test\n]";
 
-    assertThat(actualPropertiesString, is(equalTo(expectedPropertiesString)));
+    assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
   }
 
   @Test
@@ -490,7 +476,7 @@ public class PropertiesAdapterTests {
     String actualPropertiesString = from(singletonProperties("one", "1")).toString();
     String expectedPropertiesString = "[\n\tone = 1\n]";
 
-    assertThat(actualPropertiesString, is(equalTo(expectedPropertiesString)));
+    assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
   }
 
   @Test
@@ -499,7 +485,7 @@ public class PropertiesAdapterTests {
     String actualPropertiesString = from(new Properties()).toString();
     String expectedPropertiesString = "[]";
 
-    assertThat(actualPropertiesString, is(equalTo(expectedPropertiesString)));
+    assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
   }
 
   @Test
@@ -512,17 +498,17 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(properties);
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.size(), is(equalTo(properties.size())));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.size()).isEqualTo(properties.size());
 
     Map<String, String> map = propertiesAdapter.toMap();
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(map.size(), is(equalTo(properties.size())));
+    assertThat(map).isNotNull();
+    assertThat(map.size()).isEqualTo(properties.size());
 
     for (String propertyName : properties.stringPropertyNames()) {
-      assertThat(map.containsKey(propertyName), is(true));
-      assertThat(map.get(propertyName), is(equalTo(properties.getProperty(propertyName))));
+      assertThat(map.containsKey(propertyName)).isTrue();
+      assertThat(map.get(propertyName)).isEqualTo(properties.getProperty(propertyName));
     }
   }
 
@@ -531,12 +517,12 @@ public class PropertiesAdapterTests {
 
     PropertiesAdapter propertiesAdapter = from(new Properties());
 
-    assertThat(propertiesAdapter, is(notNullValue(PropertiesAdapter.class)));
-    assertThat(propertiesAdapter.isEmpty(), is(true));
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.isEmpty()).isTrue();
 
     Map<String, String> map = propertiesAdapter.toMap();
 
-    assertThat(map, is(notNullValue(Map.class)));
-    assertThat(map.isEmpty(), is(true));
+    assertThat(map).isNotNull();
+    assertThat(map.isEmpty()).isTrue();
   }
 }

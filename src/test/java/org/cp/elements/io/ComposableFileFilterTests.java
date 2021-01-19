@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -41,7 +33,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * Unit tests for {@link ComposableFileFilter}.
+ * Unit Tests for {@link ComposableFileFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -69,188 +61,195 @@ public class ComposableFileFilterTests {
   @Before
   public void setup() {
 
-    when(mockFileFilterOne.accept(any(File.class))).thenReturn(true);
-    when(mockFileFilterTwo.accept(any(File.class))).thenReturn(false);
+    when(this.mockFileFilterOne.accept(any(File.class))).thenReturn(true);
+    when(this.mockFileFilterTwo.accept(any(File.class))).thenReturn(false);
   }
 
   @Test
   public void composeReturnsNull() {
-    assertThat(ComposableFileFilter.builder().compose(null, null), is(nullValue(FileFilter.class)));
+    assertThat(ComposableFileFilter.builder().compose(null, null)).isNull();
   }
 
   @Test
   public void composeReturnsReturnsLeft() {
-    assertThat(ComposableFileFilter.builder().compose(mockFileFilterOne, null),
-      is(sameInstance(mockFileFilterOne)));
+    assertThat(ComposableFileFilter.builder().compose(this.mockFileFilterOne, null)).isSameAs(this.mockFileFilterOne);
   }
 
   @Test
   public void composeReturnsReturnsRight() {
-    assertThat(ComposableFileFilter.builder().compose(null, mockFileFilterTwo),
-      is(sameInstance(mockFileFilterTwo)));
+    assertThat(ComposableFileFilter.builder().compose(null, this.mockFileFilterTwo)).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeReturnsComposableFileFilter() {
 
-    FileFilter fileFilter = ComposableFileFilter.builder().compose(mockFileFilterOne, mockFileFilterTwo);
+    FileFilter fileFilter = ComposableFileFilter.builder().compose(this.mockFileFilterOne, this.mockFileFilterTwo);
 
-    assertThat(fileFilter, is(instanceOf(ComposableFileFilter.class)));
-    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand(), is(sameInstance(mockFileFilterOne)));
-    assertThat(((ComposableFileFilter) fileFilter).getOperator(), is(sameInstance(LogicalOperator.AND)));
-    assertThat(((ComposableFileFilter) fileFilter).getRightOperand(), is(sameInstance(mockFileFilterTwo)));
+    assertThat(fileFilter).isInstanceOf(ComposableFileFilter.class);
+    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand()).isSameAs(this.mockFileFilterOne);
+    assertThat(((ComposableFileFilter) fileFilter).getOperator()).isSameAs(LogicalOperator.AND);
+    assertThat(((ComposableFileFilter) fileFilter).getRightOperand()).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeAndReturnsNull() {
-    assertThat(ComposableFileFilter.and(null, null), is(nullValue()));
+    assertThat(ComposableFileFilter.and(null, null)).isNull();
   }
 
   @Test
   public void composeAndReturnsLeft() {
-    assertThat(ComposableFileFilter.and(mockFileFilterOne, null), is(sameInstance(mockFileFilterOne)));
+    assertThat(ComposableFileFilter.and(this.mockFileFilterOne, null)).isSameAs(this.mockFileFilterOne);
   }
 
   @Test
   public void composeAndReturnsRight() {
-    assertThat(ComposableFileFilter.and(null, mockFileFilterTwo), is(sameInstance(mockFileFilterTwo)));
+    assertThat(ComposableFileFilter.and(null, this.mockFileFilterTwo)).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeAndReturnsComposableFileFilter() {
 
-    FileFilter fileFilter = ComposableFileFilter.and(mockFileFilterOne, mockFileFilterTwo);
+    FileFilter fileFilter = ComposableFileFilter.and(this.mockFileFilterOne, this.mockFileFilterTwo);
 
-    assertThat(fileFilter, is(instanceOf(ComposableFileFilter.class)));
-    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand(), is(sameInstance(mockFileFilterOne)));
-    assertThat(((ComposableFileFilter) fileFilter).getOperator(), is(equalTo(LogicalOperator.AND)));
-    assertThat(((ComposableFileFilter) fileFilter).getRightOperand(), is(sameInstance(mockFileFilterTwo)));
+    assertThat(fileFilter).isInstanceOf(ComposableFileFilter.class);
+    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand()).isSameAs(this.mockFileFilterOne);
+    assertThat(((ComposableFileFilter) fileFilter).getOperator()).isEqualTo(LogicalOperator.AND);
+    assertThat(((ComposableFileFilter) fileFilter).getRightOperand()).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeAndWithNoFileFiltersReturnsNull() {
-    assertThat(ComposableFileFilter.and(), is(nullValue(FileFilter.class)));
+    assertThat(ComposableFileFilter.and()).isNull();
   }
 
   @Test
   public void composeAndWithNullFileFilterArrayReturnsNull() {
-    assertThat(ComposableFileFilter.and((FileFilter[]) null), is(nullValue(FileFilter.class)));
+    assertThat(ComposableFileFilter.and((FileFilter[]) null)).isNull();
   }
 
   @Test
   public void composeOrReturnsNull() {
-    assertThat(ComposableFileFilter.or(null, null), is(nullValue()));
+    assertThat(ComposableFileFilter.or(null, null)).isNull();
   }
 
   @Test
   public void composeOrReturnsLeft() {
-    assertThat(ComposableFileFilter.or(mockFileFilterOne, null), is(sameInstance(mockFileFilterOne)));
+    assertThat(ComposableFileFilter.or(this.mockFileFilterOne, null)).isSameAs(this.mockFileFilterOne);
   }
 
   @Test
   public void composeOrReturnsRight() {
-    assertThat(ComposableFileFilter.or(null, mockFileFilterTwo), is(sameInstance(mockFileFilterTwo)));
+    assertThat(ComposableFileFilter.or(null, this.mockFileFilterTwo)).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeOrReturnsComposableFileFilter() {
 
-    FileFilter fileFilter = ComposableFileFilter.or(mockFileFilterOne, mockFileFilterTwo);
+    FileFilter fileFilter = ComposableFileFilter.or(this.mockFileFilterOne, this.mockFileFilterTwo);
 
-    assertThat(fileFilter, is(instanceOf(ComposableFileFilter.class)));
-    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand(), is(sameInstance(mockFileFilterOne)));
-    assertThat(((ComposableFileFilter) fileFilter).getOperator(), is(equalTo(LogicalOperator.OR)));
-    assertThat(((ComposableFileFilter) fileFilter).getRightOperand(), is(sameInstance(mockFileFilterTwo)));
+    assertThat(fileFilter).isInstanceOf(ComposableFileFilter.class);
+    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand()).isSameAs(this.mockFileFilterOne);
+    assertThat(((ComposableFileFilter) fileFilter).getOperator()).isEqualTo(LogicalOperator.OR);
+    assertThat(((ComposableFileFilter) fileFilter).getRightOperand()).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeOrWithNoFileFiltersReturnsNull() {
-    assertThat(ComposableFileFilter.or(), is(nullValue(FileFilter.class)));
+    assertThat(ComposableFileFilter.or()).isNull();
   }
 
   @Test
   public void composeOrWithNullFileFilterArrayReturnsNull() {
-    assertThat(ComposableFileFilter.or((FileFilter[]) null), is(nullValue(FileFilter.class)));
+    assertThat(ComposableFileFilter.or((FileFilter[]) null)).isNull();
   }
 
   @Test
   public void composeXorReturnsNull() {
-    assertThat(ComposableFileFilter.xor(null, null), is(nullValue()));
+    assertThat(ComposableFileFilter.xor(null, null)).isNull();
   }
 
   @Test
   public void composeXorReturnsLeft() {
-    assertThat(ComposableFileFilter.xor(mockFileFilterOne, null), is(sameInstance(mockFileFilterOne)));
+    assertThat(ComposableFileFilter.xor(this.mockFileFilterOne, null)).isSameAs(this.mockFileFilterOne);
   }
 
   @Test
   public void composeXorReturnsRight() {
-    assertThat(ComposableFileFilter.xor(null, mockFileFilterTwo), is(sameInstance(mockFileFilterTwo)));
+    assertThat(ComposableFileFilter.xor(null, this.mockFileFilterTwo)).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void composeXorReturnsComposableFileFilter() {
 
-    FileFilter fileFilter = ComposableFileFilter.xor(mockFileFilterOne, mockFileFilterTwo);
+    FileFilter fileFilter = ComposableFileFilter.xor(this.mockFileFilterOne, this.mockFileFilterTwo);
 
-    assertThat(fileFilter, is(instanceOf(ComposableFileFilter.class)));
-    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand(), is(sameInstance(mockFileFilterOne)));
-    assertThat(((ComposableFileFilter) fileFilter).getOperator(), is(equalTo(LogicalOperator.XOR)));
-    assertThat(((ComposableFileFilter) fileFilter).getRightOperand(), is(sameInstance(mockFileFilterTwo)));
+    assertThat(fileFilter).isInstanceOf(ComposableFileFilter.class);
+    assertThat(((ComposableFileFilter) fileFilter).getLeftOperand()).isSameAs(this.mockFileFilterOne);
+    assertThat(((ComposableFileFilter) fileFilter).getOperator()).isEqualTo(LogicalOperator.XOR);
+    assertThat(((ComposableFileFilter) fileFilter).getRightOperand()).isSameAs(this.mockFileFilterTwo);
   }
 
   @Test
   public void acceptAnd() {
 
-    assertThat(ComposableFileFilter.and(mockFileFilterOne, mockFileFilterOne).accept(mockFile), is(true));
-    assertThat(ComposableFileFilter.and(mockFileFilterOne, mockFileFilterTwo).accept(mockFile), is(false));
-    assertThat(ComposableFileFilter.and(mockFileFilterTwo, mockFileFilterOne).accept(mockFile), is(false));
-    assertThat(ComposableFileFilter.and(mockFileFilterTwo, mockFileFilterTwo).accept(mockFile), is(false));
+    assertThat(ComposableFileFilter.and(this.mockFileFilterOne, this.mockFileFilterOne).accept(this.mockFile)).isTrue();
+    assertThat(ComposableFileFilter.and(this.mockFileFilterOne, this.mockFileFilterTwo).accept(this.mockFile)).isFalse();
+    assertThat(ComposableFileFilter.and(this.mockFileFilterTwo, this.mockFileFilterOne).accept(this.mockFile)).isFalse();
+    assertThat(ComposableFileFilter.and(this.mockFileFilterTwo, this.mockFileFilterTwo).accept(this.mockFile)).isFalse();
 
-    verify(mockFileFilterOne, times(3)).accept(eq(mockFile));
-    verify(mockFileFilterTwo, times(3)).accept(eq(mockFile));
+    verify(this.mockFileFilterOne, times(3)).accept(eq(this.mockFile));
+    verify(this.mockFileFilterTwo, times(3)).accept(eq(this.mockFile));
   }
 
   @Test
   public void acceptAndWithFileFilterArray() {
 
-    assertTrue(ComposableFileFilter.and(mockFileFilterOne, mockFileFilterOne, mockFileFilterOne).accept(mockFile));
-    assertFalse(ComposableFileFilter.and(mockFileFilterTwo, mockFileFilterTwo, mockFileFilterOne).accept(mockFile));
-    assertFalse(ComposableFileFilter.and(mockFileFilterOne, mockFileFilterTwo, mockFileFilterOne).accept(mockFile));
-    assertFalse(ComposableFileFilter.and(mockFileFilterTwo, mockFileFilterTwo, mockFileFilterTwo).accept(mockFile));
+    assertThat(ComposableFileFilter.and(this.mockFileFilterOne, this.mockFileFilterOne, this.mockFileFilterOne).accept(this.mockFile))
+      .isTrue();
+    assertThat(ComposableFileFilter.and(this.mockFileFilterTwo, this.mockFileFilterTwo, this.mockFileFilterOne).accept(this.mockFile))
+      .isFalse();
+    assertThat(ComposableFileFilter.and(this.mockFileFilterOne, this.mockFileFilterTwo, this.mockFileFilterOne).accept(this.mockFile))
+      .isFalse();
+    assertThat(ComposableFileFilter.and(this.mockFileFilterTwo, this.mockFileFilterTwo, this.mockFileFilterTwo).accept(this.mockFile))
+      .isFalse();
   }
 
   @Test
   public void acceptOr() {
 
-    assertThat(ComposableFileFilter.or(mockFileFilterOne, mockFileFilterOne).accept(mockFile), is(true));
-    assertThat(ComposableFileFilter.or(mockFileFilterOne, mockFileFilterTwo).accept(mockFile), is(true));
-    assertThat(ComposableFileFilter.or(mockFileFilterTwo, mockFileFilterOne).accept(mockFile), is(true));
-    assertThat(ComposableFileFilter.or(mockFileFilterTwo, mockFileFilterTwo).accept(mockFile), is(false));
+    assertThat(ComposableFileFilter.or(this.mockFileFilterOne, this.mockFileFilterOne).accept(this.mockFile)).isTrue();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterOne, this.mockFileFilterTwo).accept(this.mockFile)).isTrue();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterTwo, this.mockFileFilterOne).accept(this.mockFile)).isTrue();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterTwo, this.mockFileFilterTwo).accept(this.mockFile)).isFalse();
 
-    verify(mockFileFilterOne, times(3)).accept(eq(mockFile));
-    verify(mockFileFilterTwo, times(3)).accept(eq(mockFile));
+    verify(this.mockFileFilterOne, times(3)).accept(eq(this.mockFile));
+    verify(this.mockFileFilterTwo, times(3)).accept(eq(this.mockFile));
   }
 
   @Test
   public void acceptOrWithFileFilerArray() {
 
-    assertFalse(ComposableFileFilter.or(mockFileFilterTwo, mockFileFilterTwo, mockFileFilterTwo).accept(mockFile));
-    assertTrue(ComposableFileFilter.or(mockFileFilterOne, mockFileFilterTwo, mockFileFilterTwo).accept(mockFile));
-    assertTrue(ComposableFileFilter.or(mockFileFilterTwo, mockFileFilterOne, mockFileFilterTwo).accept(mockFile));
-    assertTrue(ComposableFileFilter.or(mockFileFilterOne, mockFileFilterOne, mockFileFilterTwo).accept(mockFile));
-    assertTrue(ComposableFileFilter.or(mockFileFilterOne, mockFileFilterOne, mockFileFilterOne).accept(mockFile));
+    assertThat(ComposableFileFilter.or(this.mockFileFilterTwo, this.mockFileFilterTwo, this.mockFileFilterTwo).accept(this.mockFile))
+      .isFalse();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterOne, this.mockFileFilterTwo, this.mockFileFilterTwo).accept(this.mockFile))
+      .isTrue();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterTwo, this.mockFileFilterOne, this.mockFileFilterTwo).accept(this.mockFile))
+      .isTrue();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterOne, this.mockFileFilterOne, this.mockFileFilterTwo).accept(this.mockFile))
+      .isTrue();
+    assertThat(ComposableFileFilter.or(this.mockFileFilterOne, this.mockFileFilterOne, this.mockFileFilterOne).accept(this.mockFile))
+      .isTrue();
   }
 
   @Test
   public void acceptXor() {
 
-    assertThat(ComposableFileFilter.xor(mockFileFilterOne, mockFileFilterOne).accept(mockFile), is(false));
-    assertThat(ComposableFileFilter.xor(mockFileFilterOne, mockFileFilterTwo).accept(mockFile), is(true));
-    assertThat(ComposableFileFilter.xor(mockFileFilterTwo, mockFileFilterOne).accept(mockFile), is(true));
-    assertThat(ComposableFileFilter.xor(mockFileFilterTwo, mockFileFilterTwo).accept(mockFile), is(false));
+    assertThat(ComposableFileFilter.xor(this.mockFileFilterOne, this.mockFileFilterOne).accept(this.mockFile)).isFalse();
+    assertThat(ComposableFileFilter.xor(this.mockFileFilterOne, this.mockFileFilterTwo).accept(this.mockFile)).isTrue();
+    assertThat(ComposableFileFilter.xor(this.mockFileFilterTwo, this.mockFileFilterOne).accept(this.mockFile)).isTrue();
+    assertThat(ComposableFileFilter.xor(this.mockFileFilterTwo, this.mockFileFilterTwo).accept(this.mockFile)).isFalse();
 
-    verify(mockFileFilterOne, times(4)).accept(eq(mockFile));
-    verify(mockFileFilterTwo, times(4)).accept(eq(mockFile));
+    verify(this.mockFileFilterOne, times(4)).accept(eq(this.mockFile));
+    verify(this.mockFileFilterTwo, times(4)).accept(eq(this.mockFile));
   }
 }

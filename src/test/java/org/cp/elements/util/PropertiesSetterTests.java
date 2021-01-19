@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.PropertiesSetter.set;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Properties;
 
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Unit tests for {@link PropertiesSetter}.
+ * Unit Tests for {@link PropertiesSetter}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
+ * @see java.util.Properties
  * @see org.junit.Test
  * @see org.cp.elements.util.PropertiesSetter
  * @since 1.0.0
  */
 public class PropertiesSetterTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void setWithValidPropertyNameIsSuccessful() {
+
     PropertiesSetter propertiesSetter = set("key");
 
     assertThat(propertiesSetter).isNotNull();
@@ -50,48 +44,49 @@ public class PropertiesSetterTests {
   }
 
   protected void assertSetWithIllegalPropertyNameThrowsIllegalArgumentException(String propertyName) {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Property name must be specified");
-
-    set(propertyName);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> set(propertyName),
+      () -> "Property name must be specified");
   }
 
-  @Test
-  public void setWithIllegalPropertyNamesThrowsIllegalArgumentException() {
-    assertSetWithIllegalPropertyNameThrowsIllegalArgumentException(null);
-    assertSetWithIllegalPropertyNameThrowsIllegalArgumentException("");
+  @Test(expected = IllegalArgumentException.class)
+  public void setWithBlankPropertyNamesThrowsIllegalArgumentException() {
     assertSetWithIllegalPropertyNameThrowsIllegalArgumentException("  ");
   }
 
-  @Test
-  public void getPropertiesWhenUnsetThrowsIllegalStateException() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Properties were not specified");
+  @Test(expected = IllegalArgumentException.class)
+  public void setWithEmptyPropertyNamesThrowsIllegalArgumentException() {
+    assertSetWithIllegalPropertyNameThrowsIllegalArgumentException("");
+  }
 
-    set("key").getProperties();
+  @Test(expected = IllegalArgumentException.class)
+  public void setWithNullPropertyNamesThrowsIllegalArgumentException() {
+    assertSetWithIllegalPropertyNameThrowsIllegalArgumentException(null);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void getPropertiesWhenUnsetThrowsIllegalStateException() {
+    TestUtils.doIllegalStateExceptionThrowingOperation(() -> set("key").getProperties(),
+      () -> "Properties were not specified");
   }
 
   @Test
   public void ofNonNullProperties() {
+
     Properties expected = new Properties();
     Properties actual = set("key").of(expected).getProperties();
 
     assertThat(actual).isSameAs(expected);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void ofNullPropertiesThrowsIllegalArgumentException() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Properties cannot be null");
-
-    set("key").of(null).getProperties();
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> set("key").of(null).getProperties(),
+      () -> "Properties cannot be null");
   }
 
   @Test
   public void toPropertyValueIsSuccessful() {
+
     Properties properties = new Properties();
 
     assertThat(properties.containsKey("key")).isFalse();
@@ -102,17 +97,15 @@ public class PropertiesSetterTests {
     assertThat(properties.getProperty("key")).isEqualTo("test");
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void toPropertyValueWhenPropertiesIsUnsetThrowsIllegalStateException() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Properties were not specified");
-
-    set("key").to("test");
+    TestUtils.doIllegalStateExceptionThrowingOperation(() -> set("key").to("test"),
+      () -> "Properties were not specified");
   }
 
   @Test
   public void withSourceProperties() {
+
     Properties source = new Properties();
     Properties target = new Properties();
 
@@ -127,21 +120,15 @@ public class PropertiesSetterTests {
     assertThat(target.getProperty("key")).isEqualTo(source.getProperty("key"));
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void withNullSourceProperties() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Source properties cannot be null");
-
-    set("key").of(new Properties()).with(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> set("key").of(new Properties()).with(null),
+      () -> "Source properties cannot be null");
   }
 
-  @Test
+  @Test(expected = IllegalStateException.class)
   public void withNullTargetProperties() {
-    exception.expect(IllegalStateException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("Properties were not specified");
-
-    set("key").with(new Properties());
+    TestUtils.doIllegalStateExceptionThrowingOperation(() -> set("key").with(new Properties()),
+      () -> "Properties were not specified");
   }
 }

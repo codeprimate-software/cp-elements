@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -33,9 +30,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -45,7 +40,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link ComposableInvocationHandler}.
+ * Unit Tests for {@link ComposableInvocationHandler}.
  *
  * @author John Blum
  * @see org.junit.Rule
@@ -60,9 +55,6 @@ import lombok.RequiredArgsConstructor;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ComposableInvocationHandlerTests {
-
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
 
   @Mock
   private InvocationHandler mockInvocationHandlerOne;
@@ -132,7 +124,7 @@ public class ComposableInvocationHandlerTests {
     verify(mockInvocationHandlerTwo, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));
   }
 
-  @Test
+  @Test(expected = UnhandledMethodInvocationException.class)
   public void invokeThrowsUnhandledMethodInvocationException() throws Throwable {
 
     Object proxy = new Object();
@@ -150,11 +142,14 @@ public class ComposableInvocationHandlerTests {
     assertThat(invocationHandler).isNotNull();
 
     try {
-      exception.expect(UnhandledMethodInvocationException.class);
-      exception.expectCause(is(nullValue(Throwable.class)));
-      exception.expectMessage("Method [getName] was not handled");
-
       invocationHandler.invoke(proxy, getName, arguments);
+    }
+    catch (UnhandledMethodInvocationException expected) {
+
+      assertThat(expected).hasMessage("Method [getName] was not handled");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
     }
     finally {
       verify(mockInvocationHandlerOne, times(1)).invoke(eq(proxy), eq(getName), eq(arguments));

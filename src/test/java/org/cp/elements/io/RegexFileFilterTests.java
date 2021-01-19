@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,56 +25,49 @@ import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link RegexFileFilter} class.
+ * Unit Tests for {@link RegexFileFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.RegexFileFilter
  * @since 1.0.0
  */
-@SuppressWarnings("all")
 public class RegexFileFilterTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
-  protected File mockFile(String name) {
+  private File mockFile(String name) {
     return mock(File.class, name);
   }
 
   @Test
   public void constructRegexFileFilterWithRegularExpression() {
-    assertThat(new RegexFileFilter("[a-zA-Z0-9_*/]+[a-zA-Z0-9_]+\\.dat").getRegularExpression(),
-      is(equalTo("[a-zA-Z0-9_*/]+[a-zA-Z0-9_]+\\.dat")));
+    assertThat(new RegexFileFilter("[a-zA-Z0-9_*/]+[a-zA-Z0-9_]+\\.dat").getRegularExpression())
+      .isEqualTo("[a-zA-Z0-9_*/]+[a-zA-Z0-9_]+\\.dat");
   }
 
   @Test
   public void constructRegexFileFilterWithPattern() {
+
     Pattern expectedPattern = Pattern.compile("[a-zA-Z0-9_]+");
-    assertThat(new RegexFileFilter(expectedPattern).getPattern(), is(equalTo(expectedPattern)));
+
+    assertThat(new RegexFileFilter(expectedPattern).getPattern()).isEqualTo(expectedPattern);
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void constructRegexFileFilterWithNullPattern() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The Regular Expression (Pattern) cannot be null");
-
-    new RegexFileFilter((Pattern) null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new RegexFileFilter((Pattern) null),
+      () -> "The Regular Expression (Pattern) cannot be null");
   }
 
   @Test
   public void acceptsMatchingFiles() throws IOException {
+
     File mockFileOne = mockFile("MockFileOne");
     File mockFileTwo = mockFile("MockFileTwo");
     File mockFileThree = mockFile("MockFileThree");
@@ -89,9 +78,9 @@ public class RegexFileFilterTests {
 
     RegexFileFilter regexFileFilter = new RegexFileFilter("[a-zA-Z0-9_/\\.]+.*\\.dat");
 
-    assertThat(regexFileFilter.accept(mockFileOne), is(true));
-    assertThat(regexFileFilter.accept(mockFileTwo), is(true));
-    assertThat(regexFileFilter.accept(mockFileThree), is(true));
+    assertThat(regexFileFilter.accept(mockFileOne)).isTrue();
+    assertThat(regexFileFilter.accept(mockFileTwo)).isTrue();
+    assertThat(regexFileFilter.accept(mockFileThree)).isTrue();
 
     verify(mockFileOne, times(1)).getCanonicalPath();
     verify(mockFileTwo, times(1)).getCanonicalPath();
@@ -106,13 +95,13 @@ public class RegexFileFilterTests {
 
     RegexFileFilter regexFileFilter = new RegexFileFilter("[.*/]+.*\\.dat");
 
-    assertThat(regexFileFilter.accept(mockFile), is(false));
+    assertThat(regexFileFilter.accept(mockFile)).isFalse();
 
     verify(mockFile, times(1)).getCanonicalPath();
   }
 
   @Test
   public void rejectsNullFiles() {
-    assertThat(new RegexFileFilter(".").accept(null), is(false));
+    assertThat(new RegexFileFilter(".").accept(null)).isFalse();
   }
 }

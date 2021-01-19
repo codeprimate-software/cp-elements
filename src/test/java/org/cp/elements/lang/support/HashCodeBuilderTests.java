@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
@@ -36,9 +33,8 @@ import java.util.logging.Level;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.AssertionException;
 import org.cp.elements.lang.ObjectUtils;
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentMatcher;
 
 import lombok.Data;
@@ -47,26 +43,19 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link HashCodeBuilder}.
+ * Unit Tests for {@link HashCodeBuilder}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see lombok
- * @see org.mockito.ArgumentMatcher
- * @see org.mockito.Mock
  * @see org.mockito.Mockito
- * @see org.mockito.Spy
  * @see org.cp.elements.lang.support.HashCodeBuilder
  * @since 1.0.0
  */
 public class HashCodeBuilderTests {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void createHashCodeBuilderWithDefaults() {
+
     HashCodeBuilder builder = HashCodeBuilder.create();
 
     assertThat(builder).isNotNull();
@@ -76,6 +65,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void createHashCodeBuilderWithCustomBaseValueAndMultiplier() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(16, 51);
 
     assertThat(builder).isNotNull();
@@ -83,26 +73,23 @@ public class HashCodeBuilderTests {
     assertThat(builder.multiplier()).isEqualTo(51);
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void createHashCodeBuilderWithIllegalBaseValue() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("baseValue [-1] must be greater than 0");
 
-    HashCodeBuilder.create(-1, 51);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> HashCodeBuilder.create(-1, 51),
+      () -> "baseValue [-1] must be greater than 0");
   }
 
-  @Test
+  @Test(expected = AssertionException.class)
   public void createHashCodeBuilderWithIllegalMultiplier() {
-    exception.expect(AssertionException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("multiplier [0] must be greater than 0");
 
-    HashCodeBuilder.create(1, 0);
+    TestUtils.doAssertionExceptionThrowingOperation(() -> HashCodeBuilder.create(1, 0),
+      () -> "multiplier [0] must be greater than 0");
   }
 
   @Test
   public void combineUsesBaseValueAndMultiplier() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(2, 4);
 
     assertThat(builder).isNotNull();
@@ -114,6 +101,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void setHashValue() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(7, 11);
 
     assertThat(builder).isNotNull();
@@ -124,6 +112,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithTrue() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -133,6 +122,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithFalse() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -142,6 +132,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithByte() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -151,6 +142,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithChar() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -160,6 +152,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithShort() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -169,6 +162,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithInt() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -178,6 +172,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithLong() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -187,6 +182,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithFloat() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -196,6 +192,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithDouble() {
+
     final long value = Double.doubleToLongBits(Math.PI);
 
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
@@ -207,6 +204,7 @@ public class HashCodeBuilderTests {
 
   @Test
   public void buildWithObject() {
+
     HashCodeBuilder builder = HashCodeBuilder.create(1, 2);
 
     assertThat(builder).isNotNull();
@@ -216,13 +214,16 @@ public class HashCodeBuilderTests {
 
   @Test
   public void hashCodeForPerson() {
-    Person jonDoe = Person.newPerson(2L, Gender.MALE, LocalDate.of(2000, Month.APRIL, 1), "transient", "Jon", "Doe");
+
+    Person jonDoe = Person.newPerson(2L, Gender.MALE, LocalDate.of(2000, Month.APRIL, 1),
+      "transient", "Jon", "Doe");
 
     assertThat(HashCodeBuilder.hashCodeFor(jonDoe).build()).isEqualTo(jonDoe.hashCode());
   }
 
   @Test
   public void hashCodeForObjectWithBadHashCodeImplementation() {
+
     HashCodeBuilder.logger = spy(HashCodeBuilder.logger);
 
     doReturn(true).when(HashCodeBuilder.logger).isLoggable(eq(Level.FINE));
@@ -292,7 +293,8 @@ public class HashCodeBuilderTests {
 
     @Override
     public boolean equals(Object obj) {
-      if (obj == this) {
+
+      if (this == obj) {
         return true;
       }
 
@@ -311,12 +313,15 @@ public class HashCodeBuilderTests {
 
     @Override
     public int hashCode() {
+
       int hashValue = 17;
+
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getBirthDate());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getFirstName());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getGender());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getLastName());
+
       return hashValue;
     }
 
@@ -337,7 +342,8 @@ public class HashCodeBuilderTests {
 
     @Override
     public boolean equals(Object obj) {
-      if (obj == this) {
+
+      if (this == obj) {
         return true;
       }
 
@@ -352,8 +358,11 @@ public class HashCodeBuilderTests {
 
     @Override
     public int hashCode() {
+
       int hashValue = 17;
+
       hashValue = 37 * hashValue + ObjectUtils.hashCode(getStringValue());
+
       return hashValue;
     }
 

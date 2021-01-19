@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,138 +23,144 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Calendar;
 
-import org.junit.Rule;
+import org.cp.elements.test.TestUtils;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
- * The ValueHolderTest class is a test suite of test cases testing the contract and functionality
- * of the ValueHolder class.
+ * Unit Tests for {@link ValueHolder}.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.ValueHolder
  * @see org.junit.Test
+ * @see org.cp.elements.lang.ValueHolder
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 public class ValueHolderTest {
 
-  @Rule
-  public ExpectedException exception = ExpectedException.none();
-
   @Test
   public void constructWithNullValue() {
-    ValueHolder<Object> valueHolder = new ValueHolder<Object>(null);
 
-    assertThat(valueHolder, is(not(nullValue())));
-    assertThat(valueHolder.getValue(), is(nullValue()));
+    ValueHolder<Object> valueHolder = new ValueHolder<>(null);
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isNull();
   }
 
   @Test
   public void constructWithNonNullValue() {
-    ValueHolder<String> valueHolder = new ValueHolder<String>("test");
 
-    assertThat(valueHolder, is(not(nullValue())));
-    assertThat(valueHolder.getValue(), is(equalTo("test")));
+    ValueHolder<String> valueHolder = new ValueHolder<>("test");
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
   }
 
   @Test
   public void setAndGetValue() {
-    ValueHolder<String> valueHolder = new ValueHolder<String>();
 
-    assertThat(valueHolder.getValue(), is(nullValue(String.class)));
+    ValueHolder<String> valueHolder = new ValueHolder<>();
+
+    assertThat(valueHolder.getValue()).isNull();
 
     valueHolder.setValue("test");
 
-    assertThat(valueHolder.getValue(), is(equalTo("test")));
+    assertThat(valueHolder.getValue()).isEqualTo("test");
 
     valueHolder.setValue(null);
 
-    assertThat(valueHolder.getValue(), is(nullValue()));
+    assertThat(valueHolder.getValue()).isNull();
 
     valueHolder.setValue("mock");
 
-    assertThat(valueHolder.getValue(), is(equalTo("mock")));
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
   }
 
   @Test
   public void equalValues() {
-    ValueHolder<String> testOne = new ValueHolder<String>("test");
-    ValueHolder<String> testTwo = new ValueHolder<String>("test");
 
-    assertThat(testOne, is(not(sameInstance(testTwo))));
-    assertThat(testOne, is(equalTo(testTwo)));
+    ValueHolder<String> testOne = new ValueHolder<>("test");
+    ValueHolder<String> testTwo = new ValueHolder<>("test");
+
+    assertThat(testOne).isNotSameAs(testTwo);
+    assertThat(testOne).isEqualTo(testTwo);
   }
 
   @Test
   public void unequalValues() {
-    ValueHolder<String> testOne = new ValueHolder<String>("test");
-    ValueHolder<String> mockOne = new ValueHolder<String>("mock");
 
-    assertThat(testOne, is(not(sameInstance(mockOne))));
-    assertThat(testOne, is(not(equalTo(mockOne))));
+    ValueHolder<String> testOne = new ValueHolder<>("test");
+    ValueHolder<String> mockOne = new ValueHolder<>("mock");
+
+    assertThat(testOne).isNotSameAs(mockOne);
+    assertThat(testOne).isNotEqualTo(mockOne);
   }
 
   @Test
   public void hashCodeValue() {
-    ValueHolder<String> valueHolder = new ValueHolder<String>("test");
 
-    assertThat(valueHolder.hashCode(), is(not(equalTo(0))));
-    assertThat(valueHolder.hashCode(), is(not(equalTo("test".hashCode()))));
+    ValueHolder<String> valueHolder = new ValueHolder<>("test");
+
+    assertThat(valueHolder.hashCode()).isNotEqualTo(0);
+    assertThat(valueHolder.hashCode()).isNotEqualTo("test".hashCode());
   }
 
   @Test
   public void testToString() {
-    ValueHolder<Object> valueHolder = new ValueHolder<Object>("test");
 
-    assertThat(valueHolder.toString(), is(equalTo("test")));
+    ValueHolder<Object> valueHolder = new ValueHolder<>("test");
 
-    valueHolder.setValue(2l);
+    assertThat(valueHolder.toString()).isEqualTo("test");
 
-    assertThat(valueHolder.toString(), is(equalTo("2")));
+    valueHolder.setValue(2L);
+
+    assertThat(valueHolder.toString()).isEqualTo("2");
 
     valueHolder.setValue(Math.PI);
 
-    assertThat(valueHolder.toString(), is(equalTo(String.valueOf(Math.PI))));
+    assertThat(valueHolder.toString()).isEqualTo(String.valueOf(Math.PI));
 
     valueHolder.setValue(true);
 
-    assertThat(valueHolder.toString(), is(equalTo("true")));
+    assertThat(valueHolder.toString()).isEqualTo("true");
   }
 
   @Test
   public void withComparableValue() {
+
     ValueHolder.ComparableValueHolder<String> valueOne = ValueHolder.withComparableValue("one");
 
-    assertThat(valueOne, is(instanceOf(Comparable.class)));
-    assertThat(valueOne.getValue(), is(instanceOf(Comparable.class)));
-    assertThat(valueOne.getValue(), is(equalTo("one")));
-    assertTrue(valueOne.compareTo("two") < 0);
-    assertTrue(valueOne.compareTo("none") > 0);
-    assertTrue(valueOne.compareTo("one") == 0);
+    assertThat(valueOne).isInstanceOf(Comparable.class);
+    assertThat(valueOne.getValue()).isInstanceOf(Comparable.class);
+    assertThat(valueOne.getValue()).isEqualTo("one");
+    assertThat(valueOne.compareTo("two") < 0).isTrue();
+    assertThat(valueOne.compareTo("none") > 0).isTrue();
+    assertThat(valueOne.compareTo("one") == 0).isTrue();
   }
 
   @Test
   public void withImmutableValue() {
+
     Calendar today = Calendar.getInstance();
+
     ValueHolder<Calendar> dayHolder = ValueHolder.withImmutableValue(today);
 
-    assertThat(dayHolder, is(not(nullValue())));
+    assertThat(dayHolder).isNotNull();
 
     Calendar todayClone = dayHolder.getValue();
 
-    assertThat(todayClone, is(instanceOf(Calendar.class)));
-    assertThat(todayClone, is(not(sameInstance(today))));
-    assertThat(todayClone, is(equalTo(today)));
+    assertThat(todayClone).isInstanceOf(Calendar.class);
+    assertThat(todayClone).isNotSameAs(today);
+    assertThat(todayClone).isEqualTo(today);
 
     todayClone.add(Calendar.DAY_OF_MONTH, -1); // yesterday
 
     Calendar anotherTodayClone = dayHolder.getValue();
 
-    assertThat(anotherTodayClone, is(instanceOf(Calendar.class)));
-    assertThat(anotherTodayClone, is(not(sameInstance(todayClone))));
-    assertThat(anotherTodayClone, is(not(equalTo(todayClone))));
-    assertThat(anotherTodayClone, is(not(sameInstance(today))));
-    assertThat(anotherTodayClone, is(equalTo(today)));
+    assertThat(anotherTodayClone).isInstanceOf(Calendar.class);
+    assertThat(anotherTodayClone).isNotSameAs(todayClone);
+    assertThat(anotherTodayClone).isNotEqualTo(todayClone);
+    assertThat(anotherTodayClone).isNotSameAs(today);
+    assertThat(anotherTodayClone).isEqualTo(today);
 
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_MONTH, 1);
@@ -170,9 +168,9 @@ public class ValueHolderTest {
 
     Calendar tomorrowClone = dayHolder.getValue();
 
-    assertThat(tomorrowClone, is(instanceOf(Calendar.class)));
-    assertThat(tomorrowClone, is(not(sameInstance(tomorrow))));
-    assertThat(tomorrowClone, is(equalTo(tomorrow)));
+    assertThat(tomorrowClone).isInstanceOf(Calendar.class);
+    assertThat(tomorrowClone).isNotSameAs(tomorrow);
+    assertThat(tomorrowClone).isEqualTo(tomorrow);
 
     Calendar tomorrowCopy = (Calendar) tomorrow.clone();
 
@@ -180,59 +178,56 @@ public class ValueHolderTest {
 
     Calendar anotherTomorrowClone = dayHolder.getValue();
 
-    assertThat(anotherTomorrowClone, is(instanceOf(Calendar.class)));
-    assertThat(anotherTomorrowClone, is(not(sameInstance(tomorrow))));
-    assertThat(anotherTomorrowClone, is(not(equalTo(tomorrow))));
-    assertThat(anotherTomorrowClone, is(not(sameInstance(tomorrowCopy))));
-    assertThat(anotherTomorrowClone, is(equalTo(tomorrowCopy)));
+    assertThat(anotherTomorrowClone).isInstanceOf(Calendar.class);
+    assertThat(anotherTomorrowClone).isNotSameAs(tomorrow);
+    assertThat(anotherTomorrowClone).isNotEqualTo(tomorrow);
+    assertThat(anotherTomorrowClone).isNotSameAs(tomorrowCopy);
+    assertThat(anotherTomorrowClone).isEqualTo(tomorrowCopy);
   }
 
   @Test
   public void withNonNullValue() {
+
     ValueHolder<String> valueHolder = ValueHolder.withNonNullValue("test");
 
-    assertThat(valueHolder, is(not(nullValue())));
-    assertThat(valueHolder.getValue(), is(equalTo("test")));
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
 
     valueHolder.setValue("null");
 
-    assertThat(valueHolder.getValue(), is(equalTo("null")));
+    assertThat(valueHolder.getValue()).isEqualTo("null");
 
     valueHolder.setValue("mock");
 
-    assertThat(valueHolder.getValue(), is(equalTo("mock")));
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
 
     valueHolder.setValue("nil");
 
-    assertThat(valueHolder.getValue(), is(equalTo("nil")));
+    assertThat(valueHolder.getValue()).isEqualTo("nil");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void withNonNullValueHolderConstructedWithNullValue() {
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The value must not be null!");
-
-    ValueHolder.withNonNullValue(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ValueHolder.withNonNullValue(null),
+      () -> "The value must not be null!");
   }
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void withNonNullValueHolderSettingNullValue() {
+
     ValueHolder<String> valueHolder = ValueHolder.withNonNullValue("test");
 
-    assertThat(valueHolder, is(not(nullValue())));
-    assertThat(valueHolder.getValue(), is(equalTo("test")));
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
 
-    exception.expect(IllegalArgumentException.class);
-    exception.expectCause(is(nullValue(Throwable.class)));
-    exception.expectMessage("The value must not be null!");
-
-    valueHolder.setValue(null);
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> valueHolder.setValue(null),
+      () -> "The value must not be null!");
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void withSerializableValue() throws Exception {
+
     ValueHolder<Integer> twentyOne = ValueHolder.withSerializableValue(21);
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -245,8 +240,8 @@ public class ValueHolderTest {
 
     byte[] twentyOneBytes = out.toByteArray();
 
-    assertThat(twentyOneBytes, is(not(nullValue())));
-    assertThat(twentyOneBytes.length, is(not(equalTo(0))));
+    assertThat(twentyOneBytes).isNotNull();
+    assertThat(twentyOneBytes.length).isNotEqualTo(0);
 
     ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(twentyOneBytes));
 
@@ -254,8 +249,8 @@ public class ValueHolderTest {
 
     objectIn.close();
 
-    assertThat(twentyOneCopy, is(not(nullValue())));
-    assertThat(twentyOneCopy, is(not(sameInstance(twentyOne))));
-    assertThat(twentyOneCopy, is(equalTo(twentyOne)));
+    assertThat(twentyOneCopy).isNotNull();
+    assertThat(twentyOneCopy).isNotSameAs(twentyOne);
+    assertThat(twentyOneCopy).isEqualTo(twentyOne);
   }
 }
