@@ -59,19 +59,43 @@ public abstract class TestUtils {
     return dateTime;
   }
 
-  public static <T> void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
+  public static void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
       @NotNull Supplier<String> message) {
 
     doIllegalArgumentExceptionThrowingOperation(operation, message, () -> { });
   }
 
-  public static <T> void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
+  public static void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
       @NotNull Supplier<String> message, @NotNull Runnable verifications) {
 
     try {
       operation.run();
     }
     catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage(message.get());
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verifications.run();
+    }
+  }
+
+  public static void doIllegalStateExceptionThrowingOperation(@NotNull Runnable operation,
+      @NotNull Supplier<String> message) {
+
+    doIllegalStateExceptionThrowingOperation(operation, message, () -> { });
+  }
+
+  public static void doIllegalStateExceptionThrowingOperation(@NotNull Runnable operation,
+      @NotNull Supplier<String> message, @NotNull Runnable verifications) {
+
+    try {
+      operation.run();
+    }
+    catch (IllegalStateException expected) {
 
       assertThat(expected).hasMessage(message.get());
       assertThat(expected).hasNoCause();
