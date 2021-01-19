@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Calendar;
 import java.util.function.Supplier;
 
+import org.cp.elements.lang.AssertionException;
 import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Assert;
 
@@ -57,6 +58,30 @@ public abstract class TestUtils {
     dateTime.set(Calendar.MILLISECOND, 0);
 
     return dateTime;
+  }
+
+  public static void doAssertionExceptionThrowingOperation(@NotNull Runnable operation,
+      @NotNull Supplier<String> message) {
+
+    doAssertionExceptionThrowingOperation(operation, message, () -> { });
+  }
+
+  public static void doAssertionExceptionThrowingOperation(@NotNull Runnable operation,
+      @NotNull Supplier<String> message, @NotNull Runnable verifications) {
+
+    try {
+      operation.run();
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage(message.get());
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verifications.run();
+    }
   }
 
   public static void doIllegalArgumentExceptionThrowingOperation(@NotNull Runnable operation,
