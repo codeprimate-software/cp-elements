@@ -24,11 +24,7 @@ import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.LangExtensions.is;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeList;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -43,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.assertj.core.api.Assertions;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
 import org.junit.Test;
@@ -53,7 +50,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link LangExtensions}.
+ * Unit Tests for {@link LangExtensions}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
@@ -1218,6 +1215,21 @@ public class LangExtensionsTests {
       }).when(ENABLE_DISABLE_CONDITION).isTrue(), () -> "[false] is not true");
   }
 
+  @Test(expected = AssertionException.class)
+  public void assertionDescribeAsUsingStringAndArgumentsIsCorrect() {
+
+    TestUtils.doAssertionExceptionThrowingOperation(
+      () -> assertThat(true).describedAs("This is a %s {1}!", "boolean", "test").isFalse(),
+        () -> "This is a boolean test!");
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertionDescribeAsUsingSupplierIsCorrect() {
+
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).describedAs(() -> "test").isFalse(),
+      () -> "test");
+  }
+
   @Test
   public void disabledAssertThatIsAssignableToSuppressesAssertionError() {
     assertThat(1).when(ENABLE_DISABLE_CONDITION).isAssignableTo(Boolean.class);
@@ -1378,7 +1390,7 @@ public class LangExtensionsTests {
 
     assertThat(Thread.currentThread()).transform(assertThatTransformer).not().holdsLock(lock);
 
-    assertEquals(1, holdsLockCallCount.get());
+    Assertions.assertThat(holdsLockCallCount.get()).isOne();
   }
 
   @Test(expected = AssertionException.class)
@@ -1709,7 +1721,7 @@ public class LangExtensionsTests {
 
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).not();
 
-    assertNotSame(mockAssertion, wrappedAssertion);
+    Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockAssertion, times(1)).not();
@@ -1724,7 +1736,7 @@ public class LangExtensionsTests {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).throwing(illegalArgument);
 
-    assertNotSame(mockAssertion, wrappedAssertion);
+    Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockAssertion, times(1)).throwing(eq(illegalArgument));
@@ -1743,7 +1755,7 @@ public class LangExtensionsTests {
 
     wrappedAssertion = wrappedAssertion.transform(mockTransformer);
 
-    assertNotSame(mockAssertion, wrappedAssertion);
+    Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockTransformer, times(1)).transform(eq(mockAssertion));
@@ -1756,7 +1768,7 @@ public class LangExtensionsTests {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).stating("message", "args");
 
-    assertNotSame(mockAssertion, wrappedAssertion);
+    Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockAssertion, times(1)).stating(eq("message"), eq("args"));
@@ -1769,7 +1781,7 @@ public class LangExtensionsTests {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).when(ENABLE_DISABLE_CONDITION);
 
-    assertNotSame(mockAssertion, wrappedAssertion);
+    Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockAssertion, times(1)).when(eq(ENABLE_DISABLE_CONDITION));
@@ -2215,7 +2227,7 @@ public class LangExtensionsTests {
 
     Is<String> isOperator = is("test");
 
-    assertNotNull(isOperator);
+    Assertions.assertThat(isOperator).isNotNull();
     assertTrue(isOperator.equalTo("test"));
     assertFalse(isOperator.equalTo("testing"));
     assertTrue(isOperator.not().equalTo("testing"));
@@ -2238,11 +2250,12 @@ public class LangExtensionsTests {
 
     Invoice invoice = TestInvoice.of(asList(
       TestLineItem.newLineItem(TestProduct.newProduct("coffee", BigDecimal.valueOf(4.50d)), 2),
-      TestLineItem.newLineItem(TestProduct.newProduct("donut", BigDecimal.valueOf(3.00d)), 4)));
+      TestLineItem.newLineItem(TestProduct.newProduct("donut", BigDecimal.valueOf(3.00d)), 4))
+    );
 
     BigDecimal coffeePrice = $(invoice).findBy("coffee").getProduct().getPrice();
 
-    assertEquals(BigDecimal.valueOf(4.50d), coffeePrice);
+    Assertions.assertThat(coffeePrice).isEqualTo(BigDecimal.valueOf(4.50d));
   }
 
   @Test
@@ -2250,14 +2263,16 @@ public class LangExtensionsTests {
 
     Invoice invoice = TestInvoice.of(asList(
       TestLineItem.newLineItem(TestProduct.newProduct("coffee", BigDecimal.valueOf(4.50d)), 2),
-      TestLineItem.newLineItem(TestProduct.newProduct("donut", BigDecimal.valueOf(3.00d)), 4)));
+      TestLineItem.newLineItem(TestProduct.newProduct("donut", BigDecimal.valueOf(3.00d)), 4))
+    );
 
-    assertNull($(invoice).findBy("nonExistingProduct").getProduct().getPrice());
+    Assertions.assertThat($(invoice).findBy("nonExistingProduct").getProduct().getPrice()).isNull();
   }
 
   @Test
   public void safeNavigationWithNullObjectChain() {
-    assertNull($((Invoice) null, Invoice.class).findBy("nonExistingProduct").getProduct().getPrice());
+    assertThat($((Invoice) null, Invoice.class).findBy("nonExistingProduct").getProduct().getPrice())
+      .isNull();
   }
 
   @Data

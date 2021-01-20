@@ -19,6 +19,7 @@ import static org.cp.elements.lang.LangExtensions.SafeNavigationHandler.newSafeN
 import static org.cp.elements.lang.reflect.MethodInvocation.newMethodInvocation;
 import static org.cp.elements.lang.reflect.ProxyFactory.newProxyFactory;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -28,6 +29,7 @@ import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 import org.cp.elements.lang.reflect.ProxyFactory;
@@ -75,52 +77,66 @@ public abstract class LangExtensions {
     return (T) proxyFactory.adviseWith(newSafeNavigationHandler(proxyFactory)).newProxy();
   }
 
-  protected static class SafeNavigationHandler<T> implements FluentApiExtension,
-      org.cp.elements.lang.reflect.MethodInterceptor<T> {
+  /**
+   * The {@link SafeNavigationHandler} class is a Java {@link InvocationHandler} and Elements {@link MethodInterceptor}
+   * used to handle safe object navigation through method chaining.
+   *
+   * @param <T> {@link Class type} of the {@link Object} to navigate safely.
+   * @see org.cp.elements.lang.reflect.MethodInterceptor
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see java.lang.reflect.InvocationHandler
+   */
+  protected static class SafeNavigationHandler<T>
+      implements FluentApiExtension, org.cp.elements.lang.reflect.MethodInterceptor<T> {
 
     private static final Object DUMMY = new Object();
 
     /**
-     * Factory method used to construct an instance of {@link SafeNavigationHandler} initialized with
+     * Factory method used to construct a new instance of {@link SafeNavigationHandler} initialized with
      * the given {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method} invocation
      * call chain.
      *
-     * @param <T> {@link Class} type of the {@link Object} to proxy.
-     * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object} in
-     * the {@link Method} invocation call chain.
-     * @return an instance of the {@link SafeNavigationHandler}.
+     * @param <T> {@link Class type} of the {@link Object} to proxy.
+     * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object}
+     * in the {@link Method} invocation call chain.
+     * @return a new {@link SafeNavigationHandler}.
+     * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
      * @see org.cp.elements.lang.reflect.ProxyFactory
      * @see #SafeNavigationHandler(ProxyFactory)
      */
-    static <T> SafeNavigationHandler<T> newSafeNavigationHandler(ProxyFactory<T> proxyFactory) {
+    protected static @NotNull <T> SafeNavigationHandler<T> newSafeNavigationHandler(
+        @NotNull ProxyFactory<T> proxyFactory) {
+
       return new SafeNavigationHandler<>(proxyFactory);
     }
 
     private final ProxyFactory<T> proxyFactory;
 
     /**
-     * Constructs an instance of {@link SafeNavigationHandler} initialized with the given {@link ProxyFactory}
+     * Constructs a new instance of {@link SafeNavigationHandler} initialized with the given {@link ProxyFactory}
      * used to evaluate the next {@link Object} in the {@link Method} invocation call chain.
      *
-     * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object} in
-     * the {@link Method} invocation call chain.
+     * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object}
+     * in the {@link Method} invocation call chain.
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
      * @see org.cp.elements.lang.reflect.ProxyFactory
      */
-    private SafeNavigationHandler(ProxyFactory<T> proxyFactory) {
+    private SafeNavigationHandler(@NotNull ProxyFactory<T> proxyFactory) {
+
       Assert.notNull(proxyFactory, "ProxyFactory must not be null");
+
       this.proxyFactory = proxyFactory;
     }
 
     /**
-     * Return a reference to the {@link ProxyFactory} used to evaluate the next {@link Object}
+     * Return a reference to the configured {@link ProxyFactory} used to evaluate the next {@link Object}
      * in the {@link Method} invocation call chain.
      *
-     * @return a reference toe the {@link ProxyFactory} used to evaluate the next {@link Object}
+     * @return a reference to the configured {@link ProxyFactory} used to evaluate the next {@link Object}
      * in the {@link Method} invocation call chain.
      * @see org.cp.elements.lang.reflect.ProxyFactory
      */
-    private ProxyFactory<T> getProxyFactory() {
+    private @NotNull ProxyFactory<T> getProxyFactory() {
       return this.proxyFactory;
     }
 
@@ -129,6 +145,7 @@ public abstract class LangExtensions {
      *
      * @return the target {@link Object} of the {@link Method} interception.
      * @see org.cp.elements.lang.reflect.MethodInterceptor#getTarget()
+     * @see org.cp.elements.lang.reflect.ProxyFactory#getTarget()
      */
     @Override
     public T getTarget() {
@@ -149,11 +166,14 @@ public abstract class LangExtensions {
      */
     @Override
     public <R> Optional<R> intercept(MethodInvocation methodInvocation) {
+
       R nextTarget = resolveNextTarget(methodInvocation);
+
       Class<?> targetType = resolveTargetType(methodInvocation);
 
-      return (canProxy(nextTarget, targetType) ? Optional.of($(nextTarget, targetType))
-        : Optional.ofNullable(nextTarget));
+      return canProxy(nextTarget, targetType)
+        ? Optional.of($(nextTarget, targetType))
+        : Optional.ofNullable(nextTarget);
     }
 
     /**
@@ -174,18 +194,24 @@ public abstract class LangExtensions {
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) {
-      return intercept(newMethodInvocation(resolveTarget(proxy), method, args)).orElse(null);
+
+      return intercept(newMethodInvocation(resolveTarget(proxy), method, args))
+        .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     private <R> R resolveNextTarget(MethodInvocation methodInvocation) {
+
       return (R) Optional.ofNullable(getTarget())
         .map(target -> methodInvocation.makeAccessible().invoke(target).orElse(null))
-          .orElse(null);
+        .orElse(null);
     }
 
     private Object resolveTarget(Object proxy) {
-      return Optional.ofNullable((Object) getTarget()).orElse(proxy);
+
+      Object target = getTarget();
+
+      return target != null ? target : proxy;
     }
 
     private Class<?> resolveTargetType(MethodInvocation methodInvocation) {
@@ -193,7 +219,10 @@ public abstract class LangExtensions {
     }
 
     private boolean canProxy(Object target, Class<?>... types) {
-      return getProxyFactory().canProxy(Optional.ofNullable(target).orElse(DUMMY), types);
+
+      Object resolvedTarget = target != null ? target : DUMMY;
+
+      return getProxyFactory().canProxy(resolvedTarget, types);
     }
   }
 
@@ -217,7 +246,7 @@ public abstract class LangExtensions {
    * The {@link AssertThat} interface is a contract for implementing objects that assert the state of an {@link Object}
    * or component of the application or system.
    *
-   * @param <T> {@link Class} type of the object to evaluate and assert.
+   * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    * @see org.cp.elements.lang.LangExtensions.AssertThatWrapper
    * @see org.cp.elements.lang.FluentApiExtension
@@ -508,6 +537,29 @@ public abstract class LangExtensions {
     AssertThat<T> not();
 
     /**
+     * Uses the provided {@link String message} and {@link Object message arguments} to describe the assertion.
+     *
+     * @param message {@link String} containing the message describing this assertion.
+     * @param args array of {@link Object} arguments used to resolve the placeholders in the {@link String message}.
+     * @return this assertion instance.
+     * @see #stating(String, Object...)
+     */
+    default AssertThat<T> describedAs(String message, Object... args) {
+      return stating(message, args);
+    }
+
+    /**
+     * Uses the provided {@link Supplier message} to describe the assertion.
+     *
+     * @param message {@link Supplier} containing the message describing this assertion.
+     * @return this assertion instance.
+     * @see #stating(Supplier)
+     */
+    default AssertThat<T> describedAs(Supplier<String> message) {
+      return stating(message);
+    }
+
+    /**
      * Uses the provided {@link String message} and {@link Object message arguments} in the {@link AssertionException}
      * thrown when an assertion fails.
      *
@@ -556,10 +608,10 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The AssertThatExpression class is the default implementation of the AssertThat interface
+   * The {@link AssertThatExpression} class is the default implementation of the {@link AssertThat} interface
    * implementing all the assertion operations.
    *
-   * @param <T> the type of object to evaluation and perform the assertion.
+   * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.
    */
   private static final class AssertThatExpression<T> implements AssertThat<T> {
 
@@ -579,10 +631,24 @@ public abstract class LangExtensions {
 
     private Transformer<AssertThat<T>> transformer;
 
+    /**
+     * Constructs a new instance of {@link AssertThatExpression} initialized with the given {@link Object}
+     * used as the subject of the assertion.
+     *
+     * @param obj {@link Object} to evaluate and make an assertion.
+     * @see #AssertThatExpression(Object, boolean)
+     */
     private AssertThatExpression(T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
 
+    /**
+     * Constructs a new instance of {@link AssertThatExpression} initialized with the given {@link Object}
+     * used as the subject of the assertion.
+     *
+     * @param obj {@link Object} to evaluate and make an assertion.
+     * @param expected boolean value specifying the intended outcome of the assertion.
+     */
     private AssertThatExpression(T obj, boolean expected) {
 
       this.obj = obj;
@@ -595,7 +661,7 @@ public abstract class LangExtensions {
     }
 
     private boolean notEqualToExpected(boolean actual) {
-      return !(actual == this.expected);
+      return actual != this.expected;
     }
 
     @SuppressWarnings("rawtypes")
@@ -869,12 +935,12 @@ public abstract class LangExtensions {
     }
 
     @Override
-    public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
+    public AssertThat<T> transform(@NotNull Transformer<AssertThat<T>> assertionTransformer) {
       this.transformer = assertionTransformer;
       return assertionTransformer.transform(this);
     }
 
-    public AssertThat<T> when(Condition condition) {
+    public AssertThat<T> when(@NotNull Condition condition) {
       this.condition = condition != null ? condition : () -> true;
       return this;
     }
@@ -902,32 +968,60 @@ public abstract class LangExtensions {
 
     private String withMessage(String defaultMessage, Object... args) {
 
-      String suppliedMessage = Optional.ofNullable(this.message).map(Supplier::get).orElse(null);
+      String suppliedMessage = Optional.ofNullable(this.message)
+        .map(Supplier::get)
+        .orElse(null);
 
       return is(suppliedMessage).notBlank() ? suppliedMessage : format(defaultMessage, args);
     }
   }
 
   /**
-   * The AssertThatWrapper class is a Decorator used to decorate or modify the existing behavior and/or functionality
-   * of an existing assertion (AssertThat instance).  This class makes it easier to extend and customize any existing
-   * assertion in the transform(..) operation.
+   * The {@link AssertThatWrapper} class is a {@literal Decorator} used to decorate or modify the existing behavior
+   * and/or functionality of an existing assertion ({@link AssertThat} instance).
    *
-   * @param <T> the type of object to evaluation and perform the assertion.
+   * This class makes it easier to extend and customize any existing assertion in the {@code transform(..)} operation.
+   *
+   * @param <T> {@link Class type} of {@link Object} to evaluate and make an assertion.
+   * @see AssertThat
    */
   public static class AssertThatWrapper<T> implements AssertThat<T> {
 
-    private final AssertThat<T> delegate;
-
-    public AssertThatWrapper(AssertThat<T> delegate) {
-      Assert.notNull(delegate, "Delegate must not be null");
-      this.delegate = delegate;
-    }
-
-    public static <T> AssertThat<T> wrap(AssertThat<T> delegate) {
+    /**
+     * Factory method used to construct a new instance of {@link AssertThatWrapper} initialized with
+     * the given {@link AssertThat} object.
+     *
+     * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.
+     * @param delegate {@link AssertThat} object instance used as the delegate for this wrapper.
+     * @return a new {@link AssertThatWrapper} instance wrapping the given {@link AssertThat} object.
+     * @throws IllegalArgumentException if the {@link AssertThat} object is {@literal null}.
+     * @see AssertThat
+     */
+    public static <T> AssertThat<T> wrap(@NotNull AssertThat<T> delegate) {
       return new AssertThatWrapper<>(delegate);
     }
 
+    private final AssertThat<T> delegate;
+
+    /**
+     * Constructs a new instance of {@link AssertThatWrapper} initialized with the given {@link AssertThat} object.
+     *
+     * @param delegate {@link AssertThat} object instance used as the delegate for this wrapper.
+     * @throws IllegalArgumentException if the {@link AssertThat} object is {@literal null}.
+     */
+    public AssertThatWrapper(@NotNull AssertThat<T> delegate) {
+
+      Assert.notNull(delegate, "Delegate must not be null");
+
+      this.delegate = delegate;
+    }
+
+    /**
+     * Returns a reference to the configured {@link AssertThat} object wrapped by this wrapper.
+     *
+     * @return a reference to the configured {@link AssertThat} object wrapped by this wrapper.
+     * @see AssertThat
+     */
     protected AssertThat<T> getDelegate() {
       return this.delegate;
     }
@@ -1413,11 +1507,13 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The IsExpression class is an implementation of the Is interface, is operator.  Note, this implementation is Thread-safe,
-   * although it is very unlikely that a Thread will share an instance of this class since every invocation of the
-   * is() operator factory method will return a new instance of this class, at least for the time being.
+   * The {@link IsExpression} class is an implementation of the Is interface, is operator.
    *
-   * @param <T> the Object's type.
+   * Note, this implementation is Thread-safe, although it is very unlikely that a {@link Thread}
+   * will share an instance of this class since every invocation of the {@link #is(Object)} operator factory method
+   * will return a new instance of this class, at least for the time being.
+   *
+   * @param <T> {@link Class type} of the the {@link Object} subject.
    * @see org.cp.elements.lang.LangExtensions.Is
    */
   private static final class IsExpression<T> implements Is<T> {

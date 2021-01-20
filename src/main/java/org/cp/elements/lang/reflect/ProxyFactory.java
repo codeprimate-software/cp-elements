@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
 import static org.cp.elements.lang.ClassUtils.getInterfaces;
@@ -33,11 +32,11 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The {@link ProxyFactory} class is a factory object used to create a proxy for a given target {@link Object}
- * that will implement the given set of {@link Class interfaces}.
+ * The {@link ProxyFactory} class is an abstract factory object used to create a proxy for a given target {@link Object}
+ * implementing the given set of {@link Class interfaces}.
  *
  * @author John Blum
- * @param <T> {@link Class} type of the {@link Object} to proxy.
+ * @param <T> {@link Class type} of the {@link Object} to proxy.
  * @see java.lang.reflect.Proxy
  * @see org.cp.elements.lang.reflect.ProxyService
  * @since 1.0.0
@@ -59,7 +58,7 @@ public abstract class ProxyFactory<T> {
     return new ProxyFactory<T>() {
 
       @Override
-      public boolean canProxy(Object target, Class[] proxyInterfaces) {
+      public boolean canProxy(Object target, Class<?>[] proxyInterfaces) {
         return ProxyService.<T>newProxyService().canProxy(target, proxyInterfaces);
       }
 
@@ -69,9 +68,11 @@ public abstract class ProxyFactory<T> {
           Iterable<MethodInterceptor<T>> methodInterceptors) {
 
         return (R) stream(newProxyService())
-          .filter(proxyFactory -> proxyFactory.canProxy(getTarget(), getProxyInterfaces())).findFirst()
-            .flatMap(proxyFactory -> Optional.of(proxyFactory.<R>newProxy(getProxyClassLoader(), getTarget(),
-              getProxyInterfaces(), getMethodInterceptors()))).orElse(getTarget());
+          .filter(proxyFactory -> proxyFactory.canProxy(getTarget(), getProxyInterfaces()))
+          .findFirst()
+          .map(proxyFactory -> proxyFactory.<R>newProxy(getProxyClassLoader(), getTarget(), getProxyInterfaces(),
+              getMethodInterceptors()))
+          .orElse(getTarget());
       }
     };
   }
@@ -107,12 +108,14 @@ public abstract class ProxyFactory<T> {
    */
   @NullSafe
   protected static Class<?>[] resolveInterfaces(Object obj, Class<?>... interfaces) {
+
     Set<Class<?>> allImplementedInterfaces = new HashSet<>(getInterfaces(obj));
 
     allImplementedInterfaces.addAll(stream(nullSafeArray(interfaces, Class.class))
-      .filter(ClassUtils::isInterface).collect(Collectors.toList()));
+      .filter(ClassUtils::isInterface)
+      .collect(Collectors.toList()));
 
-    return allImplementedInterfaces.toArray(new Class<?>[allImplementedInterfaces.size()]);
+    return allImplementedInterfaces.toArray(new Class<?>[0]);
   }
 
   private Class<?>[] proxyInterfaces;
