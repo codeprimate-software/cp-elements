@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.security.model;
 
+import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
 
 /**
@@ -23,10 +23,13 @@ import org.cp.elements.lang.Nameable;
  * of an application or a system.
  *
  * @author John Blum
+ * @param <ID> {@link Class type} of the identifier.
+ * @see java.lang.Comparable
+ * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface User extends Nameable<String> {
+public interface User<ID extends Comparable<ID>> extends Identifiable<ID>, Nameable<String> {
 
 }
