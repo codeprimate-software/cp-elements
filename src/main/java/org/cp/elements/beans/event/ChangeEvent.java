@@ -19,7 +19,7 @@ package org.cp.elements.beans.event;
 import java.util.Calendar;
 import java.util.EventObject;
 
-import org.cp.elements.lang.DateTimeUtils;
+import org.cp.elements.time.DateTimeUtils;
 
 /**
  * The ChangeEvent class is an event signifying a state change in the source object referenced by this EventObject class.

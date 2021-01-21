@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.cp.elements.lang;
+package org.cp.elements.time;
 
 import java.util.Calendar;
 import java.util.Optional;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The DateTimeUtils class contains common functionality for working with dates and time.
+ * The {@link DateTimeUtils} class is an abstract utility class containing common functionality for conveniently
+ * working with dates and times.
+ *
+ * This class predates the new {@code java.time} package in the Java API and it is highly recommended that users use
+ * those date/time types instead.
  *
  * @author John J. Blum
  * @see java.util.Calendar
@@ -64,49 +69,58 @@ public abstract class DateTimeUtils {
   };
 
   /**
-   * Clones the specified Calendar object if not null, otherwise if the date and time value is null
-   * then this method returns null.
+   * Clones the specified {@link Calendar} object.
    *
-   * @param dateTime the Calendar object to clone.
-   * @return a clone of the specified Calendar object if the Calendar is not null, otherwise return null.
+   * @param dateTime {@link Calendar} object to clone.
+   * @return a clone of the specified {@link Calendar} object if not {@literal null}, otherwise return {@literal null}.
    * @see java.util.Calendar#clone()
    */
   @NullSafe
-  public static Calendar clone(Calendar dateTime) {
-    return Optional.ofNullable(dateTime).map(localDateTime -> (Calendar) localDateTime.clone()).orElse(null);
+  public static @Nullable Calendar clone(@NotNull Calendar dateTime) {
+
+    return Optional.ofNullable(dateTime)
+      .map(Calendar::clone)
+      .map(Calendar.class::cast)
+      .orElse(null);
   }
 
   /**
-   * Creates a Calendar instance with a date and time set to the time in milliseconds.
+   * Creates a {@link Calendar} initialized with the specified date and time in milliseconds.
    *
-   * @param timeInMilliseconds a long value indicating the number of milliseconds since the EPOCH.
-   * @return a Calendar instance initialized with the specified date/time in milliseconds.
+   * @param timeInMilliseconds long value indicating the number of milliseconds since the EPOCH.
+   * @return a {@link Calendar} initialized with the specified date/time in milliseconds.
    * @see java.util.Calendar
    */
-  public static Calendar create(long timeInMilliseconds) {
+  public static @NotNull Calendar create(long timeInMilliseconds) {
+
     Calendar dateTime = Calendar.getInstance();
+
     dateTime.clear();
     dateTime.setTimeInMillis(timeInMilliseconds);
+
     return dateTime;
   }
 
   /**
-   * Truncates the time portion of the Calendar's date/time components.  If the Calendar object is null, then null
-   * is returned.  The fields of the Calendar to be truncated include the hour of day, minute, second and milliseconds.
+   * Truncates the time portion of the {@link Calendar Calendar's} date & time components.
    *
-   * @param dateTime the Calendar object to truncate.
-   * @return the Calendar object with the time portion truncated (the corresponding time fields of this Calendar
-   * are set to zero).
+   * If the {@link Calendar} object is {@literal null}, then {@literal null} is returned. The fields of
+   * the {@link Calendar} to be truncated include the hour of day, minute, second and milliseconds.
+   *
+   * @param dateTime {@link Calendar} object to truncate.
+   * @return the {@link Calendar} object with the time portion truncated. All corresponding time fields
+   * of the {@link Calendar} object are set to zero.
    * @see java.util.Calendar
    */
   @NullSafe
-  public static Calendar truncate(Calendar dateTime) {
-    Optional.ofNullable(dateTime).ifPresent(localDateTime -> {
-      localDateTime.clear(Calendar.HOUR_OF_DAY);
-      localDateTime.clear(Calendar.MINUTE);
-      localDateTime.clear(Calendar.SECOND);
-      localDateTime.clear(Calendar.MILLISECOND);
-    });
+  public static @Nullable Calendar truncate(@NotNull Calendar dateTime) {
+
+    if (dateTime != null) {
+      dateTime.clear(Calendar.HOUR_OF_DAY);
+      dateTime.clear(Calendar.MINUTE);
+      dateTime.clear(Calendar.SECOND);
+      dateTime.clear(Calendar.MILLISECOND);
+    }
 
     return dateTime;
   }

@@ -23,7 +23,7 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Calendar;
 
-import org.cp.elements.lang.DateTimeUtils;
+import org.cp.elements.time.DateTimeUtils;
 import org.junit.Test;
 
 /**

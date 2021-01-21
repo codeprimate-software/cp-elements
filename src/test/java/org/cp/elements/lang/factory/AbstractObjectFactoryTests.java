@@ -25,10 +25,10 @@ import java.util.Calendar;
 
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.data.conversion.ConversionService;
-import org.cp.elements.lang.DateTimeUtils;
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.test.TestUtils;
+import org.cp.elements.time.DateTimeUtils;
 import org.junit.After;
 import org.junit.Test;
 
