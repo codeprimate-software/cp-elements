@@ -3,9 +3,32 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
-1.0.0.M6 - ?
-------------
-Description here...
+1.0.0.M6 - 2021-January-21
+--------------------------
+Resurrected the Elements project (again) to move development forward.
+
+* Refactored the org.cp.elements.ElementsVersion class.
+* Creates a new o.c.e.lang.Describable interface defining a contract for objects that can be described
+or provide a description.
+* Adds the o.c.e.lang.annotation.NotNull annotation to describe non-null, required method parameters and return types.
+* Adds the o.c.e.lang.annotation.Nullable annotation to describe nullable method parameters and return types.
+* Reviewed and refactored the o.c.e.lang.Assert class.
+* Reviewed and refactored the o.c.e.lang.BooleanUtils class.
+* Refactored o.c.e.lang.ClassUtils.
+* Refactored o.c.e.lang.ObjectUtils.
+* Reviewed, refactored and moved the o.c.e.lang.DateTimeUtils class to the org.cp.elements.time package.
+* Improved the o.c.e.dao.support.DaoSupport interface rounding out the basic CRUD and simple query
+data access operations.
+* Changes the o.c.e.security.model.User interface to extend the o.c.e.lang.Identifiable interface.
+* Converts all JUnit Assert and Hamcrest Matchers to using AssertJ.
+* Cleans up all compiler warnings and API deprecations.
+* Upgrade to cp-core 1.3.0.RELEASE.
+* Upgrade to AssertJ 3.18.1.
+* Upgrade to Gradle 6.8.
+* Upgrade to JUnit 4.13.1.
+* Upgrade to Lombok 1.18.16.
+* Upgrade to Mockito 3.7.7.
+* Upgrade to FreeFair Lombok Gradle Plugin 5.3.0.
 
 * Tasks completed here...
 
@@ -15,7 +38,7 @@ Description here...
 Introduces the new Tabular data structure.
 
 * Created the o.c.e.util.paging.support.SimplePageable class wrapping a java.util.List to provide paging support.
-* Added absract support classes for the o.c.e.lang.Auditable and o.c.e.lang.Identifiable interfaces
+* Added abstract support classes for the o.c.e.lang.Auditable and o.c.e.lang.Identifiable interfaces
 in the o.c.e.lang.support package.
 * Added the o.c.e.lang.support.PredicateToFilterAdapter class to adapt a java.util.function.Predicate
 as a o.c.e.lang.Filter.
@@ -40,7 +63,7 @@ and handles any checked Exceptions.
 * Upgraded to Apache Maven 3.5.4 using Maven Wrapper.
 * Upgraded to Gradle 4.8.1.
 * Upgraded to AssertJ 3.10.0.
-* Upgraded to Project Lombok 1.18.0.
+* Upgraded to Lombok 1.18.0.
 * Upgraded to Mockito 2.19.0.
 
 
@@ -48,37 +71,36 @@ and handles any checked Exceptions.
 ---------------------
 Introduces new class types, data structures (e.g Caching) and tools.
 
-* Created the o.c.e.lang.Verifyable interface to validate the soft constraints, invariants and business rules
-of an application component are upheld.
+* Created the o.c.e.ElementsVersion class to print version meta-data about the cp-elements project to the command-line.
+* Refactored the o.c.e.lang.Executable interface to extend java.lang.Runnable.
+* Created and defined a new o.c.e.lang.Registry interface for implementations to implement an object or service registry.
+* Created the o.c.e.lang.RunnableUtils abstract utility class for working with java.lang.Runnable objects.
+* Created the o.c.e.lang.Verifiable interface to validate the soft constraints, invariants and business rules
+of application domain objects and components are upheld.
+* Moved o.c.e.lang.NullSafe to the o.c.e.lang.annotation package.
 * Renamed o.c.e.lang.DslExtension to o.c.e.lang.FluentApiExtension.
 * Renamed o.c.e.lang.annotation.DSL to o.c.e.lang.annotation.FluentApi.
-* Upgraded to cp-core-1.2.0.RELEASE.
-* Created the new o.c.e.tools.io.ListFiles to recursively list the contents of a file system directory.
-* Created the o.c.e.data.struct.BloomFilter probabilistic data structure.
-* Moved o.c.e.lang.NullSafe to the o.c.e.lang.annotation package.
-* Moved the o.c.e.util.convert API to the o.c.e.data.conversion package.
-* Created the o.c.e.ElementsVersion class to print version meta-data about the cp-elements project to the command-line.
-* Started cp-elements project documentation and reference guide, written in Asciidoc.
-* Refactor the o.c.e.lang.Executable interface to extend java.lang.Runnable.
-* Implement the o.c.e.data.struct.StringBasedKeyValue data structure.
-* Created the o.c.e.lang.RunnableUtils abstract utility class for working with java.lang.Runnable objects.
-* Created the o.c.e.test.annotation.UnitTest Annotation to classify and mark Unit Tests.
-* Created the o.c.e.util.zip.ZipUtils abstract utility class for working with JAR and ZIP files.
-* Created the o.c.e.util.MapBuilder class for building java.util.Maps.
-* Created the o.c.e.service.support.AbstractCacheableService class for application service components
-that support caching.
 * Created the o.c.e.data.caching.Cache API and data structure.
-* Renamed o.c.e.jdbc.DataSourceAdapter to o.c.e.jdbc.AbstractDataSource.
+* Created the o.c.e.data.struct.BloomFilter probabilistic data structure.
+* Implement the o.c.e.data.struct.StringBasedKeyValue data structure.
+* Moved the o.c.e.util.convert API to the o.c.e.data.conversion package.
 * Performed code review, refactoring, bug fixes, enhancements and added new features to the Conversion API
 based in o.c.e.data.conversion.
-* Created and defined a new o.c.e.lang.Registry interface for implementations to implement an object
-or service registry.
+* Renamed o.c.e.jdbc.DataSourceAdapter to o.c.e.jdbc.AbstractDataSource.
+* Created the o.c.e.security.model.User interface to model an application or system user.
+* Created the o.c.e.service.support.AbstractCacheableService class for application service components
+that support caching.
+* Created the o.c.e.test.annotation.UnitTest Annotation to classify and mark Unit Tests.
+* Created the new o.c.e.tools.io.ListFiles to recursively list the contents of a file system directory.
+* Created the o.c.e.util.MapBuilder class for building java.util.Maps.
+* Created the Paging API in the o.c.e.util.paging package.
+* Created the o.c.e.util.zip.ZipUtils abstract utility class for working with JAR and ZIP files.
 * Added java.util.ServiceLoader configuration in META-INF/services for a Caching provider / Cache implementation.
 * Added java.util.ServiceLoader configuration in META-INF/services for a ConversionService provider.
 * Added java.util.ServiceLoader configuration in META-INF/services for a ObjectFactory provider.
 * Added java.util.ServiceLoader configuration in META-INF/services for a ProxyFactory provider.
-* Created the o.c.e.security.model.User interface to model an application or system user.
-* Created the Paging API in the o.c.e.util.paging package.
+* Started cp-elements project documentation and reference guide, written in Asciidoc.
+* Upgraded to cp-core-1.2.0.RELEASE.
 
 
 1.0.0.M3 - 2017-05-05
