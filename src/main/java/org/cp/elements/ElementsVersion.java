@@ -55,9 +55,6 @@ public class ElementsVersion implements Runnable {
     new ElementsVersion().run();
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void run() {
     log("%1$s (%2$s) %3$s - Copyright \u00A9 %4$d%n%5$s%n", PROJECT_NAME, resolveProjectArtifactId(),

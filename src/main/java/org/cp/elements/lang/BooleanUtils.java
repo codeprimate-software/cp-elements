@@ -83,7 +83,7 @@ public abstract class BooleanUtils {
   /**
    * Perform the logical NOT operation on the given {@link Boolean} value.
    *
-   * If the {@link Boolean} wrapper object is {@link false}, then this method returns {@literal true}.
+   * If the {@link Boolean} wrapper object is {@literal false}, then this method returns {@literal true}.
    * If the {@link Boolean} wrapper object is {@literal null} or {@literal true}, then this method
    * returns {@literal false}.
    *

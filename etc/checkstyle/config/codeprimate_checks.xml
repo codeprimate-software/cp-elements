@@ -25,6 +25,11 @@
     <property name="severity" value="warning"/>
   </module>
 
+  <module name="LineLength">
+    <property name="max" value="${checkstyle.LineLength.max}" default="120"/>
+    <property name="severity" value="warning"/>
+  </module>
+
   <module name="NewlineAtEndOfFile">
     <property name="lineSeparator" value="${checkstyle.NewlineAtEndOfFile.lineSeparator}" default="lf"/>
   </module>
@@ -287,10 +292,6 @@
 
     <!-- Checks for Size Violations -->
     <module name="ExecutableStatementCount">
-      <property name="severity" value="warning"/>
-    </module>
-    <module name="LineLength">
-      <property name="max" value="${checkstyle.LineLength.max}" default="120"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="MethodLength">

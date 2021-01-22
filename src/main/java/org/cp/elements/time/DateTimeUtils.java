@@ -102,7 +102,7 @@ public abstract class DateTimeUtils {
   }
 
   /**
-   * Truncates the time portion of the {@link Calendar Calendar's} date & time components.
+   * Truncates the time portion of the {@link Calendar Calendar's} date and time components.
    *
    * If the {@link Calendar} object is {@literal null}, then {@literal null} is returned. The fields of
    * the {@link Calendar} to be truncated include the hour of day, minute, second and milliseconds.
