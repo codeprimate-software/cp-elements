@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.cp.elements.text.FormatUtils.format;
@@ -76,7 +75,7 @@ import org.cp.elements.util.search.SearchException;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class ElementsExceptionsFactory extends RuntimeException {
+public abstract class ElementsExceptionsFactory {
 
   // package org.cp.elements.biz.rules
 
