@@ -13,7 +13,7 @@ Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate 
 
 4. Copy 'cp-elements/build/reports' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-5. Copy 'cp-elements/build/api-docs' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
+5. Copy 'cp-elements/target/apidocs' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
 6. Copy 'changelog.txt' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
