@@ -15,6 +15,8 @@
  */
 package org.cp.elements;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Properties;
@@ -65,8 +67,12 @@ public class ElementsVersion implements Runnable {
 
     Properties maven = new Properties();
 
-    Optional.ofNullable(ElementsVersion.class.getResourceAsStream(MAVEN_PROPERTIES_FILE_LOCATION))
-      .ifPresent(inputStream -> IOUtils.doSafeIo(() -> maven.load(inputStream)));
+    try (InputStream inputStream = ElementsVersion.class.getResourceAsStream(MAVEN_PROPERTIES_FILE_LOCATION)) {
+      if (inputStream != null) {
+        IOUtils.doSafeIo(() -> maven.load(inputStream));
+      }
+    }
+    catch (IOException ignore) { }
 
     return maven;
   }
