@@ -50,7 +50,7 @@ or perform  properly out-of-the-box.  Good [Object-Oriented Design](https://en
  <dependency> 
   <groupId>org.codeprimate</groupId> 
   <artifactId>cp-elements</artifactId> 
-  <version>1.0.0.M5</version> 
+  <version>1.0.0.M6</version> 
 </dependency>
 ````
 
