@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.ClassUtils.assignableTo;
@@ -23,6 +22,9 @@ import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * The {@link JavaType} enum represents various Java {@link Class} types.
@@ -68,7 +70,7 @@ public enum JavaType {
    * @see #values()
    * @see #getType()
    */
-  public static boolean isJavaType(Object obj) {
+  public static boolean isJavaType(@Nullable Object obj) {
     return stream(values()).anyMatch(javaType -> javaType.getType().isInstance(obj));
   }
 
@@ -81,8 +83,8 @@ public enum JavaType {
    * @see java.lang.Class
    * @see #values()
    */
-  public static boolean isJavaType(Class<?> type) {
-    return stream(values()).anyMatch(javaType -> (type != null && assignableTo(type, javaType.getType())));
+  public static boolean isJavaType(@Nullable Class<?> type) {
+    return stream(values()).anyMatch(javaType -> type != null && assignableTo(type, javaType.getType()));
   }
 
   /**
@@ -93,13 +95,15 @@ public enum JavaType {
    * @throws TypeNotFoundException if no {@link JavaType} matches the given {@link Class} type.
    * @see java.lang.Class
    */
-  public static JavaType valueOf(Class<?> type) {
+  public static @NotNull JavaType valueOf(@Nullable Class<?> type) {
 
-    return stream(values()).filter(javaType -> javaType.getType().equals(type)).findFirst()
+    return stream(values())
+      .filter(javaType -> javaType.getType().equals(type))
+      .findFirst()
       .orElseThrow(() -> newTypeNotFoundException("No JavaType found for class type [%s]", getName(type)));
   }
 
-  private final Class type;
+  private final Class<?> type;
 
   /**
    * Constructs a new instance of the {@link JavaType} enumerated value initialized with
@@ -108,7 +112,7 @@ public enum JavaType {
    * @param type {@link Class} representing a Java {@link Class Type}.
    * @see java.lang.Class
    */
-  JavaType(Class type) {
+  JavaType(@NotNull Class<?> type) {
 
     Assert.notNull(type, "Class type cannot be null");
 
@@ -121,7 +125,7 @@ public enum JavaType {
    * @return the actual {@link Class} type of the {@link JavaType} enumerated value.
    * @see java.lang.Class
    */
-  public Class getType() {
+  public @NotNull Class<?> getType() {
     return this.type;
   }
 
