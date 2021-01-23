@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.annotation;
 
 import java.lang.annotation.Documented;
@@ -34,7 +33,7 @@ import java.lang.reflect.Method;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface Experimental {
 
