@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.jdbc;
 
 import java.sql.Types;
@@ -30,6 +29,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  */
 @SuppressWarnings("unused")
 public enum SqlType {
+
   ARRAY(Types.ARRAY),
   BIGINT(Types.BIGINT),
   BINARY(Types.BINARY),
@@ -78,7 +78,7 @@ public enum SqlType {
    * @param type the java.sql.Types integer constant.
    * @see java.sql.Types
    */
-  SqlType(final int type) {
+  SqlType(int type) {
     this.type = type;
   }
 
@@ -89,7 +89,8 @@ public enum SqlType {
    * @return the SqlType enumerated value matching the java.sql.Types constant or null if no match was found.
    * @see java.sql.Types
    */
-  public static SqlType valueOf(final int type) {
+  public static SqlType valueOf(int type) {
+
     for (SqlType sqlType : values()) {
       if (sqlType.getType() == type) {
         return sqlType;
@@ -110,7 +111,8 @@ public enum SqlType {
    * @see org.cp.elements.lang.StringUtils#trim(String)
    */
   @NullSafe
-  public static SqlType valueOfIgnoreCase(final String name) {
+  public static SqlType valueOfIgnoreCase(String name) {
+
     for (SqlType sqlType : values()) {
       if (sqlType.name().equalsIgnoreCase(StringUtils.trim(name))) {
         return sqlType;
@@ -127,7 +129,6 @@ public enum SqlType {
    * @see java.sql.Types
    */
   public int getType() {
-    return type;
+    return this.type;
   }
-
 }
