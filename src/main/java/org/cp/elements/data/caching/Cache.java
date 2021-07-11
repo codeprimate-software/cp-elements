@@ -179,7 +179,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
   }
 
   /**
-   * Caches all entries from given {@link Map} in this {@link Cache}.
+   * Caches all entries from the given {@link Map} in this {@link Cache}.
    *
    * @param map {@link Map} containing the entries to cache.
    * @see #put(Comparable, Object)
