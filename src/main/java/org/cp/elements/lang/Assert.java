@@ -1281,6 +1281,88 @@ public abstract class Assert {
   }
 
   /**
+   * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
+   *
+   * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
+   *
+   * @param obj1 {@link Object left operand} in the identity comparison.
+   * @param obj2 {@link Object right operand} in the identity comparison.
+   * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are the same.
+   * @see #notSame(Object, Object, String, Object...)
+   * @see java.lang.Object
+   */
+  public static void notSame(Object obj1, Object obj2) {
+    notSame(obj1, obj2, "[%1$s] is the same as [%2$s]", obj1, obj2);
+  }
+
+  /**
+   * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
+   *
+   * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
+   *
+   * @param obj1 {@link Object left operand} in the identity comparison.
+   * @param obj2 {@link Object right operand} in the identity comparison.
+   * @param message {@link String} containing the message used in the {@link IdentityException}
+   * thrown if the assertion fails.
+   * @param arguments array of {@link Object arguments} used as placeholder values
+   * when formatting the {@link String message}.
+   * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are the same.
+   * @see #notSame(Object, Object, String, Object...)
+   * @see java.lang.Object
+   */
+  public static void notSame(Object obj1, Object obj2, String message, Object... arguments) {
+    notSame(obj1, obj2, new IdentityException(format(message, arguments)));
+  }
+
+  /**
+   * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
+   *
+   * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
+   *
+   * @param obj1 {@link Object left operand} in the identity comparison.
+   * @param obj2 {@link Object right operand} in the identity comparison.
+   * @param message {@link Supplier} containing the message used in the {@link IdentityException}
+   * thrown if the assertion fails.
+   * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are the same.
+   * @see #notSame(Object, Object, String, Object...)
+   * @see java.lang.Object
+   */
+  public static void notSame(Object obj1, Object obj2, Supplier<String> message) {
+    if (isSame(obj1, obj2)) {
+      throw new IdentityException(message.get());
+    }
+  }
+
+  /**
+   * Assert that two {@link Object Objects} are not the same {@link Object} as determined by the identity comparison.
+   *
+   * The assertion holds if and only if (iff) the two {@link Object objects} are not the same {@link Object} in memory.
+   *
+   * @param obj1 {@link Object left operand} in the identity comparison.
+   * @param obj2 {@link Object right operand} in the identity comparison.
+   * @throws RuntimeException the two {@link Object objects} are the same.
+   * @see #notSame(Object, Object, String, Object...)
+   * @see java.lang.Object
+   */
+  public static void notSame(Object obj1, Object obj2, RuntimeException cause) {
+    if (isSame(obj1, obj2)) {
+      throw cause;
+    }
+  }
+
+  /**
+   * Determines whether the two {@link Object Objects} are the same.
+   *
+   * @param obj1 {@link Object left operand} in the identity comparison.
+   * @param obj2 {@link Object right operand} in the identity comparison.
+   * @return a boolean value indicating whether the two {@link Object Objects} are the same.
+   * @see java.lang.Object
+   */
+  private static boolean isSame(Object obj1, Object obj2) {
+    return obj1 == obj2;
+  }
+
+  /**
    * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
    *
    * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.

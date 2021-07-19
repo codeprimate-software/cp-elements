@@ -1663,6 +1663,149 @@ public class AssertUnitTests {
   }
 
   @Test
+  public void assertNotSameWithNonIdenticalObjects() {
+
+    Assert.notSame(null, "null");
+    Assert.notSame(true, false);
+    Assert.notSame('c', "C");
+    Assert.notSame(1, -1);
+    Assert.notSame(3.14159d, 3.14d);
+    Assert.notSame("test", "TEST");
+    Assert.notSame(new Object(), new Object());
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameWithIdenticalBooleanValues() {
+
+    try {
+      Assert.notSame(false, Boolean.FALSE);
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[false] is the same as [false]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameWithIdenticalCharacterValues() {
+
+    try {
+      Assert.notSame('x', 'x');
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[x] is the same as [x]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameWithIdenticalIntegerValues() {
+
+    try {
+      Assert.notSame(2, 2);
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[2] is the same as [2]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameWithIdenticalStringValues() {
+
+    try {
+      Assert.notSame("test", "test");
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[test] is the same as [test]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameWithIdenticalObjectValues() {
+
+    try {
+      Assert.notSame(LOCK, LOCK);
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[%1$s] is the same as [%1$s]", LOCK);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameFormatsMessageWithArguments() {
+
+    try{
+      Assert.notSame(1, 1, "%1$s are the {1}", "Integers", "same");
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("Integers are the same");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void assertNotSameWithSuppliedMessage() {
+
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notSame(1, 1.0, mockSupplier);
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameUsesSuppliedMessageThrowsIdentityException() {
+
+    try {
+      Assert.notSame(1, 1, () -> "test");
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertNotSameThrowsAssertException() {
+
+    try {
+      Assert.notSame(1, 1, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
   public void assertSameWithIdenticalObjects() {
 
     Assert.same(null, null);
