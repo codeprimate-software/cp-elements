@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.util;
 
 import static org.cp.elements.lang.StringUtils.hasText;
@@ -42,6 +41,7 @@ import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessAdapter;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The {@link ProcessUtils} class is an abstract utility class for working with Java {@link Process} objects.
@@ -133,6 +133,7 @@ public abstract class ProcessUtils {
    * @see java.lang.Process
    */
   @NullSafe
+  @SuppressWarnings("all")
   public static boolean isRunning(Process process) {
 
     try {
@@ -302,7 +303,6 @@ public abstract class ProcessUtils {
    * @throws IllegalArgumentException if the given {@link File} path is {@literal null} or does not exist.
    * @see java.io.File
    */
-  @SuppressWarnings("all")
   public static File findPidFile(File path) {
 
     Assert.isTrue(FileSystemUtils.isExisting(path),
@@ -310,7 +310,9 @@ public abstract class ProcessUtils {
 
     File searchDirectory = path.isDirectory() ? path : path.getParentFile();
 
-    for (File file : searchDirectory.listFiles(DIRECTORY_PID_FILE_FILTER)) {
+    File[] searchFiles = ArrayUtils.nullSafeArray(searchDirectory.listFiles(DIRECTORY_PID_FILE_FILTER), File.class);
+
+    for (File file : searchFiles) {
 
       if (file.isDirectory()) {
         file = findPidFile(file);
