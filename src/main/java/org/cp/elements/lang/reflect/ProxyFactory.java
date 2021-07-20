@@ -91,7 +91,10 @@ public abstract class ProxyFactory<T> {
    * @see #implementing(Class[])
    */
   public static <T> ProxyFactory<T> newProxyFactory(T target, Class<?>... proxyInterfaces) {
-    return ProxyFactory.<T>newProxyFactory().proxy(target).implementing(proxyInterfaces);
+
+    return ProxyFactory.<T>newProxyFactory()
+      .proxy(target)
+      .implementing(proxyInterfaces);
   }
 
   /**
@@ -122,7 +125,7 @@ public abstract class ProxyFactory<T> {
 
   private ClassLoader proxyClassLoader;
 
-  private List<MethodInterceptor<T>> methodInterceptors = new ArrayList<>();
+  private final List<MethodInterceptor<T>> methodInterceptors = new ArrayList<>();
 
   private T target;
 
