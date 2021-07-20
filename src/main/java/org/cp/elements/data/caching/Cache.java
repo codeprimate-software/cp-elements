@@ -15,10 +15,6 @@
  */
 package org.cp.elements.data.caching;
 
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
-import static org.cp.elements.util.CollectionUtils.nullSafeIterable;
-import static org.cp.elements.util.MapUtils.nullSafeMap;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +28,7 @@ import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
+import org.cp.elements.util.MapUtils;
 
 /**
  * The {@link Cache} interface is an Abstract Data Type (ADT) defining a cache data structure,
@@ -98,7 +95,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
   @NullSafe
   @SuppressWarnings("unchecked")
   default boolean containsAll(KEY... keys) {
-    return ArrayUtils.isNotEmpty(keys) && Arrays.stream(nullSafeArray(keys)).allMatch(this::contains);
+
+    return ArrayUtils.isNotEmpty(keys)
+      && Arrays.stream(ArrayUtils.nullSafeArray(keys))
+        .allMatch(this::contains);
   }
 
   /**
@@ -113,8 +113,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   default boolean containsAll(Iterable<KEY> keys) {
+
     return CollectionUtils.isNotEmpty(keys)
-      && StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).allMatch(this::contains);
+      && StreamSupport.stream(CollectionUtils.nullSafeIterable(keys).spliterator(), false)
+        .allMatch(this::contains);
   }
 
   /**
@@ -129,7 +131,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
   @NullSafe
   @SuppressWarnings("unchecked")
   default boolean containsAny(KEY... keys) {
-    return Arrays.stream(nullSafeArray(keys)).anyMatch(this::contains);
+
+    return ArrayUtils.isNotEmpty(keys)
+      && Arrays.stream(ArrayUtils.nullSafeArray(keys))
+        .anyMatch(this::contains);
   }
 
   /**
@@ -144,7 +149,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @NullSafe
   default boolean containsAny(Iterable<KEY> keys) {
-    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).anyMatch(this::contains);
+
+    return CollectionUtils.isNotEmpty(keys)
+      && StreamSupport.stream(CollectionUtils.nullSafeIterable(keys).spliterator(), false)
+        .anyMatch(this::contains);
   }
 
   /**
@@ -163,7 +171,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @SuppressWarnings("unchecked")
   default void evictAll(KEY... keys) {
-    Arrays.stream(nullSafeArray(keys)).forEach(this::evict);
+    Arrays.stream(ArrayUtils.nullSafeArray(keys)).forEach(this::evict);
   }
 
   /**
@@ -175,7 +183,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see java.lang.Iterable
    */
   default void evictAll(Iterable<KEY> keys) {
-    StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).forEach(this::evict);
+    StreamSupport.stream(CollectionUtils.nullSafeIterable(keys).spliterator(), false).forEach(this::evict);
   }
 
   /**
@@ -186,7 +194,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see java.util.Map
    */
   default void from(Map<KEY, VALUE> map) {
-    nullSafeMap(map).forEach(this::put);
+    MapUtils.nullSafeMap(map).forEach(this::put);
   }
 
   /**
@@ -215,12 +223,16 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @return a {@link List} of {@link VALUE values} for all the given {@link KEY keys}
    * in the order given by the {@link KEY keys}.
    * @see #get(Comparable)
+   * @see #getAll(Iterable)
    * @see java.util.List
    */
   @NullSafe
   @SuppressWarnings("unchecked")
   default List<VALUE> getAll(KEY... keys) {
-    return Arrays.stream(nullSafeArray(keys)).map(this::get).collect(Collectors.toList());
+
+    return Arrays.stream(ArrayUtils.nullSafeArray(keys))
+      .map(this::get)
+      .collect(Collectors.toList());
   }
 
   /**
@@ -237,12 +249,15 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @return a {@link List} of {@link VALUE values} for all the given {@link KEY keys}
    * in the order given by the {@link KEY keys}.
    * @see #get(Comparable)
+   * @see #getAll(Comparable[])
    * @see java.lang.Iterable
    * @see java.util.List
    */
   @NullSafe
   default List<VALUE> getAll(Iterable<KEY> keys) {
-    return StreamSupport.stream(nullSafeIterable(keys).spliterator(), false).map(this::get)
+
+    return StreamSupport.stream(CollectionUtils.nullSafeIterable(keys).spliterator(), false)
+      .map(this::get)
       .collect(Collectors.toList());
   }
 
@@ -308,7 +323,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    */
   @SuppressWarnings("unchecked")
   default void putAll(Identifiable<KEY>... entities) {
-    Arrays.stream(nullSafeArray(entities, Identifiable.class)).forEach(this::put);
+    Arrays.stream(ArrayUtils.nullSafeArray(entities, Identifiable.class)).forEach(this::put);
   }
 
   /**
@@ -332,7 +347,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * @see java.lang.Iterable
    */
   default void putAll(Iterable<Identifiable<KEY>> entities) {
-    StreamSupport.stream(nullSafeIterable(entities).spliterator(), false).forEach(this::put);
+    StreamSupport.stream(CollectionUtils.nullSafeIterable(entities).spliterator(), false).forEach(this::put);
   }
 
   /**
