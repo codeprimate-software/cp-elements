@@ -497,6 +497,17 @@ public abstract class LangExtensions {
     void isNotNull();
 
     /**
+     * Asserts that the object to evaluate is not the same instance as the given object.  This assertion deems
+     * the objects are not the same as determined by the identity comparison (==).
+     *
+     * @param obj the object used in the identity comparison with the object being evaluated.
+     * @throws AssertionException if the objects are the same.
+     * @see #isSameAs(Object)
+     * @see #not()
+     */
+    void isNotSameAs(T obj);
+
+    /**
      * Asserts that the object to evaluate is null.
      *
      * @throws AssertionException if the object being evaluated is not null.
@@ -512,17 +523,6 @@ public abstract class LangExtensions {
      * @see #isEqualTo(Object)
      */
     void isSameAs(T obj);
-
-    /**
-     * Asserts that the object to evaluate is not the same instance as the given object.  This assertion deems
-     * the objects are not the same as determined by the identity comparison (==).
-     *
-     * @param obj the object used in the identity comparison with the object being evaluated.
-     * @throws AssertionException if the objects are the same.
-     * @see #isSameAs(Object)
-     * @see #not()
-     */
-    void isNotSameAs(T obj);
 
     /**
      * Asserts that the object to evaluate is true.
