@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 import org.cp.elements.lang.reflect.ProxyFactory;
@@ -74,7 +75,9 @@ public abstract class LangExtensions {
 
     ProxyFactory<T> proxyFactory = newProxyFactory(obj, interfaces);
 
-    return (T) proxyFactory.adviseWith(newSafeNavigationHandler(proxyFactory)).newProxy();
+    return proxyFactory
+      .adviseWith(newSafeNavigationHandler(proxyFactory))
+      .newProxy();
   }
 
   /**
@@ -123,7 +126,7 @@ public abstract class LangExtensions {
      */
     private SafeNavigationHandler(@NotNull ProxyFactory<T> proxyFactory) {
 
-      Assert.notNull(proxyFactory, "ProxyFactory must not be null");
+      Assert.notNull(proxyFactory, "ProxyFactory is required");
 
       this.proxyFactory = proxyFactory;
     }
@@ -165,7 +168,7 @@ public abstract class LangExtensions {
      * @see java.util.Optional
      */
     @Override
-    public <R> Optional<R> intercept(MethodInvocation methodInvocation) {
+    public <R> Optional<R> intercept(@NotNull MethodInvocation methodInvocation) {
 
       R nextTarget = resolveNextTarget(methodInvocation);
 
@@ -193,32 +196,32 @@ public abstract class LangExtensions {
      * @see java.util.Optional
      */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
+    public @Nullable Object invoke(@NotNull Object proxy, @NotNull Method method, Object[] args) {
 
       return intercept(newMethodInvocation(resolveTarget(proxy), method, args))
         .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
-    private <R> R resolveNextTarget(MethodInvocation methodInvocation) {
+    private @Nullable <R> R resolveNextTarget(@NotNull MethodInvocation methodInvocation) {
 
       return (R) Optional.ofNullable(getTarget())
-        .map(target -> methodInvocation.makeAccessible().invoke(target).orElse(null))
+        .flatMap(target -> methodInvocation.makeAccessible().invoke(target))
         .orElse(null);
     }
 
-    private Object resolveTarget(Object proxy) {
+    private @Nullable Object resolveTarget(@Nullable Object proxy) {
 
       Object target = getTarget();
 
       return target != null ? target : proxy;
     }
 
-    private Class<?> resolveTargetType(MethodInvocation methodInvocation) {
+    private @NotNull Class<?> resolveTargetType(@NotNull MethodInvocation methodInvocation) {
       return methodInvocation.getMethod().getReturnType();
     }
 
-    private boolean canProxy(Object target, Class<?>... types) {
+    private boolean canProxy(@Nullable Object target, Class<?>... types) {
 
       Object resolvedTarget = target != null ? target : DUMMY;
 
