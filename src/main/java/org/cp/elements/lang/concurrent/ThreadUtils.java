@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
 import java.util.Optional;
@@ -24,18 +23,20 @@ import org.cp.elements.lang.Condition;
 import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link ThreadUtils} class provides utilities for writing concurrent programs using Java {@link Thread Threads}
- * and the java.util.concurrent API.
+ * {@link ThreadUtils} is an abstract utility class provides used to write concurrent programs
+ * using Java {@link Thread Threads} and the {@link java.util.concurrent} API.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
  * @see java.lang.Thread
  * @see java.lang.ThreadGroup
  * @see java.lang.ThreadLocal
- * @see java.util.concurrent
+ * @see java.util.concurrent.TimeUnit
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -49,8 +50,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#isAlive()
    */
   @NullSafe
-  public static boolean isAlive(Thread thread) {
-    return (thread != null && thread.isAlive());
+  public static boolean isAlive(@Nullable Thread thread) {
+    return thread != null && thread.isAlive();
   }
 
   /**
@@ -63,8 +64,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#BLOCKED
    */
   @NullSafe
-  public static boolean isBlocked(Thread thread) {
-    return (thread != null && Thread.State.BLOCKED.equals(thread.getState()));
+  public static boolean isBlocked(@Nullable Thread thread) {
+    return thread != null && Thread.State.BLOCKED.equals(thread.getState());
   }
 
   /**
@@ -77,8 +78,8 @@ public abstract class ThreadUtils {
    * @see #isNonDaemon(Thread)
    */
   @NullSafe
-  public static boolean isDaemon(Thread thread) {
-    return (thread != null && thread.isDaemon());
+  public static boolean isDaemon(@Nullable Thread thread) {
+    return thread != null && thread.isDaemon();
   }
 
   /**
@@ -91,8 +92,8 @@ public abstract class ThreadUtils {
    * @see #isDaemon(Thread)
    */
   @NullSafe
-  public static boolean isNonDaemon(Thread thread) {
-    return  (thread != null && !thread.isDaemon());
+  public static boolean isNonDaemon(@Nullable Thread thread) {
+    return thread != null && !thread.isDaemon();
   }
 
   /**
@@ -104,8 +105,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#isInterrupted()
    */
   @NullSafe
-  public static boolean isInterrupted(Thread thread) {
-    return (thread != null && thread.isInterrupted());
+  public static boolean isInterrupted(@Nullable Thread thread) {
+    return thread != null && thread.isInterrupted();
   }
 
   /**
@@ -118,8 +119,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#NEW
    */
   @NullSafe
-  public static boolean isNew(Thread thread) {
-    return (thread != null && Thread.State.NEW.equals(thread.getState()));
+  public static boolean isNew(@Nullable Thread thread) {
+    return thread != null && Thread.State.NEW.equals(thread.getState());
   }
 
   /**
@@ -132,8 +133,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#RUNNABLE
    */
   @NullSafe
-  public static boolean isRunnable(Thread thread) {
-    return (thread != null && Thread.State.RUNNABLE.equals(thread.getState()));
+  public static boolean isRunnable(@Nullable Thread thread) {
+    return thread != null && Thread.State.RUNNABLE.equals(thread.getState());
   }
 
   /**
@@ -145,8 +146,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#TERMINATED
    */
   @NullSafe
-  public static boolean isTerminated(Thread thread) {
-    return (thread != null && Thread.State.TERMINATED.equals(thread.getState()));
+  public static boolean isTerminated(@Nullable Thread thread) {
+    return thread != null && Thread.State.TERMINATED.equals(thread.getState());
   }
 
   /**
@@ -158,8 +159,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#TIMED_WAITING
    */
   @NullSafe
-  public static boolean isTimedWaiting(Thread thread) {
-    return (thread != null && Thread.State.TIMED_WAITING.equals(thread.getState()));
+  public static boolean isTimedWaiting(@Nullable Thread thread) {
+    return thread != null && Thread.State.TIMED_WAITING.equals(thread.getState());
   }
 
   /**
@@ -171,8 +172,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State#WAITING
    */
   @NullSafe
-  public static boolean isWaiting(Thread thread) {
-    return (thread != null && Thread.State.WAITING.equals(thread.getState()));
+  public static boolean isWaiting(@Nullable Thread thread) {
+    return thread != null && Thread.State.WAITING.equals(thread.getState());
   }
 
   /**
@@ -184,8 +185,11 @@ public abstract class ThreadUtils {
    * @see java.lang.ClassLoader
    */
   @NullSafe
-  public static ClassLoader getContextClassLoader(Thread thread) {
-    return (thread != null ? thread.getContextClassLoader() : ThreadUtils.class.getClassLoader());
+  public static ClassLoader getContextClassLoader(@Nullable Thread thread) {
+
+    return thread != null
+      ? thread.getContextClassLoader()
+      : ThreadUtils.class.getClassLoader();
   }
 
   /**
@@ -196,8 +200,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#getId()
    */
   @NullSafe
-  public static long getId(Thread thread) {
-    return (thread != null ? thread.getId() : 0L);
+  public static long getId(@Nullable Thread thread) {
+    return thread != null ? thread.getId() : 0L;
   }
 
   /**
@@ -208,8 +212,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#getName()
    */
   @NullSafe
-  public static String getName(Thread thread) {
-    return (thread != null ? thread.getName() : null);
+  public static @Nullable String getName(@Nullable Thread thread) {
+    return thread != null ? thread.getName() : null;
   }
 
   /**
@@ -220,8 +224,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#getPriority()
    */
   @NullSafe
-  public static int getPriority(Thread thread) {
-    return (thread != null ? thread.getPriority() : 0);
+  public static int getPriority(@Nullable Thread thread) {
+    return thread != null ? thread.getPriority() : Thread.NORM_PRIORITY;
   }
 
   /**
@@ -234,8 +238,8 @@ public abstract class ThreadUtils {
    * @see java.lang.StackTraceElement
    */
   @NullSafe
-  public static StackTraceElement[] getStackTrace(Thread thread) {
-    return (thread != null ? thread.getStackTrace() : new StackTraceElement[0]);
+  public static @NotNull StackTraceElement[] getStackTrace(@Nullable Thread thread) {
+    return thread != null ? thread.getStackTrace() : new StackTraceElement[0];
   }
 
   /**
@@ -247,8 +251,8 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread.State
    */
   @NullSafe
-  public static Thread.State getState(Thread thread) {
-    return (thread != null ? thread.getState() : null);
+  public static @Nullable Thread.State getState(@Nullable Thread thread) {
+    return thread != null ? thread.getState() : null;
   }
 
   /**
@@ -260,8 +264,8 @@ public abstract class ThreadUtils {
    * @see java.lang.ThreadGroup
    */
   @NullSafe
-  public static ThreadGroup getThreadGroup(Thread thread) {
-    return (thread != null ? thread.getThreadGroup() : null);
+  public static @Nullable ThreadGroup getThreadGroup(@Nullable Thread thread) {
+    return thread != null ? thread.getThreadGroup() : null;
   }
 
   /**
@@ -272,9 +276,12 @@ public abstract class ThreadUtils {
    */
   @NullSafe
   public static void dumpStack(String tag) {
+
     Thread currentThread = Thread.currentThread();
-    System.err.printf("%1$s - %2$s Thread @ %3$d%n", String.valueOf(tag).toUpperCase(), currentThread.getName(),
+
+    System.err.printf("[%1$s] %2$s Thread @ %3$d%n", String.valueOf(tag).toUpperCase(), currentThread.getName(),
       currentThread.getId());
+
     Thread.dumpStack();
   }
 
@@ -285,8 +292,10 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#interrupt()
    */
   @NullSafe
-  public static void interrupt(Thread thread) {
-    Optional.ofNullable(thread).ifPresent(Thread::interrupt);
+  public static void interrupt(@Nullable Thread thread) {
+    if (thread != null) {
+      thread.interrupt();
+    }
   }
 
   /**
@@ -307,14 +316,15 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#interrupt()
    */
   @NullSafe
-  public static boolean join(Thread thread, long milliseconds, int nanoseconds) {
+  public static boolean join(@Nullable Thread thread, long milliseconds, int nanoseconds) {
+
     try {
       if (thread != null) {
         thread.join(milliseconds, nanoseconds);
         return true;
       }
     }
-    catch (InterruptedException e) {
+    catch (InterruptedException ignore) {
       Thread.currentThread().interrupt();
     }
 
@@ -334,11 +344,12 @@ public abstract class ThreadUtils {
    * @see java.lang.Thread#interrupt()
    */
   public static boolean sleep(long milliseconds, int nanoseconds) {
+
     try {
       Thread.sleep(milliseconds, nanoseconds);
       return true;
     }
-    catch (InterruptedException e) {
+    catch (InterruptedException ignore) {
       Thread.currentThread().interrupt();
       return false;
     }
@@ -355,7 +366,7 @@ public abstract class ThreadUtils {
    * @see org.cp.elements.lang.annotation.FluentApi
    */
   @FluentApi
-  public static WaitTask waitFor(long duration) {
+  public static @NotNull WaitTask waitFor(long duration) {
     return WaitTask.newWaitTask().waitFor(duration);
   }
 
@@ -371,7 +382,7 @@ public abstract class ThreadUtils {
    * @see java.util.concurrent.TimeUnit
    */
   @FluentApi
-  public static WaitTask waitFor(long duration, TimeUnit timeUnit) {
+  public static @NotNull WaitTask waitFor(long duration, TimeUnit timeUnit) {
     return WaitTask.newWaitTask().waitFor(duration, timeUnit);
   }
 
@@ -407,7 +418,7 @@ public abstract class ThreadUtils {
      * @return a long value representing the length in time to wait.
      */
     public long getDuration() {
-      return duration;
+      return this.duration;
     }
 
     /**
@@ -417,7 +428,7 @@ public abstract class ThreadUtils {
      * @see java.util.concurrent.TimeUnit
      */
     public TimeUnit getDurationTimeUnit() {
-      return durationTimeUnit;
+      return this.durationTimeUnit;
     }
 
     /**
@@ -426,8 +437,12 @@ public abstract class ThreadUtils {
      * @return a long value representing the interval to reevaluate the condition of the wait.
      */
     public long getInterval() {
+
       long duration = getDuration();
-      return (interval > 0 ? Math.min(interval, duration) : duration);
+
+      return this.interval > 0
+        ? Math.min(this.interval, duration)
+        : duration;
     }
 
     /**
@@ -437,7 +452,7 @@ public abstract class ThreadUtils {
      * @see java.util.concurrent.TimeUnit
      */
     public TimeUnit getIntervalTimeUnit() {
-      return ObjectUtils.defaultIfNull(intervalTimeUnit, getDurationTimeUnit());
+      return ObjectUtils.defaultIfNull(this.intervalTimeUnit, getDurationTimeUnit());
     }
 
     /**
@@ -462,7 +477,8 @@ public abstract class ThreadUtils {
      * @see java.util.concurrent.TimeUnit
      */
     public WaitTask waitFor(long duration, TimeUnit durationTimeUnit) {
-      Assert.argument(duration > 0, String.format("duration (%1$d) must be greater than 0", duration));
+
+      Assert.argument(duration, argument -> argument > 0, "duration (%1$d) must be greater than 0", duration);
 
       this.duration = duration;
       this.durationTimeUnit = ObjectUtils.defaultIfNull(durationTimeUnit, DEFAULT_TIME_UNIT);
@@ -470,9 +486,8 @@ public abstract class ThreadUtils {
       return this;
     }
 
-    /* (non-Javadoc) */
     private boolean isValidInterval(long interval, TimeUnit intervalTimeUnit) {
-      return (interval > 0 && intervalTimeUnit.toMillis(interval) <= getDurationTimeUnit().toMillis(getDuration()));
+      return interval > 0 && intervalTimeUnit.toMillis(interval) <= getDurationTimeUnit().toMillis(getDuration());
     }
 
     /**
@@ -497,14 +512,17 @@ public abstract class ThreadUtils {
      * @see #isValidInterval(long, TimeUnit)
      */
     public WaitTask checkEvery(long interval, TimeUnit intervalTimeUnit) {
-      intervalTimeUnit = Optional.ofNullable(intervalTimeUnit).orElse(DEFAULT_TIME_UNIT);
 
-      Assert.argument(isValidInterval(interval, intervalTimeUnit), String.format(
+      TimeUnit resolvedIntervalTimeUnit = intervalTimeUnit != null
+        ? intervalTimeUnit
+        : DEFAULT_TIME_UNIT;
+
+      Assert.argument(interval, argument -> isValidInterval(argument, resolvedIntervalTimeUnit), String.format(
         "Interval [%1$d %2$s] must be greater than 0 and less than equal to duration [%3$d %4$s]",
           interval, intervalTimeUnit, duration, durationTimeUnit));
 
       this.interval = interval;
-      this.intervalTimeUnit = intervalTimeUnit;
+      this.intervalTimeUnit = resolvedIntervalTimeUnit;
 
       return this;
     }
@@ -519,7 +537,8 @@ public abstract class ThreadUtils {
      * @see org.cp.elements.lang.Condition
      */
     public boolean on(Condition condition) {
-      long timeout = (System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration()));
+
+      long timeout = System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration());
       long interval = getIntervalTimeUnit().toMillis(getInterval());
 
       condition = Optional.ofNullable(condition).orElse(Condition.FALSE_CONDITION);

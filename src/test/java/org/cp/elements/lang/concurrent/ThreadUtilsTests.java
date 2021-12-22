@@ -54,9 +54,11 @@ import edu.umd.cs.mtc.TestFramework;
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
  * @see org.cp.elements.lang.concurrent.ThreadUtils
+ * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("all")
 public class ThreadUtilsTests {
 
   @Mock
@@ -368,8 +370,8 @@ public class ThreadUtilsTests {
   }
 
   @Test
-  public void getPriorityWithNull() {
-    assertThat(ThreadUtils.getPriority(null)).isEqualTo(0);
+  public void getPriorityWithNullThread() {
+    assertThat(ThreadUtils.getPriority(null)).isEqualTo(Thread.NORM_PRIORITY);
   }
 
   @Test
@@ -448,8 +450,9 @@ public class ThreadUtilsTests {
       byte[] errorStreamBytes = outputStream.toByteArray();
       String stackTrace = new String(errorStreamBytes);
 
-      assertThat(stackTrace).contains(String.format("TEST_TAG - dumpStackTest Thread @ %d",
-        Thread.currentThread().getId()));
+      assertThat(stackTrace)
+        .contains(String.format("[TEST_TAG] dumpStackTest Thread @ %d", Thread.currentThread().getId()));
+
       assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
       assertThat(stackTrace).contains("at java.lang.Thread.dumpStack");
     }

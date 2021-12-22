@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
@@ -26,10 +25,11 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The StringUtils class performs utility operations on Strings.
+ * {@link StringUtils} is an abstract utility class used to perform operations on {@link String Strings}.
  *
  * @author John J. Blum
  * @see java.lang.String
+ * @see java.util.regex.Pattern
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -278,7 +278,8 @@ public abstract class StringUtils {
    */
   public static String getSpaces(int number) {
 
-    Assert.argument(number >= 0, "The number [{0}] of desired spaces must be greater than equal to 0", number);
+    Assert.argument(number, argument -> argument >= 0,
+      "The number [{0}] of desired spaces must be greater than equal to 0", number);
 
     StringBuilder spaces = new StringBuilder(Math.max(number, 0));
 
@@ -515,7 +516,7 @@ public abstract class StringUtils {
       valueList.add(String.valueOf(value));
     }
 
-    return trim(concat(valueList.toArray(new String[valueList.size()]), SINGLE_SPACE));
+    return trim(concat(valueList.toArray(new String[0]), SINGLE_SPACE));
   }
 
   /**
@@ -677,6 +678,7 @@ public abstract class StringUtils {
    * the given width on any given split.
    * @throws NullPointerException if the line of text is null.
    */
+  @SuppressWarnings("all")
   public static String wrap(String line, int widthInCharacters, String indent) {
 
     StringBuilder buffer = new StringBuilder();
