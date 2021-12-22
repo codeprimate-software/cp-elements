@@ -1168,8 +1168,25 @@ public class AssertUnitTests {
   }
 
   @Test
+  public void assertNotEmptyStringWithSpaces() {
+    Assert.notEmpty(" ");
+    Assert.notEmpty("  ");
+    Assert.notEmpty("   ");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void assertNotEmptyStringWithNullString() {
-    Assert.notEmpty((String) null, "Null is not an empty String");
+
+    try {
+      Assert.notEmpty((String) null, "Null is an empty String");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Null is an empty String");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test(expected = IllegalArgumentException.class)
