@@ -18,18 +18,20 @@ package org.cp.elements.lang;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link Assert} class is a more capable replacement for Java's assert keyword, providing functionality
- * to make assertions about pre-conditions and state in order to ensure an object's invariants are upheld and enforced.
+ * The {@link Assert} class is a more capable replacement for Java's {@literal assert} keyword, providing an API
+ * to make assertions about pre-conditions and state in order to ensure an {@link Object Object's} invariants
+ * are enforced and upheld.
  *
  * @author John J. Blum
- * @see java.lang.String#format(String, Object...)
- * @see java.text.MessageFormat#format(String, Object...)
- * @see java.util.function.Supplier
+ * @see java.util.function.Predicate
  * @see org.cp.elements.lang.AssertionException
  * @see org.cp.elements.lang.LangExtensions#assertThat(Object)
  * @since 1.0.0
@@ -40,113 +42,148 @@ public abstract class Assert {
   /**
    * Asserts that an {@literal argument} is valid.
    *
-   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
+   * evaluates to {@literal true}.
    *
    * For example, application code might assert that:
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
-   * to determine the validity of the argument.
+   * @param argument {@link Object} value to test and validate.
+   * @param argumentPredicate {@link Predicate} used to test and validate the argument;
+   * must not be {@literal null}.
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
-   * @see #argument(Boolean, String, Object...)
+   * @see #argument(Object, Predicate, String, Object...)
+   * @see java.util.function.Predicate
    */
-  public static void argument(Boolean valid) {
-    argument(valid, "Argument is not valid");
+  public static <T> void argument(T argument, Predicate<T> argumentPredicate) {
+    argument(argument, argumentPredicate, "Argument is not valid");
   }
 
   /**
-   * Asserts that an argument is valid.
+   * Asserts that an {@literal argument} is valid.
    *
-   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
+   * evaluates to {@literal true}.
    *
    * For example, application code might assert that:
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
-   * to determine the validity of the argument.
-   * @param message {@link String} containing the message for the {@link IllegalArgumentException}
+   * @param argument {@link Object} value to test and validate.
+   * @param argumentPredicate {@link Predicate} used to test and validate the argument;
+   * must not be {@literal null}.
+   * @param message {@link String} containing the description for the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
-   * @see #argument(Boolean, RuntimeException)
+   * @see #argument(Object, Predicate, RuntimeException)
+   * @see java.lang.IllegalArgumentException
+   * @see java.util.function.Predicate
    */
-  public static void argument(Boolean valid, String message, Object... arguments) {
-    argument(valid, new IllegalArgumentException(format(message, arguments)));
+  public static <T> void argument(T argument, Predicate<T> argumentPredicate, String message,
+      Object... messagePlaceholderValues) {
+
+    argument(argument, argumentPredicate, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
-   * Asserts that an argument is valid.
+   * Asserts that an {@literal argument} is valid.
    *
-   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
+   * evaluates to {@literal true}.
    *
    * For example, application code might assert that:
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
-   * to determine the validity of the argument.
+   * @param argument {@link Object} value to test and validate.
+   * @param argumentPredicate {@link Predicate} used to test and validate the argument;
+   * must not be {@literal null}.
    * @param message {@link Supplier} containing the message for the {@link IllegalArgumentException}
    * thrown if the assertion fails.
    * @throws java.lang.IllegalArgumentException if the argument is invalid.
+   * @see java.lang.IllegalArgumentException
+   * @see java.util.function.Predicate
    * @see java.util.function.Supplier
    */
-  public static void argument(Boolean valid, Supplier<String> message) {
-    if (isNotValid(valid)) {
+  public static <T> void argument(T argument, Predicate<T> argumentPredicate, Supplier<String> message) {
+    if (isNotValid(argument, argumentPredicate)) {
       throw new IllegalArgumentException(message.get());
     }
   }
 
   /**
-   * Asserts that an argument is valid.
+   * Asserts that an {@literal argument} is valid.
    *
-   * The assertion holds if and only if (iff) {@code valid} is {@literal true}.
+   * The assertion holds if and only if (iff) the {@code argument} tested by the {@link Predicate}
+   * evaluates to {@literal true}.
    *
    * For example, application code might assert that:
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age &gt;= 21, "Person must be 21 years of age to enter");
+   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
-   * @param valid {@link Boolean} value resulting from the evaluation of an expression used by the application
-   * to determine the validity of the argument.
+   * @param argument {@link Object} value to test and validate.
+   * @param argumentPredicate {@link Predicate} used to test and validate the argument;
+   * must not be {@literal null}.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the argument is invalid.
+   * @see java.util.function.Predicate
+   * @see java.lang.RuntimeException
    */
-  public static void argument(Boolean valid, RuntimeException cause) {
-    if (isNotValid(valid)) {
+  public static <T> void argument(T argument, Predicate<T> argumentPredicate, RuntimeException cause) {
+    if (isNotValid(argument, argumentPredicate)) {
       throw cause;
     }
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Boolean valid argument}
-   * evaluates to {@link Boolean#TRUE}.
+   * Null-safe utility method used to determine whether the given {@link Object argument}
+   * tested by the given {@link Predicate argument predicate} evaluates to {@literal true}.
    *
-   * @param valid {@link Boolean value} to evaluate.
-   * @return a boolean value indicating whether the given {@link Boolean valid argument}
-   * evaluates to {@link Boolean#TRUE}, i.e. is {@literal true}.
+   * @param argument {@link Object} value to test and validate.
+   * @param argumentPredicate {@link Predicate} used to test and validate the argument;
+   * must not be {@literal null}.
+   * @return a boolean value indicating whether the given {@link Object argument}
+   * tested by the given {@link Predicate} evaluates to {@literal true}.
+   * @see #nullSafePredicate(Predicate)
+   * @see java.util.function.Predicate
    * @see java.lang.Boolean#TRUE
    */
   @NullSafe
-  private static boolean isNotValid(Boolean valid) {
-    return !Boolean.TRUE.equals(valid);
+  private static <T> boolean isNotValid(T argument, Predicate<T> argumentPredicate) {
+    return !Boolean.TRUE.equals(nullSafePredicate(argumentPredicate).test(argument));
+  }
+
+  /**
+   * Utility method used to protect against a {@literal null} {@link Predicate}.
+   *
+   * @param <T> {@link Class type} of argument tested by the {@link Predicate}.
+   * @param predicate {@link Predicate} to evaluate for a {@literal null} reference.
+   * @return the given {@link Predicate} if not {@literal null}
+   * or a {@literal new}, {@literal non-null} {@link Predicate} who's {@literal test}
+   * evaluates to {@literal true}.
+   * @see java.util.function.Predicate
+   */
+  private static @NotNull <T>  Predicate<T> nullSafePredicate(@Nullable Predicate<T> predicate) {
+    return predicate != null ? predicate : argument -> true;
   }
 
   /**
@@ -1450,12 +1487,12 @@ public abstract class Assert {
    *
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean value} indicating whether the state is valid.
+   * @param state {@link Boolean value} indicating whether the state is valid.
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, String, Object...)
    */
-  public static void state(Boolean valid) {
-    state(valid, "State is invalid");
+  public static void state(Boolean state) {
+    state(state, "State is invalid");
   }
 
   /**
@@ -1463,7 +1500,7 @@ public abstract class Assert {
    *
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean value} indicating whether the state is valid.
+   * @param state {@link Boolean value} indicating whether the state is valid.
    * @param message {@link String} containing the message used in the {@link IllegalStateException}
    * thrown if the assertion fails.
    * @param arguments array of {@link Object arguments} used as placeholder values
@@ -1471,8 +1508,8 @@ public abstract class Assert {
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, RuntimeException)
    */
-  public static void state(Boolean valid, String message, Object... arguments) {
-    state(valid, new IllegalStateException(format(message, arguments)));
+  public static void state(Boolean state, String message, Object... arguments) {
+    state(state, new IllegalStateException(format(message, arguments)));
   }
 
   /**
@@ -1480,14 +1517,14 @@ public abstract class Assert {
    *
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean value} indicating whether the state is valid.
+   * @param state {@link Boolean value} indicating whether the state is valid.
    * @param message {@link Supplier} containing the message used in the {@link IllegalStateException}
    * thrown if the assertion fails.
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see java.util.function.Supplier
    */
-  public static void state(Boolean valid, Supplier<String> message) {
-    if (isNotValid(valid)) {
+  public static void state(Boolean state, Supplier<String> message) {
+    if (isNotValid(state, argument -> Boolean.TRUE.equals(state))) {
       throw new IllegalStateException(message.get());
     }
   }
@@ -1497,12 +1534,12 @@ public abstract class Assert {
    *
    * The assertion holds if and only if (iff) valid is {@literal true}.
    *
-   * @param valid {@link Boolean value} indicating whether the state is valid.
+   * @param state {@link Boolean value} indicating whether the state is valid.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the state is invalid.
    */
-  public static void state(Boolean valid, RuntimeException cause) {
-    if (isNotValid(valid)) {
+  public static void state(Boolean state, RuntimeException cause) {
+    if (isNotValid(state, argument -> Boolean.TRUE.equals(state))) {
       throw cause;
     }
   }
@@ -1611,41 +1648,56 @@ public abstract class Assert {
   }
 
   /**
-   * Formats the specified {@link String message} with the array of {@link Object arguments}.
+   * Null-safe utility method used to measure the length of the {@link Object} array. The length of the array
+   * is measured by the number of elements in the array.
+   *
+   * @param array {@link Object} array to measure its length.
+   * @return the length of the array or return {@literal 0} if the array is {@literal null}.
+   */
+  @NullSafe
+  private static int arrayLength(Object... array) {
+    return array != null ? array.length : 0;
+  }
+
+  /**
+   * Formats the given {@link String message} with the array of {@link Object arguments}.
    *
    * @param message {@link String} containing the message to format.
-   * @param arguments array of {@link Object arguments} used when formatting the {@link String message}.
+   * @param arguments array of {@link Object arguments} used to format the {@link String message}.
    * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see #messageFormat(String, Object...)
    * @see #stringFormat(String, Object...)
    */
-  private static String format(String message, Object... arguments) {
+  @NullSafe
+  private static @Nullable String format(@Nullable String message, Object... arguments) {
     return stringFormat(messageFormat(message, arguments), arguments);
   }
 
   /**
-   * Formats the specified {@link String message} containing possible placeholders
-   * as defined by the Java {@link MessageFormat} class.
+   * Formats the given {@link String message} containing placeholders as defined by
+   * the Java {@link MessageFormat} class.
    *
    * @param message {@link String} containing the message to format.
-   * @param arguments array of {@link Object arguments} used when formatting the {@link String message}.
+   * @param arguments array of {@link Object arguments} used to format the {@link String message}.
    * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see java.text.MessageFormat#format(String, Object...)
    */
-  private static String messageFormat(String message, Object... arguments) {
-    return arguments != null ? MessageFormat.format(message, arguments) : message;
+  @NullSafe
+  private static @Nullable String messageFormat(@Nullable String message, Object... arguments) {
+    return arrayLength(arguments) > 0 ? MessageFormat.format(String.valueOf(message), arguments) : message;
   }
 
   /**
-   * Formats the specified {@link String message} containing possible placeholders
-   * as defined by the Java {@link String} class.
+   * Formats the given {@link String message} containing placeholders as defined by
+   * the Java {@link String} class.
    *
    * @param message {@link String} containing the message to format.
-   * @param arguments array of {@link Object arguments} used when formatting the {@link String message}.
-   * @return the {@link String message} formatted with the {@link Object arguments}.
+   * @param arguments array of {@link Object arguments} used to format the {@link String message}.
+   * @return the {@link String message} formatted with the array of {@link Object arguments}.
    * @see java.lang.String#format(String, Object...)
    */
-  private static String stringFormat(String message, Object... arguments) {
-    return String.format(message, arguments);
+  @NullSafe
+  private static @Nullable String stringFormat(@Nullable String message, Object... arguments) {
+    return arrayLength(arguments) > 0 ? String.format(String.valueOf(message), arguments) : message;
   }
 }

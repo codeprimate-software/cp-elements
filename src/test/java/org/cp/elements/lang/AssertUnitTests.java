@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -48,20 +49,20 @@ public class AssertUnitTests {
 
   private static final Object LOCK = new Object();
 
-  private static Object returnsNull() {
+  private static Object returnNull() {
     return null;
   }
 
   @Test
   public void assertArgumentIsValid() {
-    Assert.argument(true);
+    Assert.argument("test", argument -> true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void assertArgumentIsInvalid() {
 
     try {
-      Assert.argument(false);
+      Assert.argument("test", argument -> false);
     }
     catch (IllegalArgumentException expected) {
 
@@ -73,30 +74,16 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertArgumentFormatsMessageWithArguments() {
+  public void assertArgumentFormatsMessageWithPlaceholderValues() {
 
     try {
-      Assert.argument(false, "[%1$s] is a {1} argument, a %2$s, {1}, %2$s argument; {2}",
-        "spy", "bad", "not good");
+      Assert.argument("mock", argument -> false,
+        "[%1$s] is a {1} argument, a %2$s, {1} argument; {2}!",
+        "mock", "bad", "not good");
     }
     catch (IllegalArgumentException expected) {
 
-      assertThat(expected).hasMessage("[spy] is a bad argument, a bad, bad, bad argument; not good");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void assertArgumentWithNullIsNullSafeAndFormatsMessageWithArguments() {
-
-    try {
-      Assert.argument(null, "[%s] is {1} valid", null, "not");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("[null] is not valid");
+      assertThat(expected).hasMessage("[mock] is a bad argument, a bad, bad argument; not good!");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -109,7 +96,7 @@ public class AssertUnitTests {
 
     Supplier<String> mockSupplier = mock(Supplier.class);
 
-    Assert.argument(true, mockSupplier);
+    Assert.argument("mock", argument -> true, mockSupplier);
 
     verify(mockSupplier, never()).get();
     verifyNoInteractions(mockSupplier);
@@ -119,7 +106,7 @@ public class AssertUnitTests {
   public void assertArgumentUsesSuppliedMessageThrowsIllegalArgumentException() {
 
     try {
-      Assert.argument(false, () -> "test");
+      Assert.argument("mock", argument -> false, () -> "test");
     }
     catch (IllegalArgumentException expected) {
 
@@ -134,7 +121,7 @@ public class AssertUnitTests {
   public void assertArgumentThrowsAssertionException() {
 
     try {
-      Assert.argument(false, new AssertionException("test"));
+      Assert.argument("spy", argument -> false, new AssertionException("test"));
     }
     catch (AssertionException expected) {
 
@@ -143,6 +130,26 @@ public class AssertUnitTests {
 
       throw expected;
     }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertArgumentWithNullArgumentIsNullSafe() {
+
+    try {
+      Assert.argument(null, Objects::nonNull);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Argument is not valid");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void assertArgumentWithNullPredicateIsNullSafe() {
+    Assert.argument("test", null);
   }
 
   @Test
@@ -1594,7 +1601,7 @@ public class AssertUnitTests {
   public void assertNotNullWithNullReturningMethod() {
 
     try {
-      Assert.notNull(returnsNull());
+      Assert.notNull(returnNull());
     }
     catch (IllegalArgumentException expected) {
 
