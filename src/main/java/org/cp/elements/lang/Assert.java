@@ -213,15 +213,17 @@ public abstract class Assert {
    * @param obj2 second {@link Comparable Comparable object} in the relational comparison.
    * @param message {@link String} containing the message used in the {@link ComparisonException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values when formatting
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values when formatting
    * the {@link String message}.
    * @throws org.cp.elements.lang.ComparisonException if the assertion fails and the two {@link Object objects}
    * are not comparable.
    * @see #comparable(Comparable, Comparable, RuntimeException)
    * @see java.lang.Comparable#compareTo(Object)
    */
-  public static <T extends Comparable<T>> void comparable(T obj1, T obj2, String message, Object... arguments) {
-    comparable(obj1, obj2, new ComparisonException(format(message, arguments)));
+  public static <T extends Comparable<T>> void comparable(T obj1, T obj2, String message,
+      Object... messagePlaceholderValues) {
+
+    comparable(obj1, obj2, new ComparisonException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -264,8 +266,8 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to evaluate the given {@link Comparable Comparable objects} to determine
-   * whether they are equal by comparison.
+   * Null-safe method used to evaluate the given {@link Comparable Comparable objects}
+   * to determine whether the {@link Object objects} are equal by comparison.
    *
    * @param <T> {@link Comparable Comparable class type} of the given {@link Object objects}.
    * @param obj1 {@link Object} to compare for equality with {@link Object object 2}.
@@ -282,7 +284,7 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
@@ -299,28 +301,28 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
    * @param obj2 {@link Object right operand} in the equality comparison.
    * @param message {@link String} containing the message used in the {@link EqualityException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.EqualityException if the assertion fails
    * and the two {@link Object objects} are not equal.
    * @see #equals(Object, Object, RuntimeException)
    * @see java.lang.Object#equals(Object)
    */
-  public static void equals(Object obj1, Object obj2, String message, Object... arguments) {
-    equals(obj1, obj2, new EqualityException(format(message, arguments)));
+  public static void equals(Object obj1, Object obj2, String message, Object... messagePlaceholderValues) {
+    equals(obj1, obj2, new EqualityException(format(message, messagePlaceholderValues)));
   }
 
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
@@ -341,7 +343,7 @@ public abstract class Assert {
   /**
    * Asserts that two {@link Object objects} are equal as determined by {@link Object#equals(Object)}.
    *
-   * The assertion holds if and only if (iff) both {@link Object objects} are not {@literal null}
+   * The assertion holds if and only if (iff) both {@link Object objects} are {@literal non-null}
    * and {@link Object#equals(Object) equal} in value.
    *
    * @param obj1 {@link Object left operand} in the equality comparison.
@@ -357,10 +359,10 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to evaluate the given {@link Object objects} or equality.
+   * Null-safe method used to evaluate the given {@link Object objects} for equality.
    *
-   * @param obj1 {@link Object} to evaluate for equality with {@link Object object 1}.
-   * @param obj2 {@link Object} to evaluate for equality with {@link Object object 2}.
+   * @param obj1 {@link Object} to evaluate for equality with {@link Object object 2}.
+   * @param obj2 {@link Object} to evaluate for equality with {@link Object object 1}.
    * @return a boolean value indicating whether the given {@link Object objects} are equal.
    * @see java.lang.Object#equals(Object)
    */
@@ -372,8 +374,9 @@ public abstract class Assert {
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
-   * or contains only {@link Character#isWhitespace(char) whitespace characters}.
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
+   * not {@link String#isEmpty() empty} and does not contain any
+   * {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
    * @throws java.lang.IllegalArgumentException if the {@link String} is {@literal blank}, {@literal empty}
@@ -388,28 +391,30 @@ public abstract class Assert {
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
-   * or contains only {@link Character#isWhitespace(char) whitespace characters}.
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
+   * not {@link String#isEmpty() empty} and does not contain any
+   * {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link String} is {@literal blank}, {@literal empty}
    * or {@literal null}.
    * @see #hasText(String, RuntimeException)
    * @see java.lang.String
    */
-  public static void hasText(String value, String message, Object... arguments) {
-    hasText(value, new IllegalArgumentException(format(message, arguments)));
+  public static void hasText(String value, String message, Object... messagePlaceholderValues) {
+    hasText(value, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
-   * or contains only {@link Character#isWhitespace(char) whitespace characters}.
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
+   * not {@link String#isEmpty() empty} and does not contain any
+   * {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
    * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
@@ -428,8 +433,9 @@ public abstract class Assert {
   /**
    * Assert that the given {@link String} is not {@literal blank}, {@literal empty} or {@literal null}.
    *
-   * The assertion holds if and only if (iff) the {@link String} is not {@literal null}, {@link String#isEmpty() empty}
-   * or contains only {@link Character#isWhitespace(char) whitespace characters}.
+   * The assertion holds if and only if (iff) the {@link String} is not {@literal null},
+   * not {@link String#isEmpty() empty} and does not contain any
+   * {@link Character#isWhitespace(char) whitespace characters}.
    *
    * @param value {@link String} being evaluated.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -443,7 +449,7 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link String} is {@literal blank}, {@literal empty}
+   * Null-safe method used to determine whether the given {@link String} is {@literal blank}, {@literal empty}
    * or {@literal null}.
    *
    * @param value {@link String} to evaluate.
@@ -460,7 +466,7 @@ public abstract class Assert {
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
-   * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
+   * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
    * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
    * @throws java.lang.IllegalMonitorStateException if the {@link Thread#currentThread() current Thread}
@@ -477,27 +483,27 @@ public abstract class Assert {
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
-   * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
+   * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
    * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
    * @param message {@link String} containing the message used in the {@link IllegalMonitorStateException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalMonitorStateException if the {@link Thread#currentThread() current Thread}
    * does not hold the {@link Object lock} or the {@link Object lock} is {@literal null}.
    * @see #holdsLock(Object, RuntimeException)
    * @see java.lang.Thread#holdsLock(Object)
    */
-  public static void holdsLock(Object lock, String message, Object... arguments) {
-    holdsLock(lock, new IllegalMonitorStateException(format(message, arguments)));
+  public static void holdsLock(Object lock, String message, Object... messagePlaceholderValues) {
+    holdsLock(lock, new IllegalMonitorStateException(format(message, messagePlaceholderValues)));
   }
 
   /**
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
-   * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
+   * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
    * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
    * @param message {@link Supplier} containing the message used in the {@link IllegalMonitorStateException}
@@ -517,7 +523,7 @@ public abstract class Assert {
    * Asserts that the {@link Thread#currentThread() current Thread} holds the specified {@link Object lock}.
    *
    * The assertion holds if and only if (iff) the {@link Object lock} is not {@literal null}
-   * and the {@link Thread#currentThread() current Thread} holds the given {@link Object lock}.
+   * and the {@link Thread#currentThread() current Thread} holds the {@link Object lock}.
    *
    * @param lock {@link Object} used as the lock, object monitor or mutex in the synchronization.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -532,12 +538,12 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the {@link Thread#currentThread() current Thread}
+   * Null-safe method used to determine whether the {@link Thread#currentThread() current Thread}
    * is the holder of the given {@link Object lock}.
    *
    * @param lock {@link Object} to evaluate as the lock.
    * @return a boolean value indicating whether the {@link Thread#currentThread() current Thread}
-   * is the holder of the given {@link Object lock}.
+   * holds the given {@link Object lock}.
    * @see java.lang.Thread#holdsLock(Object)
    */
   @NullSafe
@@ -576,15 +582,15 @@ public abstract class Assert {
    * is assignment compatible.
    * @param message {@link String} containing the message used in the {@link ClassCastException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.ClassCastException if the {@link Class 'from' class type} is not assignment compatible with
    * the {@link Class 'to' class type}.
    * @see #isAssignableTo(Class, Class, RuntimeException)
    * @see java.lang.Class#isAssignableFrom(Class)
    */
-  public static void isAssignableTo(Class<?> from, Class<?> to, String message, Object... arguments) {
-    isAssignableTo(from, to, new ClassCastException(format(message, arguments)));
+  public static void isAssignableTo(Class<?> from, Class<?> to, String message, Object... messagePlaceholderValues) {
+    isAssignableTo(from, to, new ClassCastException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -673,14 +679,14 @@ public abstract class Assert {
    * @param condition {@link Boolean value} being evaluated.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Boolean value} is not {@literal false}.
    * @see #isFalse(Boolean, RuntimeException)
    * @see java.lang.Boolean#FALSE
    */
-  public static void isFalse(Boolean condition, String message, Object... arguments) {
-    isFalse(condition, new IllegalArgumentException(format(message, arguments)));
+  public static void isFalse(Boolean condition, String message, Object... messagePlaceholderValues) {
+    isFalse(condition, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -760,15 +766,15 @@ public abstract class Assert {
    * @param type {@link Class type} used to evaluate the {@link Object} in the {@literal instanceof} operator.
    * @param message {@link String} containing the message used in the {@link IllegalTypeException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.IllegalTypeException if the {@link Object} is not an instance of
    * the specified {@link Class type}.
    * @see #isInstanceOf(Object, Class, RuntimeException)
    * @see java.lang.Class#isInstance(Object)
    */
-  public static void isInstanceOf(Object obj, Class<?> type, String message, Object... arguments) {
-    isInstanceOf(obj, type, new IllegalTypeException(format(message, arguments)));
+  public static void isInstanceOf(Object obj, Class<?> type, String message, Object... messagePlaceholderValues) {
+    isInstanceOf(obj, type, new IllegalTypeException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -850,14 +856,14 @@ public abstract class Assert {
    * @param condition {@link Boolean value} value being evaluated.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Boolean condition} is not {@literal true}.
    * @see #isTrue(Boolean, RuntimeException)
    * @see java.lang.Boolean#TRUE
    */
-  public static void isTrue(Boolean condition, String message, Object... arguments) {
-    isTrue(condition, new IllegalArgumentException(format(message, arguments)));
+  public static void isTrue(Boolean condition, String message, Object... messagePlaceholderValues) {
+    isTrue(condition, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -930,14 +936,14 @@ public abstract class Assert {
    * @param value {@link String} to evaluate.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link String} is {@link String#isEmpty() empty}.
    * @see #notEmpty(String, RuntimeException)
    * @see java.lang.String
    */
-  public static void notEmpty(String value, String message, Object... arguments) {
-    notEmpty(value, new IllegalArgumentException(format(message, arguments)));
+  public static void notEmpty(String value, String message, Object... messagePlaceholderValues) {
+    notEmpty(value, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1012,14 +1018,14 @@ public abstract class Assert {
    * @param array {@link Object array} to evaluate.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see #notEmpty(Object[], RuntimeException)
    * @see java.lang.Object[]
    */
-  public static void notEmpty(Object[] array, String message, Object... arguments) {
-    notEmpty(array, new IllegalArgumentException(format(message, arguments)));
+  public static void notEmpty(Object[] array, String message, Object... messagePlaceholderValues) {
+    notEmpty(array, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1094,15 +1100,15 @@ public abstract class Assert {
    * @param collection {@link Collection} to evaluate.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null}
    * or {@link Collection#isEmpty() empty}.
    * @see #notEmpty(java.util.Collection, RuntimeException)
    * @see java.util.Collection#isEmpty()
    */
-  public static void notEmpty(Collection<?> collection, String message, Object... arguments) {
-    notEmpty(collection, new IllegalArgumentException(format(message, arguments)));
+  public static void notEmpty(Collection<?> collection, String message, Object... messagePlaceholderValues) {
+    notEmpty(collection, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1181,14 +1187,14 @@ public abstract class Assert {
    * @param map {@link Map} to evaluate.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    * @see #notEmpty(java.util.Map, RuntimeException)
    * @see java.util.Map#isEmpty()
    */
-  public static void notEmpty(Map<?, ?> map, String message, Object... arguments) {
-    notEmpty(map, new IllegalArgumentException(format(message, arguments)));
+  public static void notEmpty(Map<?, ?> map, String message, Object... messagePlaceholderValues) {
+    notEmpty(map, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1261,14 +1267,14 @@ public abstract class Assert {
    * @param obj {@link Object} reference to evaluate.
    * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Object} reference is {@literal null}.
    * @see #notNull(Object, RuntimeException)
    * @see java.lang.Object
    */
-  public static void notNull(Object obj, String message, Object... arguments) {
-    notNull(obj, new IllegalArgumentException(format(message, arguments)));
+  public static void notNull(Object obj, String message, Object... messagePlaceholderValues) {
+    notNull(obj, new IllegalArgumentException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1341,14 +1347,14 @@ public abstract class Assert {
    * @param obj2 {@link Object right operand} in the identity comparison.
    * @param message {@link String} containing the message used in the {@link IdentityException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are the same.
    * @see #notSame(Object, Object, String, Object...)
    * @see java.lang.Object
    */
-  public static void notSame(Object obj1, Object obj2, String message, Object... arguments) {
-    notSame(obj1, obj2, new IdentityException(format(message, arguments)));
+  public static void notSame(Object obj1, Object obj2, String message, Object... messagePlaceholderValues) {
+    notSame(obj1, obj2, new IdentityException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1423,14 +1429,14 @@ public abstract class Assert {
    * @param obj2 {@link Object right operand} in the identity comparison.
    * @param message {@link String} containing the message used in the {@link IdentityException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are not the same.
    * @see #same(Object, Object, RuntimeException)
    * @see java.lang.Object
    */
-  public static void same(Object obj1, Object obj2, String message, Object... arguments) {
-    same(obj1, obj2, new IdentityException(format(message, arguments)));
+  public static void same(Object obj1, Object obj2, String message, Object... messagePlaceholderValues) {
+    same(obj1, obj2, new IdentityException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1503,13 +1509,13 @@ public abstract class Assert {
    * @param state {@link Boolean value} indicating whether the state is valid.
    * @param message {@link String} containing the message used in the {@link IllegalStateException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalStateException if the state is invalid.
    * @see #state(Boolean, RuntimeException)
    */
-  public static void state(Boolean state, String message, Object... arguments) {
-    state(state, new IllegalStateException(format(message, arguments)));
+  public static void state(Boolean state, String message, Object... messagePlaceholderValues) {
+    state(state, new IllegalStateException(format(message, messagePlaceholderValues)));
   }
 
   /**
@@ -1579,13 +1585,13 @@ public abstract class Assert {
    * to determine if the operation is supported.
    * @param message {@link String} containing the message used in the {@link UnsupportedOperationException}
    * thrown if the assertion fails.
-   * @param arguments array of {@link Object arguments} used as placeholder values
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
    * @see #supported(Boolean, RuntimeException)
    */
-  public static void supported(Boolean supported, String message, Object... arguments) {
-    supported(supported, new UnsupportedOperationException(format(message, arguments)));
+  public static void supported(Boolean supported, String message, Object... messagePlaceholderValues) {
+    supported(supported, new UnsupportedOperationException(format(message, messagePlaceholderValues)));
   }
 
   /**
