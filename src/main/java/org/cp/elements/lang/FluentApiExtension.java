@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import org.cp.elements.lang.annotation.FluentApi;
 
 /**
- * {@link FluentApiExtension} is a marker interface for classes that implement and have a {@link FluentApi}
- * which serve as the building blocks of a language expression, often expressed using the Builder Design Pattern.
+ * {@link FluentApiExtension} is a marker interface for Java classes that implement and have a {@link FluentApi}
+ * which serve as the building blocks of a language expression, often expressed using
+ * the {@literal Builder Software Design Pattern}.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.annotation.FluentApi
