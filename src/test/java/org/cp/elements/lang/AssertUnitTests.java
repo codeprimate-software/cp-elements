@@ -16,10 +16,13 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -29,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -42,7 +46,6 @@ import org.junit.Test;
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Assert
- * @see org.cp.elements.test.TestUtils
  * @version 1.0.0
  */
 public class AssertUnitTests {
@@ -223,7 +226,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = ComparisonException.class)
-  public void assertComparableFormatsMessageWithArguments() {
+  public void assertComparableFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.comparable("null", "nil",
@@ -434,7 +437,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = EqualityException.class)
-  public void assertEqualsFormatsMessageWithArguments() {
+  public void assertEqualsFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.equals(true, false, "Expected %1$s; but was {1}", true, false);
@@ -553,7 +556,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertHasTextWithTabSpaceCarriageReturnAndNewLineFormatsMessageWithArguments() {
+  public void assertHasTextWithTabSpaceCarriageReturnAndNewLineFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.hasText("\t \r \n", "%s, spaces, carriage returns and {1} are blank",
@@ -652,7 +655,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalMonitorStateException.class)
-  public void assertHoldsLockFormatsMessageWithArguments() {
+  public void assertHoldsLockFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.holdsLock(LOCK, "lock [%1$s] is not held by {1} thread", LOCK, "loose");
@@ -773,7 +776,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = ClassCastException.class)
-  public void assertIsAssignableToFormatsMessageWithArguments() {
+  public void assertIsAssignableToFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.isAssignableTo(Object.class, String.class, "%1$s is not assignable to {1}",
@@ -872,7 +875,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertIsFalseFormatsMessageWithArguments() {
+  public void assertIsFalseFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.isFalse(true, "expected %s; but was {1}", false, true);
@@ -993,7 +996,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalTypeException.class)
-  public void assertIsInstanceOfFormatsMessageWithArguments() {
+  public void assertIsInstanceOfFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.isInstanceOf(null, Object.class, "%s is not an instance of {1}",
@@ -1094,7 +1097,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertIsTrueFormatsMessageWithArguments() {
+  public void assertIsTrueFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.isTrue(false, "Expected %1$s; but was {1}", true, false);
@@ -1169,6 +1172,7 @@ public class AssertUnitTests {
 
   @Test
   public void assertNotEmptyStringWithSpaces() {
+
     Assert.notEmpty(" ");
     Assert.notEmpty("  ");
     Assert.notEmpty("   ");
@@ -1213,7 +1217,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotEmptyStringFormatsMessageWithArguments() {
+  public void assertNotEmptyStringFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.notEmpty("", "%1$s is {1}", "String", "empty");
@@ -1315,7 +1319,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotEmptyArrayFormatsMessageWithArguments() {
+  public void assertNotEmptyArrayFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.notEmpty(new Object[0], "%1$s is {1}", "Object array", "empty");
@@ -1423,7 +1427,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotEmptyCollectionFormatsMessageWithArguments() {
+  public void assertNotEmptyCollectionFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.notEmpty(Collections.emptySet(), "%1$s is {1}", "Set", "empty");
@@ -1480,12 +1484,161 @@ public class AssertUnitTests {
   }
 
   @Test
+  public void assertNotEmptyIterable() {
+
+    Iterable<Object> iterable = Collections.singletonList("test");
+
+    Assert.notEmpty(iterable);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyIterableWithNullIterable() {
+
+    try {
+      Assert.notEmpty((Iterable<?>) null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Iterable is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyIterableWithNullIterator() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    doReturn(null).when(mockIterable).iterator();
+
+    try {
+      Assert.notEmpty(mockIterable);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Iterable is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockIterable, times(1)).iterator();
+      verifyNoMoreInteractions(mockIterable);
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyIterableWithEmptyIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+    Iterator<?> mockIterator = mock(Iterator.class);
+
+    doReturn(mockIterator).when(mockIterable).iterator();
+    doReturn(false).when(mockIterator).hasNext();
+
+    try {
+      Assert.notEmpty(mockIterable);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Iterable is empty");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockIterable, times(1)).iterator();
+      verify(mockIterator, times(1)).hasNext();
+      verifyNoMoreInteractions(mockIterable, mockIterator);
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyIterableWithFormatsMessageWithPlaceholderValues() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    try {
+      Assert.notEmpty(mockIterable, "%s is {1}", mockIterable, "empty");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("%s is empty", mockIterable);
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockIterable, times(1)).iterator();
+      verifyNoMoreInteractions(mockIterable);
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void assertNotEmptyIterableWithSuppliedMessage() {
+
+    Iterable<Object> iterable = Collections.singleton("test");
+
+    Supplier<String> mockSupplier = mock(Supplier.class);
+
+    Assert.notEmpty(iterable, mockSupplier);
+
+    verify(mockSupplier, never()).get();
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertNotEmptyIterableUsesSuppliedMessageThrowsIllegalArgumentException() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    try {
+      Assert.notEmpty(mockIterable, () -> "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockIterable, times(1)).iterator();
+      verifyNoMoreInteractions(mockIterable);
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertNotEmptyIterableThrowsAssertionException() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    try {
+      Assert.notEmpty(mockIterable, new AssertionException("test"));
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("test");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(mockIterable, times(1)).iterator();
+      verifyNoMoreInteractions(mockIterable);
+    }
+  }
+
+  @Test
   public void assertNotEmptyMap() {
 
     Map<Integer, String> map = new HashMap<>(2);
 
-    map.put(1, "1");
-    map.put(2, "2");
+    map.put(1, "one");
+    map.put(2, "two");
 
     Assert.notEmpty(map);
   }
@@ -1526,7 +1679,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotEmptyMapFormatsMessageWithArguments() {
+  public void assertNotEmptyMapFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.notEmpty(Collections.emptyMap(), "%1$s is {1}", "Map", "empty");
@@ -1630,7 +1783,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertNotNullFormatsMessageWithArguments() {
+  public void assertNotNullFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.notNull(null, "%1$s is {1}", "Object reference", null);
@@ -1693,7 +1846,7 @@ public class AssertUnitTests {
     Assert.notSame(true, false);
     Assert.notSame('c', "C");
     Assert.notSame(1, -1);
-    Assert.notSame(3.14159d, 3.14d);
+    Assert.notSame(3.14159d, Math.PI);
     Assert.notSame("test", "TEST");
     Assert.notSame(new Object(), new Object());
   }
@@ -1722,6 +1875,23 @@ public class AssertUnitTests {
     catch (IdentityException expected) {
 
       assertThat(expected).hasMessage("[x] is the same as [x]");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IdentityException.class)
+  public void assertNotSameWithIdenticalDoubleValues() {
+
+    Double value = 2.0d;
+
+    try {
+      Assert.notSame(value, value);
+    }
+    catch (IdentityException expected) {
+
+      assertThat(expected).hasMessage("[2.0] is the same as [2.0]");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -1774,7 +1944,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IdentityException.class)
-  public void assertNotSameFormatsMessageWithArguments() {
+  public void assertNotSameFormatsMessageWithPlaceholderValues() {
 
     try{
       Assert.notSame(1, 1, "%1$s are the {1}", "Integers", "same");
@@ -1796,6 +1966,7 @@ public class AssertUnitTests {
 
     Assert.notSame(1, 1.0, mockSupplier);
 
+    verify(mockSupplier, never()).get();
     verifyNoInteractions(mockSupplier);
   }
 
@@ -1832,11 +2003,13 @@ public class AssertUnitTests {
   @Test
   public void assertSameWithIdenticalObjects() {
 
+    Double pi = Math.PI;
+
     Assert.same(null, null);
     Assert.same(true, Boolean.TRUE);
     Assert.same('c', 'c');
     Assert.same(1, 1);
-    //Assert.same(3.14159d, 3.14159d);
+    Assert.same(pi, pi);
     Assert.same("test", "test");
     Assert.same(LOCK, LOCK);
   }
@@ -1889,7 +2062,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void assertSameFormatsMessageWithArguments() {
+  public void assertSameFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.same("test", "TEST", "%1$s are not {1}", "Strings", "identical");
@@ -1981,7 +2154,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void assertStateFormatsMessageWithArguments() {
+  public void assertStateFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.state(Boolean.FALSE, "%1$s not {1}", "Object", "initialized");
@@ -2073,7 +2246,7 @@ public class AssertUnitTests {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void assertSupportedFormatsMessageWithArguments() {
+  public void assertSupportedFormatsMessageWithPlaceholderValues() {
 
     try {
       Assert.supported(Boolean.FALSE, "%1$s is {1}", "Write operation", "unsupported");
@@ -2089,7 +2262,7 @@ public class AssertUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
-  public void assertSupportedUsesSuppliedMessageIsSuccessful() {
+  public void assertSupportedWithSuppliedMessage() {
 
     Supplier<String> mockSupplier = mock(Supplier.class);
 

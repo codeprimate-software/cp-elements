@@ -17,6 +17,7 @@ package org.cp.elements.lang;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -998,7 +999,7 @@ public abstract class Assert {
    * Asserts that the {@link Object array} is not {@literal empty}.
    *
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the array are not evaluated.
    *
    * @param array {@link Object array} to evaluate.
    * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
@@ -1013,10 +1014,10 @@ public abstract class Assert {
    * Asserts that the {@link Object array} is not {@literal empty}.
    *
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the array are not evaluated.
    *
    * @param array {@link Object array} to evaluate.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * @param message {@link String} containing the description used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
@@ -1032,7 +1033,7 @@ public abstract class Assert {
    * Asserts that the {@link Object array} is not {@literal empty}.
    *
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the array are not evaluated.
    *
    * @param array {@link Object array} to evaluate.
    * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
@@ -1051,7 +1052,7 @@ public abstract class Assert {
    * Asserts that the {@link Object array} is not {@literal empty}.
    *
    * The assertion holds if and only if (iff) the {@link Object array} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the array are not evaluated.
    *
    * @param array {@link Object array} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -1065,21 +1066,21 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Object array} is {@literal empty}.
+   * Null-safe method used to determine whether the given {@link Object array} is {@literal empty}.
    *
    * @param array {@link Object array} to evaluate.
    * @return a boolean value indicating whether the given {@link Object array} is {@literal empty}.
    */
   @NullSafe
-  private static boolean isEmpty(Object[] array) {
+  private static boolean isEmpty(@Nullable Object[] array) {
     return array == null || array.length == 0;
   }
 
   /**
-   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
    * @param collection {@link Collection} to evaluate.
    * @throws java.lang.IllegalArgumentException if the {@link Collection} is {@literal null}
@@ -1092,13 +1093,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
    * @param collection {@link Collection} to evaluate.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * @param message {@link String} containing the description used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
@@ -1112,10 +1113,10 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
    * @param collection {@link Collection} to evaluate.
    * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
@@ -1132,10 +1133,10 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that the {@link Collection} is not {@link Collection#isEmpty()} empty.
+   * Asserts that the {@link Collection} is not {@link Collection#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Collection} is not {@literal null}
-   * and contains at least 1 element.
+   * and contains at least 1 element. Elements of the {@link Collection} are not evaluated.
    *
    * @param collection {@link Collection} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -1150,24 +1151,119 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Collection} is {@literal null}
+   * Null-safe method used to determine whether the given {@link Collection} is {@literal null}
    * or {@link Collection#isEmpty() empty}.
    *
    * @param collection {@link Collection} to evaluate.
-   * @return a boolean value indicating whether the given {@link Collection} is {@literal null}
+   * @return a boolean value indicating whether the {@link Collection} is {@literal null}
    * or {@link Collection#isEmpty() empty}.
    * @see java.util.Collection#isEmpty()
    */
   @NullSafe
-  private static boolean isEmpty(Collection<?> collection) {
+  private static boolean isEmpty(@Nullable Collection<?> collection) {
     return collection == null || collection.isEmpty();
+  }
+
+  /**
+   * Asserts that the {@link Iterable} is not empty.
+   *
+   * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
+   * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @throws java.lang.IllegalArgumentException if the {@link Iterable} is {@literal null} or empty.
+   * @see #notEmpty(Iterable, String, Object...)
+   * @see java.lang.Iterable
+   */
+  public static void notEmpty(Iterable<?> iterable) {
+    notEmpty(iterable, "Iterable is empty");
+  }
+
+  /**
+   * Asserts that the {@link Iterable} is not empty.
+   *
+   * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
+   * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @param message {@link String} containing the description used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
+   * when formatting the {@link String message}.
+   * @throws java.lang.IllegalArgumentException if the {@link Iterable} is {@literal null} or empty.
+   * @see #notEmpty(Iterable, RuntimeException)
+   * @see java.lang.Iterable
+   */
+  public static void notEmpty(Iterable<?> iterable, String message, Object... messagePlaceholderValues) {
+    notEmpty(iterable, new IllegalArgumentException(format(message, messagePlaceholderValues)));
+  }
+
+  /**
+   * Asserts that the {@link Iterable} is not empty.
+   *
+   * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
+   * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
+   * thrown if the assertion fails.
+   * @throws java.lang.IllegalArgumentException if the {@link Iterable} is {@literal null} or empty.
+   * @see java.util.function.Supplier
+   * @see java.lang.Iterable
+   */
+  public static void notEmpty(Iterable<?> iterable, Supplier<String> message) {
+    if (isEmpty(iterable)) {
+      throw new IllegalArgumentException(message.get());
+    }
+  }
+
+  /**
+   * Asserts that the {@link Iterable} is not empty.
+   *
+   * The assertion holds if and only if (iff) the {@link Iterable} is not {@literal null}
+   * and contains at least 1 element. Elements of the {@link Iterable} are not evaluated.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @param cause {@link RuntimeException} thrown if the assertion fails.
+   * @throws java.lang.RuntimeException if the {@link Iterable} is {@literal null} or empty.
+   * @see java.lang.Iterable
+   */
+  public static void notEmpty(Iterable<?> iterable, RuntimeException cause) {
+    if (isEmpty(iterable)) {
+      throw cause;
+    }
+  }
+
+  /**
+   * Null-safe method used to determine if the {@link Iterable} is {@literal null} or {@literal empty}.
+   *
+   * @param iterable {@link Iterable} to evaluate.
+   * @return a boolean value indicating whether the {@link Iterable} is {@literal null} or {@literal empty}.
+   * @see #isEmpty(Iterator)
+   * @see java.lang.Iterable
+   */
+  @NullSafe
+  private static boolean isEmpty(@Nullable Iterable<?> iterable) {
+    return iterable == null || isEmpty(iterable.iterator());
+  }
+
+  /**
+   * Null-safe method used to determine if the {@link Iterator} is {@literal null} or {@literal empty}.
+   *
+   * @param iterator {@link Iterator} to evaluate.
+   * @return a boolean value indicating whether the {@link Iterator} is {@literal null} or {@literal empty}.
+   * @see java.util.Iterator
+   */
+  @NullSafe
+  private static boolean isEmpty(@Nullable Iterator<?> iterator) {
+    return iterator == null || !iterator.hasNext();
   }
 
   /**
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
-   * and contains at least 1 key/value mapping.
+   * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
    * @param map {@link Map} to evaluate.
    * @throws java.lang.IllegalArgumentException if the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
@@ -1182,10 +1278,10 @@ public abstract class Assert {
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
-   * and contains at least 1 key/value mapping.
+   * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
    * @param map {@link Map} to evaluate.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * @param message {@link String} containing the description used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
@@ -1201,7 +1297,7 @@ public abstract class Assert {
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
-   * and contains at least 1 key/value mapping.
+   * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
    * @param map {@link Map} to evaluate.
    * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}
@@ -1220,7 +1316,7 @@ public abstract class Assert {
    * Asserts that the {@link Map} is not {@link Map#isEmpty() empty}.
    *
    * The assertion holds if and only if (iff) the {@link Map} is not {@literal null}
-   * and contains at least 1 key/value mapping.
+   * and contains at least 1 key/value mapping. Keys and values of the {@link Map} are not evaluated.
    *
    * @param map {@link Map} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
@@ -1234,14 +1330,14 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
+   * Null-safe method used to determine whether the given {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    *
    * @param map {@link Map} to evaluate.
-   * @return a boolean value indicating whether the given {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
+   * @return a boolean value indicating whether the {@link Map} is {@literal null} or {@link Map#isEmpty() empty}.
    * @see java.util.Map#isEmpty()
    */
   @NullSafe
-  private static boolean isEmpty(Map<?, ?> map) {
+  private static boolean isEmpty(@Nullable Map<?, ?> map) {
     return map == null || map.isEmpty();
   }
 
@@ -1265,7 +1361,7 @@ public abstract class Assert {
    * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
    *
    * @param obj {@link Object} reference to evaluate.
-   * @param message {@link String} containing the message used in the {@link IllegalArgumentException}
+   * @param message {@link String} containing the description used in the {@link IllegalArgumentException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
@@ -1312,14 +1408,14 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the {@link Object} reference is {@literal null}.
+   * Null-safe method used to determine whether the {@link Object} reference is {@literal null}.
    *
-   * @param obj {@link Object} to evaluate.
+   * @param obj {@link Object} reference to evaluate.
    * @return a boolean value indicating whether the {@link Object} reference is {@literal null}.
    * @see java.lang.Object
    */
   @NullSafe
-  private static boolean isNull(Object obj) {
+  private static boolean isNull(@Nullable Object obj) {
     return obj == null;
   }
 
@@ -1345,12 +1441,12 @@ public abstract class Assert {
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
-   * @param message {@link String} containing the message used in the {@link IdentityException}
+   * @param message {@link String} containing the description used in the {@link IdentityException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
    * @throws org.cp.elements.lang.IdentityException if the two {@link Object objects} are the same.
-   * @see #notSame(Object, Object, String, Object...)
+   * @see #notSame(Object, Object, RuntimeException)
    * @see java.lang.Object
    */
   public static void notSame(Object obj1, Object obj2, String message, Object... messagePlaceholderValues) {
@@ -1384,7 +1480,6 @@ public abstract class Assert {
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
    * @throws RuntimeException the two {@link Object objects} are the same.
-   * @see #notSame(Object, Object, String, Object...)
    * @see java.lang.Object
    */
   public static void notSame(Object obj1, Object obj2, RuntimeException cause) {
@@ -1394,21 +1489,22 @@ public abstract class Assert {
   }
 
   /**
-   * Determines whether the two {@link Object Objects} are the same.
+   * Null-safe method used to determine whether two {@link Object Objects} are the same {@link Object}.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
-   * @return a boolean value indicating whether the two {@link Object Objects} are the same.
+   * @return a boolean value indicating whether two {@link Object Objects} are the same {@link Object}.
    * @see java.lang.Object
    */
-  private static boolean isSame(Object obj1, Object obj2) {
+  @NullSafe
+  private static boolean isSame(@Nullable Object obj1, @Nullable Object obj2) {
     return obj1 == obj2;
   }
 
   /**
-   * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
+   * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
@@ -1421,13 +1517,13 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
+   * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
-   * @param message {@link String} containing the message used in the {@link IdentityException}
+   * @param message {@link String} containing the description used in the {@link IdentityException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
@@ -1440,9 +1536,9 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
+   * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
@@ -1459,14 +1555,14 @@ public abstract class Assert {
   }
 
   /**
-   * Asserts that two {@link Object objects} are the same {@link Object} as determined by the identity comparison.
+   * Asserts that two {@link Object Objects} are the same {@link Object} as determined by the identity comparison.
    *
-   * The assertion holds if and only if (iff) the two {@link Object objects} are the same {@link Object} in memory.
+   * The assertion holds if and only if (iff) the two {@link Object Objects} are the same {@link Object} in memory.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
-   * @throws java.lang.RuntimeException if the {@link Object objects} are not the same.
+   * @throws java.lang.RuntimeException if the {@link Object Objects} are not the same.
    * @see java.lang.Object
    */
   public static void same(Object obj1, Object obj2, RuntimeException cause) {
@@ -1476,15 +1572,15 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether the given {@link Object objects} are the same {@link Object}.
+   * Null-safe method used to determine whether the given {@link Object Objects} are the same {@link Object}.
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
-   * @return a boolean value indicating whether the given {@link Object objects} are the same {@link Object}.
+   * @return a boolean value indicating whether the given {@link Object Objects} are the same {@link Object}.
    * @see java.lang.Object
    */
   @NullSafe
-  private static boolean isNotSame(Object obj1, Object obj2) {
+  private static boolean isNotSame(@Nullable Object obj1, @Nullable Object obj2) {
     return obj1 != obj2;
   }
 
@@ -1583,11 +1679,11 @@ public abstract class Assert {
    *
    * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
-   * @param message {@link String} containing the message used in the {@link UnsupportedOperationException}
+   * @param message {@link String} containing the description used in the {@link UnsupportedOperationException}
    * thrown if the assertion fails.
    * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
    * when formatting the {@link String message}.
-   * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
+   * @throws java.lang.UnsupportedOperationException if the operation is unsupported.
    * @see #supported(Boolean, RuntimeException)
    */
   public static void supported(Boolean supported, String message, Object... messagePlaceholderValues) {
@@ -1609,7 +1705,7 @@ public abstract class Assert {
    * to determine if the operation is supported.
    * @param message {@link Supplier} containing the message used in the {@link UnsupportedOperationException}
    * thrown if the assertion fails.
-   * @throws java.lang.UnsupportedOperationException if the operations is unsupported.
+   * @throws java.lang.UnsupportedOperationException if the operation is unsupported.
    * @see java.util.function.Supplier
    */
   public static void supported(Boolean supported, Supplier<String> message) {
@@ -1641,7 +1737,7 @@ public abstract class Assert {
   }
 
   /**
-   * Null-safe method to determine whether an application operation is supported.
+   * Null-safe method used to determine whether an application operation is supported.
    *
    * @param supported {@link Boolean value} resulting from the evaluation of criteria used by the application
    * to determine if the operation is supported.
@@ -1649,7 +1745,7 @@ public abstract class Assert {
    * @see java.lang.Boolean#TRUE
    */
   @NullSafe
-  private static boolean isNotSupported(Boolean supported) {
+  private static boolean isNotSupported(@Nullable Boolean supported) {
     return !Boolean.TRUE.equals(supported);
   }
 
