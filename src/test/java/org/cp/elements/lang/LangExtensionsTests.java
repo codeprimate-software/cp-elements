@@ -53,7 +53,6 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link LangExtensions}.
  *
  * @author John J. Blum
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.LangExtensions
@@ -1382,9 +1381,10 @@ public class LangExtensionsTests {
 
     Transformer<AssertThat<Thread>> assertThatTransformer = (AssertThat<Thread> assertion) ->
       new AssertThatWrapper<Thread>(assertion) {
-        @Override public void holdsLock(final Object lock) {
+        @Override public AssertThat<Thread> holdsLock(final Object lock) {
           holdsLockCallCount.incrementAndGet();
           assertion.holdsLock(lock);
+          return this;
         }
       };
 
@@ -1874,7 +1874,7 @@ public class LangExtensionsTests {
   @SuppressWarnings("rawtypes")
   public void isNotEqualTo() {
 
-    assertTrue((is(NULL).not().equalTo(NULL)));
+    assertTrue(is(NULL).not().equalTo(NULL));
     assertTrue(is((String) null).not().equalTo("null"));
     assertTrue(is("null").not().equalTo(null));
     assertTrue(is("null").not().equalTo("nil"));
@@ -1887,6 +1887,7 @@ public class LangExtensionsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isFalse() {
 
     assertTrue(is(false).False());
@@ -1895,6 +1896,7 @@ public class LangExtensionsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotFalse() {
 
     assertTrue(is(true).not().False());
@@ -2206,6 +2208,7 @@ public class LangExtensionsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isTrue() {
 
     assertTrue(is(true).True());
@@ -2214,6 +2217,7 @@ public class LangExtensionsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotTrue() {
 
     assertTrue(is(false).not().True());

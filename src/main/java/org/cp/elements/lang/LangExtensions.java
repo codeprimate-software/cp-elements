@@ -42,10 +42,16 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  * such as conversion, etc.
  *
  * @author John J. Blum
+ * @see java.lang.reflect.InvocationHandler
+ * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.Assert
+ * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.annotation.Experimental
+ * @see org.cp.elements.lang.reflect.MethodInterceptor
+ * @see org.cp.elements.lang.reflect.MethodInvocation
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @since 1.0.0
  */
@@ -270,12 +276,13 @@ public abstract class LangExtensions {
      * maybe a Class object, an instance of a Class or null.
      *
      * @param type the Class type with which to determine assignment compatibility.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not assignable to the Class type.
      * @see java.lang.Class#isAssignableFrom(Class)
      * @see #isInstanceOf(Class)
      */
     @SuppressWarnings("rawtypes")
-    void isAssignableTo(Class type);
+    AssertThat<T> isAssignableTo(Class type);
 
     /**
      * Asserts whether the {@link Object} to evaluate is {@link Comparable} to the given {@link Object}.
@@ -284,11 +291,12 @@ public abstract class LangExtensions {
      * based on the {@link Comparable} {@link Class type} of the {@link Object objects}.
      *
      * @param obj {@link Comparable} object to compare with the {@link Object} being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the {@link Object} being evaluated is not comparable
      * to the given {@link Comparable} object.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    void isComparableTo(Comparable<T> obj);
+    AssertThat<T> isComparableTo(Comparable<T> obj);
 
     /**
      * Asserts whether the {@link Object} to evaluate is {@link Comparable} to the given {@link Object}.
@@ -297,50 +305,55 @@ public abstract class LangExtensions {
      * based on the {@link Comparable} {@link Class type} of the {@link Object objects}.
      *
      * @param obj {@link Comparable} object to compare with the {@link Object} being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the {@link Object} being evaluated is not comparable
      * to the given {@link Comparable} object.
      * @see java.lang.Comparable#compareTo(Object)
      */
-    void isNotComparableTo(Comparable<T> obj);
+    AssertThat<T> isNotComparableTo(Comparable<T> obj);
 
     /**
      * Asserts whether the object to evaluate is equal to the given object.  The objects are deemed equal
      * as determined by the Object.equals method.
      *
      * @param obj the object used in the equality comparison with the object being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not equal to the given object.
      * @see java.lang.Object#equals(Object)
      * @see #isSameAs(Object)
      */
-    void isEqualTo(T obj);
+    AssertThat<T> isEqualTo(T obj);
 
     /**
      * Asserts whether the object to evaluate is not equal to the given object.  The objects are deemed unequal
      * as determined by the Object.equals method.
      *
      * @param obj the object used in the equality comparison with the object being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is equal to the given object.
      * @see java.lang.Object#equals(Object)
      * @see #isEqualTo(Object)
      * @see #not()
      */
-    void isNotEqualTo(T obj);
+    AssertThat<T> isNotEqualTo(T obj);
 
     /**
      * Asserts whether the object to evaluate is false.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not false.
      * @see #isTrue()
      */
-    void isFalse();
+    AssertThat<T> isFalse();
 
     /**
      * Assert that the object to evaluate is greater than the given Comparable value.
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is less than or equal to the lower bound.
      */
-    void isGreaterThan(T lowerBound);
+    AssertThat<T> isGreaterThan(T lowerBound);
 
     /**
      * Assert that the object to evaluate is within the range of (greater than and less than)
@@ -348,10 +361,11 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is less than equal to the lower bound
      * or greater than equal to the upper bound.
      */
-    void isGreaterThanAndLessThan(T lowerBound, T upperBound);
+    AssertThat<T> isGreaterThanAndLessThan(T lowerBound, T upperBound);
 
     /**
      * Assert that the object to evaluate is within the range of (greater than and less than equal to)
@@ -359,18 +373,20 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is less than equal to the lower bound
      * or greater than the upper bound.
      */
-    void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
+    AssertThat<T> isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound);
 
     /**
      * Assert that the object to evaluate is greater than or equal to the given Comparable value.
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is less than the lower bound.
      */
-    void isGreaterThanEqualTo(T lowerBound);
+    AssertThat<T> isGreaterThanEqualTo(T lowerBound);
 
     /**
      * Assert that the object to evaluate is within the range of (greater than equal to and less than)
@@ -378,10 +394,11 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is less than the lower bound
      * or greater than equal to the upper bound.
      */
-    void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound);
+    AssertThat<T> isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound);
 
     /**
      * Assert that the object to evaluate is within the range of (greater than equal to and less than equal to)
@@ -389,157 +406,174 @@ public abstract class LangExtensions {
      *
      * @param lowerBound the Comparable value used as the lower bound in the relational comparison.
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is less than the lower bound
      * or greater than the upper bound.
      */
-    void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
+    AssertThat<T> isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound);
 
     /**
      * Asserts that the object to evaluate has actual textual information.  The object's String value has text
      * if and only if the value contains at least 1 character that is not whitespace.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated has no text.
      * @see #isNotBlank()
      */
-    void hasText();
+    AssertThat<T> hasText();
 
     /**
      * Assert that the current Thread holds the specified lock inside a synchronized block.
      *
      * @param lock the Object lock that must be held by the current Thread.
+     * @return this assertion.
      * @throws AssertionException if the current Thread does not hold the specified lock.
      * @see java.lang.Thread#holdsLock(Object)
      */
-    void holdsLock(Object lock);
+    AssertThat<T> holdsLock(Object lock);
 
     /**
      * Asserts that the object to evaluate is an instance of the specified Class type.
      *
      * @param type the Class type used in the instance of check for the object being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not an instance of the Class type.
      * @see java.lang.Class#isInstance(Object)
      * @see #isAssignableTo(Class)
      */
     @SuppressWarnings("rawtypes")
-    void isInstanceOf(Class type);
+    AssertThat<T> isInstanceOf(Class type);
 
     /**
      * Asserts that the object to evaluate is less than the given Comparable value.
      *
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not less than the upper bound.
      */
-    void isLessThan(T upperBound);
+    AssertThat<T> isLessThan(T upperBound);
 
     /**
      * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not less than the upper bound
      * or greater than the lower bound.
      */
-    void isLessThanOrGreaterThan(T upperBound, T lowerBound);
+    AssertThat<T> isLessThanOrGreaterThan(T upperBound, T lowerBound);
 
     /**
      * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not less than the upper bound
      * or greater than equal to the lower bound.
      */
-    void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
+    AssertThat<T> isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
      * Asserts that the object to evaluate is less than equal to the given Comparable value.
      *
      * @param upperBound the Comparable value used as the upper bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not less than equal to the upper bound.
      */
-    void isLessThanEqualTo(T upperBound);
+    AssertThat<T> isLessThanEqualTo(T upperBound);
 
     /**
      * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not less than equal to the upper bound
      * or greater than the lower bound.
      */
-    void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
+    AssertThat<T> isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound);
 
     /**
      * Asserts that the object to evaluate is outside the bounds of the given Comparable values.
      *
      * @param upperBound the Comparable value used as the lower upper bound in the relational comparison.
      * @param lowerBound the Comparable value used as the upper lower bound in the relational comparison.
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not less than equal to the upper bound
      * or greater than equal to the lower bound.
      */
-    void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
+    AssertThat<T> isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound);
 
     /**
      * Assert that the object to evaluate is not blank, or rather, has text.  The object String value is blank
      * if it contains only whitespace characters or null.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is blank, or has no actual test.
      * @see #hasText()
      */
-    void isNotBlank();
+    AssertThat<T> isNotBlank();
 
     /**
      * Assert that the object to evaluate is not empty.  The object String value is empty if it is equal to
      * the empty String.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is empty.
      */
-    void isNotEmpty();
+    AssertThat<T> isNotEmpty();
 
     /**
      * Asserts that the object to evaluate is not null.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is null.
      * @see #isNull()
      * @see #not()
      */
-    void isNotNull();
+    AssertThat<T> isNotNull();
 
     /**
      * Asserts that the object to evaluate is not the same instance as the given object.  This assertion deems
      * the objects are not the same as determined by the identity comparison (==).
      *
      * @param obj the object used in the identity comparison with the object being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the objects are the same.
      * @see #isSameAs(Object)
      * @see #not()
      */
-    void isNotSameAs(T obj);
+    AssertThat<T> isNotSameAs(T obj);
 
     /**
      * Asserts that the object to evaluate is null.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not null.
      */
-    void isNull();
+    AssertThat<T> isNull();
 
     /**
      * Asserts that the object to evaluate is the same instance as the given object.  This assertion deems the objects
      * are the same as determined by the identity comparison (==).
      *
      * @param obj the object used in the identity comparison with the object being evaluated.
+     * @return this assertion.
      * @throws AssertionException if the objects are not the same.
      * @see #isEqualTo(Object)
      */
-    void isSameAs(T obj);
+    AssertThat<T> isSameAs(T obj);
 
     /**
      * Asserts that the object to evaluate is true.
      *
+     * @return this assertion.
      * @throws AssertionException if the object being evaluated is not true.
      * @see #isFalse()
      */
-    void isTrue();
+    AssertThat<T> isTrue();
 
     /**
      * Negates this assertion.
@@ -593,17 +627,17 @@ public abstract class LangExtensions {
     /**
      * Throws the provided RuntimeException when an assertion fails.
      *
-     * @param e the RuntimeException to throw when an assertion fails.
+     * @param cause the RuntimeException to throw when an assertion fails.
      * @return this assertion instance.
      */
-    AssertThat<T> throwing(RuntimeException e);
+    AssertThat<T> throwing(RuntimeException cause);
 
     /**
      * Transforms this assertion into an adapted assertion of the same type using the provided Transformer.
      *
      * @param assertionTransformer the Transformer used to transform this assertion into another assertion
      * of the same type.
-     * @return an instance of AssertThat wrapping this assertion.
+     * @return an instance of {@link AssertThat} wrapping this assertion.
      * @see org.cp.elements.lang.Transformer
      */
     AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer);
@@ -628,6 +662,8 @@ public abstract class LangExtensions {
   private static final class AssertThatExpression<T> implements AssertThat<T> {
 
     private static final boolean DEFAULT_EXPECTED = true;
+
+    private static final Condition DEFAULT_CONDITION = Condition.TRUE_CONDITION;
 
     private static final String NOT = "not ";
 
@@ -659,13 +695,23 @@ public abstract class LangExtensions {
      * used as the subject of the assertion.
      *
      * @param obj {@link Object} to evaluate and make an assertion.
-     * @param expected boolean value specifying the intended outcome of the assertion.
+     * @param expected boolean value specifying the outcome of the assertion.
      */
     private AssertThatExpression(T obj, boolean expected) {
 
       this.obj = obj;
       this.expected = expected;
       this.condition = () -> true;
+    }
+
+    /**
+     * Gets a reference to the target {@link Object} that is the subject of this assertion.
+     *
+     * @return a reference to the target {@link Object} that is the subject of this assertion.
+     * @see java.lang.Object
+     */
+    private @Nullable T getTarget() {
+      return this.obj;
     }
 
     private boolean conditionHolds() {
@@ -676,284 +722,439 @@ public abstract class LangExtensions {
       return actual != this.expected;
     }
 
+    /**
+     * @inheritDoc
+     */
     @SuppressWarnings("rawtypes")
-    public void isAssignableTo(Class type) {
+    public @NotNull AssertThatExpression<T> isAssignableTo(Class type) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).assignableTo(type))) {
+        if (notEqualToExpected(is(getTarget()).assignableTo(type))) {
           throwAssertionError("[%1$s] is %2$sassignable to [%3$s]",
-            this.obj, negate(NOT), ObjectUtils.getName(type));
+            getTarget(), negate(NOT), ObjectUtils.getName(type));
         }
       }
+
+      return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @SuppressWarnings("unchecked")
-    public void isComparableTo(Comparable<T> comparable) {
+    public @NotNull AssertThatExpression<T> isComparableTo(Comparable<T> comparable) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is((Comparable<T>) this.obj).comparableTo(comparable))) {
-          throwAssertionError("[%1$s] is %2$scomparable to [%3$s]", this.obj, negate(NOT), comparable);
+        if (notEqualToExpected(is((Comparable<T>) getTarget()).comparableTo(comparable))) {
+          throwAssertionError("[%1$s] is %2$scomparable to [%3$s]", getTarget(), negate(NOT), comparable);
         }
       }
+
+      return this;
     }
 
-    public void isNotComparableTo(Comparable<T> comparable) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNotComparableTo(Comparable<T> comparable) {
       not().isComparableTo(comparable);
+      return this;
     }
 
-    public void isEqualTo(T obj) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isEqualTo(T obj) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).equalTo(obj))) {
-          throwAssertionError("[%1$s] is %2$sequal to [%3$s]", this.obj, negate(NOT), obj);
+        if (notEqualToExpected(is(getTarget()).equalTo(obj))) {
+          throwAssertionError("[%1$s] is %2$sequal to [%3$s]", getTarget(), negate(NOT), obj);
         }
       }
+
+      return this;
     }
 
-    public void isNotEqualTo(T obj) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNotEqualTo(T obj) {
       not().isEqualTo(obj);
+      return this;
     }
 
-    public void isFalse() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isFalse() {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).False())) {
-          throwAssertionError("[%1$s] is %2$sfalse", this.obj, negate(NOT));
+        if (notEqualToExpected(is(getTarget()).False())) {
+          throwAssertionError("[%1$s] is %2$sfalse", getTarget(), negate(NOT));
         }
       }
+
+      return this;
     }
 
-    public void isGreaterThan(T lowerBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isGreaterThan(T lowerBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).greaterThan(lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than [%3$s]", this.obj, negate(NOT), lowerBound);
+        if (notEqualToExpected(is(getTarget()).greaterThan(lowerBound))) {
+          throwAssertionError("[%1$s] is %2$sgreater than [%3$s]", getTarget(), negate(NOT), lowerBound);
         }
       }
+
+      return this;
     }
 
-    public void isGreaterThanAndLessThan(T lowerBound, T upperBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isGreaterThanAndLessThan(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).greaterThanAndLessThan(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(getTarget()).greaterThanAndLessThan(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than [%3$s] and less than [%4$s]",
-            this.obj, negate(NOT), lowerBound, upperBound);
+            getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
+
+      return this;
     }
 
-    public void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(getTarget()).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than [%3$s] and less than equal to [%4$s]",
-            this.obj, negate(NOT), lowerBound, upperBound);
+            getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
+
+      return this;
     }
 
-    public void isGreaterThanEqualTo(T lowerBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isGreaterThanEqualTo(T lowerBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).greaterThanEqualTo(lowerBound))) {
+        if (notEqualToExpected(is(getTarget()).greaterThanEqualTo(lowerBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s]",
-            this.obj, negate(NOT), lowerBound);
+            getTarget(), negate(NOT), lowerBound);
         }
       }
+
+      return this;
     }
 
-    public void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(getTarget()).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s] and less than [%4$s]",
-            this.obj, negate(NOT), lowerBound, upperBound);
+            getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
+
+      return this;
     }
 
-    public void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
+        if (notEqualToExpected(is(getTarget()).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
           throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s] and less than equal to [%4$s]",
-            this.obj, negate(NOT), lowerBound, upperBound);
+            getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
+
+      return this;
     }
 
-    public void hasText() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> hasText() {
       isNotBlank();
+      return this;
     }
 
-    public void holdsLock(Object lock) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> holdsLock(Object lock) {
+
       if (conditionHolds()) {
         if (notEqualToExpected(Thread.holdsLock(lock))) {
           throwAssertionError("[%1$s] %2$slock [%3$s]", Thread.currentThread(),
             this.expected ? "does not hold " : "holds ", lock);
         }
       }
+
+      return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @SuppressWarnings("rawtypes")
-    public void isInstanceOf(Class type) {
+    public @NotNull AssertThatExpression<T> isInstanceOf(Class type) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).instanceOf(type))) {
+        if (notEqualToExpected(is(getTarget()).instanceOf(type))) {
           throwAssertionError("[%1$s] is %2$san instance of [%3$s]",
-            this.obj, negate(NOT), ObjectUtils.getName(type));
+            getTarget(), negate(NOT), ObjectUtils.getName(type));
         }
       }
+
+      return this;
     }
 
-    public void isLessThan(T upperBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isLessThan(T upperBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).lessThan(upperBound))) {
-          throwAssertionError("[%1$s] is %2$sless than [%3$s]", this.obj, negate(NOT), upperBound);
+        if (notEqualToExpected(is(getTarget()).lessThan(upperBound))) {
+          throwAssertionError("[%1$s] is %2$sless than [%3$s]", getTarget(), negate(NOT), upperBound);
         }
       }
+
+      return this;
     }
 
-    public void isLessThanOrGreaterThan(T upperBound, T lowerBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isLessThanOrGreaterThan(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).lessThanOrGreaterThan(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(getTarget()).lessThanOrGreaterThan(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than [%3$s] or greater than [%4$s]",
-            this.obj, negate(NOT), upperBound, lowerBound);
+            getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
+
+      return this;
     }
 
-    public void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(getTarget()).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than [%3$s] or greater than equal to [%4$s]",
-            this.obj, negate(NOT), upperBound, lowerBound);
+            getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
+
+      return this;
     }
 
-    public void isLessThanEqualTo(T upperBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isLessThanEqualTo(T upperBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).lessThanEqualTo(upperBound))) {
+        if (notEqualToExpected(is(getTarget()).lessThanEqualTo(upperBound))) {
           throwAssertionError("[%1$s] is %2$sless than equal to [%3$s]",
-            this.obj, negate(NOT), upperBound);
+            getTarget(), negate(NOT), upperBound);
         }
       }
+
+      return this;
     }
 
-    public void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(getTarget()).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than equal to [%3$s] or greater than [%4$s]",
-            this.obj, negate(NOT), upperBound, lowerBound);
+            getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
+
+      return this;
     }
 
-    public void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
+        if (notEqualToExpected(is(getTarget()).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
           throwAssertionError("[%1$s] is %2$sless than equal to [%3$s] or greater than equal to [%4$s]",
-            this.obj, negate(NOT), upperBound, lowerBound);
+            getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
+
+      return this;
     }
 
-    public void isNotBlank() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNotBlank() {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).notBlank())) {
-          throwAssertionError("[%1$s] is %2$sblank", this.obj,
+        if (notEqualToExpected(is(getTarget()).notBlank())) {
+          throwAssertionError("[%1$s] is %2$sblank", getTarget(),
             this.expected ? StringUtils.EMPTY_STRING : NOT);
         }
       }
+
+      return this;
     }
 
-    public void isNotEmpty() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNotEmpty() {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).notEmpty())) {
-          throwAssertionError("[%1$s] is %2$sempty", this.obj,
+        if (notEqualToExpected(is(getTarget()).notEmpty())) {
+          throwAssertionError("[%1$s] is %2$sempty", getTarget(),
             this.expected ? StringUtils.EMPTY_STRING : NOT);
         }
       }
+
+      return this;
     }
 
-    public void isNotNull() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNotNull() {
       not().isNull();
+      return this;
     }
 
-    public void isNull() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNull() {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).Null())) {
-          throwAssertionError("[%1$s] is %2$snull", this.obj, negate(NOT));
+        if (notEqualToExpected(is(getTarget()).Null())) {
+          throwAssertionError("[%1$s] is %2$snull", getTarget(), negate(NOT));
         }
       }
+
+      return this;
     }
 
-    public void isSameAs(T obj) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isSameAs(T obj) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).sameAs(obj))) {
-          throwAssertionError("[%1$s] is %2$sthe same as [%3$s]", this.obj, negate(NOT), obj);
+        if (notEqualToExpected(is(getTarget()).sameAs(obj))) {
+          throwAssertionError("[%1$s] is %2$sthe same as [%3$s]", getTarget(), negate(NOT), obj);
         }
       }
+
+      return this;
     }
 
-    public void isNotSameAs(T obj) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isNotSameAs(T obj) {
       not().isSameAs(obj);
+      return this;
     }
 
-    public void isTrue() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThatExpression<T> isTrue() {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is(this.obj).True())) {
-          throwAssertionError("[%1$s] is %2$strue", this.obj, negate(NOT));
+        if (notEqualToExpected(is(getTarget()).True())) {
+          throwAssertionError("[%1$s] is %2$strue", getTarget(), negate(NOT));
         }
       }
+
+      return this;
     }
 
-    public AssertThat<T> not() {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThat<T> not() {
 
-      AssertThat<T> expression = new AssertThatExpression<>(this.obj, !this.expected);
+      AssertThat<T> expression = new AssertThatExpression<>(getTarget(), !this.expected);
 
       expression = this.transformer != null ? this.transformer.transform(expression) : expression;
+      expression = this.message != null ? expression.describedAs(this.message) : expression;
       expression = expression.throwing(this.cause);
-      expression = this.message != null ? expression.stating(this.message) : expression;
       expression = expression.when(this.condition);
 
       return expression;
     }
 
-    public AssertThat<T> stating(String message, Object... args) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThat<T> stating(@NotNull String message, @NotNull Object... args) {
       return stating(() -> format(message, args));
     }
 
-    public AssertThat<T> stating(Supplier<String> message) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThat<T> stating(@Nullable Supplier<String> message) {
       this.message = message;
       return this;
     }
 
-    public AssertThat<T> throwing(RuntimeException cause) {
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThat<T> throwing(@Nullable RuntimeException cause) {
       this.cause = cause;
       return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public AssertThat<T> transform(@NotNull Transformer<AssertThat<T>> assertionTransformer) {
+    public @NotNull AssertThat<T> transform(@NotNull Transformer<AssertThat<T>> assertionTransformer) {
+      Assert.notNull(assertionTransformer, "The Transformer used to transform this assertion is required");
       this.transformer = assertionTransformer;
       return assertionTransformer.transform(this);
     }
 
-    public AssertThat<T> when(@NotNull Condition condition) {
-      this.condition = condition != null ? condition : () -> true;
+    /**
+     * @inheritDoc
+     */
+    public @NotNull AssertThat<T> when(@Nullable Condition condition) {
+      this.condition = condition != null ? condition : DEFAULT_CONDITION;
       return this;
     }
 
@@ -978,13 +1179,18 @@ public abstract class LangExtensions {
         () -> new AssertionException(withMessage(defaultMessage, args)));
     }
 
+    @SuppressWarnings("all")
     private String withMessage(String defaultMessage, Object... args) {
 
-      String suppliedMessage = Optional.ofNullable(this.message)
-        .map(Supplier::get)
-        .orElse(null);
+      Supplier<String> message = this.message;
 
-      return is(suppliedMessage).notBlank() ? suppliedMessage : format(defaultMessage, args);
+      String suppliedMessage = message != null ? message.get() : null;
+
+      String resolvedMessage = is(suppliedMessage).notBlank()
+        ? suppliedMessage
+        : format(defaultMessage, args);
+
+      return resolvedMessage;
     }
   }
 
@@ -1023,7 +1229,7 @@ public abstract class LangExtensions {
      */
     public AssertThatWrapper(@NotNull AssertThat<T> delegate) {
 
-      Assert.notNull(delegate, "Delegate must not be null");
+      Assert.notNull(delegate, "AssertThat delegate is required");
 
       this.delegate = delegate;
     }
@@ -1038,176 +1244,278 @@ public abstract class LangExtensions {
       return this.delegate;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SuppressWarnings("rawtypes")
-    public void isAssignableTo(Class type) {
-      getDelegate().isAssignableTo(type);
+    public @NotNull AssertThat<T> isAssignableTo(Class type) {
+      return getDelegate().isAssignableTo(type);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isComparableTo(Comparable<T> obj) {
-      getDelegate().isComparableTo(obj);
+    public @NotNull AssertThat<T> isComparableTo(Comparable<T> obj) {
+      return getDelegate().isComparableTo(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNotComparableTo(Comparable<T> obj) {
-      getDelegate().isNotComparableTo(obj);
+    public @NotNull AssertThat<T> isNotComparableTo(Comparable<T> obj) {
+      return getDelegate().isNotComparableTo(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isEqualTo(T obj) {
-      getDelegate().isEqualTo(obj);
+    public @NotNull AssertThat<T> isEqualTo(T obj) {
+      return getDelegate().isEqualTo(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNotEqualTo(T obj) {
-      getDelegate().isNotEqualTo(obj);
+    public @NotNull AssertThat<T> isNotEqualTo(T obj) {
+      return getDelegate().isNotEqualTo(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isFalse() {
-      getDelegate().isFalse();
+    public @NotNull AssertThat<T> isFalse() {
+      return getDelegate().isFalse();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isGreaterThan(T lowerBound) {
-      getDelegate().isGreaterThan(lowerBound);
+    public @NotNull AssertThat<T> isGreaterThan(T lowerBound) {
+      return getDelegate().isGreaterThan(lowerBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isGreaterThanAndLessThan(T lowerBound, T upperBound) {
-      getDelegate().isGreaterThanAndLessThan(lowerBound, upperBound);
+    public @NotNull AssertThat<T> isGreaterThanAndLessThan(T lowerBound, T upperBound) {
+      return getDelegate().isGreaterThanAndLessThan(lowerBound, upperBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
-      getDelegate().isGreaterThanAndLessThanEqualTo(lowerBound, upperBound);
+    public @NotNull AssertThat<T> isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
+      return getDelegate().isGreaterThanAndLessThanEqualTo(lowerBound, upperBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isGreaterThanEqualTo(T lowerBound) {
-      getDelegate().isGreaterThanEqualTo(lowerBound);
+    public @NotNull AssertThat<T> isGreaterThanEqualTo(T lowerBound) {
+      return getDelegate().isGreaterThanEqualTo(lowerBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
-      getDelegate().isGreaterThanEqualToAndLessThan(lowerBound, upperBound);
+    public @NotNull AssertThat<T> isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
+      return getDelegate().isGreaterThanEqualToAndLessThan(lowerBound, upperBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
-      getDelegate().isGreaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound);
+    public @NotNull AssertThat<T> isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
+      return getDelegate().isGreaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void hasText() {
-      getDelegate().hasText();
+    public @NotNull AssertThat<T> hasText() {
+      return getDelegate().hasText();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void holdsLock(Object lock) {
-      getDelegate().holdsLock(lock);
+    public @NotNull AssertThat<T> holdsLock(Object lock) {
+      return getDelegate().holdsLock(lock);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     @SuppressWarnings("rawtypes")
-    public void isInstanceOf(Class type) {
-      getDelegate().isInstanceOf(type);
+    public @NotNull AssertThat<T> isInstanceOf(Class type) {
+      return getDelegate().isInstanceOf(type);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isLessThan(T upperBound) {
-      getDelegate().isLessThan(upperBound);
+    public @NotNull AssertThat<T> isLessThan(T upperBound) {
+      return getDelegate().isLessThan(upperBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isLessThanOrGreaterThan(T upperBound, T lowerBound) {
-      getDelegate().isLessThanOrGreaterThan(upperBound, lowerBound);
+    public @NotNull AssertThat<T> isLessThanOrGreaterThan(T upperBound, T lowerBound) {
+      return getDelegate().isLessThanOrGreaterThan(upperBound, lowerBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
-      getDelegate().isLessThanOrGreaterThanEqualTo(upperBound, lowerBound);
+    public @NotNull AssertThat<T> isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
+      return getDelegate().isLessThanOrGreaterThanEqualTo(upperBound, lowerBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isLessThanEqualTo(T upperBound) {
-      getDelegate().isLessThanEqualTo(upperBound);
+    public @NotNull AssertThat<T> isLessThanEqualTo(T upperBound) {
+      return getDelegate().isLessThanEqualTo(upperBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
-      getDelegate().isLessThanEqualToOrGreaterThan(upperBound, lowerBound);
+    public @NotNull AssertThat<T> isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
+      return getDelegate().isLessThanEqualToOrGreaterThan(upperBound, lowerBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
-      getDelegate().isLessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound);
+    public @NotNull AssertThat<T> isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
+      return getDelegate().isLessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNotBlank() {
-      getDelegate().isNotBlank();
+    public @NotNull AssertThat<T> isNotBlank() {
+      return getDelegate().isNotBlank();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNotEmpty() {
-      getDelegate().isNotEmpty();
+    public @NotNull AssertThat<T> isNotEmpty() {
+      return getDelegate().isNotEmpty();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNotNull() {
-      getDelegate().isNotNull();
+    public @NotNull AssertThat<T> isNotNull() {
+      return getDelegate().isNotNull();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNull() {
-      getDelegate().isNull();
+    public @NotNull AssertThat<T> isNull() {
+      return getDelegate().isNull();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isSameAs(T obj) {
-      getDelegate().isSameAs(obj);
+    public @NotNull AssertThat<T> isSameAs(T obj) {
+      return getDelegate().isSameAs(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isNotSameAs(T obj) {
-      getDelegate().isNotSameAs(obj);
+    public @NotNull AssertThat<T> isNotSameAs(T obj) {
+      return getDelegate().isNotSameAs(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    public void isTrue() {
-      getDelegate().isTrue();
+    public @NotNull AssertThat<T> isTrue() {
+      return getDelegate().isTrue();
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public AssertThat<T> not() {
       return new AssertThatWrapper<>(getDelegate().not());
     }
 
-    @Override
-    public AssertThat<T> throwing(RuntimeException e) {
-      getDelegate().throwing(e);
-      return this;
-    }
-
-    @Override
-    public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
-      return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     public AssertThat<T> stating(String message, Object... args) {
       getDelegate().stating(message, args);
       return this;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public AssertThat<T> stating(Supplier<String> message) {
       getDelegate().stating(message);
       return null;
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public AssertThat<T> throwing(RuntimeException cause) {
+      getDelegate().throwing(cause);
+      return this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
+      return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
+    }
+
+    /**
+     * @inheritDoc
+     */
     @Override
     public AssertThat<T> when(Condition condition) {
       getDelegate().when(condition);
