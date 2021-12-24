@@ -60,7 +60,7 @@ import lombok.RequiredArgsConstructor;
  * @see lombok
  * @since 1.0.0
  */
-public class LangExtensionsTests {
+public class LangExtensionsUnitTests {
 
   @SuppressWarnings("rawtypes")
   private final Comparable NULL = null;
