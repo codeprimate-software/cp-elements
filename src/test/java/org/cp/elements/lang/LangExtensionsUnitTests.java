@@ -30,6 +30,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -38,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 import org.assertj.core.api.Assertions;
 import org.cp.elements.test.TestUtils;
@@ -1502,6 +1504,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isAssignableTo(Object.class);
 
     verify(mockAssertion, times(1)).isAssignableTo(eq(Object.class));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1515,6 +1518,21 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isComparableTo(mockComparable);
 
     verify(mockAssertion, times(1)).isComparableTo(eq(mockComparable));
+    verifyNoMoreInteractions(mockAssertion);
+  }
+
+  @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public void wrappedAssertThatIsNotComparableToDelegatesToWrappedAssertion() {
+
+    Comparable mockComparable = mock(Comparable.class);
+
+    AssertThat<Comparable> mockAssertion = mock(AssertThat.class);
+
+    AssertThatWrapper.wrap(mockAssertion).isNotComparableTo(mockComparable);
+
+    verify(mockAssertion, times(1)).isNotComparableTo(eq(mockComparable));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1528,6 +1546,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isEqualTo(obj);
 
     verify(mockAssertion, times(1)).isEqualTo(eq(obj));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1541,6 +1560,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isNotEqualTo(obj);
 
     verify(mockAssertion, times(1)).isNotEqualTo(eq(obj));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1552,6 +1572,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isFalse();
 
     verify(mockAssertion, times(1)).isFalse();
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1563,6 +1584,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isGreaterThan(0);
 
     verify(mockAssertion, times(1)).isGreaterThan(eq(0));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1574,6 +1596,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanAndLessThan(-1, 1);
 
     verify(mockAssertion, times(1)).isGreaterThanAndLessThan(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1585,6 +1608,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanAndLessThanEqualTo(-1, 1);
 
     verify(mockAssertion, times(1)).isGreaterThanAndLessThanEqualTo(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1596,6 +1620,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualTo(0);
 
     verify(mockAssertion, times(1)).isGreaterThanEqualTo(eq(0));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1607,6 +1632,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThan(-1, 1);
 
     verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThan(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1618,6 +1644,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThanEqualTo(-1, 1);
 
     verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThanEqualTo(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1629,6 +1656,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).hasText();
 
     verify(mockAssertion, times(1)).hasText();
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1640,6 +1668,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).holdsLock(lock);
 
     verify(mockAssertion, times(1)).holdsLock(eq(lock));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1651,6 +1680,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isInstanceOf(Object.class);
 
     verify(mockAssertion, times(1)).isInstanceOf(eq(Object.class));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1662,6 +1692,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isLessThan(0);
 
     verify(mockAssertion, times(1)).isLessThan(eq(0));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1673,6 +1704,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isLessThanOrGreaterThan(-1, 1);
 
     verify(mockAssertion, times(1)).isLessThanOrGreaterThan(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1684,6 +1716,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isLessThanOrGreaterThanEqualTo(-1, 1);
 
     verify(mockAssertion, times(1)).isLessThanOrGreaterThanEqualTo(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1695,6 +1728,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualTo(0);
 
     verify(mockAssertion, times(1)).isLessThanEqualTo(eq(0));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1706,6 +1740,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThan(-1, 1);
 
     verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThan(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1717,6 +1752,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
 
     verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThanEqualTo(eq(-1), eq(1));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1728,6 +1764,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isNotBlank();
 
     verify(mockAssertion, times(1)).isNotBlank();
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1739,6 +1776,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isNotEmpty();
 
     verify(mockAssertion, times(1)).isNotEmpty();
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1750,6 +1788,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isNotNull();
 
     verify(mockAssertion, times(1)).isNotNull();
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1761,6 +1800,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isNull();
 
     verify(mockAssertion, times(1)).isNull();
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1774,6 +1814,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isNotSameAs(obj);
 
     verify(mockAssertion, times(1)).isNotSameAs(eq(obj));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1787,6 +1828,7 @@ public class LangExtensionsUnitTests {
     AssertThatWrapper.wrap(mockAssertion).isSameAs(obj);
 
     verify(mockAssertion, times(1)).isSameAs(eq(obj));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1794,8 +1836,25 @@ public class LangExtensionsUnitTests {
   public void wrappedAssertThatIsTrueDelegatesToWrappedAssertion() {
 
     AssertThat<Boolean> mockAssertion = mock(AssertThat.class);
+
     AssertThatWrapper.wrap(mockAssertion).isTrue();
+
     verify(mockAssertion, times(1)).isTrue();
+    verifyNoMoreInteractions(mockAssertion);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void wrappedAssertThatIsValidDelegatesToWrappedAssertion() {
+
+    AssertThat<Object> mockAssertion = mock(AssertThat.class);
+
+    Predicate<Object> mockPredicate = mock(Predicate.class);
+
+    AssertThatWrapper.wrap(mockAssertion).isValid(mockPredicate);
+
+    verify(mockAssertion, times(1)).isValid(eq(mockPredicate));
+    verifyNoMoreInteractions(mockAssertion);
   }
 
   @Test
@@ -1809,6 +1868,7 @@ public class LangExtensionsUnitTests {
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).not();
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
+
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockAssertion, times(1)).not();
