@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.Dsl;
@@ -45,6 +46,7 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  * @author John J. Blum
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
+ * @see java.util.function.Predicate
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
@@ -575,6 +577,16 @@ public abstract class LangExtensions {
      * @see #isFalse()
      */
     AssertThat<T> isTrue();
+
+    /**
+     * Asserts that the {@link Object} to evaluate is valid according to the {@link Predicate}.
+     *
+     * @param predicate {@link Predicate} used to evaluate and validate the {@link Object}.
+     * @return this assertion.
+     * @throws AssertionException if the {@link Object} being evaluated/validated is not valid.
+     * @see java.util.function.Predicate
+     */
+    AssertThat<T> isValid(Predicate<T> predicate);
 
     /**
      * Negates this assertion.
@@ -1154,6 +1166,23 @@ public abstract class LangExtensions {
     /**
      * @inheritDoc
      */
+    @Override
+    public AssertThat<T> isValid(@NotNull Predicate<T> predicate) {
+
+      Assert.notNull(predicate, "Predicate is required");
+
+      if (conditionHolds()) {
+        if (notEqualToExpected(predicate.test(getTarget()))) {
+          throwAssertionException("[%s] is not valid", getTarget());
+        }
+      }
+
+      return this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public @NotNull AssertThat<T> not() {
 
       AssertThat<T> expression = new AssertThatExpression<>(getTarget(), getNotExpected());
@@ -1514,6 +1543,14 @@ public abstract class LangExtensions {
     @Override
     public @NotNull AssertThat<T> isTrue() {
       return getDelegate().isTrue();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public AssertThat<T> isValid(Predicate<T> predicate) {
+      return getDelegate().isValid(predicate);
     }
 
     /**

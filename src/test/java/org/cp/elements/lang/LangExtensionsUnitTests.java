@@ -1198,6 +1198,83 @@ public class LangExtensionsUnitTests {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).not().isTrue(), () -> "[true] is true");
   }
 
+  @Test
+  public void assertThatIsValidIsValid() {
+    assertThat("test").isValid(argument -> true);
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatIsValidIsNotValid() {
+
+    try {
+      assertThat("test").isValid(argument -> false);
+    }
+    catch (AssertionException expected) {
+
+      Assertions.assertThat(expected).hasMessage("[test] is not valid");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertThatIsValidWithNullPredicate() {
+
+    try {
+      assertThat("test").isValid(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      Assertions.assertThat(expected).hasMessage("Predicate is required");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatIsValidUsingCustomMessage() {
+
+    try {
+      assertThat("test")
+        .describedAs("[%s] is invalid", "test")
+        .isValid(argument -> false);
+    }
+    catch (AssertionException expected) {
+
+      Assertions.assertThat(expected).hasMessage("[test] is invalid");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertThatIsValidThrowingIllegalArgumentException() {
+
+    try {
+      assertThat("test")
+        .throwing(new IllegalArgumentException("[test] is invalid"))
+        .isValid(argument -> false);
+    }
+    catch (IllegalArgumentException expected) {
+
+      Assertions.assertThat(expected).hasMessage("[test] is invalid");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void assertThatIsValidConditionally() {
+
+    assertThat("test")
+      .when(Condition.FALSE_CONDITION)
+      .isValid(argument -> false);
+  }
+
   @Test(expected = AssertionException.class)
   public void assertionTransformationIgnoresCondition() {
 
@@ -1230,138 +1307,148 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void disabledAssertThatIsAssignableToSuppressesAssertionError() {
+  public void disabledAssertThatIsAssignableToSuppressesAssertionException() {
     assertThat(1).when(ENABLE_DISABLE_CONDITION).isAssignableTo(Boolean.class);
   }
 
   @Test
-  public void disabledAssertThatIsComparableToSuppressesAssertionError() {
+  public void disabledAssertThatIsComparableToSuppressesAssertionException() {
     assertThat("test").when(ENABLE_DISABLE_CONDITION).isComparableTo("TEST");
   }
 
   @Test
-  public void disabledAssertThatIsEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsNotComparableToSuppressesAssertionException() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isNotComparableTo("test");
+  }
+
+  @Test
+  public void disabledAssertThatIsEqualToSuppressesAssertionException() {
     assertThat(3.1459d).when(ENABLE_DISABLE_CONDITION).isEqualTo(Math.PI);
   }
 
   @Test
-  public void disabledAssertThatIsNotEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsNotEqualToSuppressesAssertionException() {
     assertThat("test").when(ENABLE_DISABLE_CONDITION).isNotEqualTo("test");
   }
 
   @Test
-  public void disabledAssertThatIsFalseSuppressesAssertionError() {
+  public void disabledAssertThatIsFalseSuppressesAssertionException() {
     assertThat(true).when(ENABLE_DISABLE_CONDITION).isFalse();
   }
 
   @Test
-  public void disabledAssertThatIsGreaterThanSuppressesAssertionError() {
+  public void disabledAssertThatIsGreaterThanSuppressesAssertionException() {
     assertThat(-2).when(ENABLE_DISABLE_CONDITION).isGreaterThan(1);
   }
 
   @Test
-  public void disabledAssertThatIsGreaterThanAndLessThanSuppressesAssertionError() {
+  public void disabledAssertThatIsGreaterThanAndLessThanSuppressesAssertionException() {
     assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanAndLessThan(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsGreaterThanAndLessThanEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsGreaterThanAndLessThanEqualToSuppressesAssertionException() {
     assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanAndLessThanEqualTo(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsGreaterThanEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsGreaterThanEqualToSuppressesAssertionException() {
     assertThat(-2).when(ENABLE_DISABLE_CONDITION).isGreaterThanEqualTo(1);
   }
 
   @Test
-  public void disabledAssertThatIsGreaterThanEqualToAndLessThanSuppressesAssertionError() {
+  public void disabledAssertThatIsGreaterThanEqualToAndLessThanSuppressesAssertionException() {
     assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanEqualToAndLessThan(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsGreaterThanEqualToAndLessThanEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsGreaterThanEqualToAndLessThanEqualToSuppressesAssertionException() {
     assertThat(2).when(ENABLE_DISABLE_CONDITION).isGreaterThanEqualToAndLessThanEqualTo(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatHasTextSuppressesAssertionError() {
+  public void disabledAssertThatHasTextSuppressesAssertionException() {
     assertThat("  ").when(ENABLE_DISABLE_CONDITION).hasText();
   }
 
   @Test
-  public void disabledAssertThatHoldsLockSuppressesAssertionError() {
+  public void disabledAssertThatHoldsLockSuppressesAssertionException() {
     assertThat(Thread.currentThread()).when(ENABLE_DISABLE_CONDITION).holdsLock(lock);
   }
 
   @Test
-  public void disabledAssertThatIsInstanceOfSuppressesAssertionError() {
+  public void disabledAssertThatIsInstanceOfSuppressesAssertionException() {
     assertThat(null).when(ENABLE_DISABLE_CONDITION).isInstanceOf(Object.class);
   }
 
   @Test
-  public void disabledAssertThatIsLessThanSuppressesAssertionError() {
+  public void disabledAssertThatIsLessThanSuppressesAssertionException() {
     assertThat(1).when(ENABLE_DISABLE_CONDITION).isLessThan(-2);
   }
 
   @Test
-  public void disabledAssertThatIsLessThanOrGreaterThanSuppressesAssertinError() {
+  public void disabledAssertThatIsLessThanOrGreaterThanSuppressesAssertionException() {
     assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanOrGreaterThan(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsLessThanOrGreaterThanEqualToSuppressesAssertinError() {
+  public void disabledAssertThatIsLessThanOrGreaterThanEqualToSuppressesAssertionException() {
     assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanOrGreaterThanEqualTo(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsLessThanEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsLessThanEqualToSuppressesAssertionException() {
     assertThat(1).when(ENABLE_DISABLE_CONDITION).isLessThanEqualTo(-1);
   }
 
   @Test
-  public void disabledAssertThatIsLessThanEqualToOrGreaterThanSuppressesAssertionError() {
+  public void disabledAssertThatIsLessThanEqualToOrGreaterThanSuppressesAssertionException() {
     assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanEqualToOrGreaterThan(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsLessThanEqualToOrGreaterThanEqualToSuppressesAssertionError() {
+  public void disabledAssertThatIsLessThanEqualToOrGreaterThanEqualToSuppressesAssertionException() {
     assertThat(0).when(ENABLE_DISABLE_CONDITION).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
   }
 
   @Test
-  public void disabledAssertThatIsNotBlankSuppressesAssertionError() {
+  public void disabledAssertThatIsNotBlankSuppressesAssertionException() {
     assertThat(" ").when(ENABLE_DISABLE_CONDITION).isNotBlank();
   }
 
   @Test
-  public void disabledAssertThatIsNotEmptySuppressesAssertionError() {
+  public void disabledAssertThatIsNotEmptySuppressesAssertionException() {
     assertThat("").when(ENABLE_DISABLE_CONDITION).isNotEmpty();
   }
 
   @Test
-  public void disabledAssertThatIsNotNullSuppressesAssertoinError() {
+  public void disabledAssertThatIsNotNullSuppressesAssertionException() {
     assertThat(null).when(ENABLE_DISABLE_CONDITION).isNotNull();
   }
 
   @Test
-  public void disabledAssertThatIsNullSuppressesAssertionError() {
+  public void disabledAssertThatIsNullSuppressesAssertionException() {
     assertThat("test").when(ENABLE_DISABLE_CONDITION).isNull();
   }
 
   @Test
-  public void disabledAssertThatIsSameAsSuppressesAssertionError() {
+  public void disabledAssertThatIsSameAsSuppressesAssertionException() {
     assertThat("test").when(ENABLE_DISABLE_CONDITION).isSameAs("TEST");
   }
 
   @Test
-  public void disabledAssertThatIsNotSameAsSuppressesAssertionError() {
+  public void disabledAssertThatIsNotSameAsSuppressesAssertionException() {
     assertThat("test").when(ENABLE_DISABLE_CONDITION).isNotSameAs("test");
   }
 
   @Test
-  public void disabledAssertThatIsTrueSuppressesAssertionError() {
+  public void disabledAssertThatIsTrueSuppressesAssertionException() {
     assertThat(false).when(ENABLE_DISABLE_CONDITION).isTrue();
+  }
+
+  @Test
+  public void disableAssertThatIsValidSuppressesAssertionException() {
+    assertThat("test").when(ENABLE_DISABLE_CONDITION).isValid(argument -> false);
   }
 
   @Test(expected = IllegalArgumentException.class)
