@@ -31,6 +31,7 @@ import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
@@ -38,8 +39,8 @@ import org.cp.elements.lang.reflect.ProxyFactory;
 
 /**
  * The {@link LangExtensions} class provides methods to write natural language expressions for various conditions,
- * such as equality comparisons, identity checks, null checks, negation and so on, and operations
- * such as conversion, etc.
+ * such as equality comparisons, identity checks, null checks, negation along with operations such as conversion,
+ * etc.
  *
  * @author John J. Blum
  * @see java.lang.reflect.InvocationHandler
@@ -665,61 +666,110 @@ public abstract class LangExtensions {
 
     private static final Condition DEFAULT_CONDITION = Condition.TRUE_CONDITION;
 
+    private static final String EMPTY_STRING = "";
     private static final String NOT = "not ";
 
     private final boolean expected;
 
     private final T obj;
 
+    @Nullable
     private Condition condition;
 
+    @Nullable
     private RuntimeException cause;
 
+    @Nullable
     private Supplier<String> message;
 
+    @Nullable
     private Transformer<AssertThat<T>> transformer;
 
     /**
      * Constructs a new instance of {@link AssertThatExpression} initialized with the given {@link Object}
-     * used as the subject of the assertion.
+     * used as the subject of this assertion.
      *
      * @param obj {@link Object} to evaluate and make an assertion.
      * @see #AssertThatExpression(Object, boolean)
+     * @see java.lang.Object
      */
-    private AssertThatExpression(T obj) {
+    private AssertThatExpression(@Nullable T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
 
     /**
      * Constructs a new instance of {@link AssertThatExpression} initialized with the given {@link Object}
-     * used as the subject of the assertion.
+     * used as the subject of this assertion.
      *
      * @param obj {@link Object} to evaluate and make an assertion.
      * @param expected boolean value specifying the outcome of the assertion.
+     * @see java.lang.Object
      */
-    private AssertThatExpression(T obj, boolean expected) {
+    private AssertThatExpression(@Nullable T obj, boolean expected) {
 
       this.obj = obj;
       this.expected = expected;
-      this.condition = () -> true;
+      this.condition = DEFAULT_CONDITION;
     }
 
     /**
-     * Gets a reference to the target {@link Object} that is the subject of this assertion.
+     * Return the expected outcome of this assertion when applied to the {@link Object subject}.
      *
-     * @return a reference to the target {@link Object} that is the subject of this assertion.
+     * Defaults to {@literal true}, implying that the assertion statement made about the {@link Object subject}
+     * should result in a {@literal true} value.
+     *
+     * @return a boolean value indicating the expected outcome of the assertion
+     * when applied to the {@link Object subject}.
+     */
+    private boolean getExpected() {
+      return this.expected;
+    }
+
+    /**
+     * Return the negation of the expected outcome for this assertion when applied to the {@link Object subject}.
+     *
+     * @return the negated value of the expected outcome for this assertion when applied to the {@link Object subject}.
+     * @see #getExpected()
+     */
+    private boolean getNotExpected() {
+      return !getExpected();
+    }
+
+    /**
+     * Gets a reference to the target {@link Object} that is the {@literal subject} of this assertion.
+     *
+     * @return a reference to the target {@link Object} that is the {@literal subject} of this assertion.
      * @see java.lang.Object
      */
     private @Nullable T getTarget() {
       return this.obj;
     }
 
+    /**
+     * Gets the {@link #getTarget()} {@link Object} as an {@link Object} of {@link Class type}.
+     *
+     * @param <S> {@link Class type} to cast the {@link #getTarget()} {@link Object} to.
+     * @param type {@link Class type} to cast the {@link #getTarget()} {@link Object} to.
+     * @return the {@link #getTarget()} {@link Object} cast to {@link Class type}.
+     * @see java.lang.Class
+     * @see java.lang.Object
+     * @see #getTarget()
+     */
+    private @Nullable <S> S getTargetAs(@NotNull Class<S> type) {
+      return type.cast(getTarget());
+    }
+
     private boolean conditionHolds() {
-      return this.condition.evaluate();
+      return nullSafeCondition(this.condition).evaluate();
     }
 
     private boolean notEqualToExpected(boolean actual) {
-      return actual != this.expected;
+      return actual != getExpected();
+    }
+
+    @NullSafe
+    private @NotNull Condition nullSafeCondition(@Nullable Condition condition) {
+      return condition != null ? condition : DEFAULT_CONDITION;
     }
 
     /**
@@ -730,7 +780,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).assignableTo(type))) {
-          throwAssertionError("[%1$s] is %2$sassignable to [%3$s]",
+          throwAssertionException("[%1$s] is %2$sassignable to [%3$s]",
             getTarget(), negate(NOT), ObjectUtils.getName(type));
         }
       }
@@ -741,12 +791,11 @@ public abstract class LangExtensions {
     /**
      * @inheritDoc
      */
-    @SuppressWarnings("unchecked")
     public @NotNull AssertThatExpression<T> isComparableTo(Comparable<T> comparable) {
 
       if (conditionHolds()) {
-        if (notEqualToExpected(is((Comparable<T>) getTarget()).comparableTo(comparable))) {
-          throwAssertionError("[%1$s] is %2$scomparable to [%3$s]", getTarget(), negate(NOT), comparable);
+        if (notEqualToExpected(is(getTargetAs(Comparable.class)).comparableTo(comparable))) {
+          throwAssertionException("[%1$s] is %2$scomparable to [%3$s]", getTarget(), negate(NOT), comparable);
         }
       }
 
@@ -768,7 +817,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).equalTo(obj))) {
-          throwAssertionError("[%1$s] is %2$sequal to [%3$s]", getTarget(), negate(NOT), obj);
+          throwAssertionException("[%1$s] is %2$sequal to [%3$s]", getTarget(), negate(NOT), obj);
         }
       }
 
@@ -790,7 +839,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).False())) {
-          throwAssertionError("[%1$s] is %2$sfalse", getTarget(), negate(NOT));
+          throwAssertionException("[%1$s] is %2$sfalse", getTarget(), negate(NOT));
         }
       }
 
@@ -804,7 +853,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).greaterThan(lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than [%3$s]", getTarget(), negate(NOT), lowerBound);
+          throwAssertionException("[%1$s] is %2$sgreater than [%3$s]", getTarget(), negate(NOT), lowerBound);
         }
       }
 
@@ -818,7 +867,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).greaterThanAndLessThan(lowerBound, upperBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than [%3$s] and less than [%4$s]",
+          throwAssertionException("[%1$s] is %2$sgreater than [%3$s] and less than [%4$s]",
             getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
@@ -833,7 +882,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).greaterThanAndLessThanEqualTo(lowerBound, upperBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than [%3$s] and less than equal to [%4$s]",
+          throwAssertionException("[%1$s] is %2$sgreater than [%3$s] and less than equal to [%4$s]",
             getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
@@ -848,7 +897,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).greaterThanEqualTo(lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s]",
+          throwAssertionException("[%1$s] is %2$sgreater than equal to [%3$s]",
             getTarget(), negate(NOT), lowerBound);
         }
       }
@@ -863,7 +912,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).greaterThanEqualToAndLessThan(lowerBound, upperBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s] and less than [%4$s]",
+          throwAssertionException("[%1$s] is %2$sgreater than equal to [%3$s] and less than [%4$s]",
             getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
@@ -878,7 +927,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).greaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound))) {
-          throwAssertionError("[%1$s] is %2$sgreater than equal to [%3$s] and less than equal to [%4$s]",
+          throwAssertionException("[%1$s] is %2$sgreater than equal to [%3$s] and less than equal to [%4$s]",
             getTarget(), negate(NOT), lowerBound, upperBound);
         }
       }
@@ -901,8 +950,8 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(Thread.holdsLock(lock))) {
-          throwAssertionError("[%1$s] %2$slock [%3$s]", Thread.currentThread(),
-            this.expected ? "does not hold " : "holds ", lock);
+          throwAssertionException("[%1$s] %2$slock [%3$s]", Thread.currentThread(),
+            getExpected() ? "does not hold " : "holds ", lock);
         }
       }
 
@@ -917,7 +966,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).instanceOf(type))) {
-          throwAssertionError("[%1$s] is %2$san instance of [%3$s]",
+          throwAssertionException("[%1$s] is %2$san instance of [%3$s]",
             getTarget(), negate(NOT), ObjectUtils.getName(type));
         }
       }
@@ -932,7 +981,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).lessThan(upperBound))) {
-          throwAssertionError("[%1$s] is %2$sless than [%3$s]", getTarget(), negate(NOT), upperBound);
+          throwAssertionException("[%1$s] is %2$sless than [%3$s]", getTarget(), negate(NOT), upperBound);
         }
       }
 
@@ -946,7 +995,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).lessThanOrGreaterThan(upperBound, lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sless than [%3$s] or greater than [%4$s]",
+          throwAssertionException("[%1$s] is %2$sless than [%3$s] or greater than [%4$s]",
             getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
@@ -961,7 +1010,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).lessThanOrGreaterThanEqualTo(upperBound, lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sless than [%3$s] or greater than equal to [%4$s]",
+          throwAssertionException("[%1$s] is %2$sless than [%3$s] or greater than equal to [%4$s]",
             getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
@@ -976,7 +1025,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).lessThanEqualTo(upperBound))) {
-          throwAssertionError("[%1$s] is %2$sless than equal to [%3$s]",
+          throwAssertionException("[%1$s] is %2$sless than equal to [%3$s]",
             getTarget(), negate(NOT), upperBound);
         }
       }
@@ -991,7 +1040,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).lessThanEqualToOrGreaterThan(upperBound, lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sless than equal to [%3$s] or greater than [%4$s]",
+          throwAssertionException("[%1$s] is %2$sless than equal to [%3$s] or greater than [%4$s]",
             getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
@@ -1006,7 +1055,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).lessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound))) {
-          throwAssertionError("[%1$s] is %2$sless than equal to [%3$s] or greater than equal to [%4$s]",
+          throwAssertionException("[%1$s] is %2$sless than equal to [%3$s] or greater than equal to [%4$s]",
             getTarget(), negate(NOT), upperBound, lowerBound);
         }
       }
@@ -1021,8 +1070,8 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).notBlank())) {
-          throwAssertionError("[%1$s] is %2$sblank", getTarget(),
-            this.expected ? StringUtils.EMPTY_STRING : NOT);
+          throwAssertionException("[%1$s] is %2$sblank", getTarget(),
+            getExpected() ? StringUtils.EMPTY_STRING : NOT);
         }
       }
 
@@ -1036,8 +1085,8 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).notEmpty())) {
-          throwAssertionError("[%1$s] is %2$sempty", getTarget(),
-            this.expected ? StringUtils.EMPTY_STRING : NOT);
+          throwAssertionException("[%1$s] is %2$sempty", getTarget(),
+            getExpected() ? StringUtils.EMPTY_STRING : NOT);
         }
       }
 
@@ -1059,7 +1108,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).Null())) {
-          throwAssertionError("[%1$s] is %2$snull", getTarget(), negate(NOT));
+          throwAssertionException("[%1$s] is %2$snull", getTarget(), negate(NOT));
         }
       }
 
@@ -1073,7 +1122,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).sameAs(obj))) {
-          throwAssertionError("[%1$s] is %2$sthe same as [%3$s]", getTarget(), negate(NOT), obj);
+          throwAssertionException("[%1$s] is %2$sthe same as [%3$s]", getTarget(), negate(NOT), obj);
         }
       }
 
@@ -1095,7 +1144,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(is(getTarget()).True())) {
-          throwAssertionError("[%1$s] is %2$strue", getTarget(), negate(NOT));
+          throwAssertionException("[%1$s] is %2$strue", getTarget(), negate(NOT));
         }
       }
 
@@ -1107,7 +1156,7 @@ public abstract class LangExtensions {
      */
     public @NotNull AssertThat<T> not() {
 
-      AssertThat<T> expression = new AssertThatExpression<>(getTarget(), !this.expected);
+      AssertThat<T> expression = new AssertThatExpression<>(getTarget(), getNotExpected());
 
       expression = this.transformer != null ? this.transformer.transform(expression) : expression;
       expression = this.message != null ? expression.describedAs(this.message) : expression;
@@ -1171,10 +1220,10 @@ public abstract class LangExtensions {
     }
 
     private String negate(String value) {
-      return this.expected ? value : "";
+      return getExpected() ? value : EMPTY_STRING;
     }
 
-    private void throwAssertionError(String defaultMessage, Object... args) {
+    private void throwAssertionException(String defaultMessage, Object... args) {
       throw ObjectUtils.returnValueOrDefaultIfNull(this.cause,
         () -> new AssertionException(withMessage(defaultMessage, args)));
     }
@@ -1185,10 +1234,7 @@ public abstract class LangExtensions {
       Supplier<String> message = this.message;
 
       String suppliedMessage = message != null ? message.get() : null;
-
-      String resolvedMessage = is(suppliedMessage).notBlank()
-        ? suppliedMessage
-        : format(defaultMessage, args);
+      String resolvedMessage = is(suppliedMessage).notBlank() ? suppliedMessage : format(defaultMessage, args);
 
       return resolvedMessage;
     }
