@@ -672,7 +672,7 @@ public abstract class LangExtensions {
    *
    * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.
    */
-  private static final class AssertThatExpression<T> implements AssertThat<T> {
+  private static class AssertThatExpression<T> implements AssertThat<T> {
 
     private static final boolean DEFAULT_EXPECTED = true;
 
@@ -1922,7 +1922,7 @@ public abstract class LangExtensions {
    * @param <T> {@link Class type} of the the {@link Object} subject.
    * @see org.cp.elements.lang.LangExtensions.Is
    */
-  private static final class IsExpression<T> implements Is<T> {
+  private static class IsExpression<T> implements Is<T> {
 
     private static final boolean DEFAULT_EXPECTED = true;
 
