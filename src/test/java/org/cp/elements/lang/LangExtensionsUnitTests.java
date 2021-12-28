@@ -26,8 +26,11 @@ import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeList;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -45,7 +48,6 @@ import org.assertj.core.api.Assertions;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -2016,7 +2018,7 @@ public class LangExtensionsUnitTests {
     AssertThat mockAssertion = mock(AssertThat.class);
     AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion);
 
-    when(mockTransformer.transform(ArgumentMatchers.any(AssertThat.class))).thenReturn(wrappedAssertion);
+    when(mockTransformer.transform(any(AssertThat.class))).thenReturn(wrappedAssertion);
 
     wrappedAssertion = wrappedAssertion.transform(mockTransformer);
 
@@ -2050,6 +2052,48 @@ public class LangExtensionsUnitTests {
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
 
     verify(mockAssertion, times(1)).when(eq(ENABLE_DISABLE_CONDITION));
+  }
+
+  @Test
+  public void assertThatWithCompoundActionsIsCorrect() {
+
+    assertThat(2)
+      .isGreaterThanAndLessThan(1, 3)
+      .isLessThanOrGreaterThan(10, 0)
+      .isValid(argument -> argument % 2 == 0)
+      .isNotNull();
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatWithCompoundActionsShortCircuitsAndThrowsAssertionException() {
+
+    AssertThat<Integer> assertThat = spy(assertThat(2));
+
+    try {
+
+      Assertions.assertThat(assertThat).isNotNull();
+      Assertions.assertThat(ObjectUtils.invoke(assertThat, "getTarget", Integer.class)).isEqualTo(2);
+
+      assertThat
+        .isInstanceOf(Integer.class)
+        .isGreaterThanAndLessThan(1, 3)
+        .isValid(argument -> false)
+        .isLessThanOrGreaterThan(3, 1);
+    }
+    catch (AssertionException expected) {
+
+      Assertions.assertThat(expected).hasMessage("[2] is not valid");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      verify(assertThat, times(1)).isInstanceOf(eq(Integer.class));
+      verify(assertThat, times(1)).isGreaterThanAndLessThan(eq(1), eq(3));
+      verify(assertThat, times(1)).isValid(any());
+      verify(assertThat, never()).isLessThanOrGreaterThan(eq(3), eq(1));
+      verifyNoMoreInteractions(assertThat);
+    }
   }
 
   @Test
