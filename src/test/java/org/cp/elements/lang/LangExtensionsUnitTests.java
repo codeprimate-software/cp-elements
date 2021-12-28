@@ -110,6 +110,7 @@ public class LangExtensionsUnitTests {
     assertThat(Math.PI).isAssignableTo(Double.class);
     assertThat(123).isAssignableTo(Integer.class);
     assertThat("test").isAssignableTo(String.class);
+    assertThat("mock").isAssignableTo(Object.class);
     assertThat(new Object()).isAssignableTo(Object.class);
   }
 
@@ -118,10 +119,10 @@ public class LangExtensionsUnitTests {
 
     assertThat("false").not().isAssignableTo(Boolean.class);
     assertThat("test").not().isAssignableTo(Character.class);
-    assertThat(3.14159d).not().isAssignableTo(Float.class);
     assertThat(123.45f).not().isAssignableTo(Double.class);
-    assertThat(123).not().isAssignableTo(Long.class);
+    assertThat(3.14159d).not().isAssignableTo(Float.class);
     assertThat(123L).not().isAssignableTo(Integer.class);
+    assertThat(123).not().isAssignableTo(Long.class);
     assertThat('c').not().isAssignableTo(String.class);
     assertThat(new Object()).not().isAssignableTo(String.class);
   }
@@ -130,7 +131,9 @@ public class LangExtensionsUnitTests {
   public void assertThatObjectIsAssignableToStringThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(Object.class).stating("This is a %1$s{1}", "test", "!").isAssignableTo(String.class),
+      () -> assertThat(Object.class)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isAssignableTo(String.class),
         () -> "This is a test!");
   }
 
@@ -157,7 +160,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void assertThatObjectIsComparableWithObject() {
+  public void assertThatObjectIsComparableToObject() {
 
     assertThat(true).isComparableTo(Boolean.TRUE);
     assertThat('c').isComparableTo('c');
@@ -167,7 +170,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
-  public void assertThatObjectIsNotComparableWithObject() {
+  public void assertThatObjectIsNotComparableToObject() {
 
     assertThat(Boolean.FALSE).isNotComparableTo(true);
     assertThat('c').isNotComparableTo('C');
@@ -187,7 +190,7 @@ public class LangExtensionsUnitTests {
   public void assertThatObjectsAreNotComparableThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("c").stating("This is a %1$s{1}", "test", "!").isComparableTo("see"),
+      () -> assertThat("c").describedAs("This is a %1$s{1}", "test", "!").isComparableTo("see"),
         () -> "This is a test!");
   }
 
@@ -208,7 +211,7 @@ public class LangExtensionsUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void assertThatObjectsIsEqualToObject() {
+  public void assertThatObjectIsEqualToObject() {
 
     assertThat(true).isEqualTo(Boolean.TRUE);
     assertThat('c').isEqualTo(Character.valueOf('c'));
@@ -238,7 +241,7 @@ public class LangExtensionsUnitTests {
   public void assertThatObjectIsEqualToObjectThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("r").stating("This is a %1$s{1}", "test", "!").isEqualTo("are"),
+      () -> assertThat("r").describedAs("This is a %1$s{1}", "test", "!").isEqualTo("are"),
         () -> "This is a test!");
   }
 
@@ -266,19 +269,21 @@ public class LangExtensionsUnitTests {
 
   @Test
   public void assertThatTrueIsNotFalse() {
+
     assertThat(true).not().isFalse();
+    assertThat(Boolean.TRUE).not().isFalse();
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatTrueIsFalseThrowsAssertionError() {
+  public void assertThatTrueIsFalseThrowsAssertionException() {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).isFalse(), () -> "[true] is not false");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatTrueIsFalseThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatTrueIsFalseThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(true).stating("This is a %1$s{1}", "test", "!").isFalse(),
+      () -> assertThat(true).describedAs("This is a %1$s{1}", "test", "!").isFalse(),
         () -> "This is a test!");
   }
 
@@ -291,7 +296,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatFalseIsNotFalseThrowsAssertionError() {
+  public void assertThatFalseIsNotFalseThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(false).not().isFalse(),
       () -> "[false] is false");
@@ -313,17 +318,17 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanThrowsAssertionError() {
+  public void assertThatIsGreaterThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isGreaterThan(2),
       () -> "[2] is not greater than [2]");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsGreaterThanThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThan(3),
+      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isGreaterThan(3),
         () -> "This is a test!");
   }
 
@@ -336,7 +341,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotGreaterThanThrowsAssertionError() {
+  public void assertThatIsNotGreaterThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isGreaterThan(1),
       () -> "[2] is greater than [1]");
@@ -361,7 +366,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanAndLessThanThrowsAssertionError() {
+  public void assertThatIsGreaterThanAndLessThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).isGreaterThanAndLessThan(2, 2),
@@ -369,10 +374,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanAndLessThanThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsGreaterThanAndLessThanThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThan(2, 2),
+      () -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isGreaterThanAndLessThan(2, 2),
         () -> "This is a test!");
   }
 
@@ -380,12 +387,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsGreaterThanAndLessThanThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThan(2, 2),
+      () -> assertThat(2)
+        .throwing(new IllegalArgumentException("test"))
+        .isGreaterThanAndLessThan(2, 2),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotGreaterThanAndLessThanThrowsAssertionError() {
+  public void assertThatIsNotGreaterThanAndLessThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).not().isGreaterThanAndLessThan(1, 3),
@@ -411,7 +420,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionError() {
+  public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).isGreaterThanAndLessThanEqualTo(2, 2),
@@ -419,10 +428,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsGreaterThanAndLessThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanAndLessThanEqualTo(2, 2),
+      () -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isGreaterThanAndLessThanEqualTo(2, 2),
         () -> "This is a test!");
   }
 
@@ -430,12 +441,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsGreaterThanAndLessThanEqualToThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanAndLessThanEqualTo(2, 2),
+      () -> assertThat(2)
+        .throwing(new IllegalArgumentException("test"))
+        .isGreaterThanAndLessThanEqualTo(2, 2),
       () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotGreaterThanAndLessThanEqualToThrowsAssertionError() {
+  public void assertThatIsNotGreaterThanAndLessThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).not().isGreaterThanAndLessThanEqualTo(1, 2),
@@ -461,17 +474,17 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanEqualToThrowsAssertionError() {
+  public void assertThatIsGreaterThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isGreaterThanEqualTo(3),
       () -> "[2] is not greater than equal to [3]");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsGreaterThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3),
+      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isGreaterThanEqualTo(3),
         () -> "This is a test!");
   }
 
@@ -484,7 +497,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotGreaterThanEqualToThrowsAssertionError() {
+  public void assertThatIsNotGreaterThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isGreaterThanEqualTo(1),
       () -> "[2] is greater than equal to [1]");
@@ -509,7 +522,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionError() {
+  public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).isGreaterThanEqualToAndLessThan(3, 1),
@@ -517,10 +530,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsGreaterThanEqualToAndLessThanThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1s{1}", "test", "!").isGreaterThanEqualToAndLessThan(3, 1),
+      () -> assertThat(2)
+        .describedAs("This is a %1s{1}", "test", "!")
+        .isGreaterThanEqualToAndLessThan(3, 1),
         () -> "This is a test!");
   }
 
@@ -528,12 +543,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsGreaterThanEqualToAndLessThanThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThan(3, 1),
+      () -> assertThat(2)
+        .throwing(new IllegalArgumentException("test"))
+        .isGreaterThanEqualToAndLessThan(3, 1),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotGreaterThanEqualToAndLessThanThrowsAssertionError() {
+  public void assertThatIsNotGreaterThanEqualToAndLessThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).not().isGreaterThanEqualToAndLessThan(1, 3),
@@ -558,7 +575,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
+  public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).isGreaterThanEqualToAndLessThanEqualTo(3, 1),
@@ -566,10 +583,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isGreaterThanEqualToAndLessThanEqualTo(3, 1),
+      () -> assertThat(2)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isGreaterThanEqualToAndLessThanEqualTo(3, 1),
         () -> "This is a test!");
   }
 
@@ -577,12 +596,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsGreaterThanEqualToAndLessThanEqualToThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(2).throwing(new IllegalArgumentException("test")).isGreaterThanEqualToAndLessThanEqualTo(3, 1),
+      () -> assertThat(2)
+        .throwing(new IllegalArgumentException("test"))
+        .isGreaterThanEqualToAndLessThanEqualTo(3, 1),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionError() {
+  public void assertThatIsNotGreaterThanEqualToAndLessThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).not().isGreaterThanEqualToAndLessThanEqualTo(1, 3),
@@ -595,6 +616,7 @@ public class LangExtensionsUnitTests {
     assertThat("test").hasText();
     assertThat("null").isNotBlank();
     assertThat("empty").hasText();
+    assertThat("blank").hasText();
     assertThat("123").isNotBlank();
     assertThat("0").hasText();
     assertThat("_").isNotBlank();
@@ -611,16 +633,15 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatBlankStringHasTextThrowsAssertionError() {
-
+  public void assertThatBlankStringHasTextThrowsAssertionException() {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(" ").hasText(), () -> "[ ] is blank");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatEmptyStringHasTextThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatEmptyStringHasTextThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank(),
+      () -> assertThat("").describedAs("This is a %1$s{1}", "test", "!").isNotBlank(),
         () -> "This is a test!");
   }
 
@@ -633,7 +654,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatStringDoesNotHaveTextThrowsAssertionError() {
+  public void assertThatStringDoesNotHaveTextThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().hasText(),
       () -> "[test] is not blank");
@@ -653,17 +674,19 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatCurrentThreadHoldsLockThrowsAssertionError() {
+  public void assertThatCurrentThreadHoldsLockThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(Thread.currentThread()).holdsLock(lock),
       () -> String.format("[%1$s] does not hold lock [%2$s]", Thread.currentThread(), lock));
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatCurrentThreadHoldsLockThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatCurrentThreadHoldsLockThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(Thread.currentThread()).stating("This is a %1$s{1}", "test", "!").holdsLock(lock),
+      () -> assertThat(Thread.currentThread())
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .holdsLock(lock),
         () -> "This is a test!");
   }
 
@@ -671,12 +694,14 @@ public class LangExtensionsUnitTests {
   public void assertThatCurrentThreadHoldsLockThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(Thread.currentThread()).throwing(new IllegalArgumentException("test")).holdsLock(lock),
+      () -> assertThat(Thread.currentThread())
+        .throwing(new IllegalArgumentException("test"))
+        .holdsLock(lock),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionError() {
+  public void assertThatCurrentThreadDoesNotHoldLockThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> {
       synchronized (lock) {
@@ -695,7 +720,7 @@ public class LangExtensionsUnitTests {
     assertThat(2).isInstanceOf(Integer.class);
     assertThat(123).isInstanceOf(Number.class);
     assertThat("test").isInstanceOf(String.class);
-    assertThat("test").isInstanceOf(Object.class);
+    assertThat("mock").isInstanceOf(Object.class);
     assertThat(new Object()).isInstanceOf(Object.class);
   }
 
@@ -711,17 +736,19 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatStringIsInstanceOfCharacterThrowsAssertionError() {
+  public void assertThatStringIsInstanceOfCharacterThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isInstanceOf(Character.class),
       () -> "[test] is not an instance of [java.lang.Character]");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatStringIsInstanceOfCharacterThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatStringIsInstanceOfCharacterThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("test").stating("This is a %1$s{1}", "test", "!").isInstanceOf(Character.class),
+      () -> assertThat("test")
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isInstanceOf(Character.class),
         () -> "This is a test!");
   }
 
@@ -729,12 +756,14 @@ public class LangExtensionsUnitTests {
   public void assertThatStringIsInstanceOfCharacterThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat("test").throwing(new IllegalArgumentException("test")).isInstanceOf(Character.class),
+      () -> assertThat("test")
+        .throwing(new IllegalArgumentException("test"))
+        .isInstanceOf(Character.class),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatStringIsNotInstanceOfStringThrowsAssertionError() {
+  public void assertThatStringIsNotInstanceOfStringThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isInstanceOf(String.class),
       () -> "[test] is an instance of [java.lang.String]");
@@ -759,17 +788,17 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanThrowsAssertionError() {
+  public void assertThatIsLessThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isLessThan(1),
       () -> "[2] is not less than [1]");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsLessThanThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThan(1),
+      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isLessThan(1),
         () -> "This is a test!");
   }
 
@@ -782,7 +811,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotLessThanThrowsAssertionError() {
+  public void assertThatIsNotLessThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(1).not().isLessThan(2),
       () -> "[1] is less than [2]");
@@ -804,7 +833,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanOrGreaterThanThrowsAssertionError() {
+  public void assertThatIsLessThanOrGreaterThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(0).isLessThanOrGreaterThan(-1, 1),
@@ -812,10 +841,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsLessThanOrGreaterThanThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThan(-1, 1),
+      () -> assertThat(0)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isLessThanOrGreaterThan(-1, 1),
         ()  -> "This is a test!");
   }
 
@@ -823,12 +854,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsLessThanOrGreaterThanThrowsIllegalArgumentException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanOrGreaterThan(-1, 1),
+      () -> assertThat(0)
+        .throwing(new IllegalArgumentException("test"))
+        .isLessThanOrGreaterThan(-1, 1),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotLessThanOrGreaterThanThrowsAssertionError() {
+  public void assertThatIsNotLessThanOrGreaterThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(3).not().isLessThanOrGreaterThan(-1, 1),
@@ -851,7 +884,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionError() {
+  public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () ->  assertThat(0).isLessThanOrGreaterThanEqualTo(-1, 1),
@@ -859,10 +892,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsLessThanOrGreaterThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanOrGreaterThanEqualTo(-1, 1),
+      () -> assertThat(0)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isLessThanOrGreaterThanEqualTo(-1, 1),
         () -> "This is a test!");
   }
 
@@ -870,12 +905,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsLessThanOrGreaterThanEqualToThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanOrGreaterThanEqualTo(-1, 1),
+      () -> assertThat(0)
+        .throwing(new IllegalArgumentException("test"))
+        .isLessThanOrGreaterThanEqualTo(-1, 1),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotLessThanOrGreaterThanEqualToThrowsAssertionError() {
+  public void assertThatIsNotLessThanOrGreaterThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(1).not().isLessThanOrGreaterThanEqualTo(-1, 1),
@@ -900,17 +937,17 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanEqualToThrowsAssertionError() {
+  public void assertThatIsLessThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).isLessThanEqualTo(-3),
       () -> "[2] is not less than equal to [-3]");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanEqualToThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsLessThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(2).stating("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3),
+      () -> assertThat(2).describedAs("This is a %1$s{1}", "test", "!").isLessThanEqualTo(-3),
         () -> "This is a test!");
   }
 
@@ -923,7 +960,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotLessThanEqualToThrowsAssertionError() {
+  public void assertThatIsNotLessThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(2).not().isLessThanEqualTo(3),
       () -> "[2] is less than equal to [3]");
@@ -945,7 +982,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionError() {
+  public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(0).isLessThanEqualToOrGreaterThan(-1, 1),
@@ -953,10 +990,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsLessThanEqualToOrGreaterThanThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThan(-1, 1),
+      () -> assertThat(0)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isLessThanEqualToOrGreaterThan(-1, 1),
         () -> "This is a test!");
   }
 
@@ -964,12 +1003,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsLessThanEqualToOrGreaterThanThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanEqualToOrGreaterThan(-1, 1),
+      () -> assertThat(0)
+        .throwing(new IllegalArgumentException("test"))
+        .isLessThanEqualToOrGreaterThan(-1, 1),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotLessThanEqualToOrGreaterThanThrowsAssertionError() {
+  public void assertThatIsNotLessThanEqualToOrGreaterThanThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).not().isLessThanEqualToOrGreaterThan(-1, 1),
@@ -991,7 +1032,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
+  public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(0).isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
@@ -999,10 +1040,12 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(0).stating("This is a %1$s{1}", "test", "!").isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
+      () -> assertThat(0)
+        .describedAs("This is a %1$s{1}", "test", "!")
+        .isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
         ()  -> "This is a test!");
   }
 
@@ -1010,12 +1053,14 @@ public class LangExtensionsUnitTests {
   public void assertThatIsLessThanEqualToOrGreaterThanEqualToThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> assertThat(0).throwing(new IllegalArgumentException("test")).isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
+      () -> assertThat(0)
+        .throwing(new IllegalArgumentException("test"))
+        .isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
         () -> "test");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIsNotLessThanEqualToOrGreaterThanEqualToThrowsAssertionError() {
+  public void assertThatIsNotLessThanEqualToOrGreaterThanEqualToThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
       () -> assertThat(2).not().isLessThanEqualToOrGreaterThanEqualTo(-1, 1),
@@ -1037,16 +1082,16 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatNonNullObjectIsNullThrowsAssertionError() {
+  public void assertThatNonNullObjectIsNullThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNull(), () -> "[test] is not null");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatNonNullObjectIsNullThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatNonNullObjectIsNullThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("test").stating("This is a %1$s{1}", "test", "!").isNull(),
+      () -> assertThat("test").describedAs("This is a %1$s{1}", "test", "!").isNull(),
         () -> "This is a test!");
   }
 
@@ -1059,7 +1104,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatNullObjectIsNotNullThrowsAssertionError() {
+  public void assertThatNullObjectIsNotNullThrowsAssertionException() {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(null).isNotNull(), () -> "[null] is null");
   }
 
@@ -1069,8 +1114,10 @@ public class LangExtensionsUnitTests {
     assertThat("test").isNotEmpty();
     assertThat("null").isNotEmpty();
     assertThat("empty").isNotEmpty();
+    assertThat("blank").isNotEmpty();
     assertThat("0").isNotEmpty();
     assertThat("  ").isNotEmpty();
+    assertThat(" ").isNotEmpty();
     assertThat("_").isNotEmpty();
     assertThat("-").isNotEmpty();
     assertThat("*").isNotEmpty();
@@ -1085,15 +1132,15 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatEmptyStringIsNotEmptyThrowsAssertionError() {
+  public void assertThatEmptyStringIsNotEmptyThrowsAssertionException() {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("").isNotEmpty(), () -> "[] is empty");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatEmptyStringIsNotEmptyThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatEmptyStringIsNotEmptyThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("").stating("This is a %1$s{1}", "test", "!").isNotBlank(),
+      () -> assertThat("").describedAs("This is a %1$s{1}", "test", "!").isNotBlank(),
         () -> "This is a test!");
   }
 
@@ -1106,18 +1153,73 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatNonEmptyStringIsEnptyThrowsAssertionError() {
+  public void assertThatNonEmptyStringIsEmptyThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(" ").not().isNotEmpty(),
       () -> "[ ] is not empty");
   }
 
   @Test
+  public void assertThatNonBlankStringsAreNotBlank() {
+
+    assertThat("test").isNotBlank();
+    assertThat("mock").isNotBlank();
+    assertThat("empty").isNotBlank();
+    assertThat("blank").isNotBlank();
+    assertThat("_").isNotBlank();
+    assertThat("0").isNotBlank();
+    assertThat("nil").isNotBlank();
+    assertThat("null").isNotBlank();
+  }
+
+  @Test
+  public void assertThatBlankStringsAreBlank() {
+
+    assertThat(null).not().isNotBlank();
+    assertThat("").not().isNotBlank();
+    assertThat("  ").not().isNotBlank();
+    assertThat("\t").not().isNotBlank();
+    assertThat("\n").not().isNotBlank();
+    assertThat("\0").not().isNotBlank();
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatBlankStringThrowsAssertionException() {
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("  ").isNotBlank(), () -> "[  ] is blank");
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatBlankStringThrowsAssertionExceptionWithCustomMessage() {
+
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("  ")
+      .describedAs("This is a %1$s{1}", "test", "!")
+      .isNotBlank(),
+      () -> "This is a test!");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertThatBlankStringThrowsIllegalArgumentException() {
+
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> assertThat("  ")
+      .throwing(new IllegalArgumentException("test"))
+      .isNotBlank(), () -> "test");
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatNonBlankStringIsBlankThrowsAssertionException() {
+
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("nonBlank").not().isNotBlank(),
+      () -> "[nonBlank] is not blank");
+  }
+
+  @Test
   public void assertThatObjectIsSameAsObject() {
+
+    Double pi = Math.PI;
 
     assertThat(true).isSameAs(Boolean.TRUE);
     assertThat('c').isSameAs('c');
-    //assertThat(Math.PI).isSameAs(Math.PI);
+    assertThat(pi).isSameAs(pi);
     assertThat(1).isSameAs(1);
     assertThat("test").isSameAs("test");
   }
@@ -1133,17 +1235,17 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionError() {
+  public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isSameAs("TEST"),
       () -> "[test] is not the same as [TEST]");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatNonIdenticalObjectsAreTheSameThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat("test").stating("This is a %1$s{1}", "test", "!").isSameAs("TEST"),
+      () -> assertThat("test").describedAs("This is a %1$s{1}", "test", "!").isSameAs("TEST"),
         () -> "This is a test!");
   }
 
@@ -1156,7 +1258,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionError() {
+  public void assertThatIdenticalObjectsAreNotTheSameThrowsAssertionException() {
 
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").isNotSameAs("test"),
       () -> "[test] is the same as [test]");
@@ -1171,19 +1273,21 @@ public class LangExtensionsUnitTests {
 
   @Test
   public void assertThatFalseIsNotTrue() {
+
     assertThat(false).not().isTrue();
+    assertThat(Boolean.FALSE).not().isTrue();
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatFalseIsTrueThrowsAssertionError() {
+  public void assertThatFalseIsTrueThrowsAssertionException() {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(false).isTrue(), () -> "[false] is not true");
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatFalseIsTrueThrowsAssertionErrorWithCustomMessage() {
+  public void assertThatFalseIsTrueThrowsAssertionExceptionWithCustomMessage() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(false).stating("This is a %1$s{1}", "test", "!").isTrue(),
+      () -> assertThat(false).describedAs("This is a %1$s{1}", "test", "!").isTrue(),
         () -> "This is a test!");
   }
 
@@ -1196,7 +1300,7 @@ public class LangExtensionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertThatTrueIsNotTrueThrowsAssertionError() {
+  public void assertThatTrueIsNotTrueThrowsAssertionException() {
     TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat(true).not().isTrue(), () -> "[true] is true");
   }
 
@@ -1275,6 +1379,18 @@ public class LangExtensionsUnitTests {
     assertThat("test")
       .when(Condition.FALSE_CONDITION)
       .isValid(argument -> false);
+  }
+
+  @Test
+  public void assertThatIsNotValidWithNonValidValue() {
+    assertThat("test").not().isValid(argument -> false);
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertThatIsNotValidWithValidValueThrowsAssertionException() {
+
+    TestUtils.doAssertionExceptionThrowingOperation(() -> assertThat("test").not().isValid(argument -> true),
+      () -> "[test] is valid");
   }
 
   @Test(expected = AssertionException.class)
@@ -1486,7 +1602,7 @@ public class LangExtensionsUnitTests {
   public void negatedAssertThatRetainsExceptionMessageAndArgs() {
 
     TestUtils.doAssertionExceptionThrowingOperation(
-      () -> assertThat(null).stating("%1$s cannot be {1}", "Object", "null").isNotNull(),
+      () -> assertThat(null).describedAs("%1$s cannot be {1}", "Object", "null").isNotNull(),
         () -> "Object cannot be null");
   }
 
@@ -1643,7 +1759,8 @@ public class LangExtensionsUnitTests {
 
     AssertThatWrapper.wrap(mockAssertion).isGreaterThanEqualToAndLessThanEqualTo(-1, 1);
 
-    verify(mockAssertion, times(1)).isGreaterThanEqualToAndLessThanEqualTo(eq(-1), eq(1));
+    verify(mockAssertion, times(1))
+      .isGreaterThanEqualToAndLessThanEqualTo(eq(-1), eq(1));
     verifyNoMoreInteractions(mockAssertion);
   }
 
@@ -1751,7 +1868,8 @@ public class LangExtensionsUnitTests {
 
     AssertThatWrapper.wrap(mockAssertion).isLessThanEqualToOrGreaterThanEqualTo(-1, 1);
 
-    verify(mockAssertion, times(1)).isLessThanEqualToOrGreaterThanEqualTo(eq(-1), eq(1));
+    verify(mockAssertion, times(1))
+      .isLessThanEqualToOrGreaterThanEqualTo(eq(-1), eq(1));
     verifyNoMoreInteractions(mockAssertion);
   }
 
@@ -1913,7 +2031,7 @@ public class LangExtensionsUnitTests {
   public void wrappedAssertThatUsingDelegatesToWrappedAssertion() {
 
     AssertThat mockAssertion = mock(AssertThat.class);
-    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).stating("message", "args");
+    AssertThat wrappedAssertion = AssertThatWrapper.wrap(mockAssertion).describedAs("message", "args");
 
     Assertions.assertThat(wrappedAssertion).isNotSameAs(mockAssertion);
     assertTrue(wrappedAssertion instanceof AssertThatWrapper);
@@ -2030,7 +2148,8 @@ public class LangExtensionsUnitTests {
     assertTrue(is(-2).not().equalTo(2));
     assertTrue(is(3.14159d).not().equalTo(Math.PI));
     assertTrue(is("test").not().equalTo("TEST"));
-    assertTrue(is(TestUtils.createCalendar(2011, Calendar.OCTOBER, 13)).not().equalTo(Calendar.getInstance()));
+    assertTrue(is(TestUtils.createCalendar(2011, Calendar.OCTOBER, 13))
+      .not().equalTo(Calendar.getInstance()));
   }
 
   @Test

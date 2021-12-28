@@ -714,7 +714,7 @@ public abstract class LangExtensions {
      * used as the subject of this assertion.
      *
      * @param obj {@link Object} to evaluate and make an assertion.
-     * @param expected boolean value specifying the outcome of the assertion.
+     * @param expected boolean value specifying the expected outcome of this assertion.
      * @see java.lang.Object
      */
     private AssertThatExpression(@Nullable T obj, boolean expected) {
@@ -1173,7 +1173,7 @@ public abstract class LangExtensions {
 
       if (conditionHolds()) {
         if (notEqualToExpected(predicate.test(getTarget()))) {
-          throwAssertionException("[%s] is not valid", getTarget());
+          throwAssertionException("[%1$s] is %2$svalid", getTarget(), negate(NOT));
         }
       }
 
