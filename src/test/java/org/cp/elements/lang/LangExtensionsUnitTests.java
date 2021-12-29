@@ -2114,13 +2114,13 @@ public class LangExtensionsUnitTests {
 
     assertFalse(is(Object.class).assignableTo(String.class));
     assertFalse(is(Boolean.TYPE).assignableTo(Boolean.class));
+    assertFalse(is(Character.class).assignableTo(String.class));
     assertFalse(is(Double.class).assignableTo(BigDecimal.class));
-    assertFalse(is(Integer.class).assignableTo(BigInteger.class));
     assertFalse(is(Float.class).assignableTo(Double.class));
+    assertFalse(is(Integer.class).assignableTo(BigInteger.class));
     assertFalse(is(Integer.class).assignableTo(Long.class));
     assertFalse(is(String.class).assignableTo(BigDecimal.class));
     assertFalse(is(String.class).assignableTo(Character.class));
-    assertFalse(is(Character.class).assignableTo(String.class));
   }
 
   @Test
@@ -2152,6 +2152,7 @@ public class LangExtensionsUnitTests {
 
     assertFalse(is(johnBlum).comparableTo(jonBloom));
     assertTrue(is(johnBlum).not().comparableTo(jonBloom));
+    assertTrue(is(johnBlum).notComparableTo(jonBloom));
     assertTrue(is(johnBlum).equalTo(jonBloom));
   }
 

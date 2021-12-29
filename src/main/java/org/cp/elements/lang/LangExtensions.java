@@ -1611,7 +1611,7 @@ public abstract class LangExtensions {
    * equality, identity, relational or type comparisons with other {@link Object Objects}, and so on.
    *
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
-   * @param obj {@link Object} that is the subject of the operation.
+   * @param obj {@link Object} that is the {@literal subject} of the operation.
    * @return a new instance of the {@literal is} operator.
    * @see org.cp.elements.lang.LangExtensions.IsExpression
    * @see org.cp.elements.lang.annotation.FluentApi
@@ -1644,36 +1644,61 @@ public abstract class LangExtensions {
     boolean assignableTo(Class<?> type);
 
     /**
-     * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
-     * considered equal as determined by their compareTo method.  This implies that the objects in the equality
-     * comparison must implement the Comparable interface.
+     * Determines whether the {@link Object} provided to the {@literal is} operator is equal to
+     * the {@link Object} parameter.
      *
-     * @param obj the Object parameter used in the equality comparison.
-     * @return a boolean value indicating whether the objects are equal.
+     * The {@link Object Objects} are considered equal as determined by their {@link Comparable#compareTo} method.
+     * This implies that the {@link Object Objects} in the equality comparison must implement
+     * the {@link Comparable} interface.
+     *
+     * @param obj {@link Object} parameter used in the equality comparison.
+     * @return a boolean value indicating whether the {@link Object Objects} are equal.
      * @see java.lang.Comparable#compareTo(Object)
      */
     boolean comparableTo(T obj);
 
     /**
-     * Determines whether the object provided to the is operator is equal to the object parameter.  The objects are
-     * considered equal when neither is null, both refer to the same object, or both objects have the same value as
-     * determined by their equals method.
+     * Shortcut for {@literal not().comparableTo(:Object)}. Determines whether the {@link Object} provided to
+     * the {@literal is} operator is not equal to the {@link Object} parameter.
      *
-     * @param obj the Object parameter used in the equality comparison.
-     * @return a boolean value indicating whether the objects are equal.
+     * The {@link Object Objects} are considered equal as determined by their {@link Comparable#compareTo} method.
+     * This implies that the {@link Object Objects} in the equality comparison must implement
+     * the {@link Comparable} interface.
+     *
+     * @param obj {@link Object} parameter used in the equality comparison.
+     * @return a boolean value indicating whether the {@link Object Objects} are not equal.
+     * @see java.lang.Comparable#compareTo(Object)
+     * @see #comparableTo(Object)
+     * @see #not()
+     */
+    boolean notComparableTo(T obj);
+
+    /**
+     * Determines whether the {@link Object} provided to the {@literal is} operator is equal to
+     * the {@link Object} parameter.
+     *
+     * The {@link Object Objects} are considered equal when neither is {@literal null}, both refer to
+     * the same {@link Object}, or both {@link Object Objects} have the same {@literal value} as determined by
+     * their {@link Object#equals} method.
+     *
+     * @param obj {@link Object} parameter used in the equality comparison.
+     * @return a boolean value indicating whether the {@link Object Objects} are equal.
      * @see java.lang.Object#equals(Object)
      */
     boolean equalTo(T obj);
 
     /**
-     * Shortcut for not().equalTo(:Object). Determines whether the object provided to the is operator is not equal to
-     * the object parameter.  The objects are considered unequal when either is null, both are objects of
-     * different types, or both objects are unequal in value as determined by their equals method.
+     * Shortcut for not().equalTo(:Object). Determines whether the {@link Object} provided to the {@literal is} operator
+     * is not equal to the {@link Object} parameter.
      *
-     * @param obj the Object parameter used in the equality comparison.
-     * @return a boolean value indicating whether the objects are unequal.
-     * @see #not()
+     * The {@link Object Objects} are considered unequal when either is {@literal null}, both are {@link Object Objects}
+     * of different {@link Class types}, or both {@link Object Objects} are unequal in {@literal value} as determined by
+     * their {@link Object#equals} method.
+     *
+     * @param obj {@link Object} parameter used in the equality comparison.
+     * @return a boolean value indicating whether the {@link Object Objects} are unequal.
      * @see #equalTo(Object)
+     * @see #not()
      */
     boolean notEqualTo(T obj);
 
@@ -1930,25 +1955,25 @@ public abstract class LangExtensions {
 
     private final T obj;
 
-    private IsExpression(T obj) {
+    private IsExpression(@Nullable T obj) {
       this(obj, DEFAULT_EXPECTED);
     }
 
-    private IsExpression(T obj, boolean expected) {
+    private IsExpression(@Nullable T obj, boolean expected) {
       this.obj = obj;
       this.expected = expected;
     }
 
-    private boolean equalToExpected(boolean actualOutcome) {
-      return (actualOutcome == expected);
+    private boolean equalToExpected(boolean actual) {
+      return actual == this.expected;
     }
 
-    private LogicalOperator getOp(LogicalOperator op) {
-      return (expected ? op : op.getOpposite());
+    private @NotNull LogicalOperator getOp(@NotNull LogicalOperator op) {
+      return this.expected ? op : op.getOpposite();
     }
 
-    private Class<?> toClass(Object obj) {
-      return (obj instanceof Class ? (Class<?>) obj : obj.getClass());
+    private @NotNull Class<?> toClass(@NotNull Object obj) {
+      return obj instanceof Class ? (Class<?>) obj : obj.getClass();
     }
 
     @SuppressWarnings("unchecked")
@@ -1956,83 +1981,171 @@ public abstract class LangExtensions {
       return (Comparable<T>) obj;
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean assignableTo(Class<?> type) {
-      return equalToExpected(obj != null && type != null && type.isAssignableFrom(toClass(obj)));
+      return equalToExpected(this.obj != null && type != null && type.isAssignableFrom(toClass(this.obj)));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean comparableTo(T obj) {
       return equalToExpected(toComparable(this.obj).compareTo(obj) == 0);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public boolean notComparableTo(T obj) {
+      return not().comparableTo(obj);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean equalTo(T obj) {
       return equalToExpected(this.obj != null && this.obj.equals(obj));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean notEqualTo(T obj) {
       return not().equalTo(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean False() {
       return equalToExpected(Boolean.FALSE.equals(this.obj));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean greaterThan(T lowerBound) {
       return equalToExpected(toComparable(this.obj).compareTo(lowerBound) > 0);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean greaterThanAndLessThan(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThan(lowerBound), lessThan(upperBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean greaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThan(lowerBound), lessThanEqualTo(upperBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean greaterThanEqualTo(T lowerBound) {
       return equalToExpected(toComparable(this.obj).compareTo(lowerBound) >= 0);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean greaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThanEqualTo(lowerBound), lessThan(upperBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean greaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThanEqualTo(lowerBound), lessThanEqualTo(upperBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     @SuppressWarnings("rawtypes")
     public boolean instanceOf(Class type) {
       return equalToExpected(type != null && type.isInstance(this.obj));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean lessThan(T upperBound) {
       return equalToExpected(toComparable(this.obj).compareTo(upperBound) < 0);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean lessThanOrGreaterThan(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThan(upperBound), greaterThan(lowerBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean lessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThan(upperBound), greaterThanEqualTo(lowerBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean lessThanEqualTo(T upperBound) {
       return equalToExpected(toComparable(this.obj).compareTo(upperBound) <= 0);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean lessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThanEqualTo(upperBound), greaterThan(lowerBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean lessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThanEqualTo(upperBound), greaterThanEqualTo(lowerBound));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean notBlank() {
       return StringUtils.hasText(ObjectUtils.toString(this.obj));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean notEmpty() {
 
       boolean result = (this.obj instanceof Object[] && ((Object[]) this.obj).length != 0);
@@ -2044,22 +2157,42 @@ public abstract class LangExtensions {
       return result;
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean notNull() {
       return not().Null();
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean Null() {
       return equalToExpected(this.obj == null);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean notSameAs(T obj) {
       return not().sameAs(obj);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean sameAs(T obj) {
       return equalToExpected(this.obj == obj);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
     public boolean True() {
       return equalToExpected(Boolean.TRUE.equals(this.obj));
     }
