@@ -28,6 +28,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -38,8 +39,11 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -2565,6 +2569,162 @@ public class LangExtensionsUnitTests {
 
       throw expected;
     }
+  }
+
+  @Test
+  public void isNotEmptyWithNull() {
+    assertFalse(is(null).notEmpty());
+  }
+
+  @Test
+  public void isNotNotEmptyWithNull() {
+    assertTrue(is(null).not().notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyArrayWithNonEmptyArray() {
+
+    Object[] array = { "one", "two" };
+
+    assertTrue(is(array).notEmpty());
+    assertTrue(is(new Object[] { "test" }).notEmpty());
+    assertTrue(is(new Object[1]).notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyArrayWithEmptyArray() {
+    assertFalse(is(new Object[0]).notEmpty());
+  }
+
+  @Test
+  public void isNotNotEmptyArrayWithEmptyArray() {
+    assertTrue(is(new Object[0]).not().notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyCollectionWithNonEmptyCollection() {
+
+    List<?> list = Arrays.asList("one", "two");
+
+    assertTrue(is(list).notEmpty());
+    assertTrue(is(Collections.singleton("test")).notEmpty());
+    assertTrue(is(Collections.singletonList("mock")).notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyCollectionWithEmptyCollection() {
+
+    assertFalse(is(Collections.emptyList()).notEmpty());
+    assertFalse(is(Collections.emptySet()).notEmpty());
+  }
+
+  @Test
+  public void isNotNotEmptyCollectionWithEmptyCollection() {
+
+    assertTrue(is(Collections.emptyList()).not().notEmpty());
+    assertTrue(is(Collections.emptySet()).not().notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyIterableWithNonEmptyIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+    Iterator<?> mockIterator = mock(Iterator.class);
+
+    doReturn(mockIterator).when(mockIterable).iterator();
+    doReturn(true).when(mockIterator).hasNext();
+
+    assertTrue(is(mockIterable).notEmpty());
+
+    verify(mockIterable, times(1)).iterator();
+    verify(mockIterator, times(1)).hasNext();
+    verifyNoMoreInteractions(mockIterable, mockIterator);
+  }
+
+  @Test
+  public void isNotEmptyIterableWithEmptyIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+    Iterator<?> mockIterator = mock(Iterator.class);
+
+    doReturn(mockIterator).when(mockIterable).iterator();
+    doReturn(false).when(mockIterator).hasNext();
+
+    assertFalse(is(mockIterable).notEmpty());
+
+    verify(mockIterable, times(1)).iterator();
+    verify(mockIterator, times(1)).hasNext();
+    verifyNoMoreInteractions(mockIterable, mockIterator);
+  }
+
+  @Test
+  public void isNotEmptyIterableWithNullIterator() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+
+    doReturn(null).when(mockIterable).iterator();
+
+    assertFalse(is(mockIterable).notEmpty());
+
+    verify(mockIterable, times(1)).iterator();
+    verifyNoMoreInteractions(mockIterable);
+  }
+
+  @Test
+  public void isNotNotEmptyIterableWithEmptyIterable() {
+
+    Iterable<?> mockIterable = mock(Iterable.class);
+    Iterator<?> mockIterator = mock(Iterator.class);
+
+    doReturn(mockIterator).when(mockIterable).iterator();
+    doReturn(false).when(mockIterator).hasNext();
+
+    assertTrue(is(mockIterable).not().notEmpty());
+
+    verify(mockIterable, times(1)).iterator();
+    verify(mockIterator, times(1)).hasNext();
+    verifyNoMoreInteractions(mockIterable, mockIterator);
+  }
+
+  @Test
+  public void isNotEmptyMapWithNonEmptyMap() {
+    assertTrue(is(Collections.singletonMap(1, "one")).notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyMapWithEmptyMap() {
+    assertFalse(is(Collections.emptyMap()).notEmpty());
+  }
+
+  @Test
+  public void isNotNotEmptyMapWithEmptyMap() {
+    assertTrue(is(Collections.emptyMap()).not().notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyStringWithNonEmptyStrings() {
+
+    assertTrue(is("test").notEmpty());
+    assertTrue(is("empty").notEmpty());
+    assertTrue(is("blank").notEmpty());
+    assertTrue(is("null").notEmpty());
+    assertTrue(is("nil").notEmpty());
+    assertTrue(is("_").notEmpty());
+    assertTrue(is(" ").notEmpty());
+    assertTrue(is("  ").notEmpty());
+    assertTrue(is("\0").notEmpty());
+    assertTrue(is("\t").notEmpty());
+    assertTrue(is("\n").notEmpty());
+  }
+
+  @Test
+  public void isNotEmptyWithEmptyStrings() {
+    assertFalse(is("").notEmpty());
+  }
+
+  @Test
+  public void isNotNotEmptyStringWithEmptyString() {
+    assertTrue(is("").not().notEmpty());
   }
 
   @Test

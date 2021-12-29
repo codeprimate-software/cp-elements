@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -2167,10 +2168,19 @@ public abstract class LangExtensions {
       boolean result = target instanceof Object[] && ((Object[]) target).length != 0;
 
       result |= target instanceof Collection && !((Collection<?>) getTarget()).isEmpty();
+      result |= target instanceof Iterable && notEmpty((Iterable<?>) target);
       result |= target instanceof Map && !((Map<?, ?>) getTarget()).isEmpty();
       result |= target instanceof String && !getTarget().toString().isEmpty();
 
-      return result;
+      return equalToExpected(result);
+    }
+
+    private boolean notEmpty(@Nullable Iterable<?> iterable) {
+
+      return Optional.ofNullable(iterable)
+        .map(Iterable::iterator)
+        .map(Iterator::hasNext)
+        .orElse(false);
     }
 
     /**
