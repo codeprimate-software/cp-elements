@@ -1964,6 +1964,10 @@ public abstract class LangExtensions {
       this.expected = expected;
     }
 
+    protected T getTarget() {
+      return this.obj;
+    }
+
     private boolean equalToExpected(boolean actual) {
       return actual == this.expected;
     }
@@ -1986,7 +1990,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean assignableTo(Class<?> type) {
-      return equalToExpected(this.obj != null && type != null && type.isAssignableFrom(toClass(this.obj)));
+      return equalToExpected(getTarget() != null && type != null && type.isAssignableFrom(toClass(getTarget())));
     }
 
     /**
@@ -1994,7 +1998,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean comparableTo(T obj) {
-      return equalToExpected(toComparable(this.obj).compareTo(obj) == 0);
+      return equalToExpected(toComparable(getTarget()).compareTo(obj) == 0);
     }
 
     /**
@@ -2010,7 +2014,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean equalTo(T obj) {
-      return equalToExpected(this.obj != null && this.obj.equals(obj));
+      return equalToExpected(getTarget() != null && getTarget().equals(obj));
     }
 
     /**
@@ -2026,7 +2030,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean False() {
-      return equalToExpected(Boolean.FALSE.equals(this.obj));
+      return equalToExpected(Boolean.FALSE.equals(getTarget()));
     }
 
     /**
@@ -2034,7 +2038,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean greaterThan(T lowerBound) {
-      return equalToExpected(toComparable(this.obj).compareTo(lowerBound) > 0);
+      return equalToExpected(toComparable(getTarget()).compareTo(lowerBound) > 0);
     }
 
     /**
@@ -2058,7 +2062,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean greaterThanEqualTo(T lowerBound) {
-      return equalToExpected(toComparable(this.obj).compareTo(lowerBound) >= 0);
+      return equalToExpected(toComparable(getTarget()).compareTo(lowerBound) >= 0);
     }
 
     /**
@@ -2083,7 +2087,7 @@ public abstract class LangExtensions {
     @Override
     @SuppressWarnings("rawtypes")
     public boolean instanceOf(Class type) {
-      return equalToExpected(type != null && type.isInstance(this.obj));
+      return equalToExpected(type != null && type.isInstance(getTarget()));
     }
 
     /**
@@ -2091,7 +2095,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean lessThan(T upperBound) {
-      return equalToExpected(toComparable(this.obj).compareTo(upperBound) < 0);
+      return equalToExpected(toComparable(getTarget()).compareTo(upperBound) < 0);
     }
 
     /**
@@ -2115,7 +2119,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean lessThanEqualTo(T upperBound) {
-      return equalToExpected(toComparable(this.obj).compareTo(upperBound) <= 0);
+      return equalToExpected(toComparable(getTarget()).compareTo(upperBound) <= 0);
     }
 
     /**
@@ -2139,7 +2143,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean notBlank() {
-      return StringUtils.hasText(ObjectUtils.toString(this.obj));
+      return StringUtils.hasText(ObjectUtils.toString(getTarget()));
     }
 
     /**
@@ -2148,11 +2152,13 @@ public abstract class LangExtensions {
     @Override
     public boolean notEmpty() {
 
-      boolean result = (this.obj instanceof Object[] && ((Object[]) this.obj).length != 0);
+      T target = getTarget();
 
-      result |= (this.obj instanceof Collection && !((Collection<?>) this.obj).isEmpty());
-      result |= (this.obj instanceof Map && !((Map<?, ?>) this.obj).isEmpty());
-      result |= (this.obj instanceof String && !this.obj.toString().isEmpty());
+      boolean result = target instanceof Object[] && ((Object[]) target).length != 0;
+
+      result |= target instanceof Collection && !((Collection<?>) getTarget()).isEmpty();
+      result |= target instanceof Map && !((Map<?, ?>) getTarget()).isEmpty();
+      result |= target instanceof String && !getTarget().toString().isEmpty();
 
       return result;
     }
@@ -2170,7 +2176,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean Null() {
-      return equalToExpected(this.obj == null);
+      return equalToExpected(getTarget() == null);
     }
 
     /**
@@ -2186,7 +2192,7 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean sameAs(T obj) {
-      return equalToExpected(this.obj == obj);
+      return equalToExpected(getTarget() == obj);
     }
 
     /**
@@ -2194,11 +2200,11 @@ public abstract class LangExtensions {
      */
     @Override
     public boolean True() {
-      return equalToExpected(Boolean.TRUE.equals(this.obj));
+      return equalToExpected(Boolean.TRUE.equals(getTarget()));
     }
 
     public Is<T> not() {
-      return new IsExpression<>(this.obj, !expected);
+      return new IsExpression<>(getTarget(), !expected);
     }
   }
 }
