@@ -1172,7 +1172,7 @@ public abstract class LangExtensions {
       Assert.notNull(predicate, "Predicate is required");
 
       if (conditionHolds()) {
-        if (notEqualToExpected(predicate.test(getTarget()))) {
+        if (notEqualToExpected(is(getTarget()).valid(predicate))) {
           throwAssertionException("[%1$s] is %2$svalid", getTarget(), negate(NOT));
         }
       }
@@ -1929,6 +1929,16 @@ public abstract class LangExtensions {
     boolean True();
 
     /**
+     * Determines whether the {@link Object} is valid based on the criteria defined by the given {@link Predicate}.
+     *
+     * @param predicate {@link Predicate} used to evaluate and validate the {@link Object}.
+     * @return a boolean value indicating whether the {@link Object} is valid based on the criteria
+     * defined by the given {@link Predicate}.
+     * @see java.util.function.Predicate
+     */
+    boolean valid(Predicate<T> predicate);
+
+    /**
      * Negates the expected outcome/result of this operator.
      *
      * @return the instance of this Is operator negated.
@@ -2203,6 +2213,21 @@ public abstract class LangExtensions {
       return equalToExpected(Boolean.TRUE.equals(getTarget()));
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public boolean valid(@NotNull Predicate<T> predicate) {
+
+      Assert.notNull(predicate, "Predicate is required");
+
+      return equalToExpected(predicate.test(getTarget()));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
     public Is<T> not() {
       return new IsExpression<>(getTarget(), !expected);
     }

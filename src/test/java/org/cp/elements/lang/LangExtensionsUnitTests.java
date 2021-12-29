@@ -2538,6 +2538,36 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
+  public void isValid() {
+    assertTrue(is("test").valid(argument -> true));
+  }
+
+  @Test
+  public void isInvalid() {
+    assertFalse(is("test").valid(argument -> false));
+  }
+
+  @Test
+  public void isNotValid() {
+    assertTrue(is("test").not().valid(argument -> false));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void isValidWithNullPredicateThrowsIllegalArgumentException() {
+
+    try {
+      is("test").valid(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      Assertions.assertThat(expected).hasMessage("Predicate is required");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
   public void isReuse() {
 
     Is<String> isOperator = is("test");
