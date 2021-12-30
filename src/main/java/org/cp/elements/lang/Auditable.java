@@ -15,18 +15,26 @@
  */
 package org.cp.elements.lang;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link Auditable} interface defines a contract for objects that need to be audited, enabling changes
- * to be tracked in fine-grained detail capturing who, when and what made changes to this object.
+ * The {@link Auditable} interface defines a contract for {@link Object Objects} that need to be audited,
+ * enabling changes to be tracked in fine-grained detail by capturing who, when and what made changes to
+ * {@literal this} {@link Object}.
  *
  * @author John J. Blum
- * @param <USER> {@link Class} type for tracking the user.
- * @param <PROCESS> {@link Class} type for tracking the process.
- * @param <ID> {@link Class} type of the {@link Identifiable} object's identifier.
+ * @param <USER> {@link Class type} used to track the user.
+ * @param <PROCESS> {@link Class type} used track the process.
+ * @param <ID> {@link Class type} used as the {@link Identifiable} object's identifier.
  * @see java.lang.Comparable
+ * @see java.time.Instant
  * @see java.time.LocalDateTime
+ * @see java.time.ZonedDateTime
  * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */
@@ -50,16 +58,18 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   /**
    * Gets the date and time when this object was created.
    *
-   * @return a {@link LocalDateTime} capturing the date and time when this object was created.
+   * @return a {@link Instant} capturing the date and time when this object was created.
+   * @see java.time.Instant
    */
-  LocalDateTime getCreatedOn();
+  Instant getCreatedOn();
 
   /**
    * Sets the date and time when this object was created.
    *
-   * @param createdOn {@link LocalDateTime} capturing the date and time when this object was created.
+   * @param createdOn {@link Instant} capturing the date and time when this object was created.
+   * @see java.time.Instant
    */
-  void setCreatedOn(LocalDateTime createdOn);
+  void setCreatedOn(Instant createdOn);
 
   /**
    * Gets the process (application) used by the user to create this object.
@@ -85,9 +95,10 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   /**
    * Gets the date and time when this object was last modified.
    *
-   * @return a {@link LocalDateTime} capturing the date and time when this object was last modified.
+   * @return a {@link Instant} capturing the date and time when this object was last modified.
+   * @see java.time.Instant
    */
-  LocalDateTime getLastModifiedOn();
+  Instant getLastModifiedOn();
 
   /**
    * Gets the last process (application) used by the user to modify this object.
@@ -97,21 +108,26 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   PROCESS getLastModifiedWith();
 
   /**
-   * Determines whether this Auditable object has been modified.  One particular implementation suggests that
-   * if the last modified date/time does not match the current modified date/time then the Auditable object has
-   * been modified.  Of course, if any propery value of the object has changed, then the object has been modified.
+   * Determines whether this object has been modified.
    *
-   * @return a boolean value indicating whether this Auditable object has been modified or not.
+   * One particular implementation suggests that if the last modified date and time does not match
+   * the current modified date and time, then this {@link Auditable} object has been modified concurrently.
+   * Of course, if any property value of this object has changed, then the object has been modified.
+   *
+   * @return a boolean value indicating whether this object has been modified or not.
+   * @see #isModified(String)
    */
   boolean isModified();
 
   /**
-   * Determines whether the specified property of this Auditable object has been modified.  The property has been
-   * changed if the old and new value are not equal in value.
+   * Determines whether the specified property of this object has been modified.
    *
-   * @param propertyName a String value specifying the name of the property to check for modification.
-   * @return a boolean value indicating whether the specified property of this Auditable object, identified by name,
-   * has been modified.
+   * The property has been changed if the old value is not equal in valud to the new value.
+   *
+   * @param propertyName {@link String} specifying the name of the property to check for modification.
+   * @return a boolean value indicating whether the specified property of {@literal this} {@link Auditable} object,
+   * identified by name, has been modified.
+   * @see #isModified()
    */
   boolean isModified(String propertyName);
 
@@ -132,16 +148,18 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   /**
    * Gets the date and time when this object was modified.
    *
-   * @return a {@link LocalDateTime} capturing the date and time when this object was modified.
+   * @return a {@link Instant} capturing the date and time when this object was modified.
+   * @see java.time.Instant
    */
-  LocalDateTime getModifiedOn();
+  Instant getModifiedOn();
 
   /**
    * Sets the date and time when this object was modified.
    *
-   * @param modifiedOn {@link LocalDateTime} capturing the date and time when this object was modified.
+   * @param modifiedOn {@link Instant} capturing the date and time when this object was modified.
+   * @see java.time.Instant
    */
-  void setModifiedOn(LocalDateTime modifiedOn);
+  void setModifiedOn(Instant modifiedOn);
 
   /**
    * Gets the process (application) used by the user to modify this object.
@@ -158,9 +176,10 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   void setModifiedWith(PROCESS process);
 
   /**
-   * Builder method to set the user responsible for creating this object.
+   * Builder method used to set the user responsible for creating this object.
    *
-   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
    * @param user person responsible for creating this object.
    * @return this {@link Auditable} object.
    * @see #setCreatedBy(Object)
@@ -172,23 +191,56 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   }
 
   /**
-   * Builder method to set the date/time when this object was created.
+   * Builder method used to set the date and time when this object was created.
    *
-   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
-   * @param createdOn {@link LocalDateTime} capturing the creation date/time.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
+   * @param createdOn {@link Instant} capturing the creation date/time.
    * @return this {@link Auditable} object.
-   * @see #setCreatedOn(LocalDateTime)
+   * @see #setCreatedOn(Instant)
+   * @see java.time.Instant
    */
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(LocalDateTime createdOn) {
+  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(Instant createdOn) {
     setCreatedOn(createdOn);
     return (S) this;
   }
 
   /**
-   * Builder method to set the process (application) used by the user to create this object.
+   * Builder method used to set the date and time when this object was created.
    *
-   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
+   * @param createdOn {@link LocalDateTime} capturing the creation date/time.
+   * @return this {@link Auditable} object.
+   * @see #createdOn(ZonedDateTime)
+   * @see java.time.LocalDateTime
+   */
+  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(@NotNull LocalDateTime createdOn) {
+    Assert.notNull(createdOn, "createdOn LocalDateTime is required");
+    return createdOn(ZonedDateTime.of(createdOn, ZoneId.systemDefault()));
+  }
+
+  /**
+   * Builder method used to set the date and time when this object was created.
+   *
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
+   * @param createdOn {@link ZonedDateTime} capturing the creation date/time.
+   * @return this {@link Auditable} object.
+   * @see #createdOn(Instant)
+   * @see java.time.ZonedDateTime
+   */
+  default <S extends Auditable<USER, PROCESS, ID>> S createdOn(@NotNull ZonedDateTime createdOn) {
+    Assert.notNull(createdOn, "createdOn ZonedDateTime is required");
+    return createdOn(createdOn.toInstant());
+  }
+
+  /**
+   * Builder method used to set the process (application) used by the user to create this object.
+   *
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
    * @param process application used by the user to create this object.
    * @return this {@link Auditable} object.
    * @see #setCreatedWith(Object)
@@ -200,9 +252,10 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   }
 
   /**
-   * Builder method to set the user responsible for modifying this object.
+   * Builder method used to set the user responsible for modifying this object.
    *
-   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
    * @param user person responsible for modifying this object.
    * @return this {@link Auditable} object.
    * @see #setModifiedBy(Object)
@@ -214,23 +267,56 @@ public interface Auditable<USER, PROCESS, ID extends Comparable<ID>> extends Ide
   }
 
   /**
-   * Builder method to set the date and time when this object was modified.
+   * Builder method used to set the date and time when this object was modified.
    *
-   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
-   * @param modifiedOn {@link LocalDateTime} capturing the modification date/time.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
+   * @param modifiedOn {@link Instant} capturing the modification date and time.
    * @return this {@link Auditable} object.
-   * @see #setModifiedOn(LocalDateTime)
+   * @see #setModifiedOn(Instant)
+   * @see java.time.Instant
    */
   @SuppressWarnings("unchecked")
-  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(LocalDateTime modifiedOn) {
+  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(Instant modifiedOn) {
     setModifiedOn(modifiedOn);
     return (S) this;
   }
 
   /**
-   * Builder method to set the process (application) used by the user to modify this object.
+   * Builder method used to set the date and time when this object was modified.
    *
-   * @param <S> Subclass type of this object implementing the {@link Auditable} interface.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
+   * @param modifiedOn {@link LocalDateTime} capturing the modification date and time.
+   * @return this {@link Auditable} object.
+   * @see #modifiedOn(ZonedDateTime)
+   * @see java.time.LocalDateTime
+   */
+  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(@NotNull LocalDateTime modifiedOn) {
+    Assert.notNull(modifiedOn, "modifiedOn LocalDateTime is required");
+    return modifiedOn(ZonedDateTime.of(modifiedOn, ZoneId.systemDefault()));
+  }
+
+  /**
+   * Builder method used to set the date and time when this object was modified.
+   *
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
+   * @param modifiedOn {@link ZonedDateTime} capturing the modification date and time.
+   * @return this {@link Auditable} object.
+   * @see #modifiedOn(Instant)
+   * @see java.time.ZonedDateTime
+   */
+  default <S extends Auditable<USER, PROCESS, ID>> S modifiedOn(@NotNull ZonedDateTime modifiedOn) {
+    Assert.notNull(modifiedOn, "modifiedOn ZonedDateTime is required");
+    return modifiedOn(modifiedOn.toInstant());
+  }
+
+  /**
+   * Builder method used to set the process (application) used by the user to modify this object.
+   *
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Object}
+   * implementing the {@link Auditable} interface.
    * @param process application used by the user to modify this object.
    * @return this {@link Auditable} object.
    * @see #setModifiedWith(Object)
