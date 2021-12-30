@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * AssertionException is a {@link RuntimeException} thrown to indicate that an assertion has failed.
+ * {@link RuntimeException} thrown to indicate that an assertion has failed.
  *
  * @author John J. Blum
  * @see java.lang.AssertionError
@@ -28,40 +27,38 @@ package org.cp.elements.lang;
 public class AssertionException extends RuntimeException {
 
   /**
-   * Default constructor creating an instance of the AssertionException.
+   * Constructs a new, default (uninitialized) instance of the {@link AssertionException}.
    */
-  public AssertionException() {
-  }
+  public AssertionException() { }
 
   /**
-   * Constructor to create an instance of the AssertionException with the given message to describe the
-   * assertion failure.
+   * Constructs a new instance of {@link AssertionException} initialized with the given {@link String message}
+   * used to describe the assertion failure.
    *
-   * @param message a String value describing the nature of the assertion failure.
+   * @param message {@link String} describing the nature of the assertion failure.
    */
-  public AssertionException(final String message) {
+  public AssertionException(String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the AssertionException with the given Throwable to indicated the cause
-   * of the assertion failure.
+   * Constructs a new instance of {@link AssertionException} initialized with the given {@link Throwable}
+   * as the cause of the assertion failure.
    *
-   * @param cause the Throwable indicated as the cause of this assertion failure.
+   * @param cause {@link Throwable} used as the cause of this assertion failure.
    */
-  public AssertionException(final Throwable cause) {
+  public AssertionException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the AssertionException with a message to describe the assertion failure
-   * and a Throwable to indicate the probable cause of the assertion failure.
+   * Constructs a new instance of {@link AssertionException} initialized with the given {@link String message}
+   * used to describe the assertion failure and the given {@link Throwable} as the cause of the assertion failure.
    *
-   * @param message a String value describing the nature of the assertion failure.
-   * @param cause the Throwable indicated as the cause of this assertion failure.
+   * @param message {@link String} describing the nature of the assertion failure.
+   * @param cause {@link Throwable} used as the cause of this assertion failure.
    */
-  public AssertionException(final String message, final Throwable cause) {
+  public AssertionException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }
