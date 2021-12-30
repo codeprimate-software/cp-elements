@@ -16,7 +16,8 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Identifiable} interface defines a contract for uniquely identifying objects of a given type.
+ * The {@link Identifiable} interface defines a contract for uniquely identifying {@link Object Objects}
+ * of a given {@link Class type}.
  *
  * @author John J. Blum
  * @see java.lang.Comparable
@@ -26,32 +27,39 @@ package org.cp.elements.lang;
 public interface Identifiable<T extends Comparable<T>> {
 
   /**
-   * Returns the identifier uniquely identifying this object.
+   * Returns the identifier uniquely identifying {@literal this} {@link Object}.
    *
-   * @return the value uniquely identifying this object.
+   * @return the value uniquely identifying {@literal this} {@link Object}.
+   * @see #setId(Comparable)
    */
   T getId();
 
   /**
-   * Sets the identifier uniquely identifying this object.
+   * Sets the identifier uniquely identifying {@literal this} {@link Object}.
    *
-   * @param id value of type T assigned as this object's unique identifier.
+   * @param id value of {@link Class type T} assigned as {@literal this} {@link Object Object's} unique identifier.
+   * @see #getId()
    */
   void setId(T id);
 
   /**
-   * Determines whether this {@link Identifiable} object is new indicated with a {@literal null} identifier.
+   * Determines whether {@literal this} {@link Identifiable} object is {@literal new}.
    *
-   * @return a boolean value indicating whether this {@link Identifiable} object is new.
+   * This {@link Object} is considered {@literal new} if the identifier is {@literal null}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Identifiable} object is {@literal new}.
+   * @see #isNotNew()
    */
   default boolean isNew() {
     return getId() == null;
   }
 
   /**
-   * Determines whether this {@link Identifiable} object is non-new indicated with a non-{@literal null} identifier.
+   * Determines whether {@literal this} {@link Identifiable} object is {@literal not new}.
    *
-   * @return a boolean value indicating whether this {@link Identifiable} object is non-new.
+   * This {@link Object} is considered {@literal not new} if the identifier is not {@literal null}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Identifiable} object is {@literal not new}.
    * @see #isNew()
    */
   default boolean isNotNew() {
@@ -59,11 +67,11 @@ public interface Identifiable<T extends Comparable<T>> {
   }
 
   /**
-   * Builder method used to set this {@link Identifiable} object's id.
+   * Builder method used to set this {@link Identifiable} object's identifier (ID).
    *
-   * @param <S> Subclass type of this {@link Identifiable} object.
-   * @param id value of type T assigned as this object's unique identifier.
-   * @return a reference to this {@link Identifiable}.
+   * @param <S> {@link Class Subclass type} of {@literal this} {@link Identifiable} object.
+   * @param id value of {@link Class type T} assigned as this {@link Identifiable} object's unique identifier.
+   * @return a reference to {@literal this} {@link Identifiable} object.
    * @see #setId(Comparable)
    */
   @SuppressWarnings("unchecked")
