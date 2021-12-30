@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The AuditableVisitor class is a {@link Visitor} implementation visiting the an object graph
- * to set the auditable properties of an {@link Auditable} object.
+ * {@link Visitor} implementation used to visit an application domain object graph to set the auditable properties
+ * of {@link Auditable} objects in the graph.
  *
  * @author John J. Blum
- * @see java.time.LocalDateTime
+ * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor
@@ -37,94 +38,101 @@ import org.cp.elements.lang.Visitor;
 @SuppressWarnings("unused")
 public class AuditableVisitor<USER, PROCESS> implements Visitor {
 
-  private final LocalDateTime dateTime;
+  private final Instant dateTime;
 
   private final PROCESS process;
 
   private final USER user;
 
   /**
-   * Constructs an instance of the AuditableVisitor class initialized with a creating/modifying user and process.
+   * Constructs a new instance of {@link AuditableVisitor} initialized with the creating and modifying user and process.
    *
-   * @param user the user authorized and responsible for changing the Auditable object.
-   * @param process the process authorized and responsible for changing the Auditable object.
-   * @see #AuditableVisitor(Object, Object, LocalDateTime)
+   * @param user {@link USER} authorized and responsible for changing {@literal this} {@link Auditable} object.
+   * @param process {@link PROCESS} authorized and responsible for changing {@literal this} {@link Auditable} object.
+   * @throws IllegalArgumentException if the {@link USER} or {@link PROCESS} references are {@literal null}.
+   * @see #AuditableVisitor(Object, Object, Instant)
+   * @see java.time.Instant#now()
    */
-  public AuditableVisitor(USER user, PROCESS process) {
-    this(user, process, LocalDateTime.now());
+  public AuditableVisitor(@NotNull USER user, @NotNull PROCESS process) {
+    this(user, process, Instant.now());
   }
 
   /**
-   * Constructs an instance of the AuditableVisitor class initialized with a creating/modifying user and process
-   * as well as the date and time the Auditable object was created or modified.
+   * Constructs a new instance of {@link AuditableVisitor} initialized with the creating and modifying user and process
+   * as well as the date and time {@literal this} {@link Auditable} object was created or modified.
    *
-   * @param user the user authorized and responsible for changing the Auditable object.
-   * @param process the process authorized and responsible for changing the Auditable object.
-   * @param dateTime a Calendar instance indicating the date and time the Auditable object was changed.
-   * @see #AuditableVisitor(Object, Object)
-   * @see java.util.Calendar
+   * @param user {@link USER} authorized and responsible for changing {@literal this} {@link Auditable} object.
+   * @param process {@link PROCESS} authorized and responsible for changing {@literal this} {@link Auditable} object.
+   * @param dateTime {@link Instant} indicating the date and time {@literal this} {@link Auditable} object was changed.
+   * @throws IllegalArgumentException if the {@link USER} or {@link PROCESS} references are {@literal null}.
+   * @see java.time.Instant
    */
-  public AuditableVisitor(USER user, PROCESS process, LocalDateTime dateTime) {
-    Assert.notNull(user, "User must not be null");
-    Assert.notNull(process, "Process must not be null");
+  public AuditableVisitor(@NotNull USER user, @NotNull PROCESS process, @Nullable Instant dateTime) {
+
+    Assert.notNull(user, "User is required");
+    Assert.notNull(process, "Process is required");
 
     this.user = user;
     this.process = process;
-    this.dateTime = (dateTime != null ? dateTime : LocalDateTime.now());
+    this.dateTime = dateTime != null ? dateTime : Instant.now();
   }
 
   /**
-   * Gets the user authorized and responsible for changing the Auditable object.
+   * Gets the user authorized and responsible for changing the {@link Auditable} object.
    *
-   * @return the user authorized and responsible for changing the Auditable object.
+   * @return the user authorized and responsible for changing the {@link Auditable} object.
    */
-  public USER getUser() {
-    return user;
+  public @NotNull USER getUser() {
+    return this.user;
   }
 
   /**
-   * Gets the process authorized and responsible for changing the Auditable object.
+   * Gets the process authorized and responsible for changing the {@link Auditable} object.
    *
-   * @return the process authorized and responsible for changing the Auditable object.
+   * @return the process authorized and responsible for changing the {@link Auditable} object.
    */
-  public PROCESS getProcess() {
-    return process;
+  public @NotNull PROCESS getProcess() {
+    return this.process;
   }
 
   /**
-   * Gets the date and time that the Auditable object was changed.
+   * Gets the date and time that the {@link Auditable} object was changed.
    *
-   * @return a Calendar instance indicating the date and time the Auditable object was changed.
-   * @see java.util.Calendar
+   * @return {@link Instant} with the date and time the {@link Auditable} object was changed.
+   * @see java.time.Instant
    */
-  public LocalDateTime getDateTime() {
-    return dateTime;
+  public @NotNull Instant getDateTime() {
+    return this.dateTime;
   }
 
   /**
-   * Determines whether the created Auditable properties are currently unset, specifically only evaluated the
-   * createdBy and createdDateTime properties.
+   * Determines whether the primary created {@link Auditable} object properties are currently unset, specifically only
+   * evaluating the {@literal createdBy} and {@literal createdOn} properties.
    *
-   * @param auditable the Auditable object being evaluated for unset created properties.
-   * @return a boolean value indicating whether the Auditable object's created properties are currently unset.
+   * @param auditable {@link Auditable} object being evaluated for unset created properties.
+   * @return a boolean value indicating whether the {@link Auditable} object's created properties
+   * are currently unset.
    * @see org.cp.elements.lang.Auditable#getCreatedBy()
    * @see org.cp.elements.lang.Auditable#getCreatedOn()
    */
-  protected boolean isCreatedUnset(Auditable auditable) {
-    return (auditable.getCreatedBy() == null || auditable.getCreatedOn() == null);
+  protected boolean isCreatedUnset(@NotNull Auditable<?, ?, ?> auditable) {
+    return auditable.getCreatedBy() == null || auditable.getCreatedOn() == null;
   }
 
   /**
-   * Visits Auditable objects in an object graph/hierarchy setting auditable information (created/modified
-   * by/date-time/process).
+   * Visits the {@link Auditable} objects in an object graph/hierarchy setting auditable properties (created, modified
+   * by/date&time/process properties).
    *
-   * @param visitable the Visitable object visited by this Visitor.
+   * @param visitable {@link Visitable} object visited by {@literal this} {@link Visitor}.
    * @see org.cp.elements.lang.Auditable
+   * @see org.cp.elements.lang.Visitable
    */
   @Override
   @SuppressWarnings("unchecked")
-  public void visit(Visitable visitable) {
+  public void visit(@Nullable Visitable visitable) {
+
     if (visitable instanceof Auditable) {
+
       Auditable<USER, PROCESS, ?> auditable = (Auditable<USER, PROCESS, ?>) visitable;
 
       if (auditable.isNew() || isCreatedUnset(auditable)) {
