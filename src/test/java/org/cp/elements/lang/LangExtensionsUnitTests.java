@@ -54,6 +54,7 @@ import org.cp.elements.util.ComparatorUtils;
 import org.junit.Test;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -2868,7 +2869,7 @@ public class LangExtensionsUnitTests {
 
   }
 
-  @Data
+  @Getter
   @RequiredArgsConstructor(staticName = "of")
   public static class TestInvoice implements Invoice {
 
@@ -2876,24 +2877,31 @@ public class LangExtensionsUnitTests {
     private List<TestLineItem> lineItems;
 
     public LineItem findBy(int index) {
-      return nullSafeList(lineItems).get(index);
+      return nullSafeList(getLineItems()).get(index);
     }
 
     public LineItem findBy(String productName) {
-      return nullSafeList(lineItems).stream().filter((lineItem) ->
-        lineItem.getProduct().getName().equals(productName))
+
+      return nullSafeList(getLineItems()).stream()
+        .filter((lineItem) -> lineItem.getProduct().getName().equals(productName))
         .findFirst().orElse(null);
     }
 
     public BigDecimal getTotal() {
-      return nullSafeList(lineItems).stream().map(TestLineItem::getCost).reduce(BigDecimal::add)
+
+      return nullSafeList(getLineItems()).stream()
+        .map(TestLineItem::getCost)
+        .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
     }
 
     public BigDecimal getTotal(String... productNames) {
-      return (nullSafeList(lineItems)).stream().filter((lineItem) ->
-        asList(nullSafeArray(productNames)).contains(lineItem.getProduct().getName()))
-        .map(TestLineItem::getCost).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
+      return (nullSafeList(getLineItems())).stream()
+        .filter(lineItem -> asList(nullSafeArray(productNames)).contains(lineItem.getProduct().getName()))
+        .map(TestLineItem::getCost)
+        .reduce(BigDecimal::add)
+        .orElse(BigDecimal.ZERO);
     }
   }
 
@@ -2908,18 +2916,18 @@ public class LangExtensionsUnitTests {
 
   }
 
-  @Data
+  @Getter
   @RequiredArgsConstructor(staticName = "newLineItem")
   public static class TestLineItem implements LineItem {
 
     @NonNull
-    private Product product;
+    private final Product product;
 
     @NonNull
-    private Integer quantity;
+    private final Integer quantity;
 
     public BigDecimal getCost() {
-      return product.getCost(getQuantity());
+      return getProduct().getCost(getQuantity());
     }
   }
 
@@ -2933,15 +2941,15 @@ public class LangExtensionsUnitTests {
 
   }
 
-  @Data
+  @Getter
   @RequiredArgsConstructor(staticName = "newProduct")
   public static class TestProduct implements Product {
 
     @NonNull
-    private String name;
+    private final String name;
 
     @NonNull
-    private BigDecimal price;
+    private final BigDecimal price;
 
     public BigDecimal getCost(int quantity) {
       return getPrice().multiply(BigDecimal.valueOf(quantity));
