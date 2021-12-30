@@ -16,10 +16,10 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Configurable} interface defines a contract for objects that can be configured.
+ * The {@link Configurable} interface defines a contract for {@link Object Objects} that can be configured.
  *
- * This {@link Class interface} allows implementers to define parameters under which their objects will operate.
- * Configuration metadata can be specific to context, environment or runtime.
+ * This {@link Class interface} allows implementers to define parameters under which their {@link Object Objects}
+ * will operate. Configuration metadata can be specific to application context, environment or runtime.
  *
  * @author John J. Blum
  * @param <T> {@link Class} type of configuration metadata and settings.
@@ -29,24 +29,25 @@ package org.cp.elements.lang;
 public interface Configurable<T> {
 
   /**
-   * Determines whether this object has been properly configured.  An object is configured when it's configure method
-   * is invoked with configuration parameter.
+   * Determines whether {@literal this} {@link Object} has been properly configured.
    *
-   * @return a boolean value indicating whether this object has been properly configured.
+   * An {@link Object} is configured when it's {@link #configure} method is invoked with a configuration parameter.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Object} has been properly configured.
    */
   boolean isConfigured();
 
   /**
-   * Gets the configuration meta-data of type T used to configure this object.
+   * Gets the configuration metadata of type T used to configure {@literal this} {@link Object}.
    *
-   * @return the configuration meta-data used to configure this object.
+   * @return the configuration metadata used to configure {@literal this} {@link Object}.
    */
   T getConfiguration();
 
   /**
-   * Configures this object with the given configuration meta-data of type T.
+   * Configures {@literal this} {@link Object} with the given configuration metadata.
    *
-   * @param configuration the configuration meta-data of type T used to configure this object.
+   * @param configuration configuration metadata of type T used to configure {@literal this} {@link Object}.
    */
   void configure(T configuration);
 

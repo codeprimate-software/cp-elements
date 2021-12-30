@@ -16,8 +16,8 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Interruptable} interface defines a contract for objects that perform some complex or long running
- * computation that can be interrupted while processing.
+ * The {@link Interruptable} interface defines a contract for {@link Object Objects} that perform some complex
+ * or long-running computation that can be interrupted while processing.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
@@ -29,16 +29,21 @@ package org.cp.elements.lang;
 public interface Interruptable {
 
   /**
-   * Determines whether the object who's class implements this interface has been interrupted through an invocation
-   * of the interrupt method.
+   * Determines whether {@literal this} {@link Object} has been interrupted during execution through an invocation
+   * of the {@link #interrupt} method.
    *
-   * @return a boolean value indicating whether this object was interrupted.
+   * @return a boolean value indicating whether {@literal this} {@link Object} was interrupted during execution.
    */
   boolean isInterrupted();
 
   /**
-   * Interrupts the object who's class implements this interface.  The interrupt could be issued from another Thread
-   * while this object is performing a complex, long running and intensive computation.
+   * Interrupts {@literal this} {@link Object} during execution.
+   *
+   * The interrupt could be issued by another {@link Thread} while {@literal this} {@link Object} is performing
+   * a complex, long-running and intensive computation.
+   *
+   * This method has no effect if {@literal this} {@link Object} is not blocked in execution. This method
+   * is also idempotent.
    */
   void interrupt();
 

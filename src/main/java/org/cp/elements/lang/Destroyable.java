@@ -15,9 +15,11 @@
  */
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
- * The {@link Destroyable} interface defines a contract for objects that can be destroyed, releasing any resources
- * held prior to destruction followed by garbage collection by the JVM.
+ * The {@link Destroyable} interface defines a contract for {@link Object Objects} that can be destroyed,
+ * releasing any resources held prior to destruction followed by garbage collection initiated by the JVM.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable
@@ -27,15 +29,17 @@ package org.cp.elements.lang;
 public interface Destroyable {
 
   /**
-   * Determines whether this object has been destroyed.  The object is considered destroyed when it's destroy method
-   * has been invoked.
+   * Determines whether {@literal this} {@link Object} has been destroyed.
    *
-   * @return a boolean value indicating whether this object has been destroyed or not.
+   * The {@link Object} is considered destroyed when its {@link #destroy} method has been invoked and returns.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Object} has been destroyed or not.
    */
   boolean isDestroyed();
 
   /**
-   * Destroys this {@link Object} releasing any and all resources held by this {@link Destroyable object}.
+   * Destroys {@literal this} {@link Object} by releasing any and all resources held by this {@link Destroyable Object}
+   * during execution.
    *
    * @see #destroy(Runnable)
    */
@@ -44,13 +48,14 @@ public interface Destroyable {
   }
 
   /**
-   * Destroys this {@link Object} releasing any and all resources held by this {@link Destroyable object}.
+   * Destroys {@literal this} {@link Object} by releasing any and all resources held by this {@link Destroyable Object}
+   * during execution.
    *
    * The implementation must invoke the given {@link Runnable} at the end of the destruction operation.
    *
    * @param runnable {@link Runnable} callback to invoke at the end of the destruction operation.
    * @see java.lang.Runnable
    */
-  void destroy(Runnable runnable);
+  void destroy(@NotNull Runnable runnable);
 
 }

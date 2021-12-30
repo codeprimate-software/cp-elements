@@ -18,13 +18,13 @@ package org.cp.elements.lang;
 import java.util.concurrent.Callable;
 
 /**
- * The {@link Executable} interface defines a contract for objects that can be executed.
+ * The {@link Executable} interface defines a contract for {@link Object Objects} that can be executed.
  *
  * This {@link Class interface} is similar in purpose and function to the {@link java.lang.Runnable}
  * and {@link java.util.concurrent.Callable} {@link Class interfaces}.
  *
  * @author John Blum
- * @param <T> {@link Class} type of the executions return value.
+ * @param <T> {@link Class type} of the execution's return value.
  * @see java.lang.FunctionalInterface
  * @see java.lang.Runnable
  * @see java.util.concurrent.Callable
@@ -34,18 +34,19 @@ import java.util.concurrent.Callable;
 public interface Executable<T> extends Callable<T>, Runnable {
 
   /**
-   * Indicates whether this object is running.
+   * Indicates whether {@literal this} {@link Object} is running.
    *
-   * @return a boolean value indicating whether this object is running.
+   * @return a boolean value indicating whether {@literal this} {@link Object} is running.
+   * @throws IllegalStateException if the {@link Object Object's} runnable state cannot be determined.
    */
   default boolean isRunning() {
     throw new IllegalStateException("The runnable state of this object cannot be determined");
   }
 
   /**
-   * Callback method to execute the intended function/logic encapsulated in the execution.
+   * Callback method used to execute the intended function encapsulating the logic of the execution.
    *
-   * @param args optional array of {@link Object arguments} passed to the execution to carry out its function.
+   * @param args optional array of {@link Object arguments} passed to the execution to perform its function.
    * @return the result of the execution.
    */
   T execute(Object... args);
