@@ -29,11 +29,11 @@ import org.cp.elements.lang.Constants;
  * @param <PROCESS> {@link Class type} used to track the process.
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
- * @see org.cp.elements.lang.support.IdentifiableAdapter
+ * @see org.cp.elements.lang.support.AbstractIdentifiable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> extends IdentifiableAdapter<ID>
+public abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> extends AbstractIdentifiable<ID>
     implements Auditable<USER, PROCESS, ID> {
 
   /**

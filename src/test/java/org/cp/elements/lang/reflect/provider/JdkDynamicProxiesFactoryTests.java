@@ -27,7 +27,7 @@ import java.math.BigInteger;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
-import org.cp.elements.lang.support.IdentifiableAdapter;
+import org.cp.elements.lang.support.AbstractIdentifiable;
 import org.junit.Test;
 
 import lombok.Data;
@@ -130,7 +130,7 @@ public class JdkDynamicProxiesFactoryTests {
 
   @Data
   @EqualsAndHashCode(callSuper = false)
-  static class Person extends IdentifiableAdapter<Long> {
+  static class Person extends AbstractIdentifiable<Long> {
     Long id;
   }
 

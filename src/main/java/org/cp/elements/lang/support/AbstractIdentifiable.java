@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
 
 /**
- * The IdentifiableAdapter class is an abstract base class implementing the {@link Identifiable} interface
- * with default, no-op implementations of the interface methods throwing {@link UnsupportedOperationException}.
+ * @link AbstractIdentifiable} is an abstract base class implementing the {@link Identifiable} interface
+ * with default, no-op implementations of the interface methods by throwing an {@link UnsupportedOperationException}.
  *
  * @author John J. Blum
- * @param <T> Class type of the identifier.
+ * @param <T> {@link Class type} of the identifier.
+ * @see java.lang.Comparable
  * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class IdentifiableAdapter<T extends Comparable<T>> implements Identifiable<T> {
+public abstract class AbstractIdentifiable<T extends Comparable<T>> implements Identifiable<T> {
 
   /**
-   * Returns the identifier uniquely identifying this object.
-   *
-   * @return the value uniquely identifying this object.
+   * @inheritDoc
    */
   @Override
   public T getId() {
@@ -42,9 +40,7 @@ public abstract class IdentifiableAdapter<T extends Comparable<T>> implements Id
   }
 
   /**
-   * Sets the identifier uniquely identifying this object.
-   *
-   * @param id value of type T assigned as this object's unique identifier.
+   * @inheritDoc
    */
   @Override
   public void setId(T id) {
