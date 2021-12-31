@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.annotation.Id;
 
 /**
- * {@link IdentifiableSupport} is an abstract {@link Class} supporting implementations of the {@link Identifiable}
- * {@link Class interface}.
+ * {@link IdentifiableSupport} is an abstract base class supporting implementations of
+ * the {@link Identifiable} interface.
  *
  * @author John Blum
  * @see java.lang.Comparable
@@ -35,9 +34,7 @@ public abstract class IdentifiableSupport<ID extends Comparable<ID>> implements 
   private ID id;
 
   /**
-   * Returns the identifier uniquely identifying this {@link Object}.
-   *
-   * @return the value uniquely identifying this {@link Object}.
+   * @inheritDoc
    */
   @Override
   public ID getId() {
@@ -45,9 +42,7 @@ public abstract class IdentifiableSupport<ID extends Comparable<ID>> implements 
   }
 
   /**
-   * Sets the identifier uniquely identifying this {@link Object}.
-   *
-   * @param id value of {@link Class type T} assigned as this {@link Object object's} unique identifier.
+   * @inheritDoc
    */
   @Override
   public void setId(ID id) {
