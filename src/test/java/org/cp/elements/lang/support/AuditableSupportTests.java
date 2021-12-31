@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link AuditableSupport}.
+ * Unit Tests for {@link AuditableSupport}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -37,8 +40,15 @@ public class AuditableSupportTests {
 
   private AuditableSupport<String, String, Long> auditableSupport;
 
+  private @NotNull Instant toInstant(@NotNull LocalDateTime dateTime) {
+    return toInstant(ZonedDateTime.of(dateTime, ZoneId.systemDefault()));
+  }
+
+  private @NotNull Instant toInstant(@NotNull ZonedDateTime dateTime) {
+    return dateTime.toInstant();
+  }
+
   @Before
-  @SuppressWarnings("unchecked")
   public void setup() {
     this.auditableSupport = new TestAuditableSupport();
   }
@@ -73,7 +83,7 @@ public class AuditableSupportTests {
   @Test
   public void setAndGetCreatedOn() {
 
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
     this.auditableSupport.setCreatedOn(now);
 
@@ -83,7 +93,7 @@ public class AuditableSupportTests {
   @Test(expected = IllegalArgumentException.class)
   public void setCreatedOnToNullThrowsIllegalArgumentException() {
 
-    LocalDateTime createdOn = LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 30);
+    Instant createdOn = toInstant(LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 30));
 
     try {
       this.auditableSupport.setCreatedOn(createdOn);
@@ -193,7 +203,7 @@ public class AuditableSupportTests {
   @Test
   public void setAndGetModifiedOn() {
 
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
     this.auditableSupport.setModifiedOn(now);
 
@@ -204,14 +214,14 @@ public class AuditableSupportTests {
   @Test
   public void setModifiedOnTwiceReturnsFirstDateTimeForLastModifiedOn() {
 
-    LocalDateTime modifiedOnOne = LocalDateTime.of(2017, Month.FEBRUARY, 15, 22, 50);
+    Instant modifiedOnOne = toInstant(LocalDateTime.of(2017, Month.FEBRUARY, 15, 22, 50));
 
     this.auditableSupport.setModifiedOn(modifiedOnOne);
 
     assertThat(this.auditableSupport.getModifiedOn()).isEqualTo(modifiedOnOne);
     assertThat(this.auditableSupport.getLastModifiedOn()).isEqualTo(modifiedOnOne);
 
-    LocalDateTime modifiedOnTwo = LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 50);
+    Instant modifiedOnTwo = toInstant(LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 50));
 
     this.auditableSupport.setModifiedOn(modifiedOnTwo);
 
@@ -222,7 +232,7 @@ public class AuditableSupportTests {
   @Test(expected = IllegalArgumentException.class)
   public void setModifiedOnToNullThrowsIllegalArgumentException() {
 
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
     try {
       this.auditableSupport.setModifiedOn(now);
@@ -244,7 +254,7 @@ public class AuditableSupportTests {
   @Test
   public void getModifiedOnReturnsCreatedOn() {
 
-    LocalDateTime createdOn = LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 45);
+    Instant createdOn = toInstant(LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 45));
 
     this.auditableSupport.setCreatedOn(createdOn);
 
@@ -255,8 +265,8 @@ public class AuditableSupportTests {
   @Test
   public void getModifiedOnReturnsModifiedOn() {
 
-    LocalDateTime createdOn = LocalDateTime.of(2017, Month.FEBRUARY, 15, 22, 45);
-    LocalDateTime modifiedOn = LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 45);
+    Instant createdOn = toInstant(LocalDateTime.of(2017, Month.FEBRUARY, 15, 22, 45));
+    Instant modifiedOn = toInstant(LocalDateTime.of(2018, Month.FEBRUARY, 15, 22, 45));
 
     this.auditableSupport.setCreatedOn(createdOn);
     this.auditableSupport.setModifiedOn(modifiedOn);

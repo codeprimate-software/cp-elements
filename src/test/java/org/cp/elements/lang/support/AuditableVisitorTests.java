@@ -25,12 +25,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,23 +62,12 @@ public class AuditableVisitorTests {
   @Mock
   private User mockUser;
 
-  protected void assertEqualDates(LocalDate expectedDate, LocalDate actualDate) {
-
-    assertThat(actualDate.getYear()).isEqualTo(expectedDate.getYear());
-    assertThat(actualDate.getMonth()).isEqualTo(expectedDate.getMonth());
-    assertThat(actualDate.getDayOfMonth()).isEqualTo(expectedDate.getDayOfMonth());
+  private @NotNull Instant toInstant(@NotNull LocalDateTime dateTime) {
+    return toInstant(ZonedDateTime.of(dateTime, ZoneId.systemDefault()));
   }
 
-  protected void assertEqualDates(LocalDate expectedDate, LocalDateTime actualDateTime) {
-    assertEqualDates(expectedDate, actualDateTime.toLocalDate());
-  }
-
-  protected void assertEqualDateTimes(LocalDateTime expectedDateTime, LocalDateTime actualDateTime) {
-
-    assertEqualDates(expectedDateTime.toLocalDate(), actualDateTime.toLocalDate());
-    assertThat(actualDateTime.getHour()).isEqualTo(expectedDateTime.getHour());
-    assertThat(actualDateTime.getMinute()).isEqualTo(expectedDateTime.getMinute());
-    assertThat(actualDateTime.getSecond()).isEqualTo(expectedDateTime.getSecond());
+  private @NotNull Instant toInstant(@NotNull ZonedDateTime dateTime) {
+    return dateTime.toInstant();
   }
 
   @Test
@@ -86,20 +78,20 @@ public class AuditableVisitorTests {
     assertThat(visitor).isNotNull();
     assertThat(visitor.getUser()).isSameAs(mockUser);
     assertThat(visitor.getProcess()).isSameAs(mockProcess);
-    assertEqualDates(LocalDate.now(), visitor.getDateTime());
+    assertThat(visitor.getDateTime()).isBeforeOrEqualTo(Instant.now());
   }
 
   @Test
   public void constructWithUserProcessAndDateTime() {
 
-    LocalDateTime now = LocalDateTime.of(2014, Month.JANUARY, 16, 22, 30, 45);
+    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 16, 22, 30, 45));
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getUser()).isSameAs(mockUser);
     assertThat(visitor.getProcess()).isSameAs(mockProcess);
-    assertEqualDateTimes(now, visitor.getDateTime());
+    assertThat(visitor.getDateTime()).isEqualTo(now);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -107,7 +99,7 @@ public class AuditableVisitorTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> new AuditableVisitor<User, Process>(null, mockProcess),
-        () -> "User must not be null");
+        () -> "User is required");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -115,7 +107,7 @@ public class AuditableVisitorTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> new AuditableVisitor<User, Process>(mockUser, null),
-        () -> "Process must not be null");
+        () -> "Process is required");
   }
 
   @Test
@@ -174,7 +166,7 @@ public class AuditableVisitorTests {
     Auditable mockAuditable = mock(Auditable.class);
 
     when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
-    when(mockAuditable.getCreatedOn()).thenReturn(LocalDateTime.now());
+    when(mockAuditable.getCreatedOn()).thenReturn(Instant.now());
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
 
@@ -193,14 +185,14 @@ public class AuditableVisitorTests {
     when(mockAuditable.isNew()).thenReturn(true);
     when(mockAuditable.isModified()).thenReturn(true);
 
-    LocalDateTime now = LocalDateTime.of(2014, Month.JANUARY, 18, 14, 55, 30);
+    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 14, 55, 30));
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getUser()).isSameAs(mockUser);
     assertThat(visitor.getProcess()).isSameAs(mockProcess);
-    assertEqualDateTimes(now, visitor.getDateTime());
+    assertThat(visitor.getDateTime()).isEqualTo(now);
 
     visitor.visit(mockAuditable);
 
@@ -223,14 +215,14 @@ public class AuditableVisitorTests {
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
     when(mockAuditable.isModified()).thenReturn(true);
 
-    LocalDateTime now = LocalDateTime.of(2014, Month.JANUARY, 18, 15, 10, 15);
+    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 15, 10, 15));
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getUser()).isSameAs(mockUser);
     assertThat(visitor.getProcess()).isSameAs(mockProcess);
-    assertEqualDateTimes(now, visitor.getDateTime());
+    assertThat(visitor.getDateTime()).isEqualTo(now);
 
     visitor.visit(mockAuditable);
 
@@ -256,23 +248,23 @@ public class AuditableVisitorTests {
 
     when(mockAuditable.isNew()).thenReturn(false);
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
-    when(mockAuditable.getCreatedOn()).thenReturn(LocalDateTime.now());
+    when(mockAuditable.getCreatedOn()).thenReturn(Instant.now());
     when(mockAuditable.isModified()).thenReturn(true);
 
-    LocalDateTime now = LocalDateTime.of(2014, Month.JANUARY, 18, 23, 45, 0);
+    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 23, 45, 0));
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getUser()).isSameAs(mockUser);
     assertThat(visitor.getProcess()).isSameAs(mockProcess);
-    assertEqualDateTimes(now, visitor.getDateTime());
+    assertThat(visitor.getDateTime()).isEqualTo(now);
 
     visitor.visit(mockAuditable);
 
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, never()).setCreatedBy(any(User.class));
-    verify(mockAuditable, never()).setCreatedOn(any(LocalDateTime.class));
+    verify(mockAuditable, never()).setCreatedOn(any(Instant.class));
     verify(mockAuditable, never()).setCreatedWith(any(Process.class));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, times(1)).setModifiedBy(same(mockUser));
@@ -288,27 +280,27 @@ public class AuditableVisitorTests {
 
     when(mockAuditable.isNew()).thenReturn(false);
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
-    when(mockAuditable.getCreatedOn()).thenReturn(LocalDateTime.now());
+    when(mockAuditable.getCreatedOn()).thenReturn(Instant.now());
     when(mockAuditable.isModified()).thenReturn(false);
 
-    LocalDateTime now = LocalDateTime.of(2014, Month.JANUARY, 18, 23, 55, 45);
+    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 23, 55, 45));
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
     assertThat(visitor).isNotNull();
     assertThat(visitor.getUser()).isSameAs(mockUser);
     assertThat(visitor.getProcess()).isSameAs(mockProcess);
-    assertEqualDateTimes(now, visitor.getDateTime());
+    assertThat(visitor.getDateTime()).isEqualTo(now);
 
     visitor.visit(mockAuditable);
 
     verify(mockAuditable, times(1)).isNew();
     verify(mockAuditable, never()).setCreatedBy(any(User.class));
-    verify(mockAuditable, never()).setCreatedOn(any(LocalDateTime.class));
+    verify(mockAuditable, never()).setCreatedOn(any(Instant.class));
     verify(mockAuditable, never()).setCreatedWith(any(Process.class));
     verify(mockAuditable, times(1)).isModified();
     verify(mockAuditable, never()).setModifiedBy(any(User.class));
-    verify(mockAuditable, never()).setModifiedOn(any(LocalDateTime.class));
+    verify(mockAuditable, never()).setModifiedOn(any(Instant.class));
     verify(mockAuditable, never()).setModifiedWith(any(Process.class));
   }
 

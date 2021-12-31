@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The IsModifiedVisitor class is a Visitor implementation that visits a Vistiable object graph/hierarchy in search of
- * any Auditable objects that may have been modified.
+ * {@link Visitor} implementation that {@literal visits} a {@link Visitable} object graph/hierarchy
+ * in search of any {@link Auditable} objects that may have been modified.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Auditable
@@ -36,26 +36,29 @@ public class IsModifiedVisitor implements Visitor {
   private volatile boolean modified = false;
 
   /**
-   * Determines whether any of the Auditable, Visitable object visited were modified.
+   * Determines whether any of the {@link Auditable}, {@link Visitable} objects visited were modified.
    *
-   * @return a boolean value indicating whether any of the Auditable, Visitable objects in the object graph hierarchy
-   * were modified.
+   * @return a boolean value indicating whether any of the {@link Auditable}, {@link Visitable} objects
+   * in the object graph hierarchy were modified.
    */
   public boolean isModified() {
-    return modified;
+    return this.modified;
   }
 
   /**
-   * Visits all Auditable, Visitable objects in an object graph hierarchy in search of any modified objects.
+   * Visits all {@link Auditable}, {@link Visitable} objects in an object graph hierarchy in search of
+   * any modified objects.
    *
-   * @param visitable the Visitable object visited by this Visitor.
+   * @param visitable {@link Visitable} object visited by {@literal this} {@link Visitor}.
    * @see org.cp.elements.lang.Auditable#isModified()
+   * @see org.cp.elements.lang.Visitable
    */
   @Override
-  public void visit(final Visitable visitable) {
+  @SuppressWarnings("all")
+  public void visit(@Nullable Visitable visitable) {
+
     if (visitable instanceof Auditable) {
-      modified |= ((Auditable) visitable).isModified();
+      this.modified |= ((Auditable) visitable).isModified();
     }
   }
-
 }

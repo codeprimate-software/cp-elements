@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.junit.Assert.assertEquals;
@@ -25,19 +24,22 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
+import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * The CommitVisitorTest class is a test suite of test cases testing the contract and functionality
- * of the {@link CommitVisitor} class.
+ * Unit Tests for {@link CommitVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -54,29 +56,42 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class CommitVisitorTests {
 
   @Mock
+  @SuppressWarnings("rawtypes")
   private Auditable mockAuditable;
+
+  private @NotNull Instant toInstant(@NotNull LocalDateTime dateTime) {
+    return toInstant(ZonedDateTime.of(dateTime, ZoneId.systemDefault()));
+  }
+
+  private @NotNull Instant toInstant(@NotNull ZonedDateTime dateTime) {
+    return dateTime.toInstant();
+  }
 
   @Test
   public void isCommitableWithAuditable() {
-    assertTrue(new CommitVisitor().isCommitable(mockAuditable));
-    assertTrue(new CommitVisitor(mockAuditable).isCommitable(mockAuditable));
+
+    assertTrue(new CommitVisitor().isCommittable(mockAuditable));
+    assertTrue(new CommitVisitor(mockAuditable).isCommittable(mockAuditable));
   }
 
   @Test
   public void isCommitableWithNonAuditable() {
-    assertFalse(new CommitVisitor().isCommitable(new Object()));
-    assertFalse(new CommitVisitor(mockAuditable).isCommitable(new Object()));
+
+    assertFalse(new CommitVisitor().isCommittable(new Object()));
+    assertFalse(new CommitVisitor(mockAuditable).isCommittable(new Object()));
   }
 
   @Test
   public void isCommitableWithNonTargetedAuditable() {
-    assertFalse(new CommitVisitor(mockAuditable).isCommitable(mock(Auditable.class)));
+    assertFalse(new CommitVisitor(mockAuditable).isCommittable(mock(Auditable.class)));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void visit() {
-    LocalDateTime expectedDateTime = LocalDateTime.of(2014, Month.DECEMBER, 17, 0, 0);
+
+    Instant expectedDateTime =
+      toInstant(LocalDateTime.of(2014, Month.DECEMBER, 17, 0, 0));
 
     AuditableVisitable<String, String> mockAuditableVisitable = mock(AuditableVisitable.class);
 
@@ -94,7 +109,8 @@ public class CommitVisitorTests {
     assertEquals(expectedDateTime, mockAuditableVisitable.lastModifiedOn);
     assertEquals("ExpectedProcess", mockAuditableVisitable.lastModifiedWith);
 
-    LocalDateTime updatedExpectedDateTime = LocalDateTime.of(2014, Month.DECEMBER, 18, 0, 0);
+    Instant updatedExpectedDateTime =
+      toInstant(LocalDateTime.of(2014, Month.DECEMBER, 18, 0, 0));
 
     when(mockAuditableVisitable.getModifiedBy()).thenReturn("UpdatedExpectedUser");
     when(mockAuditableVisitable.getModifiedOn()).thenReturn(updatedExpectedDateTime);
@@ -134,7 +150,7 @@ public class CommitVisitorTests {
   @SuppressWarnings("unused")
   public static abstract class AuditableVisitable<USER, PROCESS> implements Auditable<USER, PROCESS, Long>, Visitable {
 
-    private LocalDateTime lastModifiedOn;
+    private Instant lastModifiedOn;
     private PROCESS lastModifiedWith;
     private USER lastModifiedBy;
 

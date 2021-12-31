@@ -24,15 +24,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import org.junit.Test;
 
 /**
- * Unit Tests for the {@link Auditable} interface.
+ * Unit Tests for {@link Auditable}.
  *
  * @author John J. Blum
- * @see java.time.LocalDateTime
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Auditable
@@ -58,9 +57,9 @@ public class AuditableTests {
 
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
 
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
-    when(mockAuditable.createdOn(any(LocalDateTime.class))).thenCallRealMethod();
+    when(mockAuditable.createdOn(any(Instant.class))).thenCallRealMethod();
 
     assertThat(mockAuditable.<Auditable>createdOn(now)).isEqualTo(mockAuditable);
 
@@ -96,9 +95,9 @@ public class AuditableTests {
 
     Auditable<String, String, Long> mockAuditable = mock(AbstractAuditable.class);
 
-    LocalDateTime now = LocalDateTime.now();
+    Instant now = Instant.now();
 
-    when(mockAuditable.modifiedOn(any(LocalDateTime.class))).thenCallRealMethod();
+    when(mockAuditable.modifiedOn(any(Instant.class))).thenCallRealMethod();
 
     assertThat(mockAuditable.<Auditable>modifiedOn(now)).isEqualTo(mockAuditable);
 
@@ -117,6 +116,7 @@ public class AuditableTests {
     verify(mockAuditable, times(1)).setModifiedWith(eq("test"));
   }
 
-  static abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> implements Auditable<USER, PROCESS, ID> { }
+  static abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>>
+    implements Auditable<USER, PROCESS, ID> { }
 
 }

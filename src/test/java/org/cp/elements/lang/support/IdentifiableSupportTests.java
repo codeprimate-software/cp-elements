@@ -25,7 +25,7 @@ import org.junit.Test;
  *
  * @author John Blum
  * @see org.junit.Test
- * @see org.cp.elements.lang.support.IdentifiableSupport
+ * @see IdentifiableSupport
  * @since 1.0.0
  */
 public class IdentifiableSupportTests {

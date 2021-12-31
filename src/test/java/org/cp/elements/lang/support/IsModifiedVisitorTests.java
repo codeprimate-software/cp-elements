@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Test;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link IsModifiedVisitor} class.
+ * Unit Tests for {@link IsModifiedVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -39,46 +38,52 @@ public class IsModifiedVisitorTests {
 
   @Test
   public void visitAuditableObject() {
+
     IsModifiedVisitor visitor = new IsModifiedVisitor();
 
-    assertFalse(visitor.isModified());
+    assertThat(visitor.isModified()).isFalse();
 
     visitor.visit(new AuditableVisitable(false));
 
-    assertFalse(visitor.isModified());
+    assertThat(visitor.isModified()).isFalse();
 
     visitor.visit(new AuditableVisitable(true));
 
-    assertTrue(visitor.isModified());
-    assertTrue(visitor.isModified());
+    assertThat(visitor.isModified()).isTrue();
+    assertThat(visitor.isModified()).isTrue();
   }
 
   @Test
   public void visitMultipleAuditableObjects() {
+
     IsModifiedVisitor visitor = new IsModifiedVisitor();
 
-    assertFalse(visitor.isModified());
+    assertThat(visitor.isModified()).isFalse();
 
-    (new AuditableVisitable(false, new AuditableVisitable(true, new AuditableVisitable(false)))).accept(visitor);
+    new AuditableVisitable(false, new AuditableVisitable(true, new AuditableVisitable(false)))
+      .accept(visitor);
 
-    assertTrue(visitor.isModified());
-    assertTrue(visitor.isModified());
+    assertThat(visitor.isModified()).isTrue();
+    assertThat(visitor.isModified()).isTrue();
   }
 
   @Test
   public void visitNonAuditableObject() {
+
     IsModifiedVisitor visitor = new IsModifiedVisitor();
 
-    assertFalse(visitor.isModified());
+    assertThat(visitor.isModified()).isFalse();
 
     visitor.visit(mock(Visitable.class));
 
-    assertFalse(visitor.isModified());
+    assertThat(visitor.isModified()).isFalse();
   }
 
-  protected static final class AuditableVisitable extends AuditableAdapter implements Visitable {
+  @SuppressWarnings("rawtypes")
+  protected static final class AuditableVisitable extends AbstractAuditable implements Visitable {
 
     private final boolean modified;
+
     private final Visitable visitable;
 
     public AuditableVisitable(boolean modified) {
@@ -92,15 +97,16 @@ public class IsModifiedVisitorTests {
 
     @Override
     public boolean isModified() {
-      return modified;
+      return this.modified;
     }
 
     @Override
-    public void accept(Visitor visitor) {
+    public void accept(@NotNull Visitor visitor) {
+
       visitor.visit(this);
 
-      if (visitable != null) {
-        visitable.accept(visitor);
+      if (this.visitable != null) {
+        this.visitable.accept(visitor);
       }
     }
   }

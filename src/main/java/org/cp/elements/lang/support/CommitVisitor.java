@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The CommitVisitor class is a {@link Visitor} implementation used to walk an application domain object graph
- * after the application domain objects have been persisted to a persistent data store in order to update
- * the persistent state of the application domain objects to committed.
+ * A {@link Visitor} implementation used to walk an application domain object graph after the application domain objects have
+ * been persisted to a persistent data store in order to update the persistent state of the application domain objects
+ * to committed.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Auditable
@@ -38,16 +38,21 @@ public class CommitVisitor implements Visitor {
   private final Object target;
 
   /**
-   * Default public no-arg constructor constructing an uninitialized instance of the CommitVisitor.  This instance
-   * will target all application domain objects for the 'commit' operation.
+   * Default public no-arg constructor used to construct a newm, uninitialized instance of the {@link CommitVisitor}.
+   *
+   * This instance will target all application domain objects for the {@literal commit} operation.
+   *
+   * @see #CommitVisitor(Object)
    */
   public CommitVisitor() {
     this(null);
   }
 
   /**
-   * Constructs an instance of the CommitVisitor initialized with the specified target object, which will be
-   * the subject of the 'commit' operation.  Only the target object will be committed, or affected by this Visitor.
+   * Construct a new instance of {@link CommitVisitor} initialized with the specified {@literal target} {@link Object},
+   * used as the subject of the {@literal commit} operation.
+   *
+   * Only the {@literal target} {@link Object} will be committed, or affected by {@literal this} {@link Visitor}.
    *
    * @param target the target Object of the 'commit' operation.
    */
@@ -56,15 +61,18 @@ public class CommitVisitor implements Visitor {
   }
 
   /**
-   * Visits all objects in an application domain object graph hierarchy targeting objects to be 'committed'.
+   * Visits all {@link Object Objects} in an application domain object (entity) graph hierarchy
+   * targeting {@link Object Objects} to be {@literal committed}.
    *
-   * @param visitable the object visited by this Visitor.
+   * @param visitable {@link Object} visited by {@literal this} {@link Visitor}.
    * @see org.cp.elements.lang.Visitable
-   * @see #isCommitable(Object)
+   * @see #isCommittable(Object)
    */
   @Override
-  public void visit(Visitable visitable) {
-    if (isCommitable(visitable)) {
+  @SuppressWarnings("rawtypes")
+  public void visit(@Nullable Visitable visitable) {
+
+    if (isCommittable(visitable)) {
       ObjectUtils.setField(visitable, "lastModifiedBy", ((Auditable) visitable).getModifiedBy());
       ObjectUtils.setField(visitable, "lastModifiedOn", ((Auditable) visitable).getModifiedOn());
       ObjectUtils.setField(visitable, "lastModifiedWith", ((Auditable) visitable).getModifiedWith());
@@ -72,20 +80,22 @@ public class CommitVisitor implements Visitor {
   }
 
   /**
-   * Determines whether the specified visitable object is commit-able.  The object is commit-able if the object
-   * is Auditable and this Visitor is not targeting a specific object in the application domain object graph
-   * hierarchy.
+   * Determines whether the specified {@link Visitable} {@link Object} is committable.
    *
-   * @param visitable the visited object being evaluated for commit-ability.
-   * @return a boolean value indicating whether the targeted object can be committed.
+   * The {@link Object} is committable if the {@link Object} is {@link Auditable} and {@literal this} {@link Visitor}
+   * is not targeting a specific {@link Object} in the application domain object (entity) graph hierarchy.
+   *
+   * @param visitable {@link Object} visited and being evaluated for commit.
+   * @return a boolean value indicating whether the {@literal targeted} {@link Object} can be committed.
    * @see org.cp.elements.lang.Auditable
    */
-  protected boolean isCommitable(Object visitable) {
-    return (visitable instanceof Auditable && (target == null || identity(visitable) == identity(target)));
+  protected boolean isCommittable(@Nullable Object visitable) {
+
+    return visitable instanceof Auditable
+      && (this.target == null || identity(visitable) == identity(this.target));
   }
 
-  /* (non-Javadoc) */
-  private int identity(Object obj) {
+  private int identity(@Nullable Object obj) {
     return System.identityHashCode(obj);
   }
 }
