@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans;
 
 import java.io.Serializable;
@@ -22,13 +21,13 @@ import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
 
 /**
- * The Bean interface defines a contract for an application domain model object representing/modeling data
+ * The {@link Bean} interface defines a contract for an application domain model objects representing/modeling data
  * in a software application.
  *
  * @author John J. Blum
- * @param <ID> the Comparable class type of the identifier uniquely identifying this Bean.
- * @param <USER> the class type of the object signifying the user for auditing information.
- * @param <PROCESS> the class type of the object signifying the process for auditing information.
+ * @param <ID> {@link Comparable} type for the identifier uniquely identifying {@literal this} {@link Bean}.
+ * @param <USER> {@link Class type} used to model the object identifying the user for auditing information.
+ * @param <PROCESS> {@link Class type} used to model the object identifying the process for auditing information.
  * @see java.lang.Cloneable
  * @see java.lang.Comparable
  * @see java.io.Serializable
