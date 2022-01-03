@@ -176,7 +176,6 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void defaultIfNullWithNonNullValues() {
 
     assertThat(ObjectUtils.defaultIfNull("test", null, null, null)).isEqualTo("test");
@@ -190,7 +189,6 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void defaultIfNullWithNullValues() {
 
     assertThat(ObjectUtils.defaultIfNull((Object[][]) null)).isNull();
@@ -199,17 +197,15 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void doOperationSafelyReturnsValue() {
-    assertThat(ObjectUtils.doOperationSafely(() -> "test")).isEqualTo("test");
+    assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
   }
 
   @Test(expected = IllegalStateException.class)
-  @SuppressWarnings("unchecked")
   public void doOperationSafelyThrowsIllegalStateException() {
 
     try {
-      ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); });
+      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("test"); });
     }
     catch (IllegalStateException expected) {
 
@@ -224,21 +220,20 @@ public class ObjectUtilsUnitTests {
 
   @Test
   public void doOperationSafelyWithDefaultValueReturnsValue() {
-    assertThat(ObjectUtils.doOperationSafely(() -> "test", "default")).isEqualTo("test");
+    assertThat(ObjectUtils.doOperationSafely(arguments -> "test", "default")).isEqualTo("test");
   }
 
   @Test
   public void doOperationSafelyWithDefaultValueReturnsDefaultValue() {
-    assertThat(ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); }, "default"))
+    assertThat(ObjectUtils.doOperationSafely(arguments -> { throw new Exception("test"); }, "default"))
       .isEqualTo("default");
   }
 
   @Test(expected = IllegalStateException.class)
-  @SuppressWarnings("unchecked")
   public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() {
 
     try {
-      ObjectUtils.doOperationSafely(() -> { throw new Exception("test"); }, (Object) null);
+      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("test"); }, (Object) null);
     }
     catch (IllegalStateException expected) {
 
@@ -357,6 +352,7 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNullOrEqualToReturnsTrueWhenObjectIsNull() {
     assertThat(ObjectUtils.isNullOrEqualTo(null, "test")).isTrue();
   }
@@ -388,22 +384,29 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void equalsWithUnequalValues() {
+  @SuppressWarnings("all")
+  public void equalsWithNullArgumentsIsNullSafe() {
 
     assertThat(ObjectUtils.equals(null, null)).isFalse();
-    assertThat(ObjectUtils.equals("test", null)).isFalse();
     assertThat(ObjectUtils.equals(null, "test")).isFalse();
     assertThat(ObjectUtils.equals(null, "null")).isFalse();
-    assertThat(ObjectUtils.equals("null", "nil")).isFalse();
+    assertThat(ObjectUtils.equals(null, "nil")).isFalse();
+    assertThat(ObjectUtils.equals("test", null)).isFalse();
+  }
+
+  @Test
+  public void equalsWithUnequalValues() {
+
     assertThat(ObjectUtils.equals(true, false)).isFalse();
     assertThat(ObjectUtils.equals('c', 'C')).isFalse();
     assertThat(ObjectUtils.equals('c', "c")).isFalse();
     assertThat(ObjectUtils.equals(-2, 2)).isFalse();
     assertThat(ObjectUtils.equals(3.14159d, Math.PI)).isFalse();
     assertThat(ObjectUtils.equals("mock", "proxy")).isFalse();
+    assertThat(ObjectUtils.equals("null", "nil")).isFalse();
     assertThat(ObjectUtils.equals("test", "TEST")).isFalse();
     assertThat(ObjectUtils.equals("test", "testing")).isFalse();
-    assertThat(ObjectUtils.equals("test", "tested")).isFalse();
+    assertThat(ObjectUtils.equals("testing", "tested")).isFalse();
   }
 
   @Test
@@ -422,17 +425,25 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void equalsIgnoreNullWithSingleNullValue() {
+
+    assertThat(ObjectUtils.equalsIgnoreNull(null, "test")).isFalse();
+    assertThat(ObjectUtils.equalsIgnoreNull(null, "null")).isFalse();
+    assertThat(ObjectUtils.equalsIgnoreNull(null, "nil")).isFalse();
+    assertThat(ObjectUtils.equalsIgnoreNull("null", null)).isFalse();
+  }
+
+  @Test
   public void equalsIgnoreNullWithUnequalValues() {
 
-    assertThat(ObjectUtils.equalsIgnoreNull(null, "null")).isFalse();
-    assertThat(ObjectUtils.equalsIgnoreNull("null", null)).isFalse();
-    assertThat(ObjectUtils.equalsIgnoreNull("null", "nil")).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull(Boolean.FALSE, Boolean.TRUE)).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull('\0', null)).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull(0, 1)).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull(Integer.MIN_VALUE, Integer.MAX_VALUE)).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull(Double.MIN_VALUE, Double.MAX_VALUE)).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull(0.0d, -0.0d)).isFalse();
+    assertThat(ObjectUtils.equalsIgnoreNull("null", "nil")).isFalse();
     assertThat(ObjectUtils.equalsIgnoreNull("gnitset", "testing")).isFalse();
   }
 
@@ -597,12 +608,12 @@ public class ObjectUtilsUnitTests {
 
   protected static class SoftwareEngineer extends Person {
 
-    public SoftwareEngineer(final String firstName, final String lastName) {
+    public SoftwareEngineer(String firstName, String lastName) {
       super(firstName, lastName);
     }
 
     @SuppressWarnings("unused")
-    public SoftwareEngineer(final Person person) {
+    public SoftwareEngineer(Person person) {
       super(person);
     }
   }

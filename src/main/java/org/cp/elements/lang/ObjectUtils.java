@@ -24,12 +24,14 @@ import java.lang.reflect.Constructor;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
 
 /**
- * The {@link ObjectUtils} class is an abstract utility class used to perform operations on {@link Object Objects}.
+ * Abstract utility class used to perform operations on {@link Object Objects}.
  *
  * @author John J. Blum
  * @see java.lang.reflect.Constructor
@@ -148,10 +150,10 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param operation {@link ThrowableOperation} to execute.
    * @return the {@link Object result} of the {@link ThrowableOperation}.
-   * @see org.cp.elements.lang.ObjectUtils.ThrowableOperation
    * @see #doOperationSafely(ThrowableOperation, Object)
+   * @see org.cp.elements.lang.ThrowableOperation
    */
-  public static <T> T doOperationSafely(ThrowableOperation<T> operation) {
+  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation) {
     return doOperationSafely(operation, (T) null);
   }
 
@@ -165,11 +167,11 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @param defaultValue {@link Object} to return if the {@link ThrowableOperation} throws a {@link Throwable}.
    * @return the {@link Object result} of the {@link ThrowableOperation} or {@link Object default value}
    * if the {@link ThrowableOperation} throws a {@link Throwable}.
-   * @see org.cp.elements.lang.ObjectUtils.ThrowableOperation
    * @see #doOperationSafely(ThrowableOperation, Supplier)
    * @see #returnValueOrThrowIfNull(Object, RuntimeException)
+   * @see org.cp.elements.lang.ThrowableOperation
    */
-  public static <T> T doOperationSafely(ThrowableOperation<T> operation, T defaultValue) {
+  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation, @NotNull T defaultValue) {
 
     Supplier<T> valueSupplier = () -> defaultValue;
 
@@ -188,13 +190,14 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return the {@link Object result} of the {@link ThrowableOperation} or a {@link Object value} supplied by
    * the {@link Supplier} if the {@link ThrowableOperation} throws a {@link Throwable}.
    * @throws IllegalStateException if the {@link Supplier} supplies a {@literal null} {@link Object value}.
-   * @see org.cp.elements.lang.ObjectUtils.ThrowableOperation
    * @see #returnValueOrThrowIfNull(Object, RuntimeException)
+   * @see org.cp.elements.lang.ThrowableOperation
    */
-  public static <T> T doOperationSafely(ThrowableOperation<T> operation, Supplier<T> valueSupplier) {
+  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation,
+      @NotNull Supplier<T> valueSupplier) {
 
     try {
-      return operation.run();
+      return operation.run(EMPTY_OBJECT_ARRAY);
     }
     catch (Throwable cause) {
       return returnValueOrThrowIfNull(valueSupplier.get(),
@@ -305,7 +308,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
-  public static boolean equals(Object obj1, Object obj2) {
+  public static boolean equals(@Nullable Object obj1, @Nullable Object obj2) {
     return obj1 != null && obj1.equals(obj2);
   }
 
@@ -320,7 +323,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
-  public static boolean equalsIgnoreNull(Object obj1, Object obj2) {
+  public static boolean equalsIgnoreNull(@Nullable Object obj1, @Nullable Object obj2) {
     return obj1 == null ? obj2 == null : obj1.equals(obj2);
   }
 
@@ -333,7 +336,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#equals(Object)
    */
   @NullSafe
-  public static boolean isNullOrEqualTo(Object obj1, Object obj2) {
+  public static boolean isNullOrEqualTo(@Nullable Object obj1, @Nullable Object obj2) {
     return obj1 == null || obj1.equals(obj2);
   }
 
@@ -346,7 +349,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#hashCode()
    */
   @NullSafe
-  public static int hashCode(Object obj) {
+  public static int hashCode(@Nullable Object obj) {
     return obj != null ? obj.hashCode() : 0;
   }
 
@@ -359,14 +362,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.lang.Object#toString()
    */
   @NullSafe
-  public static String toString(Object obj) {
+  public static @Nullable String toString(@Nullable Object obj) {
     return obj != null ? obj.toString() : null;
-  }
-
-  @FunctionalInterface
-  public interface ThrowableOperation<T> {
-
-    T run() throws Throwable;
-
   }
 }
