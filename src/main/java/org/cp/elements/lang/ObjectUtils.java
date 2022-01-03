@@ -43,6 +43,8 @@ import org.cp.elements.lang.reflect.ReflectionUtils;
 @SuppressWarnings("unused")
 public abstract class ObjectUtils extends ReflectionUtils {
 
+  public static final Object NULL_OBJECT_REFERENCE = null;
+
   public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
   /**
