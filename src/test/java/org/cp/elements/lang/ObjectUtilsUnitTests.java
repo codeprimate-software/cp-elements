@@ -175,32 +175,6 @@ public class ObjectUtilsUnitTests {
     }
   }
 
-  @Test
-  public void defaultIfNullWithNonNullValues() {
-
-    assertThat(ObjectUtils.defaultIfNull("test", null, null, null)).isEqualTo("test");
-    assertThat(ObjectUtils.defaultIfNull(null, "test")).isEqualTo("test");
-    assertThat(ObjectUtils.defaultIfNull(null, null, null, "test")).isEqualTo("test");
-    assertThat(ObjectUtils.defaultIfNull(null, "test", null, null)).isEqualTo("test");
-    assertThat(ObjectUtils.defaultIfNull("null", (Object[]) null)).isEqualTo("null");
-    assertThat(ObjectUtils.defaultIfNull("null", "test")).isEqualTo("null");
-    assertThat(ObjectUtils.defaultIfNull("nil", "test")).isEqualTo("nil");
-    assertThat(ObjectUtils.defaultIfNull("mock", "test")).isEqualTo("mock");
-  }
-
-  @Test
-  public void defaultIfNullWithNullValues() {
-
-    assertThat(ObjectUtils.defaultIfNull((Object[][]) null)).isNull();
-    assertThat(ObjectUtils.defaultIfNull(null, (Object[]) null)).isNull();
-    assertThat(ObjectUtils.defaultIfNull((Object[]) null, null, null)).isNull();
-  }
-
-  @Test
-  public void doOperationSafelyReturnsValue() {
-    assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
-  }
-
   @Test(expected = IllegalStateException.class)
   public void doOperationSafelyThrowsIllegalStateException() {
 
@@ -244,6 +218,32 @@ public class ObjectUtilsUnitTests {
 
       throw expected;
     }
+  }
+
+  @Test
+  public void returnFirstNonNullValue() {
+
+    assertThat(ObjectUtils.returnFirstNonNullValue("test", null, null, null)).isEqualTo("test");
+    assertThat(ObjectUtils.returnFirstNonNullValue(null, "test")).isEqualTo("test");
+    assertThat(ObjectUtils.returnFirstNonNullValue(null, null, null, "test")).isEqualTo("test");
+    assertThat(ObjectUtils.returnFirstNonNullValue(null, "test", null, null)).isEqualTo("test");
+    assertThat(ObjectUtils.returnFirstNonNullValue("null", (Object[]) null)).isEqualTo("null");
+    assertThat(ObjectUtils.returnFirstNonNullValue("null", "test")).isEqualTo("null");
+    assertThat(ObjectUtils.returnFirstNonNullValue("nil", "test")).isEqualTo("nil");
+    assertThat(ObjectUtils.returnFirstNonNullValue("mock", "test")).isEqualTo("mock");
+  }
+
+  @Test
+  public void returnFirstNonNullValueWithNullValues() {
+
+    assertThat(ObjectUtils.returnFirstNonNullValue((Object[][]) null)).isNull();
+    assertThat(ObjectUtils.returnFirstNonNullValue(null, (Object[]) null)).isNull();
+    assertThat(ObjectUtils.returnFirstNonNullValue((Object[]) null, null, null)).isNull();
+  }
+
+  @Test
+  public void doOperationSafelyReturnsValue() {
+    assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
   }
 
   @Test

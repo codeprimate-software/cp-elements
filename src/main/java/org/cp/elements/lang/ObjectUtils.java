@@ -127,26 +127,6 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Gets the first non-null value in the array of values.
-   *
-   * @param values an array of Object values from which the first non-null Object value in the array is returned.
-   * @param <T> the Class type of values in the array.
-   * @return the first non-null value in the array of Object values.
-   */
-  @NullSafe
-  @SuppressWarnings({ "unchecked", "varargs" })
-  public static @Nullable <T> T defaultIfNull(T... values) {
-
-    for (T value : nullSafeArray(values)) {
-      if (value != null) {
-        return value;
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
    * thrown during the normal execution of the operation by rethrowing an {@link IllegalStateException}.
    *
@@ -206,6 +186,27 @@ public abstract class ObjectUtils extends ReflectionUtils {
       return returnValueOrThrowIfNull(valueSupplier.get(),
         newIllegalStateException(cause, "Failed to execute operation [%s]", operation));
     }
+  }
+
+  /**
+   * Gets the first {@literal non-null} {@link Object value} in the array of values.
+   *
+   * @param <T> {@link Class type} of the {@link Object values} in the array.
+   * @param values array of {@link Object values} from which the first {@literal non-null} {@link Object value}
+   * will be returned; should not be {@literal null}.
+   * @return the first {@literal non-null} {@link Object value} in the array of values.
+   */
+  @NullSafe
+  @SuppressWarnings({ "unchecked", "varargs" })
+  public static @Nullable <T> T returnFirstNonNullValue(T... values) {
+
+    for (T value : nullSafeArray(values)) {
+      if (value != null) {
+        return value;
+      }
+    }
+
+    return null;
   }
 
   /**
