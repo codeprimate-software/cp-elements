@@ -100,13 +100,14 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T clone(T obj) {
+  public static @NotNull <T> T clone(@Nullable T obj) {
 
     if (obj instanceof Cloneable) {
       return (T) invoke(obj, CLONE_METHOD_NAME, obj.getClass());
     }
     else if (obj != null) {
       try {
+
         Class<T> objectType = (Class<T>) obj.getClass();
 
         Constructor<T> copyConstructor = resolveConstructor(objectType, new Class<?>[] { objectType }, obj);
@@ -134,7 +135,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    */
   @NullSafe
   @SuppressWarnings({ "unchecked", "varargs" })
-  public static <T> T defaultIfNull(T... values) {
+  public static @Nullable <T> T defaultIfNull(T... values) {
 
     for (T value : nullSafeArray(values)) {
       if (value != null) {
@@ -216,7 +217,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return the given {@code value} if not {@literal null} or returns the {@code defaultValue}.
    * @see #returnValueOrDefaultIfNull(Object, Supplier)
    */
-  public static <T> T returnValueOrDefaultIfNull(T value, T defaultValue) {
+  public static @Nullable <T> T returnValueOrDefaultIfNull(@Nullable T value, @Nullable T defaultValue) {
     return returnValueOrDefaultIfNull(value, () -> defaultValue);
   }
 
@@ -229,7 +230,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @return the given {@code value} if not {@literal null} or call the given {@link Supplier} to supply a value.
    * @see java.util.function.Supplier
    */
-  public static <T> T returnValueOrDefaultIfNull(T value, Supplier<T> valueSupplier) {
+  public static @Nullable <T> T returnValueOrDefaultIfNull(@Nullable T value, @NotNull Supplier<T> valueSupplier) {
     return Optional.ofNullable(value).orElseGet(valueSupplier);
   }
 
@@ -243,7 +244,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see #returnValueOrThrowIfNull(Object, RuntimeException)
    */
   @NullSafe
-  public static <T> T returnValueOrThrowIfNull(T value) {
+  public static @NotNull <T> T returnValueOrThrowIfNull(@Nullable T value) {
     return returnValueOrThrowIfNull(value, newIllegalArgumentException("Value must not be null"));
   }
 
@@ -257,7 +258,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @throws IllegalArgumentException if {@code exception} is {@literal null}.
    * @throws RuntimeException if {@code value} is {@literal null}.
    */
-  public static <T> T returnValueOrThrowIfNull(T value, RuntimeException exception) {
+  public static @NotNull <T> T returnValueOrThrowIfNull(@Nullable T value, @NotNull RuntimeException exception) {
 
     Assert.notNull(exception, "RuntimeException must not be null");
 
@@ -274,7 +275,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see java.util.function.Supplier
    * @see #safeGetValue(Supplier, Object)
    */
-  public static <T> T safeGetValue(Supplier<T> valueSupplier) {
+  public static @Nullable <T> T safeGetValue(@NotNull Supplier<T> valueSupplier) {
     return safeGetValue(valueSupplier, null);
   }
 
@@ -289,7 +290,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * occurs then the {@code defaultValue} will be returned.
    * @see java.util.function.Supplier
    */
-  public static <T> T safeGetValue(Supplier<T> valueSupplier, T defaultValue) {
+  public static @Nullable <T> T safeGetValue(@NotNull Supplier<T> valueSupplier, @Nullable T defaultValue) {
 
     try {
       return valueSupplier.get();
