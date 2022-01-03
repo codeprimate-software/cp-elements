@@ -22,6 +22,9 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
  * Operation capable of throwing a {@link Throwable} during execution.
  *
@@ -122,4 +125,19 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
    */
   T run(Object... args) throws Throwable;
 
+  /**
+   * Builder method used to compose {@literal this} {@link ThrowableOperation} with the given {@link ThrowableOperation}.
+   *
+   * @param operation {@link ThrowableOperation} to compose with {@literal this} {@link ThrowableOperation}.
+   * @return a composed {@link ThrowableOperation} consisting of {@literal this} {@link ThrowableOperation}
+   * and the given {@link ThrowableOperation}. If the given {@link ThrowableOperation} is {@literal null},
+   * then {@link this} {@link ThrowableOperation} is returned.
+   * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Software Design Pattern</a>
+   */
+  default @NotNull ThrowableOperation<T> andThen(@Nullable ThrowableOperation<T> operation) {
+
+    return operation != null ?
+      arguments -> operation.run(this.run(arguments))
+      : this;
+  }
 }

@@ -22,12 +22,14 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.Test;
+import org.mockito.InOrder;
 
 /**
  * Unit Tests for {@link ThrowableOperation}.
@@ -205,5 +207,39 @@ public class ThrowableOperationUnitTests {
       verify(mockOperation, times(1)).run(any());
       verifyNoMoreInteractions(mockOperation);
     }
+  }
+
+  @Test
+  public void andThenWithNonNullThrowableOperation() throws Throwable {
+
+    ThrowableOperation<Object> mockOperationOne = mock(ThrowableOperation.class);
+    ThrowableOperation<Object> mockOperationTwo = mock(ThrowableOperation.class);
+
+    doCallRealMethod().when(mockOperationOne).andThen(eq(mockOperationTwo));
+
+    ThrowableOperation<Object> composedOperation = mockOperationOne.andThen(mockOperationTwo);
+
+    doReturn("1").when(mockOperationOne).run(eq("test"));
+    doReturn("2").when(mockOperationTwo).run(eq("1"));
+
+    assertThat(composedOperation).isNotNull();
+    assertThat(composedOperation.run("test")).isEqualTo("2");
+
+    InOrder order = inOrder(mockOperationOne, mockOperationTwo);
+
+    order.verify(mockOperationOne, times(1)).andThen(eq(mockOperationTwo));
+    order.verify(mockOperationOne, times(1)).run(eq("test"));
+    order.verify(mockOperationTwo, times(1)).run(eq("1"));
+    verifyNoMoreInteractions(mockOperationOne, mockOperationTwo);
+  }
+
+  @Test
+  public void andThenWithNull() {
+
+    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
+
+    doCallRealMethod().when(mockOperation).andThen(any());
+
+    assertThat(mockOperation.andThen(null)).isSameAs(mockOperation);
   }
 }
