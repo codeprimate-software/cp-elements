@@ -76,7 +76,7 @@ public abstract class AbstractSorter implements Sorter {
   @Override
   @SuppressWarnings("unchecked")
   public <E> Comparator<E> getOrderBy() {
-    return ObjectUtils.defaultIfNull(ComparatorHolder.get(), ObjectUtils.defaultIfNull(
+    return ObjectUtils.returnFirstNonNullValue(ComparatorHolder.get(), ObjectUtils.returnFirstNonNullValue(
       orderBy, ComparableComparator.INSTANCE));
   }
 
@@ -258,7 +258,7 @@ public abstract class AbstractSorter implements Sorter {
     try {
       Method asList = obj.getClass().getMethod(sortableMetaData.listMethod());
       List<E> list = (List<E>) asList.invoke(obj);
-      return ObjectUtils.defaultIfNull(list, Collections.<E>emptyList());
+      return ObjectUtils.returnFirstNonNullValue(list, Collections.<E>emptyList());
     }
     catch (Exception e) {
       throw new SortException(String.format(

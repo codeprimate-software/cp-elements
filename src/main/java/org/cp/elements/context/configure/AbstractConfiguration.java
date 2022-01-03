@@ -274,7 +274,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   @SuppressWarnings("unchecked")
   public <T> T getPropertyValueAs(final String propertyName, final T defaultPropertyValue, final Class<T> type) {
     try {
-      return ObjectUtils.defaultIfNull(convert(getPropertyValue(propertyName, NOT_REQUIRED), type),
+      return ObjectUtils.returnFirstNonNullValue(convert(getPropertyValue(propertyName, NOT_REQUIRED), type),
         defaultPropertyValue);
     }
     catch (ConversionException ignore) {

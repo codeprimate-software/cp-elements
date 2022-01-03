@@ -451,7 +451,7 @@ public abstract class StringUtils {
 
     if (length > 0) {
 
-      StringBuilder builder = new StringBuilder(ObjectUtils.defaultIfNull(value, EMPTY_STRING));
+      StringBuilder builder = new StringBuilder(ObjectUtils.returnFirstNonNullValue(value, EMPTY_STRING));
 
       while (length - builder.length() > 0) {
         builder.append(padding);
@@ -581,7 +581,7 @@ public abstract class StringUtils {
    * @param delimiter the delimiter used to tokenize the String value.
    * @return an array of individually tokenized and trimmed Strings from the given String.
    * @see java.lang.String#split(String)
-   * @see org.cp.elements.lang.ObjectUtils#defaultIfNull(Object[])
+   * @see org.cp.elements.lang.ObjectUtils#returnFirstNonNullValue(Object[])
    * @see org.cp.elements.util.ArrayUtils#transform(Object[], Transformer)
    * @see #defaultIfBlank(String, String...)
    * @see #trim(String)
@@ -589,7 +589,7 @@ public abstract class StringUtils {
   @NullSafe
   @SuppressWarnings("all")
   public static String[] toStringArray(String delimitedValue, String delimiter) {
-    return ArrayUtils.transform(ObjectUtils.defaultIfNull(delimitedValue, EMPTY_STRING).split(
+    return ArrayUtils.transform(ObjectUtils.returnFirstNonNullValue(delimitedValue, EMPTY_STRING).split(
         defaultIfBlank(delimiter, COMMA_DELIMITER)), StringUtils::trim);
   }
 

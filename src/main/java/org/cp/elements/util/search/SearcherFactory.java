@@ -45,7 +45,7 @@ public class SearcherFactory {
    */
   @SuppressWarnings("unchecked")
   public static <T extends Searcher> T createSearcher(final SearchType type) {
-    switch (ObjectUtils.defaultIfNull(type, SearchType.UNKNOWN_SEARCH)) {
+    switch (ObjectUtils.returnFirstNonNullValue(type, SearchType.UNKNOWN_SEARCH)) {
       case BINARY_SEARCH:
         return (T) new BinarySearch();
       case LINEAR_SEARCH:

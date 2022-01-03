@@ -116,7 +116,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
     int index = 0;
 
     for (Object argument : arguments) {
-      argumentTypes[index++] = ObjectUtils.defaultIfNull(ClassUtils.getClass(argument), Object.class);
+      argumentTypes[index++] = ObjectUtils.returnFirstNonNullValue(ClassUtils.getClass(argument), Object.class);
     }
 
     return argumentTypes;

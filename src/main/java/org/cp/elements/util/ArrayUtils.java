@@ -17,7 +17,7 @@ package org.cp.elements.util;
 
 import static java.util.Arrays.stream;
 import static org.cp.elements.lang.LangExtensions.assertThat;
-import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.lang.ObjectUtils.returnFirstNonNullValue;
 import static org.cp.elements.lang.ObjectUtils.equalsIgnoreNull;
 
 import java.lang.reflect.Array;
@@ -130,7 +130,7 @@ public abstract class ArrayUtils {
       arrayList.add(element);
     }
 
-    return arrayList.toArray((T[]) Array.newInstance(defaultIfNull(componentType, Object.class), arrayList.size()));
+    return arrayList.toArray((T[]) Array.newInstance(returnFirstNonNullValue(componentType, Object.class), arrayList.size()));
   }
 
   /**
@@ -542,8 +542,8 @@ public abstract class ArrayUtils {
 
     Class<?> componentType = array.getClass().getComponentType();
 
-    componentType = defaultIfNull(componentType, ObjectUtils.getClass(element));
-    componentType = defaultIfNull(componentType, Object.class);
+    componentType = returnFirstNonNullValue(componentType, ObjectUtils.getClass(element));
+    componentType = returnFirstNonNullValue(componentType, Object.class);
 
     T[] newArray = (T[]) Array.newInstance(componentType, array.length + 1);
 
@@ -624,7 +624,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] nullSafeArray(T[] array, Class<?> componentType) {
-    return array != null ? array : (T[]) Array.newInstance(defaultIfNull(componentType, Object.class), 0);
+    return array != null ? array : (T[]) Array.newInstance(returnFirstNonNullValue(componentType, Object.class), 0);
   }
 
   /* non-Javadoc */
@@ -680,7 +680,7 @@ public abstract class ArrayUtils {
       String.format("[%1$d] is not a valid index [0, %2$d] in the array", index, array.length)))
         .isGreaterThanEqualToAndLessThan(0, array.length);
 
-    Class<?> componentType = defaultIfNull(array.getClass().getComponentType(), Object.class);
+    Class<?> componentType = returnFirstNonNullValue(array.getClass().getComponentType(), Object.class);
 
     T[] newArray = (T[]) Array.newInstance(componentType, array.length - 1);
 

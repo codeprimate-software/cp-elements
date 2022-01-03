@@ -15,7 +15,7 @@
  */
 package org.cp.elements.lang.support;
 
-import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.lang.ObjectUtils.returnFirstNonNullValue;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -156,7 +156,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
   @SuppressWarnings("unchecked")
   public void setModifiedBy(@NotNull USER modifiedBy) {
     this.modifiedBy = assertNotNull(modifiedBy, () -> "Modified by is required");
-    this.lastModifiedBy = defaultIfNull(this.lastModifiedBy, this.modifiedBy);
+    this.lastModifiedBy = returnFirstNonNullValue(this.lastModifiedBy, this.modifiedBy);
   }
 
   /**
@@ -174,7 +174,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
   @Override
   public void setModifiedOn(@NotNull Instant modifiedOn) {
     this.modifiedOn = assertNotNull(modifiedOn, () -> "Modified on is required");
-    this.lastModifiedOn = defaultIfNull(this.lastModifiedOn, this.modifiedOn);
+    this.lastModifiedOn = returnFirstNonNullValue(this.lastModifiedOn, this.modifiedOn);
   }
 
   /**
@@ -193,7 +193,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
   @SuppressWarnings("unchecked")
   public void setModifiedWith(@NotNull PROCESS modifiedWith) {
     this.modifiedWith = assertNotNull(modifiedWith, () -> "Modified with is required");
-    this.lastModifiedWith = defaultIfNull(this.lastModifiedWith, this.modifiedWith);
+    this.lastModifiedWith = returnFirstNonNullValue(this.lastModifiedWith, this.modifiedWith);
   }
 
   /**

@@ -452,7 +452,7 @@ public abstract class ThreadUtils {
      * @see java.util.concurrent.TimeUnit
      */
     public TimeUnit getIntervalTimeUnit() {
-      return ObjectUtils.defaultIfNull(this.intervalTimeUnit, getDurationTimeUnit());
+      return ObjectUtils.returnFirstNonNullValue(this.intervalTimeUnit, getDurationTimeUnit());
     }
 
     /**
@@ -481,7 +481,7 @@ public abstract class ThreadUtils {
       Assert.argument(duration, argument -> argument > 0, "duration (%1$d) must be greater than 0", duration);
 
       this.duration = duration;
-      this.durationTimeUnit = ObjectUtils.defaultIfNull(durationTimeUnit, DEFAULT_TIME_UNIT);
+      this.durationTimeUnit = ObjectUtils.returnFirstNonNullValue(durationTimeUnit, DEFAULT_TIME_UNIT);
 
       return this;
     }

@@ -56,7 +56,7 @@ public class SorterFactory {
    */
   @SuppressWarnings("unchecked")
   public static <T extends Sorter> T createSorter(final SortType type) {
-    switch (ObjectUtils.defaultIfNull(type, SortType.UNKONWN)) {
+    switch (ObjectUtils.returnFirstNonNullValue(type, SortType.UNKONWN)) {
       case BUBBLE_SORT:
         return (T) new BubbleSort();
       case COMB_SORT:

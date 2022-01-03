@@ -91,7 +91,7 @@ public abstract class AbstractSearcher implements Searcher {
       "A reference to a Matcher used by this Searcher ({0}) for searching and matching elements in the collection was not properly configured!",
         getClass().getName());
 
-    return ObjectUtils.defaultIfNull(localMatcher, matcher);
+    return ObjectUtils.returnFirstNonNullValue(localMatcher, matcher);
   }
 
   /**
@@ -359,7 +359,7 @@ public abstract class AbstractSearcher implements Searcher {
     try {
       Method listMethod = ClassUtils.getMethod(obj.getClass(), searchableAnnotation.listMethod());
       List<E> collection = (List<E>) listMethod.invoke(obj);
-      return ObjectUtils.defaultIfNull(collection, Collections.<E>emptyList());
+      return ObjectUtils.returnFirstNonNullValue(collection, Collections.<E>emptyList());
     }
     catch (Exception e) {
       throw new SearchException(String.format(

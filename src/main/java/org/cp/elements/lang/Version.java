@@ -17,7 +17,7 @@
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
-import static org.cp.elements.lang.ObjectUtils.defaultIfNull;
+import static org.cp.elements.lang.ObjectUtils.returnFirstNonNullValue;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -305,7 +305,7 @@ public class Version implements Comparable<Version> {
     this.major = major;
     this.minor = minor;
     this.maintenance = maintenance;
-    this.qualifier = defaultIfNull(qualifier, Qualifier.UNDEFINED);
+    this.qualifier = returnFirstNonNullValue(qualifier, Qualifier.UNDEFINED);
     this.qualifierNumber = Math.max(qualifierNumber, 0);
   }
 
@@ -408,7 +408,7 @@ public class Version implements Comparable<Version> {
    * @see #getQualifierNumber()
    */
   public Qualifier getQualifier() {
-    return defaultIfNull(this.qualifier, Qualifier.UNDEFINED);
+    return returnFirstNonNullValue(this.qualifier, Qualifier.UNDEFINED);
   }
 
   /**
@@ -614,7 +614,7 @@ public class Version implements Comparable<Version> {
    * @return this {@link Version} reference.
    */
   public Version with(Qualifier qualifier, int qualifierNumber) {
-    this.qualifier = defaultIfNull(qualifier, Qualifier.UNDEFINED);
+    this.qualifier = returnFirstNonNullValue(qualifier, Qualifier.UNDEFINED);
     this.qualifierNumber = Math.max(qualifierNumber, 0);
     return this;
   }

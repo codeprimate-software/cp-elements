@@ -84,7 +84,7 @@ public class QuickSort extends AbstractSorter {
    * @see org.cp.elements.util.sort.Sorter
    */
   public Sorter getSorter() {
-    return ObjectUtils.defaultIfNull(sorter, DEFAULT_SORTER);
+    return ObjectUtils.returnFirstNonNullValue(sorter, DEFAULT_SORTER);
   }
 
   /**
