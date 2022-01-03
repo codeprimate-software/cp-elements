@@ -221,6 +221,7 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void returnFirstNonNullValue() {
 
     assertThat(ObjectUtils.returnFirstNonNullValue("test", null, null, null)).isEqualTo("test");
@@ -234,6 +235,7 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void returnFirstNonNullValueWithNullValues() {
 
     assertThat(ObjectUtils.returnFirstNonNullValue((Object[][]) null)).isNull();
