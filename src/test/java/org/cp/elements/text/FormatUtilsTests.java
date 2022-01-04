@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.text;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.MissingFormatArgumentException;
+
 import org.junit.Test;
 
 /**
- * Unit tests for {@link FormatUtils}.
+ * Unit Tests for {@link FormatUtils}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -29,6 +30,17 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class FormatUtilsTests {
+
+  @Test
+  public void messageFormatGuardsAgainstNullArgumentArray() {
+    assertThat(FormatUtils.format("This a {0} with {1} text", (Object[]) null))
+      .isEqualTo("This a {0} with {1} text");
+  }
+
+  @Test(expected = MissingFormatArgumentException.class)
+  public void stringFormatGuardsAgainstNullArgumentArray() {
+    FormatUtils.format("This a %1$s with %2$s text", (Object[]) null);
+  }
 
   @Test
   public void formatPlainText() {
@@ -49,7 +61,7 @@ public class FormatUtilsTests {
   }
 
   @Test
-  public void formatStringAndFormattedText() {
+  public void formatStringAndMessagedFormattedText() {
     assertThat(FormatUtils.format("This is %1$s {1} text%3$s", "string and message", "formatted", "!"))
       .isEqualTo("This is string and message formatted text!");
   }

@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.text;
 
 import java.text.MessageFormat;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The {@link FormatUtils} class is an abstract utility class for working with text formatting.
@@ -39,7 +41,7 @@ public abstract class FormatUtils {
    * @see #stringFormat(String, Object...)
    * @see java.lang.String
    */
-  public static String format(String textPattern, Object... args) {
+  public static @NotNull String format(@NotNull String textPattern, Object... args) {
     return messageFormat(stringFormat(textPattern, args), args);
   }
 
@@ -53,8 +55,8 @@ public abstract class FormatUtils {
    * @see java.text.MessageFormat
    * @see java.lang.String
    */
-  protected static String messageFormat(String textPattern, Object... args) {
-    return MessageFormat.format(textPattern, args);
+  protected static @NotNull String messageFormat(@NotNull String textPattern, Object... args) {
+    return MessageFormat.format(textPattern, ArrayUtils.nullSafeArray(args));
   }
 
   /**
@@ -67,7 +69,7 @@ public abstract class FormatUtils {
    * @see java.lang.String#format(String, Object...)
    * @see java.lang.String
    */
-  protected static String stringFormat(String textPattern, Object... args) {
-    return String.format(textPattern, args);
+  protected static @NotNull String stringFormat(@NotNull String textPattern, Object... args) {
+    return String.format(textPattern, ArrayUtils.nullSafeArray(args));
   }
 }
