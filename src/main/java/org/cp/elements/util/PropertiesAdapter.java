@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import java.util.Collections;
@@ -27,11 +26,13 @@ import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link PropertiesAdapter} class is a wrapper around a {@link Properties} object to encapsulate functionality
- * for conveniently accessing properties and converting value to a specific type.
+ * Wrapper for a {@link Properties} object in order to encapsulate functionality for conveniently accessing properties
+ * and converting {@link Object values} to a specific {@link Class type}.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -52,7 +53,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @param properties the {@link Properties} to wrap.
    * @return an instance of the {@link PropertiesAdapter} initialized with the given {@link Properties}.
    */
-  public static PropertiesAdapter from(Properties properties) {
+  public static @NotNull PropertiesAdapter from(@NotNull Properties properties) {
     return new PropertiesAdapter(properties);
   }
 
@@ -61,7 +62,7 @@ public class PropertiesAdapter implements Iterable<String> {
    *
    * @param properties the {@link Properties} to wrap with this wrapper.
    */
-  public PropertiesAdapter(Properties properties) {
+  public PropertiesAdapter(@NotNull Properties properties) {
 
     Assert.notNull(properties, "The Properties to wrap cannot be null");
 
@@ -77,7 +78,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * into a value of the desired class type.
    * @see org.cp.elements.data.conversion.ConversionService
    */
-  protected ConversionService getConversionService() {
+  protected @NotNull ConversionService getConversionService() {
     return this.conversionService;
   }
 
@@ -87,7 +88,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @return the {@link Properties} wrapped by this Adapter.
    * @see java.util.Properties
    */
-  protected Properties getProperties() {
+  protected @NotNull Properties getProperties() {
     return this.delegate;
   }
 
@@ -180,8 +181,8 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see java.lang.String
    */
   @NullSafe
-  protected String valueOf(String value) {
-    return ("null".equalsIgnoreCase(String.valueOf(value).trim()) ? null : value);
+  protected @Nullable String valueOf(@Nullable String value) {
+    return "null".equalsIgnoreCase(String.valueOf(value).trim()) ? null : value;
   }
 
   /**
@@ -193,7 +194,8 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see java.util.Properties
    * @see #from(Properties)
    */
-  public PropertiesAdapter filter(Filter<String> filter) {
+  public @NotNull PropertiesAdapter filter(@NotNull Filter<String> filter) {
+
     Properties properties = new Properties();
 
     for (String propertyName : this) {
@@ -212,7 +214,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @return the assigned value of the named property as a {@link String}.
    * @see #get(String, String)
    */
-  public String get(String propertyName) {
+  public @Nullable String get(String propertyName) {
     return get(propertyName, null);
   }
 
@@ -227,7 +229,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see java.util.Properties#getProperty(String)
    * @see #getProperties()
    */
-  public String get(String propertyName, String defaultValue) {
+  public @Nullable String get(String propertyName, @Nullable String defaultValue) {
     return valueOf(getProperties().getProperty(propertyName, defaultValue));
   }
 
@@ -240,7 +242,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @return the assigned value of the named property as an instance of the specified {@link Class} type.
    * @see #getAsType(String, Class, Object)
    */
-  public <T> T getAsType(String propertyName, Class<T> type) {
+  public @Nullable <T> T getAsType(String propertyName, Class<T> type) {
     return getAsType(propertyName, type, null);
   }
 
@@ -257,7 +259,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see #defaultIfNotSet(String, Object, Class)
    * @see java.lang.Class
    */
-  public <T> T getAsType(String propertyName, Class<T> type, T defaultValue) {
+  public @Nullable <T> T getAsType(String propertyName, Class<T> type, @Nullable T defaultValue) {
     return defaultIfNotSet(propertyName, defaultValue, type);
   }
 
@@ -294,7 +296,8 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (obj == this) {
+
+    if (this == obj) {
       return true;
     }
 
@@ -327,7 +330,7 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return MapUtils.toString(toMap());
   }
 
@@ -339,7 +342,8 @@ public class PropertiesAdapter implements Iterable<String> {
    * @see #iterator()
    * @see #get(String)
    */
-  public Map<String, String> toMap() {
+  public @NotNull Map<String, String> toMap() {
+
     Map<String, String> map = new HashMap<>(size());
 
     for (String propertyName : this) {

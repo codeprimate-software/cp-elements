@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.function.Predicate;
 
 /**
- * The {@link Filter} interface defines a contract for an {@link Object} that functions as a filter
- * for other {@link Object objects}.
+ * The {@link Filter} interface is a {@link Predicate} and defines a contract for an {@link Object} that functions as
+ * a {@literal filter} for other {@link Object objects}.
  *
  * @author John J. Blum
  * @see java.lang.FunctionalInterface
