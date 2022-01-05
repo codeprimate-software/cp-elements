@@ -62,6 +62,10 @@ public class AuditableVisitorTests {
   @Mock
   private User mockUser;
 
+  private @NotNull Instant toInstant(int year, Month month, int day, int hour, int minute, int second) {
+    return toInstant(LocalDateTime.of(year, month.getValue(), day, hour, minute, second));
+  }
+
   private @NotNull Instant toInstant(@NotNull LocalDateTime dateTime) {
     return toInstant(ZonedDateTime.of(dateTime, ZoneId.systemDefault()));
   }
@@ -84,7 +88,7 @@ public class AuditableVisitorTests {
   @Test
   public void constructWithUserProcessAndDateTime() {
 
-    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 16, 22, 30, 45));
+    Instant now = toInstant(2014, Month.JANUARY, 16, 22, 30, 45);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -111,72 +115,6 @@ public class AuditableVisitorTests {
   }
 
   @Test
-  @SuppressWarnings("rawtypes")
-  public void isCreatedUnsetWithCreatedByAndCreatedDateTimePropertiesUnset() {
-
-    Auditable mockAuditable = mock(Auditable.class);
-
-    when(mockAuditable.getCreatedBy()).thenReturn(null);
-
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
-
-    assertThat(visitor.isCreatedUnset(mockAuditable)).isTrue();
-
-    verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, never()).getCreatedOn();
-  }
-
-  @Test
-  @SuppressWarnings("rawtypes")
-  public void isCreatedUnsetWithOnlyCreatedByPropertyUnset() {
-
-    Auditable mockAuditable = mock(Auditable.class);
-
-    when(mockAuditable.getCreatedBy()).thenReturn(null);
-
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
-
-    assertThat(visitor.isCreatedUnset(mockAuditable)).isTrue();
-
-    verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, never()).getCreatedOn();
-  }
-
-  @Test
-  @SuppressWarnings("rawtypes")
-  public void isCreatedUnsetWithOnlyCreatedDateTimePropertyUnset() {
-
-    Auditable mockAuditable = mock(Auditable.class);
-
-    when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
-    when(mockAuditable.getCreatedOn()).thenReturn(null);
-
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
-
-    assertThat(visitor.isCreatedUnset(mockAuditable)).isTrue();
-
-    verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, times(1)).getCreatedOn();
-  }
-
-  @Test
-  @SuppressWarnings("rawtypes")
-  public void isCreatedUnsetWhenBothCreatedByAndCreatedDateTimePropertiesAreSet() {
-
-    Auditable mockAuditable = mock(Auditable.class);
-
-    when(mockAuditable.getCreatedBy()).thenReturn(mockUser);
-    when(mockAuditable.getCreatedOn()).thenReturn(Instant.now());
-
-    AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess);
-
-    assertThat(visitor.isCreatedUnset(mockAuditable)).isFalse();
-
-    verify(mockAuditable, times(1)).getCreatedBy();
-    verify(mockAuditable, times(1)).getCreatedOn();
-  }
-
-  @Test
   @SuppressWarnings("unchecked")
   public void visit() {
 
@@ -185,7 +123,7 @@ public class AuditableVisitorTests {
     when(mockAuditable.isNew()).thenReturn(true);
     when(mockAuditable.isModified()).thenReturn(true);
 
-    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 14, 55, 30));
+    Instant now = toInstant(2014, Month.JANUARY, 18, 14, 55, 30);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -215,7 +153,7 @@ public class AuditableVisitorTests {
     when(mockAuditable.getCreatedBy()).thenReturn(new User() {});
     when(mockAuditable.isModified()).thenReturn(true);
 
-    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 15, 10, 15));
+    Instant now = toInstant(2014, Month.JANUARY, 18, 15, 10, 15);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -251,7 +189,7 @@ public class AuditableVisitorTests {
     when(mockAuditable.getCreatedOn()).thenReturn(Instant.now());
     when(mockAuditable.isModified()).thenReturn(true);
 
-    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 23, 45, 0));
+    Instant now = toInstant(2014, Month.JANUARY, 18, 23, 45, 0);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 
@@ -283,7 +221,7 @@ public class AuditableVisitorTests {
     when(mockAuditable.getCreatedOn()).thenReturn(Instant.now());
     when(mockAuditable.isModified()).thenReturn(false);
 
-    Instant now = toInstant(LocalDateTime.of(2014, Month.JANUARY, 18, 23, 55, 45));
+    Instant now = toInstant(2014, Month.JANUARY, 18, 23, 55, 45);
 
     AuditableVisitor<User, Process> visitor = new AuditableVisitor<>(mockUser, mockProcess, now);
 

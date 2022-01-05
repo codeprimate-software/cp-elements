@@ -16,9 +16,11 @@
 package org.cp.elements.lang.support;
 
 import java.time.Instant;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Auditable;
+import org.cp.elements.lang.Auditor;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
@@ -31,6 +33,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @author John J. Blum
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
+ * @see org.cp.elements.lang.Auditor
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor
  * @since 1.0.0
@@ -38,11 +41,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public class AuditableVisitor<USER, PROCESS> implements Visitor {
 
-  private final Instant dateTime;
-
-  private final PROCESS process;
-
-  private final USER user;
+  private final Auditor<USER, PROCESS> auditor;
 
   /**
    * Constructs a new instance of {@link AuditableVisitor} initialized with the creating and modifying user and process.
@@ -72,27 +71,48 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
     Assert.notNull(user, "User is required");
     Assert.notNull(process, "Process is required");
 
-    this.user = user;
-    this.process = process;
-    this.dateTime = dateTime != null ? dateTime : Instant.now();
+    this.auditor = newAuditor(user, process, dateTime);
   }
 
   /**
-   * Gets the user authorized and responsible for changing the {@link Auditable} object.
+   * Constructs a new isntance of {@link Auditor} initialized with the {@link USER}, {@link PROCESS}
+   * and {@link Instant date and time} used when auditing {@link Auditable} objects.
    *
-   * @return the user authorized and responsible for changing the {@link Auditable} object.
+   * @param user {@link USER} who changed the {@link Auditable} object.
+   * @param process {@link PROCESS} that changed the {@link Auditable} object.
+   * @param dateTime {@link Instant} when the {@link Auditable} object changed.
+   * @return a new {@link Auditor}.
+   * @see org.cp.elements.lang.Auditor
    */
-  public @NotNull USER getUser() {
-    return this.user;
+  private Auditor<USER, PROCESS> newAuditor(@NotNull USER user, @NotNull PROCESS process, @NotNull Instant dateTime) {
+
+    return new Auditor<USER, PROCESS>() {
+
+      @Override
+      public Supplier<Instant> getDateTime() {
+        return () -> dateTime;
+      }
+
+      @Override
+      public Supplier<PROCESS> getProcess() {
+        return () -> process;
+      }
+
+      @Override
+      public Supplier<USER> getUser() {
+        return () -> user;
+      }
+    };
   }
 
   /**
-   * Gets the process authorized and responsible for changing the {@link Auditable} object.
+   * Gets the configured {@link Auditor}.
    *
-   * @return the process authorized and responsible for changing the {@link Auditable} object.
+   * @return the configured {@link Auditor}.
+   * @see org.cp.elements.lang.Auditor
    */
-  public @NotNull PROCESS getProcess() {
-    return this.process;
+  protected @NotNull Auditor<USER, PROCESS> getAuditor() {
+    return this.auditor;
   }
 
   /**
@@ -102,21 +122,25 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @see java.time.Instant
    */
   public @NotNull Instant getDateTime() {
-    return this.dateTime;
+    return getAuditor().getDateTime().get();
   }
 
   /**
-   * Determines whether the primary created {@link Auditable} object properties are currently unset, specifically only
-   * evaluating the {@literal createdBy} and {@literal createdOn} properties.
+   * Gets the process authorized and responsible for changing the {@link Auditable} object.
    *
-   * @param auditable {@link Auditable} object being evaluated for unset created properties.
-   * @return a boolean value indicating whether the {@link Auditable} object's created properties
-   * are currently unset.
-   * @see org.cp.elements.lang.Auditable#getCreatedBy()
-   * @see org.cp.elements.lang.Auditable#getCreatedOn()
+   * @return the process authorized and responsible for changing the {@link Auditable} object.
    */
-  protected boolean isCreatedUnset(@NotNull Auditable<?, ?, ?> auditable) {
-    return auditable.getCreatedBy() == null || auditable.getCreatedOn() == null;
+  public @NotNull PROCESS getProcess() {
+    return getAuditor().getProcess().get();
+  }
+
+  /**
+   * Gets the user authorized and responsible for changing the {@link Auditable} object.
+   *
+   * @return the user authorized and responsible for changing the {@link Auditable} object.
+   */
+  public @NotNull USER getUser() {
+    return getAuditor().getUser().get();
   }
 
   /**
@@ -128,24 +152,7 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
    * @see org.cp.elements.lang.Visitable
    */
   @Override
-  @SuppressWarnings("unchecked")
   public void visit(@Nullable Visitable visitable) {
-
-    if (visitable instanceof Auditable) {
-
-      Auditable<USER, PROCESS, ?> auditable = (Auditable<USER, PROCESS, ?>) visitable;
-
-      if (auditable.isNew() || isCreatedUnset(auditable)) {
-        auditable.setCreatedBy(getUser());
-        auditable.setCreatedOn(getDateTime());
-        auditable.setCreatedWith(getProcess());
-      }
-
-      if (auditable.isModified()) {
-        auditable.setModifiedBy(getUser());
-        auditable.setModifiedOn(getDateTime());
-        auditable.setModifiedWith(getProcess());
-      }
-    }
+    getAuditor().audit(visitable);
   }
 }
