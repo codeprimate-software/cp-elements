@@ -46,14 +46,17 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.assertj.core.api.Assertions;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
 import org.junit.Test;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -77,6 +80,49 @@ public class LangExtensionsUnitTests {
   private final Condition ENABLE_DISABLE_CONDITION = Condition.FALSE_CONDITION;
 
   private final Object lock = new Object();
+
+  @Test
+  public void assertThatAsTypedAssertion() {
+
+    Object jonDoe = User.as("jonDoe");
+
+    assertThat(jonDoe).as(User.class).isComparableTo(User.as("jonDoe"));
+  }
+
+  @Test
+  public void assertThatAsStringAssertion() {
+
+    User jonDoe = User.as("jonDoe");
+
+    assertThat(jonDoe).isNotNull();
+    assertThat(jonDoe).asString().isEqualTo("jonDoe");
+  }
+
+  @Test
+  public void assertThatAsConvertedTypedAssertion() {
+
+    Person jonDoe = new Person(1L, "Jon", "Doe");
+
+    Function<Person, User> toUserFunction = person ->
+      User.as(person.getFirstName().toLowerCase() + person.getLastName());
+
+    assertThat(jonDoe).asType(toUserFunction).isEqualTo(User.as("jonDoe"));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void assertThatAsWithNullConverterFunction() {
+
+    try {
+      assertThat("mock").asType(null).isEqualTo("test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      Assertions.assertThat(expected).hasMessage("The Function used to convert the target (subject) is required");
+      Assertions.assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
 
   @Test
   public void assertThatClassIsAssignableToClassType() {
@@ -1620,6 +1666,44 @@ public class LangExtensionsUnitTests {
 
   @Test
   @SuppressWarnings({ "rawtypes", "unchecked" })
+  public void wrappedAssertThatAsTypedAssertionDelegatesToWrappedAssertion() {
+
+    AssertThat mockAssertion = mock(AssertThat.class);
+
+    AssertThatWrapper.wrap(mockAssertion).as(User.class);
+
+    verify(mockAssertion, times(1)).as(eq(User.class));
+    verifyNoMoreInteractions(mockAssertion);
+  }
+
+  @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public void wrappedAssertThatAsStringAssertionDelegatesToWrappedAssertion() {
+
+    AssertThat mockAssertion = mock(AssertThat.class);
+
+    AssertThatWrapper.wrap(mockAssertion).asString();
+
+    verify(mockAssertion, times(1)).asString();
+    verifyNoMoreInteractions(mockAssertion);
+  }
+
+  @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public void wrappedAssertThatAsConvertedTypedAssertionDelegatesToWrappedAssertion() {
+
+    AssertThat mockAssertion = mock(AssertThat.class);
+
+    Function<Person, User> mockFunction = mock(Function.class);
+
+    AssertThatWrapper.wrap(mockAssertion).asType(mockFunction);
+
+    verify(mockAssertion, times(1)).asType(mockFunction);
+    verifyNoMoreInteractions(mockAssertion);
+  }
+
+  @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void wrappedAssertThatIsAssignableToDelegatesToWrappedAssertion() {
 
     AssertThat mockAssertion = mock(AssertThat.class);
@@ -2803,7 +2887,7 @@ public class LangExtensionsUnitTests {
      */
     @Override
     @SuppressWarnings("all")
-    public int compareTo(Person person) {
+    public int compareTo(@NotNull Person person) {
 
       int compareValue = ComparatorUtils.compareIgnoreNull(getFirstName(), person.getFirstName());
 
@@ -2953,6 +3037,32 @@ public class LangExtensionsUnitTests {
 
     public BigDecimal getCost(int quantity) {
       return getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+  }
+
+  @Getter
+  @EqualsAndHashCode
+  @RequiredArgsConstructor(staticName = "as")
+  @SuppressWarnings("unused")
+  public static class User implements Comparable<User> {
+
+    @lombok.NonNull
+    private final String name;
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public int compareTo(@NotNull User other) {
+      return getName().compareTo(other.getName());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String toString() {
+      return getName();
     }
   }
 }

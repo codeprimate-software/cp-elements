@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -47,7 +48,9 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  * @author John J. Blum
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
+ * @see java.text.MessageFormat
  * @see java.util.function.Predicate
+ * @see java.util.function.Supplier
  * @see org.cp.elements.lang.Assert
  * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
@@ -274,6 +277,41 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.DslExtension
    */
   public interface AssertThat<T> extends DslExtension, FluentApiExtension {
+
+    /**
+     * Converts {@literal this} {@link AssertThat assertion} into a typed {@link AssertThat assertion}
+     * with the given {@link Class type}.
+     *
+     * @param <S> new {@link Class type} for {@literal this} {@link AssertThat assertion}.
+     * @param type new {@link Class type} for {@literal this} {@link AssertThat assertion}.
+     * @return {@literal this} {@link AssertThat assertion} into an {@link AssertThat assertion}
+     * with the given {@link Class type}.
+     * @see java.lang.Class
+     */
+    <S> AssertThat<S> as(Class<S> type);
+
+    /**
+     * Converts {@literal this} {@link AssertThat assertion} into a {@link String} {@link AssertThat assertion}.
+     *
+     * @return {@literal this} {@link AssertThat assertion} as a {@link String} {@link AssertThat assertion}.
+     * @see #as(Class)
+     */
+    default AssertThat<String> asString() {
+      return as(String.class);
+    }
+
+    /**
+     * Converts {@literal this} {@link AssertThat assertion} into a typed {@link AssertThat assertion}
+     * using the given {@link Function} to convert the {@literal target (subject)} of {@literal this}
+     * {@link AssertThat assertion} into an {@link Object} of the required {@link Class type}.
+     *
+     * @param <S> new {@link Class type} for {@literal this} {@link AssertThat assertion}.
+     * @param converter {@link Function} used to convert the {@literal target (subject)}
+     * of {@literal this} {@link AssertThat assertion} into an {@link Object} of the required {@link Class type}.
+     * @return {@literal this} {@link AssertThat assertion} into an {@link AssertThat assertion}
+     * of the given {@link Class type}.
+     */
+    <S> AssertThat<S> asType(Function<T, S> converter);
 
     /**
      * Asserts whether the object to evaluate is assignable to the given Class type.  The object evaluated
@@ -783,6 +821,36 @@ public abstract class LangExtensions {
     @NullSafe
     private @NotNull Condition nullSafeCondition(@Nullable Condition condition) {
       return condition != null ? condition : DEFAULT_CONDITION;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public <S> AssertThat<S> as(Class<S> type) {
+      return new AssertThatExpression<>(getTargetAs(type), getExpected());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public AssertThat<String> asString() {
+
+      T target = getTarget();
+
+      return new AssertThatExpression<>(target != null ? target.toString() : null);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public <S> AssertThat<S> asType(@NotNull Function<T, S> converter) {
+
+      Assert.notNull(converter, "The Function used to convert the target (subject) is required");
+
+      return new AssertThatExpression<>(converter.apply(getTarget()), getExpected());
     }
 
     /**
@@ -1318,6 +1386,30 @@ public abstract class LangExtensions {
      */
     protected AssertThat<T> getDelegate() {
       return this.delegate;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public <S> AssertThat<S> as(Class<S> type) {
+      return getDelegate().as(type);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public AssertThat<String> asString() {
+      return getDelegate().asString();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public <S> AssertThat<S> asType(Function<T, S> converter) {
+      return getDelegate().asType(converter);
     }
 
     /**
