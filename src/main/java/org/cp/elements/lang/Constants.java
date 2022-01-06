@@ -16,7 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Constants} class defines useful constants used throughout the cp-elements Java Class Library and APIs.
+ * The {@link Constants} abstract class defines useful constants used throughout the Elements Java Class Library.
  *
  * @author John J. Blum
  * @since 1.0.0
