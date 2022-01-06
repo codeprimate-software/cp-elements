@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The {@link Composite} interface defines a contract for objects implementing the Composite Software Design Pattern.
+ * The {@link Composite} interface defines a contract for {@link Object objects} who's {@link Class types}
+ * implement the {@literal Composite Software Design Pattern}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object} to {@literal compose}.
  * @see java.lang.FunctionalInterface
  * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Compsite Software Design Pattern</a>
  * @since 1.0.0
@@ -37,23 +39,23 @@ public interface Composite<T> {
    *
    * @param one {@link Object} to compose.
    * @param two {@link Object} to compose.
-   * @return an {@link Object} of type {@link T} composed of the two given {@link Object objects},
-   * both of type {@link T}.
+   * @return an {@link Object} of type {@link T} composed of the two given, non-required {@link Object objects},
+   * of type {@link T}.
    */
   T compose(T one, T two);
 
   /**
    * Composes the array of {@link Object objects} of type {@link T} into a single {@link Composite}
-   * object of type {@link T} acting like a single {@link Object} of type {@link T}.
+   * object of type {@link T} acting as a single {@link Object} of type {@link T}.
    *
    * @param objects array of {@link Object objects} to compose.
    * @return an {@link Object} of type {@link T} composed of the array of {@link Object objects} of type {@link T}.
-   * Returns {@literal null} if the array is {@literal null} or empty.
+   * Returns {@literal null} if the array is {@literal null} or {@literal empty}.
    * @see #compose(Object, Object)
    */
   @NullSafe
   @SuppressWarnings({ "unchecked", "varargs" })
-  default T compose(T... objects) {
+  default @Nullable T compose(T... objects) {
 
     T composite = null;
 
@@ -66,16 +68,16 @@ public interface Composite<T> {
 
   /**
    * Composes an {@link Iterable} collection of {@link Object objects} of type {@link T} into a single
-   * {@link Composite} object of type {@link T} acting like a single {@link Object} of type {@link T}.
+   * {@link Composite} object of type {@link T} acting as a single {@link Object} of type {@link T}.
    *
-   * @param iterable {@link Iterable} collection of objects to compose.
+   * @param iterable {@link Iterable} collection of {@link Object objects} to compose.
    * @return an {@link Object} of type {@link T} composed of the {@link Iterable} collection of {@link Object objects}
    * of type {@link T}. Returns {@literal null} if the {@link Iterable} collection of {@link Object objects}
-   * is {@literal null} or empty.
+   * is {@literal null} or {@literal empty}.
    * @see #compose(Object, Object)
    */
   @NullSafe
-  default T compose(Iterable<T> iterable) {
+  default @Nullable T compose(Iterable<T> iterable) {
 
     T composite = null;
 
