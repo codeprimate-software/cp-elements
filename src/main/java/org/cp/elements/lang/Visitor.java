@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The {@link Visitor} interface define a contract for objects who's classes implement this interface in order to walk
- * an object graph for carrying out some operation of evalution of particular objects or types of objects.  The Visitor
- * interface is an expression of the Visitor design pattern separating algorithm from object structure.
+ * The {@link Visitor} interface define a contract for {@link Object objects} who's {@link Class type} implements
+ * {@literal this} interface in order to walk an {@link Object} graph to perform some operation or make some evaluation
+ * of particular {@link Object objects} or {@link Class types} of {@link Object objects}.
+ *
+ * The Visitor interface is a definition of the {@literal Visitor Software Design Pattern}, used to separate algorithm
+ * from {@link Object} structure.
  *
  * @author John J. Blum
  * @see java.lang.FunctionalInterface
@@ -30,9 +32,11 @@ package org.cp.elements.lang;
 public interface Visitor {
 
   /**
-   * Visits the Visitable object in order to perform a function or evaluation of the target object.
+   * Visits the {@link Visitable} object in order to perform a function or make an evaluation of
+   * the target {@link Object}.
    *
-   * @param visitable the Visitable object visited by this Visitor.
+   * @param visitable {@link Visitable} object visited by {@literal this} {@link Visitor}.
+   * @see org.cp.elements.lang.Visitable
    */
   void visit(Visitable visitable);
 

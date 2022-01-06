@@ -15,23 +15,30 @@
  */
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
- * The {@link Visitable} interface defines a contract for objects that can be visited by a {@link Visitor}.
+ * The {@link Visitable} interface defines a contract for {@link Object objects} that can be visited by
+ * a {@link Visitor}.
+ *
+ * The {@link Visitable} interface is an essential component in the {@literal Visitor Software Design Pattern}.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Visitor
+ * @see <a href="https://en.wikipedia.org/wiki/Visitor_pattern">Visitor Software Design Pattern</a>
  * @since 1.0.0
  */
 public interface Visitable {
 
   /**
-   * Accepts a {@link Visitor} to perform an operation or evaluation on this {@link Visitable} object.
+   * Accepts a {@link Visitor} used to perform an operation or evaluation of {@literal this} {@link Visitable} object.
    *
-   * @param visitor {@link Object} who's {@link Class} implements the {@link Visitor} interface,
-   * walking a graph of objects to perform an evaluation or operation.
+   * @param visitor {@link Object} who's {@link Class} implements the {@link Visitor} interface and is used to
+   * walk a graph of {@link Object objects} in order to perform an operation or make an evaluation;
+   * must not be {@literal null}.
    * @see org.cp.elements.lang.Visitor
    */
-  default void accept(Visitor visitor) {
+  default void accept(@NotNull Visitor visitor) {
     visitor.visit(this);
   }
 }
