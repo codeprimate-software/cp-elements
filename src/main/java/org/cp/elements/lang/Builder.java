@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * {@link Builder} is an interface defining a contract for objects implementing the Builder Software Design Pattern.
+ * The {@link Builder} interface defines a contract for {@link Object objects} who's {@link Class types}
+ * implement the {@literal Builder Software Design Pattern}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of {@link Object} to {@literal build}.
  * @see java.lang.FunctionalInterface
  * @see <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder Software Design Pattern</a>
  * @since 1.0.0
@@ -29,9 +30,9 @@ package org.cp.elements.lang;
 public interface Builder<T> {
 
   /**
-   * Builds an object of type {@code T}.
+   * Builds an {@link Object} of type {@link T}.
    *
-   * @return the built object.
+   * @return the built {@link Object}.
    */
   T build();
 
