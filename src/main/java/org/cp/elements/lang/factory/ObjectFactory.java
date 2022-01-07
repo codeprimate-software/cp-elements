@@ -13,80 +13,101 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.factory;
 
 import org.cp.elements.context.configure.ConfigurationAware;
 import org.cp.elements.data.conversion.ConversionServiceAware;
+import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.reflect.ReflectionUtils;
 
 /**
- * The ObjectFactory interface defines a contract for components that create instances of other objects.
+ * Interface that defines a contract for components capable of creating instances of other {@link Object objects}.
  *
  * @author John J. Blum
  * @see java.lang.Object
  * @see org.cp.elements.context.configure.ConfigurationAware
- * @see org.cp.elements.lang.factory.AbstractObjectFactory
  * @see org.cp.elements.data.conversion.ConversionServiceAware
+ * @see org.cp.elements.lang.factory.AbstractObjectFactory
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public interface ObjectFactory extends ConfigurationAware, ConversionServiceAware {
 
   /**
-   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments.
-   * The parameter types of the constructor used to construct the object are determined from the arguments.
+   * Creates an {@link Object} from the given {@link String fully-qualified class name}, initialized with
+   * the given array of constructor {@link Object[] arguments}.
    *
-   * @param <T> the Class type of the created object.
-   * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @see #create(String, Class[], Object...)
+   * The {@link Class[] parameter types} of the constructor used to construct the {@link Object}
+   * are determined from the {@link Object[] arguments}.
+   *
+   * @param <T> {@link Class type} of {@link Object} to create.
+   * @param objectTypeName {@link String} containing the {@literal fully-qualified class name}
+   * for the {@link Class type} of {@link Object} to create.
+   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @return a new {@link Object} of the given {@link Class type} initialized with
+   * the given array of {@link Object[] arguments}.
+   * @see #create(Class, Class[], Object...)
    */
-  <T> T create(String objectTypeName, Object... args);
+  default <T> T create(String objectTypeName, Object... args) {
+    return create(ClassUtils.loadClass(objectTypeName), ReflectionUtils.getArgumentTypes(args), args);
+  }
 
   /**
-   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
-   * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
-   * the object.
+   * Creates an {@link Object} from the given {@link String fully-qualified class name}, initialized with
+   * the given array of constructor {@link Object[] arguments} corresponding to the given array of constructor
+   * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
+   * the {@link Object}.
    *
-   * @param <T> the Class type of the created object.
-   * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
-   * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
-   * the object.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @see #create(String, Object...)
-   * @see java.lang.Class
+   * @param <T> {@link Class type} of {@link Object} to create.
+   * @param objectTypeName {@link String} containing the {@literal fully-qualified class name}
+   * for the {@link Class type} of {@link Object} to create.
+   * @param parameterTypes array of {@link Class[] types} specifying the signature of the constructor
+   * used to construct the {@link Object}.
+   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @return a new {@link Object} of the given {@link Class type} initialized with
+   * the given array of {@link Object[] arguments}.
+   * @see #create(Class, Class[], Object...)
    */
-  <T> T create(String objectTypeName, Class[] parameterTypes, Object... args);
+  @SuppressWarnings("rawtypes")
+  default <T> T create(String objectTypeName, Class[] parameterTypes, Object... args) {
+    return create(ClassUtils.loadClass(objectTypeName), parameterTypes, args);
+  }
 
   /**
-   * Creates an object given the class type, initialized with the specified constructor arguments. The parameter types
-   * of the constructor used to construct the object are determined from the arguments.
+   * Creates an {@link Object} from the given {@link Class type} initialized with
+   * the given array of constructor {@link Object[] arguments}.
    *
-   * @param <T> the Class type of the created object.
-   * @param objectType the Class type from which the instance is created.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
+   * The {@link Class[] parameter types} of the constructor used to construct the {@link Object}
+   * are determined from the {@link Object[] arguments}.
+   *
+   * @param <T> {@link Class type} of {@link Object} to create.
+   * @param objectType {@link Class type} from which the {@link Object }instance will be created.
+   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @return a new {@link Object} of the given {@link Class type} initialized with
+   * the given array of {@link Object[] arguments}.
    * @see #create(Class, Class[], Object...)
    * @see java.lang.Class
    */
-  <T> T create(Class<T> objectType, Object... args);
+  default <T> T create(Class<T> objectType, Object... args) {
+    return create(objectType, ReflectionUtils.getArgumentTypes(args), args);
+  }
 
   /**
-   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
-   * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
-   * the object.
+   * Creates an {@link Object} from the given {@link Class type} initialized with
+   * the given array of constructor {@link Object[] arguments} corresponding to the given array of constructor
+   * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
+   * the {@link Object}.
    *
-   * @param <T> the Class type of the created object.
-   * @param objectType the Class type from which the instance is created.
-   * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
-   * the object.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @see #create(Class, Object...)
+   * @param <T> {@link Class type} of {@link Object} to create.
+   * @param objectType {@link Class type} from which the {@link Object }instance will be created.
+   * @param parameterTypes array of {@link Class[] types} specifying the signature of the constructor
+   * used to construct the {@link Object}.
+   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @return a new {@link Object} of the given {@link Class type} initialized with
+   * the given array of {@link Object[] arguments}.
    * @see java.lang.Class
    */
+  @SuppressWarnings("rawtypes")
   <T> T create(Class<T> objectType, Class[] parameterTypes, Object... args);
 
 }
