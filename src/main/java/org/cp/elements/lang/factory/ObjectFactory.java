@@ -21,13 +21,14 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.reflect.ReflectionUtils;
 
 /**
- * Interface that defines a contract for components capable of creating instances of other {@link Object objects}.
+ * Interface that defines a contract for components capable of creating instances of other {@link Object Objects}.
  *
  * @author John J. Blum
  * @see java.lang.Object
  * @see org.cp.elements.context.configure.ConfigurationAware
  * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @see org.cp.elements.lang.factory.AbstractObjectFactory
+ * @see <a href="https://en.wikipedia.org/wiki/Abstract_factory_pattern">Abstract Factory Software Design Pattern</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
