@@ -13,29 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.factory;
 
-import static org.cp.elements.util.CollectionExtensions.from;
-
 import java.lang.reflect.Constructor;
+import java.util.function.Function;
 
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
-import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionExtensions;
 
 /**
- * The AbstractObjectFactory class is a abstract base class encapsulating functionality common to all ObjectFactory
- * implementations.
+ * Abstract base class implementing the {@link ObjectFactory} interface to encapsulate functionality
+ * common to all {@link ObjectFactory} implementations.
  *
  * @author John J. Blum
  * @see java.lang.reflect.Constructor
+ * @see java.util.function.Function
  * @see org.cp.elements.context.configure.Configuration
- * @see org.cp.elements.lang.factory.ObjectFactory
  * @see org.cp.elements.data.conversion.ConversionService
+ * @see org.cp.elements.lang.factory.ObjectFactory
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -45,134 +47,195 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   private volatile ConversionService conversionService;
 
+  private volatile Function<Object, Object> objectPostProcessor = Function.identity();
+
   /**
-   * Determines whether the reference to the application Configuration was initialized.
+   * Determines whether the reference to an application {@link Configuration} was initialized.
    *
-   * @return a boolean value indicating whether the application Configuration reference was initialized.
+   * @return a boolean value indicating whether reference to a application {@link Configuration} was initialized.
+   * @see org.cp.elements.context.configure.Configuration
    */
+  @NullSafe
   protected boolean isConfigurationAvailable() {
-    return (configuration != null);
+    return this.configuration != null;
   }
 
   /**
-   * Gets the reference to the application Configuration used by the ObjectFactory to perform object configuration.
+   * Gets the reference to an application {@link Configuration} used by {@literal this} {@link ObjectFactory}
+   * to perform {@link Object} configuration.
    *
-   * @return a reference to the application Configuration.
-   * @throws IllegalStateException if the reference to the application Configuration has not been initialized.
+   * @return a reference to the application {@link Configuration}.
+   * @throws IllegalStateException if a reference to the application {@link Configuration} was not initialized.
+   * @see org.cp.elements.context.configure.Configuration
    */
-  protected Configuration getConfiguration() {
-    Assert.state(configuration != null, "The Configuration was not properly initialized");
+  @NullSafe
+  protected @NotNull Configuration getConfiguration() {
+
+    Configuration configuration = this.configuration;
+
+    Assert.state(configuration != null,
+      "A Configuration for this ObjectFactory [%s] was not properly initialized", getClass().getName());
+
     return configuration;
   }
 
   /**
-   * Sets a reference to an instance of the application Configuration in use.
+   * Sets the reference to an application {@link Configuration}.
    *
-   * @param configuration the Configuration reference in use by the application.
+   * @param configuration {@link Configuration} used by the application.
+   * @see org.cp.elements.context.configure.Configuration
    */
-  public final void setConfiguration(final Configuration configuration) {
+  public final void setConfiguration(@NotNull Configuration configuration) {
     this.configuration = configuration;
   }
 
   /**
-   * Determines whether the reference to the ConversionService was initialized.
+   * Determines whether the reference to a {@link ConversionService} was initialized.
    *
-   * @return a boolean value indicating whether the ConversionService reference was initialized.
+   * @return a boolean value indicating whether the reference to a {@link ConversionService} was initialized.
+   * @see org.cp.elements.data.conversion.ConversionService
    */
   protected boolean isConversionServiceAvailable() {
-    return (conversionService != null);
+    return this.conversionService != null;
   }
 
   /**
-   * Gets the reference to the ConversionService used by the ObjectFactory to perform type conversions.
+   * Gets the reference to a {@link ConversionService} used by {@literal this} {@link ObjectFactory}
+   * to perform {@link Class type} conversions.
    *
-   * @return a reference to the ConversionService.
-   * @throws IllegalStateException if the reference to the ConversionService has not been initialized.
+   * @return the reference to a {@link ConversionService} used by {@literal this} {@link ObjectFactory}
+   * to perform {@link Class type} conversions.
+   * @throws IllegalStateException if the reference to a {@link ConversionService} was not initialized.
+   * @see org.cp.elements.data.conversion.ConversionService
    */
-  protected ConversionService getConversionService() {
-    Assert.state(conversionService != null, "The ConversionService was not properly initialized");
+  protected @NotNull ConversionService getConversionService() {
+
+    ConversionService conversionService = this.conversionService;
+
+    Assert.state(conversionService != null,
+      "The ConversionService used by this ObjectFactory [%s] was not properly initialized",
+        getClass().getName());
+
     return conversionService;
   }
 
   /**
-   * Sets a reference to the specified ConversionService.
+   * Sets the reference to a {@link ConversionService} used by {@literal this} {@link ObjectFactory}
+   * to perform {@link Class type} conversions.
    *
-   * @param conversionService the reference to the ConversionService.
+   * @param conversionService {@link ConversionService} that will be used by {@literal this} {@link ObjectFactory}
+   * to perform {@link Class type} conversions.
+   * @see org.cp.elements.data.conversion.ConversionService
    */
-  public final void setConversionService(final ConversionService conversionService) {
+  public final void setConversionService(@NotNull ConversionService conversionService) {
     this.conversionService = conversionService;
   }
 
   /**
-   * Determines the class types of the array of object arguments.
+   * Gets the configured {@link Function} used to post process the {@link Object} after creation.
    *
-   * @param arguments the array of Object arguments to determine the class types for.
-   * @return an array of Class types for each of the arguments in the array.
-   * @see org.cp.elements.lang.ClassUtils#getClass(Object)
+   * @return a {@link Function} configured to post process the {@link Object} after creation.
+   * @see #registerObjectPostProcessor(Function)
+   * @see java.util.function.Function
    */
-  @SuppressWarnings("unchecked")
-  protected Class[] getArgumentTypes(final Object... arguments) {
-    Class[] argumentTypes = new Class[arguments.length];
-    int index = 0;
-
-    for (Object argument : arguments) {
-      argumentTypes[index++] = ObjectUtils.returnFirstNonNullValue(ClassUtils.getClass(argument), Object.class);
-    }
-
-    return argumentTypes;
+  protected @NotNull Function<Object, Object> getObjectPostProcessor() {
+    return this.objectPostProcessor;
   }
 
   /**
-   * Resolves the Class constructor with the given signature as determined by the parameter types.
+   * Registers a {@link Function} used to post process the {@link Object} after it is created by
+   * {@literal this} {@link ObjectFactory}.
    *
-   * @param objectType the Class from which the constructor is resolved.
-   * @param parameterTypes the array of Class types determining the resolved constructor's signature.
-   * @return a Constructor from the specified class with a matching signature based on the parameter types.
-   * @throws NullPointerException if either the objectType or parameterTypes are null.
-   * @see #resolveCompatibleConstructor(Class, Class[])
-   * @see java.lang.Class
-   * @see java.lang.reflect.Constructor
+   * @param <T> {@link Class type} of {@literal this} {@link ObjectFactory}.
+   * @param objectPostProcessor {@link Function} used to post process the {@link Object} after it is created by
+   * {@literal this} {@link ObjectFactory}.
+   * @return {@literal this} {@link ObjectFactory}.
+   * @throws IllegalArgumentException if the {@link Function} is {@literal null}.
+   * @see #getObjectPostProcessor()
+   * @see java.util.function.Function
    */
-  protected Constructor resolveConstructor(final Class<?> objectType, final Class... parameterTypes) {
+  @SuppressWarnings("unchecked")
+  public synchronized @NotNull <T extends AbstractObjectFactory> T registerObjectPostProcessor(
+      @NotNull Function<Object, Object> objectPostProcessor) {
+
+    Assert.notNull(objectPostProcessor, "The Function used to post process the object is required");
+
+    this.objectPostProcessor = this.objectPostProcessor.andThen(objectPostProcessor);
+
+    return (T) this;
+  }
+
+  /**
+   * Resolves the {@link Class} {@link Constructor} with the given signature as determined by
+   * the given array of {@link Class[] parameter types].
+   *
+   * @param objectType {@link Class} from which the {@link Constructor} is resolved.
+   * @param parameterTypes array of {@link Class[] types} used to determine the signature of the resolved constructor.
+   * @return a {@link Constructor} from the given {@link Class} with a matching signature based on
+   * the arry of {@link Class[] parameter types}.
+   * @throws NullPointerException if either the {@literal Class objectType} or {@link Class[] parameterTypes}
+   * are {@literal null}.
+   * @see #resolveCompatibleConstructor(Class, Class[])
+   * @see java.lang.reflect.Constructor
+   * @see java.lang.Class
+   */
+  @SuppressWarnings("rawtypes")
+  protected Constructor resolveConstructor(@NotNull Class<?> objectType, Class... parameterTypes) {
+
     try {
       return objectType.getConstructor(parameterTypes);
     }
-    catch (NoSuchMethodException e) {
-      if (!ArrayUtils.isEmpty(parameterTypes)) {
+    catch (NoSuchMethodException cause) {
+
+      if (ArrayUtils.isNotEmpty(parameterTypes)) {
+
         Constructor constructor = resolveCompatibleConstructor(objectType, parameterTypes);
-        // if the "compatible" constructor is null, resolve to finding the public, default no-arg constructor
-        return (constructor != null ? constructor : resolveConstructor(objectType));
+
+        // if the "compatible" constructor is null, resolve to finding the default, public no-arg constructor
+        try {
+          return constructor != null ? constructor
+            : resolveConstructor(objectType);
+        }
+        catch (NoSuchConstructorException ignore) { }
       }
 
-      throw new NoSuchConstructorException(String.format(
-        "Failed to find a constructor with signature (%1$s) in Class (%2$s)", from(parameterTypes).toString(),
-          objectType.getName()), e);
+      String message = String.format("Failed to find a constructor with signature [%1$s] in Class [%2$s]",
+        CollectionExtensions.from(parameterTypes), objectType.getName());
+
+      throw new NoSuchConstructorException(message, cause);
     }
   }
 
   /**
-   * Resolves the matching constructor for the specified Class type who's actual public constructor argument types
-   * are assignment compatible with the expected parameter types.
+   * Resolves a matching {@link Constructor} for the given {@link Class} whose actual {@literal public}
+   * {@link Constructor} {@link Object[] argument types} are assignment compatible with the expected
+   * array of {@link Class[] parameter types}.
    *
-   * @param objectType the Class from which the constructor is resolved.
-   * @param parameterTypes the array of Class types determining the resolved constructor's signature.
-   * @return a matching constructor from the specified Class type who's actual public constructor argument types
-   * are assignment compatible with the expected parameter types.
-   * @throws NullPointerException if either the objectType or parameterTypes are null.
+   * @param objectType {@link Class} from which the {@link Constructor} is resolved.
+   * @param parameterTypes array of {@link Class[] types} used to determine the signature of the resolved constructor.
+   * @return a matching {@link Constructor} from the given {@link Class} whose actual {@literal public}
+   * {@link Constructor} {@link Object[] argument types} are assignment compatible with the expected
+   * array of {@link Class[] parameter types}.
+   * @throws NullPointerException if either the {@link Class objectType} or {@link Class[] parameterTypes}
+   * are {@literal null}.
    * @see #resolveConstructor(Class, Class[])
-   * @see java.lang.Class
    * @see java.lang.reflect.Constructor
+   * @see java.lang.Class
    */
-  @SuppressWarnings("unchecked")
-  protected Constructor resolveCompatibleConstructor(final Class<?> objectType, final Class<?>[] parameterTypes) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  protected @Nullable Constructor resolveCompatibleConstructor(@NotNull Class<?> objectType,
+      Class<?>... parameterTypes) {
+
     for (Constructor constructor : objectType.getConstructors()) {
+
       Class[] constructorParameterTypes = constructor.getParameterTypes();
 
       if (parameterTypes.length == constructorParameterTypes.length) {
+
         boolean match = true;
 
-        for (int index = 0; index < constructorParameterTypes.length; index++) {
-          match &= constructorParameterTypes[index].isAssignableFrom(parameterTypes[index]);
+        for (int index = 0; match && index < constructorParameterTypes.length; index++) {
+          match = constructorParameterTypes[index].isAssignableFrom(parameterTypes[index]);
         }
 
         if (match) {
@@ -185,90 +248,48 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   }
 
   /**
-   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments.
-   * The parameter types of the constructor used to construct the object are determined from the arguments.
+   * Method called after construction of the {@link Object} allowing custom {@link ObjectFactory} implementations
+   * to perform post construction initialization and additional configuration as required.
    *
-   * @param <T> the Class type of the created object.
-   * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @see #create(String, Class[], Object...)
-   * @see #getArgumentTypes(Object...)
-   * @see org.cp.elements.lang.ClassUtils#loadClass(String)
+   * The default implementation applies the registered {@link Function object post processors}.
+   *
+   * @param <T> {@link Class type} of {@link Object} to create.
+   * @param object {@link Object} created by {@literal this} {@link ObjectFactory}.
+   * @param args array of {@link Object[] arguments} used during post construction initialization and configuration
+   * if no {@link Constructor} could be found with a signature matching the {@link Object[] argument types}.
+   * @return the {@link Object} after post construction initialization and configuration.
+   * @see java.util.function.Function#apply(Object)
+   * @see #getObjectPostProcessor()
+   * @see java.lang.Object
    */
-  @Override
   @SuppressWarnings("unchecked")
-  public <T> T create(final String objectTypeName, final Object... args) {
-    return (T) create(ClassUtils.loadClass(objectTypeName), getArgumentTypes(args), args);
+  protected <T> T postConstruct(T object, Object... args) {
+    return (T) getObjectPostProcessor().apply(object);
   }
 
   /**
-   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
-   * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
-   * the object.
-   *
-   * @param <T> the Class type of the created object.
-   * @param objectTypeName a String indicating the fully qualified class name for the type of object to create.
-   * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
-   * the object.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @see #create(String, Object...)
-   * @see org.cp.elements.lang.ClassUtils#loadClass(String)
-   * @see java.lang.Class
+   * @inheritDoc
    */
   @Override
-  @SuppressWarnings("unchecked")
-  public <T> T create(final String objectTypeName, final Class[] parameterTypes, final Object... args) {
-    return (T) create(ClassUtils.loadClass(objectTypeName), parameterTypes, args);
-  }
+  @SuppressWarnings("rawtypes")
+  public <T> T create(@NotNull Class<T> objectType, Class[] parameterTypes, Object... args) {
 
-  /**
-   * Creates an object given the class type, initialized with the specified constructor arguments. The parameter types
-   * of the constructor used to construct the object are determined from the arguments.
-   *
-   * @param <T> the Class type of the created object.
-   * @param objectType the Class type from which the instance is created.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @throws ObjectInstantiationException if an error occurs during object creation.
-   * @see #create(Class, Class[], Object...)
-   * @see #getArgumentTypes(Object...)
-   * @see java.lang.Class
-   */
-  @Override
-  public <T> T create(final Class<T> objectType, final Object... args) {
-    return create(objectType, getArgumentTypes(args), args);
-  }
-
-  /**
-   * Creates an object given the fully qualified class name, initialized with the specified constructor arguments
-   * corresponding to the parameter types that specifies the exact signature of the constructor used to construct
-   * the object.
-   *
-   * @param <T> the Class type of the created object.
-   * @param objectType the Class type from which the instance is created.
-   * @param parameterTypes an array of Class types indicating the signature of the constructor used to create
-   * the object.
-   * @param args an array of Objects used as constructor arguments to initialize the object.
-   * @return a newly created object of the given class type initialized with the specified arguments.
-   * @throws ObjectInstantiationException if an error occurs during object creation.
-   * @see #create(Class, Object...)
-   * @see #resolveConstructor
-   * @see java.lang.Class
-   * @see java.lang.reflect.Constructor
-   */
-  @Override
-  public <T> T create(final Class<T> objectType, final Class[] parameterTypes, final Object... args) {
     try {
+
       Constructor constructor = resolveConstructor(objectType, parameterTypes);
 
       T object;
 
-      if (!ArrayUtils.isEmpty(constructor.getParameterTypes())) {
-        Assert.equals(ArrayUtils.nullSafeLength(constructor.getParameterTypes()), ArrayUtils.nullSafeLength(args),
-          "The number of arguments ({0,number,integer}) does not match the number of parameters ({1,number,integer}) for constructor ({2}) in Class ({3})!",
-            ArrayUtils.nullSafeLength(args), ArrayUtils.nullSafeLength(constructor.getParameterTypes()), constructor, objectType);
+      if (ArrayUtils.isNotEmpty(constructor.getParameterTypes())) {
+
+        int numberOfParameters = ArrayUtils.nullSafeLength(constructor.getParameterTypes());
+        int numberOfArguments = ArrayUtils.nullSafeLength(args);
+
+        String message = "The number of arguments [{0,number,integer}] does not match the number of parameters"
+          + " [{1,number,integer}] for Constructor [{2}] in Class [{3}]!";
+
+        Assert.equals(numberOfParameters, numberOfArguments, message, numberOfArguments, numberOfParameters,
+          constructor, objectType);
 
         object = postConstruct(objectType.cast(constructor.newInstance(args)));
       }
@@ -278,24 +299,13 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
       return object;
     }
-    catch (Exception e) {
-      throw new ObjectInstantiationException(String.format(
-        "Failed to instantiate and instance of class (%1$s) with constructor having signature (%2$s) using arguments (%3$s)!",
-          ClassUtils.getName(objectType), from(parameterTypes).toString(), from(args).toString()), e);
-    }
-  }
+    catch (Exception cause) {
 
-  /**
-   * Method called after construction of the object allowing custom ObjectFactory implementations to perform post
-   * construction initialization and additional configuration.  The default implementation is to do nothing.
-   *
-   * @param <T> the Class type of object created.
-   * @param object the object created by this factory.
-   * @param args the array of Objects arguments used for post construction initialization and configuration if no
-   * constructor could be found with a signature matching the argument types.
-   * @return the object after post construction initialization and configuration.
-   */
-  protected <T> T postConstruct(final T object, final Object... args) {
-    return object;
+      String message =  String.format( "Failed to instantiate an instance of class [%1$s] with constructor"
+          + " having signature [%2$s] using arguments [%3$s]!", ClassUtils.getName(objectType),
+        CollectionExtensions.from(parameterTypes), CollectionExtensions.from(args));
+
+      throw new ObjectInstantiationException(message, cause);
+    }
   }
 }
