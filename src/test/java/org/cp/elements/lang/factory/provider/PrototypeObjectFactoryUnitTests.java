@@ -23,6 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +51,7 @@ import org.mockito.internal.matchers.VarargMatcher;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class PrototypeObjectFactoryTests {
+public class PrototypeObjectFactoryUnitTests {
 
   private Object[] equalVarargs(Object... varargs) {
     return argThat(new CustomVarargsMatcher(varargs));
@@ -64,7 +66,7 @@ public class PrototypeObjectFactoryTests {
   }
 
   @Test
-  public void constructionAndReference() {
+  public void constructionWithReference() {
 
     PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
 
@@ -74,9 +76,10 @@ public class PrototypeObjectFactoryTests {
   }
 
   @Test
-  public void constructionAndNoReference() {
+  public void constructionWithNoReference() {
 
     ObjectFactory mockObjectFactory = mock(ObjectFactory.class);
+
     ObjectFactoryReferenceHolder.set(mockObjectFactory);
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
@@ -87,16 +90,17 @@ public class PrototypeObjectFactoryTests {
     assertThat(objectFactory).isNotNull();
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
     assertThat(ObjectFactoryReferenceHolder.get()).isNotSameAs(objectFactory);
+    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory);
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void configure() {
 
-    Configuration mockConfiguration = mock(Configuration.class);
     Configurable<Configuration> mockObject = mock(Configurable.class);
+    Configuration mockConfiguration = mock(Configuration.class);
 
-    TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
+    TestObjectFactory objectFactory = new TestObjectFactory();
 
     objectFactory.setConfiguration(mockConfiguration);
 
@@ -105,6 +109,8 @@ public class PrototypeObjectFactoryTests {
     assertThat(objectFactory.configure(mockObject)).isSameAs(mockObject);
 
     verify(mockObject, times(1)).configure(same(mockConfiguration));
+    verifyNoMoreInteractions(mockObject);
+    verifyNoInteractions(mockConfiguration);
   }
 
   @Test
@@ -114,13 +120,14 @@ public class PrototypeObjectFactoryTests {
 
     Object bean = new Object();
 
-    TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
+    TestObjectFactory objectFactory = new TestObjectFactory();
 
     objectFactory.setConfiguration(mockConfiguration);
 
     assertThat(objectFactory.isConfigurationAvailable()).isTrue();
     assertThat(objectFactory.getConfiguration()).isSameAs(mockConfiguration);
     assertThat(objectFactory.configure(bean)).isSameAs(bean);
+    verifyNoInteractions(mockConfiguration);
   }
 
   @Test
@@ -129,7 +136,7 @@ public class PrototypeObjectFactoryTests {
 
     Configurable<Configuration> mockConfigurable = mock(Configurable.class);
 
-    TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
+    TestObjectFactory objectFactory = new TestObjectFactory();
 
     assertThat(objectFactory.isConfigurationAvailable()).isFalse();
     assertThat(objectFactory.configure(mockConfigurable)).isSameAs(mockConfigurable);
@@ -142,10 +149,18 @@ public class PrototypeObjectFactoryTests {
 
     Object bean = new Object();
 
-    TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
+    TestObjectFactory objectFactory = new TestObjectFactory();
 
     assertThat(objectFactory.isConfigurationAvailable()).isFalse();
     assertThat(objectFactory.configure(bean)).isSameAs(bean);
+  }
+
+  @Test
+  public void configureWithNullIsNullSafe() {
+
+    PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
+
+    assertThat(objectFactory.<Object>configure(null)).isNull();
   }
 
   @Test
@@ -155,10 +170,12 @@ public class PrototypeObjectFactoryTests {
 
     ParameterizedInitable mockParameterizedInitable = mock(ParameterizedInitable.class);
 
-    assertThat(new PrototypeObjectFactory().initialize(mockParameterizedInitable, arguments)).isSameAs(
-      mockParameterizedInitable);
+    PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
+
+    assertThat(objectFactory.initialize(mockParameterizedInitable, arguments)).isSameAs(mockParameterizedInitable);
 
     verify(mockParameterizedInitable, times(1)).init(equalVarargs(arguments));
+    verifyNoMoreInteractions(mockParameterizedInitable);
   }
 
   @Test
@@ -173,6 +190,7 @@ public class PrototypeObjectFactoryTests {
     assertThat(objectFactory.initialize(mockParameterizedInitable, parameters)).isSameAs(mockParameterizedInitable);
 
     verify(mockParameterizedInitable, times(1)).init(same(parameters));
+    verifyNoMoreInteractions(mockParameterizedInitable);
   }
 
   @Test
@@ -180,9 +198,20 @@ public class PrototypeObjectFactoryTests {
 
     Initable mockInitable = mock(Initable.class);
 
-    assertThat(new PrototypeObjectFactory().initialize(mockInitable)).isSameAs(mockInitable);
+    PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
+
+    assertThat(objectFactory.initialize(mockInitable)).isSameAs(mockInitable);
 
     verify(mockInitable, times(1)).init();
+    verifyNoMoreInteractions(mockInitable);
+  }
+
+  @Test
+  public void initializeWithNullIsNullSafe() {
+
+    PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
+
+    assertThat(objectFactory.<Object>initialize(null, Collections.singletonMap("test", 1))).isNull();
   }
 
   @Test
@@ -190,7 +219,9 @@ public class PrototypeObjectFactoryTests {
 
     Object bean = new Object();
 
-    assertThat(new PrototypeObjectFactory().initialize(bean, Collections.emptyMap())).isSameAs(bean);
+    PrototypeObjectFactory objectFactory = new PrototypeObjectFactory();
+
+    assertThat(objectFactory.initialize(bean, Collections.emptyMap())).isSameAs(bean);
   }
 
   @Test
@@ -202,7 +233,7 @@ public class PrototypeObjectFactoryTests {
 
     Object[] arguments = new Object[0];
 
-    TestPrototypeObjectFactory objectFactory = new TestPrototypeObjectFactory();
+    TestObjectFactory objectFactory = new TestObjectFactory();
 
     objectFactory.setConfiguration(mockConfiguration);
 
@@ -212,11 +243,13 @@ public class PrototypeObjectFactoryTests {
 
     verify(mockConfigurableInitable, times(1)).configure(same(mockConfiguration));
     verify(mockConfigurableInitable, times(1)).init(equalVarargs(arguments));
+    verifyNoMoreInteractions(mockConfigurableInitable);
+    verifyNoInteractions(mockConfiguration);
   }
 
-  protected interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable { }
+  interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable { }
 
-  protected static class CustomVarargsMatcher implements ArgumentMatcher<Object[]>, VarargMatcher {
+  static class CustomVarargsMatcher implements ArgumentMatcher<Object[]>, VarargMatcher {
 
     private final Object[] expectedVarargs;
 
@@ -230,7 +263,7 @@ public class PrototypeObjectFactoryTests {
     }
   }
 
-  protected static final class TestPrototypeObjectFactory extends PrototypeObjectFactory {
+  static final class TestObjectFactory extends PrototypeObjectFactory {
 
     @Override
     protected boolean isConfigurationAvailable() {
