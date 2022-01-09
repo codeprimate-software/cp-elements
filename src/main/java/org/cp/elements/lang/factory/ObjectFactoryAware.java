@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.factory;
 
 /**
- * The {@link ObjectFactoryAware} interface is a contract for implementing objects that require an instance
- * of an {@link ObjectFactory}.
+ * Interface defining a contract for implementing objects requiring an instance of an {@link ObjectFactory}.
  *
  * @author John J. Blum
  * @see java.lang.FunctionalInterface
@@ -30,9 +28,10 @@ package org.cp.elements.lang.factory;
 public interface ObjectFactoryAware {
 
   /**
-   * Sets a reference to an ObjectFactory.
+   * Sets a reference to an {@link ObjectFactory}.
    *
-   * @param objectFactory the reference to the ObjectFactory.
+   * @param objectFactory reference to an {@link ObjectFactory}.
+   * @see org.cp.elements.lang.factory.ObjectFactory
    */
   void setObjectFactory(ObjectFactory objectFactory);
 
