@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import java.util.Arrays;
@@ -23,13 +22,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link CollectionExtensions} class provides methods to write natural language expressions for performing various
- * {@link Collection}-oriented operations.
+ * The {@link CollectionExtensions} class provides methods to write natural language expressions when performing
+ * various {@link Collection} oriented operations.
  *
  * @author John J. Blum
  * @see java.util.Arrays
@@ -42,10 +44,10 @@ import org.cp.elements.lang.annotation.FluentApi;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class CollectionExtensions {
+public abstract class CollectionExtensions {
 
   /**
-   * The {@literal from} operator performs conversions on the given array and it's elements.
+   * The {@literal from} operator performs conversions on the given array and its elements.
    *
    * For instance, the array can be converted into an ordered {@link List} of elements,
    * or a unique {@link Set} of elements originating from the array.
@@ -55,6 +57,7 @@ public class CollectionExtensions {
    * @return a {@link From} operator to perform the conversions.
    * @see org.cp.elements.lang.annotation.FluentApi
    */
+  @Dsl
   @FluentApi
   @SafeVarargs
   public static <T> From<T> from(T... array) {
@@ -68,20 +71,22 @@ public class CollectionExtensions {
    * @param <T> {@link Class} type of elements in the {@link List} or {@link Set}.
    * @see org.cp.elements.lang.FluentApiExtension
    */
-  public interface From<T> extends FluentApiExtension {
+  public interface From<T> extends DslExtension, FluentApiExtension {
 
     /**
-     * Converts an object array to a List.
+     * Converts an object array to a {@link List}.
      *
-     * @return a List implementation containing all the elements in the given object array to the from operator.
+     * @return a {@link List} implementation containing all the elements in the given object array
+     * to the {@link #from(Object[]) from} operator.
      * @see java.util.List
      */
     List<T> toList();
 
     /**
-     * Converts an object array to a Set.
+     * Converts an object array to a {@link Set}.
      *
-     * @return a Set implementation containing all the elements of the given object array to the from operator.
+     * @return a {@link Set} implementation containing all the elements of the given object array
+     * to the {@link #from(Object[]) from} operator.
      * @see java.util.Set
      */
     Set<T> toSet();
@@ -89,9 +94,10 @@ public class CollectionExtensions {
   }
 
   /**
-   * The FromExpression class is an implementation of the From interface, from operator.
+   * The {@link FromExpression} class is an implementation of the {@link From} interface,
+   * {@link #from(Object[]) from} operator.
    *
-   * @param <T> the element type of items in the List or Set.
+   * @param <T> {@link Class type} of elements in the {@link List} or {@link Set}.
    * @see org.cp.elements.util.CollectionExtensions.From
    */
   private static final class FromExpression<T> implements From<T> {
@@ -103,28 +109,42 @@ public class CollectionExtensions {
       this.array = array;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<T> toList() {
-      return (this.array == null ? Collections.emptyList()
-        : (this.array.length == 1 ? Collections.singletonList(this.array[0])
-          : Arrays.asList(array)));
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public @NotNull List<T> toList() {
+
+      return this.array == null ? Collections.emptyList()
+        : this.array.length == 1 ? Collections.singletonList(this.array[0])
+        : Arrays.asList(this.array);
     }
 
-    public Set<T> toSet() {
-      return (this.array == null ? Collections.emptySet()
-        : (this.array.length == 1 ? Collections.singleton(this.array[0])
-          : new HashSet<>(toList())));
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public @NotNull Set<T> toSet() {
+
+      return this.array == null ? Collections.emptySet()
+        : this.array.length == 1 ? Collections.singleton(this.array[0])
+        : new HashSet<>(toList());
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public String toString() {
 
       StringBuilder buffer = new StringBuilder("[");
 
-      if (this.array != null) {
-        for (int index = 0; index < this.array.length; index++) {
+      T[] array = this.array;
+
+      if (array != null) {
+        for (int index = 0; index < array.length; index++) {
           buffer.append(index > 0 ? StringUtils.COMMA_SPACE_DELIMITER : StringUtils.EMPTY_STRING);
-          buffer.append(this.array[index]);
+          buffer.append(array[index]);
         }
       }
 
