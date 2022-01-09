@@ -33,7 +33,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
@@ -80,7 +82,7 @@ public abstract class ClassUtils {
    * @see #instanceOf(Object, Class)
    */
   @NullSafe
-  public static boolean assignableTo(Class<?> fromType, Class<?> toType) {
+  public static boolean assignableTo(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
     return (toType != null && (fromType == null || toType.isAssignableFrom(fromType)));
   }
 
@@ -92,7 +94,7 @@ public abstract class ClassUtils {
    * @see java.lang.Object#getClass()
    */
   @NullSafe
-  public static Class<?> getClass(Object obj) {
+  public static @Nullable Class<?> getClass(@Nullable Object obj) {
     return obj != null ? obj.getClass() : null;
   }
 
@@ -106,7 +108,7 @@ public abstract class ClassUtils {
    * @see java.lang.Object#getClass()
    */
   @NullSafe
-  public static String getClassName(Object obj) {
+  public static @Nullable String getClassName(@Nullable Object obj) {
     return obj != null ? obj.getClass().getName() : null;
   }
 
@@ -120,7 +122,7 @@ public abstract class ClassUtils {
    * @see java.lang.Object#getClass()
    */
   @NullSafe
-  public static String getClassSimpleName(Object obj) {
+  public static @Nullable String getClassSimpleName(@Nullable Object obj) {
     return obj != null ? obj.getClass().getSimpleName() : null;
   }
 
@@ -139,7 +141,7 @@ public abstract class ClassUtils {
    * @see java.lang.Object
    */
   @NullSafe
-  public static Set<Class<?>> getInterfaces(Object obj) {
+  public static Set<Class<?>> getInterfaces(@Nullable Object obj) {
     return getInterfaces(getClass(obj));
   }
 
@@ -157,8 +159,10 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static Set<Class<?>> getInterfaces(Class<?> type) {
-    return Optional.ofNullable(type).map(theType -> getInterfaces(type, new HashSet<>()))
+  public static Set<Class<?>> getInterfaces(@Nullable Class<?> type) {
+
+    return Optional.ofNullable(type)
+      .map(theType -> getInterfaces(type, new HashSet<>()))
       .orElse(Collections.emptySet());
   }
 
@@ -176,7 +180,7 @@ public abstract class ClassUtils {
    * Returns an empty {@link Set} if the given {@link Class} does not implement any interfaces.
    * @see java.lang.Class
    */
-  private static Set<Class<?>> getInterfaces(Class<?> type, Set<Class<?>> interfaces) {
+  private static Set<Class<?>> getInterfaces(@NotNull Class<?> type, @NotNull Set<Class<?>> interfaces) {
 
     if (type.getSuperclass() != null) {
       getInterfaces(type.getSuperclass(), interfaces);
@@ -204,8 +208,8 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredConstructors()
    * @see java.lang.reflect.Constructor
    */
-  @SuppressWarnings({ "unchecked", "all" })
-  public static <T> Constructor<T> findConstructor(Class<T> type, Object... arguments) {
+  @SuppressWarnings({ "unchecked" })
+  public static @Nullable <T> Constructor<T> findConstructor(@NotNull Class<T> type, Object... arguments) {
 
     for (Constructor<?> constructor : type.getDeclaredConstructors()) {
 
@@ -216,7 +220,7 @@ public abstract class ClassUtils {
         boolean match = true;
 
         for (int index = 0; match && index < parameterTypes.length; index++) {
-          match &= instanceOf(arguments[index], parameterTypes[index]);
+          match = instanceOf(arguments[index], parameterTypes[index]);
         }
 
         if (match) {
@@ -239,7 +243,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredConstructor(Class[])
    * @see java.lang.reflect.Constructor
    */
-  public static <T> Constructor<T> getConstructor(Class<T> type, Class<?>... parameterTypes) {
+  public static @NotNull <T> Constructor<T> getConstructor(@NotNull Class<T> type, Class<?>... parameterTypes) {
 
     try {
       return type.getDeclaredConstructor(parameterTypes);
@@ -264,7 +268,8 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    * @see java.lang.reflect.Constructor
    */
-  public static <T> Constructor<T> resolveConstructor(Class<T> type, Class<?>[] parameterTypes, Object... arguments) {
+  public static @NotNull <T> Constructor<T> resolveConstructor(@NotNull Class<T> type, Class<?>[] parameterTypes,
+      Object... arguments) {
 
     try {
       return getConstructor(type, parameterTypes);
@@ -273,9 +278,10 @@ public abstract class ClassUtils {
 
       Constructor<T> constructor = findConstructor(type, arguments);
 
-      Assert.notNull(constructor, new ConstructorNotFoundException(String.format(
-        "Failed to resolve constructor with signature [%1$s] on class type [%2$s]",
-          getMethodSignature(getSimpleName(type), parameterTypes, Void.class), getName(type)), cause.getCause()));
+      String message = String.format("Failed to resolve constructor with signature [%1$s] on class type [%2$s]",
+        getMethodSignature(getSimpleName(type), parameterTypes, Void.class), getName(type));
+
+      Assert.notNull(constructor, new ConstructorNotFoundException(message, cause.getCause()));
 
       return constructor;
     }
@@ -295,7 +301,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredField(String)
    * @see java.lang.reflect.Field
    */
-  public static Field getField(Class<?> type, String fieldName) {
+  public static @NotNull Field getField(@NotNull Class<?> type, String fieldName) {
 
     try {
       return type.getDeclaredField(fieldName);
@@ -328,7 +334,7 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Method
    */
   @SuppressWarnings("all")
-  public static Method findMethod(Class<?> type, String methodName, Object... arguments) {
+  public static @Nullable Method findMethod(@NotNull Class<?> type, String methodName, Object... arguments) {
 
     for (Method method : type.getDeclaredMethods()) {
 
@@ -351,7 +357,9 @@ public abstract class ClassUtils {
       }
     }
 
-    return (type.getSuperclass() != null ? findMethod(type.getSuperclass(), methodName, arguments) : null);
+    return type.getSuperclass() != null
+      ? findMethod(type.getSuperclass(), methodName, arguments)
+      : null;
   }
 
   /**
@@ -370,7 +378,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getDeclaredMethod(String, Class[])
    * @see java.lang.reflect.Method
    */
-  public static Method getMethod(Class<?> type, String methodName, Class<?>... parameterTypes) {
+  public static @NotNull Method getMethod(@NotNull Class<?> type, String methodName, Class<?>... parameterTypes) {
 
     try {
       return type.getDeclaredMethod(methodName, parameterTypes);
@@ -408,8 +416,8 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    * @see java.lang.reflect.Method
    */
-  public static Method resolveMethod(Class<?> type, String methodName, Class<?>[] parameterTypes, Object[] arguments,
-      Class<?> returnType) {
+  public static @NotNull Method resolveMethod(@NotNull Class<?> type, String methodName,
+      Class<?>[] parameterTypes, Object[] arguments, Class<?> returnType) {
 
     try {
       return getMethod(type, methodName, parameterTypes);
@@ -433,7 +441,7 @@ public abstract class ClassUtils {
    * @return the signature of the Method as a String.
    * @see #getMethodSignature(String, Class[], Class)
    */
-  protected static String getMethodSignature(Method method) {
+  protected static @NotNull String getMethodSignature(@NotNull Method method) {
     return getMethodSignature(method.getName(), method.getParameterTypes(), method.getReturnType());
   }
 
@@ -446,7 +454,8 @@ public abstract class ClassUtils {
    * @return the signature of the method as a String.
    * @see #getSimpleName(Class)
    */
-  protected static String getMethodSignature(String methodName, Class<?>[] parameterTypes, Class<?> returnType) {
+  protected static @NotNull String getMethodSignature(@NotNull String methodName,
+      Class<?>[] parameterTypes, Class<?> returnType) {
 
     StringBuilder buffer = new StringBuilder(methodName);
 
@@ -476,7 +485,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getName()
    */
   @NullSafe
-  public static String getName(Class<?> type) {
+  public static @Nullable String getName(@Nullable Class<?> type) {
     return type != null ? type.getName() : null;
   }
 
@@ -495,8 +504,11 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static String getResourceName(Class<?> type) {
-    return type != null ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION) : null;
+  public static @Nullable String getResourceName(@Nullable Class<?> type) {
+
+    return type != null
+      ? type.getName().replaceAll("\\.", "/").concat(CLASS_FILE_EXTENSION)
+      : null;
   }
 
   /**
@@ -507,7 +519,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#getSimpleName()
    */
   @NullSafe
-  public static String getSimpleName(Class<?> type) {
+  public static @Nullable String getSimpleName(@Nullable Class<?> type) {
     return type != null ? type.getSimpleName() : null;
   }
 
@@ -521,9 +533,12 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static boolean hasMainMethod(Class<?> type) {
-    return Optional.ofNullable(type).map(theType -> type.getDeclaredMethods())
-      .map(methods -> stream(methods).anyMatch(ClassUtils::isMainMethod)).orElse(false);
+  public static boolean hasMainMethod(@Nullable Class<?> type) {
+
+    return Optional.ofNullable(type)
+      .map(theType -> type.getDeclaredMethods())
+      .map(methods -> stream(methods).anyMatch(ClassUtils::isMainMethod))
+      .orElse(false);
   }
 
   /**
@@ -535,7 +550,7 @@ public abstract class ClassUtils {
    * @see java.lang.Object
    */
   @NullSafe
-  public static boolean implementsInterfaces(Object obj) {
+  public static boolean implementsInterfaces(@Nullable Object obj) {
     return !getInterfaces(obj).isEmpty();
   }
 
@@ -548,7 +563,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class
    */
   @NullSafe
-  public static boolean implementsInterfaces(Class<?> type) {
+  public static boolean implementsInterfaces(@Nullable Class<?> type) {
     return !getInterfaces(type).isEmpty();
   }
 
@@ -563,7 +578,7 @@ public abstract class ClassUtils {
    * @see #assignableTo(Class, Class)
    */
   @NullSafe
-  public static boolean instanceOf(Object obj, Class<?> type) {
+  public static boolean instanceOf(@Nullable Object obj, @Nullable Class<?> type) {
     return type != null && type.isInstance(obj);
   }
 
@@ -575,7 +590,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isAnnotation()
    */
   @NullSafe
-  public static boolean isAnnotation(Class<?> type) {
+  public static boolean isAnnotation(@Nullable Class<?> type) {
     return type != null && type.isAnnotation();
   }
 
@@ -590,7 +605,9 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.AccessibleObject#isAnnotationPresent(Class)
    */
   @NullSafe
-  public static boolean isAnnotationPresent(Class<? extends Annotation> annotation, AnnotatedElement... elements) {
+  public static boolean isAnnotationPresent(@Nullable Class<? extends Annotation> annotation,
+      AnnotatedElement... elements) {
+
     return stream(ArrayUtils.nullSafeArray(elements, AnnotatedElement.class))
       .anyMatch(member -> member != null && member.isAnnotationPresent(annotation));
   }
@@ -603,7 +620,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isArray()
    */
   @NullSafe
-  public static boolean isArray(Class<?> type) {
+  public static boolean isArray(@Nullable Class<?> type) {
     return type != null && type.isArray();
   }
 
@@ -615,9 +632,10 @@ public abstract class ClassUtils {
    * @return true iff the Class object is not null and represents an actual class.
    */
   @NullSafe
-  public static boolean isClass(Class<?> type) {
-    return type != null && !(type.isAnnotation() || type.isArray() || type.isEnum() || type.isInterface()
-      || type.isPrimitive());
+  public static boolean isClass(@Nullable Class<?> type) {
+
+    return type != null
+      && !(type.isAnnotation() || type.isArray() || type.isEnum() || type.isInterface() || type.isPrimitive());
   }
 
   /**
@@ -633,8 +651,10 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Constructor
    */
   @NullSafe
-  public static boolean isConstructorWithArrayParameter(Constructor<?> constructor) {
-    return constructor != null && constructor.getParameterCount() == 1
+  public static boolean isConstructorWithArrayParameter(@Nullable Constructor<?> constructor) {
+
+    return constructor != null
+      && constructor.getParameterCount() == 1
       && Object[].class.isAssignableFrom(constructor.getParameterTypes()[0]);
   }
 
@@ -648,7 +668,7 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Constructor
    */
   @NullSafe
-  public static boolean isDefaultConstructor(Constructor<?> constructor) {
+  public static boolean isDefaultConstructor(@Nullable Constructor<?> constructor) {
     return ModifierUtils.isPublic(constructor) && constructor.getParameterCount() == 0;
   }
 
@@ -660,7 +680,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isEnum()
    */
   @NullSafe
-  public static boolean isEnum(Class<?> type) {
+  public static boolean isEnum(@Nullable Class<?> type) {
     return type != null && type.isEnum();
   }
 
@@ -672,7 +692,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isInterface()
    */
   @NullSafe
-  public static boolean isInterface(Class<?> type) {
+  public static boolean isInterface(@Nullable Class<?> type) {
     return type != null && type.isInterface();
   }
 
@@ -685,9 +705,10 @@ public abstract class ClassUtils {
    * @see java.lang.reflect.Method
    */
   @NullSafe
-  public static boolean isMainMethod(Method method) {
+  public static boolean isMainMethod(@Nullable Method method) {
 
-    return Optional.ofNullable(method).map(localMethod -> MAIN_METHOD_NAME.equals(localMethod.getName())
+    return Optional.ofNullable(method)
+      .map(localMethod -> MAIN_METHOD_NAME.equals(localMethod.getName())
         && ModifierUtils.isPublic(localMethod)
         && ModifierUtils.isStatic(localMethod)
         && void.class.equals(localMethod.getReturnType())
@@ -703,7 +724,8 @@ public abstract class ClassUtils {
    * @return a boolean value indicating whether the class identified by name is in the classpath.
    * @see #loadClass(String)
    */
-  public static boolean isPresent(String className) {
+  @SuppressWarnings("all")
+  public static boolean isPresent(@NotNull String className) {
 
     try {
       return loadClass(className) != null;
@@ -721,7 +743,7 @@ public abstract class ClassUtils {
    * @see java.lang.Class#isPrimitive()
    */
   @NullSafe
-  public static boolean isPrimitive(Class<?> type) {
+  public static boolean isPrimitive(@Nullable Class<?> type) {
     return type != null && type.isPrimitive();
   }
 
@@ -737,7 +759,7 @@ public abstract class ClassUtils {
    * @see java.lang.Thread#currentThread()
    * @see java.lang.Thread#getContextClassLoader()
    */
-  public static <T> Class<T> loadClass(String fullyQualifiedClassName) {
+  public static @NotNull <T> Class<T> loadClass(@NotNull String fullyQualifiedClassName) {
     return loadClass(fullyQualifiedClassName, DEFAULT_INITIALIZE_LOADED_CLASS,
       Thread.currentThread().getContextClassLoader());
   }
@@ -755,7 +777,8 @@ public abstract class ClassUtils {
    * @see java.lang.Class#forName(String, boolean, ClassLoader)
    */
   @SuppressWarnings("unchecked")
-  public static <T> Class<T> loadClass(String fullyQualifiedClassName, boolean initialize, ClassLoader classLoader) {
+  public static @NotNull <T> Class<T> loadClass(@NotNull String fullyQualifiedClassName, boolean initialize,
+      @NotNull ClassLoader classLoader) {
 
     try {
       return (Class<T>) Class.forName(fullyQualifiedClassName, initialize, classLoader);
@@ -774,7 +797,7 @@ public abstract class ClassUtils {
    * @see #locateClass(String, ClassLoader)
    * @see java.net.URL
    */
-  public static URL locateClass(String binaryName) {
+  public static @Nullable URL locateClass(@NotNull String binaryName) {
     return locateClass(binaryName, Thread.currentThread().getContextClassLoader());
   }
 
@@ -789,7 +812,7 @@ public abstract class ClassUtils {
    * for the given binary name.
    * @see java.net.URL
    */
-  public static URL locateClass(String binaryName, ClassLoader classLoader) {
+  public static @Nullable URL locateClass(@NotNull String binaryName, @NotNull ClassLoader classLoader) {
 
     try {
 
@@ -812,7 +835,7 @@ public abstract class ClassUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static boolean notInstanceOf(Object obj, Class... types) {
+  public static boolean notInstanceOf(@Nullable Object obj, Class... types) {
 
     boolean result = true;
 
@@ -834,7 +857,7 @@ public abstract class ClassUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static Class<?> toRawType(Type type) {
+  public static @NotNull Class<?> toRawType(@Nullable Type type) {
 
     Type resolvedType = type instanceof ParameterizedType ? ((ParameterizedType) type).getRawType()
       : type instanceof TypeVariable ? safeGetValue(() -> loadClass(((TypeVariable<?>) type).getName()), Object.class)
