@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
 import static org.cp.elements.util.stream.StreamUtils.stream;
@@ -24,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -38,8 +38,8 @@ import org.cp.elements.lang.support.ComposableFilter;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
- * The {@link ReflectionUtils} class is an abstract, utility base class encapsulating commons operations
- * used in Java Introspection and Reflection.
+ * The {@link ReflectionUtils} class is an abstract base class encapsulating commons operations used in
+ * the Java Introspection and Reflection APIs.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -67,10 +67,13 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.ClassUtils#getClass(Object)
    */
   @NullSafe
+  @SuppressWarnings("rawtypes")
   public static Class[] getArgumentTypes(Object... arguments) {
-    Class[] argumentTypes = null;
+
+    Class[] argumentTypes = new Class[0];
 
     if (arguments != null) {
+
       argumentTypes = new Class[arguments.length];
 
       for (int index = 0; index < arguments.length; index++) {
@@ -97,14 +100,14 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
-  @SuppressWarnings("unchecked")
   public static <T> T getValue(Class<?> type, String fieldName, Class<T> fieldType) {
+
     try {
       return getValue(null, getField(type, fieldName), fieldType);
     }
-    catch (FieldNotFoundException e) {
+    catch (FieldNotFoundException cause) {
       throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on class type (%2$s)!",
-        fieldName, type.getName()), e);
+        fieldName, type.getName()), cause);
     }
   }
 
@@ -125,12 +128,13 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
   public static <T> T getValue(Object obj, String fieldName, Class<T> fieldType) {
+
     try {
       return getValue(obj, getField(obj.getClass(), fieldName), fieldType);
     }
-    catch (FieldNotFoundException e) {
+    catch (FieldNotFoundException cause) {
       throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on object of type (%2$s)!",
-        fieldName, obj.getClass().getName()), e);
+        fieldName, obj.getClass().getName()), cause);
     }
   }
 
@@ -149,6 +153,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws NullPointerException if the field or type parameter arguments are null.
    */
   public static <T> T getValue(Object target, Field field, Class<T> type) {
+
     try {
       boolean currentAccessible = field.isAccessible();
       field.setAccessible(true);
@@ -156,12 +161,12 @@ public abstract class ReflectionUtils extends ClassUtils {
       field.setAccessible(currentAccessible);
       return type.cast(value);
     }
-    catch (NullPointerException e) {
-      throw e;
+    catch (NullPointerException cause) {
+      throw cause;
     }
-    catch (Exception e) {
+    catch (Exception cause) {
       throw new FieldAccessException(String.format("Failed to get value of field (%1$s) from %2$s type (%3$s)!",
-        field.getName(), BooleanUtils.toString(target == null, "class", "object of"), getClassName(target)), e);
+        field.getName(), BooleanUtils.toString(target == null, "class", "object of"), getClassName(target)), cause);
     }
   }
 
@@ -179,12 +184,13 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #setField(Object, java.lang.reflect.Field, Object)
    */
   public static void setField(Class<?> type, String fieldName, Object value) {
+
     try {
       setField(null, getField(type, fieldName), value);
     }
-    catch (FieldNotFoundException e) {
+    catch (FieldNotFoundException cause) {
       throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on class type (%2$s)!",
-        fieldName, type.getName()), e);
+        fieldName, type.getName()), cause);
     }
   }
 
@@ -202,12 +208,13 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #setField(Object, java.lang.reflect.Field, Object)
    */
   public static void setField(Object obj, String fieldName, Object value) {
+
     try {
       setField(obj, getField(obj.getClass(), fieldName), value);
     }
-    catch (FieldNotFoundException e) {
+    catch (FieldNotFoundException cause) {
       throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on object of type (%2$s)!",
-        fieldName, obj.getClass().getName()), e);
+        fieldName, obj.getClass().getName()), cause);
     }
   }
 
@@ -224,6 +231,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    */
   @SuppressWarnings("all")
   public static void setField(Object target, Field field, Object value) {
+
     try {
       Assert.isFalse(Modifier.isFinal(field.getModifiers()), new FieldAccessException(String.format(
         "Cannot set the value of a final field (%1$s) on %2$s type (%3$s)!", field.getName(),
@@ -235,11 +243,11 @@ public abstract class ReflectionUtils extends ClassUtils {
       field.set(target, value);
       field.setAccessible(currentAccessible);
     }
-    catch (FieldAccessException e) {
-      throw e;
+    catch (FieldAccessException cause) {
+      throw cause;
     }
-    catch (NullPointerException e) {
-      throw e;
+    catch (NullPointerException cause) {
+      throw cause;
     }
     catch (Exception e) {
       throw new FieldAccessException(String.format("Failed to set field (%1$s) to value (%2$s) on %3$s type (%4$s)!",
@@ -372,9 +380,9 @@ public abstract class ReflectionUtils extends ClassUtils {
       return invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, returnType),
         arguments, returnType);
     }
-    catch (MethodNotFoundException e) {
+    catch (MethodNotFoundException cause) {
       throw new IllegalArgumentException(String.format("No method with signature (%1$s) exists on class type (%2$s)!",
-        getMethodSignature(methodName, parameterTypes, returnType), type.getName()), e);
+        getMethodSignature(methodName, parameterTypes, returnType), type.getName()), cause);
     }
   }
 
@@ -506,9 +514,9 @@ public abstract class ReflectionUtils extends ClassUtils {
       return invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, returnType),
         arguments, returnType);
     }
-    catch (MethodNotFoundException e) {
+    catch (MethodNotFoundException cause) {
       throw new IllegalArgumentException(String.format("No method with signature (%1$s) exists on object of type (%2$s)!",
-        getMethodSignature(methodName, parameterTypes, returnType), obj.getClass().getName()), e);
+        getMethodSignature(methodName, parameterTypes, returnType), obj.getClass().getName()), cause);
     }
   }
 
@@ -533,6 +541,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Method#setAccessible(boolean)
    */
   public static <T> T invoke(Object target, Method method, Object[] arguments, Class<T> returnType) {
+
     try {
       boolean currentAccessible = method.isAccessible();
       method.setAccessible(true);
@@ -540,13 +549,13 @@ public abstract class ReflectionUtils extends ClassUtils {
       method.setAccessible(currentAccessible);
       return returnType.cast(returnValue);
     }
-    catch (NullPointerException e) {
-      throw e;
+    catch (NullPointerException cause) {
+      throw cause;
     }
-    catch (Exception e) {
+    catch (Exception cause) {
       throw new MethodInvocationException(String.format("Failed to invoke method (%1$s) on %2$s type (%3$s)!",
         getMethodSignature(method), BooleanUtils.toString(target == null, "class", "object of"),
-          method.getDeclaringClass().getName()), e);
+          method.getDeclaringClass().getName()), cause);
     }
   }
 
@@ -620,13 +629,12 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private volatile boolean accepted = false;
 
-    private final Filter<T> defaultFilter = (obj) -> (obj != null);
+    private final Filter<T> defaultFilter = Objects::nonNull;
 
     private Filter<T> filter;
 
     private final Set<T> members = newMemberSet();
 
-    /* (non-Javadoc) */
     @SuppressWarnings({ "unchecked", "varargs" })
     protected WithExpression(T... members) {
       if (members != null) {
@@ -634,50 +642,44 @@ public abstract class ReflectionUtils extends ClassUtils {
       }
     }
 
-    /* (non-Javadoc) */
     protected Filter<T> getFilter() {
       return ComposableFilter.and(defaultFilter, filter);
     }
 
-    /* (non-Javadoc) */
     protected Iterable<T> getMembers() {
       return members;
     }
 
-    /* (non-Javadoc) */
     protected boolean accepts(T member) {
       boolean localAccepted = getFilter().accept(member);
-      this.accepted |= localAccepted;
+      synchronized (this) {
+        this.accepted |= localAccepted;
+      }
       return localAccepted;
     }
 
-    /* (non-Javadoc) */
     public WithExpression<T> call(MemberCallback<T> callback) {
       stream(getMembers()).filter(this::accepts).forEach(callback::with);
       return this;
     }
 
-    /* (non-Javadoc) */
     public WithExpression<T> matching(Filter<T> filter) {
       this.filter = filter;
       return this;
     }
 
-    /* (non-Javadoc) */
     protected abstract T[] members(Class<?> type);
 
-    /* (non-Javadoc) */
     protected Set<T> newMemberSet() {
       return new HashSet<>();
     }
 
-    /* (non-Javadoc) */
     public WithExpression<T> on(Object obj) {
       return on(ClassUtils.getClass(obj));
     }
 
-    /* (non-Javadoc) */
     public WithExpression<T> on(Class<?> type) {
+
       Assert.notNull(type, "The class type must not be null!");
 
       while (type != null) {
@@ -688,11 +690,11 @@ public abstract class ReflectionUtils extends ClassUtils {
       return this;
     }
 
-    /* (non-Javadoc) */
     @SuppressWarnings("all")
-    public WithExpression<T> throwing(RuntimeException e) {
+    public WithExpression<T> throwing(RuntimeException cause) {
+
       if (!accepted) {
-        throw e;
+        throw cause;
       }
 
       return this;
@@ -707,7 +709,6 @@ public abstract class ReflectionUtils extends ClassUtils {
    */
   public static class WithFields extends WithExpression<Field> {
 
-    /* (non-Javadoc) */
     public WithFields(Field... fields) {
       super(fields);
     }
@@ -725,7 +726,6 @@ public abstract class ReflectionUtils extends ClassUtils {
       return type.getDeclaredFields();
     }
 
-    /* (non-Javadoc) */
     @Override
     protected Set<Field> newMemberSet() {
       return new TreeSet<>(ComparatorUtils.nullSafeArgumentsComparator((Field field1, Field field2) -> {
@@ -745,7 +745,6 @@ public abstract class ReflectionUtils extends ClassUtils {
    */
   public static class WithMethods extends WithExpression<Method> {
 
-    /* (non-Javadoc) */
     public WithMethods(Method... methods) {
       super(methods);
     }
