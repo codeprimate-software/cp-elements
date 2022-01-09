@@ -17,6 +17,7 @@ package org.cp.elements.lang.factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.cp.elements.test.TestUtils;
 import org.junit.Before;
@@ -26,7 +27,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * Unit Tests for {@link ObjectFactoryReferenceHolderTests}.
+ * Unit Tests for {@link ObjectFactoryReferenceHolderUnitTests}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -37,7 +38,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
-public class ObjectFactoryReferenceHolderTests {
+public class ObjectFactoryReferenceHolderUnitTests {
 
   @Before
   public void setup() {
@@ -53,6 +54,7 @@ public class ObjectFactoryReferenceHolderTests {
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
 
     ObjectFactory mockObjectFactory = mock(ObjectFactory.class);
+
     ObjectFactoryReferenceHolder.set(mockObjectFactory);
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
@@ -61,23 +63,26 @@ public class ObjectFactoryReferenceHolderTests {
     ObjectFactoryReferenceHolder.clear();
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
+
+    verifyNoInteractions(mockObjectFactory);
   }
 
   @Test(expected = IllegalStateException.class)
-  public void getWhenReferenceUnset() {
+  public void getWhenReferenceIsUnset() {
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
 
     TestUtils.doIllegalStateExceptionThrowingOperation(ObjectFactoryReferenceHolder::get,
-      () -> "ObjectFactory was not properly initialized!");
+      () -> "An ObjectFactory was not properly initialized");
   }
 
   @Test(expected = IllegalStateException.class)
-  public void setWhenReferenceSet() {
+  public void setWhenReferenceIsSet() {
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
 
     ObjectFactory mockObjectFactory = mock(ObjectFactory.class, "Expected ObjectFactory");
+
     ObjectFactoryReferenceHolder.set(mockObjectFactory);
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
@@ -87,11 +92,15 @@ public class ObjectFactoryReferenceHolderTests {
       ObjectFactoryReferenceHolder.set(mock(ObjectFactory.class, "Illegal ObjectFactory"));
     }
     catch (IllegalStateException expected) {
-      assertThat(expected.getMessage()).isEqualTo(
-        String.format("The ObjectFactory reference is already set to (%1$s)", mockObjectFactory));
+
+      assertThat(expected).hasMessage("An ObjectFactory reference is already set to [%s]", mockObjectFactory);
       assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
       assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory);
+
       throw expected;
+    }
+    finally {
+      verifyNoInteractions(mockObjectFactory);
     }
   }
 
@@ -100,30 +109,33 @@ public class ObjectFactoryReferenceHolderTests {
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isFalse();
 
-    ObjectFactory mockObjectFactory1 = mock(ObjectFactory.class, "ObjectFactory 1");
-    ObjectFactoryReferenceHolder.compareAndSet(null, mockObjectFactory1);
+    ObjectFactory mockObjectFactoryOne = mock(ObjectFactory.class, "ObjectFactory 1");
+
+    ObjectFactoryReferenceHolder.compareAndSet(null, mockObjectFactoryOne);
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
-    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory1);
+    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactoryOne);
 
-    ObjectFactory mockObjectFactory2 = mock(ObjectFactory.class, "ObjectFactory 2");
-    ObjectFactoryReferenceHolder.compareAndSet(null, mockObjectFactory2);
+    ObjectFactory mockObjectFactoryTwo = mock(ObjectFactory.class, "ObjectFactory 2");
 
-    assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
-    assertThat(ObjectFactoryReferenceHolder.get()).isNotSameAs(mockObjectFactory2);
-    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory1);
-
-    ObjectFactoryReferenceHolder.compareAndSet(mockObjectFactory1, mockObjectFactory2);
+    ObjectFactoryReferenceHolder.compareAndSet(null, mockObjectFactoryTwo);
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
-    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory2);
+    assertThat(ObjectFactoryReferenceHolder.get()).isNotSameAs(mockObjectFactoryTwo);
+    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactoryOne);
 
-    ObjectFactory mockObjectFactory3 = mock(ObjectFactory.class, "ObjectFactory 3");
-    ObjectFactoryReferenceHolder.compareAndSet(mockObjectFactory1, mockObjectFactory3);
+    ObjectFactoryReferenceHolder.compareAndSet(mockObjectFactoryOne, mockObjectFactoryTwo);
 
     assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
-    assertThat(ObjectFactoryReferenceHolder.get()).isNotSameAs(mockObjectFactory3);
-    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactory2);
+    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactoryTwo);
+
+    ObjectFactory mockObjectFactoryThree = mock(ObjectFactory.class, "ObjectFactory 3");
+
+    ObjectFactoryReferenceHolder.compareAndSet(mockObjectFactoryOne, mockObjectFactoryThree);
+
+    assertThat(ObjectFactoryReferenceHolder.hasReference()).isTrue();
+    assertThat(ObjectFactoryReferenceHolder.get()).isNotSameAs(mockObjectFactoryThree);
+    assertThat(ObjectFactoryReferenceHolder.get()).isSameAs(mockObjectFactoryTwo);
   }
 
   @Test

@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.factory;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The ObjectFactoryReferenceHolder class is reference holder to an ObjectFactory instance.
+ * Reference holder to an {@link ObjectFactory} instance.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.concurrent.ThreadSafe
@@ -34,56 +36,68 @@ public final class ObjectFactoryReferenceHolder {
   private static ObjectFactory objectFactoryReference;
 
   /**
-   * Determines whether this reference holder holds a reference to an ObjectFactory.
+   * Determines whether {@literal this} reference holder holds a reference to an {@link ObjectFactory}.
    *
-   * @return a boolean value indicating whether this reference holder holds an ObjectFactory reference.
+   * @return a boolean value indicating whether {@literal this} reference holder holds a reference to
+   * an {@link ObjectFactory}.
    */
+  @NullSafe
   public static synchronized boolean hasReference() {
-    return (objectFactoryReference != null);
+    return objectFactoryReference != null;
   }
 
   /**
-   * Gets the reference to the current ObjectFactory in use by the application.
+   * Gets the reference to the current {@link ObjectFactory}.
    *
-   * @return a reference to the current ObjectFactory.
-   * @throws IllegalStateException if the ObjectFactory reference is not set.
+   * @return a reference to the current {@link ObjectFactory}.
+   * @throws IllegalStateException if the {@link ObjectFactory} reference is not set.
+   * @see org.cp.elements.lang.factory.ObjectFactory
+   * @see #set(ObjectFactory)
    */
-  public static synchronized ObjectFactory get() {
-    Assert.state(objectFactoryReference != null, "ObjectFactory was not properly initialized!");
+  public static synchronized @NotNull ObjectFactory get() {
+
+    Assert.state(objectFactoryReference != null,
+      "An ObjectFactory was not properly initialized");
+
     return objectFactoryReference;
   }
 
   /**
-   * Sets a reference to the ObjectFactory used by the application in this holder.
+   * Sets the reference to an {@link ObjectFactory}.
    *
-   * @param objectFactory the ObjectFactory reference to hold in this reference holder.
-   * @throws IllegalStateException if the reference holder already holds a reference to an ObjectFactory.
+   * @param objectFactory reference to an {@link ObjectFactory} to be held by {@literal this} reference holder.
+   * @throws IllegalStateException if {@literal this} reference holder is already holding a reference to
+   * an {@link ObjectFactory}.
    * @see #compareAndSet(ObjectFactory, ObjectFactory)
+   * @see #get()
    */
-  public static synchronized void set(final ObjectFactory objectFactory) {
-    Assert.state(objectFactoryReference == null, "The ObjectFactory reference is already set to ({0})",
-      objectFactoryReference);
+  public static synchronized void set(@Nullable ObjectFactory objectFactory) {
+
+    Assert.state(objectFactoryReference == null,
+      "An ObjectFactory reference is already set to [%s]", objectFactoryReference);
+
     objectFactoryReference = objectFactory;
   }
 
   /**
-   * CAS operation allowing the ObjectFactory reference to be changed providing the Thread knows, or has a reference
-   * to the current ObjectFactory reference.
+   * {@literal CAS operation} allowing the reference to the {@link ObjectFactory} to be changed providing the current
+   * {@link Thread} knows, or has a reference to, the current {@link ObjectFactory}.
    *
-   * @param currentObjectFactory a reference to the current ObjectFactory held by this reference holder.
-   * @param objectFactory the new ObjectFactory reference to set on this reference holder providing the comparison
-   * succeeds.
-   * @see #get()
+   * @param currentObjectFactory reference to the {@link ObjectFactory} currently held by
+   * {@literal this} reference holder.
+   * @param newObjectFactory new {@link ObjectFactory} to set as the reference held by {@literal this} reference holder.
    * @see #set(ObjectFactory)
    */
-  public static synchronized void compareAndSet(final ObjectFactory currentObjectFactory, final ObjectFactory objectFactory) {
+  public static synchronized void compareAndSet(@Nullable ObjectFactory currentObjectFactory,
+      @Nullable ObjectFactory newObjectFactory) {
+
     if (currentObjectFactory == objectFactoryReference) {
-      objectFactoryReference = objectFactory;
+      objectFactoryReference = newObjectFactory;
     }
   }
 
   /**
-   * Clears this reference holders ObjectFactory reference.
+   * Clears the reference to the current {@link ObjectFactory}.
    */
   public static synchronized void clear() {
     objectFactoryReference = null;
