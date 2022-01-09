@@ -69,8 +69,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * the given array of {@link Object[] arguments}.
    * @see #create(Class, Class[], Object...)
    */
-  @SuppressWarnings("rawtypes")
-  default <T> T create(String objectTypeName, Class[] parameterTypes, Object... args) {
+  default <T> T create(String objectTypeName, Class<?>[] parameterTypes, Object... args) {
     return create(ClassUtils.loadClass(objectTypeName), parameterTypes, args);
   }
 
@@ -108,7 +107,6 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * the given array of {@link Object[] arguments}.
    * @see java.lang.Class
    */
-  @SuppressWarnings("rawtypes")
-  <T> T create(Class<T> objectType, Class[] parameterTypes, Object... args);
+  <T> T create(Class<T> objectType, Class<?>[] parameterTypes, Object... args);
 
 }

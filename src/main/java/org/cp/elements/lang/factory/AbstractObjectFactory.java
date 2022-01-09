@@ -47,7 +47,8 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   private volatile ConversionService conversionService;
 
-  private volatile Function<Object, Object> objectPostProcessor = Function.identity();
+  @SuppressWarnings("rawtypes")
+  private volatile Function objectPostProcessor = Function.identity();
 
   /**
    * Determines whether the reference to an application {@link Configuration} was initialized.
@@ -138,8 +139,9 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @see #registerObjectPostProcessor(Function)
    * @see java.util.function.Function
    */
-  protected @NotNull Function<Object, Object> getObjectPostProcessor() {
-    return this.objectPostProcessor;
+  @SuppressWarnings("unchecked")
+  protected @NotNull <T, R> Function<T, R> getObjectPostProcessor() {
+    return (Function<T, R>) this.objectPostProcessor;
   }
 
   /**
@@ -156,7 +158,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    */
   @SuppressWarnings("unchecked")
   public synchronized @NotNull <T extends AbstractObjectFactory> T registerObjectPostProcessor(
-      @NotNull Function<Object, Object> objectPostProcessor) {
+      @NotNull Function<?, ?> objectPostProcessor) {
 
     Assert.notNull(objectPostProcessor, "The Function used to post process the object is required");
 
@@ -179,8 +181,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @see java.lang.reflect.Constructor
    * @see java.lang.Class
    */
-  @SuppressWarnings("rawtypes")
-  protected Constructor resolveConstructor(@NotNull Class<?> objectType, Class... parameterTypes) {
+  protected <T> Constructor<T> resolveConstructor(@NotNull Class<T> objectType, Class<?>... parameterTypes) {
 
     try {
       return objectType.getConstructor(parameterTypes);
@@ -189,7 +190,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
       if (ArrayUtils.isNotEmpty(parameterTypes)) {
 
-        Constructor constructor = resolveCompatibleConstructor(objectType, parameterTypes);
+        Constructor<T> constructor = resolveCompatibleConstructor(objectType, parameterTypes);
 
         // if the "compatible" constructor is null, resolve to finding the default, public no-arg constructor
         try {
@@ -222,13 +223,13 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @see java.lang.reflect.Constructor
    * @see java.lang.Class
    */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  protected @Nullable Constructor resolveCompatibleConstructor(@NotNull Class<?> objectType,
+  @SuppressWarnings("unchecked")
+  protected @Nullable <T> Constructor<T> resolveCompatibleConstructor(@NotNull Class<T> objectType,
       Class<?>... parameterTypes) {
 
-    for (Constructor constructor : objectType.getConstructors()) {
+    for (Constructor<?> constructor : objectType.getConstructors()) {
 
-      Class[] constructorParameterTypes = constructor.getParameterTypes();
+      Class<?>[] constructorParameterTypes = constructor.getParameterTypes();
 
       if (parameterTypes.length == constructorParameterTypes.length) {
 
@@ -239,7 +240,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
         }
 
         if (match) {
-          return constructor;
+          return (Constructor<T>) constructor;
         }
       }
     }
@@ -262,21 +263,19 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * @see #getObjectPostProcessor()
    * @see java.lang.Object
    */
-  @SuppressWarnings("unchecked")
   protected <T> T postConstruct(T object, Object... args) {
-    return (T) getObjectPostProcessor().apply(object);
+    return this.<T, T>getObjectPostProcessor().apply(object);
   }
 
   /**
    * @inheritDoc
    */
   @Override
-  @SuppressWarnings("rawtypes")
-  public <T> T create(@NotNull Class<T> objectType, Class[] parameterTypes, Object... args) {
+  public <T> T create(@NotNull Class<T> objectType, Class<?>[] parameterTypes, Object... args) {
 
     try {
 
-      Constructor constructor = resolveConstructor(objectType, parameterTypes);
+      Constructor<T> constructor = resolveConstructor(objectType, parameterTypes);
 
       T object;
 
