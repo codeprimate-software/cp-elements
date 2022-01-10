@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
 import static java.lang.Thread.UncaughtExceptionHandler;
 
-import java.util.Optional;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +24,8 @@ import java.util.logging.Logger;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.ThrowableUtils;
-import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.UUIDIdentifierSequence;
 
 /**
@@ -41,21 +40,25 @@ import org.cp.elements.lang.support.UUIDIdentifierSequence;
 @SuppressWarnings("unused")
 public class SimpleThreadFactory implements ThreadFactory {
 
+  private static final Logger logger = Logger.getLogger(SimpleThreadFactory.class.getName());
+
   protected static final boolean DEFAULT_DAEMON = true;
 
-  protected static final Logger logger = Logger.getLogger(SimpleThreadFactory.class.getName());
+  protected static final int DEFAULT_PRIORITY = Thread.NORM_PRIORITY;
 
-  protected static final ThreadGroup DEFAULT_THREAD_GROUP = new ThreadGroup(
-    String.format("%s.THREAD-GROUP", SimpleThreadFactory.class.getName()));
+  protected static final String THREAD_NAME_FORMAT = "%1$s.THREAD-%2$s";
+
+  protected static final ThreadGroup DEFAULT_THREAD_GROUP =
+    new ThreadGroup(String.format("%s.THREAD-GROUP", SimpleThreadFactory.class.getName()));
 
   /**
-   * Factory method to construct a new instance of the {@link SimpleThreadFactory}
-   * in order to construct a {@link Thread}.
+   * Factory method used to construct a new instance of {@link SimpleThreadFactory} that then can be used to
+   * construct and start a {@link Thread}.
    *
-   * @return a new instance of the {@link SimpleThreadFactory}.
+   * @return a new instance of {@link SimpleThreadFactory}.
    * @see org.cp.elements.lang.concurrent.SimpleThreadFactory
    */
-  public static SimpleThreadFactory newThreadFactory() {
+  public static @NotNull SimpleThreadFactory newThreadFactory() {
     return new SimpleThreadFactory();
   }
 
@@ -72,53 +75,67 @@ public class SimpleThreadFactory implements ThreadFactory {
   private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
 
   /**
-   * Generates a unique thread identifier (ID) for the new {@link Thread}.
+   * Generates a unique identifier ({@literal ID}) for the new {@link Thread}.
    *
-   * @return a {@link String} value containing a unique thread identifier (ID).
+   * @return a {@link String} containing a unique identifier (ID).
    * @see org.cp.elements.lang.IdentifierSequence
+   * @see java.lang.Thread#getId()
    * @see #generateThreadName()
    */
-  protected String generatedThreadId() {
+  protected @NotNull String generateThreadId() {
     return this.threadIdGenerator.nextId();
   }
 
   /**
-   * Generates a unique thread name for the new {@link Thread}.
+   * Generates a unique {@link String name} for the new {@link Thread}.
    *
-   * @return a {@link String} containing a unique thread name.
-   * @see #generatedThreadId()
+   * @return a {@link String} containing a {@literal unique name} for the new {@link Thread}.
+   * @see java.lang.Thread#getName()
+   * @see #generateThreadId()
    */
-  protected String generateThreadName() {
-    return String.format("%1$s.THREAD-%2$s", SimpleThreadFactory.class.getName(), generatedThreadId());
+  protected @NotNull String generateThreadName() {
+    return String.format(THREAD_NAME_FORMAT, SimpleThreadFactory.class.getName(), generateThreadId());
   }
 
   /**
-   * Constructs a new {@link Thread} with the given {@link Runnable} task.
+   * Constructs a new {@link Thread} initialized with the given, required {@link Runnable} task.
    *
-   * @param task {@link Runnable} task to run in a new {@link Thread}.
-   * @return a new {@link Thread} initialized with the given {@link Runnable} task to run.
+   * @param task {@link Runnable} task to run in a new {@link Thread};  must not be {@literal null}.
+   * @return a new {@link Thread} initialized with the given {@link Runnable} task
+   * that will be run by the {@link Thread} when started.
+   * @see #newThread(String, Runnable)
+   * @see #generateThreadName()
    * @see java.lang.Runnable
    * @see java.lang.Thread
-   * @see #generateThreadName()
-   * @see #newThread(String, Runnable)
    */
   @Override
-  public Thread newThread(Runnable task) {
+  public @NotNull Thread newThread(@NotNull Runnable task) {
     return newThread(generateThreadName(), task);
   }
 
   /**
-   * Constructs and initializes a new {@link Thread}.
+   * Constructs a new {@link Thread} initialized with the given, required {@link String name} and {@link Runnable} task
+   * that will be run by the {@link Thread} when started.
    *
-   * @param name name given to the new {@link Thread}.
-   * @param task {@link Runnable} task for the {@link Thread} to execute.
-   * @return a new {@link Thread} initialized by this factory.
-   * @throws IllegalArgumentException if {@code name} is unspecified or {@link Runnable} task is {@literal null}.
+   * @param name {@link String} containing the {@literal name} given to the new {@link Thread};
+   * must not be {@literal null}.
+   * @param task {@link Runnable} task for the {@link Thread} to execute;
+   * must not be {@literal null}.
+   * @return a new {@link Thread} created and initialized by {@literal this} {@link ThreadFactory} with the given,
+   * required {@link String name} and {@link Runnable} task to execute.
+   * @throws IllegalArgumentException if the {@link String name} or the {@link Runnable} task are {@literal null}.
+   * @see #getContextClassLoader()
+   * @see #isDaemon()
+   * @see #getPriority()
+   * @see #getThreadGroup()
+   * @see #getUncaughtExceptionHandler()
+   * @see java.lang.Runnable
    * @see java.lang.Thread
    */
-  public Thread newThread(String name, Runnable task) {
-    Assert.hasText(name, "Thread name must be specified");
-    Assert.notNull(task, "Thread task must not be null");
+  public @NotNull Thread newThread(@NotNull String name, @NotNull Runnable task) {
+
+    Assert.hasText(name, "Name [%s] is required", name);
+    Assert.notNull(task, "Runnable task is required");
 
     Thread thread = new Thread(getThreadGroup(), task, name);
 
@@ -131,24 +148,33 @@ public class SimpleThreadFactory implements ThreadFactory {
   }
 
   /**
-   * Returns the {@link Thread} context {@link ClassLoader} used to resolve {@link Class} types.
-   * Returns the calling {@link Thread Thread's} context {@link ClassLoader} if not set.
+   * Returns the configured {@literal context} {@link ClassLoader} used by new {@link Thread}
+   * to resolve {@link Class} types.
    *
-   * @return a reference to the {@link Thread} context {@link ClassLoader}.
+   * Returns the calling {@link Thread Thread's} {@link Thread#getContextClassLoader() Thread Context ClassLoader}
+   * if not set.
+   *
+   * @return a reference to the configured context {@link ClassLoader}.
    * @see java.lang.Thread#getContextClassLoader()
    * @see java.lang.ClassLoader
    */
-  @NullSafe
-  public ClassLoader getContextClassLoader() {
-    return Optional.ofNullable(this.contextClassLoader)
-      .orElseGet(() -> Thread.currentThread().getContextClassLoader());
+  public @NotNull ClassLoader getContextClassLoader() {
+
+    ClassLoader contextClassLoader = this.contextClassLoader;
+
+    return contextClassLoader != null
+      ? contextClassLoader
+      : Thread.currentThread().getContextClassLoader();
   }
 
   /**
-   * Determine whether the constructed factory {@link Thread} will execute as a daemon thread.
+   * Determine whether the new {@link Thread} will execute as a {@link Thread#isDaemon() daemon} {@link Thread}.
    *
-   * @return a boolean value indicating whether the constructed factory {@link Thread}
-   * will execute as a daemon thread.
+   * A {@link Thread#isDaemon() daemon} {@link Thread} is a {@link Thread} that will not prevent the JVM
+   * from shutting down.
+   *
+   * @return a boolean value indicating whether the new {@link Thread} will execute as
+   * a {@link Thread#isDaemon() daemon} {@link Thread}.
    * @see java.lang.Thread#isDaemon()
    */
   public boolean isDaemon() {
@@ -156,111 +182,143 @@ public class SimpleThreadFactory implements ThreadFactory {
   }
 
   /**
-   * Returns the priority used by this factory when initializing the new {@link Thread}.
+   * Returns the configured {@link Thread#getPriority() priority} used by {@literal this} {@link ThreadFactory}
+   * when initializing the new {@link Thread}.
    *
-   * @return an integer value specifying the new {@link Thread Thread's} priority.
+   * @return an {@link Integer} value specifying the new {@link Thread Thread's} {@link Thread#getPriority() priority}.
    * @see java.lang.Thread#getPriority()
    */
   public int getPriority() {
-    return Optional.ofNullable(this.priority).orElse(Thread.NORM_PRIORITY);
+
+    Integer priority = this.priority;
+
+    return priority != null ? priority : DEFAULT_PRIORITY;
   }
 
   /**
-   * Returns the {@link ThreadGroup} in which the new {@link Thread} will be assigned.
+   * Returns the {@link ThreadGroup} to which the new {@link Thread} will be assigned.
    *
-   * @return the {@link ThreadGroup} to which the new {@link Thread} will belong.
+   * @return the {@link ThreadGroup} to which the new {@link Thread} will be assigned.
    * @see java.lang.Thread#getThreadGroup()
    * @see java.lang.ThreadGroup
    */
-  @NullSafe
-  public ThreadGroup getThreadGroup() {
-    return Optional.ofNullable(this.threadGroup).orElse(DEFAULT_THREAD_GROUP);
+  public @NotNull ThreadGroup getThreadGroup() {
+
+    ThreadGroup threadGroup = this.threadGroup;
+
+    return threadGroup != null ? threadGroup : DEFAULT_THREAD_GROUP;
   }
 
   /**
-   * Returns the {@link Thread.UncaughtExceptionHandler} for handling any unhandled {@link Exception Exceptions}
-   * thrown by the {@link Runnable} tasks during normal execution of the factory {@link Thread}.
+   * Returns the {@link Thread.UncaughtExceptionHandler} used for handling any uncaught {@link Exception Exceptions}
+   * thrown by the {@link Runnable} tasks during normal execution of the new {@link Thread}.
    *
-   * @return a {@link Thread.UncaughtExceptionHandler} to handle any unhandled {@link Exception Exceptions}
-   * thrown by the {@link Runnable} tasks during normal execution of the factory {@link Thread}.
+   * @return a {@link Thread.UncaughtExceptionHandler} used to handle any uncaught {@link Exception Exceptions}
+   * thrown by the {@link Runnable} tasks during normal execution of the new {@link Thread}.
    * @see java.lang.Thread.UncaughtExceptionHandler
    */
-  @NullSafe
-  public UncaughtExceptionHandler getUncaughtExceptionHandler() {
-    return Optional.ofNullable(this.uncaughtExceptionHandler).orElse(SimpleUncaughtExceptionHandler.INSTANCE);
+  public @NotNull UncaughtExceptionHandler getUncaughtExceptionHandler() {
+
+    UncaughtExceptionHandler uncaughtExceptionHandler = this.uncaughtExceptionHandler;
+
+    return uncaughtExceptionHandler != null
+      ? uncaughtExceptionHandler
+      : SimpleUncaughtExceptionHandler.INSTANCE;
   }
 
   /**
-   * Sets whether the new factory {@link Thread} will execute as a daemon thread.
+   * Builder method used to set whether the new {@link Thread} will execute as
+   * a {@link Thread#isDaemon() daemon} {@link Thread}.
    *
-   * @param daemon boolean value indicating whether the {@link Thread} will execute as a daemon thread.
+   * @param daemon boolean value indicating whether the new {@link Thread}
+   * will execute as a {@link Thread#isDaemon() daemon} {@link Thread}.
    * @return this {@link SimpleThreadFactory}.
    * @see java.lang.Thread#setDaemon(boolean)
    * @see #isDaemon()
    */
-  public SimpleThreadFactory as(boolean daemon) {
+  public @NotNull SimpleThreadFactory as(boolean daemon) {
     this.daemon = daemon;
     return this;
   }
 
   /**
-   * Sets the {@link ThreadGroup} in which the new factory {@link Thread} will belong.
+   * Builder method used to set whether the new {@link Thread} will execute as
+   * a {@link Thread#isDaemon() daemon} {@link Thread}.
    *
-   * @param threadGroup {@link ThreadGroup} assigned to the new factory {@link Thread}.
+   * @param type {@link ThreadType} used to describe the type of {@link Thread} to execute,
+   * either as a {@link ThreadType#DAEMON} or a {@link ThreadType#NON_DAEMON}.
    * @return this {@link SimpleThreadFactory}.
+   * @see org.cp.elements.lang.concurrent.SimpleThreadFactory.ThreadType
+   * @see #as(boolean)
+   */
+  public @NotNull SimpleThreadFactory as(@Nullable ThreadType type) {
+    return as(type == null || ThreadType.DAEMON.equals(type));
+  }
+
+  /**
+   * Builder method used to set the {@link ThreadGroup} in which the new {@link Thread} will be assigned.
+   *
+   * @param threadGroup {@link ThreadGroup} in which new {@link Thread} will belong.
+   * @return this {@link SimpleThreadFactory}.
+   * @see java.lang.Thread#Thread(ThreadGroup, Runnable, String)
    * @see java.lang.ThreadGroup
    * @see #getThreadGroup()
    */
-  public SimpleThreadFactory in(ThreadGroup threadGroup) {
+  public @NotNull SimpleThreadFactory in(@Nullable ThreadGroup threadGroup) {
     this.threadGroup = threadGroup;
     return this;
   }
 
   /**
-   * Sets the context {@link ClassLoader} used by the new factory {@link Thread} to resolve {@link Class} types.
+   * Builder method used to set the {@literal context} {@link ClassLoader} used by the new {@link Thread}
+   * to resolve {@link Class} types.
    *
-   * @param contextClassLoader context {@link ClassLoader} used by the new factory {@link Thread}
+   * @param contextClassLoader {@literal context} {@link ClassLoader} used by the new {@link Thread}
    * to resolve {@link Class} types.
    * @return this {@link SimpleThreadFactory}.
    * @see java.lang.Thread#setContextClassLoader(ClassLoader)
    * @see #getContextClassLoader()
+   * @see java.lang.ClassLoader
    */
-  public SimpleThreadFactory using(ClassLoader contextClassLoader) {
+  public @NotNull SimpleThreadFactory using(@Nullable ClassLoader contextClassLoader) {
     this.contextClassLoader = contextClassLoader;
     return this;
   }
 
   /**
-   * Sets the {@link Thread.UncaughtExceptionHandler} used by the new factory {@link Thread} to handle any unhandled
-   * {@link Exception Exceptions} throws by the thread's {@link Runnable} task.
+   * Builder method used to set the {@link Thread.UncaughtExceptionHandler} used by the new {@link Thread}
+   * to handle any uncaught {@link Exception Exceptions} throws by the {@link Thread Thread's} {@link Runnable} task.
    *
-   * @param uncaughtExceptionHandler {@link Thread.UncaughtExceptionHandler} used by the new factory {@link Thread}
-   * to handle any unhandled {@link Exception Exceptions} throws by the thread's {@link Runnable} task.
+   * @param uncaughtExceptionHandler {@link Thread.UncaughtExceptionHandler} used by the new {@link Thread}
+   * to handle any uncaught {@link Exception Exceptions} throws by the {@link Thread Thread's} {@link Runnable} task.
    * @return this {@link SimpleThreadFactory}.
+   * @see java.lang.Thread#setUncaughtExceptionHandler(UncaughtExceptionHandler)
    * @see java.lang.Thread.UncaughtExceptionHandler
    * @see #getUncaughtExceptionHandler()
    */
-  public SimpleThreadFactory using(UncaughtExceptionHandler uncaughtExceptionHandler) {
+  public @NotNull SimpleThreadFactory using(@Nullable UncaughtExceptionHandler uncaughtExceptionHandler) {
     this.uncaughtExceptionHandler = uncaughtExceptionHandler;
     return this;
   }
 
   /**
-   * Sets the priority of the new factory {@link Thread}.
+   * Builder method used to set the {@link Thread#getPriority() priority} of the new {@link Thread}.
    *
-   * @param priority integer value specifying the thread priority.
+   * @param priority {@link Integer} value specifying the {@link Thread#getPriority() Thread Priority}.
    * @return this {@link SimpleThreadFactory}.
    * @see java.lang.Thread#setPriority(int)
    * @see #getPriority()
    */
-  public SimpleThreadFactory with(int priority) {
+  public @NotNull SimpleThreadFactory with(int priority) {
     this.priority = priority;
     return this;
   }
 
   /**
    * The {@link SimpleUncaughtExceptionHandler} class implements {@link Thread.UncaughtExceptionHandler} by simply
-   * logging the unhandled error.  Use and configure the {@link SimpleThreadFactory} logger to adjust logging detail.
+   * {@literal logging} the unhandled error.
+   *
+   * Use and configure the {@link SimpleThreadFactory} {@link Logger} to adjust logging detail.
    *
    * @see java.lang.Thread.UncaughtExceptionHandler
    */
@@ -269,10 +327,10 @@ public class SimpleThreadFactory implements ThreadFactory {
     protected static final SimpleUncaughtExceptionHandler INSTANCE = new SimpleUncaughtExceptionHandler();
 
     /**
-     * Returns the {@link Logger} used to log details of the uncaught, unhandled {@link Throwable exceptions/errors}
-     * thrown by {@link Thread Threads}.
+     * Returns the {@link Logger} used to log details of the uncaught, unhandled {@link Throwable Exceptions and Errors}
+     * thrown by {@link Thread Threads} during execution of the program.
      *
-     * @return the {@link Logger} used to log uncaught, unhandled {@link Throwable exception/error} events.
+     * @return the {@link Logger} used to log uncaught, unhandled {@link Throwable Exceptions and Errors}.
      * @see java.util.logging.Logger
      */
     protected Logger getLogger() {
@@ -280,23 +338,33 @@ public class SimpleThreadFactory implements ThreadFactory {
     }
 
     /**
-     * Handles any uncaught and unhandled {@link Throwable exceptions or errors} thrown
-     * from the given {@link Thread} of execution.
+     * Handles any uncaught and unhandled {@link Throwable Exceptions and Errors} thrown from any {@link Thread}
+     * of execution.
      *
-     * @param thread {@link Thread} from which the uncaught/unhandled {@link Throwable exception/error} was thrown.
-     * @param cause the uncaught, unhandled {@link Throwable exception/error} thrown by the given {@link Thread}.
+     * @param thread {@link Thread} from which the uncaught/unhandled {@link Throwable Exception or Error} was thrown.
+     * @param cause the uncaught, unhandled {@link Throwable Exception or Error} thrown by the given {@link Thread}.
      * @see java.lang.Thread
      * @see java.lang.Throwable
      * @see #getLogger()
      */
     @Override
-    public void uncaughtException(Thread thread, Throwable cause) {
-      getLogger().warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] having ID [%3$d]",
+    public void uncaughtException(@NotNull Thread thread, @NotNull Throwable cause) {
+
+      Logger logger = getLogger();
+
+      logger.warning(String.format("An unhandled error [%1$s] was thrown by Thread [%2$s] with ID [%3$d]",
         cause.getClass().getName(), thread.getName(), thread.getId()));
 
-      if (getLogger().isLoggable(Level.FINE)) {
-        getLogger().fine(ThrowableUtils.getStackTrace(cause));
+      if (logger.isLoggable(Level.FINE)) {
+        logger.fine(ThrowableUtils.getStackTrace(cause));
       }
     }
+  }
+
+  /**
+   * Enumeration of the {@link Thread Thread's} type.
+   */
+  protected enum ThreadType {
+    DAEMON, NON_DAEMON
   }
 }
