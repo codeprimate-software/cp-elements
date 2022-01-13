@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 import static org.cp.elements.io.IOUtils.close;
@@ -77,10 +76,6 @@ import org.cp.elements.util.Environment;
  */
 @SuppressWarnings("unused")
 public class ProcessAdapter implements Identifiable<Integer>, Initable {
-
-  protected static final boolean DAEMON_THREAD = true;
-
-  protected static final int THREAD_PRIORITY = Thread.NORM_PRIORITY;
 
   protected static final long DEFAULT_TIMEOUT_MILLISECONDS = TimeUnit.SECONDS.toMillis(30);
 
@@ -206,9 +201,9 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   protected Thread newThread(String name, Runnable task) {
 
     return newThreadFactory()
-      .as(DAEMON_THREAD)
+      .asDaemonThread()
       .in(resolveThreadGroup())
-      .with(THREAD_PRIORITY)
+      .withNormalPriority()
       .newThread(name, task);
   }
 
@@ -548,8 +543,8 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
 
     if (isRunning()) {
 
-      ExecutorService executorService = Executors.newSingleThreadExecutor(
-        newThreadFactory().as(DAEMON_THREAD).in(resolveThreadGroup()).with(THREAD_PRIORITY));
+      ExecutorService executorService = Executors
+        .newSingleThreadExecutor(newThreadFactory().asDaemonThread().in(resolveThreadGroup()).withNormalPriority());
 
       try {
 
