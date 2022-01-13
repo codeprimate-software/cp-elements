@@ -53,7 +53,7 @@ public class SimpleThreadFactory implements ThreadFactory {
 
   /**
    * Factory method used to construct a new instance of {@link SimpleThreadFactory} that then can be used to
-   * construct and start a {@link Thread}.
+   * construct and start a new {@link Thread}.
    *
    * @return a new instance of {@link SimpleThreadFactory}.
    * @see org.cp.elements.lang.concurrent.SimpleThreadFactory
@@ -75,9 +75,9 @@ public class SimpleThreadFactory implements ThreadFactory {
   private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
 
   /**
-   * Generates a unique identifier ({@literal ID}) for the new {@link Thread}.
+   * Generates a unique {@link String identifier} ({@literal ID}) for the new {@link Thread}.
    *
-   * @return a {@link String} containing a unique identifier (ID).
+   * @return a {@link String} containing a {@literal unique identifier} (ID) for the new {@link Thread}.
    * @see org.cp.elements.lang.IdentifierSequence
    * @see java.lang.Thread#getId()
    * @see #generateThreadName()
@@ -227,32 +227,49 @@ public class SimpleThreadFactory implements ThreadFactory {
   }
 
   /**
-   * Builder method used to set whether the new {@link Thread} will execute as
-   * a {@link Thread#isDaemon() daemon} {@link Thread}.
+   * Builder method used to set the new {@link Thread} to execute as a {@link Thread#isDaemon() daemon} {@link Thread}.
    *
-   * @param daemon boolean value indicating whether the new {@link Thread}
-   * will execute as a {@link Thread#isDaemon() daemon} {@link Thread}.
    * @return this {@link SimpleThreadFactory}.
    * @see java.lang.Thread#setDaemon(boolean)
+   * @see #asUserThread()
    * @see #isDaemon()
    */
-  public @NotNull SimpleThreadFactory as(boolean daemon) {
-    this.daemon = daemon;
+  public @NotNull SimpleThreadFactory asDaemonThread() {
+    this.daemon = true;
     return this;
   }
 
   /**
-   * Builder method used to set whether the new {@link Thread} will execute as
-   * a {@link Thread#isDaemon() daemon} {@link Thread}.
+   * Builder method used to set the new {@link Thread} to execute as a {@link Thread#isDaemon() non-daemon},
+   * {@literal user} {@link Thread}.
    *
-   * @param type {@link ThreadType} used to describe the type of {@link Thread} to execute,
-   * either as a {@link ThreadType#DAEMON} or a {@link ThreadType#NON_DAEMON}.
    * @return this {@link SimpleThreadFactory}.
-   * @see org.cp.elements.lang.concurrent.SimpleThreadFactory.ThreadType
-   * @see #as(boolean)
+   * @see java.lang.Thread#setDaemon(boolean)
+   * @see #asDaemonThread()
+   * @see #isDaemon()
    */
-  public @NotNull SimpleThreadFactory as(@Nullable ThreadType type) {
-    return as(type == null || ThreadType.DAEMON.equals(type));
+  public @NotNull SimpleThreadFactory asUserThread() {
+    this.daemon = false;
+    return this;
+  }
+
+  /**
+   * Builder method used to set the {@link Thread.UncaughtExceptionHandler} used by the new {@link Thread}
+   * to handle any uncaught {@link Exception Exceptions} throws by the {@link Thread Thread's} {@link Runnable} task.
+   *
+   * @param uncaughtExceptionHandler {@link Thread.UncaughtExceptionHandler} used by the new {@link Thread}
+   * to handle any uncaught {@link Exception Exceptions} thrown by the {@link Thread Thread's} {@link Runnable} task.
+   * @return this {@link SimpleThreadFactory}.
+   * @see java.lang.Thread#setUncaughtExceptionHandler(UncaughtExceptionHandler)
+   * @see java.lang.Thread.UncaughtExceptionHandler
+   * @see #getUncaughtExceptionHandler()
+   */
+  public @NotNull SimpleThreadFactory handleUncaughtExceptionsWith(
+      @Nullable UncaughtExceptionHandler uncaughtExceptionHandler) {
+
+    this.uncaughtExceptionHandler = uncaughtExceptionHandler;
+
+    return this;
   }
 
   /**
@@ -280,25 +297,48 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see #getContextClassLoader()
    * @see java.lang.ClassLoader
    */
-  public @NotNull SimpleThreadFactory using(@Nullable ClassLoader contextClassLoader) {
+  public @NotNull SimpleThreadFactory resolveTypesWith(@Nullable ClassLoader contextClassLoader) {
     this.contextClassLoader = contextClassLoader;
     return this;
   }
 
   /**
-   * Builder method used to set the {@link Thread.UncaughtExceptionHandler} used by the new {@link Thread}
-   * to handle any uncaught {@link Exception Exceptions} throws by the {@link Thread Thread's} {@link Runnable} task.
+   * Builder method used to set the {@link Thread#getPriority() priority} of the new {{@link Thread}
+   * to {@link Thread#MAX_PRIORITY maximum priority}.
    *
-   * @param uncaughtExceptionHandler {@link Thread.UncaughtExceptionHandler} used by the new {@link Thread}
-   * to handle any uncaught {@link Exception Exceptions} throws by the {@link Thread Thread's} {@link Runnable} task.
    * @return this {@link SimpleThreadFactory}.
-   * @see java.lang.Thread#setUncaughtExceptionHandler(UncaughtExceptionHandler)
-   * @see java.lang.Thread.UncaughtExceptionHandler
-   * @see #getUncaughtExceptionHandler()
+   * @see java.lang.Thread#setPriority(int)
+   * @see #withPriority(int)
+   * @see #getPriority()
    */
-  public @NotNull SimpleThreadFactory using(@Nullable UncaughtExceptionHandler uncaughtExceptionHandler) {
-    this.uncaughtExceptionHandler = uncaughtExceptionHandler;
-    return this;
+  public @NotNull SimpleThreadFactory withMaxPriority() {
+    return withPriority(Thread.MAX_PRIORITY);
+  }
+
+  /**
+   * Builder method used to set the {@link Thread#getPriority() priority} of the new {{@link Thread}
+   * to {@link Thread#MIN_PRIORITY minimum priority}.
+   *
+   * @return this {@link SimpleThreadFactory}.
+   * @see java.lang.Thread#setPriority(int)
+   * @see #withPriority(int)
+   * @see #getPriority()
+   */
+  public @NotNull SimpleThreadFactory withMinPriority() {
+    return withPriority(Thread.MIN_PRIORITY);
+  }
+
+  /**
+   * Builder method used to set the {@link Thread#getPriority() priority} of the new {{@link Thread}
+   * to {@link Thread#NORM_PRIORITY normal priority}.
+   *
+   * @return this {@link SimpleThreadFactory}.
+   * @see java.lang.Thread#setPriority(int)
+   * @see #withPriority(int)
+   * @see #getPriority()
+   */
+  public @NotNull SimpleThreadFactory withNormalPriority() {
+    return withPriority(Thread.NORM_PRIORITY);
   }
 
   /**
@@ -309,7 +349,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see java.lang.Thread#setPriority(int)
    * @see #getPriority()
    */
-  public @NotNull SimpleThreadFactory with(int priority) {
+  public @NotNull SimpleThreadFactory withPriority(int priority) {
     this.priority = priority;
     return this;
   }
@@ -359,12 +399,5 @@ public class SimpleThreadFactory implements ThreadFactory {
         logger.fine(ThrowableUtils.getStackTrace(cause));
       }
     }
-  }
-
-  /**
-   * Enumeration of the {@link Thread Thread's} type.
-   */
-  protected enum ThreadType {
-    DAEMON, NON_DAEMON
   }
 }

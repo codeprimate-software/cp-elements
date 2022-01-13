@@ -27,6 +27,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.HashSet;
@@ -37,7 +38,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.cp.elements.lang.ThrowableUtils;
-import org.cp.elements.lang.concurrent.SimpleThreadFactory.ThreadType;
 import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,6 @@ import org.mockito.junit.MockitoJUnitRunner;
  * Unit Tests for {@link SimpleThreadFactory}.
  *
  * @author John Blum
- * @see java.util.concurrent.TimeUnit
  * @see org.junit.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
@@ -59,7 +58,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleThreadFactoryUnitTests {
 
-  protected static final int EXPECTED_COUNT = 10000;
+  protected static final int EXPECTED_COUNT = 10_000;
 
   @Mock
   private Runnable mockRunnable;
@@ -77,7 +76,9 @@ public class SimpleThreadFactoryUnitTests {
     Set<String> threadIds = new HashSet<>(EXPECTED_COUNT);
 
     for (int count = 0; count < EXPECTED_COUNT; count++) {
-      threadIds.add(threadFactory.generateThreadId());
+      String threadId = threadFactory.generateThreadId();
+      assertThat(threadId).isNotEmpty();
+      threadIds.add(threadId);
     }
 
     assertThat(threadIds.size()).isEqualTo(EXPECTED_COUNT);
@@ -93,7 +94,7 @@ public class SimpleThreadFactoryUnitTests {
     for (int count = 0; count < EXPECTED_COUNT; count++) {
       String threadName = threadFactory.generateThreadName();
       threadNames.add(threadName);
-      assertThat(threadName).startsWith(String.format("%s.THREAD-", SimpleThreadFactory.class.getName()));
+      assertThat(threadName).matches(SimpleThreadFactory.class.getName() + "\\.THREAD-[-\\w]+");
     }
 
     assertThat(threadNames.size()).isEqualTo(EXPECTED_COUNT);
@@ -102,12 +103,10 @@ public class SimpleThreadFactoryUnitTests {
   @Test
   public void constructsNewThreadWithRunnableTask() {
 
-    SimpleThreadFactory threadFactory = SimpleThreadFactory.newThreadFactory();
-
-    Thread thread = threadFactory.newThread(this.mockRunnable);
+    Thread thread = SimpleThreadFactory.newThreadFactory().newThread(this.mockRunnable);
 
     assertThat(thread).isNotNull();
-    assertThat(thread.getName()).startsWith(String.format("%s.THREAD-", SimpleThreadFactory.class.getName()));
+    assertThat(thread.getName()).matches(SimpleThreadFactory.class.getName() + "\\.THREAD-[-\\w]+");
     assertThat(thread.getContextClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
     assertThat(thread.isDaemon()).isTrue();
     assertThat(thread.getPriority()).isEqualTo(Thread.NORM_PRIORITY);
@@ -138,25 +137,29 @@ public class SimpleThreadFactoryUnitTests {
   @Test
   public void constructsNewCustomThreadWithRunnableTaskInThreadGroup() {
 
+    ClassLoader mockClassLoader = mock(ClassLoader.class);
+
     ThreadGroup testThreadGroup = new ThreadGroup("TestThreadGroup");
 
     Thread.UncaughtExceptionHandler mockUncaughtExceptionHandler = mock(Thread.UncaughtExceptionHandler.class);
 
     Thread thread = SimpleThreadFactory.newThreadFactory()
-      .as(false)
+      .asUserThread()
+      .handleUncaughtExceptionsWith(mockUncaughtExceptionHandler)
       .in(testThreadGroup)
-      .using(ClassLoader.getSystemClassLoader())
-      .using(mockUncaughtExceptionHandler)
-      .with(Thread.MAX_PRIORITY)
-      .newThread("TestThread", this.mockRunnable);
+      .resolveTypesWith(mockClassLoader)
+      .withMaxPriority()
+      .newThread("CustomThread", this.mockRunnable);
 
     assertThat(thread).isNotNull();
-    assertThat(thread.getName()).isEqualTo("TestThread");
-    assertThat(thread.getContextClassLoader()).isEqualTo(ClassLoader.getSystemClassLoader());
+    assertThat(thread.getName()).isEqualTo("CustomThread");
+    assertThat(thread.getContextClassLoader()).isEqualTo(mockClassLoader);
     assertThat(thread.isDaemon()).isFalse();
     assertThat(thread.getPriority()).isEqualTo(Thread.MAX_PRIORITY);
     assertThat(thread.getThreadGroup()).isEqualTo(testThreadGroup);
     assertThat(thread.getUncaughtExceptionHandler()).isEqualTo(mockUncaughtExceptionHandler);
+
+    verifyNoInteractions(mockClassLoader, mockUncaughtExceptionHandler);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -192,44 +195,13 @@ public class SimpleThreadFactoryUnitTests {
   }
 
   @Test
-  public void newDaemonThreadWithNullThreadType() {
-
-    Thread thread = SimpleThreadFactory.newThreadFactory().as(null)
-      .newThread("ImplicitDaemonThread", this.mockRunnable);
-
-    assertThat(thread).isNotNull();
-    assertThat(thread.getName()).isEqualTo("ImplicitDaemonThread");
-    assertThat(thread.isDaemon()).isTrue();
-  }
-
-  @Test
-  public void newDaemonThreadWithDaemonThreadType() {
-
-    Thread thread = SimpleThreadFactory.newThreadFactory().as(ThreadType.DAEMON)
-      .newThread("ExplicitDaemonThread", this.mockRunnable);
-
-    assertThat(thread).isNotNull();
-    assertThat(thread.getName()).isEqualTo("ExplicitDaemonThread");
-    assertThat(thread.isDaemon()).isTrue();
-  }
-
-  @Test
-  public void newNonDaemonThreadWithNonDaemonThreadType() {
-
-    Thread thread = SimpleThreadFactory.newThreadFactory().as(ThreadType.NON_DAEMON)
-      .newThread("NonDaemonThread", this.mockRunnable);
-
-    assertThat(thread).isNotNull();
-    assertThat(thread.getName()).isEqualTo("NonDaemonThread");
-    assertThat(thread.isDaemon()).isFalse();
-  }
-
-  @Test
   public void newThreadRunsRunnableTask() {
 
     AtomicBoolean ran = new AtomicBoolean(false);
 
-    Thread thread = SimpleThreadFactory.newThreadFactory().newThread("TestThread", () -> ran.set(true));
+    Runnable task = () -> ran.set(true);
+
+    Thread thread = SimpleThreadFactory.newThreadFactory().newThread("TestThread", task);
 
     assertThat(thread).isNotNull();
     assertThat(thread.getName()).isEqualTo("TestThread");
@@ -242,6 +214,123 @@ public class SimpleThreadFactoryUnitTests {
       .on(ran::get);
 
     assertThat(ran.get()).isTrue();
+  }
+
+  @Test
+  public void newDaemonThreadIsDaemon() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .asDaemonThread()
+      .newThread(this.mockRunnable)
+      .isDaemon()).isTrue();
+  }
+
+  @Test
+  public void newUserThreadIsNotDaemon() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .asUserThread()
+      .newThread(this.mockRunnable)
+      .isDaemon()).isFalse();
+  }
+
+  @Test
+  public void newThreadHandlesUncaughtExceptionsWithMockUncaughtExceptionHandler() {
+
+    Thread.UncaughtExceptionHandler mockUncaughtExceptionHandler = mock(Thread.UncaughtExceptionHandler.class);
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .handleUncaughtExceptionsWith(mockUncaughtExceptionHandler)
+      .newThread(this.mockRunnable)
+      .getUncaughtExceptionHandler()).isEqualTo(mockUncaughtExceptionHandler);
+
+    verifyNoInteractions(mockUncaughtExceptionHandler);
+  }
+
+  @Test
+  public void newThreadHandlesUncaughtExceptionsWithSimpleUncaughtExceptionHandler() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .handleUncaughtExceptionsWith(SimpleThreadFactory.SimpleUncaughtExceptionHandler.INSTANCE)
+      .newThread(this.mockRunnable)
+      .getUncaughtExceptionHandler()).isEqualTo(SimpleThreadFactory.SimpleUncaughtExceptionHandler.INSTANCE);
+  }
+
+  @Test
+  public void newThreadSetToNullUncaughtExceptionHandler() {
+
+    Thread.UncaughtExceptionHandler uncaughtExceptionHandler = SimpleThreadFactory.newThreadFactory()
+      .handleUncaughtExceptionsWith(null)
+      .newThread(this.mockRunnable)
+      .getUncaughtExceptionHandler();
+
+    assertThat(uncaughtExceptionHandler).isNotNull();
+    assertThat(uncaughtExceptionHandler).isEqualTo(SimpleThreadFactory.SimpleUncaughtExceptionHandler.INSTANCE);
+  }
+
+  @Test
+  public void newThreadResolvingTypesWithCurrentThreadContextClassLoader() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory().newThread(this.mockRunnable)
+      .getContextClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
+  }
+
+  @Test
+  public void newThreadResolvingTypesWithMockClassLoader() {
+
+    ClassLoader mockClassLoader = mock(ClassLoader.class);
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .resolveTypesWith(mockClassLoader)
+      .newThread(this.mockRunnable)
+      .getContextClassLoader()).isEqualTo(mockClassLoader);
+
+    verifyNoInteractions(mockClassLoader);
+  }
+
+  @Test
+  public void newThreadSetToNullContextClassLoader() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .resolveTypesWith(null)
+      .newThread(this.mockRunnable)
+      .getContextClassLoader()).isNotNull();
+  }
+
+  @Test
+  public void newThreadWithCustomPriority() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .withPriority(4)
+      .newThread(this.mockRunnable)
+      .getPriority()).isEqualTo(4);
+  }
+
+  @Test
+  public void newThreadWithMaximumPriority() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .withMaxPriority()
+      .newThread(this.mockRunnable)
+      .getPriority()).isEqualTo(Thread.MAX_PRIORITY);
+  }
+
+  @Test
+  public void newThreadWithMinimumPriority() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .withMinPriority()
+      .newThread(this.mockRunnable)
+      .getPriority()).isEqualTo(Thread.MIN_PRIORITY);
+  }
+
+  @Test
+  public void newThreadWithNormalPriority() {
+
+    assertThat(SimpleThreadFactory.newThreadFactory()
+      .withNormalPriority()
+      .newThread(this.mockRunnable)
+      .getPriority()).isEqualTo(Thread.NORM_PRIORITY);
   }
 
   @Test
