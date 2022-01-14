@@ -16,9 +16,11 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.same;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -32,6 +34,7 @@ import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -56,6 +59,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
+ * @see org.mockito.Spy
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see edu.umd.cs.mtc.MultithreadedTestCase
  * @see edu.umd.cs.mtc.TestFramework
@@ -107,9 +111,7 @@ public class ThreadAdapterUnitTests {
   @SuppressWarnings("all")
   public void constructThreadAdapterWithRunnable() {
 
-    Runnable mockRunnable = mock(Runnable.class);
-
-    ThreadAdapter threadAdapter = new ThreadAdapter(mockRunnable);
+    ThreadAdapter threadAdapter = new ThreadAdapter(this.mockRunnable);
 
     assertThat(threadAdapter).isNotNull();
     assertThat(threadAdapter.getDelegate()).isNotNull();
@@ -117,8 +119,8 @@ public class ThreadAdapterUnitTests {
 
     threadAdapter.getDelegate().run();
 
-    verify(mockRunnable, times(1)).run();
-    verifyNoMoreInteractions(mockRunnable);
+    verify(this.mockRunnable, times(1)).run();
+    verifyNoMoreInteractions(this.mockRunnable);
   }
 
   @Test
@@ -127,7 +129,7 @@ public class ThreadAdapterUnitTests {
     ThreadAdapter threadAdapter = new ThreadAdapter(this.mockThread);
 
     assertThat(threadAdapter).isNotNull();
-    assertThat(threadAdapter.getDelegate()).isSameAs(this.mockThread);
+    assertThat(threadAdapter.getDelegate()).isEqualTo(this.mockThread);
 
     verifyNoInteractions(this.mockThread);
   }
@@ -137,7 +139,7 @@ public class ThreadAdapterUnitTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> new ThreadAdapter(null),
-        () -> "Delegate Thread is required");
+      () -> "Delegate Thread is required");
   }
 
   @Test
@@ -156,11 +158,15 @@ public class ThreadAdapterUnitTests {
 
     assertThat(mockThreadAdapter).isNotNull();
     assertThat(mockThreadAdapter.getDelegate()).isEqualTo(this.mockThread);
+
+    verifyNoInteractions(this.mockThread);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void fromNullThread() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ThreadAdapter.from(null),
+
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(
+      () -> ThreadAdapter.from(null),
       () -> "Delegate Thread is required");
   }
 
@@ -195,44 +201,52 @@ public class ThreadAdapterUnitTests {
   @SuppressWarnings("all")
   public void isDaemonWithDaemonThread() {
 
-    Thread thread = newThread("isDaemonWithDaemonThread", toFunction(it -> it.setDaemon(true)));
+    Thread thread = newThread("isDaemonWithDaemonThreadTest", toFunction(it -> it.setDaemon(true)));
 
     assertThat(new ThreadAdapter(thread).isDaemon()).isTrue();
-
-    verify(thread, times(1)).isDaemon();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isDaemonWithNonDaemonThread() {
 
-    Thread thread = newThread("isDaemonWithNonDaemonThread", toFunction(it -> it.setDaemon(false)));
+    Thread thread = newThread("isDaemonWithNonDaemonThreadTest", toFunction(it -> it.setDaemon(false)));
 
     assertThat(new ThreadAdapter(thread).isDaemon()).isFalse();
-
-    verify(thread, times(1)).isDaemon();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNonDaemonWithDaemonThread() {
 
-    Thread thread = newThread("isNonDaemonWithDaemonThread", toFunction(it -> it.setDaemon(true)));
+    Thread thread = newThread("isNonDaemonWithDaemonThreadTest", toFunction(it -> it.setDaemon(true)));
 
     assertThat(new ThreadAdapter(thread).isNonDaemon()).isFalse();
-
-    verify(thread, times(1)).isDaemon();
   }
 
   @Test
   @SuppressWarnings("all")
   public void isNonDaemonWithNonDaemonThread() {
 
-    Thread thread = newThread("isNonDaemonWithNonDaemonThread", toFunction(it -> it.setDaemon(false)));
+    Thread thread = newThread("isNonDaemonWithNonDaemonThreadTest", toFunction(it -> it.setDaemon(false)));
 
     assertThat(new ThreadAdapter(thread).isNonDaemon()).isTrue();
+  }
 
-    verify(thread, times(1)).isDaemon();
+  @Test
+  public void isUserThreadWithDaemonThread() {
+
+    Thread thread = newThread("isUserThreadWithDaemonThreadTest", toFunction(it -> it.setDaemon(true)));
+
+    assertThat(new ThreadAdapter(thread).isUser()).isFalse();
+  }
+
+  @Test
+  public void isUserThreadWithNonDaemonThread() {
+
+    Thread thread = newThread("isUserThreadWithDaemonThreadTest", toFunction(it -> it.setDaemon(false)));
+
+    assertThat(new ThreadAdapter(thread).isUser()).isTrue();
   }
 
   @Test
@@ -335,7 +349,7 @@ public class ThreadAdapterUnitTests {
   }
 
   @Test
-  public void isTimedWaitingNonTimedWaitingThread() {
+  public void isTimedWaitingWithNonTimedWaitingThread() {
 
     doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
@@ -385,19 +399,22 @@ public class ThreadAdapterUnitTests {
 
     ClassLoader mockClassLoader = mock(ClassLoader.class);
 
-    Thread thread = newThread("setContextClassLoaderToNullIsNullSafeTest",
-      toFunction(it -> it.setContextClassLoader(mockClassLoader)));
+    AtomicReference<ClassLoader> classLoaderRef = new AtomicReference<>(mockClassLoader);
 
-    assertThat(thread).isNotNull();
-    assertThat(thread.getName()).isEqualTo("setContextClassLoaderToNullIsNullSafeTest");
-    assertThat(thread.getContextClassLoader()).isEqualTo(mockClassLoader);
+    doAnswer(invocation -> classLoaderRef.get()).when(this.mockThread).getContextClassLoader();
+    doAnswer(invocation -> { classLoaderRef.set(invocation.getArgument(0, ClassLoader.class)); return null; })
+      .when(this.mockThread).setContextClassLoader(any());
 
-    ThreadAdapter expectedThreadAdapter = new ThreadAdapter(thread);
+    assertThat(this.mockThread.getContextClassLoader()).isEqualTo(mockClassLoader);
+
+    ThreadAdapter expectedThreadAdapter = new ThreadAdapter(this.mockThread);
 
     assertThat(expectedThreadAdapter.setContextClassLoader(null)).isSameAs(expectedThreadAdapter);
-    assertThat(thread.getContextClassLoader()).isNull();
+    assertThat(this.mockThread.getContextClassLoader()).isNull();
 
-    verify(thread, times(1)).setContextClassLoader(isNull());
+    verify(this.mockThread, times(1)).setContextClassLoader(isNull());
+    verify(this.mockThread, times(2)).getContextClassLoader();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
@@ -407,7 +424,16 @@ public class ThreadAdapterUnitTests {
 
     doReturn(mockClassLoader).when(this.mockThread).getContextClassLoader();
 
-    assertThat(new ThreadAdapter(this.mockThread).getContextClassLoader()).isSameAs(mockClassLoader);
+    assertThat(new ThreadAdapter(this.mockThread).getContextClassLoader()).isEqualTo(mockClassLoader);
+
+    verify(this.mockThread, times(1)).getContextClassLoader();
+    verifyNoMoreInteractions(this.mockThread);
+  }
+
+  @Test
+  public void getContextClassLoaderIsNull() {
+
+    assertThat(new ThreadAdapter(this.mockThread).getContextClassLoader()).isNull();
 
     verify(this.mockThread, times(1)).getContextClassLoader();
     verifyNoMoreInteractions(this.mockThread);
@@ -419,8 +445,7 @@ public class ThreadAdapterUnitTests {
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(this.mockThread);
 
     assertThat(expectedThreadAdapter.setDaemon(true)).isSameAs(expectedThreadAdapter);
-
-    verify(this.mockThread, times(1)).setDaemon(eq(true));
+    assertThat(this.mockThread.isDaemon()).isTrue();
   }
 
   @Test
@@ -443,8 +468,6 @@ public class ThreadAdapterUnitTests {
 
     assertThat(expectedThreadAdapter.setName("setNameTest")).isSameAs(expectedThreadAdapter);
     assertThat(thread.getName()).isEqualTo("setNameTest");
-
-    verify(thread, times(1)).setName("setNameTest");
   }
 
   @SuppressWarnings("all")
@@ -487,8 +510,6 @@ public class ThreadAdapterUnitTests {
     Thread thread = newThread("getNameTest");
 
     assertThat(new ThreadAdapter(thread).getName()).isEqualTo("getNameTest");
-
-    verify(thread, times(1)).getName();
   }
 
   @Test
@@ -498,19 +519,16 @@ public class ThreadAdapterUnitTests {
 
     ThreadAdapter expectedThreadAdapter = new ThreadAdapter(thread);
 
-    assertThat(expectedThreadAdapter.setPriority(1)).isSameAs(expectedThreadAdapter);
-
-    verify(thread, times(1)).setPriority(1);
+    assertThat(expectedThreadAdapter.setPriority(2)).isSameAs(expectedThreadAdapter);
+    assertThat(thread.getPriority()).isEqualTo(2);
   }
 
   @Test
   public void getPriority() {
 
-    Thread thread = newThread("test", toFunction(it -> it.setPriority(10)));
+    Thread thread = newThread("test", toFunction(it -> it.setPriority(8)));
 
-    assertThat(new ThreadAdapter(thread).getPriority()).isEqualTo(10);
-
-    verify(thread, times(1)).getPriority();
+    assertThat(new ThreadAdapter(thread).getPriority()).isEqualTo(8);
   }
 
   @Test
@@ -542,11 +560,17 @@ public class ThreadAdapterUnitTests {
 
     ThreadGroup testThreadGroup = new ThreadGroup("test");
 
-    Thread testThread = spy(new Thread(testThreadGroup, this.mockRunnable, "mock"));
+    Thread testThread = new Thread(testThreadGroup, this.mockRunnable, "mock");
 
     assertThat(new ThreadAdapter(testThread).getThreadGroup()).isEqualTo(testThreadGroup);
+  }
 
-    verify(testThread, times(1)).getThreadGroup();
+  @Test
+  public void getThreadGroupIsEqualToParentThreadGroup() {
+
+    Thread testThread = new Thread(null, this.mockRunnable, "test");
+
+    assertThat(new ThreadAdapter(testThread).getThreadGroup()).isEqualTo(Thread.currentThread().getThreadGroup());
   }
 
   @Test
@@ -584,6 +608,8 @@ public class ThreadAdapterUnitTests {
     assertThat(testThread.getUncaughtExceptionHandler()).isNotEqualTo(mockUncaughtExceptionHandler);
 
     verify(testThread, times(1)).setUncaughtExceptionHandler(isNull());
+    verify(testThread, times(2)).getUncaughtExceptionHandler();
+    verifyNoMoreInteractions(testThread);
   }
 
   @Test
@@ -601,10 +627,7 @@ public class ThreadAdapterUnitTests {
 
   @Test
   public void checkAccessSucceeds() {
-
     new ThreadAdapter(this.mockThread).checkAccess();
-
-    verify(this.mockThread, times(1)).checkAccess();
   }
 
   @Test

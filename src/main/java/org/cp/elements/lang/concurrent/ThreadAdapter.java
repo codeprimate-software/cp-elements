@@ -37,6 +37,7 @@ public class ThreadAdapter {
    *
    * @return a new {@link ThreadAdapter} initialized with the {@link Thread#currentThread()}.
    * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread
    * @see #from(Thread)
    */
   public static @NotNull ThreadAdapter currentThread() {
@@ -65,10 +66,11 @@ public class ThreadAdapter {
   /**
    * Constructs a new instance of {@link ThreadAdapter} initialized with
    * the {@link Thread#currentThread() current Thread} as the {@literal delegate}
-   * for all {@link Thread}-based operations.
+   * for all {@link Thread}-based operations accessible from {@literal this} adapter.
    *
    * @see java.lang.Thread#currentThread()
    * @see #ThreadAdapter(Thread)
+   * @see java.lang.Thread
    */
   public ThreadAdapter() {
     this(Thread.currentThread());
@@ -76,20 +78,22 @@ public class ThreadAdapter {
 
   /**
    * Constructs a new instance of {@link ThreadAdapter} by creating a new {@link Thread} initialized with
-   * the given {@link Runnable}.
+   * the given {@link Runnable} object.
    *
    * @param target {@link Runnable} object to execute in a new {@link Thread}.
    * @see java.lang.Thread#Thread(Runnable)
    * @see #ThreadAdapter(Thread)
    * @see java.lang.Runnable
    */
-  public ThreadAdapter(Runnable target) {
+  public ThreadAdapter(@Nullable Runnable target) {
     this(new Thread(target));
   }
 
   /**
-   * Constructs a new instance of {@link ThreadAdapter} initialized with the given, required {@link Thread}
-   * used as the {@literal delegate} for all {@link Thread}-based operations.
+   * Constructs a new instance of {@link ThreadAdapter} initialized with the given, required {@link Thread}.
+   *
+   * The given {@link Thread} will be used as the {@literal delegate} for all {@link Thread}-based operations
+   * accessible from {@literal this} adapter.
    *
    * @param delegate {@link Thread} to adapt (wrap).
    * @throws IllegalArgumentException if the {@link Thread} used as the {@literal delegate}
@@ -106,7 +110,10 @@ public class ThreadAdapter {
   /**
    * Gets the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter}.
    *
-   * @return the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter}.
+   * All operations accessible from {@literal this} adapter are delegated to the underlying, configured {@link Thread}.
+   *
+   * @return the {@literal Thread} adapted ({@literal wrapped}) by {@literal this} {@link ThreadAdapter};
+   * never {@literal null}.
    * @see java.lang.Thread
    */
   protected @NotNull Thread getDelegate() {
@@ -116,7 +123,7 @@ public class ThreadAdapter {
   /**
    * Determines whether {@literal this} {@link Thread} is alive.
    *
-   * A {@link Thread} is alive if it has been started and has not yet died.
+   * A {@link Thread} is {@literal alive} if it has been started and has not yet died.
    *
    * @return a boolean value indicating whether {@literal this} {@link Thread} is alive.
    * @see java.lang.Thread#isAlive()
@@ -129,7 +136,7 @@ public class ThreadAdapter {
    * Determines whether {@literal this} {@link Thread} is currently in a {@literal blocked}
    * {@link Thread#getState() state}.
    *
-   * A {@link Thread} may currently be blocked waiting on a lock or be performing some IO operation.
+   * A {@link Thread} may currently be {@literal blocked} waiting on a lock or be performing some IO operation.
    *
    * @return a boolean valued indicating whether {@literal this} {@link Thread} is blocked.
    * @see java.lang.Thread#getState()
@@ -158,10 +165,11 @@ public class ThreadAdapter {
    * Determines whether {@literal this} {@link Thread} is a {@link Thread#isDaemon() non-daemon} {@link Thread}.
    *
    * A {@link Thread#isDaemon() non-daemon} {@link Thread} is a background {@link Thread} that prevents
-   * the JVM from exiting.
+   * the JVM from exiting. A {@link Thread#isDaemon() daemon} {@link Thread} is also known as
+   * a {@literal user} {@link Thread}.
    *
    * @return a boolean value indicating whether {@literal this} {@link Thread}
-   * is a {@link Thread#isDaemon() non-daemon} {@link Thread}.
+   * is a {@link Thread#isDaemon() non-daemon}, {@literal user} {@link Thread}.
    * @see java.lang.Thread#isDaemon()
    * @see #isDaemon()
    */
@@ -170,10 +178,24 @@ public class ThreadAdapter {
   }
 
   /**
+   * Alias method for {@link #isNonDaemon()}.
+   *
+   * A {@link Thread#isDaemon() non-daemon} {@link Thread} is also known as a {@literal user} {@link Thread}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Thread} is a {@literal user} {@link Thread}.
+   * @see java.lang.Thread#isDaemon()
+   * @see #isNonDaemon()
+   */
+  public boolean isUser() {
+    return isNonDaemon();
+  }
+
+  /**
    * Determines whether {@literal this} {@link Thread} has been {@link Thread#isInterrupted() interrupted}.
    *
    * The {@link Thread#isInterrupted() interrupted status} of {@literal this} {@link Thread} is unaffected
-   * by this method.
+   * by this method. This {@link Thread} can only be interrupted by another {@link Thread} when {@literal this}
+   * {@link Thread} is blocked waiting on a lock or performing some blocking IO operation.
    *
    * @return a boolean indicating whether {@literal this} {@link Thread}
    * has been {@link Thread#isInterrupted() interrupted}.
@@ -249,7 +271,7 @@ public class ThreadAdapter {
    *
    * @param contextClassLoader {@link ClassLoader} used within the execution context of {@literal this} {@link Thread}
    * to resolve {@link Class} types and resources.
-   * @return a reference to {@literal this} {@link Thread}.
+   * @return {@literal this} {@link ThreadAdapter}.
    * @see java.lang.Thread#setContextClassLoader(ClassLoader)
    * @see java.lang.ClassLoader
    */
@@ -272,11 +294,11 @@ public class ThreadAdapter {
   }
 
   /**
-   * Sets {@literal this} {@link Thread} as a {@link Thread#isDaemon() daemon} or a {@literal user} {@link Thread}.
+   * Sets {@literal this} {@link Thread} as a {@link Thread#isDaemon() daemon} or as a {@literal user} {@link Thread}.
    *
    * @param daemon a boolean value indicating whether {@literal this} {@link Thread}
    * is a {@link Thread#isDaemon() daemon} {@link Thread} or a {@literal user} {@link Thread}.
-   * @return a reference to {@literal this} {@link Thread}.
+   * @return {@literal this} {@link ThreadAdapter}.
    * @see java.lang.Thread#setDaemon(boolean)
    */
   public @NotNull ThreadAdapter setDaemon(boolean daemon) {
@@ -297,8 +319,8 @@ public class ThreadAdapter {
   /**
    * Sets the {@link String name} of {@literal this} {@link Thread}.
    *
-   * @param name {@link String} containing the name for {@literal this} {@link Thread}.
-   * @return a reference to {@literal this} {@link Thread}.
+   * @param name {@link String} containing the {@literal name} for {@literal this} {@link Thread}.
+   * @return {@literal this} {@link ThreadAdapter}.
    * @throws IllegalArgumentException if the {@link String name} is {@literal null} or {@literal empty}.
    * @see java.lang.Thread#setName(String)
    */
@@ -326,7 +348,7 @@ public class ThreadAdapter {
    * and the maximum permitted priority of the {@link Thread Thread's} {@link ThreadGroup}.
    *
    * @param priority priority for {@literal this} {@link Thread}.
-   * @return a reference to {@literal this} {@link Thread}.
+   * @return {@literal this} {@link ThreadAdapter}.
    * @see java.lang.Thread#setPriority(int)
    */
   public @NotNull ThreadAdapter setPriority(int priority) {
@@ -375,7 +397,7 @@ public class ThreadAdapter {
    * @see java.lang.Thread#getThreadGroup()
    * @see java.lang.ThreadGroup
    */
-  public @Nullable ThreadGroup getThreadGroup() {
+  public @NotNull ThreadGroup getThreadGroup() {
     return getDelegate().getThreadGroup();
   }
 
@@ -385,7 +407,7 @@ public class ThreadAdapter {
    *
    * @param uncaughtExceptionHandler {@link Thread.UncaughtExceptionHandler} used by {@literal this} {@link Thread}
    * to handle any uncaught {@link Exception Exceptions} or {@link Error Errors} while executing code.
-   * @return a reference to {@literal this} {@link Thread}.
+   * @return {@literal this} {@link ThreadAdapter}.
    * @see java.lang.Thread#setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
    * @see java.lang.Thread.UncaughtExceptionHandler
    */
@@ -402,7 +424,7 @@ public class ThreadAdapter {
    * while executing code throwing an uncaught {@link Exception} or {@link Error} ({@link Throwable}).
    *
    * @return the {@link Thread.UncaughtExceptionHandler} used to handle any uncaught {@link Exception Exceptions}
-   * or {@link Error Errors} while executing code.
+   * or {@link Error Errors} while executing code in {@literal this} {@link Thread}.
    * @see java.lang.Thread#getUncaughtExceptionHandler()
    * @see java.lang.Thread.UncaughtExceptionHandler
    */
