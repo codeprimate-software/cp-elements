@@ -17,9 +17,11 @@ package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
@@ -57,9 +59,9 @@ import edu.umd.cs.mtc.TestFramework;
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
  */
-@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings("all")
-public class ThreadUtilsTests {
+@RunWith(MockitoJUnitRunner.class)
+public class ThreadUtilsUnitTests {
 
   @Mock
   private Thread mockThread;
@@ -69,8 +71,7 @@ public class ThreadUtilsTests {
     try {
       Thread.sleep(milliseconds);
     }
-    catch (InterruptedException ignore) {
-    }
+    catch (InterruptedException ignore) { }
   }
 
   @AfterClass
@@ -84,32 +85,34 @@ public class ThreadUtilsTests {
   }
 
   @Test
-  public void isAliveWithNull() {
+  public void isAliveWithNullThreadIsNullSafe() {
     assertThat(ThreadUtils.isAlive(null)).isFalse();
   }
 
   @Test
   public void isBlockedWithBlockedThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.BLOCKED);
+    doReturn(Thread.State.BLOCKED).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isBlocked(mockThread)).isTrue();
+    assertThat(ThreadUtils.isBlocked(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isBlockedWithRunnableThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
+    doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isBlocked(mockThread)).isFalse();
+    assertThat(ThreadUtils.isBlocked(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isBlockedWithNull() {
+  public void isBlockedWithNullThread() {
     assertThat(ThreadUtils.isBlocked(null)).isFalse();
   }
 
@@ -134,7 +137,7 @@ public class ThreadUtilsTests {
   }
 
   @Test
-  public void isDaemonWithNull() {
+  public void isDaemonWithNullThread() {
     assertThat(ThreadUtils.isDaemon(null)).isFalse();
   }
 
@@ -159,32 +162,59 @@ public class ThreadUtilsTests {
   }
 
   @Test
-  public void isNonDaemonWithNull() {
+  public void isNonDaemonWithNullThread() {
     assertThat(ThreadUtils.isNonDaemon(null)).isFalse();
+  }
+
+  @Test
+  public void isUserWithDaemonThread() {
+
+    Thread thread = new Thread("testDaemonThread");
+
+    thread.setDaemon(true);
+
+    assertThat(ThreadUtils.isUserThread(thread)).isFalse();
+  }
+
+  @Test
+  public void isUserWithNonDaemonThread() {
+
+    Thread thread = new Thread("testNonDaemonThread");
+
+    thread.setDaemon(false);
+
+    assertThat(ThreadUtils.isUserThread(thread)).isTrue();
+  }
+
+  @Test
+  public void isUserWithNullThread() {
+    assertThat(ThreadUtils.isUserThread(null)).isFalse();
   }
 
   @Test
   public void isInterruptedWithInterruptedThread() {
 
-    when(mockThread.isInterrupted()).thenReturn(true);
+    doReturn(true).when(this.mockThread).isInterrupted();
 
-    assertThat(ThreadUtils.isInterrupted(mockThread)).isTrue();
+    assertThat(ThreadUtils.isInterrupted(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).isInterrupted();
+    verify(this.mockThread, times(1)).isInterrupted();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isInterruptedWithNonInterruptedThread() {
 
-    when(mockThread.isInterrupted()).thenReturn(false);
+    doReturn(false).when(this.mockThread).isInterrupted();
 
-    assertThat(ThreadUtils.isInterrupted(mockThread)).isFalse();
+    assertThat(ThreadUtils.isInterrupted(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).isInterrupted();
+    verify(this.mockThread, times(1)).isInterrupted();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isInterruptedWithNull() {
+  public void isInterruptedWithNullThread() {
     assertThat(ThreadUtils.isInterrupted(null)).isFalse();
   }
 
@@ -581,7 +611,7 @@ public class ThreadUtilsTests {
   public void waitForWithInvalidDuration() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> waitFor(-500L),
-      () -> "duration (-500) must be greater than 0");
+      () -> "Duration [-500] must be greater than 0");
   }
 
   @Test(expected = IllegalArgumentException.class)

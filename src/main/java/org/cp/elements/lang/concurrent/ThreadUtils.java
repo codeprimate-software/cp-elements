@@ -15,11 +15,11 @@
  */
 package org.cp.elements.lang.concurrent;
 
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Condition;
+import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.FluentApi;
@@ -28,25 +28,26 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link ThreadUtils} is an abstract utility class provides used to write concurrent programs
- * using Java {@link Thread Threads} and the {@link java.util.concurrent} API.
+ * Abstract utility class used to write concurrent programs in Java with the {@link Thread}
+ * and {@link java.util.concurrent} APIs.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
  * @see java.lang.Thread
  * @see java.lang.ThreadGroup
  * @see java.lang.ThreadLocal
- * @see java.util.concurrent.TimeUnit
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class ThreadUtils {
 
   /**
-   * Determines whether the specified Thread is alive.  A Thread is alive if it has been started and has not yet died.
+   * Determines whether the given {@link Thread} is {@literal alive}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the specified Thread is alive.
+   * A {@link Thread} is {@literal alive} if it has been started and has not yet died.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the given {@link Thread} is {@literal alive}.
    * @see java.lang.Thread#isAlive()
    */
   @NullSafe
@@ -55,11 +56,12 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Determines whether the specified Thread is in a blocked state.  A Thread may be currently blocked waiting on a lock
-   * or performing some IO operation.
+   * Determines whether the given {@link Thread} is in a blocked state.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean valued indicating whether he specified Thread is blocked.
+   * A {@link Thread} may be currently blocked waiting on a lock or performing some IO operation.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean valued indicating whether the given {@link Thread} is {@literal blocked}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#BLOCKED
    */
@@ -69,11 +71,14 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Determines whether the specified Thread is a daemon Thread.  A daemon Thread is a background Thread that does not
-   * prevent the JVM from exiting.
+   * Determines whether the given {@link Thread} is a {@link Thread#isDaemon() daemon} {@link Thread}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the specified Thread is a daemon Thread.
+   * A {@link Thread#isDaemon() daemon} {@link Thread} is a background {@link Thread} that does not prevent
+   * the JVM from exiting.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the given {@link Thread}
+   * is a {@link Thread#isDaemon() daemon} {@link Thread}.
    * @see java.lang.Thread#isDaemon()
    * @see #isNonDaemon(Thread)
    */
@@ -83,11 +88,15 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Determines whether the specified Thread is a non-daemon Thread.  A non-daemon Thread is a background Thread
-   * that prevents the JVM from exiting.
+   * Determines whether the given {@link Thread} is a {@link Thread#isDaemon() non-daemon},
+   * {@literal user} {@link Thread}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the specified Thread is a non-daemon Thread.
+   * A {@link Thread#isDaemon() non-daemon} {@link Thread} is a background {@link Thread} that will prevent
+   * the JVM from exiting.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the given {@link Thread}
+   * is a {@link Thread#isDaemon() non-daemon}, {@literal user} {@link Thread}.
    * @see java.lang.Thread#isDaemon()
    * @see #isDaemon(Thread)
    */
@@ -97,11 +106,25 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Determines whether the specified Thread has been interrupted. The interrupted status of the Thread is unaffected
-   * by this method.
+   * Alias for {@link #isNonDaemon(Thread)}.
    *
-   * @param thread the Thread to evaluate for interruption.
-   * @return a boolean value indicating whether the given Thread has been interrupted or not.
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the given {@link Thread}
+   * is a {@link Thread#isDaemon() non-daemon}, {@literal user} {@link Thread}.
+   * @see java.lang.Thread#isDaemon()
+   * @see #isNonDaemon(Thread)
+   */
+  public static boolean isUserThread(@Nullable Thread thread) {
+    return isNonDaemon(thread);
+  }
+
+  /**
+   * Determines whether the given {@link Thread} has been interrupted.
+   *
+   * The interrupted status of the {@link Thread} is unaffected by this method.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the given {@link Thread} was interrupted.
    * @see java.lang.Thread#isInterrupted()
    */
   @NullSafe
@@ -110,11 +133,12 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Determines whether the specified Thread is a new Thread.  A "new" Thread is any Thread that has not been
-   * started yet.
+   * Determines whether the given {@link Thread} is a {@literal new}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the Thread is new.
+   * A {@literal new} {@link Thread} is any {@link Thread} that has not been started yet.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the {@link Thread} is {@literal new}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#NEW
    */
@@ -387,11 +411,13 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * The {@link WaitTask} class is a {@link FluentApiExtension} specifying an API for setting up a wait condition.
+   * The {@link WaitTask} class is a {@link DslExtension} and {@link FluentApiExtension} specifying an API
+   * for setting up a wait condition.
    *
+   * @see org.cp.elements.lang.DslExtension
    * @see org.cp.elements.lang.FluentApiExtension
    */
-  public static class WaitTask implements FluentApiExtension {
+  public static class WaitTask implements DslExtension, FluentApiExtension {
 
     protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;
 
@@ -406,9 +432,9 @@ public abstract class ThreadUtils {
     /**
      * Factory method used to construct a new, default instance of {@link WaitTask}.
      *
-     * @return a new instance of {@link WaitTask}.
+     * @return a new {@link WaitTask}.
      */
-    public static WaitTask newWaitTask() {
+    public static @NotNull WaitTask newWaitTask() {
       return new WaitTask();
     }
 
@@ -462,7 +488,7 @@ public abstract class ThreadUtils {
      * @return this {@link WaitTask} set to the specified duration.
      * @see #waitFor(long, TimeUnit)
      */
-    public WaitTask waitFor(long duration) {
+    public @NotNull WaitTask waitFor(long duration) {
       return waitFor(duration, DEFAULT_TIME_UNIT);
     }
 
@@ -476,9 +502,9 @@ public abstract class ThreadUtils {
      * @throws IllegalArgumentException if the duration is less than equal to 0.
      * @see java.util.concurrent.TimeUnit
      */
-    public WaitTask waitFor(long duration, TimeUnit durationTimeUnit) {
+    public @NotNull WaitTask waitFor(long duration, TimeUnit durationTimeUnit) {
 
-      Assert.argument(duration, argument -> argument > 0, "duration (%1$d) must be greater than 0", duration);
+      Assert.argument(duration, argument -> argument > 0, "Duration [%d] must be greater than 0", duration);
 
       this.duration = duration;
       this.durationTimeUnit = ObjectUtils.returnFirstNonNullValue(durationTimeUnit, DEFAULT_TIME_UNIT);
@@ -497,7 +523,7 @@ public abstract class ThreadUtils {
      * @return this {@link WaitTask} configured with the given interval.
      * @see #checkEvery(long, TimeUnit)
      */
-    public WaitTask checkEvery(long interval) {
+    public @NotNull WaitTask checkEvery(long interval) {
       return checkEvery(interval, DEFAULT_TIME_UNIT);
     }
 
@@ -511,15 +537,15 @@ public abstract class ThreadUtils {
      * @see java.util.concurrent.TimeUnit
      * @see #isValidInterval(long, TimeUnit)
      */
-    public WaitTask checkEvery(long interval, TimeUnit intervalTimeUnit) {
+    public @NotNull WaitTask checkEvery(long interval, TimeUnit intervalTimeUnit) {
 
       TimeUnit resolvedIntervalTimeUnit = intervalTimeUnit != null
         ? intervalTimeUnit
         : DEFAULT_TIME_UNIT;
 
-      Assert.argument(interval, argument -> isValidInterval(argument, resolvedIntervalTimeUnit), String.format(
+      Assert.argument(interval, argument -> isValidInterval(argument, resolvedIntervalTimeUnit),
         "Interval [%1$d %2$s] must be greater than 0 and less than equal to duration [%3$d %4$s]",
-          interval, intervalTimeUnit, duration, durationTimeUnit));
+          interval, intervalTimeUnit, getDuration(), getDurationTimeUnit());
 
       this.interval = interval;
       this.intervalTimeUnit = resolvedIntervalTimeUnit;
@@ -536,26 +562,26 @@ public abstract class ThreadUtils {
      * @return a boolean value indicating whether the {@link Condition} was satisfied.
      * @see org.cp.elements.lang.Condition
      */
-    public boolean on(Condition condition) {
+    public boolean on(@Nullable Condition condition) {
 
       long timeout = System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration());
       long interval = getIntervalTimeUnit().toMillis(getInterval());
 
-      condition = Optional.ofNullable(condition).orElse(Condition.FALSE_CONDITION);
+      condition = condition != null ? condition : Condition.FALSE_CONDITION;
 
       try {
         while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
-          synchronized (waitTaskMonitor) {
+          synchronized (this.waitTaskMonitor) {
             interval = Math.min(interval, (timeout - System.currentTimeMillis()));
-            TimeUnit.MILLISECONDS.timedWait(waitTaskMonitor, interval);
+            TimeUnit.MILLISECONDS.timedWait(this.waitTaskMonitor, interval);
           }
         }
       }
-      catch (InterruptedException e) {
+      catch (InterruptedException cause) {
         Thread.currentThread().interrupt();
       }
 
-      return (Condition.FALSE_CONDITION.equals(condition) || condition.evaluate());
+      return Condition.FALSE_CONDITION.equals(condition) || condition.evaluate();
     }
 
     /**
