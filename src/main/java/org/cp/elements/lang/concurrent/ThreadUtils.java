@@ -133,7 +133,7 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Determines whether the given {@link Thread} is a {@literal new}.
+   * Determines whether the given {@link Thread} is {@literal new}.
    *
    * A {@literal new} {@link Thread} is any {@link Thread} that has not been started yet.
    *
@@ -141,63 +141,70 @@ public abstract class ThreadUtils {
    * @return a boolean value indicating whether the {@link Thread} is {@literal new}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#NEW
+   * @see #getState(Thread)
    */
   @NullSafe
   public static boolean isNew(@Nullable Thread thread) {
-    return thread != null && Thread.State.NEW.equals(thread.getState());
+    return Thread.State.NEW.equals(getState(thread));
   }
 
   /**
-   * Determines whether the specified Thread is a runnable Thread.  A "runnable" Thread is any Thread that can be
-   * scheduled by the Operating System (OS) for execution.
+   * Determines whether the given {@link Thread} is {@literal runnable}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the Thread is in a runnable state.
+   * A {@literal runnable} {@link Thread} is any {@link Thread} that can be scheduled by the Operating System (OS)
+   * for execution.
+   *
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the {@link Thread} is {@literal runnable}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#RUNNABLE
+   * @see #getState(Thread)
    */
   @NullSafe
   public static boolean isRunnable(@Nullable Thread thread) {
-    return thread != null && Thread.State.RUNNABLE.equals(thread.getState());
+    return Thread.State.RUNNABLE.equals(getState(thread));
   }
 
   /**
-   * Determines whether the specified Thread has been terminated (stopped).
+   * Determines whether the given {@link Thread} has been {@literal terminated} (stopped).
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the Thread has been terminated.
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the {@link Thread} has been {@literal terminated}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#TERMINATED
+   * @see #getState(Thread)
    */
   @NullSafe
   public static boolean isTerminated(@Nullable Thread thread) {
-    return thread != null && Thread.State.TERMINATED.equals(thread.getState());
+    return Thread.State.TERMINATED.equals(getState(thread));
   }
 
   /**
-   * Determines whether the specified Thread is currently in a timed wait.
+   * Determines whether the given {@link Thread} is currently in a {@literal timed wait}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the Thread is currently in a timed wait.
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the {@link Thread} is currently in a {@literal timed wait}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#TIMED_WAITING
+   * @see #getState(Thread)
    */
   @NullSafe
   public static boolean isTimedWaiting(@Nullable Thread thread) {
-    return thread != null && Thread.State.TIMED_WAITING.equals(thread.getState());
+    return Thread.State.TIMED_WAITING.equals(getState(thread));
   }
 
   /**
-   * Determines whether the specified Thread is currently in a wait.
+   * Determines whether the given {@link Thread} is currently {@literal waiting}.
    *
-   * @param thread the Thread to evaluate.
-   * @return a boolean value indicating whether the Thread is currently in a wait.
+   * @param thread {@link Thread} to evaluate.
+   * @return a boolean value indicating whether the {@link Thread} is currently {@literal waiting}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State#WAITING
+   * @see #getState(Thread)
    */
   @NullSafe
   public static boolean isWaiting(@Nullable Thread thread) {
-    return thread != null && Thread.State.WAITING.equals(thread.getState());
+    return Thread.State.WAITING.equals(getState(thread));
   }
 
   /**

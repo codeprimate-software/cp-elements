@@ -29,6 +29,7 @@ import java.io.PrintStream;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import org.cp.elements.lang.Condition;
 import org.cp.elements.test.TestUtils;
@@ -218,128 +219,177 @@ public class ThreadUtilsUnitTests {
     assertThat(ThreadUtils.isInterrupted(null)).isFalse();
   }
 
+  private void testThreadInNonDesiredState(Thread.State desiredThreadState,
+      Function<Thread, Boolean> threadStateTestFunction) {
+
+    for (Thread.State threadState : Thread.State.values()) {
+      if (!threadState.equals(desiredThreadState)) {
+        doReturn(threadState).when(this.mockThread).getState();
+        assertThat(threadStateTestFunction.apply(this.mockThread)).isFalse();
+      }
+    }
+
+    verify(this.mockThread, times(Thread.State.values().length - 1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
+  }
+
   @Test
   public void isNewWithNewThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.NEW);
+    doReturn(Thread.State.NEW).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isNew(mockThread)).isTrue();
+    assertThat(ThreadUtils.isNew(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isNewWithTerminatedThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.TERMINATED);
+    doReturn(Thread.State.TERMINATED).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isNew(mockThread)).isFalse();
+    assertThat(ThreadUtils.isNew(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isNewWithNull() {
+  public void isNewWithNonNewThread() {
+    testThreadInNonDesiredState(Thread.State.NEW, ThreadUtils::isNew);
+  }
+
+  @Test
+  public void isNewWithNullThread() {
     assertThat(ThreadUtils.isNew(null)).isFalse();
   }
 
   @Test
   public void isRunnableWithRunnableThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
+    doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isRunnable(mockThread)).isTrue();
+    assertThat(ThreadUtils.isRunnable(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isRunnableWithBlockedThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.BLOCKED);
+    doReturn(Thread.State.BLOCKED).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isRunnable(mockThread)).isFalse();
+    assertThat(ThreadUtils.isRunnable(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isRunnableWithNull() {
+  public void isRunnableWithNonRunnableThread() {
+    testThreadInNonDesiredState(Thread.State.RUNNABLE, ThreadUtils::isRunnable);
+  }
+
+  @Test
+  public void isRunnableWithNullThread() {
     assertThat(ThreadUtils.isRunnable(null)).isFalse();
   }
 
   @Test
   public void isTerminatedWithTerminatedThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.TERMINATED);
+    doReturn(Thread.State.TERMINATED).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isTerminated(mockThread)).isTrue();
+    assertThat(ThreadUtils.isTerminated(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isTerminatedWithNewThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.NEW);
+    doReturn(Thread.State.NEW).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isTerminated(mockThread)).isFalse();
+    assertThat(ThreadUtils.isTerminated(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isTerminatedWithNull() {
+  public void isTerminatedWithNonTerminatedThread() {
+    testThreadInNonDesiredState(Thread.State.TERMINATED, ThreadUtils::isTerminated);
+  }
+
+  @Test
+  public void isTerminatedWithNullThread() {
     assertThat(ThreadUtils.isTerminated(null)).isFalse();
   }
 
   @Test
   public void isTimedWaitingWithTimedWaitingThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.TIMED_WAITING);
+    doReturn(Thread.State.TIMED_WAITING).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isTimedWaiting(mockThread)).isTrue();
+    assertThat(ThreadUtils.isTimedWaiting(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isTimedWaitingWithWaitingThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.WAITING);
+    doReturn(Thread.State.WAITING).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isTimedWaiting(mockThread)).isFalse();
+    assertThat(ThreadUtils.isTimedWaiting(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isTimeWaitingWithNull() {
+  public void isTimedWaitingWithNonTimedWaitingThread() {
+    testThreadInNonDesiredState(Thread.State.TIMED_WAITING, ThreadUtils::isTimedWaiting);
+  }
+
+  @Test
+  public void isTimedWaitingWithNullThread() {
     assertThat(ThreadUtils.isTimedWaiting(null)).isFalse();
   }
 
   @Test
   public void isWaitingWithWaitingThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.WAITING);
+    doReturn(Thread.State.WAITING).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isWaiting(mockThread)).isTrue();
+    assertThat(ThreadUtils.isWaiting(this.mockThread)).isTrue();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
   public void isWaitingWithTimedWaitingThread() {
 
-    when(mockThread.getState()).thenReturn(Thread.State.TIMED_WAITING);
+    doReturn(Thread.State.TIMED_WAITING).when(this.mockThread).getState();
 
-    assertThat(ThreadUtils.isWaiting(mockThread)).isFalse();
+    assertThat(ThreadUtils.isWaiting(this.mockThread)).isFalse();
 
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void isWaitingWithNull() {
+  public void isWaitingWithNonWaitingThread() {
+    testThreadInNonDesiredState(Thread.State.WAITING, ThreadUtils::isWaiting);
+  }
+
+  @Test
+  public void isWaitingWithNullThread() {
     assertThat(ThreadUtils.isWaiting(null)).isFalse();
   }
 
