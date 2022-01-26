@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -394,118 +393,135 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void getContextClassLoaderOfNonNullThread() {
+  public void getContextClassLoaderFromMockThread() {
 
     ClassLoader mockClassLoader = mock(ClassLoader.class);
 
-    Thread mockThread = mock(Thread.class);
+    doReturn(mockClassLoader).when(this.mockThread).getContextClassLoader();
 
-    when(mockThread.getContextClassLoader()).thenReturn(mockClassLoader);
+    assertThat(ThreadUtils.getContextClassLoader(this.mockThread)).isEqualTo(mockClassLoader);
 
-    assertThat(ThreadUtils.getContextClassLoader(mockThread)).isEqualTo(mockClassLoader);
-
-    verify(mockThread, times(1)).getContextClassLoader();
+    verify(this.mockThread, times(1)).getContextClassLoader();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void getContextClassLoaderWithNull() {
+  public void getContextClassLoaderFromNonNullThread() {
+
+    Thread thread = new Thread();
+
+    ClassLoader threadContextClassLoader = thread.getContextClassLoader();
+
+    assertThat(threadContextClassLoader).isNotNull();
+    assertThat(ThreadUtils.getContextClassLoader(thread)).isEqualTo(threadContextClassLoader);
+  }
+
+  @Test
+  public void getContextClassLoaderFromNullThread() {
     assertThat(ThreadUtils.getContextClassLoader(null)).isEqualTo(ThreadUtils.class.getClassLoader());
   }
 
   @Test
-  public void getIdOfNonNullThread() {
+  public void getIdFromMockThread() {
 
-    Thread mockThread = mock(Thread.class);
+    doReturn(2L).when(this.mockThread).getId();
 
-    when(mockThread.getId()).thenReturn(1L);
+    assertThat(ThreadUtils.getId(this.mockThread)).isEqualTo(2L);
 
-    assertThat(ThreadUtils.getId(mockThread)).isEqualTo(1L);
-
-    verify(mockThread, times(1)).getId();
+    verify(this.mockThread, times(1)).getId();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void getIdWithNull() {
+  public void getIdFromNonNullThread() {
+    assertThat(ThreadUtils.getId(new Thread())).isNotZero();
+  }
+
+  @Test
+  public void getIdFromNullThread() {
     assertThat(ThreadUtils.getId(null)).isEqualTo(0L);
   }
 
   @Test
-  public void getNameOfNonNullThread() {
+  public void getNameFromNonNullThread() {
     assertThat(ThreadUtils.getName(new Thread("test"))).isEqualTo("test");
   }
 
   @Test
-  public void getNameWithNull() {
+  public void getNameFromNullThread() {
     assertThat(ThreadUtils.getName(null)).isNull();
   }
 
   @Test
-  public void getPriorityOfNonNullThread() {
+  public void getPriorityFromNonNullThread() {
 
     Thread thread = new Thread("test");
 
-    thread.setPriority(1);
+    thread.setPriority(4);
 
-    assertThat(ThreadUtils.getPriority(thread)).isEqualTo(1);
+    assertThat(ThreadUtils.getPriority(thread)).isEqualTo(4);
   }
 
   @Test
-  public void getPriorityWithNullThread() {
+  public void getPriorityFromNullThread() {
     assertThat(ThreadUtils.getPriority(null)).isEqualTo(Thread.NORM_PRIORITY);
   }
 
   @Test
-  public void getStackTraceOfNonNullThread() {
+  public void getStackTraceFromNonNullThread() {
 
     StackTraceElement[] expectedStackTrace = Thread.currentThread().getStackTrace();
 
-    Thread mockThread = mock(Thread.class);
+    doReturn(expectedStackTrace).when(this.mockThread).getStackTrace();
 
-    when(mockThread.getStackTrace()).thenReturn(expectedStackTrace);
+    assertThat(ThreadUtils.getStackTrace(this.mockThread)).isEqualTo(expectedStackTrace);
 
-    assertThat(ThreadUtils.getStackTrace(mockThread)).isEqualTo(expectedStackTrace);
-
-    verify(mockThread, times(1)).getStackTrace();
+    verify(this.mockThread, times(1)).getStackTrace();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void getStackTraceWithNull() {
+  public void getStackTraceFromNullThread() {
 
     StackTraceElement[] stackTrace = ThreadUtils.getStackTrace(null);
 
     assertThat(stackTrace).isNotNull();
-    assertThat(stackTrace.length).isEqualTo(0);
+    assertThat(stackTrace).isEmpty();
   }
 
   @Test
-  public void getStateOfNonNullThread() {
+  public void getStateFromMockThread() {
 
-    Thread mockThread = mock(Thread.class);
+    doReturn(Thread.State.RUNNABLE).when(this.mockThread).getState();
 
-    when(mockThread.getState()).thenReturn(Thread.State.RUNNABLE);
+    assertThat(ThreadUtils.getState(this.mockThread)).isEqualTo(Thread.State.RUNNABLE);
 
-    assertThat(ThreadUtils.getState(mockThread)).isEqualTo(Thread.State.RUNNABLE);
-
-    verify(mockThread, times(1)).getState();
+    verify(this.mockThread, times(1)).getState();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void getStateWithNull() {
+  public void getStateFromNonNullThread() {
+    assertThat(ThreadUtils.getState(new Thread())).isEqualTo(Thread.State.NEW);
+  }
+
+  @Test
+  public void getStateFromNullThread() {
     assertThat(ThreadUtils.getState(null)).isNull();
   }
 
   @Test
-  public void getThreadGroupOfNonNullThread() {
+  public void getThreadGroupFromNonNullThread() {
 
-    ThreadGroup expectedThreadGroup = new ThreadGroup("test");
+    ThreadGroup expectedThreadGroup = new ThreadGroup("TestGroup");
 
-    Thread thread = new Thread(expectedThreadGroup, "test");
+    Thread thread = new Thread(expectedThreadGroup, "TestThread");
 
     assertThat(ThreadUtils.getThreadGroup(thread)).isEqualTo(expectedThreadGroup);
   }
 
   @Test
-  public void getThreadGroupWithNull() {
+  public void getThreadGroupFromNullThread() {
     assertThat(ThreadUtils.getThreadGroup(null)).isNull();
   }
 

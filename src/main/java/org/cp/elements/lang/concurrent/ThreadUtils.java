@@ -208,15 +208,16 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting the Thread's context ClassLoader.
+   * Null-safe method used to get the {@link Thread Thread's} context {@link ClassLoader}.
    *
-   * @param thread the Thread from which the context ClassLoader is returned.
-   * @return the context ClassLoader of the specified Thread or the ThreadUtils class ClassLoader if the Thread is null.
+   * @param thread {@link Thread} from which the {@literal context} {@link ClassLoader} is returned.
+   * @return the {@literal context} {@link ClassLoader} from the given {@link Thread}
+   * or the {@link ThreadUtils} {@link Class} {@link ClassLoader} if the given {@link Thread} is {@literal null}.
    * @see java.lang.Thread#getContextClassLoader()
    * @see java.lang.ClassLoader
    */
   @NullSafe
-  public static ClassLoader getContextClassLoader(@Nullable Thread thread) {
+  public static @NotNull ClassLoader getContextClassLoader(@Nullable Thread thread) {
 
     return thread != null
       ? thread.getContextClassLoader()
@@ -224,10 +225,11 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting the Thread's ID.
+   * Null-safe method used to get the {@link Thread Thread's} {@link Long ID}.
    *
-   * @param thread the Thread from which the ID is returned.
-   * @return the identifier of the specified Thread, or 0 if the Thread is null.
+   * @param thread {@link Thread} from which the {@link Long ID} is returned.
+   * @return the {@literal identifier} ({@link Long id}) of the given {@link Thread},
+   * or {@literal 0} if the given {@link Thread} is {@literal null}.
    * @see java.lang.Thread#getId()
    */
   @NullSafe
@@ -236,10 +238,11 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting the Thread's name.
+   * Null-safe method used to get the {@link Thread Thread's} {@link String name}.
    *
-   * @param thread the Thread from which the name is returned.
-   * @return a String indicating the name of the specified Thread or null if the Thread is null.
+   * @param thread {@link Thread} from which the {@link String name} is returned.
+   * @return a {@link String} containing the {@literal name} of the given {@link Thread}
+   * or return {@literal null} if the given {@link Thread} is {@literal null}.
    * @see java.lang.Thread#getName()
    */
   @NullSafe
@@ -248,11 +251,13 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting the Thread's priority.
+   * Null-safe method used to get the {@link Thread Thread's} {@link Integer priority}.
    *
-   * @param thread the Thread from which the priority is returned.
-   * @return an integer value indicating the priority of the specified Thread or 0 if the Thread is null.
+   * @param thread {@link Thread} from which the {@link Integer priority} is returned.
+   * @return an {@link Integer} value indicating the {@literal priority} of the given {@link Thread}
+   * or {@literal 0} if the given {@link Thread} is {@literal null}.
    * @see java.lang.Thread#getPriority()
+   * @see java.lang.Thread#NORM_PRIORITY
    */
   @NullSafe
   public static int getPriority(@Nullable Thread thread) {
@@ -260,11 +265,12 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting a snapshot of the Thread's current stack trace.
+   * Null-safe method used to get a snapshot of the given {@link Thread Thread's} current stack trace.
    *
-   * @param thread the Thread from which the stack trace is returned.
-   * @return an array of StackTraceElements indicating the stack trace of the specified Thread,
-   * or an empty StackTraceElement array if the Thread is null.
+   * @param thread {@link Thread} from which the stack trace is returned.
+   * @return an array of {@link StackTraceElement StackTraceElements} indicating the current stack trace
+   * of the given {@link Thread}, or an empty {@link StackTraceElement} array if the given {@link Thread}
+   * is {@literal null}.
    * @see java.lang.Thread#getStackTrace()
    * @see java.lang.StackTraceElement
    */
@@ -274,10 +280,11 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting the Thread's current state.
+   * Null-safe method used to get the given {@link Thread Thread's} current {@link Thread.State}.
    *
-   * @param thread the Thread from which the state is returned.
-   * @return the State of the specified Thread or null if the Thread is null.
+   * @param thread {@link Thread} from which the {@link Thread.State} is returned.
+   * @return the {@link Thread.State} from the given {@link Thread}
+   * or {@literal null} if the {@link Thread} is {@literal null}.
    * @see java.lang.Thread#getState()
    * @see java.lang.Thread.State
    */
@@ -287,10 +294,11 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * A null-safe method for getting the Thread's ThreadGroup.
+   * Null-safe method used to get the given {@link Thread Thread's} {@link ThreadGroup}.
    *
-   * @param thread the Thread from which the ThreadGroup is returned.
-   * @return the ThreadGroup of the specified Thread or null if the Thread is null.
+   * @param thread {@link Thread} from which the {@link ThreadGroup} is returned.
+   * @return the {@link ThreadGroup} from the given {@link Thread}
+   * or {@literal null} if the given {@link Thread} is {@literal null}.
    * @see java.lang.Thread#getThreadGroup()
    * @see java.lang.ThreadGroup
    */
@@ -300,9 +308,10 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Null-safe operation to dump the (call) stack of the current Thread.
+   * Null-safe method used to dump the (call) stack of the current {@link Thread}.
    *
-   * @param tag a String labeling the stack dump of the current Thread.
+   * @param tag {@link String} label used to prefix the stack dump of the current {@link Thread}.
+   * A tag is useful for tracing in log files.
    * @see java.lang.Thread#dumpStack()
    */
   @NullSafe
