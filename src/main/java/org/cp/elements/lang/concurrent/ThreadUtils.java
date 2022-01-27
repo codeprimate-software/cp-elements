@@ -22,6 +22,7 @@ import org.cp.elements.lang.Condition;
 import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -310,12 +311,14 @@ public abstract class ThreadUtils {
   /**
    * Null-safe method used to dump the (call) stack of the current {@link Thread}.
    *
+   * The stack is dumped to {@link System#err standard error}.
+   *
    * @param tag {@link String} label used to prefix the stack dump of the current {@link Thread}.
-   * A tag is useful for tracing in log files.
+   * A tag (label) is useful for tracing in log files.
    * @see java.lang.Thread#dumpStack()
    */
   @NullSafe
-  public static void dumpStack(String tag) {
+  public static void dumpStack(@Nullable String tag) {
 
     Thread currentThread = Thread.currentThread();
 
@@ -326,13 +329,14 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Null-safe operation to interrupt the specified Thread.
+   * Null-safe method used to interrupt the given {@link Thread}.
    *
-   * @param thread the Thread to interrupt.
+   * @param thread {@link Thread} to interrupt.
    * @see java.lang.Thread#interrupt()
    */
   @NullSafe
   public static void interrupt(@Nullable Thread thread) {
+
     if (thread != null) {
       thread.interrupt();
     }
@@ -372,14 +376,18 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Causes the current Thread to sleep for the specified number of milliseconds and nanoseconds.  If the current Thread
-   * is interrupted, the sleep is aborted, however, the interrupt bit is reset and this method returns false.
+   * Causes the {@link Thread#currentThread() current Thread} to sleep for the given number
+   * of {@link Integer#TYPE milliseconds} and {@link Integer#TYPE nanoseconds}.
    *
-   * @param milliseconds the number of milliseconds to cause the current Thread to sleep (sleep).  If the number
-   * of milliseconds is 0, then the current Thread will sleep (sleep) until interrupted.
-   * @param nanoseconds the number of nanoseconds in addition to the milliseconds to cause the current Thread to sleep
-   * (sleep).
-   * @return a boolean value if the sleep operation was successful without interruption.
+   * If the {@link Thread current Thread} is interrupted, the sleep is aborted, however, the interrupt bit
+   * is reset and this method returns {@literal false}.
+   *
+   * @param milliseconds number of milliseconds that the {@link Thread#currentThread() current Thread} will sleep.
+   * If the number of milliseconds is {@literal 0}, then the {@link Thread#currentThread() current Thread} will sleep
+   * until interrupted.
+   * @param nanoseconds number of nanoseconds in addition to the milliseconds that
+   * the {@link Thread#currentThread() current Thread} will sleep.
+   * @return a boolean value indicating whether the sleep operation was successful without interruption.
    * @see java.lang.Thread#sleep(long)
    * @see java.lang.Thread#interrupt()
    */
@@ -396,32 +404,37 @@ public abstract class ThreadUtils {
   }
 
   /**
-   * Waits for a specified duration on a {@link Condition} possibly checking every specified interval
-   * on whether the {@link Condition} has been satisfied.
+   * Waits for a given {@link Long duration} on a {@link Condition} checking every configured interval whether
+   * the {@link Condition} was satisfied.
    *
-   * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied
-   * (default time unit is MILLISECONDS).
-   * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
+   * @param duration {@link Long} value indicating the duration of time to wait for the {@link Condition}
+   * to be satisfied (default {@link TimeUnit} is {@literal TimeUnit#MILLISECONDS}).
+   * @return a boolean value indicating whether the {@link Condition} was satisfied
+   * within the given {@link Long duration}.
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
    * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.annotation.Dsl
    */
-  @FluentApi
+  @Dsl @FluentApi
   public static @NotNull WaitTask waitFor(long duration) {
     return WaitTask.newWaitTask().waitFor(duration);
   }
 
   /**
-   * Waits for a specified duration on a {@link Condition} possibly checking every specified interval
-   * on whether the {@link Condition} has been satisfied.
+   * Waits for a given {@link Long duration} in the given {@link TimeUnit} on a {@link Condition} checking every
+   * configured interval whether the {@link Condition} was satisfied.
    *
-   * @param duration a long value indicating the duration of time to wait for the Condition to be satisfied.
-   * @param timeUnit the TimeUnit of the duration time value.
-   * @return a boolean value indicating whether the Condition has been satisfied within the given duration.
+   * @param duration {@link Long} value indicating the duration of time to wait for the {@link Condition}
+   * to be satisfied (default {@link TimeUnit} is {@literal TimeUnit#MILLISECONDS}).
+   * @param timeUnit {@link TimeUnit} for the duration of time.
+   * @return a boolean value indicating whether the {@link Condition} was satisfied
+   * within the given {@link Long duration}.
    * @see org.cp.elements.lang.concurrent.ThreadUtils.WaitTask
    * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.concurrent.TimeUnit
    */
-  @FluentApi
+  @Dsl @FluentApi
   public static @NotNull WaitTask waitFor(long duration, TimeUnit timeUnit) {
     return WaitTask.newWaitTask().waitFor(duration, timeUnit);
   }

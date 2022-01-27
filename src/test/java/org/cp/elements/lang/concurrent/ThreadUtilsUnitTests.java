@@ -16,7 +16,6 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.concurrent.ThreadUtils.waitFor;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -34,7 +33,6 @@ import org.cp.elements.lang.Condition;
 import org.cp.elements.test.TestUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -47,7 +45,6 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit Tests for {@link ThreadUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Ignore
  * @see org.junit.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
@@ -528,7 +525,7 @@ public class ThreadUtilsUnitTests {
   @Test
   public void dumpStackWasCalled() {
 
-    PrintStream systemErr = System.err;
+    PrintStream systemErrorStream = System.err;
 
     try {
 
@@ -536,37 +533,44 @@ public class ThreadUtilsUnitTests {
 
       PrintStream errorStream = new PrintStream(outputStream);
 
-      System.setErr(errorStream);
-      Thread.currentThread().setName("dumpStackTest");
+      Thread currentThread = Thread.currentThread();
 
-      ThreadUtils.dumpStack("Test_Tag");
+      System.setErr(errorStream);
+      currentThread.setName("DumpStackTestThread");
+
+      // Dump the current call stack to the errorStream
+      ThreadUtils.dumpStack("TestTag");
 
       errorStream.flush();
 
       byte[] errorStreamBytes = outputStream.toByteArray();
+
       String stackTrace = new String(errorStreamBytes);
 
       assertThat(stackTrace)
-        .contains(String.format("[TEST_TAG] dumpStackTest Thread @ %d", Thread.currentThread().getId()));
+        .contains(String.format("[TESTTAG] DumpStackTestThread Thread @ %d", currentThread.getId()));
 
       assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
       assertThat(stackTrace).contains("at java.lang.Thread.dumpStack");
+      assertThat(stackTrace).contains("at " + ThreadUtils.class.getName() + ".dumpStack");
+      assertThat(stackTrace).contains("at " + ThreadUtilsUnitTests.class.getName() + ".dumpStackWasCalled");
     }
     finally {
-      System.setErr(systemErr);
+      System.setErr(systemErrorStream);
     }
   }
 
   @Test
   public void interruptInterruptsThread() {
 
-    ThreadUtils.interrupt(mockThread);
+    ThreadUtils.interrupt(this.mockThread);
 
-    verify(mockThread, times(1)).interrupt();
+    verify(this.mockThread, times(1)).interrupt();
+    verifyNoMoreInteractions(this.mockThread);
   }
 
   @Test
-  public void interruptWithNull() {
+  public void interruptNullThread() {
     ThreadUtils.interrupt(null);
   }
 
@@ -582,23 +586,23 @@ public class ThreadUtilsUnitTests {
       sleep(expectedWait);
     };
 
-    assertThat(condition.get()).isFalse();
-
     Thread testThread = new Thread(testRunnable, "Test Thread");
 
     testThread.setDaemon(false);
     testThread.setPriority(Thread.MAX_PRIORITY);
     testThread.start();
 
-    final long t0 = System.currentTimeMillis();
+    assertThat(condition.get()).isFalse();
+
+    long t0 = System.currentTimeMillis();
 
     assertThat(ThreadUtils.join(testThread, expectedWait, 0)).isTrue();
 
-    final long t1 = System.currentTimeMillis();
+    long t1 = System.currentTimeMillis();
 
     assertThat(Thread.interrupted()).isFalse();
     assertThat(condition.get()).isTrue();
-    assertThat((t1 - t0) >= expectedWait).isTrue();
+    assertThat((t1 - t0)).isGreaterThanOrEqualTo(expectedWait);
   }
 
   @Test
@@ -607,14 +611,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  public void joinNullThread() {
-    assertThat(ThreadUtils.join(null, 1000, 1000)).isFalse();
-  }
-
-  @Test
-  @Ignore
-  @Deprecated
-  public void joinInterruptedDeprecated() {
+  public void joinInterruptedAlternate() {
 
     Thread mainThread = Thread.currentThread();
 
@@ -630,16 +627,28 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
+  public void joinNullThread() {
+
+    long t0 = System.currentTimeMillis();
+    boolean success = ThreadUtils.join(null, 1000, 1000);
+    long t1 = System.currentTimeMillis();
+
+    assertThat(success).isFalse();
+    assertThat(t1 - t0).isLessThan(1000L);
+  }
+
+  @Test
   public void sleep() {
 
-    final long expectedWait = 500L;
-    final long t0 = System.currentTimeMillis();
+    long expectedWait = 500L;
+    long t0 = System.currentTimeMillis();
 
-    assertThat(ThreadUtils.sleep(expectedWait, 0)).isTrue();
+    boolean success = ThreadUtils.sleep(expectedWait, 0);
 
-    final long t1 = System.currentTimeMillis();
+    long t1 = System.currentTimeMillis();
 
-    assertThat((t1 - t0) >= expectedWait).isTrue();
+    assertThat(success).isTrue();
+    assertThat(t1 - t0).isGreaterThanOrEqualTo(expectedWait);
   }
 
   @Test
@@ -650,9 +659,9 @@ public class ThreadUtilsUnitTests {
   @Test
   public void waitForDuration() {
 
-    final long timeout = (System.currentTimeMillis() + 500);
+    long timeout = System.currentTimeMillis() + 500L;
 
-    assertThat(waitFor(500L).checkEvery(100L).run()).isTrue();
+    assertThat(ThreadUtils.waitFor(500L).checkEvery(100L).run()).isTrue();
     assertThat(System.currentTimeMillis()).isGreaterThanOrEqualTo(timeout);
   }
 
@@ -661,10 +670,15 @@ public class ThreadUtilsUnitTests {
 
     AtomicInteger count = new AtomicInteger(0);
 
-    Condition countCondition = () ->  (count.incrementAndGet() > 0);
+    Condition countCondition = () ->  count.incrementAndGet() > 0;
 
     assertThat(count.get()).isEqualTo(0);
-    assertThat(waitFor(5L, TimeUnit.SECONDS).checkEvery(1L, TimeUnit.SECONDS).on(countCondition)).isTrue();
+
+    boolean success = ThreadUtils.waitFor(5L, TimeUnit.SECONDS)
+      .checkEvery(1L, TimeUnit.SECONDS)
+      .on(countCondition);
+
+    assertThat(success).isTrue();
     assertThat(count.get()).isEqualTo(2);
   }
 
@@ -676,7 +690,7 @@ public class ThreadUtilsUnitTests {
   @Test(expected = IllegalArgumentException.class)
   public void waitForWithInvalidDuration() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> waitFor(-500L),
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ThreadUtils.waitFor(-500L),
       () -> "Duration [-500] must be greater than 0");
   }
 
@@ -684,7 +698,7 @@ public class ThreadUtilsUnitTests {
   public void waitForWithIntervalGreaterThanDuration() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> waitFor(500L).checkEvery(2L, TimeUnit.SECONDS),
+      () -> ThreadUtils.waitFor(500L).checkEvery(2L, TimeUnit.SECONDS),
         () -> "Interval [2 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
   }
 
@@ -692,7 +706,7 @@ public class ThreadUtilsUnitTests {
   public void waitForWithNegativeInterval() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
-      () -> waitFor(500L).checkEvery(-1L, TimeUnit.SECONDS),
+      () -> ThreadUtils.waitFor(500L).checkEvery(-1L, TimeUnit.SECONDS),
         () -> "Interval [-1 SECONDS] must be greater than 0 and less than equal to duration [500 MILLISECONDS]");
   }
 
@@ -809,7 +823,12 @@ public class ThreadUtilsUnitTests {
       Condition countCondition = () -> counter.incrementAndGet() > 2;
 
       assertThat(interruptingThread).isNotNull();
-      assertThat(waitFor(500, TimeUnit.MILLISECONDS).checkEvery(100, TimeUnit.MILLISECONDS).on(countCondition)).isFalse();
+
+      boolean success = ThreadUtils.waitFor(500, TimeUnit.MILLISECONDS)
+        .checkEvery(100, TimeUnit.MILLISECONDS)
+        .on(countCondition);
+
+      assertThat(success).isFalse();
       assertThat(waitingThread.isInterrupted()).isTrue();
       assertThat(counter.get()).isEqualTo(2);
     }
