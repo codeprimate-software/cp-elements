@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -30,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.cp.elements.lang.Condition;
+import org.cp.elements.lang.RuntimeUtils;
 import org.cp.elements.test.TestUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -612,6 +614,8 @@ public class ThreadUtilsUnitTests {
 
   @Test
   public void joinInterruptedAlternate() {
+
+    assumeThat(RuntimeUtils.isRunWithMaven()).isFalse();
 
     Thread mainThread = Thread.currentThread();
 
