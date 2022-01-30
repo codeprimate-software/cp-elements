@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
 import java.lang.annotation.Documented;
@@ -24,15 +23,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The ThreadSafe annotation declares a class type to be safe for use in the context of a multi-threaded, highly
- * concurrent application.
+ * The {@link ThreadSafe} annotation declares a {@link Class type} to be safe for use in a multi-Threaded, highly
+ * concurrent application context.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented
- * @see java.lang.annotation.ElementType#FIELD
- * @see java.lang.annotation.ElementType#METHOD
+ * @see java.lang.annotation.ElementType#TYPE
  * @see java.lang.annotation.Inherited
+ * @see java.lang.annotation.Retention
  * @see java.lang.annotation.RetentionPolicy#SOURCE
+ * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented
