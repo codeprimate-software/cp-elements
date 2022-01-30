@@ -26,7 +26,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link ElementsVersion} class declares the version of the Codeprimate Elements project.
+ * Declares the version of the {@literal Codeprimate Elements} software project and Java class library.
  *
  * @author John Blum
  * @see java.time.LocalDate
