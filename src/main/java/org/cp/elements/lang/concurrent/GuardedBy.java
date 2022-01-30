@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.concurrent;
 
 import java.lang.annotation.Documented;
@@ -26,28 +25,32 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * The {@link GuardedBy} annotation declares that a Java {@link Class} {@link Field} or {@link Method}
- * is guarded by the "named" lock in a multi-threaded, highly concurrent application.
+ * The {@link GuardedBy} annotation declares that a Java {@link Class}, {@link Field} or {@link Method}
+ * is guarded by the {@link String named} {@link Object lock} in a multi-Threaded, highly concurrent application.
  *
  * @author John J. Blum
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.ElementType#FIELD
  * @see java.lang.annotation.ElementType#METHOD
+ * @see java.lang.annotation.ElementType#TYPE
  * @see java.lang.annotation.Inherited
+ * @see java.lang.annotation.Retention
  * @see java.lang.annotation.RetentionPolicy#SOURCE
+ * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented
 @Inherited
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD })
 @SuppressWarnings("unused")
 public @interface GuardedBy {
 
   /**
-   * Name of the Java lock.
+   * {@link String Name} of the Java {@link Object lock} used to guard a Java {@link Class}, {@link Field}
+   * or {@link Method}.
    *
-   * @return a {@link String} containing the name of the Java lock.
+   * @return a {@link String} containing the {@literal name} of the Java {@link Object lock}.
    */
   String value();
 
