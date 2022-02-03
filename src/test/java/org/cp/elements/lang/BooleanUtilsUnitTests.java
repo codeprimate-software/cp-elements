@@ -31,7 +31,7 @@ import org.junit.Test;
  * @see org.cp.elements.lang.BooleanUtils
  * @since 1.0.0
  */
-public class BooleanUtilsTests {
+public class BooleanUtilsUnitTests {
 
   @Test
   @SuppressWarnings("all")
@@ -39,10 +39,12 @@ public class BooleanUtilsTests {
 
     assertThat(BooleanUtils.and(true)).isTrue();
     assertThat(BooleanUtils.and(Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.and(true, true)).isTrue();
+    assertThat(BooleanUtils.and(Boolean.TRUE, Boolean.TRUE)).isTrue();
     assertThat(BooleanUtils.and(true, true, true)).isTrue();
     assertThat(BooleanUtils.and(Boolean.TRUE, Boolean.TRUE, Boolean.TRUE)).isTrue();
     assertThat(BooleanUtils.and(!Boolean.FALSE)).isTrue();
-    assertThat(BooleanUtils.and(true, !Boolean.FALSE)).isTrue();
+    assertThat(BooleanUtils.and(true, !false)).isTrue();
     assertThat(BooleanUtils.and(!Boolean.FALSE, !false, !Boolean.FALSE)).isTrue();
   }
 
@@ -59,8 +61,8 @@ public class BooleanUtilsTests {
     assertThat(BooleanUtils.and(false)).isFalse();
     assertThat(BooleanUtils.and(Boolean.FALSE)).isFalse();
     assertThat(BooleanUtils.and(!Boolean.TRUE)).isFalse();
-    assertThat(BooleanUtils.and(!Boolean.TRUE, !Boolean.TRUE)).isFalse();
-    assertThat(BooleanUtils.and(!Boolean.TRUE, !true, false)).isFalse();
+    assertThat(BooleanUtils.and(!Boolean.TRUE, true)).isFalse();
+    assertThat(BooleanUtils.and(Boolean.TRUE, !true, true)).isFalse();
   }
 
   @Test
@@ -82,7 +84,8 @@ public class BooleanUtilsTests {
   }
 
   @Test
-  public void negateNullIsTrue() {
+  @SuppressWarnings("all")
+  public void negateNullIsFalse() {
     assertThat(BooleanUtils.negate(null)).isFalse();
   }
 
@@ -101,6 +104,7 @@ public class BooleanUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void notNullIsFalse() {
     assertThat(BooleanUtils.not(null)).isFalse();
   }
@@ -113,10 +117,13 @@ public class BooleanUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void orIsFalse() {
 
     assertThat(BooleanUtils.or(false)).isFalse();
     assertThat(BooleanUtils.or(Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.or(false, false)).isFalse();
+    assertThat(BooleanUtils.or(Boolean.FALSE, Boolean.FALSE)).isFalse();
     assertThat(BooleanUtils.or(false, false, false)).isFalse();
     assertThat(BooleanUtils.or(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE)).isFalse();
     assertThat(BooleanUtils.or(!Boolean.TRUE, false)).isFalse();
@@ -124,6 +131,7 @@ public class BooleanUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void orIsTrue() {
 
     assertThat(BooleanUtils.or(true)).isTrue();
@@ -141,13 +149,17 @@ public class BooleanUtilsTests {
 
     assertThat(BooleanUtils.or((Boolean[]) null)).isFalse();
     assertThat(BooleanUtils.or(null, null)).isFalse();
+    assertThat(BooleanUtils.or(false, null)).isFalse();
   }
 
   @Test
-  public void toBooleanIsSuccessful() {
-
-    assertThat(BooleanUtils.toBoolean(false)).isSameAs(Boolean.FALSE);
+  public void toBooleanIsTrue() {
     assertThat(BooleanUtils.toBoolean(true)).isSameAs(Boolean.TRUE);
+  }
+
+  @Test
+  public void toBooleanIsFalse() {
+    assertThat(BooleanUtils.toBoolean(false)).isSameAs(Boolean.FALSE);
   }
 
   @Test
@@ -169,25 +181,18 @@ public class BooleanUtilsTests {
   }
 
   @Test
-  public void valueOfAtomicBooleanIsFalse() {
-    assertThat(BooleanUtils.valueOf(new AtomicBoolean(false))).isFalse();
-  }
-
-  @Test
   public void valueOfAtomicBooleanIsTrue() {
     assertThat(BooleanUtils.valueOf(new AtomicBoolean(true))).isTrue();
   }
 
   @Test
-  public void valueOfNullAtomicBooleanIsFalse() {
-    assertThat(BooleanUtils.valueOf((AtomicBoolean) null)).isFalse();
+  public void valueOfAtomicBooleanIsFalse() {
+    assertThat(BooleanUtils.valueOf(new AtomicBoolean(false))).isFalse();
   }
 
   @Test
-  public void valueOfBooleanIsFalse() {
-
-    assertThat(BooleanUtils.valueOf(false)).isFalse();
-    assertThat(BooleanUtils.valueOf(Boolean.FALSE)).isFalse();
+  public void valueOfNullAtomicBooleanIsFalse() {
+    assertThat(BooleanUtils.valueOf((AtomicBoolean) null)).isFalse();
   }
 
   @Test
@@ -198,15 +203,42 @@ public class BooleanUtilsTests {
   }
 
   @Test
+  public void valueOfBooleanIsFalse() {
+
+    assertThat(BooleanUtils.valueOf(false)).isFalse();
+    assertThat(BooleanUtils.valueOf(Boolean.FALSE)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void valueOfNullBooleanIsFalse() {
     assertThat(BooleanUtils.valueOf((Boolean) null)).isFalse();
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void xorIsTrue() {
+
+    assertThat(BooleanUtils.xor(true)).isTrue();
+    assertThat(BooleanUtils.xor(Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.xor(true, null)).isTrue();
+    assertThat(BooleanUtils.xor(true, false)).isTrue();
+    assertThat(BooleanUtils.xor(true, Boolean.FALSE)).isTrue();
+    assertThat(BooleanUtils.xor(true, !true)).isTrue();
+    assertThat(BooleanUtils.xor(true, !Boolean.TRUE)).isTrue();
+    assertThat(BooleanUtils.xor(true, false, false, false)).isTrue();
+    assertThat(BooleanUtils.xor(false, true)).isTrue();
+    assertThat(BooleanUtils.xor(false, false, false, true)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void xorIsFalse() {
 
     assertThat(BooleanUtils.xor(false)).isFalse();
     assertThat(BooleanUtils.xor(Boolean.FALSE)).isFalse();
+    assertThat(BooleanUtils.xor(false, false)).isFalse();
+    assertThat(BooleanUtils.xor(Boolean.FALSE, Boolean.FALSE)).isFalse();
     assertThat(BooleanUtils.xor(false, false, false)).isFalse();
     assertThat(BooleanUtils.xor(Boolean.FALSE, Boolean.FALSE, Boolean.FALSE)).isFalse();
     assertThat(BooleanUtils.xor(false, !Boolean.TRUE, false)).isFalse();
@@ -217,23 +249,10 @@ public class BooleanUtilsTests {
   }
 
   @Test
-  public void xorIsTrue() {
-
-    assertThat(BooleanUtils.xor(true)).isTrue();
-    assertThat(BooleanUtils.xor(Boolean.TRUE)).isTrue();
-    assertThat(BooleanUtils.xor(true, null)).isTrue();
-    assertThat(BooleanUtils.xor(true, false)).isTrue();
-    assertThat(BooleanUtils.xor(true, Boolean.FALSE)).isTrue();
-    assertThat(BooleanUtils.xor(true, !Boolean.TRUE)).isTrue();
-    assertThat(BooleanUtils.xor(true, false, false, false)).isTrue();
-    assertThat(BooleanUtils.xor(false, true)).isTrue();
-    assertThat(BooleanUtils.xor(false, false, false, true)).isTrue();
-  }
-
-  @Test
   public void xorNullIsFalse() {
 
     assertThat(BooleanUtils.xor((Boolean[]) null)).isFalse();
     assertThat(BooleanUtils.xor(null, null)).isFalse();
+    assertThat(BooleanUtils.xor(false, null)).isFalse();
   }
 }
