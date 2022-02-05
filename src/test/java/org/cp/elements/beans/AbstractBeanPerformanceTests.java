@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans;
 
 import java.beans.PropertyChangeEvent;
@@ -33,7 +32,8 @@ public class AbstractBeanPerformanceTests {
   private static final boolean EVENT_DISPATCH_ENABLED = false;
   private static final int NUMBER_OF_OPERATIONS = 1000000;
 
-  public static void main(final String... args) {
+  public static void main(String... args) {
+
     testPerformanceOfCallback();
     testPerformanceOfReflection();
     testPerformanceOfSetter();
@@ -117,7 +117,7 @@ public class AbstractBeanPerformanceTests {
     }
 
     public void setCallbackValue(T callbackValue) {
-      processChange("callbackValue", this.callbackValue, callbackValue, () -> ValueHolder.this.callbackValue = callbackValue);
+      processChange("callbackValue", this.callbackValue, callbackValue, newValue -> ValueHolder.this.callbackValue = newValue);
     }
 
     public T getNotificationValue() {

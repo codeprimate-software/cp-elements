@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans;
 
 import java.beans.PropertyChangeEvent;
@@ -22,42 +21,52 @@ import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.beans.VetoableChangeSupport;
-import java.time.LocalDateTime;
+import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.cp.elements.beans.event.ChangeEvent;
 import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.beans.event.ChangeSupport;
 import org.cp.elements.beans.event.ChangeTracker;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.support.AuditableSupport;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
- * The AbstractBean class is an abstract base class for modeling application data as domain model objects.
+ * {@link AbstractBean} is an abstract base class for modeling {@literal Abstract Data Types (ADT)} and application data
+ * as application domain model objects and entity types.
  *
  * @author John J. Blum
- * @param <ID> the Comparable class type of the identifier uniquely identifying this Bean.
- * @param <USER> the class type of the object identifying the user for auditing information.
- * @param <PROCESS> the class type of the object identifying the process for auditing information.
+ * @param <ID> {@link Comparable} type for the identifier uniquely identifying {@literal this} {@link Bean}.
+ * @param <USER> {@link Class type} used to model the object identifying the user for auditing information.
+ * @param <PROCESS> {@link Class type} used to model the object identifying the process for auditing information.
  * @see java.beans.PropertyChangeEvent
  * @see java.beans.PropertyChangeListener
  * @see java.beans.PropertyChangeSupport
  * @see java.beans.VetoableChangeListener
  * @see java.beans.VetoableChangeSupport
  * @see java.lang.Comparable
- * @see java.time.LocalDateTime
+ * @see java.lang.reflect.Field
+ * @see java.time.Instant
  * @see org.cp.elements.beans.Bean
  * @see org.cp.elements.beans.event.ChangeEvent
  * @see org.cp.elements.beans.event.ChangeListener
  * @see org.cp.elements.beans.event.ChangeSupport
  * @see org.cp.elements.beans.event.ChangeTracker
  * @see org.cp.elements.lang.Visitor
+ * @see org.cp.elements.lang.support.AuditableSupport
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> implements Bean<ID, USER, PROCESS> {
+public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> extends AuditableSupport<USER, PROCESS, ID>
+    implements Bean<ID, USER, PROCESS> {
 
   private static final boolean DEFAULT_EVENT_DISPATCH_ENABLED = true;
 
@@ -67,298 +76,178 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
 
   private final ChangeTracker changeTracker = new ChangeTracker();
 
-  private ID id;
-
-  private LocalDateTime createdOn;
-  private LocalDateTime lastModifiedOn;
-  private LocalDateTime modifiedOn;
-
   private final Map<String, String> propertyNameToFieldNameMapping = new TreeMap<>();
+  private final Map<String, StateChangeCallback<Object>> propertyNameToStateChangeCallbackMapping = new TreeMap<>();
 
-  private final Map<String, ParameterizedStateChangeCallback> propertyNameToParameterizedStateChangeCallbackMapping =
-    new TreeMap<>();
-
-  private PROCESS createdWith;
-  private PROCESS lastModifiedWith;
-  private PROCESS modifiedWith;
-
-  private transient final PropertyChangeEvent propertyChangeEvent = new PropertyChangeEvent(this, null, null, null);
+  private transient final PropertyChangeEvent propertyChangeEvent =
+    new PropertyChangeEvent(this, null, null, null);
 
   private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-  private USER createdBy;
-  private USER lastModifiedBy;
-  private USER modifiedBy;
 
   private final VetoableChangeSupport vetoableChangeSupport = new VetoableChangeSupport(this);
 
   /**
-   * Default constructor for creating an instance of the AbstractBean class.
+   * Constructs a new instance of {@literal this} {@link AbstractBean}.
    */
   public AbstractBean() {
-    addPropertyChangeListener(changeTracker);
+    addPropertyChangeListener(this.changeTracker);
   }
 
   /**
-   * Creates an instance of the AbstractBean class initialized with the specified typed identifier.  It is recommended
-   * that the identifier uniquely identify objects within this Bean class.
+   * Constructs a new instance of {@link AbstractBean} initialized with the specified typed identifier
+   * uniquely identifying {@literal this} {@link Bean}.
    *
-   * @param id the generically typed identifier uniquely identifying objects of this particular Bean class.
+   * It is recommended that the identifier uniquely identify {@link Object Objects}
+   * within {@literal this} {@link Bean} {@link Class}.
+   *
+   * @param id generically typed identifier uniquely identifying {@link Object Objects}
+   * within {@literal this} {@link Bean} {@link Class}.
    * @see org.cp.elements.lang.Identifiable
    */
-  public AbstractBean(ID id) {
+  public AbstractBean(@Nullable ID id) {
     this();
-    this.id = id;
+    identifiedBy(id);
   }
 
   /**
-   * Gets the user who is responsible for the creation of this object.
+   * Sets the user responsible for creating this object.
    *
-   * @return an object denoting the user who created this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public USER getCreatedBy() {
-    return createdBy;
-  }
-
-  /**
-   * Sets the user who is responsible for the creation of this object.
-   *
-   * @param createdBy an object denoting the user who created this object.
+   * @param createdBy {@link Object} modeling the user responsible for creating this object.
    * @see org.cp.elements.lang.Auditable
    */
   public void setCreatedBy(USER createdBy) {
-    processChange("createdBy", this.createdBy, createdBy);
-  }
-
-  /**
-   * Gets the date and time when this object was created.
-   *
-   * @return a Calendar object denoting the date and time when this object was created.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public LocalDateTime getCreatedOn() {
-    return createdOn;
+    processChange("createdBy", getCreatedBy(), createdBy);
   }
 
   /**
    * Sets the date and time when this object was created.
    *
-   * @param createdOn a Calendar object denoting the date and time when this object was created.
+   * @param createdOn {@link Instant} with the date and time when this object was created.
    * @see org.cp.elements.lang.Auditable
+   * @see java.time.Instant
    */
-  public void setCreatedOn(LocalDateTime createdOn) {
-    processChange("createdOn", this.createdOn, createdOn);
+  public void setCreatedOn(Instant createdOn) {
+    processChange("createdOn", getCreatedOn(), createdOn);
   }
 
   /**
-   * Gets the process (the what) that functionally created this object.
+   * Sets the process (application) used by the user to create this object.
    *
-   * @return an object denoting the process that created this object.
+   * @param createdWith {@link Object} modeling the process used by the user to create this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public PROCESS getCreatedWith() {
-    return createdWith;
+  public void setCreatedWith(PROCESS createdWith) {
+    processChange("createdWith", getCreatedWith(), createdWith);
   }
 
   /**
-   * Sets the process (the what) that functionally created this object.
+   * Determines whether event dispatching is enabled for property changes on {@literal this} {@link Bean}.
    *
-   * @param creatingProcess an object denoting the process that created this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public void setCreatedWith(PROCESS creatingProcess) {
-    processChange("createdWith", this.createdWith, creatingProcess);
-  }
-
-  /**
-   * Determines whether event dispatching is enabled for property changes on this Bean.
-   *
-   * @return a boolean value indicating whether event dispatching is enabled for property changes on this Bean.
+   * @return a boolean value indicating whether event dispatching is enabled for property changes
+   * on {@literal this} {@link Bean}.
    */
   public boolean isEventDispatchEnabled() {
-    return eventDispatchEnabled;
+    return this.eventDispatchEnabled;
   }
 
   /**
-   * Enables or disables event dispatching for property changes on this Bean.
+   * Enables or disables event dispatching for property changes on {@literal this} {@link Bean}.
    *
    * @param eventDispatchEnabled a boolean value indicating whether to enable or disable event dispatching
-   * for property changes to this Bean.
+   * for property changes on {@literal this} {@link Bean}.
    */
   protected final void setEventDispatchEnabled(boolean eventDispatchEnabled) {
     this.eventDispatchEnabled = eventDispatchEnabled;
   }
 
   /**
-   * Gets the name of the field mapped to the given property.  If no such mapping exists, then the given property name
-   * is returned.
+   * Gets the {@link String name} of the {@link Field} mapped to the given {@literal property}.
    *
-   * @param propertyName a String value specifying the name of the property to retrieve the corresponding field name.
-   * @return a String value indicating the field name corresponding to the specified property.
+   * If no such mapping exists, then the given property name is returned.
+   *
+   * @param propertyName {@link String} value specifying the name of the property to retrieve
+   * the corresponding {@link Field} name.
+   * @return a {@link String} containing the {@link Field} name corresponding to the specified {@literal property}.
    */
-  protected String getFieldName(String propertyName) {
-    return ObjectUtils.defaultIfNull(propertyNameToFieldNameMapping.get(propertyName), propertyName);
+  protected @NotNull String getFieldName(@NotNull String propertyName) {
+    return ObjectUtils.returnFirstNonNullValue(this.propertyNameToFieldNameMapping.get(propertyName), propertyName);
   }
 
   /**
-   * Gets the identifier uniquely identifying this object.
+   * Sets the identifier uniquely identifying {@literal this} {@link Bean}.
    *
-   * @return the value of type T indicating this object's assigned unique identifier.
-   * @see org.cp.elements.lang.Identifiable
-   */
-  public ID getId() {
-    return id;
-  }
-
-  /**
-   * Sets the identifier uniquely identifying this object.
-   *
-   * @param id a value of type T assigned as this object's unique identifier.
+   * @param id a value of {@link Class type T} assigned as {@literal this} {@link Bean Bean's} unique identifier.
    * @see org.cp.elements.lang.Identifiable
    */
   public final void setId(ID id) {
-    processChange("id", this.id, id);
+    processChange("id", getId(), id);
   }
 
   /**
-   * Gets the user who was last responsible for modifying this object.
+   * Determines whether {@literal this} {@link Bean} has been modified.
    *
-   * @return an object denoting the last user responsible for modifying this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public USER getLastModifiedBy() {
-    return lastModifiedBy;
-  }
-
-  /**
-   * Gets the last date and time when this object was modified.
+   * One particular implementation suggests that if the last modified date and time does not match
+   * the current modified date and time then {@literal this} {@link Bean} has been modified.
    *
-   * @return a Calendar object denoting the date and time when this object was last modified.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public LocalDateTime getLastModifiedOn() {
-    return lastModifiedOn;
-  }
-
-  /**
-   * Gets the process (the what) that was last responsible for modifying this object.
-   *
-   * @return an object denoting the last process responsible for modifying this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public PROCESS getLastModifiedWith() {
-    return lastModifiedWith;
-  }
-
-  /**
-   * Determines whether this Auditable object has been modified.  One particular implementation suggests that
-   * if the last modified date/time does not match the current modified date/time then the Auditable object has
-   * been modified.
-   *
-   * @return a boolean value indicating whether this Auditable object has been modified or not.
+   * @return a boolean value indicating whether {@literal this} {@link Bean} has been modified or not.
    * @see org.cp.elements.lang.Auditable
    */
   public boolean isModified() {
-    return changeTracker.isModified();
+    return this.changeTracker.isModified();
   }
 
   /**
-   * Determines whether the specified property of this Auditable object has been modified.  The property has been
-   * changed if the old and new value are not equal in value.
+   * Determines whether the specified property of {@literal this} {@link Bean} has been modified.
    *
-   * @param propertyName a String value specifying the name of the property to check for modification.
-   * @return a boolean value indicating whether the specified property of this Auditable object, identified by name,
-   * has been modified.
+   * The property has been changed if the old value is not equal in value to the new value.
+   *
+   * @param propertyName {@link String} containing the name of the property to check for modification.
+   * @return a boolean value indicating whether the specified property of {@literal this} {@link Bean},
+   * identified by name, has been modified.
    */
   public boolean isModified(String propertyName) {
-    return changeTracker.isModified(propertyName);
+    return this.changeTracker.isModified(propertyName);
   }
 
   /**
-   * Gets the user who is responsible for modifying this object.
+   * Sets the user responsible for modifying this object.
    *
-   * @return an object denoting the user who modified this object.
+   * @param modifiedBy {@link Object} modeling the user who modified this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public USER getModifiedBy() {
-    return modifiedBy;
-  }
-
-  /**
-   * Sets the user who is responsible for modifying this object.
-   *
-   * @param modifiedBy an object denoting the user who modified this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  @SuppressWarnings("unchecked")
   public void setModifiedBy(USER modifiedBy) {
-    processChange("modifiedBy", this.modifiedBy, modifiedBy);
-    this.lastModifiedBy = ObjectUtils.defaultIfNull(this.lastModifiedBy, this.modifiedBy);
-  }
-
-  /**
-   * Gets the date and time when this object was modified.
-   *
-   * @return a Calendar object denoting the date and time when this object was modified.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public LocalDateTime getModifiedOn() {
-    return modifiedOn;
+    processChange("modifiedBy", getModifiedBy(), modifiedBy);
   }
 
   /**
    * Sets the date and time when this object was modified.
    *
-   * @param modifiedOn a Calendar object denoting the date and time when this object was modified.
+   * @param modifiedOn {@link Instant} with the date and time when this object was modified.
+   * @see org.cp.elements.lang.Auditable
+   * @see java.time.Instant
+   */
+  public void setModifiedOn(Instant modifiedOn) {
+    processChange("modifiedOn", getModifiedOn(), modifiedOn);
+  }
+
+  /**
+   * Sets the process (application) used by the user to modify this object.
+   *
+   * @param modifiedWith {@link Object} modeling the process used by the user to modify this object.
    * @see org.cp.elements.lang.Auditable
    */
-  public void setModifiedOn(LocalDateTime modifiedOn) {
-    processChange("modifiedOn", this.modifiedOn, modifiedOn);
-    this.lastModifiedOn = ObjectUtils.defaultIfNull(this.lastModifiedOn, this.modifiedOn);
+  public void setModifiedWith(PROCESS modifiedWith) {
+    processChange("modifiedWith", getModifiedWith(), modifiedWith);
   }
 
   /**
-   * Gets the process (the what) that functionally modified this object.
+   * Accepts a {@link Visitor} used to perform some operation or inspection on {@literal this} {@link Bean}.
    *
-   * @return an object denoting the process that modified this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  public PROCESS getModifiedWith() {
-    return modifiedWith;
-  }
-
-  /**
-   * Sets the process (the what) that functionally modified this object.
-   *
-   * @param modifyingProcess an object denoting the process that modified this object.
-   * @see org.cp.elements.lang.Auditable
-   */
-  @SuppressWarnings("unchecked")
-  public void setModifiedWith(PROCESS modifyingProcess) {
-    processChange("modifiedWith", this.modifiedWith, modifyingProcess);
-    this.lastModifiedWith = ObjectUtils.defaultIfNull(this.lastModifiedWith, this.modifiedWith);
-  }
-
-  /**
-   * Makes a determination, or assessment for whether this Bean (object) is new.
-   *
-   * @return a boolean value indicating whether this Bean is new or not.
-   * @see org.cp.elements.lang.Identifiable
-   */
-  public boolean isNew() {
-    return (getId() == null);
-  }
-
-  /**
-   * Accepts a Visitor implementation for performing some operation or inspection on this object.
-   *
-   * @param visitor an object who's class implements the Visitor interface to walk a graph of objects
-   * in order to perform some inspection or operation on the object graph.
+   * @param visitor {@link Visitor} used to {@literal visit} {@literal this} {@link Bean} to perform an opeation.
    * @see org.cp.elements.lang.Visitable
    * @see org.cp.elements.lang.Visitor
    */
-  public void accept(Visitor visitor) {
+  public void accept(@NotNull Visitor visitor) {
     visitor.visit(this);
   }
 
@@ -371,8 +260,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.beans.event.ChangeListener
    * @see org.cp.elements.beans.event.ChangeSupport
    */
-  protected void addChangeListener(ChangeListener listener) {
-    changeSupport.add(listener);
+  protected void addChangeListener(@Nullable ChangeListener listener) {
+    this.changeSupport.add(listener);
   }
 
   /**
@@ -383,8 +272,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void addPropertyChangeListener(PropertyChangeListener listener) {
-    propertyChangeSupport.addPropertyChangeListener(listener);
+  protected void addPropertyChangeListener(@Nullable PropertyChangeListener listener) {
+    this.propertyChangeSupport.addPropertyChangeListener(listener);
   }
 
   /**
@@ -397,8 +286,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-    propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+  protected void addPropertyChangeListener(@Nullable String propertyName, @Nullable PropertyChangeListener listener) {
+    this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
   }
 
   /**
@@ -410,8 +299,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void addVetoableChangeListener(VetoableChangeListener listener) {
-    vetoableChangeSupport.addVetoableChangeListener(listener);
+  protected void addVetoableChangeListener(@Nullable VetoableChangeListener listener) {
+    this.vetoableChangeSupport.addVetoableChangeListener(listener);
   }
 
   /**
@@ -425,102 +314,40 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void addVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
-    vetoableChangeSupport.addVetoableChangeListener(propertyName, listener);
+  protected void addVetoableChangeListener(@Nullable String propertyName, @Nullable VetoableChangeListener listener) {
+    this.vetoableChangeSupport.addVetoableChangeListener(propertyName, listener);
   }
 
   /**
-   * Changes the value of the given property, referenced by name, to the new Object value, effectively modifying
-   * the internal state of this Bean.  This method uses the Java reflective APIs to set the field corresponding
-   * to the specified property.
+   * Changes the old {@link Object value} of the given property, referenced by {@link String name},
+   * to the new {@link Object value}, effectively modifying the internal state of {@literal this} {@link Bean}.
    *
-   * @param propertyName a String value specifying the name of the property (internally, the field) to set to
-   * the new Object value.
-   * @param newValue an Object containing the new value for the given property (internally, the field).
-   * @throws PropertyNotFoundException if property referenced by name is not a property of this Bean.  This Exception
-   * occurs when the field for the corresponding property does not exist.
+   * This method uses the Java Reflection API to set the {@link Field} for the corresponding {@literal property}.
+   *
+   * @param propertyName {@link String} containing the name of the property ({@link Field}) to set.
+   * @param newValue {@link Object} containing the new value for the given property ({@link Field}).
+   * @throws PropertyNotFoundException if property referenced by {@link String name} is not a property
+   * of {@literal this} {@link Bean}. A {@link PropertyNotFoundException} is thrown when the {@link Field}
+   * for the corresponding property does not exist.
    * @see #getFieldName(String)
    */
-  void changeState(String propertyName, Object newValue) {
+  void changeState(@NotNull String propertyName, @Nullable Object newValue) {
+
     try {
       ObjectUtils.setField(this, getFieldName(propertyName), newValue);
     }
-    catch (IllegalArgumentException e) {
-      throw new PropertyNotFoundException(String.format(
-        "The property (%1$s) corresponding to field (%2$s) was not found in this Bean (%3$s)!",
-          propertyName, getFieldName(propertyName), getClass().getName()), e);
+    catch (IllegalArgumentException cause) {
+
+      String message = String.format("The property [%1$s] for field [%2$s] was not found in this Bean [%3$s]!",
+        propertyName, getFieldName(propertyName), getClass().getName());
+
+      throw new PropertyNotFoundException(message, cause);
     }
   }
 
   /**
-   * Compares the specified Bean with this Bean to determine order.  The default implementation is to
-   * order by identifier, where null identifiers are ordered before non-null identifiers.
-   *
-   * @param obj the Bean being compared with this Bean.
-   * @return an integer value indicating the relative ordering of the specified Bean with this Bean.
-   * A negative value implies this Bean logically occurs before the specified Bean.  A zero value indicates
-   * the specified Bean and this Bean are comparatively equal, and a positive value indicates this Bean logically
-   * occurs after the specified Bean.
-   * @throws IllegalArgumentException if the specified Bean is not an instance of this Bean class.
-   * @see java.lang.Comparable#compareTo(Object)
-   */
-  @SuppressWarnings("all")
-  public int compareTo(Bean<ID, USER, PROCESS> obj) {
-    Assert.isInstanceOf(obj, getClass(), new ClassCastException(String.format(
-      "The Bean being compared with this Bean must be an instance of %1$s!", getClass().getName())));
-    return ComparatorUtils.compareIgnoreNull(getId(), obj.getId());
-  }
-
-  /**
-   * Creates a new instance of the PropertyChangeEvent initialized with this Bean as the source as well as the
-   * name of the property that is changing along with the property's old and new values.  A PropertyChangeEvent
-   * will be created only if event dispatching to registered listeners is enabled and there are either
-   * PropertyChangeListeners or VetoableChangeListeners registered on this Bean.
-   *
-   * @param propertyName a String value specifying the name of the property on this Bean that is being changed.
-   * @param oldValue an Object containing the old value of the specified property.
-   * @param newValue an Object containing the new value for the specified property.
-   * @return a PropertyChangeEvent for this Bean specifying the name of the property changing along with the
-   * property's old and new value.
-   * @see java.beans.PropertyChangeEvent
-   */
-  protected PropertyChangeEvent newPropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
-    if (isEventDispatchEnabled()) {
-      if (vetoableChangeSupport.hasListeners(propertyName) || propertyChangeSupport.hasListeners(propertyName)) {
-        return new PropertyChangeEvent(this, propertyName, oldValue, newValue);
-      }
-    }
-
-    return this.propertyChangeEvent;
-  }
-
-  /**
-   * Determines whether this Bean and the specified Bean are equal in value.  This Bean and the specified Bean
-   * are considered equal in value if their identifiers match.  Note, a null identifier is not logically equivalent
-   * to any other Bean, even other Beans with a null identifier regardless of the Bean's other state.
-   *
-   * @param obj the Bean object being compared for equality with this Bean.
-   * @return a boolean value indicating whether this Bean and the specified Bean are logically equal.
-   * @see java.lang.Object#equals(Object)
-   * @see org.cp.elements.lang.ObjectUtils#equals(Object, Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == this) {
-      return true;
-    }
-
-    if (!(obj instanceof Bean)) {
-      return false;
-    }
-
-    final Bean that = (Bean) obj;
-
-    return ObjectUtils.equals(this.getId(), that.getId());
-  }
-
-  /**
-   * Notifies all ChangeListeners of a change event happening on this Bean.
+   * Notifies all {@link ChangeListener ChangeListeners} of a {@link ChangeEvent} happening to
+   * {@literal this} {@link Bean}.
    *
    * @see org.cp.elements.beans.event.ChangeEvent
    * @see org.cp.elements.beans.event.ChangeListener
@@ -528,115 +355,178 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.beans.event.ChangeSupport#hasListeners()
    */
   protected void fireChange() {
-    if (isEventDispatchEnabled()) {
-      if (isModified() && changeSupport.hasListeners()) {
-        changeSupport.fireChangeEvent();
-      }
+
+    boolean triggerFireChange = isEventDispatchEnabled()
+      && this.changeSupport.hasListeners()
+      && isModified();
+
+    if (triggerFireChange) {
+      this.changeSupport.fireChangeEvent();
     }
   }
 
   /**
-   * Notifies all PropertyChangeListeners of a property change event occurring on this Bean.
+   * Notifies all {@link PropertyChangeListener PropertyChangeListeners} of a {@link PropertyChangeEvent} happening to
+   * {@literal this} {@link Bean}.
    *
-   * @param event the PropertyChangeEvent indicating the property who's value is changing.
-   * @throws NullPointerException if the PropertyChangeEvent is null.
-   * @see java.beans.PropertyChangeEvent
-   * @see java.beans.PropertyChangeListener
+   * @param event {@link PropertyChangeEvent} capturing the property that is changing.
+   * @throws IllegalArgumentException if the {@link PropertyChangeEvent} is {@literal null}.
    * @see java.beans.PropertyChangeSupport#firePropertyChange(java.beans.PropertyChangeEvent)
    * @see java.beans.PropertyChangeSupport#hasListeners(String)
+   * @see java.beans.PropertyChangeListener
+   * @see java.beans.PropertyChangeEvent
    */
-  protected void firePropertyChange(PropertyChangeEvent event) {
+  protected void firePropertyChange(@NotNull PropertyChangeEvent event) {
+
     if (isEventDispatchEnabled()) {
-      Assert.notNull(event, "The PropertyChangeEvent cannot be null!");
-      if (propertyChangeSupport.hasListeners(event.getPropertyName())) {
-        propertyChangeSupport.firePropertyChange(event);
+      Assert.notNull(event, "PropertyChangeEvent is required");
+      if (this.propertyChangeSupport.hasListeners(event.getPropertyName())) {
+        this.propertyChangeSupport.firePropertyChange(event);
       }
     }
   }
 
   /**
-   * Notifies all VetoableChangeListeners of a property change event occurring on this Bean.  The change to
-   * the property may potentially be vetoed by one of the VetoableChangeListeners listening to property changes
-   * on this Bean, resulting in preventing the value of the property to change.
+   * Notifies all {@link VetoableChangeListener VetoableChangeListeners} of a {@link PropertyChangeEvent} happening to
+   * {@literal this} {@link Bean}.
    *
-   * @param event the PropertyChangeEvent indicating the property who's value is changing.
-   * @throws NullPointerException if the PropertyChangeEvent is null.
-   * @throws PropertyVetoException if the property change is vetoed by a VetoableChangeListener listening to
-   * property changes on this Bean.
-   * @see java.beans.PropertyChangeEvent
-   * @see java.beans.VetoableChangeListener
+   * The change to the property may be vetoed by one of the {@link VetoableChangeListener VetoableChangeListeners}
+   * listening to property changes occuring on {@literal this} {@link Bean}. If the property change is vetoed by
+   * any listener, the veto prevents the value of the property from changing.
+   *
+   * @param event {@link PropertyChangeEvent} capturing the property that is changing.
+   * @throws IllegalArgumentException if the {@link PropertyChangeEvent} is {@literal null}.
+   * @throws PropertyVetoException if the property change is vetoed by a {@link VetoableChangeListener}
+   * listening to property changes happening to {@literal this} {@link Bean}.
    * @see java.beans.VetoableChangeSupport#fireVetoableChange(java.beans.PropertyChangeEvent)
    * @see java.beans.VetoableChangeSupport#hasListeners(String)
+   * @see java.beans.VetoableChangeListener
+   * @see java.beans.PropertyChangeEvent
    */
-  protected void fireVetoableChange(PropertyChangeEvent event) throws PropertyVetoException {
+  protected void fireVetoableChange(@NotNull PropertyChangeEvent event) throws PropertyVetoException {
+
     if (isEventDispatchEnabled()) {
-      Assert.notNull(event, "The PropertyChangeEvent cannot be null!");
-      if (vetoableChangeSupport.hasListeners(event.getPropertyName())) {
-        vetoableChangeSupport.fireVetoableChange(event);
+      Assert.notNull(event, "PropertyChangeEvent is required");
+      if (this.vetoableChangeSupport.hasListeners(event.getPropertyName())) {
+        this.vetoableChangeSupport.fireVetoableChange(event);
       }
     }
   }
 
   /**
-   * Computes the hash code value for this Bean as determined by this Bean's internal state.
+   * Maps the specified property with {@link String name} of {@literal this} {@link Bean}
+   * to one of the {@link Bean Bean's} {@link Field Fields}.
    *
-   * @return an integer value representing the computed hash code of this Bean.
-   * @see java.lang.Object#hashCode()
-   * @see org.cp.elements.lang.ObjectUtils#hashCode(Object)
+   * @param propertyName {@link String} containing the name of the property on {@link this} {@link Bean}.
+   * @param fieldName {@link String} containing the name of the {@link Bean Bean's} {@link Field Fields}.
+   * @return a boolean value indicating whether the mapping between the property and {@link Field}
+   * was created successfully.
+   * @throws IllegalArgumentException if the {@link String name} of the property or {@link Field}
+   * is not specified.
    */
-  @Override
-  public int hashCode() {
-    int hashValue = 17;
-    hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
-    return hashValue;
+  protected boolean mapPropertyNameToFieldName(@NotNull String propertyName, @NotNull String fieldName) {
+
+    Assert.hasText(propertyName, "Property name [%s] is required", propertyName);
+    Assert.hasText(fieldName, "Field name [%s] is required", fieldName);
+
+    this.propertyNameToFieldNameMapping.put(propertyName, fieldName);
+
+    return this.propertyNameToFieldNameMapping.containsKey(propertyName);
   }
 
   /**
-   * Creates a mapping from the specified property on this Bean class to one of the Bean object's fields.
+   * Maps the specified property with {@link String name} of {@literal this} {@link Bean}
+   * to the given {@link StateChangeCallback} used to affect state changes for the specified property.
    *
-   * @param propertyName a String value specifying the name of a property on this Bean class.
-   * @param fieldName a String value specifying the name of the Bean object's field.
-   * @return a boolean value indicating whether the mapping between the property and field was successfully
-   * created.
+   * If the {@link StateChangeCallback} is {@literal null}, then the mapping for the specified property
+   * is removed if any such mapping exists.
+   *
+   * @param propertyName {@link String} containing the name of the property on {@link this} {@link Bean}.
+   * @param callback {@link StateChangeCallback} used to affect state changes for the given property.
+   * @return a boolean indicating the mapping was added successfully.
+   * @throws IllegalArgumentException if the property is not specified.
    */
-  protected boolean mapPropertyNameToFieldName(final String propertyName, final String fieldName) {
-    // TODO add possible validation for the property name and field name of this Bean class.
-    propertyNameToFieldNameMapping.put(propertyName, fieldName);
-    return propertyNameToFieldNameMapping.containsKey(propertyName);
+  protected boolean mapPropertyNameToStateChangeCallback(@NotNull String propertyName,
+      @Nullable StateChangeCallback<Object> callback) {
+
+    Assert.hasText(propertyName, "Property name [%s] is required", propertyName);
+
+    if (callback != null) {
+      this.propertyNameToStateChangeCallbackMapping.put(propertyName, callback);
+    }
+    else {
+      this.propertyNameToStateChangeCallbackMapping.remove(propertyName);
+    }
+
+    return this.propertyNameToStateChangeCallbackMapping.containsKey(propertyName);
   }
 
   /**
-   * Creates a mapping from the specified property on this Bean to the specified ParameterizedStateChangeCallback
-   * for affecting state transitions and changes.
+   * Constructs a new instance of {@link PropertyChangeEvent} initialized with {@literal this} {@link Bean}
+   * as the source of the event as well as the {@link String name} of the property that is changing
+   * along with the property's {@link Object old value} and {@link Object new values}.
    *
-   * @param propertyName a String value specifying the name of the property on this Bean class.
-   * @param callback a ParameterizedStateChangeCallback affecting the state change/transition.
-   * @return a boolean indicating that the mapping was added successfully.
+   * A {@link PropertyChangeEvent} will only be created if event dispatching for registered listeners
+   * is {@link #isEventDispatchEnabled() enabled} and there are either
+   * {@link PropertyChangeListener PropertyChangeListeners} or {@link VetoableChangeListener VetoableChangeListeners}
+   * registered with {@literal this} {@link Bean}.
+   *
+   * @param propertyName {@link String} containing the name of the property that is changing.
+   * @param oldValue {@link Object} containing the old value for the specified property.
+   * @param newValue {@link Object} containing the new value for the specified property.
+   * @return a new {@link PropertyChangeEvent} for {@literal this} {@link Bean} specifying the name of the property
+   * that is changing along with the property's {@link Object old value} and {@link Object new value}.
+   * @see java.beans.PropertyChangeEvent
    */
-  protected boolean mapPropertyNameToParameterizedStateChangeCallback(String propertyName,
-      ParameterizedStateChangeCallback callback) {
+  protected PropertyChangeEvent newPropertyChangeEvent(@NotNull String propertyName,
+      @Nullable Object oldValue, @Nullable Object newValue) {
 
-    propertyNameToParameterizedStateChangeCallbackMapping.put(propertyName, callback);
-    return propertyNameToParameterizedStateChangeCallbackMapping.containsKey(propertyName);
+    return isEventDispatchingEnabledWithRegisteredListeners(propertyName)
+      ? new PropertyChangeEvent(this, propertyName, oldValue, newValue)
+      : this.propertyChangeEvent;
+  }
+
+  private boolean isEventDispatchingEnabledWithRegisteredListeners(@Nullable String propertyName) {
+
+    return isEventDispatchEnabled()
+      && isPropertySpecified(propertyName)
+      && hasListeners(propertyName);
+  }
+
+  private boolean isPropertySpecified(@Nullable String propertyName) {
+    return StringUtils.hasText(propertyName);
+  }
+
+  private boolean hasListeners(@NotNull String propertyName) {
+    return this.propertyChangeSupport.hasListeners(propertyName)
+      || this.vetoableChangeSupport.hasListeners(propertyName);
   }
 
   /**
-   * Processes the change in state to the particular property of this Bean.  A PropertyChangeEvent is created
-   * to notify all listeners of the state change.  First, VetoableChangeListeners are notified of the pending change
-   * in order to validate the change and veto any undesired change to the specified property.  Next, the state change
-   * is effected followed by notification of all PropertyChangeListeners.  Finally, a change event is sent to all
-   * ChangeListeners notifying them this Bean has been changed.
+   * Processes the change in state to the specified property of {@literal this} {@link Bean}.
    *
-   * This particular implementation uses property-to-field mapping and reflection to change the state of this Bean.
-   * Subclasses are allowed to create a mapping of property names to actual fields of this particular Bean by calling
-   * the mapPropertyNameToFieldName method.  However, if no such mapping exists, then the field name is derived from
-   * the name of the specified property.  Essentially, the field name is expected to be the same as the property name.
+   * A {@link PropertyChangeEvent} is created to notify all listeners of the state change.
    *
-   * @param propertyName a String value specifying the name of the property on this Bean that is being changed.
-   * @param oldValue an Object containing the old value of the specified property.
-   * @param newValue an Object containing the new value for the specified property.
-   * @throws IllegalPropertyValueException if the property change violates a constraint imposed by one of the
-   * VetoableChangeListeners listening to property change events on this Bean.
+   * First, all {@link VetoableChangeListener VetoableChangeListeners} are notified of the pending state change
+   * in order to validate the change and veto any undesirable change to the specified property.
+   *
+   * Next, the state change is effected followed by notification of
+   * all {@link PropertyChangeListener PropertyChangeListeners}.
+   *
+   * Finally, a {@link ChangeEvent} is sent to all {@link ChangeListener ChangeListeners} notifying the listeners
+   * that {@literal this} {@link Bean} has been changed.
+   *
+   * This particular implementation employs a callback style and approach to effectively changing the state
+   * of {@literal this} {@link Bean}. As it is not always possible to access the particular {@link Field Fields}
+   * of an {@link Object Object's} class, the callback allows the subclass to effect the change, naturally.
+   *
+   * @param propertyName {@link String} containing the name of the property on {@literal this} {@link Bean}
+   * to which the change will be applied.
+   * @param oldValue {@link Object} containing the old value for the specified property.
+   * @param newValue {@link Object} containing the new value for the specified property.
+   * @throws IllegalPropertyValueException if the property change violates a constraint or invariant imposed by
+   * one of the {@link VetoableChangeListener VetoableChangeListeners} listening to property change events
+   * on {@literal this} {@link Bean}.
    * @see #processChange(String, Object, Object, org.cp.elements.beans.AbstractBean.StateChangeCallback)
    */
   protected void processChange(String propertyName, Object oldValue, Object newValue) {
@@ -644,37 +534,49 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
   }
 
   /**
-   * Processes the change in state to the particular property of this Bean.  A PropertyChangeEvent is created
-   * to notify all listeners of the state change.  First, VetoableChangeListeners are notified of the pending change
-   * in order to validate the change and veto any undesired change to the specified property.  Next, the state change
-   * is effected followed by notification of all PropertyChangeListeners.  Finally, a change event is sent to all
-   * ChangeListeners notifying them this Bean has been changed.
+   * Processes the change in state to the specified property of {@literal this} {@link Bean}.
    *
-   * This particular implementation employs a callback style approach to effectively changing the state of this Bean.
-   * As it is not always possible to access the particular fields of an object's class, the callback allows the subclass
-   * to effect the change.
+   * A {@link PropertyChangeEvent} is created to notify all listeners of the state change.
    *
-   * @param propertyName a String value specifying the name of the property on this Bean that is being changed.
-   * @param oldValue an Object containing the old value of the specified property.
-   * @param newValue an Object containing the new value for the specified property.
-   * @param callback the StateChangeCallback implementation used to actually effect the state transition on the
-   * specified property of this Bean.
-   * @throws IllegalPropertyValueException if the property change violates a constraint imposed by one of the
-   * VetoableChangeListeners listening to property change events on this Bean.
+   * First, all {@link VetoableChangeListener VetoableChangeListeners} are notified of the pending state change
+   * in order to validate the change and veto any undesirable change to the specified property.
+   *
+   * Next, the state change is effected followed by notification of
+   * all {@link PropertyChangeListener PropertyChangeListeners}.
+   *
+   * Finally, a {@link ChangeEvent} is sent to all {@link ChangeListener ChangeListeners} notifying the listeners
+   * that {@literal this} {@link Bean} has been changed.
+   *
+   * This particular implementation employs a callback style and approach to effectively changing the state
+   * of {@literal this} {@link Bean}. As it is not always possible to access the particular {@link Field Fields}
+   * of an {@link Object Object's} class, the callback allows the subclass to effect the change, naturally.
+   *
+   * @param <T> {@link Class type} of the {@link Object old value} and {@link Object new value}.
+   * @param propertyName {@link String} containing the name of the property on {@literal this} {@link Bean}
+   * to which the change will be applied.
+   * @param oldValue {@link Object} containing the old value for the specified property.
+   * @param newValue {@link Object} containing the new value for the specified property.
+   * @param callback {@link StateChangeCallback} used to actually effect the state transition on the specified property
+   * of {@literal this} {@link Bean}.
+   * @throws IllegalPropertyValueException if the property change violates a constraint or invariant imposed by
+   * one of the {@link VetoableChangeListener VetoableChangeListeners} listening to property change events
+   * on {@literal this} {@link Bean}.
    * @see #processChange(String, Object, Object)
    */
-  @SuppressWarnings("unchecked")
-  protected void processChange(String propertyName, Object oldValue, Object newValue, StateChangeCallback callback) {
+  protected <T> void processChange(@NotNull String propertyName, @Nullable T oldValue, @Nullable T newValue,
+      @Nullable StateChangeCallback<T> callback) {
+
     try {
+
       PropertyChangeEvent event = newPropertyChangeEvent(propertyName, oldValue, newValue);
 
       fireVetoableChange(event);
 
       if (callback != null) {
-        callback.changeState();
+        callback.changeState(newValue);
       }
-      else if (propertyNameToParameterizedStateChangeCallbackMapping.containsKey(propertyName)) {
-        propertyNameToParameterizedStateChangeCallbackMapping.get(propertyName).changeState(newValue);
+      else if (this.propertyNameToStateChangeCallbackMapping.containsKey(propertyName)) {
+        this.propertyNameToStateChangeCallbackMapping.get(propertyName).changeState(newValue);
       }
       else {
         changeState(propertyName, newValue);
@@ -683,10 +585,12 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
       firePropertyChange(event);
       fireChange();
     }
-    catch (PropertyVetoException e) {
-      throw new IllegalPropertyValueException(String.format(
-        "The new value (%1$s) for property (%2$s) on Bean (%3$s) is not valid!",
-          newValue, propertyName, getClass().getName()), e);
+    catch (PropertyVetoException cause) {
+
+      String message = String.format("The new value [%1$s] for property [%2$s] of Bean [%3$s] is not valid",
+        newValue, propertyName, getClass().getName());
+
+      throw new IllegalPropertyValueException(message, cause);
     }
   }
 
@@ -698,8 +602,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see org.cp.elements.beans.event.ChangeListener
    * @see org.cp.elements.beans.event.ChangeSupport
    */
-  protected void removeChangeListener(ChangeListener listener) {
-    changeSupport.remove(listener);
+  protected void removeChangeListener(@Nullable ChangeListener listener) {
+    this.changeSupport.remove(listener);
   }
 
   /**
@@ -710,8 +614,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void removePropertyChangeListener(PropertyChangeListener listener) {
-    propertyChangeSupport.removePropertyChangeListener(listener);
+  protected void removePropertyChangeListener(@Nullable PropertyChangeListener listener) {
+    this.propertyChangeSupport.removePropertyChangeListener(listener);
   }
 
   /**
@@ -724,8 +628,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.PropertyChangeListener
    * @see java.beans.PropertyChangeSupport
    */
-  protected void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-    propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+  protected void removePropertyChangeListener(@Nullable String propertyName, @Nullable PropertyChangeListener listener) {
+    this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
   }
 
   /**
@@ -737,8 +641,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void removeVetoableChangeListener(VetoableChangeListener listener) {
-    vetoableChangeSupport.removeVetoableChangeListener(listener);
+  protected void removeVetoableChangeListener(@Nullable VetoableChangeListener listener) {
+    this.vetoableChangeSupport.removeVetoableChangeListener(listener);
   }
 
   /**
@@ -751,44 +655,114 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> imp
    * @see java.beans.VetoableChangeListener
    * @see java.beans.VetoableChangeSupport
    */
-  protected void removeVetoableChangeListener(String propertyName, VetoableChangeListener listener) {
-    vetoableChangeSupport.removeVetoableChangeListener(propertyName, listener);
+  protected void removeVetoableChangeListener(@Nullable String propertyName, @Nullable VetoableChangeListener listener) {
+    this.vetoableChangeSupport.removeVetoableChangeListener(propertyName, listener);
   }
 
   /**
-   * Removes the mapping between the specified property and the corresponding field of this Bean.
+   * Removes the mapping from the specified property to the corresponding {@link Field} of {@literal this} {@link Bean}.
    *
-   * @param propertyName a String value indicating the name of the property on this Bean to remove the mapping for.
-   * @return a String value indicating the name of the Bean object's field mapped to the specified property.
+   * @param propertyName {@link String} containing the name of the property of {@literal this} {@link Bean}
+   * for which the mapping will be removed.
+   * @return {@link String} containing the name of the {@link Bean Bean's} {@link Field} that was mapped to
+   * the specified property.
    */
-  protected String unmapPropertyNameToFieldName(String propertyName) {
-    return propertyNameToFieldNameMapping.remove(propertyName);
+  protected String unmapPropertyNameToFieldName(@Nullable String propertyName) {
+    return this.propertyNameToFieldNameMapping.remove(propertyName);
   }
 
   /**
-   * Removes the mapping from the specified property on this Bean to the registered ParameterizedStateChangeCallback
-   * for affecting state transitions and changes.
+   * Removes the mapping from the specified property of {@literal this} {@link Bean}
+   * to the registered {@link StateChangeCallback} used to affect state changes to the specified property.
    *
-   * @param propertyName a String value specifying the name of the property on this Bean class.
-   * @return a boolean indicating that the mapping was removed.
+   * @param propertyName {@link String} containing the name of the property of {@literal this} {@link Bean}.
+   * @return a boolean indicating that whether the mapping was removed successfully.
    */
-  protected boolean unmapPropertyNameToParameterizedStateChangeCallback(String propertyName) {
-    return (propertyNameToParameterizedStateChangeCallbackMapping.remove(propertyName) != null);
+  protected boolean unmapPropertyNameToStateChangeCallback(@Nullable String propertyName) {
+    return this.propertyNameToStateChangeCallbackMapping.remove(propertyName) != null;
   }
 
   /**
-   * The StateChangeCallback interface is a callback interface allowing the invocation of a method to be called
-   * by the invoked method.
+   * Compares the given {@link Bean} with {@literal this} {@link Bean} to determine sort order.
+   *
+   * The default implementation is to order by identifier, where {@literal null} identifiers
+   * are ordered before {@literal non-null} identifiers.
+   *
+   * @param bean {@link Bean} to compare with {@literal this} {@link Bean}.
+   * @return an integer value indicating the relative sort order of the given {@link Bean}
+   * with {@literal this} {@link Bean}. A negative value implies {@literal this} {@link Bean}
+   * logically comes before the given {@link Bean}. A zero value indicates the given {@link Bean}
+   * and {@literal this} {@link Bean} are comparatively equal. And, a positive value indicates
+   * {@literal this} {@link Bean} logically comes after the given {@link Bean}.
+   * @throws ClassCastException if the given {@link Bean} is not an instance of
+   * {@literal this} {@link Bean} {@link Class type}.
+   * @see java.lang.Comparable#compareTo(Object)
    */
-  protected interface StateChangeCallback {
-    void changeState();
+  @SuppressWarnings("all")
+  public int compareTo(@NotNull Bean<ID, USER, PROCESS> bean) {
+
+    String message = String.format("The Bean to compare with this Bean must be an instance of [%s]!",
+      getClass().getName());
+
+    Assert.isInstanceOf(bean, getClass(), new ClassCastException(message));
+
+    return ComparatorUtils.compareIgnoreNull(getId(), bean.getId());
   }
 
   /**
-   * The ParameterizedStateChangeCallback interface is a callback interface affecting the state of this Bean.
-   * @param <T> the Class type of the value.
+   * Determines whether {@literal this} {@link Bean} and the given {@link Bean} are equal.
+   *
+   * {@literal This} {@link Bean} and the given {@link Bean} are considered equal if their {@link #getId() identifiers}
+   * match. A {@literal null} {@link #getId() identifier} is not logically equal to any other {@link Bean}, even other
+   * {@link Bean Beans} with a {@literal null} {@link #getId() identifier} regardless of the {@link Bean Bean's}
+   * other state.
+   *
+   * @param obj {@link Bean} to compare for equality with {@literal this} {@link Bean}.
+   * @return a boolean value indicating whether {@literal this} {@link Bean} and the given {@link Bean}
+   * are logically equal.
+   * @see org.cp.elements.lang.ObjectUtils#equals(Object, Object)
+   * @see java.lang.Object#equals(Object)
    */
-  protected interface ParameterizedStateChangeCallback<T> {
+  @Override
+  @SuppressWarnings("unchecked")
+  public boolean equals(@Nullable Object obj) {
+
+    if (this == obj) {
+      return true;
+    }
+
+    if (!(obj instanceof Bean)) {
+      return false;
+    }
+
+    Bean<ID, USER, PROCESS> that = (Bean<ID, USER, PROCESS>) obj;
+
+    return ObjectUtils.equals(this.getId(), that.getId());
+  }
+
+  /**
+   * Computes the {@link Integer#TYPE hash code value} for {@literal this} {@link Bean}
+   * as determined by {@literal this} {@link Bean Bean's} internal state.
+   *
+   * @return an integer value representing the computed hash code of {@literal this} {@link Bean}.
+   * @see org.cp.elements.lang.ObjectUtils#hashCode(Object)
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    int hashValue = 17;
+    hashValue = 37 * hashValue + ObjectUtils.hashCode(getId());
+    return hashValue;
+  }
+
+  /**
+   * The {@link StateChangeCallback} interface defines a callback enabling the invoked accessor (setter) method
+   * for the property of {@literal this} {@link Bean} to change state.
+   *
+   * @param <T> {@link Class type} of the {@link Object new value}.
+   */
+  @FunctionalInterface
+  protected interface StateChangeCallback<T> {
     void changeState(T newValue);
   }
 }
