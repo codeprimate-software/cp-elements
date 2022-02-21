@@ -18,6 +18,7 @@ package org.cp.elements.function;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
@@ -34,11 +35,29 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class FunctionUtils {
 
   /**
-   * Adapts the required {@link Consumer} as a {@link Function}.
+   * Adapts the given, required {@link Function} as a {@link Consumer}.
+   *
+   * @param <T> {@link Class type} of the {@link Function Function's} and {@link Consumer Consumer's} argument.
+   * @param <R> {@link Class type} of the {@link Function Function's} return value.
+   * @param function {@link Function} to adapt; must not be {@literal null}.
+   * @return a {@link Consumer} implementation adapting the given, required {@link Function}.
+   * @throws IllegalArgumentException if the {@link Function} is {@literal null}.
+   * @see java.util.function.Consumer
+   * @see java.util.function.Function
+   */
+  public static @NotNull <T, R> Consumer<T> toConsumer(@NotNull Function<T, R> function) {
+
+    Assert.notNull(function, "Function is required");
+
+    return function::apply;
+  }
+
+  /**
+   * Adapts the given, required {@link Consumer} as a {@link Function}.
    *
    * @param <T> {@link Class type} of {@link Object} processed by the {@link Consumer} and {@link Function}.
-   * @param consumer {@link Consumer} to adapt.
-   * @return a {@link Function} implementation adapting the given {@link Consumer}.
+   * @param consumer {@link Consumer} to adapt; must not be {@literal null}.
+   * @return a {@link Function} implementation adapting the given, required {@link Consumer}.
    * @throws IllegalArgumentException if the {@link Consumer} is {@literal null}.
    * @see java.util.function.Consumer
    * @see java.util.function.Function
@@ -51,5 +70,40 @@ public abstract class FunctionUtils {
       consumer.accept(target);
       return target;
     };
+  }
+
+  /**
+   * Adapts the given, required {@link Consumer} as a {@link Function}.
+   *
+   * @param <R> {@link Class type} of {@link Object} returned by the {@link Supplier} and {@link Function}.
+   * @param supplier {@link Supplier} to adapt; must not be {@literal null}.
+   * @return a {@link Function} implementation adapting the given, required {@link Supplier}.
+   * @throws IllegalArgumentException if the {@link Supplier} is {@literal null}.
+   * @see java.util.function.Function
+   * @see java.util.function.Supplier
+   */
+  public static @NotNull <T, R> Function<T, R> toFunction(@NotNull Supplier<R> supplier) {
+
+    Assert.notNull(supplier, "Supplier is required");
+
+    return argument -> supplier.get();
+  }
+
+  /**
+   * Adapts the given, required {@link Function} as a {@link Supplier}.
+   *
+   * @param <T> {@link Class type} of the {@link Function Function's} argument.
+   * @param <R> {@link Class type} of the {@link Function Function's} and {@link Supplier Supplier's} return value.
+   * @param function {@link Function} to adapt; must not be {@literal null}.
+   * @return a {@link Supplier} implementation adapting the given, required {@link Function}.
+   * @throws IllegalArgumentException if the {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   * @see java.util.function.Supplier
+   */
+  public static @NotNull <T, R> Supplier<R> toSupplier(@NotNull Function<T, R> function) {
+
+    Assert.notNull(function, "Function is required");
+
+    return () -> function.apply(null);
   }
 }
