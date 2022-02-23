@@ -69,7 +69,10 @@ import org.cp.elements.util.ComparatorUtils;
 public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> extends AuditableSupport<USER, PROCESS, ID>
     implements Bean<ID, USER, PROCESS> {
 
-  private static final boolean DEFAULT_EVENT_DISPATCH_ENABLED = true;
+  public static final boolean EVENT_DISPATCH_DISABLED = false;
+  public static final boolean EVENT_DISPATCH_ENABLED = true;
+
+  private static final boolean DEFAULT_EVENT_DISPATCH_ENABLED = EVENT_DISPATCH_ENABLED;
 
   private volatile boolean eventDispatchEnabled = DEFAULT_EVENT_DISPATCH_ENABLED;
 
@@ -79,9 +82,6 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   private final Map<String, String> propertyNameToFieldNameMapping = new TreeMap<>();
   private final Map<String, StateChangeCallback<Object>> propertyNameToStateChangeCallbackMapping = new TreeMap<>();
-
-  private transient final PropertyChangeEvent propertyChangeEvent =
-    new PropertyChangeEvent(this, null, null, null);
 
   private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -392,43 +392,19 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Constructs a new instance of {@link PropertyChangeEvent} initialized with {@literal this} {@link Bean}
    * as the source of the event as well as the {@link String name} of the property that is changing
-   * along with the property's {@link Object old value} and {@link Object new values}.
+   * along with the property's {@link Object old value} and {@link Object new value}.
    *
-   * A {@link PropertyChangeEvent} will only be created if event dispatching for registered listeners
-   * is {@link #isEventDispatchEnabled() enabled} and there are either
-   * {@link PropertyChangeListener PropertyChangeListeners} or {@link VetoableChangeListener VetoableChangeListeners}
-   * registered with {@literal this} {@link Bean}.
-   *
-   * @param propertyName {@link String} containing the name of the property that is changing.
-   * @param oldValue {@link Object} containing the old value for the specified property.
-   * @param newValue {@link Object} containing the new value for the specified property.
-   * @return a new {@link PropertyChangeEvent} for {@literal this} {@link Bean} specifying the name of the property
-   * that is changing along with the property's {@link Object old value} and {@link Object new value}.
+   * @param propertyName {@link String} containing the {@literal name} of the property that is changing.
+   * @param oldValue {@link Object} containing the old value for the {@link String named} property.
+   * @param newValue {@link Object} containing the new value for the {@link String named} property.
+   * @return a new {@link PropertyChangeEvent} for {@literal this} {@link Bean} specifying the {@link String name}
+   * of the property that is changing along with the property's {@link Object old value} and {@link Object new value}.
    * @see java.beans.PropertyChangeEvent
    */
   protected PropertyChangeEvent newPropertyChangeEvent(@NotNull String propertyName,
       @Nullable Object oldValue, @Nullable Object newValue) {
 
-    return isEventDispatchingEnabledWithRegisteredListeners(propertyName)
-      ? new PropertyChangeEvent(this, propertyName, oldValue, newValue)
-      : this.propertyChangeEvent;
-  }
-
-  private boolean isEventDispatchingEnabledWithRegisteredListeners(@Nullable String propertyName) {
-
-    return isEventDispatchEnabled()
-      && isPropertySpecified(propertyName)
-      && hasListeners(propertyName);
-  }
-
-  private boolean isPropertySpecified(@Nullable String propertyName) {
-    return StringUtils.hasText(propertyName);
-  }
-
-  private boolean hasListeners(@NotNull String propertyName) {
-
-    return this.propertyChangeSupport.hasListeners(propertyName)
-      || this.vetoableChangeSupport.hasListeners(propertyName);
+    return new PropertyChangeEvent(this, propertyName, oldValue, newValue);
   }
 
   /**
@@ -869,7 +845,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
           }
         }
 
-        return false;
+        return returnValue;
       }
     },
 
@@ -879,16 +855,15 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
        * @inheritDoc
        */
       @Override
-      @SuppressWarnings("rawtypes")
       public @Nullable Boolean apply(@NotNull PropertyChangeEvent event, @Nullable Boolean returnValue) {
 
         if (!Boolean.TRUE.equals(returnValue)) {
-          AbstractBean bean = (AbstractBean) event.getSource();
+          AbstractBean<?, ?, ?> bean = (AbstractBean<?, ?, ?>) event.getSource();
           bean.changeState(event.getPropertyName(), event.getNewValue());
           return true;
         }
 
-        return false;
+        return returnValue;
       }
     }
   }

@@ -15,13 +15,25 @@
  */
 package org.cp.elements.beans;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyVetoException;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Assert;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.Stack;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import org.cp.elements.beans.event.ChangeEvent;
+import org.cp.elements.beans.event.ChangeListener;
+import org.cp.elements.security.model.User;
 
 /**
- * Test suite of test cases testing and measuring the performance of the {@link AbstractBean} class.
+ * Performance Tests for {@link AbstractBean}.
  *
  * @author John J. Blum
  * @see org.cp.elements.beans.AbstractBean
@@ -29,130 +41,175 @@ import org.junit.Assert;
  */
 public class AbstractBeanPerformanceTests {
 
-  private static final boolean EVENT_DISPATCH_ENABLED = false;
-  private static final int NUMBER_OF_OPERATIONS = 1000000;
+  private static final int NUMBER_OF_OPERATIONS = 1_000_000;
 
   public static void main(String... args) {
 
-    testPerformanceOfCallback();
-    testPerformanceOfReflection();
-    testPerformanceOfSetter();
-    testPerformanceOfSetterWithEventNotification();
+    testPerformanceOfSetValueUsingLambda(new ValueHolder<>());
+    testPerformanceOfSetValueUsingMethodHandle(new ValueHolder<>());
+    testPerformanceOfSetValueUsingReflection(new ValueHolder<>());
+    testPerformanceOfSetValueUsingSetter(new ValueHolder<>());
+    testPerformanceOfSetValueWithEventNotification(new ValueHolder<>());
+
   }
 
-  private static void testPerformanceOfCallback() {
-    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+  private static long measurePerformanceInMilliseconds(
+      Consumer<Integer> valueHolderSetter, Supplier<Integer> valueHolderGetter) {
 
     long timeBegin = System.currentTimeMillis();
 
     for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
-      valueHolder.setCallbackValue(count);
-      Assert.assertEquals(count, valueHolder.getCallbackValue().intValue());
+      valueHolderSetter.accept(count);
+      assertThat(valueHolderGetter.get()).isEqualTo(count);
     }
 
     long timeEnd = System.currentTimeMillis();
 
-    System.out.printf("Setting through callback took [%d] milliseconds.%n", timeEnd - timeBegin);
+    return timeEnd - timeBegin;
   }
 
-  private static void testPerformanceOfReflection() {
-    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+  private static void testPerformanceOfSetValueUsingLambda(ValueHolder<Integer> valueHolder) {
 
-    long timeBegin = System.currentTimeMillis();
+    long milliseconds =
+      measurePerformanceInMilliseconds(valueHolder::setValueUsingLambda, valueHolder::getValue);
 
-    for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
-      valueHolder.setReflectionValue(count);
-      Assert.assertEquals(count, valueHolder.getReflectionValue().intValue());
-    }
-
-    long timeEnd = System.currentTimeMillis();
-
-    System.out.printf("Setting through reflection took [%d] milliseconds.%n", timeEnd - timeBegin);
+    System.out.printf("Set with callback using Lambda took [%d] milliseconds.%n", milliseconds);
   }
 
-  private static void testPerformanceOfSetter() {
-    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+  private static void testPerformanceOfSetValueUsingMethodHandle(ValueHolder<Integer> valueHolder) {
 
-    long timeBegin = System.currentTimeMillis();
+    long milliseconds =
+      measurePerformanceInMilliseconds(valueHolder::setValueUsingMethodHandle, valueHolder::getValue);
 
-    for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
-      valueHolder.setValue(count);
-      Assert.assertEquals(count, valueHolder.getValue().intValue());
-    }
-
-    long timeEnd = System.currentTimeMillis();
-
-    System.out.printf("Calling setter took [%d] milliseconds.%n", timeEnd - timeBegin);
+    System.out.printf("Set with callback using method handle took [%d] milliseconds.%n", milliseconds);
   }
 
-  private static void testPerformanceOfSetterWithEventNotification() {
-    ValueHolder<Integer> valueHolder = new ValueHolder<>();
+  private static void testPerformanceOfSetValueUsingReflection(ValueHolder<Integer> valueHolder) {
 
-    long timeBegin = System.currentTimeMillis();
+    long milliseconds =
+      measurePerformanceInMilliseconds(valueHolder::setValueUsingReflection, valueHolder::getValue);
 
-    for (int count = 0; count < NUMBER_OF_OPERATIONS; count++) {
-      valueHolder.setNotificationValue(count);
-      Assert.assertEquals(count, valueHolder.getNotificationValue().intValue());
-    }
+    System.out.printf("Set with reflection took [%d] milliseconds.%n", milliseconds);
+  }
 
-    long timeEnd = System.currentTimeMillis();
+  private static void testPerformanceOfSetValueUsingSetter(ValueHolder<Integer> valueHolder) {
 
-    System.out.printf("Calling setter with event notification took [%d] milliseconds.", timeEnd - timeBegin);
+    long milliseconds =
+      measurePerformanceInMilliseconds(valueHolder::setValue, valueHolder::getValue);
+
+    System.out.printf("Calling setter took [%d] milliseconds.%n", milliseconds);
+  }
+
+  private static void testPerformanceOfSetValueWithEventNotification(ValueHolder<Integer> valueHolder) {
+
+    long milliseconds =
+      measurePerformanceInMilliseconds(valueHolder::setValueWithEventNotification, valueHolder::getValue);
+
+    System.out.printf("Calling setter with event notification took [%d] milliseconds.", milliseconds);
   }
 
   @SuppressWarnings("unused")
-  private static final class ValueHolder<T> extends AbstractBean<Long, String, String> {
+  private static final class ValueHolder<T> extends AbstractBean<Long, User<Integer>, Object> {
 
-    private T callbackValue;
-    private T notificationValue;
-    private T reflectionValue;
     private T value;
+    private T valueCopy;
 
     public ValueHolder() {
-      setEventDispatchEnabled(EVENT_DISPATCH_ENABLED);
-    }
 
-    public T getCallbackValue() {
-      return callbackValue;
-    }
-
-    public void setCallbackValue(T callbackValue) {
-      processChange("callbackValue", this.callbackValue, callbackValue, newValue -> ValueHolder.this.callbackValue = newValue);
-    }
-
-    public T getNotificationValue() {
-      return notificationValue;
-    }
-
-    public void setNotificationValue(T notificationValue) {
-      try {
-        PropertyChangeEvent event = newPropertyChangeEvent("notificationValue",
-          this.notificationValue, notificationValue);
-
-        fireVetoableChange(event);
-        this.notificationValue = notificationValue;
-        firePropertyChange(event);
-        fireChange();
-      }
-      catch (PropertyVetoException e) {
-        throw new IllegalPropertyValueException(e);
-      }
-    }
-
-    public T getReflectionValue() {
-      return reflectionValue;
-    }
-
-    public void setReflectionValue(T reflectionValue) {
-      processChange("reflectionValue", this.reflectionValue, reflectionValue);
+      setEventDispatchEnabled(false);
+      register(LoggingChangeListener.INSTANCE);
+      register("value", CopyPropertyChangeListener.INSTANCE);
+      register("value", RequiredVetoableChangeListener.INSTANCE);
     }
 
     public T getValue() {
-      return value;
+      return this.value;
     }
 
     public void setValue(T value) {
       this.value = value;
+    }
+
+    @SuppressWarnings("all")
+    public void setValueUsingLambda(T value) {
+      processChange("value", getValue(), value, newValue -> setValue(newValue));
+    }
+
+    public void setValueUsingMethodHandle(T value) {
+      processChange("value", getValue(), value, this::setValue);
+    }
+
+    public void setValueUsingReflection(T value) {
+      processChange("value", getValue(), value);
+    }
+
+    public void setValueWithEventNotification(T value) {
+
+      try {
+        setEventDispatchEnabled(true);
+        processChange("value", getValue(), value, this::setValue);
+      }
+      finally {
+        setEventDispatchEnabled(false);
+      }
+    }
+
+    public T getValueCopy() {
+      return this.valueCopy;
+    }
+
+    public void setValueCopy(T valueCopy) {
+      this.valueCopy = valueCopy;
+    }
+  }
+
+  private static final class LoggingChangeListener implements ChangeListener {
+
+    private static final LoggingChangeListener INSTANCE = new LoggingChangeListener();
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd@hh:mm:ss");
+
+    private final Stack<String> logMessages = new Stack<>();
+
+    @SuppressWarnings("unused")
+    public String getLastLogMessage() {
+      return this.logMessages.peek();
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent event) {
+      this.logMessages.push(String.format("Source [%s] was changed on [%s]", event.getSource().getClass().getName(),
+        event.getChangeDateTime().atZone(ZoneOffset.systemDefault()).format(this.dateTimeFormatter)));
+    }
+  }
+
+  private static final class CopyPropertyChangeListener implements PropertyChangeListener {
+
+    private static final CopyPropertyChangeListener INSTANCE = new CopyPropertyChangeListener();
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void propertyChange(PropertyChangeEvent event) {
+
+      Object source = event.getSource();
+
+      if (source instanceof ValueHolder) {
+        ((ValueHolder<Object>) source).setValueCopy(event.getNewValue());
+      }
+    }
+  }
+
+  private static final class RequiredVetoableChangeListener implements VetoableChangeListener {
+
+    private static final RequiredVetoableChangeListener INSTANCE = new RequiredVetoableChangeListener();
+
+    @Override
+    public void vetoableChange(PropertyChangeEvent event) throws PropertyVetoException {
+
+      if (Objects.isNull(event.getNewValue())) {
+        String message = String.format("Property [%s] must not be null", event.getPropertyName());
+        throw new PropertyVetoException(message, event);
+      }
     }
   }
 }
