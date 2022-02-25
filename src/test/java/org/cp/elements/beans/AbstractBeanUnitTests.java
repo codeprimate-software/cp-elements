@@ -410,6 +410,132 @@ public class AbstractBeanUnitTests {
     assertThat(holder.getValue()).isEqualTo("mock");
   }
 
+  @SuppressWarnings("all")
+  @Test(expected = ClassCastException.class)
+  public void compareToNonAbstractBean() {
+
+    try {
+      new TestBean<Integer>().compareTo(mock(Bean.class));
+    }
+    catch (ClassCastException expected) {
+
+      assertThat(expected).hasMessage("The Bean to compare with this Bean must be an instance of [%s]",
+        TestBean.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void compareToEqualBean() {
+
+    TestBean<Integer> beanOne = new TestBean<>(1);
+    TestBean<Integer> beanTwo = new TestBean<>(1);
+
+    assertThat(beanOne.compareTo(beanTwo)).isZero();
+  }
+
+  @Test
+  public void compareToGreaterBean() {
+
+    TestBean<Integer> beanOne = new TestBean<>(1);
+    TestBean<Integer> beanTwo = new TestBean<>(2);
+
+    assertThat(beanOne.compareTo(beanTwo)).isLessThan(0);
+  }
+
+  @Test
+  public void compareToLesserBean() {
+
+    TestBean<Integer> beanOne = new TestBean<>(1);
+    TestBean<Integer> beanTwo = new TestBean<>(2);
+
+    assertThat(beanTwo.compareTo(beanOne)).isGreaterThan(0);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void compareToSameBean() {
+
+    TestBean<Integer> bean = new TestBean<>(0);
+
+    assertThat(bean.compareTo(bean)).isZero();
+  }
+
+  @Test
+  public void equalsWithEqualBean() {
+
+    ValueHolder testValueOne = new ValueHolder("test");
+    ValueHolder testValueTwo = new ValueHolder("test");
+
+    assertThat(testValueOne.equals(testValueTwo)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsWithSameBean() {
+
+    ValueHolder value = new ValueHolder("test");
+
+    assertThat(value.equals(value)).isTrue();
+  }
+
+  @Test
+  public void equalsWithUnequalBean() {
+
+    ValueHolder testValue = new ValueHolder("test");
+    ValueHolder mockValue = new ValueHolder("mock");
+
+    assertThat(testValue.equals(mockValue)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsWithNonBeanIsFalse() {
+    assertThat(new ValueHolder("test").equals("test")).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void equalsWithNullIsFalse() {
+    assertThat(new ValueHolder("test").equals(null)).isFalse();
+  }
+
+  @Test
+  public void hashCodeIsNotZero() {
+
+    assertThat(new TestBean<Integer>().hashCode()).isNotZero();
+    assertThat(new ValueHolder("test").hashCode()).isNotZero();
+  }
+
+  @Test
+  public void hashCodeForEqualBeansIsEqual() {
+
+    TestBean<Integer> beanOne = new TestBean<>(1);
+    TestBean<Integer> beanTwo = new TestBean<>(1);
+
+    assertThat(beanOne.hashCode()).isEqualTo(beanTwo.hashCode());
+  }
+
+  @Test
+  public void hashCodeForSameBeanIsEqual() {
+
+    TestBean<Integer> bean = new TestBean<>(0);
+
+    assertThat(bean.hashCode()).isEqualTo(bean.hashCode());
+  }
+
+  @Test
+  public void hashCodeForUnequalsBeansIsNotEqual() {
+
+    TestBean<Integer> beanOne = new TestBean<>(1);
+    TestBean<Integer> beanTwo = new TestBean<>(2);
+
+    assertThat(beanOne.hashCode()).isNotEqualTo(beanTwo.hashCode());
+  }
+
   private static final class TestBean<ID extends Comparable<ID>> extends AbstractBean<ID, User<Long>, Object> {
 
     public TestBean() { }
