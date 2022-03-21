@@ -17,20 +17,27 @@
 package org.cp.elements.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.withSettings;
 
+import java.beans.PropertyChangeEvent;
 import java.time.Instant;
 
 import org.cp.elements.beans.AbstractBean.StateChangeCallback;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.security.model.User;
 import org.junit.Test;
 
@@ -46,7 +53,7 @@ import org.junit.Test;
 public class AbstractBeanUnitTests {
 
   @SuppressWarnings("unchecked")
-  private static User<Long> mockUser(String name) {
+  private static @NotNull User<Long> mockUser(@Nullable String name) {
 
     User<Long> mockUser = mock(User.class, withSettings().lenient());
 
@@ -64,6 +71,7 @@ public class AbstractBeanUnitTests {
     assertThat(bean).isNotNull();
     assertThat(bean.getId()).isNull();
     assertThat(bean.isNew()).isTrue();
+    assertThat(bean.isModified()).isFalse();
     assertThat(bean.isEventDispatchEnabled()).isTrue();
   }
 
@@ -75,6 +83,7 @@ public class AbstractBeanUnitTests {
     assertThat(bean).isNotNull();
     assertThat(bean.getId()).isEqualTo(2);
     assertThat(bean.isNew()).isFalse();
+    assertThat(bean.isModified()).isTrue();
     assertThat(bean.isEventDispatchEnabled()).isTrue();
   }
 
@@ -86,20 +95,24 @@ public class AbstractBeanUnitTests {
     assertThat(bean).isNotNull();
     assertThat(bean.getId()).isNull();
     assertThat(bean.isNew()).isTrue();
+    assertThat(bean.isModified()).isFalse();
 
     bean.setId(8);
 
     assertThat(bean.getId()).isEqualTo(8);
     assertThat(bean.isNotNew()).isTrue();
+    assertThat(bean.isModified()).isTrue();
 
     bean.setId(null);
 
     assertThat(bean.getId()).isNull();
     assertThat(bean.isNew()).isTrue();
+    assertThat(bean.isModified()).isFalse();
 
     assertThat(bean.<Bean<Integer, User<Long>, Object>>identifiedBy(2)).isSameAs(bean);
     assertThat(bean.getId()).isEqualTo(2);
     assertThat(bean.isNotNew()).isTrue();
+    assertThat(bean.isModified()).isTrue();
   }
 
   @Test
@@ -169,40 +182,40 @@ public class AbstractBeanUnitTests {
   @Test
   public void isModified() {
 
-    ValueHolder value = new ValueHolder("test");
+    ValueHolder valueHolder = new ValueHolder("test");
 
-    assertThat(value).isNotNull();
-    assertThat(value.isModified()).isFalse();
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.isModified()).isFalse();
 
-    value.setValue("test");
+    valueHolder.setValue("test");
 
-    assertThat(value.isModified()).isFalse();
-    assertThat(value.isModified("id")).isFalse();
-    assertThat(value.isModified("value")).isFalse();
+    assertThat(valueHolder.isModified()).isFalse();
+    assertThat(valueHolder.isModified("id")).isFalse();
+    assertThat(valueHolder.isModified("value")).isFalse();
 
-    value.setValue("TEST");
+    valueHolder.setValue("TEST");
 
-    assertThat(value.isModified()).isTrue();
-    assertThat(value.isModified("id")).isFalse();
-    assertThat(value.isModified("value")).isTrue();
+    assertThat(valueHolder.isModified()).isTrue();
+    assertThat(valueHolder.isModified("id")).isFalse();
+    assertThat(valueHolder.isModified("value")).isTrue();
 
-    value.setValue("mock");
+    valueHolder.setValue("mock");
 
-    assertThat(value.isModified()).isTrue();
-    assertThat(value.isModified("id")).isFalse();
-    assertThat(value.isModified("value")).isTrue();
+    assertThat(valueHolder.isModified()).isTrue();
+    assertThat(valueHolder.isModified("id")).isFalse();
+    assertThat(valueHolder.isModified("value")).isTrue();
 
-    value.setValue("test");
+    valueHolder.setValue("test");
 
-    assertThat(value.isModified()).isFalse();
-    assertThat(value.isModified("id")).isFalse();
-    assertThat(value.isModified("value")).isFalse();
+    assertThat(valueHolder.isModified()).isFalse();
+    assertThat(valueHolder.isModified("id")).isFalse();
+    assertThat(valueHolder.isModified("value")).isFalse();
 
-    value.setValue(null);
+    valueHolder.setValue(null);
 
-    assertThat(value.isModified()).isTrue();
-    assertThat(value.isModified("id")).isFalse();
-    assertThat(value.isModified("value")).isTrue();
+    assertThat(valueHolder.isModified()).isTrue();
+    assertThat(valueHolder.isModified("id")).isFalse();
+    assertThat(valueHolder.isModified("value")).isTrue();
   }
 
   @Test
@@ -216,6 +229,64 @@ public class AbstractBeanUnitTests {
 
     verify(mockVisitor, times(1)).visit(eq(bean));
     verifyNoMoreInteractions(mockVisitor);
+  }
+
+  @Test
+  public void changeStateIsSuccessful() {
+
+    ValueHolder valueHolder = new ValueHolder("test");
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+
+    valueHolder.changeState("value", "mock");
+
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
+  }
+
+  @Test
+  public void changeStateForPropertyMappedFieldIsSuccessful() {
+
+    ValueHolder valueHolder = new ValueHolder("test");
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+    assertThat(valueHolder.mapPropertyNameToFieldName("nonExistingProperty", "value")).isNull();
+    assertThat(valueHolder.getFieldName("nonExistingProperty")).isEqualTo("value");
+
+    valueHolder.changeState("nonExistingProperty", "mock");
+
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
+  }
+
+  @Test(expected = FieldNotFoundException.class)
+  public void changeStateForPropertyWithUnmappedFieldThrowsException() {
+
+    ValueHolder valueHolder = new ValueHolder("test");
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+    assertThat(valueHolder.getFieldName("nonExistingProperty")).isEqualTo("nonExistingProperty");
+
+    try {
+      valueHolder.changeState("nonExistingProperty", "mock");
+    }
+    catch (FieldNotFoundException expected) {
+
+      assertThat(expected)
+        .hasMessage("No field [nonExistingProperty] for property [nonExistingProperty] was found on this Bean [%s]",
+          valueHolder.getClass().getName());
+
+      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
+      assertThat(expected.getCause()).hasCauseInstanceOf(FieldNotFoundException.class);
+      assertThat(expected.getCause().getCause()).hasCauseInstanceOf(NoSuchFieldException.class);
+      assertThat(expected.getCause().getCause().getCause()).hasNoCause();
+
+      throw expected;
+    }
+    finally {
+      assertThat(valueHolder.getValue()).isEqualTo("test");
+    }
   }
 
   @Test
@@ -275,7 +346,7 @@ public class AbstractBeanUnitTests {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void mapPropertyNameToEmptyBlankName() {
+  public void mapPropertyNameToBlankFieldName() {
     testMapPropertyNameToIllegalFieldName("  ");
   }
 
@@ -295,18 +366,18 @@ public class AbstractBeanUnitTests {
 
     StateChangeCallback<Object> mockCallback = mock(StateChangeCallback.class);
 
-    ValueHolder holder = new ValueHolder();
+    ValueHolder valueHolder = new ValueHolder();
 
-    assertThat(holder).isNotNull();
-    assertThat(holder.getAlias()).isNull();
-    assertThat(holder.getValue()).isNull();
-    assertThat(holder.mapPropertyNameToStateChangeCallback("alias", mockCallback)).isNull();
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getAlias()).isNull();
+    assertThat(valueHolder.getValue()).isNull();
+    assertThat(valueHolder.mapPropertyNameToStateChangeCallback("alias", mockCallback)).isNull();
 
-    holder.setAlias("test");
+    valueHolder.setAlias("test");
 
-    assertThat(holder.getAlias()).isNull();
-    assertThat(holder.getValue()).isNull();
-    assertThat(holder.unmapPropertyNameToStateChangeCallback("alias")).isEqualTo(mockCallback);
+    assertThat(valueHolder.getAlias()).isNull();
+    assertThat(valueHolder.getValue()).isNull();
+    assertThat(valueHolder.unmapPropertyNameToStateChangeCallback("alias")).isEqualTo(mockCallback);
 
     verify(mockCallback, times(1)).changeState(eq("test"));
     verifyNoMoreInteractions(mockCallback);
@@ -357,57 +428,87 @@ public class AbstractBeanUnitTests {
     }
   }
 
-  @Test(expected = PropertyNotFoundException.class)
+  @Test
+  public void newPropertyChangeEventWasInitialized() {
+
+    TestBean<?> bean = new TestBean<>();
+
+    assertThat(bean).isNotNull();
+
+    PropertyChangeEvent event = bean.newPropertyChangeEvent("testProperty", "test", "mock");
+
+    assertThat(event).isNotNull();
+    assertThat(event.getSource()).isSameAs(bean);
+    assertThat(event.getPropertyName()).isEqualTo("testProperty");
+    assertThat(event.getOldValue()).isEqualTo("test");
+    assertThat(event.getNewValue()).isEqualTo("mock");
+  }
+
+  @Test(expected = FieldNotFoundException.class)
   public void setPropertyForUnmappedFieldAndUnmappedStateChangeCallback() {
 
-    ValueHolder holder = new ValueHolder("test");
+    ValueHolder valueHolder = new ValueHolder("test");
 
-    assertThat(holder).isNotNull();
-    assertThat(holder.getValue()).isEqualTo("test");
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
 
     try {
-      holder.setAlias("mock");
+      valueHolder.setAlias("mock");
     }
-    catch (PropertyNotFoundException expected) {
+    catch (FieldNotFoundException expected) {
 
       assertThat(expected).hasMessage("No field [alias] for property [alias] was found on this Bean [%s]",
-        holder.getClass().getName());
+        valueHolder.getClass().getName());
 
       assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
 
       throw expected;
     }
     finally {
-      assertThat(holder.getValue()).isEqualTo("test");
+      assertThat(valueHolder.getValue()).isEqualTo("test");
     }
   }
 
   @Test
   public void setPropertyWhenPropertyNameIsMappedToFieldName() {
 
-    ValueHolder holder = new ValueHolder("test");
+    ValueHolder valueHolder = spy(new ValueHolder("test"));
 
-    assertThat(holder).isNotNull();
-    assertThat(holder.getValue()).isEqualTo("test");
-    assertThat(holder.mapPropertyNameToFieldName("alias", "value")).isNull();
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+    assertThat(valueHolder.mapPropertyNameToFieldName("alias", "value")).isNull();
+    assertThat(valueHolder.getFieldName("alias")).isEqualTo("value");
 
-    holder.setAlias("mock");
+    valueHolder.setAlias("mock");
 
-    assertThat(holder.getValue()).isEqualTo("mock");
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
+
+    verify(valueHolder, times(1)).setAlias(eq("mock"));
+    verify(valueHolder, times(1)).changeState(eq("alias"), eq("mock"));
+    verify(valueHolder, times(3)).getValue();
+    verify(valueHolder, never()).setValue(any());
   }
 
   @Test
   public void setPropertyWhenPropertyNameIsMappedToStateChangeCallback() {
 
-    ValueHolder holder = new ValueHolder("test");
+    ValueHolder valueHolder = spy(new ValueHolder("test"));
 
-    assertThat(holder).isNotNull();
-    assertThat(holder.getValue()).isEqualTo("test");
-    assertThat(holder.mapPropertyNameToStateChangeCallback("alias", holder::setValue)).isNull();
+    StateChangeCallback<Object> stateChangeCallback = newValue -> valueHolder.value = newValue;
 
-    holder.setAlias("mock");
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+    assertThat(valueHolder.mapPropertyNameToStateChangeCallback("alias", stateChangeCallback)).isNull();
+    assertThat(valueHolder.getFieldName("alias")).isEqualTo("alias");
 
-    assertThat(holder.getValue()).isEqualTo("mock");
+    valueHolder.setAlias("mock");
+
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
+
+    verify(valueHolder, times(1)).setAlias(eq("mock"));
+    verify(valueHolder, times(3)).getValue();
+    verify(valueHolder, never()).changeState(anyString(), any());
+    verify(valueHolder, never()).setValue(eq("mock"));
   }
 
   @SuppressWarnings("all")
@@ -546,7 +647,7 @@ public class AbstractBeanUnitTests {
   }
 
   @SuppressWarnings("unused")
-  private static final class ValueHolder extends AbstractBean<Integer, User<Long>, Object> {
+  private static class ValueHolder extends AbstractBean<Integer, User<Long>, Object> {
 
     private Object value;
 
