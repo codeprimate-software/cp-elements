@@ -37,6 +37,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.support.AuditableSupport;
 import org.cp.elements.util.ComparatorUtils;
 
@@ -264,9 +265,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    *
    * @param propertyName {@link String} containing the name of the property ({@link Field}) to set.
    * @param newValue {@link Object} containing the new value for the given property ({@link Field}).
-   * @throws PropertyNotFoundException if property referenced by {@link String name} is not a property
-   * of {@literal this} {@link Bean}. A {@link PropertyNotFoundException} is thrown when the {@link Field}
-   * for the corresponding property does not exist.
+   * @throws FieldNotFoundException if property referenced by {@link String name} has no {@link Field}
+   * on {@literal this} {@link Bean}.
    * @see #getFieldName(String)
    */
   void changeState(@NotNull String propertyName, @Nullable Object newValue) {
@@ -279,7 +279,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
       String message = String.format("No field [%1$s] for property [%2$s] was found on this Bean [%3$s]",
         getFieldName(propertyName), propertyName, getClass().getName());
 
-      throw new PropertyNotFoundException(message, cause);
+      throw new FieldNotFoundException(message, cause);
     }
   }
 
@@ -491,22 +491,26 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
     }
   }
 
-  @SuppressWarnings("unchecked")
   private @NotNull <T> StateChangeFunction resolveStateChangeFunction(@Nullable StateChangeCallback<T> callback) {
 
-    StateChangeFunction callbackFunction = (event, returnValue) -> {
-      callback.changeState((T) event.getNewValue());
-      return true;
-    };
-
-    StateChangeFunction resolvedFunction = callback != null ? callbackFunction
-      : StateChangeFunction.noStateChangeFunction();
+    StateChangeFunction resolvedFunction = callback == null
+      ? StateChangeFunction.noStateChangeFunction()
+      : newStateChangeFunction(callback);
 
     for (StateChangeFunction function : StateChangeFunctionStrategies.values()) {
       resolvedFunction = resolvedFunction.andThen(function);
     }
 
     return resolvedFunction;
+  }
+
+  @SuppressWarnings("unchecked")
+  private @NotNull <T> StateChangeFunction newStateChangeFunction(@NotNull StateChangeCallback<T> callback) {
+
+    return (event, returnValue) -> {
+      callback.changeState((T) event.getNewValue());
+      return true;
+    };
   }
 
   /**
