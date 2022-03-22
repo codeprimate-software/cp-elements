@@ -20,19 +20,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.withSettings;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
 import java.time.Instant;
 
 import org.cp.elements.beans.AbstractBean.StateChangeCallback;
+import org.cp.elements.beans.event.ChangeEvent;
+import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
@@ -40,6 +49,8 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.security.model.User;
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.stubbing.Answer;
 
 /**
  * Unit Tests for {@link AbstractBean}.
@@ -509,6 +520,157 @@ public class AbstractBeanUnitTests {
     verify(valueHolder, times(3)).getValue();
     verify(valueHolder, never()).changeState(anyString(), any());
     verify(valueHolder, never()).setValue(eq("mock"));
+  }
+
+  @Test
+  public void propertyChangeFiresEventListeners() throws PropertyVetoException {
+
+    Instant beforeEventDateTime = Instant.now();
+
+    ChangeListener mockChangeListener = mock(ChangeListener.class);
+
+    PropertyChangeListener mockPropertyChangeListener = mock(PropertyChangeListener.class);
+
+    VetoableChangeListener mockVetoableChangeListener = mock(VetoableChangeListener.class);
+
+    ValueHolder valueHolder = new ValueHolder("test");
+    ValueHolder valueHolderSpy = spy(valueHolder);
+
+    assertThat(valueHolderSpy).isNotNull();
+    assertThat(valueHolderSpy.getValue()).isEqualTo("test");
+
+    valueHolderSpy.register(mockChangeListener);
+    valueHolderSpy.register(mockPropertyChangeListener);
+    valueHolderSpy.register(mockVetoableChangeListener);
+
+    doAnswer(invocation -> {
+
+      ChangeEvent event = invocation.getArgument(0);
+
+      assertThat(event).isNotNull();
+      assertThat(event.getSource()).isEqualTo(valueHolder);
+      assertThat(event.getChangeDateTime()).isAfterOrEqualTo(beforeEventDateTime);
+
+      return null;
+
+    }).when(mockChangeListener).stateChanged(any(ChangeEvent.class));
+
+    Answer<Void> propertyChangeEventHandler = invocation -> {
+
+      PropertyChangeEvent event = invocation.getArgument(0);
+
+      assertThat(event).isNotNull();
+      assertThat(event.getSource()).isEqualTo(valueHolderSpy);
+      assertThat(event.getPropertyName()).isEqualTo("value");
+      assertThat(event.getOldValue()).isEqualTo("test");
+      assertThat(event.getNewValue()).isEqualTo("mock");
+
+      return null;
+
+    };
+
+    doAnswer(propertyChangeEventHandler).when(mockPropertyChangeListener).propertyChange(any(PropertyChangeEvent.class));
+    doAnswer(propertyChangeEventHandler).when(mockVetoableChangeListener).vetoableChange(any(PropertyChangeEvent.class));
+
+    valueHolderSpy.setValue("mock");
+
+    assertThat(valueHolderSpy.getValue()).isEqualTo("mock");
+
+    InOrder order = inOrder(valueHolderSpy, mockChangeListener, mockPropertyChangeListener, mockVetoableChangeListener);
+
+    order.verify(valueHolderSpy, times(1)).setValue(eq("mock"));
+    order.verify(valueHolderSpy, times(1)).processChange(eq("value"), eq("test"), eq("mock"));
+    order.verify(mockVetoableChangeListener, times(1)).vetoableChange(isA(PropertyChangeEvent.class));
+    order.verify(valueHolderSpy, times(1)).changeState(eq("value"), eq("mock"));
+    order.verify(mockPropertyChangeListener, times(1)).propertyChange(isA(PropertyChangeEvent.class));
+    order.verify(mockChangeListener, times(1)).stateChanged(isA(ChangeEvent.class));
+
+    verifyNoMoreInteractions(mockChangeListener, mockPropertyChangeListener, mockVetoableChangeListener);
+  }
+
+  @Test
+  public void propertyChangeDoesNotFireEventListenersWhenEventDispatchIsDisabled() {
+
+    ChangeListener mockChangeListener = mock(ChangeListener.class);
+
+    PropertyChangeListener mockPropertyChangeListener = mock(PropertyChangeListener.class);
+
+    VetoableChangeListener mockVetoableChangeListener = mock(VetoableChangeListener.class);
+
+    ValueHolder valueHolder = spy(new ValueHolder("test"));
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+
+    valueHolder.setEventDispatchEnabled(false);
+    valueHolder.register(mockChangeListener);
+    valueHolder.register(mockPropertyChangeListener);
+    valueHolder.register(mockVetoableChangeListener);
+
+    assertThat(valueHolder.isEventDispatchEnabled()).isFalse();
+
+    valueHolder.setValue("mock");
+
+    assertThat(valueHolder.getValue()).isEqualTo("mock");
+
+    verify(valueHolder, times(1)).setValue(eq("mock"));
+    verify(valueHolder, times(1)).processChange(eq("value"), eq("test"), eq("mock"));
+    verifyNoInteractions(mockChangeListener, mockPropertyChangeListener, mockVetoableChangeListener);
+  }
+
+  @Test(expected = IllegalPropertyValueException.class)
+  public void propertyChangeIsVetoed() throws PropertyVetoException {
+
+    ChangeListener mockChangeListener = mock(ChangeListener.class);
+
+    PropertyChangeListener mockPropertyChangeListener = mock(PropertyChangeListener.class);
+
+    VetoableChangeListener mockVetoableChangeListener = mock(VetoableChangeListener.class);
+
+    ValueHolder valueHolder = new ValueHolder("test");
+
+    assertThat(valueHolder).isNotNull();
+    assertThat(valueHolder.getValue()).isEqualTo("test");
+
+    valueHolder.register(mockChangeListener);
+    valueHolder.register(mockPropertyChangeListener);
+    valueHolder.register(mockVetoableChangeListener);
+
+    doAnswer(invocation -> { throw new PropertyVetoException("New value is invalid", invocation.getArgument(0)); })
+      .when(mockVetoableChangeListener).vetoableChange(any(PropertyChangeEvent.class));
+
+    try {
+      valueHolder.setValue("mock");
+    }
+    catch (IllegalPropertyValueException expected) {
+
+      assertThat(expected).hasMessage("The new value [mock] for property [value] of Bean [%s] is not valid",
+        valueHolder.getClass().getName());
+
+      assertThat(expected).hasCauseInstanceOf(PropertyVetoException.class);
+
+      PropertyVetoException exception = (PropertyVetoException) expected.getCause();
+
+      assertThat(exception.getMessage()).isEqualTo("New value is invalid");
+
+      PropertyChangeEvent event = exception.getPropertyChangeEvent();
+
+      assertThat(event).isNotNull();
+      assertThat(event.getSource()).isEqualTo(valueHolder);
+      assertThat(event.getPropertyName()).isEqualTo("value");
+      assertThat(event.getOldValue()).isEqualTo("test");
+      assertThat(event.getNewValue()).isEqualTo("mock");
+
+      throw expected;
+    }
+    finally {
+
+      assertThat(valueHolder.getValue()).isEqualTo("test");
+
+      verify(mockVetoableChangeListener, times(1)).vetoableChange(isA(PropertyChangeEvent.class));
+      verifyNoMoreInteractions(mockVetoableChangeListener);
+      verifyNoInteractions(mockChangeListener, mockPropertyChangeListener);
+    }
   }
 
   @SuppressWarnings("all")
