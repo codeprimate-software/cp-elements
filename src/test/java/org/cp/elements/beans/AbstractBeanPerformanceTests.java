@@ -49,7 +49,8 @@ public class AbstractBeanPerformanceTests {
     testPerformanceOfSetValueUsingMethodHandle(new ValueHolder<>());
     testPerformanceOfSetValueUsingReflection(new ValueHolder<>());
     testPerformanceOfSetValueUsingSetter(new ValueHolder<>());
-    testPerformanceOfSetValueWithEventNotification(new ValueHolder<>());
+    testPerformanceOfSetValueUsingVariableAssignment(new ValueHolder<>());
+    testPerformanceOfSetValueWithEventNotificationEnabled(new ValueHolder<>());
 
   }
 
@@ -100,7 +101,15 @@ public class AbstractBeanPerformanceTests {
     System.out.printf("Calling setter took [%d] milliseconds.%n", milliseconds);
   }
 
-  private static void testPerformanceOfSetValueWithEventNotification(ValueHolder<Integer> valueHolder) {
+  private static void testPerformanceOfSetValueUsingVariableAssignment(ValueHolder<Integer> valueHolder) {
+
+    long milliseconds =
+      measurePerformanceInMilliseconds(newValue -> valueHolder.value = newValue, valueHolder::getValue);
+
+    System.out.printf("Calling variable assignment took [%d] milliseconds.%n", milliseconds);
+  }
+
+  private static void testPerformanceOfSetValueWithEventNotificationEnabled(ValueHolder<Integer> valueHolder) {
 
     long milliseconds =
       measurePerformanceInMilliseconds(valueHolder::setValueWithEventNotification, valueHolder::getValue);
