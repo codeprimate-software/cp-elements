@@ -302,6 +302,36 @@ public class AbstractBeanUnitTests {
     }
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void firePropertyChangeEventWithNullEvent() {
+
+    try {
+      new TestBean<>().firePropertyChangeEvent(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("PropertyChangeEvent is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void fireVetoableChangeEventWithNullEvent() throws PropertyVetoException {
+
+    try {
+      new TestBean<>().fireVetoableChangeEvent(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("PropertyChangeEvent is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
   @Test
   public void mapAndUnmapPropertyNameToFieldName() {
 
