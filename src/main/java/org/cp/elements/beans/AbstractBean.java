@@ -862,8 +862,11 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
       public @Nullable Boolean apply(@NotNull PropertyChangeEvent event, @Nullable Boolean returnValue) {
 
         if (!Boolean.TRUE.equals(returnValue)) {
+
           AbstractBean<?, ?, ?> bean = (AbstractBean<?, ?, ?>) event.getSource();
+
           bean.changeState(event.getPropertyName(), event.getNewValue());
+
           return true;
         }
 
