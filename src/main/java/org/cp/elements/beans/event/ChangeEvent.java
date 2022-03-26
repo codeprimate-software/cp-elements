@@ -13,43 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans.event;
 
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.EventObject;
 
-import org.cp.elements.time.DateTimeUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The ChangeEvent class is an event signifying a state change in the source object referenced by this EventObject class.
+ * {@link EventObject} implementation used as the record for the change in state to the source {@link Object}.
  *
  * @author John J. Blum
+ * @see java.time.Instant
  * @see java.util.EventObject
  * @since 1.0.0
  */
 public class ChangeEvent extends EventObject {
 
-  private final Calendar changeDateTime;
+  private final Instant changeDateTime = Instant.now();
 
   /**
-   * Creates an instance of the ChangeEvent class initialized with the specified object as the source for change events.
+   * Constructs a new instance of {@link ChangeEvent} initialized with the given, required {@link Object} used as
+   * the source for change events.
    *
-   * @param source an Object reference as the source of the change events.
+   * @param source {@link Object} reference used as the source of the change events; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link Object source} is {@literal null}.
    */
-  public ChangeEvent(final Object source) {
+  public ChangeEvent(@NotNull Object source) {
     super(source);
-    changeDateTime = Calendar.getInstance();
   }
 
   /**
-   * Gets the date and time that the change event on the source object occurred.
+   * Gets the {@link Instant date and time} when the change to the source {@link Object} occurred.
    *
-   * @return a Calendar indicating the date and time of the change event.
-   * @see java.util.Calendar
+   * @return a {@link Instant} indicating the {@literal date and time} of {@literal this} change event,
+   * i.e. when the source {@link Object} was changed.
+   * @see java.time.Instant
    */
-  public Calendar getChangeDateTime() {
-    return DateTimeUtils.clone(changeDateTime);
+  public @NotNull Instant getChangeDateTime() {
+    return Instant.from(this.changeDateTime);
   }
-
 }
