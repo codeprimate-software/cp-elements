@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans.event;
 
 import java.util.EventListener;
 
 /**
- * The {@link ChangeListener} interface defines a contract for implementing classes interested in change events.
+ * Interface to define a contract for implementing classes interested in {@link ChangeEvent ChangeEvents}.
  *
  * @author John J. Blum
  * @see java.lang.FunctionalInterface
@@ -32,10 +31,10 @@ import java.util.EventListener;
 public interface ChangeListener extends EventListener {
 
   /**
-   * The ChangeListener callback method notifying the listener that a change event, such as a Object state transition
-   * or change has occurred.
+   * Event handler method notifying {@literal this} listener that a {@link ChangeEvent}, such as a change
+   * in the {@link Object Object's} state has occurred.
    *
-   * @param event the ChangeEvent object encapsulating the state change event.
+   * @param event {@link ChangeEvent} encapsulating the change in the {@link Object Object's} state.
    * @see org.cp.elements.beans.event.ChangeEvent
    */
   void stateChanged(ChangeEvent event);
