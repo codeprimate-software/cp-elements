@@ -175,17 +175,22 @@ public class ObjectUtilsUnitTests {
     }
   }
 
+  @Test
+  public void doOperationSafelyReturnsResult() {
+    assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
+  }
+
   @Test(expected = IllegalStateException.class)
   public void doOperationSafelyThrowsIllegalStateException() {
 
     try {
-      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("test"); });
+      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); });
     }
     catch (IllegalStateException expected) {
 
       assertThat(expected).hasMessageStartingWith("Failed to execute operation");
       assertThat(expected).hasCauseInstanceOf(Exception.class);
-      assertThat(expected.getCause()).hasMessage("test");
+      assertThat(expected.getCause()).hasMessage("ERROR");
       assertThat(expected.getCause()).hasNoCause();
 
       throw expected;
@@ -193,13 +198,13 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void doOperationSafelyWithDefaultValueReturnsValue() {
+  public void doOperationSafelyWithDefaultValueReturnsResult() {
     assertThat(ObjectUtils.doOperationSafely(arguments -> "test", "default")).isEqualTo("test");
   }
 
   @Test
   public void doOperationSafelyWithDefaultValueReturnsDefaultValue() {
-    assertThat(ObjectUtils.doOperationSafely(arguments -> { throw new Exception("test"); }, "default"))
+    assertThat(ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, "default"))
       .isEqualTo("default");
   }
 
@@ -207,13 +212,72 @@ public class ObjectUtilsUnitTests {
   public void doOperationSafelyWithDefaultValueThrowsIllegalStateException() {
 
     try {
-      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("test"); }, (Object) null);
+      ObjectUtils.doOperationSafely(arguments -> { throw new Exception("ERROR"); }, (Object) null);
     }
     catch (IllegalStateException expected) {
 
       assertThat(expected).hasMessageStartingWith("Failed to execute operation");
       assertThat(expected).hasCauseInstanceOf(Exception.class);
-      assertThat(expected.getCause()).hasMessage("test");
+      assertThat(expected.getCause()).hasMessage("ERROR");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void doOperationSafelyWithSuppliedValueReturnsResult() {
+    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> "test", () -> "supplied")).isEqualTo("test");
+  }
+
+  @Test
+  public void doOperationSafelyWithSuppliedValueReturnsSuppliedValue() {
+    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Exception("ERROR"); }, () -> "supplied"))
+      .isEqualTo("supplied");
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void doOperationSafelyWithSuppliedValueThrowsIllegalStateException() {
+
+    try {
+      ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Exception("ERROR"); }, () -> null);
+    }
+    catch (IllegalStateException expected) {
+
+      assertThat(expected).hasMessageStartingWith("Failed to execute operation");
+      assertThat(expected).hasCauseInstanceOf(Exception.class);
+      assertThat(expected.getCause()).hasMessage("ERROR");
+      assertThat(expected.getCause()).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  public void doOperationSafelyWithFunctionReturnsResult() {
+    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> "test",
+      cause -> { throw new RuntimeException("ERROR", cause); })).isEqualTo("test");
+  }
+
+  @Test
+  public void doOperationSafelyWithFunctionReturnsFunctionResult() {
+    assertThat(ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Exception("ERROR"); },
+      cause -> "functionResult" )).isEqualTo("functionResult");
+  }
+
+  @Test(expected = TestException.class)
+  public void doOperationSafelyWithFunctionThrowsFunctionException() {
+
+    try {
+      ObjectUtils.<Object>doOperationSafely(arguments -> { throw new Error("ERROR"); },
+        cause -> { throw new TestException("TEST EXCEPTION", cause); });
+    }
+    catch (RuntimeException expected) {
+
+      assertThat(expected).isInstanceOf(TestException.class);
+      assertThat(expected).hasMessage("TEST EXCEPTION");
+      assertThat(expected).hasCauseInstanceOf(Error.class);
+      assertThat(expected.getCause()).hasMessage("ERROR");
       assertThat(expected.getCause()).hasNoCause();
 
       throw expected;
@@ -262,11 +326,6 @@ public class ObjectUtilsUnitTests {
     assertThat(ObjectUtils.returnFirstNonNullValue((Object[][]) null)).isNull();
     assertThat(ObjectUtils.returnFirstNonNullValue(null, (Object[]) null)).isNull();
     assertThat(ObjectUtils.returnFirstNonNullValue((Object[]) null, null, null)).isNull();
-  }
-
-  @Test
-  public void doOperationSafelyReturnsValue() {
-    assertThat(ObjectUtils.<String>doOperationSafely(arguments -> "test")).isEqualTo("test");
   }
 
   @Test
@@ -598,7 +657,7 @@ public class ObjectUtilsUnitTests {
     @Override
     public boolean equals(Object obj) {
 
-      if (obj == this) {
+      if (this == obj) {
         return true;
       }
 
@@ -638,6 +697,13 @@ public class ObjectUtilsUnitTests {
     @SuppressWarnings("unused")
     public SoftwareEngineer(Person person) {
       super(person);
+    }
+  }
+
+  protected static class TestException extends RuntimeException {
+
+    protected TestException(String message, Throwable cause) {
+      super(message, cause);
     }
   }
 }

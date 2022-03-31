@@ -22,6 +22,7 @@ import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.Constructor;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -127,8 +128,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
-   * thrown during the normal execution of the operation by rethrowing an {@link IllegalStateException}.
+   * Safely executes the given {@link ThrowableOperation} and handles any {@link Throwable} thrown during the execution
+   * of the operation by rethrowing an {@link IllegalStateException}.
    *
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param operation {@link ThrowableOperation} to execute.
@@ -141,17 +142,16 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
-   * thrown during the normal execution of the operation by returning the given {@link Object default value}
-   * or rethrowing an {@link IllegalStateException} if the {@link Object default value} is {@literal null}.
+   * Safely executes the given {@link ThrowableOperation} and handles any {@link Throwable} thrown during the execution
+   * of the operation by returning the given {@link Object default value} or rethrowing an {@link IllegalStateException}
+   * if the {@link Object default value} is {@literal null}.
    *
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param operation {@link ThrowableOperation} to execute.
    * @param defaultValue {@link Object} to return if the {@link ThrowableOperation} throws a {@link Throwable}.
-   * @return the {@link Object result} of the {@link ThrowableOperation} or {@link Object default value}
+   * @return the {@link Object result} of the {@link ThrowableOperation} or the {@link Object default value}
    * if the {@link ThrowableOperation} throws a {@link Throwable}.
    * @see #doOperationSafely(ThrowableOperation, Supplier)
-   * @see #returnValueOrThrowIfNull(Object, RuntimeException)
    * @see org.cp.elements.lang.ThrowableOperation
    */
   public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation, @NotNull T defaultValue) {
@@ -162,9 +162,9 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Safely executes the given {@link ThrowableOperation} handling any {@link Throwable}
-   * thrown during the normal execution of the operation by returning the given {@link Object default value}
-   * or rethrowing an {@link IllegalStateException} if the {@link Object default value} is {@literal null}.
+   * Safely executes the given {@link ThrowableOperation} and handles any {@link Throwable} thrown during the execution
+   * of the operation by returning a {@link Object value} from the given {@link Supplier} or rethrows an
+   * {@link IllegalStateException} if the {@link Supplier supplied value} is {@literal null}.
    *
    * @param <T> {@link Class type} of the {@link Object return value}.
    * @param operation {@link ThrowableOperation} to execute.
@@ -172,19 +172,42 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * if the {@link ThrowableOperation} throws a {@link Throwable}.
    * @return the {@link Object result} of the {@link ThrowableOperation} or a {@link Object value} supplied by
    * the {@link Supplier} if the {@link ThrowableOperation} throws a {@link Throwable}.
-   * @throws IllegalStateException if the {@link Supplier} supplies a {@literal null} {@link Object value}.
+   * @throws IllegalStateException if the {@link ThrowableOperation} throws a {@link Throwable} and the {@link Supplier}
+   * supplies a {@literal null} {@link Object value}.
    * @see #returnValueOrThrowIfNull(Object, RuntimeException)
+   * @see #doOperationSafely(ThrowableOperation, Function)
    * @see org.cp.elements.lang.ThrowableOperation
+   * @see java.util.function.Supplier
    */
   public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation,
       @NotNull Supplier<T> valueSupplier) {
+
+    Function<Throwable, T> throwableHandler = cause -> returnValueOrThrowIfNull(valueSupplier.get(),
+      newIllegalStateException(cause, "Failed to execute operation [%s]", operation));
+
+    return doOperationSafely(operation, throwableHandler);
+  }
+
+  /**
+   * Safely executes the given {@link ThrowableOperation} returning the {@link Object result} and handling any
+   * {@link Throwable} thrown by the operation during execution by invoking the given {@link Function}.
+   *
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @param operation {@link ThrowableOperation} to execute; must not be {@literal null}.
+   * @param throwableHandler {@link Function} used to handle the {@link Throwable} thrown by
+   * the {@link ThrowableOperation} during execution; must not be {@literal null}.
+   * @return the {@link Object result} of the {@link ThrowableOperation}.
+   * @see org.cp.elements.lang.ThrowableOperation
+   * @see java.util.function.Function
+   */
+  public static @Nullable <T> T doOperationSafely(@NotNull ThrowableOperation<T> operation,
+      @NotNull Function<Throwable, T> throwableHandler) {
 
     try {
       return operation.run(EMPTY_OBJECT_ARRAY);
     }
     catch (Throwable cause) {
-      return returnValueOrThrowIfNull(valueSupplier.get(),
-        newIllegalStateException(cause, "Failed to execute operation [%s]", operation));
+      return throwableHandler.apply(cause);
     }
   }
 
