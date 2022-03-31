@@ -189,6 +189,22 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
+   * Requires the given {@link Object} reference.
+   *
+   * @param <T> {@link Class} type of the {@link Object}.
+   * @param object {@link Object} reference to evaluate.
+   * @param message {@link String} containing the message for the {@link IllegalArgumentException} thrown by
+   * this method if the {@link Object} reference is {@literal null}.
+   * @param args array of arguments used to resolve the placeholders in the {@link String message}.
+   * @return the given {@link Object}.
+   * @throws IllegalArgumentException if the {@link Object} is {@literal null}.
+   */
+  public static @NotNull <T> T requireObject(T object, String message, Object... args) {
+    Assert.notNull(object, message, args);
+    return object;
+  }
+
+  /**
    * Gets the first {@literal non-null} {@link Object value} in the array of values.
    *
    * @param <T> {@link Class type} of the {@link Object values} in the array.

@@ -221,7 +221,29 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  public void requiredNonNullObject() {
+
+    Object object = new Object();
+
+    assertThat(ObjectUtils.requireObject(object, "Object is required")).isSameAs(object);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void requireNullObjectThrowsIllegalArgumentException() {
+
+    try {
+      ObjectUtils.requireObject(null, "This is a %s message!", "test");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("This is a test message!");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
   public void returnFirstNonNullValue() {
 
     assertThat(ObjectUtils.returnFirstNonNullValue("test", null, null, null)).isEqualTo("test");
@@ -235,7 +257,6 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void returnFirstNonNullValueWithNullValues() {
 
     assertThat(ObjectUtils.returnFirstNonNullValue((Object[][]) null)).isNull();
