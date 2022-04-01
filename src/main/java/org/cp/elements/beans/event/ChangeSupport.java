@@ -13,145 +13,200 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans.event;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * ChangeSupport is a support class used to register and unregister {@link ChangeListener}s interested in
- * state change events happening associated with the source Object monitored by a instance of this class.
+ * Support class used to register and unregister {@link ChangeListener ChangeListeners} interested in state changes to
+ * the {@literal source} {@link Object} managed and monitored by {@literal this} {@link ChangeSupport} object.
  *
  * @author John J. Blum
- * @see java.io.Serializable
  * @see java.lang.Iterable
  * @see org.cp.elements.beans.event.ChangeEvent
  * @see org.cp.elements.beans.event.ChangeListener
  * @since 1.0.0
  */
-public class ChangeSupport implements Iterable<ChangeListener>, Serializable {
+public class ChangeSupport implements Iterable<ChangeListener> {
 
-  // collection of registered ChangeListeners listening for change events on the source Object
-  private transient final List<ChangeListener> changeListeners = new ArrayList<>();
+  // List of registered ChangeListeners listening for change events on the source Object.
+  private transient final List<ChangeListener> changeListeners = new CopyOnWriteArrayList<>();
 
-  // an Object reference to the source of the change events
+  // Reference to the source Object of the change events.
   private final Object source;
 
   /**
-   * Creates an instance of {@link ChangeSupport} initialized with the specified Object as the source
-   * of the change events.
+   * Constructs a new instance of {@link ChangeSupport} initialized with the given, required {@link Object}
+   * used as the source of the {@link ChangeEvent change events}.
    *
-   * @param source source of the change events.
-   * @throws IllegalArgumentException if {@code source} is null.
+   * @param source {@link Object} used as the source of the {@link ChangeEvent change events};
+   * must not be {@literal null}.
+   * @throws IllegalArgumentException if {@link Object source} is {@literal null}.
    */
-  public ChangeSupport(Object source) {
-    Assert.notNull(source, "Source cannot be null");
-    this.source = source;
+  public ChangeSupport(@NotNull Object source) {
+    this.source = ObjectUtils.requireObject(source, "A source object is required");
   }
 
   /**
-   * Gets a reference to the Object that is the source of change events fired by this change support class.
+   * Returns the {@link List} of {@link ChangeListener} objects currently registered and managed by {@literal this}
+   * {@link ChangeSupport} object.
    *
-   * @return an Object reference to the source of the change events.
-   */
-  protected Object getSource() {
-    return source;
-  }
-
-  /**
-   * Adds the specified ChangeListener to the collection of listeners managed by this support class that get notified
-   * of change events occurring for the given source Object.
-   *
-   * @param listener the ChangeListener to add to the collection of listeners managed by this support class.
-   * @return a boolean indicating if the ChangeListener was successfully added to the collection of listeners.
-   * Null ChangeListeners cannot be added and so this method will return false if the ChangeListener object reference
-   * is null.
-   * @see #remove(ChangeListener)
-   */
-  public boolean add(ChangeListener listener) {
-    return (listener != null && changeListeners.add(listener));
-  }
-
-  /**
-   * Determines whether the support class contains the specified ChangeListener.
-   *
-   * @param listener the ChangeListener parameter being tested for registration with this support class.
-   * @return a boolean value indication whether the ChangeListener has been registered with this support class.
-   */
-  public boolean contains(ChangeListener listener) {
-    return changeListeners.contains(listener);
-  }
-
-  /**
-   * Creates an instance of the ChangeEvent class initialized with the specified source Object for which
-   * change events occur.
-   *
-   * @param source a reference to the source Object for the change events.
-   * @return a ChangeEvent object wrapping the specified Object parameter as the source of the change events.
-   * @see org.cp.elements.beans.event.ChangeEvent
-   */
-  protected ChangeEvent createChangeEvent(Object source) {
-    return new ChangeEvent(source);
-  }
-
-  /**
-   * Fires a ChangeEvent for the source Object notifying each registered ChangeListener of the change.
-   *
-   * @see org.cp.elements.beans.event.ChangeEvent
+   * @return the {@link List} of {@link ChangeListener} objects currently registered and managed by {@literal this}
+   * {@link ChangeSupport} object.
    * @see org.cp.elements.beans.event.ChangeListener
+   * @see java.util.List
+   */
+  protected @NotNull List<ChangeListener> getChangeListeners() {
+    return this.changeListeners;
+  }
+
+  /**
+   * Gets a reference to the {@link Object} used as the source of the {@link ChangeEvent change events} fired by
+   * {@literal this} {@link ChangeSupport} object.
+   *
+   * @return an {@link Object} reference to the source of the {@link ChangeEvent change events}; never {@literal null}.
+   * @see java.lang.Object
+   */
+  protected @NotNull Object getSource() {
+    return this.source;
+  }
+
+  /**
+   * Determines whether the given {@link ChangeListener} is registered with {@literal this} {@link ChangeSupport} object.
+   *
+   * @param listener {@link ChangeListener} to evaluate.
+   * @return {@literal true} if the given {@link ChangeListener} is not {@literal null} and has been registered with
+   * {@literal this} {@link ChangeSupport} object.
+   * @see org.cp.elements.beans.event.ChangeListener
+   * @see #unregister(ChangeListener)
+   * @see #register(ChangeListener)
+   * @see #getChangeListeners()
+   */
+  public boolean contains(@Nullable ChangeListener listener) {
+    return listener != null && getChangeListeners().contains(listener);
+  }
+
+  /**
+   * Computes the number of {@link ChangeListener ChangeListeners} registered with {@literal this}
+   * {@link ChangeSupport} object.
+   *
+   * @return the number of {@link ChangeListener ChangeListeners} registered with {@literal this}
+   * {@link ChangeSupport} object.
+   * @see #getChangeListeners()
+   * @see #hasListeners()
+   */
+  public int count() {
+    return getChangeListeners().size();
+  }
+
+  /**
+   * Fires a {@link ChangeEvent} notifying each registered {@link ChangeListener} of the change in state to
+   * the {@link #getSource() source} {@link Object}.
+   *
+   * @see org.cp.elements.beans.event.ChangeListener
+   * @see org.cp.elements.beans.event.ChangeEvent
+   * @see #newChangeEvent(Object)
+   * @see #getSource()
    * @see #iterator()
    */
   public void fireChangeEvent() {
-    ChangeEvent event = createChangeEvent(getSource());
 
-    for (ChangeListener listener : this) {
-      listener.stateChanged(event);
+    if (hasListeners()) {
+
+      ChangeEvent event = newChangeEvent(getSource());
+
+      this.forEach(changeListener -> changeListener.stateChanged(event));
     }
   }
 
   /**
-   * Determines whether this support class has any registered ChangeListeners.
+   * Constructs a new instance of {@link ChangeEvent} initialized with the given {@link #getSource() source}
+   * {@link Object} for which {@link ChangeEvent change event} occurred.
    *
-   * @return a boolean value indicating whether this support class has any registered ChangeListeners.
+   * @param source reference to the {@literal source} {@link Object} for the {@link ChangeEvent}.
+   * @return a new {@link ChangeEvent} object wrapping the given {@link Object} as the {@literal source}
+   * of the {@link ChangeEvent}.
+   * @see org.cp.elements.beans.event.ChangeEvent
+   * @see java.lang.Object
+   */
+  protected @NotNull ChangeEvent newChangeEvent(@NotNull Object source) {
+    return new ChangeEvent(source);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link ChangeSupport} object has any registered
+   * {@link ChangeListener ChangeListeners}.
+   *
+   * @return {@literal true} if {@literal this} {@link ChangeSupport} object has any registered
+   * {@link ChangeListener ChangeListeners}.
+   * @see #count()
    */
   public boolean hasListeners() {
-    return !changeListeners.isEmpty();
+    return count() > 0;
   }
 
   /**
-   * Iterates over the ChangeListeners registered on this support class for the specified event source Object.
+   * Iterates over the {@link ChangeListener ChangeListeners} registered with {@literal this}
+   * {@link ChangeSupport} object.
    *
-   * @return an Iterator over the ChangeListeners registered with this support class instance for the source Object.
+   * @return an {@link Iterator} over the {@link ChangeListener ChangeListeners} registered with
+   * {@literal this} {@link ChangeSupport} object.
+   * @see org.cp.elements.beans.event.ChangeListener
+   * @see #getChangeListeners()
    * @see java.util.Iterator
    */
-  public Iterator<ChangeListener> iterator() {
-    return Collections.unmodifiableList(changeListeners).iterator();
+  public @NotNull Iterator<ChangeListener> iterator() {
+    return Collections.unmodifiableList(getChangeListeners()).iterator();
   }
 
   /**
-   * Removes the specified ChangeListener from the collection of listeners on this support class that are notified
-   * of change events occurring for the source Object.
+   * Registers the given {@link ChangeListener} to the {@link List} of listeners managed by {@literal this}
+   * {@link ChangeSupport} object.
    *
-   * @param listener the ChangeListener to remove from this support class.
-   * @return a boolean indicating if the ChangeListener was successfully removed from the collection of listeners.
-   * @see #add(ChangeListener)
+   * The registered {@link ChangeListener} will be notified of all {@link ChangeEvent change events} occurring on
+   * the {@link #getSource() source} {@link Object}.
+   *
+   * @param listener {@link ChangeListener} to register; must not be {@literal null}.
+   * @return {@literal this} {@link ChangeSupport} object.
+   * @see #unregister(ChangeListener)
+   * @see #contains(ChangeListener)
+   * @see #getChangeListeners()
    */
-  public boolean remove(ChangeListener listener) {
-    return changeListeners.remove(listener);
+  @SuppressWarnings("all")
+  public @NotNull ChangeSupport register(@NotNull ChangeListener listener) {
+
+    if (listener != null) {
+      getChangeListeners().add(listener);
+    }
+
+    return this;
   }
 
   /**
-   * Determines the number of registered ChangeListeners registered on this support class.
+   * Unregisters the given {@link ChangeListener} from {@literal this} {@link ChangeSupport} object.
    *
-   * @return an integer value indicating the number of ChangeListener registered on this support class.
+   * The unregistered {@link ChangeListener} will no longer be notified of any {@link ChangeEvent change events}
+   * occurring on the {@link #getSource() source} {@link Object}.
+   *
+   * @param listener {@link ChangeListener} to unregister; must not be {@literal null}.
+   * @return {@literal this} {@link ChangeSupport} object.
+   * @see #register(ChangeListener)
+   * @see #contains(ChangeListener)
+   * @see #getChangeListeners()
    */
-  public int size() {
-    return changeListeners.size();
+  public @NotNull ChangeSupport unregister(@NotNull ChangeListener listener) {
+
+    if (listener != null) {
+      getChangeListeners().remove(listener);
+    }
+
+    return this;
   }
 }

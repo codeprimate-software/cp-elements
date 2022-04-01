@@ -519,11 +519,11 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    *
    * @param listener {@link ChangeListener} to add to the list of listeners being notified of changes
    * to {@literal this} {@link Bean}.
+   * @see org.cp.elements.beans.event.ChangeSupport#register(ChangeListener)
    * @see org.cp.elements.beans.event.ChangeListener
-   * @see org.cp.elements.beans.event.ChangeSupport
    */
   protected void register(@Nullable ChangeListener listener) {
-    this.changeSupport.add(listener);
+    this.changeSupport.register(listener);
   }
 
   /**
@@ -593,11 +593,11 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    *
    * @param listener {@link ChangeListener} to remove from the list of listeners being notified of changes
    * to {@literal this} {@link Bean}.
-   * @see org.cp.elements.beans.event.ChangeSupport#remove(ChangeListener)
+   * @see org.cp.elements.beans.event.ChangeSupport#unregister(ChangeListener)
    * @see org.cp.elements.beans.event.ChangeListener
    */
   protected void unregister(@Nullable ChangeListener listener) {
-    this.changeSupport.remove(listener);
+    this.changeSupport.unregister(listener);
   }
 
   /**
