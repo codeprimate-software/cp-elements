@@ -18,7 +18,6 @@ package org.cp.elements.beans.event;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.Test;
@@ -59,15 +58,14 @@ public class ChangeEventUnitTests {
     assertThat(event).isNotNull();
     assertThat(event).isNotNull();
 
-    Instant changeDateTime = event.getChangeDateTime();
+    Instant eventChangeDateTime = event.getChangeDateTime();
 
-    assertThat(changeDateTime).isNotNull();
-    assertThat(changeDateTime).isBeforeOrEqualTo(Instant.now());
+    assertThat(eventChangeDateTime).isNotNull();
+    assertThat(eventChangeDateTime).isBeforeOrEqualTo(Instant.now());
 
-    changeDateTime.minus(5, ChronoUnit.YEARS);
+    Instant newChangeDateTime = eventChangeDateTime.minus(5, ChronoUnit.DAYS);
 
-    assertThat(changeDateTime.atZone(ZoneOffset.systemDefault()).getYear())
-      .isEqualTo(Instant.now().atZone(ZoneOffset.systemDefault()).getYear());
-    assertThat(event.getChangeDateTime()).isNotEqualTo(changeDateTime);
+    assertThat(event.getChangeDateTime()).isEqualTo(eventChangeDateTime);
+    assertThat(event.getChangeDateTime()).isNotEqualTo(newChangeDateTime);
   }
 }
