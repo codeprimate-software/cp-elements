@@ -793,7 +793,7 @@ public class AbstractBeanUnitTests {
     }
   }
 
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "all", "unchecked" })
   @Test(expected = ClassCastException.class)
   public void compareToNonAbstractBean() {
 
