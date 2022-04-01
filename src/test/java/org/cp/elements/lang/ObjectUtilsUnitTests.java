@@ -308,6 +308,9 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  // The SuppressWarnings annotation is needed to suppress compiler warnings involving unchecked generic array creation
+  // for varargs parameter.
   public void returnFirstNonNullValue() {
 
     assertThat(ObjectUtils.returnFirstNonNullValue("test", null, null, null)).isEqualTo("test");
@@ -321,6 +324,9 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  // The SuppressWarnings annotation is needed to suppress compiler warnings involving unchecked generic array creation
+  // for varargs parameter.
   public void returnFirstNonNullValueWithNullValues() {
 
     assertThat(ObjectUtils.returnFirstNonNullValue((Object[][]) null)).isNull();
