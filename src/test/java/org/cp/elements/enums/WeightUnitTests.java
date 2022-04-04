@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +25,7 @@ import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link WeightUnit}.
+ * Unit Tests for {@link WeightUnit}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -65,6 +64,8 @@ public class WeightUnitTests {
   @Test
   public void valueOfInvalidAbbreviationsReturnsNull() {
 
+    assertThat(WeightUnit.valueOfAbbreviation("")).isNull();
+    assertThat(WeightUnit.valueOfAbbreviation("  ")).isNull();
     assertThat(WeightUnit.valueOfAbbreviation("GR")).isNull();
     assertThat(WeightUnit.valueOfAbbreviation("GRM")).isNull();
     assertThat(WeightUnit.valueOfAbbreviation("ounce")).isNull();
@@ -74,7 +75,7 @@ public class WeightUnitTests {
   }
 
   @Test
-  public void valueOfNullAbbreviationReturnsNull() {
+  public void valueOfNullAbbreviationIsNullSafeAndReturnsNull() {
     assertThat(WeightUnit.valueOfAbbreviation(null)).isNull();
   }
 
@@ -91,6 +92,8 @@ public class WeightUnitTests {
   @Test
   public void valueOfInvalidNamesReturnsNull() {
 
+    assertThat(WeightUnit.valueOfName("")).isNull();
+    assertThat(WeightUnit.valueOfName("  ")).isNull();
     assertThat(WeightUnit.valueOfName("milliram")).isNull();
     assertThat(WeightUnit.valueOfName("gramcracker")).isNull();
     assertThat(WeightUnit.valueOfName("killogram")).isNull();
@@ -100,12 +103,12 @@ public class WeightUnitTests {
   }
 
   @Test
-  public void valueOfNullNameReturnsNull() {
+  public void valueOfNullNameIsNullSafeAndReturnsNull() {
     assertThat(WeightUnit.valueOfName(null)).isNull();
   }
 
   @Test
-  public void getPluralNamesIsCorrect() {
+  public void pluralNamesAreCorrect() {
 
     Arrays.stream(WeightUnit.values()).forEach(it ->
       assertThat(it.getPluralName()).isEqualTo(it.name().concat("S")));
