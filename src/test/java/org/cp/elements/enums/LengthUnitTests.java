@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.enums;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,19 +25,19 @@ import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link LengthUnit}.
+ * Unit Tests for {@link LengthUnit}.
  *
  * @author John Blum
  * @see org.junit.Test
- * @see LengthUnit
+ * @see org.cp.elements.enums.LengthUnit
  * @since 1.0.0
  */
 public class LengthUnitTests {
 
   @Test
-  public void defaultLenghtUnitIsCorrect() {
+  public void defaultLengthUnitIsCorrect() {
 
-    // US
+    // USA
     //assertThat(LengthUnit.getDefault()).isEqualTo(LengthUnit.FOOT);
 
     assertThat(LengthUnit.getDefault())
@@ -69,17 +68,17 @@ public class LengthUnitTests {
     assertThat(LengthUnit.valueOfAbbreviation("  ")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("1/4INCH")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("1/2in")).isNull();
-    assertThat(LengthUnit.valueOfAbbreviation("inches")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("IN")).isNull();
+    assertThat(LengthUnit.valueOfAbbreviation("inches")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("foot")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("FEET")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("yrd")).isNull();
-    assertThat(LengthUnit.valueOfAbbreviation("mile")).isNull();
     assertThat(LengthUnit.valueOfAbbreviation("MI")).isNull();
+    assertThat(LengthUnit.valueOfAbbreviation("Mile")).isNull();
   }
 
   @Test
-  public void valueOfNullAbbreviationReturnsNull() {
+  public void valueOfNullAbbreviationIsNullSafeAndReturnsNull() {
     assertThat(LengthUnit.valueOfAbbreviation(null)).isNull();
   }
 
@@ -101,6 +100,7 @@ public class LengthUnitTests {
     assertThat(LengthUnit.valueOfName("MEETR")).isNull();
     assertThat(LengthUnit.valueOfName("KillOMeter")).isNull();
     assertThat(LengthUnit.valueOfName("INC")).isNull();
+    assertThat(LengthUnit.valueOfName("bigfoot")).isNull();
     assertThat(LengthUnit.valueOfName("feet")).isNull();
     assertThat(LengthUnit.valueOfName("YardAge")).isNull();
     assertThat(LengthUnit.valueOfName("Yardstick")).isNull();
@@ -108,7 +108,12 @@ public class LengthUnitTests {
   }
 
   @Test
-  public void valueOfMixedCaseNamesReturnsLengthUnit() {
+  public void valueOfNullNameIsNullSafeAndReturnsNull() {
+    assertThat(LengthUnit.valueOfName(null)).isNull();
+  }
+
+  @Test
+  public void valueOfUpperAndLowerCaseNamesReturnsLengthUnit() {
 
     assertThat(LengthUnit.valueOfName(LengthUnit.NANOMETER.name())).isEqualTo(LengthUnit.NANOMETER);
     assertThat(LengthUnit.valueOfName("Micrometer")).isEqualTo(LengthUnit.MICROMETER);
@@ -123,16 +128,15 @@ public class LengthUnitTests {
   }
 
   @Test
-  public void valueOfNullNameReturnsNull() {
-    assertThat(LengthUnit.valueOfName(null)).isNull();
-  }
-
-  @Test
   public void pluralizedNamesAreCorrect() {
 
     Arrays.stream(LengthUnit.values())
-      .filter(it -> !(LengthUnit.INCH.equals(it) || LengthUnit.FOOT.equals(it)))
+      .filter(it -> !Arrays.asList(LengthUnit.FOOT, LengthUnit.INCH).contains(it))
       .forEach(it -> assertThat(it.getPluralName()).isEqualTo(it.name().concat("S")));
+  }
+
+  @Test
+  public void pluralizedNamesForInchesAndFeetAreCorrect() {
 
     assertThat(LengthUnit.INCH.getPluralName()).isEqualTo("INCHES");
     assertThat(LengthUnit.FOOT.getPluralName()).isEqualTo("FEET");

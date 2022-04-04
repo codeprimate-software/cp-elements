@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.enums;
 
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link LengthUnit} enum is an {@link Enum enumeration} of distances or length.
+ * An {@link Enum enumeration} of length, height or distance measurements.
  *
  * @author John Blum
  * @see java.lang.Enum
@@ -63,13 +63,14 @@ public enum LengthUnit {
   /**
    * Factory method used to get the default unit of length based in the current, default {@link Locale}.
    *
-   * Returns {@link LengthUnit#FOOT} if this is the {@literal United States},
-   * otherwise returns {@link LengthUnit#METER}.
+   * Returns {@link LengthUnit#FOOT} if this is the {@literal United States of America (USA)},
+   * otherwise returns {@link LengthUnit#METER} for all other countries.
    *
    * @return the default {@link LengthUnit} based in the current, default {@link Locale}.
    * @see java.util.Locale#getCountry()
+   * @see java.util.Locale#getDefault()
    */
-  public static LengthUnit getDefault() {
+  public static @NotNull LengthUnit getDefault() {
 
     return Optional.of(Locale.getDefault().getCountry())
       .filter(Locale.US.getCountry()::equals)
@@ -78,37 +79,37 @@ public enum LengthUnit {
   }
 
   /**
-   * Factory method used to find or lookup a {@link LengthUnit} by {@link String abbreviation}.
+   * Factory method used to find a {@link LengthUnit} by {@link String abbreviation}.
    *
-   * @param abbreviation {@link String} containing the abbreviation of the {@link LengthUnit}.
-   * @return the {@link LengthUnit} for the given {@link String abbreviation} or {@literal null}
+   * @param abbreviation {@link String} containing the abbreviation of the {@link LengthUnit} to find.
+   * @return the {@link LengthUnit} for the given {@link String abbreviation}, or {@literal null}
    * if no {@link LengthUnit} with the given {@link String abbreviation} exists.
    * @see #getAbbreviation()
    * @see #values()
    */
-  public static LengthUnit valueOfAbbreviation(String abbreviation) {
+  public static @Nullable LengthUnit valueOfAbbreviation(@Nullable String abbreviation) {
 
     return Arrays.stream(values())
-      .filter(distance -> distance.getAbbreviation().equals(abbreviation))
+      .filter(length -> length.getAbbreviation().equals(abbreviation))
       .findFirst()
       .orElse(null);
   }
 
   /**
-   * Factory method used to find or lookup a {@link LengthUnit} by {@link String name}.
+   * Factory method used to find a {@link LengthUnit} by {@link String name}.
    *
    * This operation is case-insensitive.
    *
    * @param name {@link String} containing the name of the {@link LengthUnit} to find.
-   * @return the {@link LengthUnit} for the given {@link String name} or {@literal null}
+   * @return the {@link LengthUnit} with the given {@link String name}, or {@literal null}
    * if no {@link LengthUnit} with the given {@link String name} exists.
-   * @see #values()
    * @see #name()
+   * @see #values()
    */
-  public static LengthUnit valueOfName(String name) {
+  public static @Nullable LengthUnit valueOfName(@Nullable String name) {
 
     return Arrays.stream(values())
-      .filter(distance -> distance.name().equalsIgnoreCase(name))
+      .filter(length -> length.name().equalsIgnoreCase(name))
       .findFirst()
       .orElse(null);
   }
@@ -116,25 +117,21 @@ public enum LengthUnit {
   private final String abbreviation;
 
   /**
-   * Construct a new instance of {@link LengthUnit} initialized with the given {@link String abbreviation}.
+   * Construct a new instance of {@link LengthUnit} initialized with the given, required {@link String abbreviation}.
    *
-   * @param abbreviation {@link String} containing the abbreviation for this {@link LengthUnit}.
-   * @throws IllegalArgumentException if {@link String abbreviation} is {@literal null} or empty.
+   * @param abbreviation {@link String} containing the abbreviation for {@literal this} {@link LengthUnit}.
    */
-  LengthUnit(String abbreviation) {
-
-    Assert.hasText(abbreviation, "Abbreviation is required");
-
+  LengthUnit(@NotNull String abbreviation) {
     this.abbreviation = abbreviation;
   }
 
   /**
-   * Returns the {@link String abbreviation} for this {@link LengthUnit}.
+   * Gets the {@link String abbreviation} for {@literal this} {@link LengthUnit}.
    *
-   * @return the {@link String abbreviation} for this {@link LengthUnit}.
+   * @return the {@link String abbreviation} for {@literal this} {@link LengthUnit}.
    * @see java.lang.String
    */
-  public String getAbbreviation() {
+  public @NotNull String getAbbreviation() {
     return this.abbreviation;
   }
 
@@ -144,7 +141,7 @@ public enum LengthUnit {
    * @return the pluralized {@link #name()} of this {@link LengthUnit} enumerated value.
    * @see #name()
    */
-  public String getPluralName() {
+  public @NotNull String getPluralName() {
     return this == FOOT ? "FEET" : this == INCH ? "INCHES" : name().concat("S");
   }
 
