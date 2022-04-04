@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.enums;
 
 import java.util.Arrays;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * The {@link Gender} enum is an {@link Enum enumeration} of the two sexes ({@literal male} and {@literal female}).
+ * An {@link Enum enumeration} of the genders [{@literal male}, {@literal female}] for people.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -31,7 +33,16 @@ public enum Gender {
   FEMALE("F", "Female"),
   MALE("M", "Male");
 
-  public static Gender valueOfAbbreviation(String abbreviation) {
+  /**
+   * Factory method used to find a {@link Gender} by {@link String abbreviation}.
+   *
+   * @param abbreviation {@link String} containing the abbreviation of the {@link Gender} to find.
+   * @return the {@link Gender} with the given {@link String abbreviation}, or {@literal null}
+   * if no {@link Gender} with the given {@link String name} exists.
+   * @see #getAbbreviation()
+   * @see #values()
+   */
+  public static @Nullable Gender valueOfAbbreviation(@Nullable String abbreviation) {
 
     return Arrays.stream(values())
       .filter(gender -> gender.getAbbreviation().equalsIgnoreCase(abbreviation))
@@ -39,7 +50,16 @@ public enum Gender {
       .orElse(null);
   }
 
-  public static Gender valueOfName(String name) {
+  /**
+   * Factory method used to find a {@link Gender} by {@link String name}.
+   *
+   * @param name {@link String} containing the name of the {@link Gender} to find.
+   * @return the {@link Gender} with the given {@link String name}, or {@literal null}
+   * if no {@link Gender} with the given {@link String name} exists.
+   * @see #getName()
+   * @see #values()
+   */
+  public static @Nullable Gender valueOfName(@Nullable String name) {
 
     return Arrays.stream(values())
       .filter(gender -> gender.getName().equalsIgnoreCase(name))
@@ -50,19 +70,39 @@ public enum Gender {
   private final String abbreviation;
   private final String name;
 
-  Gender(String abbreviation, String name) {
+  /**
+   * Constructs a new instance of {@link Gender} initialized with the given, required {@link String abbreviation}
+   * and {@link String name}.
+   *
+   * @param abbreviation {@link String} specifying the abbreviation for {@literal this} {@link Gender}.
+   * @param name {@link String} containing the name of {@literal this} {@link Gender}.
+   */
+  Gender(@NotNull String abbreviation, @NotNull String name) {
     this.abbreviation = abbreviation;
     this.name = name;
   }
 
-  public String getAbbreviation() {
+  /**
+   * Get the {@link String abbreviation} for {@literal this} {@link Gender}.
+   *
+   * @return the {@link String abbreviation} of {@literal this} {@link Gender}.
+   */
+  public @NotNull String getAbbreviation() {
     return this.abbreviation;
   }
 
-  public String getName() {
+  /**
+   * Get the {@link String name} for {@literal this} {@link Gender}.
+   *
+   * @return the {@link String name} of {@literal this} {@link Gender}.
+   */
+  public @NotNull String getName() {
     return this.name;
   }
 
+  /**
+   * @inheritDoc
+   */
   @Override
   public String toString() {
     return getName();
