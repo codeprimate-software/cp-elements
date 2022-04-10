@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.enums;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.function.Predicate;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link Month} enum is an {@link Enum enumeration} of the months in a year.
+ * An {@link Enum enumeration} of the months in a calendar year.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -44,42 +47,84 @@ public enum Month {
   NOVEMBER("Nov", "November", 11, Calendar.NOVEMBER, java.time.Month.NOVEMBER),
   DECEMBER("Dec", "December", 12, Calendar.DECEMBER, java.time.Month.DECEMBER);
 
-  public static Month valueOfAbbreviation(String abbreviation) {
-
-    return Arrays.stream(values())
-      .filter(month -> month.getAbbreviation().equalsIgnoreCase(abbreviation))
-      .findFirst()
-      .orElse(null);
+  /**
+   * Factory method used to find a {@link Month} for the given {@link String abbreviation}.
+   *
+   * @param abbreviation {@link String} containing the abbreviation for the {@link Month} to find.
+   * @return a {@link Month} in the enumeration with the given {@link String abbreviation},
+   * or {@literal null} if no {@link Month} with the given {@link String abbreviation} exists.
+   * @see #valueOfPredicate(Predicate)
+   * @see #getAbbreviation()
+   */
+  public static @Nullable Month valueOfAbbreviation(@Nullable String abbreviation) {
+    return valueOfPredicate(month -> month.getAbbreviation().equalsIgnoreCase(abbreviation));
   }
 
-  public static Month valueOfCalendarMonth(int calendarMonth) {
-
-    return Arrays.stream(values())
-      .filter(month -> month.getCalendarMonth() == calendarMonth)
-      .findFirst()
-      .orElse(null);
+  /**
+   * Factory method used to find a {@link Month} for the given {@link java.util.Calendar#MONTH}.
+   *
+   * @param calendarMonth {@link Calendar#MONTH} used to find a {@link Month} in the enumeration.
+   * @return a {@link Month} in the enumeration with the given {@link java.util.Calendar#MONTH},
+   * or {@literal null} if no {@link Month} with the given {@link java.util.Calendar#MONTH} exists.
+   * @see #valueOfPredicate(Predicate)
+   * @see java.util.Calendar#MONTH
+   */
+  public static @Nullable Month valueOfCalendarMonth(int calendarMonth) {
+    return valueOfPredicate(month -> month.getCalendarMonth() == calendarMonth);
   }
 
-  public static Month valueOfJavaTimeMonth(java.time.Month javaTimeMonth) {
-
-    return Arrays.stream(values())
-      .filter(month -> month.getJavaTimeMonth().equals(javaTimeMonth))
-      .findFirst()
-      .orElse(null);
+  /**
+   * Factory method used to find a {@link Month} for the given {@link java.time.Month}.
+   *
+   * @param javaTimeMonth {@link java.time.Month} used to find a {@link Month} in the enumeration.
+   * @return a {@link Month} in the enumeration with the given {@link java.time.Month},
+   * or {@literal null} if no {@link Month} with the given {@link java.time.Month} exists.
+   * @see #valueOfPredicate(Predicate)
+   * @see java.time.Month
+   */
+  public static @Nullable Month valueOfJavaTimeMonth(@Nullable java.time.Month javaTimeMonth) {
+    return valueOfPredicate(month -> month.getJavaTimeMonth().equals(javaTimeMonth));
   }
 
-  public static Month valueOfName(String name) {
-
-    return Arrays.stream(values())
-      .filter(month -> month.getName().equalsIgnoreCase(name))
-      .findFirst()
-      .orElse(null);
+  /**
+   * Factory method used to find a {@link Month} for the given {@link String name}.
+   *
+   * @param name {@link String} containing the name of the {@link Month} to find.
+   * @return a {@link Month} in the enumeration with the given {@link String name},
+   * or {@literal null} if no {@link Month} with the given {@link String name} exists.
+   * @see #valueOfPredicate(Predicate)
+   * @see #getName()
+   */
+  public static @Nullable Month valueOfName(@Nullable String name) {
+    return valueOfPredicate(month -> month.getName().equalsIgnoreCase(name));
   }
 
-  public static Month valueOfPosition(int position) {
+  /**
+   * Factory method used to find a {@link Month} at the given {@link Integer#TYPE position} in the calendar year.
+   *
+   * @param position {@link Integer#TYPE} indicating the position of the {@link Month} in the calendar year to find.
+   * @return the {@link Month} in the enumeration at the {@link Integer#TYPE position} in the calendar year,
+   * or {@literal null} if the given {@link Integer#TYPE position} is not within the calendar year (1 <= position <= 12).
+   * @see #valueOfPredicate(Predicate)
+   * @see #getPosition()
+   */
+  public static @Nullable Month valueOfPosition(int position) {
+    return valueOfPredicate(month -> month.getPosition() == position);
+  }
+
+  /**
+   * Finds the first {@link Month} enumerated value that matches the given, required {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} used to find and match the desired {@link Month}.
+   * @return a {@link Month} matching the {@link Predicate} or {@literal null} if no {@link Month}
+   * is found matching the {@link Predicate}.
+   * @see java.util.function.Predicate
+   * @see #values()
+   */
+  private static @Nullable Month valueOfPredicate(@NotNull Predicate<Month> predicate) {
 
     return Arrays.stream(values())
-      .filter(month -> month.getPosition() == position)
+      .filter(predicate)
       .findFirst()
       .orElse(null);
   }
@@ -93,15 +138,19 @@ public enum Month {
   private final String name;
 
   /**
-   * Constructs an instance of the {@link Month} enum initialized with the given month meta-data and descriptors.
+   * Constructs a new instance of the {@link Month} enum initialized with the given month metadata and descriptors.
    *
-   * @param abbreviation abbreviation for the month (e.g. Jan).
-   * @param name name of the month (e.g January).
-   * @param position integer value indicating the position of the month within th calendar year (e.g. January == 1).
-   * @param calendarMonth {@link Calendar} month (e.g. {@link Calendar#JANUARY}.
-   * @param month {@link java.time.Month} value of this {@link Month} enum (e.g. {@link java.time.Month#JANUARY}.
+   * @param abbreviation {@link String} specifying an abbreviation for the month (for example: {@literal Jan}).
+   * @param name {@link String} containing the name for the month (for example: {@literal January}).
+   * @param position {@link Integer#TYPE} value specifying the order of the month in a calendar year
+   * (for example: {@literal January} is the first month in the calendar year).
+   * @param calendarMonth {@link Calendar} month (for example: {@link Calendar#JANUARY}.
+   * @param month {@link java.time.Month} for the month (for example: {@link java.time.Month#JANUARY}).
+   * @see java.util.Calendar
+   * @see java.time.Month
    */
-  Month(String abbreviation, String name, int position, int calendarMonth, java.time.Month month) {
+  Month(@NotNull String abbreviation, @NotNull String name, int position, int calendarMonth,
+      @NotNull java.time.Month month) {
 
     this.abbreviation = abbreviation;
     this.name = name;
@@ -110,28 +159,61 @@ public enum Month {
     this.month = month;
   }
 
-  public String getAbbreviation() {
+  /**
+   * Gets the {@link String abbreviation} for {@literal this} {@link Month}.
+   *
+   * @return the {@link String abbreviation} for {@literal this} {@link Month}.
+   */
+  public @NotNull String getAbbreviation() {
     return this.abbreviation;
   }
 
+  /**
+   * Gets the equivalent {@link java.util.Calendar} month for {@literal this} {@link Month}.
+   *
+   * @return the equivalent {@link java.util.Calendar} month for {@literal this} {@link Month}.
+   * @see java.util.Calendar#MONTH
+   */
   public int getCalendarMonth() {
     return this.calendarMonth;
   }
 
-  public java.time.Month getJavaTimeMonth() {
+  /**
+   * Gets the equivalent {@link java.time.Month} for {@literal this} {@link Month}.
+   *
+   * @return the equivalent {@link java.time.Month} for {@literal this} {@link Month}.
+   * @see java.time.Month
+   */
+  public @NotNull java.time.Month getJavaTimeMonth() {
     return this.month;
   }
 
-  public String getName() {
+  /**
+   * Gets the {@link String name} of {@literal this} {@link Month}.
+   *
+   * @return the {@link String name} of {@literal this} {@link Month}.
+   */
+  public @NotNull String getName() {
     return this.name;
   }
 
+  /**
+   * Gets the {@literal Integer#TYPE position} of {@literal this} {@link Month} within a calendar year.
+   *
+   * @return the {@literal Integer#TYPE position} of {@literal this} {@link Month} within a calendar year.
+   */
   public int getPosition() {
     return this.position;
   }
 
+  /**
+   * Return a {@link String} representation of {@literal this} {@link Month}.
+   *
+   * @return a {@link String} describing {@literal this} {@link Month}.
+   * @see #getName()
+   */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return getName();
   }
 }
