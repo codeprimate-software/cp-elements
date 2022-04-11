@@ -18,6 +18,7 @@ package org.cp.elements.enums;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -58,35 +59,44 @@ public enum WeightUnit {
   }
 
   /**
-   * Factory method used to find a unit of weight by {@link String abbreviation}.
+   * Factory method used to find a {@link WeightUnit} by {@link String abbreviation}.
    *
-   * @param abbreviation {@link String} containing the abbreviation of the {@link WeightUnit} to find.
+   * @param abbreviation {@link String} containing the {@literal abbreviation} of the {@link WeightUnit} to find.
    * @return a {@link WeightUnit} with the given {@link String abbreviation}, or {@literal null}
    * if no {@link WeightUnit} with the given {@link String abbreviation} exists.
+   * @see #valueOf(Predicate)
    * @see #getAbbreviation()
-   * @see #values()
    */
   public static @Nullable WeightUnit valueOfAbbreviation(@Nullable String abbreviation) {
-
-    return Arrays.stream(values())
-      .filter(it -> it.getAbbreviation().equalsIgnoreCase(String.valueOf(abbreviation).trim()))
-      .findFirst()
-      .orElse(null);
+    return valueOf(weight -> weight.getAbbreviation().equalsIgnoreCase(String.valueOf(abbreviation).trim()));
   }
 
   /**
-   * Factory method used to find a unit of weight by {@link String name}.
+   * Factory method used to find a {@link WeightUnit} by {@link String name}.
    *
-   * @param name {@link String} containing the name of the {@link WeightUnit} to find.
+   * @param name {@link String} containing the {@literal name} of the {@link WeightUnit} to find.
    * @return a {@link WeightUnit} with the given {@link String name}, or {@literal null}
    * if no {@link WeightUnit} with the given {@link String name} exists.
+   * @see #valueOf(Predicate)
    * @see #name()
-   * @see #values()
    */
   public static @Nullable WeightUnit valueOfName(@Nullable String name) {
+    return valueOf(weight -> weight.name().equalsIgnoreCase(String.valueOf(name).trim()));
+  }
+
+  /**
+   * Factory method used to find a {@link WeightUnit} matching the given, required {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} used to find and match a {@link WeightUnit}; must not be {@literal null}.
+   * @return a {@link WeightUnit} matching the given, required {@link Predicate} or {@literal null}
+   * if not {@link WeightUnit} is a match for the given, required {@link Predicate}.
+   * @see java.util.function.Predicate
+   * @see #values()
+   */
+  private static @Nullable WeightUnit valueOf(@NotNull Predicate<WeightUnit> predicate) {
 
     return Arrays.stream(values())
-      .filter(it -> it.name().equalsIgnoreCase(String.valueOf(name).trim()))
+      .filter(predicate)
       .findFirst()
       .orElse(null);
   }
@@ -122,7 +132,7 @@ public enum WeightUnit {
   }
 
   /**
-   * Returns a {@link String} representation of {@literal this} {@link WeightUnit}.
+   * Returns a {@link String} representation for {@literal this} {@link WeightUnit}.
    *
    * @return a {@link String} describing {@literal this} {@link WeightUnit}.
    * @see java.lang.Object#toString()
