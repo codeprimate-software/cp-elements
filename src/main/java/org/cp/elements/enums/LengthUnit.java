@@ -18,6 +18,7 @@ package org.cp.elements.enums;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -81,18 +82,14 @@ public enum LengthUnit {
   /**
    * Factory method used to find a {@link LengthUnit} by {@link String abbreviation}.
    *
-   * @param abbreviation {@link String} containing the abbreviation of the {@link LengthUnit} to find.
+   * @param abbreviation {@link String} containing the {@literal abbreviation} of the {@link LengthUnit} to find.
    * @return the {@link LengthUnit} for the given {@link String abbreviation}, or {@literal null}
    * if no {@link LengthUnit} with the given {@link String abbreviation} exists.
+   * @see #valueOf(Predicate)
    * @see #getAbbreviation()
-   * @see #values()
    */
   public static @Nullable LengthUnit valueOfAbbreviation(@Nullable String abbreviation) {
-
-    return Arrays.stream(values())
-      .filter(length -> length.getAbbreviation().equals(abbreviation))
-      .findFirst()
-      .orElse(null);
+    return valueOf(length -> length.getAbbreviation().equals(abbreviation));
   }
 
   /**
@@ -100,16 +97,29 @@ public enum LengthUnit {
    *
    * This operation is case-insensitive.
    *
-   * @param name {@link String} containing the name of the {@link LengthUnit} to find.
+   * @param name {@link String} containing the {@literal name} of the {@link LengthUnit} to find.
    * @return the {@link LengthUnit} with the given {@link String name}, or {@literal null}
    * if no {@link LengthUnit} with the given {@link String name} exists.
+   * @see #valueOf(Predicate)
    * @see #name()
-   * @see #values()
    */
   public static @Nullable LengthUnit valueOfName(@Nullable String name) {
+    return valueOf(length -> length.name().equalsIgnoreCase(name));
+  }
+
+  /**
+   * Factory method used to find a {@link LengthUnit} by the given, required {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} used to find and match the {@link LengthUnit}; must not be {@literal null}.
+   * @return a {@link LengthUnit} matching the given, required {@link Predicate} or {@literal null}
+   * if no {@link LengthUnit} is a match for the the given, required {@link Predicate}.
+   * @see java.util.function.Predicate
+   * @see #values()
+   */
+  private static @Nullable LengthUnit valueOf(@NotNull Predicate<LengthUnit> predicate) {
 
     return Arrays.stream(values())
-      .filter(length -> length.name().equalsIgnoreCase(name))
+      .filter(predicate)
       .findFirst()
       .orElse(null);
   }
@@ -146,9 +156,9 @@ public enum LengthUnit {
   }
 
   /**
-   * Returns a {@link String} representation of this {@link LengthUnit}.
+   * Returns a {@link String} representation for {@literal this} {@link LengthUnit}.
    *
-   * @return a {@link String} describing this {@link LengthUnit}.
+   * @return a {@link String} describing {@literal this} {@link LengthUnit}.
    * @see java.lang.Object#toString()
    * @see #name()
    */
