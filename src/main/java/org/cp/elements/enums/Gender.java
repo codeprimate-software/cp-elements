@@ -16,6 +16,7 @@
 package org.cp.elements.enums;
 
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -36,33 +37,42 @@ public enum Gender {
   /**
    * Factory method used to find a {@link Gender} by {@link String abbreviation}.
    *
-   * @param abbreviation {@link String} containing the abbreviation of the {@link Gender} to find.
+   * @param abbreviation {@link String} containing the {@literal abbreviation} of the {@link Gender} to find.
    * @return the {@link Gender} with the given {@link String abbreviation}, or {@literal null}
-   * if no {@link Gender} with the given {@link String name} exists.
+   * if no {@link Gender} with the given {@link String abbreviation} exists.
+   * @see #valueOf(Predicate)
    * @see #getAbbreviation()
-   * @see #values()
    */
   public static @Nullable Gender valueOfAbbreviation(@Nullable String abbreviation) {
-
-    return Arrays.stream(values())
-      .filter(gender -> gender.getAbbreviation().equalsIgnoreCase(abbreviation))
-      .findFirst()
-      .orElse(null);
+    return valueOf(gender -> gender.getAbbreviation().equalsIgnoreCase(abbreviation));
   }
 
   /**
    * Factory method used to find a {@link Gender} by {@link String name}.
    *
-   * @param name {@link String} containing the name of the {@link Gender} to find.
+   * @param name {@link String} containing the {@literal name} of the {@link Gender} to find.
    * @return the {@link Gender} with the given {@link String name}, or {@literal null}
    * if no {@link Gender} with the given {@link String name} exists.
+   * @see #valueOf(Predicate)
    * @see #getName()
-   * @see #values()
    */
   public static @Nullable Gender valueOfName(@Nullable String name) {
+    return valueOf(gender -> gender.getName().equalsIgnoreCase(name));
+  }
+
+  /**
+   * Factory method used to find a {@link Gender} by the given, required {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} used to fina and match a {@link Gender}; must not be {@literal null}.
+   * @return a {@link Gender} matching the given, required {@link Predicate} or {@literal null} if no {@link Gender}
+   * is a match for the given, required {@link Predicate}.
+   * @see java.util.function.Predicate
+   * @see #values()
+   */
+  private static @Nullable Gender valueOf(Predicate<Gender> predicate) {
 
     return Arrays.stream(values())
-      .filter(gender -> gender.getName().equalsIgnoreCase(name))
+      .filter(predicate)
       .findFirst()
       .orElse(null);
   }
