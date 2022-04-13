@@ -44,7 +44,7 @@ public enum Weekday {
   SATURDAY("Sat", "Saturday", Calendar.SATURDAY, DayOfWeek.SATURDAY, 7);
 
   /**
-   * Finds and matches a {@link Weekday} enumerated value for the given {@link String abbreviation}.
+   * Factory method used to find a {@link Weekday} for the given {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the {@literal abbreviation} used to find and match
    * the desired {@link Weekday}.
@@ -58,7 +58,7 @@ public enum Weekday {
   }
 
   /**
-   * Finds and matches a {@link Weekday} enumerated value for the given {@link Calendar#DAY_OF_WEEK}.
+   * Factory method used to find a {@link Weekday} for the given {@link Calendar#DAY_OF_WEEK}.
    *
    * @param calendarDay {@link Calendar#DAY_OF_WEEK} used to find and match the desired {@link Weekday}.
    * @return a {@link Weekday} matching the given {@link Calendar#DAY_OF_WEEK} or {@literal null}
@@ -72,7 +72,7 @@ public enum Weekday {
   }
 
   /**
-   * Finds and matches a {@link Weekday} enumerated value for the given {@link DayOfWeek}.
+   * Factory method used to find a {@link Weekday} for the given {@link DayOfWeek}.
    *
    * @param dayOfWeek {@link DayOfWeek} used to find and match the desired {@link Weekday}.
    * @return a {@link Weekday} matching the given {@link DayOfWeek} or {@literal null}
@@ -86,7 +86,7 @@ public enum Weekday {
   }
 
   /**
-   * Finds and matches a {@link Weekday} enumerated value for the given {@link String name}.
+   * Factory method used to find a {@link Weekday} for the given {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} used to find and match the desired {@link Weekday}.
    * @return a {@link Weekday} matching the given {@link String name} or {@literal null}
@@ -99,7 +99,7 @@ public enum Weekday {
   }
 
   /**
-   * Finds and matches a {@link Weekday} enumerated value for the given {@link Integer position}.
+   * Factory method used to find a {@link Weekday} for the given {@link Integer position}.
    *
    * @param position {@link Integer} containing the {@literal position} used to find and match
    * the desired {@link Weekday}.
