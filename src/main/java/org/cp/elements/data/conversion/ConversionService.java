@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.service.ServiceTemplate;
 import org.cp.elements.service.annotation.Service;
-import org.cp.elements.service.support.ServiceSupport;
 
 /**
  * The {@link ConversionService} interface defines a contract for application {@link Service} components
@@ -28,13 +27,13 @@ import org.cp.elements.service.support.ServiceSupport;
  * @see org.cp.elements.data.conversion.AbstractConversionService
  * @see org.cp.elements.data.conversion.Converter
  * @see org.cp.elements.data.conversion.ConverterRegistry
+ * @see org.cp.elements.service.ServiceTemplate
  * @see org.cp.elements.service.annotation.Service
- * @see org.cp.elements.service.support.ServiceSupport
  * @since 1.0.0
  */
 @Service
 @SuppressWarnings("unused")
-public interface ConversionService extends ConverterRegistry, ServiceSupport {
+public interface ConversionService extends ConverterRegistry, ServiceTemplate<ConversionService> {
 
   /**
    * Determines whether this {@link ConversionService} can convert the given {@link Object}

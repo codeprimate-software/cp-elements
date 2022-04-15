@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.ServiceLoader;
 
+import org.cp.elements.service.ServiceTemplate;
 import org.cp.elements.service.annotation.Service;
-import org.cp.elements.service.support.ServiceSupport;
 
 /**
  * The {@link ProxyService} class is a service component used to load {@link ProxyFactory}
@@ -35,12 +33,12 @@ import org.cp.elements.service.support.ServiceSupport;
  * @see java.util.ServiceLoader
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @see org.cp.elements.service.annotation.Service
- * @see org.cp.elements.service.support.ServiceSupport
+ * @see org.cp.elements.service.ServiceTemplate
  * @since 1.0.0
  */
 @Service
-@SuppressWarnings("unused")
-public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceSupport<ProxyFactory<T>> {
+@SuppressWarnings({ "rawtypes", "unused" })
+public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceTemplate<ProxyFactory<T>> {
 
   private static ProxyService proxyServiceInstance;
 
@@ -53,7 +51,11 @@ public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceSup
    */
   @SuppressWarnings("unchecked")
   public static synchronized <T> ProxyService<T> newProxyService() {
-    proxyServiceInstance = Optional.ofNullable(proxyServiceInstance).orElseGet(ProxyService::new);
+
+    if (proxyServiceInstance == null) {
+      proxyServiceInstance = new ProxyService<T>();
+    }
+
     return proxyServiceInstance;
   }
 
