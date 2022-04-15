@@ -1,19 +1,20 @@
 /*
- * Copyright 2011-Present Author or Authors.
+ * Copyright 2016 Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-package org.cp.elements.dao.support;
+package org.cp.elements.dao;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,10 +27,11 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The Data Access Object (DAO) Support interface defines the basic contract and functionality
+ * The Data Access Object (DAO) Template interface defines the basic contract and functionality
  * for the CRUD (CREATE, READ, UPDATE, DELETE) data access operations.
  *
  * @author John J. Blum
@@ -40,22 +42,25 @@ import org.cp.elements.util.CollectionUtils;
  * @see java.util.List
  * @see java.util.Optional
  * @see java.util.Set
+ * @see <a href="https://en.wikipedia.org/wiki/Template_method_pattern">Template Method Software Design Pattern</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface DaoSupport<T> {
+public interface DaoTemplate<T> {
 
   /**
-   * Creates a new instance of a Bean with a {@link Class type} of {@code T}.
+   * Creates a new instance of a Bean of {@link Class type} {@code T}.
    *
    * @return a new Bean.
    */
   T create();
 
   /**
-   * Creates a new instance of a Bean with a {@link Class type} of {@code T}.
+   * Creates a new instance of a Bean of {@link Class type} {@code T} initialized with
+   * the given, required {@link Function}.
    *
-   * The new Bean is passed to the {@code callback} {@link Function} in order to perform any necessary initialization.
+   * The new Bean is passed to the {@code callback} {@link Function} in order to perform any necessary initialization
+   * or other customizations before the Bean is returned.
    *
    * @param callback {@link Function} used to initialize the Bean; must not be {@literal null}.
    * @return a new [initialized] Bean.
@@ -63,7 +68,7 @@ public interface DaoSupport<T> {
    * @see java.util.function.Function
    * @see #create()
    */
-  default T create(Function<T, T> callback) {
+  default T create(@NotNull Function<T, T> callback) {
 
     Assert.notNull(callback, "Callback Function is required");
 
@@ -75,7 +80,7 @@ public interface DaoSupport<T> {
    *
    * Returns an {@link List#isEmpty() empty List} by default.
    *
-   * @return all Beans in the data store.
+   * @return all Beans contained in the data store.
    * @see #findAll(Comparator)
    * @see java.util.List
    */
@@ -84,17 +89,18 @@ public interface DaoSupport<T> {
   }
 
   /**
-   * Finds all Beans persisted to the data store ordered (sorted) by the given {@link Comparator}.
+   * Finds all Beans persisted to the data store ordered (sorted) by the given, required {@link Comparator}.
    *
-   * @param orderBy {@link Comparator} used to order (sort) the Beans in the {@link List}.
-   * @return all Beans persisted to the data store.
+   * @param orderBy {@link Comparator} used to order (sort) the Beans in the {@link List};
+   * must not be {@literal null}.
+   * @return all Beans contained to the data store ordered (sorted) by the {@link Comparator}.
    * @throws IllegalArgumentException if the {@link Comparator} used to order (sort) the results
    * is {@literal null}.
    * @see java.util.Comparator
    * @see java.util.List
    * @see #findAll()
    */
-  default List<T> findAll(Comparator<T> orderBy) {
+  default List<T> findAll(@NotNull Comparator<T> orderBy) {
 
     Assert.notNull(orderBy, "Comparator used to order (sort) the beans is required");
 
@@ -106,18 +112,19 @@ public interface DaoSupport<T> {
   }
 
   /**
-   * Finds all Beans matching the criteria defined by the given {@link Predicate}.
+   * Finds all Beans matching the criteria defined by the given, required {@link Predicate}.
    *
    * Returns a {@link Collections#emptyList()} by default.
    *
-   * @param queryPredicate {@link Predicate} defining the criteria used to match Beans.
+   * @param queryPredicate {@link Predicate} defining the criteria used to match Beans;
+   * must not be {@literal null}.
    * @return a {@link List} of all Beans matching the criteria defined by the {@link Predicate}.
    * @throws IllegalArgumentException if the Query {@link Predicate} is {@literal null}.
-   * @see #findAll(Predicate, Comparator)
    * @see java.util.function.Predicate
    * @see java.util.List
+   * @see #findAll()
    */
-  default List<T> findAll(Predicate<T> queryPredicate) {
+  default List<T> findAll(@NotNull Predicate<T> queryPredicate) {
 
     Assert.notNull(queryPredicate, "Query Predicate is required");
 
@@ -129,20 +136,21 @@ public interface DaoSupport<T> {
   }
 
   /**
-   * Finds all Beans matching the criteria defined by the given {@link Predicate}
-   * ordered by (sorted by) the given {@link Comparator}.
+   * Finds all Beans matching the criteria defined by the given, required {@link Predicate}
+   * then ordered by (sorted by) the given, required {@link Comparator}.
    *
-   * @param queryPredicate {@link Predicate} defining the criteria used to match Beans.
-   * @param orderBy {@link Comparator} used to order (sort) the Beans in the {@link List}.
-   * @return a {@link List} of all Beans matching the criteria defined by the {@link Predicate}.
-   * @throws IllegalArgumentException if the Query {@link Predicate} or the {@link Comparator}
-   * used to order (sort) the results is {@literal null}.
+   * @param queryPredicate {@link Predicate} defining the criteria used to match Beans; must not be {@literal null}.
+   * @param orderBy {@link Comparator} used to order (sort) the Beans in the {@link List}; must not be {@literal null}.
+   * @return a {@link List} of all Beans matching the criteria defined by the {@link Predicate}, then ordered (sorted)
+   * by the {@link Comparator}.
+   * @throws IllegalArgumentException if the Query {@link Predicate} used to filter, or the {@link Comparator}
+   * used to order (sort) the results, is {@literal null}.
    * @see java.util.function.Predicate
    * @see java.util.Comparator
    * @see #findAll(Predicate)
    * @see java.util.List
    */
-  default List<T> findAll(Predicate<T> queryPredicate, Comparator<T> orderBy) {
+  default List<T> findAll(@NotNull Predicate<T> queryPredicate, @NotNull Comparator<T> orderBy) {
 
     Assert.notNull(queryPredicate, "Query Predicate is required");
     Assert.notNull(orderBy, "Comparator used to order (sort) the beans is required");
@@ -155,24 +163,24 @@ public interface DaoSupport<T> {
   }
 
   /**
-   * Finds a single {@link Optional} Bean matching the criteria defined by the given {@link Predicate}.
+   * Finds a single, {@link Optional} Bean matching the criteria defined by the given, required {@link Predicate}.
    *
    * Returns {@link Optional#empty()} by default.
    *
    * @param queryPredicate {@link Predicate} defining the criteria used to match a single Bean.
-   * @return a single {@link Optional} Bean matching the criteria defined by the {@link Predicate}.
+   * @return a single, {@link Optional} Bean matching the criteria defined by the {@link Predicate}.
    * @see java.util.function.Predicate
    * @see java.util.Optional
    * @see #findAll(Predicate)
    */
-  default Optional<T> findBy(Predicate<T> queryPredicate) {
+  default Optional<T> findBy(@NotNull Predicate<T> queryPredicate) {
     return Optional.empty();
   }
 
   /**
    * Loads the specified Bean from the data store with the given {@code ID}.
    *
-   * @param <ID> {@link Class type} of the Beans' Identifier (ID).
+   * @param <ID> {@link Class type} of the Bean's identifier ({@literal ID}).
    * @param id Identifier identifying the Bean to load from the data store.
    * @return the Bean loaded from the data store.
    * @see org.cp.elements.lang.Identifiable#getId()
@@ -182,18 +190,18 @@ public interface DaoSupport<T> {
   /**
    * Removes the specified Bean from the data store.
    *
-   * @param bean the Bean object specifying the ID of the entity to remove from the data store.
+   * @param bean Bean object specifying the ID of the entity to remove from the data store.
    * @return a boolean value indicating whether a Bean with ID was successfully removed from the data store.
    * @see org.cp.elements.lang.Identifiable#getId()
    */
   boolean remove(T bean);
 
   /**
-   * Removes all Beans from the data store matching the given {@link Predicate} filter.
+   * Removes all Beans from the data store matching the given, required {@link Predicate} filter.
    *
    * @param filter {@link Predicate} used to match the Beans to remove from the data store.
-   * @return a boolean value indicating whether this operation mutated the data store.
-   * @throws IllegalArgumentException if the {@link Predicate} Filter is {@literal null}.
+   * @return a boolean value indicating whether this {@code removeAll} operation mutated the data store.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
    * @see java.util.function.Predicate
    * @see #findAll(Predicate)
    * @see #removeAll(Set)
@@ -206,7 +214,7 @@ public interface DaoSupport<T> {
   }
 
   /**
-   * Removes all {@link Set Beans} from the data store.
+   * Removes all Beans contained in the given {@link Set} from the data store.
    *
    * @param beans {@link Set} of Beans to remove from the data store.
    * @return a boolean value indicating whether this {@code removeAll} operation mutated the data store.
@@ -215,23 +223,22 @@ public interface DaoSupport<T> {
    */
   default boolean removeAll(Set<T> beans) {
 
-    Set<T> removedBeans = CollectionUtils.nullSafeSet(beans).stream()
+    return CollectionUtils.nullSafeSet(beans).stream()
       .filter(Objects::nonNull)
-      .filter(this::remove)
-      .collect(Collectors.toSet());
-
-    return !removedBeans.isEmpty();
+      .map(this::remove)
+      .reduce((booleanOne, booleanTwo) -> booleanOne || booleanTwo)
+      .orElse(false);
   }
 
   /**
-   * Saves the specified Bean to the data store.
+   * Saves the given Bean to the data store.
    *
    * If the Bean is new (usually indicated by the absence of an ID), then the Bean is inserted in the data store,
    * otherwise the data store is updated with the Bean's current state.
    *
-   * @param bean the Bean object who's stated is persisted (inserted/updated) to the data store.
-   * @return the Bean object in a persisted, saved state.  This is also transaction indicating the Bean is no longer
-   * in a modified state.
+   * @param bean Bean object whose state is persisted to (inserted/updated, or stored in) the data store.
+   * @return the Bean object in a persisted, saved state. The Bean will also transition to a non-new,
+   * non-modified state.
    * @see org.cp.elements.lang.Auditable#isModified()
    * @see org.cp.elements.lang.Identifiable#isNew()
    */
@@ -245,7 +252,7 @@ public interface DaoSupport<T> {
    * @see java.util.Set
    * @see #save(Object)
    */
-  default Set<T> saveAll(Set<T> beans) {
+  default @NotNull Set<T> saveAll(@NotNull Set<T> beans) {
 
     return CollectionUtils.nullSafeSet(beans).stream()
       .filter(Objects::nonNull)
