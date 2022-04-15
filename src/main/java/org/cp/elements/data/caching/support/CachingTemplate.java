@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import java.util.Optional;
@@ -24,28 +23,27 @@ import java.util.function.Supplier;
 
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link CachingTemplate} class is an implementation of the Template Method Software Design Pattern
- * wrapping a {@link Cache} to provide additional capabilities such as look-aside caching, cache puts
- * on successful service method completion and cache eviction when a service method performs an update.
+ * The {@link CachingTemplate} class is an implementation of the {@literal Template Method Software Design Pattern}
+ * wrapping and delegating to a {@link Cache} in order to provide additional capabilities such as
+ * {@literal Look-Aside Caching} ({@literal Cache-Aside Caching}), cache puts on successful service method completion
+ * and cache eviction when a service method performs an update.
  *
- * This template additionally performs locking for both read and write data access operations
- * on the wrapped {@link Cache} to coordinate concurrent {@link Cache} operations in a multi-thread
- * environment.
+ * This Template additionally performs locking for both read and write data access operations when using the wrapped
+ * {@link Cache} in order to coordinate concurrent {@link Cache} operations in a multi-Thread environment.
  *
  * @author John Blum
  * @see java.util.concurrent.locks.Lock
  * @see java.util.concurrent.locks.ReadWriteLock
+ * @see java.util.concurrent.locks.ReentrantReadWriteLock
  * @see org.cp.elements.data.caching.Cache
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
-
-  private final Cache<KEY, VALUE> cache;
-
-  private ReadWriteLock lock;
 
   /**
    * Factory method used to construct a new instance of the {@link CachingTemplate}
@@ -59,82 +57,96 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see org.cp.elements.data.caching.Cache
    * @see #CachingTemplate(Cache)
    */
-  public static <KEY extends Comparable<KEY>, VALUE> CachingTemplate<KEY, VALUE> with(Cache<KEY, VALUE> cache) {
+  public static @NotNull <KEY extends Comparable<KEY>, VALUE> CachingTemplate<KEY, VALUE> with(
+      @NotNull Cache<KEY, VALUE> cache) {
+
     return new CachingTemplate<>(cache);
   }
 
+  private final Cache<KEY, VALUE> cache;
+
+  private ReadWriteLock lock;
+
   /**
-   * Constructs an instance of the {@link CachingTemplate} initialized with the given {@link Cache}.
+   * Constructs a new instance of {@link CachingTemplate} initialized with the given, required {@link Cache}.
    *
-   * @param cache {@link Cache} used by this template in all {@link Cache} data access operations.
+   * @param cache {@link Cache} used by this Template in all {@link Cache} data access operations.
    * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
-   * @see org.cp.elements.data.caching.Cache
    * @see #CachingTemplate(Cache, ReadWriteLock)
+   * @see org.cp.elements.data.caching.Cache
    */
-  public CachingTemplate(Cache<KEY, VALUE> cache) {
+  public CachingTemplate(@NotNull Cache<KEY, VALUE> cache) {
     this(cache, null);
   }
 
   /**
-   * Constructs a new instance of {@link CachingTemplate} initialized with the given {@link Cache} used in all
-   * caching operations performed by this template along with a lock to synchronize the cache data access operations.
+   * Constructs a new instance of {@link CachingTemplate} initialized with the given, required {@link Cache}
+   * used in all caching operations performed by this Template along with a {@link Lock} to synchronize on
+   * the {@link Cache} data access operations.
    *
-   * @param cache {@link Cache} used by this template in all {@link Cache} data access operations.
-   * @param lock {@link Object} used by this template to synchronized/coordinate
-   * all {@link Cache} data access operations.
+   * @param cache {@link Cache} used by this Template in all {@link Cache} data access operations.
+   * @param lock {@link ReadWriteLock} used by this Template to synchronize all {@link Cache} data access operations.
    * @throws IllegalArgumentException if {@link Cache} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache
+   * @see #resolveReadWriteLock(ReadWriteLock)
+   * @see #newReadWriteLock()
    */
-  public CachingTemplate(Cache<KEY, VALUE> cache, ReadWriteLock lock) {
+  public CachingTemplate(@NotNull Cache<KEY, VALUE> cache, @Nullable ReadWriteLock lock) {
 
     Assert.notNull(cache, "Cache is required");
 
     this.cache = cache;
-    this.lock = lock != null ? lock : newReadWriteLock();
+    this.lock = resolveReadWriteLock(lock);
+  }
+
+  private @NotNull ReadWriteLock resolveReadWriteLock(@Nullable ReadWriteLock lock) {
+    return lock != null ? lock : newReadWriteLock();
   }
 
   /**
-   * Returns a reference to the {@link Cache} used by this template.
+   * Returns a reference to the {@link Cache} used by this Template.
    *
-   * @return a reference to the {@link Cache} used by this template.
+   * @return a reference to the {@link Cache} used by this Template.
    * @see org.cp.elements.data.caching.Cache
    */
-  protected Cache<KEY, VALUE> getCache() {
+  protected @NotNull Cache<KEY, VALUE> getCache() {
     return this.cache;
   }
 
   /**
-   * Returns the {@link ReadWriteLock lock} used by this template when performing {@link Cache} operations.
+   * Returns the {@link ReadWriteLock} used by this Template when performing {@link Cache} data access operations.
    *
-   * @return the {@link ReadWriteLock lock} used by this template when performing {@link Cache} operations.
+   * @return the {@link ReadWriteLock lock} used by this Template when performing {@link Cache} data access operations.
    * @see java.util.concurrent.locks.ReadWriteLock
    */
-  protected ReadWriteLock getLock() {
+  protected @NotNull ReadWriteLock getLock() {
     return this.lock;
   }
 
   /**
    * Constructs a new instance of the {@link ReadWriteLock}.
    *
-   * @return a new instance of the {@link ReadWriteLock}.
+   * @return a new {@link ReadWriteLock}.
+   * @see java.util.concurrent.locks.ReentrantReadWriteLock
    * @see java.util.concurrent.locks.ReadWriteLock
    */
-  protected ReadWriteLock newReadWriteLock() {
+  protected @NotNull ReadWriteLock newReadWriteLock() {
     return new ReentrantReadWriteLock();
   }
 
   /**
-   * Sets the {@link ReadWriteLock lock} used by this template to synchronize {@link Cache}
+   * Sets the {@link ReadWriteLock} used by this Template to synchronize {@link Cache}
    * read and write data access operations.
    *
-   * @param lock {@link ReadWriteLock} used to synchronize/coordinate {@link Cache}
-   * read and write data access operations.
+   * @param lock {@link ReadWriteLock} used to synchronize{@link Cache} read and write
+   * data access operations.
    * @return this {@link CachingTemplate}.
    * @see java.util.concurrent.locks.ReadWriteLock
+   * @see #resolveReadWriteLock(ReadWriteLock)
    * @see #newReadWriteLock()
    */
-  public CachingTemplate using(ReadWriteLock lock) {
-    this.lock = lock != null ? lock : newReadWriteLock();
+  public @NotNull CachingTemplate<KEY, VALUE> using(@Nullable ReadWriteLock lock) {
+    this.lock = resolveReadWriteLock(lock);
     return this;
   }
 
@@ -148,7 +160,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see java.util.concurrent.locks.ReadWriteLock#writeLock()
    * @see #getCache()
    */
-  protected void clear(ReadWriteLock lock) {
+  protected void clear(@NotNull ReadWriteLock lock) {
 
     Lock writeLock = lock.writeLock();
 
@@ -172,7 +184,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see java.util.concurrent.locks.ReadWriteLock#writeLock()
    * @see #getCache()
    */
-  protected void evict(ReadWriteLock lock, KEY key) {
+  protected void evict(@NotNull ReadWriteLock lock, @NotNull KEY key) {
 
     Lock writeLock = lock.writeLock();
 
@@ -198,7 +210,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see java.util.concurrent.locks.ReadWriteLock#readLock()
    * @see #getCache()
    */
-  protected VALUE read(ReadWriteLock lock, KEY key) {
+  protected @Nullable VALUE read(@NotNull ReadWriteLock lock, @NotNull KEY key) {
 
     Lock readLock = lock.readLock();
 
@@ -225,7 +237,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see java.util.concurrent.locks.ReadWriteLock#writeLock()
    * @see #getCache()
    */
-  protected VALUE write(ReadWriteLock lock, KEY key, VALUE value) {
+  protected @Nullable VALUE write(@NotNull ReadWriteLock lock, @NotNull KEY key, @Nullable VALUE value) {
 
     Lock writeLock = lock.writeLock();
 
@@ -263,7 +275,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see #getLock()
    */
   @SuppressWarnings("unchecked")
-  public <T extends VALUE> T withCaching(KEY key, Supplier<VALUE> cacheableOperation) {
+  public @Nullable <T extends VALUE> T withCaching(@NotNull KEY key, @NotNull Supplier<VALUE> cacheableOperation) {
 
     Assert.notNull(key, "Key is required");
     Assert.notNull(cacheableOperation, "Supplier is required");
@@ -290,7 +302,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see #getLock()
    */
   @SuppressWarnings("unchecked")
-  public <T extends VALUE> T withCacheClear(Supplier<VALUE> cacheableOperation) {
+  public @Nullable <T extends VALUE> T withCacheClear(@NotNull Supplier<VALUE> cacheableOperation) {
 
     Assert.notNull(cacheableOperation, "Supplier is required");
 
@@ -316,7 +328,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see #getLock()
    */
   @SuppressWarnings("unchecked")
-  public <T extends VALUE> T withCacheEvict(KEY key, Supplier<VALUE> cacheableOperation) {
+  public @Nullable <T extends VALUE> T withCacheEvict(@NotNull KEY key, @NotNull Supplier<VALUE> cacheableOperation) {
 
     Assert.notNull(cacheableOperation, "Supplier is required");
 
@@ -346,7 +358,7 @@ public class CachingTemplate<KEY extends Comparable<KEY>, VALUE> {
    * @see #getLock()
    */
   @SuppressWarnings("unchecked")
-  public <T extends VALUE> T withCachePut(KEY key, Supplier<VALUE> cacheableOperation) {
+  public @Nullable <T extends VALUE> T withCachePut(@NotNull KEY key, @NotNull Supplier<VALUE> cacheableOperation) {
 
     Assert.notNull(key, "Key is required");
     Assert.notNull(cacheableOperation, "Supplier is required");
