@@ -5,17 +5,17 @@
 
     <ivyauthor name="Codeprimate, LLC" url="www.codeprimate.org"/>
     <description>
-      The Codeprimate cp-elements is a library of Java classes and components used to build cli, desktop, web
-      and mobile software applications.
+      The Codeprimate cp-elements is a Java classes library and micro-framework used to build software applications
+      written in Java.
     </description>
   </info>
   <dependencies>
-    <dependency org="junit" name="junit" rev="4.12"/>
-    <dependency org="org.mockito" name="mockito" rev="1.10.19"/>
-    <dependency org="org.jmock" name="jmock" rev="2.8.1" transitive="true"/>
-    <dependency org="org.jmock" name="jmock-junit4" rev="2.8.1" transitive="true"/>
-    <dependency org="org.jmock" name="jmock-legacy" rev="2.8.1" transitive="true"/>
-    <dependency org="org.easymock" name="easymock" rev="3.0"/>
+    <dependency org="junit" name="junit" rev="4.13.2"/>
+    <dependency org="org.mockito" name="mockito" rev="4.4.0"/>
+    <dependency org="org.jmock" name="jmock" rev="2.12.0" transitive="true"/>
+    <dependency org="org.jmock" name="jmock-junit4" rev="2.12.0" transitive="true"/>
+    <dependency org="org.jmock" name="jmock-legacy" rev="2.12.0" transitive="true"/>
+    <dependency org="org.easymock" name="easymock" rev="4.3"/>
     <dependency org="edu.umd.cs.mtc" name="multithreadedtc" rev="1.01"/>
   </dependencies>
 </ivy-module>
