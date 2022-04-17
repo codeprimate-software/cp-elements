@@ -613,6 +613,7 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
+  // TODO: Test fails when run with Gradle.
   public void joinInterruptedAlternate() {
 
     assumeThat(RuntimeUtils.isRunWithMaven()).isFalse();
