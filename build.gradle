@@ -42,6 +42,7 @@ jar {
   version = "$version"
   manifest {
     attributes('Main-Class' : 'org.cp.elements.ElementsVersion')
+    attributes('Automatic-Module-Name' : 'org.codeprimate.elements')
   }
 }
 
