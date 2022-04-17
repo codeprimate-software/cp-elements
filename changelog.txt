@@ -3,6 +3,99 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0-M7 - 2022-April-16
+--------------------------
+Continued development of Codeprimate Elements beginning with a project review and refactoring.
+
+* Reviewed and refactored the org.cp.elements.ElementsVersion class.
+* Reviewed and refactored the org.cp.elements.lang.Assert class.
+*** Adds Assert.notEmpty(:Iterable) to assert methods and returns this from all assertions.
+* Reviewed and refactored the org.cp.elements.lang.LangExtensions class.
+*** Adds new getTargetAs(:Class) method to the assertThat operator.
+*** Adds new isValid(:Predicate) method to the assertThat operator.
+*** Changes the AssertThatExpression class to be extensible.
+*** Adds the new notComparable(:Comparable) method to the is operator.
+*** Adds the valid(:Predicate) method to the is operator.
+*** Adds new type assertions: as(:Class), asString(), and asType(:Function<T, S>).
+* Defines the new @Dsl annotation in the org.cp.elements.lang.annotation package.
+* Reviewed and refactored the org.cp.elements.lang.annotation.FluentApi annotation
+and org.cp.elements.lang.FluentExtensions class.
+* Defines the new @InitializationSafe annotation in the org.cp.elements.lang.annotation package.
+* Reviewed and refactored the org.cp.elements.lang.Lifecycle interface.
+* Reviewed and refactored the org.cp.elements.lang.AssertionException class.
+* Reviewed and refactored the org.cp.elements.lang.Auditable interface.
+* Reviewed and refactored the org.cp.elements.lang.Identifiable interface.
+* Reviewed and refactored the org.cp.elements.lang.support.AuditableAdapter class.
+* Reviewed and refactored the org.cp.elements.lang.support.AuditableSupport class.
+* Reviewed and refactored the org.cp.elements.lang.support.AuditableVisitor class.
+* Reviewed and refactored the org.cp.elements.lang.support.IdentifiableAdaptor class.
+* Reviewed and refactored the org.cp.elements.lang.support.IdentifiableSupport class.
+* Reviewed and refactored the org.cp.elements.beans.Bean interface.
+* Defines the ThrowableOperation interface in the org.cp.elements.lang package.
+* Reviewed and refactored the org.cp.elements.lang.CheckedExceptionsFactory class.
+* Reviewed and refactored the org.cp.elements.lang.RuntimeExceptionsFactory class.
+* Defines the new CodeBlocks class in the org.cp.elements.lang package.
+* Renamed the defaultIfNull(:Object[]) method in the org.cp.elements.lang.ObjectUtils class
+to returnFirstNonNullValue(:Object[]).
+* Defines the new Auditor interface in the org.cp.elements.lang package.
+*** Refactor the the org.cp.elements.lang.AuditableVisitable class to the use the new Auditor interface.
+* Defines the new Versionable interface in the org.cp.elements.lang package.
+* Defines the new JavaVersion class in the org.cp.elements.lang package.
+* Reviewed and refactored the org.cp.elements.lang.Builder interface.
+* Reviewed and refactored the org.cp.elements.lang.Composite interface.
+* Reviewed and refactored the org.cp.elements.lang.Visitable interface.
+* Reviewed and refactored the org.cp.elements.lang.Visitor interface.
+* Reviewed and refactored the org.cp.elements.lang.factory.ObjectFactory interface.
+* Reviewed and refactored the org.cp.elements.lang.factory.AbstractObjectFactory class.
+* Reviewed and refactored the org.cp.elements.lang.factory.provider.PrototypeObjectFactory class.
+* Refactored the org.cp.elements.util.CollectionExtensions class.
+* Reviewed and refactored the org.cp.elements.lang.factory.ObjectFactoryAware interface.
+* Reviewed and refactored the org.cp.elements.lang.factory.ObjectFactoryReferenceHolder class.
+* Reviewed and refactored the org.cp.elements.lang.concurrent.SimpleThreadFactory class.
+* Reviewed and refactored the org.cp.elements.lang.concurrent.ThreadAdapter class.
+* Reviewed and refactored the org.cp.elements.lang.concurrent.ThreadUtils class.
+* Defines the new RuntimeUtils class in the org.cp.elements.lang package.
+* Reviewed and refactored the org.cp.elements.lang.concurrent.GuardedBy annotation.
+* Reviewed and refactored the org.cp.elements.lang.concurrent.ThreadSafe annotation.
+* Reviewed and refactored the org.cp.elements.lang.BooleanUtils class.
+* Defines the new FunctionUtils class in the org.cp.elements.function package.
+* Defines the new CannedPredicates enum in the org.cp.elements.function package.
+* Reviewed and refactored the org.cp.elements.beans.AbstractBean class.
+* Defines the new LoserException class in the org.cp.elements.utils package.
+* Defines the new BiFeederFunction class in the org.cp.elements.function package.
+* Defines the new ClearDirtyStateVisitor class in the org.cp.elements.beans.support package.
+* Reviewed and refactored the org.cp.elements.beans.event.ChangeEvent class.
+* Reviewed and refactored the org.cp.elements.beans.event.ChangeListener interface.
+* Reviewed and refactored the org.cp.elements.beans.event.ChangeRecorder class.
+*** Renamed o.c.elements.beans.event.ChangeTracker to ChangeRecorder.
+* Adds new requireObject(:Object) method to the org.cp.elements.lang.ObjectUtils class.
+* Adds overloaded doOperationSafely(:ThrowableOperation, :Function) method to the org.cp.elements.lang.ObjectUtils class.
+* Reviewed and refactored the org.cp.elements.beans.event.ChangeSupport class.
+* Reviewed and refactored the org.cp.elements.enums.Gender enum.
+* Reviewed and refactored the org.cp.elements.enums.LengthUnit enum.
+* Reviewed and refactored the org.cp.elements.enums.WeightUnit enum.
+* Reviewed and refactored the org.cp.elements.enums.Month enum.
+* Reviewed and refactored the org.cp.elements.enums.Weekday enum.
+* Reviewed and refactored the org.cp.elements.enums.Order enum.
+* Reviewed and refactored the org.cp.elements.enums.Race enum.
+* Reviewed and refactored the org.cp.elements.enums.TimeUnit enum.
+* Reviewed and refactored the org.cp.elements.dao.DaoTemplate interface.
+*** Renamed o.c.elements.dao.support.DaoSupport to DaoTemplate.
+* Reviewed and refactored the org.cp.elements.service.ServiceTemplate interface.
+*** Renamed o.c.elements.service.support.ServiceSupport to ServiceTemplate.
+* Defines the new CacheException class in the org.cp.elements.data.cache package.
+* Reviewed and refactored the org.cp.elements.data.cache.CachingTemplate class.
+* Renamed refactored production *Tests classes to *UnitTests.
+* Edited Javadoc across the API.
+* Annotated the Codeprimate Elements classes and interfaces (APIs) with Element's @NotNull and @Nullable annotations.
+* Upgrades to org.codeprimate:cp-core:1.4.0.
+* Upgrades to AssertJ 3.22.0.
+* Upgrades to JUnit 4.13.2.
+* Upgrades to Mockito 4.4.0.
+* Upgrades to Project Lombok 1.18.22.
+* Upgrades to Gradle 7.4.2.
+
+
 1.0.0.M6 - 2021-January-21
 --------------------------
 Resurrected the Elements project (again) to move development forward.
@@ -33,8 +126,8 @@ data access operations.
 * Tasks completed here...
 
 
-1.0.0.M5 - 2018-07-11
----------------------
+1.0.0.M5 - 2018-July-11
+-----------------------
 Introduces the new Tabular data structure.
 
 * Created the o.c.e.util.paging.support.SimplePageable class wrapping a java.util.List to provide paging support.
@@ -67,8 +160,8 @@ and handles any checked Exceptions.
 * Upgraded to Mockito 2.19.0.
 
 
-1.0.0.M4 - 2018-01-21
----------------------
+1.0.0.M4 - 2018-January-21
+--------------------------
 Introduces new class types, data structures (e.g Caching) and tools.
 
 * Created the o.c.e.ElementsVersion class to print version meta-data about the cp-elements project to the command-line.
@@ -103,8 +196,8 @@ that support caching.
 * Upgraded to cp-core-1.2.0.RELEASE.
 
 
-1.0.0.M3 - 2017-05-05
----------------------
+1.0.0.M3 - 2017-May-05
+----------------------
 Introduces the ProcessExecutor API in the org.cp.elements.process package for configuring, forking/launching
 and managing processes.
 
@@ -197,8 +290,8 @@ the o.c.e.util.MapUtils class.
 * Upgraded to Mockito 2.7.22.
 
 
-1.0.0.M2 - 2016-09-05
----------------------
+1.0.0.M2 - 2016-September-05
+----------------------------
 Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang, org.cp.elements.io,
 org.cp.elements.net and org.cp.elements.util packages.
 
@@ -227,8 +320,8 @@ between Arrays and Collections.
 * Enabled Travis CI for this project.
 
 
-1.0.0.M1 - 2016-01-03
----------------------
+1.0.0.M1 - 2016-January-03
+--------------------------
 Code review, refactoring, enhancements and new features introduced in the org.cp.elements.lang package.
 
 * Added the assertThat(..) language expression and extension.
@@ -241,8 +334,8 @@ Code review, refactoring, enhancements and new features introduced in the org.cp
 * Added Nexus Staging Maven Plugin
 
 
-birth - 2011-10-03
-------------------
+birth - 2011-October-03
+-----------------------
 Key features of the 1.0.0 inception is the Language extensions and concurrent utilities, IO utilities
 and supporting classes, Network utilities and supporting classes, Reflection utilities, Collection Framework utilities,
 ObjectFactory API, Beans API, Business Rules API, Configuration API, Conversion API, Search API and the Sorting API.
