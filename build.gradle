@@ -10,7 +10,6 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'maven'
 
 description = "Codeprimate Elements Java class library and micro-framework."
 group = "org.codeprimate"
