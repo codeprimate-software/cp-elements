@@ -31,17 +31,11 @@ import org.cp.elements.lang.Identifiable;
 @SuppressWarnings("unused")
 public abstract class AbstractIdentifiable<T extends Comparable<T>> implements Identifiable<T> {
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public T getId() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setId(T id) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);

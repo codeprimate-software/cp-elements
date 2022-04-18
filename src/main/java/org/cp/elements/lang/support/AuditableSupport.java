@@ -15,14 +15,13 @@
  */
 package org.cp.elements.lang.support;
 
-import static org.cp.elements.lang.ObjectUtils.returnFirstNonNullValue;
-
 import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Auditable;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -30,6 +29,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * {@link AuditableSupport} is an abstract base class supporting implementations of the {@link Auditable} interface.
  *
  * @author John Blum
+ * @see java.lang.Comparable
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.support.IdentifiableSupport
@@ -68,132 +68,87 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
     return value;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable USER getCreatedBy() {
     return this.createdBy;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setCreatedBy(@NotNull USER createdBy) {
     this.createdBy = assertNotNull(createdBy, () -> "Created by is required");
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable Instant getCreatedOn() {
     return this.createdOn;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setCreatedOn(@NotNull Instant createdOn) {
     this.createdOn = assertNotNull(createdOn, () -> "Created on is required");
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable PROCESS getCreatedWith() {
     return this.createdWith;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setCreatedWith(@NotNull PROCESS createdWith) {
     this.createdWith = assertNotNull(createdWith, () -> "Created with is required");
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable USER getLastModifiedBy() {
     return this.lastModifiedBy;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable Instant getLastModifiedOn() {
     return this.lastModifiedOn;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable PROCESS getLastModifiedWith() {
     return this.lastModifiedWith;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable USER getModifiedBy() {
     return Optional.ofNullable(this.modifiedBy)
       .orElseGet(this::getCreatedBy);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   @SuppressWarnings("unchecked")
   public void setModifiedBy(@NotNull USER modifiedBy) {
     this.modifiedBy = assertNotNull(modifiedBy, () -> "Modified by is required");
-    this.lastModifiedBy = returnFirstNonNullValue(this.lastModifiedBy, this.modifiedBy);
+    this.lastModifiedBy = ObjectUtils.returnFirstNonNullValue(this.lastModifiedBy, this.modifiedBy);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable Instant getModifiedOn() {
     return Optional.ofNullable(this.modifiedOn)
       .orElseGet(this::getCreatedOn);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setModifiedOn(@NotNull Instant modifiedOn) {
     this.modifiedOn = assertNotNull(modifiedOn, () -> "Modified on is required");
-    this.lastModifiedOn = returnFirstNonNullValue(this.lastModifiedOn, this.modifiedOn);
+    this.lastModifiedOn = ObjectUtils.returnFirstNonNullValue(this.lastModifiedOn, this.modifiedOn);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public @Nullable PROCESS getModifiedWith() {
     return Optional.ofNullable(this.modifiedWith)
       .orElseGet(this::getCreatedWith);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   @SuppressWarnings("unchecked")
   public void setModifiedWith(@NotNull PROCESS modifiedWith) {
     this.modifiedWith = assertNotNull(modifiedWith, () -> "Modified with is required");
-    this.lastModifiedWith = returnFirstNonNullValue(this.lastModifiedWith, this.modifiedWith);
+    this.lastModifiedWith = ObjectUtils.returnFirstNonNullValue(this.lastModifiedWith, this.modifiedWith);
   }
 
   /**

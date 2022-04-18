@@ -27,6 +27,7 @@ import org.cp.elements.lang.Constants;
  * @author John J. Blum
  * @param <USER> {@link Class type} used to track the user.
  * @param <PROCESS> {@link Class type} used to track the process.
+ * @see java.lang.Comparable
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.support.AbstractIdentifiable
@@ -36,137 +37,86 @@ import org.cp.elements.lang.Constants;
 public abstract class AbstractAuditable<USER, PROCESS, ID extends Comparable<ID>> extends AbstractIdentifiable<ID>
     implements Auditable<USER, PROCESS, ID> {
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public USER getCreatedBy() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setCreatedBy(USER user) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public Instant getCreatedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setCreatedOn(Instant createdOn) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public PROCESS getCreatedWith() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setCreatedWith(PROCESS process) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public USER getLastModifiedBy() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public Instant getLastModifiedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public PROCESS getLastModifiedWith() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public boolean isModified() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public boolean isModified(String propertyName) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public USER getModifiedBy() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setModifiedBy(USER user) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public Instant getModifiedOn() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setModifiedOn(Instant modifiedOn) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public PROCESS getModifiedWith() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setModifiedWith(PROCESS process) {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);

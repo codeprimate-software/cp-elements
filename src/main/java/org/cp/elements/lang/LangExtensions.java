@@ -49,6 +49,7 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
  * @see java.text.MessageFormat
+ * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see java.util.function.Supplier
  * @see org.cp.elements.lang.Assert
@@ -823,17 +824,11 @@ public abstract class LangExtensions {
       return condition != null ? condition : DEFAULT_CONDITION;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public <S> AssertThat<S> as(Class<S> type) {
       return new AssertThatExpression<>(getTargetAs(type), getExpected());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<String> asString() {
 
@@ -842,9 +837,6 @@ public abstract class LangExtensions {
       return new AssertThatExpression<>(target != null ? target.toString() : null);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public <S> AssertThat<S> asType(@NotNull Function<T, S> converter) {
 
@@ -853,9 +845,7 @@ public abstract class LangExtensions {
       return new AssertThatExpression<>(converter.apply(getTarget()), getExpected());
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     @SuppressWarnings("rawtypes")
     public @NotNull AssertThatExpression<T> isAssignableTo(Class type) {
 
@@ -869,9 +859,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isComparableTo(Comparable<T> comparable) {
 
       if (conditionHolds()) {
@@ -883,17 +871,13 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNotComparableTo(Comparable<T> comparable) {
       not().isComparableTo(comparable);
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isEqualTo(T obj) {
 
       if (conditionHolds()) {
@@ -905,17 +889,13 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNotEqualTo(T obj) {
       not().isEqualTo(obj);
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isFalse() {
 
       if (conditionHolds()) {
@@ -927,9 +907,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isGreaterThan(T lowerBound) {
 
       if (conditionHolds()) {
@@ -941,9 +919,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isGreaterThanAndLessThan(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
@@ -956,9 +932,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
@@ -971,9 +945,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isGreaterThanEqualTo(T lowerBound) {
 
       if (conditionHolds()) {
@@ -986,9 +958,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
@@ -1001,9 +971,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
 
       if (conditionHolds()) {
@@ -1016,17 +984,13 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> hasText() {
       isNotBlank();
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> holdsLock(Object lock) {
 
       if (conditionHolds()) {
@@ -1039,9 +1003,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     @SuppressWarnings("rawtypes")
     public @NotNull AssertThatExpression<T> isInstanceOf(Class type) {
 
@@ -1055,9 +1017,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isLessThan(T upperBound) {
 
       if (conditionHolds()) {
@@ -1069,9 +1029,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isLessThanOrGreaterThan(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
@@ -1084,9 +1042,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
@@ -1099,9 +1055,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isLessThanEqualTo(T upperBound) {
 
       if (conditionHolds()) {
@@ -1114,9 +1068,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
@@ -1129,9 +1081,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
 
       if (conditionHolds()) {
@@ -1144,9 +1094,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNotBlank() {
 
       if (conditionHolds()) {
@@ -1159,9 +1107,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNotEmpty() {
 
       if (conditionHolds()) {
@@ -1174,17 +1120,13 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNotNull() {
       not().isNull();
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNull() {
 
       if (conditionHolds()) {
@@ -1196,9 +1138,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isSameAs(T obj) {
 
       if (conditionHolds()) {
@@ -1210,17 +1150,13 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isNotSameAs(T obj) {
       not().isSameAs(obj);
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThatExpression<T> isTrue() {
 
       if (conditionHolds()) {
@@ -1232,9 +1168,6 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> isValid(@NotNull Predicate<T> predicate) {
 
@@ -1249,9 +1182,7 @@ public abstract class LangExtensions {
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThat<T> not() {
 
       AssertThat<T> expression = new AssertThatExpression<>(getTarget(), getNotExpected());
@@ -1264,32 +1195,23 @@ public abstract class LangExtensions {
       return expression;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThat<T> stating(@NotNull String message, @NotNull Object... args) {
       return stating(() -> format(message, args));
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThat<T> stating(@Nullable Supplier<String> message) {
       this.message = message;
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThat<T> throwing(@Nullable RuntimeException cause) {
       this.cause = cause;
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> transform(@NotNull Transformer<AssertThat<T>> assertionTransformer) {
       Assert.notNull(assertionTransformer, "The Transformer used to transform this assertion is required");
@@ -1297,9 +1219,7 @@ public abstract class LangExtensions {
       return assertionTransformer.transform(this);
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public @NotNull AssertThat<T> when(@Nullable Condition condition) {
       this.condition = condition != null ? condition : DEFAULT_CONDITION;
       return this;
@@ -1388,310 +1308,196 @@ public abstract class LangExtensions {
       return this.delegate;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public <S> AssertThat<S> as(Class<S> type) {
       return getDelegate().as(type);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<String> asString() {
       return getDelegate().asString();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public <S> AssertThat<S> asType(Function<T, S> converter) {
       return getDelegate().asType(converter);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("rawtypes")
     public @NotNull AssertThat<T> isAssignableTo(Class type) {
       return getDelegate().isAssignableTo(type);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isComparableTo(Comparable<T> obj) {
       return getDelegate().isComparableTo(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNotComparableTo(Comparable<T> obj) {
       return getDelegate().isNotComparableTo(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isEqualTo(T obj) {
       return getDelegate().isEqualTo(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNotEqualTo(T obj) {
       return getDelegate().isNotEqualTo(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isFalse() {
       return getDelegate().isFalse();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isGreaterThan(T lowerBound) {
       return getDelegate().isGreaterThan(lowerBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isGreaterThanAndLessThan(T lowerBound, T upperBound) {
       return getDelegate().isGreaterThanAndLessThan(lowerBound, upperBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isGreaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getDelegate().isGreaterThanAndLessThanEqualTo(lowerBound, upperBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isGreaterThanEqualTo(T lowerBound) {
       return getDelegate().isGreaterThanEqualTo(lowerBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isGreaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
       return getDelegate().isGreaterThanEqualToAndLessThan(lowerBound, upperBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isGreaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getDelegate().isGreaterThanEqualToAndLessThanEqualTo(lowerBound, upperBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> hasText() {
       return getDelegate().hasText();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> holdsLock(Object lock) {
       return getDelegate().holdsLock(lock);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("rawtypes")
     public @NotNull AssertThat<T> isInstanceOf(Class type) {
       return getDelegate().isInstanceOf(type);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isLessThan(T upperBound) {
       return getDelegate().isLessThan(upperBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isLessThanOrGreaterThan(T upperBound, T lowerBound) {
       return getDelegate().isLessThanOrGreaterThan(upperBound, lowerBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isLessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getDelegate().isLessThanOrGreaterThanEqualTo(upperBound, lowerBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isLessThanEqualTo(T upperBound) {
       return getDelegate().isLessThanEqualTo(upperBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isLessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
       return getDelegate().isLessThanEqualToOrGreaterThan(upperBound, lowerBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isLessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getDelegate().isLessThanEqualToOrGreaterThanEqualTo(upperBound, lowerBound);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNotBlank() {
       return getDelegate().isNotBlank();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNotEmpty() {
       return getDelegate().isNotEmpty();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNotNull() {
       return getDelegate().isNotNull();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNull() {
       return getDelegate().isNull();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isSameAs(T obj) {
       return getDelegate().isSameAs(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isNotSameAs(T obj) {
       return getDelegate().isNotSameAs(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull AssertThat<T> isTrue() {
       return getDelegate().isTrue();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> isValid(Predicate<T> predicate) {
       return getDelegate().isValid(predicate);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> not() {
       return new AssertThatWrapper<>(getDelegate().not());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> stating(String message, Object... args) {
       getDelegate().stating(message, args);
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> stating(Supplier<String> message) {
       getDelegate().stating(message);
       return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> throwing(RuntimeException cause) {
       getDelegate().throwing(cause);
       return this;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> transform(Transformer<AssertThat<T>> assertionTransformer) {
       return new AssertThatWrapper<>(assertionTransformer.transform(getDelegate()));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public AssertThat<T> when(Condition condition) {
       getDelegate().when(condition);
@@ -2088,170 +1894,107 @@ public abstract class LangExtensions {
       return (Comparable<T>) obj;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean assignableTo(Class<?> type) {
       return equalToExpected(getTarget() != null && type != null && type.isAssignableFrom(toClass(getTarget())));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean comparableTo(T obj) {
       return equalToExpected(toComparable(getTarget()).compareTo(obj) == 0);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean notComparableTo(T obj) {
       return not().comparableTo(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean equalTo(T obj) {
       return equalToExpected(getTarget() != null && getTarget().equals(obj));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean notEqualTo(T obj) {
       return not().equalTo(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean False() {
       return equalToExpected(Boolean.FALSE.equals(getTarget()));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean greaterThan(T lowerBound) {
       return equalToExpected(toComparable(getTarget()).compareTo(lowerBound) > 0);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean greaterThanAndLessThan(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThan(lowerBound), lessThan(upperBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean greaterThanAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThan(lowerBound), lessThanEqualTo(upperBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean greaterThanEqualTo(T lowerBound) {
       return equalToExpected(toComparable(getTarget()).compareTo(lowerBound) >= 0);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean greaterThanEqualToAndLessThan(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThanEqualTo(lowerBound), lessThan(upperBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean greaterThanEqualToAndLessThanEqualTo(T lowerBound, T upperBound) {
       return getOp(LogicalOperator.AND).evaluate(greaterThanEqualTo(lowerBound), lessThanEqualTo(upperBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("rawtypes")
     public boolean instanceOf(Class type) {
       return equalToExpected(type != null && type.isInstance(getTarget()));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean lessThan(T upperBound) {
       return equalToExpected(toComparable(getTarget()).compareTo(upperBound) < 0);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean lessThanOrGreaterThan(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThan(upperBound), greaterThan(lowerBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean lessThanOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThan(upperBound), greaterThanEqualTo(lowerBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean lessThanEqualTo(T upperBound) {
       return equalToExpected(toComparable(getTarget()).compareTo(upperBound) <= 0);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean lessThanEqualToOrGreaterThan(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThanEqualTo(upperBound), greaterThan(lowerBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean lessThanEqualToOrGreaterThanEqualTo(T upperBound, T lowerBound) {
       return getOp(LogicalOperator.OR).evaluate(lessThanEqualTo(upperBound), greaterThanEqualTo(lowerBound));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean notBlank() {
       return StringUtils.hasText(ObjectUtils.toString(getTarget()));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean notEmpty() {
 
@@ -2275,49 +2018,31 @@ public abstract class LangExtensions {
         .orElse(false);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean notNull() {
       return not().Null();
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean Null() {
       return equalToExpected(getTarget() == null);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean notSameAs(T obj) {
       return not().sameAs(obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean sameAs(T obj) {
       return equalToExpected(getTarget() == obj);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean True() {
       return equalToExpected(Boolean.TRUE.equals(getTarget()));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean valid(@NotNull Predicate<T> predicate) {
 
@@ -2326,9 +2051,6 @@ public abstract class LangExtensions {
       return equalToExpected(predicate.test(getTarget()));
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public Is<T> not() {
       return new IsExpression<>(getTarget(), !expected);

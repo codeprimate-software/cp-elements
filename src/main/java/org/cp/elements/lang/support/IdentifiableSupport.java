@@ -25,6 +25,7 @@ import org.cp.elements.lang.annotation.Id;
  * @author John Blum
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.Identifiable
+ * @see org.cp.elements.lang.annotation.Id
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -33,17 +34,11 @@ public abstract class IdentifiableSupport<ID extends Comparable<ID>> implements 
   @Id
   private ID id;
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public ID getId() {
     return this.id;
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setId(ID id) {
     this.id = id;

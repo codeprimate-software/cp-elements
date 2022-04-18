@@ -35,73 +35,46 @@ import org.cp.elements.lang.Constants;
 @SuppressWarnings("unused")
 public abstract class AbstractDataSource implements DataSource {
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public Connection getConnection() {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public Connection getConnection(String username, String password) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public PrintWriter getLogWriter() {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setLogWriter(PrintWriter out) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public int getLoginTimeout() {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public void setLoginTimeout(int seconds) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   //@Override
   public Logger getParentLogger() {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public boolean isWrapperFor(Class<?> interfaceType) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
-  /**
-   * @inheritDoc
-   */
   @Override
   public <T> T unwrap(Class<T> interfaceType) {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
