@@ -145,7 +145,7 @@ public class AuditableVisitor<USER, PROCESS> implements Visitor {
 
   /**
    * Visits the {@link Auditable} objects in an object graph/hierarchy setting auditable properties (created, modified
-   * by/date&time/process properties).
+   * by/date&amp;time/process properties).
    *
    * @param visitable {@link Visitable} object visited by {@literal this} {@link Visitor}.
    * @see org.cp.elements.lang.Auditable

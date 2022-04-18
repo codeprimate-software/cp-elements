@@ -131,7 +131,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
    * @param operation {@link ThrowableOperation} to compose with {@literal this} {@link ThrowableOperation}.
    * @return a composed {@link ThrowableOperation} consisting of {@literal this} {@link ThrowableOperation}
    * and the given {@link ThrowableOperation}. If the given {@link ThrowableOperation} is {@literal null},
-   * then {@link this} {@link ThrowableOperation} is returned.
+   * then {@literal this} {@link ThrowableOperation} is returned.
    * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Software Design Pattern</a>
    */
   default @NotNull ThrowableOperation<T> andThen(@Nullable ThrowableOperation<T> operation) {

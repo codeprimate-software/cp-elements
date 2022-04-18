@@ -75,6 +75,7 @@ public abstract class FunctionUtils {
   /**
    * Adapts the given, required {@link Consumer} as a {@link Function}.
    *
+   * @param <T> {@link Class type} of the {@link Function} argument.
    * @param <R> {@link Class type} of {@link Object} returned by the {@link Supplier} and {@link Function}.
    * @param supplier {@link Supplier} to adapt; must not be {@literal null}.
    * @return a {@link Function} implementation adapting the given, required {@link Supplier}.

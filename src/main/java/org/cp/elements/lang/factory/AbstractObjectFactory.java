@@ -135,6 +135,8 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   /**
    * Gets the configured {@link Function} used to post process the {@link Object} after creation.
    *
+   * @param <T> {@link Class type} of the {@link Function} argument.
+   * @param <R> {@link Class type} of the {@link Function} return value.
    * @return a {@link Function} configured to post process the {@link Object} after creation.
    * @see #registerObjectPostProcessor(Function)
    * @see java.util.function.Function
@@ -169,8 +171,9 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Resolves the {@link Class} {@link Constructor} with the given signature as determined by
-   * the given array of {@link Class[] parameter types].
+   * the given array of {@link Class parameter types}.
    *
+   * @param <T> {@link Class type} in which the {@link Constructor} is declared.
    * @param objectType {@link Class} from which the {@link Constructor} is resolved.
    * @param parameterTypes array of {@link Class[] types} used to determine the signature of the resolved constructor.
    * @return a {@link Constructor} from the given {@link Class} with a matching signature based on
@@ -212,6 +215,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    * {@link Constructor} {@link Object[] argument types} are assignment compatible with the expected
    * array of {@link Class[] parameter types}.
    *
+   * @param <T> {@link Class type} in which the {@link Constructor} is declared.
    * @param objectType {@link Class} from which the {@link Constructor} is resolved.
    * @param parameterTypes array of {@link Class[] types} used to determine the signature of the resolved constructor.
    * @return a matching {@link Constructor} from the given {@link Class} whose actual {@literal public}
@@ -268,7 +272,19 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   }
 
   /**
-   * @inheritDoc
+   * Creates an {@link Object} from the given {@link Class type} initialized with
+   * the given array of constructor {@link Object[] arguments} corresponding to the given array of constructor
+   * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
+   * the {@link Object}.
+   *
+   * @param <T> {@link Class type} of {@link Object} to create.
+   * @param objectType {@link Class type} from which the {@link Object }instance will be created.
+   * @param parameterTypes array of {@link Class[] types} specifying the signature of the constructor
+   * used to construct the {@link Object}.
+   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @return a new {@link Object} of the given {@link Class type} initialized with
+   * the given array of {@link Object[] arguments}.
+   * @see java.lang.Class
    */
   @Override
   public <T> T create(@NotNull Class<T> objectType, Class<?>[] parameterTypes, Object... args) {

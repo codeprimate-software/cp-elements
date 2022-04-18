@@ -104,7 +104,8 @@ public enum Month {
    *
    * @param position {@link Integer#TYPE} indicating the position of the {@link Month} in the calendar year to find.
    * @return the {@link Month} in the enumeration at the {@link Integer#TYPE position} in the calendar year,
-   * or {@literal null} if the given {@link Integer#TYPE position} is not within the calendar year (1 <= position <= 12).
+   * or {@literal null} if the given {@link Integer#TYPE position} is not within the calendar year
+   * {@literal  (1 <= position <= 12)}.
    * @see #valueOfPredicate(Predicate)
    * @see #getPosition()
    */

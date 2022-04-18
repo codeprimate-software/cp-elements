@@ -50,10 +50,11 @@ public abstract class Assert {
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
+   *     Assert.argument(age, argument -&gt; argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
+   * @param <T> {@link Class type} of the argument to assert.
    * @param argument {@link Object} value to test and validate.
    * @param argumentPredicate {@link Predicate} used to test and validate the argument;
    * must not be {@literal null}.
@@ -75,10 +76,11 @@ public abstract class Assert {
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
+   *     Assert.argument(age, argument -&gt; argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
+   * @param <T> {@link Class type} of the argument to assert.
    * @param argument {@link Object} value to test and validate.
    * @param argumentPredicate {@link Predicate} used to test and validate the argument;
    * must not be {@literal null}.
@@ -107,10 +109,11 @@ public abstract class Assert {
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
+   *     Assert.argument(age, argument -&gt; argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
+   * @param <T> {@link Class type} of the argument to assert.
    * @param argument {@link Object} value to test and validate.
    * @param argumentPredicate {@link Predicate} used to test and validate the argument;
    * must not be {@literal null}.
@@ -137,10 +140,11 @@ public abstract class Assert {
    *
    * <pre>
    *   <code>
-   *     Assert.argument(age, argument -> argument &gt;= 21, "Person must be 21 years of age or older to enter");
+   *     Assert.argument(age, argument -&gt; argument &gt;= 21, "Person must be 21 years of age or older to enter");
    *   </code>
    * </pre>
    *
+   * @param <T> {@link Class type} of the argument to assert.
    * @param argument {@link Object} value to test and validate.
    * @param argumentPredicate {@link Predicate} used to test and validate the argument;
    * must not be {@literal null}.
@@ -1479,6 +1483,7 @@ public abstract class Assert {
    *
    * @param obj1 {@link Object left operand} in the identity comparison.
    * @param obj2 {@link Object right operand} in the identity comparison.
+   * @param cause {@link RuntimeException} thrown if the two {@link Object objects} are the same.
    * @throws RuntimeException the two {@link Object objects} are the same.
    * @see java.lang.Object
    */

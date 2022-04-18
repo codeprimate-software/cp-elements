@@ -37,7 +37,11 @@ public class ClearDirtyStateVisitor implements Visitor {
   public static final ClearDirtyStateVisitor INSTANCE = new ClearDirtyStateVisitor();
 
   /**
-   * @inheritDoc
+   * Visits the given {@link Visitable} object if a {@link ChangeRecorder} and clears the recorded
+   * {@link Object Object's} dirty state.
+   *
+   * @param visitable {@link Visitable} object to visit.
+   * @see org.cp.elements.beans.event.ChangeRecorder#clear()
    */
   @Override
   public void visit(@Nullable Visitable visitable) {

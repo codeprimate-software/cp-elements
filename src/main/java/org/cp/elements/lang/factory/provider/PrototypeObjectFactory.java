@@ -126,7 +126,7 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
    * Initializes the given {@link Object} with the {@link Map} of named parameters providing the {@link Object}
    * implements the {@link ParameterizedInitable} interface, otherwise delegates to
    * the {@link #initialize(Object, Object...)} method by passing the {@link Map#values() values} of the {@link Map}
-   * as an array of {@link Object[] arguments.
+   * as an array of {@link Object arguments}.
    *
    * @param <T> {@link Class type} of {@link Object} to initialize.
    * @param object {@link Object} to initialize.

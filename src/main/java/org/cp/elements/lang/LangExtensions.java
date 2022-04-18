@@ -124,7 +124,7 @@ public abstract class LangExtensions {
      * @return a new {@link SafeNavigationHandler}.
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
      * @see org.cp.elements.lang.reflect.ProxyFactory
-     * @see SafeNavigationHandler(ProxyFactory)
+     * @see #SafeNavigationHandler(ProxyFactory)
      */
     protected static @NotNull <T> SafeNavigationHandler<T> newSafeNavigationHandler(
         @NotNull ProxyFactory<T> proxyFactory) {

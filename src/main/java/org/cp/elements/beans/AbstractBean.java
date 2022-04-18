@@ -97,7 +97,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Constructs a new instance of {@link AbstractBean} initialized with the given typed {@link ID identifier}
-   * uniquely identifying {@literal this} {@link Bean}.
+   * to uniquely identify {@literal this} {@link Bean}.
    *
    * It is recommended that the {@link ID identifier} uniquely identify {@link Object Objects}
    * within {@literal this} {@link Bean} {@link Class type}.
@@ -182,7 +182,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Sets the {@link ID identifier} uniquely identifying {@literal this} {@link Bean}.
    *
-   * @param id a value of {@link Class type ID} assigned as {@literal this} {@link Bean Bean's} unique identifier.
+   * @param id a value of {@link Class type ID} assigned as {@literal this} {@link Bean} unique identifier.
    * @see org.cp.elements.lang.Identifiable
    */
   public final void setId(ID id) {
@@ -317,7 +317,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   protected void firePropertyChangeEvent(@NotNull PropertyChangeEvent event) {
 
     if (isEventDispatchEnabled()) {
+
       Assert.notNull(event, "PropertyChangeEvent is required");
+
       if (this.propertyChangeSupport.hasListeners(event.getPropertyName())) {
         this.propertyChangeSupport.firePropertyChange(event);
       }
@@ -344,7 +346,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   protected void fireVetoableChangeEvent(@NotNull PropertyChangeEvent event) throws PropertyVetoException {
 
     if (isEventDispatchEnabled()) {
+
       Assert.notNull(event, "PropertyChangeEvent is required");
+
       if (this.vetoableChangeSupport.hasListeners(event.getPropertyName())) {
         this.vetoableChangeSupport.fireVetoableChange(event);
       }
@@ -353,9 +357,9 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Maps the given, required {@link String named} property of {@literal this} {@link Bean}
-   * to one of the {@link Bean Bean's} {@link Field Fields} by {@link String name}.
+   * to one of the {@link Bean} {@link Field Fields} by {@link String name}.
    *
-   * @param propertyName {@link String} containing the {@literal name} of the property on {@link this} {@link Bean}.
+   * @param propertyName {@link String} containing the {@literal name} of the property on {@literal this} {@link Bean}.
    * @param fieldName {@link String} containing the {@literal name} of a {@link Field} on {@literal this} {@link Bean}.
    * @return the previously mapped {@link String named} {@link Field} of this {@link Bean}.
    * @throws IllegalArgumentException if the {@link String name} of the property or {@link Field} is not specified.
@@ -373,7 +377,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * to the given {@link StateChangeCallback}, which is used to affect changes in state
    * to the given {@link String named} property.
    *
-   * @param propertyName {@link String} containing the {@literal name} of the property on {@link this} {@link Bean}.
+   * @param propertyName {@link String} containing the {@literal name} of the property on {@literal this} {@link Bean}.
    * @param callback {@link StateChangeCallback} used to affect changes in state
    * to the given {@link String named} property.
    * @return the previously mapped {@link StateChangeCallback}.
@@ -558,10 +562,10 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Registers the given {@link VetoableChangeListener} to listen for {@link PropertyChangeEvent PropertyChangeEvents}
-   * in order to monitor and veto any undesired changes to {@literal this} {@link Bean Bean's} state.
+   * in order to monitor and veto any undesired changes to {@literal this} {@link Bean} state.
    *
    * @param listener {@link VetoableChangeListener} used to listen for and possibly veto any undesired changes
-   * to {@literal this} {@link Bean Bean's} state.
+   * to {@literal this} {@link Bean} state.
    * @see java.beans.VetoableChangeSupport#addVetoableChangeListener(VetoableChangeListener)
    * @see #register(String, VetoableChangeListener)
    * @see java.beans.VetoableChangeListener
@@ -573,12 +577,12 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   /**
    * Registers the given {@link VetoableChangeListener} to listen for {@link PropertyChangeEvent PropertyChangeEvents}
    * on the given {@link String named} property in order to monitor and veto any undesired changes to {@literal this}
-   * {@link Bean's} state.
+   * {@link Bean} state.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property on {@literal this} {@link Bean}
    * for which the listener will be notified of changes.
    * @param listener {@link VetoableChangeListener} used to listen for and possibly veto any undesired changes
-   * to {@literal this} {@link Bean Bean's} state.
+   * to {@literal this} {@link Bean} state.
    * @see java.beans.VetoableChangeSupport#addVetoableChangeListener(String, VetoableChangeListener)
    * @see #register(VetoableChangeListener)
    * @see java.beans.VetoableChangeListener
@@ -634,7 +638,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * {@link PropertyChangeEvent PropertyChangeEvents} to the given {@link String named} property
    * of {@literal this} {@link Bean}.
    *
-   * In addition, the listener's vote in vetoing possibly undesirable changes to {@literal this} {@link Bean Bean's}
+   * In addition, the listener's vote in vetoing possibly undesirable changes to {@literal this} {@link Bean}
    * state is now void.
    *
    * @param listener {@link VetoableChangeListener} to remove.
@@ -651,8 +655,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * {@link PropertyChangeEvent PropertyChangeEvents} to the given {@link String named} property
    * of {@literal this} {@link Bean}.
    *
-   * In addition, the listener's vote in vetoing possibly undesirable changes to {@literal this} {@link Bean Bean's}
-   * state is now void.
+   * In addition, the listener's vote in vetoing possibly undesirable changes to {@literal this} {@link Bean} state
+   * is now void.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property on {@literal this} {@link Bean}.
    * @param listener {@link VetoableChangeListener} to remove.
@@ -669,7 +673,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * of {@literal this} {@link Bean}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property on {@literal this} {@link Bean}.
-   * @return {@link String} containing the {@literal name} of the {@link Bean Bean's} {@link Field} that was mapped to
+   * @return {@link String} containing the {@literal name} of the {@link Bean Bean} {@link Field} that was mapped to
    * the {@link String named} property.
    */
   protected @Nullable String unmapPropertyNameToFieldName(@Nullable String propertyName) {
@@ -714,8 +718,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   @SuppressWarnings("all")
   public int compareTo(@NotNull Bean<ID, USER, PROCESS> bean) {
 
-    String message =
-      String.format("The Bean to compare with this Bean must be an instance of [%s]", getClass().getName());
+    String message = String.format("The Bean to compare with this Bean must be an instance of [%s]",
+      getClass().getName());
 
     Assert.isInstanceOf(bean, getClass(), new ClassCastException(message));
 
@@ -727,8 +731,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    *
    * {@literal This} {@link Bean} and the given {@link Bean} are considered equal if their {@link #getId() identifiers}
    * match. A {@literal null} {@link #getId() identifier} is not logically equal to any other {@link Bean}, even other
-   * {@link Bean Beans} with a {@literal null} {@link #getId() identifier} regardless of the {@link Bean Bean's}
-   * other state.
+   * {@link Bean Beans} with a {@literal null} {@link #getId() identifier} regardless of the {@link Bean} other state.
    *
    * @param obj {@link Bean} to compare for equality with {@literal this} {@link Bean}.
    * @return a boolean value indicating whether {@literal this} {@link Bean} and the given {@link Bean}
@@ -755,7 +758,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
   /**
    * Computes the {@link Integer#TYPE hash code value} for {@literal this} {@link Bean}
-   * as determined by {@literal this} {@link Bean Bean's} internal state.
+   * as determined by {@literal this} {@link Bean} internal state.
    *
    * @return an integer value representing the computed hash code of {@literal this} {@link Bean}.
    * @see org.cp.elements.lang.ObjectUtils#hashCode(Object)

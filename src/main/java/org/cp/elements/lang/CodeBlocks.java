@@ -46,7 +46,7 @@ public abstract class CodeBlocks {
    * @param target {@link Object} to evaluate in the {@literal if} statement.
    * @param ifCondition {@link Predicate} used to evaluate the {@link Object target} in the {@literal if} condition.
    * @param ifBlock {@link Function} encapsulating the logic in the {@literal if} block.
-   * @param elseBlock {@link Function} encapsulating the logic in the {@link else} block.
+   * @param elseBlock {@link Function} encapsulating the logic in the {@literal else} block.
    * @return the {@link Object result} from the evaluation of the {@literal if} statement.
    * @throws IllegalArgumentException if the {@link Predicate if-condition}, {@link Function if-block}
    * or the {@link Function else-block} are {@literal null}.

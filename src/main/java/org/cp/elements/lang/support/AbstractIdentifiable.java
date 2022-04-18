@@ -19,7 +19,7 @@ import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
 
 /**
- * @link AbstractIdentifiable} is an abstract base class implementing the {@link Identifiable} interface
+ * {@link AbstractIdentifiable} is an abstract base class implementing the {@link Identifiable} interface
  * with default, no-op implementations of the interface methods by throwing an {@link UnsupportedOperationException}.
  *
  * @author John J. Blum

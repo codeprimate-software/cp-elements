@@ -48,14 +48,14 @@ public interface BiFeederFunction<T, R> extends BiFunction<T, R, R> {
    * Applies the logic in {@literal this} {@link BiFunction} to the given arguments, returning the {@link R result}
    * of the computation.
    *
-   * @param arg0 first argument of type {@link T} passed to {@literal this {@link BiFunction}.
-   * @param arg1 second argument of type {@link R} passed to {@literal this {@link BiFunction}.
+   * @param arg0 first argument of type {@link T} passed to {@literal this} {@link BiFunction}.
+   * @param arg1 second argument of type {@link R} passed to {@literal this} {@link BiFunction}.
    * @return the {@link R result} of {@literal this} {@link BiFunction BiFunction's} computation.
    */
   R apply(T arg0, R arg1);
 
   /**
-   * Composes {@link this} {@link BiFeederFunction} with the given, required {@link BiFunction}.
+   * Composes {@literal this} {@link BiFeederFunction} with the given, required {@link BiFunction}.
    *
    * The given {@link BiFunction} will be executed after {@literal this} {@link BiFeederFunction}
    * and the {@link R return value} will be used as input, or the second argument to
