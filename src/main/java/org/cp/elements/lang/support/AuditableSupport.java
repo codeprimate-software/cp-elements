@@ -17,9 +17,7 @@ package org.cp.elements.lang.support;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.function.Supplier;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -53,21 +51,6 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
   private USER lastModifiedBy;
   private USER modifiedBy;
 
-  /**
-   * Assert that the given {@link Object value} is not {@literal null}.
-   *
-   * @param <T> {@link Class type} of the {@link Object value}.
-   * @param value {@link Object} to evaluate.
-   * @param message {@link Supplier} containing the message used in the {@link IllegalArgumentException}.
-   * @return the given {@link Object value} if not {@literal null}.
-   * @throws IllegalArgumentException with {@link Supplier message} if the {@link Object value} is {@literal null}.
-   * @see java.util.function.Supplier
-   */
-  private <T> T assertNotNull(T value, Supplier<String> message) {
-    Assert.notNull(value, message);
-    return value;
-  }
-
   @Override
   public @Nullable USER getCreatedBy() {
     return this.createdBy;
@@ -75,7 +58,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
 
   @Override
   public void setCreatedBy(@NotNull USER createdBy) {
-    this.createdBy = assertNotNull(createdBy, () -> "Created by is required");
+    this.createdBy = ObjectUtils.requireObject(createdBy, "Created by is required");
   }
 
   @Override
@@ -85,7 +68,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
 
   @Override
   public void setCreatedOn(@NotNull Instant createdOn) {
-    this.createdOn = assertNotNull(createdOn, () -> "Created on is required");
+    this.createdOn = ObjectUtils.requireObject(createdOn, "Created on is required");
   }
 
   @Override
@@ -95,7 +78,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
 
   @Override
   public void setCreatedWith(@NotNull PROCESS createdWith) {
-    this.createdWith = assertNotNull(createdWith, () -> "Created with is required");
+    this.createdWith = ObjectUtils.requireObject(createdWith, "Created with is required");
   }
 
   @Override
@@ -122,7 +105,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
   @Override
   @SuppressWarnings("unchecked")
   public void setModifiedBy(@NotNull USER modifiedBy) {
-    this.modifiedBy = assertNotNull(modifiedBy, () -> "Modified by is required");
+    this.modifiedBy = ObjectUtils.requireObject(modifiedBy, "Modified by is required");
     this.lastModifiedBy = ObjectUtils.returnFirstNonNullValue(this.lastModifiedBy, this.modifiedBy);
   }
 
@@ -134,7 +117,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
 
   @Override
   public void setModifiedOn(@NotNull Instant modifiedOn) {
-    this.modifiedOn = assertNotNull(modifiedOn, () -> "Modified on is required");
+    this.modifiedOn = ObjectUtils.requireObject(modifiedOn, "Modified on is required");
     this.lastModifiedOn = ObjectUtils.returnFirstNonNullValue(this.lastModifiedOn, this.modifiedOn);
   }
 
@@ -147,7 +130,7 @@ public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>>
   @Override
   @SuppressWarnings("unchecked")
   public void setModifiedWith(@NotNull PROCESS modifiedWith) {
-    this.modifiedWith = assertNotNull(modifiedWith, () -> "Modified with is required");
+    this.modifiedWith = ObjectUtils.requireObject(modifiedWith, "Modified with is required");
     this.lastModifiedWith = ObjectUtils.returnFirstNonNullValue(this.lastModifiedWith, this.modifiedWith);
   }
 
