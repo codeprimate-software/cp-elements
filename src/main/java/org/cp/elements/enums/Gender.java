@@ -111,7 +111,10 @@ public enum Gender {
   }
 
   /**
-   * @inheritDoc
+   * Return {@link String} representation of {@literal this} {@link Gender} enum.
+   *
+   * @return a {@link String} describing {@literal this} {@link Gender} enum.
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {

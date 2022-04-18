@@ -27,6 +27,7 @@ import org.cp.elements.util.ArrayUtils;
  * Java class to represent the current version of the JRE or JVM.
  *
  * @author John Blum
+ * @see java.lang.Comparable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -76,7 +77,7 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * Gets the {@literal current} {@link JavaVersion} as determined by the JVM.
+   * Factory method used to get the {@literal current} {@link JavaVersion} as determined by the JRE/JVM.
    *
    * @return the {@literal current} {@link JavaVersion}.
    */
@@ -315,7 +316,13 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * @inheritDoc
+   * Compares {@literal this} {@link JavaVersion} to the given, required {@link JavaVersion} to determine which version
+   * of Java came first.
+   *
+   * @return an {@link Integer} less than {@literal 0} if {@literal this} {@link JavaVersion} came before the given,
+   * required {@link JavaVersion}, greater than {@literal 0} if this {@link JavaVersion} comes after, or {@literal 0}
+   * if {@literal this} {@link JavaVersion} and the given, required {@link JavaVersion} are the same.
+   * @see java.lang.Comparable#compareTo(Object)
    */
   @Override
   public int compareTo(@NotNull JavaVersion version) {
@@ -332,7 +339,12 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * @inheritDoc
+   * Determines whether {@literal this} {@link JavaVersion} is equal to the given {@link Object}.
+   *
+   * @param obj {@link Object} to evaluate in the equality expression.
+   * @return a boolean value indicating whether {@literal this} {@link JavaVersion} is equal to
+   * the given {@link Object}.
+   * @see java.lang.Object#equals(Object)
    */
   @Override
   public boolean equals(Object obj) {
@@ -353,7 +365,10 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * @inheritDoc
+   * Computes a hash code for {@literal this} {@link JavaVersion}.
+   *
+   * @return a computed hash code for {@literal this} {@link JavaVersion}.
+   * @see java.lang.Object#hashCode()
    */
   @Override
   public int hashCode() {
@@ -368,7 +383,10 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
-   * @inheritDoc
+   * Returns a {@link String} representing {@literal this} {@link JavaVersion}.
+   *
+   * @return a {@link String} describing {@literal this} {@link JavaVersion}.
+   * @see java.lang.Object#toString()
    */
   @Override
   public @NotNull String toString() {
