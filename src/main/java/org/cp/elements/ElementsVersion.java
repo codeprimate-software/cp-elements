@@ -49,7 +49,7 @@ public class ElementsVersion implements Runnable {
   public static final String PROJECT_ARTIFACT_ID = "cp-elements";
   public static final String PROJECT_LICENSE = "Apache License, version 2.0";
   public static final String PROJECT_NAME = "Codeprimate Elements";
-  public static final String PROJECT_VERSION = "version 1.0.0.M5";
+  public static final String PROJECT_VERSION = "version 1.0.0-M7";
 
   private Properties maven;
 
