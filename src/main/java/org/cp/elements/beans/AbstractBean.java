@@ -89,7 +89,13 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   private final VetoableChangeSupport vetoableChangeSupport = new VetoableChangeSupport(this);
 
   /**
-   * Constructs a new instance of {@literal this} {@link AbstractBean}.
+   * Constructs a new instance of {@link AbstractBean}.
+   *
+   * This default, no-arg constructor simply registers a {@link ChangeRecorder} {@link PropertyChangeListener}
+   * to record and keep track of changes in state to {@literal this} {@link AbstractBean}.
+   *
+   * @see org.cp.elements.beans.event.ChangeRecorder
+   * @see #register(PropertyChangeListener)
    */
   public AbstractBean() {
     register(this.changeRecorder);
@@ -105,6 +111,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * @param id {@link ID generically typed identifier} uniquely identifying {@link Object Objects}
    * within {@literal this} {@link Bean} {@link Class type}.
    * @see org.cp.elements.lang.Identifiable
+   * @see #identifiedBy(Comparable)
+   * @see #AbstractBean()
    */
   public AbstractBean(@Nullable ID id) {
     this();
@@ -827,6 +835,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * for changing the state of {@literal this} {@link Bean}.
    *
    * @see <a href="https://en.wikipedia.org/wiki/Strategy_pattern">Strategy Software Design Pattern</a>
+   * @see StateChangeCallback
    * @see StateChangeFunction
    */
   private enum StateChangeFunctionStrategies implements StateChangeFunction {
