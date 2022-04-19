@@ -23,7 +23,17 @@ package org.cp.elements.lang;
  * @see java.lang.Runtime
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public abstract class RuntimeUtils {
+
+  /**
+   * Determines whether the Java program was initiated from Gradle.
+   *
+   * @return a boolean value indicating whether the Java program was initiated from Gradle.
+   */
+  public static boolean isRunWithGradle() {
+    return StringUtils.hasText(System.getProperty("gradle.user.home"));
+  }
 
   /**
    * Determines whether the Java program was initiated from Maven.
