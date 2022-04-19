@@ -31,6 +31,7 @@ public abstract class RuntimeUtils {
    * @return a boolean value determining whether the Java program was initiated from Maven.
    */
   public static boolean isRunWithMaven() {
-    return System.getenv("MAVEN_PROJECTBASEDIR") != null;
+    return StringUtils.hasText(System.getenv("MAVEN_PROJECTBASEDIR"))
+      || StringUtils.hasText(System.getProperty("maven.projectBasedir"));
   }
 }
