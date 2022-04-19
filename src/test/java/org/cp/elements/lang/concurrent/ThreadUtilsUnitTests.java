@@ -16,7 +16,6 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -31,7 +30,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import org.cp.elements.lang.Condition;
-import org.cp.elements.lang.RuntimeUtils;
 import org.cp.elements.test.TestUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -613,22 +611,31 @@ public class ThreadUtilsUnitTests {
   }
 
   @Test
-  // TODO: Test fails when run with Gradle.
-  public void joinInterruptedAlternate() {
+  public void joinMainThreadInterruptingTestThread() {
 
-    assumeThat(RuntimeUtils.isRunWithMaven()).isFalse();
+    AtomicBoolean joinSuccess = new AtomicBoolean(true);
+    AtomicBoolean ran = new AtomicBoolean(false);
 
     Thread mainThread = Thread.currentThread();
 
-    Runnable testRunnable = mainThread::interrupt;
+    Runnable testRunnable = () -> {
+      ran.set(true);
+      joinSuccess.set(ThreadUtils.join(mainThread, TimeUnit.SECONDS.toMillis(10), 0));
+    };
 
     Thread testThread = new Thread(testRunnable, "Test Thread");
 
     testThread.setDaemon(false);
     testThread.start();
+    testThread.interrupt();
 
-    assertThat(ThreadUtils.join(testThread, 500, 0)).isFalse();
-    assertThat(mainThread.isInterrupted()).isTrue();
+    assertThat(testThread.isInterrupted()).isTrue();
+    assertThat(ThreadUtils.join(testThread, 500L, 0)).isTrue();
+
+    assertThat(ran.get()).isTrue();
+    assertThat(joinSuccess.get()).isFalse();
+    //assertThat(testThread.isInterrupted()).isTrue(); // TODO: Why false?
+    assertThat(testThread.isAlive()).isFalse();
   }
 
   @Test
@@ -718,41 +725,47 @@ public class ThreadUtilsUnitTests {
   @SuppressWarnings("unused")
   protected static final class JoinInterruptedMultithreadedTestCase extends MultithreadedTestCase {
 
-    private Thread interruptingThread;
-    private Thread joiningThread;
+    private volatile Thread interruptingThread;
+    private volatile Thread joiningThread;
 
     public void thread1() throws InterruptedException {
 
       assertTick(0);
 
-      interruptingThread = Thread.currentThread();
-      interruptingThread.setName("Interrupting Thread");
+      this.interruptingThread = Thread.currentThread();
+      this.interruptingThread.setName("Interrupting Thread");
 
       waitForTick(2);
+      assertTick(2);
 
-      assertThat(joiningThread).isNotNull();
+      assertThat(this.joiningThread).isNotNull();
 
-      joiningThread.interrupt();
-      joiningThread.join();
+      this.joiningThread.interrupt();
+      this.joiningThread.join();
+
+      assertThat(this.interruptingThread.isInterrupted()).isFalse();
     }
 
     public void thread2() {
 
+      assertTick(0);
+
+      this.joiningThread = Thread.currentThread();
+      this.joiningThread.setName("Joining Thread");
+
       waitForTick(1);
+      assertTick(1);
 
-      joiningThread = Thread.currentThread();
-      joiningThread.setName("Joining Thread");
-
-      assertThat(interruptingThread).isNotNull();
-      assertThat(ThreadUtils.join(interruptingThread, TimeUnit.SECONDS.toMillis(5), 0)).isFalse();
-      assertThat(joiningThread.isInterrupted()).isTrue();
+      assertThat(this.interruptingThread).isNotNull();
+      assertThat(ThreadUtils.join(this.interruptingThread, TimeUnit.SECONDS.toMillis(5), 0)).isFalse();
+      assertThat(this.joiningThread.isInterrupted()).isTrue();
     }
 
     @Override
     public void finish() {
 
-      assertThat(interruptingThread.isAlive()).isFalse();
-      assertThat(joiningThread.isAlive()).isFalse();
+      assertThat(this.interruptingThread.isAlive()).isFalse();
+      assertThat(this.joiningThread.isAlive()).isFalse();
     }
   }
 
