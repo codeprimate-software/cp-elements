@@ -17,9 +17,9 @@
 
   <name>Elements</name>
   <description>
-    'Codeprimate Elements' (a.k.a. cp-elements, or simply Elements) is a Java class library and micro-framework
-    that simplifies the development of software applications written in Java.  Elements packages several APIs
-    into one library in order to address various application concerns and aspects of software design and development
+    'Codeprimate Elements' (a.k.a. cp-elements, or simply Elements) is a Java library and micro-framework used to
+    simplify the development of software applications written in Java. Elements packages several APIs into one
+    library in order to address various application concerns and aspects of software design and development
     collectively. Elements is a highly simple, yet robust and proven library built on solid OO principles,
     software design patterns and best practices to effectively solve common and reoccurring problems
     in software development.
@@ -76,9 +76,9 @@
   </issueManagement>
 
   <properties>
+    <java-module-name>org.codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
-    <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
   </properties>
 
   <dependencies>
