@@ -551,7 +551,7 @@ public class ThreadUtilsUnitTests {
         .contains(String.format("[TESTTAG] DumpStackTestThread Thread @ %d", currentThread.getId()));
 
       assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
-      assertThat(stackTrace).contains("at java.lang.Thread.dumpStack");
+      assertThat(stackTrace).containsPattern("at .*java.lang.Thread.dumpStack(.*)");
       assertThat(stackTrace).contains("at " + ThreadUtils.class.getName() + ".dumpStack");
       assertThat(stackTrace).contains("at " + ThreadUtilsUnitTests.class.getName() + ".dumpStackWasCalled");
     }

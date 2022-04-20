@@ -650,7 +650,7 @@ public class ThreadAdapterUnitTests {
       //System.out.println(stackTrace);
 
       assertThat(stackTrace).contains("java.lang.Exception: Stack trace");
-      assertThat(stackTrace).contains("at java.lang.Thread.dumpStack");
+      assertThat(stackTrace).containsPattern("at .*java.lang.Thread.dumpStack(.*)");
     }
     finally {
       System.setErr(systemErr);

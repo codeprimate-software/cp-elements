@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,7 +30,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link ProxyFactory}.
+ * Unit Tests for {@link ProxyFactory}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -44,6 +43,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void newProxyFactoryIsNotNull() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
@@ -55,6 +55,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void newProxyFactoryForTargetObjectAndInterfaces() {
+
     Contact johnBlum = Contact.newContact("John Blum");
 
     ProxyFactory<Object> proxyFactory = newProxyFactory(johnBlum, Auditable.class, Identifiable.class, Runnable.class);
@@ -86,13 +87,15 @@ public class ProxyFactoryTests {
 
   @Test
   public void resolvesNoInterfaces() {
+
     assertThat(ProxyFactory.resolveInterfaces(Contact.newContact("John Blum"))).isEmpty();
     assertThat(ProxyFactory.resolveInterfaces(new Object())).isEmpty();
   }
 
   @Test
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public void adviseWithMethodInterceptors() {
+
     MethodInterceptor mockMethodInterceptorOne = mock(MethodInterceptor.class);
     MethodInterceptor mockMethodInterceptorTwo = mock(MethodInterceptor.class);
 
@@ -106,6 +109,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void adviseWithNullMethodInterceptors() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
@@ -116,6 +120,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void implementingInterfaces() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
@@ -125,7 +130,9 @@ public class ProxyFactoryTests {
   }
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void implementingNoInterfaces() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory(target, Auditable.class, Identifiable.class);
 
     assertThat(proxyFactory).isNotNull();
@@ -138,6 +145,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void proxyTarget() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
@@ -148,6 +156,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void proxyNull() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory(target);
 
     assertThat(proxyFactory).isNotNull();
@@ -158,6 +167,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void usingSystemClassLoader() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
@@ -168,6 +178,7 @@ public class ProxyFactoryTests {
 
   @Test
   public void usingThreadContextClassLoader() {
+
     ProxyFactory<Object> proxyFactory = newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
@@ -175,14 +186,12 @@ public class ProxyFactoryTests {
     assertThat(proxyFactory.getProxyClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
   }
 
-  abstract class Entity implements Auditable {
-  }
+  @SuppressWarnings("rawtypes")
+  static abstract class Entity implements Auditable { }
 
-  abstract class Person extends Entity implements Comparable<Person>, Serializable {
-  }
+  static abstract class Person extends Entity implements Comparable<Person>, Serializable { }
 
-  abstract class Golfer extends Person {
-  }
+  static abstract class Golfer extends Person { }
 
   @Data
   @RequiredArgsConstructor(staticName = "newContact")

@@ -17,19 +17,19 @@ package org.cp.elements.lang.reflect;
 
 import static org.cp.elements.lang.ClassUtils.getInterfaces;
 import static org.cp.elements.lang.reflect.ProxyService.newProxyService;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
-import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * The {@link ProxyFactory} class is an abstract factory object used to create a proxy for a given target {@link Object}
@@ -53,6 +53,7 @@ public abstract class ProxyFactory<T> {
    * @see org.cp.elements.lang.reflect.ProxyFactory
    * @see org.cp.elements.lang.reflect.ProxyService
    */
+  @SuppressWarnings("all")
   protected static <T> ProxyFactory<T> newProxyFactory() {
 
     return new ProxyFactory<T>() {
@@ -67,7 +68,7 @@ public abstract class ProxyFactory<T> {
       public <R> R newProxy(ClassLoader proxyClassLoader, T target, Class<?>[] proxyInterfaces,
           Iterable<MethodInterceptor<T>> methodInterceptors) {
 
-        return (R) stream(newProxyService())
+        return (R) StreamUtils.stream(newProxyService())
           .filter(proxyFactory -> proxyFactory.canProxy(getTarget(), getProxyInterfaces()))
           .findFirst()
           .map(proxyFactory -> proxyFactory.<R>newProxy(getProxyClassLoader(), getTarget(), getProxyInterfaces(),
@@ -114,7 +115,7 @@ public abstract class ProxyFactory<T> {
 
     Set<Class<?>> allImplementedInterfaces = new HashSet<>(getInterfaces(obj));
 
-    allImplementedInterfaces.addAll(stream(nullSafeArray(interfaces, Class.class))
+    allImplementedInterfaces.addAll(Arrays.stream(ArrayUtils.nullSafeArray(interfaces, Class.class))
       .filter(ClassUtils::isInterface)
       .collect(Collectors.toList()));
 
@@ -169,7 +170,11 @@ public abstract class ProxyFactory<T> {
    */
   @NullSafe
   protected ClassLoader getProxyClassLoader() {
-    return Optional.ofNullable(this.proxyClassLoader).orElseGet(() -> Thread.currentThread().getContextClassLoader());
+
+    ClassLoader proxyClassLoader = this.proxyClassLoader;
+
+    return proxyClassLoader != null ? proxyClassLoader :
+      Thread.currentThread().getContextClassLoader();
   }
 
   /**
@@ -181,7 +186,7 @@ public abstract class ProxyFactory<T> {
    */
   @NullSafe
   public Class<?>[] getProxyInterfaces() {
-    return nullSafeArray(this.proxyInterfaces, Class.class);
+    return ArrayUtils.nullSafeArray(this.proxyInterfaces, Class.class);
   }
 
   /**
@@ -209,7 +214,7 @@ public abstract class ProxyFactory<T> {
   @NullSafe
   @SuppressWarnings("unchecked")
   public ProxyFactory<T> adviseWith(MethodInterceptor<T>... methodInterceptors) {
-    Collections.addAll(this.methodInterceptors, nullSafeArray(methodInterceptors));
+    Collections.addAll(this.methodInterceptors, ArrayUtils.nullSafeArray(methodInterceptors, MethodInterceptor.class));
     return this;
   }
 
