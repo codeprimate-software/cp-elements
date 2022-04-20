@@ -31,6 +31,11 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -44,8 +49,6 @@ import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.annotation.Resource;
 
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
@@ -123,6 +126,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void getClassWithNull() {
     assertThat(ClassUtils.getClass(null)).isNull();
   }
@@ -552,6 +556,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void getNameWithNull() {
     assertThat(ClassUtils.getName(null)).isNull();
   }
@@ -584,6 +589,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void getSimpleNameWithNull() {
     assertNull(ClassUtils.getName(null));
   }
@@ -640,6 +646,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void notInstanceOf() {
 
     assertFalse(ClassUtils.instanceOf(false, Number.class));
@@ -656,6 +663,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotAnnotation() {
 
     assertFalse(ClassUtils.isAnnotation(null));
@@ -704,6 +712,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotArray() {
 
     assertFalse(ClassUtils.isArray(null));
@@ -944,6 +953,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotInterface() {
 
     assertFalse(ClassUtils.isInterface(null));
@@ -1018,6 +1028,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotPrimitive() {
 
     assertFalse(ClassUtils.isPrimitive(null));
@@ -1321,5 +1332,11 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   private static class ParentType extends GrandparentType implements InterfaceFour { }
 
   private static class ChildType extends ParentType implements InterfaceFive { }
+
+  @Documented
+  @Inherited
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.TYPE)
+  private @interface Resource { }
 
 }

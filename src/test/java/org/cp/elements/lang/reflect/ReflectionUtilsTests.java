@@ -29,8 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
-import javax.annotation.Resource;
-
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.test.AbstractBaseTestSuite;
@@ -640,7 +638,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
   @Test
   @SuppressWarnings("all")
   public void withNullFields() {
-    ReflectionUtils.withFields(null, null, null).call((field) -> new NullPointerException("The Field must not be null!"));
+    ReflectionUtils.withFields(null, null, null).call(field -> new NullPointerException("The Field must not be null!"));
   }
 
   @Test
@@ -742,7 +740,6 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
   }
 
-  @Resource
   @SuppressWarnings("all")
   protected static class DerivedType extends SuperType {
 
