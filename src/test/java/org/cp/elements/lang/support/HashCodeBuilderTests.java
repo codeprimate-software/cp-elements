@@ -17,18 +17,19 @@ package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.AssertionException;
@@ -46,6 +47,7 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link HashCodeBuilder}.
  *
  * @author John J. Blum
+ * @see java.util.logging.Logger
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.support.HashCodeBuilder
@@ -224,23 +226,28 @@ public class HashCodeBuilderTests {
   @Test
   public void hashCodeForObjectWithBadHashCodeImplementation() {
 
-    HashCodeBuilder.logger = spy(HashCodeBuilder.logger);
+    ObjectWithBadHashCodeImplementation object =
+      ObjectWithBadHashCodeImplementation.create("nonTrasient", "test");
 
-    doReturn(true).when(HashCodeBuilder.logger).isLoggable(eq(Level.FINE));
+    Logger mockLogger = mock(Logger.class);
 
-    ObjectWithBadHashCodeImplementation object = ObjectWithBadHashCodeImplementation.create("nonTrasient", "test");
+    Function<HashCodeBuilder, HashCodeBuilder> hashCodeBuilderFunction = builder -> {
+      HashCodeBuilder builderSpy = spy(builder);
+      doReturn(mockLogger).when(builderSpy).getLogger();
+      return builderSpy;
+    };
 
-    assertThat(HashCodeBuilder.hashCodeFor(object).build()).isNotEqualTo(object.hashCode());
+    assertThat(HashCodeBuilder.hashCodeFor(object, hashCodeBuilderFunction).build()).isNotEqualTo(object.hashCode());
 
-    verify(HashCodeBuilder.logger, atLeast(2)).isLoggable(eq(Level.FINE));
-
-    verify(HashCodeBuilder.logger, times(1)).fine(SupplierArgumentMatcher.equalSuppliers(
+    verify(mockLogger, times(1)).fine(SupplierArgumentMatcher.equalSuppliers(
       () -> String.format("Hashing field [objectValue] on object [%s]",
         ObjectWithBadHashCodeImplementation.class.getName())));
 
-    verify(HashCodeBuilder.logger, times(1)).fine(SupplierArgumentMatcher.equalSuppliers(
+    verify(mockLogger, times(1)).fine(SupplierArgumentMatcher.equalSuppliers(
       () -> String.format("Hashing field [stringValue] on object [%s]",
         ObjectWithBadHashCodeImplementation.class.getName())));
+
+    verifyNoMoreInteractions(mockLogger);
   }
 
   private static final class SupplierArgumentMatcher<T> implements ArgumentMatcher<Supplier<T>> {

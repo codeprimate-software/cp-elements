@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
@@ -21,11 +20,14 @@ import static org.cp.elements.lang.reflect.ReflectionUtils.getValue;
 import static org.cp.elements.lang.reflect.ReflectionUtils.withFields;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.text.FormatUtils;
 
@@ -45,46 +47,33 @@ public class HashCodeBuilder implements Builder<Integer> {
   protected static final int DEFAULT_BASE_VALUE = 17;
   protected static final int DEFAULT_MULTIPLIER = 37;
 
-  static Logger logger = Logger.getLogger(HashCodeBuilder.class.getName());
-
   private final int multiplier;
 
   private int hashValue;
 
   /**
-   * Factory method to construct a new instance of {@link HashCodeBuilder} initialized with default values
-   * for base value and multiplier.
+   * Factory method used to construct a new instance of {@link HashCodeBuilder} initialized with
+   * a default base value and multiplier.
    *
-   * @return an instance of {@link HashCodeBuilder}.
+   * @return a new {@link HashCodeBuilder}.
    * @see #HashCodeBuilder()
    */
-  public static HashCodeBuilder create() {
+  public static @NotNull HashCodeBuilder create() {
     return new HashCodeBuilder();
   }
 
   /**
-   * Factory method to construct a new instance of {@link HashCodeBuilder} initialized with the given base value
-   * and multiplier.
+   * Factory method used to construct a new instance of {@link HashCodeBuilder} initialized with
+   * the given base value and multiplier.
    *
    * @param baseValue integer indicating the starting value of the hash code.
    * @param multiplier integer indicating the multiplier used in the individual factors.
-   * @return an instance of the {@link HashCodeBuilder} initialized with the given base value and multiplier.
+   * @return a new {@link HashCodeBuilder} initialized with the given base value and multiplier.
    * @throws IllegalArgumentException if {@code baseValue} or {@code multiplier} are less than equal to 0.
    * @see #HashCodeBuilder(int, int)
    */
-  public static HashCodeBuilder create(int baseValue, int multiplier) {
+  public static @NotNull HashCodeBuilder create(int baseValue, int multiplier) {
     return new HashCodeBuilder(baseValue, multiplier);
-  }
-
-  /**
-   * Returns the {@link Logger} for the {@link HashCodeBuilder} class handling logging
-   * for all instances of {@link HashCodeBuilder}.
-   *
-   * @return the {@link HashCodeBuilder} class {@link Logger}.
-   * @see java.util.logging.Logger
-   */
-  protected static Logger getLogger() {
-    return logger;
   }
 
   /**
@@ -107,12 +96,19 @@ public class HashCodeBuilder implements Builder<Integer> {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static HashCodeBuilder hashCodeFor(Object obj) {
-    HashCodeBuilder builder = create();
+  public static @NotNull HashCodeBuilder hashCodeFor(@Nullable Object obj) {
+    return hashCodeFor(obj, Function.identity());
+  }
+
+  static @NotNull HashCodeBuilder hashCodeFor(@Nullable Object obj,
+      @NotNull Function<HashCodeBuilder, HashCodeBuilder> hashCodeBuilderFunction) {
+
+    HashCodeBuilder builder = hashCodeBuilderFunction.apply(create());
 
     Optional.ofNullable(obj).ifPresent(object -> {
       withFields().on(object).matching(field -> !ModifierUtils.isTransient(field)).call(field -> {
-        getLogger().fine(() -> FormatUtils.format("Hashing field [%1$s] on object [%2$s]",
+
+        builder.getLogger().fine(() ->  FormatUtils.format("Hashing field [%1$s] on object [%2$s]",
           field.getName(), object.getClass().getName()));
 
         builder.with(getValue(object, field, field.getType()));
@@ -122,9 +118,11 @@ public class HashCodeBuilder implements Builder<Integer> {
     return builder;
   }
 
+  private final Logger logger = Logger.getLogger(getClass().getName());
+
   /**
-   * Constructs an instance of the {@link HashCodeBuilder} initialized with the default base value and multiplier
-   * used to compute the hash code of an object.
+   * Constructs a new instance of {@link HashCodeBuilder} initialized with the default base value and multiplier
+   * used to compute the hash code of an {@link Object}.
    *
    * @see #HashCodeBuilder(int, int)
    */
@@ -133,19 +131,31 @@ public class HashCodeBuilder implements Builder<Integer> {
   }
 
   /**
-   * Constructs an instance of the {@link HashCodeBuilder} initialized with the given base value and multiplier
-   * used to compute the hash code of an object.
+   * Constructs a new instance of the {@link HashCodeBuilder} initialized with the given {@link Integer#TYPE base value}
+   * and {@link Integer#TYPE multiplier} used to compute the hash code of an {@link Object}.
    *
-   * @param baseValue integer indicating the starting value of the hash code.
-   * @param multiplier integer indicating the multiplier used in the individual factors.
-   * @throws IllegalArgumentException if {@code baseValue} or {@code multiplier} are less than equal to 0.
+   * @param baseValue {@link Integer#TYPE} indicating the starting value of the hash code.
+   * @param multiplier {@link Integer#TYPE} indicating the multiplier used in the individual factors.
+   * @throws IllegalArgumentException if the {@link Integer base value} or {@link Integer multiplier}
+   * are less than equal to {@literal 0}.
    */
   public HashCodeBuilder(int baseValue, int multiplier) {
-    assertThat(baseValue).stating("baseValue [%d] must be greater than 0", baseValue).isGreaterThan(0);
-    assertThat(multiplier).stating("multiplier [%d] must be greater than 0", multiplier).isGreaterThan(0);
+
+    assertThat(baseValue).describedAs("baseValue [%d] must be greater than 0", baseValue).isGreaterThan(0);
+    assertThat(multiplier).describedAs("multiplier [%d] must be greater than 0", multiplier).isGreaterThan(0);
 
     this.hashValue = baseValue;
     this.multiplier = multiplier;
+  }
+
+  /**
+   * Returns the configured {@link Logger} used by this {@link HashCodeBuilder} to log operations and internal state.
+   *
+   * @return the configured {@link Logger}.
+   * @see java.util.logging.Logger
+   */
+  protected @NotNull Logger getLogger() {
+    return this.logger;
   }
 
   /**

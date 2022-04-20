@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.io.PrintWriter;
@@ -21,9 +20,11 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
  /**
- * The ThrowableUtils class provides methods for working with Throwable objects (Errors and Exceptions).
+ * {@link ThrowableUtils} provides methods for working with {@link Throwable} objects
+  * ({@link Error Errors} and {@link Exception Exceptions}).
  *
  * @author John J. Blum
  * @see java.lang.Error
@@ -41,8 +42,8 @@ public abstract class ThrowableUtils {
    * @see java.lang.Throwable#getCause()
    */
   @NullSafe
-  public static Throwable getCause(Throwable throwable) {
-    return (throwable != null ? throwable.getCause() : null);
+  public static @Nullable Throwable getCause(@Nullable Throwable throwable) {
+    return throwable != null ? throwable.getCause() : null;
   }
 
   /**
@@ -57,8 +58,8 @@ public abstract class ThrowableUtils {
    * @see java.lang.Throwable#getCause()
    */
   @NullSafe
-  public static Throwable getCauseOfInvocationTargetException(Throwable throwable) {
-    return (throwable instanceof InvocationTargetException ? throwable.getCause() : throwable);
+  public static @Nullable Throwable getCauseOfInvocationTargetException(@Nullable Throwable throwable) {
+    return throwable instanceof InvocationTargetException ? throwable.getCause() : throwable;
   }
 
   /**
@@ -70,8 +71,8 @@ public abstract class ThrowableUtils {
    * @see java.lang.Throwable#getMessage()
    */
   @NullSafe
-  public static String getMessage(Throwable throwable) {
-    return (throwable != null ? throwable.getMessage() : null);
+  public static @Nullable String getMessage(@Nullable Throwable throwable) {
+    return throwable != null ? throwable.getMessage() : null;
   }
 
   /**
@@ -84,7 +85,8 @@ public abstract class ThrowableUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static Throwable getRootCause(Throwable throwable) {
+  public static @Nullable Throwable getRootCause(@Nullable Throwable throwable) {
+
     while (getCause(throwable) != null) {
       throwable = throwable.getCause();
     }
@@ -100,7 +102,9 @@ public abstract class ThrowableUtils {
    * @return the Stack Trace of the given {@link Throwable} object as a {@link String}.
    * @see java.lang.Throwable#printStackTrace(java.io.PrintWriter)
    */
-  public static String getStackTrace(Throwable throwable) {
+  @NullSafe
+  public static @Nullable String getStackTrace(@Nullable Throwable throwable) {
+
     String stackTraceValue = null;
 
     if (throwable != null) {

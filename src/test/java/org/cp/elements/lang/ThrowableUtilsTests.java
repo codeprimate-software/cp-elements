@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ThrowableUtils}.
+ * Unit Tests for {@link ThrowableUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Error
@@ -38,7 +39,8 @@ import org.junit.Test;
  */
 public class ThrowableUtilsTests {
 
-  protected String toString(Throwable throwable) {
+  private @NotNull String toString(@NotNull Throwable throwable) {
+
     StringBuilder builder = new StringBuilder(throwable.getClass().getName());
 
     if (throwable.getMessage() != null) {
@@ -57,6 +59,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getCauseFromThrowableWithCause() {
+
     IllegalArgumentException expectedCause = new IllegalArgumentException("Illegal Argument");
 
     assertThat(ThrowableUtils.getCause(new Throwable(expectedCause))).isSameAs(expectedCause);
@@ -65,12 +68,13 @@ public class ThrowableUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void getCauseFromThrowableWithNoCause() {
-    Throwable throwable = new Throwable();
-    Throwable throwableSpy = spy(throwable);
 
-    assertThat(ThrowableUtils.getCause(throwableSpy)).isSameAs(throwable);
+    Throwable throwable = spy(new Throwable((Throwable) null));
 
-    verify(throwableSpy, times(1)).getCause();
+    assertThat(ThrowableUtils.getCause(throwable)).isNull();
+
+    verify(throwable, times(1)).getCause();
+    verifyNoMoreInteractions(throwable);
   }
 
   @Test
@@ -80,6 +84,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getCauseOfInvocationTargetExceptionFromInvocationTargetExceptionHavingCause() {
+
     IllegalStateException expectedCause = new IllegalStateException("Illegal State");
 
     assertThat(ThrowableUtils.getCauseOfInvocationTargetException(new InvocationTargetException(expectedCause)))
@@ -98,6 +103,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getCauseOfInvocationTargetExceptionFromRuntimeExceptionHavingCause() {
+
     IllegalStateException cause = new IllegalStateException("Illegal State");
     RuntimeException expectedException = new RuntimeException("test", cause);
 
@@ -112,6 +118,7 @@ public class ThrowableUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void getMessageFromThrowableWithNoMessage() {
+
     Throwable throwableSpy = spy(new Throwable());
 
     assertThat(ThrowableUtils.getMessage(throwableSpy)).isNull();
@@ -126,6 +133,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getRootCauseFromThrowableHavingNoCause() {
+
     Throwable expectedRootCause = new Throwable();
 
     assertThat(ThrowableUtils.getRootCause(expectedRootCause)).isSameAs(expectedRootCause);
@@ -133,6 +141,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getRootCauseFromThrowableWithCause() {
+
     IllegalArgumentException expectedRootCause = new IllegalArgumentException("Illegal Argument");
 
     assertThat(ThrowableUtils.getRootCause(new Throwable(expectedRootCause))).isSameAs(expectedRootCause);
@@ -140,6 +149,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getRootCauseFromThrowableWithDeeplyRootedCause() {
+
     NullPointerException expectedRootCause = new NullPointerException("NPE");
     IllegalStateException illegalState = new IllegalStateException("Illegal State", expectedRootCause);
     IllegalArgumentException illegalArgument = new IllegalArgumentException("Illegal Argument", illegalState);
@@ -155,6 +165,7 @@ public class ThrowableUtilsTests {
 
   @Test
   public void getStackTraceFromThrowable() {
+
     Throwable throwable = new Throwable("test");
 
     assertThat(ThrowableUtils.getStackTrace(throwable)).isEqualTo(toString(throwable));

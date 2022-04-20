@@ -534,7 +534,7 @@ public class ThreadAdapter {
   /**
    * Return a {@link String} representation of {@literal this} {@link Thread}.
    *
-   * @return a {@link String} describing the state of {@literal this} {@link Thread}.
+   * @return a {@link String} describing {@literal this} {@link Thread}.
    * @see java.lang.Thread#toString()
    */
   @Override
