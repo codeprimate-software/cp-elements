@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular.provider;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
@@ -52,7 +51,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "rawtypes", "unused" })
 public class InMemoryTable extends AbstractTable {
 
   private final List<Column> columns;
@@ -105,7 +104,7 @@ public class InMemoryTable extends AbstractTable {
 
     Assert.notEmpty(columns, "Columns are required");
 
-    List<Column> inMemoryColumns = (List<Column>) Arrays.stream(columns)
+    List<? extends Column> inMemoryColumns = (List<? extends Column>) Arrays.stream(columns)
       .map(InMemoryColumn::new)
       .collect(Collectors.toList());
 
@@ -146,6 +145,7 @@ public class InMemoryTable extends AbstractTable {
    * @see org.cp.elements.data.struct.tabular.Column
    */
   @Override
+  @SuppressWarnings("all")
   public boolean add(Column column) {
 
     if (getColumns().add(validateColumn(column))) {
