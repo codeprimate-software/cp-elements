@@ -11,11 +11,11 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 
-description = "Codeprimate Elements Java class library and micro-framework."
+description = "Codeprimate Elements Java library and micro-framework."
 group = "org.codeprimate"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+//sourceCompatibility = 1.8
+//targetCompatibility = 1.8
 
 tasks.withType(Test).all {
   systemProperties['gradle.build'] = true
@@ -27,7 +27,9 @@ repositories {
 
 dependencies {
 
-  implementation files(System.getProperty("java.home") + "/../lib/tools.jar")
+  if (JavaVersion.current().isJava8()) {
+    implementation files(System.getProperty("java.home") + "/../lib/tools.jar")
+  }
 
   testImplementation "org.assertj:assertj-core:$assertjVersion"
   testImplementation "org.hamcrest:hamcrest-core:$hamcrestVersion"
