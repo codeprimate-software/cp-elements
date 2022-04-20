@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +22,7 @@ import java.lang.management.ManagementFactory;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link SystemUtils}.
+ * Unit Tests for {@link SystemUtils}.
  *
  * @author John J. Blum
  * @see java.lang.System
@@ -34,7 +33,7 @@ import org.junit.Test;
  * @see org.cp.elements.lang.SystemUtils
  * @since 1.0.0
  */
-public class SystemUtilsTests {
+public class SystemUtilsUnitTests {
 
   @Test
   public void isJavaVersionAtLeast180() {

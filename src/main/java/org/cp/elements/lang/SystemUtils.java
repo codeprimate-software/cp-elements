@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.Scanner;
@@ -64,28 +63,21 @@ public abstract class SystemUtils {
   public static final String USERNAME = System.getProperty("user.name");
 
   /**
-   * Utility method to determine if the installed Java Runtime Environment (JRE) meets the minimum expected version.
-   * Java versions are typically of the form "1.8.0_66".  The Java version is determined by the "java.version"
-   * System property.
+   * Utility method used to determine if the installed Java Runtime Environment (JRE)
+   * meets the minimum expected version requirement.
    *
-   * @param expectedVersion a numerical String value specifying the expected minimum version
-   * of the installed Java Runtime Environment.
-   * @return a boolean value indicating if the Java Runtime Environment meets the expected minimum version requirement.
-   * @see java.lang.System#getProperty(String)
+   * Java versions are typically of the form {@literal "1.8.0_66"}. The Java version is determined by
+   * the {@literal "java.version"} {@link System#getProperties() System property}.
+   *
+   * @param expectedVersion numerical {@link String} value specifying the expected minimum Java version
+   * of the installed Java Runtime Environment (JRE).
+   * @return a boolean value indicating if the Java Runtime Environment (JRE) meets the expected minimum
+   * version requirement.
+   * @see org.cp.elements.lang.JavaVersion#current()
+   * @see org.cp.elements.lang.JavaVersion
    */
   public static boolean isJavaVersionAtLeast(String expectedVersion) {
-
-    String actualVersionDigits = StringUtils.getDigits(System.getProperty("java.version"));
-
-    String expectedVersionDigits = StringUtils.pad(StringUtils.getDigits(expectedVersion), '0',
-      actualVersionDigits.length());
-
-    try {
-      return (Long.parseLong(actualVersionDigits) >= Long.parseLong(expectedVersionDigits));
-    }
-    catch (NumberFormatException ignore) {
-      return false;
-    }
+    return JavaVersion.current().isNewerThanOrEqualTo(JavaVersion.parse(expectedVersion));
   }
 
   /**
