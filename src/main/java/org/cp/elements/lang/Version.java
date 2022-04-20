@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
@@ -22,6 +21,8 @@ import static org.cp.elements.lang.ObjectUtils.returnFirstNonNullValue;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ComparatorResultBuilder;
 
 /**
@@ -34,10 +35,15 @@ import org.cp.elements.util.ComparatorResultBuilder;
 @SuppressWarnings("unused")
 public class Version implements Comparable<Version> {
 
+  protected static final int DEFAULT_BUILD_NUMBER = 0;
+  protected static final int DEFAULT_QUALIFIER_NUMBER = 0;
+  protected static final int DEFAULT_VERSION_NUMBER = 0;
+
   protected static final String RELEASE_DATE_TIME_FORMAT = "yyyy-MMMM-dd-HH-mm-ss";
+  protected static final String VERSION_NUMBER_SEPARATOR = "\\.";
 
   /**
-   * Factory method to construct an instance of {@link Version} initialized with major and minor version numbers.
+   * Factory method used to construct a new instance of {@link Version} initialized with major and minor version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -46,12 +52,12 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int, Qualifier, int)
    */
-  public static Version from(int major, int minor) {
-    return from(major, minor, 0, Qualifier.UNDEFINED, 0);
+  public static @NotNull Version from(int major, int minor) {
+    return from(major, minor, 0, Qualifier.UNDEFINED, DEFAULT_QUALIFIER_NUMBER);
   }
 
   /**
-   * Factory method to construct an instance of {@link Version} initialized with major, minor
+   * Factory method used to construct a new instance of {@link Version} initialized with major, minor
    * and maintenance version numbers.
    *
    * @param major major version number.
@@ -63,18 +69,19 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int, Qualifier, int)
    */
-  public static Version from(int major, int minor, int maintenance) {
-    return from(major, minor, maintenance, Qualifier.UNDEFINED, 0);
+  public static @NotNull Version from(int major, int minor, int maintenance) {
+    return from(major, minor, maintenance, Qualifier.UNDEFINED, DEFAULT_QUALIFIER_NUMBER);
   }
 
   /**
-   * Factory method to construct an instance of {@link Version} initialized with major, minor
-   * and maintenance version numbers along with the version qualifier (e.g. RELEASE).
+   * Factory method used to construct a new instance of {@link Version} initialized with major, minor
+   * and maintenance version numbers along with a version qualifier (e.g. RELEASE).
    *
    * @param major major version number.
    * @param minor minor version number.
    * @param maintenance maintenance version number.
-   * @param qualifier version {@link Qualifier} such as M# (Milestone), RC# (Release Candidate) or RELEASE.
+   * @param qualifier version {@link Qualifier} such as {@literal M# (Milestone)}, {@literal RC# (Release Candidate)}
+   * or {@literal RELEASE}.
    * @return a new instance of {@link Version} initialized with the major, minor and maintenance version numbers
    * along with the version qualifier.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
@@ -83,53 +90,56 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int, Qualifier, int)
    */
-  public static Version from(int major, int minor, int maintenance, Qualifier qualifier) {
-    return from(major, minor, maintenance, qualifier, 0);
+  public static @NotNull Version from(int major, int minor, int maintenance, Qualifier qualifier) {
+    return from(major, minor, maintenance, qualifier, DEFAULT_QUALIFIER_NUMBER);
   }
 
   /**
-   * Factory method to construct an instance of {@link Version} initialized with major, minor
-   * and maintenance version numbers along with the version qualifier (e.g. RELEASE) and a qualifier number.
+   * Factory method used to construct a new instance of {@link Version} initialized with major, minor
+   * and maintenance version numbers along with a version qualifier (e.g. RELEASE) and a qualifier number.
    *
    * @param major major version number.
    * @param minor minor version number.
    * @param maintenance maintenance version number.
-   * @param qualifier version {@link Qualifier} such as M# (Milestone), RC# (Release Candidate) or RELEASE.
-   * @param qualifierNumber qualifier version number such as M1 (Milestone 1).
+   * @param qualifier version {@link Qualifier} such as {@literal M# (Milestone)}, {@literal RC# (Release Candidate)}
+   * or {@literal RELEASE}.
+   * @param qualifierNumber qualifier version number such as {@literal M1 (Milestone 1)}.
    * @return a new instance of {@link Version} initialized with the major, minor and maintenance version numbers
-   * along with the version qualifier.
+   * along with a version qualifier and qualifier number.
    * @throws IllegalArgumentException if {@code major}, {@code minor} or {@code maintenance} version numbers
    * are less than {@literal 0}.
+   * @see #Version(int, int, int, Qualifier, int)
    * @see org.cp.elements.lang.Version.Qualifier
    * @see org.cp.elements.lang.Version
-   * @see #Version(int, int, int, Qualifier, int)
    */
-  public static Version from(int major, int minor, int maintenance, Qualifier qualifier, int qualifierNumber) {
+  public static @NotNull Version from(int major, int minor, int maintenance, Qualifier qualifier, int qualifierNumber) {
     return new Version(major, minor, maintenance, qualifier, qualifierNumber);
   }
 
   /**
-   * Factory method to parse a version {@link String} into a fully qualified instance of {@link Version}.
+   * Factory method used to parse a version {@link String} into a fully-qualified instance of {@link Version}.
    *
-   * @param version {@link String} representation of the version.
-   * @return a new instance of {@link Version} initialized with the given version {@link String}.
-   * @throws IllegalArgumentException if the {@code version} {@link String} is {@literal null} or empty,
+   * @param version {@link String} representation of the version; must not be {@literal null} or {@literal empty}.
+   * @return a new instance of {@link Version} initialized with the given, required version {@link String}.
+   * @throws IllegalArgumentException if the {@code version} {@link String} is {@literal null} or {@literal empty},
    * or the version {@link String} could not be parsed into individual version elements,
    * or the version {@link String} is unrecognizable.
    * @see #parseMajorMinorMaintenanceQualifier(String[])
    * @see #parseMajorMinorMaintenance(String[])
    * @see #parseMajorMinor(String[])
    */
-  public static Version parse(String version) {
+  public static @NotNull Version parse(@NotNull String version) {
 
-    Assert.hasText(version, "The version [%s] must be specified", version);
+    Assert.hasText(version, "A version [%s] is required", version);
 
-    String[] versionNumbers = version.split("\\.");
-
-    Assert.isTrue(versionNumbers.length > 1,
-      "Version [%s] must minimally consist of major and minor version numbers", version);
+    String[] versionNumbers = version.split(VERSION_NUMBER_SEPARATOR);
 
     switch (versionNumbers.length) {
+      case 1:
+        String[] majorMinorVersionNumbers = {
+          versionNumbers[0], String.valueOf(DEFAULT_VERSION_NUMBER)
+        };
+        return parseMajorMinor(majorMinorVersionNumbers);
       case 2:
         return parseMajorMinor(versionNumbers);
       case 3:
@@ -150,7 +160,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.StringUtils#getDigits(String)
    * @see java.lang.Integer#parseInt(String)
    */
-  private static int parseInt(String value) {
+  private static int parseInt(@NotNull String value) {
     return Integer.parseInt(StringUtils.getDigits(value));
   }
 
@@ -162,7 +172,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version
    * @see #from(int, int)
    */
-  private static Version parseMajorMinor(String[] versionNumbers) {
+  private static @NotNull Version parseMajorMinor(@NotNull String[] versionNumbers) {
     return from(parseInt(versionNumbers[0]), parseInt(versionNumbers[1]));
   }
 
@@ -174,7 +184,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int)
    */
-  private static Version parseMajorMinorMaintenance(String[] versionNumbers) {
+  private static @NotNull Version parseMajorMinorMaintenance(@NotNull String[] versionNumbers) {
     return from(parseInt(versionNumbers[0]), parseInt(versionNumbers[1]), parseInt(versionNumbers[2]));
   }
 
@@ -188,7 +198,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version
    * @see #from(int, int, int, Qualifier, int)
    */
-  private static Version parseMajorMinorMaintenanceQualifier(String[] versionNumbers) {
+  private static @NotNull Version parseMajorMinorMaintenanceQualifier(@NotNull String[] versionNumbers) {
     return from(parseInt(versionNumbers[0]), parseInt(versionNumbers[1]), parseInt(versionNumbers[2]),
       parseQualifier(versionNumbers[3]), parseQualifierNumber(versionNumbers[3]));
   }
@@ -200,7 +210,7 @@ public class Version implements Comparable<Version> {
    * @return a {@link Version.Qualifier} instance representing the given {@link String}.
    * @see org.cp.elements.lang.Version.Qualifier
    */
-  private static Qualifier parseQualifier(String qualifier) {
+  private static @NotNull Qualifier parseQualifier(@Nullable String qualifier) {
     return Qualifier.resolve(qualifier);
   }
 
@@ -212,7 +222,7 @@ public class Version implements Comparable<Version> {
    * {@link String} contained no numeric values.
    * @see #parseInt(String)
    */
-  private static int parseQualifierNumber(String qualifier) {
+  private static int parseQualifierNumber(@Nullable String qualifier) {
 
     try {
       return parseInt(qualifier);
@@ -222,8 +232,8 @@ public class Version implements Comparable<Version> {
     }
   }
 
-  private int buildNumber = 0;
-  private int qualifierNumber = 0;
+  private int buildNumber = DEFAULT_BUILD_NUMBER;
+  private int qualifierNumber = DEFAULT_QUALIFIER_NUMBER;
 
   private final int major;
   private final int minor;
@@ -234,7 +244,7 @@ public class Version implements Comparable<Version> {
   private Qualifier qualifier = Qualifier.UNDEFINED;
 
   /**
-   * Constructs an instance of {@link Version} initialized with major and minor version numbers.
+   * Constructs a new instance of {@link Version} initialized with major and minor version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -243,11 +253,11 @@ public class Version implements Comparable<Version> {
    * @see #Version(int, int, int, Qualifier, int)
    */
   public Version(int major, int minor) {
-    this(major, minor, 0, Qualifier.UNDEFINED, 0);
+    this(major, minor, 0, Qualifier.UNDEFINED, DEFAULT_QUALIFIER_NUMBER);
   }
 
   /**
-   * Constructs an instance of {@link Version} initialized with major, minor and maintenance version numbers.
+   * Constructs a new instance of {@link Version} initialized with major, minor and maintenance version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -257,11 +267,11 @@ public class Version implements Comparable<Version> {
    * @see #Version(int, int, int, Qualifier, int)
    */
   public Version(int major, int minor, int maintenance) {
-    this(major, minor, maintenance, Qualifier.UNDEFINED, 0);
+    this(major, minor, maintenance, Qualifier.UNDEFINED, DEFAULT_QUALIFIER_NUMBER);
   }
 
   /**
-   * Constructs an instance of {@link Version} initialized with major, minor and maintenance version numbers
+   * Constructs a new instance of {@link Version} initialized with major, minor and maintenance version numbers
    * along with the version {@link Qualifier}.
    *
    * @param major major version number.
@@ -273,12 +283,12 @@ public class Version implements Comparable<Version> {
    * @see #Version(int, int, int, Qualifier, int)
    */
   public Version(int major, int minor, int maintenance, Qualifier qualifier) {
-    this(major, minor, maintenance, qualifier, 0);
+    this(major, minor, maintenance, qualifier, DEFAULT_VERSION_NUMBER);
   }
 
   /**
-   * Constructs an instance of {@link Version} initialized with major, minor and maintenance version numbers
-   * along with the version {@link Qualifier} and qualifier number.
+   * Constructs a new instance of {@link Version} initialized with major, minor and maintenance version numbers
+   * along with a version {@link Qualifier} and qualifier number.
    *
    * @param major major version number.
    * @param minor minor version number.
@@ -407,7 +417,7 @@ public class Version implements Comparable<Version> {
    * @see org.cp.elements.lang.Version.Qualifier
    * @see #getQualifierNumber()
    */
-  public Qualifier getQualifier() {
+  public @NotNull Qualifier getQualifier() {
     return returnFirstNonNullValue(this.qualifier, Qualifier.UNDEFINED);
   }
 
@@ -428,7 +438,7 @@ public class Version implements Comparable<Version> {
    * @return the date and time on which this {@link Version} was released.
    * @see java.time.LocalDateTime
    */
-  public LocalDateTime getReleaseDateTime() {
+  public @Nullable LocalDateTime getReleaseDateTime() {
     return this.releaseDateTime;
   }
 
@@ -448,7 +458,7 @@ public class Version implements Comparable<Version> {
    * @see #getQualifierNumber()
    */
   @Override
-  public int compareTo(Version version) {
+  public int compareTo(@NotNull Version version) {
 
     return ComparatorResultBuilder.<Integer>create()
       .doCompare(this.getMajor(), version.getMajor())
@@ -515,7 +525,7 @@ public class Version implements Comparable<Version> {
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
 
     int buildNumber = getBuildNumber();
 
@@ -532,11 +542,11 @@ public class Version implements Comparable<Version> {
    * if the software build number was unspecified.
    * @see #getBuildNumber()
    */
-  private String toBuildNumberString() {
+  private @NotNull String toBuildNumberString() {
 
     int buildNumber = getBuildNumber();
 
-    return (buildNumber > 0 ? String.format(" build %d", buildNumber) : StringUtils.EMPTY_STRING);
+    return buildNumber > 0 ? String.format(" build %d", buildNumber) : StringUtils.EMPTY_STRING;
   }
 
   /**
@@ -547,15 +557,15 @@ public class Version implements Comparable<Version> {
    * @see #getQualifierNumber()
    * @see #getQualifier()
    */
-  private String toQualifierString() {
+  private @NotNull String toQualifierString() {
 
     Qualifier qualifier = getQualifier();
 
     int qualifierNumber = getQualifierNumber();
 
-    return (qualifier.isUndefined() ? StringUtils.EMPTY_STRING
+    return qualifier.isUndefined() ? StringUtils.EMPTY_STRING
       : (qualifierNumber > 0 ? String.format(".%s%d", qualifier.getAbbreviation(), qualifierNumber)
-        : String.format(".%s", qualifier.name())));
+        : String.format(".%s", qualifier.name()));
   }
 
   /**
@@ -564,12 +574,12 @@ public class Version implements Comparable<Version> {
    * @return a {@link String} containing the software release date and time for this {@link Version},
    * or an empty {@link String} if the software release date and time is unknown.
    */
-  private String toReleaseDateTimeString() {
+  private @NotNull String toReleaseDateTimeString() {
 
     LocalDateTime releaseDateTime = getReleaseDateTime();
 
-    return (releaseDateTime == null ? StringUtils.EMPTY_STRING
-      : String.format(" on %s", releaseDateTime.format(DateTimeFormatter.ofPattern(RELEASE_DATE_TIME_FORMAT))));
+    return releaseDateTime == null ? StringUtils.EMPTY_STRING
+      : String.format(" on %s", releaseDateTime.format(DateTimeFormatter.ofPattern(RELEASE_DATE_TIME_FORMAT)));
   }
 
   /**
@@ -579,7 +589,7 @@ public class Version implements Comparable<Version> {
    * for this {@link Version}.
    * @return this {@link Version} reference.
    */
-  public Version on(LocalDateTime releaseDateTime) {
+  public @NotNull Version on(@Nullable LocalDateTime releaseDateTime) {
     this.releaseDateTime = releaseDateTime;
     return this;
   }
@@ -590,7 +600,7 @@ public class Version implements Comparable<Version> {
    * @param buildNumber software build number to set for this {@link Version}.
    * @return this {@link Version} reference.
    */
-  public Version with(int buildNumber) {
+  public @NotNull Version with(int buildNumber) {
     this.buildNumber = Math.max(buildNumber, 0);
     return this;
   }
@@ -602,7 +612,7 @@ public class Version implements Comparable<Version> {
    * @return this {@link Version} reference.
    * @see #with(Qualifier, int)
    */
-  public Version with(Qualifier qualifier) {
+  public @NotNull Version with(@Nullable Qualifier qualifier) {
     return with(qualifier, 0);
   }
 
@@ -613,7 +623,7 @@ public class Version implements Comparable<Version> {
    * @param qualifierNumber {@link Version.Qualifier} number.
    * @return this {@link Version} reference.
    */
-  public Version with(Qualifier qualifier, int qualifierNumber) {
+  public @NotNull Version with(@Nullable Qualifier qualifier, int qualifierNumber) {
     this.qualifier = returnFirstNonNullValue(qualifier, Qualifier.UNDEFINED);
     this.qualifierNumber = Math.max(qualifierNumber, 0);
     return this;
@@ -647,7 +657,7 @@ public class Version implements Comparable<Version> {
      * @see org.cp.elements.lang.Version.Qualifier
      * @see #getAbbreviation()
      */
-    public static Qualifier resolve(String version) {
+    public static @NotNull Qualifier resolve(@Nullable String version) {
 
       if (StringUtils.hasText(version)) {
 
@@ -678,7 +688,7 @@ public class Version implements Comparable<Version> {
      * @param abbreviation {@link String} abbreviation for this {@link Qualifier}.
      * @param description describing this {@link Qualifier}.
      */
-    Qualifier(String abbreviation, String description) {
+    Qualifier(@NotNull String abbreviation, @NotNull String description) {
       this.abbreviation = abbreviation;
       this.description = description;
     }
@@ -689,7 +699,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is an ALPHA version.
      */
     public boolean isAlpha() {
-      return (this == ALPHA);
+      return this == ALPHA;
     }
 
     /**
@@ -698,7 +708,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is a BETA version.
      */
     public boolean isBeta() {
-      return (this == BETA);
+      return this == BETA;
     }
 
     /**
@@ -707,7 +717,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is a BUILD-SNAPSHOT version.
      */
     public boolean isBuildSnapshot() {
-      return (this == BUILD_SNAPSHOT);
+      return this == BUILD_SNAPSHOT;
     }
 
     /**
@@ -716,7 +726,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is an ITERATION version.
      */
     public boolean isIteration() {
-      return (this == ITERATION);
+      return this == ITERATION;
     }
 
     /**
@@ -725,7 +735,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is an MILESTONE version.
      */
     public boolean isMilestone() {
-      return (this == MILESTONE);
+      return this == MILESTONE;
     }
 
     /**
@@ -734,7 +744,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is a RELEASE-CANDIDATE version.
      */
     public boolean isReleaseCandidate() {
-      return (this == RELEASE_CANDIDATE);
+      return this == RELEASE_CANDIDATE;
     }
 
     /**
@@ -743,7 +753,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is a RELEASE version.
      */
     public boolean isRelease() {
-      return (this == RELEASE);
+      return this == RELEASE;
     }
 
     /**
@@ -752,7 +762,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is a SNAPSHOT version.
      */
     public boolean isSnapshot() {
-      return (this == SNAPSHOT);
+      return this == SNAPSHOT;
     }
 
     /**
@@ -761,7 +771,7 @@ public class Version implements Comparable<Version> {
      * @return a boolean value if this {@link Qualifier} is UNDEFINED.
      */
     public boolean isUndefined() {
-      return (this == UNDEFINED);
+      return this == UNDEFINED;
     }
 
     /**
@@ -778,8 +788,8 @@ public class Version implements Comparable<Version> {
      *
      * @return the abbreviation for this {@link Qualifier}.
      */
-    public String getAbbreviation() {
-      return abbreviation;
+    public @NotNull String getAbbreviation() {
+      return this.abbreviation;
     }
 
     /**
@@ -787,17 +797,18 @@ public class Version implements Comparable<Version> {
      *
      * @return a description of this {@link Qualifier}.
      */
-    public String getDescription() {
-      return description;
+    public @NotNull String getDescription() {
+      return this.description;
     }
 
     /**
      * Return a {@link String} representation of this {@link Qualifier}.
      *
      * @return a {@link String} describing this {@link Qualifier}.
+     * @see java.lang.Object#toString()
      */
     @Override
-    public String toString() {
+    public @NotNull String toString() {
       return getDescription();
     }
   }

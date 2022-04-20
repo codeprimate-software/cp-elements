@@ -165,19 +165,19 @@ public class VersionTests {
   @Test(expected = IllegalArgumentException.class)
   public void parseNullVersion() {
     TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse(null),
-      () -> "The version [null] must be specified");
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void parseIllegalVersion() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("1"),
-      () -> "Version [1] must minimally consist of major and minor version numbers");
+      () -> "A version [null] is required");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void parseEmptyVersion() {
+    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse(""),
+      () -> "A version [] is required");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void parseBlankVersion() {
     TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> Version.parse("  "),
-      () -> "The version [  ] must be specified");
+      () -> "A version [  ] is required");
   }
 
   @Test
