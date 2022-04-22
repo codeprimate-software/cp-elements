@@ -124,6 +124,15 @@
       </properties>
     </profile>
     <profile>
+      <id>oracle-jdk-14</id>
+      <activation>
+        <jdk>[14,15)</jdk>
+      </activation>
+      <properties>
+        <java.version>14</java.version>
+      </properties>
+    </profile>
+    <profile>
       <id>oracle-jdk-11</id>
       <activation>
         <jdk>[11,12)</jdk>
