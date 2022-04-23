@@ -7,6 +7,8 @@ https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 --------------------------
 Continued development of Codeprimate Elements beginning with a project review and refactoring.
 
+* Built on Java (JDK) 8; 1.8.0_331.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14 and Java 17.
 * Reviewed and refactored the org.cp.elements.ElementsVersion class.
 * Reviewed and refactored the org.cp.elements.lang.Assert class.
 *** Adds Assert.notEmpty(:Iterable) to assert methods and returns this from all assertions.
@@ -88,11 +90,13 @@ to returnFirstNonNullValue(:Object[]).
 * Renamed refactored production *Tests classes to *UnitTests.
 * Edited Javadoc across the API.
 * Annotated the Codeprimate Elements classes and interfaces (APIs) with Element's @NotNull and @Nullable annotations.
-* Upgrades to org.codeprimate:cp-core:1.4.0.
+* Upgrades to Codeprimate Core 1.6.0.
+* Upgrades to Apache Maven 3.8.5.
+* Upgrades to Apache Maven Wrapper 3.1.0.
 * Upgrades to AssertJ 3.22.0.
 * Upgrades to JUnit 4.13.2.
-* Upgrades to Mockito 4.4.0.
-* Upgrades to Project Lombok 1.18.22.
+* Upgrades to Mockito 4.5.1.
+* Upgrades to Project Lombok 1.18.24.
 * Upgrades to Gradle 7.4.2.
 
 
