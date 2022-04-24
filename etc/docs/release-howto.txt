@@ -7,7 +7,7 @@ Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate 
 
 1. `mvn -P code-analysis,prepare-release clean install site`
 
-2. `gradlew clean build install`
+2. `gradlew [--no-daemon] clean build`
 
 3. Copy 'cp-elements/target/site' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
@@ -17,7 +17,7 @@ Version Qualifier maybe 1 of: M# (Milestone #; e.g. M2), RC# (Release Candidate 
 
 6. Copy 'changelog.txt' to 'cp-core-workspace/etc/releases/cp-elements-<major>.<minor>.<maint>.<version-qualifier>/'.
 
-7. `mvn -P release deploy`
+7. `mvn -P [-DskipTests] release deploy`
 
 8. Login to Sonatype Nexus Repository Server and "release" artifacts (in staging) to Maven Central.
 
