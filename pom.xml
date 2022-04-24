@@ -12,7 +12,7 @@
   </parent>
 
   <artifactId>cp-elements</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0-M7</version>
   <packaging>jar</packaging>
 
   <name>Elements</name>
@@ -201,8 +201,8 @@
                 <configuration>
                   <type>date</type>
                   <dates>
-                    <date implementation="java.lang.String">2018-07-13</date>
-                    <date implementation="java.lang.String">2021-01-22</date>
+                    <date implementation="java.lang.String">2021-01-23</date>
+                    <date implementation="java.lang.String">2022-04-24</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
