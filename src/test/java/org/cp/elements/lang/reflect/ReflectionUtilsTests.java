@@ -503,7 +503,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
         SuperType.class.getName());
 
       assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessage("wrong number of arguments");
+      assertThat(expected.getCause()).hasMessageStartingWith("wrong number of arguments");
 
       throw expected;
     }
