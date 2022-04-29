@@ -115,6 +115,15 @@
 
   <profiles>
     <profile>
+      <id>oracle-jdk-18</id>
+      <activation>
+        <jdk>[18,19)</jdk>
+      </activation>
+      <properties>
+        <java.version>18</java.version>
+      </properties>
+    </profile>
+    <profile>
       <id>oracle-jdk-17</id>
       <activation>
         <jdk>[17,18)</jdk>
