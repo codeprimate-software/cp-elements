@@ -407,6 +407,28 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
+   * Computes the {@link Integer hash code} for all the given {@link Object elements} of the array
+   * using the standard hash code algorithm.
+   *
+   * The {@link Object elements} in the array can represent the individual properties of an {@link Object}
+   * that makes up the hash code.
+   *
+   * @param array array of {@link Object elements} to use when computing the hash code.
+   * @return the computed hash code.
+   */
+  @NullSafe
+  public static int hashCodeOf(Object... array) {
+
+    int hashCode = 17;
+
+    for (Object obj : ArrayUtils.nullSafeArray(array)) {
+      hashCode = 37 * hashCode + hashCode(obj);
+    }
+
+    return hashCode;
+  }
+
+  /**
    * Transforms the object into a String by invoking Object.toString for non-null objects and returning null for
    * null object references.
    *

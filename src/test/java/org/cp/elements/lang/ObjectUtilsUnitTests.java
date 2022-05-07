@@ -558,6 +558,24 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  public void hashCodeOfPerson() {
+
+    Person person = Person.as("Jon", "Doe");
+
+    assertThat(ObjectUtils.hashCodeOf(person.getFirstName(), person.getLastName())).isEqualTo(person.hashCode());
+  }
+
+  @Test
+  public void hashCodeOfEmptyArray() {
+    assertThat(ObjectUtils.hashCodeOf()).isEqualTo(17);
+  }
+
+  @Test
+  public void hashCodeOfNullArrayIsNullSafe() {
+    assertThat(ObjectUtils.hashCodeOf((Object[]) null)).isEqualTo(17);
+  }
+
+  @Test
   public void toStringWithNull() {
     assertThat(ObjectUtils.toString(null)).isNull();
   }
