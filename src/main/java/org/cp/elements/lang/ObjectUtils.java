@@ -18,18 +18,21 @@ package org.cp.elements.lang;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newCloneNotSupportedException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.cp.elements.io.IOUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.ReflectionUtils;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Abstract utility class used to perform operations on {@link Object Objects}.
@@ -61,7 +64,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   @SuppressWarnings("all")
   public static boolean areAllNull(Object... values) {
 
-    for (Object value : nullSafeArray(values)) {
+    for (Object value : ArrayUtils.nullSafeArray(values)) {
       if (value != null) {
         return false;
       }
@@ -80,7 +83,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   @NullSafe
   public static boolean areAnyNull(Object... values) {
 
-    for (Object value : nullSafeArray(values)) {
+    for (Object value : ArrayUtils.nullSafeArray(values)) {
       if (value == null) {
         return true;
       }
@@ -108,15 +111,22 @@ public abstract class ObjectUtils extends ReflectionUtils {
     }
     else if (obj != null) {
       try {
-
         Class<T> objectType = (Class<T>) obj.getClass();
 
         Constructor<T> copyConstructor = resolveConstructor(objectType, new Class<?>[] { objectType }, obj);
 
         return copyConstructor.newInstance(obj);
       }
+      // A copy constructor was not found in the Object's class type.
       catch (ConstructorNotFoundException ignore) {
-        // copy constructor was not found in the Object's class type
+        if (obj instanceof Serializable) {
+          try {
+            return IOUtils.deserialize(IOUtils.serialize(obj));
+          }
+          catch (ClassNotFoundException | IOException cause) {
+            throw new CloneException("[clone] using [serialization] was unsuccessful", cause);
+          }
+        }
       }
       catch (Exception cause) {
         throw new CloneException("[clone] using [copy constructor] was unsuccessful", cause);
@@ -239,7 +249,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   @SuppressWarnings({ "unchecked", "varargs" })
   public static @Nullable <T> T returnFirstNonNullValue(T... values) {
 
-    for (T value : nullSafeArray(values)) {
+    for (T value : ArrayUtils.nullSafeArray(values)) {
       if (value != null) {
         return value;
       }

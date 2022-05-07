@@ -22,6 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
@@ -141,8 +142,19 @@ public class ObjectUtilsUnitTests {
     }
   }
 
+  @Test
+  public void cloneWithSerializableObject() {
+
+    Message message = new Message("TEST");
+    Message messageClone = ObjectUtils.clone(message);
+
+    assertThat(messageClone).isNotNull();
+    assertThat(messageClone).isNotSameAs(message);
+    assertThat(messageClone).isEqualTo(message);
+  }
+
   @Test(expected = UnsupportedOperationException.class)
-  public void cloneWithNonCloneableNonCopyableObject() {
+  public void cloneWithNonCloneableNonCopyableNonSerializableObject() {
 
     try {
       ObjectUtils.clone(new Object());
@@ -572,22 +584,23 @@ public class ObjectUtilsUnitTests {
       this.value = null;
     }
 
-    public CopyableObject(final T value) {
+    public CopyableObject(T value) {
       this.value = value;
     }
 
-    public CopyableObject(final CopyableObject<T> copyableObject) {
+    public CopyableObject(CopyableObject<T> copyableObject) {
       this(copyableObject.getValue());
     }
 
     public T getValue() {
-      return value;
+      return this.value;
     }
 
     @Override
     @SuppressWarnings("rawtypes")
-    public boolean equals(final Object obj) {
-      if (obj == this) {
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
         return true;
       }
 
@@ -615,7 +628,7 @@ public class ObjectUtilsUnitTests {
 
   protected static class CloneableObject<T> extends CopyableObject<T> implements Cloneable {
 
-    protected CloneableObject(final T value) {
+    protected CloneableObject(T value) {
       super(value);
     }
 
@@ -628,7 +641,7 @@ public class ObjectUtilsUnitTests {
 
   protected static class ExceptionThrowingCopyConstructorObject<T> extends CopyableObject<T> {
 
-    public ExceptionThrowingCopyConstructorObject(final T value) {
+    public ExceptionThrowingCopyConstructorObject(T value) {
       super(value);
     }
 
@@ -638,7 +651,52 @@ public class ObjectUtilsUnitTests {
     }
   }
 
+  protected static class Message implements Serializable {
+
+    private final String text;
+
+    private Message(String text) {
+      this.text = text;
+    }
+
+    public Object getText() {
+      return this.text;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
+        return true;
+      }
+
+      if (!(obj instanceof Message)) {
+        return false;
+      }
+
+      Message that = (Message) obj;
+
+      return ObjectUtils.equals(getText(), that.getText());
+    }
+
+    @Override
+    public int hashCode() {
+      int hashValue = 17;
+      hashValue = 37 * hashValue + ObjectUtils.hashCode(getText());
+      return hashValue;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(getText());
+    }
+  }
+
   protected static abstract class Person {
+
+    public static Person as(String firstName, String lastName) {
+      return new Person(firstName, lastName) { };
+    }
 
     private final String firstName;
     private final String lastName;
