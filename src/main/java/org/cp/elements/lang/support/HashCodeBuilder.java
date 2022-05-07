@@ -105,15 +105,15 @@ public class HashCodeBuilder implements Builder<Integer> {
 
     HashCodeBuilder builder = hashCodeBuilderFunction.apply(create());
 
-    Optional.ofNullable(obj).ifPresent(object -> {
+    Optional.ofNullable(obj).ifPresent(object ->
       withFields().on(object).matching(field -> !ModifierUtils.isTransient(field)).call(field -> {
 
         builder.getLogger().fine(() ->  FormatUtils.format("Hashing field [%1$s] on object [%2$s]",
           field.getName(), object.getClass().getName()));
 
         builder.with(getValue(object, field, field.getType()));
-      });
-    });
+
+      }));
 
     return builder;
   }
