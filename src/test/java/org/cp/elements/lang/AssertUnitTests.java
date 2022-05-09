@@ -964,6 +964,36 @@ public class AssertUnitTests {
   }
 
   @Test(expected = IllegalTypeException.class)
+  public void assertIsInstanceOfCloneableWithNull() {
+
+    try {
+      Assert.isInstanceOf(null, Cloneable.class, "null is not Cloneable");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("null is not Cloneable");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalTypeException.class)
+  public void assertIsInstanceOfCloneableWithObject() {
+
+    try {
+      Assert.isInstanceOf(new Object(), Cloneable.class, "Object is not Cloneable");
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Object is not Cloneable");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = IllegalTypeException.class)
   public void assertIsInstanceOfWithNull() {
 
     try {
