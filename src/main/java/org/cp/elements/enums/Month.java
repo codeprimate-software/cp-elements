@@ -17,6 +17,7 @@ package org.cp.elements.enums;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -205,6 +206,44 @@ public enum Month {
    */
   public int getPosition() {
     return this.position;
+  }
+
+  /**
+   * Returns the adjacent {@link Month} either prior or following {@literal this} {@link Month}.
+   *
+   * @param positionFunction {@link Function} used to adjust {@literal this} {@link Month Month's}
+   * {@link #getPosition()} to determine the adjacent {@link Month}.
+   * @return the adjacent {@link Month} either prior or following {@literal this} {@link Month}.
+   * @see java.util.function.Function
+   */
+  private Month getAdjacentMonth(@NotNull Function<Integer, Integer> positionFunction) {
+    return valueOfPosition(positionFunction.apply(getPosition()));
+  }
+
+  /**
+   * Gets the {@link Month} following {@literal this} {@link Month}.
+   *
+   * If {@literal this} {@link Month} is {@link Month#DECEMBER},
+   * then the {@link Month} resets to {@link Month#JANUARY}.
+   *
+   * @return the {@link Month} following {@literal this} {@link Month}.
+   * @see #getAdjacentMonth(Function)
+   */
+  public @NotNull Month getNextMonth() {
+    return getAdjacentMonth(position -> position >= 12 ? 1 : position + 1);
+  }
+
+  /**
+   * Gets the {@link Month} prior to {@literal this} {@link Month}.
+   *
+   * If {@literal this} {@link Month} is {@link Month#JANUARY},
+   * then the {@link Month} rolls back to {@link Month#DECEMBER}.
+   *
+   * @return the {@link Month} prior to {@literal this} {@link Month}.
+   * @see #getAdjacentMonth(Function)
+   */
+  public Month getPreviousMonth() {
+    return getAdjacentMonth(position -> position <= 1 ? 12 : position - 1);
   }
 
   /**

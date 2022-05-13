@@ -189,4 +189,38 @@ public class MonthUnitTests {
     assertThat(Month.valueOfPosition(-7)).isNull();
     assertThat(Month.valueOfPosition(13)).isNull();
   }
+
+  @Test
+  public void getNextMonthIsCorrect() {
+
+    assertThat(Month.JANUARY.getNextMonth()).isEqualTo(Month.FEBRUARY);
+    assertThat(Month.FEBRUARY.getNextMonth()).isEqualTo(Month.MARCH);
+    assertThat(Month.MARCH.getNextMonth()).isEqualTo(Month.APRIL);
+    assertThat(Month.APRIL.getNextMonth()).isEqualTo(Month.MAY);
+    assertThat(Month.MAY.getNextMonth()).isEqualTo(Month.JUNE);
+    assertThat(Month.JUNE.getNextMonth()).isEqualTo(Month.JULY);
+    assertThat(Month.JULY.getNextMonth()).isEqualTo(Month.AUGUST);
+    assertThat(Month.AUGUST.getNextMonth()).isEqualTo(Month.SEPTEMBER);
+    assertThat(Month.SEPTEMBER.getNextMonth()).isEqualTo(Month.OCTOBER);
+    assertThat(Month.OCTOBER.getNextMonth()).isEqualTo(Month.NOVEMBER);
+    assertThat(Month.NOVEMBER.getNextMonth()).isEqualTo(Month.DECEMBER);
+    assertThat(Month.DECEMBER.getNextMonth()).isEqualTo(Month.JANUARY);
+  }
+
+  @Test
+  public void getPreviousMonthIsCorrect() {
+
+    assertThat(Month.JANUARY.getPreviousMonth()).isEqualTo(Month.DECEMBER);
+    assertThat(Month.FEBRUARY.getPreviousMonth()).isEqualTo(Month.JANUARY);
+    assertThat(Month.MARCH.getPreviousMonth()).isEqualTo(Month.FEBRUARY);
+    assertThat(Month.APRIL.getPreviousMonth()).isEqualTo(Month.MARCH);
+    assertThat(Month.MAY.getPreviousMonth()).isEqualTo(Month.APRIL);
+    assertThat(Month.JUNE.getPreviousMonth()).isEqualTo(Month.MAY);
+    assertThat(Month.JULY.getPreviousMonth()).isEqualTo(Month.JUNE);
+    assertThat(Month.AUGUST.getPreviousMonth()).isEqualTo(Month.JULY);
+    assertThat(Month.SEPTEMBER.getPreviousMonth()).isEqualTo(Month.AUGUST);
+    assertThat(Month.OCTOBER.getPreviousMonth()).isEqualTo(Month.SEPTEMBER);
+    assertThat(Month.NOVEMBER.getPreviousMonth()).isEqualTo(Month.OCTOBER);
+    assertThat(Month.DECEMBER.getPreviousMonth()).isEqualTo(Month.NOVEMBER);
+  }
 }
