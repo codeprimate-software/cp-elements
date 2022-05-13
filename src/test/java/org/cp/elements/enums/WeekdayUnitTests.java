@@ -240,4 +240,28 @@ public class WeekdayUnitTests {
     assertThat(Weekday.valueOfPosition(0)).isNull();
     assertThat(Weekday.valueOfPosition(8)).isNull();
   }
+
+  @Test
+  public void getTomorrowIsCorrect() {
+
+    assertThat(Weekday.SUNDAY.getTomorrow()).isEqualTo(Weekday.MONDAY);
+    assertThat(Weekday.MONDAY.getTomorrow()).isEqualTo(Weekday.TUESDAY);
+    assertThat(Weekday.TUESDAY.getTomorrow()).isEqualTo(Weekday.WEDNESDAY);
+    assertThat(Weekday.WEDNESDAY.getTomorrow()).isEqualTo(Weekday.THURSDAY);
+    assertThat(Weekday.THURSDAY.getTomorrow()).isEqualTo(Weekday.FRIDAY);
+    assertThat(Weekday.FRIDAY.getTomorrow()).isEqualTo(Weekday.SATURDAY);
+    assertThat(Weekday.SATURDAY.getTomorrow()).isEqualTo(Weekday.SUNDAY);
+  }
+
+  @Test
+  public void getYesterdayIsCorrect() {
+
+    assertThat(Weekday.SUNDAY.getYesterday()).isEqualTo(Weekday.SATURDAY);
+    assertThat(Weekday.MONDAY.getYesterday()).isEqualTo(Weekday.SUNDAY);
+    assertThat(Weekday.TUESDAY.getYesterday()).isEqualTo(Weekday.MONDAY);
+    assertThat(Weekday.WEDNESDAY.getYesterday()).isEqualTo(Weekday.TUESDAY);
+    assertThat(Weekday.THURSDAY.getYesterday()).isEqualTo(Weekday.WEDNESDAY);
+    assertThat(Weekday.FRIDAY.getYesterday()).isEqualTo(Weekday.THURSDAY);
+    assertThat(Weekday.SATURDAY.getYesterday()).isEqualTo(Weekday.FRIDAY);
+  }
 }

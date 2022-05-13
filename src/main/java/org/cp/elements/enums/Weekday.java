@@ -18,6 +18,7 @@ package org.cp.elements.enums;
 import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -201,6 +202,47 @@ public enum Weekday {
    */
   public int getPosition() {
     return this.position;
+  }
+
+  /**
+   * Gets an adjacent {@link Weekday} relative to {@literal this} {@link Weekday}.
+   *
+   * The {@literal adjacent} {@link Weekday} is either the day before {@literal this} {@link Weekday}, as in yesterday,
+   * or the the day after {@literal this} {@link Weekday}, as in tomorrow.
+   *
+   * @param positionFunction {@link Function} used to adjust the {@link #getPosition()} of {@literal this}
+   * {@link Weekday} to an {@literal adjacent} day.
+   * @return an adjacent {@link Weekday} relative to {@literal this} {@link Weekday}.
+   * @see java.util.function.Function
+   */
+  private Weekday getAdjacentWeekday(@NotNull Function<Integer, Integer> positionFunction) {
+    return valueOfPosition(positionFunction.apply(getPosition()));
+  }
+
+  /**
+   * Gets the {@link Weekday} after {@literal this} {@link Weekday}.
+   *
+   * If {@literal this} {@link Weekday} is {@link Weekday#SATURDAY},
+   * then this method will return {@link Weekday#SUNDAY} and the week resets.
+   *
+   * @return the {@link Weekday} after {@literal this} {@link Weekday}.
+   * @see #getAdjacentWeekday(Function)
+   */
+  public Weekday getTomorrow() {
+    return getAdjacentWeekday(position -> position >= 7 ? 1 : position + 1);
+  }
+
+  /**
+   * Gets the {@link Weekday} prior to {@literal this} {@link Weekday}.
+   *
+   * If {@literal this} {@link Weekday} is {@link Weekday#SUNDAY},
+   * then this method will return {@link Weekday#SATURDAY} and the week returns to the previous week.
+   *
+   * @return the {@link Weekday} prior to {@literal this} {@link Weekday}.
+   * @see #getAdjacentWeekday(Function)
+   */
+  public Weekday getYesterday() {
+    return getAdjacentWeekday(position -> position <= 1 ? 7 : position - 1);
   }
 
   /**
