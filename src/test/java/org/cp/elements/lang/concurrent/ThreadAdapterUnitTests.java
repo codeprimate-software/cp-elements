@@ -36,6 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.cp.elements.function.FunctionUtils;
@@ -255,8 +256,9 @@ public class ThreadAdapterUnitTests {
   @SuppressWarnings("all")
   public void isDaemonWithDaemonThread() {
 
-    Thread thread =
-      newThreadSpy("isDaemonWithDaemonThreadTest", FunctionUtils.toFunction(it -> it.setDaemon(true)));
+    Consumer<Thread> consumer = it -> it.setDaemon(true);
+
+    Thread thread = newThreadSpy("isDaemonWithDaemonThreadTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).isDaemon()).isTrue();
 
@@ -267,8 +269,9 @@ public class ThreadAdapterUnitTests {
   @SuppressWarnings("all")
   public void isDaemonWithNonDaemonThread() {
 
-    Thread thread =
-      newThreadSpy("isDaemonWithNonDaemonThreadTest", FunctionUtils.toFunction(it -> it.setDaemon(false)));
+    Consumer<Thread> consumer = it -> it.setDaemon(false);
+
+    Thread thread = newThreadSpy("isDaemonWithNonDaemonThreadTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).isDaemon()).isFalse();
 
@@ -279,8 +282,9 @@ public class ThreadAdapterUnitTests {
   @SuppressWarnings("all")
   public void isNonDaemonWithDaemonThread() {
 
-    Thread thread =
-      newThreadSpy("isNonDaemonWithDaemonThreadTest", FunctionUtils.toFunction(it -> it.setDaemon(true)));
+    Consumer<Thread> consumer = it -> it.setDaemon(true);
+
+    Thread thread = newThreadSpy("isNonDaemonWithDaemonThreadTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).isNonDaemon()).isFalse();
 
@@ -291,8 +295,9 @@ public class ThreadAdapterUnitTests {
   @SuppressWarnings("all")
   public void isNonDaemonWithNonDaemonThread() {
 
-    Thread thread =
-      newThreadSpy("isNonDaemonWithNonDaemonThreadTest", FunctionUtils.toFunction(it -> it.setDaemon(false)));
+    Consumer<Thread> consumer = it -> it.setDaemon(false);
+
+    Thread thread = newThreadSpy("isNonDaemonWithNonDaemonThreadTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).isNonDaemon()).isTrue();
 
@@ -302,8 +307,9 @@ public class ThreadAdapterUnitTests {
   @Test
   public void isUserThreadWithDaemonThread() {
 
-    Thread thread =
-      newThreadSpy("isUserThreadWithDaemonThreadTest", FunctionUtils.toFunction(it -> it.setDaemon(true)));
+    Consumer<Thread> consumer = it -> it.setDaemon(true);
+
+    Thread thread = newThreadSpy("isUserThreadWithDaemonThreadTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).isUser()).isFalse();
 
@@ -313,8 +319,9 @@ public class ThreadAdapterUnitTests {
   @Test
   public void isUserThreadWithNonDaemonThread() {
 
-    Thread thread =
-      newThreadSpy("isUserThreadWithDaemonThreadTest", FunctionUtils.toFunction(it -> it.setDaemon(false)));
+    Consumer<Thread> consumer = it -> it.setDaemon(false);
+
+    Thread thread = newThreadSpy("isUserThreadWithDaemonThreadTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).isUser()).isTrue();
 
@@ -628,7 +635,9 @@ public class ThreadAdapterUnitTests {
   @Test
   public void getPriority() {
 
-    Thread thread = newThreadSpy("getPriorityTest", FunctionUtils.toFunction(it -> it.setPriority(8)));
+    Consumer<Thread> consumer = it -> it.setPriority(8);
+
+    Thread thread = newThreadSpy("getPriorityTest", FunctionUtils.toFunction(consumer));
 
     assertThat(new ThreadAdapter(thread).getPriority()).isEqualTo(8);
   }
@@ -699,8 +708,10 @@ public class ThreadAdapterUnitTests {
 
     Thread.UncaughtExceptionHandler mockUncaughtExceptionHandler = mock(Thread.UncaughtExceptionHandler.class);
 
+    Consumer<Thread> consumer = it -> it.setUncaughtExceptionHandler(mockUncaughtExceptionHandler);
+
     Thread testThread = newThreadSpy("setUncaughtExceptionHandlerToNullIsNullSafeTest",
-      FunctionUtils.toFunction(it -> it.setUncaughtExceptionHandler(mockUncaughtExceptionHandler)));
+      FunctionUtils.toFunction(consumer));
 
     assertThat(testThread).isNotNull();
     assertThat(testThread.getName()).isEqualTo("setUncaughtExceptionHandlerToNullIsNullSafeTest");
