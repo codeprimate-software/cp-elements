@@ -138,7 +138,8 @@ public enum Weekday {
   private final String name;
 
   /**
-   * Constructs a new instance of {@link Weekday} initialized with weekday metadata and descriptors.
+   * Constructs a new instance of {@link Weekday} initialized with weekday (day of week) metadata and descriptors.
+   *
    * @param abbreviation {@link String} specifying the {@literal abbreviation} for {@literal this} {@link Weekday}.
    * @param name {@link String} containing the {@literal name} of {@literal this} {@link Weekday}.
    * @param calendarDay {@link Calendar#DAY_OF_WEEK} value.
@@ -243,6 +244,93 @@ public enum Weekday {
    */
   public Weekday getYesterday() {
     return getAdjacentWeekday(position -> position <= 1 ? 7 : position - 1);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is the given {@link Weekday day in the week}.
+   *
+   * @param day {@link Weekday} to evaluate; must not be {@literal null}.
+   * @return a boolean value determining if this {@link Weekday} is the given {@link Weekday day in the week}.
+   */
+  private boolean isDay(@NotNull Weekday day) {
+    return this.equals(day);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#SUNDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#SUNDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#SUNDAY
+   */
+  public boolean isSunday() {
+    return isDay(Weekday.SUNDAY);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#MONDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#MONDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#MONDAY
+   */
+  public boolean isMonday() {
+    return Weekday.MONDAY.equals(this);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#TUESDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#TUESDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#TUESDAY
+   */
+  public boolean isTuesday() {
+    return Weekday.TUESDAY.equals(this);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#WEDNESDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#WEDNESDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#WEDNESDAY
+   */
+  public boolean isWednesday() {
+    return Weekday.WEDNESDAY.equals(this);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#THURSDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#THURSDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#THURSDAY
+   */
+  public boolean isThursday() {
+    return Weekday.THURSDAY.equals(this);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#FRIDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#FRIDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#FRIDAY
+   */
+  public boolean isFriday() {
+    return Weekday.FRIDAY.equals(this);
+  }
+
+  /**
+   * Determines whether this {@link Weekday} is a {@link Weekday#SATURDAY}.
+   *
+   * @return a boolean value indicating whether this {@link Weekday} is a {@link Weekday#SATURDAY}.
+   * @see #isDay(Weekday)
+   * @see Weekday#SATURDAY
+   */
+  public boolean isSaturday() {
+    return Weekday.SATURDAY.equals(this);
   }
 
   /**

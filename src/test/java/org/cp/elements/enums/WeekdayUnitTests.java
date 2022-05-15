@@ -21,7 +21,9 @@ import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
 
@@ -58,40 +60,6 @@ public class WeekdayUnitTests {
   };
 
   @Test
-  public void isWeekdayReturnsTrue() {
-
-    assertThat(Weekday.MONDAY.isWeekday()).isTrue();
-    assertThat(Weekday.TUESDAY.isWeekday()).isTrue();
-    assertThat(Weekday.WEDNESDAY.isWeekday()).isTrue();
-    assertThat(Weekday.THURSDAY.isWeekday()).isTrue();
-    assertThat(Weekday.FRIDAY.isWeekday()).isTrue();
-  }
-
-  @Test
-  public void isWeekdayReturnsFalse() {
-
-    assertThat(Weekday.SUNDAY.isWeekday()).isFalse();
-    assertThat(Weekday.SATURDAY.isWeekday()).isFalse();
-  }
-
-  @Test
-  public void isWeekendReturnsTrue() {
-
-    assertThat(Weekday.SUNDAY.isWeekend()).isTrue();
-    assertThat(Weekday.SATURDAY.isWeekend()).isTrue();
-  }
-
-  @Test
-  public void isWeekendReturnsFalse() {
-
-    assertThat(Weekday.MONDAY.isWeekend()).isFalse();
-    assertThat(Weekday.TUESDAY.isWeekend()).isFalse();
-    assertThat(Weekday.WEDNESDAY.isWeekend()).isFalse();
-    assertThat(Weekday.THURSDAY.isWeekend()).isFalse();
-    assertThat(Weekday.FRIDAY.isWeekend()).isFalse();
-  }
-
-  @Test
   public void valueOfReturnsWeekday() {
 
     AtomicInteger position = new AtomicInteger(0);
@@ -125,11 +93,6 @@ public class WeekdayUnitTests {
   }
 
   @Test
-  public void valueOfAbbreviationIsNullSafeReturnsNull() {
-    assertThat(Weekday.valueOfAbbreviation(null)).isNull();
-  }
-
-  @Test
   public void valueOfAbbreviationUsingNameReturnsNull() {
 
     assertThat(Weekday.valueOfAbbreviation("Sunday")).isNull();
@@ -143,6 +106,11 @@ public class WeekdayUnitTests {
     assertThat(Weekday.valueOfAbbreviation("  ")).isNull();
     assertThat(Weekday.valueOfAbbreviation("May")).isNull();
     assertThat(Weekday.valueOfAbbreviation("2014")).isNull();
+  }
+
+  @Test
+  public void valueOfNullAbbreviationIsNullSafeReturnsNull() {
+    assertThat(Weekday.valueOfAbbreviation(null)).isNull();
   }
 
   @Test
@@ -200,11 +168,6 @@ public class WeekdayUnitTests {
   }
 
   @Test
-  public void valueOfNameIsNullSafeReturnsNull() {
-    assertThat(Weekday.valueOfName(null)).isNull();
-  }
-
-  @Test
   public void valueOfNameUsingAbbreviationReturnsNull() {
 
     assertThat(Weekday.valueOfName("Mon")).isNull();
@@ -217,8 +180,15 @@ public class WeekdayUnitTests {
 
     assertThat(Weekday.valueOfName("")).isNull();
     assertThat(Weekday.valueOfName("  ")).isNull();
+    assertThat(Weekday.valueOfName("nil")).isNull();
+    assertThat(Weekday.valueOfName("null")).isNull();
     assertThat(Weekday.valueOfName("October")).isNull();
     assertThat(Weekday.valueOfName("2014")).isNull();
+  }
+
+  @Test
+  public void valueOfNullNameIsNullSafeReturnsNull() {
+    assertThat(Weekday.valueOfName(null)).isNull();
   }
 
   @Test
@@ -263,5 +233,117 @@ public class WeekdayUnitTests {
     assertThat(Weekday.THURSDAY.getYesterday()).isEqualTo(Weekday.WEDNESDAY);
     assertThat(Weekday.FRIDAY.getYesterday()).isEqualTo(Weekday.THURSDAY);
     assertThat(Weekday.SATURDAY.getYesterday()).isEqualTo(Weekday.FRIDAY);
+  }
+
+  private void isDayReturnsFalse(Function<Weekday, Boolean> weekdayFunction) {
+
+    for (Weekday weekday : Weekday.values()) {
+      if (FunctionUtils.toPredicate(weekdayFunction).negate().test(weekday)) {
+        assertThat(weekdayFunction.apply(weekday)).isFalse();
+      }
+    }
+  }
+
+  @Test
+  public void isSundayReturnsTrue() {
+    assertThat(Weekday.SUNDAY.isSunday()).isTrue();
+  }
+
+  @Test
+  public void isSundayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isSunday);
+  }
+
+  @Test
+  public void isMondayReturnsTrue() {
+    assertThat(Weekday.MONDAY.isMonday()).isTrue();
+  }
+
+  @Test
+  public void isMondayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isMonday);
+  }
+
+  @Test
+  public void isTuesdayReturnsTrue() {
+    assertThat(Weekday.TUESDAY.isTuesday()).isTrue();
+  }
+
+  @Test
+  public void isTuesdayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isTuesday);  }
+
+  @Test
+  public void isWednesdayReturnsTrue() {
+    assertThat(Weekday.WEDNESDAY.isWednesday()).isTrue();
+  }
+
+  @Test
+  public void isWednesdayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isWednesday);
+  }
+
+  @Test
+  public void isThursdayReturnsTrue() {
+    assertThat(Weekday.THURSDAY.isThursday()).isTrue();
+  }
+
+  @Test
+  public void isThursdayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isThursday);
+  }
+
+  @Test
+  public void isFridayReturnsTrue() {
+    assertThat(Weekday.FRIDAY.isFriday()).isTrue();
+  }
+
+  @Test
+  public void isFridayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isFriday);
+  }
+
+  @Test
+  public void isSaturdayReturnsTrue() {
+    assertThat(Weekday.SATURDAY.isSaturday()).isTrue();
+  }
+
+  @Test
+  public void isSaturdayReturnsFalse() {
+    isDayReturnsFalse(Weekday::isSaturday);
+  }
+
+  @Test
+  public void isWeekdayReturnsTrue() {
+
+    assertThat(Weekday.MONDAY.isWeekday()).isTrue();
+    assertThat(Weekday.TUESDAY.isWeekday()).isTrue();
+    assertThat(Weekday.WEDNESDAY.isWeekday()).isTrue();
+    assertThat(Weekday.THURSDAY.isWeekday()).isTrue();
+    assertThat(Weekday.FRIDAY.isWeekday()).isTrue();
+  }
+
+  @Test
+  public void isWeekdayReturnsFalse() {
+
+    assertThat(Weekday.SUNDAY.isWeekday()).isFalse();
+    assertThat(Weekday.SATURDAY.isWeekday()).isFalse();
+  }
+
+  @Test
+  public void isWeekendReturnsTrue() {
+
+    assertThat(Weekday.SUNDAY.isWeekend()).isTrue();
+    assertThat(Weekday.SATURDAY.isWeekend()).isTrue();
+  }
+
+  @Test
+  public void isWeekendReturnsFalse() {
+
+    assertThat(Weekday.MONDAY.isWeekend()).isFalse();
+    assertThat(Weekday.TUESDAY.isWeekend()).isFalse();
+    assertThat(Weekday.WEDNESDAY.isWeekend()).isFalse();
+    assertThat(Weekday.THURSDAY.isWeekend()).isFalse();
+    assertThat(Weekday.FRIDAY.isWeekend()).isFalse();
   }
 }
