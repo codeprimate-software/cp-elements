@@ -18,17 +18,21 @@ package org.cp.elements.function;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * Abstract utility class containing canned, useful {@link Function Functions}.
+ * Abstract utility class containing canned, useful {@link Function Functions} and {@literal Adapters}
+ * for {@literal java.util.function} {@link Class types}.
  *
  * @author John Blum
  * @see java.util.function.Consumer
  * @see java.util.function.Function
+ * @see java.util.function.Predicate
+ * @see java.util.function.Supplier
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -73,9 +77,26 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Adapts the given, required {@link Predicate} as a {@link Function}.
+   *
+   * @param <T> {@link Class type} of {@link Object} processed by the {@link Predicate} and {@link Function}.
+   * @param predicate {@link Predicate} to adapt; must not be {@literal null}.
+   * @return a {@link Function} implementation adapting the given, required {@link Predicate}.
+   * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
+   * @see java.util.function.Function
+   */
+  public static @NotNull <T> Function<T, Boolean> toFunction(@NotNull Predicate<T> predicate) {
+
+    Assert.notNull(predicate, "Predicate is required");
+
+    return predicate::test;
+  }
+
+  /**
    * Adapts the given, required {@link Consumer} as a {@link Function}.
    *
-   * @param <T> {@link Class type} of the {@link Function} argument.
+   * @param <T> {@link Class type} of the {@link Function Function's} argument.
    * @param <R> {@link Class type} of {@link Object} returned by the {@link Supplier} and {@link Function}.
    * @param supplier {@link Supplier} to adapt; must not be {@literal null}.
    * @return a {@link Function} implementation adapting the given, required {@link Supplier}.
@@ -88,6 +109,23 @@ public abstract class FunctionUtils {
     Assert.notNull(supplier, "Supplier is required");
 
     return argument -> supplier.get();
+  }
+
+  /**
+   * Adapts the given, required {@link Function} as a {@link Predicate}.
+   *
+   * @param <T> {@link Class type} of the {@link Function Function's} argument.
+   * @param function {@link Function} to adapt; must not be {@literal null}.
+   * @return a {@link Predicate} implementation adapting the given, required {@link Function}.
+   * @throws IllegalArgumentException if the {@link Function} is {@literal null}.
+   * @see java.util.function.Function
+   * @see java.util.function.Predicate
+   */
+  public static @NotNull <T> Predicate<T> toPredicate(@NotNull Function<T, Boolean> function) {
+
+    Assert.notNull(function, "Function is required");
+
+    return function::apply;
   }
 
   /**

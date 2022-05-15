@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -36,7 +37,10 @@ import org.junit.Test;
  * Unit Tests for {@link FunctionUtils}
  *
  * @author John Blum
+ * @see java.util.function.Consumer
  * @see java.util.function.Function
+ * @see java.util.function.Predicate
+ * @see java.util.function.Supplier
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.function.FunctionUtils
@@ -107,6 +111,39 @@ public class FunctionUtilsUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
+  public void toFunctionFromPredicate() {
+
+    Predicate<Object> mockPredicate = mock(Predicate.class);
+
+    doReturn(true).when(mockPredicate).test(any());
+
+    Function<Object, Boolean> function = FunctionUtils.toFunction(mockPredicate);
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply("test")).isTrue();
+
+    verify(mockPredicate, times(1)).test(eq("test"));
+    verifyNoMoreInteractions(mockPredicate);
+  }
+
+  @SuppressWarnings("all")
+  @Test(expected = IllegalArgumentException.class)
+  public void toFunctionFromNullPredicate() {
+
+    try {
+      FunctionUtils.toFunction((Predicate<?>) null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Predicate is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   public void toFunctionFromSupplier() {
 
     Supplier<Object> mockSupplier = mock(Supplier.class);
@@ -131,6 +168,40 @@ public class FunctionUtilsUnitTests {
     catch (IllegalArgumentException expected) {
 
       assertThat(expected).hasMessage("Supplier is required");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void toPredicateFromFunction() {
+
+    Function<Object, Boolean> mockFunction = mock(Function.class);
+
+    doReturn(true).when(mockFunction).apply(any());
+
+    Predicate<Object> predicate = FunctionUtils.toPredicate(mockFunction);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("test")).isTrue();
+    assertThat(predicate.negate().test("mock")).isFalse();
+
+    verify(mockFunction, times(1)).apply(eq("test"));
+    verify(mockFunction, times(1)).apply(eq("mock"));
+    verifyNoMoreInteractions(mockFunction);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void toPredicateFromNullFunction() {
+
+    try {
+      FunctionUtils.toPredicate(null);
+    }
+    catch (IllegalArgumentException expected) {
+
+      assertThat(expected).hasMessage("Function is required");
       assertThat(expected).hasNoCause();
 
       throw expected;
