@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.elements.enums;
+package org.cp.elements.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ import org.junit.Test;
  *
  * @author John J. Blum
  * @see org.junit.Test
- * @see org.cp.elements.enums.TimeUnit
+ * @see org.cp.elements.time.TimeUnit
  * @since 1.0.0
  */
 public class TimeUnitUnitTests {

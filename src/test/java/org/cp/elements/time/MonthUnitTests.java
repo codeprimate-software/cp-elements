@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.elements.enums;
+package org.cp.elements.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,7 +33,7 @@ import org.junit.Test;
  * @see org.junit.Test
  * @see java.time.Month
  * @see java.util.Calendar
- * @see org.cp.elements.enums.Month
+ * @see org.cp.elements.time.Month
  * @since 1.0.0
  */
 public class MonthUnitTests {

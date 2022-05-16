@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.elements.enums;
+package org.cp.elements.time;
 
 import java.util.Arrays;
 import java.util.Calendar;

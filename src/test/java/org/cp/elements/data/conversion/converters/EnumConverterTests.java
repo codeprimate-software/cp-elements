@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
-import org.cp.elements.enums.TimeUnit;
+import org.cp.elements.time.TimeUnit;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link EnumConverter}.
+ * Unit Tests for {@link EnumConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -35,7 +34,7 @@ import org.junit.Test;
  */
 public class EnumConverterTests {
 
-  private EnumConverter converter = new EnumConverter();
+  private final EnumConverter converter = new EnumConverter();
 
   @Test
   public void canConvertToEnumReturnsTrue() {

@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.cp.elements.enums.Month;
+import org.cp.elements.time.Month;
 import org.junit.Test;
 
 /**
