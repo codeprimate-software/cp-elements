@@ -75,6 +75,16 @@ public class GenderUnitTests {
   }
 
   @Test
+  public void valueOfNameUsingAbbreviationReturnsNull() {
+
+    assertThat(Gender.valueOfName("B")).isNull();
+    assertThat(Gender.valueOfName("F")).isNull();
+    assertThat(Gender.valueOfName("G")).isNull();
+    assertThat(Gender.valueOfName("M")).isNull();
+    assertThat(Gender.valueOfName("W")).isNull();
+  }
+
+  @Test
   public void valueOfInvalidNameReturnsNull() {
 
     assertThat(Gender.valueOfName("Boy")).isNull();
@@ -88,15 +98,5 @@ public class GenderUnitTests {
   @Test
   public void valueOfNullNameIsNullSafeReturnsNull() {
     assertThat(Gender.valueOfName(null)).isNull();
-  }
-
-  @Test
-  public void valueOfNameUsingAbbreviationReturnsNull() {
-
-    assertThat(Gender.valueOfName("B")).isNull();
-    assertThat(Gender.valueOfName("F")).isNull();
-    assertThat(Gender.valueOfName("G")).isNull();
-    assertThat(Gender.valueOfName("M")).isNull();
-    assertThat(Gender.valueOfName("W")).isNull();
   }
 }

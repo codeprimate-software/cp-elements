@@ -32,7 +32,8 @@ import org.cp.elements.lang.annotation.Nullable;
 public enum Gender {
 
   FEMALE("F", "Female"),
-  MALE("M", "Male");
+  MALE("M", "Male"),
+  NON_BINARY("N", "NonBinary");
 
   /**
    * Factory method used to find a {@link Gender} by {@link String abbreviation}.
