@@ -247,6 +247,148 @@ public enum Month {
   }
 
   /**
+   * Determines whether {@literal this} {@link Month} is the given, required {@link Month}.
+   *
+   * @param month {@link Month} used to evaluate {@literal this} {@link Month}; must not be {@literal null}.
+   * @return a boolean value indicating whether {@literal this} {@link Month} is the given, required {@link Month}.
+   */
+  private boolean isMonth(@NotNull Month month) {
+    return this.equals(month);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#JANUARY}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#JANUARY}.
+   * @see #isMonth(Month)
+   * @see Month#JANUARY
+   */
+  public boolean isJanuary() {
+    return isMonth(Month.JANUARY);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#FEBRUARY}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#FEBRUARY}.
+   * @see #isMonth(Month)
+   * @see Month#FEBRUARY
+   */
+  public boolean isFebruary() {
+    return isMonth(Month.FEBRUARY);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#MARCH}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#MARCH}.
+   * @see #isMonth(Month)
+   * @see Month#MARCH
+   */
+  public boolean isMarch() {
+    return isMonth(Month.MARCH);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#APRIL}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#APRIL}.
+   * @see #isMonth(Month)
+   * @see Month#APRIL
+   */
+  public boolean isApril() {
+    return isMonth(Month.APRIL);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#MAY}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#MAY}.
+   * @see #isMonth(Month)
+   * @see Month#MAY
+   */
+  public boolean isMay() {
+    return isMonth(Month.MAY);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#JUNE}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#JUNE}.
+   * @see #isMonth(Month)
+   * @see Month#JUNE
+   */
+  public boolean isJune() {
+    return isMonth(Month.JUNE);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#JULY}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#JULY}.
+   * @see #isMonth(Month)
+   * @see Month#JULY
+   */
+  public boolean isJuly() {
+    return isMonth(Month.JULY);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#AUGUST}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#AUGUST}.
+   * @see #isMonth(Month)
+   * @see Month#AUGUST
+   */
+  public boolean isAugust() {
+    return isMonth(Month.AUGUST);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#SEPTEMBER}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#SEPTEMBER}.
+   * @see #isMonth(Month)
+   * @see Month#SEPTEMBER
+   */
+  public boolean isSeptember() {
+    return isMonth(Month.SEPTEMBER);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#OCTOBER}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#OCTOBER}.
+   * @see #isMonth(Month)
+   * @see Month#OCTOBER
+   */
+  public boolean isOctober() {
+    return isMonth(Month.OCTOBER);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#NOVEMBER}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#NOVEMBER}.
+   * @see #isMonth(Month)
+   * @see Month#NOVEMBER
+   */
+  public boolean isNovember() {
+    return isMonth(Month.NOVEMBER);
+  }
+
+  /**
+   * Determines whether {@literal this} {@link Month} is {@link Month#DECEMBER}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link Month} is {@link Month#DECEMBER}.
+   * @see #isMonth(Month)
+   * @see Month#DECEMBER
+   */
+  public boolean isDecember() {
+    return isMonth(Month.DECEMBER);
+  }
+
+  /**
    * Return a {@link String} representation of {@literal this} {@link Month}.
    *
    * @return a {@link String} describing {@literal this} {@link Month}.

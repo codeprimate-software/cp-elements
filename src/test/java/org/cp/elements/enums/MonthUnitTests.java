@@ -20,7 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
 
@@ -222,5 +224,136 @@ public class MonthUnitTests {
     assertThat(Month.OCTOBER.getPreviousMonth()).isEqualTo(Month.SEPTEMBER);
     assertThat(Month.NOVEMBER.getPreviousMonth()).isEqualTo(Month.OCTOBER);
     assertThat(Month.DECEMBER.getPreviousMonth()).isEqualTo(Month.NOVEMBER);
+  }
+
+  private void testIsNotMonth(Function<Month, Boolean> monthFunction) {
+
+    for (Month month : Month.values()) {
+      if (FunctionUtils.toPredicate(monthFunction).negate().test(month)) {
+        assertThat(monthFunction.apply(month)).isFalse();
+      }
+      else {
+        assertThat(monthFunction.apply(month)).isTrue();
+      }
+    }
+  }
+  @Test
+  public void isJanuaryReturnsTrue() {
+    assertThat(Month.JANUARY.isJanuary()).isTrue();
+  }
+
+  @Test
+  public void isJanuaryReturnsFalse() {
+    testIsNotMonth(Month::isJanuary);
+  }
+
+  @Test
+  public void isFebruaryReturnsTrue() {
+    assertThat(Month.FEBRUARY.isFebruary()).isTrue();
+  }
+
+  @Test
+  public void isFebruaryReturnFalse() {
+    testIsNotMonth(Month::isFebruary);
+  }
+
+  @Test
+  public void isMarchReturnsTrue() {
+    assertThat(Month.MARCH.isMarch()).isTrue();
+  }
+
+  @Test
+  public void isMarchReturnsFalse() {
+    testIsNotMonth(Month::isMarch);
+  }
+
+  @Test
+  public void isAprilReturnsTrue() {
+    assertThat(Month.APRIL.isApril()).isTrue();
+  }
+
+  @Test
+  public void isAprilReturnsFalse() {
+    testIsNotMonth(Month::isApril);
+  }
+
+  @Test
+  public void isMayReturnsTrue() {
+    assertThat(Month.MAY.isMay()).isTrue();
+  }
+
+  @Test
+  public void isMayReturnFalse() {
+    testIsNotMonth(Month::isMay);
+  }
+
+  @Test
+  public void isJuneReturnsTrue() {
+    assertThat(Month.JUNE.isJune()).isTrue();
+  }
+
+  @Test
+  public void isJuneReturnsFalse() {
+    testIsNotMonth(Month::isJune);
+  }
+
+  @Test
+  public void isJulyReturnsTrue() {
+    assertThat(Month.JULY.isJuly()).isTrue();
+  }
+
+  @Test
+  public void isJulyReturnsFalse() {
+    testIsNotMonth(Month::isJuly);
+  }
+
+  @Test
+  public void isAugustReturnsTrue() {
+    assertThat(Month.AUGUST.isAugust()).isTrue();
+  }
+
+  @Test
+  public void isAugustReturnsFalse() {
+    testIsNotMonth(Month::isAugust);
+  }
+
+  @Test
+  public void isSeptemberReturnsTrue() {
+    assertThat(Month.SEPTEMBER.isSeptember()).isTrue();
+  }
+
+  @Test
+  public void isSeptemberReturnsFalse() {
+    testIsNotMonth(Month::isSeptember);
+  }
+
+  @Test
+  public void isOctoberReturnsTrue() {
+    assertThat(Month.OCTOBER.isOctober()).isTrue();
+  }
+
+  @Test
+  public void isOctoberReturnsFalse() {
+    testIsNotMonth(Month::isOctober);
+  }
+
+  @Test
+  public void isNovemberReturnsTrue() {
+    assertThat(Month.NOVEMBER.isNovember()).isTrue();
+  }
+
+  @Test
+  public void isNovemberReturnsFalse() {
+    testIsNotMonth(Month::isNovember);
+  }
+
+  @Test
+  public void isDecemberReturnsTrue() {
+    assertThat(Month.DECEMBER.isDecember()).isTrue();
+  }
+
+  @Test
+  public void isDecemberReturnsFalse() {
+    testIsNotMonth(Month::isDecember);
   }
 }
