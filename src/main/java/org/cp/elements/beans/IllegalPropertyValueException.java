@@ -13,54 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans;
 
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
- * The IllegalPropertyValueException class is an IllegalStateException signifying that the value being assigned
- * to the property is not valid.
+ * A {@link BeansException} thrown to signify that the value being assigned to a bean property is not valid.
  *
  * @author John J. Blum
- * @see java.lang.IllegalStateException
+ * @see java.lang.RuntimeException
+ * @see org.cp.elements.beans.BeansException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class IllegalPropertyValueException extends IllegalStateException {
+public class IllegalPropertyValueException extends BeansException {
 
   /**
-   * Constructs an uninitialized instance of the IllegalPropertyValueException.
+   * Constructs a new, default instance of {@link IllegalPropertyValueException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public IllegalPropertyValueException() {
-  }
+  public IllegalPropertyValueException() { }
 
   /**
-   * Constructs an instance of the IllegalPropertyValueException initialized with a message describing the problem.
+   * Constructs a new instance of {@link IllegalPropertyValueException} initialized with
+   * the given {@link String message} to describe this exception.
    *
-   * @param message a String describing the nature of the problem and reason this Exception was thrown.
+   * @param message {@link String} describing the illegal bean property value.
    */
-  public IllegalPropertyValueException(final String message) {
+  public IllegalPropertyValueException(@NotNull String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the IllegalPropertyValueException initialized with the specified Throwable
-   * indicating the reason, or underlying cause for why this Exception was thrown.
+   * Constructs a new instance of {@link IllegalPropertyValueException} initialized with the given {@link Throwable}
+   * used as the cause or reason why this exception was thrown.
    *
-   * @param cause a Throwable indicating the reason this IllegalPropertyValueException was thrown.
+   * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public IllegalPropertyValueException(final Throwable cause) {
+  public IllegalPropertyValueException(@NotNull Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the IllegalPropertyValueException initialized with a message describing the exceptional
-   * condition along with a Throwable indicating the reason, or underlying cause for why this Exception was thrown.
+   * Constructs a new instance of {@link IllegalPropertyValueException} initialized with
+   * the given {@link String message} to describe this exception along with the given {@link Throwable}
+   * used as the cause and reason this exception was thrown.
    *
-   * @param message a String describing the nature of the problem and reason this Exception was thrown.
-   * @param cause a Throwable indicating the reason this IllegalPropertyValueException was thrown.
+   * @param message {@link String} describing the illegal bean property value.
+   * @param cause {@link Throwable} used as the cause of this exception.
    */
-  public IllegalPropertyValueException(final String message, final Throwable cause) {
+  public IllegalPropertyValueException(@NotNull String message, @NotNull Throwable cause) {
     super(message, cause);
   }
-
 }

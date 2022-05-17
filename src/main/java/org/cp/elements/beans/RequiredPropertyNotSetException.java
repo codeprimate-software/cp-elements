@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans;
 
+import org.cp.elements.beans.annotation.Required;
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
- * The RequiredPropertiesNotSetException class is a subclass of RequiredPropertyNotSetException indicating that a bean
- * property annotated with @Required was not properly set.
+ * {@link IllegalPropertyValueException} extension thrown to indicate that a bean property annotated with
+ * {@link Required @Required} was not properly set.
  *
  * @author John J. Blum
+ * @see java.lang.RuntimeException
  * @see org.cp.elements.beans.IllegalPropertyValueException
  * @since 1.0.0
  */
@@ -28,39 +31,40 @@ package org.cp.elements.beans;
 public class RequiredPropertyNotSetException extends IllegalPropertyValueException {
 
   /**
-   * Constructs an uninitialized instance of the RequiredPropertyNotSetException class.
+   * Constructs a new, default instance of {@link RequiredPropertyNotSetException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public RequiredPropertyNotSetException() {
-  }
+  public RequiredPropertyNotSetException() { }
 
   /**
-   * Constructs an instance of the RequiredPropertyNotSetException initialized with a message describing the problem.
+   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with
+   * the given {@link String message} to describe this exception.
    *
-   * @param message a String describing the nature of the problem and reason this Exception was thrown.
+   * @param message {@link String} describing this exception.
    */
-  public RequiredPropertyNotSetException(final String message) {
+  public RequiredPropertyNotSetException(@NotNull String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the RequiredPropertyNotSetException initialized with the specified Throwable
-   * indicating the reason, or underlying cause for why this Exception was thrown.
+   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with the given {@link Throwable}
+   * used as the cause and reason this exception was thrown.
    *
-   * @param cause a Throwable indicating the reason this RequiredPropertyNotSetException was thrown.
+   * @param cause {@link Throwable} used as the cause and reason this exception was thrown.
    */
-  public RequiredPropertyNotSetException(final Throwable cause) {
+  public RequiredPropertyNotSetException(@NotNull Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the RequiredPropertyNotSetException initialized with a message describing the exceptional
-   * condition along with a Throwable indicating the reason, or underlying cause for why this Exception was thrown.
+   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with
+   * the given {@link String message} to describe this exception along with the given {@link Throwable}
+   * used as the cause and reason this exception was thrown.
    *
-   * @param message a String describing the nature of the problem and reason this Exception was thrown.
-   * @param cause a Throwable indicating the reason this RequiredPropertyNotSetException was thrown.
+   * @param message {@link String} describing this exception.
+   * @param cause {@link Throwable} used as the cause and reason this exception was thrown.
    */
-  public RequiredPropertyNotSetException(final String message, final Throwable cause) {
+  public RequiredPropertyNotSetException(@NotNull String message, @NotNull Throwable cause) {
     super(message, cause);
   }
-
 }

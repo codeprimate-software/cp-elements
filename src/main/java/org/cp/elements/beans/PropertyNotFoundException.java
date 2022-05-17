@@ -13,54 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans;
 
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
- * The PropertyNotFoundException class is a RuntimeException to indicate that the specified property does not exist
- * on a JavaBean.
+ * A {@link BeansException} thrown to indicate that a bean property does not exist.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
+ * @see org.cp.elements.beans.BeansException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class PropertyNotFoundException extends RuntimeException {
+public class PropertyNotFoundException extends BeansException {
 
   /**
-   * Creates an instance of the PropertyNotFoundException class.
+   * Constructs a new, default instance of {@link PropertyNotFoundException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public PropertyNotFoundException() {
-  }
+  public PropertyNotFoundException() { }
 
   /**
-   * Creates an instance of the PropertyNotFoundException class initialized with a description of the problem.
+   * Constructs a new instance of {@link PropertyNotFoundException} initialized with the given {@link String}
+   * describing the bean property that could not be found.
    *
-   * @param message a String describing the nature of the problem and reason this Exception was thrown.
+   * @param message {@link String} describing the bean property that could not be found.
    */
-  public PropertyNotFoundException(final String message) {
+  public PropertyNotFoundException(@NotNull String message) {
     super(message);
   }
 
   /**
-   * Creates an instance of the PropertyNotFoundException class initialized with the specified Throwable, which is also
-   * the reason, or underlying cause for why this Exception was thrown.
+   * Constructs a new instance of {@link PropertyNotFoundException} initialized with the given {@link Throwable}
+   * used as the cause or reason why this exception was thrown.
    *
-   * @param cause a Throwable indicating the reason this PropertyNotFoundException was thrown.
+   * @param cause {@link Throwable} used as the cause and reason why this exception was thrown.
    */
-  public PropertyNotFoundException(final Throwable cause) {
+  public PropertyNotFoundException(@NotNull Throwable cause) {
     super(cause);
   }
 
   /**
-   * Creates an instance of the PropertyNotFoundException class initialized with a message describing the exceptional
-   * condition and a reason, or underlying cause for why this Exception was thrown.
+   * Constructs a new instance of {@link PropertyNotFoundException} initialized with the given {@link String}
+   * describing the bean property that could not be found along with the given {@link Throwable} used as
+   * the cause and reason this exception was thrown.
    *
-   * @param message a String describing the nature of the problem and reason this Exception was thrown.
-   * @param cause a Throwable indicating the reason this PropertyNotFoundException was thrown.
+   * @param message {@link String} describing the bean property that could not be found.
+   * @param cause {@link Throwable} used as the cause and reason why this exception was thrown.
    */
-  public PropertyNotFoundException(final String message, final Throwable cause) {
+  public PropertyNotFoundException(@NotNull String message, @NotNull Throwable cause) {
     super(message, cause);
   }
-
 }
