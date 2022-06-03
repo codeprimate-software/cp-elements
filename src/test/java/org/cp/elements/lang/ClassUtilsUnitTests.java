@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -46,9 +47,11 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
@@ -84,6 +87,7 @@ import org.junit.Test;
 public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
   private <T> void assertConstructor(Constructor<T> constructor, Class<T> declaringClass, Class<?>[] parameterTypes) {
+
     assertThat(constructor).isNotNull();
     assertThat(constructor.getDeclaringClass()).isEqualTo(declaringClass);
     TestUtils.assertEquals(parameterTypes, constructor.getParameterTypes());
@@ -316,6 +320,53 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
       throw expected;
     }
+  }
+
+  @Test
+  public void getAllDeclaredFieldsForObject() {
+
+    Field[] fields = ClassUtils.getAllDeclaredFields(new Object());
+
+    assertThat(fields).isNotNull();
+    assertThat(fields).isEmpty();
+  }
+
+  @Test
+  public void getAllDeclaredFieldsForNullObject() {
+
+    Field[] fields = ClassUtils.getAllDeclaredFields((Object) null);
+
+    assertThat(fields).isNotNull();
+    assertThat(fields).isEmpty();
+  }
+
+  @Test
+  public void getAllDeclaredFieldsForSuperClassType() {
+
+    Field[] fields = ClassUtils.getAllDeclaredFields(SuperType.class);
+
+    assertThat(fields).isNotNull();
+    assertThat(Arrays.stream(fields).map(Field::getName).collect(Collectors.toList()))
+      .containsExactly("id", "stringValue");
+  }
+
+  @Test
+  public void getAllDeclaredFieldsForSubClassType() {
+
+    Field[] fields = ClassUtils.getAllDeclaredFields(SubType.class);
+
+    assertThat(fields).isNotNull();
+    assertThat(Arrays.stream(fields).map(Field::getName).collect(Collectors.toList()))
+      .containsExactly("charValue", "id", "nonAnnotatedField", "id", "stringValue");
+  }
+
+  @Test
+  public void getAllDeclaredFieldsForNullClassType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ClassUtils.getAllDeclaredFields(null))
+      .withMessage("Class type is required")
+      .withNoCause();
   }
 
   @Test
@@ -970,7 +1021,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
   @Test
   public void classWithIncorrectlyNamedMainMethodIsFalse() {
-    assertFalse(ClassUtils.hasMainMethod(ClassWithMaintMethod.class));
+    assertFalse(ClassUtils.hasMainMethod(ClassWithMaineMethod.class));
   }
 
   @Test
@@ -1144,8 +1195,8 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     public static void main(String[] args) { }
   }
 
-  public static class ClassWithMaintMethod {
-    public static void maint(String[] args) { }
+  public static class ClassWithMaineMethod {
+    public static void maine(String[] args) { }
   }
 
   public static class ClassWithPrivateMainMethod {
@@ -1180,8 +1231,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
 
     private String stringValue;
 
-    public SuperType() {
-    }
+    public SuperType() { }
 
     public SuperType(Object value) {
       this.stringValue = String.valueOf(value);
@@ -1204,8 +1254,8 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
       return value;
     }
 
-    public void methodTwo(Boolean conditional, Number number, String string) {
-    }
+    public void methodTwo(Boolean conditional, Number number, String string) { }
+
   }
 
   @Resource
@@ -1223,11 +1273,10 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
       this.id = id;
     }
 
-    public SubType(Boolean condition, Number number, String string) {
-    }
+    public SubType(Boolean condition, Number number, String string) { }
 
     public Character getCharacterValue() {
-      return charValue;
+      return this.charValue;
     }
 
     public void setCharacterValue(Character charValue) {
@@ -1238,8 +1287,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
      * @deprecated
      */
     @Deprecated
-    public void deprecatedMethod() {
-    }
+    public void deprecatedMethod() { }
 
     @Override
     public String methodOne(String value) {
@@ -1254,14 +1302,12 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
       return Math.max(wholeNumber, floatingPointNumber);
     }
 
-    public void methodTwo(Boolean conditional, Integer number, String string) {
-    }
+    public void methodTwo(Boolean conditional, Integer number, String string) { }
 
-    public void methodTwo(String string, Number number, Boolean conditional) {
-    }
+    public void methodTwo(String string, Number number, Boolean conditional) { }
 
-    public void nonAnnotatedMethod() {
-    }
+    public void nonAnnotatedMethod() { }
+
   }
 
   private static class TypeWithWithDefaultConstructor {

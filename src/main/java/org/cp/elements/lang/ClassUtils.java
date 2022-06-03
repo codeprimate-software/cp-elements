@@ -28,8 +28,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,6 +67,10 @@ public abstract class ClassUtils {
 
   @SuppressWarnings("rawtypes")
   public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
+
+  public static final Field[] EMPTY_FIELD_ARRAY = new Field[0];
+
+  public static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
   public static final String CLASS_FILE_EXTENSION = ".class";
   public static final String CLONE_METHOD_NAME = "clone";
@@ -288,18 +295,61 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Gets a Field object representing the named field on the specified class.  This method will recursively search
-   * up the class hierarchy of the specified class until the Object class is reached.  If the named field is found
-   * then a Field object representing the class field is returned, otherwise a NoSuchFieldException is thrown.
+   * Gets all the declared {@link Field fields} on the given {@link Object}.
    *
-   * @param type the Class type to search for the specified field.
-   * @param fieldName a String indicating the name of the field on the class.
-   * @return a Field object representing the named field on the specified class.
-   * @throws FieldNotFoundException if the named field does not exist on the specified class
-   * or a superclass of the specified class.
-   * @see java.lang.Class
+   * @param target {@link Object} to evaluate.
+   * @return an array of {@link Field Fields} for all fields declared by the {@link Object Object's} {@link Class type}
+   * and its {@link Class supertypes} in the {@link Class} hierarchy. If no {@link Field Fields} are declared, then
+   * this method returns an empty {@link Field} array.
+   * @see #getAllDeclaredFields(Class)
+   */
+  public static Field[] getAllDeclaredFields(@Nullable Object target) {
+    return target != null ? getAllDeclaredFields(target.getClass()) : EMPTY_FIELD_ARRAY;
+  }
+
+  /**
+   * Gets all the declared {@link Field fields} on the given {@link Class type}.
+   *
+   * This method recursively searches up the {@link Class} hierarchy from the given {@link Class type},
+   * introspecting each {@link Class superclass types} until the {@link Object} {@link Class} is reached.
+   *
+   * @param type {@link Class} to evaluate.
+   * @return an array of {@link Field Fields} for all fields declared by the {@link Object Object's} {@link Class type}
+   * including all {@link Class superclass types} in the {@link Class} hierarchy. If no {@link Field Fields}
+   * were declared, then this method returns an empty {@link Field} array.
+   * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+   * @see #getAllDeclaredFields(Class)
+   */
+  public static Field[] getAllDeclaredFields(@NotNull Class<?> type) {
+
+    Assert.notNull(type, "Class type is required");
+
+    List<Field> fields = new ArrayList<>(Arrays.asList(type.getDeclaredFields()));
+
+    if (type.getSuperclass() != null) {
+      fields.addAll(Arrays.asList(getAllDeclaredFields(type.getSuperclass())));
+    }
+
+    return fields.toArray(new Field[0]);
+  }
+
+  /**
+   * Gets a {@link Field} object representing the {@link String named field} of the given {@link Class}.
+   *
+   * This method recursively searches up the {@link Class} hierarchy of the given {@link Class}
+   * until the {@link Object} class is reached. If the named field is found then a {@link Field} object
+   * representing the {@link Class} field is returned, otherwise a {@link FieldNotFoundException} is thrown.
+   *
+   * @param type {@link Class} to search for a {@link Field} with the given {@link String name};
+   * must not be {@literal null}.
+   * @param fieldName {@link String} containing the {@literal name} of the {@link Field} on the {@link Class}
+   * to search for.
+   * @return a {@link Field} object representing the {@link String named field} of the given {@link Class}.
+   * @throws FieldNotFoundException if the {@link String named field} does not exist on the given {@link Class}
+   * or a superclass of the given {@link Class}.
    * @see java.lang.Class#getDeclaredField(String)
    * @see java.lang.reflect.Field
+   * @see java.lang.Class
    */
   public static @NotNull Field getField(@NotNull Class<?> type, String fieldName) {
 
