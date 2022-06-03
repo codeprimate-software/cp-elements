@@ -15,12 +15,15 @@
  */
 package org.cp.elements.beans.model;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Adapter for a given Java Bean, or {@link Object POJO}.
+ * Adapter for a given {@link Object POJO} used as a {@literal JavaBean}.
  *
  * @author John Blum
  * @see java.lang.Object
@@ -30,10 +33,10 @@ public class BeanAdapter {
 
   /**
    * Factory method used to construct a new instance of {@link BeanAdapter} initialized with the given,
-   * required {@link Object} to adapt.
+   * required {@link Object POJO} to adapt as a {@literal JavaBean}.
    *
-   * @param target {@link Object} to adapt as a Java Bean.
-   * @return a new {@link BeanAdapter} initialized with the given, required {@link Object} (POJO).
+   * @param target {@link Object} to adapt as a {@literal JavaBean}; must not be {@literal null}.
+   * @return a new {@link BeanAdapter} initialized with the given, required {@link Object POJO}.
    * @throws IllegalArgumentException if the target {@link Object} is {@literal null}.
    * @see #BeanAdapter(Object)
    * @see java.lang.Object
@@ -42,41 +45,72 @@ public class BeanAdapter {
     return new BeanAdapter(target);
   }
 
+  private final AtomicReference<BeanModel> beanModelReference = new AtomicReference<>(null);
+
   private final Object target;
 
   /**
-   * Constructs a new instance of {@link BeanAdapter} initialized with the given, required {@link Object} to adapt.
+   * Constructs a new instance of {@link BeanAdapter} initialized with the given, required {@link Object POJO}
+   * to adapt as a {@literal JavaBean}.
    *
-   * @param target {@link Object} to adapt as a Java Bean.
+   * @param target {@link Object} adapted as a {@literal JavaBean}.
    * @throws IllegalArgumentException if the target {@link Object} is {@literal null}.
    * @see java.lang.Object
    */
   public BeanAdapter(@NotNull Object target) {
-
-    Assert.notNull(target, "The target object to adapt is required");
-
-    this.target = target;
+    this.target = ObjectUtils.requireObject(target, "The target object to adapt is required");
   }
 
   /**
-   * Returns a reference to the target {@link Object} adapted as a Java Bean.
+   * Lazily gets the {@link BeanModel} modeling this bean.
    *
-   * @return a reference to the target {@link Object}.
+   * @return the {@link BeanModel} modeling this bean.
+   * @see org.cp.elements.beans.model.BeanModel
    */
-  protected Object getTarget() {
+  protected @NotNull BeanModel getModel() {
+    return this.beanModelReference.updateAndGet(model -> model != null ? model : BeanModel.from(this));
+  }
+
+  /**
+   * Returns a reference to the target {@link Object POJO} adapted as a {@literal JavaBean}.
+   *
+   * @return a reference to the target {@link Object POJO} adapted as a {@literal JavaBean}.
+   * @see java.lang.Object
+   */
+  protected @NotNull Object getTarget() {
     return this.target;
   }
 
-  public <T> T getProperty(@NotNull String propertyName) {
+  /**
+   * Get the {@link Object value} of the property identified by {@link String name}.
+   *
+   * @param <T> {@link Class type} of the property {@link Object value}.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @return the {@link Object value} of the property identified by {@link String name}.
+   * @throws IllegalArgumentException if the {@link String property name} is {@literal null},
+   * {@literal blank} or {@literal empty}.
+   * @see #setPropertyValue(String, Object)
+   */
+  @SuppressWarnings("unchecked")
+  public @Nullable <T> T getPropertyValue(@NotNull String propertyName) {
 
     Assert.hasText(propertyName, "The name [%s] of the property is required", propertyName);
 
-    return null;
+    return (T) getModel().getProperty(propertyName).getValue();
   }
 
-  public <T> void setProperty(@NotNull String propertyName, @Nullable T value) {
+  /**
+   * Set the property identified by {@link String name} to the given {@link Object value}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @throws IllegalArgumentException if the {@link String property name} is {@literal null},
+   * {@literal blank} or {@literal empty}.
+   * @see #getPropertyValue(String)
+   */
+  public void setPropertyValue(@NotNull String propertyName, @Nullable Object value) {
 
-    Assert.notNull(propertyName, "The name [%s] of the property to set is required", propertyName);
+    Assert.hasText(propertyName, "The name [%s] of the property to set is required", propertyName);
 
+    getModel().getProperty(propertyName).setValue(value);
   }
 }
