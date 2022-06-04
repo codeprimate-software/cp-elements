@@ -38,6 +38,7 @@ import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.ToStringRenderer;
 
 /**
@@ -450,6 +451,35 @@ public abstract class CollectionUtils {
       .filter(filter::accept)
       .findFirst()
       .orElse(null);
+  }
+
+  /**
+   * Gets the last element in the given {@link List}.
+   *
+   * @param <T> {@link Class type} of elements in the given {@link List}.
+   * @param list {@link List} from which to return the last element.
+   * @return the last element in the given {@link List}
+   * or {@literal null} if the given {@link List} is {@literal null}.
+   * @see #getLastElement(List, Object)
+   * @see java.util.List
+   */
+  public static @Nullable <T> T getLastElement(@Nullable List<T> list) {
+    return getLastElement(list, null);
+  }
+
+  /**
+   * Gets the last element in the given {@link List} or returns the given {@link Object default value}
+   * if the {@link List} is {@literal null} or {@literal empty}.
+   *
+   * @param <T> {@link Class type} of elements in the given {@link List}.
+   * @param list {@link List} from which to return the last element.
+   * @return the last element in the given {@link List} or {@link T default value}
+   * if the given {@link List} is {@literal null} or {@literal empty}.
+   * @see #isNotEmpty(Iterable)
+   * @see java.util.List
+   */
+  public static @Nullable <T> T getLastElement(@Nullable List<T> list, @Nullable T defaultValue) {
+    return isNotEmpty(list) ? list.get(list.size() - 1) : defaultValue;
   }
 
   /**

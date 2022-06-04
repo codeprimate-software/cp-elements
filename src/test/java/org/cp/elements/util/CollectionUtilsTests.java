@@ -1163,6 +1163,38 @@ public class CollectionUtilsTests {
   }
 
   @Test
+  public void getLastElementReturnsLastElementFromList() {
+
+    List<Object> list = Arrays.asList(1, 2, 3);
+
+    assertThat(CollectionUtils.getLastElement(list)).isEqualTo(3);
+    assertThat(CollectionUtils.getLastElement(list, 4)).isEqualTo(3);
+  }
+
+  @Test
+  public void getLastElementFromSingletonList() {
+
+    List<Object> list = Collections.singletonList(1);
+
+    assertThat(CollectionUtils.getLastElement(list)).isEqualTo(1);
+    assertThat(CollectionUtils.getLastElement(list, 2)).isEqualTo(1);
+  }
+
+  @Test
+  public void getLastElementFromNullList() {
+
+    assertThat(CollectionUtils.<Object>getLastElement(null)).isNull();
+    assertThat(CollectionUtils.getLastElement(null, "test")).isEqualTo("test");
+  }
+
+  @Test
+  public void getLastElementFromEmptyList() {
+
+    assertThat(CollectionUtils.<Object>getLastElement(Collections.emptyList())).isNull();
+    assertThat(CollectionUtils.getLastElement(Collections.emptyList(), "test")).isEqualTo("test");
+  }
+
+  @Test
   public void isEmptyWithEmptyCollectionIsTrue() {
 
     assertThat(CollectionUtils.isEmpty(null)).isTrue();
