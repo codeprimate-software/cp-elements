@@ -15,10 +15,7 @@
  */
 package org.cp.elements.util;
 
-import static java.util.Arrays.stream;
 import static org.cp.elements.lang.LangExtensions.assertThat;
-import static org.cp.elements.lang.ObjectUtils.returnFirstNonNullValue;
-import static org.cp.elements.lang.ObjectUtils.equalsIgnoreNull;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,9 +36,10 @@ import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An abstract utility {@link Class} providing methods and functionality for working with {@link Object} arrays.
+ * Abstract utility class providing methods and functionality for processing arrays.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -64,7 +62,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class ArrayUtils {
 
   @SuppressWarnings("all")
-  private static final Object[] EMPTY_ARRAY = new Object[0];
+  public static final Object[] EMPTY_ARRAY = new Object[0];
 
   /**
    * Adds (inserts) the element to the end of the array.
@@ -84,8 +82,8 @@ public abstract class ArrayUtils {
   /**
    * Converts the varargs into an actual array reference.
    *
-   * @param <T> Class type of the elements stored in the array.
-   * @param elements elements (varargs) to convert into an array.
+   * @param <T> {@link Class type} of elements stored in the array.
+   * @param elements vararg elements to convert into an array.
    * @return the given array.
    */
   @SafeVarargs
@@ -96,13 +94,13 @@ public abstract class ArrayUtils {
   /**
    * Converts the {@link Enumeration} into an array.
    *
-   * @param <T> Class type of the elements in the {@link Enumeration}.
+   * @param <T> {@link Class type} of elements in the array.
    * @param enumeration {@link Enumeration} to convert into an array.
-   * @param componentType {@link Class} type of the elements in the {@link Enumeration}.
-   * @return an array containing all the elements from the {@link Enumeration}.  Returns an empty array
-   * if the {@link Enumeration} is null or empty.
-   * @see java.util.Enumeration
+   * @param componentType {@link Class type} of elements in the {@link Enumeration}.
+   * @return an array containing all the elements from the {@link Enumeration}.
+   * Returns an empty array if the {@link Enumeration} is {@literal null} or {@literal empty}.
    * @see #asArray(Iterable, Class)
+   * @see java.util.Enumeration
    */
   @NullSafe
   public static <T> T[] asArray(Enumeration<T> enumeration, Class<T> componentType) {
@@ -112,12 +110,11 @@ public abstract class ArrayUtils {
   /**
    * Converts the {@link Iterable} into an array.
    *
-   * @param <T> Class type of the elements in the {@link Iterable}.
-   * @param iterable {@link Iterable} collection to convert into an array.
-   * @param componentType {@link Class} type of the elements in the {@link Iterable}.
-   * @return an array containing all the elements from the {@link Iterable} collection.  Returns an empty array
-   * if the {@link Iterable} is null or empty.
-   * @see java.lang.Class
+   * @param <T> {@link Class type} of elements in the array.
+   * @param iterable {@link Iterable} to convert into an array.
+   * @param componentType {@link Class type} of elements in the {@link Iterable}.
+   * @return an array containing all the elements from the {@link Iterable}.
+   * Returns an empty array if the {@link Iterable} is {@literal null} or {@literal empty}.
    * @see java.lang.Iterable
    */
   @NullSafe
@@ -130,19 +127,23 @@ public abstract class ArrayUtils {
       arrayList.add(element);
     }
 
-    return arrayList.toArray((T[]) Array.newInstance(returnFirstNonNullValue(componentType, Object.class), arrayList.size()));
+    Class<?> resolvedComponentType = ObjectUtils.returnFirstNonNullValue(componentType, Object.class);
+
+    T[] array = (T[]) Array.newInstance(resolvedComponentType, arrayList.size());
+
+    return arrayList.toArray(array);
   }
 
   /**
    * Converts the {@link Iterator} into an array.
    *
-   * @param <T> Class type of the elements in the {@link Iterator}.
+   * @param <T> {@link Class type} of elements in the array.
    * @param iterator {@link Iterator} to convert into an array.
-   * @param componentType {@link Class} type of the elements in the {@link Iterator}.
-   * @return an array containing all the elements from the {@link Iterator}.  Returns an empty array
-   * if the {@link Iterator} is null or empty.
-   * @see java.util.Iterator
+   * @param componentType {@link Class type} of elements in the {@link Iterator}.
+   * @return an array containing all the elements from the {@link Iterator}.
+   * Returns an empty array if the {@link Iterator} is {@literal null} or {@literal empty}.
    * @see #asArray(Iterable, Class)
+   * @see java.util.Iterator
    */
   @NullSafe
   public static <T> T[] asArray(Iterator<T> iterator, Class<T> componentType) {
@@ -162,13 +163,13 @@ public abstract class ArrayUtils {
   @SafeVarargs
   public static <T> Enumeration<T> asEnumeration(T... array) {
 
-    return (array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
+    return array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
       private int index = 0;
 
       @Override
       public boolean hasMoreElements() {
-        return (index < array.length);
+        return this.index < array.length;
       }
 
       @Override
@@ -176,9 +177,9 @@ public abstract class ArrayUtils {
 
         Assert.isTrue(hasMoreElements(), new NoSuchElementException("No more elements"));
 
-        return array[index++];
+        return array[this.index++];
       }
-    });
+    };
   }
 
   /**
@@ -210,13 +211,13 @@ public abstract class ArrayUtils {
   @SafeVarargs
   public static <T> Iterator<T> asIterator(T... array) {
 
-    return (array == null ? Collections.emptyIterator() : new Iterator<T>() {
+    return array == null ? Collections.emptyIterator() : new Iterator<T>() {
 
       private int index = 0;
 
       @Override
       public boolean hasNext() {
-        return (index < array.length);
+        return this.index < array.length;
       }
 
       @Override
@@ -224,9 +225,9 @@ public abstract class ArrayUtils {
 
         Assert.isTrue(hasNext(), new NoSuchElementException("No more elements"));
 
-        return array[index++];
+        return array[this.index++];
       }
-    });
+    };
   }
 
   /**
@@ -256,7 +257,9 @@ public abstract class ArrayUtils {
 
     Assert.notNull(filter, "Filter is required");
 
-    return stream(nullSafeArray(array)).filter(filter::accept).count();
+    return Arrays.stream(nullSafeArray(array))
+      .filter(filter::accept)
+      .count();
   }
 
   /**
@@ -272,7 +275,7 @@ public abstract class ArrayUtils {
    * @see #deepCopy(Object[], Function)
    * @see #shallowCopy(Object[])
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("all")
   public static <T> T[] deepCopy(T[] array) {
 
     Assert.notNull(array, "Array is required");
@@ -350,9 +353,13 @@ public abstract class ArrayUtils {
     Assert.notNull(array, "Array is required");
     Assert.notNull(filter, "Filter is required");
 
-    List<T> arrayList = stream(array).filter(filter::accept).collect(Collectors.toList());
+    List<T> arrayList = Arrays.stream(array)
+      .filter(filter::accept)
+      .collect(Collectors.toList());
 
-    return arrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size()));
+    T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size());
+
+    return arrayList.toArray(newArray);
   }
 
   /**
@@ -368,7 +375,7 @@ public abstract class ArrayUtils {
    * @see #filter(Object[], Filter)
    * @see #transform(Object[], Transformer)
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("all")
   public static <T> T[] filterAndTransform(T[] array, FilteringTransformer<T> filteringTransformer) {
     return transform(filter(array, filteringTransformer), filteringTransformer);
   }
@@ -385,12 +392,14 @@ public abstract class ArrayUtils {
    * @see org.cp.elements.lang.Filter
    * @see #findOne(Object[], Filter)
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings("all")
   public static <T> List<T> findAll(T[] array, Filter<T> filter) {
 
     Assert.notNull(filter, "Filter is required");
 
-    return stream(nullSafeArray(array)).filter(filter::accept).collect(Collectors.toList());
+    return Arrays.stream(nullSafeArray(array))
+      .filter(filter::accept)
+      .collect(Collectors.toList());
   }
 
   /**
@@ -408,7 +417,10 @@ public abstract class ArrayUtils {
 
     Assert.notNull(filter, "Filter is required");
 
-    return stream(nullSafeArray(array)).filter(filter::accept).findFirst().orElse(null);
+    return Arrays.stream(nullSafeArray(array))
+      .filter(filter::accept)
+      .findFirst()
+      .orElse(null);
   }
 
   /**
@@ -447,12 +459,12 @@ public abstract class ArrayUtils {
    * @param array array from which to extract the first element.
    * @return the first element in the array or {@literal null}
    * if the {@code array} is {@literal null} or empty.
-   * @see #getFirst(Object[], Object)
+   * @see #getFirstElement(Object[], Object)
    */
   @NullSafe
   @SafeVarargs
-  public static <T> T getFirst(T... array) {
-    return getFirst(array, null);
+  public static <T> T getFirstElement(T... array) {
+    return getFirstElement(array, null);
   }
 
   /**
@@ -465,7 +477,7 @@ public abstract class ArrayUtils {
    * is {@literal null} or empty.
    * @see #getElementAt(Object[], int, Object)
    */
-  public static <T> T getFirst(T[] array, T defaultValue) {
+  public static <T> T getFirstElement(T[] array, T defaultValue) {
     return getElementAt(array, 0, defaultValue);
   }
 
@@ -475,12 +487,12 @@ public abstract class ArrayUtils {
    * @param <T> {@link Class} type of elements in the array.
    * @param array array from which to extract the last element.
    * @return the last element in the array or {@literal null} if the {@code array} is {@literal null} or empty.
-   * @see #getLast(Object[], Object)
+   * @see #getLastElement(Object[], Object)
    */
   @NullSafe
   @SafeVarargs
-  public static <T> T getLast(T... array) {
-    return getLast(array, null);
+  public static <T> T getLastElement(T... array) {
+    return getLastElement(array, null);
   }
 
   /**
@@ -493,7 +505,7 @@ public abstract class ArrayUtils {
    * is {@literal null} or empty.
    * @see #getElementAt(Object[], int, Object)
    */
-  public static <T> T getLast(T[] array, T defaultValue) {
+  public static <T> T getLastElement(T[] array, T defaultValue) {
     return getElementAt(array, Math.max(0, nullSafeLength(array) - 1), defaultValue);
   }
 
@@ -510,7 +522,7 @@ public abstract class ArrayUtils {
   public static <T> int indexOf(T[] array, T element) {
 
     for (int index = 0, length = nullSafeLength(array); index < length; index++) {
-      if (equalsIgnoreNull(array[index], element)) {
+      if (ObjectUtils.equalsIgnoreNull(array[index], element)) {
         return index;
       }
     }
@@ -542,8 +554,8 @@ public abstract class ArrayUtils {
 
     Class<?> componentType = array.getClass().getComponentType();
 
-    componentType = returnFirstNonNullValue(componentType, ObjectUtils.getClass(element));
-    componentType = returnFirstNonNullValue(componentType, Object.class);
+    componentType = ObjectUtils.returnFirstNonNullValue(componentType, ObjectUtils.getClass(element));
+    componentType = ObjectUtils.returnFirstNonNullValue(componentType, Object.class);
 
     T[] newArray = (T[]) Array.newInstance(componentType, array.length + 1);
 
@@ -587,14 +599,28 @@ public abstract class ArrayUtils {
   }
 
   /**
+   * Null-safe operation to determine whether the size (length) of the array matches the given size.
+   *
+   * @param array array to evaluate.
+   * @param size {@link Integer} indicating the length of the array to match.
+   * @return a boolean value indicating whether the given array matches the given size (length).
+   * @see #nullSafeLength(Object[])
+   */
+  @NullSafe
+  public static boolean isSize(@Nullable Object[] array, int size) {
+    return nullSafeLength(array) == size;
+  }
+
+  /**
    * Null-safe operation to determine whether the given array has a length of 1.
    *
    * @param array array to evaluate.
    * @return a boolean value indicating whether the length of the array is 1.
+   * @see #nullSafeLength(Object[])
    */
   @NullSafe
   public static boolean isSizeOne(Object... array) {
-    return array != null && array.length == 1;
+    return nullSafeLength(array) == 1;
   }
 
   /**
@@ -624,7 +650,7 @@ public abstract class ArrayUtils {
   @NullSafe
   @SuppressWarnings("unchecked")
   public static <T> T[] nullSafeArray(T[] array, Class<?> componentType) {
-    return array != null ? array : (T[]) Array.newInstance(returnFirstNonNullValue(componentType, Object.class), 0);
+    return array != null ? array : (T[]) Array.newInstance(ObjectUtils.returnFirstNonNullValue(componentType, Object.class), 0);
   }
 
   /* non-Javadoc */
@@ -680,7 +706,7 @@ public abstract class ArrayUtils {
       String.format("[%1$d] is not a valid index [0, %2$d] in the array", index, array.length)))
         .isGreaterThanEqualToAndLessThan(0, array.length);
 
-    Class<?> componentType = returnFirstNonNullValue(array.getClass().getComponentType(), Object.class);
+    Class<?> componentType = ObjectUtils.returnFirstNonNullValue(array.getClass().getComponentType(), Object.class);
 
     T[] newArray = (T[]) Array.newInstance(componentType, array.length - 1);
 

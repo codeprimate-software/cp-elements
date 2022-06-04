@@ -509,7 +509,7 @@ public class ArrayUtilsTests {
     assertThat(ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isEven)).isEqualTo(4L);
     assertThat(ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isOdd)).isEqualTo(5L);
     assertThat(ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isNegative)).isEqualTo(0L);
-    assertThat(ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isPositive)).isEqualTo((long) array.length);
+    assertThat(ArrayUtils.count(array, (Filter<Integer>) NumberUtils::isPositive)).isEqualTo(array.length);
   }
 
   @Test
@@ -982,82 +982,82 @@ public class ArrayUtilsTests {
 
   @Test
   public void getFirstFromArray() {
-    assertThat(ArrayUtils.getFirst("test", "testing", "tested")).isEqualTo("test");
+    assertThat(ArrayUtils.getFirstElement("test", "testing", "tested")).isEqualTo("test");
   }
 
   @Test
   public void getFirstFromEmptyArray() {
-    assertThat(ArrayUtils.<Object>getFirst()).isNull();
+    assertThat(ArrayUtils.<Object>getFirstElement()).isNull();
   }
 
   @Test
   public void getFirstFromNullArray() {
-    assertThat(ArrayUtils.getFirst((Object[]) null)).isNull();
+    assertThat(ArrayUtils.getFirstElement((Object[]) null)).isNull();
   }
 
   @Test
   public void getFirstFromSingleElementArray() {
-    assertThat(ArrayUtils.getFirst("test")).isEqualTo("test");
+    assertThat(ArrayUtils.getFirstElement("test")).isEqualTo("test");
   }
 
   @Test
   public void getFirstFromNonNullNonEmptyArrayWithDefaultValueReturnsFirstElement() {
-    assertThat(ArrayUtils.getFirst(new Object[] { "test", "testing", "tested" }, "default")).isEqualTo("test");
+    assertThat(ArrayUtils.getFirstElement(new Object[] { "test", "testing", "tested" }, "default")).isEqualTo("test");
   }
 
   @Test
   public void getFirstFromEmptyArrayWithDefaultValueReturnsDefaultValue() {
-    assertThat(ArrayUtils.getFirst(new Object[0], "default")).isEqualTo("default");
+    assertThat(ArrayUtils.getFirstElement(new Object[0], "default")).isEqualTo("default");
   }
 
   @Test
   public void getFirstFromNullArrayWithDefaultValueReturnsDefaultValue() {
-    assertThat(ArrayUtils.getFirst(null, "default")).isEqualTo("default");
+    assertThat(ArrayUtils.getFirstElement(null, "default")).isEqualTo("default");
   }
 
   @Test
   public void getFirstFromNullArrayWithNullDefaultValueReturnsNull() {
-    assertThat(ArrayUtils.<Object>getFirst(null, null)).isNull();
+    assertThat(ArrayUtils.<Object>getFirstElement(null, null)).isNull();
   }
 
   @Test
   public void getLastFromArray() {
-    assertThat(ArrayUtils.getLast("test", "testing", "tested")).isEqualTo("tested");
+    assertThat(ArrayUtils.getLastElement("test", "testing", "tested")).isEqualTo("tested");
   }
 
   @Test
   public void getLastFromEmptyArray() {
-    assertThat(ArrayUtils.<Object>getLast()).isNull();
+    assertThat(ArrayUtils.<Object>getLastElement()).isNull();
   }
 
   @Test
   public void getLastFromNullArray() {
-    assertThat(ArrayUtils.getLast((Object[]) null)).isNull();
+    assertThat(ArrayUtils.getLastElement((Object[]) null)).isNull();
   }
 
   @Test
   public void getLastFromSingleElementArray() {
-    assertThat(ArrayUtils.getLast("test")).isEqualTo("test");
+    assertThat(ArrayUtils.getLastElement("test")).isEqualTo("test");
   }
 
   @Test
   public void getLastFromNonNullNonEmptyArrayWithDefaultValueReturnsLastElement() {
-    assertThat(ArrayUtils.getLast(new Object[] { "test", "testing", "tested" }, "default")).isEqualTo("tested");
+    assertThat(ArrayUtils.getLastElement(new Object[] { "test", "testing", "tested" }, "default")).isEqualTo("tested");
   }
 
   @Test
   public void getLastFromEmptyArrayWithDefaultValueReturnsDefaultValue() {
-    assertThat(ArrayUtils.getLast(new Object[0], "default")).isEqualTo("default");
+    assertThat(ArrayUtils.getLastElement(new Object[0], "default")).isEqualTo("default");
   }
 
   @Test
   public void getLastFromNullArrayWithDefaultValueReturnsDefaultValue() {
-    assertThat(ArrayUtils.getLast(null, "default")).isEqualTo("default");
+    assertThat(ArrayUtils.getLastElement(null, "default")).isEqualTo("default");
   }
 
   @Test
   public void getLastFromNullArrayWithNullDefaultValueReturnsNull() {
-    assertThat(ArrayUtils.<Object>getLast(null, null)).isNull();
+    assertThat(ArrayUtils.<Object>getLastElement(null, null)).isNull();
   }
 
   @Test
@@ -1194,6 +1194,40 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void isSizeWithEmptyArray() {
+
+    assertThat(ArrayUtils.isSize(ArrayUtils.EMPTY_ARRAY, 0)).isTrue();
+    assertThat(ArrayUtils.isSize(ArrayUtils.EMPTY_ARRAY, 1)).isFalse();
+    assertThat(ArrayUtils.isSize(ArrayUtils.EMPTY_ARRAY, 2)).isFalse();
+  }
+
+  @Test
+  public void isSizeWithNullArray() {
+
+    assertThat(ArrayUtils.isSize(null, 0)).isTrue();
+    assertThat(ArrayUtils.isSize(null, 1)).isFalse();
+    assertThat(ArrayUtils.isSize(null, 2)).isFalse();
+  }
+
+  @Test
+  public void isSizeWithArrayAndMatchingSize() {
+
+    assertThat(ArrayUtils.isSize(new Object[] { null }, 1)).isTrue();
+    assertThat(ArrayUtils.isSize(new Object[] { null, null }, 2)).isTrue();
+    assertThat(ArrayUtils.isSize(new Object[] { "mock", "test" }, 2)).isTrue();
+    assertThat(ArrayUtils.isSize(new Object[] { "test", "test" }, 2)).isTrue();
+    assertThat(ArrayUtils.isSize(new Object[] { 0, 1, 2 }, 3)).isTrue();
+  }
+
+  @Test
+  public void isSizeWithArrayAndNonMatchingSize() {
+
+    assertThat(ArrayUtils.isSize(new Object[] { "test", "test" }, 1)).isFalse();
+    assertThat(ArrayUtils.isSize(new Object[] { 0, 1, 2 }, 2)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void isSizeOneWithNullArrayIsFalse() {
     assertThat(ArrayUtils.isSizeOne((Object[]) null)).isFalse();
   }
@@ -1662,6 +1696,7 @@ public class ArrayUtilsTests {
     }
   }
 
+  @SuppressWarnings("all")
   @Test(expected = NullPointerException.class)
   public void swapWithNullArray() {
     ArrayUtils.swap(null, 0, 10);
