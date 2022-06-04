@@ -15,15 +15,12 @@
  */
 package org.cp.elements.process;
 
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.io.FileUtils.newFile;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
-import static org.cp.elements.process.ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
-import static org.cp.elements.util.ArrayUtils.asArray;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -50,6 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,10 +57,12 @@ import java.util.regex.Pattern;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.support.RuntimeProcessExecutor;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.Environment;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -80,7 +80,6 @@ import edu.umd.cs.mtc.TestFramework;
  *
  * @author John Blum
  * @see java.lang.Process
- * @see org.junit.Rule
  * @see org.junit.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
@@ -159,37 +158,26 @@ public class ProcessAdapterTests {
     assertThat(processAdapter.getProcessContext()).isSameAs(this.processContext);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void newProcessAdapterWithNullProcess() {
 
-    try {
-      newProcessAdapter(null, this.processContext);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Process cannot be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void newProcessAdapterWithNullProcessContext() {
-
-    try {
-      newProcessAdapter(this.mockProcess, null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("ProcessContext cannot be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessAdapter(null, this.processContext))
+      .withMessage("Process is required")
+      .withNoCause();
   }
 
   @Test
+  public void newProcessAdapterWithNullProcessContext() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newProcessAdapter(this.mockProcess, null))
+      .withMessage("ProcessContext is required")
+      .withNoCause();
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void constructProcessAdapter() {
 
     ProcessAdapter processAdapter = new ProcessAdapter(this.mockProcess, this.processContext);
@@ -510,13 +498,13 @@ public class ProcessAdapterTests {
   @Test
   public void getCommandLineReturnsProcessCommand() {
 
-    String[] commandLine = asArray("java", "-server", "-ea", "--classpath", "/path/to/application.jar",
-      "example.Application");
+    String[] commandLine = ArrayUtils.asArray("java", "-server", "-ea", "--classpath",
+      "/path/to/application.jar", "example.Application");
 
     this.processContext.ranWith(commandLine);
 
     assertThat(newProcessAdapter(this.mockProcess, this.processContext).getCommandLine())
-      .isEqualTo(asList(commandLine));
+      .isEqualTo(Arrays.asList(commandLine));
   }
 
   @Test
@@ -560,7 +548,10 @@ public class ProcessAdapterTests {
   public void getIdThrowsPidUnkownExceptionForNonExistingDirectory() {
 
     try {
-      doReturn(newFile("/absolute/path/to/non/existing/directory")).when(this.processContext).getDirectory();
+
+      doReturn(FileUtils.newFile("/absolute/path/to/non/existing/directory"))
+        .when(this.processContext).getDirectory();
+
       newProcessAdapter(this.mockProcess, this.processContext).getId();
     }
     catch (PidUnknownException expected) {
@@ -602,7 +593,7 @@ public class ProcessAdapterTests {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void setIdThrowsUnsupportedSupportedException() {
+  public void setIdThrowsUnsupportedOperationException() {
 
     ProcessAdapter processAdapter = newProcessAdapter(this.mockProcess, this.processContext);
 
@@ -622,6 +613,32 @@ public class ProcessAdapterTests {
     finally {
       assertThat(processAdapter.safeGetId()).isEqualTo(-1);
     }
+  }
+
+  @Test
+  public void getNameReturnsProcessId() {
+
+    ProcessAdapter processAdapter = spy(newProcessAdapter(this.mockProcess, this.processContext));
+
+    doReturn(101).when(processAdapter).getId();
+
+    assertThat(processAdapter.getId()).isEqualTo(101);
+    assertThat(processAdapter.getCommandLine()).isEmpty();
+    assertThat(processAdapter.getName()).isEqualTo("101");
+  }
+
+  @Test
+  public void getNameReturnsProcessName() {
+
+    ProcessAdapter processAdapter = spy(newProcessAdapter(this.mockProcess, this.processContext));
+
+    doReturn(100).when(processAdapter).getId();
+
+    this.processContext.ranWith("path", "to", "java.exe");
+
+    assertThat(processAdapter.getId()).isEqualTo(100);
+    assertThat(processAdapter.getCommandLine()).containsExactly("path", "to", "java.exe");
+    assertThat(processAdapter.getName()).isEqualTo("java.exe");
   }
 
   @Test
@@ -762,7 +779,7 @@ public class ProcessAdapterTests {
 
     Process mockRestartedProcess = mock(Process.class);
 
-    List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
+    List<String> expectedCommandLine = Arrays.asList("java", "-server", "-ea", "-classpath",
       "/class/path/to/application.jar", "mock.Application");
 
     when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
@@ -804,7 +821,7 @@ public class ProcessAdapterTests {
     verify(this.mockProcess, times(1)).destroy();
     verify(this.mockProcess, times(1)).waitFor();
     verify(processAdapter, times(1))
-      .stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+      .stop(eq(ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
     verify(mockProcessExecutor, times(1))
       .execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
     verifyNoInteractions(mockRestartedProcess);
@@ -818,7 +835,7 @@ public class ProcessAdapterTests {
 
     Process mockRestartedProcess = mock(Process.class);
 
-    List<String> expectedCommandLine = asList("java", "-server", "-ea", "-classpath",
+    List<String> expectedCommandLine = Arrays.asList("java", "-server", "-ea", "-classpath",
       "/class/path/to/application.jar", "mock.Application");
 
     when(mockProcessExecutor.execute(eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine)))
@@ -857,7 +874,7 @@ public class ProcessAdapterTests {
     verify(this.mockProcess, times(2)).exitValue();
     verify(this.mockProcess, never()).destroy();
     verify(this.mockProcess, never()).waitFor();
-    verify(processAdapter, never()).stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+    verify(processAdapter, never()).stop(eq(ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
     verify(mockProcessExecutor, times(1)).execute(
       eq(FileSystemUtils.USER_HOME_DIRECTORY), eq(expectedCommandLine));
     verifyNoInteractions(mockRestartedProcess);
@@ -910,7 +927,7 @@ public class ProcessAdapterTests {
       verify(this.mockProcess, times(1)).destroy();
       verify(this.mockProcess, times(1)).waitFor();
       verify(processAdapter, times(1))
-        .stop(eq(DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
+        .stop(eq(ProcessAdapter.DEFAULT_TIMEOUT_MILLISECONDS), eq(TimeUnit.MILLISECONDS));
       verify(mockProcessExecutor, never()).execute(any(File.class), any(String[].class));
     }
   }

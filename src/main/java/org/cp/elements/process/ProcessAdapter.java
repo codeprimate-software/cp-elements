@@ -45,68 +45,78 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Initable;
+import org.cp.elements.lang.Nameable;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.ThrowableUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.util.ProcessUtils;
+import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.Environment;
 
 /**
  * The {@link ProcessAdapter} class is an Adapter (wrapper) for a Java {@link Process} object.
  *
  * This class provides additional, convenient operations on an instance of {@link Process} that
- * are not directly available in the Java {@link Process} API itself.
+ * are not available in the Java {@link Process} API.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see java.lang.Process
  * @see java.util.UUID
- * @see java.util.logging.Logger
- * @see java.util.concurrent.ExecutorService
- * @see java.util.concurrent.Executors
- * @see java.util.concurrent.Future
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.Initable
+ * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.process.ProcessContext
  * @see org.cp.elements.process.ProcessExecutor
  * @see org.cp.elements.process.event.ProcessStreamListener
- * @see org.cp.elements.process.util.ProcessUtils
  * @see org.cp.elements.util.Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ProcessAdapter implements Identifiable<Integer>, Initable {
+public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable<String> {
 
   protected static final long DEFAULT_TIMEOUT_MILLISECONDS = TimeUnit.SECONDS.toMillis(30);
 
   /**
-   * Factory method used to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}.
+   * Factory method used to construct a new instance of {@link ProcessAdapter} initialized with
+   * the given, required {@link Process}.
    *
-   * @param process {@link Process} object to adapt/wrap with an instance of {@link ProcessAdapter}.
-   * @return a newly constructed {@link ProcessAdapter} adapting/wrapping the given {@link Process}.
+   * @param process {@link Process} object to adapt as an instance of {@link ProcessAdapter};
+   * must not be {@literal null}.
+   * @return a new {@link ProcessAdapter} adapting the given {@link Process}.
    * @throws IllegalArgumentException if {@link Process} is {@literal null}.
    * @see #newProcessAdapter(Process, ProcessContext)
    * @see java.lang.Process
    */
-  public static ProcessAdapter newProcessAdapter(Process process) {
-    return newProcessAdapter(process, newProcessContext(process).ranBy(SystemUtils.USERNAME)
-      .ranIn(FileSystemUtils.WORKING_DIRECTORY).usingEnvironmentVariables());
+  public static @NotNull ProcessAdapter newProcessAdapter(@NotNull Process process) {
+
+    ProcessContext processContext = newProcessContext(process)
+      .ranBy(SystemUtils.USERNAME)
+      .ranIn(FileSystemUtils.WORKING_DIRECTORY)
+      .usingEnvironmentVariables();
+
+    return newProcessAdapter(process, processContext);
   }
 
   /**
-   * Factory method used to construct an instance of {@link ProcessAdapter} initialized with the given {@link Process}
-   * and corresponding {@link ProcessContext}.
+   * Factory method used to construct a new instance of {@link ProcessAdapter} initialized with
+   * the given, required {@link Process} and corresponding {@link ProcessContext}.
    *
-   * @param process {@link Process} object to adapt/wrap with an instance of {@link ProcessAdapter}.
+   * @param process {@link Process} object to adapt as an instance of {@link ProcessAdapter};
+   * must not be {@literal null}.
    * @param processContext {@link ProcessContext} object containing contextual information about the environment
-   * in which the {@link Process} is running.
-   * @return a newly constructed {@link ProcessAdapter} adapting/wrapping the given {@link Process}.
+   * in which the {@link Process} is running; must not be {@literal null}.
+   * @return a new {@link ProcessAdapter} adapting the given {@link Process}.
    * @throws IllegalArgumentException if {@link Process} or {@link ProcessContext} is {@literal null}.
    * @see #ProcessAdapter(Process, ProcessContext)
    * @see org.cp.elements.process.ProcessContext
    * @see java.lang.Process
    */
-  public static ProcessAdapter newProcessAdapter(Process process, ProcessContext processContext) {
+  public static @NotNull ProcessAdapter newProcessAdapter(@NotNull Process process,
+      @NotNull ProcessContext processContext) {
+
     return new ProcessAdapter(process, processContext);
   }
 
@@ -126,23 +136,21 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
   private final ThreadGroup threadGroup;
 
   /**
-   * Constructs an instance of {@link ProcessAdapter} initialized with the given {@link Process}
+   * Constructs a new instance of {@link ProcessAdapter} initialized with the given, required {@link Process}
    * and {@link ProcessContext}.
    *
-   * @param process {@link Process} object adapted/wrapped by this {@link ProcessAdapter}.
+   * @param process {@link Process} object adapted (wrapped) by this {@link ProcessAdapter};
+   * must not be {@literal null}.
    * @param processContext {@link ProcessContext} object containing contextual information about the environment
-   * in which the {@link Process} is running.
+   * in which the {@link Process} is running; must not be {@literal null}.
    * @throws IllegalArgumentException if {@link Process} or {@link ProcessContext} is {@literal null}.
    * @see org.cp.elements.process.ProcessContext
    * @see java.lang.Process
    */
-  public ProcessAdapter(Process process, ProcessContext processContext) {
+  public ProcessAdapter(@NotNull Process process, @NotNull ProcessContext processContext) {
 
-    Assert.notNull(process, "Process cannot be null");
-    Assert.notNull(processContext, "ProcessContext cannot be null");
-
-    this.process = process;
-    this.processContext = processContext;
+    this.process = ObjectUtils.requireObject(process, "Process is required");
+    this.processContext = ObjectUtils.requireObject(processContext, "ProcessContext is required");
     this.threadGroup = new ThreadGroup(String.format("Process [%s] Thread Group", UUID.randomUUID()));
   }
 
@@ -167,10 +175,10 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
       }
     }
 
-    initialized.set(true);
+    this.initialized.set(true);
   }
 
-  protected Runnable newProcessStreamReader(InputStream in) {
+  protected Runnable newProcessStreamReader(@NotNull InputStream in) {
 
     return () -> {
 
@@ -194,7 +202,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
     };
   }
 
-  protected BufferedReader newReader(InputStream in) {
+  protected BufferedReader newReader(@NotNull InputStream in) {
     return new BufferedReader(new InputStreamReader(in));
   }
 
@@ -217,7 +225,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * @return a reference to the {@link Process} object adapted/wrapped by this {@link ProcessAdapter}.
    * @see java.lang.Process
    */
-  public Process getProcess() {
+  public @NotNull Process getProcess() {
     return this.process;
   }
 
@@ -229,7 +237,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    * in which the {@link Process} is running.
    * @see org.cp.elements.process.ProcessContext
    */
-  public ProcessContext getProcessContext() {
+  public @NotNull ProcessContext getProcessContext() {
     return this.processContext;
   }
 
@@ -389,6 +397,21 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable {
    */
   protected Logger getLogger() {
     return this.logger;
+  }
+
+  /**
+   * Gets the Operating System (OS) {@link String name} of this {@link Process}.
+   *
+   * @return the {@link String name} of this {@link Process}.
+   */
+  @Override
+  public String getName() {
+
+    List<String> commandLine = getProcessContext().getCommandLine();
+
+    return CollectionUtils.isNotEmpty(commandLine)
+      ? CollectionUtils.getLastElement(commandLine)
+      : String.valueOf(getId());
   }
 
   /**
