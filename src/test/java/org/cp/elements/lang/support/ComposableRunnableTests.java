@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.cp.elements.util.ArrayUtils.getFirst;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
 /**
@@ -39,7 +37,7 @@ import org.junit.Test;
 public class ComposableRunnableTests {
 
   private Runnable mockRunnable(String... name) {
-    return mock(Runnable.class, getFirst(name, "MockRunnable"));
+    return mock(Runnable.class, ArrayUtils.getFirstElement(name, "MockRunnable"));
   }
 
   @Test
@@ -94,7 +92,7 @@ public class ComposableRunnableTests {
     Runnable mockRunnableThree = mockRunnable("three");
 
     assertThat(ComposableRunnable.builder().compose((Iterable<Runnable>) null)).isNull();
-    assertThat(ComposableRunnable.builder().compose(asIterable(mockRunnableOne))).isSameAs(mockRunnableOne);
+    assertThat(ComposableRunnable.builder().compose(ArrayUtils.asIterable(mockRunnableOne))).isSameAs(mockRunnableOne);
 
     Runnable composedRunnable =
       ComposableRunnable.builder().compose(mockRunnableZero, mockRunnableOne, mockRunnableTwo, mockRunnableThree);

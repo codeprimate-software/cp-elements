@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.io;
 
-import static java.util.Arrays.stream;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.io.File;
 import java.util.Arrays;
@@ -67,7 +64,7 @@ public class ListFiles implements Runnable {
 
   /* (non-Javadoc) */
   static String resolveArgument(String[] args) {
-    return Optional.ofNullable(args).map(ArrayUtils::getFirst).filter(StringUtils::hasText)
+    return Optional.ofNullable(args).map(ArrayUtils::getFirstElement).filter(StringUtils::hasText)
       .orElseThrow(() -> newIllegalArgumentException("Directory is required"));
   }
 
@@ -127,7 +124,7 @@ public class ListFiles implements Runnable {
    * @see java.io.File
    */
   protected File getDirectory() {
-    return Optional.ofNullable(this.directory).orElseGet(() -> DEFAULT_DIRECTORY);
+    return Optional.ofNullable(this.directory).orElse(DEFAULT_DIRECTORY);
   }
 
   /**
@@ -164,7 +161,7 @@ public class ListFiles implements Runnable {
 
     String directoryContentIndent = buildDirectoryContentIndent(indent);
 
-    stream(sort(nullSafeArray(directory.listFiles(), File.class))).forEach(file -> {
+    Arrays.stream(sort(ArrayUtils.nullSafeArray(directory.listFiles(), File.class))).forEach(file -> {
       if (FileSystemUtils.isDirectory(file)) {
         listFiles(file, directoryContentIndent);
       }
@@ -174,15 +171,13 @@ public class ListFiles implements Runnable {
     });
   }
 
-  /* (non-Javadoc) */
   String buildDirectoryContentIndent(String indent) {
 
     return Optional.ofNullable(indent).filter(StringUtils::hasText)
       .map(it -> it + StringUtils.SINGLE_SPACE + SUB_DIRECTORY_OFFSET + DIRECTORY_SWIM_LANE)
-      .orElseGet(() ->StringUtils.SINGLE_SPACE + DIRECTORY_SWIM_LANE);
+      .orElse(StringUtils.SINGLE_SPACE + DIRECTORY_SWIM_LANE);
   }
 
-  /* (non-Javadoc) */
   String concatIndentAndDirectoryName(String indent, File directory) {
 
     indent = Optional.ofNullable(indent).filter(StringUtils::hasText)
@@ -192,12 +187,10 @@ public class ListFiles implements Runnable {
     return String.format(indent + DIRECTORY_MARKER_WITH_DIRECTORY_NAME, directory.getName());
   }
 
-  /* (non-Javadoc) */
   String concatIndentAndFileName(String indent, File file) {
     return String.format(indent + SUB_DIRECTORY_OFFSET + FILE_MARKER_WITH_FILENAME, file.getName());
   }
 
-  /* (non-Javadoc) */
   private File printDirectoryName(String indent, File directory) {
 
     System.out.printf(String.format("%s%n", concatIndentAndDirectoryName(indent, directory)));
@@ -205,7 +198,6 @@ public class ListFiles implements Runnable {
     return directory;
   }
 
-  /* (non-Javadoc) */
   private File printFileName(String indent, File file) {
 
     System.out.printf(String.format("%s%n", concatIndentAndFileName(indent, file)));
@@ -213,7 +205,6 @@ public class ListFiles implements Runnable {
     return file;
   }
 
-  /* (non-Javadoc) */
   File printHeader(File directory) {
 
     System.out.printf("Listing contents for directory [%s]...%n%n", directory.getAbsolutePath());

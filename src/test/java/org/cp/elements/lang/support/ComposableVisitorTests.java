@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Fail.fail;
 import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.cp.elements.util.ArrayUtils.getFirst;
+import static org.cp.elements.util.ArrayUtils.getFirstElement;
 import static org.cp.elements.util.CollectionUtils.asSet;
 import static org.mockito.Mockito.mock;
 
@@ -49,7 +48,7 @@ import org.junit.Test;
 public class ComposableVisitorTests {
 
   private Visitor mockVisitor(String... name) {
-    return mock(Visitor.class, getFirst(name, "MockVisitor"));
+    return mock(Visitor.class, getFirstElement(name, "MockVisitor"));
   }
 
   @Test
@@ -394,7 +393,7 @@ public class ComposableVisitorTests {
   @SuppressWarnings("unused")
   private static final class TraceVisitor implements Iterable<Visitable>, Visitor {
 
-    private List<Visitable> visitablesVisited = new LinkedList<>();
+    private final List<Visitable> visitablesVisited = new LinkedList<>();
 
     public Iterator<Visitable> iterator() {
       return CollectionUtils.unmodifiableIterator(visitablesVisited.iterator());
