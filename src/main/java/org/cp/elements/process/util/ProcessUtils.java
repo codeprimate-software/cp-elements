@@ -38,7 +38,9 @@ import org.cp.elements.io.FilesOnlyFilter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.util.ArrayUtils;
@@ -57,16 +59,16 @@ public abstract class ProcessUtils {
 
   protected static final long KILL_WAIT_TIMEOUT = 5;
 
-  protected static final String PROCESS_ID_FILENAME = ".pid";
-  protected static final String WINDOWS_KILL_COMMAND = "taskkill /F /PID";
+  protected static final String PROCESS_ID_FILE_EXTENSION = ".pid";
   protected static final String UNIX_KILL_COMMAND = "kill -KILL";
+  protected static final String WINDOWS_KILL_COMMAND = "taskkill /F /PID";
   protected static final String VIRTUAL_MACHINE_CLASS_NAME = "com.sun.tools.attach.VirtualMachine";
 
-  protected static final FileFilter PID_FILE_FILTER = ComposableFileFilter.and(
-    FilesOnlyFilter.INSTANCE, new FileExtensionFilter(PROCESS_ID_FILENAME));
+  protected static final FileFilter PID_FILE_FILTER = ComposableFileFilter
+    .and(FilesOnlyFilter.INSTANCE, new FileExtensionFilter(PROCESS_ID_FILE_EXTENSION));
 
-  protected static final FileFilter DIRECTORY_PID_FILE_FILTER = ComposableFileFilter.or(
-    DirectoriesOnlyFilter.INSTANCE, PID_FILE_FILTER);
+  protected static final FileFilter DIRECTORY_PID_FILE_FILTER = ComposableFileFilter
+    .or(DirectoriesOnlyFilter.INSTANCE, PID_FILE_FILTER);
 
   protected static final TimeUnit KILL_WAIT_TIME_UNIT = TimeUnit.SECONDS;
 
@@ -85,6 +87,7 @@ public abstract class ProcessUtils {
     Throwable cause = null;
 
     if (hasText(runtimeMxBeanName)) {
+
       int atSignIndex = runtimeMxBeanName.indexOf('@');
 
       if (atSignIndex > 0) {
@@ -110,7 +113,7 @@ public abstract class ProcessUtils {
    * @see #isRunning(Process)
    */
   @NullSafe
-  public static boolean isAlive(Process process) {
+  public static boolean isAlive(@Nullable Process process) {
     return process != null && process.isAlive();
   }
 
@@ -134,7 +137,7 @@ public abstract class ProcessUtils {
    */
   @NullSafe
   @SuppressWarnings("all")
-  public static boolean isRunning(Process process) {
+  public static boolean isRunning(@Nullable Process process) {
 
     try {
       return process != null && process.exitValue() == Double.NaN;
@@ -153,7 +156,7 @@ public abstract class ProcessUtils {
    * @see org.cp.elements.process.ProcessAdapter
    */
   @NullSafe
-  public static boolean isRunning(ProcessAdapter processAdapter) {
+  public static boolean isRunning(@Nullable ProcessAdapter processAdapter) {
     return processAdapter != null && isRunning(processAdapter.getProcess());
   }
 
@@ -167,8 +170,8 @@ public abstract class ProcessUtils {
    */
   public static boolean kill(int processId) {
 
-    String killCommand =
-      String.format("%s %d", SystemUtils.isWindows() ? WINDOWS_KILL_COMMAND : UNIX_KILL_COMMAND, processId);
+    String operatingSystemKillCommand = SystemUtils.isWindows() ? WINDOWS_KILL_COMMAND : UNIX_KILL_COMMAND;
+    String killCommand = String.format("%s %d", operatingSystemKillCommand, processId);
 
     try {
 
@@ -192,7 +195,7 @@ public abstract class ProcessUtils {
    * @see #isAlive(Process)
    */
   @NullSafe
-  public static boolean kill(Process process) {
+  public static boolean kill(@Nullable Process process) {
 
     boolean alive = isAlive(process);
 
@@ -235,7 +238,7 @@ public abstract class ProcessUtils {
    * @see #kill(Process)
    */
   @NullSafe
-  public static boolean kill(ProcessAdapter processAdapter) {
+  public static boolean kill(@Nullable ProcessAdapter processAdapter) {
     return processAdapter != null && kill(processAdapter.getProcess());
   }
 
@@ -247,7 +250,7 @@ public abstract class ProcessUtils {
    * @see java.lang.Runnable
    * @see java.lang.Thread
    */
-  protected static Thread newThread(Runnable runnable) {
+  protected static @NotNull Thread newThread(@NotNull Runnable runnable) {
     return new Thread(runnable, "Process Shutdown Hook Thread");
   }
 
@@ -272,7 +275,7 @@ public abstract class ProcessUtils {
    * @see #newThread(Runnable)
    * @see #kill(Process)
    */
-  public static void registerShutdownHook(Process process) {
+  public static void registerShutdownHook(@NotNull Process process) {
     Runtime.getRuntime().addShutdownHook(newThread(() -> kill(process)));
   }
 
@@ -283,30 +286,31 @@ public abstract class ProcessUtils {
    * @see org.cp.elements.process.ProcessAdapter#getProcess()
    * @see #registerShutdownHook(Process)
    */
-  public static void registerShutdownHook(ProcessAdapter processAdapter) {
+  public static void registerShutdownHook(@NotNull ProcessAdapter processAdapter) {
     registerShutdownHook(processAdapter.getProcess());
   }
 
   /**
-   * Searches the given {@link File} path for a {@literal .pid} {@link File}.
+   * Searches the given, required {@link File path} for a {@literal .pid} {@link File}.
    *
    * If the given {@link File} is a directory then the directory is recursively searched (depth-first) until the first
-   * {@literal .pid} {@link File} is found.  If the algorithm exhausts its search and no {@literal .pid} {@link File}
+   * {@literal .pid} {@link File} is found. If the algorithm exhausts its search and no {@literal .pid} {@link File}
    * can be found, then {@literal null} is returned.
    *
-   * If the given {@link File} is a file then the file's containing directory is used as the base directory
-   * for the search and the algorithm continues as described above.
+   * If the given {@link File path} is a file then the file's containing directory is used as the base directory
+   * to begin the search and the algorithm continues as described above.
    *
-   * @param path base {@link File} path to begin a search for a {@literal .pid} {@link File}.
+   * @param path {@link File base path} used to begin a search for a {@literal .pid} {@link File};
+   * must not be {@literal null}.
    * @return the first {@literal .pid} {@link File} found or {@literal null} if no {@literal .pid} {@link File}
-   * could be found starting from the given {@link File path} until the search is exhausted.
-   * @throws IllegalArgumentException if the given {@link File} path is {@literal null} or does not exist.
+   * could be found beginning from the given, required {@link File path} when the search is exhausted.
+   * @throws IllegalArgumentException if the {@link File path} is {@literal null} or does not exist.
    * @see java.io.File
    */
-  public static File findPidFile(File path) {
+  public static @Nullable File findPidFile(@NotNull File path) {
 
     Assert.isTrue(FileSystemUtils.isExisting(path),
-      "The path [%s] to search for the .pid file must not be null and must actually exist", path);
+      "The path [%s] used to search for a .pid file must exist", path);
 
     File searchDirectory = path.isDirectory() ? path : path.getParentFile();
 
@@ -336,7 +340,7 @@ public abstract class ProcessUtils {
    * @see java.io.File
    * @see #writePid(int)
    */
-  public static int readPid(File pid) {
+  public static int readPid(@NotNull File pid) {
 
     try {
       return Integer.parseInt(FileSystemUtils.read(pid));
@@ -355,15 +359,16 @@ public abstract class ProcessUtils {
    * @see java.io.File
    * @see #readPid(File)
    */
-  public static File writePid(int pid) throws IOException {
+  public static @NotNull File writePid(int pid) throws IOException {
 
-    File pidFile = FileSystemUtils.newFile(PROCESS_ID_FILENAME);
+    File pidFile = FileSystemUtils.newFile(PROCESS_ID_FILE_EXTENSION);
 
     pidFile.deleteOnExit();
 
     PrintWriter writer = newPrintWriter(pidFile);
 
     try {
+
       writer.print(pid);
       writer.flush();
 
@@ -374,7 +379,7 @@ public abstract class ProcessUtils {
     }
   }
 
-  private static PrintWriter newPrintWriter(File file) throws IOException {
+  private static @NotNull PrintWriter newPrintWriter(@NotNull File file) throws IOException {
     return new PrintWriter(new BufferedWriter(new FileWriter(file, false), 32), true);
   }
 
@@ -383,10 +388,10 @@ public abstract class ProcessUtils {
     INSTANCE;
 
     public boolean isRunning(int processId) {
-      return (ObjectUtils.isPresent(VIRTUAL_MACHINE_CLASS_NAME) && doIsRunning(processId));
+      return ObjectUtils.isPresent(VIRTUAL_MACHINE_CLASS_NAME) && doIsRunning(processId);
     }
 
-    protected boolean doIsRunning(int processId) {
+    boolean doIsRunning(int processId) {
       for (VirtualMachineDescriptor vmDescriptor : VirtualMachine.list()) {
         if (String.valueOf(processId).equals(vmDescriptor.id())) {
           return true;

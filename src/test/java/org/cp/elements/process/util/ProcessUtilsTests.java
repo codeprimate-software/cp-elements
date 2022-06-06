@@ -54,6 +54,7 @@ import org.junit.Test;
 public class ProcessUtilsTests {
 
   @AfterClass
+  @SuppressWarnings("all")
   public static void tearDown() {
     Thread.interrupted();
   }
@@ -402,13 +403,13 @@ public class ProcessUtilsTests {
     File nonExistingFile = new File("/absolute/path/to/non/existing/file");
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ProcessUtils.findPidFile(nonExistingFile),
-      () -> "The path [/absolute/path/to/non/existing/file] to search for the .pid file must not be null and must actually exist");
+      () -> "The path [/absolute/path/to/non/existing/file] used to search for a .pid file must exist");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void findPidFileWithNullThrowsIllegalArgumentException() {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ProcessUtils.findPidFile(null),
-      () -> "The path [null] to search for the .pid file must not be null and must actually exist");
+      () -> "The path [null] used to search for a .pid file must exist");
   }
 }
