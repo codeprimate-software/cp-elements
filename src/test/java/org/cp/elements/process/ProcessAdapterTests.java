@@ -559,7 +559,7 @@ public class ProcessAdapterTests {
       assertThat(expected).hasMessage("Process ID (PID) cannot be determined");
       assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
       assertThat(expected.getCause())
-        .hasMessage("The path [/absolute/path/to/non/existing/directory] to search for the .pid file must not be null and must actually exist");
+        .hasMessage("The path [/absolute/path/to/non/existing/directory] used to search for a .pid file must exist");
       assertThat(expected.getCause()).hasNoCause();
 
       throw expected;
