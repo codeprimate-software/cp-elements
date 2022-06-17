@@ -15,8 +15,6 @@
  */
 package org.cp.elements.process.util;
 
-import static org.cp.elements.lang.StringUtils.hasText;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileFilter;
@@ -37,6 +35,7 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.io.FilesOnlyFilter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -86,7 +85,7 @@ public abstract class ProcessUtils {
 
     Throwable cause = null;
 
-    if (hasText(runtimeMxBeanName)) {
+    if (StringUtils.hasText(runtimeMxBeanName)) {
 
       int atSignIndex = runtimeMxBeanName.indexOf('@');
 
