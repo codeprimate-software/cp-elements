@@ -58,7 +58,7 @@ public class BeanAdapterUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> BeanAdapter.from(null))
-      .withMessage("The target object to adapt is required")
+      .withMessage("The target object to adapt as a JavaBean is required")
       .withNoCause();
   }
 
@@ -79,7 +79,7 @@ public class BeanAdapterUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new BeanAdapter(null))
-      .withMessage("The target object to adapt is required")
+      .withMessage("The target object to adapt as a JavaBean is required")
       .withNoCause();
   }
 
