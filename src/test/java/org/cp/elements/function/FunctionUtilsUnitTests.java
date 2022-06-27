@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.function.Consumer;
@@ -47,6 +48,50 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class FunctionUtilsUnitTests {
+
+  @Test
+  public void nullSafePredicateMatchAllWithNonNullPredicate() {
+
+    Predicate<?> mockPredicate = mock(Predicate.class);
+
+    assertThat(FunctionUtils.nullSafePredicateMatchAll(mockPredicate)).isSameAs(mockPredicate);
+
+    verifyNoInteractions(mockPredicate);
+  }
+
+  @Test
+  public void nullSafePredicateMatchAllWithNullPredicate() {
+
+    Predicate<Object> predicate = FunctionUtils.nullSafePredicateMatchAll(null);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("test")).isTrue();
+    assertThat(predicate.test("nil")).isTrue();
+    assertThat(predicate.test("mock")).isTrue();
+    assertThat(predicate.test(null)).isTrue();
+  }
+
+  @Test
+  public void nullSafePredicateMatchNoneWithNonNullPredicate() {
+
+    Predicate<?> mockPredicate = mock(Predicate.class);
+
+    assertThat(FunctionUtils.nullSafePredicateMatchNone(mockPredicate)).isSameAs(mockPredicate);
+
+    verifyNoInteractions(mockPredicate);
+  }
+
+  @Test
+  public void nullSafePredicateMatchNoneWithNullPredicate() {
+
+    Predicate<Object> predicate = FunctionUtils.nullSafePredicateMatchNone(null);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("test")).isFalse();
+    assertThat(predicate.test("nil")).isFalse();
+    assertThat(predicate.test("mock")).isFalse();
+    assertThat(predicate.test(null)).isFalse();
+  }
 
   @Test
   @SuppressWarnings("unchecked")

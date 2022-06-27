@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract utility class containing canned, useful {@link Function Functions} and {@literal Adapters}
@@ -37,6 +39,35 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 @SuppressWarnings("unused")
 public abstract class FunctionUtils {
+
+  /**
+   * Null-safe method used to guard against a {@literal null} {@link Predicate} reference.
+   *
+   * @param <T> {@link Class type} of {@link Object} tested by the {{@link Predicate}.
+   * @param predicate {@link Predicate} to evaluate for {@literal null}.
+   * @return the given {@link Predicate} if not {@literal null} or a new {@link Predicate}
+   * with a {@link Predicate#test(Object)} that always evaluates to {@literal true}.
+   * @see #nullSafePredicateMatchNone(Predicate)
+   * @see java.util.function.Predicate
+   */
+  @NullSafe
+  public static @NotNull <T> Predicate<T> nullSafePredicateMatchAll(@Nullable Predicate<T> predicate) {
+    return predicate != null ? predicate : argument -> true;
+  }
+
+  /**
+   * Null-safe method used to guard against a {@literal null} {@link Predicate} reference.
+   *
+   * @param <T> {@link Class type} of {@link Object} tested by the {{@link Predicate}.
+   * @param predicate {@link Predicate} to evaluate for {@literal null}.
+   * @return the given {@link Predicate} if not {@literal null} or a new {@link Predicate}
+   * with a {@link Predicate#test(Object)} that always evaluates to {@literal false}.
+   * @see #nullSafePredicateMatchAll(Predicate)
+   * @see java.util.function.Predicate
+   */
+  public static @NotNull <T> Predicate<T> nullSafePredicateMatchNone(@Nullable Predicate<T> predicate) {
+    return predicate != null ? predicate : argument -> false;
+  }
 
   /**
    * Adapts the given, required {@link Function} as a {@link Consumer}.
