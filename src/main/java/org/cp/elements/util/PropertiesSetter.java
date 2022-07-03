@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.FluentApiExtension;
+import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 
 /**
@@ -32,6 +32,7 @@ import org.cp.elements.lang.annotation.FluentApi;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@FluentApi
 public abstract class PropertiesSetter implements FluentApiExtension {
 
   private Properties properties;
@@ -47,7 +48,7 @@ public abstract class PropertiesSetter implements FluentApiExtension {
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.util.PropertiesSetter
    */
-  @FluentApi
+  @Dsl
   public static PropertiesSetter set(String propertyName) {
     return new PropertiesSetter(propertyName) {};
   }

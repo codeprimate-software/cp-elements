@@ -87,7 +87,6 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  @FluentApi
   @Experimental
   @SuppressWarnings("unchecked")
   public static <T> T $(T obj, Class<?>... interfaces) {
@@ -104,11 +103,13 @@ public abstract class LangExtensions {
    * used to handle safe object navigation through method chaining.
    *
    * @param <T> {@link Class type} of the {@link Object} to navigate safely.
-   * @see org.cp.elements.lang.reflect.MethodInterceptor
-   * @see org.cp.elements.lang.FluentApiExtension
    * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.reflect.MethodInterceptor
    * @see java.lang.reflect.InvocationHandler
    */
+  //@FluentApi
   protected static class SafeNavigationHandler<T> implements DslExtension, FluentApiExtension,
       org.cp.elements.lang.reflect.MethodInterceptor<T> {
 
@@ -262,7 +263,6 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  @FluentApi
   public static <T> AssertThat<T> assertThat(T obj) {
     return new AssertThatExpression<>(obj);
   }
@@ -272,11 +272,13 @@ public abstract class LangExtensions {
    * or component of the application or system.
    *
    * @param <T> {@link Class type} of the {@link Object} to evaluate and assert.
+   * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.FluentApiExtension
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    * @see org.cp.elements.lang.LangExtensions.AssertThatWrapper
-   * @see org.cp.elements.lang.FluentApiExtension
-   * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.annotation.FluentApi
    */
+  @FluentApi
   public interface AssertThat<T> extends DslExtension, FluentApiExtension {
 
     /**
@@ -1517,7 +1519,6 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
-  @FluentApi
   public static <T> Is<T> is(T obj) {
     return new IsExpression<>(obj);
   }
@@ -1527,9 +1528,11 @@ public abstract class LangExtensions {
    * state, type or relationship to another {@link Object}.
    *
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
+   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.FluentApiExtension
    * @see org.cp.elements.lang.DslExtension
    */
+  @FluentApi
   public interface Is<T> extends DslExtension, FluentApiExtension {
 
     /**

@@ -58,7 +58,6 @@ public abstract class CollectionExtensions {
    * @see org.cp.elements.lang.annotation.FluentApi
    */
   @Dsl
-  @FluentApi
   @SafeVarargs
   public static <T> From<T> from(T... array) {
     return new FromExpression<>(array);
@@ -71,6 +70,7 @@ public abstract class CollectionExtensions {
    * @param <T> {@link Class} type of elements in the {@link List} or {@link Set}.
    * @see org.cp.elements.lang.FluentApiExtension
    */
+  @FluentApi
   public interface From<T> extends DslExtension, FluentApiExtension {
 
     /**

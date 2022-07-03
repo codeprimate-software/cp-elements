@@ -415,7 +415,7 @@ public abstract class ThreadUtils {
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
-  @Dsl @FluentApi
+  @Dsl
   public static @NotNull WaitTask waitFor(long duration) {
     return WaitTask.newWaitTask().waitFor(duration);
   }
@@ -434,7 +434,7 @@ public abstract class ThreadUtils {
    * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.concurrent.TimeUnit
    */
-  @Dsl @FluentApi
+  @Dsl
   public static @NotNull WaitTask waitFor(long duration, TimeUnit timeUnit) {
     return WaitTask.newWaitTask().waitFor(duration, timeUnit);
   }
@@ -446,6 +446,7 @@ public abstract class ThreadUtils {
    * @see org.cp.elements.lang.DslExtension
    * @see org.cp.elements.lang.FluentApiExtension
    */
+  @FluentApi
   public static class WaitTask implements DslExtension, FluentApiExtension {
 
     protected static final TimeUnit DEFAULT_TIME_UNIT = TimeUnit.MILLISECONDS;

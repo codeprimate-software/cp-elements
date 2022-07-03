@@ -32,6 +32,7 @@ import org.cp.elements.lang.BooleanUtils;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FluentApiExtension;
+import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.support.ComposableFilter;
@@ -568,7 +569,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see NullSafe
    */
-  @FluentApi @NullSafe
+  @Dsl @NullSafe
   public static WithFields withFields(Field... fields) {
     return new WithFields(fields);
   }
@@ -582,7 +583,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see NullSafe
    */
-  @FluentApi @NullSafe
+  @Dsl @NullSafe
   public static WithMethods withMethods(Method... methods) {
     return new WithMethods(methods);
   }
@@ -707,6 +708,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    *
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithExpression
    */
+  @FluentApi
   public static class WithFields extends WithExpression<Field> {
 
     public WithFields(Field... fields) {
@@ -743,6 +745,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    *
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
    */
+  @FluentApi
   public static class WithMethods extends WithExpression<Method> {
 
     public WithMethods(Method... methods) {
