@@ -32,6 +32,12 @@ import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
+import org.cp.elements.lang.reflect.ConstructorNotFoundException;
+import org.cp.elements.lang.reflect.FieldAccessException;
+import org.cp.elements.lang.reflect.FieldNotFoundException;
+import org.cp.elements.lang.reflect.MethodInvocationException;
+import org.cp.elements.lang.reflect.MethodNotFoundException;
+import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
@@ -79,6 +85,12 @@ import org.cp.elements.util.search.SearchException;
  * @see org.cp.elements.lang.TypeNotFoundException
  * @see org.cp.elements.lang.factory.NoSuchConstructorException
  * @see org.cp.elements.lang.factory.ObjectInstantiationException
+ * @see org.cp.elements.lang.reflect.ConstructorNotFoundException
+ * @see org.cp.elements.lang.reflect.FieldAccessException
+ * @see org.cp.elements.lang.reflect.FieldNotFoundException
+ * @see org.cp.elements.lang.reflect.MethodInvocationException
+ * @see org.cp.elements.lang.reflect.MethodNotFoundException
+ * @see org.cp.elements.lang.reflect.UnhandledMethodInvocationException
  * @see org.cp.elements.net.NoAvailablePortException
  * @see org.cp.elements.security.AuthenticationException
  * @see org.cp.elements.security.AuthorizationException
@@ -673,8 +685,64 @@ public abstract class ElementsExceptionsFactory {
     return newObjectInstantiationException(null, message, args);
   }
 
-  public static ObjectInstantiationException newObjectInstantiationException(Throwable cause, String message, Object... args) {
+  public static ObjectInstantiationException newObjectInstantiationException(Throwable cause, String message,
+      Object... args) {
+
     return new ObjectInstantiationException(format(message, args), cause);
+  }
+
+  // package org.cp.elements.lang.reflect
+
+  public static ConstructorNotFoundException newConstructorNotFoundException(String message, Object... args) {
+    return newConstructorNotFoundException(null, message, args);
+  }
+
+  public static ConstructorNotFoundException newConstructorNotFoundException(Throwable cause, String message,
+      Object... args) {
+
+    return new ConstructorNotFoundException(format(message, args), cause);
+  }
+
+  public static FieldAccessException newFieldAccessException(String message, Object... args) {
+    return newFieldAccessException(null, message, args);
+  }
+
+  public static FieldAccessException newFieldAccessException(Throwable cause, String message, Object... args) {
+    return new FieldAccessException(format(message, args), cause);
+  }
+
+  public static FieldNotFoundException newFieldNotFoundException(String message, Object... args) {
+    return newFieldNotFoundException(null, message, args);
+  }
+
+  public static FieldNotFoundException newFieldNotFoundException(Throwable cause, String message, Object... args) {
+    return new FieldNotFoundException(format(message, args), cause);
+  }
+
+  public static MethodInvocationException newMethodInvocationException(String message, Object... args) {
+    return newMethodInvocationException(null, message, args);
+  }
+
+  public static MethodInvocationException newMethodInvocationException(Throwable cause, String message, Object... args) {
+    return new MethodInvocationException(format(message, args), cause);
+  }
+
+  public static MethodNotFoundException newMethodNotFoundException(String message, Object... args) {
+    return newMethodNotFoundException(null, message, args);
+  }
+
+  public static MethodNotFoundException newMethodNotFoundException(Throwable cause, String message, Object... args) {
+    return new MethodNotFoundException(format(message, args), cause);
+  }
+
+  public static UnhandledMethodInvocationException newUnhandledMethodInvocationException(String message, Object... args) {
+    return newUnhandledMethodInvocationException(null, message, args);
+  }
+
+  public static UnhandledMethodInvocationException newUnhandledMethodInvocationException(Throwable cause, String message,
+      Object... args) {
+
+    return new UnhandledMethodInvocationException(format(message, args), cause);
   }
 
   // package org.cp.elements.net
