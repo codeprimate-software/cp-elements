@@ -30,6 +30,8 @@ import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
+import org.cp.elements.lang.factory.NoSuchConstructorException;
+import org.cp.elements.lang.factory.ObjectInstantiationException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
@@ -73,7 +75,10 @@ import org.cp.elements.util.search.SearchException;
  * @see org.cp.elements.lang.InitializationException
  * @see org.cp.elements.lang.ObjectNotFoundException
  * @see org.cp.elements.lang.ResourceNotFoundException
+ * @see org.cp.elements.lang.ThrowableOperationException
  * @see org.cp.elements.lang.TypeNotFoundException
+ * @see org.cp.elements.lang.factory.NoSuchConstructorException
+ * @see org.cp.elements.lang.factory.ObjectInstantiationException
  * @see org.cp.elements.net.NoAvailablePortException
  * @see org.cp.elements.security.AuthenticationException
  * @see org.cp.elements.security.AuthorizationException
@@ -618,7 +623,9 @@ public abstract class ElementsExceptionsFactory {
     return newThrowableOperationException(null, message, args);
   }
 
-  public static ThrowableOperationException newThrowableOperationException(Throwable cause, String message, Object... args) {
+  public static ThrowableOperationException newThrowableOperationException(Throwable cause, String message,
+      Object... args) {
+
     return new ThrowableOperationException(format(message, args), cause);
   }
 
@@ -648,6 +655,26 @@ public abstract class ElementsExceptionsFactory {
    */
   public static TypeNotFoundException newTypeNotFoundException(Throwable cause, String message, Object... args) {
     return new TypeNotFoundException(format(message, args), cause);
+  }
+
+  // package org.cp.elements.lang.factory
+
+  public static NoSuchConstructorException newNoSuchConstructorException(String message, Object... args) {
+    return newNoSuchConstructorException(null, message, args);
+  }
+
+  public static NoSuchConstructorException newNoSuchConstructorException(Throwable cause, String message,
+      Object... args) {
+
+    return new NoSuchConstructorException(format(message, args), cause);
+  }
+
+  public static ObjectInstantiationException newObjectInstantiationException(String message, Object... args) {
+    return newObjectInstantiationException(null, message, args);
+  }
+
+  public static ObjectInstantiationException newObjectInstantiationException(Throwable cause, String message, Object... args) {
+    return new ObjectInstantiationException(format(message, args), cause);
   }
 
   // package org.cp.elements.net
