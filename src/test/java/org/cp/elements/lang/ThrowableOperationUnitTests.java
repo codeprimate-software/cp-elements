@@ -57,7 +57,7 @@ public class ThrowableOperationUnitTests {
     verifyNoMoreInteractions(mockOperation);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test(expected = ThrowableOperationException.class)
   public void acceptHandlesThrowable() throws Throwable {
 
     ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
@@ -68,7 +68,7 @@ public class ThrowableOperationUnitTests {
     try {
       mockOperation.accept("mock");
     }
-    catch (RuntimeException expected) {
+    catch (ThrowableOperationException expected) {
 
       assertThat(expected).hasMessage("Accept failed to operate on target [mock]");
       assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
@@ -99,7 +99,7 @@ public class ThrowableOperationUnitTests {
     verifyNoMoreInteractions(mockOperation);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test(expected = ThrowableOperationException.class)
   public void callHandlesThrowable() throws Throwable {
 
     ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
@@ -110,7 +110,7 @@ public class ThrowableOperationUnitTests {
     try {
       mockOperation.call();
     }
-    catch (RuntimeException cause) {
+    catch (ThrowableOperationException cause) {
 
       assertThat(cause).hasMessage("Call failed to complete operation");
       assertThat(cause).hasCauseInstanceOf(IllegalStateException.class);
@@ -141,7 +141,7 @@ public class ThrowableOperationUnitTests {
     verifyNoMoreInteractions(mockOperation);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test(expected = ThrowableOperationException.class)
   public void getHandlesThrowable() throws Throwable {
 
     ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
@@ -152,7 +152,7 @@ public class ThrowableOperationUnitTests {
     try {
       mockOperation.get();
     }
-    catch (RuntimeException cause) {
+    catch (ThrowableOperationException cause) {
 
       assertThat(cause).hasMessage("Get failed to return the result of the operation");
       assertThat(cause).hasCauseInstanceOf(UnsupportedOperationException.class);
@@ -182,7 +182,7 @@ public class ThrowableOperationUnitTests {
     verifyNoMoreInteractions(mockOperation);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test(expected = ThrowableOperationException.class)
   public void runHandlesThrowable() throws Throwable {
 
     ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
@@ -193,7 +193,7 @@ public class ThrowableOperationUnitTests {
     try {
       mockOperation.run();
     }
-    catch (RuntimeException expected) {
+    catch (ThrowableOperationException expected) {
 
       assertThat(expected).hasMessage("Run failed to complete operation");
       assertThat(expected).hasCauseInstanceOf(RuntimeException.class);

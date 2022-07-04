@@ -16,7 +16,7 @@
  */
 package org.cp.elements.lang;
 
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newThrowableOperationException;
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -57,7 +57,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
       run(target);
     }
     catch (Throwable cause) {
-      throw newRuntimeException(cause, "Accept failed to operate on target [%s]", target);
+      throw newThrowableOperationException(cause, "Accept failed to operate on target [%s]", target);
     }
   }
 
@@ -75,7 +75,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
       return run(ObjectUtils.EMPTY_OBJECT_ARRAY);
     }
     catch (Throwable cause) {
-      throw newRuntimeException(cause, "Call failed to complete operation");
+      throw newThrowableOperationException(cause, "Call failed to complete operation");
     }
   }
 
@@ -93,7 +93,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
       return run(ObjectUtils.EMPTY_OBJECT_ARRAY);
     }
     catch (Throwable cause) {
-      throw newRuntimeException(cause, "Get failed to return the result of the operation");
+      throw newThrowableOperationException(cause, "Get failed to return the result of the operation");
     }
   }
 
@@ -112,7 +112,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
       run(ObjectUtils.EMPTY_OBJECT_ARRAY);
     }
     catch (Throwable cause) {
-      throw newRuntimeException(cause, "Run failed to complete operation");
+      throw newThrowableOperationException(cause, "Run failed to complete operation");
     }
   }
 
