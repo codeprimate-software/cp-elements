@@ -614,6 +614,14 @@ public abstract class ElementsExceptionsFactory {
     return new ResourceNotFoundException(format(message, args), cause);
   }
 
+  public static ThrowableOperationException newThrowableOperationException(String message, Object... args) {
+    return newThrowableOperationException(null, message, args);
+  }
+
+  public static ThrowableOperationException newThrowableOperationException(Throwable cause, String message, Object... args) {
+    return new ThrowableOperationException(format(message, args), cause);
+  }
+
   /**
    * Constructs and initializes a new {@link TypeNotFoundException} with the given {@link String message}
    * formatted with the given {@link Object[] arguments}.
