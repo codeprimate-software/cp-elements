@@ -50,9 +50,18 @@ import org.cp.elements.util.search.SearchException;
  * Elements API {@link RuntimeException} classes.
  *
  * @author John Blum
+ * @see org.cp.elements.beans.BeansException
+ * @see org.cp.elements.beans.IllegalPropertyValueException
+ * @see org.cp.elements.beans.PropertyNotFoundException
+ * @see org.cp.elements.beans.PropertyReadException
+ * @see org.cp.elements.beans.PropertyWriteException
+ * @see org.cp.elements.beans.RequiredPropertyNotSetException
  * @see org.cp.elements.biz.rules.RuleException
  * @see org.cp.elements.context.configure.ConfigurationException
  * @see org.cp.elements.dao.DataAccessException
+ * @see org.cp.elements.data.caching.CacheException
+ * @see org.cp.elements.data.conversion.ConversionException
+ * @see org.cp.elements.data.mapping.MappingException
  * @see org.cp.elements.io.NoSuchFileException
  * @see org.cp.elements.lang.AssertionException
  * @see org.cp.elements.lang.CloneException
@@ -77,7 +86,6 @@ import org.cp.elements.util.search.SearchException;
  * @see org.cp.elements.util.SystemException
  * @see org.cp.elements.util.UserException
  * @see org.cp.elements.util.WriteOnlyException
- * @see org.cp.elements.data.conversion.ConversionException
  * @see org.cp.elements.util.search.SearchException
  * @since 1.0.0
  */
@@ -234,6 +242,34 @@ public abstract class ElementsExceptionsFactory {
 
   public static CacheException newCacheException(Throwable cause, String message, Object... args) {
     return new CacheException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs and initializes a new {@link ConversionException} with the given {@link String message}
+   * formatted with the given {@link Object[] arguments}.
+   *
+   * @param message {@link String} describing the {@link ConversionException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @return a new {@link ConversionException} with the given {@link String message}.
+   * @see #newConversionException(Throwable, String, Object...)
+   * @see org.cp.elements.data.conversion.ConversionException
+   */
+  public static ConversionException newConversionException(String message, Object... args) {
+    return newConversionException(null, message, args);
+  }
+
+  /**
+   * Constructs and initializes a new {@link ConversionException} with the given {@link Throwable cause}
+   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   *
+   * @param cause {@link Throwable} identified as the reason this {@link ConversionException} was thrown.
+   * @param message {@link String} describing the {@link ConversionException exception}.
+   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @return a new {@link ConversionException} with the given {@link Throwable cause} and {@link String message}.
+   * @see org.cp.elements.data.conversion.ConversionException
+   */
+  public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
+    return new ConversionException(format(message, args), cause);
   }
 
   /**
@@ -840,34 +876,6 @@ public abstract class ElementsExceptionsFactory {
    */
   public static ApplicationException newApplicationException(Throwable cause, String message, Object... args) {
     return new ApplicationException(format(message, args), cause);
-  }
-
-  /**
-   * Constructs and initializes a new {@link ConversionException} with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
-   *
-   * @param message {@link String} describing the {@link ConversionException exception}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
-   * @return a new {@link ConversionException} with the given {@link String message}.
-   * @see #newConversionException(Throwable, String, Object...)
-   * @see org.cp.elements.data.conversion.ConversionException
-   */
-  public static ConversionException newConversionException(String message, Object... args) {
-    return newConversionException(null, message, args);
-  }
-
-  /**
-   * Constructs and initializes a new {@link ConversionException} with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
-   *
-   * @param cause {@link Throwable} identified as the reason this {@link ConversionException} was thrown.
-   * @param message {@link String} describing the {@link ConversionException exception}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
-   * @return a new {@link ConversionException} with the given {@link Throwable cause} and {@link String message}.
-   * @see org.cp.elements.data.conversion.ConversionException
-   */
-  public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
-    return new ConversionException(format(message, args), cause);
   }
 
   /**
