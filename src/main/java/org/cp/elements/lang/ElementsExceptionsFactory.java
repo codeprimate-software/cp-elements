@@ -17,6 +17,12 @@ package org.cp.elements.lang;
 
 import static org.cp.elements.text.FormatUtils.format;
 
+import org.cp.elements.beans.BeansException;
+import org.cp.elements.beans.IllegalPropertyValueException;
+import org.cp.elements.beans.PropertyNotFoundException;
+import org.cp.elements.beans.PropertyReadException;
+import org.cp.elements.beans.PropertyWriteException;
+import org.cp.elements.beans.RequiredPropertyNotSetException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
@@ -76,6 +82,58 @@ import org.cp.elements.util.search.SearchException;
  */
 @SuppressWarnings("unused")
 public abstract class ElementsExceptionsFactory {
+
+  // package org.cp.elements.beans
+
+  public static BeansException newBeansException(String message, Object... args) {
+    return newBeansException(null, message, args);
+  }
+
+  public static BeansException newBeansException(Throwable cause, String message, Object... args) {
+    return new BeansException(format(message, args), cause) { };
+  }
+
+  public static IllegalPropertyValueException newIllegalPropertyValueException(String message, Object... args) {
+    return newIllegalPropertyValueException(null, message, args);
+  }
+
+  public static IllegalPropertyValueException newIllegalPropertyValueException(Throwable cause, String message,
+      Object... args) {
+
+    return new IllegalPropertyValueException(format(message, args), cause);
+  }
+
+  public static PropertyNotFoundException newPropertyNotFoundException(String message, Object... args) {
+    return newPropertyNotFoundException(null, message, args);
+  }
+
+  public static PropertyNotFoundException newPropertyNotFoundException(Throwable cause, String message, Object... args) {
+    return new PropertyNotFoundException(format(message, args), cause);
+  }
+
+  public static PropertyReadException newPropertyReadException(String message, Object... args) {
+    return newPropertyReadException(null, message, args);
+  }
+
+  public static PropertyReadException newPropertyReadException(Throwable cause, String message, Object... args) {
+    return new PropertyReadException(format(message, args), cause);
+  }
+
+  public static PropertyWriteException newPropertyWriteException(String message, Object... args) {
+    return newPropertyWriteException(null, message, args);
+  }
+
+  public static PropertyWriteException newPropertyWriteException(Throwable cause, String message, Object... args) {
+    return new PropertyWriteException(format(message, args), cause);
+  }
+
+  public static RequiredPropertyNotSetException newRequiredPropertyNotSetException(String message, Object... args) {
+    return newRequiredPropertyNotSetException(null, message, args);
+  }
+
+  public static RequiredPropertyNotSetException newRequiredPropertyNotSetException(Throwable cause, String message, Object... args) {
+    return new RequiredPropertyNotSetException(format(message, args), cause);
+  }
 
   // package org.cp.elements.biz.rules
 
