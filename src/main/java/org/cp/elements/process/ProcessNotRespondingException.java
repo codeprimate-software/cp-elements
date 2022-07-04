@@ -13,41 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 /**
- * The {@link ProcessNotRespondingException} is a {@link ProcessException} indicating that a target {@link Process}
- * is not responding to inputs or control.
+ * A {@link ProcessExecutionException} used to signify that a target {@link Process} is not responding to
+ * input or control.
  *
  * @author John J. Blum
- * @see org.cp.elements.process.ProcessException
+ * @see org.cp.elements.process.ProcessExecutionException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ProcessNotRespondingException extends ProcessException {
+public class ProcessNotRespondingException extends ProcessExecutionException {
 
   /**
-   * Constructs an uninitialized instance of {@link ProcessNotRespondingException} with no message or cause.
+   * Constructs a new, uninitialized instance of {@link ProcessNotRespondingException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public ProcessNotRespondingException() {
-  }
+  public ProcessNotRespondingException() { }
 
   /**
-   * Constructs an instance of {@link ProcessNotRespondingException} initialized with the given message
-   * describing this {@link ProcessException}.
+   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with the given {@link String message}
+   * describing this {@link ProcessExecutionException}.
    *
-   * @param message {@link String} describing this {@link ProcessException}.
+   * @param message {@link String} describing this {@link ProcessExecutionException}.
+   * @see java.lang.String
    */
   public ProcessNotRespondingException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of {@link ProcessNotRespondingException} initialized with the given {@link Throwable}
-   * indicating the cause of this {@link ProcessException}.
+   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with
+   * the given {@link Throwable cause} used as the reason this {@link ProcessExecutionException} was thrown.
    *
-   * @param cause {@link Throwable} object indicating the cause of this {@link ProcessException}.
+   * @param cause {@link Throwable} used as the cause and reason this {@link ProcessExecutionException} was thrown.
    * @see java.lang.Throwable
    */
   public ProcessNotRespondingException(Throwable cause) {
@@ -55,12 +55,13 @@ public class ProcessNotRespondingException extends ProcessException {
   }
 
   /**
-   * Constructs an instance of {@link ProcessNotRespondingException} initialized with the given message
-   * describing this {@link ProcessException} and cause to indicate the reason this {@link ProcessException}
-   * was thrown.
+   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with the given {@link String message}
+   * describing this {@link ProcessExecutionException} along with the given {@link Throwable cause} used as the reason
+   * this {@link ProcessExecutionException} was thrown.
    *
-   * @param message {@link String} describing this {@link ProcessException}.
-   * @param cause {@link Throwable} object indicating the cause of this {@link ProcessException}.
+   * @param message {@link String} describing this {@link ProcessExecutionException}.
+   * @param cause {@link Throwable} used as the cause and reason this {@link ProcessExecutionException} was thrown.
+   * @see java.lang.String
    * @see java.lang.Throwable
    */
   public ProcessNotRespondingException(String message, Throwable cause) {
