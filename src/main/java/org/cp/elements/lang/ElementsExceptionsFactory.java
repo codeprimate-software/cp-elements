@@ -39,6 +39,11 @@ import org.cp.elements.lang.reflect.MethodInvocationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
 import org.cp.elements.net.NoAvailablePortException;
+import org.cp.elements.process.EmbeddedProcessExecutionException;
+import org.cp.elements.process.PidUnknownException;
+import org.cp.elements.process.ProcessException;
+import org.cp.elements.process.ProcessExecutionException;
+import org.cp.elements.process.ProcessNotRespondingException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.security.SecurityException;
@@ -773,6 +778,52 @@ public abstract class ElementsExceptionsFactory {
    */
   public static NoAvailablePortException newNoAvailablePortException(Throwable cause, String message, Object... args) {
     return new NoAvailablePortException(format(message, args), cause);
+  }
+
+  // package org.cp.elements.process
+
+  public static EmbeddedProcessExecutionException newEmbeddedProcessExecutionException(String message, Object... args) {
+    return newEmbeddedProcessExecutionException(null, message, args);
+  }
+
+  public static EmbeddedProcessExecutionException newEmbeddedProcessExecutionException(Throwable cause, String message,
+      Object... args) {
+
+    return new EmbeddedProcessExecutionException(format(message, args), cause);
+  }
+
+  public static PidUnknownException newPidUnknownException(String message, Object... args) {
+    return newPidUnknownException(null, message, args);
+  }
+
+  public static PidUnknownException newPidUnknownException(Throwable cause, String message, Object... args) {
+    return new PidUnknownException(format(message, args), cause);
+  }
+
+  public static ProcessException newProcessException(String message, Object... args) {
+    return newProcessException(null, message, args);
+  }
+
+  public static ProcessException newProcessException(Throwable cause, String message, Object... args) {
+    return new ProcessException(format(message, args), cause);
+  }
+
+  public static ProcessExecutionException newProcessExecutionException(String message, Object... args) {
+    return newProcessExecutionException(null, message, args);
+  }
+
+  public static ProcessExecutionException newProcessExecutionException(Throwable cause, String message, Object... args) {
+    return new ProcessExecutionException(format(message, args), cause);
+  }
+
+  public static ProcessNotRespondingException newProcessNotRespondingException(String message, Object... args) {
+    return newProcessNotRespondingException(null, message, args);
+  }
+
+  public static ProcessNotRespondingException newProcessNotRespondingException(Throwable cause, String message,
+      Object... args) {
+
+    return new ProcessNotRespondingException(format(message, args), cause);
   }
 
   // package org.cp.elements.security
