@@ -26,6 +26,7 @@ import org.cp.elements.beans.RequiredPropertyNotSetException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
+import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -226,6 +227,14 @@ public abstract class ElementsExceptionsFactory {
   }
 
   // package org.cp.elements.data
+
+  public static CacheException newCacheException(String message, Object... args) {
+    return newCacheException(null, message, args);
+  }
+
+  public static CacheException newCacheException(Throwable cause, String message, Object... args) {
+    return new CacheException(format(message, args), cause);
+  }
 
   /**
    * Constructs and initializes a new {@link MappingException} with the given {@link String message}
