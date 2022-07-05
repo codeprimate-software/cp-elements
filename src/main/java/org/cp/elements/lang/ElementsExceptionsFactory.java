@@ -38,6 +38,7 @@ import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.lang.reflect.MethodInvocationException;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
+import org.cp.elements.net.NetworkException;
 import org.cp.elements.net.NoAvailablePortException;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
 import org.cp.elements.process.PidUnknownException;
@@ -1120,6 +1121,35 @@ public abstract class ElementsExceptionsFactory {
   }
 
   // package org.cp.elements.net
+
+  /**
+   * Constructs a new instance of {@link NetworkException} initialized with the given {@link String message}
+   * to describe the {@link NetworkException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link NetworkException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link NetworkException}.
+   * @see #newNetworkException(Throwable, String, Object...)
+   * @see org.cp.elements.net.NetworkException
+   */
+  public static NetworkException newNetworkException(String message, Object... args) {
+    return newNetworkException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link NetworkException} initialized with the given {@link String message}
+   * to describe the {@link NetworkException} along with a {@link Throwable cause} used as the reason
+   * why the {@link NetworkException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link NetworkException}.
+   * @param message {@link String} containing a message to describe the {@link NetworkException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link NetworkException}.
+   * @see org.cp.elements.net.NetworkException
+   */
+  public static NetworkException newNetworkException(Throwable cause, String message, Object... args) {
+    return new NetworkException(format(message, args), cause);
+  }
 
   /**
    * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
