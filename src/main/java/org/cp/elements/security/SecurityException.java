@@ -13,53 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.security;
 
 /**
- * The SecurityException class is a base Exception noting a security violation.
+ * {@link RuntimeException} noting a security violation.
  *
  * @author John J. Blum
- * @see java.lang.Exception
+ * @see java.lang.RuntimeException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SecurityException extends Exception {
+public class SecurityException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of the SecurityException class.
+   * Constructs a new, uninitialized instance of {@link SecurityException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public SecurityException() {
-  }
+  public SecurityException() { }
 
   /**
-   * Constructs an instance of the SecurityException class with the specified message describing the security violation.
+   * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
+   * describing the security violation.
    *
-   * @param message a String describing the security violation.
+   * @param message {@link String} used to describe the security violation.
    */
-  public SecurityException(final String message) {
+  public SecurityException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the SecurityException class with the underlying cause, or reason for the security
-   * violation.
+   * Constructs a new instance of {@link SecurityException} initialized with the given {@link Throwable cause}
+   * used as the reason for the security violation.
    *
-   * @param cause a Throwable indicating the cause of the security violation.
+   * @param cause {@link Throwable} used as the reason for the security violation.
    */
-  public SecurityException(final Throwable cause) {
+  public SecurityException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the SecurityException class with the specified message describing the security violation
-   * along with the underlying cause, or reason of the security violation.
+   * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
+   * describing the security violation along with the given {@link Throwable cause} used as the reason
+   * for the security violation.
    *
-   * @param message a String describing the security violation.
-   * @param cause a Throwable indicating the cause of the security violation.
+   * @param message {@link String} used to describe the security violation.
+   * @param cause {@link Throwable} used as the reason for the security violation.
    */
-  public SecurityException(final String message, final Throwable cause) {
+  public SecurityException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }
