@@ -13,52 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net;
 
 /**
- * The {@link NoAvailablePortException} class is a {@link IllegalStateException} indicating that
- * no available system port could be found.
+ * A {@link NetworkException} used to indicate that no available system port could be found.
  *
  * @author John Blum
- * @see java.lang.IllegalStateException
+ * @see org.cp.elements.net.NetworkException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class NoAvailablePortException extends IllegalStateException {
+public class NoAvailablePortException extends NetworkException {
 
   /**
-   * Constructs an uninitialized instance of {@link NoAvailablePortException}.
+   * Constructs a new, uninitialized instance of {@link NoAvailablePortException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public NoAvailablePortException() {
-  }
+  public NoAvailablePortException() { }
 
   /**
-   * Constructs an instance of {@link NoAvailablePortException} initialized with the given message.
+   * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
+   * to describe the port error.
    *
-   * @param message {@link String} containing a description of the error.
+   * @param message {@link String} containing a description of the port error.
    */
   public NoAvailablePortException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of {@link NoAvailablePortException} initialized with the given cause.
+   * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link Throwable cause}
+   * used as the reason why this port error occurred.
    *
-   * @param cause {@link Throwable} object indicating the reason this error was thrown.
-   * @see java.lang.Throwable
+   * @param cause {@link Throwable} used as the reason why this port error occurred.
    */
   public NoAvailablePortException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of {@link NoAvailablePortException} initialized with the given message
-   * and cause of this error.
+   * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
+   * to describe the port error along with the given {@link Throwable cause} used as the reason
+   * why this port error occurred.
    *
-   * @param message {@link String} containing a description of the error.
-   * @param cause {@link Throwable} object indicating the reason this error was thrown.
-   * @see java.lang.Throwable
+   * @param message {@link String} containing a description of the port error.
+   * @param cause {@link Throwable} used as the reason why this port error occurred.
    */
   public NoAvailablePortException(String message, Throwable cause) {
     super(message, cause);
