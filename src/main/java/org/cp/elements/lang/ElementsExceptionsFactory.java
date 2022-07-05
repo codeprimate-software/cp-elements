@@ -49,6 +49,9 @@ import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.security.SecurityException;
 import org.cp.elements.service.ServiceInvocationException;
+import org.cp.elements.test.FailedTestException;
+import org.cp.elements.test.HungTestException;
+import org.cp.elements.test.TestException;
 import org.cp.elements.text.FormatException;
 import org.cp.elements.text.ParseException;
 import org.cp.elements.util.ApplicationException;
@@ -99,16 +102,20 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.lang.reflect.MethodInvocationException
  * @see org.cp.elements.lang.reflect.MethodNotFoundException
  * @see org.cp.elements.lang.reflect.UnhandledMethodInvocationException
+ * @see org.cp.elements.net.NetworkException
+ * @see org.cp.elements.net.NoAvailablePortException
  * @see org.cp.elements.process.EmbeddedProcessExecutionException
  * @see org.cp.elements.process.PidUnknownException
  * @see org.cp.elements.process.ProcessException
  * @see org.cp.elements.process.ProcessExecutionException
  * @see org.cp.elements.process.ProcessNotRespondingException
- * @see org.cp.elements.net.NoAvailablePortException
  * @see org.cp.elements.security.AuthenticationException
  * @see org.cp.elements.security.AuthorizationException
  * @see org.cp.elements.security.SecurityException
  * @see org.cp.elements.service.ServiceInvocationException
+ * @see org.cp.elements.test.FailedTestException
+ * @see org.cp.elements.test.HungTestException
+ * @see org.cp.elements.test.TestException
  * @see org.cp.elements.text.FormatException
  * @see org.cp.elements.text.ParseException
  * @see org.cp.elements.util.ApplicationException
@@ -1456,6 +1463,95 @@ public abstract class ElementsExceptionsFactory {
     return new ServiceInvocationException(format(message, args), cause);
   }
 
+  // package org.cp.elements.test
+
+  /**
+   * Constructs a new instance of {@link FailedTestException} initialized with the given {@link String message}
+   * to describe the {@link FailedTestException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link FailedTestException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link FailedTestException}.
+   * @see #newFailedTestException(Throwable, String, Object...)
+   * @see org.cp.elements.test.FailedTestException
+   */
+  public static FailedTestException newFailedTestException(String message, Object... args) {
+    return newFailedTestException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link FailedTestException} initialized with the given {@link String message}
+   * to describe the {@link FailedTestException} along with a {@link Throwable cause} used as the reason
+   * why the {@link FailedTestException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link FailedTestException}.
+   * @param message {@link String} containing a message to describe the {@link FailedTestException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link FailedTestException}.
+   * @see org.cp.elements.test.FailedTestException
+   */
+  public static FailedTestException newFailedTestException(Throwable cause, String message, Object... args) {
+    return new FailedTestException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link HungTestException} initialized with the given {@link String message}
+   * to describe the {@link HungTestException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link HungTestException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link HungTestException}.
+   * @see #newHungTestException(Throwable, String, Object...)
+   * @see org.cp.elements.test.HungTestException
+   */
+  public static HungTestException newHungTestException(String message, Object... args) {
+    throw newHungTestException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link HungTestException} initialized with the given {@link String message}
+   * to describe the {@link HungTestException} along with a {@link Throwable cause} used as the reason
+   * why the {@link HungTestException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link HungTestException}.
+   * @param message {@link String} containing a message to describe the {@link HungTestException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link HungTestException}.
+   * @see org.cp.elements.test.HungTestException
+   */
+  public static HungTestException newHungTestException(Throwable cause, String message, Object... args) {
+    throw new HungTestException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link TestException} initialized with the given {@link String message}
+   * to describe the {@link TestException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link TestException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link TestException}.
+   * @see #newTestException(Throwable, String, Object...)
+   * @see org.cp.elements.test.TestException
+   */
+  public static TestException newTestException(String message, Object... args) {
+    return newTestException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link TestException} initialized with the given {@link String message}
+   * to describe the {@link TestException} along with a {@link Throwable cause} used as the reason
+   * why the {@link TestException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link TestException}.
+   * @param message {@link String} containing a message to describe the {@link TestException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link TestException}.
+   * @see org.cp.elements.test.TestException
+   */
+  public static TestException newTestException(Throwable cause, String message, Object... args) {
+    return new TestException(format(message, args), cause);
+  }
+
   // package org.cp.elements.text
 
   /**
@@ -1516,7 +1612,6 @@ public abstract class ElementsExceptionsFactory {
     return new ParseException(format(message, args), cause);
   }
 
-  // TODO: Edit Javadoc
   // package org.cp.elements.util
 
   /**
