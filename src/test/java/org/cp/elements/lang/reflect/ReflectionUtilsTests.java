@@ -164,7 +164,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     catch (NullPointerException expected) {
 
       // for line "boolean currentAccessible = field.isAccessible();" in getValue(:Object, :Field, :Class<T>):T
-      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(158);
+      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(159);
 
       throw expected;
     }
@@ -309,7 +309,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     catch (NullPointerException expected) {
 
       // for line "Assert.isFalse(Modifier.isFinal(field.getModifiers())..." in setField(:Object, :Field, :Object):void
-      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(236);
+      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(237);
 
       throw expected;
     }
@@ -569,7 +569,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
     catch (NullPointerException expected) {
 
-      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(546);
+      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(547);
 
       throw expected;
     }
