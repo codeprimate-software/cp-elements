@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.stream;
 
 import java.util.Arrays;
@@ -22,48 +21,79 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link StreamUtils} class is a collection of utility methods for working with Java 8 {@link Stream Streams}.
+ * Abstract utility class containing a collection of methods for processing Java 8 {@link Stream Streams}.
  *
  * @author John J. Blum
  * @see java.util.Arrays
  * @see java.util.stream.Stream
  * @see java.util.stream.StreamSupport
- * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class StreamUtils {
 
   /**
-   * Returns a {@link Stream} from the array of elements.
+   * Returns an empty {@link Stream}.
    *
-   * @param <T> Class type of the elements in the array.
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @return an empty {@link Stream}.
+   * @see java.util.stream.Stream
+   * @see #stream(Object[])
+   */
+  @SuppressWarnings("all")
+  public static <T> Stream<T> empty() {
+    return stream();
+  }
+
+  /**
+   * Null-safe method used to evaluate a given {@link Stream} for a {@literal null} reference.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param stream {@link Stream} reference to evaluate for {@literal null}.
+   * @return the given {@link Stream} if not {@literal null}
+   * or return an {@literal empty} {@link Stream} otherwise.
+   * @see java.util.stream.Stream
+   * @see #empty()
+   */
+  @NullSafe
+  public static @NotNull <T> Stream<T> nullSafeStream(@Nullable Stream<T> stream) {
+    return stream != null ? stream : empty();
+  }
+
+  /**
+   * Returns a {@link Stream} from the given array of elements.
+   *
+   * @param <T> {@link Class type} of elements in the array.
    * @param elements array of elements to convert into a {@link Stream}.
-   * @return a {@link Stream} for the elements in the array.
+   * @return a {@link Stream} containing the elements in the array.
    * @see java.util.stream.Stream
    */
   @SafeVarargs
-  public static <T> Stream<T> stream(T... elements) {
+  public static @NotNull <T> Stream<T> stream(T... elements) {
     return Arrays.stream(elements);
   }
 
   /**
-   * Returns a {@link Stream} from the {@link Iterable} collection of elements.
+   * Returns a {@link Stream} from the given {@link Iterable} collection of elements.
    *
-   * @param <T> Class type of the elements in the {@link Iterable}.
+   * @param <T> {@link Class type} of elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to convert into a {@link Stream}.
-   * @return a {@link Stream} for the elements in the {@link Iterable}.
-   * @throws IllegalArgumentException if {@link Iterable} is null.
+   * @return a {@link Stream} containing the elements in the {@link Iterable}.
+   * @throws IllegalArgumentException if the {@link Iterable} is null.
    * @see java.util.stream.Stream
    * @see java.lang.Iterable
    */
-  @SuppressWarnings("unchecked")
-  public static <T> Stream<T> stream(Iterable<T> iterable) {
-    Assert.notNull(iterable, "Iterable cannot be null");
+  public static @NotNull <T> Stream<T> stream(@NotNull Iterable<T> iterable) {
 
-    return (iterable instanceof Collection ? ((Collection) iterable).stream()
-      : StreamSupport.stream(iterable.spliterator(), false));
+    Assert.notNull(iterable, "Iterable is required");
+
+    return iterable instanceof Collection
+      ? ((Collection<T>) iterable).stream()
+      : StreamSupport.stream(iterable.spliterator(), false);
   }
 }
