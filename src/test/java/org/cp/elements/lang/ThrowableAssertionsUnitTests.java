@@ -17,6 +17,7 @@ package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIndexOutOfBoundsException;
@@ -415,5 +416,23 @@ public class ThrowableAssertionsUnitTests {
 
       throw expected;
     }
+  }
+
+  @Test
+  public void testAssertJExceptionAssertions() {
+
+    try {
+      assertThatExceptionOfType(ApplicationException.class)
+        .isThrownBy(() -> codeThrowingApplicationException("app message",
+          new SecurityException("security message", new RuntimeException("runtime message"))))
+        .withMessage("app message")
+        .withCauseInstanceOf(SecurityException.class)
+        .withMessage("security message")
+        .withCauseInstanceOf(RuntimeException.class)
+        .withMessage("runtime message");
+
+      throw newTestException("AssertJ does not handle Exception switching unlike Elements");
+    }
+    catch (AssertionError ignore) { }
   }
 }
