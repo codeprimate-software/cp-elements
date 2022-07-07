@@ -111,7 +111,7 @@ public class BeanModel {
    * @see #getProperties()
    */
   public @NotNull Property getProperty(@Nullable String name) {
-    return getProperties().findBy(name);
+    return getProperties().findByName(name);
   }
 
   /**

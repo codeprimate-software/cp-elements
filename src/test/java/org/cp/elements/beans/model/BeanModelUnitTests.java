@@ -111,7 +111,7 @@ public class BeanModelUnitTests {
     BeanAdapter mockUserBean = mock(BeanAdapter.class);
 
     doReturn(mockUser).when(mockUserBean).getTarget();
-    doReturn(mockProperty).when(mockProperties).findBy(eq("mockPropertyName"));
+    doReturn(mockProperty).when(mockProperties).findByName(eq("mockPropertyName"));
 
     BeanModel beanModel = spy(BeanModel.from(mockUserBean));
 
@@ -120,7 +120,7 @@ public class BeanModelUnitTests {
     assertThat(beanModel.getProperty("mockPropertyName")).isEqualTo(mockProperty);
 
     verify(beanModel, times(1)).getProperties();
-    verify(mockProperties, times(1)).findBy(eq("mockPropertyName"));
+    verify(mockProperties, times(1)).findByName(eq("mockPropertyName"));
     verifyNoMoreInteractions(mockProperties);
     verifyNoInteractions(mockProperty);
   }

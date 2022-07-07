@@ -19,22 +19,25 @@ import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * Abstract Data Type (ADT) modeling a collection of bean properties.
@@ -111,6 +114,20 @@ public class Properties implements Iterable<Property> {
     return of(ArrayUtils.asArray(properties, Property.class));
   }
 
+  /**
+   * Factory method usec to construct a new isntance of {@link Properties}
+   * from the given {@link Stream} of {@link Property properties}.
+   *
+   * @param properties {@link Stream} of {@link Property properties} contained by this collection.
+   * @return a new {@link Properties}.
+   * @see org.cp.elements.beans.model.Property
+   * @see java.util.stream.Stream
+   * @see #of(Iterable)
+   */
+  public static @NotNull Properties of(Stream<Property> properties) {
+    return of(StreamUtils.nullSafeStream(properties).collect(Collectors.toSet()));
+  }
+
   private final Set<Property> properties;
 
   /**
@@ -120,7 +137,7 @@ public class Properties implements Iterable<Property> {
    * @see org.cp.elements.beans.model.Property
    */
   protected Properties(Property... properties) {
-    this.properties = new HashSet<>(CollectionUtils.asSet(properties));
+    this.properties = new TreeSet<>(CollectionUtils.asSet(properties));
   }
 
   /**
@@ -130,7 +147,7 @@ public class Properties implements Iterable<Property> {
    * @see org.cp.elements.beans.model.Property
    * @see java.util.Set
    */
-  protected Set<Property> getProperties() {
+  protected @NotNull Set<Property> getProperties() {
     return Collections.unmodifiableSet(this.properties);
   }
 
@@ -142,6 +159,7 @@ public class Properties implements Iterable<Property> {
    * this set of {@link Properties}.
    * @see org.cp.elements.beans.model.Property
    */
+  @NullSafe
   public boolean contains(@Nullable Property property) {
     return property != null && getProperties().contains(property);
   }
@@ -174,7 +192,7 @@ public class Properties implements Iterable<Property> {
    * @see org.cp.elements.beans.model.Property
    * @see #findBy(Predicate)
    */
-  public @NotNull Property findBy(@Nullable String name) {
+  public @NotNull Property findByName(@Nullable String name) {
 
     return findBy(property -> property.getName().equals(name)).findFirst()
       .orElseThrow(() -> new PropertyNotFoundException(String.format("Property with name [%s] not found", name)));
@@ -189,7 +207,7 @@ public class Properties implements Iterable<Property> {
    * the given {@link Class type}.
    * @see #findBy(Predicate)
    */
-  public Properties findBy(@NotNull Class<?> type) {
+  public Properties findByType(@NotNull Class<?> type) {
 
     return Properties.of(findBy(property -> ClassUtils.assignableTo(property.getType(), type))
       .collect(Collectors.toSet()));
@@ -244,5 +262,16 @@ public class Properties implements Iterable<Property> {
   @Override
   public @NotNull Iterator<Property> iterator() {
     return Collections.unmodifiableSet(getProperties()).iterator();
+  }
+
+  /**
+   * Returns a {@link Stream} of {@link Property properties} in this collection.
+   *
+   * @return a {@link Stream} of {@link Property properties} in this collection.
+   * @see java.util.stream.Stream
+   * @see #iterator()
+   */
+  public @NotNull Stream<Property> stream() {
+    return StreamSupport.stream(this.spliterator(), false);
   }
 }
