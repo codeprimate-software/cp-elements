@@ -16,6 +16,7 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 
 import java.io.File;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
-import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.stream.StreamUtils;
 import org.junit.Test;
 
@@ -135,10 +135,12 @@ public class FileExtensionFilterTests extends AbstractBaseTestSuite {
     assertThat(fileExtensions.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructWithNullIterableCollectionFoFileExtensions() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new FileExtensionFilter((Iterable<String>) null),
-      () -> "Iterable cannot be null");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new FileExtensionFilter((Iterable<String>) null))
+      .withMessage("Iterable is required");
   }
 
   @Test
