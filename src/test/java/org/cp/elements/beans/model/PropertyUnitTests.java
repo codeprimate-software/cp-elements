@@ -17,6 +17,7 @@ package org.cp.elements.beans.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -37,6 +38,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Period;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
@@ -96,7 +99,7 @@ public class PropertyUnitTests {
   }
 
   @Test
-  public void fromConstructsProperty() {
+  public void fromFactoryMethodConstructsProperty() {
 
     BeanModel mockBeanModel = mock(BeanModel.class);
 
@@ -118,9 +121,11 @@ public class PropertyUnitTests {
 
     BeanModel mockBeanModel = mock(BeanModel.class);
 
+    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
+
     doReturn(mockBean).when(mockBeanModel).getBean();
 
-    Property property = Property.from(mockBeanModel, mock(PropertyDescriptor.class));
+    Property property = Property.from(mockBeanModel, mockPropertyDescriptor);
 
     assertThat(property).isNotNull();
     assertThat(property.getBeanModel()).isSameAs(mockBeanModel);
@@ -128,7 +133,7 @@ public class PropertyUnitTests {
 
     verify(mockBeanModel, times(1)).getBean();
     verifyNoMoreInteractions(mockBeanModel);
-    verifyNoInteractions(mockBean);
+    verifyNoInteractions(mockBean, mockPropertyDescriptor);
   }
 
   @Test
@@ -182,6 +187,7 @@ public class PropertyUnitTests {
 
     assertThat(property).isNotNull();
     assertThat(property.getName()).isEqualTo("age");
+    assertThat(property.isDerived()).isTrue();
     assertThat(property.isReadable()).isTrue();
 
     Method getAge = property.getReadMethod();
@@ -217,10 +223,12 @@ public class PropertyUnitTests {
 
     BeanModel mockBeanModel = mock(BeanModel.class);
 
+    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
+
     doReturn(cookieDoe).when(mockBean).getTarget();
     doReturn(mockBean).when(mockBeanModel).getBean();
 
-    Property property = spy(Property.from(mockBeanModel, mock(PropertyDescriptor.class)));
+    Property property = spy(Property.from(mockBeanModel, mockPropertyDescriptor));
 
     assertThat(property).isNotNull();
     assertThat(property.getTargetObject()).isEqualTo(cookieDoe);
@@ -231,10 +239,11 @@ public class PropertyUnitTests {
     verify(mockBeanModel, times(1)).getBean();
     verify(mockBean, times(1)).getTarget();
     verifyNoMoreInteractions(property, mockBeanModel, mockBean);
+    verifyNoInteractions(mockPropertyDescriptor);
   }
 
   @Test
-  public void getWriteMethodFromWritableProperty() {
+  public void getWriteMethodForWritableProperty() {
 
     Customer dillDoe = Customer.as("Dill Doe");
 
@@ -400,11 +409,12 @@ public class PropertyUnitTests {
 
     assertThat(property).isNotNull();
     assertThat(property.getName()).isEqualTo("name");
+    assertThat(property.getType()).isEqualTo(String.class);
     assertThat(property.isReadable()).isTrue();
     assertThat(property.getValue()).isEqualTo("Moe Doe");
   }
 
-  @Test(expected = PropertyReadException.class)
+  @Test
   public void getValueFromNonReadableProperty() {
 
     CryptographicFunction function = new CryptographicFunction();
@@ -417,16 +427,10 @@ public class PropertyUnitTests {
     assertThat(property.getName()).isEqualTo("salt");
     assertThat(property.isReadable()).isFalse();
 
-    try {
-      property.getValue();
-    }
-    catch (PropertyReadException expected) {
-
-      assertThat(expected).hasMessage("Property [salt] of bean [%s] is not readable", bean);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatThrowableOfType(PropertyReadException.class)
+      .isThrownBy(args -> property.getValue())
+      .havingMessage("Property [salt] of bean [%s] is not readable", bean)
+      .withNoCause();
   }
 
   @Test
@@ -444,6 +448,7 @@ public class PropertyUnitTests {
 
     assertThat(property).isNotNull();
     assertThat(property.getName()).isEqualTo("birthdate");
+    assertThat(property.getType()).isEqualTo(LocalDate.class);
     assertThat(property.isWritable()).isTrue();
 
     property.setValue(birthdate);
@@ -451,7 +456,7 @@ public class PropertyUnitTests {
     assertThat(pieDoe.getBirthdate()).isEqualTo(birthdate);
   }
 
-  @Test(expected = PropertyWriteException.class)
+  @Test
   public void setValueForNonWritableProperty() {
 
     Customer sourDoe = Customer.as("Sour Doe");
@@ -464,19 +469,12 @@ public class PropertyUnitTests {
     assertThat(property.getName()).isEqualTo("name");
     assertThat(property.isWritable()).isFalse();
 
-    try {
-      property.setValue("Roller In Dough");
-    }
-    catch (PropertyWriteException expected) {
+    assertThatThrowableOfType(PropertyWriteException.class)
+      .isThrownBy(args -> { property.setValue("Roller In Dough"); return null; })
+      .havingMessage("Property [name] of bean [%s] is not writable", bean)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Property [name] of bean [%s] is not writable", bean);
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(sourDoe.getName()).isEqualTo("Sour Doe");
-    }
+    assertThat(sourDoe.getName()).isEqualTo("Sour Doe");
   }
 
   @Test
@@ -625,6 +623,59 @@ public class PropertyUnitTests {
     verify(mockPropertyDescriptor, times(2)).getName();
     verifyNoMoreInteractions(mockPropertyDescriptor);
   }
+
+  @Test
+  public void propertiesOfComposedType() {
+
+    Vip vip = Vip.from("Jack Handy");
+
+    BeanAdapter bean = BeanAdapter.from(vip);
+
+    Properties properties = bean.getModel().getProperties();
+
+    Set<String> propertyNames = properties.stream()
+      .map(Property::getName)
+      .collect(Collectors.toSet());
+
+    assertThat(propertyNames).isNotNull();
+    assertThat(propertyNames).hasSize(4);
+    assertThat(propertyNames).containsExactlyInAnyOrder("age", "birthdate", "name", "rewardsNumber");
+  }
+
+  @Test
+  public void propertiesOfInheritedType() {
+
+    Customer jackBlack = Customer.as("Jack Black");
+
+    Account account = Account.forCustomer(jackBlack);
+
+    BeanAdapter bean = BeanAdapter.from(account);
+
+    Properties properties = bean.getModel().getProperties();
+
+    Set<String> propertyNames = properties.stream()
+      .map(Property::getName)
+      .collect(Collectors.toSet());
+
+    assertThat(propertyNames).isNotNull();
+    assertThat(propertyNames).hasSize(2);
+    assertThat(propertyNames).containsExactlyInAnyOrder("customer", "number");
+  }
+
+  @Getter
+  @ToString(of = "number")
+  @EqualsAndHashCode(of = "customer")
+  @RequiredArgsConstructor(staticName = "forCustomer")
+  static class Account {
+
+    @lombok.NonNull
+    private final Customer customer;
+
+    @Setter
+    private String number;
+
+  }
+
   @Getter
   @EqualsAndHashCode
   @ToString(of = "name")
@@ -656,6 +707,20 @@ public class PropertyUnitTests {
 
     public String hash(String data) {
       throw new UnsupportedOperationException("Not Implemented");
+    }
+  }
+
+  static class Vip extends Customer {
+
+    static Vip from(String name) {
+      return new Vip(name);
+    }
+
+    @Getter @Setter
+    private String rewardsNumber;
+
+    Vip(@lombok.NonNull String name) {
+      super(name);
     }
   }
 }

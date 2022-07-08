@@ -15,6 +15,9 @@
  */
 package org.cp.elements.beans.model;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyReadException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyWriteException;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -279,8 +282,8 @@ public class Property implements Comparable<Property>, Nameable<String> {
    */
   public @Nullable Object getValue() {
 
-    Assert.state(isReadable(), new PropertyReadException(String.format("Property [%s] of bean [%s] is not readable",
-      getName(), getBean())));
+    Assert.state(isReadable(), newPropertyReadException("Property [%s] of bean [%s] is not readable",
+      getName(), getBean()));
 
     return ObjectUtils.invoke(getTargetObject(), getReadMethod(), new Object[0], Object.class);
   }
@@ -294,8 +297,8 @@ public class Property implements Comparable<Property>, Nameable<String> {
    */
   public void setValue(Object value) {
 
-    Assert.state(isWritable(), new PropertyWriteException(String.format("Property [%s] of bean [%s] is not writable",
-      getName(), getBean())));
+    Assert.state(isWritable(), newPropertyWriteException("Property [%s] of bean [%s] is not writable",
+      getName(), getBean()));
 
     ObjectUtils.invoke(getTargetObject(), getWriteMethod(), new Object[] { value }, Void.class);
   }
