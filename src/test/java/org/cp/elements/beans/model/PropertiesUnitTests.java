@@ -25,9 +25,13 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.beans.BeanInfo;
+import java.beans.PropertyDescriptor;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,6 +50,7 @@ import org.junit.Test;
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.Properties
+ * @see org.cp.elements.beans.model.Property
  * @since 1.0.0
  */
 public class PropertiesUnitTests {
@@ -70,17 +75,17 @@ public class PropertiesUnitTests {
     return property;
   };
 
-  private void assertThatPropertiesIsEmpty(Properties properties) {
-
-    assertThat(properties).isNotNull();
-    assertThat(properties).isEmpty();
-  }
-
   private void assertThatPropertiesContains(Properties properties, Property... propertyElements) {
 
     assertThat(properties).isNotNull();
     assertThat(properties).hasSize(propertyElements.length);
     assertThat(properties).containsExactlyInAnyOrder(propertyElements);
+  }
+
+  private void assertThatPropertiesIsEmpty(Properties properties) {
+
+    assertThat(properties).isNotNull();
+    assertThat(properties).isEmpty();
   }
 
   private Property mockProperty(String name, Class<?> type) {
@@ -105,6 +110,38 @@ public class PropertiesUnitTests {
 
     assertThat(properties).isNotNull();
     assertThat(properties).isEmpty();
+  }
+
+  @Test
+  public void fromBeanModelIsCorrect() {
+
+    BeanModel mockBeanModel = mock(BeanModel.class);
+
+    BeanInfo mockBeanInfo = mock(BeanInfo.class);
+
+    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
+
+    doReturn(mockBeanInfo).when(mockBeanModel).getBeanInfo();
+    doReturn(ArrayUtils.asArray(mockPropertyDescriptor)).when(mockBeanInfo).getPropertyDescriptors();
+    doReturn("mockProperty").when(mockPropertyDescriptor).getName();
+
+    Properties properties = Properties.from(mockBeanModel);
+
+    assertThat(properties).isNotNull();
+    assertThat(properties).hasSize(1);
+
+    Property property = properties.stream().findFirst().orElse(null);
+
+    assertThat(property).isNotNull();
+    assertThat(property.getBeanModel()).isSameAs(mockBeanModel);
+    assertThat(property.getDescriptor()).isSameAs(mockPropertyDescriptor);
+    assertThat(property.getName()).isEqualTo("mockProperty");
+
+    verify(mockBeanModel, times(1)).getBeanInfo();
+    verify(mockBeanInfo, times(1)).getPropertyDescriptors();
+    verify(mockPropertyDescriptor, atLeastOnce()).getName();
+
+    verifyNoMoreInteractions(mockBeanModel, mockBeanInfo, mockPropertyDescriptor);
   }
 
   @Test
@@ -504,6 +541,24 @@ public class PropertiesUnitTests {
     writableProperties = properties.findByType(Boolean.class).findWritable();
 
     assertThatPropertiesIsEmpty(writableProperties);
+  }
+
+  @Test
+  public void queryPropertiesWithMultiplePredicates() {
+
+    Property mockPropertyOne = mockProperty("one", String.class,
+      READABLE_PROPERTY_FUNCTION.andThen(TRANSIENT_PROPERTY_FUNCTION));
+
+    Property mockPropertyTwo = mockProperty("two", Integer.class,
+      TRANSIENT_PROPERTY_FUNCTION);
+
+    Properties properties = Properties.of(mockPropertyOne, mockPropertyTwo);
+
+    assertThatPropertiesContains(properties, mockPropertyOne, mockPropertyTwo);
+
+    Properties result = properties.findByType(Boolean.class).findTransient();
+
+    assertThatPropertiesIsEmpty(result);
   }
 
   @Test
