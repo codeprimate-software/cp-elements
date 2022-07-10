@@ -1,76 +1,94 @@
+[[codeprimate-elements]]
 = Codeprimate Elements
+:version: 1.0.0-M7
 
-*Codeprimate Elements* (a.k.a. *cp-elements* pronounced *see-pee elements*, or just *Elements*) is a Java library
-and micro-framework for simplifying the development of software applications written in **Java**.
+*Codeprimate Elements* (or simply just *Elements*) is a Java library and micro-framework for simplifying
+the development of software applications written in **Java**.
 
-*Elements* packages several APIs into a single library in order to handle several application development aspects,
-such as configuration, management, security, data modeling & processing in addition to the encapsulation of business
-logic in functional-based rules along with many other concerns for convenience. At the most basic/fundamental level,
-*Elements* is an extension of the Java language and APIs itself adding powerful and expressive capabilities not directly
-provided by the **Java Platform**.
+*Elements* packages several APIs in a single library to handle many different software application development concerns,
+such as, but not limited to, data modeling & processing, configuration, management, security, and Java language extensions
+in addition to many other aspects of software development using Java. At the most basic and fundamental level, *Elements*
+is an extension of the Java language and APIs itself adding powerful and expressive capabilities not directly provided by
+the **Java Platform**.
 
-The intent of *Elements* is to provide high quality, reusable and useful application classes and components that solve
-common, reoccurring problems during software development.
+The main intent of *Elements* is to provide high quality, reusable and useful application classes and components
+to solve common, reoccurring problems during software development with ease and reliability.
 
+[[elemental-objectives]]
 == Elemental Objectives
 
-1. Functionally independent with no dependencies on 3rd-party Java libraries.
+1. Functionally independent with absolutely no additional dependencies on 3rd-party Java libraries.
 2. Simple, robust and proven APIs built on solid OO principles, design patterns, and recommended practices.
 3. Promote "open" collaboration through transparent communication and feedback.
-4. Emphasis and priority on quality and reliability over quantity.
+4. Prioritize quality and reliability over quantity.
 
+[[why-elements]]
 == Why Elements...
 
 Codeprimate Elements is very similar in function and purpose to *Apache Commons* or *Google Guava*.
 
-*Elements* is a highly refined Java library of classes and components based on years of research and development
-along with extensive experience in deployed enterprise applications. *Elements* maintains a high standard on quality
-enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme enterprise application
+*Elements* is a highly refined Java library of classes and components based on years of research and development along
+with extensive experience in deployed production-grade applications. *Elements* maintains a high standard on quality
+enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme application
 environments.
 
-*Elements* is a foundational Java library, and does not introduce any additional dependencies in order to function
+*Elements* is a foundation-based Java library, and does not introduce any additional dependencies in order to function
 or perform properly out-of-the-box. Good https://en.wikipedia.org/wiki/Object-oriented_design[Object-Oriented Design]
 based on https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)[SOLID design principles] coupled with effective
 use of https://en.wikipedia.org/wiki/Software_design_pattern[Software Design Patterns] makes *Elements* immediately
-familiar, highly consistent and easy to use. Finally, development of *Elements* consists of open and transparent
-collaboration to garner feedback that is essential to building high quality and reliable software.
+familiar, highly consistent and easy to use. Finally, development of *Elements* built on open and transparent
+collaboration to harvest feedback that is essential to building high quality and reliable software.
 
 No corporate entity owns or controls *Elements*, and therefore, you will never be bound by licenses or contracts.
 
+[[requirements]]
 == Requirements
 
 1. Baseline is Java SE (JDK/JRE) 8.0.
 2. Built with JDK 1.8.0_331.
 
+[[support]]
 == Supports
 
 1. Elements builds and runs on Java 11, Java 14 and Java 17.
 
+[[license]]
 == License
 
 *Elements* is licensed under the **Apache 2.0 Software License Agreement**.
 
+[[download]]
 == Download / Include
 
 .Maven
+====
+[source,xml]
+[subs="verbatim,attributes"]
 ----
 <dependency>
   <groupId>org.codeprimate</groupId>
   <artifactId>cp-elements</artifactId>
-  <version>1.0.0-M7</version>
+  <version>{version}</version>
 </dependency>
 ----
+====
 
 .Gradle
+====
+[source,groovy]
+[subs="verbatim,attributes"]
 ----
-implementation 'org.codeprimate:cp-elements:1.0.0-M7'
+implementation 'org.codeprimate:cp-elements:{version}'
 ----
+====
 
+[[issues]]
 == Issues
 
 Please use https://github.com/codeprimate-software/cp-elements/issues[GitHub Issues] to report any bugs, improvements
 or feature requests.
 
+[[contributions]]
 == Contributions
 
 Thank you for your interests in contributing to the *Codeprimate Elements* project.  A full *contributor license agreement*
