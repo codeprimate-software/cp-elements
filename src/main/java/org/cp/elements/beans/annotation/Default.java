@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.beans.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -24,12 +24,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * The Default annotation defines bean property meta-data for specifying default values when a value
+ * {@link Annotation} defining bean property meta-data for specifying default values when a value
  * is not explicitly provided for the property when the corresponding setter is called.
  *
  * @author John J. Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.ElementType#ANNOTATION_TYPE
+ * @see java.lang.annotation.ElementType#FIELD
  * @see java.lang.annotation.ElementType#METHOD
+ * @see java.lang.annotation.ElementType#PARAMETER
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.RetentionPolicy#RUNTIME
@@ -39,9 +43,26 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({
+  ElementType.ANNOTATION_TYPE,
+  ElementType.FIELD,
+  ElementType.METHOD,
+  ElementType.PARAMETER
+})
 public @interface Default {
 
+  /**
+   * Value used as the {@literal default value} for the {@link java.lang.reflect.AnnotatedElement}.
+   *
+   * @return the value used as the {@literal default value} for the {@link java.lang.reflect.AnnotatedElement}.
+   */
   String value();
+
+  /**
+   * {@link String} containing a {@literal pattern} used to parse the {@literal default} {@link #value()}.
+   *
+   * @return a {@literal pattern} used to parse the {@literal default} {@link #value()}.
+   */
+  String pattern() default "";
 
 }
