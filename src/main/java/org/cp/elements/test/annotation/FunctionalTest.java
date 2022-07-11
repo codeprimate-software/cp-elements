@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.test.annotation;
 
 import java.lang.annotation.Annotation;
@@ -28,15 +27,16 @@ import java.lang.annotation.Target;
  * or test class is a Functional-based Test.
  *
  * @author John J. Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.Target
  * @since 1.0.0
  */
-@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.TYPE })
 public @interface FunctionalTest {
 
 }

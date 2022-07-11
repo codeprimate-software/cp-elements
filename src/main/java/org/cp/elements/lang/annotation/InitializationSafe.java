@@ -35,11 +35,11 @@ import java.lang.annotation.Target;
  * @see java.lang.annotation.Target
  * @since 1.0.0
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
-@Inherited
 @Documented
+@Inherited
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 public @interface InitializationSafe {
 
 }

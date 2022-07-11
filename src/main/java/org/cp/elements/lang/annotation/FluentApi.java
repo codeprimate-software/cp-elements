@@ -39,11 +39,11 @@ import java.lang.annotation.Target;
  * @see <a href="https://en.wikipedia.org/wiki/Fluent_interface">Fluent interface</a>
  * @since 1.0.0
  */
-@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Documented
+@Inherited
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 public @interface FluentApi {
 
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.test.annotation;
 
 import java.lang.annotation.Annotation;
@@ -32,14 +31,22 @@ import java.lang.annotation.Target;
  * @author John Blum
  * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.Retention
  * @see java.lang.annotation.RetentionPolicy#RUNTIME
  * @see java.lang.annotation.Target
  * @since 1.0.0
  */
-@Target({ ElementType.FIELD, ElementType.LOCAL_VARIABLE, ElementType.METHOD, ElementType.PARAMETER })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.RUNTIME)
+@Target({
+  ElementType.ANNOTATION_TYPE,
+  ElementType.FIELD,
+  ElementType.LOCAL_VARIABLE,
+  ElementType.METHOD,
+  ElementType.PARAMETER,
+  ElementType.TYPE
+})
 public @interface SubjectUnderTest {
 
 }

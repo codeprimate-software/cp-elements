@@ -35,10 +35,10 @@ import java.lang.annotation.Target;
  * @see org.cp.elements.lang.DslExtension
  * @since 1.0.0
  */
-@Target({ ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
 @Documented
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.METHOD })
 public @interface Dsl {
 
 }

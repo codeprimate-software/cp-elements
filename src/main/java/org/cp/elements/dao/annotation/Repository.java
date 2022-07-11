@@ -30,6 +30,7 @@ import java.lang.annotation.Target;
  * that correspond to data store specific procedures and functions.
  *
  * @author John Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
@@ -38,9 +39,9 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 public @interface Repository {
 
 }

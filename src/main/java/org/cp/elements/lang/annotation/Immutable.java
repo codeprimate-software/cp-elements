@@ -27,16 +27,15 @@ import java.lang.annotation.Target;
  * any application class or component in order to classify it as immutable.
  *
  * @author John Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.Retention
- * @see java.lang.annotation.RetentionPolicy#RUNTIME
  * @see java.lang.annotation.Target
- * @see java.lang.annotation.ElementType#TYPE
  * @since 1.0.0
  */
 @Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.SOURCE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface Immutable {
 

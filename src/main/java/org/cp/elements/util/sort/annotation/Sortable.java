@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.annotation;
 
 import java.lang.annotation.Documented;
@@ -34,6 +33,7 @@ import java.util.Comparator;
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.Target
+ * @see java.lang.annotation.ElementType#ANNOTATION_TYPE
  * @see java.lang.annotation.ElementType#TYPE
  * @see java.lang.annotation.RetentionPolicy#RUNTIME
  * @see org.cp.elements.util.sort.Sortable
@@ -43,7 +43,7 @@ import java.util.Comparator;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface Sortable {
 

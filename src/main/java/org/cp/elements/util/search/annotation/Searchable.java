@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search.annotation;
 
 import java.lang.annotation.Documented;
@@ -35,6 +34,7 @@ import org.cp.elements.util.search.Matcher;
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.Target
+ * @see java.lang.annotation.ElementType#ANNOTATION_TYPE
  * @see java.lang.annotation.ElementType#TYPE
  * @see java.lang.annotation.RetentionPolicy#RUNTIME
  * @see org.cp.elements.util.search.Searchable
@@ -44,7 +44,7 @@ import org.cp.elements.util.search.Matcher;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface Searchable {
 

@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
  * to be {@literal null-safe}, thus allowing {@literal null} arguments.
  *
  * @author John J. Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
@@ -39,7 +40,7 @@ import java.lang.reflect.Method;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.CONSTRUCTOR, ElementType.METHOD})
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface NullSafe {
 

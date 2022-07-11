@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
  * is guarded by the {@link String named} {@link Object lock} in a multi-Threaded, highly concurrent application.
  *
  * @author John J. Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.ElementType#FIELD
  * @see java.lang.annotation.ElementType#METHOD
@@ -42,7 +43,7 @@ import java.lang.reflect.Method;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.SOURCE)
-@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD })
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface GuardedBy {
 

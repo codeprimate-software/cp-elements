@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.annotation;
 
 import java.lang.annotation.Documented;
@@ -30,6 +29,7 @@ import org.cp.elements.lang.Condition;
  * that specifies a required {@link Condition}.
  *
  * @author John Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
@@ -37,11 +37,11 @@ import org.cp.elements.lang.Condition;
  * @see org.cp.elements.lang.Condition
  * @since 1.0.0
  */
-@Target({ ElementType.TYPE, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
 @Documented
+@Inherited
 @SuppressWarnings("unused")
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Conditional {
 
   /**

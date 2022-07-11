@@ -30,12 +30,17 @@ import java.lang.annotation.Target;
  * and encapsulates business rules.
  *
  * @author John Blum
+ * @see java.lang.annotation.Annotation
+ * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.Inherited
+ * @see java.lang.annotation.Retention
+ * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.TYPE })
 @SuppressWarnings("unused")
 public @interface Service {
 

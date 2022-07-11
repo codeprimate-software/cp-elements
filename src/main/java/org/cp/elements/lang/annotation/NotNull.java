@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
  * The {@link NotNull} annotation describes {@link Method} parameter or return value that cannot be {@literal null}.
  *
  * @author John Blum
+ * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
  * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
@@ -35,7 +36,7 @@ import java.lang.reflect.Method;
  */
 @Documented
 @Inherited
-@Retention(RetentionPolicy.RUNTIME)
+@Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 @SuppressWarnings("unused")
 public @interface NotNull {
