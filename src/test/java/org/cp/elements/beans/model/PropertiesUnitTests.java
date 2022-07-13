@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.beans.BeanInfo;
 import java.beans.PropertyDescriptor;
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -484,6 +485,35 @@ public class PropertiesUnitTests {
     requiredProperties = properties.findByType(Boolean.class).findRequired();
 
     assertThatPropertiesIsEmpty(requiredProperties);
+  }
+
+  @Test
+  public void findSerializableProperties() {
+
+    Property mockPropertyOne = mockProperty("one", String.class, READABLE_PROPERTY_FUNCTION);
+
+    Property mockPropertyTwo = mockProperty("two", Integer.class,
+      READABLE_PROPERTY_FUNCTION.andThen(TRANSIENT_PROPERTY_FUNCTION));
+
+    Property mockPropertyThree = mockProperty("three", Boolean.class, WRITABLE_PROPERTY_FUNCTION);
+
+    Property mockPropertyFour = mockProperty("four", BigDecimal.class,
+      READABLE_PROPERTY_FUNCTION.andThen(WRITABLE_PROPERTY_FUNCTION).andThen(TRANSIENT_PROPERTY_FUNCTION));
+
+    Property mockPropertyFive = mockProperty("five", Character.class,
+      READABLE_PROPERTY_FUNCTION.andThen(WRITABLE_PROPERTY_FUNCTION).andThen(REQUIRED_PROPERTY_FUNCTION));
+
+    Properties properties =
+      Properties.of(mockPropertyOne, mockPropertyTwo, mockPropertyThree, mockPropertyFour, mockPropertyFive);
+
+    assertThatPropertiesContains(properties, mockPropertyOne, mockPropertyTwo, mockPropertyThree,
+      mockPropertyFour, mockPropertyFive);
+
+    Properties serializableProperties = properties.findSerializable();
+
+    assertThat(serializableProperties).isNotNull();
+    assertThat(serializableProperties).hasSize(2);
+    assertThat(serializableProperties).containsExactlyInAnyOrder(mockPropertyOne, mockPropertyFive);
   }
 
   @Test

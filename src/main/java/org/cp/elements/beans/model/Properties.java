@@ -207,7 +207,7 @@ public class Properties implements Iterable<Property> {
    * the given {@link Class type}.
    * @see #findBy(Predicate)
    */
-  public Properties findByType(@NotNull Class<?> type) {
+  public @NotNull Properties findByType(@NotNull Class<?> type) {
 
     return Properties.of(findBy(property -> ClassUtils.assignableTo(property.getType(), type))
       .collect(Collectors.toSet()));
@@ -217,9 +217,10 @@ public class Properties implements Iterable<Property> {
    * Finds all readable {@link Properties}.
    *
    * @return all readable {@link Properties}.
+   * @see #findBy(Predicate)
    * @see #findWritable()
    */
-  public Properties findReadable() {
+  public @NotNull Properties findReadable() {
     return Properties.of(findBy(Property::isReadable).collect(Collectors.toSet()));
   }
 
@@ -227,17 +228,40 @@ public class Properties implements Iterable<Property> {
    * Finds all required {@link Properties}.
    *
    * @return all required {@link Properties}.
+   * @see #findBy(Predicate)
    */
-  public Properties findRequired() {
+  public @NotNull Properties findRequired() {
     return Properties.of(findBy(Property::isRequired).collect(Collectors.toSet()));
+  }
+
+  /**
+   * Finds all {@literal serializable} {@link Properties}.
+   *
+   * {@link Properties} that are {@link Property#isReadable()} and is not {@link Property#isTransient()}
+   * are considered {@literal serializable}. However, this method does not take into account
+   * the {@link Property#getType()} and whether the {@link Class type} of the {@link Property}
+   * implements the {@link java.io.Serializable} interface, or is generally {@literal serializable}
+   * given there are multiple methods for serializing a value, not limited simply to Java Serialization.
+   *
+   * @return all {@literal serializable} {@link Properties}.
+   * @see #findBy(Predicate)
+   */
+  public @NotNull Properties findSerializable() {
+
+    Predicate<Property> readableNonTransientPredicate = Property::isReadable;
+
+    readableNonTransientPredicate = readableNonTransientPredicate.and(property -> !property.isTransient());
+
+    return Properties.of(findBy(readableNonTransientPredicate).collect(Collectors.toSet()));
   }
 
   /**
    * Finds all transient {@link Properties}.
    *
    * @return all transient {@link Properties}.
+   * @see #findBy(Predicate)
    */
-  public Properties findTransient() {
+  public @NotNull Properties findTransient() {
     return Properties.of(findBy(Property::isTransient).collect(Collectors.toSet()));
   }
 
@@ -245,9 +269,10 @@ public class Properties implements Iterable<Property> {
    * Finds all writable {@link Properties}.
    *
    * @return all writable {@link Properties}.
+   * @see #findBy(Predicate)
    * @see #findReadable()
    */
-  public Properties findWritable() {
+  public @NotNull Properties findWritable() {
     return Properties.of(findBy(Property::isWritable).collect(Collectors.toSet()));
   }
 
