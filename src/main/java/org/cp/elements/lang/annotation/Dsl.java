@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
 @Documented
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
-@Target({ ElementType.METHOD })
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD })
 public @interface Dsl {
 
 }
