@@ -17,7 +17,6 @@ package org.cp.elements.lang.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -29,13 +28,11 @@ import java.lang.reflect.Method;
  * @author John Blum
  * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
- * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented
-@Inherited
 @Retention(RetentionPolicy.SOURCE)
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 @SuppressWarnings("unused")

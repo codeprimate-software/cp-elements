@@ -18,7 +18,6 @@ package org.cp.elements.beans.annotation;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -34,14 +33,12 @@ import java.lang.annotation.Target;
  * @see java.lang.annotation.ElementType#FIELD
  * @see java.lang.annotation.ElementType#METHOD
  * @see java.lang.annotation.ElementType#PARAMETER
- * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.RetentionPolicy#RUNTIME
  * @see java.lang.annotation.Target
  * @since 1.0.0
  */
 @Documented
-@Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
   ElementType.ANNOTATION_TYPE,

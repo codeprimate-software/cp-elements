@@ -18,6 +18,7 @@ package org.cp.elements.test.annotation;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -29,6 +30,7 @@ import java.lang.annotation.Target;
  * @author John J. Blum
  * @see java.lang.annotation.Annotation
  * @see java.lang.annotation.Documented
+ * @see java.lang.annotation.Inherited
  * @see java.lang.annotation.Retention
  * @see java.lang.annotation.Target
  * @see org.cp.elements.test.annotation.IntegrationTest
@@ -36,6 +38,7 @@ import java.lang.annotation.Target;
  */
 @IntegrationTest
 @Documented
+@Inherited
 @SuppressWarnings("unused")
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.TYPE })
