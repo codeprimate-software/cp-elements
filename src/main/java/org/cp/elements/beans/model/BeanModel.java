@@ -118,9 +118,23 @@ public class BeanModel {
    * Returns the underlying {@link Object POJO} backing this bean.
    *
    * @return the underlying {@link Object POJO} backing this bean.
+   * @see org.cp.elements.beans.model.BeanAdapter#getTarget()
    * @see java.lang.Object
+   * @see #getBean()
    */
   public @NotNull Object getTargetObject() {
     return getBean().getTarget();
+  }
+
+  /**
+   * Gets the {@link Class type} of the {@link Object target}.
+   *
+   * @return the {@link Class type} of the {@link Object target}.
+   * @see java.lang.Object#getClass()
+   * @see #getTargetObject()
+   * @see java.lang.Class
+   */
+  protected @NotNull Class<?> getTargetType() {
+    return getTargetObject().getClass();
   }
 }
