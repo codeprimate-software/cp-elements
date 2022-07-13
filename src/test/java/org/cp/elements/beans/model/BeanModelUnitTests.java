@@ -57,7 +57,7 @@ public class BeanModelUnitTests {
     assertThat(userModel.getBeanInfo()).isNotNull();
     assertThat(userModel.getProperties()).isNotNull();
     assertThat(userModel.getTargetObject()).isSameAs(mockUser);
-    assertThat(userModel.getTargetType()).isEqualTo(User.class);
+    assertThat(User.class).isAssignableFrom(userModel.getTargetType());
 
     verify(mockUserBean, atLeastOnce()).getTarget();
   }
@@ -87,7 +87,7 @@ public class BeanModelUnitTests {
     assertThat(processModel.getBeanInfo()).isNotNull();
     assertThat(processModel.getProperties()).isNotNull();
     assertThat(processModel.getTargetObject()).isSameAs(mockProcess);
-    assertThat(processModel.getTargetType()).isEqualTo(Process.class);
+    assertThat(Process.class).isAssignableFrom(processModel.getTargetType());
 
     verify(mockProcessBean, atLeastOnce()).getTarget();
   }
