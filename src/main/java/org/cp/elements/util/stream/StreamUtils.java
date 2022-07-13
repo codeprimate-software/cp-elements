@@ -17,6 +17,11 @@ package org.cp.elements.util.stream;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -95,5 +100,149 @@ public abstract class StreamUtils {
     return iterable instanceof Collection
       ? ((Collection<T>) iterable).stream()
       : StreamSupport.stream(iterable.spliterator(), false);
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link List}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param stream {@link Stream} to convert into a {@link List}.
+   * @return a {@link List} all elements from the given {@link Stream}.
+   * @see java.util.stream.Stream
+   * @see java.util.List
+   */
+  public static @NotNull <T> List<T> toList(@Nullable Stream<T> stream) {
+    return toList(stream, arg -> true, Function.identity());
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link List}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param <R> {@link Class type} of elements in the resulting {@link List}.
+   * @param stream {@link Stream} to convert into a {@link List}.
+   * @param function {@link Function} used to transform elements in the {@link Stream}.
+   * @return a {@link List} containing transformed elements from the given {@link Stream}.
+   * @see java.util.function.Function
+   * @see java.util.stream.Stream
+   * @see java.util.List
+   */
+  public static @NotNull <T, R> List<R> toList(@Nullable Stream<T> stream, @NotNull Function<T, R> function) {
+    return toList(stream, arg -> true, function);
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link List}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param stream {@link Stream} to convert into a {@link List}.
+   * @param predicate {@link Predicate} used to filter elements in the {@link Stream}.
+   * @return a {@link List} containing filtered elements from the given {@link Stream}.
+   * @see java.util.function.Predicate
+   * @see java.util.stream.Stream
+   * @see java.util.List
+   */
+  public static @NotNull <T> List<T> toList(@Nullable Stream<T> stream, @NotNull Predicate<T> predicate) {
+    return toList(stream, predicate, Function.identity());
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link List}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param <R> {@link Class type} of elements in the resulting {@link List}.
+   * @param stream {@link Stream} to convert into a {@link List}.
+   * @param predicate {@link Predicate} used to filter elements in the {@link Stream}.
+   * @param function {@link Function} used to transform elements in the {@link Stream}.
+   * @return a {@link List} containing filtered, transformed elements from the given {@link Stream}.
+   * @see java.util.function.Function
+   * @see java.util.function.Predicate
+   * @see java.util.stream.Stream
+   * @see java.util.List
+   */
+  @SuppressWarnings("unchecked")
+  public static @NotNull <T, R> List<R> toList(@Nullable Stream<T> stream,
+      @NotNull Predicate<T> predicate, @NotNull Function<T, R> function) {
+
+    return (List<R>) nullSafeStream(stream)
+      .filter(resolve(predicate))
+      .map(resolve(function))
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link Set}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param stream {@link Stream} to convert into a {@link Set}.
+   * @return a {@link Set} containing all elements from the given {@link Stream}.
+   * @see java.util.stream.Stream
+   * @see java.util.Set
+   */
+  public static @NotNull <T> Set<T> toSet(@Nullable Stream<T> stream) {
+    return toSet(stream, args -> true, Function.identity());
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link Set}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param <R> {@link Class type} of elements in the resulting {@link Set}.
+   * @param stream {@link Stream} to convert into a {@link Set}.
+   * @param function {@link Function} used to transform elements in the {@link Stream}.
+   * @return a {@link Set} containing all transformed elements from the given {@link Stream}.
+   * @see java.util.function.Function
+   * @see java.util.stream.Stream
+   * @see java.util.Set
+   */
+  public static @NotNull <T, R> Set<R> toSet(@Nullable Stream<T> stream, @NotNull Function<T, R> function) {
+    return toSet(stream, args -> true, function);
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link Set}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param stream {@link Stream} to convert into a {@link Set}.
+   * @param predicate {@link Predicate} used to filter elements in the {@link Stream}.
+   * @return a {@link Set} containing filtered elements from the given {@link Stream}.
+   * @see java.util.function.Predicate
+   * @see java.util.stream.Stream
+   * @see java.util.Set
+   */
+  public static @NotNull <T> Set<T> toSet(@Nullable Stream<T> stream, @NotNull Predicate<T> predicate) {
+    return toSet(stream, predicate, Function.identity());
+  }
+
+  /**
+   * Converts the given {@link Stream} into a {@link Set}.
+   *
+   * @param <T> {@link Class type} of elements in the {@link Stream}.
+   * @param <R> {@link Class type} of elements in the resulting {@link Set}.
+   * @param stream {@link Stream} to convert into a {@link Set}.
+   * @param predicate {@link Predicate} used to filter elements in the {@link Stream}.
+   * @param function {@link Function} used to transform elements in the {@link Stream}.
+   * @return a {@link Set} containing filtered, transformed elements from the given {@link Stream}.
+   * @see java.util.function.Function
+   * @see java.util.function.Predicate
+   * @see java.util.stream.Stream
+   * @see java.util.Set
+   */
+  @SuppressWarnings("unchecked")
+  public static @NotNull <T, R> Set<R> toSet(@Nullable Stream<T> stream,
+      @NotNull Predicate<T> predicate, @NotNull Function<T, R> function) {
+
+    return (Set<R>) nullSafeStream(stream)
+      .filter(resolve(predicate))
+      .map(resolve(function))
+      .collect(Collectors.toSet());
+  }
+
+  private static <T, R> Function<T, ?> resolve(@Nullable Function<T, R> function) {
+    return function != null ? function : Function.identity();
+  }
+
+  private static <T> Predicate<T> resolve(Predicate<T> predicate) {
+    return predicate != null ? predicate : arg -> true;
   }
 }

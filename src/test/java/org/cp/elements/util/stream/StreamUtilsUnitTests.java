@@ -22,9 +22,13 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.util.ArrayUtils;
 import org.junit.Test;
 
@@ -175,5 +179,178 @@ public class StreamUtilsUnitTests {
     assertThat(result).isNotNull();
     assertThat(result).hasSize(list.size());
     assertThat(result).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  public void fromStreamToUnfilteredNonTransformedList() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    List<Integer> list = StreamUtils.toList(stream);
+
+    assertThat(list).isNotNull();
+    assertThat(list).hasSize(3);
+    assertThat(list).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  public void fromStreamToTransformedList() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    List<Numbers> list = StreamUtils.toList(stream, Numbers::valueOfNumber);
+
+    assertThat(list).isNotNull();
+    assertThat(list).hasSize(3);
+    assertThat(list).containsExactly(Numbers.ONE, Numbers.TWO, Numbers.THREE);
+  }
+
+  @Test
+  public void fromStreamToFilteredList() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Predicate<Integer> isEven = NumberUtils::isEven;
+
+    List<Integer> list = StreamUtils.toList(stream, isEven);
+
+    assertThat(list).isNotNull();
+    assertThat(list).hasSize(1);
+    assertThat(list).containsExactly(2);
+  }
+
+  @Test
+  public void fromStreamToFilteredTransformedList() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Predicate<Integer> isEven = NumberUtils::isEven;
+
+    Function<Integer, Numbers> toNumbers = Numbers::valueOfNumber;
+
+    List<Numbers> list = StreamUtils.toList(stream, isEven, toNumbers);
+
+    assertThat(list).isNotNull();
+    assertThat(list).hasSize(1);
+    assertThat(list).containsExactly(Numbers.TWO);
+  }
+
+  @Test
+  public void toListFromNullStream() {
+
+    List<?> list = StreamUtils.toList(null);
+
+    assertThat(list).isNotNull();
+    assertThat(list).isEmpty();
+  }
+
+  @Test
+  public void toListWithNullPredicateAndNullFunctionIsNullSafe() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    List<Integer> list = StreamUtils.toList(stream, null, null);
+
+    assertThat(list).isNotNull();
+    assertThat(list).hasSize(3);
+    assertThat(list).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  public void fromStreamToUnfilteredNonTransformedSet() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Set<Integer> set = StreamUtils.toSet(stream);
+
+    assertThat(set).isNotNull();
+    assertThat(set).hasSize(3);
+    assertThat(set).containsExactlyInAnyOrder(1, 2, 3);
+  }
+
+  @Test
+  public void fromStreamToTransformedSet() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Set<Numbers> set = StreamUtils.toSet(stream, Numbers::valueOfNumber);
+
+    assertThat(set).isNotNull();
+    assertThat(set).hasSize(3);
+    assertThat(set).containsExactlyInAnyOrder(Numbers.ONE, Numbers.TWO, Numbers.THREE);
+  }
+
+  @Test
+  public void fromStreamToFilteredSet() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Predicate<Integer> isOdd = NumberUtils::isOdd;
+
+    Set<Integer> set = StreamUtils.toSet(stream, isOdd);
+
+    assertThat(set).isNotNull();
+    assertThat(set).hasSize(2);
+    assertThat(set).containsExactlyInAnyOrder(1, 3);
+  }
+
+  @Test
+  public void fromStreamToFilteredTransformedSet() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Predicate<Integer> isOdd = NumberUtils::isOdd;
+
+    Function<Integer, Numbers> toNumbers = Numbers::valueOfNumber;
+
+    Set<Numbers> set = StreamUtils.toSet(stream, isOdd, toNumbers);
+
+    assertThat(set).isNotNull();
+    assertThat(set).hasSize(2);
+    assertThat(set).containsExactlyInAnyOrder(Numbers.ONE, Numbers.THREE);
+  }
+
+  @Test
+  public void toSetFromNullStreamIsNullSafe() {
+
+    Set<?> set = StreamUtils.toSet(null);
+
+    assertThat(set).isNotNull();
+    assertThat(set).isEmpty();
+  }
+
+  @Test
+  public void toSetWithNullPredicateAndNullFunctionIsNullSafe() {
+
+    Stream<Integer> stream = Arrays.stream(ArrayUtils.asArray(1, 2, 3));
+
+    Set<Integer> set = StreamUtils.toSet(stream, null, null);
+
+    assertThat(set).isNotNull();
+    assertThat(set).hasSize(3);
+    assertThat(set).containsExactlyInAnyOrder(1, 2, 3);
+  }
+
+  enum Numbers {
+
+    ONE(1), TWO(2), THREE(3);
+
+    static Numbers valueOfNumber(int number) {
+
+      return Arrays.stream(Numbers.values())
+        .filter(numberEnum -> numberEnum.getNumber() == number)
+        .findFirst()
+        .orElse(null);
+    }
+
+    private final int number;
+
+    Numbers(int number) {
+      this.number = number;
+    }
+
+    int getNumber() {
+      return this.number;
+    }
   }
 }
