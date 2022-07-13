@@ -16,6 +16,8 @@
  */
 package org.cp.elements.function;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,6 +27,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Abstract utility class containing canned, useful {@link Function Functions} and {@literal Adapters}
@@ -39,6 +42,25 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 @SuppressWarnings("unused")
 public abstract class FunctionUtils {
+
+  /**
+   * Composes the given array of {@link Function Functions} into a single {@link Function}
+   * using the {@literal Composite Software Design Pattern}.
+   *
+   * @param functions array of {@link Function Functions} to compose.
+   * @return a single {@literal non-null} {@link Function} composed from
+   * the given array of {@link Function Functions}.
+   * @see java.util.function.Function
+   */
+  @NullSafe
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public static @NotNull Function compose(@NotNull Function... functions) {
+
+    return Arrays.stream(ArrayUtils.nullSafeArray(functions, Function.class))
+      .filter(Objects::nonNull)
+      .reduce(Function::andThen)
+      .orElseGet(Function::identity);
+  }
 
   /**
    * Null-safe method used to guard against a {@literal null} {@link Predicate} reference.

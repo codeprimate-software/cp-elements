@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -48,6 +49,56 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class FunctionUtilsUnitTests {
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeFunctionsIsCorrect() {
+
+    Function<Integer, Integer> sum = value -> value + value;
+    Function<Integer, Integer> multiply = value -> value * value;
+
+    Function<Integer, Integer> function = FunctionUtils.compose(sum, multiply);
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply(2)).isEqualTo(16);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeFunctionsContainingNullsIsNullSafe() {
+
+    Function<String, String> duplicate = stringValue -> stringValue + " " + stringValue;
+
+    Function<String, String> function =
+      FunctionUtils.compose(null, duplicate, null, null, duplicate, duplicate, null);
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply("TEST")).isEqualTo("TEST TEST TEST TEST TEST TEST TEST TEST");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeFunctionsOfDifferentValuesIsCorrect() {
+
+    Function<String, Integer> toInteger = Integer::parseInt;
+
+    Function<Integer, Par> toEnum = Par::valueOf;
+
+    Function<String, Par> function = FunctionUtils.compose(toInteger, toEnum);
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply("4")).isEqualTo(Par.FOUR);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeNullFunctionsIsNullSate() {
+
+    Function<Object, Object> function = FunctionUtils.compose((Function<?, ?>[]) null);
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply("TEST")).isEqualTo("TEST");
+  }
 
   @Test
   public void nullSafePredicateMatchAllWithNonNullPredicate() {
@@ -282,6 +333,29 @@ public class FunctionUtilsUnitTests {
       assertThat(expected).hasNoCause();
 
       throw expected;
+    }
+  }
+
+  enum Par {
+
+    THREE(3), FOUR(4), FIVE(5);
+
+    static Par valueOf(int parValue) {
+
+      return Arrays.stream(Par.values())
+        .filter(par -> par.getValue() == parValue)
+        .findFirst()
+        .orElse(null);
+    }
+
+    final int value;
+
+    Par(int value) {
+      this.value = value;
+    }
+
+    public int getValue() {
+      return value;
     }
   }
 }
