@@ -28,11 +28,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
@@ -54,7 +54,6 @@ import org.cp.elements.lang.support.ToStringRenderer;
  * @see java.util.List
  * @see java.util.Set
  * @see java.util.stream.Collectors
- * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.FilteringTransformer
  * @see org.cp.elements.lang.Renderer
  * @see org.cp.elements.lang.Transformer
@@ -297,7 +296,7 @@ public abstract class CollectionUtils {
    *
    * @param iterable {@link Iterable} collection of elements being evaluated.
    * @return an integer value indicating the number of elements in the {@link Iterable} collection (i.e. size).
-   * @see #count(Iterable, Filter)
+   * @see #count(Iterable, Predicate)
    * @see java.util.Collection#size()
    * @see java.lang.Iterable
    */
@@ -310,25 +309,25 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Counts the number of elements in the {@link Iterable} collection accepted by the {@link Filter}.
+   * Counts the number of elements in the {@link Iterable} collection accepted by the {@link Predicate}.
    *
    * @param <T> {@link Class} type of the elements in the {@link Iterable} collection.
    * @param iterable {@link Iterable} collection of elements being evaluated.
-   * @param filter {@link Filter} used to determine the number of elements (count)
-   * in the {@link Iterable} collection accepted by the {@link Filter}.
+   * @param predicate {@link Predicate} used to determine the number of elements (count)
+   * in the {@link Iterable} collection accepted by the {@link Predicate}.
    * @return an integer value indicating the number of elements in the {@link Iterable} collection
-   * accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
+   * accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
    * @see #nullSafeIterable(Iterable)
-   * @see org.cp.elements.lang.Filter
    * @see java.lang.Iterable
    */
-  public static <T> long count(Iterable<T> iterable, Filter<T> filter) {
+  public static <T> long count(Iterable<T> iterable, Predicate<T> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
-      .filter(filter::accept)
+      .filter(predicate)
       .count();
   }
 
@@ -361,22 +360,23 @@ public abstract class CollectionUtils {
 
   /**
    * Returns a filtered {@link Collection} containing only the elements from the given {@link Collection} accepted by
-   * the {@link Filter}.
+   * the {@link Predicate}.
    *
-   * @param <T> Class type of the elements in the {@link Collection}.
+   * @param <T> {@link Class type} of the elements in the {@link Collection}.
    * @param collection {@link Collection} to filter.
-   * @param filter {@link Filter} used to filter the {@link Collection}.
-   * @return a filtered {@link Collection} of elements accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if either the {@link Collection} or {@link Filter} are null.
-   * @see org.cp.elements.lang.Filter
+   * @param predicate {@link Predicate} used to filter the {@link Collection}.
+   * @return a filtered {@link Collection} of elements accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if either the {@link Collection} or {@link Predicate} are {@literal null}.
+   * @see java.util.function.Predicate
+   * @see java.util.Collection
    */
-  public static <T> Collection<T> filter(Collection<T>  collection, Filter<T> filter) {
+  public static <T> Collection<T> filter(Collection<T>  collection, Predicate<T> predicate) {
 
     Assert.notNull(collection, "Collection is required");
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return collection.stream()
-      .filter(filter::accept)
+      .filter(predicate)
       .collect(Collectors.toList());
   }
 
@@ -405,50 +405,50 @@ public abstract class CollectionUtils {
   }
 
   /**
-   * Searches the {@link Iterable} for all elements accepted by the {@link Filter}.
+   * Searches the {@link Iterable} for all elements accepted by the {@link Predicate}.
    *
-   * @param <T> {@link Class} type of the elements in the {@link Iterable}.
+   * @param <T> {@link Class type} of the elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to search.
-   * @param filter {@link Filter} used to find elements from the {@link Iterable} collection
-   * accepted by the {@link Filter}.
+   * @param predicate {@link Predicate} used to find elements from the {@link Iterable} collection
+   * accepted by the {@link Predicate}.
    * @return a {@link List} containing elements from the {@link Iterable} collection
-   * accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
-   * @see #findOne(Iterable, Filter)
+   * accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
+   * @see #findOne(Iterable, Predicate)
    * @see #nullSafeIterable(Iterable)
-   * @see org.cp.elements.lang.Filter
    * @see java.lang.Iterable
    */
-  public static <T> List<T> findAll(Iterable<T> iterable, Filter<T> filter) {
+  public static <T> List<T> findAll(Iterable<T> iterable, Predicate<T> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
-      .filter(filter::accept)
+      .filter(predicate)
       .collect(Collectors.toList());
   }
 
   /**
-   * Searches the {@link Iterable} for the first element accepted by the {@link Filter}.
+   * Searches the {@link Iterable} for the first element accepted by the {@link Predicate}.
    *
    * @param <T> {@link Class} type of the elements in the {@link Iterable}.
    * @param iterable {@link Iterable} collection of elements to search.
-   * @param filter {@link Filter} used to find the first element from the {@link Iterable}
-   * accepted by the {@link Filter}.
-   * @return the first element from the {@link Iterable} accepted by the {@link Filter},
+   * @param predicate {@link Predicate} used to find the first element from the {@link Iterable}
+   * accepted by the {@link Predicate}.
+   * @return the first element from the {@link Iterable} accepted by the {@link Predicate},
    * or {@literal null} if no such element is found.
-   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
-   * @see #findAll(Iterable, Filter)
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
+   * @see #findAll(Iterable, Predicate)
    * @see #nullSafeIterable(Iterable)
-   * @see org.cp.elements.lang.Filter
    * @see java.lang.Iterable
    */
-  public static <T> T findOne(Iterable<T> iterable, Filter<T> filter) {
+  public static <T> T findOne(Iterable<T> iterable, Predicate<T> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return StreamSupport.stream(nullSafeIterable(iterable).spliterator(), false)
-      .filter(filter::accept)
+      .filter(predicate)
       .findFirst()
       .orElse(null);
   }

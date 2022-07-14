@@ -16,6 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -69,9 +70,12 @@ public class CollectionUtilsTests {
 
   private <T> void assertShuffled(Iterable<T> source, Iterable<T> target) {
 
-    assertThat(source != null && source.iterator().hasNext()).as("'source' must not be null and must have elements")
+    assertThat(source != null && source.iterator().hasNext())
+      .describedAs("'source' must not be null and must have elements")
       .isTrue();
-    assertThat(target != null && target.iterator().hasNext()).as("'target' must not be null and must have elements")
+
+    assertThat(target != null && target.iterator().hasNext())
+      .describedAs("'target' must not be null and must have elements")
       .isTrue();
 
     Iterator<T> targetIterator = target.iterator();
@@ -722,19 +726,13 @@ public class CollectionUtilsTests {
     assertThat(CollectionUtils.count(asIterable(0, 1, 2), (element) -> false)).isEqualTo(0L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void countWithNullFilter() {
 
-    try {
-      CollectionUtils.count(Collections.emptyList(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.count(Collections.emptyList(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -826,19 +824,13 @@ public class CollectionUtilsTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterWithNullFilter() {
 
-    try {
-      CollectionUtils.filter(Collections.emptyList(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.filter(Collections.emptyList(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -1034,19 +1026,13 @@ public class CollectionUtilsTests {
     assertThat(CollectionUtils.<Object>findOne(null, (element) -> true)).isNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findWithNullFilter() {
 
-    try {
-      CollectionUtils.findOne(asIterable(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.findOne(asIterable(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -1147,19 +1133,13 @@ public class CollectionUtilsTests {
     assertThat(matches.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithNullFilter() {
 
-    try {
-      CollectionUtils.findAll(Collections.emptyList(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CollectionUtils.findAll(Collections.emptyList(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
