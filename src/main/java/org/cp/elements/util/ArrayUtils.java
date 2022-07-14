@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -627,6 +628,21 @@ public abstract class ArrayUtils {
   @NullSafe
   public static boolean isSizeOne(Object... array) {
     return nullSafeLength(array) == 1;
+  }
+
+  /**
+   * Determines whether the array is not {@literal null} and contains no {@literal null} elements.
+   *
+   * @param array array to evaluate.
+   * @return a boolean value indicating whether the array is not {@literal null}
+   * and contains no {@literal null} elements.
+   */
+  @NullSafe
+  public static boolean noNullElements(Object... array) {
+
+    return array != null && Arrays.stream(array)
+      .filter(Objects::nonNull)
+      .count() == array.length;
   }
 
   /**

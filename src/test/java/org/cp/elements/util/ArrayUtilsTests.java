@@ -1291,6 +1291,26 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  public void noNullElementsForArrayReturnsTrue() {
+    assertThat(ArrayUtils.noNullElements("test", "testing", "tested", "nil", "null", "", "  ")).isTrue();
+  }
+
+  @Test
+  public void noNullElementsWithArrayHavingAllNullElementsReturnsFalse() {
+    assertThat(ArrayUtils.noNullElements(null, null, null)).isFalse();
+  }
+
+  @Test
+  public void noNullElementsWithArrayHavingSingleNullElementReturnsFalse() {
+    assertThat(ArrayUtils.noNullElements(null, "test")).isFalse();
+  }
+
+  @Test
+  public void noNullElementsWithNullArrayReturnsFalse() {
+    assertThat(ArrayUtils.noNullElements((Object[]) null)).isFalse();
+  }
+
+  @Test
   public void nullSafeArrayWithArray() {
 
     String[] expectedArray = { "test", "testing", "tested" };
