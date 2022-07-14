@@ -543,6 +543,22 @@ public abstract class CollectionUtils {
   }
 
   /**
+   * Determines whether the given {@link Collection} is not {@literal null} and contains no {@literal null} elements.
+   *
+   * @param collection {@link Collection} to evaluate.
+   * @return a boolean value indicating whether the given {@link Collection} is not {@literal null}
+   * and contains no {@literal null} elements.
+   * @see java.util.Collection
+   */
+  @NullSafe
+  public static boolean noNullElements(@Nullable Collection<?> collection) {
+
+    return collection != null && collection.stream()
+      .filter(Objects::nonNull)
+      .count() == collection.size();
+  }
+
+  /**
    * Null-safe method returning the given {@link Collection} if not {@literal null} or an empty {@link Collection}
    * if {@literal null}.
    *
@@ -555,7 +571,6 @@ public abstract class CollectionUtils {
   public static @NotNull <T> Collection<T> nullSafeCollection(@Nullable Collection<T> collection) {
     return collection != null ? collection : Collections.emptyList();
   }
-
   /**
    * Null-safe method returning the given {@link Enumeration} or an empty {@link Enumeration} if null.
    *

@@ -1265,6 +1265,33 @@ public class CollectionUtilsTests {
   }
 
   @Test
+  public void noNullElementsForCollectionReturnsTrue() {
+
+    assertThat(CollectionUtils.noNullElements(Arrays.asList(1, 2, 3))).isTrue();
+    assertThat(CollectionUtils.noNullElements(new HashSet<>(
+      Arrays.asList("test", "testing", "tested", "nil", "null", "", "  ")))).isTrue();
+  }
+
+  @Test
+  public void noNullElementsWithCollectionContainingAllNullElementsReturnsFalse() {
+
+    assertThat(CollectionUtils.noNullElements(Arrays.asList(null, null, null))).isFalse();
+    assertThat(CollectionUtils.noNullElements(new HashSet<>(Arrays.asList(null, null)))).isFalse();
+  }
+
+  @Test
+  public void noNullElementsWithCollectionContainingSingleNullElementReturnsFalse() {
+
+    assertThat(CollectionUtils.noNullElements(Collections.singleton(null))).isFalse();
+    assertThat(CollectionUtils.noNullElements(Collections.singletonList(null))).isFalse();
+  }
+
+  @Test
+  public void noNullElementsWithNullCollectionReturnsFalse() {
+    assertThat(CollectionUtils.noNullElements(null)).isFalse();
+  }
+
+  @Test
   public void nullSafeCollectionWithCollection() {
 
     Collection<?> collection = asCollection(1, 2, 3);
