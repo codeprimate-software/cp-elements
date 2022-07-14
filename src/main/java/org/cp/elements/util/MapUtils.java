@@ -30,7 +30,9 @@ import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * An abstract utility {@link Class} providing methods and functionality for working with the Java Collections Framework
@@ -39,6 +41,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @author John J. Blum
  * @see java.util.Collections
  * @see java.util.Map
+ * @see java.util.Map.Entry
  * @see java.util.function.Predicate
  * @see java.util.stream.Collectors
  * @see org.cp.elements.lang.Constants
@@ -62,7 +65,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static <K, V> int count(Map<K, V> map) {
+  public static <K, V> int count(@Nullable Map<K, V> map) {
     return map != null ? map.size() : 0;
   }
 
@@ -80,7 +83,7 @@ public abstract class MapUtils {
    * @see java.util.function.Predicate
    * @see java.util.Map
    */
-  public static <K, V> long count(Map<K, V> map, Predicate<Entry<K, V>> predicate) {
+  public static <K, V> long count(@Nullable Map<K, V> map, @NotNull Predicate<Entry<K, V>> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -103,7 +106,7 @@ public abstract class MapUtils {
    * @see java.util.function.Predicate
    * @see java.util.Map
    */
-  public static <K, V> Map<K, V> filter(Map<K, V> map, Predicate<Map.Entry<K, V>> predicate) {
+  public static @NotNull <K, V> Map<K, V> filter(@NotNull Map<K, V> map, @NotNull Predicate<Map.Entry<K, V>> predicate) {
 
     Assert.notNull(map, "Map is required");
     Assert.notNull(predicate, "Predicate is required");
@@ -129,8 +132,8 @@ public abstract class MapUtils {
    * @see #filter(Map, Predicate)
    * @see java.util.Map
    */
-  public static <K, V> Map<K, V> filterAndTransform(Map<K, V> map,
-      FilteringTransformer<Map.Entry<K, V>> filteringTransformer) {
+  public static @NotNull <K, V> Map<K, V> filterAndTransform(@NotNull Map<K, V> map,
+      @NotNull FilteringTransformer<Map.Entry<K, V>> filteringTransformer) {
 
     Assert.notNull(map, "Map is required");
     Assert.notNull(filteringTransformer, "FilteringTransformer is required");
@@ -156,7 +159,7 @@ public abstract class MapUtils {
    * @see #filter(Map, Predicate)
    * @see java.util.Map
    */
-  public static <K, V> Map<K, V> findAll(Map<K, V> map, Predicate<Map.Entry<K, V>> predicate) {
+  public static @NotNull <K, V> Map<K, V> findAll(@NotNull Map<K, V> map, @NotNull Predicate<Map.Entry<K, V>> predicate) {
     return filter(map, predicate);
   }
 
@@ -168,7 +171,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static Map<String, String> fromAssociativeArray(String[] associativeArray) {
+  public static @NotNull Map<String, String> fromAssociativeArray(@Nullable String[] associativeArray) {
 
     Map<String, String> map = new HashMap<>(ArrayUtils.nullSafeLength(associativeArray));
 
@@ -205,7 +208,7 @@ public abstract class MapUtils {
    * @see #isNotEmpty(Map)
    */
   @NullSafe
-  public static boolean isEmpty(Map<?, ?> map) {
+  public static boolean isEmpty(@Nullable Map<?, ?> map) {
     return map == null || map.isEmpty();
   }
 
@@ -220,7 +223,7 @@ public abstract class MapUtils {
    * @see #isEmpty(Map)
    */
   @NullSafe
-  public static boolean isNotEmpty(Map<?, ?> map) {
+  public static boolean isNotEmpty(@Nullable Map<?, ?> map) {
     return !isEmpty(map);
   }
 
@@ -233,7 +236,8 @@ public abstract class MapUtils {
    * @see #isSizeOne(Map)
    * @see java.util.Map
    */
-  public static boolean isSize(Map<?, ?> map, int size) {
+  @NullSafe
+  public static boolean isSize(@Nullable Map<?, ?> map, int size) {
     return size(map) == size;
   }
 
@@ -246,7 +250,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static boolean isSizeOne(Map<?, ?> map) {
+  public static boolean isSizeOne(@Nullable Map<?, ?> map) {
     return size(map) == 1;
   }
 
@@ -261,7 +265,7 @@ public abstract class MapUtils {
    * @return a new {@link Map.Entry} initialized with the {@link Object key} and {@link Object value}.
    * @see java.util.Map.Entry
    */
-  public static <K, V> Map.Entry<K, V> newMapEntry(K key, V value) {
+  public static @NotNull <K, V> Map.Entry<K, V> newMapEntry(K key, V value) {
 
     return new Map.Entry<K, V>() {
 
@@ -293,7 +297,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static <K, V> Map<K, V> nullSafeMap(Map<K, V> map) {
+  public static @NotNull <K, V> Map<K, V> nullSafeMap(@Nullable Map<K, V> map) {
     return map != null ? map : Collections.emptyMap();
   }
 
@@ -307,7 +311,7 @@ public abstract class MapUtils {
    * @see #count(Map)
    */
   @NullSafe
-  public static int size(Map<?, ?> map) {
+  public static int size(@Nullable Map<?, ?> map) {
     return count(map);
   }
 
@@ -324,7 +328,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static String[] toAssociativeArray(Map<?, ?> map) {
+  public static String[] toAssociativeArray(@Nullable Map<?, ?> map) {
 
     List<String> list = new ArrayList<>(size(map));
 
@@ -344,7 +348,7 @@ public abstract class MapUtils {
    * @see java.util.Map
    */
   @NullSafe
-  public static String toString(Map<?, ?> map) {
+  public static @NotNull String toString(@Nullable Map<?, ?> map) {
 
     StringBuilder builder = new StringBuilder("[");
 
@@ -377,7 +381,7 @@ public abstract class MapUtils {
    * @see org.cp.elements.lang.Transformer
    * @see java.util.Map
    */
-  public static <K, V> Map<K, V> transform(Map<K, V> map, Transformer<V> transformer) {
+  public static @NotNull <K, V> Map<K, V> transform(@NotNull Map<K, V> map, @NotNull Transformer<V> transformer) {
 
     Assert.notNull(map, "Map is required");
     Assert.notNull(transformer, "Transformer is required");
