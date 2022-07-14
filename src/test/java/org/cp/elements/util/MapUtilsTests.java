@@ -16,6 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -99,7 +100,7 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    assertThat(MapUtils.count(map, (entry) -> true)).isEqualTo((long) map.size());
+    assertThat(MapUtils.count(map, (entry) -> true)).isEqualTo(map.size());
   }
 
   @Test
@@ -123,19 +124,13 @@ public class MapUtilsTests {
     assertThat(MapUtils.count(null, (entry) -> true)).isEqualTo(0L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void countNonNullMapWithNullFilter() {
 
-    try {
-      MapUtils.count(Collections.emptyMap(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.count(Collections.emptyMap(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -214,34 +209,22 @@ public class MapUtilsTests {
     assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterWithNullFilter() {
 
-    try {
-      MapUtils.filter(Collections.emptyMap(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.filter(Collections.emptyMap(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterWithNullMap() {
 
-    try {
-      MapUtils.filter(null, (entry) -> true);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Map is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.filter(null, (entry) -> true))
+      .withMessage("Map is required")
+      .withNoCause();
   }
 
   @Test
@@ -383,35 +366,23 @@ public class MapUtilsTests {
     assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterAndTransformWithNullFilter() {
 
-    try {
-      MapUtils.filterAndTransform(Collections.emptyMap(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("FilteringTransformer is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.filterAndTransform(Collections.emptyMap(), null))
+      .withMessage("FilteringTransformer is required")
+      .withNoCause();
   }
 
   @SuppressWarnings("unchecked")
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterAndTransformWithNullMap() {
 
-    try {
-      MapUtils.filterAndTransform(null, mock(FilteringTransformer.class));
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Map is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.filterAndTransform(null, mock(FilteringTransformer.class)))
+      .withMessage("Map is required")
+      .withNoCause();
   }
 
   @Test
@@ -480,34 +451,22 @@ public class MapUtilsTests {
     assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithNullFilter() {
 
-    try {
-      MapUtils.findAll(Collections.emptyMap(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Filter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.findAll(Collections.emptyMap(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void findAllWithNullMap() {
 
-    try {
-      MapUtils.findAll(null, (entry) -> true);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Map is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.findAll(null, (entry) -> true))
+      .withMessage("Map is required")
+      .withNoCause();
   }
 
   @Test
@@ -898,33 +857,21 @@ public class MapUtilsTests {
     assertThat(resultMap.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformWithNullMap() {
 
-    try {
-      MapUtils.transform(null, (value) -> null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Map is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.transform(null, (value) -> null))
+      .withMessage("Map is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void transformWithNullTransformer() {
 
-    try {
-      MapUtils.transform(Collections.emptyMap(), null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Transformer is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MapUtils.transform(Collections.emptyMap(), null))
+      .withMessage("Transformer is required")
+      .withNoCause();
   }
 }

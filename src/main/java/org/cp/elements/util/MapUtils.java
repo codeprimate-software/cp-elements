@@ -20,12 +20,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
@@ -38,9 +39,9 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @author John J. Blum
  * @see java.util.Collections
  * @see java.util.Map
+ * @see java.util.function.Predicate
  * @see java.util.stream.Collectors
  * @see org.cp.elements.lang.Constants
- * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.FilteringTransformer
  * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
@@ -66,49 +67,49 @@ public abstract class MapUtils {
   }
 
   /**
-   * Counts the number of {@link Map.Entry entries} in the {@link Map} accepted by the {@link Filter}.
+   * Counts the number of {@link Map.Entry entries} in the {@link Map} accepted by the {@link Predicate}.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
+   * @param <K> {@link Class type} of the key.
+   * @param <V> {@link Class type} of the value.
    * @param map {@link Map} to evaluate.
-   * @param filter {@link Filter} used to determine the number of {@link Map.Entry entries} in the {@link Map}
-   * accepted by the {@link Filter}; must not be {@literal null}.
+   * @param predicate {@link Predicate} used to determine the number of {@link Map.Entry entries} in the {@link Map}
+   * accepted by the {@link Predicate}; must not be {@literal null}.
    * @return an integer value indicating the number of {@link Map.Entry entries} in the {@link Map}
-   * accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is {@literal null}.
-   * @see org.cp.elements.lang.Filter
+   * accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
    * @see java.util.Map
    */
-  public static <K, V> long count(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
+  public static <K, V> long count(Map<K, V> map, Predicate<Entry<K, V>> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return nullSafeMap(map).entrySet().stream()
-      .filter(filter::accept)
+      .filter(predicate)
       .count();
   }
 
   /**
    * Returns a filtered {@link Map} containing only the {@link Map.Entry Key/Value entries} from the given {@link Map}
-   * that are accepted by the {@link Filter}.
+   * that are accepted by the {@link Predicate}.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
+   * @param <K> {@link Class type} of the key.
+   * @param <V> {@link Class type} of the value.
    * @param map {@link Map} to filter; must not be {@literal null}.
-   * @param filter {@link Filter} used to filter the {@link Map}; must not be {@literal null}.
+   * @param predicate {@link Predicate} used to filter the {@link Map}; must not be {@literal null}.
    * @return a filtered {@link Map} containing only the {@link Map.Entry Key/Value entries} from the given {@link Map}
-   * accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if either the {@link Map} or {@link Filter} are {@literal null}.
-   * @see org.cp.elements.lang.Filter
+   * accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if either the {@link Map} or {@link Predicate} are {@literal null}.
+   * @see java.util.function.Predicate
    * @see java.util.Map
    */
-  public static <K, V> Map<K, V> filter(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
+  public static <K, V> Map<K, V> filter(Map<K, V> map, Predicate<Map.Entry<K, V>> predicate) {
 
     Assert.notNull(map, "Map is required");
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return map.entrySet().stream()
-      .filter(filter::accept)
+      .filter(predicate)
       .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
@@ -116,8 +117,8 @@ public abstract class MapUtils {
    * Filters and transform the {@link Map.Entry entries} in the given {@link Map}
    * using the provided {@link FilteringTransformer}.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
+   * @param <K> {@link Class type} of the key.
+   * @param <V> {@link Class type} of the value.
    * @param map {@link Map} to filter and transform; must not be {@literal null}.
    * @param filteringTransformer {@link FilteringTransformer} used to filter and transform the given {@link Map};
    * must not be {@literal null}.
@@ -125,7 +126,7 @@ public abstract class MapUtils {
    * @throws IllegalArgumentException if the {@link Map} or {@link FilteringTransformer} are {@literal null}.
    * @see org.cp.elements.lang.FilteringTransformer
    * @see #transform(Map, Transformer)
-   * @see #filter(Map, Filter)
+   * @see #filter(Map, Predicate)
    * @see java.util.Map
    */
   public static <K, V> Map<K, V> filterAndTransform(Map<K, V> map,
@@ -141,22 +142,22 @@ public abstract class MapUtils {
   }
 
   /**
-   * Finds all {@link Map.Entry Key/Value entries} from the given {@link Map} accepted by the {@link Filter}.
+   * Finds all {@link Map.Entry Key/Value entries} from the given {@link Map} accepted by the {@link Predicate}.
    *
-   * @param <K> {@link Class} type of the key.
-   * @param <V> {@link Class} type of the value.
+   * @param <K> {@link Class type} of the key.
+   * @param <V> {@link Class type} of the value.
    * @param map {@link Map} to search; must not be {@literal null}.
-   * @param filter {@link Filter} used to find matching {@link Map.Entry Key/Value entries} from the {@link Map};
+   * @param predicate {@link Predicate} used to find matching {@link Map.Entry Key/Value entries} from the {@link Map};
    * must not be {@literal null}.
    * @return a new {@link Map} containing {@link Map.Entry Key/Value entries} from the given {@link Map}
-   * accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if either the {@link Map} or {@link Filter} are {@literal null}.
-   * @see org.cp.elements.lang.Filter
-   * @see #filter(Map, Filter)
+   * accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if either the {@link Map} or {@link Predicate} are {@literal null}.
+   * @see java.util.function.Predicate
+   * @see #filter(Map, Predicate)
    * @see java.util.Map
    */
-  public static <K, V> Map<K, V> findAll(Map<K, V> map, Filter<Map.Entry<K, V>> filter) {
-    return filter(map, filter);
+  public static <K, V> Map<K, V> findAll(Map<K, V> map, Predicate<Map.Entry<K, V>> predicate) {
+    return filter(map, predicate);
   }
 
   /**
