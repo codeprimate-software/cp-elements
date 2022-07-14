@@ -16,6 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
@@ -522,10 +523,13 @@ public class ArrayUtilsTests {
     assertThat(ArrayUtils.count(null, (number) -> true)).isEqualTo(0L);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void countWithNullFilter() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.count(new Object[0], null),
-      () -> "Filter is required");
+  @Test
+  public void countWithNullPredicate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.count(new Object[0], null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -710,16 +714,22 @@ public class ArrayUtilsTests {
     assertThat(actualStrings.length).isEqualTo(strings.length);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterNullArray() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.filter(null, (element) -> true),
-      () -> "Array is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.filter(null, (element) -> true))
+      .withMessage("Array is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void filterWithNullFilter() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.filter(new Object[0], null),
-      () -> "Filter is required");
+  @Test
+  public void filterWithNullPredicate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.filter(new Object[0], null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -800,10 +810,13 @@ public class ArrayUtilsTests {
       () -> "Array is required", () -> verifyNoInteractions(mockFilteringTransformer));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void filterAndTransformWithNullFilteringTransformer() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() ->
-      ArrayUtils.filterAndTransform(new Object[0], null), () -> "Filter is required");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.filterAndTransform(new Object[0], null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -873,10 +886,13 @@ public class ArrayUtilsTests {
     verifyNoInteractions(mockFilter);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void findWithNullFilter() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.findOne(toArray(), null),
-      () -> "Filter is required");
+  @Test
+  public void findWithNullPredicate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.findOne(toArray(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test
@@ -924,10 +940,13 @@ public class ArrayUtilsTests {
     assertThat(actualNumbers.isEmpty()).isTrue();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void findAllWithNullFilter() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> ArrayUtils.findAll(toArray(), null),
-      () -> "Filter is required");
+  @Test
+  public void findAllWithNullPredicate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayUtils.findAll(toArray(), null))
+      .withMessage("Predicate is required")
+      .withNoCause();
   }
 
   @Test

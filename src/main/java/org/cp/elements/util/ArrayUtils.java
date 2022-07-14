@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
-import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
@@ -52,10 +52,8 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.util.Iterator
  * @see java.util.List
  * @see java.util.function.Function
+ * @see java.util.function.Predicate
  * @see java.util.stream.Collectors
- * @see org.cp.elements.lang.Filter
- * @see org.cp.elements.lang.FilteringTransformer
- * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -243,22 +241,22 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Counts the number of elements in the array matching the criteria (rules) defined by the {@link Filter}.
+   * Counts the number of elements in the array matching the criteria (rules) defined by the {@link Predicate}.
    *
-   * @param <T> Class type of the elements in the array.
+   * @param <T> {@link Class type} of the elements in the array.
    * @param array array to search.
-   * @param filter {@link Filter} used to match elements in the array and tally the count.
+   * @param predicate {@link Predicate} used to match elements in the array and tally the count.
    * @return an integer value indicating the number of elements in the array matching the criteria (rules)
-   * defined by the {@link Filter}.
-   * @throws IllegalArgumentException if {@link Filter} is null.
-   * @see org.cp.elements.lang.Filter
+   * defined by the {@link Predicate}.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
    */
-  public static <T> long count(T[] array, Filter<T> filter) {
+  public static <T> long count(T[] array, Predicate<T> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return Arrays.stream(nullSafeArray(array))
-      .filter(filter::accept)
+      .filter(predicate)
       .count();
   }
 
@@ -336,25 +334,25 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Filters the elements in the array.
+   * Filters the elements in the array using the given {@link Predicate}.
    *
    * @param <T> Class type of the elements in the array.
-   * @param array array to filter.
-   * @param filter {@link Filter} used to filter the array elements.
+   * @param array array to predicate.
+   * @param predicate {@link Predicate} used to filter the array elements.
    * @return a new array of the array class component type containing only elements from the given array
-   * accepted by the {@link Filter}.
-   * @throws IllegalArgumentException if either the array or {@link Filter} are null.
+   * accepted by the {@link Predicate}.
+   * @throws IllegalArgumentException if either the array or {@link Predicate} are {@literal null}.
    * @see #filterAndTransform(Object[], FilteringTransformer)
-   * @see org.cp.elements.lang.Filter
+   * @see java.util.function.Predicate
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] filter(T[] array, Filter<T> filter) {
+  public static <T> T[] filter(T[] array, Predicate<T> predicate) {
 
     Assert.notNull(array, "Array is required");
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     List<T> arrayList = Arrays.stream(array)
-      .filter(filter::accept)
+      .filter(predicate)
       .collect(Collectors.toList());
 
     T[] newArray = (T[]) Array.newInstance(array.getClass().getComponentType(), arrayList.size());
@@ -372,8 +370,8 @@ public abstract class ArrayUtils {
    * (accepted) and transformed by the {@link FilteringTransformer}.
    * @throws IllegalArgumentException if either the array or {@link FilteringTransformer} are null.
    * @see org.cp.elements.lang.FilteringTransformer
-   * @see #filter(Object[], Filter)
    * @see #transform(Object[], Transformer)
+   * @see #filter(Object[], Predicate)
    */
   @SuppressWarnings("all")
   public static <T> T[] filterAndTransform(T[] array, FilteringTransformer<T> filteringTransformer) {
@@ -381,44 +379,45 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Searches the array returning all elements accepted by the {@link Filter}.
+   * Searches the array returning all elements accepted by the {@link Predicate}.
    *
    * @param <T> Class type of the elements in the array.
    * @param array array to search.
-   * @param filter {@link Filter} used to find all elements in the array accepted by the {@link Filter}.
-   * @return a {@link List} containing all the elements from the array accepted by the {@link Filter}
+   * @param predicate {@link Predicate} used to find all elements in the array accepted by the {@link Predicate}.
+   * @return a {@link List} containing all the elements from the array accepted by the {@link Predicate}
    * or an empty {@link List} if no elements were found.
-   * @throws IllegalArgumentException if {@link Filter} is null.
-   * @see org.cp.elements.lang.Filter
-   * @see #findOne(Object[], Filter)
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
+   * @see #findOne(Object[], Predicate)
    */
   @SuppressWarnings("all")
-  public static <T> List<T> findAll(T[] array, Filter<T> filter) {
+  public static <T> List<T> findAll(T[] array, Predicate<T> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return Arrays.stream(nullSafeArray(array))
-      .filter(filter::accept)
+      .filter(predicate)
       .collect(Collectors.toList());
   }
 
   /**
-   * Searches the array for the first element accepted by the {@link Filter}.
+   * Searches the array for the first element accepted by the {@link Predicate}.
    *
-   * @param <T> Class type of the elements in the array.
+   * @param <T> {@link Class type} of the elements in the array.
    * @param array array to search.
-   * @param filter {@link Filter} used to find the first element in the array accepted by the {@link Filter}.
-   * @return the first element from the array accepted by the {@link Filter} or null if no such element is found.
-   * @throws IllegalArgumentException if {@link Filter} is null.
-   * @see org.cp.elements.lang.Filter
-   * @see #findAll(Object[], Filter)
+   * @param predicate {@link Predicate} used to find the first element in the array accepted by the {@link Predicate}.
+   * @return the first element from the array accepted by the {@link Predicate} or {@literal null} if no such element
+   * is found.
+   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
+   * @see #findAll(Object[], Predicate)
    */
-  public static <T> T findOne(T[] array, Filter<T> filter) {
+  public static <T> T findOne(T[] array, Predicate<T> predicate) {
 
-    Assert.notNull(filter, "Filter is required");
+    Assert.notNull(predicate, "Predicate is required");
 
     return Arrays.stream(nullSafeArray(array))
-      .filter(filter::accept)
+      .filter(predicate)
       .findFirst()
       .orElse(null);
   }
