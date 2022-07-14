@@ -35,6 +35,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -73,7 +74,7 @@ public abstract class ArrayUtils {
    * @see #insert(Object, Object[], int)
    * @see #count(Object[])
    */
-  public static <T> T[] append(T element, T[] array) {
+  public static @NotNull <T> T[] append(@Nullable T element, @NotNull T[] array) {
     return insert(element, array, count(array));
   }
 
@@ -101,7 +102,7 @@ public abstract class ArrayUtils {
    * @see java.util.Enumeration
    */
   @NullSafe
-  public static <T> T[] asArray(Enumeration<T> enumeration, Class<T> componentType) {
+  public static @NotNull <T> T[] asArray(@Nullable Enumeration<T> enumeration, @Nullable Class<T> componentType) {
     return asArray(CollectionUtils.asIterable(enumeration), componentType);
   }
 
@@ -117,7 +118,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T[] asArray(Iterable<T> iterable, Class<T> componentType) {
+  public static @NotNull <T> T[] asArray(@Nullable Iterable<T> iterable, @Nullable Class<T> componentType) {
 
     List<T> arrayList = new ArrayList<>();
 
@@ -144,7 +145,7 @@ public abstract class ArrayUtils {
    * @see java.util.Iterator
    */
   @NullSafe
-  public static <T> T[] asArray(Iterator<T> iterator, Class<T> componentType) {
+  public static @NotNull <T> T[] asArray(@Nullable Iterator<T> iterator, @Nullable Class<T> componentType) {
     return asArray(CollectionUtils.asIterable(iterator), componentType);
   }
 
@@ -159,7 +160,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> Enumeration<T> asEnumeration(T... array) {
+  public static @NotNull <T> Enumeration<T> asEnumeration(T... array) {
 
     return array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
@@ -192,7 +193,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> Iterable<T> asIterable(T... array) {
+  public static @NotNull <T> Iterable<T> asIterable(T... array) {
     return () -> asIterator(array);
   }
 
@@ -207,7 +208,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> Iterator<T> asIterator(T... array) {
+  public static @NotNull <T> Iterator<T> asIterator(T... array) {
 
     return array == null ? Collections.emptyIterator() : new Iterator<T>() {
 
@@ -236,7 +237,7 @@ public abstract class ArrayUtils {
    * @return an integer value indicating the number of elements in the array (a.k.a. size).
    */
   @NullSafe
-  public static <T> int count(T[] array) {
+  public static <T> int count(@Nullable T[] array) {
     return array != null ? array.length : 0;
   }
 
@@ -251,7 +252,7 @@ public abstract class ArrayUtils {
    * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
    * @see java.util.function.Predicate
    */
-  public static <T> long count(T[] array, Predicate<T> predicate) {
+  public static <T> long count(@Nullable T[] array, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -274,7 +275,7 @@ public abstract class ArrayUtils {
    * @see #shallowCopy(Object[])
    */
   @SuppressWarnings("all")
-  public static <T> T[] deepCopy(T[] array) {
+  public static @NotNull <T> T[] deepCopy(@NotNull T[] array) {
 
     Assert.notNull(array, "Array is required");
 
@@ -296,7 +297,7 @@ public abstract class ArrayUtils {
    * @see #shallowCopy(Object[])
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] deepCopy(T[] array, Function<T, T> copyFunction) {
+  public static @NotNull <T> T[] deepCopy(@NotNull T[] array, @NotNull Function<T, T> copyFunction) {
 
     Assert.notNull(array, "Array is required");
     Assert.notNull(copyFunction, "Copy Function is required");
@@ -318,7 +319,7 @@ public abstract class ArrayUtils {
  	 * @param defaultArray array to return if the given {@code array} is {@literal null} or empty.
  	 * @return the given {@code array} if not {@literal null} or empty otherwise return the {@code defaultArray}.
  	 */
-  public static <T> T[] defaultIfEmpty(T[] array, T[] defaultArray) {
+  public static @Nullable <T> T[] defaultIfEmpty(@Nullable T[] array, @Nullable T[] defaultArray) {
     return isNotEmpty(array) ? array : defaultArray;
   }
 
@@ -329,7 +330,7 @@ public abstract class ArrayUtils {
    * @see #EMPTY_ARRAY
    */
   @NullSafe
-  public static Object[] emptyArray() {
+  public static @NotNull Object[] emptyArray() {
     return EMPTY_ARRAY.clone();
   }
 
@@ -346,7 +347,7 @@ public abstract class ArrayUtils {
    * @see java.util.function.Predicate
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] filter(T[] array, Predicate<T> predicate) {
+  public static @NotNull <T> T[] filter(@NotNull T[] array, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(array, "Array is required");
     Assert.notNull(predicate, "Predicate is required");
@@ -374,7 +375,9 @@ public abstract class ArrayUtils {
    * @see #filter(Object[], Predicate)
    */
   @SuppressWarnings("all")
-  public static <T> T[] filterAndTransform(T[] array, FilteringTransformer<T> filteringTransformer) {
+  public static @NotNull <T> T[] filterAndTransform(@NotNull T[] array,
+      @NotNull FilteringTransformer<T> filteringTransformer) {
+
     return transform(filter(array, filteringTransformer), filteringTransformer);
   }
 
@@ -391,7 +394,7 @@ public abstract class ArrayUtils {
    * @see #findOne(Object[], Predicate)
    */
   @SuppressWarnings("all")
-  public static <T> List<T> findAll(T[] array, Predicate<T> predicate) {
+  public static @NotNull <T> List<T> findAll(@Nullable T[] array, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -412,7 +415,7 @@ public abstract class ArrayUtils {
    * @see java.util.function.Predicate
    * @see #findAll(Object[], Predicate)
    */
-  public static <T> T findOne(T[] array, Predicate<T> predicate) {
+  public static @NotNull <T> T findOne(@Nullable T[] array, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -431,7 +434,8 @@ public abstract class ArrayUtils {
    * @return the element at the given index in the array.
    * @see #getElementAt(Object[], int, Object)
    */
-  public static <T> T getElementAt(T[] array, int index) {
+  @NullSafe
+  public static @Nullable <T> T getElementAt(@Nullable T[] array, int index) {
     return getElementAt(array, index, null);
   }
 
@@ -447,7 +451,8 @@ public abstract class ArrayUtils {
    * if the array is {@literal null}, empty or does not contain an element at the given index.
    * @see #getElementAt(Object[], int, Object)
    */
-  public static <T> T getElementAt(T[] array, int index, T defaultValue) {
+  @NullSafe
+  public static @Nullable <T> T getElementAt(@Nullable T[] array, int index, @Nullable T defaultValue) {
     return nullSafeLength(array) > index ? array[index] : defaultValue;
   }
 
@@ -462,7 +467,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> T getFirstElement(T... array) {
+  public static @Nullable <T> T getFirstElement(T... array) {
     return getFirstElement(array, null);
   }
 
@@ -476,7 +481,8 @@ public abstract class ArrayUtils {
    * is {@literal null} or empty.
    * @see #getElementAt(Object[], int, Object)
    */
-  public static <T> T getFirstElement(T[] array, T defaultValue) {
+  @NullSafe
+  public static @Nullable <T> T getFirstElement(@Nullable T[] array, @Nullable T defaultValue) {
     return getElementAt(array, 0, defaultValue);
   }
 
@@ -490,7 +496,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> T getLastElement(T... array) {
+  public static @Nullable <T> T getLastElement(T... array) {
     return getLastElement(array, null);
   }
 
@@ -504,7 +510,8 @@ public abstract class ArrayUtils {
    * is {@literal null} or empty.
    * @see #getElementAt(Object[], int, Object)
    */
-  public static <T> T getLastElement(T[] array, T defaultValue) {
+  @NullSafe
+  public static @Nullable <T> T getLastElement(@Nullable T[] array, @Nullable T defaultValue) {
     return getElementAt(array, Math.max(0, nullSafeLength(array) - 1), defaultValue);
   }
 
@@ -518,7 +525,7 @@ public abstract class ArrayUtils {
    * if {@code element} could not be found.
    */
   @NullSafe
-  public static <T> int indexOf(T[] array, T element) {
+  public static <T> int indexOf(@Nullable T[] array, @Nullable T element) {
 
     for (int index = 0, length = nullSafeLength(array); index < length; index++) {
       if (ObjectUtils.equalsIgnoreNull(array[index], element)) {
@@ -543,7 +550,7 @@ public abstract class ArrayUtils {
    * @see #append(Object, Object[])
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] insert(T element, T[] array, int index) {
+  public static @NotNull <T> T[] insert(@Nullable T element, @NotNull T[] array, int index) {
 
     Assert.notNull(array, "Array is required");
 
@@ -580,7 +587,7 @@ public abstract class ArrayUtils {
    * @see #count(Object[])
    */
   @NullSafe
-  public static boolean isEmpty(Object[] array) {
+  public static boolean isEmpty(@Nullable Object[] array) {
     return count(array) == 0;
   }
 
@@ -593,7 +600,7 @@ public abstract class ArrayUtils {
    * @see #isEmpty(Object[])
    */
   @NullSafe
-  public static boolean isNotEmpty(Object[] array) {
+  public static boolean isNotEmpty(@Nullable Object[] array) {
     return !isEmpty(array);
   }
 
@@ -632,7 +639,7 @@ public abstract class ArrayUtils {
    * @see #componentType(Object[])
    */
   @NullSafe
-  public static <T> T[] nullSafeArray(T[] array) {
+  public static @NotNull <T> T[] nullSafeArray(@Nullable T[] array) {
     return nullSafeArray(array, componentType(array));
   }
 
@@ -648,13 +655,12 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T[] nullSafeArray(T[] array, Class<?> componentType) {
+  public static @NotNull<T> T[] nullSafeArray(@Nullable T[] array, @Nullable Class<?> componentType) {
     return array != null ? array : (T[]) Array.newInstance(ObjectUtils.returnFirstNonNullValue(componentType, Object.class), 0);
   }
 
-  /* non-Javadoc */
   @NullSafe
-  static <T> Class<?> componentType(T[] array) {
+  static @NotNull <T> Class<?> componentType(@Nullable T[] array) {
     return array != null ? array.getClass().getComponentType() : Object.class;
   }
 
@@ -668,7 +674,7 @@ public abstract class ArrayUtils {
    * @see #count(Object[])
    */
   @NullSafe
-  public static <T> int nullSafeLength(T[] array) {
+  public static <T> int nullSafeLength(@Nullable T[] array) {
     return count(array);
   }
 
@@ -682,7 +688,7 @@ public abstract class ArrayUtils {
    * @throws IllegalArgumentException if the array is null.
    * @see #insert(Object, Object[], int)
    */
-  public static <T> T[] prepend(T element, T[] array) {
+  public static @NotNull <T> T[] prepend(@Nullable T element, @NotNull T[] array) {
     return insert(element, array, 0);
   }
 
@@ -697,7 +703,7 @@ public abstract class ArrayUtils {
    * @throws ArrayIndexOutOfBoundsException if the {@code index} is not valid.
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] remove(T[] array, int index) {
+  public static @NotNull <T> T[] remove(@NotNull T[] array, int index) {
 
     Assert.notNull(array, "Array is required");
 
@@ -730,7 +736,7 @@ public abstract class ArrayUtils {
    * @see #deepCopy(Object[])
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] shallowCopy(T[] array) {
+  public static @NotNull <T> T[] shallowCopy(@NotNull T[] array) {
 
     Assert.notNull(array, "Array is required");
 
@@ -750,8 +756,7 @@ public abstract class ArrayUtils {
    * @return the array of elements shuffled.
    * @see #isNotEmpty(Object[])
    */
-  @NullSafe
-  public static <T> T[] shuffle(T[] array) {
+  public static @NotNull <T> T[] shuffle(@NotNull T[] array) {
 
     if (isNotEmpty(array)) {
 
@@ -777,7 +782,7 @@ public abstract class ArrayUtils {
    * @see #sort(Object[], Comparator)
    * @see java.lang.Comparable
    */
-  public static <T extends Comparable<T>> T[] sort(T[] array) {
+  public static @NotNull <T extends Comparable<T>> T[] sort(@NotNull T[] array) {
     return sort(array, Comparable::compareTo);
   }
 
@@ -790,7 +795,7 @@ public abstract class ArrayUtils {
    * @return the given array sorted.
    * @see java.util.Comparator
    */
-  public static <T> T[] sort(T[] array, Comparator<T> comparator) {
+  public static @NotNull <T> T[] sort(@NotNull T[] array, @NotNull Comparator<T> comparator) {
 
     Arrays.sort(array, comparator);
 
@@ -808,7 +813,7 @@ public abstract class ArrayUtils {
    * @throws NullPointerException if either the array or indices are null.
    */
   @SuppressWarnings("unchecked")
-  public static <T> T[] subArray(T[] array, int... indices) {
+  public static @NotNull <T> T[] subArray(@NotNull T[] array, int... indices) {
 
     List<T> subArrayList = new ArrayList<>(indices.length);
 
@@ -830,7 +835,7 @@ public abstract class ArrayUtils {
    * @throws ArrayIndexOutOfBoundsException if the indexes are not valid indexes in the array.
    * @throws NullPointerException if the array is null.
    */
-  public static <T> T[] swap(T[] array, int indexOne, int indexTwo) {
+  public static @NotNull <T> T[] swap(@NotNull T[] array, int indexOne, int indexTwo) {
 
     T elementAtIndexOne = array[indexOne];
 
@@ -847,7 +852,7 @@ public abstract class ArrayUtils {
    * @return a {@link String} array for the given {@link Object} array.
    */
   @NullSafe
-  public static String[] toStringArray(Object... array) {
+  public static @NotNull String[] toStringArray(Object... array) {
 
     String[] stringArray = new String[nullSafeLength(array)];
 
@@ -870,7 +875,7 @@ public abstract class ArrayUtils {
    * @throws IllegalArgumentException if either the array or {@link Transformer} are null.
    * @see org.cp.elements.lang.Transformer
    */
-  public static <T> T[] transform(T[] array, Transformer<T> transformer) {
+  public static @NotNull <T> T[] transform(@NotNull T[] array, @NotNull Transformer<T> transformer) {
 
     Assert.notNull(array, "Array is required");
     Assert.notNull(transformer, "Transformer is required");

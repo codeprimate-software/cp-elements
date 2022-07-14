@@ -37,6 +37,7 @@ import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.Renderer;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.ToStringRenderer;
@@ -76,7 +77,7 @@ public abstract class CollectionUtils {
    * @see java.util.Collection
    */
   @SuppressWarnings("unchecked")
-  public static <E, T extends Collection<E>> T addAll(T collection, E... array) {
+  public static @NotNull <E, T extends Collection<E>> T addAll(@NotNull T collection, E... array) {
 
     Assert.notNull(collection, "Collection is required");
 
@@ -98,7 +99,7 @@ public abstract class CollectionUtils {
  	 * @see java.util.Collection
  	 * @see java.lang.Iterable
  	 */
- 	public static <E, T extends Collection<E>> T addAll(T collection, Iterable<E> iterable) {
+ 	public static @NotNull <E, T extends Collection<E>> T addAll(@NotNull T collection, Iterable<E> iterable) {
 
  		Assert.notNull(collection, "Collection is required");
 
@@ -122,7 +123,7 @@ public abstract class CollectionUtils {
    * @see java.util.Iterator
    */
   @NullSafe
-  public static <T> Enumeration<T> asEnumeration(Iterator<T> iterator) {
+  public static @NotNull <T> Enumeration<T> asEnumeration(@Nullable Iterator<T> iterator) {
 
     return iterator == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
@@ -149,7 +150,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static <T> Iterable<T> asIterable(Enumeration<T> enumeration) {
+  public static @NotNull <T> Iterable<T> asIterable(@Nullable Enumeration<T> enumeration) {
     return () -> asIterator(enumeration);
   }
 
@@ -164,7 +165,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static <T> Iterable<T> asIterable(Iterator<T> iterator) {
+  public static @NotNull <T> Iterable<T> asIterable(@Nullable Iterator<T> iterator) {
     return () -> nullSafeIterator(iterator);
   }
 
@@ -180,7 +181,7 @@ public abstract class CollectionUtils {
    * @see java.util.Iterator
    */
   @NullSafe
-  public static <T> Iterator<T> asIterator(Enumeration<T> enumeration) {
+  public static @NotNull <T> Iterator<T> asIterator(@Nullable Enumeration<T> enumeration) {
 
     return enumeration == null ? Collections.emptyIterator() : new Iterator<T>() {
 
@@ -207,7 +208,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> List<T> asList(T... array) {
+  public static @NotNull <T> List<T> asList(T... array) {
     return new ArrayList<>(Arrays.asList(ArrayUtils.nullSafeArray(array)));
   }
 
@@ -222,7 +223,7 @@ public abstract class CollectionUtils {
    * @see java.util.List
    */
   @NullSafe
-  public static <T> List<T> asList(Iterable<T> iterable) {
+  public static @NotNull <T> List<T> asList(@Nullable Iterable<T> iterable) {
 
     return iterable instanceof Collection
       ? new ArrayList<>((Collection<T>) iterable)
@@ -240,7 +241,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   @SafeVarargs
-  public static <T> Set<T> asSet(T... elements) {
+  public static @NotNull <T> Set<T> asSet(T... elements) {
     return Arrays.stream(ArrayUtils.nullSafeArray(elements)).collect(Collectors.toSet());
   }
 
@@ -255,7 +256,7 @@ public abstract class CollectionUtils {
    * @see java.util.Set
    */
   @NullSafe
-  public static <T> Set<T> asSet(Iterable<T> iterable) {
+  public static @NotNull <T> Set<T> asSet(@Nullable Iterable<T> iterable) {
 
     return iterable instanceof Collection
       ? new HashSet<>((Collection<T>) iterable)
@@ -273,7 +274,7 @@ public abstract class CollectionUtils {
    * @see java.util.Collection#contains(Object)
    */
   @NullSafe
-  public static boolean containsAny(Collection<?> collection, Object... elements) {
+  public static boolean containsAny(@Nullable Collection<?> collection, Object... elements) {
 
     if (Objects.nonNull(collection)) {
       for (Object element : ArrayUtils.nullSafeArray(elements)) {
@@ -301,11 +302,11 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static long count(Iterable<?> iterable) {
+  public static long count(@Nullable Iterable<?> iterable) {
 
     return iterable instanceof Collection
       ? ((Collection<?>) iterable).size()
-      : count(iterable, (element) -> true);
+      : count(iterable, element -> true);
   }
 
   /**
@@ -322,7 +323,7 @@ public abstract class CollectionUtils {
    * @see #nullSafeIterable(Iterable)
    * @see java.lang.Iterable
    */
-  public static <T> long count(Iterable<T> iterable, Predicate<T> predicate) {
+  public static <T> long count(@Nullable Iterable<T> iterable, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -341,7 +342,7 @@ public abstract class CollectionUtils {
  	 * @return {@code iterable} if not {@literal null} or empty otherwise return {@code defaultIterable}.
  	 * @see java.lang.Iterable
  	 */
-  public static <E, T extends Iterable<E>> T defaultIfEmpty(T iterable, T defaultIterable) {
+  public static @Nullable <E, T extends Iterable<E>> T defaultIfEmpty(@Nullable T iterable, @Nullable T defaultIterable) {
     return iterable != null && iterable.iterator().hasNext() ? iterable : defaultIterable;
   }
 
@@ -354,7 +355,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static <T> Iterable<T> emptyIterable() {
+  public static @NotNull <T> Iterable<T> emptyIterable() {
     return Collections::emptyIterator;
   }
 
@@ -370,7 +371,7 @@ public abstract class CollectionUtils {
    * @see java.util.function.Predicate
    * @see java.util.Collection
    */
-  public static <T> Collection<T> filter(Collection<T>  collection, Predicate<T> predicate) {
+  public static @NotNull <T> Collection<T> filter(@NotNull Collection<T>  collection, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(predicate, "Predicate is required");
@@ -392,8 +393,8 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.FilteringTransformer
    * @see java.util.Collection
    */
-  public static <T> Collection<T> filterAndTransform(Collection<T> collection,
-      FilteringTransformer<T> filteringTransformer) {
+  public static @NotNull <T> Collection<T> filterAndTransform(@NotNull Collection<T> collection,
+      @NotNull FilteringTransformer<T> filteringTransformer) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(filteringTransformer, "FilteringTransformer is required");
@@ -419,7 +420,7 @@ public abstract class CollectionUtils {
    * @see #nullSafeIterable(Iterable)
    * @see java.lang.Iterable
    */
-  public static <T> List<T> findAll(Iterable<T> iterable, Predicate<T> predicate) {
+  public static @NotNull <T> List<T> findAll(@Nullable Iterable<T> iterable, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -443,7 +444,7 @@ public abstract class CollectionUtils {
    * @see #nullSafeIterable(Iterable)
    * @see java.lang.Iterable
    */
-  public static <T> T findOne(Iterable<T> iterable, Predicate<T> predicate) {
+  public static @Nullable <T> T findOne(@Nullable Iterable<T> iterable, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
@@ -494,7 +495,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static boolean isEmpty(Iterable<?> iterable) {
+  public static boolean isEmpty(@Nullable Iterable<?> iterable) {
     return iterable == null || !iterable.iterator().hasNext();
   }
 
@@ -509,7 +510,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static boolean isNotEmpty(Iterable<?> iterable) {
+  public static boolean isNotEmpty(@Nullable Iterable<?> iterable) {
     return !isEmpty(iterable);
   }
 
@@ -523,7 +524,7 @@ public abstract class CollectionUtils {
    * @see #isSizeOne(Collection)
    * @see java.util.Collection
    */
-  public static boolean isSize(Collection<?> collection, int size) {
+  public static boolean isSize(@Nullable Collection<?> collection, int size) {
     return nullSafeSize(collection) == size;
   }
 
@@ -537,7 +538,7 @@ public abstract class CollectionUtils {
    * @see java.util.Collection
    */
   @NullSafe
-  public static boolean isSizeOne(Collection<?> collection) {
+  public static boolean isSizeOne(@Nullable Collection<?> collection) {
     return isSize(collection, 1);
   }
 
@@ -551,7 +552,7 @@ public abstract class CollectionUtils {
    * @see java.util.Collection
    */
   @NullSafe
-  public static <T> Collection<T> nullSafeCollection(Collection<T> collection) {
+  public static @NotNull <T> Collection<T> nullSafeCollection(@Nullable Collection<T> collection) {
     return collection != null ? collection : Collections.emptyList();
   }
 
@@ -565,7 +566,7 @@ public abstract class CollectionUtils {
    * @see java.util.Enumeration
    */
   @NullSafe
-  public static <T> Enumeration<T> nullSafeEnumeration(Enumeration<T> enumeration) {
+  public static @NotNull <T> Enumeration<T> nullSafeEnumeration(@Nullable Enumeration<T> enumeration) {
     return enumeration != null ? enumeration : Collections.emptyEnumeration();
   }
 
@@ -579,7 +580,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static <T> Iterable<T> nullSafeIterable(Iterable<T> iterable) {
+  public static @NotNull <T> Iterable<T> nullSafeIterable(@Nullable Iterable<T> iterable) {
     return iterable != null ? iterable : emptyIterable();
   }
 
@@ -593,7 +594,7 @@ public abstract class CollectionUtils {
    * @see java.util.Iterator
    */
   @NullSafe
-  public static <T> Iterator<T> nullSafeIterator(Iterator<T> iterator) {
+  public static @NotNull <T> Iterator<T> nullSafeIterator(@Nullable Iterator<T> iterator) {
     return iterator != null ? iterator : Collections.emptyIterator();
   }
 
@@ -607,7 +608,7 @@ public abstract class CollectionUtils {
    * @see java.util.List
    */
   @NullSafe
-  public static <T> List<T> nullSafeList(List<T> list) {
+  public static @NotNull <T> List<T> nullSafeList(@Nullable List<T> list) {
     return list != null ? list : Collections.emptyList();
   }
 
@@ -621,7 +622,7 @@ public abstract class CollectionUtils {
    * @see java.util.Set
    */
   @NullSafe
-  public static <T> Set<T> nullSafeSet(Set<T> set) {
+  public static @NotNull <T> Set<T> nullSafeSet(@Nullable Set<T> set) {
     return set != null ? set : Collections.emptySet();
   }
 
@@ -634,7 +635,7 @@ public abstract class CollectionUtils {
    * @see java.util.Collection#size()
    */
   @NullSafe
-  public static int nullSafeSize(Collection<?> collection) {
+  public static int nullSafeSize(@Nullable Collection<?> collection) {
     return collection != null ? collection.size() : 0;
   }
 
@@ -649,8 +650,7 @@ public abstract class CollectionUtils {
    * @see #isNotEmpty(Iterable)
    * @see java.util.List
    */
-  @NullSafe
-  public static <T> List<T> shuffle(List<T> list) {
+  public static @Nullable <T> List<T> shuffle(@Nullable List<T> list) {
 
     if (isNotEmpty(list)) {
 
@@ -676,7 +676,7 @@ public abstract class CollectionUtils {
    * @throws IndexOutOfBoundsException if the indices are not valid indexes in the {@link List}.
    * @see java.util.List
    */
-  public static <T> List<T> subList(List<T> list, int... indices) {
+  public static @NotNull <T> List<T> subList(@NotNull List<T> list, int... indices) {
 
     Assert.notNull(list, "List is required");
     Assert.notNull(indices, "Indices are required");
@@ -703,7 +703,7 @@ public abstract class CollectionUtils {
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static <T> T[] toArray(Collection<T> collection, Class<T> componentType) {
+  public static @NotNull <T> T[] toArray(@Nullable Collection<T> collection, @Nullable Class<T> componentType) {
 
     Object[] array = (Object[]) Array.newInstance(componentType, nullSafeSize(collection));
 
@@ -722,7 +722,7 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static String toString(Iterable<?> iterable) {
+  public static @NotNull String toString(@Nullable Iterable<?> iterable) {
     return toString(iterable, new ToStringRenderer<>());
   }
 
@@ -737,9 +737,11 @@ public abstract class CollectionUtils {
    * @see java.lang.Iterable
    */
   @NullSafe
-  public static <T> String toString(Iterable<T> iterable, Renderer<T> renderer) {
+  public static <T> String toString(@Nullable Iterable<T> iterable, @NotNull Renderer<T> renderer) {
 
     StringBuilder buffer = new StringBuilder("[");
+
+    renderer = renderer != null ? renderer : new ToStringRenderer<>();
 
     int count = 0;
 
@@ -764,7 +766,7 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Transformer
    * @see java.util.Collection
    */
-  public static <T> Collection<T> transform(Collection<T> collection, Transformer<T> transformer) {
+  public static @NotNull <T> Collection<T> transform(@NotNull Collection<T> collection, @NotNull Transformer<T> transformer) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(transformer, "Transformer is required");
@@ -784,7 +786,7 @@ public abstract class CollectionUtils {
    * @throws IllegalArgumentException if {@link Iterator} is {@literal null}.
    * @see java.util.Iterator
    */
-  public static <T> Iterator<T> unmodifiableIterator(Iterator<T> iterator) {
+  public static @NotNull <T> Iterator<T> unmodifiableIterator(@NotNull Iterator<T> iterator) {
 
     Assert.notNull(iterator, "Iterator is required");
 
