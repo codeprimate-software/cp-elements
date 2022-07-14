@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -284,6 +285,25 @@ public abstract class MapUtils {
         throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
       }
     };
+  }
+
+  /**
+   * Determines whether the {@link Map} is not {@literal null} and contains no {@literal null}
+   * {@link Map.Entry Map Entries}.
+   *
+   * The {@link Map} contains no {@literal null} {@link Map.Entry Map Entries} is there does not exist a mapping
+   * where either the key or value, or both, are {@literal null}.
+   *
+   * @param map {@link Map} to evaluate.
+   * @return a boolean value indicating whether the {@link Map} is not {@literal null}
+   * and contains no {@literal null} {@link Map.Entry Map Entries}.
+   * @see java.util.Map
+   */
+  @NullSafe
+  public static boolean noNullEntries(@Nullable Map<?, ?> map) {
+
+    return !(map == null || map.entrySet().stream()
+      .anyMatch(mapEntry -> Objects.isNull(mapEntry.getKey()) || Objects.isNull(mapEntry.getValue())));
   }
 
   /**

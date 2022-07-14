@@ -677,6 +677,55 @@ public class MapUtilsTests {
   }
 
   @Test
+  public void noNullEntriesForMapReturnsTrue() {
+
+    Map<?, ?> map = MapBuilder.newHashMap()
+      .put("testkey", "testValue")
+      .put("nil", "nil")
+      .put("null", "null")
+      .put("", "")
+      .put("  ", "  ")
+      .build();
+
+    assertThat(MapUtils.noNullEntries(Collections.singletonMap("testKey", "mockValue"))).isTrue();
+    assertThat(MapUtils.noNullEntries(MapUtils.fromAssociativeArray(
+      new String [] { "keyOne=valueOne", "keyTwo=valueTwo" }))).isTrue();
+    assertThat(MapUtils.noNullEntries(map)).isTrue();
+  }
+
+  @Test
+  public void noNullEntriesWithMapHavingNullKeyReturnsFalse() {
+
+    Map<?, ?> map = MapBuilder.newHashMap()
+      .put("keyOne", "valueOne")
+      .put(null, "valueTwo")
+      .build();
+
+    assertThat(MapUtils.noNullEntries(map)).isFalse();
+  }
+
+  @Test
+  public void noNullEntriesWithMapHavingNullValueReturnsFalse() {
+
+    Map<?, ?> map = MapBuilder.newHashMap()
+      .put("keyOne", "valueOne")
+      .put("keyTwo", null)
+      .build();
+
+    assertThat(MapUtils.noNullEntries(map)).isFalse();
+  }
+
+  @Test
+  public void noNullEntriesWithMapHavingSingleNullEntryReturnsFalse() {
+    assertThat(MapUtils.noNullEntries(Collections.singletonMap(null, null))).isFalse();
+  }
+
+  @Test
+  public void noNullEntriesWithNullMap() {
+    assertThat(MapUtils.noNullEntries(null)).isFalse();
+  }
+
+  @Test
   public void nullSafeMapWithMap() {
 
     Map<Object, Object> map = Collections.singletonMap("one", 1);
