@@ -15,17 +15,25 @@
  */
 package org.cp.elements.lang.reflect;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodNotFoundException;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.BooleanUtils;
@@ -34,8 +42,11 @@ import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FluentApiExtension;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.ComposableFilter;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
@@ -49,15 +60,161 @@ import org.cp.elements.util.ComparatorUtils;
  * @see java.lang.reflect.Member
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
+ * @see java.util.Objects
+ * @see java.util.function.Predicate
  * @see org.cp.elements.lang.ClassUtils
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.FluentApiExtension
+ * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
- * @see org.cp.elements.util.stream.StreamUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class ReflectionUtils extends ClassUtils {
+
+  /**
+   * Determines if the given {@link Method} is {@literal overloaded} in its {@link Class type} hierarchy.
+   *
+   * @param method {@link MethodReference} referring to the {@link Method} to evaluate.
+   * @return a boolean value indicating whether the given {@link Method} is {@literal overloaded}
+   * in its {@link Class type} hierarchy.
+   * @see #overloadedMethodEquals(MethodReference, Method)
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
+   * @see java.lang.reflect.Method
+   */
+  @NullSafe
+  public static boolean isOverloaded(@Nullable MethodReference method) {
+    return method != null && resolveAllMatchingDeclaredMethods(method).stream()
+      .anyMatch(declaredMethod -> overloadedMethodEquals(method, declaredMethod));
+  }
+
+  /**
+   * Determines if the given {@link Method} is {@literal overridden} in its {@link Class type} hierarchy.
+   *
+   * @param method {@link MethodReference} referring to the {@link Method} to evaluate.
+   * @return a boolean value indicating whether the given {@link Method} is {@literal overridden}
+   * in its {@link Class type} hierarchy.
+   * @see #overriddenMethodEquals(MethodReference, Method)
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
+   * @see java.lang.reflect.Method
+   */
+  @NullSafe
+  public static boolean isOverridden(@Nullable MethodReference method) {
+    return method != null && resolveAllMatchingDeclaredMethods(method).stream()
+      .anyMatch(declaredMethod -> overriddenMethodEquals(method, declaredMethod));
+  }
+
+  private static boolean isMatchingMethods(@NotNull MethodReference methodOne, @NotNull Method methodTwo,
+      @NotNull BiPredicate<Class<?>[], Class<?>[]> methodParametersEqualityPredicate) {
+
+    // Null Method references are not equal even if both Method references are null
+    if (ArrayUtils.noNullElements(methodOne, methodTwo)) {
+
+      // Short circuit if the Method references refer to the same Object;
+      //  a Method is clearly equal to itself.
+      if (methodOne.get() == methodTwo) {
+        return true;
+      }
+
+      // Methods must have the same (equal) "name" (case-sensitive)
+      if (methodOne.getMethodName().equals(methodTwo.getName())) {
+
+        Class<?> methodOneDeclaredType = methodOne.fromType();
+        Class<?> methodTwoDeclaredType = methodTwo.getDeclaringClass();
+
+        // Methods must come from the same Class type hierarchy
+        // Clearly, two Methods with the same signature (name, then number, order and type of parameters)
+        //  cannot be declared in the same Class when overriding
+        // Two Methods with the same name but different parameters (number, order or type)
+        //  can be declared in the same Class when overloading
+        if (assignableTo(methodOneDeclaredType, methodTwoDeclaredType)) {
+
+          Class<?>[] methodOneParameterTypes = methodOne.getParameterTypes();
+          Class<?>[] methodTwoParameterTypes = methodTwo.getParameterTypes();
+
+          return methodParametersEqualityPredicate.test(methodOneParameterTypes, methodTwoParameterTypes);
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Determines whether the first {@link Method} is an {@literal overload} of the second {@link Method}.
+   *
+   * Overloading compliments a {@link Method}.
+   *
+   * @param methodOne first method {@link Method} in the equality comparison.
+   * @param methodTwo second method {@link Method} in the equality comparison.
+   * @return a boolean value indicating whether the first {@link Method}
+   * is an {@literal overload} of the second {@link Method}.
+   * @see java.lang.reflect.Method
+   */
+  protected static boolean overloadedMethodEquals(@NotNull MethodReference methodOne, @NotNull Method methodTwo) {
+
+    // Methods with the same name must have a different number, order or type of parameters.
+    BiPredicate<Class<?>[], Class<?>[]> methodParameterEqualityPredicate = Arrays::equals;
+
+    return methodOne.get() != methodTwo
+      && isMatchingMethods(methodOne, methodTwo, methodParameterEqualityPredicate.negate());
+  }
+
+  /**
+   * Determines whether the first {@link Method} is an {@literal override} of the second {@link Method}.
+   *
+   * Overriding hides a {@link Method}.
+   *
+   * @param methodOne first method {@link Method} in the equality comparison.
+   * @param methodTwo second method {@link Method} in the equality comparison.
+   * @return a boolean value indicating whether the first {@link Method}
+   * is an {@literal override} of the second {@link Method}.
+   * @see java.lang.reflect.Method
+   */
+  @NullSafe
+  protected static boolean overriddenMethodEquals(@NotNull MethodReference methodOne, @NotNull Method methodTwo) {
+    // Methods with the same name must have the same number, order and type of parameters.
+    return methodOne.get() != methodTwo
+      && isMatchingMethods(methodOne, methodTwo, Arrays::equals);
+  }
+
+  private static List<Method> resolveAllMatchingDeclaredMethods(@NotNull MethodReference methodReference) {
+
+    Predicate<Method> methodPredicate = Objects::nonNull;
+
+    methodPredicate = methodPredicate.and(target -> !target.equals(methodReference.get()));
+    methodPredicate = methodPredicate.and(target -> target.getName().equals(methodReference.getMethodName()));
+
+    return resolveAllMatchingDeclaredMethods(methodReference.fromType(), methodPredicate);
+  }
+
+  private static List<Method> resolveAllMatchingDeclaredMethods(@NotNull Class<?> type,
+      @NotNull Predicate<Method> methodPredicate) {
+
+    List<Method> matchingDeclaredMethods = new ArrayList<>();
+
+    if (isNonNullNonObjectType(type)) {
+
+      Arrays.stream(ArrayUtils.nullSafeArray(type.getDeclaredMethods(), Method.class))
+        .filter(methodPredicate)
+        .forEach(matchingDeclaredMethods::add);
+
+      for (Class<?> interfaceType : ArrayUtils.nullSafeArray(type.getInterfaces(), Class.class)) {
+        matchingDeclaredMethods.addAll(resolveAllMatchingDeclaredMethods(interfaceType, methodPredicate));
+      }
+
+      matchingDeclaredMethods.addAll(resolveAllMatchingDeclaredMethods(type.getSuperclass(), methodPredicate));
+    }
+
+    return matchingDeclaredMethods;
+  }
+
+  private static boolean isNonNullNonObjectType(@Nullable Class<?> type) {
+    return !(type == null || Object.class.equals(type));
+  }
+
 
   /**
    * Determines the class types for all the given arguments.
@@ -605,8 +762,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Field
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MemberCallback
    */
-  public interface FieldCallback extends MemberCallback<Field> {
-  }
+  public interface FieldCallback extends MemberCallback<Field> { }
 
   /**
    * Callback interface for Methods declared and defined on a given class/object type.
@@ -614,7 +770,96 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Method
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MemberCallback
    */
-  public interface MethodCallback extends MemberCallback<Method> {
+  public interface MethodCallback extends MemberCallback<Method> { }
+
+  @FluentApi
+  public static class MethodResolver {
+
+    @Dsl
+    public static @NotNull MethodResolver fromType(@NotNull Class<?> type) {
+      return new MethodResolver(type);
+    }
+
+    private static @NotNull <T> T requireNonNull(@NotNull T target, String message, Object... args) {
+      Assert.notNull(target, message, args);
+      return target;
+    }
+
+    private final Class<?> referenceType;
+
+    protected MethodResolver(@NotNull Class<?> sourceType) {
+      this.referenceType = requireNonNull(sourceType, "Reference type is required");
+    }
+
+    protected @NotNull Class<?> getReferenceType() {
+      return this.referenceType;
+    }
+
+    @Dsl
+    public @NotNull MethodReference havingName(@NotNull String methodName) {
+      Assert.hasText(methodName, "Method name [%s] is required", methodName);
+      return new MethodReference(getReferenceType(), methodName);
+    }
+  }
+
+  @FluentApi
+  public static class MethodReference {
+
+    private final AtomicReference<Method> methodReference = new AtomicReference<>(null);
+
+    private final Class<?> referenceType;
+
+    private Class<?>[] parameterTypes;
+
+    private final String methodName;
+
+    private final Function<Class<?>, Method> safeGetMethod = type -> {
+
+      String methodName = getMethodName();
+      Class<?>[] parameterTypes = getParameterTypes();
+
+      try {
+        return type.getMethod(methodName, parameterTypes);
+      }
+      catch (NoSuchMethodException cause) {
+        throw newMethodNotFoundException(cause, "Method [%s] with parameters of type [%s] not found",
+          methodName, Arrays.toString(parameterTypes));
+      }
+    };
+
+    private MethodReference() {
+      this.referenceType = null;
+      this.methodName = null;
+    }
+
+    private MethodReference(@NotNull Class<?> referenceType, @NotNull String methodName) {
+      this.referenceType = referenceType;
+      this.methodName = methodName;
+    }
+
+    protected @NotNull String getMethodName() {
+      return this.methodName;
+    }
+
+    protected Class<?>[] getParameterTypes() {
+      return ArrayUtils.nullSafeArray(this.parameterTypes, Class.class);
+    }
+
+    public @NotNull Class<?> fromType() {
+      Class<?> referenceType = this.referenceType;
+      return referenceType != null ? referenceType : get().getDeclaringClass();
+    }
+
+    public @NotNull Method get() {
+      return this.methodReference.updateAndGet(method -> method != null ? method
+        : this.safeGetMethod.apply(this.referenceType));
+    }
+
+    @Dsl
+    public @NotNull MethodReference withParameterTypes(Class<?>... parameterTypes) {
+      this.parameterTypes = parameterTypes;
+      return this;
+    }
   }
 
   /**
