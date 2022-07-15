@@ -15,7 +15,10 @@
  */
 package org.cp.elements.lang.reflect;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newFieldAccessException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodNotFoundException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.lang.reflect.Field;
@@ -217,11 +220,12 @@ public abstract class ReflectionUtils extends ClassUtils {
 
 
   /**
-   * Determines the class types for all the given arguments.
+   * Determines the {@link Class types} for all the given arguments.
    *
-   * @param arguments the array of (object) arguments from which to determine their class types.
-   * @return an array of class types for each object in the array of arguments, or null if the given array is null.
-   * This method is careful to guard against null elements given a non-null array of arguments.
+   * @param arguments array of {@link Object arguments} from which to determine their {@link Class types}.
+   * @return an array of {@link Class types} for each {@link Object} in the array of arguments, or {@literal null}
+   * if the given array is {@literal null}. This method is careful to guard against {@literal null} elements when
+   * given a {@literal non-null} array of {@link Object arguments}.
    * @see org.cp.elements.lang.ClassUtils#getClass(Object)
    */
   @NullSafe
@@ -258,14 +262,14 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
-  public static <T> T getValue(Class<?> type, String fieldName, Class<T> fieldType) {
+  public static @Nullable <T> T getValue(@NotNull Class<?> type, @NotNull String fieldName, @NotNull Class<T> fieldType) {
 
     try {
       return getValue(null, getField(type, fieldName), fieldType);
     }
     catch (FieldNotFoundException cause) {
-      throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on class type (%2$s)!",
-        fieldName, type.getName()), cause);
+      throw newIllegalArgumentException(cause, "Field with name [%s] does not exist on class type [%s]",
+        fieldName, type.getName());
     }
   }
 
@@ -285,14 +289,14 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
-  public static <T> T getValue(Object obj, String fieldName, Class<T> fieldType) {
+  public static @Nullable <T> T getValue(@NotNull Object obj, @NotNull String fieldName, @NotNull Class<T> fieldType) {
 
     try {
       return getValue(obj, getField(obj.getClass(), fieldName), fieldType);
     }
     catch (FieldNotFoundException cause) {
-      throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on object of type (%2$s)!",
-        fieldName, obj.getClass().getName()), cause);
+      throw newIllegalArgumentException(cause, "Field with name [%s] does not exist on object of type [%s]",
+        fieldName, obj.getClass().getName());
     }
   }
 
@@ -305,26 +309,26 @@ public abstract class ReflectionUtils extends ClassUtils {
    * the field's declared type.
    * @param target the Object on which the field is defined.
    * @param field the specified Field from which to get the value.
-   * @param type the desired return type of the field's value; should be compatible with the field's declared type.
+   * @param fieldType the desired return type of the field's value; should be compatible with the field's declared type.
    * @return the value of the given field on the given object cast to the desired type.
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
    * @throws NullPointerException if the field or type parameter arguments are null.
    */
-  public static <T> T getValue(Object target, Field field, Class<T> type) {
+  public static @Nullable <T> T getValue(@Nullable Object target, @NotNull Field field, @NotNull Class<T> fieldType) {
 
     try {
       boolean currentAccessible = field.isAccessible();
       field.setAccessible(true);
       Object value = field.get(target);
       field.setAccessible(currentAccessible);
-      return type.cast(value);
+      return fieldType.cast(value);
     }
     catch (NullPointerException cause) {
       throw cause;
     }
     catch (Exception cause) {
-      throw new FieldAccessException(String.format("Failed to get value of field (%1$s) from %2$s type (%3$s)!",
-        field.getName(), BooleanUtils.toString(target == null, "class", "object of"), getClassName(target)), cause);
+      throw newFieldAccessException(cause, "Failed to get value of field [%s] from %s type [%s]", field.getName(),
+        BooleanUtils.toString(target == null, "class", "object of"), getClassName(target));
     }
   }
 
@@ -341,14 +345,14 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #setField(Object, java.lang.reflect.Field, Object)
    */
-  public static void setField(Class<?> type, String fieldName, Object value) {
+  public static void setField(@NotNull Class<?> type, @NotNull String fieldName, @Nullable Object value) {
 
     try {
       setField(null, getField(type, fieldName), value);
     }
     catch (FieldNotFoundException cause) {
-      throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on class type (%2$s)!",
-        fieldName, type.getName()), cause);
+      throw newIllegalArgumentException(cause, "Field with name [%s] does not exist on class type [%s]",
+        fieldName, type.getName());
     }
   }
 
@@ -365,14 +369,14 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #setField(Object, java.lang.reflect.Field, Object)
    */
-  public static void setField(Object obj, String fieldName, Object value) {
+  public static void setField(@NotNull Object obj, @NotNull String fieldName, @Nullable Object value) {
 
     try {
       setField(obj, getField(obj.getClass(), fieldName), value);
     }
     catch (FieldNotFoundException cause) {
-      throw new IllegalArgumentException(String.format("Field with name (%1$s) does not exist on object of type (%2$s)!",
-        fieldName, obj.getClass().getName()), cause);
+      throw newIllegalArgumentException(cause, "Field with name [%s] does not exist on object of type [%s]",
+        fieldName, obj.getClass().getName());
     }
   }
 
@@ -388,12 +392,13 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws NullPointerException if the field parameter argument is null.
    */
   @SuppressWarnings("all")
-  public static void setField(Object target, Field field, Object value) {
+  public static void setField(@Nullable Object target, @NotNull Field field, @Nullable Object value) {
 
     try {
-      Assert.isFalse(Modifier.isFinal(field.getModifiers()), new FieldAccessException(String.format(
-        "Cannot set the value of a final field (%1$s) on %2$s type (%3$s)!", field.getName(),
-          BooleanUtils.toString(target == null, "class", "object of"), field.getDeclaringClass().getName())));
+      Assert.isFalse(Modifier.isFinal(field.getModifiers()),
+        newFieldAccessException("Cannot set the value of a final field [%s] on %s type [%s]", field.getName(),
+          BooleanUtils.toString(target == null, "class", "object of"),
+            field.getDeclaringClass().getName()));
 
       boolean currentAccessible = field.isAccessible();
 
@@ -407,10 +412,10 @@ public abstract class ReflectionUtils extends ClassUtils {
     catch (NullPointerException cause) {
       throw cause;
     }
-    catch (Exception e) {
-      throw new FieldAccessException(String.format("Failed to set field (%1$s) to value (%2$s) on %3$s type (%4$s)!",
-        field.getName(), value, BooleanUtils.toString(target == null, "class", "object of"),
-          field.getDeclaringClass().getName()), e);
+    catch (Exception cause) {
+      throw newFieldAccessException(cause, "Failed to set field [%s] to value [%s] on %s type [%s]", field.getName(),
+        value, BooleanUtils.toString(target == null, "class", "object of"),
+          field.getDeclaringClass().getName());
     }
   }
 
@@ -425,7 +430,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethod(Class, String, Class[])
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static void invoke(Class<?> type, String methodName) {
+  public static void invoke(@NotNull Class<?> type, @NotNull String methodName) {
     invoke(type, methodName, null, null, Void.class);
   }
 
@@ -443,7 +448,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethod(Class, String, Class[])
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static void invoke(Class<?> type, String methodName, Object... arguments) {
+  public static void invoke(@NotNull Class<?> type, @NotNull String methodName, Object... arguments) {
     invoke(type, methodName, getArgumentTypes(arguments), arguments, Void.class);
   }
 
@@ -462,7 +467,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethod(Class, String, Class[])
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(Class<?> type, String methodName, Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Class<?> type, @NotNull String methodName, Class<T> returnType) {
     return invoke(type, methodName, null, null, returnType);
   }
 
@@ -484,7 +489,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(Class<?> type, String methodName, Object[] arguments, Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Class<?> type, @NotNull String methodName, Object[] arguments, Class<T> returnType) {
     return invoke(type, methodName, getArgumentTypes(arguments), arguments, returnType);
   }
 
@@ -505,7 +510,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static void invoke(Class<?> type, String methodName, Class<?>[] parameterTypes, Object... arguments) {
+  public static void invoke(@NotNull Class<?> type, @NotNull String methodName, Class<?>[] parameterTypes, Object... arguments) {
     invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, Void.class), arguments, Void.class);
   }
 
@@ -531,16 +536,16 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static <T> T invoke(Class<?> type, String methodName, Class<?>[] parameterTypes, Object[] arguments,
-      Class<T> returnType) {
+  public static <T> T invoke(@NotNull Class<?> type, @NotNull String methodName,
+      Class<?>[] parameterTypes, Object[] arguments, Class<T> returnType) {
 
     try {
       return invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, returnType),
         arguments, returnType);
     }
     catch (MethodNotFoundException cause) {
-      throw new IllegalArgumentException(String.format("No method with signature (%1$s) exists on class type (%2$s)!",
-        getMethodSignature(methodName, parameterTypes, returnType), type.getName()), cause);
+      throw newIllegalArgumentException(cause, "No method with signature [%s] exists on class type [%s]",
+        getMethodSignature(methodName, parameterTypes, returnType), type.getName());
     }
   }
 
@@ -555,7 +560,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static void invoke(Object obj, String methodName) {
+  public static void invoke(@NotNull Object obj, @NotNull String methodName) {
     invoke(obj, methodName, null, null, Void.class);
   }
 
@@ -573,7 +578,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static void invoke(Object obj, String methodName, Object... arguments) {
+  public static void invoke(@NotNull Object obj, @NotNull String methodName, Object... arguments) {
     invoke(obj, methodName, getArgumentTypes(arguments), arguments, Void.class);
   }
 
@@ -592,7 +597,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(Object obj, String methodName, Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Object obj, @NotNull String methodName, Class<T> returnType) {
     return invoke(obj, methodName, null, null, returnType);
   }
 
@@ -615,7 +620,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static <T> T invoke(Object obj, String methodName, Object[] arguments, Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Object obj, @NotNull String methodName, Object[] arguments, Class<T> returnType) {
     return invoke(obj, methodName, getArgumentTypes(arguments), arguments, returnType);
   }
 
@@ -637,7 +642,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static void invoke(Object obj, String methodName, Class<?>[] parameterTypes, Object... arguments) {
+  public static void invoke(@NotNull Object obj, @NotNull String methodName, Class<?>[] parameterTypes, Object... arguments) {
     invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, Void.class),
       arguments, Void.class);
   }
@@ -665,16 +670,16 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static <T> T invoke(Object obj, String methodName, Class<?>[] parameterTypes, Object[] arguments,
-      Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Object obj, @NotNull String methodName,
+      Class<?>[] parameterTypes, Object[] arguments, Class<T> returnType) {
 
     try {
       return invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, returnType),
         arguments, returnType);
     }
     catch (MethodNotFoundException cause) {
-      throw new IllegalArgumentException(String.format("No method with signature (%1$s) exists on object of type (%2$s)!",
-        getMethodSignature(methodName, parameterTypes, returnType), obj.getClass().getName()), cause);
+      throw newIllegalArgumentException(cause, "No method with signature [%s] exists on object of type [%s]",
+        getMethodSignature(methodName, parameterTypes, returnType), obj.getClass().getName());
     }
   }
 
@@ -698,7 +703,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see java.lang.reflect.Method#invoke(Object, Object...)
    * @see java.lang.reflect.Method#setAccessible(boolean)
    */
-  public static <T> T invoke(Object target, Method method, Object[] arguments, Class<T> returnType) {
+  public static <T> T invoke(@NotNull Object target, @NotNull Method method, Object[] arguments, Class<T> returnType) {
 
     try {
       boolean currentAccessible = method.isAccessible();
@@ -711,9 +716,9 @@ public abstract class ReflectionUtils extends ClassUtils {
       throw cause;
     }
     catch (Exception cause) {
-      throw new MethodInvocationException(String.format("Failed to invoke method (%1$s) on %2$s type (%3$s)!",
+      throw newMethodInvocationException(cause, "Failed to invoke method [%s] on %s type [%s]",
         getMethodSignature(method), BooleanUtils.toString(target == null, "class", "object of"),
-          method.getDeclaringClass().getName()), cause);
+          method.getDeclaringClass().getName());
     }
   }
 
@@ -726,7 +731,8 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see NullSafe
    */
-  @Dsl @NullSafe
+  @Dsl
+  @NullSafe
   public static WithFields withFields(Field... fields) {
     return new WithFields(fields);
   }
@@ -740,7 +746,8 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see NullSafe
    */
-  @Dsl @NullSafe
+  @Dsl
+  @NullSafe
   public static WithMethods withMethods(Method... methods) {
     return new WithMethods(methods);
   }
@@ -871,6 +878,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.reflect.ReflectionUtils.WithMethods
    * @see org.cp.elements.lang.FluentApiExtension
    */
+  @FluentApi
   public static abstract class WithExpression<T extends Member> implements FluentApiExtension {
 
     private volatile boolean accepted = false;
@@ -888,12 +896,12 @@ public abstract class ReflectionUtils extends ClassUtils {
       }
     }
 
-    protected Filter<T> getFilter() {
-      return ComposableFilter.and(defaultFilter, filter);
+    protected @NotNull Filter<T> getFilter() {
+      return ComposableFilter.and(this.defaultFilter, this.filter);
     }
 
-    protected Iterable<T> getMembers() {
-      return members;
+    protected @NotNull Iterable<T> getMembers() {
+      return this.members;
     }
 
     protected boolean accepts(T member) {
@@ -904,12 +912,18 @@ public abstract class ReflectionUtils extends ClassUtils {
       return localAccepted;
     }
 
-    public WithExpression<T> call(MemberCallback<T> callback) {
-      stream(getMembers()).filter(this::accepts).forEach(callback::with);
+    @Dsl
+    public @NotNull WithExpression<T> call(@NotNull MemberCallback<T> callback) {
+
+      stream(getMembers())
+        .filter(this::accepts)
+        .forEach(callback::with);
+
       return this;
     }
 
-    public WithExpression<T> matching(Filter<T> filter) {
+    @Dsl
+    public @NotNull WithExpression<T> matching(@Nullable Filter<T> filter) {
       this.filter = filter;
       return this;
     }
@@ -920,13 +934,15 @@ public abstract class ReflectionUtils extends ClassUtils {
       return new HashSet<>();
     }
 
-    public WithExpression<T> on(Object obj) {
+    @Dsl
+    public @NotNull WithExpression<T> on(@NotNull Object obj) {
       return on(ClassUtils.getClass(obj));
     }
 
-    public WithExpression<T> on(Class<?> type) {
+    @Dsl
+    public @NotNull WithExpression<T> on(@NotNull Class<?> type) {
 
-      Assert.notNull(type, "The class type must not be null!");
+      Assert.notNull(type, "Class type must not be null");
 
       while (type != null) {
         Collections.addAll(this.members, members(type));
@@ -936,10 +952,11 @@ public abstract class ReflectionUtils extends ClassUtils {
       return this;
     }
 
+    @Dsl
     @SuppressWarnings("all")
-    public WithExpression<T> throwing(RuntimeException cause) {
+    public @NotNull WithExpression<T> throwing(@NotNull RuntimeException cause) {
 
-      if (!accepted) {
+      if (!this.accepted) {
         throw cause;
       }
 
@@ -969,13 +986,15 @@ public abstract class ReflectionUtils extends ClassUtils {
      * @see java.lang.reflect.Field
      */
     @Override
-    protected Field[] members(Class<?> type) {
+    protected Field[] members(@NotNull Class<?> type) {
       return type.getDeclaredFields();
     }
 
     @Override
-    protected Set<Field> newMemberSet() {
+    protected @NotNull Set<Field> newMemberSet() {
+
       return new TreeSet<>(ComparatorUtils.nullSafeArgumentsComparator((Field field1, Field field2) -> {
+
         String fullyQualifiedFieldOneName = field1.getDeclaringClass().getName().concat(field1.getName());
         String fullyQualifiedFieldTwoName = field2.getDeclaringClass().getName().concat(field2.getName());
 
@@ -1006,7 +1025,7 @@ public abstract class ReflectionUtils extends ClassUtils {
      * @see java.lang.reflect.Field
      */
     @Override
-    protected Method[] members(Class<?> type) {
+    protected Method[] members(@NotNull Class<?> type) {
       return type.getDeclaredMethods();
     }
   }
