@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.ByteArrayInputStream;
@@ -28,10 +27,12 @@ import java.io.OutputStream;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The IOUtils class provides basic input and output utility operations.
+ * Abstract utility class used to perform basic input & output (I/O) operations.
  *
  * @author John J. Blum
  * @see java.io.ByteArrayInputStream
@@ -40,6 +41,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @see java.io.InputStream
  * @see java.io.ObjectInputStream
  * @see java.io.ObjectOutputStream
+ * @see java.io.ObjectStreamClass
  * @see java.io.OutputStream
  * @since 1.0.0
  */
@@ -57,7 +59,7 @@ public abstract class IOUtils {
    * @see java.io.Closeable
    */
   @NullSafe
-  public static boolean close(Closeable obj) {
+  public static boolean close(@Nullable Closeable obj) {
 
     if (obj != null) {
       try {
@@ -80,7 +82,7 @@ public abstract class IOUtils {
    * @see java.io.InputStream
    * @see java.io.OutputStream
    */
-  public static void copy(InputStream in, OutputStream out) throws IOException {
+  public static void copy(@NotNull InputStream in, @NotNull OutputStream out) throws IOException {
 
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
@@ -98,7 +100,7 @@ public abstract class IOUtils {
    * @return a boolean value indicating whether the I/O operation was successful or not.
    * @see org.cp.elements.io.IOUtils.IoExceptionThrowingOperation
    */
-  public static boolean doSafeIo(IoExceptionThrowingOperation operation) {
+  public static boolean doSafeIo(@NotNull IoExceptionThrowingOperation operation) {
 
     try {
       operation.doIo();
@@ -214,7 +216,7 @@ public abstract class IOUtils {
    * @see java.io.InputStream
    */
   @NullSafe
-  public static byte[] toByteArray(InputStream in) throws IOException {
+  public static byte[] toByteArray(@NotNull InputStream in) throws IOException {
 
     Assert.notNull(in, "The InputStream to read bytes from cannot be null");
 
