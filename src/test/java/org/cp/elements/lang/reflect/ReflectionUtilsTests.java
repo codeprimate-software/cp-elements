@@ -17,18 +17,28 @@ package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.test.AbstractBaseTestSuite;
@@ -36,7 +46,12 @@ import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Unit Tests for {@link ReflectionUtils}.
@@ -55,6 +70,43 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
   private static final AtomicReference<String> METHOD_NAME = new AtomicReference<>();
 
+  private static final List<Line> reflectionUtilsLines = new ArrayList<>();
+
+  @BeforeClass
+  public static void setupBeforeTests() {
+
+    try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(newInputStream(ReflectionUtils.class)))) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        reflectionUtilsLines.add(Line.with(reader.getLineNumber(), line));
+      }
+    }
+    catch (IOException ignore) { }
+  }
+
+  private static InputStream newInputStream(Class<?> type) throws FileNotFoundException {
+
+    String sourceFilename = type.getSimpleName().concat(FileSystemUtils.JAVA_FILE_EXTENSION);
+
+    File sourceFile = FileSystemUtils.search(sourceFilename);
+
+    //System.err.printf("File [%s]%n", sourceFile);
+
+    return new FileInputStream(sourceFile);
+  }
+
+  @SuppressWarnings("unused")
+  private static void printReflectionUtilsClassSource() {
+
+    System.err.println("*****");
+
+    reflectionUtilsLines.stream()
+      .map(Line::toString)
+      .forEach(System.out::println);
+
+    System.err.println("*****");
+  }
+
   @Before
   public void setup() {
     setLogLevel(Level.INFO);
@@ -64,6 +116,17 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
   public void tearDown() {
     METHOD_NAME.set(null);
     SuperType.stringField = null;
+  }
+
+  private int getLineNumberForLine(String line) {
+
+    //printReflectionUtilsClassSource();
+
+    return reflectionUtilsLines.stream()
+      .filter(reflectionUtilsLine -> reflectionUtilsLine.getContent().contains(line))
+      .findFirst()
+      .map(Line::getNumber)
+      .orElse(0);
   }
 
   @Test
@@ -163,8 +226,8 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
     catch (NullPointerException expected) {
 
-      // for line "boolean currentAccessible = field.isAccessible();" in getValue(:Object, :Field, :Class<T>):T
-      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(320);
+      assertThat(expected.getStackTrace()[0].getLineNumber())
+        .isEqualTo(getLineNumberForLine("boolean currentAccessible = field.isAccessible();"));
 
       throw expected;
     }
@@ -310,8 +373,8 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
     catch (NullPointerException expected) {
 
-      // for line "Assert.isFalse(Modifier.isFinal(field.getModifiers())..." in setField(:Object, :Field, :Object):void
-      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(398);
+      assertThat(expected.getStackTrace()[0].getLineNumber())
+        .isEqualTo(getLineNumberForLine("Assert.isFalse(Modifier.isFinal(field.getModifiers()),"));
 
       throw expected;
     }
@@ -575,7 +638,8 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
     catch (NullPointerException expected) {
 
-      assertThat(expected.getStackTrace()[0].getLineNumber()).isEqualTo(709);
+      assertThat(expected.getStackTrace()[0].getLineNumber())
+        .isEqualTo(getLineNumberForLine("boolean currentAccessible = method.isAccessible();"));
 
       throw expected;
     }
@@ -709,7 +773,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     ReflectionUtils.withMethods(null, null, null).call((method) -> new NullPointerException("Method must not be null"));
   }
 
-  // TODO write more tests!
+  // TODO: Write more tests!
 
   @SuppressWarnings("all")
   protected static class SuperType {
@@ -781,6 +845,23 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     public Object methodNine(String message) {
       METHOD_NAME.compareAndSet(null, "methodNine");
       throw new IllegalArgumentException(message);
+    }
+  }
+
+  @Getter
+  @EqualsAndHashCode
+  @RequiredArgsConstructor(staticName = "with")
+  static class Line {
+
+    @lombok.NonNull
+    private final int number;
+
+    @lombok.NonNull
+    private final String content;
+
+    @Override
+    public String toString() {
+      return String.format("%d: %s", getNumber(), getContent());
     }
   }
 }
