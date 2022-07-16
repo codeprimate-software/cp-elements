@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
@@ -22,16 +21,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.SystemUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link FileSystemUtils} class is an abstract utility class for working with
- * the operating system's (OS) file system.
+ * Abstract utility class for processing {@link File Files} in the operating system's (OS) file system.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -61,18 +62,24 @@ public abstract class FileSystemUtils extends FileUtils {
 
   /**
    * Creates a file system path by appending the array of path elements to the base path separated by
-   * {@link File#separator}.  If the array of path elements is null or empty then base path is returned.
+   * {@link File#separator}.
    *
-   * @param basePath base of the file system path expressed as a pathname {@link String}.
+   * If the array of path elements is {@literal null} or {@literal empty} then {@link String base path} is returned.
+   *
+   * @param basePath base of the file system path expressed as a {@link String pathname}.
    * @param pathElements array of path elements to append to the base path.
-   * @return the path elements appended to the base path separated by {@link File#separator}.
-   * @throws NullPointerException if basePath is null.
+   * @return the path elements appended to the base path separated by the {@link File#separator}.
+   * @throws IllegalArgumentException if {@link String base path} is {@literal null}.
+   * @see #createPath(String...)
    * @see java.io.File#separator
    */
-  public static String appendToPath(String basePath, String... pathElements) {
+  public static @NotNull String appendToPath(@NotNull String basePath, String... pathElements) {
+
     Assert.notNull(basePath, "basePath cannot be null");
 
-    String fileSeparator = (SystemUtils.isWindows() ? WINDOWS_FILE_SEPARATOR : File.separator);
+    String fileSeparator = SystemUtils.isWindows()
+      ? WINDOWS_FILE_SEPARATOR
+      : File.separator;
 
     for (String pathElement : ArrayUtils.nullSafeArray(pathElements, String.class)) {
       if (StringUtils.hasText(pathElement)) {
@@ -80,8 +87,9 @@ public abstract class FileSystemUtils extends FileUtils {
       }
     }
 
-    String fileSeparatorPattern = (SystemUtils.isWindows() ? WINDOWS_FILE_SEPARATOR_PATTERN
-      : UNIX_FILE_SEPARATOR_PATTERN);
+    String fileSeparatorPattern = SystemUtils.isWindows()
+      ? WINDOWS_FILE_SEPARATOR_PATTERN
+      : UNIX_FILE_SEPARATOR_PATTERN;
 
     return basePath.trim().replaceAll(fileSeparatorPattern, fileSeparator);
   }
@@ -92,11 +100,15 @@ public abstract class FileSystemUtils extends FileUtils {
    * @param pathElements array of path elements used to construct a file system path.
    * @return an absolute file system pathname composed of the individual path elements
    * from the given array delimited by the {@link File#separator}.
+   * @see #appendToPath(String, String...)
    * @see java.io.File#separator
    */
   @NullSafe
-  public static String createPath(String... pathElements) {
-    String fileSeparator = (SystemUtils.isWindows() ? WINDOWS_FILE_SEPARATOR : File.separator);
+  public static @NotNull String createPath(String... pathElements) {
+
+    String fileSeparator = SystemUtils.isWindows()
+      ? WINDOWS_FILE_SEPARATOR
+      : File.separator;
 
     StringBuilder buffer = new StringBuilder(fileSeparator);
 
@@ -106,97 +118,105 @@ public abstract class FileSystemUtils extends FileUtils {
       }
     }
 
-    String fileSeparatorPattern = (SystemUtils.isWindows() ? WINDOWS_FILE_SEPARATOR_PATTERN
-      : UNIX_FILE_SEPARATOR_PATTERN);
+    String fileSeparatorPattern = SystemUtils.isWindows()
+      ? WINDOWS_FILE_SEPARATOR_PATTERN
+      : UNIX_FILE_SEPARATOR_PATTERN;
 
     return buffer.toString().replaceAll(fileSeparatorPattern, fileSeparator);
   }
 
   /**
-   * Counts the number of files in the given file system path.  If path is a file then this method returns 1.
-   * If path is a directory then this method will recursively visit all sub-directories, counting all the files
-   * contained in the given path excluding the path itself.
+   * Counts the number of files in the given file system path.
    *
-   * @param path the file system path to evaluate.
+   * If path is a {@link File#isFile() file} then this method returns {@literal 1}.
+   * If path is a {@link File#isDirectory() directory} then this method will recursively visit all
+   * {@link File subdirectories}, counting all the {@link File files} contained in the given path
+   * excluding the path itself.
+   *
+   * @param path file system path to evaluate.
    * @return an integer value indicating the number of files contained in the given file system path.
-   * If path is a non-null file then this method returns 1.
-   * @see java.io.File
-   * @see FilesOnlyFilter
+   * If path is a {@literal non-null} {@link File} then this method returns {@literal 1}.
+   * @see org.cp.elements.io.FilesOnlyFilter
    * @see #count(File, FileFilter)
+   * @see java.io.File
    */
-  public static int count(File path) {
+  public static int count(@Nullable File path) {
     return count(path, FileUtils::isExisting);
   }
 
   /**
-   * Counts the number of files in the given file system path accepted by the given {@link FileFilter}.  If path
-   * is a file then this method returns 1. If path is a directory then this method will recursively visit all
-   * sub-directories, counting all the files contained within the given path excluding the path itself.
+   * Counts the number of files in the given file system path accepted by the given {@link FileFilter}.
    *
-   * @param path the file system path to evaluate.
-   * @param fileFilter the {@link FileFilter} used to evaluate the {@link File} and determine whether
-   * it is to be included in the count.
+   * If path is a {@link File#isFile() file} then this method returns {@literal 1}.
+   * If path is a {@link File#isDirectory() directory} then this method will recursively visit all
+   * {@link File subdirectories}, counting all the {@link File files} contained in the given path
+   * excluding the path itself.
+   *
+   * @param path file system path to evaluate.
+   * @param fileFilter {@link FileFilter} used to evaluate the {@link File} and determine whether it will be included
+   * in the count.
    * @return an integer value indicating the number of files contained in the given file system path.
-   * If path is a non-null file then this method returns 1.
-   * @see java.io.File
-   * @see java.io.FileFilter
+   * If path is a {@literal non-null} {@link File} then this method returns {@literal 1}.
    * @see #safeListFiles(File)
    * @see #isDirectory(File)
+   * @see java.io.FileFilter
+   * @see java.io.File
    */
-  public static int count(File path, FileFilter fileFilter) {
+  public static int count(@Nullable File path, @Nullable FileFilter fileFilter) {
+
     int count = 0;
 
     for (File file : safeListFiles(path, fileFilter)) {
-      count += (isDirectory(file) ? count(file, fileFilter) : 1);
+      count += isDirectory(file) ? count(file, fileFilter) : 1;
     }
 
-    return (ComposableFileFilter.and(FileUtils::isFile, fileFilter).accept(path) ? 1 : count);
+    return ComposableFileFilter.and(FileUtils::isFile, fileFilter).accept(path) ? 1 : count;
   }
 
   /**
-   * Deletes the given {@link File} from the file system.  If the {@link File} is a directory, then this method
-   * recursively deletes all files and subdirectories in the given directory along with the directory itself.
-   * If the {@link File} is just a plain old file, then only the given file will be deleted.  This method attempts
-   * to delete as many files as possible.
+   * Deletes the given {@link File} from the file system.
    *
-   * @param path the {@link File} to delete from the file system.
+   * If the path is a {@link File#isDirectory() directory}, then this method recursively deletes all {@link File files}
+   * and {@link File subdirectories} in the given path along with the {@link File directory} itself.
+   * If the path] is just a plain old {@link File#isFile() file}, then only the given {@link File} will be deleted.
+   * This method attempts to delete as many {@link File files} as possible.
+   *
+   * @param path {@link File} to delete from the file system.
    * @return a boolean value indicating whether the given {@link File} was successfully deleted from the file system.
-   * @see java.io.File
    * @see #deleteRecursive(File, FileFilter)
+   * @see java.io.File
    */
   @NullSafe
-  public static boolean deleteRecursive(File path) {
+  public static boolean deleteRecursive(@Nullable File path) {
     return deleteRecursive(path, FileUtils::isExisting);
   }
 
   /**
    * Deletes the given {@link File} from the file system if accepted by the given {@link FileFilter}.
    *
-   * If the {@link File} is a directory, then this method recursively deletes all files and subdirectories
-   * accepted by the {@link FileFilter} in the given directory along with the directory itself.
+   * If the path is a {@link File#isDirectory() directory}, then this method recursively deletes all {@link File files}
+   * and {@link File subdirectories} in the given path along with the {@link File directory} itself.
+   * If the path] is just a plain old {@link File#isFile() file}, then only the given {@link File} will be deleted.
+   * This method attempts to delete as many {@link File files} as possible.
    *
-   * If the {@link File} is just a plain old file, then only the given file will be deleted if accepted
-   * by the {@link FileFilter}.
-   *
-   * This method attempts to delete as many files as possible.
-   *
-   * @param path the {@link File} to delete from the file system.
-   * @param fileFilter the {@link FileFilter} used to identify the {@link File}s to delete.
+   * @param path {@link File} to delete from the file system.
+   * @param fileFilter {@link FileFilter} used to identify the {@link File Files} to delete.
    * @return a boolean value indicating whether the given {@link File} was successfully deleted from the file system.
-   * @see java.io.File
-   * @see java.io.FileFilter
    * @see #safeListFiles(File)
    * @see #isDirectory(File)
    * @see #delete(File)
+   * @see java.io.FileFilter
+   * @see java.io.File
    */
-  public static boolean deleteRecursive(File path, FileFilter fileFilter) {
+  public static boolean deleteRecursive(@Nullable File path, @Nullable FileFilter fileFilter) {
+
     boolean success = true;
 
     for (File file : safeListFiles(path, fileFilter)) {
-      success &= (isDirectory(file) ? deleteRecursive(file, fileFilter) : delete(file));
+      success &= isDirectory(file) ? deleteRecursive(file, fileFilter) : delete(file);
     }
 
-    return (success && fileFilter.accept(path) && delete(path));
+    return success && fileFilter.accept(path) && delete(path);
   }
 
   /**
@@ -209,8 +229,8 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see #isDirectory(File)
    */
   @SuppressWarnings("all")
-  public static boolean isEmptyDirectory(File directory) {
-    return (isDirectory(directory) && directory.listFiles().length == 0);
+  public static boolean isEmptyDirectory(@Nullable File directory) {
+    return isDirectory(directory) && directory.listFiles().length == 0;
   }
 
   /**
@@ -221,9 +241,9 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see #tryGetCanonicalPathElseGetAbsolutePath(File)
    */
   @NullSafe
-  public static boolean isRelativeToWorkingDirectory(File path) {
-    return (path != null && tryGetCanonicalPathElseGetAbsolutePath(path).startsWith(
-      tryGetCanonicalPathElseGetAbsolutePath(WORKING_DIRECTORY)));
+  public static boolean isRelativeToWorkingDirectory(@Nullable File path) {
+    return path != null && tryGetCanonicalPathElseGetAbsolutePath(path)
+      .startsWith(tryGetCanonicalPathElseGetAbsolutePath(WORKING_DIRECTORY));
   }
 
   /**
@@ -256,25 +276,46 @@ public abstract class FileSystemUtils extends FileUtils {
    */
   @NullSafe
   public static File[] listFiles(File directory, FileFilter fileFilter) {
+
     List<File> files = new ArrayList<>();
 
     for (File file : safeListFiles(directory, fileFilter)) {
       files.addAll(isDirectory(file) ? Arrays.asList(listFiles(file, fileFilter)) : Collections.singletonList(file));
     }
 
-    return (files.isEmpty() ? NO_FILES : files.toArray(new File[files.size()]));
+    return files.isEmpty() ? NO_FILES : files.toArray(new File[0]);
   }
 
-  /* (non-Javadoc) */
   @NullSafe
-  static File[] safeListFiles(File path) {
+  static File[] safeListFiles(@Nullable File path) {
     return safeListFiles(path, FileUtils::isExisting);
   }
 
-  /* (non-Javadoc) */
   @NullSafe
-  static File[] safeListFiles(File path, FileFilter fileFilter) {
-    return (isDirectory(path) ? path.listFiles(fileFilter) : NO_FILES);
+  static File[] safeListFiles(@Nullable File path, @Nullable FileFilter fileFilter) {
+    return isDirectory(path) ? path.listFiles(fileFilter) : NO_FILES;
+  }
+
+  public static @Nullable File search(@NotNull String filename) {
+    return search(FileSystemUtils.WORKING_DIRECTORY, filename);
+  }
+
+  public static @Nullable File search(@NotNull File path, @NotNull String filename) {
+
+    File foundFile = null;
+
+    for (File file : safeListFiles(path)) {
+
+      foundFile = isDirectory(file) ? search(file, filename)
+        : file.getName().equals(filename) ? file
+        : null;
+
+      if (Objects.nonNull(foundFile)) {
+        break;
+      }
+    }
+
+    return foundFile;
   }
 
   /**
@@ -287,7 +328,7 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see FilesOnlyFilter
    * @see #size(File, FileFilter)
    */
-  public static long size(File path) {
+  public static long size(@Nullable File path) {
     return size(path, FileUtils::isExisting);
   }
 
@@ -302,13 +343,14 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see java.io.File#length()
    * @see java.io.FileFilter#accept(File)
    */
-  public static long size(File path, FileFilter fileFilter) {
+  public static long size(@Nullable File path, @Nullable FileFilter fileFilter) {
+
     long size = 0;
 
     for (File file : safeListFiles(path, fileFilter)) {
-      size += (isDirectory(file) ? size(file, fileFilter) : file.length());
+      size += isDirectory(file) ? size(file, fileFilter) : file.length();
     }
 
-    return (ComposableFileFilter.and(FileUtils::isFile, fileFilter).accept(path) ? path.length() : size);
+    return ComposableFileFilter.and(FileUtils::isFile, fileFilter).accept(path) ? path.length() : size;
   }
 }
