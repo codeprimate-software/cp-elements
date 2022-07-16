@@ -31,13 +31,16 @@ import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract utility {@link Class} encapsulating several utility methods for working with {@link File Files}.
+ * Abstract utility {@link Class} encapsulating several utility methods for procesing {@link File Files}.
  *
  * @author John J. Blum
  * @see java.io.File
+ * @see java.io.FileReader
  * @see java.io.InputStream
  * @see java.io.OutputStream
  * @see org.cp.elements.io.IOUtils
@@ -45,6 +48,11 @@ import org.cp.elements.lang.annotation.NullSafe;
  */
 @SuppressWarnings("unused")
 public abstract class FileUtils extends IOUtils {
+
+  public static final String CLASS_FILE_EXTENSION = ".class";
+  public static final String GROOVY_FILE_EXTENSION = ".groovy";
+  public static final String JAVA_FILE_EXTENSION = ".java";
+  public static final String KOTLIN_FILE_EXTENSION = ".kt";
 
   /**
    * Asserts that the given {@link File} exists.
@@ -56,7 +64,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File
    */
   @NullSafe
-  public static File assertExists(File path) throws FileNotFoundException {
+  public static @NotNull File assertExists(@Nullable File path) throws FileNotFoundException {
 
     if (isExisting(path)) {
       return path;
@@ -126,7 +134,7 @@ public abstract class FileUtils extends IOUtils {
    * @throws java.lang.NullPointerException if the {@link File} reference is {@literal null}.
    * @see java.io.File#getName()
    */
-  public static String getExtension(File file) {
+  public static String getExtension(@NotNull File file) {
 
     Assert.notNull(file, "File cannot be null");
 
@@ -146,7 +154,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    * @see java.io.File#getParentFile()
    */
-  public static String getLocation(File file) {
+  public static String getLocation(@NotNull File file) {
 
     Assert.notNull(file, "File cannot be null");
 
@@ -165,7 +173,7 @@ public abstract class FileUtils extends IOUtils {
    * @throws java.lang.NullPointerException if the {@link File} reference is {@literal null}.
    * @see java.io.File#getName()
    */
-  public static String getName(File file) {
+  public static String getName(@NotNull File file) {
 
     Assert.notNull(file, "File cannot be null");
 
@@ -184,7 +192,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#isDirectory()
    */
   @NullSafe
-  public static boolean isDirectory(File path) {
+  public static boolean isDirectory(@Nullable File path) {
     return path != null && path.isDirectory();
   }
 
@@ -197,7 +205,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #size(File)
    */
   @NullSafe
-  public static boolean isEmpty(File path) {
+  public static boolean isEmpty(@Nullable File path) {
     return size(path) == 0L;
   }
 
@@ -209,7 +217,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#exists()
    */
   @NullSafe
-  public static boolean isExisting(File path) {
+  public static boolean isExisting(@Nullable File path) {
     return path != null && path.exists();
   }
 
@@ -221,7 +229,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#isFile()
    */
   @NullSafe
-  public static boolean isFile(File path) {
+  public static boolean isFile(@Nullable File path) {
     return path != null && path.isFile();
   }
 
@@ -233,7 +241,7 @@ public abstract class FileUtils extends IOUtils {
    * @throws NullPointerException if {@link String pathname} is {@literal null}.
    * @see java.io.File#File(String)
    */
-  public static File newFile(String pathname) {
+  public static @NotNull File newFile(@NotNull String pathname) {
     return new File(pathname);
   }
 
@@ -248,7 +256,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #readLines(File)
    * @see java.io.File
    */
-  public static String read(File file) throws IOException {
+  public static @NotNull String read(@NotNull File file) throws IOException {
 
     StringBuilder buffer = new StringBuilder();
 
@@ -271,7 +279,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#canRead()
    * @see #isFile(File)
    */
-  public static List<String> readLines(File file) throws IOException {
+  public static List<String> readLines(@NotNull File file) throws IOException {
 
     Assert.isTrue(isFile(file), "[%s] must be a valid file", file);
     Assert.state(file.canRead(), "[%s] is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
@@ -292,7 +300,7 @@ public abstract class FileUtils extends IOUtils {
    * @see #isFile(File)
    */
   @NullSafe
-  public static long size(File path) {
+  public static long size(@Nullable File path) {
     return isFile(path) ? path.length() : 0L;
   }
 
@@ -305,7 +313,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#getAbsoluteFile()
    * @see java.io.File#getCanonicalFile()
    */
-  public static File tryGetCanonicalFileElseGetAbsoluteFile(File file) {
+  public static @NotNull File tryGetCanonicalFileElseGetAbsoluteFile(@NotNull File file) {
 
     try {
       return file.getCanonicalFile();
@@ -323,7 +331,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File#getAbsolutePath()
    * @see java.io.File#getCanonicalPath()
    */
-  public static String tryGetCanonicalPathElseGetAbsolutePath(File file) {
+  public static @NotNull String tryGetCanonicalPathElseGetAbsolutePath(@NotNull File file) {
 
     try {
       return file.getCanonicalPath();
@@ -347,7 +355,7 @@ public abstract class FileUtils extends IOUtils {
    * @see java.io.File
    * @see #copy(InputStream, OutputStream)
    */
-  public static File write(InputStream in, File file) throws IOException {
+  public static File write(@NotNull InputStream in, @NotNull File file) throws IOException {
 
     Assert.notNull(in, "InputStream cannot be null");
     Assert.notNull(file, "File cannot be null");
