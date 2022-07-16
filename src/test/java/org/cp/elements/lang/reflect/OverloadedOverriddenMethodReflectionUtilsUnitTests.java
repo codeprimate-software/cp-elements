@@ -16,6 +16,8 @@
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
@@ -41,7 +43,10 @@ import lombok.ToString;
  * @author John Blum
  * @see java.lang.reflect.Method
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.ReflectionUtils
+ * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
+ * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
  * @since 1.0.0
  */
 public class OverloadedOverriddenMethodReflectionUtilsUnitTests {
@@ -134,7 +139,117 @@ public class OverloadedOverriddenMethodReflectionUtilsUnitTests {
     assertThat(getBirthdate.getDeclaringClass()).isEqualTo(Person.class);
   }
 
-  // ReflectionUtils Unit Tests
+  // Additional ReflectionUtils Unit Tests
+
+  @Test
+  public void fromMethodResolverAndType() {
+
+    MethodResolver methodResolver = MethodResolver.fromType(Person.class);
+
+    assertThat(methodResolver).isNotNull();
+    assertThat(methodResolver.getReferenceType()).isEqualTo(Person.class);
+  }
+
+  @Test
+  public void fromMethodResolverAndNullType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->MethodResolver.fromType(null))
+      .withMessage("Reference type is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromMethodResolverHavingMethodName() {
+
+    MethodReference methodReference = MethodResolver.fromType(Person.class)
+      .havingName("getName");
+
+    assertThat(methodReference).isNotNull();
+    assertThat(methodReference.fromType()).isEqualTo(Person.class);
+    assertThat(methodReference.getName()).isEqualTo("getName");
+    assertThat(methodReference.getParameterTypes()).isEmpty();
+  }
+
+  @Test
+  public void fromMethodResolverHavingMethodNameWithParameterTypes() {
+
+    MethodReference methodReference = MethodResolver.fromType(Customer.class)
+      .havingName("getAge")
+      .withParameterTypes(LocalDate.class);
+
+    assertThat(methodReference).isNotNull();
+    assertThat(methodReference.fromType()).isEqualTo(Customer.class);
+    assertThat(methodReference.getName()).isEqualTo("getAge");
+    assertThat(methodReference.getParameterTypes()).containsExactly(LocalDate.class);
+  }
+  @Test
+  public void fromMethodResolverHavingBlankMethodName() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MethodResolver.fromType(Person.class).havingName("  "))
+      .withMessage("Method name [  ] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromMethodResolverHavingEmptyMethodName() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MethodResolver.fromType(Person.class).havingName(""))
+      .withMessage("Method name [] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromMethodResolverHavingNullMethodName() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MethodResolver.fromType(Person.class).havingName(null))
+      .withMessage("Method name [null] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void methodReferenceIsResolvableToDeclaredMethod() {
+
+    Method method = MethodResolver.fromType(Person.class)
+      .havingName("getAge")
+      .withParameterTypes(LocalDate.class)
+      .get();
+
+    assertThat(method).isNotNull();
+    assertThat(method.getDeclaringClass()).isEqualTo(Person.class);
+    assertThat(method.getName()).isEqualTo("getAge");
+    assertThat(method.getParameterTypes()).containsExactly(LocalDate.class);
+    assertThat(method.getReturnType()).isEqualTo(Integer.TYPE);
+  }
+
+  @Test
+  public void methodReferenceIsResolvableToInheritedMethod() {
+
+    Method method = MethodResolver.fromType(Customer.class)
+      .havingName("getBirthdate")
+      .get();
+
+    assertThat(method).isNotNull();
+    assertThat(method.getName()).isEqualTo("getBirthdate");
+    assertThat(method.getParameterTypes()).isEmpty();
+    assertThat(method.getReturnType()).isEqualTo(LocalDate.class);
+  }
+
+  @Test
+  public void methodReferenceIsNonResolvable() {
+
+    assertThatThrowableOfType(MethodNotFoundException.class)
+      .isThrownBy(args -> MethodResolver.fromType(Customer.class)
+        .havingName("getNonExistingMethod")
+        .withParameterTypes(Object.class)
+        .get())
+      .havingMessage("Method [getNonExistingMethod] with parameters of type [[java.lang.Object]] not found")
+      .causedBy(NoSuchMethodException.class)
+      .withNoCause();
+  }
 
   @Test
   public void nullMethodIsNotOverloadedAndIsNullSafe() {
@@ -198,7 +313,7 @@ public class OverloadedOverriddenMethodReflectionUtilsUnitTests {
     assertThat(testGetAge.getName()).isEqualTo("getAge");
     assertThat(testGetAge.getDeclaringClass()).isEqualTo(BirthdateCapable.class);
 
-    doReturn("getAge").when(mockGetAge).getMethodName();
+    doReturn("getAge").when(mockGetAge).getName();
     doReturn(testGetAge).when(mockGetAge).get();
 
     assertThat(ReflectionUtils.isOverloaded(getAge)).isTrue();
@@ -226,7 +341,9 @@ public class OverloadedOverriddenMethodReflectionUtilsUnitTests {
     //LocalDate getBirthdate();
 
     default int getAge() {
-      return Period.between((LocalDate) getBirthdate(), LocalDate.now()).getYears();
+      return LocalDate.now().isAfter((LocalDate) getBirthdate())
+        ? Period.between((LocalDate) getBirthdate(), LocalDate.now()).getYears()
+        : 0;
     }
   }
 

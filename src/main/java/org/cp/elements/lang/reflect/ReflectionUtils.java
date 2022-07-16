@@ -37,12 +37,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.BooleanUtils;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.DslExtension;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FluentApiExtension;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -64,9 +67,11 @@ import org.cp.elements.util.ComparatorUtils;
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
  * @see java.util.Objects
+ * @see java.util.function.BiPredicate
+ * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see org.cp.elements.lang.ClassUtils
- * @see org.cp.elements.lang.Filter
+ * @see org.cp.elements.lang.DslExtension
  * @see org.cp.elements.lang.FluentApiExtension
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
@@ -81,9 +86,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @param method {@link MethodReference} referring to the {@link Method} to evaluate.
    * @return a boolean value indicating whether the given {@link Method} is {@literal overloaded}
    * in its {@link Class type} hierarchy.
-   * @see #overloadedMethodEquals(MethodReference, Method)
-   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
+   * @see #overloadedMethodEquals(MethodReference, Method)
    * @see java.lang.reflect.Method
    */
   @NullSafe
@@ -98,9 +103,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @param method {@link MethodReference} referring to the {@link Method} to evaluate.
    * @return a boolean value indicating whether the given {@link Method} is {@literal overridden}
    * in its {@link Class type} hierarchy.
-   * @see #overriddenMethodEquals(MethodReference, Method)
-   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodResolver
+   * @see #overriddenMethodEquals(MethodReference, Method)
    * @see java.lang.reflect.Method
    */
   @NullSafe
@@ -109,23 +114,23 @@ public abstract class ReflectionUtils extends ClassUtils {
       .anyMatch(declaredMethod -> overriddenMethodEquals(method, declaredMethod));
   }
 
-  private static boolean isMatchingMethods(@NotNull MethodReference methodOne, @NotNull Method methodTwo,
+  private static boolean isMatchingMethods(@NotNull MethodReference methodReference, @NotNull Method method,
       @NotNull BiPredicate<Class<?>[], Class<?>[]> methodParametersEqualityPredicate) {
 
     // Null Method references are not equal even if both Method references are null
-    if (ArrayUtils.noNullElements(methodOne, methodTwo)) {
+    if (ArrayUtils.noNullElements(methodReference, method)) {
 
       // Short circuit if the Method references refer to the same Object;
       //  a Method is clearly equal to itself.
-      if (methodOne.get() == methodTwo) {
+      if (methodReference.get() == method) {
         return true;
       }
 
       // Methods must have the same (equal) "name" (case-sensitive)
-      if (methodOne.getMethodName().equals(methodTwo.getName())) {
+      if (methodReference.getName().equals(method.getName())) {
 
-        Class<?> methodOneDeclaredType = methodOne.fromType();
-        Class<?> methodTwoDeclaredType = methodTwo.getDeclaringClass();
+        Class<?> methodOneDeclaredType = methodReference.fromType();
+        Class<?> methodTwoDeclaredType = method.getDeclaringClass();
 
         // Methods must come from the same Class type hierarchy
         // Clearly, two Methods with the same signature (name, then number, order and type of parameters)
@@ -134,8 +139,8 @@ public abstract class ReflectionUtils extends ClassUtils {
         //  can be declared in the same Class when overloading
         if (assignableTo(methodOneDeclaredType, methodTwoDeclaredType)) {
 
-          Class<?>[] methodOneParameterTypes = methodOne.getParameterTypes();
-          Class<?>[] methodTwoParameterTypes = methodTwo.getParameterTypes();
+          Class<?>[] methodOneParameterTypes = methodReference.getParameterTypes();
+          Class<?>[] methodTwoParameterTypes = method.getParameterTypes();
 
           return methodParametersEqualityPredicate.test(methodOneParameterTypes, methodTwoParameterTypes);
         }
@@ -154,6 +159,8 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @param methodTwo second method {@link Method} in the equality comparison.
    * @return a boolean value indicating whether the first {@link Method}
    * is an {@literal overload} of the second {@link Method}.
+   * @see #isMatchingMethods(MethodReference, Method, BiPredicate)
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
    * @see java.lang.reflect.Method
    */
   protected static boolean overloadedMethodEquals(@NotNull MethodReference methodOne, @NotNull Method methodTwo) {
@@ -174,6 +181,8 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @param methodTwo second method {@link Method} in the equality comparison.
    * @return a boolean value indicating whether the first {@link Method}
    * is an {@literal override} of the second {@link Method}.
+   * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodReference
+   * @see #isMatchingMethods(MethodReference, Method, BiPredicate)
    * @see java.lang.reflect.Method
    */
   @NullSafe
@@ -188,7 +197,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     Predicate<Method> methodPredicate = Objects::nonNull;
 
     methodPredicate = methodPredicate.and(target -> !target.equals(methodReference.get()));
-    methodPredicate = methodPredicate.and(target -> target.getName().equals(methodReference.getMethodName()));
+    methodPredicate = methodPredicate.and(target -> target.getName().equals(methodReference.getName()));
 
     return resolveAllMatchingDeclaredMethods(methodReference.fromType(), methodPredicate);
   }
@@ -779,9 +788,26 @@ public abstract class ReflectionUtils extends ClassUtils {
    */
   public interface MethodCallback extends MemberCallback<Method> { }
 
+  /**
+   * ADT used to resolve a {@link Method} by {@link String name} from a given, required {@link Class type}.
+   *
+   * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.DslExtension
+   */
   @FluentApi
-  public static class MethodResolver {
+  public static class MethodResolver implements DslExtension, FluentApiExtension {
 
+    /**
+     * Factory method used to construct a new instance of {@link MethodResolver} initialized with
+     * the given, required {@link Class type} used to resolve the {@link Method} by {@link String name}.
+     *
+     * @param type {@link Class type} from which to resolve the {@link Method} by {@link String name};
+     * must not be {@literal null}.
+     * @return a new {@link MethodResolver}.
+     * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+     * @see MethodResolver(Class)
+     */
     @Dsl
     public static @NotNull MethodResolver fromType(@NotNull Class<?> type) {
       return new MethodResolver(type);
@@ -794,14 +820,35 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private final Class<?> referenceType;
 
+    /**
+     * Constructs a new instance of {@link MethodResolver} initialized with the given, required {@link Class type}
+     * from which to resolve the {@link Method} by {@link String name}.
+     *
+     * @param sourceType {@link Class} from which to resolve the {@link Method} by {@link String name};
+     * must not be {@literal null}.
+     * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+     */
     protected MethodResolver(@NotNull Class<?> sourceType) {
       this.referenceType = requireNonNull(sourceType, "Reference type is required");
     }
 
+    /**
+     * Returns the {@link Class type} from which the {@link Method} by {{@link String name} will be resolved.
+     *
+     * @return the {@link Class type} from which the {@link Method} by {{@link String name} will be resolved.
+     */
     protected @NotNull Class<?> getReferenceType() {
       return this.referenceType;
     }
 
+    /**
+     * {@link Dsl} based builder method used to configure the {@link String name} of the {@link Method} to resolve.
+     *
+     * @param methodName {@link String} containing the {@literal name} of the {@link Method} to resolve;
+     * must not be {@literal null} or {@literal empty}.
+     * @throws IllegalArgumentException if the {@link String method name} is {@literal null} or {@literal empty}.
+     * @return this {@link MethodReference}.
+     */
     @Dsl
     public @NotNull MethodReference havingName(@NotNull String methodName) {
       Assert.hasText(methodName, "Method name [%s] is required", methodName);
@@ -809,8 +856,16 @@ public abstract class ReflectionUtils extends ClassUtils {
     }
   }
 
+  /**
+   * ADT used to refer to a {@link Method}.
+   *
+   * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.Nameable
+   */
   @FluentApi
-  public static class MethodReference {
+  public static class MethodReference implements DslExtension, FluentApiExtension, Nameable<String> {
 
     private final AtomicReference<Method> methodReference = new AtomicReference<>(null);
 
@@ -822,7 +877,7 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private final Function<Class<?>, Method> safeGetMethod = type -> {
 
-      String methodName = getMethodName();
+      String methodName = getName();
       Class<?>[] parameterTypes = getParameterTypes();
 
       try {
@@ -830,38 +885,80 @@ public abstract class ReflectionUtils extends ClassUtils {
       }
       catch (NoSuchMethodException cause) {
         throw newMethodNotFoundException(cause, "Method [%s] with parameters of type [%s] not found",
-          methodName, Arrays.toString(parameterTypes));
+          methodName, Arrays.stream(parameterTypes).map(Class::getName).collect(Collectors.toList()));
       }
     };
 
+    /**
+     * Default constructor used for testing/mocking purposes only!
+     */
     private MethodReference() {
       this.referenceType = null;
       this.methodName = null;
     }
 
+    /**
+     * Constructs a new instance of {@link MethodReference} initialized with the given, required {@link Class type}
+     * from which the {@link Method} will be resolved and {@link String method name} used to identify the {@link Method}.
+     *
+     * @param referenceType {@link Class type} from which the {@link Method} by {@link String name} is resolved.
+     * @param methodName {@link String} containing the {@literal name} of the {@link Method} to resolve.
+     */
     private MethodReference(@NotNull Class<?> referenceType, @NotNull String methodName) {
       this.referenceType = referenceType;
       this.methodName = methodName;
     }
 
-    protected @NotNull String getMethodName() {
+    /**
+     * Gets the {@link String name} of the resolve {@link Method}.
+     *
+     * @return the {@link String name} of the resolve {@link Method}.
+     */
+    public @NotNull String getName() {
       return this.methodName;
     }
 
+    /**
+     * Gets an array containing the {@link Method Method's} parameter {@link Class types}.
+     *
+     * The number, order and {@link Class types} (along with the {@link Method Method's} {@link String name})
+     * constitutes the {@link Method Method's} signature.
+     *
+     * @return an array containing the {@link Method Method's} parameter {@link Class types}.
+     * @see #getName()
+     */
     protected Class<?>[] getParameterTypes() {
       return ArrayUtils.nullSafeArray(this.parameterTypes, Class.class);
     }
 
+    /**
+     * Gets the {@link Class type} from which this {@link Method} was resolved.
+     *
+     * @return the {@link Class type} from which this {@link Method} was resolved.
+     */
     public @NotNull Class<?> fromType() {
       Class<?> referenceType = this.referenceType;
       return referenceType != null ? referenceType : get().getDeclaringClass();
     }
 
+    /**
+     * Resolves the {@link Method} referred to by this {@link MethodReference}.
+     *
+     * @return the resolved {@link Method}.
+     * @see java.lang.reflect.Method
+     */
     public @NotNull Method get() {
       return this.methodReference.updateAndGet(method -> method != null ? method
         : this.safeGetMethod.apply(this.referenceType));
     }
 
+    /**
+     * {@link Dsl} based build method to configure the array of {@link Class parameter types} used in
+     * identifying and resolving the {@link Method} by signature.
+     *
+     * @param parameterTypes array of {@link Class types} constituting the {@link Method Method's} signature.
+     * @return this {@link MethodReference}.
+     */
     @Dsl
     public @NotNull MethodReference withParameterTypes(Class<?>... parameterTypes) {
       this.parameterTypes = parameterTypes;
