@@ -41,6 +41,14 @@ collaboration to harvest feedback that is essential to building high quality and
 
 No corporate entity owns or controls *Elements*, and therefore, you will never be bound by licenses or contracts.
 
+[[learn]]
+== Learn
+
+Codeprimate Elements has comprehensive documentation:
+
+* User Guide (and Reference Documentation) coming soon.
+* https://www.javadoc.io/doc/org.codeprimate/cp-elements/latest/index.html[Javadoc] for the entire library API.
+
 [[requirements]]
 == Requirements
 
