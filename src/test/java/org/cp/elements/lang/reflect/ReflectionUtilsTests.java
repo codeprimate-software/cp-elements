@@ -853,7 +853,6 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
   @RequiredArgsConstructor(staticName = "with")
   static class Line {
 
-    @lombok.NonNull
     private final int number;
 
     @lombok.NonNull
