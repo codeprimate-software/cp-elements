@@ -154,7 +154,30 @@ public class PropertyUnitTests {
 
     assertThat(name).isNotNull();
     assertThat(name.getName()).isEqualTo("name");
+    assertThat(name.getType()).isEqualTo(String.class);
     assertThat(property.getField()).isSameAs(name);
+  }
+
+  @Test
+  public void getFieldFromBeanPropertyBackedBySupertypeField() {
+
+    Vip pieDoe = Vip.from("Pie Doe");
+
+    BeanAdapter bean = BeanAdapter.from(pieDoe);
+
+    Property property = bean.getModel().getProperty("birthdate");
+
+    assertThat(property).isNotNull();
+    assertThat(property.getName()).isEqualTo("birthdate");
+    assertThat(property.getType()).isEqualTo(LocalDate.class);
+    assertThat(property.isDerived()).isFalse();
+
+    Field field = property.getField();
+
+    assertThat(field).isNotNull();
+    assertThat(field.getName()).isEqualTo("birthdate");
+    assertThat(field.getType()).isEqualTo(LocalDate.class);
+    assertThat(property.getField()).isSameAs(field);
   }
 
   @Test
@@ -710,7 +733,12 @@ public class PropertyUnitTests {
     }
   }
 
+  @SuppressWarnings("unused")
   static class Vip extends Customer {
+
+    static Vip from(Customer customer) {
+      return new Vip(customer.getName());
+    }
 
     static Vip from(String name) {
       return new Vip(name);

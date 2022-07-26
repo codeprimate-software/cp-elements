@@ -19,10 +19,18 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyReadExce
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPropertyWriteException;
 
 import java.beans.PropertyDescriptor;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.cp.elements.beans.PropertyReadException;
@@ -32,9 +40,11 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Transient;
 import org.cp.elements.lang.reflect.ModifierUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * Abstract Data Type (ADT) modeling a {@link Object bean} property.
@@ -42,6 +52,8 @@ import org.cp.elements.lang.reflect.ModifierUtils;
  * @author John Blum
  * @see java.beans.PropertyDescriptor
  * @see java.lang.Comparable
+ * @see java.lang.annotation.Annotation
+ * @see java.lang.reflect.AnnotatedElement
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.Nameable
@@ -50,14 +62,29 @@ import org.cp.elements.lang.reflect.ModifierUtils;
 @SuppressWarnings("unused")
 public class Property implements Comparable<Property>, Nameable<String> {
 
-  protected static final Predicate<AnnotatedElement> IS_REQUIRED = element ->
-    element != null && element.isAnnotationPresent(Required.class);
+  public static final Function<AnnotatedElement, Set<Annotation>> ALL_ANNOTATIONS_RESOLVER =
+    annotatedElement -> annotatedElement != null
+      ? CollectionUtils.asSet(annotatedElement.getAnnotations())
+      : Collections.emptySet();
 
-  protected static final Predicate<AnnotatedElement> IS_TRANSIENT_ANNOTATED = element -> element != null
-    && (element.isAnnotationPresent(Transient.class) || element.isAnnotationPresent(java.beans.Transient.class));
+  public static final Function<AnnotatedElement, Set<Annotation>> DECLARED_ANNOTATIONS_RESOLVER =
+    annotatedElement -> annotatedElement != null
+      ? CollectionUtils.asSet(annotatedElement.getDeclaredAnnotations())
+      : Collections.emptySet();
 
-  protected static final Predicate<AnnotatedElement> IS_TRANSIENT_FIELD = element ->
-    element instanceof Field && ModifierUtils.isTransient(element);
+  protected static final Function<AnnotatedElement, Set<Annotation>> DEFAULT_ANNOTATIONS_RESOLVER =
+    DECLARED_ANNOTATIONS_RESOLVER;
+
+  protected static final Predicate<AnnotatedElement> IS_REQUIRED = annotatedElement ->
+    annotatedElement != null && annotatedElement.isAnnotationPresent(Required.class);
+
+  protected static final Predicate<AnnotatedElement> IS_TRANSIENT_ANNOTATED = annotatedElement ->
+    annotatedElement != null
+      && (annotatedElement.isAnnotationPresent(Transient.class)
+        || annotatedElement.isAnnotationPresent(java.beans.Transient.class));
+
+  protected static final Predicate<AnnotatedElement> IS_TRANSIENT_FIELD = annotatedElement ->
+    annotatedElement instanceof Field && ModifierUtils.isTransient(annotatedElement);
 
   protected static final Predicate<AnnotatedElement> IS_TRANSIENT = IS_TRANSIENT_FIELD.or(IS_TRANSIENT_ANNOTATED);
 
@@ -78,11 +105,75 @@ public class Property implements Comparable<Property>, Nameable<String> {
     return new Property(beanModel, propertyDescriptor);
   }
 
-  private final AtomicReference<Field> fieldReference = new AtomicReference<>(null);
+  /**
+   * Resolves all {@link Annotation Annotations} declared on the given {@link AnnotatedElement} by using the given,
+   * required {@link Function} encapsulating the {@literal Strategy} for resolving {@link Annotation Annotations}
+   * declared on an {@link AnnotatedElement}.
+   *
+   * The default {@literal Strategies} provided by this {@link Property} class includes
+   * {@link AnnotatedElement#getAnnotations()} and {@link AnnotatedElement#getDeclaredAnnotations()}.
+   *
+   * @param <T> {@link Class type} of {@link AnnotatedElement}, such as {@link Field} or {@link Method}.
+   * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
+   * the {@link Annotation Annotations} declared on the {@link AnnotatedElement}; should not be {@literal null},
+   * but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
+   * @param annotatedElementAnnotationsCache {@link Map} acting as a {@literal cache} to lookup previously resolved
+   * {@link Annotation Annotations} declared on the {@link AnnotatedElement}; must not be {@literal null}.
+   * @param annotatedElement {@link AnnotatedElement}, such as a {@link Field} or {@link Method}, from which
+   * the declared {@link Annotation Annotations} are resolved.
+   * @return a {@link Set} of {@link Annotation Annotations} resolved from the {@link AnnotatedElement}.
+   * @see java.lang.reflect.AnnotatedElement
+   * @see java.lang.annotation.Annotation
+   * @see java.util.function.Function
+   * @see java.util.Map
+   */
+  @NullSafe
+  protected static <T extends AnnotatedElement> Set<Annotation> getAnnotatedElementAnnotations(
+      @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver,
+      @NotNull Map<T, Set<Annotation>> annotatedElementAnnotationsCache,
+      @Nullable T annotatedElement) {
 
-  private final FieldResolver fieldResolver = new PropertyNameFieldResolver();
+    return annotatedElement != null
+      ? nullSafeAnnotatedElementAnnotationsCache(annotatedElementAnnotationsCache)
+        .computeIfAbsent(annotatedElement, nullSafeAnnotationsResolver(annotationsResolver))
+      : Collections.emptySet();
+  }
+
+  @NullSafe
+  private static @NotNull <T extends AnnotatedElement> Map<T, Set<Annotation>> nullSafeAnnotatedElementAnnotationsCache(
+      @Nullable Map<T, Set<Annotation>> annotatedElementAnnotations) {
+
+    return annotatedElementAnnotations != null ? annotatedElementAnnotations
+      : new AbstractMap<T, Set<Annotation>>() {
+
+          // Key is never cached; Value is always computed with the given Function.
+          @Override
+          public Set<Annotation> computeIfAbsent(T key, Function<? super T, ? extends Set<Annotation>> mappingFunction) {
+            return mappingFunction.apply(key);
+          }
+
+          @Override
+          public Set<Entry<T, Set<Annotation>>> entrySet() {
+            return Collections.emptySet();
+          }
+      };
+  }
+
+  @NullSafe
+  private static @NotNull Function<AnnotatedElement, Set<Annotation>> nullSafeAnnotationsResolver(
+      @Nullable Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
+
+    return annotationsResolver != null ? annotationsResolver : DEFAULT_ANNOTATIONS_RESOLVER;
+  }
+
+  private transient final AtomicReference<Field> fieldReference = new AtomicReference<>(null);
+
+  private transient final FieldResolver fieldResolver = new PropertyNameFieldResolver();
 
   private final BeanModel beanModel;
+
+  private transient final Map<Field, Set<Annotation>> fieldAnnotations = new WeakHashMap<>();
+  private transient final Map<Method, Set<Annotation>> methodAnnotations = new WeakHashMap<>();
 
   private final PropertyDescriptor propertyDescriptor;
 
@@ -91,7 +182,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * modeling the bean containing this {@link Property} along with the given, required {@link PropertyDescriptor}
    * describing the bean {@link Property}.
    *
-   * @param beanModel {@link BeanModel} modeling the bean that contains this property; must not be {@literal null}.
+   * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the bean property; must not be {@literal null}.
    * @throws IllegalArgumentException if the {@link BeanModel} or {@link PropertyDescriptor} are {@literal null}.
    * @see org.cp.elements.beans.model.BeanModel
@@ -104,10 +195,100 @@ public class Property implements Comparable<Property>, Nameable<String> {
   }
 
   /**
+   * Gets all resolvable {@link Annotation Annotations} declared on this {@link Property}.
+   *
+   * A {@link Property Property's} {@link Annotation Annotations} consist of
+   * all {@link Annotation Annotation's} declared on the {@link Property Property's} {@link Field}
+   * if the {@link Property} is not {@link #isDerived()}, as well as all {@link Annotation Annotations}
+   * declared on the {@link #getReadMethod() accessor method} and {@link #getWriteMethod() mutator method}
+   * of the {@link Property}, providing the {@link Property} is both {@link #isReadable()} and {@link #isWritable()}.
+   *
+   * @return a {@link Set} of all resolvable {@link Annotation Annotations} declared on this {@link Property}.
+   * @see java.lang.annotation.Annotation
+   * @see #getAnnotations(Function)
+   * @see java.util.Set
+   */
+  public Set<Annotation> getAnnotations() {
+    return getAnnotations(DEFAULT_ANNOTATIONS_RESOLVER);
+  }
+
+  /**
+   * Gets all resolvable {@link Annotation Annotations} declared on this {@link Property} using the given, required
+   * {@link Function} encapsulating the {@literal Strategy} for resolving {@link Annotation Annotations}
+   * on all {@link AnnotatedElement AnnotatedElements} of this {@link Property}.
+   *
+   * A {@link Property Property's} {@link Annotation Annotations} consist of
+   * all {@link Annotation Annotation's} declared on the {@link Property Property's} {@link Field}
+   * if the {@link Property} is not {@link #isDerived()}, as well as all {@link Annotation Annotations}
+   * declared on the {@link #getReadMethod() accessor method} and {@link #getWriteMethod() mutator method}
+   * of the {@link Property}, providing the {@link Property} is both {@link #isReadable()} and {@link #isWritable()}.
+   *
+   * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
+   * the {@link Annotation Annotations} declared on an {@link AnnotatedElement}; should not be {@literal null},
+   * but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
+   * @return a {@link Set} of all resolved {@link Annotation Annotations} declared on this {@link Property}.
+   * @see #getWriteMethodAnnotations(Function)
+   * @see #getReadMethodAnnotations(Function)
+   * @see #getFieldAnnotations(Function)
+   * @see java.lang.annotation.Annotation
+   * @see java.util.function.Function
+   * @see java.util.Set
+   */
+  public Set<Annotation> getAnnotations(@NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
+
+    Set<Annotation> propertyAnnotations = new HashSet<>();
+
+    propertyAnnotations.addAll(getFieldAnnotations(annotationsResolver));
+    propertyAnnotations.addAll(getReadMethodAnnotations(annotationsResolver));
+    propertyAnnotations.addAll(getWriteMethodAnnotations(annotationsResolver));
+
+    return propertyAnnotations;
+  }
+
+  /**
+   * Gets an {@link Annotation} declared on this {@link Property} of the given {@link Class type}.
+   *
+   * @param annotationType {@link Class type} of {@link Annotation} to find.
+   * @return an {@link Annotation} declared on this {@link Property} of the given {@link Class type}
+   * or {@literal null} if an {@link Annotation} of the given {@link Class type} was not declared
+   * on this {@link Property}.
+   * @see #getAnnotation(Class, Function)
+   * @see java.lang.annotation.Annotation
+   */
+  protected @Nullable Annotation getAnnotation(@NotNull Class<? extends Annotation> annotationType) {
+    return getAnnotation(annotationType, DEFAULT_ANNOTATIONS_RESOLVER);
+  }
+
+  /**
+   * Gets an {@link Annotation} declared on this {@link Property} of the given {@link Class type}.
+   *
+   * @param annotationType {@link Class type} of {@link Annotation} to find.
+   * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
+   * the {@link Annotation Annotations} declared on an {@link AnnotatedElement}; should not be {@literal null},
+   * but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
+   * @return an {@link Annotation} declared on this {@link Property} of the given {@link Class type}
+   * or {@literal null} if an {@link Annotation} of the given {@link Class type} was not declared
+   * on this {@link Property}.
+   * @see java.lang.annotation.Annotation
+   * @see java.util.function.Function
+   * @see #getAnnotations(Function)
+   */
+  protected @Nullable Annotation getAnnotation(@NotNull Class<? extends Annotation> annotationType,
+      @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
+
+    return getAnnotations(annotationsResolver).stream()
+      .filter(annotation -> annotation.annotationType().equals(annotationType))
+      .findFirst()
+      .orElse(null);
+  }
+
+  /**
    * Gets the {@link BeanAdapter bean} to which this {@link Property} belongs.
    *
    * @return the {@link BeanAdapter bean} to which this {@link Property} belongs.
+   * @see org.cp.elements.beans.model.BeanModel#getBean()
    * @see org.cp.elements.beans.model.BeanAdapter
+   * @see #getBeanModel()
    */
   protected @NotNull BeanAdapter getBean() {
     return getBeanModel().getBean();
@@ -150,6 +331,27 @@ public class Property implements Comparable<Property>, Nameable<String> {
   }
 
   /**
+   * Gets all resolvable {@link Annotation Annotations} declared on the {@link Property Property's}
+   * {@link #getField() Field}.
+   *
+   * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
+   * the {@link Annotation Annotations} declared on the {@link Property Property's {@link Field};
+   * should not be {@literal null}, but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
+   * @return a {@link Set} of {@link Annotation Annotations} resolved from
+   * the {@link Property Property's} {@link Field}. Returns an {@link Collections#emptySet()}
+   * if this {@link Property} is {@link #isDerived() derived}.
+   * @see #getAnnotatedElementAnnotations(Function, Map, AnnotatedElement)
+   * @see java.lang.annotation.Annotation
+   * @see java.util.Set
+   * @see #getField()
+   */
+  protected Set<Annotation> getFieldAnnotations(
+      @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
+
+    return getAnnotatedElementAnnotations(annotationsResolver, this.fieldAnnotations, getField());
+  }
+
+  /**
    * Gets the {@link Method} used to read from this {@link Property}.
    *
    * @return the {@link Method} used to read from this {@link Property};
@@ -162,10 +364,34 @@ public class Property implements Comparable<Property>, Nameable<String> {
   }
 
   /**
+   * Gets all resolvable {@link Annotation Annotations} declared on the {@link Property Property's}
+   * {@link #getReadMethod() accessor method}.
+   *
+   * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
+   * the {@link Annotation Annotations} declared on this {@link Property Property's}
+   * {@link #getReadMethod() accessor method}; should not be {@literal null},
+   * but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
+   * @return a {@link Set} of {@link Annotation Annotations} resolved from
+   * the {@link Property Property's} {@link #getReadMethod() accessor method}.
+   * Returns an {@link Collections#emptySet()} if this {@link Property} is not {@link #isReadable() readable}.
+   * @see #getAnnotatedElementAnnotations(Function, Map, AnnotatedElement)
+   * @see java.lang.annotation.Annotation
+   * @see #getReadMethod()
+   * @see java.util.Set
+   */
+  protected Set<Annotation> getReadMethodAnnotations(
+      @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
+
+    return getAnnotatedElementAnnotations(annotationsResolver, this.methodAnnotations, getReadMethod());
+  }
+
+  /**
    * Gets the underlying {@link Object POJO} backing the bean for this {@link Property}.
    *
    * @return the underlying {@link Object POJO} backing the bean for this {@link Property}.
+   * @see org.cp.elements.beans.model.BeanAdapter#getTarget()
    * @see java.lang.Object
+   * @see #getBean()
    */
   protected @NotNull Object getTargetObject() {
     return getBean().getTarget();
@@ -182,6 +408,55 @@ public class Property implements Comparable<Property>, Nameable<String> {
    */
   protected @Nullable Method getWriteMethod() {
     return getDescriptor().getWriteMethod();
+  }
+
+  /**
+   * Gets all resolvable {@link Annotation Annotations} declared on the {@link Property Property's}
+   * {@link #getReadMethod() mutator method}.
+   *
+   * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
+   * the {@link Annotation Annotations} declared on this {@link Property Property's}
+   * {@link #getWriteMethod()}  mutator method}; should not be {@literal null},
+   * but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
+   * @return a {@link Set} of {@link Annotation Annotations} resolved from
+   * the {@link Property Property's} {@link #getWriteMethod() mutator method}.
+   * Returns an {@link Collections#emptySet()} if this {@link Property} is not {@link #isWritable()}  writable}.
+   * @see #getAnnotatedElementAnnotations(Function, Map, AnnotatedElement)
+   * @see java.lang.annotation.Annotation
+   * @see #getWriteMethod()
+   * @see java.util.Set
+   */
+  protected Set<Annotation> getWriteMethodAnnotations(
+      @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
+
+    return getAnnotatedElementAnnotations(annotationsResolver, this.methodAnnotations, getWriteMethod());
+  }
+
+  /**
+   * Determines whether this {@link Property} is annotated.
+   *
+   * @return a boolean value indicating whether this {@link Property} is annotated.
+   * @see #getAnnotations();
+   */
+  public boolean isAnnotated() {
+    return !getAnnotations().isEmpty();
+  }
+
+  /**
+   * Determines whether this {@link Property} is annotated with an {@link Annotation} of the given, required
+   * {@link Annotation#annotationType()}.
+   *
+   * @param annotationType {@link Class type} of the {@link Annotation} to evaluate.
+   * @return a boolean value indicating whether this {@link Property} is annotated with an {@link Annotation}
+   * of the given, required {@link Annotation#annotationType()}.
+   * @see java.lang.annotation.Annotation#annotationType()
+   * @see #getAnnotations()
+   */
+  public boolean isAnnotatedWith(@NotNull Class<? extends Annotation> annotationType) {
+
+    return getAnnotations().stream()
+      .map(Annotation::annotationType)
+      .anyMatch(actualAnnotationType -> actualAnnotationType.equals(annotationType));
   }
 
   /**
