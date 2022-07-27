@@ -303,7 +303,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * @return the {@link BeanModel} modeling the bean containing this {@link Property}.
    * @see org.cp.elements.beans.model.BeanModel
    */
-  protected @NotNull BeanModel getBeanModel() {
+  public @NotNull BeanModel getBeanModel() {
     return this.beanModel;
   }
 
@@ -313,7 +313,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * @return the {@literal JavaBeans} {@link PropertyDescriptor} describing this bean {@link Property}.
    * @see java.beans.PropertyDescriptor
    */
-  protected @NotNull PropertyDescriptor getDescriptor() {
+  public @NotNull PropertyDescriptor getDescriptor() {
     return this.propertyDescriptor;
   }
 
