@@ -355,6 +355,17 @@ public class Property implements Comparable<Property>, Nameable<String> {
   }
 
   /**
+   * Alias for {@link #getReadMethod()}.
+   *
+   * @return the {@link Method} used to read from this {@link Property}.
+   * @see java.lang.reflect.Method
+   * @see #getReadMethod()
+   */
+  protected @Nullable Method getAccessorMethod() {
+    return getReadMethod();
+  }
+
+  /**
    * Gets the {@link Method} used to read from this {@link Property}.
    *
    * @return the {@link Method} used to read from this {@link Property};
@@ -398,6 +409,17 @@ public class Property implements Comparable<Property>, Nameable<String> {
    */
   protected @NotNull Object getTargetObject() {
     return getBean().getTarget();
+  }
+
+  /**
+   * Alias for {@link #getWriteMethod()}.
+   *
+   * @return the {@link Method} used to write to this {@link Property}.
+   * @see java.lang.reflect.Method
+   * @see #getWriteMethod()
+   */
+  protected @Nullable Method getMutatorMethod() {
+    return getWriteMethod();
   }
 
   /**

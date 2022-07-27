@@ -203,6 +203,27 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void getAccessorMethodReturnsReadMethod() {
+
+    Vip billyJean = Vip.from("Billy Jean");
+
+    BeanAdapter bean = BeanAdapter.from(billyJean);
+
+    Property age = spy(bean.getModel().getProperty("age"));
+
+    assertThat(age).isNotNull();
+    assertThat(age.getName()).isEqualTo("age");
+
+    Method getAge = age.getAccessorMethod();
+
+    assertThat(getAge).isNotNull();
+    assertThat(getAge.getName()).isEqualTo("getAge");
+    assertThat(getAge).isEqualTo(age.getReadMethod());
+
+    verify(age, times(2)).getReadMethod();
+  }
+
+  @Test
   public void getReadMethodForReadableProperty() {
 
     Customer bobDoe = Customer.as("Bob Doe");
@@ -266,6 +287,27 @@ public class PropertyUnitTests {
     verify(mockBean, times(1)).getTarget();
     verifyNoMoreInteractions(property, mockBeanModel, mockBean);
     verifyNoInteractions(mockPropertyDescriptor);
+  }
+
+  @Test
+  public void getMutatorMethodReturnsWriteMethod() {
+
+    Vip jackHandy = Vip.from("Jack Handy");
+
+    BeanAdapter beanAdapter = BeanAdapter.from(jackHandy);
+
+    Property birthdate = spy(beanAdapter.getModel().getProperty("birthdate"));
+
+    assertThat(birthdate).isNotNull();
+    assertThat(birthdate.getName()).isEqualTo("birthdate");
+
+    Method setBirthdate = birthdate.getMutatorMethod();
+
+    assertThat(setBirthdate).isNotNull();
+    assertThat(setBirthdate.getName()).isEqualTo("setBirthdate");
+    assertThat(setBirthdate).isEqualTo(birthdate.getWriteMethod());
+
+    verify(birthdate, times(2)).getWriteMethod();
   }
 
   @Test
