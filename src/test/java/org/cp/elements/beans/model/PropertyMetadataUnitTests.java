@@ -56,7 +56,7 @@ import lombok.ToString;
 public class PropertyMetadataUnitTests {
 
   @Test
-  public void getPropertyAnnotationsIsCorrect() {
+  public void getCustomerPropertyAnnotationsIsCorrect() {
 
     Customer jonDoe = Customer.from("Jon Doe");
 
@@ -81,7 +81,7 @@ public class PropertyMetadataUnitTests {
   }
 
   @Test
-  public void getInheritedDerivedPropertyAnnotationsIsCorrect() {
+  public void getCustomerInheritedDerivedPropertyAnnotationsIsCorrect() {
 
     Customer janeDoe = Customer.from("Jane Doe");
 
@@ -99,7 +99,7 @@ public class PropertyMetadataUnitTests {
   }
 
   @Test
-  public void getInheritedFieldBasedPropertyAnnotationsIsCorrect() {
+  public void getCustomerInheritedFieldBasedPropertyAnnotationsIsCorrect() {
 
     Customer janeDoe = Customer.from("Jane Doe");
 
@@ -118,34 +118,11 @@ public class PropertyMetadataUnitTests {
     Set<Class<? extends Annotation>> birthdateAnnotationTypes =
       StreamUtils.toSet(birthdateAnnotations.stream(), Annotation::annotationType);
 
-    assertThat(birthdateAnnotationTypes).containsExactly(MockInheritedAnnotation.class);
+    assertThat(birthdateAnnotationTypes).containsExactly(MockNonInheritedAnnotation.class);
   }
 
   @Test
-  public void getDeclaredNamePropertyAnnotationsIsCorrect() {
-
-    Person billyJean = Person.as("Billy Jean");
-
-    BeanAdapter bean = BeanAdapter.from(billyJean);
-
-    Property name = bean.getModel().getProperty("name");
-
-    assertThat(name).isNotNull();
-    assertThat(name.getName()).isEqualTo("name");
-
-    Set<Annotation> nameAnnotations = name.getAnnotations();
-
-    assertThat(nameAnnotations).isNotNull();
-    assertThat(nameAnnotations).hasSize(2);
-
-    Set<Class<? extends Annotation>> nameAnnotationTypes =
-      StreamUtils.toSet(nameAnnotations.stream(), Annotation::annotationType);
-
-    assertThat(nameAnnotationTypes).containsExactly(Required.class, MockNonInheritedAnnotation.class);
-  }
-
-  @Test
-  public void getOverriddenInheritedNamePropertyAnnotationsIsCorrect() {
+  public void getCustomerOverriddenInheritedNamePropertyAnnotationsIsCorrect() {
 
     Customer bobDoe = Customer.from("Bob Doe");
 
@@ -167,6 +144,92 @@ public class PropertyMetadataUnitTests {
     assertThat(nameAnnotationTypes).containsExactly(Required.class);
   }
 
+  @Test
+  public void getPersonDeclaredNamePropertyAnnotationsIsCorrect() {
+
+    Person billyJean = Person.as("Billy Jean");
+
+    BeanAdapter bean = BeanAdapter.from(billyJean);
+
+    Property name = bean.getModel().getProperty("name");
+
+    assertThat(name).isNotNull();
+    assertThat(name.getName()).isEqualTo("name");
+
+    Set<Annotation> nameAnnotations = name.getAnnotations();
+
+    assertThat(nameAnnotations).isNotNull();
+    assertThat(nameAnnotations).hasSize(2);
+
+    Set<Class<? extends Annotation>> nameAnnotationTypes =
+      StreamUtils.toSet(nameAnnotations.stream(), Annotation::annotationType);
+
+    assertThat(nameAnnotationTypes).containsExactly(Required.class, MockInheritedAnnotation.class);
+  }
+
+  @Test
+  public void getCustomerNamePropertyAnnotationByType() {
+
+    Customer cookieDoe = Customer.from("Cookie Doe");
+
+    BeanAdapter bean = BeanAdapter.from(cookieDoe);
+
+    Property name = bean.getModel().getProperty("name");
+
+    assertThat(name).isNotNull();
+    assertThat(name.getName()).isEqualTo("name");
+
+    MockInheritedAnnotation mockInheritedAnnotation = name.getAnnotation(MockInheritedAnnotation.class);
+
+    assertThat(mockInheritedAnnotation).isNull();
+  }
+
+  @Test
+  public void getCustomerSalutationPropertyAnnotationByType() {
+
+    Customer cookieDoe = Customer.from("Dill Doe");
+
+    BeanAdapter bean = BeanAdapter.from(cookieDoe);
+
+    Property salutation = bean.getModel().getProperty("salutation");
+
+    assertThat(salutation).isNotNull();
+    assertThat(salutation.getName()).isEqualTo("salutation");
+
+    Default defaultAnnotation = salutation.getAnnotation(Default.class);
+
+    assertThat(defaultAnnotation).isNotNull();
+    assertThat(defaultAnnotation.value()).isEqualTo("Sir");
+  }
+
+  @Test
+  public void isPersonAgePropertyAnnotatedReturnsFalse() {
+
+    Person cookieDoe = Person.as("Fro Doe");
+
+    BeanAdapter bean = BeanAdapter.from(cookieDoe);
+
+    Property age = bean.getModel().getProperty("age");
+
+    assertThat(age).isNotNull();
+    assertThat(age.getName()).isEqualTo("age");
+    assertThat(age.isAnnotated()).isFalse();
+  }
+
+  @Test
+  public void isCustomerBirthdatePropertyAnnotatedReturnsTrue() {
+
+    Customer dillDoe = Customer.from("Hoe Doe");
+
+    BeanAdapter bean = BeanAdapter.from(dillDoe);
+
+    Property birthdate = bean.getModel().getProperty("birthdate");
+
+    assertThat(birthdate).isNotNull();
+    assertThat(birthdate.getName()).isEqualTo("birthdate");
+    assertThat(birthdate.isAnnotated()).isTrue();
+  }
+
   // NOTE: Java's @Inherited Annotation only applies to Class type Annotation declarations.
   // NOTE: Lombok Annotations declare a RetentionPolicy of CLASS and therefore are not accessible/available at RUNTIME.
 
@@ -176,12 +239,12 @@ public class PropertyMetadataUnitTests {
   static class Person {
 
     @Getter @Setter
-    @MockInheritedAnnotation
+    @MockNonInheritedAnnotation
     private LocalDate birthdate;
 
     @Required
     @lombok.NonNull
-    @Getter(onMethod_ = { @NotNull, @MockNonInheritedAnnotation })
+    @Getter(onMethod_ = { @NotNull, @MockInheritedAnnotation })
     private final String name;
 
     public int getAge() {
