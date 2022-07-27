@@ -16,6 +16,8 @@
 package org.cp.elements.beans.model;
 
 import java.beans.BeanInfo;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.PropertyNotFoundException;
@@ -34,6 +36,8 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public class BeanModel {
 
+  private static final Map<BeanAdapter, BeanModel> beanModelCache = new WeakHashMap<>();
+
   /**
    * Factory method used to construct a new instance of {@link BeanModel} used to model the given,
    * required {@link BeanAdapter bean}.
@@ -46,7 +50,7 @@ public class BeanModel {
    * @see #BeanModel(BeanAdapter)
    */
   public static @NotNull BeanModel from(@NotNull BeanAdapter bean) {
-    return new BeanModel(bean);
+    return beanModelCache.computeIfAbsent(bean, BeanModel::new);
   }
 
   private final BeanAdapter bean;
