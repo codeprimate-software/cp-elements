@@ -348,6 +348,34 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void isReadableForReadablePropertyReturnsTrue() {
+
+    Customer jackBlack = Customer.as("Jack Black");
+
+    BeanAdapter bean = BeanAdapter.from(jackBlack);
+
+    Property age = bean.getModel().getProperty("age");
+
+    assertThat(age).isNotNull();
+    assertThat(age.getName()).isEqualTo("age");
+    assertThat(age.isReadable()).isTrue();
+  }
+
+  @Test
+  public void isReadableForWriteOnlyPropertyReturnsFalse() {
+
+    CryptographicFunction function = new CryptographicFunction();
+
+    BeanAdapter bean = BeanAdapter.from(function);
+
+    Property salt = bean.getModel().getProperty("salt");
+
+    assertThat(salt).isNotNull();
+    assertThat(salt.getName()).isEqualTo("salt");
+    assertThat(salt.isReadable()).isFalse();
+  }
+
+  @Test
   public void isRequiredForRequiredPropertyIsTrue() {
 
     CryptographicFunction function = new CryptographicFunction();
@@ -396,6 +424,74 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void isSerializableForReadableNonTransientPropertyReturnsTrue() {
+
+    Property mockProperty = mock(Property.class);
+
+    doCallRealMethod().when(mockProperty).isSerializable();
+    doReturn(true).when(mockProperty).isReadable();
+    doReturn(false).when(mockProperty).isTransient();
+
+    assertThat(mockProperty.isSerializable()).isTrue();
+
+    verify(mockProperty, times(1)).isSerializable();
+    verify(mockProperty, times(1)).isReadable();
+    verify(mockProperty, times(1)).isTransient();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void isSerializableForReadableTransientPropertyReturnsFalse() {
+
+    Property mockProperty = mock(Property.class);
+
+    doCallRealMethod().when(mockProperty).isSerializable();
+    doReturn(true).when(mockProperty).isReadable();
+    doReturn(true).when(mockProperty).isTransient();
+
+    assertThat(mockProperty.isSerializable()).isFalse();
+
+    verify(mockProperty, times(1)).isSerializable();
+    verify(mockProperty, times(1)).isReadable();
+    verify(mockProperty, times(1)).isTransient();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void isSerializableForNonReadableNonTransientPropertyReturnsFalse() {
+
+    Property mockProperty = mock(Property.class);
+
+    doCallRealMethod().when(mockProperty).isSerializable();
+    doReturn(false).when(mockProperty).isReadable();
+    doReturn(false).when(mockProperty).isTransient();
+
+    assertThat(mockProperty.isSerializable()).isFalse();
+
+    verify(mockProperty, times(1)).isSerializable();
+    verify(mockProperty, times(1)).isReadable();
+    verify(mockProperty, never()).isTransient();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void isSerializableForNonReadableTransientPropertyReturnsFalse() {
+
+    Property mockProperty = mock(Property.class);
+
+    doCallRealMethod().when(mockProperty).isSerializable();
+    doReturn(false).when(mockProperty).isReadable();
+    doReturn(true).when(mockProperty).isTransient();
+
+    assertThat(mockProperty.isSerializable()).isFalse();
+
+    verify(mockProperty, times(1)).isSerializable();
+    verify(mockProperty, times(1)).isReadable();
+    verify(mockProperty, never()).isTransient();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
   public void isTransientForNonTransientProperty() {
 
     Customer joeDoe = Customer.as("Joe Doe");
@@ -407,6 +503,34 @@ public class PropertyUnitTests {
     assertThat(property).isNotNull();
     assertThat(property.getName()).isEqualTo("name");
     assertThat(property.isTransient()).isFalse();
+  }
+
+  @Test
+  public void isWritableForWritablePropertyReturnsTrue() {
+
+    CryptographicFunction function = new CryptographicFunction();
+
+    BeanAdapter bean = BeanAdapter.from(function);
+
+    Property salt = bean.getModel().getProperty("salt");
+
+    assertThat(salt).isNotNull();
+    assertThat(salt.getName()).isEqualTo("salt");
+    assertThat(salt.isWritable()).isTrue();
+  }
+
+  @Test
+  public void isWritableForReadOnlyPropertyReturnsFalse() {
+
+    Account account = Account.forCustomer(Customer.as("Bubba"));
+
+    BeanAdapter bean = BeanAdapter.from(account);
+
+    Property customer = bean.getModel().getProperty("customer");
+
+    assertThat(customer).isNotNull();
+    assertThat(customer.getName()).isEqualTo("customer");
+    assertThat(customer.isWritable()).isFalse();
   }
 
   @Test

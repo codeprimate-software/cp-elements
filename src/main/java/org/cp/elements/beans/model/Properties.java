@@ -190,6 +190,7 @@ public class Properties implements Iterable<Property> {
    * @throws PropertyNotFoundException if a {@link Property} with the given {@link String name}
    * could not be found in this collection.
    * @see org.cp.elements.beans.model.Property
+   * @see Property#getName()
    * @see #findBy(Predicate)
    */
   public @NotNull Property findByName(@Nullable String name) {
@@ -205,6 +206,7 @@ public class Properties implements Iterable<Property> {
    * having an assignable {@link Class type}.
    * @return all {@link Property properties} in this collection assignable to
    * the given {@link Class type}.
+   * @see Property#getType()
    * @see #findBy(Predicate)
    */
   public @NotNull Properties findByType(@NotNull Class<?> type) {
@@ -217,6 +219,7 @@ public class Properties implements Iterable<Property> {
    * Finds all readable {@link Properties}.
    *
    * @return all readable {@link Properties}.
+   * @see Property#isReadable()
    * @see #findBy(Predicate)
    * @see #findWritable()
    */
@@ -228,6 +231,7 @@ public class Properties implements Iterable<Property> {
    * Finds all required {@link Properties}.
    *
    * @return all required {@link Properties}.
+   * @see Property#isRequired()
    * @see #findBy(Predicate)
    */
   public @NotNull Properties findRequired() {
@@ -244,21 +248,18 @@ public class Properties implements Iterable<Property> {
    * given there are multiple methods for serializing a value, not limited simply to Java Serialization.
    *
    * @return all {@literal serializable} {@link Properties}.
+   * @see Property#isSerializable()
    * @see #findBy(Predicate)
    */
   public @NotNull Properties findSerializable() {
-
-    Predicate<Property> readableNonTransientPredicate = Property::isReadable;
-
-    readableNonTransientPredicate = readableNonTransientPredicate.and(property -> !property.isTransient());
-
-    return Properties.of(findBy(readableNonTransientPredicate).collect(Collectors.toSet()));
+    return Properties.of(findBy(Property::isSerializable).collect(Collectors.toSet()));
   }
 
   /**
    * Finds all transient {@link Properties}.
    *
    * @return all transient {@link Properties}.
+   * @see Property#isTransient()
    * @see #findBy(Predicate)
    */
   public @NotNull Properties findTransient() {
@@ -269,6 +270,7 @@ public class Properties implements Iterable<Property> {
    * Finds all writable {@link Properties}.
    *
    * @return all writable {@link Properties}.
+   * @see Property#isWritable()
    * @see #findBy(Predicate)
    * @see #findReadable()
    */

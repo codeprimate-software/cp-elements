@@ -99,6 +99,7 @@ public class PropertiesUnitTests {
 
     doReturn(name).when(mockProperty).getName();
     doReturn(type).when(mockProperty).getType();
+    doCallRealMethod().when(mockProperty).isSerializable();
     doCallRealMethod().when(mockProperty).compareTo(any(Property.class));
 
     return propertyFunction.apply(mockProperty);

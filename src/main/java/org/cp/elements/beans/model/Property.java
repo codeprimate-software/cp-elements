@@ -526,6 +526,20 @@ public class Property implements Comparable<Property>, Nameable<String> {
   }
 
   /**
+   * Determines whether this {@link Property} is serializable.
+   *
+   * A {@link Property} is {@literal serializable} if the {@link Property} is {@link #isReadable()}
+   * and is not {@link #isTransient()}.
+   *
+   * @return a boolean value indicating whether this {@link Property} is serializable.
+   * @see #isTransient()
+   * @see #isReadable()
+   */
+  public boolean isSerializable() {
+    return isReadable() && !isTransient();
+  }
+
+  /**
    * Determines whether this {@link Property} is transient.
    *
    * A {@link Property} is {@literal transient} if the {@link Field} backing this {@link Property} is declared with
