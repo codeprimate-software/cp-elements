@@ -164,7 +164,7 @@ public class PropertyMetadataUnitTests {
     Set<Class<? extends Annotation>> nameAnnotationTypes =
       StreamUtils.toSet(nameAnnotations.stream(), Annotation::annotationType);
 
-    assertThat(nameAnnotationTypes).containsExactly(Required.class, MockInheritedAnnotation.class);
+    assertThat(nameAnnotationTypes).containsExactlyInAnyOrder(Required.class, MockInheritedAnnotation.class);
   }
 
   @Test
