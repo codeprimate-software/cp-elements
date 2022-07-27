@@ -17,6 +17,11 @@ package org.cp.elements.beans.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
@@ -143,6 +148,60 @@ public class BeanUtilsUnitTests {
       .isThrownBy(() -> BeanUtils.acquireBeanInformation(null))
       .withMessage("Bean is required")
       .withNoCause();
+  }
+
+  @Test
+  public void resolveTypeFromBean() {
+
+    BeanAdapter mockBean = mock(BeanAdapter.class);
+
+    TestUser user = TestUser.as("TestUser");
+
+    doReturn(user).when(mockBean).getTarget();
+
+    assertThat(BeanUtils.resolveType(mockBean)).isEqualTo(TestUser.class);
+
+    verify(mockBean, times(1)).getTarget();
+    verifyNoMoreInteractions(mockBean);
+  }
+
+  @Test
+  public void resolveTypeFromProperty() {
+
+    Property mockProperty = mock(Property.class);
+
+    doReturn(User.class).when(mockProperty).getType();
+
+    assertThat(BeanUtils.resolveType(mockProperty)).isEqualTo(User.class);
+
+    verify(mockProperty, times(1)).getType();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void resolveTypeFromPropertyDescriptor() {
+
+    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
+
+    doReturn(User.class).when(mockPropertyDescriptor).getPropertyType();
+
+    assertThat(BeanUtils.resolveType(mockPropertyDescriptor)).isEqualTo(User.class);
+
+    verify(mockPropertyDescriptor, times(1)).getPropertyType();
+    verifyNoMoreInteractions(mockPropertyDescriptor);
+  }
+
+  @Test
+  public void resolveTypeFromUser() {
+
+    User<Integer> user = TestUser.as("TestUser");
+
+    assertThat(BeanUtils.resolveType(user)).isEqualTo(TestUser.class);
+  }
+
+  @Test
+  public void resolveTypeFromNullIsNullSafe() {
+    assertThat(BeanUtils.resolveType(null)).isEqualTo(Object.class);
   }
 
   private static class TestProcess extends BaseProcess { }

@@ -18,6 +18,7 @@ package org.cp.elements.beans.model;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.lang.Assert;
@@ -60,10 +61,18 @@ public abstract class BeanUtils extends ObjectUtils {
     }
   }
 
-  private static Class<?> resolveType(@NotNull Object obj) {
+  /**
+   * Resolves the {@link Class type} of the given {@link Object}.
+   *
+   * @param obj {@link Object} from which to resolve the {@link Class type}.
+   * @return the {@link Class type} of the given {@link Object}.
+   */
+  public static @NotNull Class<?> resolveType(@NotNull Object obj) {
 
-    return obj instanceof BeanAdapter
-      ? ((BeanAdapter) obj).getTarget().getClass()
-      : obj.getClass();
+    return obj instanceof BeanAdapter ? ((BeanAdapter) obj).getTarget().getClass()
+      : obj instanceof PropertyDescriptor ? ((PropertyDescriptor) obj).getPropertyType()
+      : obj instanceof Property ? ((Property) obj).getType()
+      : obj != null ? obj.getClass()
+      : Object.class;
   }
 }
