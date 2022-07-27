@@ -248,6 +248,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
   /**
    * Gets an {@link Annotation} declared on this {@link Property} of the given {@link Class type}.
    *
+   * @param <T> {@link Class type} of the {@link Annotation}.
    * @param annotationType {@link Class type} of {@link Annotation} to find.
    * @return an {@link Annotation} declared on this {@link Property} of the given {@link Class type}
    * or {@literal null} if an {@link Annotation} of the given {@link Class type} was not declared
@@ -255,13 +256,14 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * @see #getAnnotation(Class, Function)
    * @see java.lang.annotation.Annotation
    */
-  protected @Nullable Annotation getAnnotation(@NotNull Class<? extends Annotation> annotationType) {
+  protected @Nullable <T extends Annotation> T getAnnotation(@NotNull Class<T> annotationType) {
     return getAnnotation(annotationType, DEFAULT_ANNOTATIONS_RESOLVER);
   }
 
   /**
    * Gets an {@link Annotation} declared on this {@link Property} of the given {@link Class type}.
    *
+   * @param <T> {@link Class type} of the {@link Annotation}.
    * @param annotationType {@link Class type} of {@link Annotation} to find.
    * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
    * the {@link Annotation Annotations} declared on an {@link AnnotatedElement}; should not be {@literal null},
@@ -273,12 +275,13 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * @see java.util.function.Function
    * @see #getAnnotations(Function)
    */
-  protected @Nullable Annotation getAnnotation(@NotNull Class<? extends Annotation> annotationType,
+  protected @Nullable <T extends Annotation> T getAnnotation(@NotNull Class<T> annotationType,
       @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
 
     return getAnnotations(annotationsResolver).stream()
       .filter(annotation -> annotation.annotationType().equals(annotationType))
       .findFirst()
+      .map(annotationType::cast)
       .orElse(null);
   }
 

@@ -57,6 +57,9 @@ import lombok.ToString;
  * Unit Tests for {@link Property}.
  *
  * @author John Blum
+ * @see java.beans.PropertyDescriptor
+ * @see java.lang.reflect.Field
+ * @see java.lang.reflect.Method
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.Property
@@ -699,6 +702,19 @@ public class PropertyUnitTests {
 
   }
 
+  @EqualsAndHashCode
+  @SuppressWarnings("unused")
+  static class CryptographicFunction {
+
+    @Setter
+    @Required
+    private transient String salt;
+
+    public String hash(String data) {
+      throw new UnsupportedOperationException("Not Implemented");
+    }
+  }
+
   @Getter
   @EqualsAndHashCode
   @ToString(of = "name")
@@ -717,19 +733,6 @@ public class PropertyUnitTests {
         .map(birthdate -> Period.between(birthdate, LocalDate.now()))
         .map(Period::getYears)
         .orElse(0);
-    }
-  }
-
-  @EqualsAndHashCode
-  @SuppressWarnings("unused")
-  static class CryptographicFunction {
-
-    @Setter
-    @Required
-    private transient String salt;
-
-    public String hash(String data) {
-      throw new UnsupportedOperationException("Not Implemented");
     }
   }
 
