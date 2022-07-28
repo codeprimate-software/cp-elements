@@ -24,8 +24,10 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -37,6 +39,7 @@ import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -482,6 +485,81 @@ public class Property implements Comparable<Property>, Nameable<String> {
     return getAnnotations().stream()
       .map(Annotation::annotationType)
       .anyMatch(actualAnnotationType -> actualAnnotationType.equals(annotationType));
+  }
+
+  /**
+   * Determines whether the {@link Class type} of this {@link Property} is an {@link Class#isArray() array}.
+   *
+   * @return a boolean value indicating whether the {@link Class type} of this {@link Property}
+   * is an {@link Class#isArray() array}.
+   * @see #getType();
+   */
+  public boolean isArrayTyped() {
+    return ClassUtils.isArray(getType());
+  }
+
+  /**
+   * Determines whether the {@link Class type} of this {@link Property} is {@link Collection Collection-like}.
+   *
+   * @return a boolean value indicating whether the {@link Class type} of this {@link Property}
+   * is {@link Collection Collection-like}.
+   * @see #isArrayTyped()
+   * @see #isListTyped()
+   * @see #isMapTyped()
+   * @see #isSetTyped()
+   */
+  public boolean isCollectionLike() {
+    return isArrayTyped() || isListTyped() || isMapTyped() || isSetTyped();
+  }
+
+  /**
+   * Determines whether the {@link Class type} of this {@link Property} is a {@link List}.
+   *
+   * @return a boolean value indicating whether the {@link Class type} of this {@link Property} is a {@link List}.
+   * @see #isTypedAs(Class)
+   * @see java.util.List
+   */
+  public boolean isListTyped() {
+    return isTypedAs(List.class);
+  }
+
+  /**
+   * Determines whether the {@link Class type} of this {@link Property} is a {@link Map}.
+   *
+   * @return a boolean value indicating whether the {@link Class type} of this {@link Property} is a {@link Map}.
+   * @see #isTypedAs(Class)
+   * @see java.util.Map
+   */
+  public boolean isMapTyped() {
+    return isTypedAs(Map.class);
+  }
+
+  /**
+   * Determines whether the {@link Class type} of this {@link Property} is a {@link Set}.
+   *
+   * @return a boolean value indicating whether the {@link Class type} of this {@link Property} is a {@link Set}.
+   * @see #isTypedAs(Class)
+   * @see java.util.Set
+   */
+  public boolean isSetTyped() {
+    return isTypedAs(Set.class);
+  }
+
+  /**
+   * Determines whether the {@link #getType()} of this {@link Property} is assignment compatible with
+   * the given {@link Class type}.
+   *
+   * If the {@link Class type} argument is {@literal null}, then this method returns {@literal false}.
+   *
+   * @param type {@link Class} used to evaluate this {@link Property#getType() property type}.
+   * @return a boolean value indicating whether the {@link #getType()} of this {@link Property}
+   * is assignment compatible with the given {@link Class type}.
+   * @see java.lang.Class
+   * @see #getType()
+   */
+  @NullSafe
+  public boolean isTypedAs(@Nullable Class<?> type) {
+    return type != null && type.isAssignableFrom(getType());
   }
 
   /**
