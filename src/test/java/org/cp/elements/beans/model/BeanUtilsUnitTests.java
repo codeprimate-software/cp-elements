@@ -166,6 +166,23 @@ public class BeanUtilsUnitTests {
   }
 
   @Test
+  public void resolveTypeFromClass() {
+
+    assertThat(BeanUtils.resolveType(Boolean.class)).isEqualTo(Boolean.class);
+    assertThat(BeanUtils.resolveType(Integer.TYPE)).isEqualTo(Integer.TYPE);
+    assertThat(BeanUtils.resolveType(Integer.class)).isEqualTo(Integer.class);
+    assertThat(BeanUtils.resolveType(String.class)).isEqualTo(String.class);
+  }
+
+  @Test
+  public void resolveTypeFromObject() {
+
+    User<Integer> user = TestUser.as("TestUser");
+
+    assertThat(BeanUtils.resolveType(user)).isEqualTo(TestUser.class);
+  }
+
+  @Test
   public void resolveTypeFromProperty() {
 
     Property mockProperty = mock(Property.class);
@@ -189,14 +206,6 @@ public class BeanUtilsUnitTests {
 
     verify(mockPropertyDescriptor, times(1)).getPropertyType();
     verifyNoMoreInteractions(mockPropertyDescriptor);
-  }
-
-  @Test
-  public void resolveTypeFromUser() {
-
-    User<Integer> user = TestUser.as("TestUser");
-
-    assertThat(BeanUtils.resolveType(user)).isEqualTo(TestUser.class);
   }
 
   @Test

@@ -65,13 +65,15 @@ public abstract class BeanUtils extends ObjectUtils {
    * Resolves the {@link Class type} of the given {@link Object}.
    *
    * @param obj {@link Object} from which to resolve the {@link Class type}.
-   * @return the {@link Class type} of the given {@link Object}.
+   * @return the {@link Class type} of the given {@link Object}. If the given {@link Object} is {@literal null}
+   * then this method returns {@link Class Object.class}.
    */
   public static @NotNull Class<?> resolveType(@NotNull Object obj) {
 
     return obj instanceof BeanAdapter ? ((BeanAdapter) obj).getTarget().getClass()
       : obj instanceof PropertyDescriptor ? ((PropertyDescriptor) obj).getPropertyType()
       : obj instanceof Property ? ((Property) obj).getType()
+      : obj instanceof Class ? (Class<?>) obj
       : obj != null ? obj.getClass()
       : Object.class;
   }
