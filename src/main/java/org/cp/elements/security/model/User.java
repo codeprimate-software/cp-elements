@@ -30,6 +30,10 @@ import org.cp.elements.lang.Nameable;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface User<ID extends Comparable<ID>> extends Identifiable<ID>, Nameable<String> {
+public interface User<ID extends Comparable<ID>> extends Comparable<User<ID>>, Identifiable<ID>, Nameable<String> {
 
+  @Override
+  default int compareTo(User<ID> that) {
+    return this.getName().compareTo(that.getName());
+  }
 }
