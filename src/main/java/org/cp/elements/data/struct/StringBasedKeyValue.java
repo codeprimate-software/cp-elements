@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import java.util.Optional;
@@ -23,10 +22,10 @@ import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.StringUtils;
 
 /**
- * The {@link StringBasedKeyValue} class is an implementation of the {@link SimpleKeyValue} data structure
- * where the key and value are {@link String Strings}.
+ * Implementation of the {@link SimpleKeyValue} data structure where both the key and value are {@link String Strings}.
  *
  * @author John Blum
+ * @see java.lang.String
  * @see org.cp.elements.data.struct.SimpleKeyValue
  * @see org.cp.elements.data.conversion.ConversionService
  * @since 1.0.0
@@ -80,7 +79,10 @@ public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String>
    * @see java.lang.Class
    */
   public <T> Optional<T> getValueAs(Class<T> type) {
-    return getValue().filter(StringUtils::hasText).map(value -> getConversionService().convert(value, type));
+
+    return getValue()
+      .filter(StringUtils::hasText)
+      .map(value -> getConversionService().convert(value, type));
   }
 
   /**
