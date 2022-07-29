@@ -38,6 +38,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
+import org.cp.elements.util.stream.Streamable;
 
 /**
  * Abstract Data Type (ADT) modeling a collection of bean properties.
@@ -47,9 +48,10 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see java.lang.Iterable
  * @see java.util.stream.Stream
  * @see org.cp.elements.beans.model.Property
+ * @see org.cp.elements.util.stream.Streamable
  */
 @SuppressWarnings("unused")
-public class Properties implements Iterable<Property> {
+public class Properties implements Iterable<Property>, Streamable<Property> {
 
   /**
    * Factory method used to construct a new, empty instance of {@link Properties}.
@@ -68,6 +70,7 @@ public class Properties implements Iterable<Property> {
    * @return a new {@link Properties} containing all the {@link Property properties} of the bean
    * represented by the given, required {@link BeanModel model}.
    * @throws IllegalArgumentException if the {@link BeanModel} is {@literal null}.
+   * @see org.cp.elements.beans.model.AbstractPropertyFactory
    * @see org.cp.elements.beans.model.BeanModel
    * @see #of(Iterable)
    */
@@ -82,7 +85,7 @@ public class Properties implements Iterable<Property> {
 
     return of(Arrays.stream(propertyDescriptors)
       .filter(Objects::nonNull)
-      .map(propertyDescriptor -> Property.from(beanModel, propertyDescriptor))
+      .map(propertyDescriptor -> AbstractPropertyFactory.create(beanModel, propertyDescriptor))
       .collect(Collectors.toSet()));
   }
 
@@ -298,6 +301,7 @@ public class Properties implements Iterable<Property> {
    * @see java.util.stream.Stream
    * @see #iterator()
    */
+  @Override
   public @NotNull Stream<Property> stream() {
     return StreamSupport.stream(this.spliterator(), false);
   }
