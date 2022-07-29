@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.data.struct.SimpleKeyValue.newKeyValue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -28,14 +28,17 @@ import org.cp.elements.lang.Constants;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link SimpleKeyValue}.
+ * Unit Tests for {@link SimpleKeyValue}.
  *
  * @author John Blum
+ * @see java.util.Map
+ * @see java.util.Optional
  * @see org.junit.Test
- * @see SimpleKeyValue
+ * @see org.mockito.Mockito
+ * @see org.cp.elements.data.struct.SimpleKeyValue
  * @since 1.0.0
  */
-public class SimpleKeyValueTests {
+public class SimpleKeyValueUnitTests {
 
   @Test
   public void newKeyValueWithKey() {
@@ -65,29 +68,41 @@ public class SimpleKeyValueTests {
 
     Map.Entry<Object, Object> mockMapEntry = mock(Map.Entry.class);
 
-    when(mockMapEntry.getKey()).thenReturn("TestKey");
-    when(mockMapEntry.getValue()).thenReturn("TestValue");
+    when(mockMapEntry.getKey()).thenReturn("mockKey");
+    when(mockMapEntry.getValue()).thenReturn("mockValue");
 
     SimpleKeyValue<Object, Object> keyValue = SimpleKeyValue.from(mockMapEntry);
 
     assertThat(keyValue).isNotNull();
-    assertThat(keyValue.getKey()).isEqualTo("TestKey");
-    assertThat(keyValue.getValue().orElse(null)).isEqualTo("TestValue");
+    assertThat(keyValue.getKey()).isEqualTo("mockKey");
+    assertThat(keyValue.getValue().orElse(null)).isEqualTo("mockValue");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void fromNullMapEntry() {
 
-    try {
-      SimpleKeyValue.from(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleKeyValue.from(null))
+      .withMessage("Map.Entry is required")
+      .withNoCause();
+  }
 
-      assertThat(expected).hasMessage("Map.Entry is required");
-      assertThat(expected).hasNoCause();
+  @Test
+  public void newKeyValueWithNullKeyAndNoValue() {
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleKeyValue.newKeyValue(null))
+      .withMessage("Key is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void newKeyValueWithNullKeyAndNonNullValue() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> SimpleKeyValue.newKeyValue(null, "mock"))
+      .withMessage("Key is required")
+      .withNoCause();
   }
 
   @Test
@@ -104,7 +119,6 @@ public class SimpleKeyValueTests {
 
     SimpleKeyValue<Object, Object> keyValue = new SimpleKeyValue<>("testKey");
 
-    assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("testKey");
     assertThat(keyValue.getValue()).isInstanceOf(Optional.class);
     assertThat(keyValue.getValue("default")).isEqualTo("default");
@@ -115,25 +129,18 @@ public class SimpleKeyValueTests {
 
     SimpleKeyValue<Object, Object> keyValue = new SimpleKeyValue<>("testKey", null);
 
-    assertThat(keyValue).isNotNull();
     assertThat(keyValue.getKey()).isEqualTo("testKey");
     assertThat(keyValue.getValue()).isInstanceOf(Optional.class);
     assertThat(keyValue.getValue("default")).isEqualTo("default");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructKeyValueWithNullKeyThrowsIllegalArgumentException() {
 
-    try {
-      new SimpleKeyValue<>(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Key is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new SimpleKeyValue<>(null))
+      .withMessage("Key is required")
+      .withNoCause();
   }
 
   @Test
@@ -143,19 +150,9 @@ public class SimpleKeyValueTests {
 
   @Test
   public void isSetReturnsFalse() {
+
     assertThat(newKeyValue("testKey").isSet()).isFalse();
     assertThat(newKeyValue("testKey", null).isSet()).isFalse();
-  }
-
-  @Test
-  public void getValueWithDefaultWhenNullUsesDefault() {
-    assertThat(newKeyValue("testKey").getValue("default")).isEqualTo("default");
-    assertThat(newKeyValue("testKey", null).getValue("default")).isEqualTo("default");
-  }
-
-  @Test
-  public void getValueWithDefaultWhenNotNullUsesValue() {
-    assertThat(newKeyValue("testKey", "testValue").getValue("default")).isEqualTo("testValue");
   }
 
   @Test
