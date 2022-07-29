@@ -142,6 +142,7 @@ public class PropertiesUnitTests {
     verify(mockBeanModel, times(1)).getBeanInfo();
     verify(mockBeanInfo, times(1)).getPropertyDescriptors();
     verify(mockPropertyDescriptor, atLeastOnce()).getName();
+    verify(mockPropertyDescriptor, atLeastOnce()).getPropertyType();
 
     verifyNoMoreInteractions(mockBeanModel, mockBeanInfo, mockPropertyDescriptor);
   }
