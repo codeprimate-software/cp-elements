@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
-
-import static org.cp.elements.util.MapUtils.newMapEntry;
 
 import java.util.Map;
 import java.util.Optional;
+
+import org.cp.elements.util.MapUtils;
 
 /**
  * The {@link KeyValue} interface defines a contract for a data structure modeling both a key and a value
@@ -27,44 +26,56 @@ import java.util.Optional;
  *
  * @author John Blum
  * @see java.util.Map
+ * @see java.util.Optional
  * @since 1.0.0
  */
+@FunctionalInterface
 public interface KeyValue<KEY, VALUE> {
 
   /**
-   * Determines whether the {@link #getKey() key} has a value.
+   * Determines whether the {@link #getKey() key} is mapped to a {@link #getValue() value}.
    *
-   * @return a boolean value indicating whether the {@link #getKey() key} has a value.
-   * @see #getValue(Object)
+   * @return a boolean value indicating whether the {@link #getKey() key} has a {@link #getValue() value}.
+   * @see java.util.Optional#isPresent()
+   * @see #getValue()
    */
-  boolean isSet();
+  default boolean isSet() {
+    return getValue().isPresent();
+  }
 
   /**
-   * Return the key in the key/value mapping.
+   * Return the {@link KEY key} in the key/value mapping.
    *
-   * @return the key.
+   * @return the {@link KEY key}.
    */
   KEY getKey();
 
   /**
-   * Return the value as a null-safe {@link Optional} value in the key/value mapping.
+   * Return a null-safe {@link Optional} {@link VALUE value} in the key/value mapping.
    *
-   * @return the optional value.
+   * Defaults to {@link Optional#empty()}.
+   *
+   * @return an {@link Optional} {@link VALUE value}.
    * @see java.util.Optional
    * @see #getValue(Object)
    */
-  Optional<VALUE> getValue();
+  default Optional<VALUE> getValue() {
+    return Optional.empty();
+  }
 
   /**
-   * Return the value in the key/value mapping.
+   * Return a materialized {@link Object value} in the key/value mapping.
    *
-   * If the value is {@literal null}, then return the {@code defaulValue}.
+   * If the {@link VALUE value} is {@literal null}, then returns the type compatible {@link VALUE defaultValue}.
    *
-   * @param defaultValue default value to return if the value is {@literal null}.
-   * @return the value of the key/value mapping or {@code defaultValue} if value is {@literal null}.
+   * @param defaultValue {@link VALUE default value} to return if the {@link VALUE value} is {@literal null}.
+   * @return the {@link VALUE value} in the key/value mapping or {@link VALUE defaultValue}
+   * if {@link VALUE value} is {@literal null}.
    * @see #getValue()
    */
-  VALUE getValue(VALUE defaultValue);
+  default VALUE getValue(VALUE defaultValue) {
+    return getValue().orElse(defaultValue);
+  }
 
   /**
    * Returns this {@link SimpleKeyValue} object as an immutable instance of {@link Map.Entry}.
@@ -72,8 +83,10 @@ public interface KeyValue<KEY, VALUE> {
    * @return this {@link SimpleKeyValue} object as an immutable instance of {@link Map.Entry}.
    * @see org.cp.elements.util.MapUtils#newMapEntry(Object, Object)
    * @see java.util.Map.Entry
+   * @see #getValue(Object)
+   * @see #getKey()
    */
   default Map.Entry<KEY, VALUE> asMapEntry() {
-    return newMapEntry(getKey(), getValue().orElse(null));
+    return MapUtils.newMapEntry(getKey(), getValue(null));
   }
 }
