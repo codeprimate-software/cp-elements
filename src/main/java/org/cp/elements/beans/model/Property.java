@@ -592,6 +592,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    *
    * @return a boolean value indicating whether this {@link Property} can be read.
    * @see #getReadMethod()
+   * @see #isWritable()
    */
   public boolean isReadable() {
     return getReadMethod() != null;
@@ -636,6 +637,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * annotation.
    *
    * @return a boolean value indicating whether this {@link Property} is transient.
+   * @see #isSerializable()
    */
   public boolean isTransient() {
 
@@ -649,6 +651,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    *
    * @return a boolean value indicating whether this {@link Property} can be written.
    * @see #getWriteMethod()
+   * @see #isReadable()
    */
   public boolean isWritable() {
     return getWriteMethod() != null;
