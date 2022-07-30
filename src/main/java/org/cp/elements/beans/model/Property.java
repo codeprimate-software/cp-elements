@@ -696,6 +696,20 @@ public class Property implements Comparable<Property>, Nameable<String> {
   }
 
   /**
+   * Returns this {@link Property} as a typed {@link Property} of the given {@link Property} {@link Class type}.
+   *
+   * @param <T> {@link Class type} of {@link Property}.
+   * @param type {@link Class type} to cast this {@link Property} to; must not be {@literal null}.
+   * @return a typed {@link Property} of the given {@link Property} {@link Class type}.
+   * @throws org.cp.elements.lang.IllegalTypeException if this {@link Property} is not an instance of
+   * the given {@link Class type}.
+   */
+  public @NotNull <T extends Property> T asTypedProperty(@NotNull Class<T> type) {
+    Assert.isInstanceOf(this, type);
+    return type.cast(this);
+  }
+
+  /**
    * Compares this {@link Property} to the given, required {@link Property} to determine (sort) order.
    *
    * {@link Property Properties} are ordered by {@link #getName()}.

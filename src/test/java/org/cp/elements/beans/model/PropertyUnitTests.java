@@ -16,6 +16,7 @@
 package org.cp.elements.beans.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -47,12 +48,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.data.struct.KeyValue;
+import org.cp.elements.function.FunctionUtils;
+import org.cp.elements.lang.IllegalTypeException;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.junit.Test;
 
@@ -75,6 +80,20 @@ import lombok.ToString;
  * @since 1.0.0
  */
 public class PropertyUnitTests {
+
+  private Property mockProperty(String name) {
+    return mockProperty(name, FunctionUtils.noopConsumer());
+  }
+
+  private Property mockProperty(String name, Consumer<Property> propertyConsumer) {
+
+    Property mockProperty = mock(Property.class, name);
+
+    doReturn(name).when(mockProperty).getName();
+    propertyConsumer.accept(mockProperty);
+
+    return mockProperty;
+  }
 
   @Test
   public void constructProperty() {
@@ -907,6 +926,28 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void asTypedPropertyIsCorrect() {
+
+    Property property = new TestProperty(mock(BeanModel.class), mock(PropertyDescriptor.class));
+
+    assertThat(property).isInstanceOf(TestProperty.class);
+
+    TestProperty testProperty = property.asTypedProperty(TestProperty.class);
+
+    assertThat(testProperty).isSameAs(property);
+  }
+
+  @Test
+  public void asIllegalTypedPropertyThrowsException() {
+
+    assertThatExceptionOfType(IllegalTypeException.class)
+      .isThrownBy(() -> mockProperty("test", property -> doCallRealMethod().when(property).asTypedProperty(any()))
+        .asTypedProperty(TestProperty.class))
+      .withMessage("[test] is not an instance of [%s]", TestProperty.class)
+      .withNoCause();
+  }
+
+  @Test
   public void compareEqualPropertiesReturnsZero() {
 
     Property mockPropertyOne = mock(Property.class);
@@ -974,7 +1015,7 @@ public class PropertyUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void propertyEqualsEqualProperty() {
+  public void propertiesAreEqual() {
 
     PropertyDescriptor mockPropertyDescriptor= mock(PropertyDescriptor.class);
 
@@ -990,10 +1031,21 @@ public class PropertyUnitTests {
   }
 
   @Test
-  @SuppressWarnings("all")
-  public void propertyEqualsNullReturnsFalse() {
+  public void propertiesAreNotEqual() {
 
-    Property mockProperty = mock(Property.class);
+    Property mockPropertyOne = mockProperty("mock");
+    Property mockPropertyTwo = mockProperty("MOCK");
+    Property testProperty = mockProperty("test");
+
+    assertThat(mockPropertyOne.equals(mockPropertyTwo)).isFalse();
+    assertThat(mockPropertyOne.equals(testProperty)).isFalse();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void propertyIsNotEqualToNull() {
+
+    Property mockProperty = mockProperty("test");
 
     assertThat(mockProperty.equals(null)).isFalse();
 
@@ -1002,9 +1054,9 @@ public class PropertyUnitTests {
 
   @Test
   @SuppressWarnings("all")
-  public void propertyEqualsObjectReturnsFalse() {
+  public void propertyIsNotEqualToObject() {
 
-    Property mockProperty = mock(Property.class);
+    Property mockProperty = mockProperty("MOCK");
 
     assertThat(mockProperty.equals("MOCK")).isFalse();
 
@@ -1159,6 +1211,13 @@ public class PropertyUnitTests {
 
     Vip(@lombok.NonNull String name) {
       super(name);
+    }
+  }
+
+  static class TestProperty extends Property {
+
+    TestProperty(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
+      super(beanModel, propertyDescriptor);
     }
   }
 
