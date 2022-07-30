@@ -486,6 +486,72 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void isIndexedForArrayPropertyReturnsTrue() {
+
+    Property mockProperty = mock(Property.class);
+
+    doReturn(true).when(mockProperty).isArrayTyped();
+    doCallRealMethod().when(mockProperty).isIndexed();
+
+    assertThat(mockProperty.isIndexed()).isTrue();
+
+    verify(mockProperty, times(1)).isIndexed();
+    verify(mockProperty, times(1)).isArrayTyped();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void isIndexedForIndexedPropertyReturnsTrue() {
+
+    Property mockProperty = mock(Property.class);
+
+    doReturn(false).when(mockProperty).isArrayTyped();
+    doReturn(ArrayList.class).when(mockProperty).getType();
+    doCallRealMethod().when(mockProperty).isIndexed();
+
+    assertThat(mockProperty.isIndexed()).isTrue();
+
+    verify(mockProperty, times(1)).isIndexed();
+    verify(mockProperty, times(1)).isArrayTyped();
+    verify(mockProperty, times(1)).getType();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void isIndexedForNonIndexedPropertyReturnsFalse() {
+
+    Property mockProperty = mock(Property.class);
+
+    doReturn(false).when(mockProperty).isArrayTyped();
+    doReturn(Set.class).when(mockProperty).getType();
+    doCallRealMethod().when(mockProperty).isIndexed();
+
+    assertThat(mockProperty.isIndexed()).isFalse();
+
+    verify(mockProperty, times(1)).isIndexed();
+    verify(mockProperty, times(1)).isArrayTyped();
+    verify(mockProperty, times(1)).getType();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
+  public void isIndexedForObjectPropertyReturnsFalse() {
+
+    Property mockProperty = mock(Property.class);
+
+    doReturn(false).when(mockProperty).isArrayTyped();
+    doReturn(Object.class).when(mockProperty).getType();
+    doCallRealMethod().when(mockProperty).isIndexed();
+
+    assertThat(mockProperty.isIndexed()).isFalse();
+
+    verify(mockProperty, times(1)).isIndexed();
+    verify(mockProperty, times(1)).isArrayTyped();
+    verify(mockProperty, times(1)).getType();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
   public void isTypedAsWithIncompatibleTypeReturnsFalse() {
 
     Property customer = BeanAdapter.from(Account.forCustomer(Customer.as("Imma Pigg")))

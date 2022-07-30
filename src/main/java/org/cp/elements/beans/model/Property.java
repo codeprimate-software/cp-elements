@@ -38,6 +38,7 @@ import java.util.function.Predicate;
 import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
 import org.cp.elements.beans.annotation.Required;
+import org.cp.elements.beans.model.support.AbstractIndexedProperty;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Nameable;
@@ -538,6 +539,22 @@ public class Property implements Comparable<Property>, Nameable<String> {
    */
   public boolean isDerived() {
     return getField() == null;
+  }
+
+  /**
+   * Determines whether this {@link Property} is an {@link AbstractIndexedProperty Indexed-based Property}.
+   *
+   * A {@link Property} is an {@link AbstractIndexedProperty Indexed-based Property}
+   * if the {@link #getType() Property's Type} is an indexed-based data structure, such as an array,
+   * {@link List} or {@link Map}.
+   *
+   * @return a boolean value indicating whether this {@link Property}
+   * is an {@link AbstractIndexedProperty Indexed-based Property}.
+   * @see AbstractIndexedProperty#isIndexed(Property)
+   * @see #isArrayTyped()
+   */
+  public boolean isIndexed() {
+    return isArrayTyped() || AbstractIndexedProperty.isIndexed(this);
   }
 
   /**
