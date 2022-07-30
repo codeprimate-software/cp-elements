@@ -32,6 +32,8 @@ import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
@@ -48,16 +50,20 @@ import org.cp.elements.util.stream.Streamable;
  * @see java.lang.Iterable
  * @see java.util.stream.Stream
  * @see org.cp.elements.beans.model.Property
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.util.stream.Streamable
  */
 @SuppressWarnings("unused")
+@FluentApi
 public class Properties implements Iterable<Property>, Streamable<Property> {
 
   /**
    * Factory method used to construct a new, empty instance of {@link Properties}.
    *
    * @return a new {@link Properties} containing no {@link Property properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   public static @NotNull Properties empty() {
     return new Properties();
   }
@@ -72,8 +78,10 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * @throws IllegalArgumentException if the {@link BeanModel} is {@literal null}.
    * @see org.cp.elements.beans.model.AbstractPropertyFactory
    * @see org.cp.elements.beans.model.BeanModel
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #of(Iterable)
    */
+  @Dsl
   public static @NotNull Properties from(@NotNull BeanModel beanModel) {
 
     Assert.notNull(beanModel, "BeanModel is required");
@@ -96,9 +104,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * @param properties array of {@link Property properties} contained by this collection.
    * @return a new {@link Properties} containing the array of {@link Property properties}.
    * @see org.cp.elements.beans.model.Property
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #Properties(Property...)
    * @see #of(Iterable)
    */
+  @Dsl
   public static @NotNull Properties of(Property... properties) {
     return new Properties(properties);
   }
@@ -110,10 +120,12 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * @param properties {@link Iterable} of {@link Property properties} contained by this collection.
    * @return a new {@link Properties} containing the {@link Iterable} of {@link Property properties}.
    * @see org.cp.elements.beans.model.Property
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.lang.Iterable
    * @see #of(Property...)
    */
-  public static @NotNull Properties of(Iterable<Property> properties) {
+  @Dsl
+  public static @NotNull Properties of(@Nullable Iterable<Property> properties) {
     return of(ArrayUtils.asArray(properties, Property.class));
   }
 
@@ -124,10 +136,12 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * @param properties {@link Stream} of {@link Property properties} contained by this collection.
    * @return a new {@link Properties}.
    * @see org.cp.elements.beans.model.Property
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.stream.Stream
    * @see #of(Iterable)
    */
-  public static @NotNull Properties of(Stream<Property> properties) {
+  @Dsl
+  public static @NotNull Properties of(@Nullable Stream<Property> properties) {
     return of(StreamUtils.nullSafeStream(properties).collect(Collectors.toSet()));
   }
 
@@ -175,10 +189,12 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    *
    * @param predicate {@link Predicate} used to match {@link Property properties} in this collection.
    * @return a {@link Stream} of {@link Property properties} that match the {@link Predicate}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.function.Predicate
    * @see java.util.stream.Stream
    * @see #getProperties()
    */
+  @Dsl
   public @NotNull Stream<Property> findBy(@Nullable Predicate<Property> predicate) {
 
     return getProperties().stream()
@@ -193,9 +209,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * @throws PropertyNotFoundException if a {@link Property} with the given {@link String name}
    * could not be found in this collection.
    * @see org.cp.elements.beans.model.Property
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#getName()
    * @see #findBy(Predicate)
    */
+  @Dsl
   public @NotNull Property findByName(@Nullable String name) {
 
     return findBy(property -> property.getName().equals(name)).findFirst()
@@ -209,9 +227,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * having an assignable {@link Class type}.
    * @return all {@link Property properties} in this collection assignable to
    * the given {@link Class type}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#getType()
    * @see #findBy(Predicate)
    */
+  @Dsl
   public @NotNull Properties findByType(@NotNull Class<?> type) {
 
     return Properties.of(findBy(property -> ClassUtils.assignableTo(property.getType(), type))
@@ -222,10 +242,12 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * Finds all readable {@link Properties}.
    *
    * @return all readable {@link Properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#isReadable()
    * @see #findBy(Predicate)
    * @see #findWritable()
    */
+  @Dsl
   public @NotNull Properties findReadable() {
     return Properties.of(findBy(Property::isReadable).collect(Collectors.toSet()));
   }
@@ -234,9 +256,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * Finds all required {@link Properties}.
    *
    * @return all required {@link Properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#isRequired()
    * @see #findBy(Predicate)
    */
+  @Dsl
   public @NotNull Properties findRequired() {
     return Properties.of(findBy(Property::isRequired).collect(Collectors.toSet()));
   }
@@ -251,9 +275,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * given there are multiple methods for serializing a value, not limited simply to Java Serialization.
    *
    * @return all {@literal serializable} {@link Properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#isSerializable()
    * @see #findBy(Predicate)
    */
+  @Dsl
   public @NotNull Properties findSerializable() {
     return Properties.of(findBy(Property::isSerializable).collect(Collectors.toSet()));
   }
@@ -262,9 +288,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * Finds all transient {@link Properties}.
    *
    * @return all transient {@link Properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#isTransient()
    * @see #findBy(Predicate)
    */
+  @Dsl
   public @NotNull Properties findTransient() {
     return Properties.of(findBy(Property::isTransient).collect(Collectors.toSet()));
   }
@@ -273,10 +301,12 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * Finds all writable {@link Properties}.
    *
    * @return all writable {@link Properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see Property#isWritable()
    * @see #findBy(Predicate)
    * @see #findReadable()
    */
+  @Dsl
   public @NotNull Properties findWritable() {
     return Properties.of(findBy(Property::isWritable).collect(Collectors.toSet()));
   }
@@ -298,9 +328,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * Returns a {@link Stream} of {@link Property properties} in this collection.
    *
    * @return a {@link Stream} of {@link Property properties} in this collection.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.stream.Stream
    * @see #iterator()
    */
+  @Dsl
   @Override
   public @NotNull Stream<Property> stream() {
     return StreamSupport.stream(this.spliterator(), false);

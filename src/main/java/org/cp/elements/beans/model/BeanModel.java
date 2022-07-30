@@ -22,6 +22,8 @@ import java.util.WeakHashMap;
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -31,9 +33,11 @@ import org.cp.elements.lang.annotation.Nullable;
  * @author John Blum
  * @see java.beans.BeanInfo
  * @see org.cp.elements.beans.model.BeanAdapter
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@FluentApi
 public class BeanModel {
 
   private static final Map<BeanAdapter, BeanModel> beanModelCache = new WeakHashMap<>();
@@ -47,8 +51,10 @@ public class BeanModel {
    * @throws BeansException if information about the {@link BeanAdapter bean} could not be acquired.
    * @throws IllegalArgumentException if the {@link BeanAdapter bean} is {@literal null}.
    * @see org.cp.elements.beans.model.BeanAdapter
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #BeanModel(BeanAdapter)
    */
+  @Dsl
   public static @NotNull BeanModel from(@NotNull BeanAdapter bean) {
     return beanModelCache.computeIfAbsent(bean, BeanModel::new);
   }
@@ -79,8 +85,10 @@ public class BeanModel {
    *
    * @return a reference to the {@link BeanAdapter bean} for which this {@link BeanModel model} is based.
    * @see org.cp.elements.beans.model.BeanAdapter
+   * @see org.cp.elements.lang.annotation.Dsl
    */
-  protected @NotNull BeanAdapter getBean() {
+  @Dsl
+  public @NotNull BeanAdapter getBean() {
     return this.bean;
   }
 
@@ -90,7 +98,7 @@ public class BeanModel {
    * @return the {@link BeanInfo} for the {@link BeanAdapter bean} represented by this {@link BeanModel model}.
    * @see java.beans.BeanInfo
    */
-  protected @NotNull BeanInfo getBeanInfo() {
+  public @NotNull BeanInfo getBeanInfo() {
     return this.beanInfo;
   }
 
@@ -99,7 +107,9 @@ public class BeanModel {
    *
    * @return the {@link Properties} of the {@link BeanAdapter bean}.
    * @see org.cp.elements.beans.model.Properties
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   public @NotNull Properties getProperties() {
     return this.beanProperties;
   }
@@ -112,8 +122,10 @@ public class BeanModel {
    * @throws PropertyNotFoundException if a {@link Property} with the given {@link String name} does not exist
    * on the bean modeled by this model.
    * @see org.cp.elements.beans.model.Property
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #getProperties()
    */
+  @Dsl
   public @NotNull Property getProperty(@Nullable String name) {
     return getProperties().findByName(name);
   }
@@ -138,7 +150,7 @@ public class BeanModel {
    * @see #getTargetObject()
    * @see java.lang.Class
    */
-  protected @NotNull Class<?> getTargetType() {
+  public @NotNull Class<?> getTargetType() {
     return getTargetObject().getClass();
   }
 }

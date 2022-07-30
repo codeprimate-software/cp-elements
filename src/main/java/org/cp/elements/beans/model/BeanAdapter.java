@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -27,8 +29,10 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John Blum
  * @see java.lang.Object
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
+@FluentApi
 public class BeanAdapter {
 
   /**
@@ -38,9 +42,11 @@ public class BeanAdapter {
    * @param target {@link Object} to adapt as a {@literal JavaBean}; must not be {@literal null}.
    * @return a new {@link BeanAdapter} initialized with the given, required {@link Object POJO}.
    * @throws IllegalArgumentException if the target {@link Object} is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #BeanAdapter(Object)
    * @see java.lang.Object
    */
+  @Dsl
   public static BeanAdapter from(@NotNull Object target) {
     return new BeanAdapter(target);
   }
@@ -57,7 +63,7 @@ public class BeanAdapter {
    * @throws IllegalArgumentException if the target {@link Object} is {@literal null}.
    * @see java.lang.Object
    */
-  public BeanAdapter(@NotNull Object target) {
+  protected BeanAdapter(@NotNull Object target) {
     this.target = ObjectUtils.requireObject(target, "The target object to adapt as a JavaBean is required");
   }
 
@@ -66,8 +72,10 @@ public class BeanAdapter {
    *
    * @return the {@link BeanModel} modeling this bean.
    * @see org.cp.elements.beans.model.BeanModel
+   * @see org.cp.elements.lang.annotation.Dsl
    */
-  protected @NotNull BeanModel getModel() {
+  @Dsl
+  public @NotNull BeanModel getModel() {
     return this.beanModelReference.updateAndGet(model -> model != null ? model : BeanModel.from(this));
   }
 
@@ -77,7 +85,7 @@ public class BeanAdapter {
    * @return a reference to the target {@link Object POJO} adapted as a {@literal JavaBean}.
    * @see java.lang.Object
    */
-  protected @NotNull Object getTarget() {
+  public @NotNull Object getTarget() {
     return this.target;
   }
 

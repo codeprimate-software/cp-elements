@@ -42,6 +42,8 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
@@ -60,8 +62,10 @@ import org.cp.elements.util.CollectionUtils;
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
  * @see org.cp.elements.lang.Nameable
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
+@FluentApi
 @SuppressWarnings("unused")
 public class Property implements Comparable<Property>, Nameable<String> {
 
@@ -102,8 +106,10 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * @throws IllegalArgumentException if the {@link BeanModel} or {@link PropertyDescriptor} are {@literal null}.
    * @see #Property(BeanModel, PropertyDescriptor)
    * @see org.cp.elements.beans.model.BeanModel
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.beans.PropertyDescriptor
    */
+  @Dsl
   public static @NotNull Property from(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
     return new Property(beanModel, propertyDescriptor);
   }
@@ -294,8 +300,10 @@ public class Property implements Comparable<Property>, Nameable<String> {
    * @return the {@link BeanAdapter bean} to which this {@link Property} belongs.
    * @see org.cp.elements.beans.model.BeanModel#getBean()
    * @see org.cp.elements.beans.model.BeanAdapter
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #getBeanModel()
    */
+  @Dsl
   protected @NotNull BeanAdapter getBean() {
     return getBeanModel().getBean();
   }
@@ -305,7 +313,9 @@ public class Property implements Comparable<Property>, Nameable<String> {
    *
    * @return the {@link BeanModel} modeling the bean containing this {@link Property}.
    * @see org.cp.elements.beans.model.BeanModel
+   * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   public @NotNull BeanModel getBeanModel() {
     return this.beanModel;
   }
