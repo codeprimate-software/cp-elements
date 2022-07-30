@@ -502,6 +502,7 @@ public class Property implements Comparable<Property>, Nameable<String> {
    *
    * @return a boolean value indicating whether the {@link Class type} of this {@link Property}
    * is an {@link Class#isArray() array}.
+   * @see #isCollectionLike()
    * @see #getType();
    */
   public boolean isArrayTyped() {
@@ -513,46 +514,30 @@ public class Property implements Comparable<Property>, Nameable<String> {
    *
    * @return a boolean value indicating whether the {@link Class type} of this {@link Property}
    * is {@link Collection Collection-like}.
+   * @see #isTypedAs(Class)
    * @see #isArrayTyped()
-   * @see #isListTyped()
-   * @see #isMapTyped()
-   * @see #isSetTyped()
    */
   public boolean isCollectionLike() {
-    return isArrayTyped() || isListTyped() || isMapTyped() || isSetTyped();
+
+    return isArrayTyped()
+      || isTypedAs(List.class)
+      || isTypedAs(Map.class)
+      || isTypedAs(Set.class);
   }
 
   /**
-   * Determines whether the {@link Class type} of this {@link Property} is a {@link List}.
+   * Determines whether this {@link Property} is derived from another bean {@link Property}.
    *
-   * @return a boolean value indicating whether the {@link Class type} of this {@link Property} is a {@link List}.
-   * @see #isTypedAs(Class)
-   * @see java.util.List
-   */
-  public boolean isListTyped() {
-    return isTypedAs(List.class);
-  }
-
-  /**
-   * Determines whether the {@link Class type} of this {@link Property} is a {@link Map}.
+   * This means this {@link Property} is not backed by an {@link Object} {@link Field}.
+   * For example, this {@link Property} may represent the {@literal age} property of a {@literal Person} type
+   * where age is computed from the person's {@literal date of birth} using the {@literal birthdate} {@link Field}.
    *
-   * @return a boolean value indicating whether the {@link Class type} of this {@link Property} is a {@link Map}.
-   * @see #isTypedAs(Class)
-   * @see java.util.Map
+   * @return a boolean value indicating whether this {@link Property} is derived from
+   * another bean {@link Property}.
+   * @see #getField()
    */
-  public boolean isMapTyped() {
-    return isTypedAs(Map.class);
-  }
-
-  /**
-   * Determines whether the {@link Class type} of this {@link Property} is a {@link Set}.
-   *
-   * @return a boolean value indicating whether the {@link Class type} of this {@link Property} is a {@link Set}.
-   * @see #isTypedAs(Class)
-   * @see java.util.Set
-   */
-  public boolean isSetTyped() {
-    return isTypedAs(Set.class);
+  public boolean isDerived() {
+    return getField() == null;
   }
 
   /**
@@ -570,21 +555,6 @@ public class Property implements Comparable<Property>, Nameable<String> {
   @NullSafe
   public boolean isTypedAs(@Nullable Class<?> type) {
     return type != null && type.isAssignableFrom(getType());
-  }
-
-  /**
-   * Determines whether this {@link Property} is derived from another bean {@link Property}.
-   *
-   * This means this {@link Property} is not backed by an {@link Object} {@link Field}.
-   * For example, this {@link Property} may represent the {@literal age} property of a {@literal Person} type
-   * where age is computed from the person's {@literal date of birth} using the {@literal birthdate} {@link Field}.
-   *
-   * @return a boolean value indicating whether this {@link Property} is derived from
-   * another bean {@link Property}.
-   * @see #getField()
-   */
-  public boolean isDerived() {
-    return getField() == null;
   }
 
   /**

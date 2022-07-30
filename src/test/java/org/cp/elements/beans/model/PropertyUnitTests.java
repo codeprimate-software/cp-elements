@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 import org.cp.elements.beans.PropertyReadException;
@@ -399,9 +401,8 @@ public class PropertyUnitTests {
 
     verify(mockProperty, times(1)).isCollectionLike();
     verify(mockProperty, times(1)).isArrayTyped();
-    verify(mockProperty, never()).isListTyped();
-    verify(mockProperty, never()).isMapTyped();
-    verify(mockProperty, never()).isSetTyped();
+    verify(mockProperty, never()).isTypedAs(any(Class.class));
+    verify(mockProperty, never()).getType();
     verifyNoMoreInteractions(mockProperty);
   }
 
@@ -410,16 +411,17 @@ public class PropertyUnitTests {
 
     Property mockProperty = mock(Property.class);
 
+    doCallRealMethod().when(mockProperty).isArrayTyped();
     doCallRealMethod().when(mockProperty).isCollectionLike();
-    doReturn(true).when(mockProperty).isListTyped();
+    doCallRealMethod().when(mockProperty).isTypedAs(any());
+    doReturn(ArrayList.class).when(mockProperty).getType();
 
     assertThat(mockProperty.isCollectionLike()).isTrue();
 
     verify(mockProperty, times(1)).isCollectionLike();
     verify(mockProperty, times(1)).isArrayTyped();
-    verify(mockProperty, times(1)).isListTyped();
-    verify(mockProperty, never()).isMapTyped();
-    verify(mockProperty, never()).isSetTyped();
+    verify(mockProperty, times(1)).isTypedAs(eq(List.class));
+    verify(mockProperty, times(2)).getType();
     verifyNoMoreInteractions(mockProperty);
   }
 
@@ -428,16 +430,18 @@ public class PropertyUnitTests {
 
     Property mockProperty = mock(Property.class);
 
+    doCallRealMethod().when(mockProperty).isArrayTyped();
     doCallRealMethod().when(mockProperty).isCollectionLike();
-    doReturn(true).when(mockProperty).isMapTyped();
+    doCallRealMethod().when(mockProperty).isTypedAs(any());
+    doReturn(ConcurrentMap.class).when(mockProperty).getType();
 
     assertThat(mockProperty.isCollectionLike()).isTrue();
 
     verify(mockProperty, times(1)).isCollectionLike();
     verify(mockProperty, times(1)).isArrayTyped();
-    verify(mockProperty, times(1)).isListTyped();
-    verify(mockProperty, times(1)).isMapTyped();
-    verify(mockProperty, never()).isSetTyped();
+    verify(mockProperty, times(1)).isTypedAs(eq(List.class));
+    verify(mockProperty, times(1)).isTypedAs(eq(Map.class));
+    verify(mockProperty, times(3)).getType();
     verifyNoMoreInteractions(mockProperty);
   }
 
@@ -446,16 +450,19 @@ public class PropertyUnitTests {
 
     Property mockProperty = mock(Property.class);
 
+    doCallRealMethod().when(mockProperty).isArrayTyped();
     doCallRealMethod().when(mockProperty).isCollectionLike();
-    doReturn(true).when(mockProperty).isSetTyped();
+    doCallRealMethod().when(mockProperty).isTypedAs(any());
+    doReturn(TreeSet.class).when(mockProperty).getType();
 
     assertThat(mockProperty.isCollectionLike()).isTrue();
 
     verify(mockProperty, times(1)).isCollectionLike();
     verify(mockProperty, times(1)).isArrayTyped();
-    verify(mockProperty, times(1)).isListTyped();
-    verify(mockProperty, times(1)).isMapTyped();
-    verify(mockProperty, times(1)).isSetTyped();
+    verify(mockProperty, times(1)).isTypedAs(eq(List.class));
+    verify(mockProperty, times(1)).isTypedAs(eq(Map.class));
+    verify(mockProperty, times(1)).isTypedAs(eq(Set.class));
+    verify(mockProperty, times(4)).getType();
     verifyNoMoreInteractions(mockProperty);
   }
 
@@ -465,80 +472,17 @@ public class PropertyUnitTests {
     Property mockProperty = mock(Property.class);
 
     doCallRealMethod().when(mockProperty).isCollectionLike();
+    doCallRealMethod().when(mockProperty).isTypedAs(any());
+    doReturn(false).when(mockProperty).isArrayTyped();
+    doReturn(Object.class).when(mockProperty).getType();
+
     assertThat(mockProperty.isCollectionLike()).isFalse();
 
     verify(mockProperty, times(1)).isCollectionLike();
     verify(mockProperty, times(1)).isArrayTyped();
-    verify(mockProperty, times(1)).isListTyped();
-    verify(mockProperty, times(1)).isMapTyped();
-    verify(mockProperty, times(1)).isSetTyped();
+    verify(mockProperty, times(3)).isTypedAs(any());
+    verify(mockProperty, times(3)).getType();
     verifyNoMoreInteractions(mockProperty);
-  }
-
-  @Test
-  public void isListTypedForListPropertyReturnsTrue() {
-
-    Property list = BeanAdapter.from(new TypeWithListProperty()).getModel().getProperty("list");
-
-    assertThat(list).isNotNull();
-    assertThat(list.getName()).isEqualTo("list");
-    assertThat(list.getType()).isEqualTo(List.class);
-    assertThat(list.isListTyped()).isTrue();
-  }
-
-  @Test
-  public void isListTypedForNonListPropertyReturnsFalse() {
-
-    Property array = BeanAdapter.from(new TypeWithArrayProperty()).getModel().getProperty("array");
-
-    assertThat(array).isNotNull();
-    assertThat(array.getName()).isEqualTo("array");
-    assertThat(array.getType()).isEqualTo(Object[].class);
-    assertThat(array.isListTyped()).isFalse();
-  }
-
-  @Test
-  public void isMapTypedForMapPropertyReturnsTrue() {
-
-    Property map = BeanAdapter.from(new TypeWithMapProperty()).getModel().getProperty("map");
-
-    assertThat(map).isNotNull();
-    assertThat(map.getName()).isEqualTo("map");
-    assertThat(map.getType()).isEqualTo(Map.class);
-    assertThat(map.isMapTyped()).isTrue();
-  }
-
-  @Test
-  public void isMapTypedForNonMapPropertyReturnsFalse() {
-
-    Property keyValue = BeanAdapter.from(new TypeWithKeyValueProperty()).getModel().getProperty("keyValue");
-
-    assertThat(keyValue).isNotNull();
-    assertThat(keyValue.getName()).isEqualTo("keyValue");
-    assertThat(keyValue.getType()).isEqualTo(KeyValue.class);
-    assertThat(keyValue.isMapTyped()).isFalse();
-  }
-
-  @Test
-  public void isSetTypedForSetPropertyReturnsTrue() {
-
-    Property set = BeanAdapter.from(new TypeWithSetProperty()).getModel().getProperty("set");
-
-    assertThat(set).isNotNull();
-    assertThat(set.getName()).isEqualTo("set");
-    assertThat(set.getType()).isEqualTo(Set.class);
-    assertThat(set.isSetTyped()).isTrue();
-  }
-
-  @Test
-  public void isSetTypedForNonSetPropertyReturnsTrue() {
-
-    Property collection = BeanAdapter.from(new TypeWithCollectionProperty()).getModel().getProperty("collection");
-
-    assertThat(collection).isNotNull();
-    assertThat(collection.getName()).isEqualTo("collection");
-    assertThat(collection.getType()).isEqualTo(Collection.class);
-    assertThat(collection.isSetTyped()).isFalse();
   }
 
   @Test
