@@ -63,6 +63,17 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Factory method used to construct a new instance of {@link Consumer} that does nothing.
+   *
+   * @param <T> {@link Class type} of {@link Object} processed by the {@link Consumer}.
+   * @return a noop {@link Consumer}.
+   * @see java.util.function.Consumer
+   */
+  public static @NotNull <T> Consumer<T> noopConsumer() {
+    return argument -> {};
+  }
+
+  /**
    * Null-safe method used to guard against a {@literal null} {@link Predicate} reference.
    *
    * @param <T> {@link Class type} of {@link Object} tested by the {{@link Predicate}.

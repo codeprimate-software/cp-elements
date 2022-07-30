@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.cp.elements.security.model.User;
 import org.junit.Test;
 
 /**
@@ -98,6 +99,20 @@ public class FunctionUtilsUnitTests {
 
     assertThat(function).isNotNull();
     assertThat(function.apply("TEST")).isEqualTo("TEST");
+  }
+
+  @Test
+  public void noopConsumerIsCorrect() {
+
+    User<?> mockUser = mock(User.class);
+
+    Consumer<User<?>> userConsumer = FunctionUtils.noopConsumer();
+
+    assertThat(userConsumer).isNotNull();
+
+    userConsumer.accept(mockUser);
+
+    verifyNoInteractions(mockUser);
   }
 
   @Test
