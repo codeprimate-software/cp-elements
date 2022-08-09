@@ -68,27 +68,6 @@ public class ArrayPropertyUnitTests {
   }
 
   @Test
-  public void isArrayTypeForArrayTypedPropertyDescriptor() {
-    testIsArrayTypeForArrayTypedProperty(User[].class);
-  }
-
-  @Test
-  public void isArrayTypeForNonArrayTypedPropertyDescriptor() {
-
-    PropertyDescriptor mockPropertyDescriptor = mockPropertyDescriptor(User.class);
-
-    assertThat(ArrayProperty.isArrayType(mockPropertyDescriptor)).isFalse();
-
-    verify(mockPropertyDescriptor, times(1)).getPropertyType();
-    verifyNoMoreInteractions(mockPropertyDescriptor);
-  }
-
-  @Test
-  public void isArrayTypeForTwoDimensionalArrayPropertyDescriptor() {
-    testIsArrayTypeForArrayTypedProperty(Object[][].class);
-  }
-
-  @Test
   public void assertArrayTypeWithArrayTypedPropertyDescriptor() {
 
     PropertyDescriptor mockPropertyDescriptor = mockPropertyDescriptor(Object[].class);
@@ -115,6 +94,27 @@ public class ArrayPropertyUnitTests {
       .isThrownBy(() -> ArrayProperty.assertArrayType(null))
       .withMessage("PropertyDescriptor is required")
       .withNoCause();
+  }
+
+  @Test
+  public void isArrayTypeWithArrayTypedPropertyDescriptor() {
+    testIsArrayTypeForArrayTypedProperty(User[].class);
+  }
+
+  @Test
+  public void isArrayTypeWithNonArrayTypedPropertyDescriptor() {
+
+    PropertyDescriptor mockPropertyDescriptor = mockPropertyDescriptor(User.class);
+
+    assertThat(ArrayProperty.isArrayType(mockPropertyDescriptor)).isFalse();
+
+    verify(mockPropertyDescriptor, times(1)).getPropertyType();
+    verifyNoMoreInteractions(mockPropertyDescriptor);
+  }
+
+  @Test
+  public void isArrayTypeWithTwoDimensionalArrayPropertyDescriptor() {
+    testIsArrayTypeForArrayTypedProperty(Object[][].class);
   }
 
   @Test
