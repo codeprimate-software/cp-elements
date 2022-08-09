@@ -35,6 +35,10 @@ import lombok.Setter;
  */
 public class ArrayPropertyIntegrationTests {
 
+  private ArrayProperty arrayPropertyFrom(Object target, String propertyName) {
+    return typedPropertyFrom(target, propertyName, ArrayProperty.class);
+  }
+
   private Property propertyFrom(Object target, String propertyName) {
     return BeanAdapter.from(target).getModel().getProperty(propertyName);
   }
@@ -46,14 +50,14 @@ public class ArrayPropertyIntegrationTests {
   @Test
   public void getValueAtIndex() {
 
-    Property array = BeanAdapter.from(new TypeWithArrayProperty()).getModel().getProperty("array");
+    Property property = propertyFrom(new TypeWithArrayProperty(), "array");
 
-    assertThat(array).isNotNull();
-    assertThat(array.getName()).isEqualTo("array");
-    assertThat(array.getType()).isEqualTo(Object[].class);
-    assertThat(array).isInstanceOf(ArrayProperty.class);
+    assertThat(property).isNotNull();
+    assertThat(property.getName()).isEqualTo("array");
+    assertThat(property.getType()).isEqualTo(Object[].class);
+    assertThat(property).isInstanceOf(ArrayProperty.class);
 
-    ArrayProperty arrayProperty = (ArrayProperty) array;
+    ArrayProperty arrayProperty = (ArrayProperty) property;
 
     assertThat(arrayProperty.getValue(1)).isEqualTo(2);
   }
@@ -62,7 +66,7 @@ public class ArrayPropertyIntegrationTests {
   public void getValueAtNegativeIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> typedPropertyFrom(new TypeWithArrayProperty(), "array", ArrayProperty.class)
+      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
         .getValue(-1))
       .withMessage("Array index [-1] must be greater than equal to 0 and less than [3]")
       .withNoCause();
@@ -72,7 +76,7 @@ public class ArrayPropertyIntegrationTests {
   public void getValueAtOverflowIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> typedPropertyFrom(new TypeWithArrayProperty(), "array", ArrayProperty.class)
+      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
         .getValue(3))
       .withMessage("Array index [3] must be greater than equal to 0 and less than [3]")
       .withNoCause();
@@ -83,14 +87,14 @@ public class ArrayPropertyIntegrationTests {
 
     TypeWithArrayProperty target = new TypeWithArrayProperty();
 
-    Property array = BeanAdapter.from(target).getModel().getProperty("array");
+    Property property = propertyFrom(target, "array");
 
-    assertThat(array).isNotNull();
-    assertThat(array.getName()).isEqualTo("array");
-    assertThat(array.getType()).isEqualTo(Object[].class);
-    assertThat(array).isInstanceOf(ArrayProperty.class);
+    assertThat(property).isNotNull();
+    assertThat(property.getName()).isEqualTo("array");
+    assertThat(property.getType()).isEqualTo(Object[].class);
+    assertThat(property).isInstanceOf(ArrayProperty.class);
 
-    ArrayProperty arrayProperty = (ArrayProperty) array;
+    ArrayProperty arrayProperty = (ArrayProperty) property;
 
     assertThat(target.array[2]).isEqualTo(3);
     assertThat(arrayProperty.setValue(2, 4)).isEqualTo(3);
@@ -101,7 +105,7 @@ public class ArrayPropertyIntegrationTests {
   public void setValueAtNegativeIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> typedPropertyFrom(new TypeWithArrayProperty(), "array", ArrayProperty.class)
+      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
         .setValue(-1, 13))
       .withMessage("Array index [-1] must be greater than equal to 0 and less than [3]")
       .withNoCause();
@@ -111,7 +115,7 @@ public class ArrayPropertyIntegrationTests {
   public void setValueAtOverflowIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> typedPropertyFrom(new TypeWithArrayProperty(), "array", ArrayProperty.class)
+      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
         .setValue(3, 13))
       .withMessage("Array index [3] must be greater than equal to 0 and less than [3]")
       .withNoCause();
