@@ -109,6 +109,15 @@ public class ArrayPropertyUnitTests {
   }
 
   @Test
+  public void assertArrayTypeWithNullIsNullSafe() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ArrayProperty.assertArrayType(null))
+      .withMessage("PropertyDescriptor is required")
+      .withNoCause();
+  }
+
+  @Test
   public void fromBeanModelAndPropertyDescriptor() {
 
     BeanModel mockBeanModel = mock(BeanModel.class);
