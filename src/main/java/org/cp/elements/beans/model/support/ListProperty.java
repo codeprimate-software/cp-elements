@@ -52,7 +52,7 @@ public class ListProperty extends AbstractIndexedProperty {
    * @see #isListType(PropertyDescriptor)
    * @see java.beans.PropertyDescriptor
    */
-  private static @NotNull PropertyDescriptor assertListType(@Nullable PropertyDescriptor propertyDescriptor) {
+  static @NotNull PropertyDescriptor assertListType(@Nullable PropertyDescriptor propertyDescriptor) {
 
     Assert.argument(propertyDescriptor, ListProperty::isListType,
       "Property [%s] must be a List", propertyDescriptor);
@@ -74,9 +74,9 @@ public class ListProperty extends AbstractIndexedProperty {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ListProperty} initialized with the given,
-   * required {@link BeanModel} modeling the bean containing the {@link List} property along with the given,
-   * required {@link PropertyDescriptor} describing the {@link List} property.
+   * Factory method used to construct a new instance of {@link ListProperty} initialized with
+   * the given, required {@link BeanModel} modeling the bean containing the {@link List} property
+   * along with the given, required {@link PropertyDescriptor} describing the {@link List} property.
    *
    * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
@@ -91,8 +91,8 @@ public class ListProperty extends AbstractIndexedProperty {
   }
 
   /**
-   * Factory method used to construct a new instance of {@link ListProperty} initialized with the given,
-   * required {@link Property} modeling the {@link List List-based} bean property.
+   * Factory method used to construct a new instance of {@link ListProperty} initialized with
+   * the given, required {@link Property} modeling the {@link List List-based} bean property.
    *
    * @param property {@link Property} modeling the {@link List List-based} bean property; must not be {@literal null}.
    * @throws IllegalArgumentException if the {@link Property} is {@literal null}, or the bean {@link Property}
