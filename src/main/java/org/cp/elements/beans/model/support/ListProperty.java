@@ -49,10 +49,14 @@ public class ListProperty extends AbstractIndexedProperty {
    *
    * @param propertyDescriptor {@link PropertyDescriptor} to assert.
    * @return the given {@link PropertyDescriptor}.
+   * @throws IllegalArgumentException if the {@link PropertyDescriptor} is {@literal null}
+   * or the {@link PropertyDescriptor} does not describe a {@link List List-based} bean property.
    * @see #isListType(PropertyDescriptor)
    * @see java.beans.PropertyDescriptor
    */
   static @NotNull PropertyDescriptor assertListType(@Nullable PropertyDescriptor propertyDescriptor) {
+
+    Assert.notNull(propertyDescriptor, "PropertyDescriptor is required");
 
     Assert.argument(propertyDescriptor, ListProperty::isListType,
       "Property [%s] must be a List", propertyDescriptor);
