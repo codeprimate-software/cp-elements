@@ -18,7 +18,6 @@ package org.cp.elements.beans.model.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -88,9 +87,7 @@ public class ListPropertyUnitTests {
   @Test
   public void assertListTypeWithListBasedPropertyDescriptor() {
 
-    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
-
-    doReturn(List.class).when(mockPropertyDescriptor).getPropertyType();
+    PropertyDescriptor mockPropertyDescriptor = mockPropertyDescriptor(List.class);
 
     assertThat(ListProperty.assertListType(mockPropertyDescriptor)).isSameAs(mockPropertyDescriptor);
 
@@ -101,9 +98,7 @@ public class ListPropertyUnitTests {
   @Test
   public void assertListTypeWithNonListBasedPropertyDescriptor() {
 
-    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
-
-    doReturn(Object.class).when(mockPropertyDescriptor).getPropertyType();
+    PropertyDescriptor mockPropertyDescriptor = mockPropertyDescriptor(Object.class);
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ListProperty.assertListType(mockPropertyDescriptor))
@@ -115,7 +110,7 @@ public class ListPropertyUnitTests {
   }
 
   @Test
-  public void assertListTypeWithNullIsNullSafe() {
+  public void assertListTypeWithNullThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ListProperty.assertListType(null))
@@ -134,17 +129,17 @@ public class ListPropertyUnitTests {
   }
 
   @Test
-  public void isListTypeWithNullTypedProperty() {
+  public void isNotListTypedWithNullTypedProperty() {
     testIsNotListTypedProperty(null);
   }
 
   @Test
-  public void isListTypeWithObjectProperty() {
+  public void isNotListTypedWithObjectProperty() {
     testIsNotListTypedProperty(Object.class);
   }
 
   @Test
-  public void isListTypeWithSetProperty() {
+  public void isNotListTypedWithSetProperty() {
     testIsNotListTypedProperty(SortedSet.class);
   }
 
@@ -177,7 +172,6 @@ public class ListPropertyUnitTests {
 
     doReturn(mockBeanModel).when(mockProperty).getBeanModel();
     doReturn(mockPropertyDescriptor).when(mockProperty).getDescriptor();
-    doCallRealMethod().when(mockProperty).getType();
 
     ListProperty property = ListProperty.from(mockProperty);
 
@@ -210,7 +204,6 @@ public class ListPropertyUnitTests {
 
     ListProperty property = new ListProperty(mockBeanModel, mockPropertyDescriptor);
 
-    assertThat(property).isNotNull();
     assertThat(property.getBeanModel()).isEqualTo(mockBeanModel);
     assertThat(property.getDescriptor()).isEqualTo(mockPropertyDescriptor);
 
