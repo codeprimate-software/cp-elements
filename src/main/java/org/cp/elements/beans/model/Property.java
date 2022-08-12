@@ -41,6 +41,7 @@ import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.beans.model.support.AbstractIndexedProperty;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.Describable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.Dsl;
@@ -68,7 +69,7 @@ import org.cp.elements.util.CollectionUtils;
  */
 @FluentApi
 @SuppressWarnings("unused")
-public class Property implements Comparable<Property>, Nameable<String> {
+public class Property implements Comparable<Property>, Describable<PropertyDescriptor>, Nameable<String> {
 
   public static final Function<AnnotatedElement, Set<Annotation>> ALL_ANNOTATIONS_RESOLVER =
     annotatedElement -> annotatedElement != null
@@ -319,6 +320,18 @@ public class Property implements Comparable<Property>, Nameable<String> {
   @Dsl
   public @NotNull BeanModel getBeanModel() {
     return this.beanModel;
+  }
+
+  /**
+   * Alias for {@link #getDescriptor()}.
+   *
+   * @return the {@link PropertyDescriptor} for this {@link Property}.
+   * @see java.beans.PropertyDescriptor
+   * @see #getDescriptor()
+   */
+  @Override
+  public PropertyDescriptor getDescription() {
+    return getDescriptor();
   }
 
   /**

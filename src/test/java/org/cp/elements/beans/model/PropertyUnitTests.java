@@ -168,6 +168,24 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void getDescriptionReturnsGetDescriptor() {
+
+    Property mockProperty = mock(Property.class);
+
+    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
+
+    doReturn(mockPropertyDescriptor).when(mockProperty).getDescriptor();
+    doCallRealMethod().when(mockProperty).getDescription();
+
+    assertThat(mockProperty.getDescription()).isEqualTo(mockPropertyDescriptor);
+
+    verify(mockProperty, times(1)).getDescription();
+    verify(mockProperty, times(1)).getDescriptor();
+    verifyNoMoreInteractions(mockProperty);
+    verifyNoInteractions(mockPropertyDescriptor);
+  }
+
+  @Test
   public void getFieldFromBeanPropertyBackedByObjectField() {
 
     Customer jonDoe = Customer.as("Jon Doe");
