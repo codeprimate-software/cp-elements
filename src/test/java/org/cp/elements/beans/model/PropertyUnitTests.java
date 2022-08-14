@@ -57,6 +57,7 @@ import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.data.struct.KeyValue;
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.IllegalTypeException;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.junit.Test;
@@ -165,24 +166,6 @@ public class PropertyUnitTests {
     verify(mockBeanModel, times(1)).getBean();
     verifyNoMoreInteractions(mockBeanModel);
     verifyNoInteractions(mockBean, mockPropertyDescriptor);
-  }
-
-  @Test
-  public void getDescriptionReturnsGetDescriptor() {
-
-    Property mockProperty = mock(Property.class);
-
-    PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
-
-    doReturn(mockPropertyDescriptor).when(mockProperty).getDescriptor();
-    doCallRealMethod().when(mockProperty).getDescriptor();
-
-    assertThat(mockProperty.getDescriptor()).isEqualTo(mockPropertyDescriptor);
-
-    verify(mockProperty, times(1)).getDescriptor();
-    verify(mockProperty, times(1)).getDescriptor();
-    verifyNoMoreInteractions(mockProperty);
-    verifyNoInteractions(mockPropertyDescriptor);
   }
 
   @Test
@@ -900,6 +883,81 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void getTypedValueAsString() {
+
+    Customer imaPigg = Customer.as("Ima Pigg");
+
+    BeanAdapter bean = BeanAdapter.from(imaPigg);
+
+    Property name = bean.getModel().getProperty("name");
+
+    assertThat(name).isNotNull();
+    assertThat(name.getName()).isEqualTo("name");
+    assertThat(name.getType()).isEqualTo(String.class);
+
+    Object nameValue = name.getValue();
+
+    assertThat(nameValue).isInstanceOf(String.class);
+    assertThat(nameValue).isEqualTo("Ima Pigg");
+
+    String typedNameValue = name.getTypedValue();
+
+    assertThat(typedNameValue).isEqualTo(nameValue);
+  }
+
+  @Test
+  public void getTypedValueAsInteger() {
+
+    Customer turdBurt = Customer.as("Turd Burt")
+      .bornOn(LocalDate.now().minusYears(10));
+
+    BeanAdapter bean = BeanAdapter.from(turdBurt);
+
+    Property age = bean.getModel().getProperty("age");
+
+    assertThat(age).isNotNull();
+    assertThat(age.getName()).isEqualTo("age");
+    assertThat(age.getType()).isEqualTo(Integer.TYPE);
+
+    Object ageValue = age.getValue();
+
+    assertThat(ageValue).isInstanceOf(Integer.class);
+    assertThat(ageValue).isEqualTo(10);
+
+    int typedAgeValue = age.getTypedValue();
+
+    assertThat(typedAgeValue).isEqualTo(ageValue);
+
+    Integer wrappedTypedAgeValue = age.getTypedValue();
+
+    assertThat(wrappedTypedAgeValue).isEqualTo(typedAgeValue);
+  }
+
+  @Test
+  public void getTypedValueAsCustomer() {
+
+    Customer seamooreButts = Customer.as("Seamoore Butts");
+
+    Account account = Account.forCustomer(seamooreButts);
+
+    BeanAdapter bean = BeanAdapter.from(account);
+
+    Property customer = bean.getModel().getProperty("customer");
+
+    assertThat(customer).isNotNull();
+    assertThat(customer.getName()).isEqualTo("customer");
+    assertThat(customer.getType()).isEqualTo(Customer.class);
+
+    Object customerValue = customer.getValue();
+
+    assertThat(customerValue).isInstanceOf(Customer.class);
+    assertThat(customerValue).isEqualTo(seamooreButts);
+
+    Customer typedCustomerValue = customer.getTypedValue();
+
+    assertThat(typedCustomerValue).isEqualTo(customerValue);
+  }
+  @Test
   public void setValueIsCorrect() {
 
     LocalDate birthdate = LocalDate.of(2022, Month.JUNE, 29);
@@ -1173,6 +1231,10 @@ public class PropertyUnitTests {
     @Setter
     private String number;
 
+    public Account with(String number) {
+      setNumber(number);
+      return this;
+    }
   }
 
   @EqualsAndHashCode
@@ -1207,9 +1269,15 @@ public class PropertyUnitTests {
         .map(Period::getYears)
         .orElse(0);
     }
+
+    public Customer bornOn(LocalDate birthdate) {
+      setBirthdate(birthdate);
+      return this;
+    }
   }
 
-  interface Person {
+  @FunctionalInterface
+  interface Person extends Nameable<String> {
     String getName();
   }
 

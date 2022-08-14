@@ -44,6 +44,7 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Describable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.PrimitiveTypeUtils;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -664,6 +665,20 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
   @SuppressWarnings("unchecked")
   public @NotNull Class<?> getType() {
     return ObjectUtils.returnFirstNonNullValue(getDescriptor().getPropertyType(), Object.class);
+  }
+
+  /**
+   * Gets {@link Object value} of this {@link Property} as a value of the given {@link #getType() Property's type}.
+   *
+   * @param <T> {@link Class type} of this {@link Property}.
+   * @return the {@link Object value} of this {@link Property} as a value of
+   * the given {@link #getType() Property's type}.
+   * @see #getValue()
+   * @see #getType()
+   */
+  @SuppressWarnings("unchecked")
+  public @Nullable <T> T getTypedValue() {
+    return (T) PrimitiveTypeUtils.primitiveToWrapperType().apply(getType()).cast(getValue());
   }
 
   /**
