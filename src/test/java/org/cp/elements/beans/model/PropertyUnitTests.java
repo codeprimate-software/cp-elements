@@ -175,11 +175,11 @@ public class PropertyUnitTests {
     PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
 
     doReturn(mockPropertyDescriptor).when(mockProperty).getDescriptor();
-    doCallRealMethod().when(mockProperty).getDescription();
+    doCallRealMethod().when(mockProperty).getDescriptor();
 
-    assertThat(mockProperty.getDescription()).isEqualTo(mockPropertyDescriptor);
+    assertThat(mockProperty.getDescriptor()).isEqualTo(mockPropertyDescriptor);
 
-    verify(mockProperty, times(1)).getDescription();
+    verify(mockProperty, times(1)).getDescriptor();
     verify(mockProperty, times(1)).getDescriptor();
     verifyNoMoreInteractions(mockProperty);
     verifyNoInteractions(mockPropertyDescriptor);

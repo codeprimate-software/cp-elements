@@ -323,18 +323,6 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
   }
 
   /**
-   * Alias for {@link #getDescriptor()}.
-   *
-   * @return the {@link PropertyDescriptor} for this {@link Property}.
-   * @see java.beans.PropertyDescriptor
-   * @see #getDescriptor()
-   */
-  @Override
-  public PropertyDescriptor getDescription() {
-    return getDescriptor();
-  }
-
-  /**
    * Gets the {@literal JavaBeans} {@link PropertyDescriptor} describing this bean {@link Property}.
    *
    * @return the {@literal JavaBeans} {@link PropertyDescriptor} describing this bean {@link Property}.
