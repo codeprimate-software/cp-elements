@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.math.BigInteger;
 
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * The {@link NumberUtils} class is an abstract utility class encapsulating common functionality
@@ -59,7 +59,7 @@ public abstract class NumberUtils {
    * @see #isWhole(double)
    */
   public static boolean isDecimal(double value) {
-    return (Math.floor(value) != value);
+    return Math.floor(value) != value;
   }
 
   /**
@@ -74,8 +74,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number
    */
   @NullSafe
-  public static boolean isDecimal(Number value) {
-    return (value instanceof Float || value instanceof Double);
+  public static boolean isDecimal(@Nullable Number value) {
+    return value instanceof Float || value instanceof Double;
   }
 
   /**
@@ -88,7 +88,7 @@ public abstract class NumberUtils {
    * @see #isOdd(long)
    */
   public static boolean isEven(long value) {
-    return (Math.abs(value) % 2L == 0);
+    return Math.abs(value) % 2L == 0;
   }
 
   /**
@@ -100,7 +100,7 @@ public abstract class NumberUtils {
    * @see #isEven(long)
    */
   public static boolean isBitwiseEven(long value) {
-    return ((1L & Math.abs(value)) == 0L);
+    return (1L & Math.abs(value)) == 0L;
   }
 
   /**
@@ -111,7 +111,7 @@ public abstract class NumberUtils {
    * @see #isPositive(double)
    */
   public static boolean isNegative(double value) {
-    return (value < 0.0d);
+    return value < 0.0d;
   }
 
   /**
@@ -136,7 +136,7 @@ public abstract class NumberUtils {
    * @see #isOdd(long)
    */
   public static boolean isBitwiseOdd(long value) {
-    return ((1L & Math.abs(value)) == 1L);
+    return (1L & Math.abs(value)) == 1L;
   }
 
   /**
@@ -147,7 +147,7 @@ public abstract class NumberUtils {
    * @see #isNegative(double)
    */
   public static boolean isPositive(double value) {
-    return (value > 0.0d);
+    return value > 0.0d;
   }
 
   /**
@@ -159,14 +159,24 @@ public abstract class NumberUtils {
    * @see #isDecimal(double)
    */
   public static boolean isWhole(double value) {
-    return (Math.floor(value) == value);
+    return Math.floor(value) == value;
   }
 
-  /* (non-Javadoc) */
+  /**
+   * Determines whether the given {@link Number} is {@literal whole}.
+   *
+   * @param value {@link Number} to evaluate.
+   * @return a boolean value indicating whether the the given {@link Number} is {@literal whole}.
+   * @see java.lang.Number
+   */
   @NullSafe
-  public static boolean isWhole(Number value) {
-    return (value instanceof Byte || value instanceof Short || value instanceof Integer || value instanceof Long
-      || value instanceof BigInteger);
+  public static boolean isWhole(@Nullable Number value) {
+
+    return value instanceof Byte
+      || value instanceof Short
+      || value instanceof Integer
+      || value instanceof Long
+      || value instanceof BigInteger;
   }
 
   /**
@@ -176,7 +186,7 @@ public abstract class NumberUtils {
    * @return a boolean value indicating whether the given double value is zero.
    */
   public static boolean isZero(double value) {
-    return (value == 0.0d);
+    return value == 0.0d;
   }
 
   /**
@@ -192,9 +202,9 @@ public abstract class NumberUtils {
    * @see java.lang.Byte
    */
   @NullSafe
-  public static boolean isByte(Number value) {
-    return (value instanceof Byte
-      || (isWhole(value) && value.longValue() >= Byte.MIN_VALUE && value.longValue() <= Byte.MAX_VALUE));
+  public static boolean isByte(@Nullable Number value) {
+    return value instanceof Byte
+      || (isWhole(value) && value.longValue() >= Byte.MIN_VALUE && value.longValue() <= Byte.MAX_VALUE);
   }
 
   /**
@@ -210,9 +220,9 @@ public abstract class NumberUtils {
    * @see java.lang.Short
    */
   @NullSafe
-  public static boolean isShort(Number value) {
-    return (value instanceof Short
-      || (isWhole(value) && value.longValue() >= Short.MIN_VALUE && value.longValue() <= Short.MAX_VALUE));
+  public static boolean isShort(@Nullable Number value) {
+    return value instanceof Short
+      || (isWhole(value) && value.longValue() >= Short.MIN_VALUE && value.longValue() <= Short.MAX_VALUE);
   }
 
   /**
@@ -228,9 +238,9 @@ public abstract class NumberUtils {
    * @see java.lang.Integer
    */
   @NullSafe
-  public static boolean isInteger(Number value) {
-    return (value instanceof Integer
-      || (isWhole(value) && value.longValue() >= Integer.MIN_VALUE && value.longValue() <= Integer.MAX_VALUE));
+  public static boolean isInteger(@Nullable Number value) {
+    return value instanceof Integer
+      || (isWhole(value) && value.longValue() >= Integer.MIN_VALUE && value.longValue() <= Integer.MAX_VALUE);
   }
 
   /**
@@ -244,8 +254,8 @@ public abstract class NumberUtils {
    * @see java.lang.Long
    */
   @NullSafe
-  public static boolean isLong(Number value) {
-    return (value instanceof Long);
+  public static boolean isLong(@Nullable Number value) {
+    return value instanceof Long;
   }
 
   /**
@@ -261,9 +271,9 @@ public abstract class NumberUtils {
    * @see java.lang.Float
    */
   @NullSafe
-  public static boolean isFloat(Number value) {
-    return (value instanceof Float
-      || (isDecimal(value) && value.doubleValue() >= Float.MIN_VALUE && value.doubleValue() <= Float.MAX_VALUE));
+  public static boolean isFloat(@Nullable Number value) {
+    return value instanceof Float
+      || (isDecimal(value) && value.doubleValue() >= Float.MIN_VALUE && value.doubleValue() <= Float.MAX_VALUE);
   }
 
   /**
@@ -277,8 +287,8 @@ public abstract class NumberUtils {
    * @see java.lang.Double
    */
   @NullSafe
-  public static boolean isDouble(Number value) {
-    return (value instanceof Double);
+  public static boolean isDouble(@Nullable Number value) {
+    return value instanceof Double;
   }
 
   /**
@@ -289,8 +299,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number#byteValue()
    */
   @NullSafe
-  public static byte byteValue(Number number) {
-    return (number != null ? number.byteValue() : 0);
+  public static byte byteValue(@Nullable Number number) {
+    return number != null ? number.byteValue() : 0;
   }
 
   /**
@@ -301,8 +311,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number#shortValue()
    */
   @NullSafe
-  public static short shortValue(Number number) {
-    return (number != null ? number.shortValue() : 0);
+  public static short shortValue(@Nullable Number number) {
+    return number != null ? number.shortValue() : 0;
   }
 
   /**
@@ -313,8 +323,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number#intValue()
    */
   @NullSafe
-  public static int intValue(Number number) {
-    return (number != null ? number.intValue() : 0);
+  public static int intValue(@Nullable Number number) {
+    return number != null ? number.intValue() : 0;
   }
 
   /**
@@ -325,8 +335,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number#longValue()
    */
   @NullSafe
-  public static long longValue(Number number) {
-    return (number != null ? number.longValue() : 0L);
+  public static long longValue(@Nullable Number number) {
+    return number != null ? number.longValue() : 0L;
   }
 
   /**
@@ -337,8 +347,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number#floatValue()
    */
   @NullSafe
-  public static float floatValue(Number number) {
-    return (number != null ? number.floatValue() : 0.0f);
+  public static float floatValue(@Nullable Number number) {
+    return number != null ? number.floatValue() : 0.0f;
   }
 
   /**
@@ -349,8 +359,8 @@ public abstract class NumberUtils {
    * @see java.lang.Number#doubleValue()
    */
   @NullSafe
-  public static double doubleValue(Number number) {
-    return (number != null ? number.doubleValue() : 0.0d);
+  public static double doubleValue(@Nullable Number number) {
+    return number != null ? number.doubleValue() : 0.0d;
   }
 
   /**
@@ -363,7 +373,7 @@ public abstract class NumberUtils {
    * @see java.lang.Byte
    */
   @NullSafe
-  public static byte valueOf(Byte value) {
+  public static byte valueOf(@Nullable Byte value) {
     return byteValue(value);
   }
 
@@ -377,7 +387,7 @@ public abstract class NumberUtils {
    * @see java.lang.Short
    */
   @NullSafe
-  public static short valueOf(Short value) {
+  public static short valueOf(@Nullable Short value) {
     return shortValue(value);
   }
 
@@ -391,7 +401,7 @@ public abstract class NumberUtils {
    * @see java.lang.Integer
    */
   @NullSafe
-  public static int valueOf(Integer value) {
+  public static int valueOf(@Nullable Integer value) {
     return intValue(value);
   }
 
@@ -405,7 +415,7 @@ public abstract class NumberUtils {
    * @see java.lang.Long
    */
   @NullSafe
-  public static long valueOf(Long value) {
+  public static long valueOf(@Nullable Long value) {
     return longValue(value);
   }
 
@@ -419,7 +429,7 @@ public abstract class NumberUtils {
    * @see java.lang.Float
    */
   @NullSafe
-  public static float valueOf(Float value) {
+  public static float valueOf(@Nullable Float value) {
     return floatValue(value);
   }
 
@@ -433,7 +443,7 @@ public abstract class NumberUtils {
    * @see java.lang.Double
    */
   @NullSafe
-  public static double valueOf(Double value) {
+  public static double valueOf(@Nullable Double value) {
     return doubleValue(value);
   }
 }
