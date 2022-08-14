@@ -34,6 +34,6 @@ public interface Describable<T> {
    *
    * @return a {@link Object description} for {@literal this} {@link Object}.
    */
-  T getDescription();
+  T getDescriptor();
 
 }
