@@ -594,6 +594,22 @@ public class PropertyUnitTests {
   }
 
   @Test
+  public void isPersistentCallsIsSerializable() {
+
+    Property mockProperty = mock(Property.class);
+
+    doReturn(false).doReturn(true).when(mockProperty).isSerializable();
+    doCallRealMethod().when(mockProperty).isPersistent();
+
+    assertThat(mockProperty.isPersistent()).isFalse();
+    assertThat(mockProperty.isPersistent()).isTrue();
+
+    verify(mockProperty, times(2)).isPersistent();
+    verify(mockProperty, times(2)).isSerializable();
+    verifyNoMoreInteractions(mockProperty);
+  }
+
+  @Test
   public void isTypedAsWithCompatibleTypeReturnsTrue() {
 
     Property customer = BeanAdapter.from(Account.forCustomer(Customer.as("Ben Dover")))

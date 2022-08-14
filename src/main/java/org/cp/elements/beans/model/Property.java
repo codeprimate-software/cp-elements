@@ -577,6 +577,16 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
   }
 
   /**
+   * Alias for {@link #isSerializable()}.
+   *
+   * @return the value of {@link #isSerializable()}.
+   * @see #isSerializable()
+   */
+  public boolean isPersistent() {
+    return isSerializable();
+  }
+
+  /**
    * Determine whether this {@link Property} can be read.
    *
    * @return a boolean value indicating whether this {@link Property} can be read.
