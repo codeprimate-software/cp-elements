@@ -115,9 +115,9 @@ public class ThrowableAssertionsUnitTests {
   public void constructAssertThatThrowableWithIncompatibleThrowable() {
 
     assertThatExceptionOfType(IllegalTypeException.class)
-      .isThrownBy(() -> AssertThatThrowableExpression.from(SecurityException.class, new AuthenticationException("test")))
+      .isThrownBy(() -> AssertThatThrowableExpression.from(IllegalAccessException.class, new AuthorizationException("test")))
       .withMessage("Expected Throwable [%s] to be an instance of [%s]",
-        AuthenticationException.class.getName(), SecurityException.class.getName())
+        AuthorizationException.class.getName(), IllegalAccessException.class.getName())
       .withNoCause();
   }
 
@@ -134,7 +134,7 @@ public class ThrowableAssertionsUnitTests {
   public void constructAssertThatThrowableWithNullType() {
 
     Assertions.assertThatIllegalArgumentException()
-      .isThrownBy(() -> AssertThatThrowableExpression.from(null, new AuthorizationException("test")))
+      .isThrownBy(() -> AssertThatThrowableExpression.from(null, new AuthenticationException("test")))
       .withMessage("The type of Throwable is required")
       .withNoCause();
   }

@@ -15,15 +15,22 @@
  */
 package org.cp.elements.security;
 
+import java.util.Optional;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * {@link RuntimeException} noting a security violation.
+ * A Java {@link SecurityException} noting a security violation.
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SecurityException extends RuntimeException {
+public class SecurityException extends java.lang.SecurityException {
+
+  private Object code;
 
   /**
    * Constructs a new, uninitialized instance of {@link SecurityException} with no {@link String message}
@@ -43,9 +50,9 @@ public class SecurityException extends RuntimeException {
 
   /**
    * Constructs a new instance of {@link SecurityException} initialized with the given {@link Throwable cause}
-   * used as the reason for the security violation.
+   * used as the reason this security violation was thrown.
    *
-   * @param cause {@link Throwable} used as the reason for the security violation.
+   * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
   public SecurityException(Throwable cause) {
     super(cause);
@@ -54,12 +61,42 @@ public class SecurityException extends RuntimeException {
   /**
    * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
    * describing the security violation along with the given {@link Throwable cause} used as the reason
-   * for the security violation.
+   * this security violation was thrown.
    *
    * @param message {@link String} used to describe the security violation.
-   * @param cause {@link Throwable} used as the reason for the security violation.
+   * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
   public SecurityException(String message, Throwable cause) {
     super(message, cause);
+  }
+
+  /**
+   * Gets the security code used to represent the security violation in a non-obvious, secure way.
+   *
+   * @return an {@link Optional} security code representing the security violation in a secure way.
+   * @see java.util.Optional
+   */
+  public Optional<Object> getCode() {
+    return Optional.ofNullable(this.code);
+  }
+
+  /**
+   * Set the security code used to represent the security violation in a non-obvious, secure way.
+   *
+   * @param code security code used to represent the security violation in a secure way.
+   */
+  public void setCode(@Nullable Object code) {
+    this.code = code;
+  }
+
+  /**
+   * Builder method used to set the security code used to represent the security violation in a non-obvious, secure way.
+   *
+   * @param securityCode used to represent the security violation in a secure way.
+   * @return this {@link SecurityException} instance.
+   */
+  public @NotNull SecurityException with(@Nullable Object securityCode) {
+    setCode(securityCode);
+    return this;
   }
 }
