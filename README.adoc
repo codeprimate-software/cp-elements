@@ -23,7 +23,7 @@ to solve common, reoccurring problems during software development with ease and 
 4. Prioritize quality and reliability over quantity.
 
 [[why-elements]]
-== Why Elements...
+== Why Elements
 
 Codeprimate Elements is very similar in function and purpose to *Apache Commons* or *Google Guava*.
 
@@ -36,7 +36,7 @@ environments.
 or perform properly out-of-the-box. Good https://en.wikipedia.org/wiki/Object-oriented_design[Object-Oriented Design]
 based on https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)[SOLID design principles] coupled with effective
 use of https://en.wikipedia.org/wiki/Software_design_pattern[Software Design Patterns] makes *Elements* immediately
-familiar, highly consistent and easy to use. Finally, development of *Elements* built on open and transparent
+familiar, highly consistent and easy to use. Finally, the development of *Elements* is built on open and transparent
 collaboration to harvest feedback that is essential to building high quality and reliable software.
 
 No corporate entity owns or controls *Elements*, and therefore, you will never be bound by licenses or contracts.
@@ -46,7 +46,7 @@ No corporate entity owns or controls *Elements*, and therefore, you will never b
 
 Codeprimate Elements has comprehensive documentation:
 
-* User Guide (and Reference Documentation) coming soon.
+* User Manual coming soon.
 * https://www.javadoc.io/doc/org.codeprimate/cp-elements/latest/index.html[Javadoc] for the entire library API.
 
 [[requirements]]
