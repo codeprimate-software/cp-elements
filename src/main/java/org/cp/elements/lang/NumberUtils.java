@@ -16,7 +16,9 @@
 package org.cp.elements.lang;
 
 import java.math.BigInteger;
+import java.util.regex.Pattern;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -26,9 +28,97 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John J. Blum
  * @see java.lang.Number
+ * @see java.util.regex.Pattern
  * @since 1.0.0
  */
 public abstract class NumberUtils {
+
+  protected static final Pattern binaryPattern = Pattern.compile("[01]+");
+  protected static final Pattern hexadecimalPattern = Pattern.compile("[\\dAaBbCcDdEeFf]+");
+
+  /**
+   * Converts the given, required {@link String binary value} into an {@link Integer}.
+   *
+   * @param binaryValue {@link String} containing only 1s and 0s.
+   * @return an {@link Integer} representing the {@link String binary value}.
+   * @throws IllegalArgumentException if the {@link String binary value} is {@literal null} or {@literal empty},
+   * or the value is not a valid {@link String binary string}.
+   */
+  public static @NotNull Integer fromBinaryString(@NotNull String binaryValue) {
+
+    Assert.hasText(binaryValue, "Binary String [%s] is required", binaryValue);
+
+    Assert.argument(binaryValue, value -> binaryPattern.matcher(binaryValue).matches(),
+      "Binary String [%s] must contain only 1s and 0s", binaryValue);
+
+    int result = 0;
+    int pow = 0;
+
+    for (char digit : reverseCharacters(binaryValue).toCharArray()) {
+      result += parseInt(digit) * (int) Math.pow(2.0d, pow++);
+    }
+
+    return result;
+  }
+
+  /**
+   * Converts the given, required {@link String hexadecimal value} into an {@link Integer}.
+   *
+   * @param hexadecimalValue {@link String} containing digits 0-9 and letters A-F.
+   * @return an {@link Integer} representing the {@link String hexadecimal value}.
+   * @throws IllegalArgumentException if the {@link String hexadecimal value} is {@literal null} or {@literal empty},
+   * or the value is not a valid {@link String hexadecimal string}.
+   */
+  public static @NotNull Integer fromHexadecimalString(@NotNull String hexadecimalValue) {
+
+    Assert.hasText(hexadecimalValue, "Hexadecimal String [%s] is required", hexadecimalValue);
+
+    hexadecimalValue = hexadecimalValue.trim().startsWith("Ox")
+      ? hexadecimalValue.substring("Ox".length())
+      : hexadecimalValue;
+
+    Assert.argument(hexadecimalValue, value -> hexadecimalPattern.matcher(value).matches(),
+      "Hexadecimal String [%s] must contain only digits [0-9] and letters [A-F]", hexadecimalValue);
+
+    int result = 0;
+    int pow = 0;
+
+    for (char digit : reverseCharacters(hexadecimalValue).toCharArray()) {
+      result += parseInt(digit) * Math.pow(16.0d, pow++);
+    }
+
+    return result;
+  }
+
+  private static int parseInt(char digit) {
+
+    switch (digit) {
+      case'A':
+      case 'a':
+        return 10;
+      case 'B':
+      case 'b':
+        return 11;
+      case 'C':
+      case 'c':
+        return 12;
+      case 'D':
+      case 'd':
+        return 13;
+      case 'E':
+      case 'e':
+        return 14;
+      case 'F':
+      case 'f':
+        return 15;
+      default:
+        return Integer.parseInt(String.valueOf(digit));
+    }
+  }
+
+  private static @NotNull String reverseCharacters(@NotNull String value) {
+    return new StringBuilder(value).reverse().toString();
+  }
 
   /**
    * Gets the individual bytes of an integer (int) value.  An integer is a 32-bit value consisting of 4 bytes

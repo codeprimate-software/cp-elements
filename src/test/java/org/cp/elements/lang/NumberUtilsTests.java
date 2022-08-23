@@ -17,6 +17,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -32,6 +33,114 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class NumberUtilsTests {
+
+  @Test
+  public void fromBinaryStringIsCorrect() {
+
+    Integer value = 1248163264;
+    String binaryString = Integer.toBinaryString(value);
+
+    assertThat(NumberUtils.fromBinaryString(binaryString)).isEqualTo(value);
+  }
+
+  @Test
+  public void fromBlankBinaryString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromBinaryString("  "))
+      .withMessage("Binary String [  ] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromEmptyBinaryString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromBinaryString(""))
+      .withMessage("Binary String [] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNullBinaryString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromBinaryString(null))
+      .withMessage("Binary String [null] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromHexBasedBinaryString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromBinaryString("B00BFAB5"))
+      .withMessage("Binary String [B00BFAB5] must contain only 1s and 0s")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromInvalidBinaryString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromBinaryString("1O101O"))
+      .withMessage("Binary String [1O101O] must contain only 1s and 0s")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromTextBasedBinaryString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromBinaryString("OxTEXT"))
+      .withMessage("Binary String [OxTEXT] must contain only 1s and 0s")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromHexadecimalStringIsCorrect() {
+
+    Integer value = 0xB00BFAB;
+    String hexadecimalString = Integer.toHexString(value);
+
+    assertThat(NumberUtils.fromHexadecimalString(hexadecimalString)).isEqualTo(value);
+  }
+
+  @Test
+  public void fromBlankHexidecimalString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromHexadecimalString("  "))
+      .withMessage("Hexadecimal String [  ] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromEmptyHexidecimalString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromHexadecimalString(""))
+      .withMessage("Hexadecimal String [] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNullHexidecimalString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromHexadecimalString(null))
+      .withMessage("Hexadecimal String [null] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromInvalidHexadecimalString() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> NumberUtils.fromHexadecimalString("0xCAT1NB0X"))
+      .withMessage("Hexadecimal String [0xCAT1NB0X] must contain only digits [0-9] and letters [A-F]")
+      .withNoCause();
+  }
 
   @Test
   public void getBytes() {
@@ -90,6 +199,7 @@ public class NumberUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotDecimalWithNull() {
     assertThat(NumberUtils.isDecimal(null)).isFalse();
   }
@@ -280,6 +390,7 @@ public class NumberUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotWholeWithNumber() {
     assertThat(NumberUtils.isWhole(new Float(3.14159f))).isFalse();
     assertThat(NumberUtils.isWhole(new Double(Math.PI))).isFalse();
@@ -287,6 +398,7 @@ public class NumberUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotWholeWithNull() {
     assertThat(NumberUtils.isWhole(null)).isFalse();
   }
@@ -432,6 +544,7 @@ public class NumberUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotLongWithNull() {
     assertThat(NumberUtils.isLong(null)).isFalse();
   }
@@ -445,6 +558,7 @@ public class NumberUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotFloatWithBigDecimal() {
     assertThat(NumberUtils.isFloat(new BigDecimal(3.14159f))).isFalse();
   }
@@ -489,6 +603,7 @@ public class NumberUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void isNotDoubleWithNull() {
     assertThat(NumberUtils.isDouble(null)).isFalse();
   }
