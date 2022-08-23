@@ -819,14 +819,15 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Creates a sub-array from the given array with elements at the specified indices in the given array.
+   * Create a sub-array containing elements at the specified indices in the given, required {@link T[] array}.
    *
-   * @param <T> the Class type of the elements in the array.
-   * @param array the source array.
-   * @param indices an array of indexes to elements in the given array to include in the sub-array.
-   * @return a sub-array from the given array with elements at the specified indices in the given array.
-   * @throws ArrayIndexOutOfBoundsException if the indices are not valid indexes in the array.
-   * @throws NullPointerException if either the array or indices are null.
+   * @param <T> {@link Class type} of elements contained in the array.
+   * @param array source array; must not be {@literal null}.
+   * @param indices array of indexes referring to elements contained in the array to include in the sub-array;
+   * must not be {@literal null}.
+   * @return a sub-array containing elements from the given array at the specified indices.
+   * @throws ArrayIndexOutOfBoundsException if the indices are not valid indexes in the given array.
+   * @throws NullPointerException if either the array or indices are {@literal null}.
    */
   @SuppressWarnings("unchecked")
   public static @NotNull <T> T[] subArray(@NotNull T[] array, int... indices) {
@@ -838,6 +839,30 @@ public abstract class ArrayUtils {
     }
 
     return subArrayList.toArray((T[]) Array.newInstance(array.getClass().getComponentType(), subArrayList.size()));
+  }
+
+  /**
+   * Create a sub-array containing elements from the given, required {@link T array}.
+   *
+   * @param <T> {@link Class type} of elements contained in the array.
+   * @param array source array; must not be {@literal null}.
+   * @param offset {@link Integer} specifying the index in the array from which to start extracting elements.
+   * @param length {@link Integer} specifying the number of elements to extract from the array.
+   * @return a sub-array containing elements from the given array between {@code offset}
+   * and {@code offset} + {@code length}
+   * @throws ArrayIndexOutOfBoundsException if the {@code offset} or {@code length} are not valid.
+   * @throws NullPointerException if the array is {@literal null}.
+   * @see #subArray(Object[], int...)
+   */
+  public static @NotNull <T> T[] subArray(@NotNull T[] array, int offset, int length) {
+
+    int[] indices = new int[length];
+
+    for (int index = 0; index < length; index++) {
+      indices[index] = offset + index;
+    }
+
+    return subArray(array, indices);
   }
 
   /**

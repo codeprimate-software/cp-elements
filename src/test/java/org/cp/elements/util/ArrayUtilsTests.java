@@ -1630,8 +1630,9 @@ public class ArrayUtilsTests {
     Integer[] array = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     Integer[] subArray = ArrayUtils.subArray(array, 1, 2, 4, 8);
 
+    assertThat(subArray).isNotNull();
     assertThat(subArray).isNotSameAs(array);
-    assertElements(subArray, 1, 2, 4, 8);
+    assertThat(subArray).containsExactly(1, 2, 4, 8);
   }
 
   @Test
@@ -1640,7 +1641,7 @@ public class ArrayUtilsTests {
     Object[] subArray = ArrayUtils.subArray(new Object[0]);
 
     assertThat(subArray).isNotNull();
-    assertThat(subArray.length).isEqualTo(0);
+    assertThat(subArray).hasSize(0);
   }
 
   @Test(expected = ArrayIndexOutOfBoundsException.class)
@@ -1654,9 +1655,14 @@ public class ArrayUtilsTests {
     String[] array = { "test", "testing", "tested" };
     String[] subArray = ArrayUtils.subArray(array);
 
-    assertThat(subArray).isNotSameAs(array);
     assertThat(subArray).isNotNull();
-    assertThat(subArray.length).isEqualTo(0);
+    assertThat(subArray).isNotSameAs(array);
+    assertThat(subArray).hasSize(0);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void subArrayWithNullArray() {
+    ArrayUtils.subArray(null, 1);
   }
 
   @Test
@@ -1665,8 +1671,9 @@ public class ArrayUtilsTests {
     String[] array = { "test" };
     String[] subArray = ArrayUtils.subArray(array, 0);
 
+    assertThat(subArray).isNotNull();
     assertThat(subArray).isNotSameAs(array);
-    assertElements(subArray, "test");
+    assertThat(subArray).containsExactly("test");
   }
 
   @Test(expected = ArrayIndexOutOfBoundsException.class)
@@ -1674,9 +1681,30 @@ public class ArrayUtilsTests {
     ArrayUtils.subArray(new Integer[] { 0 }, 1);
   }
 
+  @Test
+  public void subArrayWithOffsetAndLength() {
+
+    Byte[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    Byte[] subArray = ArrayUtils.subArray(array, 3, 3);
+
+    assertThat(subArray).isNotNull();
+    assertThat(subArray).isNotSameAs(array);
+    assertThat(subArray).containsExactly((byte) 4, (byte) 5, (byte) 6);
+  }
+
+  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  public void subArrayWithOffsetAndLengthUsingInvalidLength() {
+    ArrayUtils.subArray(new Object[] { "test" }, 0, 10);
+  }
+
+  @Test(expected = ArrayIndexOutOfBoundsException.class)
+  public void subArrayWithOffsetAndLengthUsingInvalidOffset() {
+    ArrayUtils.subArray(new Object[0], 1, 10);
+  }
+
   @Test(expected = NullPointerException.class)
-  public void subArrayWithNullArray() {
-    ArrayUtils.subArray(null, 1);
+  public void subArrayWithOffsetAndLengthUsingNullArray() {
+    ArrayUtils.subArray(null, 5, 10);
   }
 
   @Test
