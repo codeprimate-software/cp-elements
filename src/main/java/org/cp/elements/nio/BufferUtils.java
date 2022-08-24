@@ -19,7 +19,10 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Abstract utility class for processing {@link Buffer Buffers}.
@@ -29,6 +32,8 @@ import org.cp.elements.lang.annotation.NotNull;
  * @since 1.0.0
  */
 public abstract class BufferUtils {
+
+  public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
   /**
    * Computes the {@literal load factor} of the given, required {@link Buffer}.
@@ -106,5 +111,54 @@ public abstract class BufferUtils {
     byte[] array = new byte[buffer.capacity()];
     buffer.get(array);
     return array;
+  }
+
+  /**
+   * Converts the primitive byte array into a big, wrapper {@link Byte} array.
+   *
+   * @param array primitive byte array to convert.
+   * @return a big {@link Byte} array containing the elements of the primitive byte array.
+   * @see #toPrimitiveByteArray(Byte[])
+   */
+  @NullSafe
+  public static Byte[] toBigByteArray(byte[] array) {
+
+    array = nullSafeArray(array);
+
+    Byte[] bigByteArray = new Byte[array.length];
+    int index = 0;
+
+    for (byte element : array) {
+      bigByteArray[index++] = element;
+    }
+
+    return bigByteArray;
+  }
+
+  @NullSafe
+  private static byte[] nullSafeArray(byte[] array) {
+    return array != null ? array : EMPTY_BYTE_ARRAY;
+  }
+
+  /**
+   * Converts the big, wrapper {@link Byte} array into a primitive byte array.
+   *
+   * @param array big, wrapper {@link Byte} array to convert.
+   * @return a a primitive byte array containing the lement of the big {@link Byte} array.
+   * @see #toBigByteArray(byte[])
+   */
+  @NullSafe
+  public static byte[] toPrimitiveByteArray(Byte[] array) {
+
+    array = ArrayUtils.nullSafeArray(array, Byte.class);
+
+    byte[] primitiveByteArray = new byte[array.length];
+    int index = 0;
+
+    for (Byte element : array) {
+      primitiveByteArray[index++] = NumberUtils.byteValue(element);
+    }
+
+    return primitiveByteArray;
   }
 }

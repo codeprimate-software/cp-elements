@@ -115,4 +115,52 @@ public class BufferUtilsUnitTests {
       .withMessage("ByteBuffer is required")
       .withNoCause();
   }
+
+  @Test
+  public void toBigByteArrayFromPrimitiveByteArray() {
+
+    byte[] primitiveByteArray =
+      { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+
+    Byte[] bigByteArray = BufferUtils.toBigByteArray(primitiveByteArray);
+
+    assertThat(bigByteArray).isNotNull();
+    assertThat(bigByteArray).hasSize(primitiveByteArray.length);
+
+    int index = 0;
+
+    for (Byte element : bigByteArray) {
+      assertThat(element.byteValue()).isEqualTo(primitiveByteArray[index++]);
+    }
+  }
+
+  @Test
+  public void toBigByteArrayFromNullIsNullSafeReturnsEmptyArray() {
+
+    Byte[] array = BufferUtils.toBigByteArray(null);
+
+    assertThat(array).isNotNull();
+    assertThat(array).isEmpty();
+  }
+
+  @Test
+  public void toPrimitiveByteArrayFromBigByteArray() {
+
+    Byte[] bigByteArray = { 0x01, 0x02, null, 0x04, null, null, null, 0x08, null };
+
+    byte[] primitiveByteArray = BufferUtils.toPrimitiveByteArray(bigByteArray);
+
+    assertThat(primitiveByteArray).isNotNull();
+    assertThat(primitiveByteArray).hasSize(bigByteArray.length);
+    assertThat(primitiveByteArray).containsExactly(0x01, 0x02, 0x00, 0x04, 0x00, 0x00, 0x00, 0x08, 0x00);
+  }
+
+  @Test
+  public void toPrimitiveByteArrayFromNullIsNullSafeReturnEmptyArray() {
+
+    byte[] array = BufferUtils.toPrimitiveByteArray(null);
+
+    assertThat(array).isNotNull();
+    assertThat(array).isEmpty();
+  }
 }
