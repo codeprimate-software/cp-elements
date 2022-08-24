@@ -63,24 +63,43 @@ public abstract class BufferUtils {
   }
 
   /**
-   * Copies the given (existing), required {@link ByteBuffer} into a new {@link ByteBuffer}
-   * with possibly additional {@link ByteBuffer#capacity() capacity}.
+   * Copies the given, required {@link ByteBuffer} into a new {@link ByteBuffer} with
+   * additional {@link ByteBuffer#capacity()}.
+   *
+   * The {@link ByteBuffer#position()} will be set to immediately after the last byte copied from
+   * the given {@link ByteBuffer}, which corresponds to either the given {@link ByteBuffer ByteBuffer's}
+   * {@link ByteBuffer#limit()} or its {@link ByteBuffer#capacity()}, dependent on the existing data
+   * in the {@link ByteBuffer}.
+   *
+   * The {@link ByteBuffer#limit()} of the new {@link ByteBuffer} (copy) will match its {@link ByteBuffer#capacity()}.
+   *
+   * The {@link ByteBuffer#capacity()} of the new {@link ByteBuffer} (copy) will be the {@link ByteBuffer#capacity()}
+   * of the given {@link ByteBuffer} plus the {@code additionalCapacity}.
    *
    * @param buffer {@link ByteBuffer} to copy; must not be {@literal null}.
-   * @param additionalCapacity {@link Integer} specifying the capacity to add to the existing, given {@link ByteBuffer};
+   * @param additionalCapacity {@link Integer} specifying the capacity to add to the new {@link ByteBuffer};
    * must be greater than equal to {@literal 0}.
    * @return a new {@link ByteBuffer} with additional {@link ByteBuffer#capacity()} and the contents from the existing,
    * given {@link ByteBuffer}.
    * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null} or {@code additionalCapacity}
    * is less than {@literal 0}.
+   * @throws IllegalStateException if the given {@link ByteBuffer} to copy has no {@link ByteBuffer#capacity()}
+   * or could not be {@link ByteBuffer#rewind() rewound} for the {@code copy} operation.
    * @see java.nio.ByteBuffer
    */
   public static @NotNull ByteBuffer copy(@NotNull ByteBuffer buffer, int additionalCapacity) {
 
-    Assert.notNull(buffer, "ByteBuffer is required to copy");
+    Assert.notNull(buffer, "ByteBuffer to copy is required");
+
+    Assert.state(buffer.capacity() > 0, "ByteBuffer to copy has no capacity");
 
     Assert.isTrue(additionalCapacity > -1,
       "Additional capacity [%d] must be greater than equal to 0", additionalCapacity);
+
+    buffer = prepareByteBufferToCopy(buffer);
+
+    Assert.state(buffer.position() == 0, "Failed to rewind the given ByteBuffer");
+    Assert.state(buffer.remaining() > 0, "The given ByteBuffer has no remaining content to copy");
 
     return buffer.isDirect()
       ? allocateDirect(buffer, additionalCapacity)
@@ -93,6 +112,13 @@ public abstract class BufferUtils {
 
   private static @NotNull ByteBuffer allocateNonDirect(@NotNull ByteBuffer existingBuffer, int additionalCapacity) {
     return ByteBuffer.allocate(existingBuffer.capacity() + additionalCapacity).put(existingBuffer);
+  }
+
+  private static @NotNull ByteBuffer prepareByteBufferToCopy(@NotNull ByteBuffer buffer) {
+
+    return buffer.position() > 0
+      ? (ByteBuffer) buffer.limit(buffer.position()).rewind()
+      : (ByteBuffer) buffer.limit(buffer.capacity());
   }
 
   /**

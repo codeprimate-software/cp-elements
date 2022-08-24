@@ -17,11 +17,13 @@ package org.cp.elements.nio;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.nio.ByteBuffer;
 
+import org.cp.elements.lang.NumberUtils;
 import org.junit.Test;
 
 /**
@@ -61,28 +63,90 @@ public class BufferUtilsUnitTests {
   @Test
   public void copyByteBufferIsSuccessful() {
 
-    byte[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF };
+    byte[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 
     ByteBuffer byteBuffer = ByteBuffer.wrap(array);
 
-    ByteBuffer copy = BufferUtils.copy(byteBuffer, array.length * 2);
+    assertThat(byteBuffer).isNotNull();
+    assertThat(byteBuffer.position()).isZero();
+    assertThat(byteBuffer.limit()).isEqualTo(array.length);
+    assertThat(byteBuffer.capacity()).isEqualTo(array.length);
 
-    assertThat(copy).isNotNull();
-    assertThat(copy.capacity()).isGreaterThanOrEqualTo(array.length * 2);
+    ByteBuffer byteBufferCopy = BufferUtils.copy(byteBuffer, array.length * 2);
 
-    while (byteBuffer.position() < byteBuffer.capacity()) {
-      assertThat(copy.get()).isEqualTo(byteBuffer.get());
+    assertThat(byteBufferCopy).isNotNull();
+    assertThat(byteBufferCopy).isNotSameAs(byteBuffer);
+    assertThat(byteBufferCopy.position()).isEqualTo(array.length);
+    assertThat(byteBufferCopy.limit()).isEqualTo(byteBufferCopy.capacity());
+    assertThat(byteBufferCopy.capacity())
+      .describedAs("Buffer copy capacity is [%d]", byteBufferCopy.capacity())
+      .isEqualTo(array.length + array.length * 2);
+
+    // Must rewind the copy to prepare for reading from the beginning of the buffer all the data in the original buffer
+    // plus any additional data added to the copy
+    assertThat(byteBufferCopy.limit(byteBufferCopy.capacity()).rewind()).isEqualTo(byteBufferCopy);
+    assertThat(byteBufferCopy.position()).isZero();
+    assertThat(byteBufferCopy.limit()).isEqualTo(byteBufferCopy.capacity());
+    assertThat(byteBufferCopy.capacity()).isEqualTo(array.length + array.length * 2);
+
+    int count = 0;
+
+    for (byte element : array) {
+      assertThat(byteBufferCopy.get()).isEqualTo(element);
+      count++;
     }
 
-    assertThat(copy.remaining()).isEqualTo(copy.capacity() - array.length);
+    assertThat(count).isEqualTo(array.length);
+    assertThat(byteBufferCopy.position()).isEqualTo(15);
+    assertThat(byteBufferCopy.remaining()).isEqualTo(byteBufferCopy.capacity() - array.length);
+  }
+
+  @Test
+  public void copyByteBufferWithNonZeroPositionAndLimitLessThanCapacity() {
+
+    ByteBuffer source = ByteBuffer.allocate(6);
+
+    assertThat(source).isNotNull();
+
+    source.put(NumberUtils.byteValue(0x0C));
+    source.put(NumberUtils.byteValue(0x0B));
+    source.put(NumberUtils.byteValue(0x0A));
+
+    assertThat(source.position()).isEqualTo(3);
+    assertThat(source.limit()).isEqualTo(source.capacity());
+    assertThat(source.capacity()).isEqualTo(6);
+
+    ByteBuffer copy = BufferUtils.copy(source, source.capacity());
+
+    assertThat(copy).isNotNull();
+    assertThat(copy.position()).isEqualTo(3);
+    assertThat(copy.limit()).isEqualTo(copy.capacity());
+    assertThat(copy.capacity()).isEqualTo(source.capacity() * 2);
+
+    for (int number = 9; number > 0; number--) {
+      copy.put(NumberUtils.byteValue(number));
+    }
+
+    assertThat(copy.remaining()).isZero();
+    assertThat(copy.array())
+      .containsExactly(0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01);
   }
 
   @Test
   public void copyByteBufferWithNegativeAdditionalCapacity() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> BufferUtils.copy(mock(ByteBuffer.class), -1))
+      .isThrownBy(() -> BufferUtils.copy(ByteBuffer.allocate(1), -1))
       .withMessage("Additional capacity [-1] must be greater than equal to 0")
+      .withNoCause();
+  }
+
+  @Test
+  public void copyByteBufferWithNoCapacity() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> BufferUtils.copy(ByteBuffer.allocate(0), 0))
+      .withMessage("ByteBuffer to copy has no capacity")
       .withNoCause();
   }
 
@@ -91,7 +155,7 @@ public class BufferUtilsUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> BufferUtils.copy(null, 10))
-      .withMessage("ByteBuffer is required to copy")
+      .withMessage("ByteBuffer to copy is required")
       .withNoCause();
   }
 
