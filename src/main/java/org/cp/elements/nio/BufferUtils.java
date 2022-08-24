@@ -31,7 +31,16 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.nio.Buffer
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public abstract class BufferUtils {
+
+  public static final int ONE_KILOBYTE_BUFFER_SIZE = 1024;
+  public static final int TWO_KILOBYTE_BUFFER_SIZE = 2048;
+  public static final int FOUR_KILOBYTE_BUFFER_SIZE = 4096;
+  public static final int EIGHT_KILOBYTE_BUFFER_SIZE = 8192;
+  public static final int SIXTEEN_KILOBYTE_BUFFER_SIZE = 8192;
+  public static final int THIRTY_TWO_KILOBYTE_BUFFER_SIZE = 32768;
+  public static final int SIXTY_FOUR_KILOBYTE_BUFFER_SIZE = 64536;
 
   public static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
