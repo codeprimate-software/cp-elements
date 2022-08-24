@@ -17,6 +17,8 @@ package org.cp.elements.nio;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import java.nio.ByteBuffer;
 
@@ -28,10 +30,33 @@ import org.junit.Test;
  * @author John Blum
  * @see java.nio.ByteBuffer
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.nio.BufferUtils
  * @since 1.0.0
  */
 public class BufferUtilsUnitTests {
+
+  @Test
+  public void computeLoadFactorIsCorrect() {
+
+    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+
+    doReturn(0).doReturn(5).doReturn(8).when(mockByteBuffer).position();
+    doReturn(10).when(mockByteBuffer).capacity();
+
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(1.0f);
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.5f);
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.8f);
+  }
+
+  @Test
+  public void computeLoadFactorWithNullByteBuffer() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> BufferUtils.computeLoadFactor(null))
+      .withMessage("ByteBuffer is required to compute load factor")
+      .withNoCause();
+  }
 
   @Test
   public void getByteArrayFromByteBuffer() {

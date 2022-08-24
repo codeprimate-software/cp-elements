@@ -31,6 +31,33 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class BufferUtils {
 
   /**
+   * Computes the {@literal load factor} of the given, required {@link ByteBuffer}.
+   *
+   * The {@literal load factor} is a function of the {@link ByteBuffer ByteBuffer's} {@link ByteBuffer#position()}
+   * and {@link ByteBuffer#capacity()}, irrespective of the {@link ByteBuffer ByteBuffer's} {@link ByteBuffer#limit()},
+   * if set.
+   *
+   * Just because a {@link ByteBuffer} has reached its {@link ByteBuffer#limit()} does not mean it is at
+   * or nearing {@link ByteBuffer#capacity()}. This computation is often used in the determination
+   * for whether to {@link #copy(ByteBuffer, int)} reallocate the {@link ByteBuffer}.
+   *
+   * @param buffer {@link ByteBuffer} used to compute the {@literal load factor}; must not be {@literal null}.
+   * @return the computed {@literal load factor} of the given {@link ByteBuffer}.
+   * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.
+   * @see java.nio.ByteBuffer
+   */
+  public static float computeLoadFactor(@NotNull ByteBuffer buffer) {
+
+    Assert.notNull(buffer, "ByteBuffer is required to compute load factor");
+
+    int bufferPosition = buffer.position();
+
+    return bufferPosition != 0
+      ? (float) bufferPosition / (float) buffer.capacity()
+      : 1.0f;
+  }
+
+  /**
    * Gets an array of bytes containing the contents of the given, required {@link ByteBuffer}.
    *
    * This method handles {@link ByteBuffer#isReadOnly() read-only} {@link ByteBuffer ByteBuffers}.
