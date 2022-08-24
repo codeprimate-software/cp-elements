@@ -31,24 +31,24 @@ import org.cp.elements.lang.annotation.NotNull;
 public abstract class BufferUtils {
 
   /**
-   * Computes the {@literal load factor} of the given, required {@link ByteBuffer}.
+   * Computes the {@literal load factor} of the given, required {@link Buffer}.
    *
-   * The {@literal load factor} is a function of the {@link ByteBuffer ByteBuffer's} {@link ByteBuffer#position()}
-   * and {@link ByteBuffer#capacity()}, irrespective of the {@link ByteBuffer ByteBuffer's} {@link ByteBuffer#limit()},
+   * The {@literal load factor} is a function of the {@link Buffer Buffer's} {@link Buffer#position()}
+   * and {@link Buffer#capacity()}, irrespective of the {@link Buffer Buffer's} {@link Buffer#limit()},
    * if set.
    *
-   * Just because a {@link ByteBuffer} has reached its {@link ByteBuffer#limit()} does not mean it is at
-   * or nearing {@link ByteBuffer#capacity()}. This computation is often used in the determination
-   * for whether to {@link #copy(ByteBuffer, int)} reallocate the {@link ByteBuffer}.
+   * Just because a {@link Buffer} has reached its {@link Buffer#limit()} does not mean it is at
+   * or nearing {@link Buffer#capacity()}. This computation is often used in the determination
+   * for whether to {@link #copy(ByteBuffer, int)} reallocate the {@link Buffer}.
    *
-   * @param buffer {@link ByteBuffer} used to compute the {@literal load factor}; must not be {@literal null}.
-   * @return the computed {@literal load factor} of the given {@link ByteBuffer}.
-   * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.
-   * @see java.nio.ByteBuffer
+   * @param buffer {@link Buffer} used to compute the {@literal load factor}; must not be {@literal null}.
+   * @return the computed {@literal load factor} of the given {@link Buffer}.
+   * @throws IllegalArgumentException if the {@link Buffer} is {@literal null}.
+   * @see java.nio.Buffer
    */
-  public static float computeLoadFactor(@NotNull ByteBuffer buffer) {
+  public static float computeLoadFactor(@NotNull Buffer buffer) {
 
-    Assert.notNull(buffer, "ByteBuffer is required to compute load factor");
+    Assert.notNull(buffer, "A Buffer is required to compute load factor");
 
     int bufferPosition = buffer.position();
 

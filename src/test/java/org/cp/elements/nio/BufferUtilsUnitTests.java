@@ -54,7 +54,7 @@ public class BufferUtilsUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> BufferUtils.computeLoadFactor(null))
-      .withMessage("ByteBuffer is required to compute load factor")
+      .withMessage("A Buffer is required to compute load factor")
       .withNoCause();
   }
 
