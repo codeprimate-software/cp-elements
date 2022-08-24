@@ -58,6 +58,39 @@ public abstract class BufferUtils {
   }
 
   /**
+   * Copies the given (existing), required {@link ByteBuffer} into a new {@link ByteBuffer}
+   * with possibly additional {@link ByteBuffer#capacity() capacity}.
+   *
+   * @param buffer {@link ByteBuffer} to copy; must not be {@literal null}.
+   * @param additionalCapacity {@link Integer} specifying the capacity to add to the existing, given {@link ByteBuffer};
+   * must be greater than equal to {@literal 0}.
+   * @return a new {@link ByteBuffer} with additional {@link ByteBuffer#capacity()} and the contents from the existing,
+   * given {@link ByteBuffer}.
+   * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null} or {@code additionalCapacity}
+   * is less than {@literal 0}.
+   * @see java.nio.ByteBuffer
+   */
+  public static @NotNull ByteBuffer copy(@NotNull ByteBuffer buffer, int additionalCapacity) {
+
+    Assert.notNull(buffer, "ByteBuffer is required to copy");
+
+    Assert.isTrue(additionalCapacity > -1,
+      "Additional capacity [%d] must be greater than equal to 0", additionalCapacity);
+
+    return buffer.isDirect()
+      ? allocateDirect(buffer, additionalCapacity)
+      : allocateNonDirect(buffer, additionalCapacity);
+  }
+
+  private static @NotNull ByteBuffer allocateDirect(@NotNull ByteBuffer existingBuffer, int additionalCapacity) {
+    return ByteBuffer.allocateDirect(existingBuffer.capacity() + additionalCapacity).put(existingBuffer);
+  }
+
+  private static @NotNull ByteBuffer allocateNonDirect(@NotNull ByteBuffer existingBuffer, int additionalCapacity) {
+    return ByteBuffer.allocate(existingBuffer.capacity() + additionalCapacity).put(existingBuffer);
+  }
+
+  /**
    * Gets an array of bytes containing the contents of the given, required {@link ByteBuffer}.
    *
    * This method handles {@link ByteBuffer#isReadOnly() read-only} {@link ByteBuffer ByteBuffers}.

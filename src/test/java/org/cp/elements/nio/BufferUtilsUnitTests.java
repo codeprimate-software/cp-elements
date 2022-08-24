@@ -59,6 +59,43 @@ public class BufferUtilsUnitTests {
   }
 
   @Test
+  public void copyByteBufferIsSuccessful() {
+
+    byte[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0xA, 0xB, 0xC, 0xD, 0xE, 0xF };
+
+    ByteBuffer byteBuffer = ByteBuffer.wrap(array);
+
+    ByteBuffer copy = BufferUtils.copy(byteBuffer, array.length * 2);
+
+    assertThat(copy).isNotNull();
+    assertThat(copy.capacity()).isGreaterThanOrEqualTo(array.length * 2);
+
+    while (byteBuffer.position() < byteBuffer.capacity()) {
+      assertThat(copy.get()).isEqualTo(byteBuffer.get());
+    }
+
+    assertThat(copy.remaining()).isEqualTo(copy.capacity() - array.length);
+  }
+
+  @Test
+  public void copyByteBufferWithNegativeAdditionalCapacity() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> BufferUtils.copy(mock(ByteBuffer.class), -1))
+      .withMessage("Additional capacity [-1] must be greater than equal to 0")
+      .withNoCause();
+  }
+
+  @Test
+  public void copyNullByteBuffer() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> BufferUtils.copy(null, 10))
+      .withMessage("ByteBuffer is required to copy")
+      .withNoCause();
+  }
+
+  @Test
   public void getByteArrayFromByteBuffer() {
 
     ByteBuffer buffer = ByteBuffer.wrap("TEST".getBytes());
