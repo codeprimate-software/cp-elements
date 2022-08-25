@@ -66,9 +66,9 @@ public abstract class BufferUtils {
 
     int bufferPosition = buffer.position();
 
-    return bufferPosition != 0
+    return bufferPosition > 0
       ? (float) bufferPosition / (float) buffer.capacity()
-      : 1.0f;
+      : 0.0f;
   }
 
   /**

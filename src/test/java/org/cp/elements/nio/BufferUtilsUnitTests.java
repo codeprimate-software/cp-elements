@@ -43,12 +43,15 @@ public class BufferUtilsUnitTests {
 
     ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
 
-    doReturn(0).doReturn(5).doReturn(8).when(mockByteBuffer).position();
+    doReturn(0).doReturn(2).doReturn(5).doReturn(8).doReturn(10)
+      .when(mockByteBuffer).position();
     doReturn(10).when(mockByteBuffer).capacity();
 
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(1.0f);
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.5f);
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.8f);
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.0f); // 0%
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.2f); // 20%
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.5f); // 50%
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.8f); // 80%
+    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(1.0f); // 100%
   }
 
   @Test
