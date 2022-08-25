@@ -62,8 +62,14 @@ public class ByteBufferInputStream extends InputStream {
    * @see java.nio.ByteBuffer
    */
   public ByteBufferInputStream(@NotNull ByteBuffer byteBuffer) {
-    this.byteBuffer = ObjectUtils.requireObject(byteBuffer, "ByteBuffer is required");
-    this.byteBuffer.mark();
+    this.byteBuffer = prepareForReading(ObjectUtils.requireObject(byteBuffer, "ByteBuffer is required"));
+  }
+
+  private @NotNull ByteBuffer prepareForReading(@NotNull ByteBuffer byteBuffer) {
+
+    return (ByteBuffer) (byteBuffer.position() > 0
+      ? byteBuffer.limit(byteBuffer.position()).rewind().mark()
+      : byteBuffer.limit(byteBuffer.capacity())).mark();
   }
 
   /**
