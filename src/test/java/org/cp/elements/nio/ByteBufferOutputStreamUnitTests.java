@@ -197,12 +197,16 @@ public class ByteBufferOutputStreamUnitTests {
     assertThat(byteBuffer.isReadOnly()).isFalse();
     assertThat(byteBuffer.capacity()).isEqualTo(2);
 
+    byteBuffer.put((byte) 0x21);
+    byteBuffer.put((byte) 0x42);
+
     ByteBufferOutputStream outputStream = ByteBufferOutputStream.into(byteBuffer);
 
     assertThat(outputStream).isNotNull();
     assertThat(outputStream.isOpen()).isTrue();
 
     outputStream.write(array);
+    outputStream.flush();
 
     ByteBuffer buffer = outputStream.getByteBuffer();
 
@@ -213,8 +217,12 @@ public class ByteBufferOutputStreamUnitTests {
     assertThat(buffer.capacity()).isGreaterThanOrEqualTo(array.length);
     assertThat(outputStream.isClosed()).isTrue();
 
+    buffer.limit(buffer.position()).rewind();
+
     byte[] copy = buffer.array();
 
+    assertThat(ArrayUtils.subArray(BufferUtils.toBigByteArray(copy), 0, 2))
+      .containsExactly(BufferUtils.toBigByteArray(new byte[] { 0x21, 0x42 }));
     assertThat(ArrayUtils.subArray(BufferUtils.toBigByteArray(copy), 2, 15))
       .containsExactly(BufferUtils.toBigByteArray(array));
   }

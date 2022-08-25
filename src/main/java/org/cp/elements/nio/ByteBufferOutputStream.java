@@ -32,7 +32,7 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 public class ByteBufferOutputStream extends OutputStream {
 
-  protected static final int CAPACITY_INCREMENT = 8192;
+  protected static final int CAPACITY_INCREMENT = BufferUtils.EIGHT_KILOBYTE_BUFFER_SIZE;
 
   protected static final float LOAD_FACTOR = 0.85f;
 
@@ -140,6 +140,7 @@ public class ByteBufferOutputStream extends OutputStream {
   }
 
   protected byte convertToByte(int value) {
+    //return Integer.valueOf(value).byteValue();
     return (byte) (value & 0x000000FF);
   }
 
