@@ -79,6 +79,7 @@ public class ArrayProperty extends AbstractIndexedProperty {
    *
    * @param beanModel {@link BeanModel} modeling the bean containing this property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
+   * @return a new {@link ArrayProperty} initialized with the given {@link BeanModel} and {@link PropertyDescriptor}.
    * @throws IllegalArgumentException if the {@link BeanModel} or {@link PropertyDescriptor} are {@literal null},
    * or the {@link PropertyDescriptor} describing the bean property is not an array.
    * @see #ArrayProperty(BeanModel, PropertyDescriptor)
@@ -94,6 +95,7 @@ public class ArrayProperty extends AbstractIndexedProperty {
    * required {@link Property} modeling the array-typed, bean property.
    *
    * @param property {@link Property} modeling the array-typed, bean property; must not be {@literal null}.
+   * @return a new {@link ArrayProperty} initialized with the given {@link Property}.
    * @throws IllegalArgumentException if the {@link Property} is {@literal null}, or the bean {@link Property}
    * is not an array.
    * @see org.cp.elements.beans.model.Property
