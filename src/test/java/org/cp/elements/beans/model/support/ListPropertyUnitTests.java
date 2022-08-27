@@ -249,7 +249,7 @@ public class ListPropertyUnitTests {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
       .isThrownBy(() -> newListProperty().assertListIndex(Collections.singletonList("mock"), -1))
-      .withMessage("List index [-1] must be greater than equal to 0 and less than [1]")
+      .withMessage("List index [-1] must be greater than equal to [0] and less than [1]")
       .withNoCause();
   }
 
@@ -258,7 +258,7 @@ public class ListPropertyUnitTests {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
       .isThrownBy(() -> newListProperty().assertListIndex(Collections.emptyList(), 0))
-      .withMessage("List index [0] must be greater than equal to 0 and less than [0]")
+      .withMessage("List index [0] must be greater than equal to [0] and less than [0]")
       .withNoCause();
   }
 }

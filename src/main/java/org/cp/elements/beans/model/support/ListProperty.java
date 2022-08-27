@@ -130,10 +130,11 @@ public class ListProperty extends AbstractIndexedProperty {
   /**
    * Asserts that the given {@link List} index is valid.
    *
-   * @param index {@link Integer#TYPE} to evaluate as a {@link List} index.
+   * @param index {@link Integer#TYPE} value to evaluate as a valid {@link List} index.
    * @throws IndexOutOfBoundsException if the {@link List} index is less than {@literal 0}
    * or greater than equal to {@link List#size()}.
    * @return the given {@link List} index if valid.
+   * @see java.util.List
    */
   @NullSafe
   protected int assertListIndex(@Nullable List<?> list, int index) {
@@ -141,7 +142,7 @@ public class ListProperty extends AbstractIndexedProperty {
     int listSize = CollectionUtils.nullSafeSize(list);
 
     if (index < 0 || index >= listSize) {
-      String message = "List index [%d] must be greater than equal to 0 and less than [%d]";
+      String message = "List index [%d] must be greater than equal to [0] and less than [%d]";
       throw newIndexOutOfBoundsException(message, index, listSize);
     }
 
@@ -151,6 +152,7 @@ public class ListProperty extends AbstractIndexedProperty {
   @Override
   @SuppressWarnings("unchecked")
   protected BiFunction<Object, Integer, Object> getValueAccessorFunction() {
+
     return (list, index) -> {
       List<?> resolvedList = (List<?>) list;
       return resolvedList.get(assertListIndex(resolvedList, index));
@@ -160,6 +162,7 @@ public class ListProperty extends AbstractIndexedProperty {
   @Override
   @SuppressWarnings("unchecked")
   protected BiFunction<Object, IndexedValue<Integer, Object>, Object> getValueMutatorFunction() {
+
     return (list, indexedValue) -> {
       List<Object> resolvedList = (List<Object>) list;
       return resolvedList.set(assertListIndex(resolvedList, indexedValue.getIndex()),

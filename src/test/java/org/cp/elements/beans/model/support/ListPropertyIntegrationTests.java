@@ -70,7 +70,7 @@ public class ListPropertyIntegrationTests {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
       .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").getValue(-1))
-      .withMessage("List index [-1] must be greater than equal to 0 and less than [3]")
+      .withMessage("List index [-1] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
 
@@ -79,7 +79,7 @@ public class ListPropertyIntegrationTests {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
       .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").getValue(3))
-      .withMessage("List index [3] must be greater than equal to 0 and less than [3]")
+      .withMessage("List index [3] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
 
@@ -107,7 +107,7 @@ public class ListPropertyIntegrationTests {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
       .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").setValue(-1, 8))
-      .withMessage("List index [-1] must be greater than equal to 0 and less than [3]")
+      .withMessage("List index [-1] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
 
@@ -116,7 +116,7 @@ public class ListPropertyIntegrationTests {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
       .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").setValue(3, 8))
-      .withMessage("List index [3] must be greater than equal to 0 and less than [3]")
+      .withMessage("List index [3] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
 
