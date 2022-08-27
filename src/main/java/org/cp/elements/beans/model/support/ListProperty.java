@@ -84,6 +84,7 @@ public class ListProperty extends AbstractIndexedProperty {
    *
    * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
+   * @return a new {@link ListProperty} initialized with the given {@link BeanModel} and {@link PropertyDescriptor}.
    * @throws IllegalArgumentException if the {@link BeanModel} or {@link PropertyDescriptor} are {@literal null},
    * or the {@link PropertyDescriptor} describing the bean property is not a {@link List}.
    * @see #ListProperty(BeanModel, PropertyDescriptor)
@@ -99,6 +100,7 @@ public class ListProperty extends AbstractIndexedProperty {
    * the given, required {@link Property} modeling the {@link List List-based} bean property.
    *
    * @param property {@link Property} modeling the {@link List List-based} bean property; must not be {@literal null}.
+   * @return a new {@link ListProperty} initialized with the given {@link Property}.
    * @throws IllegalArgumentException if the {@link Property} is {@literal null}, or the bean {@link Property}
    * is not a {@link List}.
    * @see org.cp.elements.beans.model.Property
