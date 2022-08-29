@@ -21,6 +21,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
 import org.cp.elements.beans.BeansException;
+import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -59,6 +60,25 @@ public abstract class BeanUtils extends ObjectUtils {
       throw new BeansException(String.format("Failed to introspect bean of type [%s]",
         ObjectUtils.getName(beanType))) { };
     }
+  }
+
+  /**
+   * Utility method used to get a {@link Property} with the given, required {@link String name}
+   * from the given, required target {@link Object}.
+   *
+   * @param <P> {@link Class type} of {@link Property}.
+   * @param target {@link Object} from which to get the {@link Property}.
+   * @param propertyName {@link String} containing the {@literal name} of the {@link Property}
+   * to get from the target {@link Object}.
+   * @return a {@link Property} with the given {@link String name} on the target {@link Object}.
+   * @throws IllegalArgumentException if the {@link Object target} is {@literal null}.
+   * @throws PropertyNotFoundException if a {@link Property} with the given {@link String name}
+   * does not exist on the target {@link Object}.
+   * @see org.cp.elements.beans.model.Property
+   */
+  @SuppressWarnings("unchecked")
+  public static @NotNull <P extends Property> P getProperty(@NotNull Object target, @NotNull String propertyName) {
+    return (P) BeanAdapter.from(target).getModel().getProperty(propertyName);
   }
 
   /**

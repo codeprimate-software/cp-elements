@@ -16,6 +16,7 @@
 package org.cp.elements.beans.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -29,6 +30,8 @@ import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.cp.elements.beans.PropertyNotFoundException;
+import org.cp.elements.beans.model.support.ArrayProperty;
 import org.cp.elements.process.BaseProcess;
 import org.cp.elements.security.model.User;
 import org.junit.Test;
@@ -44,6 +47,9 @@ import lombok.ToString;
  * Unit Tests for {@link BeanUtils}.
  *
  * @author John Blum
+ * @see java.beans.BeanDescriptor
+ * @see java.beans.BeanInfo
+ * @see java.beans.PropertyDescriptor
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.BeanUtils
@@ -151,6 +157,46 @@ public class BeanUtilsUnitTests {
   }
 
   @Test
+  public void getPropertyFromObject() {
+
+    Property name = BeanUtils.getProperty(TestUser.as("jonDoe"), "name");
+
+    assertThat(name).isNotNull();
+    assertThat(name.getName()).isEqualTo("name");
+    assertThat(name.getType()).isEqualTo(String.class);
+    assertThat(name.getValue()).isEqualTo("jonDoe");
+  }
+
+  @Test
+  public void getArrayPropertyFromObject() {
+
+    Property array = BeanUtils.getProperty(new TypeWithArrayProperty(), "array");
+
+    assertThat(array).isInstanceOf(ArrayProperty.class);
+    assertThat(array.getName()).isEqualTo("array");
+    assertThat(array.getType()).isEqualTo(Object[].class);
+    assertThat(((ArrayProperty) array).getValue(1)).isEqualTo(2);
+  }
+
+  @Test
+  public void getPropertyFromNullObject() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> BeanUtils.getProperty(null, "mockProperty"))
+      .withMessage("A target object to adapt as a JavaBean is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void getNonExistingPropertyFromObject() {
+
+    assertThatExceptionOfType(PropertyNotFoundException.class)
+      .isThrownBy(() -> BeanUtils.getProperty(new TestProcess(), "nonExistingProperty"))
+      .withMessage("Property with name [nonExistingProperty] not found")
+      .withNoCause();
+  }
+
+  @Test
   public void resolveTypeFromBean() {
 
     BeanAdapter mockBean = mock(BeanAdapter.class);
@@ -225,6 +271,13 @@ public class BeanUtilsUnitTests {
 
     @NonNull @Getter
     private final String name;
+
+  }
+
+  @Getter
+  private static class TypeWithArrayProperty {
+
+    private final Object[] array = { 1, 2, 3 };
 
   }
 }
