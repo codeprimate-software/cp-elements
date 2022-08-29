@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import java.util.Arrays;
 import java.util.List;
 
-import org.cp.elements.beans.model.BeanAdapter;
+import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
 import org.junit.Test;
 
@@ -38,27 +38,14 @@ import lombok.Getter;
  */
 public class ListPropertyIntegrationTests {
 
-  private ListProperty listPropertyFrom(Object target, String propertyName) {
-    return typedPropertyFrom(target, propertyName, ListProperty.class);
-  }
-
-  private Property propertyFrom(Object target, String propertyName) {
-    return BeanAdapter.from(target).getModel().getProperty(propertyName);
-  }
-
-  private <T extends Property> T typedPropertyFrom(Object target, String propertyName, Class<T> type) {
-    return propertyFrom(target, propertyName).asTypedProperty(type);
-  }
-
   @Test
   public void getValueAtIndex() {
 
-    Property property = propertyFrom(new TypeWithListProperty(), "list");
+    Property property = BeanUtils.getProperty(new TypeWithListProperty(), "list");
 
-    assertThat(property).isNotNull();
+    assertThat(property).isInstanceOf(ListProperty.class);
     assertThat(property.getName()).isEqualTo("list");
     assertThat(property.getType()).isEqualTo(List.class);
-    assertThat(property).isInstanceOf(ListProperty.class);
 
     ListProperty listProperty = (ListProperty) property;
 
@@ -69,7 +56,8 @@ public class ListPropertyIntegrationTests {
   public void getValueAtNegativeIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").getValue(-1))
+      .isThrownBy(() -> BeanUtils.<ListProperty>getProperty(new TypeWithListProperty(), "list")
+        .getValue(-1))
       .withMessage("List index [-1] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
@@ -78,7 +66,8 @@ public class ListPropertyIntegrationTests {
   public void getValueAtOverflowIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").getValue(3))
+      .isThrownBy(() -> BeanUtils.<ListProperty>getProperty(new TypeWithListProperty(), "list")
+        .getValue(3))
       .withMessage("List index [3] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
@@ -88,12 +77,11 @@ public class ListPropertyIntegrationTests {
 
     TypeWithListProperty target = new TypeWithListProperty();
 
-    Property property = propertyFrom(target, "list");
+    Property property = BeanUtils.getProperty(target, "list");
 
-    assertThat(property).isNotNull();
+    assertThat(property).isInstanceOf(ListProperty.class);
     assertThat(property.getName()).isEqualTo("list");
     assertThat(property.getType()).isEqualTo(List.class);
-    assertThat(property).isInstanceOf(ListProperty.class);
 
     ListProperty listProperty = (ListProperty) property;
 
@@ -106,7 +94,8 @@ public class ListPropertyIntegrationTests {
   public void setValueAtNegativeIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").setValue(-1, 8))
+      .isThrownBy(() -> BeanUtils.<ListProperty>getProperty(new TypeWithListProperty(), "list")
+        .setValue(-1, 8))
       .withMessage("List index [-1] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }
@@ -115,7 +104,8 @@ public class ListPropertyIntegrationTests {
   public void setValueAtOverflowIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> listPropertyFrom(new TypeWithListProperty(), "list").setValue(3, 8))
+      .isThrownBy(() -> BeanUtils.<ListProperty>getProperty(new TypeWithListProperty(), "list")
+        .setValue(3, 8))
       .withMessage("List index [3] must be greater than equal to [0] and less than [3]")
       .withNoCause();
   }

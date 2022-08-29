@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.cp.elements.beans.model.BeanAdapter;
+import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
 import org.junit.Test;
 
@@ -53,19 +53,10 @@ public class SortedSetPropertyIntegrationTests {
     throw newIndexOutOfBoundsException("Index [%d] is not valid in Set of size [%d]", index, set.size());
   }
 
-  private Property getProperty(Object target, String propertyName) {
-    return BeanAdapter.from(target).getModel().getProperty(propertyName);
-  }
-
-  @SuppressWarnings("unchecked")
-  private <P extends SortedSetProperty> P getAsSortedSetProperty(Object target, String propertyName) {
-    return (P) getProperty(target, propertyName);
-  }
-
   @Test
   public void getValueAtIndex() {
 
-    Property property = getProperty(new TypeWithSortedSetProperty(), "animals");
+    Property property = BeanUtils.getProperty(new TypeWithSortedSetProperty(), "animals");
 
     assertThat(property).isInstanceOf(SortedSetProperty.class);
     assertThat(property.getName()).isEqualTo("animals");
@@ -81,7 +72,8 @@ public class SortedSetPropertyIntegrationTests {
   public void getValueAtNegativeIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> getAsSortedSetProperty(new TypeWithSortedSetProperty(), "animals").getValue(-1))
+      .isThrownBy(() -> BeanUtils.<SortedSetProperty>getProperty(new TypeWithSortedSetProperty(), "animals")
+        .getValue(-1))
       .withMessage("[-1] is not a valid index in Set with size [6]")
       .withNoCause();
   }
@@ -90,7 +82,8 @@ public class SortedSetPropertyIntegrationTests {
   public void getValueAtOutOfBoundsIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> getAsSortedSetProperty(new TypeWithSortedSetProperty(), "animals").getValue(9))
+      .isThrownBy(() -> BeanUtils.<SortedSetProperty>getProperty(new TypeWithSortedSetProperty(), "animals")
+        .getValue(9))
       .withMessage("[9] is not a valid index in Set with size [6]")
       .withNoCause();
   }
@@ -100,7 +93,7 @@ public class SortedSetPropertyIntegrationTests {
 
     TypeWithSortedSetProperty target = new TypeWithSortedSetProperty();
 
-    Property property = getProperty(target, "animals");
+    Property property = BeanUtils.getProperty(target, "animals");
 
     assertThat(property).isInstanceOf(SortedSetProperty.class);
     assertThat(property.getName()).isEqualTo("animals");
@@ -124,7 +117,8 @@ public class SortedSetPropertyIntegrationTests {
     assertThat(target.getAnimals().iterator().next()).isEqualTo("bird");
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> getAsSortedSetProperty(target, "animals").setValue(-1, "raptor"))
+      .isThrownBy(() -> BeanUtils.<SortedSetProperty>getProperty(target, "animals")
+        .setValue(-1, "raptor"))
       .withMessage("[-1] is not a valid index in Set with size [6]")
       .withNoCause();
 
@@ -135,7 +129,8 @@ public class SortedSetPropertyIntegrationTests {
   public void setValueAtOutOfBoundsIndex() {
 
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-      .isThrownBy(() -> getAsSortedSetProperty(new TypeWithSortedSetProperty(), "animals").setValue(6, "reptile"))
+      .isThrownBy(() -> BeanUtils.<SortedSetProperty>getProperty(new TypeWithSortedSetProperty(), "animals")
+        .setValue(6, "reptile"))
       .withMessage("[6] is not a valid index in Set with size [6]")
       .withNoCause();
   }

@@ -18,7 +18,7 @@ package org.cp.elements.beans.model.support;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.cp.elements.beans.model.BeanAdapter;
+import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
 import org.junit.Test;
 
@@ -35,27 +35,14 @@ import lombok.Setter;
  */
 public class ArrayPropertyIntegrationTests {
 
-  private ArrayProperty arrayPropertyFrom(Object target, String propertyName) {
-    return typedPropertyFrom(target, propertyName, ArrayProperty.class);
-  }
-
-  private Property propertyFrom(Object target, String propertyName) {
-    return BeanAdapter.from(target).getModel().getProperty(propertyName);
-  }
-
-  private <T extends Property> T typedPropertyFrom(Object target, String propertyName, Class<T> propertyClass) {
-    return propertyFrom(target, propertyName).asTypedProperty(propertyClass);
-  }
-
-  @Test
+ @Test
   public void getValueAtIndex() {
 
-    Property property = propertyFrom(new TypeWithArrayProperty(), "array");
+    Property property = BeanUtils.getProperty(new TypeWithArrayProperty(), "array");
 
-    assertThat(property).isNotNull();
+    assertThat(property).isInstanceOf(ArrayProperty.class);
     assertThat(property.getName()).isEqualTo("array");
     assertThat(property.getType()).isEqualTo(Object[].class);
-    assertThat(property).isInstanceOf(ArrayProperty.class);
 
     ArrayProperty arrayProperty = (ArrayProperty) property;
 
@@ -66,7 +53,7 @@ public class ArrayPropertyIntegrationTests {
   public void getValueAtNegativeIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
+      .isThrownBy(() -> BeanUtils.<ArrayProperty>getProperty(new TypeWithArrayProperty(), "array")
         .getValue(-1))
       .withMessage("Array index [-1] must be greater than equal to 0 and less than [3]")
       .withNoCause();
@@ -76,7 +63,7 @@ public class ArrayPropertyIntegrationTests {
   public void getValueAtOverflowIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
+      .isThrownBy(() -> BeanUtils.<ArrayProperty>getProperty(new TypeWithArrayProperty(), "array")
         .getValue(3))
       .withMessage("Array index [3] must be greater than equal to 0 and less than [3]")
       .withNoCause();
@@ -87,12 +74,11 @@ public class ArrayPropertyIntegrationTests {
 
     TypeWithArrayProperty target = new TypeWithArrayProperty();
 
-    Property property = propertyFrom(target, "array");
+    Property property = BeanUtils.getProperty(target, "array");
 
-    assertThat(property).isNotNull();
+    assertThat(property).isInstanceOf(ArrayProperty.class);
     assertThat(property.getName()).isEqualTo("array");
     assertThat(property.getType()).isEqualTo(Object[].class);
-    assertThat(property).isInstanceOf(ArrayProperty.class);
 
     ArrayProperty arrayProperty = (ArrayProperty) property;
 
@@ -105,7 +91,7 @@ public class ArrayPropertyIntegrationTests {
   public void setValueAtNegativeIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
+      .isThrownBy(() -> BeanUtils.<ArrayProperty>getProperty(new TypeWithArrayProperty(), "array")
         .setValue(-1, 13))
       .withMessage("Array index [-1] must be greater than equal to 0 and less than [3]")
       .withNoCause();
@@ -115,7 +101,7 @@ public class ArrayPropertyIntegrationTests {
   public void setValueAtOverflowIndex() {
 
     assertThatExceptionOfType(ArrayIndexOutOfBoundsException.class)
-      .isThrownBy(() -> arrayPropertyFrom(new TypeWithArrayProperty(), "array")
+      .isThrownBy(() -> BeanUtils.<ArrayProperty>getProperty(new TypeWithArrayProperty(), "array")
         .setValue(3, 13))
       .withMessage("Array index [3] must be greater than equal to 0 and less than [3]")
       .withNoCause();
