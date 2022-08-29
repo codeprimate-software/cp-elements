@@ -40,7 +40,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @FluentApi
 public class BeanModel {
 
-  private static final Map<BeanAdapter, BeanModel> beanModelCache = new WeakHashMap<>();
+  private static final Map<BeanModelCacheKey, BeanModel> beanModelCache = new WeakHashMap<>();
 
   /**
    * Factory method used to construct a new instance of {@link BeanModel} used to model the given,
@@ -56,7 +56,7 @@ public class BeanModel {
    */
   @Dsl
   public static @NotNull BeanModel from(@NotNull BeanAdapter bean) {
-    return beanModelCache.computeIfAbsent(bean, BeanModel::new);
+    return beanModelCache.computeIfAbsent(BeanModelCacheKey.from(bean), key -> new BeanModel(key.getBean()));
   }
 
   private final BeanAdapter bean;
@@ -152,5 +152,48 @@ public class BeanModel {
    */
   public @NotNull Class<?> getTargetType() {
     return getTargetObject().getClass();
+  }
+
+  protected static class BeanModelCacheKey {
+
+    protected static @NotNull BeanModelCacheKey from(@NotNull BeanAdapter bean) {
+      return new BeanModelCacheKey(bean);
+    }
+
+    private final BeanAdapter bean;
+
+    protected BeanModelCacheKey(@NotNull BeanAdapter bean) {
+      this.bean = ObjectUtils.requireObject(bean, "Bean is required");
+    }
+
+    protected @NotNull BeanAdapter getBean() {
+      return this.bean;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
+        return true;
+      }
+
+      if (!(obj instanceof BeanModelCacheKey)) {
+        return false;
+      }
+
+      BeanModelCacheKey that = (BeanModelCacheKey) obj;
+
+      return this.getBean().equals(that.getBean());
+    }
+
+    @Override
+    public int hashCode() {
+      return ObjectUtils.hashCodeOf(getBean());
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(getBean());
+    }
   }
 }

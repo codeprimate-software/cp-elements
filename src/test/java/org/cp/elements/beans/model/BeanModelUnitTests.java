@@ -27,6 +27,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.UUID;
+
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.security.model.User;
 import org.junit.Test;
 
@@ -40,6 +43,17 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class BeanModelUnitTests {
+
+  @SuppressWarnings("unchecked")
+  private @NotNull User<UUID> mockUser(@NotNull String name) {
+
+    User <UUID> mockUser = mock(User.class, name);
+
+    doReturn(UUID.randomUUID()).when(mockUser).getId();
+    doReturn(name).when(mockUser).getName();
+
+    return mockUser;
+  }
 
   @Test
   public void fromNonNullBean() {
@@ -60,6 +74,27 @@ public class BeanModelUnitTests {
     assertThat(User.class).isAssignableFrom(userModel.getTargetType());
 
     verify(mockUserBean, atLeastOnce()).getTarget();
+  }
+
+  @Test
+  public void fromNonNullBeanUsesCache() {
+
+    User<?> pieDoe = mockUser("pieDoe");
+    User<?> sourDoe = mockUser("sourDoe");
+
+    BeanAdapter pieDoeBean = BeanAdapter.from(pieDoe);
+    BeanAdapter sourDoeBean= BeanAdapter.from(sourDoe);
+
+    assertThat(pieDoeBean).isNotNull();
+    assertThat(sourDoeBean).isNotNull();
+    assertThat(pieDoeBean).isNotEqualTo(sourDoeBean);
+
+    BeanModel pieDoeModel = pieDoeBean.getModel();
+    BeanModel sourDoeModel = sourDoeBean.getModel();
+
+    assertThat(pieDoeModel).isNotNull();
+    assertThat(sourDoeModel).isNotNull();
+    assertThat(pieDoeModel).isNotEqualTo(sourDoeModel);
   }
 
   @Test
