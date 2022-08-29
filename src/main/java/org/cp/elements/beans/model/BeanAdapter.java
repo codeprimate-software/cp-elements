@@ -64,7 +64,7 @@ public class BeanAdapter {
    * @see java.lang.Object
    */
   protected BeanAdapter(@NotNull Object target) {
-    this.target = ObjectUtils.requireObject(target, "The target object to adapt as a JavaBean is required");
+    this.target = ObjectUtils.requireObject(target, "A target object to adapt as a JavaBean is required");
   }
 
   /**
