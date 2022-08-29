@@ -28,43 +28,43 @@ import org.cp.elements.lang.annotation.NotNull;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class RequiredPropertyNotSetException extends IllegalPropertyValueException {
+public class PropertyNotSetException extends IllegalPropertyValueException {
 
   /**
-   * Constructs a new, default instance of {@link RequiredPropertyNotSetException} with no {@link String message}
+   * Constructs a new, default instance of {@link PropertyNotSetException} with no {@link String message}
    * and no {@link Throwable cause}.
    */
-  public RequiredPropertyNotSetException() { }
+  public PropertyNotSetException() { }
 
   /**
-   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with
+   * Constructs a new instance of {@link PropertyNotSetException} initialized with
    * the given {@link String message} to describe this exception.
    *
    * @param message {@link String} describing this exception.
    */
-  public RequiredPropertyNotSetException(@NotNull String message) {
+  public PropertyNotSetException(@NotNull String message) {
     super(message);
   }
 
   /**
-   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with the given {@link Throwable}
+   * Constructs a new instance of {@link PropertyNotSetException} initialized with the given {@link Throwable}
    * used as the cause and reason this exception was thrown.
    *
    * @param cause {@link Throwable} used as the cause and reason this exception was thrown.
    */
-  public RequiredPropertyNotSetException(@NotNull Throwable cause) {
+  public PropertyNotSetException(@NotNull Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with
+   * Constructs a new instance of {@link PropertyNotSetException} initialized with
    * the given {@link String message} to describe this exception along with the given {@link Throwable}
    * used as the cause and reason this exception was thrown.
    *
    * @param message {@link String} describing this exception.
    * @param cause {@link Throwable} used as the cause and reason this exception was thrown.
    */
-  public RequiredPropertyNotSetException(@NotNull String message, @NotNull Throwable cause) {
+  public PropertyNotSetException(@NotNull String message, @NotNull Throwable cause) {
     super(message, cause);
   }
 }

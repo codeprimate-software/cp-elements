@@ -22,7 +22,7 @@ import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
-import org.cp.elements.beans.RequiredPropertyNotSetException;
+import org.cp.elements.beans.PropertyNotSetException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
@@ -74,7 +74,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.beans.PropertyNotFoundException
  * @see org.cp.elements.beans.PropertyReadException
  * @see org.cp.elements.beans.PropertyWriteException
- * @see org.cp.elements.beans.RequiredPropertyNotSetException
+ * @see PropertyNotSetException
  * @see org.cp.elements.biz.rules.RuleException
  * @see org.cp.elements.context.configure.ConfigurationException
  * @see org.cp.elements.dao.DataAccessException
@@ -226,6 +226,37 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
+   * Constructs a new instance of {@link PropertyNotSetException} initialized with
+   * the given {@link String message} to describe the {@link PropertyNotSetException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link PropertyNotSetException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link PropertyNotSetException}.
+   * @see #newPropertyNotSetException(Throwable, String, Object...)
+   * @see org.cp.elements.beans.PropertyNotSetException
+   */
+  public static PropertyNotSetException newPropertyNotSetException(String message, Object... args) {
+    return newPropertyNotSetException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link PropertyNotSetException} initialized with
+   * the given {@link String message} to describe the {@link PropertyNotSetException} along with
+   * a {@link Throwable cause} used as the reason why the {@link PropertyNotSetException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link PropertyNotSetException}.
+   * @param message {@link String} containing a message to describe the {@link PropertyNotSetException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link PropertyNotSetException}.
+   * @see org.cp.elements.beans.PropertyNotSetException
+   */
+  public static PropertyNotSetException newPropertyNotSetException(Throwable cause,
+      String message, Object... args) {
+
+    return new PropertyNotSetException(format(message, args), cause);
+  }
+
+  /**
    * Constructs a new instance of {@link PropertyReadException} initialized with the given {@link String message}
    * to describe the {@link PropertyReadException}.
    *
@@ -281,37 +312,6 @@ public abstract class ElementsExceptionsFactory {
    */
   public static PropertyWriteException newPropertyWriteException(Throwable cause, String message, Object... args) {
     return new PropertyWriteException(format(message, args), cause);
-  }
-
-  /**
-   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with
-   * the given {@link String message} to describe the {@link RequiredPropertyNotSetException}.
-   *
-   * @param message {@link String} containing a message to describe the {@link RequiredPropertyNotSetException}.
-   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link RequiredPropertyNotSetException}.
-   * @see #newRequiredPropertyNotSetException(Throwable, String, Object...)
-   * @see org.cp.elements.beans.RequiredPropertyNotSetException
-   */
-  public static RequiredPropertyNotSetException newRequiredPropertyNotSetException(String message, Object... args) {
-    return newRequiredPropertyNotSetException(null, message, args);
-  }
-
-  /**
-   * Constructs a new instance of {@link RequiredPropertyNotSetException} initialized with
-   * the given {@link String message} to describe the {@link RequiredPropertyNotSetException} along with
-   * a {@link Throwable cause} used as the reason why the {@link RequiredPropertyNotSetException} was thrown.
-   *
-   * @param cause {@link Throwable} used as the cause of the {@link RequiredPropertyNotSetException}.
-   * @param message {@link String} containing a message to describe the {@link RequiredPropertyNotSetException}.
-   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link RequiredPropertyNotSetException}.
-   * @see org.cp.elements.beans.RequiredPropertyNotSetException
-   */
-  public static RequiredPropertyNotSetException newRequiredPropertyNotSetException(Throwable cause,
-      String message, Object... args) {
-
-    return new RequiredPropertyNotSetException(format(message, args), cause);
   }
 
   // package org.cp.elements.biz.rules
@@ -1505,7 +1505,7 @@ public abstract class ElementsExceptionsFactory {
    * @see org.cp.elements.test.HungTestException
    */
   public static HungTestException newHungTestException(String message, Object... args) {
-    throw newHungTestException(null, message, args);
+    return newHungTestException(null, message, args);
   }
 
   /**
@@ -1520,7 +1520,7 @@ public abstract class ElementsExceptionsFactory {
    * @see org.cp.elements.test.HungTestException
    */
   public static HungTestException newHungTestException(Throwable cause, String message, Object... args) {
-    throw new HungTestException(format(message, args), cause);
+    return new HungTestException(format(message, args), cause);
   }
 
   /**
