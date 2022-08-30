@@ -17,6 +17,7 @@ package org.cp.elements.beans.model;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.Dsl;
@@ -48,7 +49,10 @@ public class BeanAdapter {
    */
   @Dsl
   public static BeanAdapter from(@NotNull Object target) {
-    return new BeanAdapter(target);
+
+    return target instanceof AbstractBean
+      ? ((AbstractBean<?, ?, ?>) target).getAdapter()
+      : new BeanAdapter(target);
   }
 
   private final AtomicReference<BeanModel> beanModelReference = new AtomicReference<>(null);
@@ -63,7 +67,7 @@ public class BeanAdapter {
    * @throws IllegalArgumentException if the target {@link Object} is {@literal null}.
    * @see java.lang.Object
    */
-  protected BeanAdapter(@NotNull Object target) {
+  public BeanAdapter(@NotNull Object target) {
     this.target = ObjectUtils.requireObject(target, "A target object to adapt as a JavaBean is required");
   }
 

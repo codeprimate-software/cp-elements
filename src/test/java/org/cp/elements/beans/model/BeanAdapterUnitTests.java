@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.security.model.User;
 import org.junit.Test;
 
@@ -39,6 +40,18 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class BeanAdapterUnitTests {
+
+  @Test
+  public void fromAbstractBean() {
+
+    TestBean bean = new TestBean();
+
+    BeanAdapter beanAdapter = BeanAdapter.from(bean);
+
+    assertThat(beanAdapter).isNotNull();
+    assertThat(beanAdapter.getTarget()).isSameAs(bean);
+    assertThat(BeanAdapter.from(bean)).isSameAs(beanAdapter);
+  }
 
   @Test
   public void fromObject() {
@@ -183,4 +196,7 @@ public class BeanAdapterUnitTests {
   public void setPropertyWithNullName() {
     testSetPropertyValueWithInvalidName(null);
   }
+
+  private static final class TestBean extends AbstractBean<Integer, User<Integer>, Object> { }
+
 }

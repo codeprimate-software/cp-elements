@@ -132,7 +132,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    */
   public @NotNull BeanAdapter getAdapter() {
     return this.beanAdapterReference.updateAndGet(beanAdapter ->
-      beanAdapter != null ? beanAdapter : BeanAdapter.from(this));
+      beanAdapter != null ? beanAdapter : new BeanAdapter(this));
   }
 
   /**
