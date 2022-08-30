@@ -44,6 +44,7 @@ import java.time.Instant;
 import org.cp.elements.beans.AbstractBean.StateChangeCallback;
 import org.cp.elements.beans.event.ChangeEvent;
 import org.cp.elements.beans.event.ChangeListener;
+import org.cp.elements.beans.model.BeanAdapter;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
@@ -98,6 +99,18 @@ public class AbstractBeanUnitTests {
     assertThat(bean.isNew()).isFalse();
     assertThat(bean.isModified()).isTrue();
     assertThat(bean.isEventDispatchEnabled()).isTrue();
+  }
+
+  @Test
+  public void getAdapter() {
+
+    TestBean<Integer> bean = new TestBean<>(1);
+
+    BeanAdapter beanAdapter = bean.getAdapter();
+
+    assertThat(beanAdapter).isNotNull();
+    assertThat(beanAdapter.getTarget()).isSameAs(bean);
+    assertThat(bean.getAdapter()).isSameAs(beanAdapter);
   }
 
   @Test

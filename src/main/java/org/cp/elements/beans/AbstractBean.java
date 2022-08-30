@@ -25,11 +25,13 @@ import java.lang.reflect.Field;
 import java.time.Instant;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.cp.elements.beans.event.ChangeEvent;
 import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.beans.event.ChangeRecorder;
 import org.cp.elements.beans.event.ChangeSupport;
+import org.cp.elements.beans.model.BeanAdapter;
 import org.cp.elements.function.BiFeederFunction;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
@@ -62,6 +64,7 @@ import org.cp.elements.util.ComparatorUtils;
  * @see org.cp.elements.beans.event.ChangeListener
  * @see org.cp.elements.beans.event.ChangeRecorder
  * @see org.cp.elements.beans.event.ChangeSupport
+ * @see org.cp.elements.beans.model.BeanAdapter
  * @see org.cp.elements.lang.Visitor
  * @see org.cp.elements.lang.support.AuditableSupport
  * @since 1.0.0
@@ -76,6 +79,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   private static final boolean DEFAULT_EVENT_DISPATCH_ENABLED = EVENT_DISPATCH_ENABLED;
 
   private volatile boolean eventDispatchEnabled = DEFAULT_EVENT_DISPATCH_ENABLED;
+
+  private final AtomicReference<BeanAdapter> beanAdapterReference = new AtomicReference<>(null);
 
   private final ChangeRecorder changeRecorder = new ChangeRecorder();
 
@@ -117,6 +122,17 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   public AbstractBean(@Nullable ID id) {
     this();
     identifiedBy(id);
+  }
+
+  /**
+   * Gets a {@link BeanAdapter} adapting this {@link Object POJO} as a {@literal JavaBean}.
+   *
+   * @return a {@link BeanAdapter} adapting this {@link Object POJO} as a {@literal JavaBean}.
+   * @see org.cp.elements.beans.model.BeanAdapter
+   */
+  public @NotNull BeanAdapter getAdapter() {
+    return this.beanAdapterReference.updateAndGet(beanAdapter ->
+      beanAdapter != null ? beanAdapter : BeanAdapter.from(this));
   }
 
   /**
