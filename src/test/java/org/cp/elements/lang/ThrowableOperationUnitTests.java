@@ -17,6 +17,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -26,7 +27,11 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import org.cp.elements.lang.ThrowableOperation.VoidReturningThrowableOperation;
+import org.cp.elements.security.model.User;
 
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -42,6 +47,32 @@ import org.mockito.InOrder;
  */
 @SuppressWarnings("unchecked")
 public class ThrowableOperationUnitTests {
+
+  @Test
+  public void fromVoidReturnThrowableOperation() throws Throwable {
+
+    VoidReturningThrowableOperation mockOperation = mock(VoidReturningThrowableOperation.class);
+
+    User<?> mockUser = mock(User.class);
+
+    ThrowableOperation<?> throwableOperation = ThrowableOperation.from(mockOperation);
+
+    assertThat(throwableOperation).isNotNull();
+    assertThat(throwableOperation.run(1, "test", mockUser)).isNull();
+
+    verify(mockOperation, times(1)).run(eq(1), eq("test"), eq(mockUser));
+    verifyNoMoreInteractions(mockOperation);
+    verifyNoInteractions(mockUser);
+  }
+
+  @Test
+  public void fromNullVoidReturningThrowableOperation() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableOperation.from(null))
+      .withMessage("VoidReturningThrowableOperation is required")
+      .withNoCause();
+  }
 
   @Test
   public void acceptInvokesRunWithArguments() throws Throwable {

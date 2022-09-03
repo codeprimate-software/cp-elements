@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
@@ -41,6 +42,29 @@ import org.cp.elements.lang.annotation.Nullable;
 @FunctionalInterface
 public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnable, Supplier<T> {
 
+  @SuppressWarnings("unused")
+  ThrowableOperation<Object> NO_OP = args -> null;
+
+  /**
+   * Factory method used to construct a new instance of {@link ThrowableOperation}
+   * from the given, required {@link VoidReturningThrowableOperation}.
+   *
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @param operation {@link VoidReturningThrowableOperation} to convert into a {@link ThrowableOperation}.
+   * @return a new {@link ThrowableOperation} from the {@link VoidReturningThrowableOperation}
+   * @throws IllegalArgumentException if the {@link VoidReturningThrowableOperation} is {@literal null}.
+   * @see VoidReturningThrowableOperation
+   */
+  static <T> ThrowableOperation<T> from(@NotNull VoidReturningThrowableOperation operation) {
+
+    Assert.notNull(operation, "VoidReturningThrowableOperation is required");
+
+    return args -> {
+      operation.run(args);
+      return null;
+    };
+  }
+
   /**
    * Alias for {@link #run(Object...)}.
    *
@@ -48,6 +72,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
    *
    * @param target {@link Object} processed by {@literal this} operation.
    * @throws RuntimeException wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
+   * @see java.util.function.Consumer#accept(Object)
    * @see #run(Object...)
    */
   @Override
@@ -66,6 +91,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
    *
    * @return the {@link Object result} of {@literal this} operation.
    * @throws Exception wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
+   * @see java.util.concurrent.Callable#call()
    * @see #run(Object...)
    */
   @Override
@@ -84,6 +110,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
    *
    * @return the {@link Object result} of {@literal this} operation.
    * @throws RuntimeException wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
+   * @see java.util.function.Supplier#get()
    * @see #run(Object...)
    */
   @Override
@@ -103,6 +130,7 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
    * Accepts no arguments and ignores the {@link Object result} of the operation.
    *
    * @throws RuntimeException wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
+   * @see java.lang.Runnable#run()
    * @see #run(Object...)
    */
   @Override
@@ -126,18 +154,27 @@ public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnabl
   T run(Object... args) throws Throwable;
 
   /**
-   * Builder method used to compose {@literal this} {@link ThrowableOperation} with the given {@link ThrowableOperation}.
+   * Builder method used to compose this {@link ThrowableOperation} with the given {@link ThrowableOperation}.
    *
-   * @param operation {@link ThrowableOperation} to compose with {@literal this} {@link ThrowableOperation}.
-   * @return a composed {@link ThrowableOperation} consisting of {@literal this} {@link ThrowableOperation}
+   * @param operation {@link ThrowableOperation} to compose with this {@link ThrowableOperation}.
+   * @return a composed {@link ThrowableOperation} consisting of this {@link ThrowableOperation}
    * and the given {@link ThrowableOperation}. If the given {@link ThrowableOperation} is {@literal null},
    * then {@literal this} {@link ThrowableOperation} is returned.
    * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Software Design Pattern</a>
    */
+  @NullSafe
   default @NotNull ThrowableOperation<T> andThen(@Nullable ThrowableOperation<T> operation) {
 
-    return operation != null ?
-      arguments -> operation.run(this.run(arguments))
+    return operation != null
+      ? arguments -> operation.run(this.run(arguments))
       : this;
+  }
+
+  /**
+   * Interface defining a contract for implementing {@link Object Objects} that perform an operation
+   * capable of throwing a {@link Throwable}.
+   */
+  interface VoidReturningThrowableOperation {
+    void run(Object... args) throws Throwable;
   }
 }
