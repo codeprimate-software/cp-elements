@@ -16,8 +16,20 @@
  */
 package org.cp.elements.service;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheException;
+
+import java.util.Iterator;
+import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
+
+import org.cp.elements.data.caching.Cache;
+import org.cp.elements.data.caching.CacheException;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.CollectionUtils;
+
 /**
- * The {@link ServiceTemplate} interface is a marker {@link Class interface} declaring an application service component.
+ * The {@link ServiceTemplate} interface defines a contract for declaring an application service component.
  *
  * Additionally, this {@link ServiceTemplate} interface defines a contract for application service components
  * encapsulating business logic and other service operations common to all services.
@@ -29,4 +41,28 @@ package org.cp.elements.service;
 @SuppressWarnings("unused")
 public interface ServiceTemplate<T> {
 
+  /**
+   * Gets access to the {@link Cache} with the given {@link String name} that can be used by application services
+   * to cache results of service operations.
+   *
+   * @param <KEY> {@link Comparable} {@link Class type} of the {@link Cache} {@link Object key}.
+   * @param <VALUE> {@link Class type} of the {@link Cache} {@link Object value}.
+   * @param name {@link String} containing the {@literal name} of the {@link Cache} to lookup.
+   * @return the {@link String named} {@link Cache}.
+   * @throws CacheException if a {@link Cache} with {@link String name} cannot be found.
+   * @see org.cp.elements.data.caching.Cache
+   * @see java.util.ServiceLoader
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  default @NotNull <KEY extends Comparable<KEY>, VALUE> Cache<KEY, VALUE> getCache(String name) {
+
+    ServiceLoader<Cache> cacheServiceLoader = ServiceLoader.load(Cache.class);
+
+    Iterator<Cache> cacheServiceIterator = CollectionUtils.nullSafeIterator(cacheServiceLoader.iterator());
+
+    return StreamSupport.stream(CollectionUtils.asIterable(cacheServiceIterator).spliterator(), false)
+      .filter(cache -> ObjectUtils.equalsIgnoreNull(cache.getName(), name))
+      .findFirst()
+      .orElseThrow(() -> newCacheException("Cache with name [%s] not found", name));
+  }
 }
