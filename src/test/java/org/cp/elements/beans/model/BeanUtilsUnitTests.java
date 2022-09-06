@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.model.support.ArrayProperty;
 import org.cp.elements.process.BaseProcess;
 import org.cp.elements.security.model.User;
+
 import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
@@ -193,6 +195,57 @@ public class BeanUtilsUnitTests {
     assertThatExceptionOfType(PropertyNotFoundException.class)
       .isThrownBy(() -> BeanUtils.getProperty(new TestProcess(), "nonExistingProperty"))
       .withMessage("Property with name [nonExistingProperty] not found")
+      .withNoCause();
+  }
+
+  @Test
+  public void newPropertyChangeEventIsCorrect() {
+
+    Object source = new Object();
+
+    PropertyChangeEvent event =
+      BeanUtils.newPropertyChangeEvent(source, "mockProperty", 1, 2);
+
+    assertThat(event).isNotNull();
+    assertThat(event.getSource()).isEqualTo(source);
+    assertThat(event.getPropertyName()).isEqualTo("mockProperty");
+    assertThat(event.getOldValue()).isEqualTo(1);
+    assertThat(event.getNewValue()).isEqualTo(2);
+  }
+
+  @Test
+  public void newPropertyChangeEventWithNoSource() {
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> BeanUtils.newPropertyChangeEvent(null, "mockProperty", 1, 2))
+      .withMessage("Source is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void newPropertyChangeEventWithBlankPropertyName() {
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> BeanUtils.newPropertyChangeEvent(new Object(), "  ", 1, 2))
+      .withMessage("Property name [  ] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void newPropertyChangeEventWithEmptyPropertyName() {
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> BeanUtils.newPropertyChangeEvent(new Object(), "", 1, 2))
+      .withMessage("Property name [] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void newPropertyChangeEventWithNullPropertyName() {
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> BeanUtils.newPropertyChangeEvent(new Object(), null, 1, 2))
+      .withMessage("Property name [null] is required")
       .withNoCause();
   }
 

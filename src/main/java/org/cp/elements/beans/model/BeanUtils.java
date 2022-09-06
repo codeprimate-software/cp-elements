@@ -18,6 +18,7 @@ package org.cp.elements.beans.model;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 
 import org.cp.elements.beans.BeansException;
@@ -25,6 +26,7 @@ import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Abstract utility class for processing a JavaBean, or {@link Object POJO}.
@@ -79,6 +81,29 @@ public abstract class BeanUtils extends ObjectUtils {
   @SuppressWarnings("unchecked")
   public static @NotNull <P extends Property> P getProperty(@NotNull Object target, @NotNull String propertyName) {
     return (P) BeanAdapter.from(target).getModel().getProperty(propertyName);
+  }
+
+  /**
+   * Constructs a new instance of {@link PropertyChangeEvent} initialized with the given, required {@link Object source},
+   * {@link String propertyName}, {@link Object old value} and {@link Object new value}.
+   *
+   * @param source {@link Object} source of the {@link PropertyChangeEvent}; must not be {@literal null}.
+   * @param propertyName {@link String} containing the {@literal name} of the bean property that changed;
+   * must not be {@literal null}.
+   * @param oldValue {@link Object} referring to the old value.
+   * @param newValue {@link Object} referring to the new value.
+   * @return a new {@link PropertyChangeEvent}.
+   * @throws IllegalArgumentException if the {@link Object source} is {@literal null}
+   * or the {@link String propertyName} is {@literal null} or {@literal empty}.
+   * @see java.beans.PropertyChangeEvent
+   */
+  public static @NotNull PropertyChangeEvent newPropertyChangeEvent(@NotNull Object source, @NotNull String propertyName,
+      @Nullable Object oldValue, @Nullable Object newValue) {
+
+    Assert.notNull(source, "Source is required");
+    Assert.hasText(propertyName, "Property name [%s] is required", propertyName);
+
+    return new PropertyChangeEvent(source, propertyName, oldValue, newValue);
   }
 
   /**
