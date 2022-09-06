@@ -20,9 +20,9 @@ import static org.cp.elements.text.FormatUtils.format;
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.beans.PropertyNotFoundException;
+import org.cp.elements.beans.PropertyNotSetException;
 import org.cp.elements.beans.PropertyReadException;
 import org.cp.elements.beans.PropertyWriteException;
-import org.cp.elements.beans.PropertyNotSetException;
 import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
@@ -48,6 +48,7 @@ import org.cp.elements.process.ProcessNotRespondingException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.security.SecurityException;
+import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.test.FailedTestException;
 import org.cp.elements.test.HungTestException;
@@ -1431,6 +1432,35 @@ public abstract class ElementsExceptionsFactory {
 
   // TODO: Edit Javadoc
   // package org.cp.elements.service
+
+  /**
+   * Constructs a new instance of {@link ServiceException} initialized with the given {@link String message}
+   * to describe the {@link ServiceException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link ServiceException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ServiceException}.
+   * @see org.cp.elements.service.ServiceException
+   * @see #newServiceException(String, Object...)
+   */
+  public static ServiceException newServiceException(String message, Object... args) {
+    return newServiceException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link ServiceException} initialized with the given {@link String message}
+   * to describe the {@link ServiceException} along with a {@link Throwable cause} used as the reason
+   * the {@link ServiceInvocationException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link ServiceException}.
+   * @param message {@link String} containing a message to describe the {@link ServiceException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ServiceException}.
+   * @see org.cp.elements.service.ServiceException
+   */
+  public static ServiceException newServiceException(Throwable cause, String message, Object... args) {
+    return new ServiceException(format(message, args), cause);
+  }
 
   /**
    * Constructs a new instance of {@link ServiceInvocationException} initialized with the given {@link String message}

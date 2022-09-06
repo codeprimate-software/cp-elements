@@ -65,6 +65,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newResourceNotFound
 import static org.cp.elements.lang.ElementsExceptionsFactory.newRuleException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSearchException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSecurityException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSystemException;
@@ -121,6 +122,7 @@ import org.cp.elements.util.WriteOnlyException;
 import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.search.SearchException;
 import org.cp.elements.util.sort.SortException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -628,6 +630,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newSecurityExceptionWithFormattedMessageAndCause() {
     assertThrowable(newSecurityException(this.mockCause, "%s is a {1}", "This", "test"),
       SecurityException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newServiceExceptionWithMessage() {
+    assertThrowable(newServiceException("test"), ServiceInvocationException.class, "test");
+  }
+
+  @Test
+  public void newServiceExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newServiceException(this.mockCause, "%s is a {1}", "This", "test"),
+      ServiceInvocationException.class, "This is a test", this.mockCause);
   }
 
   @Test
