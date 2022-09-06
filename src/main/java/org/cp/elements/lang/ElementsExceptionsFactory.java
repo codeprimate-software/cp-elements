@@ -50,6 +50,7 @@ import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.security.SecurityException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
+import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.test.FailedTestException;
 import org.cp.elements.test.HungTestException;
 import org.cp.elements.test.TestException;
@@ -1479,7 +1480,7 @@ public abstract class ElementsExceptionsFactory {
   /**
    * Constructs a new instance of {@link ServiceInvocationException} initialized with the given {@link String message}
    * to describe the {@link ServiceInvocationException} along with a {@link Throwable cause} used as the reason
-   * why the {@link ServiceInvocationException} was thrown.
+   * the {@link ServiceInvocationException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the {@link ServiceInvocationException}.
    * @param message {@link String} containing a message to describe the {@link ServiceInvocationException}.
@@ -1491,6 +1492,37 @@ public abstract class ElementsExceptionsFactory {
       String message, Object... args) {
 
     return new ServiceInvocationException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link ServiceUnavailableException} initialized with the given {@link String message}
+   * to describe the {@link ServiceUnavailableException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link ServiceUnavailableException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ServiceUnavailableException}.
+   * @see org.cp.elements.service.ServiceUnavailableException
+   * @see #newServiceUnavailableException(String, Object...)
+   */
+  public static ServiceUnavailableException newServiceUnavailableException(String message, Object... args) {
+    return newServiceUnavailableException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link ServiceUnavailableException} initialized with the given {@link String message}
+   * to describe the {@link ServiceUnavailableException} along with a {@link Throwable cause} used as the reason
+   * the {@link ServiceUnavailableException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link ServiceUnavailableException}.
+   * @param message {@link String} containing a message to describe the {@link ServiceUnavailableException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ServiceUnavailableException}.
+   * @see org.cp.elements.service.ServiceUnavailableException
+   */
+  public static ServiceUnavailableException newServiceUnavailableException(Throwable cause,
+      String message, Object... args) {
+
+    return new ServiceUnavailableException(format(message, args), cause);
   }
 
   // package org.cp.elements.test

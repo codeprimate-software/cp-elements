@@ -67,6 +67,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newSearchException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSecurityException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceInvocationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceUnavailableException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSortException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSystemException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
@@ -107,7 +108,9 @@ import org.cp.elements.process.ProcessNotRespondingException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.security.SecurityException;
+import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
+import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.test.FailedTestException;
 import org.cp.elements.test.HungTestException;
 import org.cp.elements.test.TestException;
@@ -634,13 +637,13 @@ public class ElementsExceptionsFactoryUnitTests {
 
   @Test
   public void newServiceExceptionWithMessage() {
-    assertThrowable(newServiceException("test"), ServiceInvocationException.class, "test");
+    assertThrowable(newServiceException("test"), ServiceException.class, "test");
   }
 
   @Test
   public void newServiceExceptionWithFormattedMessageAndCause() {
     assertThrowable(newServiceException(this.mockCause, "%s is a {1}", "This", "test"),
-      ServiceInvocationException.class, "This is a test", this.mockCause);
+      ServiceException.class, "This is a test", this.mockCause);
   }
 
   @Test
@@ -652,6 +655,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newServiceInvocationExceptionWithFormattedMessageAndCause() {
     assertThrowable(newServiceInvocationException(this.mockCause, "%s is a {1}", "This", "test"),
       ServiceInvocationException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newServiceUnavailableExceptionWithMessage() {
+    assertThrowable(newServiceUnavailableException("test"), ServiceUnavailableException.class, "test");
+  }
+
+  @Test
+  public void newServiceUnavailableExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newServiceUnavailableException(this.mockCause, "%s is a {1}", "This", "test"),
+      ServiceUnavailableException.class, "This is a test", this.mockCause);
   }
 
   @Test
