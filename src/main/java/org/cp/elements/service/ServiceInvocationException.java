@@ -13,54 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.service;
 
 /**
- * The ServiceInvocationException class is a RuntimeException indicating an error in a Service call.
+ * {@link ServiceException} implementation used to indicate a {@link RuntimeException} in an application service call.
  *
- * @author John J. Blum
- * @see java.lang.RuntimeException
+ * @author John Blum
+ * @see org.cp.elements.service.ServiceException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ServiceInvocationException extends RuntimeException {
+public class ServiceInvocationException extends ServiceException {
 
   /**
-   * Default constructor creating an instance of the ServiceInvocationException.
+   * Constructs a new, uninitialized instance of {@link ServiceInvocationException}.
    */
-  public ServiceInvocationException() {
-  }
+  public ServiceInvocationException() { }
 
   /**
-   * Constructor to create an instance of the ServiceInvocationException with a given message to describe the
-   * service call error.
+   * Constructs a new instance of {@link ServiceInvocationException} initialized with the given {@link String message}
+   * describing the {@link RuntimeException}.
    *
-   * @param message a String value describing the nature of the service call error.
+   * @param message {@link String} containing a description of the {@link RuntimeException}.
    */
   public ServiceInvocationException(final String message) {
     super(message);
   }
 
   /**
-   * Constructor to create an instance of the ServiceInvocationException with the given Throwable indicating the cause
-   * of the service call error.
+   * Constructs a new instance of {@link ServiceInvocationException} initialized with the given {@link Throwable}
+   * used as the reason this {@link RuntimeException} was thrown.
    *
-   * @param cause a Throwable indicated as the cause of this service call error.
+   * @param cause {@link Throwable} used as the reason this {@link ServiceUnavailableException} was thrown.
    */
   public ServiceInvocationException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructor to create an instance of the ServiceInvocationException with both a message to describe the
-   * service call error along with a Throwable indicating the probably cause of the service call error.
+   * Constructs a new instance of {@link ServiceInvocationException} initialized with the given {@link String message}
+   * describing the {@link RuntimeException} and {@link Throwable} used as the reason this {@link RuntimeException}
+   * was thrown.
    *
-   * @param message a String value describing the nature of the service call error.
-   * @param cause a Throwable indicated as the cause of this service call error.
+   * @param message {@link String} containing a description of the {@link RuntimeException}.
+   * @param cause {@link Throwable} used as the reason this {@link RuntimeException} was thrown.
    */
   public ServiceInvocationException(final String message, final Throwable cause) {
     super(message, cause);
   }
-
 }
