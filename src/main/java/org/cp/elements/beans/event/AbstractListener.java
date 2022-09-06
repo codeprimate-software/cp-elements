@@ -133,7 +133,11 @@ public abstract class AbstractListener implements EventListener, Iterable<String
    */
   @NullSafe
   protected boolean canHandle(@Nullable String propertyName) {
-    return StringUtils.hasText(propertyName) && getPropertyNames().contains(propertyName);
+
+    List<String> propertyNames = getPropertyNames();
+
+    return StringUtils.hasText(propertyName)
+      && (propertyNames.isEmpty() || propertyNames.contains(propertyName));
   }
 
   /**

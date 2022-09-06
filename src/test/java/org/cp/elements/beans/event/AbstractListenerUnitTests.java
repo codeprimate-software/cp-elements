@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.StringUtils;
 
 import org.junit.Test;
 import org.mockito.ArgumentMatchers;
@@ -142,16 +141,16 @@ public class AbstractListenerUnitTests {
 
     PropertyChangeEvent mockEvent = mock(PropertyChangeEvent.class);
 
-    doReturn("mockProperty").when(mockEvent).getPropertyName();
+    doReturn("testProperty").when(mockEvent).getPropertyName();
 
-    AbstractListener listener = spy(new TestListener());
+    AbstractListener listener = spy(new TestListener("mockProperty"));
 
     doReturn(true).when(listener).canHandle(anyString());
 
     assertThat(listener.canHandle(mockEvent)).isTrue();
 
     verify(listener, times(1)).canHandle(eq(mockEvent));
-    verify(listener, times(1)).canHandle(eq("mockProperty"));
+    verify(listener, times(1)).canHandle(eq("testProperty"));
     verify(mockEvent, times(1)).getPropertyName();
     verifyNoMoreInteractions(listener, mockEvent);
   }
@@ -161,16 +160,16 @@ public class AbstractListenerUnitTests {
 
     PropertyChangeEvent mockEvent = mock(PropertyChangeEvent.class);
 
-    doReturn("mockProperty").when(mockEvent).getPropertyName();
+    doReturn("testProperty").when(mockEvent).getPropertyName();
 
-    AbstractListener listener = spy(new TestListener());
+    AbstractListener listener = spy(new TestListener("mockProperty"));
 
     doReturn(false).when(listener).canHandle(anyString());
 
     assertThat(listener.canHandle(mockEvent)).isFalse();
 
     verify(listener, times(1)).canHandle(eq(mockEvent));
-    verify(listener, times(1)).canHandle(eq("mockProperty"));
+    verify(listener, times(1)).canHandle(eq("testProperty"));
     verify(mockEvent, times(1)).getPropertyName();
     verifyNoMoreInteractions(listener, mockEvent);
   }
@@ -183,6 +182,22 @@ public class AbstractListenerUnitTests {
     assertThat(listener.canHandle((PropertyChangeEvent) null)).isFalse();
 
     verify(listener, times(1)).canHandle(ArgumentMatchers.<PropertyChangeEvent>isNull());
+    verifyNoMoreInteractions(listener);
+  }
+
+  @Test
+  public void canHandleAnyNamedProperty() {
+
+    AbstractListener listener = spy(new TestListener());
+
+    assertThat(listener.canHandle("mockProperty")).isTrue();
+    assertThat(listener.canHandle("nonExistingProperty")).isTrue();
+    assertThat(listener.canHandle("testProperty")).isTrue();
+
+    verify(listener, times(1)).canHandle(eq("mockProperty"));
+    verify(listener, times(1)).canHandle(eq("nonExistingProperty"));
+    verify(listener, times(1)).canHandle(eq("testProperty"));
+    verify(listener, times(3)).getPropertyNames();
     verifyNoMoreInteractions(listener);
   }
 
@@ -216,11 +231,8 @@ public class AbstractListenerUnitTests {
 
     assertThat(listener.canHandle(propertyName)).isFalse();
 
-    if (StringUtils.hasText(propertyName)) {
-      verify(listener, times(1)).getPropertyNames();
-    }
-
     verify(listener, times(1)).canHandle(ArgumentMatchers.<String>any());
+    verify(listener, times(1)).getPropertyNames();
     verifyNoMoreInteractions(listener);
   }
 
