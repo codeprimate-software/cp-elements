@@ -19,11 +19,13 @@ package org.cp.elements.service;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheException;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.stream.StreamSupport;
 
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.data.caching.CacheException;
+import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
@@ -64,5 +66,32 @@ public interface ServiceTemplate<T> {
       .filter(cache -> ObjectUtils.equalsIgnoreNull(cache.getName(), name))
       .findFirst()
       .orElseThrow(() -> newCacheException("Cache with name [%s] not found", name));
+  }
+
+  /**
+   * Gets access to an {@link Optional} {@link ConversionService} that can be used by application services
+   * to perform conversions.
+   *
+   * @return an {@link Optional} reference to the configured {@link ConversionService}.
+   * @see org.cp.elements.data.conversion.ConversionService
+   * @see java.util.ServiceLoader
+   * @see java.util.Optional
+   */
+  default Optional<ConversionService> getConversionService() {
+
+    try {
+
+      ServiceLoader<ConversionService> conversionServiceLoader = ServiceLoader.load(ConversionService.class);
+
+      Iterator<ConversionService> conversionServiceIterator =
+        CollectionUtils.nullSafeIterator(conversionServiceLoader.iterator());
+
+      return conversionServiceIterator.hasNext()
+        ? Optional.of(conversionServiceIterator.next())
+        : Optional.empty();
+    }
+    catch (Exception ignore) {
+      throw new ServiceUnavailableException("Failed to load ConversionService");
+    }
   }
 }
