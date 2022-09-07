@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.security.model.User;
+
 import org.junit.Test;
 
 /**
@@ -126,7 +127,7 @@ public class BeanAdapterUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> BeanAdapter.from(mockUser).getPropertyValue(name))
-      .withMessage("The name [%s] of the property is required", name)
+      .withMessage("The name [%s] of the property to get is required", name)
       .withNoCause();
 
     verifyNoInteractions(mockUser);

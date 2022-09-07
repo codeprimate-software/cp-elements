@@ -30,6 +30,7 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John Blum
  * @see java.lang.Object
+ * @see org.cp.elements.beans.AbstractBean
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
@@ -43,12 +44,13 @@ public class BeanAdapter {
    * @param target {@link Object} to adapt as a {@literal JavaBean}; must not be {@literal null}.
    * @return a new {@link BeanAdapter} initialized with the given, required {@link Object POJO}.
    * @throws IllegalArgumentException if the target {@link Object} is {@literal null}.
+   * @see org.cp.elements.beans.AbstractBean#getAdapter()
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #BeanAdapter(Object)
    * @see java.lang.Object
    */
   @Dsl
-  public static BeanAdapter from(@NotNull Object target) {
+  public static @NotNull BeanAdapter from(@NotNull Object target) {
 
     return target instanceof AbstractBean
       ? ((AbstractBean<?, ?, ?>) target).getAdapter()
@@ -106,7 +108,7 @@ public class BeanAdapter {
   @SuppressWarnings("unchecked")
   public @Nullable <T> T getPropertyValue(@NotNull String propertyName) {
 
-    Assert.hasText(propertyName, "The name [%s] of the property is required", propertyName);
+    Assert.hasText(propertyName, "The name [%s] of the property to get is required", propertyName);
 
     return (T) getModel().getProperty(propertyName).getValue();
   }
