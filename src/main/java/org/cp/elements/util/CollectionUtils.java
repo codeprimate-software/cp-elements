@@ -474,6 +474,7 @@ public abstract class CollectionUtils {
    *
    * @param <T> {@link Class type} of elements in the given {@link List}.
    * @param list {@link List} from which to return the last element.
+   * @param defaultValue {@link Object} to return if the {@link List} is {@literal null} or {@link List#isEmpty()}.
    * @return the last element in the given {@link List} or {@link T default value}
    * if the given {@link List} is {@literal null} or {@literal empty}.
    * @see #isNotEmpty(Iterable)

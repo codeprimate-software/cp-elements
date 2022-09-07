@@ -142,6 +142,7 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
    * Set the {@link Object} value of the bean property at the given {@link INDEX index}.
    *
    * @param index {@link INDEX} referencing the specific element in an index-based property, such as an array.
+   * @param value {@link Object} to set the property at {@link INDEX} to.
    * @return the previous {@link Object value} at the given {@link INDEX index}.
    * @see org.cp.elements.beans.model.support.AbstractIndexedProperty.IndexedValue
    * @see #getValueMutatorFunction()
@@ -208,7 +209,7 @@ public abstract class AbstractIndexedProperty<INDEX> extends Property {
      * @return a new {@link IndexedValue}.
      * @throws IllegalArgumentException if {@link INDEX index} is {@literal null}.
      * @see org.cp.elements.lang.annotation.Dsl
-     * @see #IndexedValue(INDEX, VALUE)
+     * @see #IndexedValue(Object, Object)
      */
     @Dsl
     public static @NotNull <INDEX, VALUE> IndexedValue<INDEX, VALUE> from(@NotNull INDEX index, @Nullable VALUE value) {

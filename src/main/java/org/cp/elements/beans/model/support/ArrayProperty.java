@@ -127,6 +127,7 @@ public class ArrayProperty extends AbstractIndexedProperty<Integer> {
   /**
    * Asserts that the given array index is valid.
    *
+   * @param array {@link Object} array to used in the assertion.
    * @param index {@link Integer#TYPE} to evaluate as an array index.
    * @throws ArrayIndexOutOfBoundsException if the array index is less than {@literal 0}
    * or greater than equal to {@literal array.length}.

@@ -356,7 +356,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * {@link #getField() Field}.
    *
    * @param annotationsResolver {@link Function} encapsulating the {@literal Strategy} used to resolve
-   * the {@link Annotation Annotations} declared on the {@link Property Property's {@link Field};
+   * the {@link Annotation Annotations} declared on the {@link Property Property's} {@link Field};
    * should not be {@literal null}, but defaults to {@link #DECLARED_ANNOTATIONS_RESOLVER}.
    * @return a {@link Set} of {@link Annotation Annotations} resolved from
    * the {@link Property Property's} {@link Field}. Returns an {@link Collections#emptySet()}
@@ -503,7 +503,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * Determines whether this {@link Property} is annotated.
    *
    * @return a boolean value indicating whether this {@link Property} is annotated.
-   * @see #getAnnotations();
+   * @see #getAnnotations()
    */
   public boolean isAnnotated() {
     return !getAnnotations().isEmpty();
@@ -532,7 +532,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * @return a boolean value indicating whether the {@link Class type} of this {@link Property}
    * is an {@link Class#isArray() array}.
    * @see #isCollectionLike()
-   * @see #getType();
+   * @see #getType()
    */
   public boolean isArrayTyped() {
     return ClassUtils.isArray(getType());
@@ -657,7 +657,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * Determines whether this {@link Property} is transient.
    *
    * A {@link Property} is {@literal transient} if the {@link Field} backing this {@link Property} is declared with
-   * the {@link transient} keyword, or the {@link Method getter method} or {@link Method setter method}
+   * the {@literal transient} keyword, or the {@link Method getter method} or {@link Method setter method}
    * are annotated with the Elements {@link Transient} annotation or the JavaBeans {@link java.beans.Transient}
    * annotation.
    *

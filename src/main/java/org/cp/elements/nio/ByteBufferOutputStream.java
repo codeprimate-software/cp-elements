@@ -42,9 +42,10 @@ public class ByteBufferOutputStream extends OutputStream {
    *
    * @param byteBuffer {@link ByteBuffer} into which this {@link OutputStream} will write data;
    * must not be {@literal null} and must be {@link ByteBuffer#isReadOnly() writable}.
+   * @return a new {@link ByteBufferOutputStream}.
    * @throws IllegalArgumentException if the {@link ByteBuffer} is {@literal null}.
    * @throws IllegalStateException if the {@link ByteBuffer} is {@link ByteBuffer#isReadOnly() read-only}.
-   * @see #ByteBufferOutputStream(ByteBuffer)
+   * @see ByteBufferOutputStream#ByteBufferOutputStream(ByteBuffer)
    * @see java.nio.ByteBuffer
    */
   public static @NotNull ByteBufferOutputStream into(@NotNull ByteBuffer byteBuffer) {

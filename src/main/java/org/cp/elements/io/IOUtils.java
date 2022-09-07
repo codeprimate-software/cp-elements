@@ -32,7 +32,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract utility class used to perform basic input & output (I/O) operations.
+ * Abstract utility class used to perform basic input and output (I/O) operations.
  *
  * @author John J. Blum
  * @see java.io.ByteArrayInputStream

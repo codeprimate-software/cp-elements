@@ -806,7 +806,7 @@ public abstract class ReflectionUtils extends ClassUtils {
      * must not be {@literal null}.
      * @return a new {@link MethodResolver}.
      * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
-     * @see MethodResolver(Class)
+     * @see #MethodResolver(Class)
      */
     @Dsl
     public static @NotNull MethodResolver fromType(@NotNull Class<?> type) {

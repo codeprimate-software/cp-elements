@@ -117,6 +117,7 @@ public class BeanAdapter {
    * Set the property identified by {@link String name} to the given {@link Object value}.
    *
    * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @param value {@link Object} value used to set the bean property.
    * @throws IllegalArgumentException if the {@link String property name} is {@literal null},
    * {@literal blank} or {@literal empty}.
    * @see #getPropertyValue(String)
