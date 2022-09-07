@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.provider;
 
 import static org.cp.elements.lang.ClassUtils.CLASS_FILE_EXTENSION;
@@ -61,6 +60,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.service.annotation.Service;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
 /**
@@ -78,13 +78,13 @@ import org.cp.elements.util.CollectionUtils;
 @SuppressWarnings("unused")
 public class SimpleConversionService extends AbstractConversionService {
 
-  protected static final Class CONVERTER_CLASS = StringConverter.class;
+  protected static final Class<?> CONVERTER_CLASS = StringConverter.class;
 
   protected static final Package CONVERTERS_PACKAGE = CONVERTER_CLASS.getPackage();
 
   private volatile boolean defaultsEnabled = false;
 
-  private final Map<Class, Object> defaultValues =
+  private final Map<Class<?>, Object> defaultValues =
     Collections.synchronizedMap(new HashMap<>(13, 0.95f));
 
   /**
@@ -169,7 +169,6 @@ public class SimpleConversionService extends AbstractConversionService {
     register(new URLConverter());
   }
 
-  /* (non-Javadoc) */
   private void registerConvertersFromJarFile(String converterClassResourceName, URL converterClassResourceLocation) {
 
     String converterClassResourceLocationString = converterClassResourceLocation.toExternalForm();
@@ -184,9 +183,7 @@ public class SimpleConversionService extends AbstractConversionService {
       ? jarFilePathname.substring("jar:file:".length())
       : jarFilePathname;
 
-    try {
-
-      JarFile jarFile = new JarFile(new File(jarFilePathname));
+    try (JarFile jarFile = new JarFile(new File(jarFilePathname))) {
 
       for (JarEntry jarEntry : CollectionUtils.asIterable(jarFile.entries())) {
 
@@ -210,7 +207,6 @@ public class SimpleConversionService extends AbstractConversionService {
     }
   }
 
-  /* (non-Javadoc) */
   @SuppressWarnings("all")
   private void registerConvertersFromFileSystem(String converterClassResourceName, URL converterClassResourceLocation) {
 
@@ -221,7 +217,10 @@ public class SimpleConversionService extends AbstractConversionService {
       Assert.isTrue(convertersPackagePath.isDirectory(),
           "Directory for Converters package [%s] does not exist", convertersPackagePath.getAbsolutePath());
 
-      for (File classFile : convertersPackagePath.listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION))) {
+      File[] classFiles = ArrayUtils.nullSafeArray(convertersPackagePath
+        .listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION)), File.class);
+
+      for (File classFile : classFiles) {
 
         String converterClassName = CONVERTERS_PACKAGE.getName()
             .concat(StringUtils.DOT_SEPARATOR).concat(FileUtils.getName(classFile));
@@ -235,7 +234,7 @@ public class SimpleConversionService extends AbstractConversionService {
     }
   }
 
-  /* (non-Javadoc) */
+  @SuppressWarnings("rawtypes")
   private void register(String converterClassName) {
 
     Class<Converter> converterClass = ObjectUtils.loadClass(converterClassName);
@@ -245,8 +244,7 @@ public class SimpleConversionService extends AbstractConversionService {
         Converter<?, ?> converter = (Converter<?, ?>) converterClass.newInstance();
         register(converter);
       }
-      catch (Exception ignore) {
-      }
+      catch (Exception ignore) { }
     }
   }
 
@@ -256,7 +254,7 @@ public class SimpleConversionService extends AbstractConversionService {
    */
   private void initDefaultValues() {
 
-    this.defaultValues.put(BigDecimal.class, new BigDecimal(0.0d));
+    this.defaultValues.put(BigDecimal.class, new BigDecimal("0.0"));
     this.defaultValues.put(BigInteger.class, new BigInteger("0"));
     this.defaultValues.put(Boolean.class, false);
     this.defaultValues.put(Byte.class, (byte) 0);
@@ -330,12 +328,13 @@ public class SimpleConversionService extends AbstractConversionService {
    * @return the {@link Object default value} for the specified {@link Class type}.
    * @see java.lang.Class
    */
+  @SuppressWarnings("unchecked")
   public <T> T getDefaultValue(Class<T> type) {
 
     Object value = this.defaultValues.get(type);
 
     if (value instanceof Supplier) {
-      value = ((Supplier) value).get();
+      value = ((Supplier<T>) value).get();
     }
 
     return type.cast(value);

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +71,7 @@ public class SimpleConversionServiceTests {
   @Test
   public void constructAndRegisterConvertersIsSuccessful() {
 
-    Set<Class> expectedRegisteredConverters = new HashSet<>(17);
+    Set<Class<?>> expectedRegisteredConverters = new HashSet<>(17);
 
     expectedRegisteredConverters.add(BigDecimalConverter.class);
     expectedRegisteredConverters.add(BigIntegerConverter.class);
@@ -92,7 +91,7 @@ public class SimpleConversionServiceTests {
     expectedRegisteredConverters.add(URIConverter.class);
     expectedRegisteredConverters.add(URLConverter.class);
 
-    for (Converter converter : this.conversionService) {
+    for (Converter<?, ?> converter : this.conversionService) {
       assertThat(expectedRegisteredConverters.remove(converter.getClass()))
         .describedAs("Converter [%s] was not registered with the SimpleConversionService", converter)
         .isTrue();
@@ -122,7 +121,7 @@ public class SimpleConversionServiceTests {
   public void initializeDefaultValuesIsSuccessful() {
 
     assertThat(this.conversionService.isDefaultValuesEnabled()).isFalse();
-    assertThat(this.conversionService.getDefaultValue(BigDecimal.class)).isEqualTo(new BigDecimal(0.0d));
+    assertThat(this.conversionService.getDefaultValue(BigDecimal.class)).isEqualTo(new BigDecimal("0.0"));
     assertThat(this.conversionService.getDefaultValue(BigInteger.class)).isEqualTo(new BigInteger("0"));
     assertThat(this.conversionService.getDefaultValue(Boolean.class)).isFalse();
     assertThat(this.conversionService.getDefaultValue(Byte.class)).isEqualTo((byte) 0);
