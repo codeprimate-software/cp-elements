@@ -56,7 +56,9 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.reflect.Constructor
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
+ * @see java.lang.reflect.ParameterizedType
  * @see java.lang.reflect.Type
+ * @see java.lang.reflect.TypeVariable
  * @see java.net.URL
  * @since 1.0.0
  */
@@ -441,6 +443,32 @@ public abstract class ClassUtils {
 
       throw new MethodNotFoundException(cause);
     }
+  }
+
+  /**
+   * Gets the most direct, declared {@link Method} from the given, required {@link Class type} using the given,
+   * required {@link Method} reference.
+   *
+   * @param type {@link Class} to search for the most direct, declared {@link Method}.
+   * @param method {@link Method} used as the reference to search in the {@link Class type}.
+   * @return the most direct, declared {@link Method} of the given {@link Class type}.
+   * @throws IllegalArgumentException if the {@link Class type} or {@link Method} are {@literal null}
+   * or if the {@link Method#getDeclaringClass()} of the given {@link Method} is not assignable from
+   * the given {@link Class type}.
+   * @throws MethodNotFoundException if the {@link Method} cannot be found.
+   * @see java.lang.reflect.Method
+   * @see java.lang.Class
+   */
+  public static @NotNull Method getDeclaredMethod(@NotNull Class<?> type, @NotNull Method method) {
+
+    Assert.notNull(type, "Class type is required");
+    Assert.notNull(method, "Method is required");
+    Assert.isTrue(method.getDeclaringClass().isAssignableFrom(type),
+      "The declared Class type [%1$s] of Method [%2$s] is not assignable from the given Class type [%3$s]",
+      method.getDeclaringClass().getName(), method.getName(), type.getName());
+
+    return method.getDeclaringClass().equals(type) ? method
+      : getMethod(type, method.getName(), method.getParameterTypes());
   }
 
   /**

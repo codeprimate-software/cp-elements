@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.junit.Assert.assertEquals;
@@ -61,7 +62,13 @@ import org.cp.elements.lang.reflect.ReflectionUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
+
 import org.junit.Test;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Unit Tests for {@link ClassUtils}.
@@ -525,6 +532,61 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   @Test(expected = MethodNotFoundException.class)
   public void getOverriddenMethodOnSubClassFromSuperClass() {
     ClassUtils.getMethod(SuperType.class, "methodOne", Boolean.class);
+  }
+
+  @Test
+  public void getDeclaredMethod() throws NoSuchMethodException {
+
+    Method nameableGetName = Nameable.class.getDeclaredMethod("getName");
+    Method personGetName = ClassUtils.getDeclaredMethod(Person.class, nameableGetName);
+
+    assertThat(personGetName).isNotNull();
+    assertThat(personGetName).isNotEqualTo(nameableGetName);
+    assertThat(personGetName.getName()).isEqualTo(nameableGetName.getName());
+    assertThat(personGetName.getParameterTypes()).isEqualTo(nameableGetName.getParameterTypes());
+    assertThat(nameableGetName.getReturnType()).isEqualTo(Object.class);
+    assertThat(personGetName.getReturnType()).isEqualTo(String.class);
+    assertThat(nameableGetName.getDeclaringClass()).isEqualTo(Nameable.class);
+    assertThat(personGetName.getDeclaringClass()).isEqualTo(Person.class);
+  }
+
+  @Test
+  public void getDeclaredMethodReturnsGivenMethod() throws NoSuchMethodException {
+
+    Method personGetName = Person.class.getDeclaredMethod("getName");
+    Method declaredPersonGetName = ClassUtils.getDeclaredMethod(Person.class, personGetName);
+
+    assertThat(declaredPersonGetName).isSameAs(personGetName);
+  }
+
+  @Test
+  public void getDeclaredMethodWithNullType() {
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> ClassUtils.getDeclaredMethod(null, Person.class.getDeclaredMethod("getName")))
+      .withMessage("Class type is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void getDeclaredMethodWithNullMethod() {
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> ClassUtils.getDeclaredMethod(Person.class, null))
+      .withMessage("Method is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void getDeclaredMethodWithIncompatibleTypes() throws NoSuchMethodException {
+
+    Method personGetName = Person.class.getDeclaredMethod("getName");
+
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> ClassUtils.getDeclaredMethod(String.class, personGetName))
+      .withMessage("The declared Class type [%s] of Method [getName] is not assignable from the given Class type [java.lang.String]",
+        personGetName.getDeclaringClass().getName())
+      .withNoCause();
   }
 
   @Test
@@ -1378,6 +1440,17 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   private static class ParentType extends GrandparentType implements InterfaceFour { }
 
   private static class ChildType extends ParentType implements InterfaceFive { }
+
+  @Getter
+  @ToString(of = "name")
+  @EqualsAndHashCode(of = "name")
+  @RequiredArgsConstructor(staticName = "as")
+  private static class Person implements Nameable<String> {
+
+    @lombok.NonNull
+    private final String name;
+
+  }
 
   @Documented
   @Inherited
