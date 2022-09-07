@@ -75,7 +75,7 @@ public abstract class AbstractVetoableChangeListener extends AbstractListener im
       handle(event);
     }
     catch (BeansException cause) {
-      String message = String.format("Error occurred while processing event [%s]", event);
+      String message = String.format("Failed to process event [%s]", event);
       throw new ChainedPropertyVetoException(event, message, cause);
     }
   }

@@ -99,7 +99,7 @@ public class AbstractVetoableChangeListenerUnitTests {
 
     assertThatThrowableOfType(PropertyVetoException.class)
       .isThrownBy(ThrowableOperation.from(args -> listener.vetoableChange(mockEvent)))
-      .havingMessage("Error occurred while processing event [%s]", mockEvent)
+      .havingMessage("Failed to process event [%s]", mockEvent)
       .causedBy(IllegalPropertyValueException.class)
       .havingMessage("TEST")
       .withNoCause();
