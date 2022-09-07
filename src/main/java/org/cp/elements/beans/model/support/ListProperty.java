@@ -42,7 +42,7 @@ import org.cp.elements.util.CollectionUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ListProperty extends AbstractIndexedProperty {
+public class ListProperty extends AbstractIndexedProperty<Integer> {
 
   /**
    * Asserts that the {@link PropertyDescriptor} describes a {@link List List-based} bean property.
@@ -152,7 +152,6 @@ public class ListProperty extends AbstractIndexedProperty {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected BiFunction<Object, Integer, Object> getValueAccessorFunction() {
 
     return (list, index) -> {

@@ -39,7 +39,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ArrayProperty extends AbstractIndexedProperty {
+public class ArrayProperty extends AbstractIndexedProperty<Integer> {
 
   /**
    * Asserts that the {@link PropertyDescriptor} describes an array-typed, bean property.
@@ -146,13 +146,11 @@ public class ArrayProperty extends AbstractIndexedProperty {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected BiFunction<Object, Integer, Object> getValueAccessorFunction() {
     return (array, index) -> Array.get(array, assertArrayIndex(array, index));
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected BiFunction<Object, IndexedValue<Integer, Object>, Object> getValueMutatorFunction() {
 
     return (array, indexedValue) -> {

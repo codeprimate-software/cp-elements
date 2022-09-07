@@ -45,7 +45,7 @@ import org.cp.elements.util.CollectionUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SortedSetProperty extends AbstractIndexedProperty {
+public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
 
   /**
    * Asserts that the {@link PropertyDescriptor} describes a {@link SortedSet SortedSet-based} bean property.
@@ -138,7 +138,6 @@ public class SortedSetProperty extends AbstractIndexedProperty {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected BiFunction<Object, Integer, Object> getValueAccessorFunction() {
     return (set, index) -> getElementAt((SortedSet<?>) set, index);
   }

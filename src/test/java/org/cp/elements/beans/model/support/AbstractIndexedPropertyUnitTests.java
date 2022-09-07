@@ -48,6 +48,7 @@ import org.cp.elements.beans.model.Property;
 import org.cp.elements.beans.model.support.AbstractIndexedProperty.IndexedValue;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.security.model.User;
+
 import org.junit.Test;
 
 /**
@@ -201,7 +202,7 @@ public class AbstractIndexedPropertyUnitTests {
 
     PropertyDescriptor mockPropertyDescriptor = mock(PropertyDescriptor.class);
 
-    AbstractIndexedProperty property = new TestIndexedProperty(mockBeanModel, mockPropertyDescriptor);
+    AbstractIndexedProperty<?> property = new TestIndexedProperty(mockBeanModel, mockPropertyDescriptor);
 
     assertThat(property).isNotNull();
     assertThat(property.getBeanModel()).isSameAs(mockBeanModel);
@@ -234,7 +235,7 @@ public class AbstractIndexedPropertyUnitTests {
 
     BiFunction<Object, Integer, Object> mockFunction = mock(BiFunction.class);
 
-    AbstractIndexedProperty property = mock(AbstractIndexedProperty.class);
+    AbstractIndexedProperty<Integer> property = mock(AbstractIndexedProperty.class);
 
     doCallRealMethod().when(property).getValue(anyInt());
     doReturn(Collections.emptyList()).when(property).getValue();
@@ -256,7 +257,7 @@ public class AbstractIndexedPropertyUnitTests {
 
     BiFunction<Object, IndexedValue<Integer, Object>, Object> mockFunction = mock(BiFunction.class);
 
-    AbstractIndexedProperty property = mock(AbstractIndexedProperty.class);
+    AbstractIndexedProperty<Integer> property = mock(AbstractIndexedProperty.class);
 
     doCallRealMethod().when(property).setValue(anyInt(), any());
     doReturn(Collections.emptyList()).when(property).getValue();
@@ -411,20 +412,18 @@ public class AbstractIndexedPropertyUnitTests {
     assertThat(IndexedValue.at(2).with("mock").toString()).isEqualTo("Value [mock] at Index [2]");
   }
 
-  static final class TestIndexedProperty extends AbstractIndexedProperty {
+  static final class TestIndexedProperty extends AbstractIndexedProperty<Integer> {
 
     TestIndexedProperty(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
       super(beanModel, propertyDescriptor);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected BiFunction<Object, Integer, Object> getValueAccessorFunction() {
       throw new UnsupportedOperationException("Not Implemented");
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected BiFunction<Object, IndexedValue<Integer, Object>, Object> getValueMutatorFunction() {
       throw new UnsupportedOperationException("Not Implemented");
     }

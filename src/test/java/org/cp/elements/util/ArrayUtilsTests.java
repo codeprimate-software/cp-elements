@@ -34,6 +34,7 @@ import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.Transformer;
 import org.cp.elements.test.TestUtils;
+
 import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
@@ -223,6 +224,7 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void asArrayWithNull() {
     assertThat(ArrayUtils.asArray((Object[]) null)).isNull();
   }
@@ -1010,6 +1012,7 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void getFirstFromNullArray() {
     assertThat(ArrayUtils.getFirstElement((Object[]) null)).isNull();
   }
@@ -1050,6 +1053,7 @@ public class ArrayUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void getLastFromNullArray() {
     assertThat(ArrayUtils.getLastElement((Object[]) null)).isNull();
   }

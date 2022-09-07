@@ -45,13 +45,14 @@ import org.cp.elements.lang.annotation.Nullable;
  * an index, such as with a positional index in an array or {@link Map} key.
  *
  * @author John Blum
+ * @param <INDEX> {@link Class type} of the index. For example, if an array, then an {@link Integer}.
  * @see java.beans.PropertyDescriptor
  * @see org.cp.elements.beans.model.BeanModel
  * @see org.cp.elements.beans.model.Property
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class AbstractIndexedProperty extends Property {
+public abstract class AbstractIndexedProperty<INDEX> extends Property {
 
   protected static final Predicate<Class<?>> IS_ARRAY = ClassUtils::isArray;
   protected static final Predicate<Class<?>> IS_LIST = type -> List.class.isAssignableFrom(nullSafeType(type));
@@ -118,13 +119,12 @@ public abstract class AbstractIndexedProperty extends Property {
   /**
    * Gets the {@link Object} value of the bean property at the given {@link INDEX index}.
    *
-   * @param <INDEX> {@link Class type} of the index. For example, if an array, then an {@link Integer}.
    * @param index {@link INDEX} referencing the specific element in an index-based property, such as an array.
    * @return the {@link Object} value of the bean property at the given {@link INDEX index}.
    * @see #getValueAccessorFunction()
    * @see #getValue()
    */
-  public <INDEX> Object getValue(INDEX index) {
+  public Object getValue(INDEX index) {
     return getValueAccessorFunction().apply(getValue(), index);
   }
 
@@ -132,37 +132,34 @@ public abstract class AbstractIndexedProperty extends Property {
    * {@link BiFunction Function} used to access (get) a specific element in an index-based data structure,
    * such as an array or a {@link Map}.
    *
-   * @param <INDEX> {@link Class type} of the index. For example, if an array, then an {@link Integer}.
    * @return the {@link BiFunction} used to access a specific element in an index-based data structure,
    * such as an array or a {@link Map}.
    * @see java.util.function.BiFunction
    */
-  protected abstract <INDEX> BiFunction<Object, INDEX, Object> getValueAccessorFunction();
+  protected abstract BiFunction<Object, INDEX, Object> getValueAccessorFunction();
 
   /**
    * Set the {@link Object} value of the bean property at the given {@link INDEX index}.
    *
-   * @param <INDEX> {@link Class type} of the index. For example, if an array, then an {@link Integer}.
    * @param index {@link INDEX} referencing the specific element in an index-based property, such as an array.
    * @return the previous {@link Object value} at the given {@link INDEX index}.
    * @see org.cp.elements.beans.model.support.AbstractIndexedProperty.IndexedValue
    * @see #getValueMutatorFunction()
    * @see #getValue()
    */
-  public <INDEX> Object setValue(INDEX index, Object value) {
-    return this.<INDEX>getValueMutatorFunction().apply(getValue(), IndexedValue.at(index).with(value));
+  public Object setValue(INDEX index, Object value) {
+    return this.getValueMutatorFunction().apply(getValue(), IndexedValue.at(index).with(value));
   }
 
   /**
    * {@link BiFunction Function} used to mutate (set) a specific element in an index-based data structure,
    * such as an array or a {@link Map}.
    *
-   * @param <INDEX> {@link Class type} of the index. For example, if an array, then an {@link Integer}.
    * @return the {@link BiFunction} used to mutate a specific element in an index-based data structure,
    * such as an array or a {@link Map}.
    * @see java.util.function.BiFunction
    */
-  protected abstract <INDEX> BiFunction<Object, IndexedValue<INDEX, Object>, Object> getValueMutatorFunction();
+  protected abstract BiFunction<Object, IndexedValue<INDEX, Object>, Object> getValueMutatorFunction();
 
   /**
    * Abstract Data Type (ADT) modeling both an {@link INDEX index} and {@link VALUE value}.

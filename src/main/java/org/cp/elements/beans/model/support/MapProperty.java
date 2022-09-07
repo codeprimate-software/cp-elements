@@ -39,7 +39,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class MapProperty extends AbstractIndexedProperty {
+public class MapProperty extends AbstractIndexedProperty<Object> {
 
   /**
    * Asserts that the given {@link PropertyDescriptor} describes a {@link Map Map-typed} bean property.
@@ -127,13 +127,13 @@ public class MapProperty extends AbstractIndexedProperty {
   }
 
   @Override
-  protected <INDEX> BiFunction<Object, INDEX, Object> getValueAccessorFunction() {
+  protected BiFunction<Object, Object, Object> getValueAccessorFunction() {
     return (map, index) -> ((Map<?, ?>) map).get(index);
   }
 
   @Override
   @SuppressWarnings("unchecked")
-  protected <INDEX> BiFunction<Object, IndexedValue<INDEX, Object>, Object> getValueMutatorFunction() {
+  protected BiFunction<Object, IndexedValue<Object, Object>, Object> getValueMutatorFunction() {
     return (map, indexedValue) -> ((Map<Object, Object>) map)
       .put(indexedValue.getIndex(), indexedValue.getValue(null));
   }
