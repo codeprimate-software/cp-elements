@@ -27,6 +27,7 @@ import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.caching.CacheException;
+import org.cp.elements.data.caching.CacheNotFoundException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -438,6 +439,35 @@ public abstract class ElementsExceptionsFactory {
    */
   public static CacheException newCacheException(Throwable cause, String message, Object... args) {
     return new CacheException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link CacheNotFoundException} initialized with the given {@link String message}
+   * to describe the {@link CacheNotFoundException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link CacheNotFoundException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link CacheNotFoundException}.
+   * @see #newCacheException(Throwable, String, Object...)
+   * @see org.cp.elements.data.caching.CacheNotFoundException
+   */
+  public static CacheNotFoundException newCacheNotFoundException(String message, Object... args) {
+    return newCacheNotFoundException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link CacheNotFoundException} initialized with the given {@link String message}
+   * to describe the {@link CacheNotFoundException} along with a {@link Throwable cause} used as the reason
+   * why the {@link CacheNotFoundException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link CacheNotFoundException}.
+   * @param message {@link String} containing a message to describe the {@link CacheNotFoundException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link CacheNotFoundException}.
+   * @see org.cp.elements.data.caching.CacheNotFoundException
+   */
+  public static CacheNotFoundException newCacheNotFoundException(Throwable cause, String message, Object... args) {
+    return new CacheNotFoundException(format(message, args), cause);
   }
 
   /**

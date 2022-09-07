@@ -22,6 +22,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newAuthenticationEx
 import static org.cp.elements.lang.ElementsExceptionsFactory.newAuthorizationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newBeansException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCloneException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newComparisonException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationException;
@@ -87,6 +88,7 @@ import org.cp.elements.biz.rules.RuleException;
 import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.caching.CacheException;
+import org.cp.elements.data.caching.CacheNotFoundException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -270,6 +272,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newCacheExceptionWithFormattedMessageAndCause() {
     assertThrowable(newCacheException(this.mockCause, "%s is a {1}", "This", "test"),
       CacheException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newCacheNotFoundExceptionWithMessage() {
+    assertThrowable(newCacheNotFoundException("test"), CacheNotFoundException.class, "test");
+  }
+
+  @Test
+  public void newCacheNotFoundExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newCacheNotFoundException(this.mockCause, "%s is a {1}", "This", "test"),
+      CacheNotFoundException.class, "This is a test", this.mockCause);
   }
 
   @Test
