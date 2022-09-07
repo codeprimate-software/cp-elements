@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure.support;
 
 import java.io.File;
@@ -42,24 +41,30 @@ public class PropertiesConfiguration extends AbstractConfiguration {
 
   private final Properties properties;
 
-  public PropertiesConfiguration(final File propertiesFile) throws IOException {
+  public PropertiesConfiguration(File propertiesFile) throws IOException {
     this(propertiesFile, null);
   }
 
-  public PropertiesConfiguration(final File propertiesFile, final Configuration parent) throws IOException {
+  public PropertiesConfiguration(File propertiesFile, Configuration parent) throws IOException {
+
     super(parent);
-    Assert.notNull(propertiesFile, "The file to load properties from cannot be null!");
+
+    Assert.notNull(propertiesFile, "The file to load properties from cannot be null");
+
     this.properties = new Properties();
-    this.properties.load(new FileInputStream(propertiesFile));
+
+    try (FileInputStream fileInputStream = new FileInputStream(propertiesFile)) {
+      this.properties.load(fileInputStream);
+    }
   }
 
-  public PropertiesConfiguration(final Properties properties) {
+  public PropertiesConfiguration(Properties properties) {
     this(properties, null);
   }
 
-  public PropertiesConfiguration(final Properties properties, final Configuration parent) {
+  public PropertiesConfiguration(Properties properties, Configuration parent) {
     super(parent);
-    Assert.notNull(properties, "The Properties object used to back this Configuration cannot be null!");
+    Assert.notNull(properties, "The Properties object used to back this Configuration cannot be null");
     this.properties = properties;
   }
 
@@ -77,12 +82,12 @@ public class PropertiesConfiguration extends AbstractConfiguration {
    * @see #isSet(String)
    */
   @Override
-  public boolean isPresent(final String propertyName) {
+  public boolean isPresent(String propertyName) {
     return getProperties().containsKey(propertyName);
   }
 
   @Override
-  protected String doGetPropertyValue(final String propertyName) {
+  protected String doGetPropertyValue(String propertyName) {
     return getProperties().getProperty(propertyName);
   }
 
@@ -90,5 +95,4 @@ public class PropertiesConfiguration extends AbstractConfiguration {
   public Iterator<String> iterator() {
     return Collections.unmodifiableSet(getProperties().stringPropertyNames()).iterator();
   }
-
 }

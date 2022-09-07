@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure.support;
 
 import static org.cp.elements.io.FileSystemUtils.WORKING_DIRECTORY;
@@ -32,17 +31,17 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.cp.elements.io.FileSystemUtils;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * The PropertiesConfigurationTest class is a test suite of test cases testing the contract and functionality of the
- * PropertiesConfiguration class.
+ * Unit Tests for {@link PropertiesConfiguration}.
  *
  * @author John J. Blum
- * @see org.cp.elements.context.configure.support.PropertiesConfiguration
  * @see org.junit.Test
+ * @see org.cp.elements.context.configure.support.PropertiesConfiguration
  * @since 1.0.0
  */
 public class PropertiesConfigurationTest {
@@ -58,6 +57,7 @@ public class PropertiesConfigurationTest {
 
   @Before
   public void setup() {
+
     configurationSettings = new Properties();
     configurationSettings.setProperty("bool.prop", "true");
     configurationSettings.setProperty("chr.prop", "X");
@@ -65,33 +65,37 @@ public class PropertiesConfigurationTest {
     configurationSettings.setProperty("int.prop", "2");
     configurationSettings.setProperty("str.prop", "test");
     configuration = new PropertiesConfiguration(configurationSettings);
+
     assertSame(configurationSettings, configuration.getProperties());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructConfigurationWithNullProperties() {
+
     try {
       new PropertiesConfiguration((Properties) null);
     }
     catch (IllegalArgumentException expected) {
-      assertEquals("The Properties object used to back this Configuration cannot be null!", expected.getMessage());
+      assertEquals("The Properties object used to back this Configuration cannot be null", expected.getMessage());
       throw expected;
     }
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testConstructConfigurationWithNullPropertiesFile() throws IOException {
+
     try {
       new PropertiesConfiguration((File) null);
     }
     catch (IllegalArgumentException expected) {
-      assertEquals("The file to load properties from cannot be null!", expected.getMessage());
+      assertEquals("The file to load properties from cannot be null", expected.getMessage());
       throw expected;
     }
   }
 
   @Test
   public void testIsPresent() {
+
     assertTrue(configuration.isPresent("bool.prop"));
     assertTrue(configuration.isPresent("chr.prop"));
     assertTrue(configuration.isPresent("dbl.prop"));
@@ -106,6 +110,7 @@ public class PropertiesConfigurationTest {
 
   @Test
   public void testDoGetPropertyValue() {
+
     assertEquals("true", configuration.doGetPropertyValue("bool.prop"));
     assertEquals("X", configuration.doGetPropertyValue("chr.prop"));
     assertEquals(String.valueOf(Math.PI), configuration.doGetPropertyValue("dbl.prop"));
@@ -118,6 +123,7 @@ public class PropertiesConfigurationTest {
 
   @Test
   public void testGetParentPropertyValue() {
+
     Properties parentConfigurationSetting = new Properties();
 
     parentConfigurationSetting.setProperty("BOOL.PROP", "false");
@@ -141,6 +147,7 @@ public class PropertiesConfigurationTest {
 
   @Test
   public void testIterator() {
+
     Set<String> expectedPropertyNames = new HashSet<String>(configurationSettings.stringPropertyNames());
 
     assertFalse(expectedPropertyNames.isEmpty());
@@ -154,6 +161,7 @@ public class PropertiesConfigurationTest {
 
   @Test
   public void testPropertiesFileBaseConfiguration() throws Exception {
+
     Properties testJdbcProperties = new Properties();
 
     testJdbcProperties.setProperty("jdbc.driverClassName", "com.mysql.jdbc.Driver");
