@@ -65,6 +65,7 @@ import org.cp.elements.util.CollectionUtils;
  * @see java.lang.reflect.AnnotatedElement
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
+ * @see org.cp.elements.lang.Describable
  * @see org.cp.elements.lang.Nameable
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
@@ -269,7 +270,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * @see #getAnnotation(Class, Function)
    * @see java.lang.annotation.Annotation
    */
-  protected @Nullable <T extends Annotation> T getAnnotation(@NotNull Class<T> annotationType) {
+  public @Nullable <T extends Annotation> T getAnnotation(@NotNull Class<T> annotationType) {
     return getAnnotation(annotationType, DEFAULT_ANNOTATIONS_RESOLVER);
   }
 
@@ -288,7 +289,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * @see java.util.function.Function
    * @see #getAnnotations(Function)
    */
-  protected @Nullable <T extends Annotation> T getAnnotation(@NotNull Class<T> annotationType,
+  public @Nullable <T extends Annotation> T getAnnotation(@NotNull Class<T> annotationType,
       @NotNull Function<AnnotatedElement, Set<Annotation>> annotationsResolver) {
 
     return getAnnotations(annotationsResolver).stream()
