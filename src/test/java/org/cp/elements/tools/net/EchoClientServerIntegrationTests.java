@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.cp.elements.net.NetworkUtils;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,6 +43,7 @@ public class EchoClientServerIntegrationTests {
 
   @BeforeClass
   public static void setup() {
+
     echoServer = new EchoServer(NetworkUtils.availablePort()) {
       @Override protected Logger getLogger() {
         Logger logger = super.getLogger();
