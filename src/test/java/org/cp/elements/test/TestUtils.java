@@ -18,6 +18,7 @@ package org.cp.elements.test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Calendar;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.AssertionException;
@@ -26,6 +27,8 @@ import org.junit.Assert;
 
 @SuppressWarnings("unused")
 public abstract class TestUtils {
+
+  private static final String JACOCO_RESERVED_WORD = "jacoco";
 
   public static <T> void assertEquals(@NotNull T[] expected, @NotNull T[] actual) {
 
@@ -130,6 +133,10 @@ public abstract class TestUtils {
     finally {
       verifications.run();
     }
+  }
+
+  public static @NotNull Predicate<String> jacocoFilter() {
+    return value -> !value.contains(JACOCO_RESERVED_WORD);
   }
 
   public static long timeIt(@NotNull Runnable runnable) {

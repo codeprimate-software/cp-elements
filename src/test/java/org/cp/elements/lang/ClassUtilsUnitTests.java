@@ -18,6 +18,7 @@ package org.cp.elements.lang;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.test.TestUtils.jacocoFilter;
 import static org.cp.elements.util.ArrayUtils.asIterable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -74,8 +75,6 @@ import lombok.ToString;
  * Unit Tests for {@link ClassUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Test
- * @see java.io.File
  * @see java.lang.Class
  * @see java.lang.reflect.Constructor
  * @see java.lang.reflect.Field
@@ -83,9 +82,9 @@ import lombok.ToString;
  * @see java.lang.reflect.Modifier
  * @see java.lang.reflect.ParameterizedType
  * @see java.lang.reflect.TypeVariable
- * @see java.time.Instant
+ * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ClassUtils
- * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0
@@ -353,7 +352,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     Field[] fields = ClassUtils.getAllDeclaredFields(SuperType.class);
 
     assertThat(fields).isNotNull();
-    assertThat(Arrays.stream(fields).map(Field::getName).collect(Collectors.toList()))
+    assertThat(Arrays.stream(fields).map(Field::getName).filter(jacocoFilter()).collect(Collectors.toList()))
       .containsExactly("id", "stringValue");
   }
 
@@ -363,7 +362,7 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
     Field[] fields = ClassUtils.getAllDeclaredFields(SubType.class);
 
     assertThat(fields).isNotNull();
-    assertThat(Arrays.stream(fields).map(Field::getName).collect(Collectors.toList()))
+    assertThat(Arrays.stream(fields).map(Field::getName).filter(jacocoFilter()).collect(Collectors.toList()))
       .containsExactly("charValue", "id", "nonAnnotatedField", "id", "stringValue");
   }
 
