@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.cp.elements.lang.annotation.NotNull;
+
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -51,6 +52,7 @@ public class ByteBufferInputStreamUnitTests {
 
   private static final int CAPACITY = 1;
 
+  // TODO: Refactor mockByteBuffer since all the mocked Buffer methods are final.
   private @NotNull ByteBuffer mockByteBuffer() {
 
     ByteBuffer mockByteBuffer = mock(ByteBuffer.class, withSettings().lenient());
@@ -60,6 +62,7 @@ public class ByteBufferInputStreamUnitTests {
     doReturn(0).when(mockByteBuffer).position();
     doReturn(mockByteBuffer).when(mockByteBuffer).limit(anyInt());
     doReturn(mockByteBuffer).when(mockByteBuffer).mark();
+    doReturn(mockByteBuffer).when(mockByteBuffer).reset();
     doReturn(mockByteBuffer).when(mockByteBuffer).rewind();
 
     return mockByteBuffer;
