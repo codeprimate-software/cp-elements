@@ -31,8 +31,6 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public class ChainedPropertyVetoException extends PropertyVetoException {
 
-  private final Throwable cause;
-
   /**
    * Constructs a new instance of {@link ChainedPropertyVetoException} initialized with
    * the given {@link PropertyChangeEvent} that resulted in this checked {@link Exception}
@@ -61,17 +59,6 @@ public class ChainedPropertyVetoException extends PropertyVetoException {
       @Nullable Throwable cause) {
 
     super(message, event);
-    this.cause = cause;
-  }
-
-  /**
-   * Gets the underlying reason this {@link PropertyVetoException} was thrown.
-   *
-   * @return a {@link Throwable} object used as the underlying reason this {@link PropertyVetoException} was thrown.
-   * @see java.lang.Throwable
-   */
-  @Override
-  public @Nullable Throwable getCause() {
-    return this.cause;
+    initCause(cause);
   }
 }
