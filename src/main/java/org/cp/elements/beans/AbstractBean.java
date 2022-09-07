@@ -31,7 +31,9 @@ import org.cp.elements.beans.event.ChangeEvent;
 import org.cp.elements.beans.event.ChangeListener;
 import org.cp.elements.beans.event.ChangeRecorder;
 import org.cp.elements.beans.event.ChangeSupport;
+import org.cp.elements.beans.event.support.RequiredPropertyVetoableChangeListener;
 import org.cp.elements.beans.model.BeanAdapter;
+import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.function.BiFeederFunction;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
@@ -104,6 +106,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    */
   public AbstractBean() {
     register(this.changeRecorder);
+    register(RequiredPropertyVetoableChangeListener.INSTANCE);
   }
 
   /**
@@ -122,6 +125,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   public AbstractBean(@Nullable ID id) {
     this();
     identifiedBy(id);
+    register(RequiredPropertyVetoableChangeListener.INSTANCE);
   }
 
   /**
@@ -432,7 +436,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
   protected PropertyChangeEvent newPropertyChangeEvent(@NotNull String propertyName,
       @Nullable Object oldValue, @Nullable Object newValue) {
 
-    return new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+    return BeanUtils.newPropertyChangeEvent(this, propertyName, oldValue, newValue);
   }
 
   /**
@@ -887,6 +891,7 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
        * @inheritDoc
        */
       @Override
+      @SuppressWarnings("all")
       public @Nullable Boolean apply(@NotNull PropertyChangeEvent event, @Nullable Boolean returnValue) {
 
         if (!Boolean.TRUE.equals(returnValue)) {
