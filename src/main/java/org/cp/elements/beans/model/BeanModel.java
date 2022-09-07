@@ -93,9 +93,9 @@ public class BeanModel {
   }
 
   /**
-   * Gets the {@link BeanInfo} for the {@link BeanAdapter bean} represented by this {@link BeanModel model}.
+   * Gets the {@link BeanInfo} for the {@link BeanAdapter bean} represented by this {@link BeanModel}.
    *
-   * @return the {@link BeanInfo} for the {@link BeanAdapter bean} represented by this {@link BeanModel model}.
+   * @return the {@link BeanInfo} for the {@link BeanAdapter bean} represented by this {@link BeanModel}.
    * @see java.beans.BeanInfo
    */
   public @NotNull BeanInfo getBeanInfo() {
@@ -117,10 +117,10 @@ public class BeanModel {
   /**
    * Gets a single {@link Property} identified by the given {@link String name}.
    *
-   * @param name {@link String} containing the {@literal name} of the {@link Property} on this bean.
+   * @param name {@link String} containing the {@literal name} of the {@link Property} on the {@link BeanAdapter bean}.
    * @return a single {@link Property} identified by the given {@link String name}.
    * @throws PropertyNotFoundException if a {@link Property} with the given {@link String name} does not exist
-   * on the bean modeled by this model.
+   * on the {@link BeanAdapter bean} modeled by this {@link BeanModel}.
    * @see org.cp.elements.beans.model.Property
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #getProperties()
@@ -131,9 +131,9 @@ public class BeanModel {
   }
 
   /**
-   * Returns the underlying {@link Object POJO} backing this bean.
+   * Returns the underlying {@link Object POJO} backing the {@link BeanAdapter bean}.
    *
-   * @return the underlying {@link Object POJO} backing this bean.
+   * @return the underlying {@link Object POJO} backing the {@link BeanAdapter bean}.
    * @see org.cp.elements.beans.model.BeanAdapter#getTarget()
    * @see java.lang.Object
    * @see #getBean()
@@ -154,18 +154,48 @@ public class BeanModel {
     return getTargetObject().getClass();
   }
 
+  /**
+   * Abstract Data Type (ADT) used to model the {@literal key} in the {@link BeanModel} {@literal cache}.
+   */
   protected static class BeanModelCacheKey {
 
+    /**
+     * Factory method used to construct a new instance of {@link BeanModelCacheKey} initialized with
+     * the given, required {@link BeanAdapter bean}.
+     *
+     * @param bean {@link BeanAdapter} used as a key component in the {@link BeanModel} {@literal cache};
+     * must not be {@literal null}.
+     * @return a new {@link BeanModelCacheKey}.
+     * @throws IllegalArgumentException if the {@link BeanAdapter bean} is {@literal null}.
+     * @see org.cp.elements.beans.model.BeanAdapter
+     * @see #BeanModelCacheKey(BeanAdapter)
+     */
     protected static @NotNull BeanModelCacheKey from(@NotNull BeanAdapter bean) {
       return new BeanModelCacheKey(bean);
     }
 
     private final BeanAdapter bean;
 
+    /**
+     * Constructs a new instance of {@link BeanModelCacheKey} initialized with the given,
+     * required {@link BeanAdapter bean}.
+     *
+     * @param bean {@link BeanAdapter} used as a key component in the {@link BeanModel} {@literal cache};
+     * must not be {@literal null}.
+     * @throws IllegalArgumentException if the {@link BeanAdapter bean} is {@literal null}.
+     * @see org.cp.elements.beans.model.BeanAdapter
+     */
     protected BeanModelCacheKey(@NotNull BeanAdapter bean) {
       this.bean = ObjectUtils.requireObject(bean, "Bean is required");
     }
 
+    /**
+     * Gets a reference to the {@link BeanAdapter bean} used as a key component
+     * in the {@link BeanModel} {@literal cache}.
+     *
+     * @return the {@link BeanAdapter bean} used as a key component in the {@link BeanModel} {@literal cache}.
+     * @see org.cp.elements.beans.model.BeanAdapter
+     */
     protected @NotNull BeanAdapter getBean() {
       return this.bean;
     }
