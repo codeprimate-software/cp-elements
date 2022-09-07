@@ -16,7 +16,7 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Identifiable} interface defines a contract for uniquely identifying {@link Object Objects}
+ * The {@link Identifiable} interface defines a contract for uniquely identifying {@link Object objects}
  * of a given {@link Class type}.
  *
  * @author John J. Blum
@@ -24,7 +24,7 @@ package org.cp.elements.lang;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Identifiable<T extends Comparable<T>> {
+public interface Identifiable<ID extends Comparable<ID>> {
 
   /**
    * Returns the identifier uniquely identifying {@literal this} {@link Object}.
@@ -32,15 +32,15 @@ public interface Identifiable<T extends Comparable<T>> {
    * @return the value uniquely identifying {@literal this} {@link Object}.
    * @see #setId(Comparable)
    */
-  T getId();
+  ID getId();
 
   /**
    * Sets the identifier uniquely identifying {@literal this} {@link Object}.
    *
-   * @param id value of {@link Class type T} assigned as {@literal this} {@link Object Object's} unique identifier.
+   * @param id value of {@link Class type ID} assigned as {@literal this} {@link Object Object's} unique identifier.
    * @see #getId()
    */
-  void setId(T id);
+  void setId(ID id);
 
   /**
    * Determines whether {@literal this} {@link Identifiable} object is {@literal new}.
@@ -69,14 +69,14 @@ public interface Identifiable<T extends Comparable<T>> {
   /**
    * Builder method used to set this {@link Identifiable} object's identifier (ID).
    *
-   * @param <S> {@link Class Subclass type} of {@literal this} {@link Identifiable} object.
-   * @param id value of {@link Class type T} assigned as this {@link Identifiable} object's unique identifier.
-   * @return a reference to {@literal this} {@link Identifiable} object.
+   * @param <IDX> {@link Class Subclass type} of {@literal this} {@link Identifiable} object.
+   * @param id value of {@link Class type ID} assigned as this {@link Identifiable} object's unique identifier.
+   * @return {@literal this} {@link Identifiable} object.
    * @see #setId(Comparable)
    */
   @SuppressWarnings("unchecked")
-  default <S extends Identifiable<T>> S identifiedBy(T id) {
+  default <IDX extends Identifiable<ID>> IDX identifiedBy(ID id) {
     setId(id);
-    return (S) this;
+    return (IDX) this;
   }
 }
