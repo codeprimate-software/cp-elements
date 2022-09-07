@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang;
 
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 /**
@@ -238,6 +239,6 @@ public abstract class SystemUtils {
    */
   public static void promptPressEnterToExit() {
     System.err.println("Press <enter> to exit...");
-    new Scanner(System.in).nextLine();
+    new Scanner(System.in, Charset.defaultCharset().name()).nextLine();
   }
 }

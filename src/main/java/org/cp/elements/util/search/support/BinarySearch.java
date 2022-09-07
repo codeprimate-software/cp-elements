@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search.support;
 
 import java.util.Collection;
@@ -50,9 +49,9 @@ public class BinarySearch extends AbstractSearcher {
    * @see java.util.List
    */
   @Override
-  @SuppressWarnings("unchecked")
-  public <E> E search(final Collection<E> collection) {
-    Assert.isInstanceOf(collection, List.class, "The collection {0} must be an instance of java.util.List!",
+  public <E> E search(Collection<E> collection) {
+
+    Assert.isInstanceOf(collection, List.class, "The collection {0} must be an instance of java.util.List",
       ClassUtils.getClassName(collection));
 
     return doSearch((List<E>) collection);
@@ -70,9 +69,11 @@ public class BinarySearch extends AbstractSearcher {
    * @see #search(java.util.Collection)
    * @see java.util.List
    */
-  protected <E> E doSearch(final List<E> list) {
+  protected <E> E doSearch(List<E> list) {
+
     if (!list.isEmpty()) {
-      int matchIndex = (list.size() / 2);
+
+      int matchIndex = list.size() / 2;
       E element = list.get(matchIndex);
       int matchResult = getMatcher().match(element);
 
@@ -89,5 +90,4 @@ public class BinarySearch extends AbstractSearcher {
 
     return null;
   }
-
 }

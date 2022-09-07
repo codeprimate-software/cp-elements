@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.zip;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +40,7 @@ import org.cp.elements.util.SystemException;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link ZipUtils}.
+ * Unit Tests for {@link ZipUtils}.
  *
  * @author John Blum
  * @see org.junit.Test

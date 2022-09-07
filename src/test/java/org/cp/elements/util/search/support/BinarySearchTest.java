@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search.support;
 
 import static org.junit.Assert.assertEquals;
@@ -23,19 +22,19 @@ import org.cp.elements.util.search.AbstractMatcher;
 import org.junit.Test;
 
 /**
- * The BinarySearchTest class is a test suite of test cases testing the contract and functionality of the BinarySearch
- * class.
+ * Unit Tests for {@link BinarySearch}.
  *
- * @author John J. Blum
+ * @author John Blum
+ * @see org.junit.Test
  * @see org.cp.elements.util.search.AbstractMatcher
  * @see org.cp.elements.util.search.support.BinarySearch
- * @see org.junit.Test
  * @since 1.0.0
  */
 public class BinarySearchTest {
 
   @Test
   public void testSearch() {
+
     String[] animals = { "ape", "bat", "cat", "dog", "eel", "fish", "gorilla", "hamster", "iguana", "jackrabbit",
       "kangaroo", "lama", "mouse", "newt", "octopus", "parrot", "quail", "rat", "snail", "turtle", "uakari", "vulture",
       "walrus", "x-ray tetra", "yak", "zebra" };
@@ -77,6 +76,7 @@ public class BinarySearchTest {
 
   @Test
   public void testSearchUnorderedCollection() {
+
     String[] computerTerms = {
       "code", "byte", "vm", "xcode", "electronic", "defect", "float", "hard drive", "queue", "kilobyte", "ram", "long",
       "machine", "ada", "nanosecond", "octal", "java", "pseudo code", "int", "terabyte", "short", "u", "watt", "yarn",
@@ -93,5 +93,4 @@ public class BinarySearchTest {
 
     assertNull(searcher.search(computerTerms));
   }
-
 }

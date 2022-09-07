@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -203,7 +204,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
   }
 
   protected BufferedReader newReader(@NotNull InputStream in) {
-    return new BufferedReader(new InputStreamReader(in));
+    return new BufferedReader(new InputStreamReader(in, Charset.defaultCharset()));
   }
 
   protected Thread newThread(String name, Runnable task) {

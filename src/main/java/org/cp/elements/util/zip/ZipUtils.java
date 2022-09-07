@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.zip;
 
 import static java.util.Arrays.stream;
@@ -36,7 +35,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.util.SystemException;
 
 /**
- * The {@link ZipUtils} class is an abstract utility class for working with {@link File ZIP files}.
+ * Abstract utility class used to process {@link File ZIP files}.
  *
  * @author John Blum
  * @see java.io.File
@@ -126,46 +125,47 @@ public abstract class ZipUtils {
 
     Assert.isTrue(FileUtils.createDirectory(directory), String.format("[%s] is not a valid directory", directory));
 
-    ZipFile zipFile = new ZipFile(zip, ZipFile.OPEN_READ);
+    try (ZipFile zipFile = new ZipFile(zip, ZipFile.OPEN_READ)) {
 
-    zipFile.stream().forEach(zipEntry -> {
+      zipFile.stream().forEach(zipEntry -> {
 
-      if (zipEntry.isDirectory()) {
-        Assert.state(FileUtils.createDirectory(new File(directory, zipEntry.getName())),
-          newSystemException("Failed to create directory [%s] for ZIP entry", zipEntry.getName()));
-      }
-      else {
-
-        DataInputStream entryInputStream = null;
-
-        DataOutputStream entryOutputStream = null;
-
-        try {
-
-          File zipEntryFile = new File(directory, zipEntry.getName());
-
-          Assert.state(FileUtils.createDirectory(zipEntryFile.getParentFile()),
-            newSystemException("Failed to create directory [%1$s] for entry [%2$s]",
-              zipEntryFile.getParent(), zipEntry.getName()));
-
-          Assert.state(zipEntryFile.createNewFile(),
-            newSystemException("Filed to create file [%1$s] for entry [%2$s]", zipEntryFile, zipEntry.getName()));
-
-          entryInputStream = new DataInputStream(zipFile.getInputStream(zipEntry));
-          entryOutputStream = new DataOutputStream(new FileOutputStream(zipEntryFile));
-
-          IOUtils.copy(entryInputStream, entryOutputStream);
-
+        if (zipEntry.isDirectory()) {
+          Assert.state(FileUtils.createDirectory(new File(directory, zipEntry.getName())),
+            newSystemException("Failed to create directory [%s] for ZIP entry", zipEntry.getName()));
         }
-        catch (IOException cause) {
-          throw newSystemException(cause, "Failed to unzip entry [%s]", zipEntry.getName());
+        else {
+
+          DataInputStream entryInputStream = null;
+
+          DataOutputStream entryOutputStream = null;
+
+          try {
+
+            File zipEntryFile = new File(directory, zipEntry.getName());
+
+            Assert.state(FileUtils.createDirectory(zipEntryFile.getParentFile()),
+              newSystemException("Failed to create directory [%1$s] for entry [%2$s]",
+                zipEntryFile.getParent(), zipEntry.getName()));
+
+            Assert.state(zipEntryFile.createNewFile(),
+              newSystemException("Filed to create file [%1$s] for entry [%2$s]", zipEntryFile, zipEntry.getName()));
+
+            entryInputStream = new DataInputStream(zipFile.getInputStream(zipEntry));
+            entryOutputStream = new DataOutputStream(new FileOutputStream(zipEntryFile));
+
+            IOUtils.copy(entryInputStream, entryOutputStream);
+
+          }
+          catch (IOException cause) {
+            throw newSystemException(cause, "Failed to unzip entry [%s]", zipEntry.getName());
+          }
+          finally {
+            IOUtils.close(entryInputStream);
+            IOUtils.close(entryOutputStream);
+          }
         }
-        finally {
-          IOUtils.close(entryInputStream);
-          IOUtils.close(entryOutputStream);
-        }
-      }
-    });
+      });
+    }
   }
 
   /**

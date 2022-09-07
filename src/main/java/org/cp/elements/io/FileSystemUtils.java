@@ -228,9 +228,9 @@ public abstract class FileSystemUtils extends FileUtils {
    * @see java.io.File#listFiles()
    * @see #isDirectory(File)
    */
-  @SuppressWarnings("all")
+  @NullSafe
   public static boolean isEmptyDirectory(@Nullable File directory) {
-    return isDirectory(directory) && directory.listFiles().length == 0;
+    return isDirectory(directory) && ArrayUtils.nullSafeLength(directory.listFiles()) == 0;
   }
 
   /**

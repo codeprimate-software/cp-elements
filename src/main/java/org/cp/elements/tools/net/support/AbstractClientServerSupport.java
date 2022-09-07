@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net.support;
 
 import static org.cp.elements.lang.NumberUtils.intValue;
@@ -30,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -91,7 +91,7 @@ public abstract class AbstractClientServerSupport {
    * @see java.net.Socket
    */
   protected BufferedReader newBufferedReader(Socket socket) throws IOException {
-    return new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    return new BufferedReader(new InputStreamReader(socket.getInputStream(), Charset.defaultCharset()));
   }
 
   /**
@@ -104,7 +104,8 @@ public abstract class AbstractClientServerSupport {
    * @see java.net.Socket
    */
   protected PrintWriter newPrintWriter(Socket socket) throws IOException {
-    return new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+    return new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.defaultCharset())),
+      true);
   }
 
   /**

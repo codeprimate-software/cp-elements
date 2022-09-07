@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
@@ -53,7 +52,7 @@ public abstract class FileComparatorFactory {
    * @see java.util.Comparator
    */
   public static Comparator<File> fileLastModifiedComparator() {
-    return (fileOne, fileTwo) -> Long.valueOf(fileOne.lastModified()).compareTo(fileTwo.lastModified());
+    return Comparator.comparingLong(File::lastModified);
   }
 
   /**
@@ -90,6 +89,6 @@ public abstract class FileComparatorFactory {
    * @see java.util.Comparator
    */
   public static Comparator<File> fileSizeComparator() {
-    return (fileOne, fileTwo) -> Long.valueOf(fileOne.length()).compareTo(fileTwo.length());
+    return Comparator.comparingLong(File::length);
   }
 }
