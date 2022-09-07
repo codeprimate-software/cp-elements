@@ -22,7 +22,7 @@ import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 
 import org.cp.elements.data.caching.Cache;
-import org.cp.elements.data.caching.CacheException;
+import org.cp.elements.data.caching.CacheNotFoundException;
 import org.cp.elements.data.conversion.ConversionService;
 
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class ServiceTemplateUnitTests {
 
     doCallRealMethod().when(serviceTemplate).getCache(any());
 
-    assertThatExceptionOfType(CacheException.class)
+    assertThatExceptionOfType(CacheNotFoundException.class)
       .isThrownBy(() -> serviceTemplate.getCache("nonExistingCache"))
       .withMessage("Cache with name [nonExistingCache] not found")
       .withNoCause();

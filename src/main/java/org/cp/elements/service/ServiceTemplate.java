@@ -16,7 +16,7 @@
  */
 package org.cp.elements.service;
 
-import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheNotFoundException;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -65,7 +65,7 @@ public interface ServiceTemplate<T> {
     return StreamSupport.stream(CollectionUtils.asIterable(cacheServiceIterator).spliterator(), false)
       .filter(cache -> ObjectUtils.equalsIgnoreNull(cache.getName(), name))
       .findFirst()
-      .orElseThrow(() -> newCacheException("Cache with name [%s] not found", name));
+      .orElseThrow(() -> newCacheNotFoundException("Cache with name [%s] not found", name));
   }
 
   /**
