@@ -27,8 +27,8 @@ package org.cp.elements.lang;
 public class ThrowableOperationException extends RuntimeException {
 
   /**
-   * Constructs a new, initialized instance of {@link ThrowableOperationException}
-   * having no {@link String message} or {@link Throwable cause}.
+   * Constructs a new instance of {@link ThrowableOperationException} having no {@link String message}
+   * and no {@link Throwable cause}.
    */
   public ThrowableOperationException() { }
 
