@@ -51,6 +51,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Transient;
+import org.cp.elements.lang.reflect.MethodNotFoundException;
 import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.util.CollectionUtils;
 
@@ -386,11 +387,23 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    *
    * @return the {@link Method} used to read from this {@link Property};
    * may return {@literal null} if the {@link Property} cannot be read.
+   * @see java.beans.PropertyDescriptor#getReadMethod()
    * @see java.lang.reflect.Method
    * @see #getWriteMethod()
+   * @see #getDescriptor()
    */
   protected @Nullable Method getReadMethod() {
-    return getDescriptor().getReadMethod();
+
+    Method readMethod = getDescriptor().getReadMethod();
+
+    try {
+      return readMethod != null
+        ? ClassUtils.getDeclaredMethod(getBeanModel().getTargetType(), readMethod)
+        : readMethod;
+    }
+    catch (MethodNotFoundException ignore) {
+      return readMethod;
+    }
   }
 
   /**
@@ -444,11 +457,23 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * @return the {@link Method} used to write to this {@link Property};
    * may return {@literal null} if the {@link Property} cannot be written,
    * such as for a read-only {@link Property}.
+   * @see java.beans.PropertyDescriptor#getWriteMethod()
    * @see java.lang.reflect.Method
+   * @see #getDescriptor()
    * @see #getReadMethod()
    */
   protected @Nullable Method getWriteMethod() {
-    return getDescriptor().getWriteMethod();
+
+    Method writeMethod = getDescriptor().getWriteMethod();
+
+    try {
+      return writeMethod != null
+        ? ClassUtils.getDeclaredMethod(getBeanModel().getTargetType(), writeMethod)
+        : writeMethod;
+    }
+    catch (MethodNotFoundException ignore) {
+      return writeMethod;
+    }
   }
 
   /**

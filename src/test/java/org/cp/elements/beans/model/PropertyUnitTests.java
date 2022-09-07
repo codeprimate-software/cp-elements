@@ -60,6 +60,7 @@ import org.cp.elements.lang.IllegalTypeException;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.reflect.ModifierUtils;
+
 import org.junit.Test;
 
 import lombok.EqualsAndHashCode;

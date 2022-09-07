@@ -29,11 +29,13 @@ import java.util.Set;
 
 import org.cp.elements.beans.annotation.Default;
 import org.cp.elements.beans.annotation.Required;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Transient;
 import org.cp.elements.util.stream.StreamUtils;
+
 import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
@@ -236,7 +238,7 @@ public class PropertyMetadataUnitTests {
   @ToString(of = "name")
   @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "as")
-  static class Person {
+  static class Person implements Nameable<String> {
 
     @Getter @Setter
     @MockNonInheritedAnnotation
