@@ -18,12 +18,12 @@ package org.cp.elements.nio;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import org.cp.elements.lang.NumberUtils;
+
 import org.junit.Test;
 
 /**
@@ -38,20 +38,24 @@ import org.junit.Test;
  */
 public class BufferUtilsUnitTests {
 
+  private <T extends Buffer> T reposition(T buffer, int newPosition) {
+    assertThat(buffer.position(newPosition).position()).isEqualTo(newPosition);
+    return buffer;
+  }
+
   @Test
   public void computeLoadFactorIsCorrect() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class);
+    ByteBuffer byteBuffer = ByteBuffer.allocate(10);
 
-    doReturn(0).doReturn(2).doReturn(5).doReturn(8).doReturn(10)
-      .when(mockByteBuffer).position();
-    doReturn(10).when(mockByteBuffer).capacity();
-
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.0f); // 0%
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.2f); // 20%
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.5f); // 50%
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(0.8f); // 80%
-    assertThat(BufferUtils.computeLoadFactor(mockByteBuffer)).isEqualTo(1.0f); // 100%
+    assertThat(byteBuffer).isNotNull();
+    assertThat(byteBuffer.capacity()).isEqualTo(10);
+    assertThat(byteBuffer.position()).isZero();
+    assertThat(BufferUtils.computeLoadFactor(byteBuffer)).isEqualTo(0.0f); // 0%
+    assertThat(BufferUtils.computeLoadFactor(reposition(byteBuffer, 2))).isEqualTo(0.2f); // 20%
+    assertThat(BufferUtils.computeLoadFactor(reposition(byteBuffer, 5))).isEqualTo(0.5f); // 50%
+    assertThat(BufferUtils.computeLoadFactor(reposition(byteBuffer, 8))).isEqualTo(0.8f); // 80%
+    assertThat(BufferUtils.computeLoadFactor(reposition(byteBuffer, 10))).isEqualTo(1.0f); // 100%
   }
 
   @Test
