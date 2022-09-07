@@ -106,7 +106,6 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * @see org.cp.elements.beans.model.Property
    * @see org.cp.elements.lang.annotation.Dsl
    * @see #Properties(Property...)
-   * @see #of(Iterable)
    */
   @Dsl
   public static @NotNull Properties of(Property... properties) {
@@ -130,11 +129,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
   }
 
   /**
-   * Factory method usec to construct a new isntance of {@link Properties}
+   * Factory method used to construct a new instance of {@link Properties}
    * from the given {@link Stream} of {@link Property properties}.
    *
    * @param properties {@link Stream} of {@link Property properties} contained by this collection.
-   * @return a new {@link Properties}.
+   * @return a new {@link Properties} containing the {@link Stream} of {@link Property properties}.
    * @see org.cp.elements.beans.model.Property
    * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.stream.Stream
@@ -316,9 +315,11 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    *
    * @return an unmodifiable {@link Iterator} over the {@link Property properties} in this collection.
    * @see org.cp.elements.beans.model.Property
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.Iterator
    * @see #getProperties()
    */
+  @Dsl
   @Override
   public @NotNull Iterator<Property> iterator() {
     return Collections.unmodifiableSet(getProperties()).iterator();
@@ -328,6 +329,7 @@ public class Properties implements Iterable<Property>, Streamable<Property> {
    * Returns a {@link Stream} of {@link Property properties} in this collection.
    *
    * @return a {@link Stream} of {@link Property properties} in this collection.
+   * @see org.cp.elements.beans.model.Property
    * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.stream.Stream
    * @see #iterator()
