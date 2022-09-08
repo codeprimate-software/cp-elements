@@ -23,8 +23,10 @@ import java.util.Comparator;
 import java.util.Optional;
 
 import org.cp.elements.io.FileSystemUtils;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -62,15 +64,19 @@ public class ListFiles implements Runnable {
     newListFiles(resolveDirectory(args)).run();
   }
 
-  /* (non-Javadoc) */
   static String resolveArgument(String[] args) {
-    return Optional.ofNullable(args).map(ArrayUtils::getFirstElement).filter(StringUtils::hasText)
+
+    return Optional.ofNullable(args)
+      .map(ArrayUtils::getFirstElement)
+      .filter(StringUtils::hasText)
       .orElseThrow(() -> newIllegalArgumentException("Directory is required"));
   }
 
-  /* (non-Javadoc) */
   static File resolveDirectory(String[] args) {
-    return Optional.of(resolveArgument(args)).map(File::new).filter(File::isDirectory)
+
+    return Optional.of(resolveArgument(args))
+      .map(File::new)
+      .filter(File::isDirectory)
       .orElseThrow(() -> newIllegalArgumentException("Argument [%s] is not a valid directory", args[0]));
   }
 
@@ -84,7 +90,7 @@ public class ListFiles implements Runnable {
    * @see #newListFiles(File)
    * @see java.io.File
    */
-  public static ListFiles newListFiles() {
+  public static @NotNull ListFiles newListFiles() {
     return newListFiles(DEFAULT_DIRECTORY);
   }
 
@@ -98,7 +104,7 @@ public class ListFiles implements Runnable {
    * @see #ListFiles(File)
    * @see java.io.File
    */
-  public static ListFiles newListFiles(File directory) {
+  public static @NotNull ListFiles newListFiles(@NotNull File directory) {
     return new ListFiles(directory);
   }
 
@@ -113,7 +119,7 @@ public class ListFiles implements Runnable {
    * @see #validateDirectory(File)
    * @see java.io.File
    */
-  public ListFiles(File directory) {
+  public ListFiles(@NotNull File directory) {
     this.directory = validateDirectory(directory);
   }
 
@@ -123,8 +129,8 @@ public class ListFiles implements Runnable {
    * @return a reference to the {@link File directory} for which the contents will be listed.
    * @see java.io.File
    */
-  protected File getDirectory() {
-    return Optional.ofNullable(this.directory).orElse(DEFAULT_DIRECTORY);
+  protected @NotNull File getDirectory() {
+    return ObjectUtils.returnFirstNonNullValue(this.directory, DEFAULT_DIRECTORY);
   }
 
   /**
@@ -152,10 +158,10 @@ public class ListFiles implements Runnable {
    * @see #validateDirectory(File)
    * @see java.io.File
    */
-  public void listFiles(File directory, String indent) {
+  public void listFiles(@NotNull File directory, @Nullable String indent) {
 
     directory = validateDirectory(directory);
-    indent = Optional.ofNullable(indent).filter(StringUtils::hasText).orElse(StringUtils.EMPTY_STRING);
+    indent = StringUtils.hasText(indent) ? indent : StringUtils.EMPTY_STRING;
 
     printDirectoryName(indent, directory);
 
@@ -171,43 +177,50 @@ public class ListFiles implements Runnable {
     });
   }
 
-  String buildDirectoryContentIndent(String indent) {
+  @NotNull String buildDirectoryContentIndent(@Nullable String indent) {
 
-    return Optional.ofNullable(indent).filter(StringUtils::hasText)
+    return Optional.ofNullable(indent)
+      .filter(StringUtils::hasText)
       .map(it -> it + StringUtils.SINGLE_SPACE + SUB_DIRECTORY_OFFSET + DIRECTORY_SWIM_LANE)
       .orElse(StringUtils.SINGLE_SPACE + DIRECTORY_SWIM_LANE);
   }
 
-  String concatIndentAndDirectoryName(String indent, File directory) {
+  @NotNull String concatIndentAndDirectoryName(@Nullable String indent, @NotNull File directory) {
 
-    indent = Optional.ofNullable(indent).filter(StringUtils::hasText)
+    indent = Optional.ofNullable(indent)
+      .filter(StringUtils::hasText)
       .map(it -> it + SUB_DIRECTORY_DASH_PLUS_OFFSET)
       .orElse(StringUtils.EMPTY_STRING);
 
     return String.format(indent + DIRECTORY_MARKER_WITH_DIRECTORY_NAME, directory.getName());
   }
 
-  String concatIndentAndFileName(String indent, File file) {
+  @NotNull String concatIndentAndFileName(@Nullable String indent, @NotNull File file) {
     return String.format(indent + SUB_DIRECTORY_OFFSET + FILE_MARKER_WITH_FILENAME, file.getName());
+  }
+
+  private void logOutput(String message, Object... args) {
+    System.out.printf(message, args);
+    System.out.flush();
   }
 
   private File printDirectoryName(String indent, File directory) {
 
-    System.out.printf(String.format("%s%n", concatIndentAndDirectoryName(indent, directory)));
+    logOutput("%s%n", concatIndentAndDirectoryName(indent, directory));
 
     return directory;
   }
 
   private File printFileName(String indent, File file) {
 
-    System.out.printf(String.format("%s%n", concatIndentAndFileName(indent, file)));
+    logOutput("%s%n", concatIndentAndFileName(indent, file));
 
     return file;
   }
 
   File printHeader(File directory) {
 
-    System.out.printf("Listing contents for directory [%s]...%n%n", directory.getAbsolutePath());
+    logOutput("Listing contents for directory [%s]...%n%n", directory.getAbsolutePath());
 
     return directory;
   }
@@ -221,10 +234,9 @@ public class ListFiles implements Runnable {
    * @see java.util.Arrays#sort(Object[], Comparator)
    * @see java.io.File
    */
-  protected File[] sort(File[] files) {
+  protected @NotNull File[] sort(@NotNull File[] files) {
 
     Arrays.sort(files, (fileOne, fileTwo) -> {
-
       if (fileOne.isDirectory() && fileTwo.isDirectory()) {
         return fileOne.getName().compareTo(fileTwo.getName());
       }
@@ -250,9 +262,10 @@ public class ListFiles implements Runnable {
    * @throws IllegalArgumentException if the given {@link File} is not a valid directory.
    * @see java.io.File#isDirectory()
    */
-  @NullSafe
-  private File validateDirectory(File directory) {
-    return Optional.ofNullable(directory).filter(File::isDirectory)
+  private @NotNull File validateDirectory(@NotNull File directory) {
+
+    return Optional.ofNullable(directory)
+      .filter(File::isDirectory)
       .orElseThrow(() -> newIllegalArgumentException("File [%s] is not a valid directory", directory));
   }
 }
