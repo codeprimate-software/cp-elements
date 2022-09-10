@@ -3,6 +3,99 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0-M8 - 2022-September-09
+----------------------------
+Extends Codeprimate Elements with JavaBeans API and framework support.
+
+* Built on Oracle Java (JDK) 8; 1.8.0_341.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Changes Java Module Name to 'codeprimate.elements'.
+* Introduces JavaBeans API and framework extensions and support.
+*** Reviewed, refactored and extended the o.c.elements.beans.AbstractBean class.
+*** Reviewed and refactored the org.cp.elements.beans.annotation types: @Default and @Required.
+*** Added ChainedPropertyVetoException extending java.beans.PropertyVetoException in the org.cp.elements.beans package.
+*** Added org.cp.elements.beans.model package and classes: BeanAdapter, BeanModel, Properties, Property,
+along with AbstractIndexedProperty sub-types such as: ArrayProperty, ListProperty, MapProperty and SortedSetProperty.
+*** Added the FieldResolver interface and PropertyNameFieldResolver class in the org.cp.elements.beans.model package
+to resolve Fields from JavaBean (POJO) properties.
+*** Added the AbstractListener, AbstractPropertyChangeListener and AbstractVetoableChangeListener classes
+in the org.cp.elements.beans.event package to process and handle PropertyChangeEvents.
+*** Added the ObjectEffectivelyImmutableVetoableChangeListener and RequiredPropertyVetoableChangeListener classes
+in the org.cp.elements.beans.event.support package.
+* Creates the new org.cp.elements.lang.PrimitiveTypeUtils class.
+* Creates the new org.cp.elements.lang.ThrowableAssertions class.
+* Creates the new org.cp.elements.lang.annotation.Transient annotation.
+* Creates the new org.cp.elements.lang.reflect.Modifier enum.
+* Creates the new org.cp.elements.data.compression.Compressor interface.
+* Creates the new org.cp.elements.data.serialization.Serializer interface.
+* Creates the new org.cp.elements.nio.BufferUtils class.
+* Creates the new org.cp.elements.nio.ByteBufferInputStream class.
+* Creates the new org.cp.elements.nio.ByteBufferOutputStream class.
+* Creates the new org.cp.elements.process.BaseProcess abstract base class for java.lang.Process implementations.
+* Creates the new org.cp.elements.test.TestError class.
+* Creates the new org.cp.elements.util.stream.Streamable interface.
+* Adds new getAllDeclaredFields(..) utility methods to org.cp.elements.lang.ClassUtils.
+* Adds new getDeclaredMethod(:Class, :Method) utility method to org.cp.elements.lang.ClassUtils.
+* Adds new hashCode(:Object[]) method to org.cp.elements.lang.ObjectUtils.
+* Adds formal ADTs used to resolve java.lang.reflect.Method objects
+in the org.cp.elements.lang.reflect.ReflectionUtils class.
+* Adds new isOverloaded(:MethodReference) and isOverridden(:MethodReference) methods
+to org.cp.elements.lang.reflect.ReflectionUtils.
+* Adds new fromBinaryString(..) and fromHexadecimalString(..) utility methods to org.cp.elements.lang.NumberUtils.
+* Adds NON_BINARY to the org.cp.elements.enums.Gender enum.
+* Adds compose(:Function[]) method to the org.cp.elements.function.FunctionUtils class.
+* Adds noopConsumer() factory method to the org.cp.elements.function.FunctionUtils class.
+* Adds toFunction(:Predicate) method to the org.cp.elements.function.FunctionUtils class
+to adapt a java.util.function.Predicate as a java.util.function.Function.
+* Adds isMonth(:Month) like methods to the org.cp.elements.time.Month enum.
+* Adds getNextMonth() and getPreviousMonth() methods to the org.cp.elements.time.Month enum.
+* Adds isDay(:Weekday) like methods to the org.cp.elements.time.Weekday enum.
+* Adds getTomorrow() and getYesterday() methods to the org.cp.elements.time.Weekday enum.
+* Adds noNullElements(:Object[]) method to org.cp.elements.util.ArrayUtils.
+* Adds subArray(:Object[], offset, length) method to org.cp.elements.util.ArrayUtils.
+* Adds getLastElement(:List<T>[, defaultValue:T]) methods to org.cp.elements.util.CollectionUtils.
+* Adds noNullElements(:Collection<?>) method to org.cp.elements.util.CollectionUtils.
+* Adds noNullEntries(:Map<?, ?>) method to org.cp.elements.util.MapUtils.
+* Adds toList(:Stream<?>) and toSet(:Stream<?>) methods to org.cp.elements.util.stream.StreamUtils.
+* Fixes SpotBugs Errors.
+* Improves the org.cp.elements.lang.ObjectUtils.clone(:Object) method to try Java Serialization.
+* Moves Month, TimeUnit and Weekday enums from the org.cp.elements.enums package to org.cp.elements.time.
+* Refactored the org.cp.elements.lang.NumberUtils class.
+* Refactored the org.cp.elements.lang.ThrowableOperations class.
+* Refactored the org.cp.elements.lang.reflect.ReflectionUtils class.
+* Refactored the org.cp.elements.data.struct.KeyValue interface.
+* Refactored the org.cp.elements.data.struct.SimpleKeyValue class.
+* Refactored the org.cp.elements.io.FileSystemUtils class.
+* Refactored the org.cp.elements.io.FileUtils class.
+* Refactored the org.cp.elements.io.IOUtils class.
+* Refactored the org.cp.elements.process.ProcessAdapter class.
+* Refactored the org.cp.elements.process.util.ProcessUtils class.
+* Refactored the org.cp.elements.security.SecurityException class to extend java.lang.SecurityException
+and add a getCode() method (code property).
+* Refactored the org.cp.elements.security.model.User interface to extend java.lang.Comparable.
+* Refactored the org.cp.elements.util.ArrayUtils class.
+* Renamed the getDescription() method to getDescriptor() in the org.cp.elements.lang.Describable interface.
+* Renamed the org.cp.elements.beans.Describable interface to DescribableBean and extended o.c.elements.lang.Describable.
+* Replaced all utility methods in the org.cp.elements.util.ArrayUtils class accepting a o.c.elements.lang.Filter
+with java.util.function.Predicate.
+* Replaced all utility methods in the org.cp.elements.util.CollectionUtils class accepting a o.c.elements.lang.Filter
+with java.util.function.Predicate.
+* Replaced all utility methods in the org.cp.elements.util.MapUtils class accepting a o.c.elements.lang.Filter
+with java.util.function.Predicate.
+* Reviewed and refactored the org.cp.elements.lang.ValueHolder class.
+* Reviewed and refactored the org.cp.elements.lang.reflect.ModifierUtils class.
+* Reviewed and refactored the org.cp.elements.service.ServiceTemplate interface.
+* Reviewed and refactored the org.cp.elements.util.stream.StreamUtils class.
+*** Adds the getCache(:String) and getConversionService() methods to ServiceTemplate.
+* Reviewed and refactored the org.cp.elements.util.stream.StreamUtils class.
+* Reviewed and refactored all Elements Annotations to use the proper meta-Annotations (e.g @Inherited)
+and RetentionPolicies (e.g. SOURCE vs. RUNTIME).
+* Upgrades to Codeprimate Core 1.8.0.
+* Upgrades to AssertJ 3.23.1.
+* Upgrades to Gradle 7.5.1.
+* Upgrades to Mockito 4.8.0.
+
+
 1.0.0-M7 - 2022-April-16
 --------------------------
 Continued development of Codeprimate Elements beginning with a project review and refactoring.
