@@ -1,6 +1,6 @@
 [[codeprimate-elements]]
 = Codeprimate Elements
-:version: 1.0.0-M7
+:version: 1.0.0-M8
 
 *Codeprimate Elements* (or simply just *Elements*) is a Java library and micro-framework for simplifying
 the development of software applications written in **Java**.
@@ -27,10 +27,10 @@ to solve common, reoccurring problems during software development with ease and 
 
 Codeprimate Elements is very similar in function and purpose to *Apache Commons* or *Google Guava*.
 
-*Elements* is a highly refined Java library of classes and components based on years of research and development along
-with extensive experience in deployed production-grade applications. *Elements* maintains a high standard on quality
-enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme application
-environments.
+*Elements* is a highly refined Java library of classes and components based on years of research and development
+along with extensive experience in deployed production-grade applications. *Elements* maintains a high standard
+on quality enforced by extensive test coverage, code metrics, peer review and trusted performance in extreme
+application environments.
 
 *Elements* is a foundation-based Java library, and does not introduce any additional dependencies in order to function
 or perform properly out-of-the-box. Good https://en.wikipedia.org/wiki/Object-oriented_design[Object-Oriented Design]
@@ -40,6 +40,37 @@ familiar, highly consistent and easy to use. Finally, the development of *Elemen
 collaboration to harvest feedback that is essential to building high quality and reliable software.
 
 No corporate entity owns or controls *Elements*, and therefore, you will never be bound by licenses or contracts.
+
+[[core-library-features]]
+=== Core Library Features
+
+* Software Design Patterns as Code: _Abstract Factory, Builder, Composite, DAO, Proxy, Template, Visitor_.
+* Domain Specific Languages (DSLs) and Fluent APIs to write concise yet expressive code.
+* Annotations for writing descriptive code: [ `@Conditional`, `@Dsl`, `@Experimental`, `FluentApi`, `@GuardedBy`,
+`@Immutable`, `@InitializationSafe`, `@NotNull`, `@Nullable`, `@NullSafe`, `@Repository`, `@Service`, `@ThreadSafe` ]
+* Addition of intuitive and applicable `RuntimeException` classes.
+* _JavaBeans_ API and framework extensions and support.
+* `Enums` (Enumerations) for general use cases: [ `LengthUnit`, `Order`, `Month`, `TimeUnit`, `Weekday`, `WeightUnit` ]
+* Environment-Aware, Context-Driven Configuration Model.
+* Comprehensive Data Structures and Data Management:
+** Auditing & Identity Management
+** Bloom Filter
+** Caching
+** Data Conversion
+** Key/Value Data Structure
+** Table-based (Tabular) Data Structure
+* Pluggable support for common Algorithms:
+** Searching: _Binary Search, Linear Search_
+** Sorting: _Bubble Sort, Comb Sort, Heap Sort, Insertion Sort, Merge Sort, Quick Sort, Selection Sort, Shell Sort_
+* Logic and Math utilities along with Logical and Relational Operators.
+* IO, NIO and Network utilities and classes.
+* Process Execution / Lifecycle Management framework
+* Pagination for Java Collections
+* Utilities for Classes, Objects, Arrays, Booleans, Characters, Collections, Functions, JavaBeans, Maps, Numbers,
+Primitive Types, Processes, Properties, Reflection, Runtime/System, Streams, Strings, Threads, and on and on.
+* Testing support with robust assertions.
+
+This list is not nearly complete. Elements covers so much more.
 
 [[learn]]
 == Learn
