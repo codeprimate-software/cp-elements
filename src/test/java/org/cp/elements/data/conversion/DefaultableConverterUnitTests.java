@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.Test;
 
 /**
- * Unit tests for {@link DefaultableConverter}.
+ * Unit Tests for {@link DefaultableConverter}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.elements.data.conversion.DefaultableConverter
  * @since 1.0.0
  */
-public class DefaultableConverterTests {
+public class DefaultableConverterUnitTests {
 
-  protected DefaultableConverter<Object, Object> newConverter() {
+  private DefaultableConverter<Object, Object> newConverter() {
     return new TestConverter();
   }
 
@@ -54,34 +54,22 @@ public class DefaultableConverterTests {
     assertThat(newConverter().withDefaultValue("test").convert(null)).isEqualTo("test");
   }
 
-  @Test(expected = ConversionException.class)
-  public void convertWithNonNullValueThrowsException() {
+  @Test
+  public void convertWithNonNullValueThrowsConversionException() {
 
-    try {
-      newConverter().convert("test");
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [test] to [java.lang.Object]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> newConverter().convert("test"))
+      .withMessage("Cannot convert [test] to [java.lang.Object]")
+      .withNoCause();
   }
 
-  @Test(expected = ConversionException.class)
-  public void convertWithNullValueAndNullDefaultValueThrowsException() {
+  @Test
+  public void convertWithNullValueAndNullDefaultValueThrowsConversionException() {
 
-    try {
-      newConverter().convert(null);
-    }
-    catch (ConversionException expected) {
-
-      assertThat(expected).hasMessage("Cannot convert [null] to [java.lang.Object]");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatExceptionOfType(ConversionException.class)
+      .isThrownBy(() -> newConverter().convert(null))
+      .withMessage("Cannot convert [null] to [java.lang.Object]")
+      .withNoCause();
   }
 
   @Test
@@ -98,21 +86,26 @@ public class DefaultableConverterTests {
     converter.setDefaultValue(null);
 
     assertThat(converter.getDefaultValue()).isNull();
+
+    converter.setDefaultValue("mock");
+
+    assertThat(converter.getDefaultValue()).isEqualTo("mock");
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void withDefaultValue() {
 
     DefaultableConverter<Object, Object> converter = newConverter();
 
     assertThat(converter.getDefaultValue()).isNull();
-    assertThat(converter.<DefaultableConverter>withDefaultValue("test")).isEqualTo(converter);
+    assertThat(converter.<DefaultableConverter<Object, Object>>withDefaultValue("test")).isEqualTo(converter);
     assertThat(converter.getDefaultValue()).isEqualTo("test");
-    assertThat(converter.<DefaultableConverter>withDefaultValue(null)).isEqualTo(converter);
+    assertThat(converter.<DefaultableConverter<Object, Object>>withDefaultValue(null)).isEqualTo(converter);
     assertThat(converter.getDefaultValue()).isNull();
+    assertThat(converter.<DefaultableConverter<Object, Object>>withDefaultValue("mock")).isEqualTo(converter);
+    assertThat(converter.getDefaultValue()).isEqualTo("mock");
   }
 
-  static class TestConverter extends DefaultableConverter<Object, Object> {
-  }
+  static class TestConverter extends DefaultableConverter<Object, Object> { }
+
 }

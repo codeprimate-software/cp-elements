@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link DefaultableConverter} class is an abstract {@link Converter} implementation supporting
- * the use {@link Object default values} if the {@link Object value} to convert is {@literal null}.
+ * Abstract {@link Converter} implementation supporting the use of {@link Object default values}
+ * if the {@link Object value} to convert is {@literal null}.
  *
  * @author John Blum
  * @see org.cp.elements.data.conversion.AbstractConverter
@@ -39,7 +40,7 @@ public abstract class DefaultableConverter<S, T> extends AbstractConverter<S, T>
    * @param defaultValue {@link Object default value} returned if the {@link Object value} to convert
    * is {@literal null}.
    */
-  public void setDefaultValue(T defaultValue) {
+  public void setDefaultValue(@Nullable T defaultValue) {
     this.defaultValue = defaultValue;
   }
 
@@ -48,7 +49,7 @@ public abstract class DefaultableConverter<S, T> extends AbstractConverter<S, T>
    *
    * @return the {@link Object default value} used if the {@link Object value} to convert is {@literal null}.
    */
-  protected T getDefaultValue() {
+  protected @Nullable T getDefaultValue() {
     return this.defaultValue;
   }
 
@@ -64,7 +65,7 @@ public abstract class DefaultableConverter<S, T> extends AbstractConverter<S, T>
    */
   @Override
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
-    return (fromType == null && getDefaultValue() != null);
+    return fromType == null && getDefaultValue() != null;
   }
 
   /**
@@ -77,7 +78,7 @@ public abstract class DefaultableConverter<S, T> extends AbstractConverter<S, T>
    * @see #convert(Object, Class)
    */
   @Override
-  public T convert(S value) {
+  public @NotNull T convert(@Nullable S value) {
 
     T defaultValue = getDefaultValue();
 
@@ -100,7 +101,7 @@ public abstract class DefaultableConverter<S, T> extends AbstractConverter<S, T>
    * @see #setDefaultValue(Object)
    */
   @SuppressWarnings("unchecked")
-  public <CONVERTER extends DefaultableConverter<S, T>> CONVERTER withDefaultValue(T defaultValue) {
+  public @NotNull <CONVERTER extends DefaultableConverter<S, T>> CONVERTER withDefaultValue(@Nullable T defaultValue) {
     setDefaultValue(defaultValue);
     return (CONVERTER) this;
   }
