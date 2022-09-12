@@ -33,8 +33,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.cp.elements.security.model.User;
 import org.junit.Test;
+
+import org.cp.elements.security.model.User;
 
 /**
  * Unit Tests for {@link FunctionUtils}
@@ -113,6 +114,24 @@ public class FunctionUtilsUnitTests {
     userConsumer.accept(mockUser);
 
     verifyNoInteractions(mockUser);
+  }
+
+  @Test
+  public void nullSafeConsumerWithNonNullConsumer() {
+
+    Consumer<?> mockConsumer = mock(Consumer.class);
+
+    assertThat(FunctionUtils.nullSafeConsumer(mockConsumer)).isSameAs(mockConsumer);
+
+    verifyNoInteractions(mockConsumer);
+  }
+
+  @Test
+  public void nullSafeConsumerWithNullConsumer() {
+
+    Consumer<?> consumer = FunctionUtils.nullSafeConsumer(null);
+
+    assertThat(consumer).isNotNull();
   }
 
   @Test

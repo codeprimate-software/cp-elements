@@ -74,6 +74,19 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Null-safe method used to guard against a {@literal null} {@link Consumer}.
+   *
+   * @param <T> {@link Class type} of the {@link Consumer Consumer's} {@link Object argument}.
+   * @param consumer {@link Consumer} to evaluate.
+   * @return the given {@link Consumer} if not {@literal null} or a noop {@link Consumer}.
+   * @see java.util.function.Consumer
+   */
+  @NullSafe
+  public static @NotNull <T> Consumer<T> nullSafeConsumer(@Nullable Consumer<T> consumer) {
+    return consumer != null ? consumer : noopConsumer();
+  }
+
+  /**
    * Null-safe method used to guard against a {@literal null} {@link Predicate} reference.
    *
    * @param <T> {@link Class type} of {@link Object} tested by the {{@link Predicate}.
@@ -98,6 +111,7 @@ public abstract class FunctionUtils {
    * @see #nullSafePredicateMatchAll(Predicate)
    * @see java.util.function.Predicate
    */
+  @NullSafe
   public static @NotNull <T> Predicate<T> nullSafePredicateMatchNone(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> false;
   }
