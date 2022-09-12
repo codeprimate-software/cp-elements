@@ -16,7 +16,9 @@
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.net.URL;
 import java.sql.Date;
@@ -28,6 +30,8 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
  * Unit Tests for {@link AbstractConverter}.
  *
@@ -38,7 +42,7 @@ import org.junit.Test;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractConverterTests {
+public class AbstractConverterUnitTests {
 
   private AbstractConverter<Object, Object> newConverter() {
     return new TestConverter();
@@ -58,6 +62,8 @@ public class AbstractConverterTests {
     converter.setConversionService(mockConversionService);
 
     assertThat(converter.getConversionService().orElse(null)).isEqualTo(mockConversionService);
+
+    verifyNoInteractions(mockConversionService);
   }
 
   @Test
@@ -75,21 +81,17 @@ public class AbstractConverterTests {
     converter.setConversionService(mockConversionService);
 
     assertThat(converter.resolveConversionService()).isEqualTo(mockConversionService);
+
+    verifyNoInteractions(mockConversionService);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void resolveConversionServiceWhenUnsetThrowsIllegalStateException() {
 
-    try {
-      newConverter().resolveConversionService();
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessage("No ConversionService was configured");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalStateException()
+      .isThrownBy(() -> newConverter().resolveConversionService())
+      .withMessage("No ConversionService was configured")
+      .withNoCause();
   }
 
   @Test
@@ -289,7 +291,7 @@ public class AbstractConverterTests {
 
     TestConverter() { }
 
-    TestConverter(Class<?> type) {
+    TestConverter(@NotNull Class<?> type) {
       super(type);
     }
   }
