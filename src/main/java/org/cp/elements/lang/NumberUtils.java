@@ -28,13 +28,29 @@ import org.cp.elements.lang.annotation.Nullable;
  *
  * @author John J. Blum
  * @see java.lang.Number
+ * @see java.math.BigDecimal
+ * @see java.math.BigInteger
  * @see java.util.regex.Pattern
  * @since 1.0.0
  */
 public abstract class NumberUtils {
 
   protected static final Pattern binaryPattern = Pattern.compile("[01]+");
-  protected static final Pattern hexadecimalPattern = Pattern.compile("[\\dAaBbCcDdEeFf]+");
+  protected static final Pattern hexadecimalPattern = Pattern.compile("0x[0-9A-Fa-f]+");
+
+  protected static final String HEXADECIMAL_PREFIX_NOTATION = "0x";
+
+  /**
+   * Determines whether the given {@link String value} represents a binary value, consisting of
+   * only {@literal 1s} and {@literal 0s}.
+   *
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating whether the given {@link String value} represents a binary value,
+   * consisting of only {@literal 1s} and {@literal 0s}.
+   */
+  public static boolean isBinaryString(@Nullable String value) {
+    return StringUtils.hasText(value) && binaryPattern.matcher(value).matches();
+  }
 
   /**
    * Converts the given, required {@link String binary value} into an {@link Integer}.
@@ -43,12 +59,13 @@ public abstract class NumberUtils {
    * @return an {@link Integer} representing the {@link String binary value}.
    * @throws IllegalArgumentException if the {@link String binary value} is {@literal null} or {@literal empty},
    * or the value is not a valid {@link String binary string}.
+   * @see #isBinaryString(String)
    */
   public static @NotNull Integer fromBinaryString(@NotNull String binaryValue) {
 
     Assert.hasText(binaryValue, "Binary String [%s] is required", binaryValue);
 
-    Assert.argument(binaryValue, value -> binaryPattern.matcher(binaryValue).matches(),
+    Assert.argument(binaryValue, NumberUtils::isBinaryString,
       "Binary String [%s] must contain only 1s and 0s", binaryValue);
 
     int result = 0;
@@ -62,28 +79,39 @@ public abstract class NumberUtils {
   }
 
   /**
+   * Determines whether the given {@link String value} is a hexadecimal value, consisting of
+   * only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
+   *
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating whether the given {@link String value} is a hexadecimal value, consisting of
+   * only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
+   */
+  public static boolean isHexadecimalString(@Nullable String value) {
+    return StringUtils.hasText(value) && hexadecimalPattern.matcher(value).matches();
+  }
+
+  /**
    * Converts the given, required {@link String hexadecimal value} into an {@link Integer}.
    *
    * @param hexadecimalValue {@link String} containing digits 0-9 and letters A-F.
    * @return an {@link Integer} representing the {@link String hexadecimal value}.
    * @throws IllegalArgumentException if the {@link String hexadecimal value} is {@literal null} or {@literal empty},
    * or the value is not a valid {@link String hexadecimal string}.
+   * @see #isHexadecimalString(String)
    */
   public static @NotNull Integer fromHexadecimalString(@NotNull String hexadecimalValue) {
 
     Assert.hasText(hexadecimalValue, "Hexadecimal String [%s] is required", hexadecimalValue);
 
-    hexadecimalValue = hexadecimalValue.trim().startsWith("Ox")
-      ? hexadecimalValue.substring("Ox".length())
-      : hexadecimalValue;
-
-    Assert.argument(hexadecimalValue, value -> hexadecimalPattern.matcher(value).matches(),
+    Assert.argument(hexadecimalValue, NumberUtils::isHexadecimalString,
       "Hexadecimal String [%s] must contain only digits [0-9] and letters [A-F]", hexadecimalValue);
+
+    String resolvedHexadecimalValue = stripHexadecimalPrefixNotation(hexadecimalValue);
 
     int result = 0;
     int pow = 0;
 
-    for (char digit : reverseCharacters(hexadecimalValue).toCharArray()) {
+    for (char digit : reverseCharacters(resolvedHexadecimalValue).toCharArray()) {
       result += parseInt(digit) * Math.pow(16.0d, pow++);
     }
 
@@ -118,6 +146,13 @@ public abstract class NumberUtils {
 
   private static @NotNull String reverseCharacters(@NotNull String value) {
     return new StringBuilder(value).reverse().toString();
+  }
+
+  private static @NotNull String stripHexadecimalPrefixNotation(@NotNull String value) {
+
+    return value.trim().startsWith(HEXADECIMAL_PREFIX_NOTATION)
+      ? value.substring(HEXADECIMAL_PREFIX_NOTATION.length())
+      : value;
   }
 
   /**

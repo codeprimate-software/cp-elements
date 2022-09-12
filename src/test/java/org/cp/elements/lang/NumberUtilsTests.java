@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,14 +24,45 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link NumberUtils}.
+ * Unit Tests for {@link NumberUtils}.
  *
  * @author John J. Blum
+ * @see java.math.BigDecimal
+ * @see java.math.BigInteger
  * @see org.junit.Test
  * @see org.cp.elements.lang.NumberUtils
  * @since 1.0.0
  */
 public class NumberUtilsTests {
+
+  private String formatAsHexadecimalString(String number) {
+    return number.startsWith(NumberUtils.HEXADECIMAL_PREFIX_NOTATION) ? number
+      : String.format("%1$s%2$s", NumberUtils.HEXADECIMAL_PREFIX_NOTATION, number);
+  }
+
+  @Test
+  public void isBinaryString() {
+
+    assertThat(NumberUtils.isBinaryString("0")).isTrue();
+    assertThat(NumberUtils.isBinaryString("1")).isTrue();
+    assertThat(NumberUtils.isBinaryString("0001")).isTrue();
+    assertThat(NumberUtils.isBinaryString("0010")).isTrue();
+    assertThat(NumberUtils.isBinaryString("10")).isTrue();
+    assertThat(NumberUtils.isBinaryString("1010")).isTrue();
+    assertThat(NumberUtils.isBinaryString("10001010")).isTrue();
+  }
+
+  @Test
+  public void isNotBinaryString() {
+
+    assertThat(NumberUtils.isBinaryString("O")).isFalse();
+    assertThat(NumberUtils.isBinaryString("1O")).isFalse();
+    assertThat(NumberUtils.isBinaryString("0llO")).isFalse();
+    assertThat(NumberUtils.isBinaryString("1234567890")).isFalse();
+    assertThat(NumberUtils.isBinaryString("CAFEBABE")).isFalse();
+    assertThat(NumberUtils.isBinaryString("0xCAFEBABE")).isFalse();
+    assertThat(NumberUtils.isBinaryString("TEXT")).isFalse();
+  }
 
   @Test
   public void fromBinaryStringIsCorrect() {
@@ -83,8 +113,8 @@ public class NumberUtilsTests {
   public void fromInvalidBinaryString() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> NumberUtils.fromBinaryString("1O101O"))
-      .withMessage("Binary String [1O101O] must contain only 1s and 0s")
+      .isThrownBy(() -> NumberUtils.fromBinaryString("1Ol01O"))
+      .withMessage("Binary String [1Ol01O] must contain only 1s and 0s")
       .withNoCause();
   }
 
@@ -98,16 +128,43 @@ public class NumberUtilsTests {
   }
 
   @Test
+  public void isHexadecimalString() {
+
+    assertThat(NumberUtils.isHexadecimalString("0xabcdef")).isTrue();
+    assertThat(NumberUtils.isHexadecimalString("0xabCDef")).isTrue();
+    assertThat(NumberUtils.isHexadecimalString("0xAbCDeF")).isTrue();
+    assertThat(NumberUtils.isHexadecimalString("0xAbCdEf")).isTrue();
+    assertThat(NumberUtils.isHexadecimalString("0xB00BFAB5")).isTrue();
+    assertThat(NumberUtils.isHexadecimalString("0xCAFEBABE")).isTrue();
+    assertThat(NumberUtils.isHexadecimalString("0x10a2B3c4D5e6F78")).isTrue();
+  }
+
+  @Test
+  public void isNotHexadecimalString() {
+
+    assertThat(NumberUtils.isHexadecimalString("10101010")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("0123456789")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("9876543210")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("abcdef")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("ABCDEF")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("0123456789ABCDEF")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("0xl0l0")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("0xC@B")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("OxCAFE")).isFalse();
+    assertThat(NumberUtils.isHexadecimalString("0xTEXT")).isFalse();
+  }
+
+  @Test
   public void fromHexadecimalStringIsCorrect() {
 
     Integer value = 0xB00BFAB;
     String hexadecimalString = Integer.toHexString(value);
 
-    assertThat(NumberUtils.fromHexadecimalString(hexadecimalString)).isEqualTo(value);
+    assertThat(NumberUtils.fromHexadecimalString(formatAsHexadecimalString(hexadecimalString))).isEqualTo(value);
   }
 
   @Test
-  public void fromBlankHexidecimalString() {
+  public void fromBlankHexadecimalString() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> NumberUtils.fromHexadecimalString("  "))
@@ -116,7 +173,7 @@ public class NumberUtilsTests {
   }
 
   @Test
-  public void fromEmptyHexidecimalString() {
+  public void fromEmptyHexadecimalString() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> NumberUtils.fromHexadecimalString(""))
@@ -125,7 +182,7 @@ public class NumberUtilsTests {
   }
 
   @Test
-  public void fromNullHexidecimalString() {
+  public void fromNullHexadecimalString() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> NumberUtils.fromHexadecimalString(null))
@@ -140,6 +197,14 @@ public class NumberUtilsTests {
       .isThrownBy(() -> NumberUtils.fromHexadecimalString("0xCAT1NB0X"))
       .withMessage("Hexadecimal String [0xCAT1NB0X] must contain only digits [0-9] and letters [A-F]")
       .withNoCause();
+  }
+
+  @Test
+  public void fromPrefixNotationHexadecimalString() {
+
+    assertThat(NumberUtils.fromHexadecimalString("0x15")).isEqualTo(21);
+    assertThat(NumberUtils.fromHexadecimalString("0x45")).isEqualTo(69);
+    assertThat(NumberUtils.fromHexadecimalString("0x63")).isEqualTo(99);
   }
 
   @Test
