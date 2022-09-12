@@ -69,13 +69,13 @@ public abstract class NumberUtils {
     Assert.argument(binaryValue, NumberUtils::isBinaryString,
       "Binary String [%s] must contain only 1s and 0s", binaryValue);
 
-    String resolvedBinaryValue = stripBinaryPrefixNotation(binaryValue);
+    String resolvedBinaryValue = stripBinaryNumberPrefixNotation(binaryValue);
 
     int result = 0;
-    int pow = 0;
+    int pow = resolvedBinaryValue.length() - 1;
 
-    for (char digit : reverseCharacters(resolvedBinaryValue).toCharArray()) {
-      result += parseInt(digit) * (int) Math.pow(2.0d, pow++);
+    for (char digit : resolvedBinaryValue.toCharArray()) {
+      result += parseInt(digit) * (int) Math.pow(2.0d, pow--);
     }
 
     return result;
@@ -109,13 +109,13 @@ public abstract class NumberUtils {
     Assert.argument(hexadecimalValue, NumberUtils::isHexadecimalString,
       "Hexadecimal String [%s] must contain only digits [0-9] and letters [A-F]", hexadecimalValue);
 
-    String resolvedHexadecimalValue = stripHexadecimalPrefixNotation(hexadecimalValue);
+    String resolvedHexadecimalValue = stripHexadecimalNumberPrefixNotation(hexadecimalValue);
 
     int result = 0;
-    int pow = 0;
+    int pow = resolvedHexadecimalValue.length() - 1;
 
-    for (char digit : reverseCharacters(resolvedHexadecimalValue).toCharArray()) {
-      result += parseInt(digit) * Math.pow(16.0d, pow++);
+    for (char digit : resolvedHexadecimalValue.toCharArray()) {
+      result += parseInt(digit) * Math.pow(16.0d, pow--);
     }
 
     return result;
@@ -147,22 +147,16 @@ public abstract class NumberUtils {
     }
   }
 
-  private static @NotNull String reverseCharacters(@NotNull String value) {
-    return new StringBuilder(value).reverse().toString();
+  private static @NotNull String stripBinaryNumberPrefixNotation(@NotNull String value) {
+    return stripNumberPrefixNotation(value, BINARY_PREFIX_NOTATION);
   }
 
-  private static @NotNull String stripBinaryPrefixNotation(@NotNull String value) {
-
-    return value.trim().startsWith(BINARY_PREFIX_NOTATION)
-      ? value.substring(BINARY_PREFIX_NOTATION.length())
-      : value;
+  private static @NotNull String stripHexadecimalNumberPrefixNotation(@NotNull String value) {
+    return stripNumberPrefixNotation(value, HEXADECIMAL_PREFIX_NOTATION);
   }
 
-  private static @NotNull String stripHexadecimalPrefixNotation(@NotNull String value) {
-
-    return value.trim().startsWith(HEXADECIMAL_PREFIX_NOTATION)
-      ? value.substring(HEXADECIMAL_PREFIX_NOTATION.length())
-      : value;
+  private static @NotNull String stripNumberPrefixNotation(@NotNull String value, @NotNull String prefix) {
+    return value.startsWith(prefix) ? value.substring(prefix.length()) : value;
   }
 
   /**

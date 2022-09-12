@@ -81,6 +81,19 @@ public class NumberUtilsTests {
   }
 
   @Test
+  public void fromBinaryStringWithPrefixIsCorrect() {
+
+    assertThat(NumberUtils.fromBinaryString("b0001")).isEqualTo(1);
+    assertThat(NumberUtils.fromBinaryString("b0010")).isEqualTo(2);
+    assertThat(NumberUtils.fromBinaryString("b0100")).isEqualTo(4);
+    assertThat(NumberUtils.fromBinaryString("b1000")).isEqualTo(8);
+    assertThat(NumberUtils.fromBinaryString("b1010")).isEqualTo(10);
+    assertThat(NumberUtils.fromBinaryString("b1100")).isEqualTo(12);
+    assertThat(NumberUtils.fromBinaryString("b1110")).isEqualTo(14);
+    assertThat(NumberUtils.fromBinaryString("b00110110")).isEqualTo(54);
+  }
+
+  @Test
   public void fromBlankBinaryString() {
 
     assertThatIllegalArgumentException()
