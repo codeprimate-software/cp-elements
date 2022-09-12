@@ -18,7 +18,7 @@ package org.cp.elements.lang;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIndexOutOfBoundsException;
@@ -38,7 +38,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.PatternSyntaxException;
 
 import org.junit.Test;
 
@@ -47,16 +49,24 @@ import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSourceExpression;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
+import org.cp.elements.security.model.User;
 import org.cp.elements.util.ApplicationException;
 import org.cp.elements.util.ArrayUtils;
 
 import org.assertj.core.api.Assertions;
 import org.mockito.InOrder;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Unit Tests for {@link ThrowableAssertions}.
  *
  * @author John Blum
+ * @see org.assertj.core.api.Assertions
  * @see org.junit.Test
  * @see org.cp.elements.lang.ThrowableAssertions
  * @since 1.0.0
@@ -438,16 +448,18 @@ public class ThrowableAssertionsUnitTests {
   @Test
   public void assertIllegalArgumentExceptionUsingArrayOfArguments() {
 
-    ObjectOperationThrowingIllegalArgumentException operation =
-      spy(new ObjectOperationThrowingIllegalArgumentException());
+    User<Integer> jonDoe = TestUser.as("jonDoe");
+
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(IllegalArgumentException::new));
 
     assertThatIllegalArgumentException()
-      .usingArguments(true, 1, "mock")
+      .usingArguments(true, 1, "mock", jonDoe)
       .isThrownBy(operation::run)
       .havingMessage("TEST")
       .withNoCause();
 
-    verify(operation, times(1)).run(eq(new Object[] { true, 1, "mock" }));
+    verify(operation, times(1)).run(eq(new Object[] { true, 1, "mock", jonDoe }));
     verifyNoMoreInteractions(operation);
   }
 
@@ -455,12 +467,14 @@ public class ThrowableAssertionsUnitTests {
   @SuppressWarnings("unchecked")
   public void assertIllegalArgumentExceptionUsingSupplierOfArguments() {
 
-    ObjectOperationThrowingIllegalArgumentException operation =
-      spy(new ObjectOperationThrowingIllegalArgumentException());
+    ObjectOperationThrowingRuntimeException operation =
+      spy(new ObjectOperationThrowingRuntimeException(IllegalArgumentException::new));
 
     Supplier<Object[]> mockArgumentSupplier = mock(Supplier.class);
 
-    doReturn(ArrayUtils.asArray(true, 1, "mock")).when(mockArgumentSupplier).get();
+    User<Integer> janeDoe = TestUser.as("janeDoe");
+
+    doReturn(ArrayUtils.asArray(true, 1, "mock", janeDoe)).when(mockArgumentSupplier).get();
 
     ThrowableSource throwableSource = spy(assertThatIllegalArgumentException()
       .usingArguments(mockArgumentSupplier));
@@ -474,9 +488,71 @@ public class ThrowableAssertionsUnitTests {
 
     order.verify(throwableSource, times(1)).isThrownBy(isNotNull());
     order.verify(mockArgumentSupplier, times(1)).get();
-    order.verify(operation, times(1)).run(eq(new Object[] { true, 1, "mock" }));
+    order.verify(operation, times(1)).run(eq(new Object[] { true, 1, "mock", janeDoe }));
 
     verifyNoMoreInteractions(mockArgumentSupplier, operation);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void assertIllegalStateExceptionHavingMessageMatchingRegularExpression() {
+
+    User<Integer> jonDoe = TestUser.as("jonDoe");
+
+    ObjectOperationThrowingRuntimeException operation =
+      new ObjectOperationThrowingRuntimeException(IllegalArgumentException::new);
+
+    assertThatIllegalStateException()
+      .usingArguments(jonDoe)
+      .isThrownBy(args -> operation.process((User<Integer>) ArrayUtils.getFirstElement(args)))
+      .havingMessageMatching("Cannot process User \\[.*\\(.*jonDoe\\)]")
+      .withNoCause();
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertIndexOutOfBoundsExceptionHavingNonMatchingMessage() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      new ObjectOperationThrowingRuntimeException(IndexOutOfBoundsException::new);
+
+    try {
+      assertThatIndexOutOfBoundsException()
+        .usingArguments(10)
+        .isThrownBy(args -> operation.atIndex(Integer.parseInt(String.valueOf(ArrayUtils.getFirstElement(args)))))
+        .havingMessageMatching("Index \\[\\d] is not valid")
+        .withNoCause();
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected)
+        .hasMessage("The Throwable [%s] message [Index [10] is not valid] does not match the pattern [Index \\[\\d] is not valid]",
+          IndexOutOfBoundsException.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = PatternSyntaxException.class)
+  public void assertThatNullPointerExceptionWithInvalidRegularExpressionPattern() {
+
+    ObjectOperationThrowingRuntimeException operation =
+      new ObjectOperationThrowingRuntimeException(NullPointerException::new);
+
+    try {
+      assertThatNullPointerException()
+        .isThrownBy(args -> operation.usingNullReference())
+        .havingMessageMatching("\\(.*)")
+        .withNoCause();
+    }
+    catch (PatternSyntaxException expected) {
+
+      assertThat(expected).hasMessageStartingWith("Unmatched closing ')'");
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test
@@ -497,10 +573,42 @@ public class ThrowableAssertionsUnitTests {
     catch (AssertionError ignore) { }
   }
 
-  static class ObjectOperationThrowingIllegalArgumentException {
+  static class ObjectOperationThrowingRuntimeException {
+
+    private final Function<String, RuntimeException> runtimeExceptionFunction;
+
+    ObjectOperationThrowingRuntimeException(Function<String, RuntimeException> runtimeExceptionFunction) {
+      this.runtimeExceptionFunction = runtimeExceptionFunction;
+    }
+
+    Object atIndex(int index) {
+      throw this.runtimeExceptionFunction.apply(String.format("Index [%d] is not valid", index));
+    }
 
     Object run(Object[] arguments) {
-      throw newIllegalArgumentException("TEST");
+      throw this.runtimeExceptionFunction.apply("TEST");
     }
+
+    Object process(User<?> user) {
+      throw newIllegalStateException("Cannot process User [%s]", user);
+    }
+
+    Object usingNullReference() {
+      throw this.runtimeExceptionFunction.apply("Null Pointer");
+    }
+  }
+
+  @Getter
+  @ToString(of = "name")
+  @EqualsAndHashCode(of = "name")
+  @RequiredArgsConstructor(staticName = "as")
+  static class TestUser implements User<Integer> {
+
+    @Setter
+    private Integer id;
+
+    @lombok.NonNull
+    private final String name;
+
   }
 }

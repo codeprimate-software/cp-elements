@@ -19,6 +19,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newAssertionExcepti
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.annotation.Dsl;
@@ -29,13 +30,15 @@ import org.cp.elements.text.FormatUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Abstract utility class defining assertions for {@link Throwable Throwables}, such as {@link Exception Exceptions}
- * and {@link Error Errors}.
+ * Abstract base class defining assertions for {@link Throwable Throwables}, such as {@link Exception Exceptions},
+ * {@link RuntimeException RuntimeExceptions} and {@link Error Errors}.
  *
  * @author John Blum
  * @see java.lang.Error
  * @see java.lang.Exception
+ * @see java.lang.RuntimeException
  * @see java.lang.Throwable
+ * @see java.util.regex.Pattern
  * @see org.cp.elements.lang.annotation.Dsl
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
@@ -196,6 +199,8 @@ public abstract class ThrowableAssertions {
      *
      * @param throwableType expected {@link Class type} of the {@link Throwable cause}.
      * @return this {@link AssertThatThrowable} instance.
+     * @throws AssertionException if the subject {@link Throwable} was not caused by
+     * a {@link Throwable} of the given {@link Class type}.
      */
     AssertThatThrowable causedBy(Class<? extends Throwable> throwableType);
 
@@ -204,9 +209,12 @@ public abstract class ThrowableAssertions {
      * expected {@link String message}.
      *
      * @param message {@link String} containing the expected message.
-     * @param args an optional, variable array of {@link Object arguments} used to replace the placeholders
+     * @param args an optional, variable array of {@link Object arguments} used to replace placeholders
      * in the expected message.
      * @return this {@link AssertThatThrowable} instance.
+     * @throws AssertionException if the {@link Throwable#getMessage() Throwable message} is not equal to
+     * (match, case-sensitive) the given, expected {@link String message} after formatted with
+     * the array of {@link Object arguments}.
      */
     AssertThatThrowable havingMessage(String message, Object... args);
 
@@ -218,6 +226,9 @@ public abstract class ThrowableAssertions {
      * @param args an optional, variable array of {@link Object arguments} used to replace the placeholders
      * in the expected message.
      * @return this {@link AssertThatThrowable} instance.
+     * @throws AssertionException if the {@link Throwable#getMessage() Throwable message} does not contain
+     * the given {@link String message} after formatted with the array of {@link Object arguments}.
+     * @see #havingMessageMatching(String)
      */
     AssertThatThrowable havingMessageContaining(String message, Object... args);
 
@@ -229,8 +240,26 @@ public abstract class ThrowableAssertions {
      * @param args an optional, variable array of {@link Object arguments} used to replace the placeholders
      * in the expected message.
      * @return this {@link AssertThatThrowable} instance.
+     * @throws AssertionException if the {@link Throwable#getMessage() Throwable message} does not end with
+     * the given {@link String message} after formatted with the array of {@link Object arguments}.
+     * @see #havingMessageStartingWith(String, Object...)
      */
     AssertThatThrowable havingMessageEndingWith(String message, Object... args);
+
+    /**
+     * Asserts that the current, subject {@link Throwable} has a message matching the given
+     * {@literal Regular Expression (REGEX)} {@link String pattern}.
+     *
+     * @param pattern {@link String} containing the {@literal Regular Expression (REGEX)}
+     * used to match {@link Throwable#getMessage() Throwable message}.
+     * @return this {@link AssertThatThrowable} instance.
+     * @throws AssertionException if the {@link Throwable#getMessage() Throwable message}
+     * does match the {@literal Regular Expression (REGEX)} {@link String pattern}.
+     * @throws java.util.regex.PatternSyntaxException if the given {@link String pattern}
+     * is not valid {@literal REGEX} syntax.
+     * @see #havingMessageContaining(String, Object...)
+     */
+    AssertThatThrowable havingMessageMatching(String pattern);
 
     /**
      * Asserts that the current, subject {@link Throwable} has a message starting with the given,
@@ -240,6 +269,9 @@ public abstract class ThrowableAssertions {
      * @param args an optional, variable array of {@link Object arguments} used to replace the placeholders
      * in the expected message.
      * @return this {@link AssertThatThrowable} instance.
+     * @throws AssertionException if the {@link Throwable#getMessage() Throwable message} does not start with
+     * the given {@link String message} after formatted with the array of {@link Object arguments}.
+     * @see #havingMessageEndingWith(String, Object...)
      */
     AssertThatThrowable havingMessageStartingWith(String message, Object... args);
 
@@ -317,6 +349,24 @@ public abstract class ThrowableAssertions {
     public @NotNull AssertThatThrowable havingMessageEndingWith(String message, Object... args) {
       return withMessage(String::endsWith, "Expected message ending with [%s] in [%s]",
         message, args);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public @NotNull AssertThatThrowable havingMessageMatching(@NotNull String pattern) {
+
+      Assert.hasText(pattern, "Regular Expression (REGEX) Pattern [%s] is required", pattern);
+
+      Pattern regularExpressionPattern = Pattern.compile(pattern);
+
+      String message = getThrowable().getMessage();
+
+      if (!regularExpressionPattern.matcher(message).matches()) {
+        throw newAssertionException("The Throwable [%1$s] message [%2$s] does not match the pattern [%3$s]",
+          getThrowable().getClass().getName(), message, pattern);
+      }
+
+      return this;
     }
 
     @Override
