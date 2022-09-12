@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
-import static java.util.Arrays.stream;
-import static org.cp.elements.lang.ClassUtils.assignableTo;
-import static org.cp.elements.lang.ObjectUtils.safeGetValue;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link AbstractConverter} class is an abstract base class encapsulating functionality and behavior
- * common to all {@link Converter} implementations.
+ * An abstract base class encapsulating functionality and behavior common to all {@link Converter} implementations.
  *
  * @author John J. Blum
+ * @see java.util.function.Function
  * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @see org.cp.elements.data.conversion.Converter
  * @since 1.0.0
@@ -58,14 +58,14 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Constructs an instance of {@link AbstractConverter} initialized with the given {@link Class type}
+   * Constructs a new instance of {@link AbstractConverter} initialized with the given {@link Class type}
    * to determine the {@link Class source} and {@link Class target} types of the conversion.
    *
    * @param type {@link Class} to evaluate for source and target {@link Class types}.
    * @see java.lang.Class
    * @see #init(Class)
    */
-  public AbstractConverter(Class<?> type) {
+  public AbstractConverter(@NotNull Class<?> type) {
     init(type);
   }
 
@@ -73,16 +73,16 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
    * Initializes the {@link Class source} and {@link Class target} types of the data conversion
    * performed by this {@link Converter}.
    *
-   * @param type {@link Class} to evaluate for source and target {@link Class types}.
+   * @param type {@link Class} to evaluate for source and target {@link Class types}; must not be {@literal null}.
    * @see java.lang.Class
    */
-  private void init(Class<?> type) {
+  private void init(@NotNull Class<?> type) {
 
     ParameterizedType parameterizedType =
-      stream(nullSafeArray(type.getGenericInterfaces(), Type.class))
+      Arrays.stream(ArrayUtils.nullSafeArray(type.getGenericInterfaces(), Type.class))
         .filter(this::isParameterizedFunctionType)
         .findFirst()
-        .map(it -> (ParameterizedType) it)
+        .map(ParameterizedType.class::cast)
         .orElseGet(() -> {
 
           Type genericSuperclass = type.getGenericSuperclass();
@@ -101,19 +101,19 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Sets a reference to the {@link ConversionService} used to perform conversions.
+   * Sets a reference to the {@link ConversionService} used to perform data conversions.
    *
-   * @param conversionService reference to the {@link ConversionService} used to perform conversions.
+   * @param conversionService reference to the {@link ConversionService} used to perform data conversions.
    * @see org.cp.elements.data.conversion.ConversionService
    */
-  public void setConversionService(ConversionService conversionService) {
+  public void setConversionService(@Nullable ConversionService conversionService) {
     this.conversionService = conversionService;
   }
 
   /**
-   * Returns an {@link Optional} reference to the {@link ConversionService} used to perform conversions.
+   * Returns an {@link Optional} reference to the {@link ConversionService} used to perform data conversions.
    *
-   * @return an {@link Optional} reference to the {@link ConversionService} used to perform conversions.
+   * @return an {@link Optional} reference to the {@link ConversionService} used to perform data conversions.
    * @see org.cp.elements.data.conversion.ConversionService
    * @see java.util.Optional
    */
@@ -122,15 +122,16 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Resolves the reference to the {@link ConversionService} used to perform conversions.
+   * Resolves the reference to the {@link ConversionService} used to perform data conversions.
    *
-   * @return the resolved reference to the {@link ConversionService} used to perform conversions.
+   * @return the resolved reference to the {@link ConversionService} used to perform data conversions.
    * @throws IllegalStateException if no {@link ConversionService} was configured.
    * @see org.cp.elements.data.conversion.ConversionService
    * @see #getConversionService()
    */
-  protected ConversionService resolveConversionService() {
-    return getConversionService().orElseThrow(() -> newIllegalStateException("No ConversionService was configured"));
+  protected @NotNull ConversionService resolveConversionService() {
+    return getConversionService()
+      .orElseThrow(() -> newIllegalStateException("No ConversionService was configured"));
   }
 
   /**
@@ -146,8 +147,8 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   @NullSafe
   protected boolean isAssignableTo(Class<?> fromType, Class<?>... toTypes) {
 
-    for (Class toType : nullSafeArray(toTypes, Class.class)) {
-      if (assignableTo(fromType, toType)) {
+    for (Class<?> toType : ArrayUtils.nullSafeArray(toTypes, Class.class)) {
+      if (ClassUtils.assignableTo(fromType, toType)) {
         return true;
       }
     }
@@ -156,21 +157,21 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Determines whether the {@link Type} is a generic, parameterized {@link Converter} {@link Class type}, such as
-   * by implementing the {@link Converter} interface or extending the {@link AbstractConverter} base class.
+   * Determines whether the {@link Type} is a generic, parameterized {@link Converter} {@link Class type},
+   * such as by implementing the {@link Converter} interface or extending the {@link AbstractConverter} base class.
    *
    * @param type {@link Type} to evaluate.
    * @return a boolean if the {@link Type} represents a generic, parameterized {@link Converter} {@link Class type}.
    * @see java.lang.reflect.Type
    */
   @NullSafe
-  protected boolean isParameterizedFunctionType(Type type) {
+  protected boolean isParameterizedFunctionType(@Nullable Type type) {
 
     return Optional.ofNullable(type)
-      .filter(it -> it instanceof ParameterizedType)
+      .filter(ParameterizedType.class::isInstance)
       .map(it -> {
 
-        Class<?> rawType = safeGetValue(() -> ClassUtils.toRawType(it), Object.class);
+        Class<?> rawType = ObjectUtils.safeGetValue(() -> ClassUtils.toRawType(it), Object.class);
 
         return isAssignableTo(rawType, Converter.class, Function.class);
 
@@ -179,9 +180,9 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Returns an {@link Optional} {@link Class source type} of the conversion performed by this {@link Converter}.
+   * Returns an {@link Optional} {@link Class source type} of the data conversion performed by this {@link Converter}.
    *
-   * @return an {@link Optional} {@link Class source type} of the conversion performed by this {@link Converter}.
+   * @return an {@link Optional} {@link Class source type} of the data conversion performed by this {@link Converter}.
    * @see java.util.Optional
    * @see java.lang.Class
    */
@@ -190,9 +191,10 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   }
 
   /**
-   * Returns the {@link Class target type} of the conversion performed by this {@link Converter}.
+   * Returns an {@link Optional} {@link Class target type} of the data conversion performed by this {@link Converter}.
    *
-   * @return the {@link Class target type} of the conversion performed by this {@link Converter}.
+   * @return an {@link Optional} {@link Class target type} of the data conversion performed by this {@link Converter}.
+   * @see java.util.Optional
    * @see java.lang.Class
    */
   protected Optional<Class<?>> getTargetType() {
@@ -215,24 +217,28 @@ public abstract class AbstractConverter<S, T> implements Converter<S, T> {
   public boolean canConvert(Class<?> fromType, Class<?> toType) {
 
     boolean canConvert = getSourceType()
-      .filter(sourceType -> !Object.class.equals(sourceType))
-      .map(sourceType -> assignableTo(fromType, sourceType))
+      .filter(this::notObjectTypePredicate)
+      .map(sourceType -> ClassUtils.assignableTo(fromType, sourceType))
       .orElse(true);
 
     // targetType should be assignable to or a subclass of toType
     // toType should be assignable from targetType
     canConvert &= getTargetType()
-      .filter(targetType -> !Object.class.equals(targetType))
-      .map(targetType -> assignableTo(targetType, toType))
+      .filter(this::notObjectTypePredicate)
+      .map(targetType -> ClassUtils.assignableTo(targetType, toType))
       .orElse(true);
 
     return canConvert;
   }
 
+  private boolean notObjectTypePredicate(@Nullable Class<?> type) {
+    return !Object.class.equals(type);
+  }
+
   /**
    * Converts an {@link Object} of {@link Class type S} into an {@link Object} of {@link Class type T}.
    *
-   * @param value {@link Object} of {@link Class type S} to convert.
+   * @param value {@link Object} to convert.
    * @return the converted {@link Object} of {@link Class type T}.
    * @throws ConversionException if the {@link Object} cannot be converted.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +29,7 @@ import java.util.function.Function;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link AbstractConverter}.
+ * Unit Tests for {@link AbstractConverter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -94,10 +93,9 @@ public class AbstractConverterTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void isAssignableToReturnsTrue() {
 
-    AbstractConverter converter = newConverter();
+    AbstractConverter<Object, Object> converter = newConverter();
 
     assertThat(converter.isAssignableTo(Character.class, Short.class, String.class, Object.class)).isTrue();
     assertThat(converter.isAssignableTo(Boolean.class, Boolean.class, Byte.class, Character.class, String.class,
@@ -105,10 +103,9 @@ public class AbstractConverterTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void isAssignableToReturnsFalse() {
 
-    AbstractConverter converter = newConverter();
+    AbstractConverter<Object, Object> converter = newConverter();
 
     assertThat(converter.isAssignableTo(Timestamp.class, Calendar.class, Date.class, LocalDate.class,
       LocalDateTime.class, Long.class, String.class)) .isFalse();
@@ -118,15 +115,13 @@ public class AbstractConverterTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void isAssignableToWithEmptyClassTypeArrayReturnsFalse() {
     assertThat(newConverter().isAssignableTo(Object.class)).isFalse();
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void isAssignableToWithNullClassTypeArrayIsNullSafeAndReturnsFalse() {
-    assertThat(newConverter().isAssignableTo(Object.class, (Class[]) null)).isFalse();
+    assertThat(newConverter().isAssignableTo(Object.class, (Class<?>[]) null)).isFalse();
   }
 
   @Test
@@ -279,6 +274,7 @@ public class AbstractConverterTests {
     }
   }
 
+  @SuppressWarnings("rawtypes")
   static class RawTypeConverter extends AbstractConverter { }
 
   static class StringToIntegerConverter extends AbstractConverter<String, Integer> { }
