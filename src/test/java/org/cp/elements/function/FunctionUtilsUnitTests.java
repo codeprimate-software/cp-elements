@@ -117,6 +117,15 @@ public class FunctionUtilsUnitTests {
   }
 
   @Test
+  public void noopSupplierIsCorrect() {
+
+    Supplier<User<?>> supplier = FunctionUtils.noopSupplier();
+
+    assertThat(supplier).isNotNull();
+    assertThat(supplier.get()).isNull();
+  }
+
+  @Test
   public void nullSafeConsumerWithNonNullConsumer() {
 
     Consumer<?> mockConsumer = mock(Consumer.class);
