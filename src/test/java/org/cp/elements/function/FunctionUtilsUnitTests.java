@@ -188,6 +188,24 @@ public class FunctionUtilsUnitTests {
   }
 
   @Test
+  public void nullSafeSupplierWithNonNullSupplier() {
+
+    Supplier<?> mockSupplier = mock(Supplier.class);
+
+    assertThat(FunctionUtils.nullSafeSupplier(mockSupplier)).isSameAs(mockSupplier);
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
+  public void nullSafeSupplierWithNullSupplier() {
+
+    Supplier<?> supplier = FunctionUtils.nullSafeSupplier(null);
+
+    assertThat(supplier).isNotNull();
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void toConsumerFromFunction() {
 

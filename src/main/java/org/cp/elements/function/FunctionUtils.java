@@ -130,6 +130,19 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Null-safe method used to guard against a {@literal null} {@link Supplier}.
+   *
+   * @param <T> {@link Class type} of {@link Object} returned by the {@link Supplier}.
+   * @param supplier {@link Supplier} to evaluate.
+   * @return the given {@link Supplier} if not {@literal null} or a noop {@link Supplier}.
+   * @see java.util.function.Supplier
+   */
+  @NullSafe
+  public static @NotNull <T> Supplier<T> nullSafeSupplier(Supplier<T> supplier) {
+    return supplier != null ? supplier : noopSupplier();
+  }
+
+  /**
    * Adapts the given, required {@link Function} as a {@link Consumer}.
    *
    * @param <T> {@link Class type} of the {@link Function Function's} and {@link Consumer Consumer's} argument.
