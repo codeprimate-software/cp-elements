@@ -50,6 +50,11 @@ public class NumberUtilsTests {
     assertThat(NumberUtils.isBinaryString("10")).isTrue();
     assertThat(NumberUtils.isBinaryString("1010")).isTrue();
     assertThat(NumberUtils.isBinaryString("10001010")).isTrue();
+    assertThat(NumberUtils.isBinaryString("b0")).isTrue();
+    assertThat(NumberUtils.isBinaryString("b01")).isTrue();
+    assertThat(NumberUtils.isBinaryString("b010")).isTrue();
+    assertThat(NumberUtils.isBinaryString("b101")).isTrue();
+    assertThat(NumberUtils.isBinaryString("b10101")).isTrue();
   }
 
   @Test
@@ -57,8 +62,10 @@ public class NumberUtilsTests {
 
     assertThat(NumberUtils.isBinaryString("O")).isFalse();
     assertThat(NumberUtils.isBinaryString("1O")).isFalse();
-    assertThat(NumberUtils.isBinaryString("0llO")).isFalse();
+    assertThat(NumberUtils.isBinaryString("0l1O")).isFalse();
     assertThat(NumberUtils.isBinaryString("1234567890")).isFalse();
+    assertThat(NumberUtils.isBinaryString("b12")).isFalse();
+    assertThat(NumberUtils.isBinaryString("bCAFE")).isFalse();
     assertThat(NumberUtils.isBinaryString("CAFEBABE")).isFalse();
     assertThat(NumberUtils.isBinaryString("0xCAFEBABE")).isFalse();
     assertThat(NumberUtils.isBinaryString("TEXT")).isFalse();

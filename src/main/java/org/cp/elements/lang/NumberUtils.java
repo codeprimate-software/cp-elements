@@ -35,10 +35,11 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 public abstract class NumberUtils {
 
-  protected static final Pattern binaryPattern = Pattern.compile("[01]+");
-  protected static final Pattern hexadecimalPattern = Pattern.compile("0x[0-9A-Fa-f]+");
+  public static final String BINARY_PREFIX_NOTATION = "b";
+  public static final String HEXADECIMAL_PREFIX_NOTATION = "0x";
 
-  protected static final String HEXADECIMAL_PREFIX_NOTATION = "0x";
+  protected static final Pattern binaryPattern = Pattern.compile("b?[01]+");
+  protected static final Pattern hexadecimalPattern = Pattern.compile("0x[0-9A-Fa-f]+");
 
   /**
    * Determines whether the given {@link String value} represents a binary value, consisting of
@@ -68,10 +69,12 @@ public abstract class NumberUtils {
     Assert.argument(binaryValue, NumberUtils::isBinaryString,
       "Binary String [%s] must contain only 1s and 0s", binaryValue);
 
+    String resolvedBinaryValue = stripBinaryPrefixNotation(binaryValue);
+
     int result = 0;
     int pow = 0;
 
-    for (char digit : reverseCharacters(binaryValue).toCharArray()) {
+    for (char digit : reverseCharacters(resolvedBinaryValue).toCharArray()) {
       result += parseInt(digit) * (int) Math.pow(2.0d, pow++);
     }
 
@@ -146,6 +149,13 @@ public abstract class NumberUtils {
 
   private static @NotNull String reverseCharacters(@NotNull String value) {
     return new StringBuilder(value).reverse().toString();
+  }
+
+  private static @NotNull String stripBinaryPrefixNotation(@NotNull String value) {
+
+    return value.trim().startsWith(BINARY_PREFIX_NOTATION)
+      ? value.substring(BINARY_PREFIX_NOTATION.length())
+      : value;
   }
 
   private static @NotNull String stripHexadecimalPrefixNotation(@NotNull String value) {
