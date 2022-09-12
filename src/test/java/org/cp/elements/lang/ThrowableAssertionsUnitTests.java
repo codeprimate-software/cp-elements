@@ -18,6 +18,7 @@ package org.cp.elements.lang;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatIndexOutOfBoundsException;
@@ -27,15 +28,30 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatRuntimeExceptio
 import static org.cp.elements.lang.ThrowableAssertions.assertThatSecurityException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNotNull;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.assertj.core.api.Assertions;
+import java.util.function.Supplier;
+
+import org.junit.Test;
+
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSourceExpression;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
 import org.cp.elements.util.ApplicationException;
-import org.junit.Test;
+import org.cp.elements.util.ArrayUtils;
+
+import org.assertj.core.api.Assertions;
+import org.mockito.InOrder;
 
 /**
  * Unit Tests for {@link ThrowableAssertions}.
@@ -289,6 +305,7 @@ public class ThrowableAssertionsUnitTests {
       .withNoCause();
   }
 
+  // java.lang.InterruptedException
   @Test(expected = AssertionException.class)
   public void assertCheckedExceptionHavingMessageEndingWithUnexpectedTextThrowsAssertionException() {
 
@@ -419,6 +436,50 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test
+  public void assertIllegalArgumentExceptionUsingArrayOfArguments() {
+
+    ObjectOperationThrowingIllegalArgumentException operation =
+      spy(new ObjectOperationThrowingIllegalArgumentException());
+
+    assertThatIllegalArgumentException()
+      .usingArguments(true, 1, "mock")
+      .isThrownBy(operation::run)
+      .havingMessage("TEST")
+      .withNoCause();
+
+    verify(operation, times(1)).run(eq(new Object[] { true, 1, "mock" }));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void assertIllegalArgumentExceptionUsingSupplierOfArguments() {
+
+    ObjectOperationThrowingIllegalArgumentException operation =
+      spy(new ObjectOperationThrowingIllegalArgumentException());
+
+    Supplier<Object[]> mockArgumentSupplier = mock(Supplier.class);
+
+    doReturn(ArrayUtils.asArray(true, 1, "mock")).when(mockArgumentSupplier).get();
+
+    ThrowableSource throwableSource = spy(assertThatIllegalArgumentException()
+      .usingArguments(mockArgumentSupplier));
+
+    throwableSource
+      .isThrownBy(operation::run)
+      .havingMessage("TEST")
+      .withNoCause();
+
+    InOrder order = inOrder(mockArgumentSupplier, operation, throwableSource);
+
+    order.verify(throwableSource, times(1)).isThrownBy(isNotNull());
+    order.verify(mockArgumentSupplier, times(1)).get();
+    order.verify(operation, times(1)).run(eq(new Object[] { true, 1, "mock" }));
+
+    verifyNoMoreInteractions(mockArgumentSupplier, operation);
+  }
+
+  @Test
   public void testAssertJExceptionAssertions() {
 
     try {
@@ -434,5 +495,12 @@ public class ThrowableAssertionsUnitTests {
       throw newTestException("AssertJ does not handle Exception switching unlike Elements");
     }
     catch (AssertionError ignore) { }
+  }
+
+  static class ObjectOperationThrowingIllegalArgumentException {
+
+    Object run(Object[] arguments) {
+      throw newIllegalArgumentException("TEST");
+    }
   }
 }

@@ -18,12 +18,15 @@ package org.cp.elements.lang;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newAssertionException;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.text.FormatUtils;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Abstract utility class defining assertions for {@link Throwable Throwables}, such as {@link Exception Exceptions}
@@ -161,6 +164,7 @@ public abstract class ThrowableAssertions {
    * @see org.cp.elements.lang.ThrowableAssertions.ThrowableSource
    * @see java.lang.Throwable
    */
+  @Dsl
   public static @NotNull ThrowableSource assertThatThrowableOfType(@NotNull Class<? extends Throwable> type) {
     return ThrowableSource.from(type);
   }
@@ -182,7 +186,7 @@ public abstract class ThrowableAssertions {
      * @param cause actual {@link Throwable cause} thrown.
      * @return a new {@link AssertThatThrowable}.
      */
-    static AssertThatThrowable from(@NotNull Class<? extends Throwable> type, @NotNull Throwable cause) {
+    static @NotNull AssertThatThrowable from(@NotNull Class<? extends Throwable> type, @NotNull Throwable cause) {
       return AssertThatThrowableExpression.from(type, cause);
     }
 
@@ -383,6 +387,28 @@ public abstract class ThrowableAssertions {
     ThrowableSource describedAs(String message, Object... args);
 
     /**
+     * Configures an array of {@link Object arguments} passed to the {@link ThrowableOperation} when run
+     * by the {@link ThrowableAssertions}.
+     *
+     * @param args array of {@link Object arguments} to pass to the {@link ThrowableOperation}.
+     * @return this {@link ThrowableSource}.
+     * @see #usingArguments(Supplier)
+     */
+    default ThrowableSource usingArguments(Object... args) {
+      return usingArguments(() -> ArrayUtils.nullSafeArray(args, Object.class));
+    }
+
+    /**
+     * Configures the {@link Supplier} of {@link Object arguments} passed to the {@link ThrowableOperation}
+     * when run by the {@link ThrowableAssertions}.
+     *
+     * @param arguments {@link Supplier} of {@link Object arguments} to pass to the {@link ThrowableOperation}.
+     * @return this {@link ThrowableSource}.
+     * @see #usingArguments(Object...)
+     */
+    ThrowableSource usingArguments(Supplier<Object[]> arguments);
+
+    /**
      * {@link ThrowableOperation Callback} containing snippet of code throwing the {@link Throwable} to invoke
      * during the assertion.
      *
@@ -404,8 +430,14 @@ public abstract class ThrowableAssertions {
 
     private String description;
 
+    private Supplier<Object[]> arguments;
+
     protected ThrowableSourceExpression(@NotNull Class<? extends Throwable> type) {
       this.type = ObjectUtils.requireObject(type, "The type of Throwable is required");
+    }
+
+    protected @NotNull Supplier<Object[]> getArguments() {
+      return FunctionUtils.nullSafeSupplier(this.arguments);
     }
 
     public @NotNull String getDescription() {
@@ -418,6 +450,25 @@ public abstract class ThrowableAssertions {
 
     protected @NotNull Class<? extends Throwable> getType() {
       return this.type;
+    }
+
+    /**
+     * Run the {@link ThrowableOperation} passing any configured array of {@link Object arguments}.
+     *
+     * @param operation {@link ThrowableOperation} to run.
+     * @throws Throwable {@link Throwable} object thrown by the {@link ThrowableOperation} during the run.
+     * @see java.lang.Throwable
+     */
+    private void run(@NotNull ThrowableOperation<?> operation) throws Throwable {
+
+      Object[] arguments = getArguments().get();
+
+      if (ArrayUtils.isNotEmpty(arguments)) {
+        operation.run(arguments);
+      }
+      else {
+        operation.run();
+      }
     }
 
     @Override
@@ -434,15 +485,25 @@ public abstract class ThrowableAssertions {
     public @NotNull AssertThatThrowable isThrownBy(@NotNull ThrowableOperation<?> operation) {
 
       try {
-        operation.run();
+        run(operation);
         throw newAssertionException(getDescription());
       }
       catch (AssertionException assertionException) {
         throw assertionException;
       }
-      catch (Throwable cause) {
+      catch (ThrowableOperationException cause) {
         return AssertThatThrowable.from(getType(), cause.getCause());
       }
+      catch (Throwable cause) {
+        //return AssertThatThrowable.from(getType(), cause.getCause());
+        return AssertThatThrowable.from(getType(), cause);
+      }
+    }
+
+    @Override
+    public @NotNull ThrowableSource usingArguments(@Nullable Supplier<Object[]> args) {
+      this.arguments = args;
+      return this;
     }
   }
 }
