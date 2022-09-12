@@ -42,7 +42,7 @@ public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> 
 
   /**
    * Applies this {@link Converter} / {@link Function} to the given {@link S argument}
-   * converting the value into an {@link Object} of {@link Class type} {@link T}.
+   * converting the value into an {@link Object} of {@link Class type T}.
    *
    * @param value {@link Object} applied to this {@link Converter} / {@link Function}.
    * @return the converted {@link T value} from applying this {@link Converter} /  {@link Function}
