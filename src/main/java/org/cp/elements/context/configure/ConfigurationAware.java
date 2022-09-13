@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure;
 
 /**
- * The {@link ConfigurationAware} interface specifies a contract for objects that require a reference to
+ * The {@link ConfigurationAware} interface specifies a contract for {@link Object objects} that require a reference to
  * a {@link Configuration} instance.
  *
  * @author John J. Blum
@@ -30,9 +29,10 @@ package org.cp.elements.context.configure;
 public interface ConfigurationAware {
 
   /**
-   * Sets a reference to an instance of the application Configuration in use.
+   * Sets a reference to an instance of the Java application (program) {@link Configuration} in use.
    *
-   * @param configuration the Configuration reference in use by the application.
+   * @param configuration {@link Configuration} used by the Java application (program).
+   * @see org.cp.elements.context.configure.Configuration
    */
   void setConfiguration(Configuration configuration);
 
