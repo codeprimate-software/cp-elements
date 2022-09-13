@@ -233,8 +233,29 @@ public class ThrowableAssertionsUnitTests {
         new IllegalStateException("mock message")))
       .havingMessage("%s message", "test")
       .causedBy(IllegalStateException.class)
-      .havingMessage("%s message", "mock")
+      .havingMessage("{0} message", "mock")
       .withNoCause();
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertRuntimeExceptionWithNoCauseThrowsAssertionException() {
+
+    try {
+      assertThatRuntimeException()
+        .isThrownBy(args -> codeThrowingRuntimeException("test message"))
+        .causedBy(IllegalAccessException.class)
+        .havingMessage("mock message")
+        .withNoCause();
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("Expected Throwable [%s] to have a cause of type [%s]; but was [null]",
+        RuntimeException.class.getName(), IllegalAccessException.class.getName());
+
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
   }
 
   @Test(expected = AssertionException.class)
@@ -242,8 +263,8 @@ public class ThrowableAssertionsUnitTests {
 
     try {
       assertThatRuntimeException()
-        .isThrownBy(args -> codeThrowingRuntimeException("mock", new IllegalStateException("test")))
-        .havingMessage("mock")
+        .isThrownBy(args -> codeThrowingRuntimeException("test message", new IllegalStateException("mock message")))
+        .havingMessage("test message")
         .withNoCause();
     }
     catch (AssertionException expected) {
@@ -251,6 +272,24 @@ public class ThrowableAssertionsUnitTests {
       assertThat(expected).hasMessage("Expected Throwable [%s] to have no cause; but was caused by [%s]",
         RuntimeException.class.getName(), IllegalStateException.class.getName());
 
+      assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertRuntimeExceptionWithNoMessageThrowsAssertionException() {
+
+    try {
+      assertThatRuntimeException()
+        .isThrownBy(args -> codeThrowingRuntimeException(null))
+        .havingMessage("expected message")
+        .withNoCause();
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("Expected message [expected message]; but was [null]");
       assertThat(expected).hasNoCause();
 
       throw expected;
@@ -404,6 +443,8 @@ public class ThrowableAssertionsUnitTests {
     }
   }
 
+  // DUPLICATE
+  // @see assertRuntimeExceptionWithNoCauseThrowsAssertionException();
   @Test(expected = AssertionException.class)
   public void assertSecurityExceptionWithNoCauseThrowsAssertionException() {
 
@@ -426,13 +467,15 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertSecurityExceptionWithUnexpectedCauseThrowsAssertionException() {
+  public void assertSecurityExceptionWithExpectedButUnexpectedCauseThrowsAssertionException() {
 
     try {
       assertThatSecurityException()
         .isThrownBy(args -> codeThrowingSecurityException("Unauthorized user",
           new AuthenticationException("Unauthenticated user")))
-        .causedBy(AuthorizationException.class);
+        .causedBy(AuthorizationException.class)
+        .havingMessage("[janeDoe] is not authorized to perform action [delete]")
+        .withNoCause();
     }
     catch (AssertionException expected) {
 
@@ -440,6 +483,26 @@ public class ThrowableAssertionsUnitTests {
         SecurityException.class.getName(), AuthorizationException.class.getName(), AuthenticationException.class.getName());
 
       assertThat(expected).hasNoCause();
+
+      throw expected;
+    }
+  }
+
+  @Test(expected = AssertionException.class)
+  public void assertSecurityExceptionWithExpectedButUnexpectedMessageThrowsAssertionException() {
+
+    try {
+      assertThatSecurityException()
+        .isThrownBy(args -> codeThrowingSecurityException("User [rogueOne] is not authorized to execute operation [findAll]"))
+        .havingMessage("User [%1$s] is unauthorized to execute [%2$s]", "rogueOne", "findAll")
+        .withNoCause();
+    }
+    catch (AssertionException expected) {
+
+      assertThat(expected).hasMessage("Expected message [User [rogueOne] is unauthorized to execute [findAll]];"
+        + " but was [User [rogueOne] is not authorized to execute operation [findAll]]");
+
+        assertThat(expected).hasNoCause();
 
       throw expected;
     }
@@ -510,7 +573,7 @@ public class ThrowableAssertionsUnitTests {
   }
 
   @Test(expected = AssertionException.class)
-  public void assertIndexOutOfBoundsExceptionHavingNonMatchingMessage() {
+  public void assertIndexOutOfBoundsExceptionHavingNonRegularExpressionMatchingMessage() {
 
     ObjectOperationThrowingRuntimeException operation =
       new ObjectOperationThrowingRuntimeException(IndexOutOfBoundsException::new);

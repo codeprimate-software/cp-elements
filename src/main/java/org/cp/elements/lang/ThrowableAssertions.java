@@ -383,8 +383,11 @@ public abstract class ThrowableAssertions {
       String resolvedExpectedMessage = FormatUtils.format(expectedMessage, expectedMessageArguments);
       String actualMessage = getThrowable().getMessage();
 
-      if (!assertMessageFunction.apply(actualMessage, resolvedExpectedMessage)) {
-        throw newAssertionException(assertionExceptionMessage, expectedMessage, actualMessage);
+      boolean throwAssertException = actualMessage == null
+        || !assertMessageFunction.apply(actualMessage, resolvedExpectedMessage);
+
+      if (throwAssertException) {
+        throw newAssertionException(assertionExceptionMessage, resolvedExpectedMessage, actualMessage);
       }
 
       return this;
