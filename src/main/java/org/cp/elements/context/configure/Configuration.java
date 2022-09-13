@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 import org.cp.elements.context.annotation.Profile;
 import org.cp.elements.data.conversion.provider.SimpleTypeConversions;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -39,11 +40,12 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.FunctionalInterface
  * @see java.lang.Iterable
  * @see org.cp.elements.context.annotation.Profile
+ * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 @FunctionalInterface
-public interface Configuration extends Iterable<String>, Serializable {
+public interface Configuration extends Iterable<String>, Nameable<String>, Serializable {
 
   boolean REQUIRED = true;
   boolean NOT_REQUIRED = false;
@@ -80,6 +82,20 @@ public interface Configuration extends Iterable<String>, Serializable {
   @NullSafe
   default boolean isSet(@Nullable String propertyName) {
     return StringUtils.hasText(propertyName) && StringUtils.hasText(getPropertyValue(propertyName, NOT_REQUIRED));
+  }
+
+  /**
+   * Returns the {@link String name} of this {@link Configuration}.
+   *
+   * By default, this method returns the {@link String} of the implementing {@link Configuration} class;
+   * this method should be overridden.
+   *
+   * @return the {@link String name} of this {@link Configuration}.
+   * @see org.cp.elements.lang.Nameable#getName()
+   */
+  @Override
+  default String getName() {
+    return getClass().getName();
   }
 
   /**

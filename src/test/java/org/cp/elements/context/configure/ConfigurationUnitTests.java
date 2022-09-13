@@ -132,6 +132,15 @@ public class ConfigurationUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void getNameReturnsImplementClassName() {
+
+    Configuration configuration = new TestConfiguration();
+
+    assertThat(configuration.getName()).isEqualTo(TestConfiguration.class.getName());
+  }
+
+  @Test
   public void getProfilesForConfigurationWithNoProfiles() {
 
     Configuration mockConfiguration = mock(NonProfiledConfiguration.class);
@@ -161,6 +170,15 @@ public class ConfigurationUnitTests {
 
     verify(mockConfiguration, times(1)).getProfiles();
     verifyNoMoreInteractions(mockConfiguration);
+  }
+
+  @Test
+  public void getProfilesForConfigurationWithInheritedProfiles() {
+
+    Configuration testConfiguration = new TestConfiguration();
+
+    assertThat(testConfiguration.getProfiles()).isNotNull();
+    assertThat(testConfiguration.getProfiles()).containsExactly("mockProfile");
   }
 
   @Test
@@ -473,5 +491,16 @@ public class ConfigurationUnitTests {
 
   @Profile(names = { "  ", "" })
   interface UndeclaredProfileConfiguration extends Configuration { }
+
+  @Profile(names = "mockProfile")
+  static class MockConfiguration implements ProfiledConfiguration {
+
+    @Override
+    public String getPropertyValue(String propertyName, boolean required) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
+  }
+
+  static class TestConfiguration extends MockConfiguration { }
 
 }
