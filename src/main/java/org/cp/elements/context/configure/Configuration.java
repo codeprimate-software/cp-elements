@@ -13,120 +13,281 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+import org.cp.elements.context.annotation.Profile;
+import org.cp.elements.data.conversion.provider.SimpleTypeConversions;
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
- * The Configuration interface is an abstraction for modeling configuration settings used to configure any application
- * or program.
+ * Abstract Data Type (ADT) modeling configuration metadata used to configure any application or program.
  *
- * @author John J. Blum
+ * @author John Blum
  * @see java.io.Serializable
+ * @see java.lang.FunctionalInterface
  * @see java.lang.Iterable
+ * @see org.cp.elements.context.annotation.Profile
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@FunctionalInterface
 public interface Configuration extends Iterable<String>, Serializable {
 
+  boolean REQUIRED = true;
+  boolean NOT_REQUIRED = false;
+  boolean DEFAULT_REQUIRED = REQUIRED;
+
   /**
-   * Determines whether the configuration property identified by name is present in the configuration settings, which
-   * means the configuration property was declared but not necessarily defined.
+   * Determines whether the configuration property identified by the given {@link String name} is present
+   * in the configuration metadata.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return a boolean value indicating if the property identified by name is present (declared) in the configuration
-   * settings.
+   * Even if the configuration property was declared (present) does not mean the property is defined (set).
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a boolean value indicating whether the property identified by the given {@link String name}
+   * is present (declared) in the configuration metadata.
    * @see #isSet(String)
    */
-  boolean isPresent(String propertyName);
+  @NullSafe
+  default boolean isPresent(@Nullable String propertyName) {
+    return isSet(propertyName);
+  }
 
   /**
-   * Determines whether the configuration property identified by name is set in the configuration settings, which
-   * means the configuration property was both declared and defined (set with a value).
+   * Determines whether the configuration property identified by the given {@link String name} is set
+   * in the configuration metadata.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return a boolean value indicating if the property identified by name is defined (set with a value) in the
-   * configuration settings.
+   * If a configuration property is set then it means the property was both declared and defined with a value.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a boolean value indicating whether the configuration property identified by the given {@link String name}
+   * is set in the configuration metadata.
+   * @see #getPropertyValue(String, boolean)
    * @see #isPresent(String)
    */
-  boolean isSet(String propertyName);
+  @NullSafe
+  default boolean isSet(@Nullable String propertyName) {
+    return StringUtils.hasText(propertyName) && StringUtils.hasText(getPropertyValue(propertyName, NOT_REQUIRED));
+  }
 
   /**
-   * Gets the value of the configuration property identified by name.  The property is required to be declared
-   * and defined otherwise a ConfigurationException is thrown.
+   * Returns an array of {@link String values} declaring the {@literal names} of {@link Profile Profiles}
+   * for which this {@link Configuration} should be applied.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if the property value was undeclared or is undefined.
+   * @return an array of {@link String Strings} declaring the {@literal names} of {@link Profile Profiles}
+   * for which this {@link Configuration} should be applied.
+   * @see org.cp.elements.context.annotation.Profile
    */
-  String getPropertyValue(String propertyName);
+  default String[] getProfiles() {
+
+    Class<?> type = getClass();
+
+    return type.isAnnotationPresent(Profile.class)
+      ? Arrays.stream(ArrayUtils.nullSafeArray(type.getAnnotation(Profile.class).names(), String.class))
+        .filter(StringUtils::hasText)
+        .toArray(String[]::new)
+      : StringUtils.EMPTY_STRING_ARRAY;
+  }
 
   /**
-   * Gets the value of the configuration property identified by name.  The required parameter can be used to indicate
-   * the property is not required and that a ConfigurationException should not be thrown if the property is undeclared
-   * or undefined.
+   * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param required used to indicate whether the configuration property is required to be declared and defined.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if and only if the property is required and the property is either undeclared
-   * or undefined.
+   * The configuration property is required to be declared and defined otherwise a {@link ConfigurationException}
+   * will be thrown.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return the {@link String value} of the {@link String named} configuration property.
+   * @throws ConfigurationException if the configuration property is undeclared or undefined.
+   * @see #getPropertyValue(String, boolean)
+   */
+  default @NotNull String getPropertyValue(String propertyName) {
+    return getPropertyValue(propertyName, REQUIRED);
+  }
+
+  /**
+   * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
+   *
+   * The {@code required} parameter is used to indicate whether the configuration property is {@literal required} or not
+   * and whether a {@link ConfigurationException} should be thrown when the property is undeclared or undefined.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param required boolean value used to indicate whether the configuration property is required
+   * to be both declared and defined.
+   * @return the {@link String value} of the {@link String named} configuration property. May return
+   * a {@literal null} {@link String value} for the configuration property if not required.
+   * @throws ConfigurationException if the configuration property is required and the property
+   * is undeclared or undefined.
    */
   String getPropertyValue(String propertyName, boolean required);
 
   /**
-   * Gets the value of the configuration property identified by name.  The defaultPropertyValue parameter effectively
-   * overrides the required attribute indicating that the property is not required to be declared or defined.
+   * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
-   * undefined.
-   * @return the value of the configuration property identified by name, or the default property value if the property
-   * was undeclared or undefined.
+   * By passing an {@link String argument} to the {@code defaultPropertyValue} parameter, this effectively overrides
+   * the required parameter to indicate that the configuration property is not required to be declared or defined,
+   * and therefore falls back to the {@link String default value}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param defaultPropertyValue {@link String default value} returned for the configuration property
+   * when the property is undeclared or undefined.
+   * @return the {@link String value} of the configuration property identified by the given {@link String name},
+   * or the {@link String default value} if the property is undeclared or undefined.
+   * @see #getPropertyValue(String, boolean)
    */
-  String getPropertyValue(String propertyName, String defaultPropertyValue);
+  default @Nullable String getPropertyValue(String propertyName, @Nullable String defaultPropertyValue) {
+    return StringUtils.defaultIfBlank(getPropertyValue(propertyName, NOT_REQUIRED), defaultPropertyValue);
+  }
 
   /**
-   * Gets the value of the configuration property identified by name as a value of the specified Class type.
-   * The property is required to be declared and defined otherwise a ConfigurationException is thrown.
+   * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
    *
-   * @param <T> the return class type of the property value.
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param type the expected Class type of the configuration property value.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if the property value was undeclared or is undefined.
+   * By passing {@link Supplier} to the {@code defaultPropertyValue} parameter, this effectively overrides
+   * the required parameter to indicate that the configuration property is not required to be declared or defined,
+   * and therefore falls back to a {@link String default value} returned by the given {@link Supplier}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param defaultPropertyValue {@link Supplier} used to supply the {@link String default value}
+   * for the {@link String named} configuration property when undeclared or undefined.
+   * @return the {@link String value} of the configuration property identified by the given {@link String name},
+   * or the {@link String default value} supplied by the given {@link Supplier} when the property
+   * is undeclared or undefined.
+   * @see #getPropertyValue(String, boolean)
+   * @see java.util.function.Supplier
    */
-  <T> T getPropertyValueAs(String propertyName, Class<T> type);
+  default @Nullable String getPropertyValue(String propertyName, @Nullable Supplier<String> defaultPropertyValue) {
+
+    return Optional.ofNullable(getPropertyValue(propertyName, NOT_REQUIRED))
+      .filter(StringUtils::hasText)
+      .orElseGet(defaultPropertyValue);
+  }
 
   /**
-   * Gets the value of the configuration property identified by name as a value of the specified Class type.
-   * The required parameter can be used to indicate the property is not required and that a ConfigurationException
-   * should not be thrown if the property is undeclared or undefined.
+   * Gets the value of the configuration property identified by the given {@link String name} as a {@link T value}
+   * of the specified {@link Class type T}.
    *
-   * @param <T> the return class type of the property value.
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param required used to indicate whether the configuration property is required to be declared and defined.
-   * @param type the expected Class type of the configuration property value.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if and only if the property is required and the property is either undeclared
-   * or undefined.
+   * The configuration property is required to be declared and defined otherwise a {@link ConfigurationException}
+   * will be thrown.
+   *
+   * @param <T> {@link Class type} to convert the returned value of the configuration property to.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param type expected {@link Class type} of the configuration property value.
+   * @return the value of the configuration property identified by the given {@link String name}
+   * as a {@link T value} of the specified {@link Class type T}.
+   * @throws ConfigurationException if the configuration property is undeclared or undefined.
+   * @see #getPropertyValueAs(String, Class, boolean)
    */
-  <T> T getPropertyValueAs(String propertyName, boolean required, Class<T> type);
+  default <T> T getPropertyValueAs(String propertyName, Class<T> type) {
+    return getPropertyValueAs(propertyName, type, REQUIRED);
+  }
 
   /**
-   * Gets the value of the configuration property identified by name as a value of the specified Class type.
-   * The defaultPropertyValue parameter effectively overrides the required attribute indicating that the property
-   * is not required to be declared or defined.
+   * Gets the value of the configuration property identified by the given {@link String name} as a {@link T value}
+   * of the specified {@link Class type T}.
    *
-   * @param <T> the return class type of the property value.
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
-   * undefined.
-   * @param type the expected Class type of the configuration property value.
-   * @return the value of the configuration property identified by name, or the default property value if the property
-   * was undeclared or undefined.
+   * The {@code required} parameter is used to indicate whether the configuration property is {@literal required} or not
+   * and whether a {@link ConfigurationException} should be thrown when the property is undeclared or undefined.
+   *
+   * @param <T> {@link Class type} to convert the returned value of the configuration property to.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param type expected {@link Class type} of the configuration property value.
+   * @param required boolean value used to indicate whether the configuration property is required
+   * to be both declared and defined.
+   * @return the value of the configuration property identified by the given {@link String name}
+   * as a {@link T value} of the specified {@link Class type T}.
+   * @throws ConfigurationException if the configuration property is required and the property
+   * is undeclared or undefined.
+   * @see org.cp.elements.data.conversion.provider.SimpleTypeConversions
+   * @see #getPropertyValue(String, boolean)
    */
-  <T> T getPropertyValueAs(String propertyName, T defaultPropertyValue, Class<T> type);
+  default <T> T getPropertyValueAs(String propertyName, Class<T> type, boolean required) {
+    return SimpleTypeConversions.findBy(type).convert(getPropertyValue(propertyName, required));
+  }
 
+  /**
+   * Gets the value of the configuration property identified by the given {@link String name} as a {@link T value}
+   * of the specified {@link Class type T}.
+   *
+   * By passing an {@link T argument} to the {@code defaultPropertyValue} parameter, this effectively overrides
+   * the required parameter to indicate that the configuration property is not required to be declared or defined,
+   * and therefore falls back to the {@link T default value}.
+   *
+   * @param <T> {@link Class type} to convert the returned value of the configuration property to.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param type expected {@link Class type} of the configuration property value.
+   * @param defaultPropertyValue {@link T default value} returned for the configuration property
+   * when the property is undeclared or undefined.
+   * @return the value of the configuration property identified by the given {@link String name}
+   * as a {@link T value} of the specified {@link Class type T}, or the {@link T default value}
+   * when the property is undeclared or undefined.
+   * @see #getPropertyValueAs(String, Class, boolean)
+   * @see java.util.function.Supplier
+   */
+  @SuppressWarnings("unchecked")
+  default @Nullable <T> T getPropertyValueAs(String propertyName, Class<T> type, @Nullable T defaultPropertyValue) {
+
+    return ObjectUtils.returnFirstNonNullValue(getPropertyValueAs(propertyName, type, NOT_REQUIRED),
+      defaultPropertyValue);
+  }
+
+  /**
+   * Gets the value of the configuration property identified by the given {@link String name} as a {@link T value}
+   * of the specified {@link Class type T}.
+   *
+   * @param <T> {@link Class type} to convert the returned value of the configuration property to.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param type expected {@link Class type} of the configuration property value.
+   * @param defaultPropertyValue {@link Supplier} used to supply the {@link T default value}
+   * for the {@link String named} configuration property when undeclared or undefined.
+   * @return the value of the configuration property identified by the given {@link String name}
+   * as a {@link T value} of {@link Class type T}, or the {@link T default value} supplied by
+   * the given {@link Supplier} when the property is undeclared or undefined.
+   * @see #getPropertyValueAs(String, Class, boolean)
+   * @see java.util.function.Supplier
+   */
+  default @Nullable <T> T getPropertyValueAs(String propertyName, Class<T> type,
+      @Nullable Supplier<T> defaultPropertyValue) {
+
+    return Optional.ofNullable(getPropertyValueAs(propertyName, type, NOT_REQUIRED))
+      .orElseGet(defaultPropertyValue);
+  }
+
+  /**
+   * Builder method used to compose a {@literal Composite} of {@link Configuration} objects.
+   *
+   * @param configuration {@link Configuration} to compose with this {@link Configuration}.
+   * @return a {@literal Composite} {@link Configuration} consisting of this {@link Configuration}
+   * and the given {@link Configuration} if not {@literal null}. Returns this {@link Configuration}
+   * if the given {@link Configuration} is {@literal null}.
+   * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Software Design Pattern</a>
+   */
+  default @NotNull Configuration andThen(@Nullable Configuration configuration) {
+
+    return configuration == null ? this : (propertyName, required) ->
+      this.getPropertyValue(propertyName, () -> configuration.getPropertyValue(propertyName, required));
+  }
+
+  /**
+   * Returns an {@literal Iterator} to iterate over the {@link String property names}
+   * declared in this {@link Configuration}.
+   *
+   * @return an {@link Iterator} iterating over the {@link String property names}
+   * declared in this {@link Configuration}.
+   * @see java.util.Iterator
+   */
+  @Override
+  default Iterator<String> iterator() {
+    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+  }
 }
