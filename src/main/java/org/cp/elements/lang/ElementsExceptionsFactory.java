@@ -61,6 +61,7 @@ import org.cp.elements.util.ApplicationException;
 import org.cp.elements.util.LoserException;
 import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
+import org.cp.elements.util.UndeclaredPropertyException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
 import org.cp.elements.util.paging.PageNotFoundException;
@@ -1820,6 +1821,37 @@ public abstract class ElementsExceptionsFactory {
    */
   public static SystemException newSystemException(Throwable cause, String message, Object... args) {
     return new SystemException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link UndeclaredPropertyException} initialized with the given {@link String message}
+   * to describe the {@link UndeclaredPropertyException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link UndeclaredPropertyException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link UndeclaredPropertyException}.
+   * @see #newUndeclaredPropertyException(String, Object...)
+   * @see org.cp.elements.util.UndefinedPropertyException
+   */
+  public static UndeclaredPropertyException newUndeclaredPropertyException(String message, Object... args) {
+    return newUndeclaredPropertyException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link UndeclaredPropertyException} initialized with the given {@link String message}
+   * to describe the {@link UndeclaredPropertyException} along with a {@link Throwable cause} used as the reason
+   * why the {@link UndeclaredPropertyException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link UndeclaredPropertyException}.
+   * @param message {@link String} containing a message to describe the {@link UndeclaredPropertyException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link UndeclaredPropertyException}.
+   * @see org.cp.elements.util.UndeclaredPropertyException
+   */
+  public static UndeclaredPropertyException newUndeclaredPropertyException(Throwable cause, String message,
+      Object... args) {
+
+    return new UndeclaredPropertyException(format(message, args), cause);
   }
 
   /**

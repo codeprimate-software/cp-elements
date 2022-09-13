@@ -74,9 +74,13 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newSystemException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newThrowableOperationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTypeNotFoundException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newUndeclaredPropertyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUnhandledMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUserException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyException;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.cp.elements.beans.BeansException;
 import org.cp.elements.beans.IllegalPropertyValueException;
@@ -122,14 +126,13 @@ import org.cp.elements.util.ApplicationException;
 import org.cp.elements.util.LoserException;
 import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
+import org.cp.elements.util.UndeclaredPropertyException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
 import org.cp.elements.util.paging.PageNotFoundException;
 import org.cp.elements.util.search.SearchException;
 import org.cp.elements.util.sort.SortException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -778,6 +781,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newSystemExceptionWithFormattedMessageAndCause() {
     assertThrowable(newSystemException(this.mockCause, "%s is a {1}", "This", "test"),
       SystemException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newUndeclaredPropertyExceptionWithMessage() {
+    assertThrowable(newUndeclaredPropertyException("test"), UndeclaredPropertyException.class, "test");
+  }
+
+  @Test
+  public void newUndeclaredPropertyExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newUndeclaredPropertyException(this.mockCause, "%s is a {1}", "This", "test"),
+      UndeclaredPropertyException.class, "This is a test", this.mockCause);
   }
 
   @Test
