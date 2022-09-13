@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure;
+
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
@@ -23,10 +25,12 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The AbstractConfiguration class is an abstract base class encapsulating functionality common to all Configuration
- * implementations.
+ * Abstract base class encapsulating functionality common to all {@link Configuration} implementations.
  *
  * @author John J. Blum
  * @see org.cp.elements.context.configure.Configuration
@@ -37,115 +41,138 @@ import org.cp.elements.lang.StringUtils;
 @SuppressWarnings("unused")
 public abstract class AbstractConfiguration implements Configuration, ConversionServiceAware {
 
-  protected static final boolean DEFAULT_REQUIRED = true;
-  protected static final boolean NOT_REQUIRED = false;
-
   private final Configuration parent;
 
-  // TODO use PropertyEditors in addition to ConversionService!?!
+  // TODO: Use PropertyEditors in addition to ConversionService!?!
   private ConversionService conversionService;
 
   /**
-   * Constructs an instance of the AbstractConfiguration class with no parent Configuration.
+   * Constructs a new instance of {@link AbstractConfiguration} with no parent {@link Configuration}.
    */
   public AbstractConfiguration() {
     this.parent = null;
   }
 
   /**
-   * Constructs an instance of the AbstractConfiguration class initialized with a parent Configuration.
+   * Constructs a new instance of {@link AbstractConfiguration} initialized with the given {@literal parent}
+   * {@link Configuration}.
    *
-   * @param parent the fallback Configuration to retrieve configuration meta-data from when not overridden by this
-   * Configuration object.
+   * @param parent {@link Configuration} used as a fallback for retrieving configuration metadata
+   * when not overridden by this {@link Configuration} object.
    * @see org.cp.elements.context.configure.Configuration
    */
-  public AbstractConfiguration(final Configuration parent) {
+  public AbstractConfiguration(@Nullable Configuration parent) {
     this.parent = parent;
   }
 
   /**
-   * Gets a reference to the ConversionService used by this Configuration to convert configuration property values into
-   * the requested, target type.
+   * Sets a reference to the {@link ConversionService} used by this {@link Configuration} to convert configuration
+   * property {@link String values} into an {@link Object} of the requested, target {@link Class type}.
    *
-   * @return a reference to a ConversionService to perform property value type conversions.
-   * @throws IllegalStateException if a ConversionService reference was not provided.
+   * @param conversionService reference to the {@link ConversionService} used to perform configuration property
+   * {@link String value} {@link Class type} conversions.
+   * @throws IllegalArgumentException if the {@link ConversionService} is {@literal null}.
    * @see org.cp.elements.data.conversion.ConversionService
    */
-  protected ConversionService getConversionService() {
-    Assert.state(conversionService != null, "The ConversionService was not properly initialized!");
-    return conversionService;
+  public final void setConversionService(@NotNull ConversionService conversionService) {
+    this.conversionService = ObjectUtils.requireObject(conversionService,
+      "The ConversionService used by this Configuration is required");
   }
 
   /**
-   * Sets a reference to a ConversionService used by this Configuration to convert configuration property value into
-   * the requested, target type.
+   * Gets a reference to the {@link ConversionService} used by this {@link Configuration} to convert configuration
+   * property {@link String values} into an {@link Object} of the requested, target {@link Class type}.
    *
-   * @param conversionService a reference to the ConversionService used to perform configuration property value type
-   * conversions.
-   * @throws NullPointerException if the ConversionService reference is null.
+   * @return a reference to the configured {@link ConversionService} used to perform property {@link String value}
+   * {@link Class type} conversions.
+   * @throws IllegalStateException if a {@link ConversionService} was not properly configured.
    * @see org.cp.elements.data.conversion.ConversionService
    */
-  public final void setConversionService(final ConversionService conversionService) {
-    Assert.notNull(conversionService, "The ConversionService used to support this Configuration cannot be null!");
-    this.conversionService = conversionService;
+  protected @NotNull ConversionService getConversionService() {
+    return ObjectUtils.requireState(this.conversionService,
+      "The ConversionService was not properly initialized");
   }
 
   /**
-   * Gets a reference to the parent Configuration used for fallback to retrieve configuration settings when undefined
-   * by this Configuration.
+   * Gets a reference to the parent {@link Configuration} used as a fallback when requesting configuration metadata
+   * by {@link String property name} and the configuration property is undeclared or undefined
+   * by this {@link Configuration}.
    *
-   * @return the parent Configuration object used for fallback to retrieve configuration settings.
+   * @return the configured parent {@link Configuration} object.
    * @see org.cp.elements.context.configure.Configuration
    */
-  protected Configuration getParent() {
-    return parent;
+  protected @Nullable Configuration getParent() {
+    return this.parent;
   }
 
   /**
-   * Converts the configuration setting property value into a value of the specified type.
+   * Asserts that the {@link String property name} is declared when passed as an argument
+   * to the {@link #getPropertyValue(String, boolean)} and {@link #getPropertyValueAs(String, Class, boolean)} methods.
    *
-   * @param <T> the type of object the String property value is converted into.
-   * @param value the String property value to convert.
-   * @param type the Class type to convert the String property value into.
-   * @return the String property value into a value of type T.
-   * @throws NullPointerException if the specified conversion Class type is null.
-   * @throws ConversionException if the String property value cannot be converted into an object of type T.
-   * @see #getConversionService()
-   * @see org.cp.elements.data.conversion.ConversionService
+   * @param propertyName {@link String} containing the {@literal name} of the property to assert.
+   * @return the given {@link String property name}.
+   * @throws IllegalArgumentException if the {@link String property name} was not declared.
    */
-  protected <T> T convert(final String value, final Class<T> type) {
-    Assert.notNull(type, "The Class type to convert the String value to cannot be null!");
+  protected @NotNull String assertPropertyName(@NotNull String propertyName) {
+    return StringUtils.requireText(propertyName, "Property name [%s] is required");
+  }
 
-    if (getConversionService().canConvert(String.class, type)) {
-      return getConversionService().convert(value, type);
+  /**
+   * Converts the configuration property {@link String value} into an {@link Object} of the given,
+   * required {@link Class type}.
+   *
+   * @param <T> {@link Class type} that the property {@link String value} will be converted into.
+   * @param value {@link String} containing the property value to convert.
+   * @param type {@link Class type} that the property {@link String value} will be converted into;
+   * must not be {@literal null}.
+   * @return the property {@link String value} converted into an {@link Object} of {@link Class type T}.
+   * @throws IllegalArgumentException if the given {@link Class type} is {@literal null}.
+   * @throws ConversionException if the property {@link String value} cannot be converted from a {@link String}
+   * into a {@link Object} of {@link Class type T}.
+   * @see org.cp.elements.data.conversion.ConversionService
+   * @see #getConversionService()
+   */
+  protected <T> T convert(@Nullable String value, @NotNull Class<T> type) {
+
+    Assert.notNull(type, "Class type to convert the String value to is required");
+
+    ConversionService conversionService = getConversionService();
+
+    if (conversionService.canConvert(String.class, type)) {
+      return conversionService.convert(value, type);
     }
 
-    throw new ConversionException(String.format("Cannot convert String value (%1$s) into a value of type (%2$s)!",
-      value, type.getName()));
+    throw newConversionException("Cannot convert String value [%1$s] into a value of type [%2$s]",
+      value, type.getName());
   }
 
   /**
-   * Returns value if not blank otherwise returns default value.
+   * Determines whether this {@link Configuration} was configured with parent {@link Configuration}.
    *
-   * @param value the String to evaluate for value (containing text).
-   * @param defaultValue the String value to return if the 'value' is blank.
-   * @return value if it has text otherwise returns the default value.
-   * @see org.cp.elements.lang.StringUtils#hasText(String)
+   * @return a boolean value indicating whether this {@link Configuration} was configured with
+   * parent {@link Configuration}.
+   * @see #getParent()
    */
-  protected String defaultIfUnset(final String value, final String defaultValue) {
-    return (StringUtils.hasText(value) ? value : defaultValue);
+  @NullSafe
+  protected boolean isParentConfigurationPresent() {
+    return getParent() != null;
   }
 
   /**
-   * Determines whether the configuration property identified by name is present in the configuration settings, which
-   * means the configuration property was declared but not necessarily defined.
+   * Determines whether the configuration property identified by the given {@link String name} is present
+   * in the configuration metadata.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return a boolean value indicating if the property identified by name is present (declared) in the configuration
-   * settings.
+   * Even if the configuration property was declared (present) does not mean the property is defined (set).
+   * To determine if the configuration property has value, call {@link #isSet(String)}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a boolean value indicating whether the property identified by the given {@link String name}
+   * is present (declared) in the configuration metadata.
    * @see #isSet(String)
    */
-  public boolean isPresent(final String propertyName) {
+  @NullSafe
+  public boolean isPresent(@Nullable String propertyName) {
+
     for (String configurationPropertyName : this) {
       if (configurationPropertyName.equals(propertyName)) {
         return true;
@@ -156,103 +183,99 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   }
 
   /**
-   * Determines whether the configuration property identified by name is set in the configuration settings, which
-   * means the configuration property was both declared and defined (set with a value).
+   * Determines whether the configuration property identified by the given {@link String name} is set (defined)
+   * in the configuration metadata.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return a boolean value indicating if the property identified by name is defined (set with a value) in the
-   * configuration settings.
+   * If a configuration property is set then it means the property was both declared and defined
+   * in Java application (program) {@link Configuration} with a {@link String value}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a boolean value indicating whether the configuration property identified by the given {@link String name}
+   * is set (defined) in the configuration metadata.
+   * @see #getPropertyValue(String, boolean)
+   * @see #doGetPropertyValue(String)
    * @see #isPresent(String)
    */
-  public boolean isSet(final String propertyName) {
-    return StringUtils.hasText(doGetPropertyValue(propertyName));
+  @NullSafe
+  public boolean isSet(@Nullable String propertyName) {
+    return StringUtils.hasText(propertyName) && StringUtils.hasText(doGetPropertyValue(propertyName));
+  }
+
+  @NullSafe
+  private boolean isNotSet(@Nullable String value) {
+    return StringUtils.isBlank(value);
+  }
+
+  private @Nullable String returnNullWhenNotSet(@Nullable String value) {
+    return StringUtils.hasText(value) ? value : null;
   }
 
   /**
-   * Gets the value of the configuration property identified by name.  The property is required to be declared
-   * and defined otherwise a ConfigurationException is thrown.
+   * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if the property value was undeclared or is undefined.
-   */
-  public String getPropertyValue(final String propertyName) {
-    return getPropertyValue(propertyName, DEFAULT_REQUIRED);
-  }
-
-  /**
-   * Gets the value of the configuration property identified by name.  The required parameter can be used to indicate
-   * the property is not required and that a ConfigurationException should not be thrown if the property is undeclared
-   * or undefined.
+   * The {@code required} parameter is used to indicate whether the configuration property is {@literal required}
+   * or not and whether a {@link ConfigurationException} will be thrown when the property is undeclared or undefined.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param required used to indicate whether the configuration property is required to be declared and defined.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if and only if the property is required and the property is either undeclared
-   * or undefined.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param required boolean value used to indicate whether the configuration property is required
+   * to be both declared and defined.
+   * @return the {@link String value} of the {@link String named} configuration property. May return
+   * a {@literal null} {@link String value} for the configuration property if not required.
+   * @throws ConfigurationException if the configuration property is required and the property
+   * is undeclared or undefined.
+   * @see #isParentConfigurationPresent()
+   * @see #doGetPropertyValue(String)
    */
-  public String getPropertyValue(final String propertyName, final boolean required) {
-    String propertyValue = doGetPropertyValue(propertyName);
+  @Override
+  public String getPropertyValue(String propertyName, boolean required) {
 
-    if (StringUtils.isBlank(propertyValue) && getParent() != null) {
+    String propertyValue = doGetPropertyValue(assertPropertyName(propertyName));
+
+    if (isNotSet(propertyValue) && isParentConfigurationPresent()) {
       propertyValue = getParent().getPropertyValue(propertyName, required);
     }
 
-    if (StringUtils.isBlank(propertyValue) && required) {
-      throw new ConfigurationException(String.format("The property (%1$s) is required!", propertyName));
+    if (isNotSet(propertyValue) && required) {
+      throw newConfigurationException("Property [%1$s] is required, but was not %2$s", propertyName,
+        isPresent(propertyName) ? "defined" : "declared");
     }
 
-    return defaultIfUnset(propertyValue, null);
+    return returnNullWhenNotSet(propertyValue);
   }
 
   /**
-   * Gets the value of the configuration property identified by name.  The defaultPropertyValue parameter effectively
-   * overrides the required attribute indicating that the property is not required to be declared or defined.
+   * Gets the value of the configuration property identified by the given {@link String name} as a {@link T value}
+   * of the specified {@link Class type T}.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
-   * undefined.
-   * @return the value of the configuration property identified by name, or the default property value if the property
-   * was undeclared or undefined.
+   * The {@code required} parameter is used to indicate whether the configuration property is {@literal required}
+   * or not and whether a {@link ConfigurationException} will be thrown when the property is undeclared or undefined.
+   *
+   * @param <T> {@link Class type} in which to convert the returned value of the configuration property.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @param type expected {@link Class type} of the configuration property value when returned.
+   * @param required boolean value used to indicate whether the configuration property is required
+   * to be both declared and defined.
+   * @return the value of the configuration property identified by the given {@link String name}
+   * as a {@link T value} of the specified {@link Class type T}.
+   * @throws ConfigurationException if the configuration property is required and the property
+   * is undeclared or undefined.
+   * @see #getPropertyValue(String, boolean)
+   * @see #convert(String, Class)
    */
-  public String getPropertyValue(final String propertyName, final String defaultPropertyValue) {
-    return defaultIfUnset(getPropertyValue(propertyName, NOT_REQUIRED), defaultPropertyValue);
-  }
+  @Override
+  public <T> T getPropertyValueAs(String propertyName, Class<T> type, boolean required) {
 
-  /**
-   * Gets the value of the configuration property identified by name as a value of the specified Class type.
-   * The property is required to be declared and defined otherwise a ConfigurationException is thrown.
-   *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param type the expected Class type of the configuration property value.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if the property value was undeclared or is undefined.
-   */
-  public <T> T getPropertyValueAs(final String propertyName, final Class<T> type) {
-    return convert(getPropertyValue(propertyName, DEFAULT_REQUIRED), type);
-  }
+    String propertyValue = null;
 
-  /**
-   * Gets the value of the configuration property identified by name as a value of the specified Class type.
-   * The required parameter can be used to indicate the property is not required and that a ConfigurationException
-   * should not be thrown if the property is undeclared or undefined.
-   *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param required used to indicate whether the configuration property is required to be declared and defined.
-   * @param type the expected Class type of the configuration property value.
-   * @return the value of the configuration property identified by name.
-   * @throws ConfigurationException if and only if the property is required and the property is either undeclared
-   * or undefined.
-   */
-  public <T> T getPropertyValueAs(final String propertyName, final boolean required, final Class<T> type) {
     try {
-      return convert(getPropertyValue(propertyName, required), type);
+      propertyValue = getPropertyValue(propertyName, required);
+      return convert(propertyValue, type);
     }
-    catch (ConversionException e) {
+    catch (ConversionException cause) {
+
       if (required) {
-        throw new ConfigurationException(String.format(
-          "Failed to get the value of configuration setting property (%1$s) as type (%2$s)!", propertyName,
-            ClassUtils.getName(type)), e);
+        String message = "Failed to get value [%1$s] of configuration property [%2$s] as an instance of type [%3$s]";
+        throw newConfigurationException(cause, message, propertyValue, propertyName, ClassUtils.getName(type));
       }
 
       return null;
@@ -260,34 +283,12 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   }
 
   /**
-   * Gets the value of the configuration property identified by name as a value of the specified Class type.
-   * The defaultPropertyValue parameter effectively overrides the required attribute indicating that the property
-   * is not required to be declared or defined.
-   *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @param defaultPropertyValue the default value for the configuration property when the property is undeclared or
-   * undefined.
-   * @param type the expected Class type of the configuration property value.
-   * @return the value of the configuration property identified by name, or the default property value if the property
-   * was undeclared or undefined.
-   */
-  @SuppressWarnings("unchecked")
-  public <T> T getPropertyValueAs(final String propertyName, final T defaultPropertyValue, final Class<T> type) {
-    try {
-      return ObjectUtils.returnFirstNonNullValue(convert(getPropertyValue(propertyName, NOT_REQUIRED), type),
-        defaultPropertyValue);
-    }
-    catch (ConversionException ignore) {
-      return defaultPropertyValue;
-    }
-  }
-
-  /**
-   * Abstract method to be implemented by concrete Configuration implementations to handle retrieval
+   * Abstract method to be implemented by concrete {@link Configuration} implementations to handle retrieval
    * of the property value from the property source.
    *
-   * @param propertyName the String name of the property to retrieve.
-   * @return a String value of the named property or possibly null if the property is not set or undefined.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a {@link String value} for the {@link String named} configuration property,
+   * possibly returning {@literal null} if the property was not declared or defined.
    */
   protected abstract String doGetPropertyValue(String propertyName);
 
