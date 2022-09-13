@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure;
 
 /**
- * The ConfigurationException class is a RuntimeException denoting a configuration problem.
+ * Java {@link RuntimeException} used to indicate a configuration problem in the Java application (program).
  *
  * @author John J. Blum
  * @see java.lang.RuntimeException
@@ -27,38 +26,40 @@ package org.cp.elements.context.configure;
 public class ConfigurationException extends RuntimeException {
 
   /**
-   * Default constructor to create an uninitialized instance of the ConfigurationException class.
+   * Constructs a new instance of {@link ConfigurationException}
+   * with no {@link String message} and no {@link Throwable cause}.
    */
-  public ConfigurationException() {
-  }
+  public ConfigurationException() { }
 
   /**
-   * Constructs an instance of the the ConfigurationException class with a message describing the configuration problem.
+   * Constructs a new instance of {@link ConfigurationException} initialized with the given {@link String message}
+   * used to description this {@link RuntimeException}.
    *
-   * @param message a String describing the configuration problem.
+   * @param message {@link String} containing a {@literal message} to description this {@link RuntimeException}.
    */
   public ConfigurationException(final String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the ConfigurationException class along with the cause of the configuration problem.
+   * Constructs a new instance of {@link ConfigurationException} initialized with the given {@link Throwable}
+   * used as the cause or reason this {@link RuntimeException} was thrown.
    *
-   * @param cause a Throwable indicating the underlying cause of the configuration problem.
+   * @param cause {@link Throwable} used as the reason this {@link RuntimeException} was thrown.
    */
   public ConfigurationException(final Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the ConfigurationException class with a message describing the configuration problem
-   * along with the underlying cause of the configuration problem.
+   * Constructs a new instance of {@link ConfigurationException} initialized with the given {@link String message}
+   * used to description this {@link RuntimeException} along with the given {@link Throwable} used as the cause
+   * or reason this {@link RuntimeException} was thrown.
    *
-   * @param message a String describing the configuration problem.
-   * @param cause a Throwable indicating the underlying cause of the configuration problem.
+   * @param message {@link String} containing a {@literal message} to description this {@link RuntimeException}.
+   * @param cause {@link Throwable} used as the reason this {@link RuntimeException} was thrown.
    */
   public ConfigurationException(final String message, final Throwable cause) {
     super(message, cause);
   }
-
 }
