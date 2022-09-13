@@ -316,6 +316,15 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
+  public void requireObjectWithNullObjectThrowsIllegalArgumentExceptionHandlingMessageArguments() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ObjectUtils.requireObject(null, "Object [%s] must not be null!"))
+      .withMessage("Object [null] must not be null!")
+      .withNoCause();
+  }
+
+  @Test
   public void requireStateWithNonNullObject() {
 
     Object object = new Object();

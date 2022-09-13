@@ -234,7 +234,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see #requireState(Object, String, Object...)
    */
   public static @NotNull <T> T requireObject(T object, String message, Object... args) {
-    Assert.notNull(object, message, args);
+    Object[] resolveArguments = ArrayUtils.isNotEmpty(args) ? args : ArrayUtils.asArray(object);
+    Assert.notNull(object, message, resolveArguments);
     return object;
   }
 
