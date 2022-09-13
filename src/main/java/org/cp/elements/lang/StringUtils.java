@@ -21,7 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.text.FormatUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -497,6 +500,20 @@ public abstract class StringUtils {
       value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
     }
 
+    return value;
+  }
+
+  /**
+   * Requires the given {@link String value} to have text.
+   *
+   * @param value {@link String} to evaluate.
+   * @param message {@link String} containing the message used to describe the {@link IllegalArgumentException}.
+   * @param args array of {@link Object arguments} used to format (replace) placeholders in the {@link String message}.
+   * @return the given {@link String value}.
+   * @throws IllegalArgumentException if the {@link String} is {@literal null} or {@literal empty} (blank).
+   */
+  public static @NotNull String requireText(@Nullable String value, String message, Object... args) {
+    Assert.hasText(value, FormatUtils.format(message, args));
     return value;
   }
 
