@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
-import org.cp.elements.text.FormatUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -33,6 +32,7 @@ import org.cp.elements.util.ArrayUtils;
  * @author John J. Blum
  * @see java.lang.String
  * @see java.util.regex.Pattern
+ * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -513,7 +513,8 @@ public abstract class StringUtils {
    * @throws IllegalArgumentException if the {@link String} is {@literal null} or {@literal empty} (blank).
    */
   public static @NotNull String requireText(@Nullable String value, String message, Object... args) {
-    Assert.hasText(value, FormatUtils.format(message, args));
+    Object[] resolvedArguments = ArrayUtils.isNotEmpty(args) ? args : ArrayUtils.asArray(value);
+    Assert.hasText(value, message, resolvedArguments);
     return value;
   }
 

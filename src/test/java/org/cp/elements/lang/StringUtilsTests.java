@@ -37,7 +37,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see org.cp.elements.lang.StringUtils
  * @since 1.0.0
  */
-public class StringUtilsTest {
+public class StringUtilsTests {
 
   @Test
   public void capitalizeCharacter() {
@@ -582,13 +582,22 @@ public class StringUtilsTest {
   }
 
   @Test
-  public void requiresTextWithNoText() {
+  public void requireTextWithNoText() {
 
     Arrays.stream(ArrayUtils.asArray("  ", "", null)).forEach(text ->
       assertThatIllegalArgumentException()
         .isThrownBy(() -> StringUtils.requireText(text, "String [%s] must have {1}", text, "text"))
         .withMessage("String [%s] must have text", text)
         .withNoCause());
+  }
+
+  @Test
+  public void requireTextWithNoTextDefaultsMessageArguments() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> StringUtils.requireText("  ", "String [%s] must not be null or empty"))
+      .withMessage("String [  ] must not be null or empty")
+      .withNoCause();
   }
 
   @Test
