@@ -75,6 +75,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newTestException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newThrowableOperationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTypeNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUndeclaredPropertyException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newUndefinedPropertyException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUnhandledMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUserException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyException;
@@ -127,6 +128,7 @@ import org.cp.elements.util.LoserException;
 import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
 import org.cp.elements.util.UndeclaredPropertyException;
+import org.cp.elements.util.UndefinedPropertyException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
 import org.cp.elements.util.paging.PageNotFoundException;
@@ -792,6 +794,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newUndeclaredPropertyExceptionWithFormattedMessageAndCause() {
     assertThrowable(newUndeclaredPropertyException(this.mockCause, "%s is a {1}", "This", "test"),
       UndeclaredPropertyException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newUndefinedPropertyExceptionWithMessage() {
+    assertThrowable(newUndefinedPropertyException("test"), UndefinedPropertyException.class, "test");
+  }
+
+  @Test
+  public void newUndefinedPropertyExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newUndefinedPropertyException(this.mockCause, "%s is a {1}", "This", "test"),
+      UndefinedPropertyException.class, "This is a test", this.mockCause);
   }
 
   @Test

@@ -62,6 +62,7 @@ import org.cp.elements.util.LoserException;
 import org.cp.elements.util.ReadOnlyException;
 import org.cp.elements.util.SystemException;
 import org.cp.elements.util.UndeclaredPropertyException;
+import org.cp.elements.util.UndefinedPropertyException;
 import org.cp.elements.util.UserException;
 import org.cp.elements.util.WriteOnlyException;
 import org.cp.elements.util.paging.PageNotFoundException;
@@ -126,6 +127,8 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.util.LoserException
  * @see org.cp.elements.util.ReadOnlyException
  * @see org.cp.elements.util.SystemException
+ * @see org.cp.elements.util.UndeclaredPropertyException
+ * @see org.cp.elements.util.UndefinedPropertyException
  * @see org.cp.elements.util.UserException
  * @see org.cp.elements.util.WriteOnlyException
  * @see org.cp.elements.util.paging.PageNotFoundException
@@ -1852,6 +1855,37 @@ public abstract class ElementsExceptionsFactory {
       Object... args) {
 
     return new UndeclaredPropertyException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link UndefinedPropertyException} initialized with the given {@link String message}
+   * to describe the {@link UndefinedPropertyException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link UndefinedPropertyException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link UndefinedPropertyException}.
+   * @see #newUndefinedPropertyException(Throwable, String, Object...)
+   * @see org.cp.elements.util.UndefinedPropertyException
+   */
+  public static UndefinedPropertyException newUndefinedPropertyException(String message, Object... args) {
+    return newUndefinedPropertyException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link UndefinedPropertyException} initialized with the given {@link String message}
+   * to describe the {@link UndefinedPropertyException} along with a {@link Throwable cause} used as the reason
+   * why the {@link UndefinedPropertyException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link UndefinedPropertyException}.
+   * @param message {@link String} containing a message to describe the {@link UndefinedPropertyException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link UndefinedPropertyException}.
+   * @see org.cp.elements.util.UndefinedPropertyException
+   */
+  public static UndefinedPropertyException newUndefinedPropertyException(Throwable cause, String message,
+      Object... args) {
+
+    return new UndefinedPropertyException(format(message, args), cause);
   }
 
   /**
