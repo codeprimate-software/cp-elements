@@ -316,7 +316,7 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void requireObjectWithNullObjectThrowsIllegalArgumentExceptionHandlingMessageArguments() {
+  public void requireObjectWithNullObjectThrowsIllegalArgumentExceptionDefaultsMessageArguments() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ObjectUtils.requireObject(null, "Object [%s] must not be null!"))
@@ -338,6 +338,15 @@ public class ObjectUtilsUnitTests {
     assertThatIllegalStateException()
       .isThrownBy(() -> ObjectUtils.requireState(null, "This is a %s message!", "test"))
       .withMessage("This is a test message!")
+      .withNoCause();
+  }
+
+  @Test
+  public void requireStateWithNullObjectThrowsIllegalStateExceptionDefaultsMessageArguments() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> ObjectUtils.requireState(null, "Object state [%s] is not valid!"))
+      .withMessage("Object state [null] is not valid!")
       .withNoCause();
   }
 

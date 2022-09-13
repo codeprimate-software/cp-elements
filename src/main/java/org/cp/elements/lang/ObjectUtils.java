@@ -234,8 +234,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see #requireState(Object, String, Object...)
    */
   public static @NotNull <T> T requireObject(T object, String message, Object... args) {
-    Object[] resolveArguments = ArrayUtils.isNotEmpty(args) ? args : ArrayUtils.asArray(object);
-    Assert.notNull(object, message, resolveArguments);
+    Object[] resolvedArguments = ArrayUtils.isNotEmpty(args) ? args : ArrayUtils.asArray(object);
+    Assert.notNull(object, message, resolvedArguments);
     return object;
   }
 
@@ -252,7 +252,8 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @see #requireObject(Object, String, Object...)
    */
   public static @NotNull <T> T requireState(T object, String message, Object... args) {
-    Assert.state(object != null, message, args);
+    Object[] resolvedArguments = ArrayUtils.isNotEmpty(args) ? args : ArrayUtils.asArray(object);
+    Assert.state(object != null, message, resolvedArguments);
     return object;
   }
 
