@@ -16,6 +16,8 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -297,26 +299,37 @@ public class ObjectUtilsUnitTests {
   }
 
   @Test
-  public void requiredNonNullObject() {
+  public void requireObjectWithNonNullObject() {
 
     Object object = new Object();
 
     assertThat(ObjectUtils.requireObject(object, "Object is required")).isSameAs(object);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void requireNullObjectThrowsIllegalArgumentException() {
+  @Test
+  public void requireObjectWithNullObjectThrowsIllegalArgumentException() {
 
-    try {
-      ObjectUtils.requireObject(null, "This is a %s message!", "test");
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ObjectUtils.requireObject(null, "This is a %s message!", "test"))
+      .withMessage("This is a test message!")
+      .withNoCause();
+  }
 
-      assertThat(expected).hasMessage("This is a test message!");
-      assertThat(expected).hasNoCause();
+  @Test
+  public void requireStateWithNonNullObject() {
 
-      throw expected;
-    }
+    Object object = new Object();
+
+    assertThat(ObjectUtils.requireState(object, "Object state is required")).isSameAs(object);
+  }
+
+  @Test
+  public void requireStateWithNullObjectThrowsIllegalStateException() {
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> ObjectUtils.requireState(null, "This is a %s message!", "test"))
+      .withMessage("This is a test message!")
+      .withNoCause();
   }
 
   @Test

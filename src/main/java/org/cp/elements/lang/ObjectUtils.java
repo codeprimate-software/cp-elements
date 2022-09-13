@@ -228,12 +228,30 @@ public abstract class ObjectUtils extends ReflectionUtils {
    * @param object {@link Object} reference to evaluate.
    * @param message {@link String} containing the message for the {@link IllegalArgumentException} thrown by
    * this method if the {@link Object} reference is {@literal null}.
-   * @param args array of arguments used to resolve the placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to resolve the placeholders in the {@link String message}.
    * @return the given {@link Object}.
    * @throws IllegalArgumentException if the {@link Object} is {@literal null}.
+   * @see #requireState(Object, String, Object...)
    */
   public static @NotNull <T> T requireObject(T object, String message, Object... args) {
     Assert.notNull(object, message, args);
+    return object;
+  }
+
+  /**
+   * Requires the {@link Object} reference to have been initialized, that is, to not be {@literal null}
+   *
+   * @param <T> {@link Class type} of {@link Object}.
+   * @param object {@link Object} reference to evaluate.
+   * @param message {@link String} containing the message for the {@link IllegalStateException} thrown by
+   * this method if the {@link Object} reference is {@literal null}.
+   * @param args array of {@link Object arguments} used to resolve the placeholders in the {@link String message}.
+   * @return the given {@link Object}.
+   * @throws IllegalStateException if the {@link Object} is {@literal null}.
+   * @see #requireObject(Object, String, Object...)
+   */
+  public static @NotNull <T> T requireState(T object, String message, Object... args) {
+    Assert.state(object != null, message, args);
     return object;
   }
 
