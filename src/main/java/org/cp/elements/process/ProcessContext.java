@@ -31,7 +31,7 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.annotation.NullSafe;
-import org.cp.elements.util.Environment;
+import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link ProcessContext} class captures details about the operating environment (context)
@@ -44,7 +44,7 @@ import org.cp.elements.util.Environment;
  * @see java.lang.ProcessBuilder.Redirect
  * @see org.cp.elements.io.FileSystemUtils
  * @see org.cp.elements.lang.SystemUtils
- * @see org.cp.elements.util.Environment
+ * @see Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -120,7 +120,7 @@ public class ProcessContext {
    * Returns the {@link Environment} variable configuration used when launching the {@link Process}.
    *
    * @return the {@link Environment} variable configuration used when launching the {@link Process}.
-   * @see org.cp.elements.util.Environment
+   * @see Environment
    * @see #usingEnvironmentVariables()
    * @see #using(Environment)
    */
@@ -397,7 +397,7 @@ public class ProcessContext {
    * was launched.
    *
    * @return this {@link ProcessContext}.
-   * @see org.cp.elements.util.Environment#fromEnvironmentVariables()
+   * @see Environment#fromEnvironmentVariables()
    * @see #using(Environment)
    * @see #getEnvironment()
    */

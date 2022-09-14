@@ -32,7 +32,7 @@ import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
-import org.cp.elements.util.Environment;
+import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link RuntimeProcessExecutor} class is a {@link ProcessExecutor} using the {@link Runtime} API
@@ -46,7 +46,7 @@ import org.cp.elements.util.Environment;
  * @see org.cp.elements.process.ProcessAdapter
  * @see org.cp.elements.process.ProcessContext
  * @see org.cp.elements.process.ProcessExecutor
- * @see org.cp.elements.util.Environment
+ * @see Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -130,7 +130,7 @@ public class RuntimeProcessExecutor implements ProcessExecutor<ProcessAdapter> {
    * @return a reference to the {@link Environment} configuration used when running the program.
    * If the configured {@link Environment} is {@literal null}, then this method
    * returns {@link Environment#fromEnvironmentVariables()}.
-   * @see org.cp.elements.util.Environment
+   * @see Environment
    */
   @NullSafe
   protected Environment getEnvironment() {
@@ -142,7 +142,7 @@ public class RuntimeProcessExecutor implements ProcessExecutor<ProcessAdapter> {
    *
    * @param environment {@link Environment} configuration used when running the program.
    * @return this {@link RuntimeProcessExecutor}.
-   * @see org.cp.elements.util.Environment
+   * @see Environment
    */
   public RuntimeProcessExecutor using(Environment environment) {
     this.environment = environment;

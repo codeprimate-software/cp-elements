@@ -23,11 +23,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
-import org.cp.elements.util.Environment;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

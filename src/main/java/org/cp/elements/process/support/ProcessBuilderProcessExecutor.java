@@ -31,7 +31,7 @@ import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
-import org.cp.elements.util.Environment;
+import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link ProcessBuilderProcessExecutor} class is a {@link ProcessExecutor} using the {@link ProcessBuilder} API
@@ -45,7 +45,7 @@ import org.cp.elements.util.Environment;
  * @see org.cp.elements.process.ProcessAdapter
  * @see org.cp.elements.process.ProcessContext
  * @see org.cp.elements.process.ProcessExecutor
- * @see org.cp.elements.util.Environment
+ * @see Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -135,7 +135,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
    * @param environment {@link Environment} configuration used to run the program.
    * @return a new instance of {@link ProcessBuilder} configured and initialized with this
    * {@link ProcessBuilderProcessExecutor} configuration.
-   * @see org.cp.elements.util.Environment
+   * @see Environment
    * @see java.lang.ProcessBuilder
    * @see java.io.File
    */
@@ -160,7 +160,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
    * @return a reference to the {@link Environment} configuration used when running the program.
    * If the configured {@link Environment} is {@literal null}, then this method
    * returns {@link Environment#fromEnvironmentVariables()}.
-   * @see org.cp.elements.util.Environment
+   * @see Environment
    */
   @NullSafe
   protected Environment getEnvironment() {
@@ -276,7 +276,7 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
    *
    * @param environment {@link Environment} configuration used when running the program.
    * @return this {@link ProcessBuilderProcessExecutor}.
-   * @see org.cp.elements.util.Environment
+   * @see Environment
    */
   public ProcessBuilderProcessExecutor using(Environment environment) {
     this.environment = environment;

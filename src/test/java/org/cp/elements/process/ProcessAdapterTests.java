@@ -55,6 +55,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.io.FileUtils;
@@ -63,12 +70,7 @@ import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.support.RuntimeProcessExecutor;
 import org.cp.elements.util.ArrayUtils;
-import org.cp.elements.util.Environment;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 

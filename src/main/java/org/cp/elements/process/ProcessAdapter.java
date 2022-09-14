@@ -54,7 +54,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.util.ProcessUtils;
 import org.cp.elements.util.CollectionUtils;
-import org.cp.elements.util.Environment;
+import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link ProcessAdapter} class is an Adapter (wrapper) for a Java {@link Process} object.
@@ -72,7 +72,7 @@ import org.cp.elements.util.Environment;
  * @see org.cp.elements.process.ProcessContext
  * @see org.cp.elements.process.ProcessExecutor
  * @see org.cp.elements.process.event.ProcessStreamListener
- * @see org.cp.elements.util.Environment
+ * @see Environment
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
