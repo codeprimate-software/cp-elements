@@ -16,7 +16,7 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.util.PropertiesAdapter.from;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,12 +32,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.cp.elements.data.conversion.ConversionService;
-import org.cp.elements.test.TestUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.data.conversion.ConversionService;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -73,7 +74,7 @@ public class PropertiesAdapterTests {
     properties.setProperty("integerProperty", "2");
     properties.setProperty("stringProperty", "test");
 
-    propertiesAdapter = from(properties);
+    propertiesAdapter = PropertiesAdapter.from(properties);
   }
 
   @Before
@@ -89,25 +90,37 @@ public class PropertiesAdapterTests {
   @Test
   public void constructPropertiesAdapterWithProperties() {
 
-    PropertiesAdapter propertiesAdapter = new PropertiesAdapter(mockProperties);
+    PropertiesAdapter propertiesAdapter = new PropertiesAdapter(this.mockProperties);
 
-    assertThat(propertiesAdapter.getProperties()).isSameAs(mockProperties);
+    assertThat(propertiesAdapter.getProperties()).isSameAs(this.mockProperties);
     assertThat(propertiesAdapter.getConversionService()).isNotNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructPropertiesAdapterWithNull() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new PropertiesAdapter(null),
-      () -> "The Properties to wrap cannot be null");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() ->new PropertiesAdapter(null))
+      .withMessage("Properties to adapt is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void emptyIsCorrect() {
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.empty();
+
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter).isEmpty();
   }
 
   @Test
   public void fromProperties() {
 
-    PropertiesAdapter propertiesAdapter = from(mockProperties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(this.mockProperties);
 
     assertThat(propertiesAdapter).isNotNull();
-    assertThat(propertiesAdapter.getProperties()).isSameAs(mockProperties);
+    assertThat(propertiesAdapter.getProperties()).isSameAs(this.mockProperties);
     assertThat(propertiesAdapter.getConversionService()).isNotNull();
   }
 
@@ -137,7 +150,7 @@ public class PropertiesAdapterTests {
 
     Properties properties = new Properties();
 
-    PropertiesAdapter propertiesAdapter = from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.isEmpty()).isTrue();
@@ -172,7 +185,7 @@ public class PropertiesAdapterTests {
     properties.setProperty("six", "!");
     properties.setProperty("seven", "void");
 
-    PropertiesAdapter propertiesAdapter = from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.size()).isEqualTo(7);
@@ -194,7 +207,7 @@ public class PropertiesAdapterTests {
     properties.setProperty("two", "");
     properties.setProperty("three", "null");
 
-    PropertiesAdapter propertiesAdapter = from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.size()).isEqualTo(3);
@@ -213,7 +226,7 @@ public class PropertiesAdapterTests {
     properties.put("NullProperty", "Null");
     properties.put("nullProperty", "null");
 
-    PropertiesAdapter propertiesAdapter = from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.size()).isEqualTo(properties.size());
@@ -386,7 +399,7 @@ public class PropertiesAdapterTests {
 
     Properties properties = new Properties();
 
-    PropertiesAdapter propertiesAdapter = from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.size()).isEqualTo(0);
@@ -415,8 +428,8 @@ public class PropertiesAdapterTests {
 
     Properties properties = singletonProperties("one", "1");
 
-    PropertiesAdapter propertiesAdapterOne = from(properties);
-    PropertiesAdapter propertiesAdapterTwo = from(properties);
+    PropertiesAdapter propertiesAdapterOne = PropertiesAdapter.from(properties);
+    PropertiesAdapter propertiesAdapterTwo = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapterOne).isNotNull();
     assertThat(propertiesAdapterTwo).isNotNull();
@@ -428,7 +441,8 @@ public class PropertiesAdapterTests {
   @SuppressWarnings("all")
   public void equalsItselfIsTrue() {
 
-    PropertiesAdapter propertiesAdapter = from(singletonProperties("one", "1"));
+    PropertiesAdapter propertiesAdapter =
+      PropertiesAdapter.from(singletonProperties("one", "1"));
 
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.equals(propertiesAdapter)).isTrue();
@@ -436,13 +450,13 @@ public class PropertiesAdapterTests {
 
   @Test
   public void equalsObjectIsFalse() {
-    assertThat(from(mockProperties).equals(new Object())).isFalse();
+    assertThat(PropertiesAdapter.from(mockProperties).equals(new Object())).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void equalsNullIsFalse() {
-    assertThat(from(mockProperties).equals(null)).isFalse();
+    assertThat(PropertiesAdapter.from(mockProperties).equals(null)).isFalse();
   }
 
   @Test
@@ -450,9 +464,10 @@ public class PropertiesAdapterTests {
 
     Properties properties = singletonProperties("one", "1");
 
-    PropertiesAdapter propertiesAdapterOne = from(properties);
-    PropertiesAdapter propertiesAdapterTwo = from(properties);
-    PropertiesAdapter propertiesAdapterThree = from(singletonProperties("two", "2"));
+    PropertiesAdapter propertiesAdapterOne = PropertiesAdapter.from(properties);
+    PropertiesAdapter propertiesAdapterTwo = PropertiesAdapter.from(properties);
+    PropertiesAdapter propertiesAdapterThree =
+      PropertiesAdapter.from(singletonProperties("two", "2"));
 
     assertThat(propertiesAdapterOne.hashCode()).isNotEqualTo(0);
     assertThat(propertiesAdapterOne.hashCode()).isEqualTo(propertiesAdapterTwo.hashCode());
@@ -473,7 +488,7 @@ public class PropertiesAdapterTests {
   @Test
   public void toStringWithSinglePropertyIsSuccessful() {
 
-    String actualPropertiesString = from(singletonProperties("one", "1")).toString();
+    String actualPropertiesString = PropertiesAdapter.from(singletonProperties("one", "1")).toString();
     String expectedPropertiesString = "[\n\tone = 1\n]";
 
     assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
@@ -482,10 +497,44 @@ public class PropertiesAdapterTests {
   @Test
   public void toStringWithNoPropertiesIsSuccessful() {
 
-    String actualPropertiesString = from(new Properties()).toString();
+    String actualPropertiesString = PropertiesAdapter.from(new Properties()).toString();
     String expectedPropertiesString = "[]";
 
     assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
+  }
+
+  @Test
+  public void toPropertiesIsSuccessful() {
+
+    Properties properties = new Properties();
+
+    properties.setProperty("one", "1");
+    properties.setProperty("two", "2");
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter).hasSize(2);
+
+    Properties actual = propertiesAdapter.toProperties();
+
+    assertThat(actual).isNotNull();
+    assertThat(actual).isNotSameAs(properties);
+    assertThat(actual).isEqualTo(properties);
+  }
+
+  @Test
+  public void toPropertiesWithEmptyPropertiesAdapter() {
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.empty();
+
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter).isEmpty();
+
+    Properties actual = propertiesAdapter.toProperties();
+
+    assertThat(actual).isNotNull();
+    assertThat(actual).isEmpty();
   }
 
   @Test
@@ -496,15 +545,15 @@ public class PropertiesAdapterTests {
     properties.setProperty("one", "1");
     properties.setProperty("two", "2");
 
-    PropertiesAdapter propertiesAdapter = from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
 
     assertThat(propertiesAdapter).isNotNull();
-    assertThat(propertiesAdapter.size()).isEqualTo(properties.size());
+    assertThat(propertiesAdapter).hasSize(properties.size());
 
     Map<String, String> map = propertiesAdapter.toMap();
 
     assertThat(map).isNotNull();
-    assertThat(map.size()).isEqualTo(properties.size());
+    assertThat(map).hasSize(properties.size());
 
     for (String propertyName : properties.stringPropertyNames()) {
       assertThat(map.containsKey(propertyName)).isTrue();
@@ -513,16 +562,16 @@ public class PropertiesAdapterTests {
   }
 
   @Test
-  public void toMapWithEmptyPropertiesIsSuccessful() {
+  public void toMapWithEmptyPropertiesAdapter() {
 
-    PropertiesAdapter propertiesAdapter = from(new Properties());
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.empty();
 
     assertThat(propertiesAdapter).isNotNull();
-    assertThat(propertiesAdapter.isEmpty()).isTrue();
+    assertThat(propertiesAdapter).isEmpty();
 
     Map<String, String> map = propertiesAdapter.toMap();
 
     assertThat(map).isNotNull();
-    assertThat(map.isEmpty()).isTrue();
+    assertThat(map).isEmpty();
   }
 }

@@ -23,8 +23,8 @@ import java.util.Properties;
 import java.util.ServiceLoader;
 
 import org.cp.elements.data.conversion.ConversionService;
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -43,30 +43,46 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public class PropertiesAdapter implements Iterable<String> {
 
-  private final ConversionService conversionService;
-
-  private final Properties delegate;
+  /**
+   * Factory method used to construct a new instance of {@link PropertiesAdapter} with no {@link Properties}.
+   *
+   * @return a new {@link PropertiesAdapter} with no {@link Properties}.
+   * @see #PropertiesAdapter(Properties)
+   * @see java.util.Properties
+   */
+  @NullSafe
+  public static @NotNull PropertiesAdapter empty() {
+    return new PropertiesAdapter(new Properties());
+  }
 
   /**
-   * Factory method to get an instance of the PropertiesAdapter class initialized with the given {@link Properties}.
+   * Factory method used to construct a new instance of {@link PropertiesAdapter} initialized with the given,
+   * required {@link Properties}.
    *
-   * @param properties the {@link Properties} to wrap.
-   * @return an instance of the {@link PropertiesAdapter} initialized with the given {@link Properties}.
+   * @param properties {@link Properties} to adapt; must not be {@literal null}.
+   * @return a new {@link PropertiesAdapter} adapting the given, required {@link Properties}.
+   * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+   * @see #PropertiesAdapter(Properties)
+   * @see java.util.Properties
    */
   public static @NotNull PropertiesAdapter from(@NotNull Properties properties) {
     return new PropertiesAdapter(properties);
   }
 
+  private final ConversionService conversionService;
+
+  private final Properties delegate;
+
   /**
-   * Constructs an instance of the PropertiesAdapter class initialized with the given {@link Properties}.
+   * Constructs a new instance of {@link PropertiesAdapter} initialized with the given, required {@link Properties}.
    *
-   * @param properties the {@link Properties} to wrap with this wrapper.
+   * @param properties the {@link Properties} to adapt.
+   * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+   * @see java.util.Properties
    */
   public PropertiesAdapter(@NotNull Properties properties) {
 
-    Assert.notNull(properties, "The Properties to wrap cannot be null");
-
-    this.delegate = properties;
+    this.delegate = ObjectUtils.requireObject(properties, "Properties to adapt is required");
     this.conversionService = ServiceLoader.load(ConversionService.class).iterator().next();
   }
 
@@ -332,6 +348,23 @@ public class PropertiesAdapter implements Iterable<String> {
   @Override
   public @NotNull String toString() {
     return MapUtils.toString(toMap());
+  }
+
+  /**
+   * Converts this {@link PropertiesAdapter} into a {@link Properties} object.
+   *
+   * @return a {@link Properties} object from this {@link PropertiesAdapter}.
+   * @see java.util.Properties
+   */
+  public @NotNull Properties toProperties() {
+
+    Properties properties = new Properties();
+
+    for (String propertyName : this) {
+      properties.setProperty(propertyName, get(propertyName));
+    }
+
+    return properties;
   }
 
   /**
