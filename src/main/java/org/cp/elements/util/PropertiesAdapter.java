@@ -21,9 +21,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.function.Predicate;
 
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
-import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -76,8 +78,11 @@ public class PropertiesAdapter implements Iterable<String> {
   /**
    * Constructs a new instance of {@link PropertiesAdapter} initialized with the given, required {@link Properties}.
    *
-   * @param properties the {@link Properties} to adapt.
+   * Additionally, this constructor will load the configured {@link ConversionService}.
+   *
+   * @param properties {@link Properties} to adapt; must not be {@literal null}.
    * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+   * @see org.cp.elements.data.conversion.ConversionService
    * @see java.util.Properties
    */
   public PropertiesAdapter(@NotNull Properties properties) {
@@ -87,11 +92,11 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Returns a reference to the {@link ConversionService} used to convert the property value
-   * into a value of the desired class type.
+   * Returns a reference to the configured {@link ConversionService} used to convert property values
+   * into a value of the requested {@link Class type}.
    *
-   * @return a reference to the {@link ConversionService} used ot convert the property value
-   * into a value of the desired class type.
+   * @return a reference to the configured {@link ConversionService} used to convert property values
+   * into a value of the requested {@link Class type}.
    * @see org.cp.elements.data.conversion.ConversionService
    */
   protected @NotNull ConversionService getConversionService() {
@@ -99,9 +104,10 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Returns the {@link Properties} wrapped by this Adapter.
+   * Returns the {@link Properties} adapted (wrapped) by this {@link PropertiesAdapter}.
    *
-   * @return the {@link Properties} wrapped by this Adapter.
+   * @return the {@link Properties} adapted (wrapped) by this {@link PropertiesAdapter};
+   * never {@literal null}.
    * @see java.util.Properties
    */
   protected @NotNull Properties getProperties() {
@@ -109,21 +115,9 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Determines whether the named property is present in this {@link Properties} adapter.
+   * Determines whether this {@link PropertiesAdapter} contains any properties.
    *
-   * @param propertyName the name of the property to check for presence in this adapter.
-   * @return a boolean value indicating whether the named property is present in this set of {@link Properties}.
-   * @see java.util.Properties#containsKey(Object)
-   * @see #getProperties()
-   */
-  public boolean contains(String propertyName) {
-    return getProperties().containsKey(propertyName);
-  }
-
-  /**
-   * Determines whether this {@link Properties} object contains any properties.
-   *
-   * @return a boolean value indicating whether this {@link Properties} object contains any properties.
+   * @return a boolean value indicating whether this {@link PropertiesAdapter} contains any properties.
    * @see java.util.Properties#isEmpty()
    * @see #getProperties()
    */
@@ -132,90 +126,125 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Determines whether the property identified by name is set.
+   * Determines whether the property identified by {@link String name} is set.
    *
-   * @param propertyName the name of the property.
-   * @return a boolean value indicating whether the named property is set.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @return a boolean value indicating whether the {@link String named} property is set.
    * @see org.cp.elements.lang.StringUtils#hasText(String)
    * @see #get(String)
    */
-  public boolean isSet(String propertyName) {
+  public boolean isSet(@NotNull String propertyName) {
     return StringUtils.hasText(get(propertyName));
   }
 
   /**
-   * Determines whether the property identified by name is unset.
+   * Determines whether the property identified by {@link String name} is unset.
    *
-   * @param propertyName the name of the property.
-   * @return a boolean value indicating whether the named property exits but is unset.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @return a boolean value indicating whether the {@link String named} property exits but is unset.
    * @see #contains(String)
    * @see #isSet(String)
    */
-  public boolean isUnset(String propertyName) {
-    return (contains(propertyName) && !isSet(propertyName));
+  public boolean isUnset(@NotNull String propertyName) {
+    return contains(propertyName) && !isSet(propertyName);
   }
 
   /**
-   * Converts the value of the named property into an instance of the given {@link Class} type.
+   * Determines whether the {@link String named} property is present (declared or defined) in
+   * this {@link PropertiesAdapter}.
    *
-   * @param <T> Class type of the return value.
-   * @param propertyName the name of the property to get.
-   * @param type the desired {@link Class} type to convert the value of the named property to.
-   * @return the value of the named property converted to an instance of the given {@link Class} type.
-   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
-   * @see java.lang.Class
-   * @see #getConversionService()
-   * @see #get(String) \
+   * @param propertyName {@link String} containing the {@literal name} of the property to check for presence
+   * (declaration of definition) in this {@link PropertiesAdapter}.
+   * @return a boolean value indicating whether the {@link String named} property is present (declared or defined)
+   * in this {@link PropertiesAdapter}.
+   * @see java.util.Properties#containsKey(Object)
+   * @see #getProperties()
    */
-  protected <T> T convert(String propertyName, Class<T> type) {
-    return getConversionService().convert(get(propertyName), type);
+  public boolean contains(@NotNull String propertyName) {
+    return getProperties().containsKey(propertyName);
   }
 
   /**
-   * Defaults of the value for the named property if the property does not exist.
+   * Converts the {@link String value} of the {@link String named} property into an instance of
+   * the requested {@link Class type}.
    *
-   * @param <T> {@link Class} type of the return value.
-   * @param propertyName the name of the property to get.
-   * @param defaultValue the default value to return if the named property does not exist.
-   * @param type the desired {@link Class} type of the named property value.
+   * @param <T> {@link Class type} of the return value.
+   * @param propertyName {@link String} containing the {@literal name} of the property to get.
+   * @param type requested {@link Class} type in which to convert the {@link String value}
+   * of the {@link String named} property; must not be {@literal null}.
+   * @return the {@link String value} of the {@link String named} property converted into
+   * an instance of the requested {@link Class type}.
+   * @throws ConversionException if the {@link String value} of the {@link String named} property
+   * cannot be converted into an instance of the requested {@link Class type}.
+   * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
+   * @see #getConversionService()
+   * @see java.lang.Class
+   * @see #get(String)
+   */
+  protected <T> T convert(@NotNull String propertyName, @NotNull Class<T> type) {
+
+    return getConversionService().convert(get(propertyName),
+      ObjectUtils.requireObject(type, "Class type to convert the property value to is required"));
+  }
+
+  /**
+   * Defaults the {@link String value} for the {@link String named} property if the property
+   * was not declared or defined (set).
+   *
+   * @param <T> {@link Class type} of the return value.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @param type requested {@link Class type} of the {@link String named} property {@link String value};
+   * must not be {@literal null}.
+   * @param defaultValue {@link T default value} to return if the {@link String named} property
+   * was not declared or defined (set).
    * @return the value of the named property as a instance of the specified {@link Class} type
    * or return the default value if the named property does not exist.
+   * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+   * @see #convert(String, Class)
    * @see java.lang.Class
    * @see #isSet(String)
-   * @see #convert(String, Class)
    */
-  protected <T> T defaultIfNotSet(String propertyName, T defaultValue, Class<T> type) {
-    return (isSet(propertyName) ? convert(propertyName, type) : defaultValue);
+  protected @Nullable <T> T returnDefaultValueIfNotSet(@NotNull String propertyName, @NotNull Class<T> type,
+      @Nullable T defaultValue) {
+
+    return isSet(propertyName) ? convert(propertyName, type) : defaultValue;
   }
 
   /**
-   * Returns {@literal null} for a {@literal "null"} {@link String} value or simply returns the {@link String} value.
-   * The {@link String} value is safely trimmed before evaluation.
+   * Returns {@literal null} for a {@literal "null"} {@link String value} or simply returns the {@link String value}.
    *
-   * @param value {@link String} value to evaluate.
-   * @return a {@literal null} for a {@literal "null"} {@link String} value.
+   * The {@link String value} is safely {@link String#trim() trimmed} before evaluation.
+   *
+   * @param value {@link String} to evaluate.
+   * @return {@literal null} for a {@literal "null"} {@link String value} or return the {@link String value}
+   * if not {@literal null} or {@literal "null"}.
    * @see java.lang.String
    */
-  @NullSafe
   protected @Nullable String valueOf(@Nullable String value) {
     return "null".equalsIgnoreCase(String.valueOf(value).trim()) ? null : value;
   }
 
   /**
-   * Filters the properties from this adapter by name.
+   * {@link Predicate Filters} properties from this {@link PropertiesAdapter} by {@link String name}.
    *
-   * @param filter the {@link Filter} used to filter the properties of this adapter.
-   * @return a newly constructed instance of the {@link PropertiesAdapter} containing only the filtered properties.
+   * @param filter {@link Predicate} used to filter properties from this {@link PropertiesAdapter};
+   * must not be {@literal null}.
+   * @return a new instance of {@link PropertiesAdapter} containing only filtered properties.
+   * @throws IllegalArgumentException if the {@link Predicate filter} is {@literal null}.
+   * @see java.util.function.Predicate
    * @see org.cp.elements.lang.Filter
    * @see java.util.Properties
    * @see #from(Properties)
    */
-  public @NotNull PropertiesAdapter filter(@NotNull Filter<String> filter) {
+  public @NotNull PropertiesAdapter filter(@NotNull Predicate<String> filter) {
+
+    Assert.notNull(filter, "Predicate used to filter properties is required");
 
     Properties properties = new Properties();
 
     for (String propertyName : this) {
-      if (filter.accept(propertyName)) {
+      if (filter.test(propertyName)) {
         properties.setProperty(propertyName, get(propertyName));
       }
     }
@@ -224,78 +253,85 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
-   * Gets the assigned value of named property as a {@link String}.
+   * Gets the assigned {@link String value} of {@link String named} property.
    *
-   * @param propertyName the name of the property to get.
-   * @return the assigned value of the named property as a {@link String}.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @return the assigned {@link String value} of {@link String named} property.
    * @see #get(String, String)
    */
-  public @Nullable String get(String propertyName) {
+  public @Nullable String get(@NotNull String propertyName) {
     return get(propertyName, null);
   }
 
   /**
-   * Gets the assigned value of the named property as a {@link String} or returns the default value
-   * if the named property does not exist.
+   * Gets the assigned {@link String value} of the {@link String named} property or returns
+   * the {@link String default value} if the {@link String named} property does not exist.
    *
-   * @param propertyName the name of the property to get.
-   * @param defaultValue the default value to return if the named property does not exist.
-   * @return the assigned value of the named property as a {@link String} or default value
-   * if the named property does not exist.
-   * @see java.util.Properties#getProperty(String)
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @param defaultValue {@link String default value} to return if the {@link String named} property does not exist.
+   * @return the assigned {@link String value} of the {@link String named} property or returns
+   * the {@link String default value} if the {@link String named} property does not exist.
+   * @see java.util.Properties#getProperty(String, String)
    * @see #getProperties()
    */
-  public @Nullable String get(String propertyName, @Nullable String defaultValue) {
+  public @Nullable String get(@NotNull String propertyName, @Nullable String defaultValue) {
     return valueOf(getProperties().getProperty(propertyName, defaultValue));
   }
 
   /**
-   * Gets the assigned value of the named property as an instance of the specified {@link Class} type.
+   * Gets the assigned {@link String value} of the {@link String named} property as an instance of
+   * the requested {@link Class type}.
    *
-   * @param <T> {@link Class} type of the return value.
-   * @param propertyName the name of the property to get.
-   * @param type Class type of the value to return for the specified property.
-   * @return the assigned value of the named property as an instance of the specified {@link Class} type.
+   * @param <T> {@link Class type} of the return value.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @param type requested {@link Class type} of the {@link String value} to return for the property.
+   * @return the assigned {@link String value} of the {@link String named} property as an instance of
+   * the requested {@link Class type}.
+   * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
    * @see #getAsType(String, Class, Object)
    */
-  public @Nullable <T> T getAsType(String propertyName, Class<T> type) {
+  public @Nullable <T> T getAsType(@NotNull String propertyName, @NotNull Class<T> type) {
     return getAsType(propertyName, type, null);
   }
 
   /**
-   * Gets the assigned value of the named property as an instance of the specified {@link Class} type
-   * or the default value if the named property does not exist.
+   * Gets the assigned {@link String value} of the {@link String named} property as an instance of
+   * the requested {@link Class} type or the {@link T default value} if the {@link String named} property
+   * was not declared or is undefined (not set).
    *
-   * @param <T> {@link Class} type of the return value.
-   * @param propertyName the name of the property to get.
-   * @param type Class type of the value to return for the specified property.
-   * @param defaultValue the default value to return if the named property does not exist.
-   * @return the assigned value of the named property as an instance of the specified {@link Class} type
-   * or the default value if the named property does not exist.
-   * @see #defaultIfNotSet(String, Object, Class)
-   * @see java.lang.Class
+   * @param <T> {@link Class type} of the return value.
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @param type requested {@link Class type} of the {@link String value} to return for the property.
+   * @param defaultValue {@link T default value} to return if the {@link String named} property
+   * was not declared or is undefined (not set).
+   * @return the assigned {@link String value} of the {@link String named} property as an instance of
+   * the requested {@link Class} type or the {@link T default value} if the {@link String named} property
+   * was not declared or is undefined (not set).
+   * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+   * @see #returnDefaultValueIfNotSet(String, Class, Object)
    */
-  public @Nullable <T> T getAsType(String propertyName, Class<T> type, @Nullable T defaultValue) {
-    return defaultIfNotSet(propertyName, defaultValue, type);
+  public @Nullable <T> T getAsType(@NotNull String propertyName, @NotNull Class<T> type, @Nullable T defaultValue) {
+    return returnDefaultValueIfNotSet(propertyName, type, defaultValue);
   }
 
   /**
-   * Iterates the property names in this {@link Properties} object.
+   * Iterates over property {@link String names} in this {@link PropertiesAdapter}.
    *
-   * @return an {@link Iterator} to iterate the name of the properties in this {@link Properties} object.
+   * @return an unmodifiable {@link Iterator} to iterate over the {@link String names} of the properties
+   * in this {@link PropertiesAdapter}.
    * @see java.util.Properties#stringPropertyNames()
    * @see java.util.Iterator
    * @see #getProperties()
    */
   @Override
-  public Iterator<String> iterator() {
+  public @NotNull Iterator<String> iterator() {
     return Collections.unmodifiableSet(getProperties().stringPropertyNames()).iterator();
   }
 
   /**
-   * Returns the number of properties in this {@link Properties} object.
+   * Returns the {@link Integer number of properties} defined in this {@link PropertiesAdapter}.
    *
-   * @return an integer value indicating the number of properties in this {@link Properties} object.
+   * @return the {@link Integer number of properties} defined in this {@link PropertiesAdapter}.
    * @see java.util.Properties#size()
    * @see #getProperties()
    */
@@ -334,16 +370,15 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   @Override
   public int hashCode() {
-    int hashValue = 17;
-    hashValue = 37 * hashValue + getProperties().hashCode();
-    return hashValue;
+    return ObjectUtils.hashCodeOf(getProperties());
   }
 
   /**
    * Return a {@link String} representation of this {@link PropertiesAdapter}.
    *
    * @return a {@link String} describing this {@link PropertiesAdapter}.
-   * @see java.lang.Object#toString()
+   * @see org.cp.elements.util.MapUtils#toString(Map)
+   * @see #toMap()
    */
   @Override
   public @NotNull String toString() {
