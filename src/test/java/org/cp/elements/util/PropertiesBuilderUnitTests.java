@@ -16,10 +16,12 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,13 +33,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.cp.elements.io.NoSuchFileException;
 import org.junit.Test;
+
+import org.cp.elements.io.NoSuchFileException;
+import org.cp.elements.test.annotation.IntegrationTest;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -48,14 +53,16 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link PropertiesBuilder}.
  *
  * @author John J. Blum
+ * @see java.util.Properties
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.PropertiesBuilder
  * @since 1.0.0
  */
-public class PropertiesBuilderTests {
+public class PropertiesBuilderUnitTests {
 
   @Test
+  @IntegrationTest
   public void fromFileLoadsProperties() throws IOException {
 
     File testProperties = new File("test.properties");
@@ -66,7 +73,10 @@ public class PropertiesBuilderTests {
 
     expected.setProperty("one", "1");
     expected.setProperty("two", "2");
-    expected.store(new FileWriter(testProperties), "Test Properties");
+
+    try (Writer writer = new FileWriter(testProperties)) {
+      expected.store(writer, "Test File Properties");
+    }
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(testProperties);
 
@@ -74,65 +84,78 @@ public class PropertiesBuilderTests {
     assertThat(propertiesBuilder.build()).isEqualTo(expected);
   }
 
-  @Test(expected = NoSuchFileException.class)
+  @Test
   public void fromNonExistingFile() {
 
     File nonExistingFile = new File("/absolute/path/to/non/existing/file.properties");
 
-    try {
-      PropertiesBuilder.from(nonExistingFile);
-    }
-    catch (NoSuchFileException expected) {
+    assertThatThrowableOfType(NoSuchFileException.class)
+      .isThrownBy(args -> PropertiesBuilder.from(nonExistingFile))
+      .havingMessage("[%s] not found", nonExistingFile)
+      .causedBy(FileNotFoundException.class)
+      .withNoCause();
+  }
 
-      assertThat(expected).hasMessage(String.format("[%s] not found", nonExistingFile));
-      assertThat(expected).hasCauseInstanceOf(FileNotFoundException.class);
-      assertThat(expected.getCause()).hasNoCause();
+  @Test
+  public void fromNullFile() {
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(args -> PropertiesBuilder.from((File) null))
+      .havingMessage("Properties file is required")
+      .withNoCause();
   }
 
   @Test
   public void fromInputStreamLoadsProperties() throws IOException {
 
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-
     Properties expected = new Properties();
 
-    expected.setProperty("one", "1");
-    expected.setProperty("two", "2");
-    expected.store(out, "Test Properties");
+    expected.setProperty("keyOne", "valueOne");
+    expected.setProperty("keyTwo", "valueTwo");
 
-    byte[] buffer = out.toByteArray();
+    byte[] buffer;
 
-    PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(new ByteArrayInputStream(buffer));
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+      expected.store(out, "Test InputStream Properties");
+      buffer = out.toByteArray();
+    }
+
+    PropertiesBuilder propertiesBuilder;
+
+    try (ByteArrayInputStream in = new ByteArrayInputStream(buffer)) {
+      propertiesBuilder = PropertiesBuilder.from(in);
+    }
 
     assertThat(propertiesBuilder).isNotNull();
     assertThat(propertiesBuilder.build()).isEqualTo(expected);
   }
 
-  @Test(expected = SystemException.class)
-  public void fromInputStreamThrowingIOExceptionIsHandledProperly() throws IOException {
+  @Test
+  public void fromInputStreamThrowingIOException() throws IOException {
 
     InputStream mockInputStream = mock(InputStream.class);
 
     IOException ioException = new IOException("test");
 
-    when(mockInputStream.read()).thenThrow(ioException);
-    when(mockInputStream.read(any(byte[].class))).thenThrow(ioException);
-    when(mockInputStream.read(any(byte[].class), anyInt(), anyInt())).thenThrow(ioException);
+    doThrow(ioException).when(mockInputStream).read();
+    doThrow(ioException).when(mockInputStream).read(any(byte[].class));
+    doThrow(ioException).when(mockInputStream).read(any(byte[].class), anyInt(), anyInt());
 
-    try {
-      PropertiesBuilder.from(mockInputStream);
-    }
-    catch (SystemException expected) {
+    assertThatThrowableOfType(SystemException.class)
+      .isThrownBy(args -> PropertiesBuilder.from(mockInputStream))
+      .havingMessage("Failed to load properties from input stream [%s]", mockInputStream)
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
+  }
 
-      assertThat(expected).hasMessage("Failed to load properties from input stream [%s]", mockInputStream);
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasNoCause();
+  @Test
+  public void fromNullInputStream() {
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(args -> PropertiesBuilder.from((InputStream) null))
+      .havingMessage("InputStream is required")
+      .withNoCause();
   }
 
   @Test
@@ -154,11 +177,40 @@ public class PropertiesBuilderTests {
     Properties actual = propertiesBuilder.build();
 
     assertThat(actual).isNotNull();
-    assertThat(actual.size()).isEqualTo(expected.size());
+    assertThat(actual).hasSize(expected.size());
+    expected.forEach((key, value) -> assertThat(actual.getProperty(key)).isEqualTo(String.valueOf(value)));
+  }
 
-    for (String propertyName : expected.keySet()) {
-      assertThat(actual.getProperty(propertyName)).isEqualTo(String.valueOf(expected.get(propertyName)));
-    }
+  @Test
+  public void fromMapWithNullKeys() {
+
+    Map<String, Object> map = MapBuilder.<String, Object>newHashMap()
+      .put("mockKey", "mockValue")
+      .put(null, "testValue")
+      .build();
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(args -> PropertiesBuilder.from(map))
+      .havingMessage("Map must not contain null keys")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNullMap() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(args -> PropertiesBuilder.from((Map<String, ?>) null))
+      .havingMessage("Map is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNullPropertiesIsNullSafe() {
+
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.from((Properties) null);
+
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEmpty();
   }
 
   @Test
@@ -166,8 +218,8 @@ public class PropertiesBuilderTests {
 
     Properties expected = new Properties();
 
-    expected.setProperty("one", "1");
-    expected.setProperty("two", "2");
+    expected.setProperty("keyOne", "valueOne");
+    expected.setProperty("keyTwo", "valueTwo");
 
     PropertiesBuilder propertiesBuilder = PropertiesBuilder.from(expected);
 
@@ -182,41 +234,53 @@ public class PropertiesBuilderTests {
 
     Properties expected = new Properties();
 
-    expected.setProperty("one", "1");
-    expected.setProperty("two", "2");
-    expected.store(new OutputStreamWriter(out), "Test Properties");
+    expected.setProperty("keyOne", "valueOne");
+    expected.setProperty("keyTwo", "valueTwo");
+
+    try (Writer writer = new OutputStreamWriter(out)) {
+      expected.store(writer, "Test Reader Properties");
+    }
 
     byte[] buffer = out.toByteArray();
 
-    Properties actual = PropertiesBuilder.from(new InputStreamReader(new ByteArrayInputStream(buffer))).build();
+    Properties actual;
+
+    try (Reader reader = new InputStreamReader(new ByteArrayInputStream(buffer))) {
+      actual = PropertiesBuilder.from(reader).build();
+    }
 
     assertThat(actual).isNotNull();
+    assertThat(actual).hasSize(expected.size());
     assertThat(actual).isEqualTo(expected);
   }
 
-  @Test(expected = SystemException.class)
-  public void fromReaderThrowingIOExceptionIsHandledProperly() throws IOException {
+  @Test
+  public void fromNullReader() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(args -> PropertiesBuilder.from((Reader) null))
+      .havingMessage("Reader is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromReaderThrowingIOException() throws IOException {
 
     Reader mockReader = mock(Reader.class);
 
     IOException ioException = new IOException("test");
 
-    when(mockReader.read()).thenThrow(ioException);
-    when(mockReader.read(any(char[].class))).thenThrow(ioException);
-    when(mockReader.read(any(char[].class), anyInt(), anyInt())).thenThrow(ioException);
-    when(mockReader.read(any(CharBuffer.class))).thenThrow(ioException);
+    doThrow(ioException).when(mockReader).read();
+    doThrow(ioException).when(mockReader).read(any(char[].class));
+    doThrow(ioException).when(mockReader).read(any(char[].class), anyInt(), anyInt());
+    doThrow(ioException).when(mockReader).read(any(CharBuffer.class));
 
-    try {
-      PropertiesBuilder.from(mockReader);
-    }
-    catch (SystemException expected) {
-
-      assertThat(expected).hasMessage("Failed to load properties from reader [%s]", mockReader);
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    assertThatThrowableOfType(SystemException.class)
+      .isThrownBy(args -> PropertiesBuilder.from(mockReader))
+      .havingMessage("Failed to load properties from reader [%s]", mockReader)
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
   }
 
   @Test
@@ -242,46 +306,62 @@ public class PropertiesBuilderTests {
 
     Properties source = new Properties();
 
-    source.setProperty("keyOne", "testOne");
-    source.setProperty("keyTwo", "testTwo");
+    source.setProperty("keyOne", "valueOne");
+    source.setProperty("keyTwo", "valueTwo");
 
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    byte[] xmlProperties;
 
-    source.storeToXML(outputStream, "Test XML Properties");
+    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+      source.storeToXML(outputStream, "Test XML Properties");
+      xmlProperties = outputStream.toByteArray();
+    }
 
-    byte[] xmlProperties = outputStream.toByteArray();
+    Properties target;
 
-    ByteArrayInputStream inputStream = new ByteArrayInputStream(xmlProperties);
-
-    Properties target = PropertiesBuilder.fromXml(inputStream).build();
+    try (ByteArrayInputStream inputStream = new ByteArrayInputStream(xmlProperties)) {
+      target = PropertiesBuilder.fromXml(inputStream).build();
+    }
 
     assertThat(target).isNotNull();
-    assertThat(target.size()).isEqualTo(source.size());
+    assertThat(target).hasSize(source.size());
     assertThat(target).isEqualTo(source);
   }
 
-  @Test(expected = SystemException.class)
-  public void fromXmlThrowingIOExceptionIsHandledProperly() throws IOException {
+  @Test
+  public void fromXmlThrowingIOException() throws IOException {
 
     InputStream mockInputStream = mock(InputStream.class);
 
     IOException ioException = new IOException("test");
 
-    when(mockInputStream.read()).thenThrow(ioException);
-    when(mockInputStream.read(any(byte[].class))).thenThrow(ioException);
-    when(mockInputStream.read(any(byte[].class), anyInt(), anyInt())).thenThrow(ioException);
+    doThrow(ioException).when(mockInputStream).read();
+    doThrow(ioException).when(mockInputStream).read(any(byte[].class));
+    doThrow(ioException).when(mockInputStream).read(any(byte[].class), anyInt(), anyInt());
 
-    try {
-      PropertiesBuilder.fromXml(mockInputStream);
-    }
-    catch (SystemException expected) {
+    assertThatThrowableOfType(SystemException.class)
+      .isThrownBy(args -> PropertiesBuilder.fromXml(mockInputStream))
+      .havingMessage("Failed to load properties from input stream [%s]", mockInputStream)
+      .causedBy(IOException.class)
+      .havingMessage("test")
+      .withNoCause();
+  }
 
-      assertThat(expected).hasMessage("Failed to load properties from input stream [%s]", mockInputStream);
-      assertThat(expected).hasCauseInstanceOf(IOException.class);
-      assertThat(expected.getCause()).hasNoCause();
+  @Test
+  public void fromXmlWithNullInputStream() {
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(args -> PropertiesBuilder.fromXml(null))
+      .havingMessage("InputStream is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void newInstanceIsCorrect() {
+
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.newInstance();
+
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).isEmpty();
   }
 
   @Test
@@ -291,7 +371,7 @@ public class PropertiesBuilderTests {
     Properties properties = propertiesBuilder.getProperties();
 
     assertThat(properties).isNotNull();
-    assertThat(properties.isEmpty()).isTrue();
+    assertThat(properties).isEmpty();
   }
 
   @Test
@@ -299,8 +379,8 @@ public class PropertiesBuilderTests {
 
     Properties expected = new Properties();
 
-    expected.setProperty("one", "1");
-    expected.setProperty("two", "2");
+    expected.setProperty("keyOne", "valueOne");
+    expected.setProperty("keyTwo", "valueTwo");
 
     PropertiesBuilder propertiesBuilder = new PropertiesBuilder(expected);
 

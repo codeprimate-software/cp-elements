@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
+
+import static org.cp.elements.lang.ElementsExceptionsFactory.newSystemException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,58 +24,81 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.cp.elements.io.NoSuchFileException;
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
+import org.cp.elements.lang.annotation.Dsl;
+import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link PropertiesBuilder} class is a Builder object for constructing an instance of the {@link Properties} class.
+ * {@link PropertiesBuilder} is a {@link Builder} object for constructing a new instance of Java {@link Properties}.
  *
  * @author John J. Blum
  * @see java.util.Properties
  * @see org.cp.elements.lang.Builder
+ * @see org.cp.elements.lang.annotation.Dsl
+ * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.util.PropertiesAdapter
+ * @see <a href="https://en.wikipedia.org/wiki/Builder_pattern">Builder Software Design Pattern</a>
  * @since 1.0.0
  */
+@FluentApi
 @SuppressWarnings("unused")
 public class PropertiesBuilder implements Builder<Properties> {
 
-  private final Properties properties;
-
   /**
-   * Factory method to load the {@link Properties} contained in the specified {@link File}.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * loaded from the given, required {@link File}.
    *
-   * @param properties the properties {@link File} to load.
-   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
-   * contained in the given {@link File}.
-   * @throws NoSuchFileException if the specified {@link File} cannot be found.
-   * @throws SystemException if the properties from the specified {@link File} cannot be loaded.
-   * @see java.io.File
+   * @param properties {@link File} containing properties to load; must not be {@literal null}.
+   * @return a new {@link PropertiesBuilder} initialized with {@link Properties} loaded from
+   * the given, required {@link File}.
+   * @throws NoSuchFileException if the {@link File} cannot be found.
+   * @throws SystemException if properties from the given, required {@link File} cannot be loaded.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #from(InputStream)
+   * @see java.io.File
    */
-  public static PropertiesBuilder from(File properties) {
+  @Dsl
+  public static @NotNull PropertiesBuilder from(@NotNull File properties) {
 
-    try {
-      return from(new FileInputStream(properties));
+    Assert.notNull(properties, "Properties file is required");
+
+    try (FileInputStream in = new FileInputStream(properties)) {
+      return from(in);
     }
-    catch (FileNotFoundException e) {
-      throw new NoSuchFileException(String.format("[%1$s] not found", properties), e);
+    catch (FileNotFoundException cause) {
+      throw new NoSuchFileException(String.format("[%1$s] not found", properties), cause);
+    }
+    catch (IOException cause) {
+      throw newSystemException(cause, "Failed to load properties from file [%s]", properties);
     }
   }
 
   /**
-   * Factory method to load {@link Properties} from the given {@link InputStream}.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * loaded from the given, required {@link InputStream}.
    *
-   * @param inputStream an input source containing the {@link Properties} to load.
-   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
-   * from the given input source.
-   * @throws SystemException if the properties from the given {@link InputStream} could not be loaded.
+   * @param inputStream input source containing {@link Properties} to load; must not be {@literal null}.
+   * @return a new {@link PropertiesBuilder} initialized with properties loaded from the given,
+   * required {@link InputStream}.
+   * @throws IllegalArgumentException if the {@link InputStream} is {@literal null}.
+   * @throws SystemException if properties from the given {@link InputStream} could not be loaded.
    * @see java.util.Properties#load(InputStream)
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.io.InputStream
    * @see #from(Properties)
    */
-  public static PropertiesBuilder from(InputStream inputStream) {
+  @Dsl
+  public static @NotNull PropertiesBuilder from(@NotNull InputStream inputStream) {
+
+    Assert.notNull(inputStream, "InputStream is required");
 
     try {
       Properties defaults = new Properties();
@@ -82,7 +106,7 @@ public class PropertiesBuilder implements Builder<Properties> {
       return from(defaults);
     }
     catch (IOException cause) {
-      throw new SystemException(String.format("Failed to load properties from input stream [%s]", inputStream), cause);
+      throw newSystemException(cause, "Failed to load properties from input stream [%s]", inputStream);
     }
   }
 
@@ -92,11 +116,21 @@ public class PropertiesBuilder implements Builder<Properties> {
    *
    * @param map the {@link Map} used to initialize the new {@link PropertiesBuilder}.
    * @return a new {@link PropertiesBuilder} initialized with the key/values from the given {@link Map}.
+   * @throws IllegalArgumentException if the {@link Map} is {@literal null} or the given {@link Map}
+   * contains a singl {@literal nul} key.
    * @see java.util.Properties
    * @see java.util.Map
    * @see #from(Properties)
    */
-  public static PropertiesBuilder from(Map<String, ?> map) {
+  public static @NotNull PropertiesBuilder from(@NotNull Map<String, ?> map) {
+
+    Assert.notNull(map, "Map is required");
+
+    long nullKeyCount = map.keySet().stream()
+      .filter(Objects::isNull)
+      .count();
+
+    Assert.isTrue(nullKeyCount == 0, "Map must not contain null keys");
 
     Properties properties = new Properties();
 
@@ -108,30 +142,39 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
-   * Factory method to construct a new instance of the {@link PropertiesBuilder} class
-   * initialized with the specified {@link Properties}.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with
+   * the given {@link Properties} used as {@literal defaults}.
    *
-   * @param properties the {@link Properties} used to initialize the {@link PropertiesBuilder}.
-   * @return a newly constructed {@link PropertiesBuilder} initialized with the specified {@link Properties}.
-   * @see java.util.Properties
+   * @param defaults {@link Properties} used to initialize the {@link PropertiesBuilder} as {@literal defaults}.
+   * @return a new {@link PropertiesBuilder} initialized with the given {@link Properties} as {@literal defaults}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #PropertiesBuilder(Properties)
+   * @see java.util.Properties
    */
-  public static PropertiesBuilder from(Properties properties) {
-    return new PropertiesBuilder(properties);
+  @Dsl
+  @NullSafe
+  public static @NotNull PropertiesBuilder from(@Nullable Properties defaults) {
+    return new PropertiesBuilder(defaults);
   }
 
   /**
-   * Factory method to load {@link Properties} from the given {@link Reader}.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * loaded from the given, required {@link Reader}.
    *
-   * @param reader {@link Reader} containing the {@link Properties} to load.
-   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
-   * from the given reader.
-   * @throws SystemException if the properties from the given {@link Reader} could not be loaded.
+   * @param reader {@link Reader} containing the {@link Properties} to load; must not be {@literal null}.
+   * @return a new {@link PropertiesBuilder} initialized with {@link Properties} loaded from the given,
+   * required {@link Reader}.
+   * @throws IllegalArgumentException if the {@link Reader} is {@literal null}.
+   * @throws SystemException if properties from the given {@link Reader} could not be loaded.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.Properties#load(Reader)
-   * @see java.io.Reader
    * @see #from(Properties)
+   * @see java.io.Reader
    */
-  public static PropertiesBuilder from(Reader reader) {
+  @Dsl
+  public static @NotNull PropertiesBuilder from(@NotNull Reader reader) {
+
+    Assert.notNull(reader, "Reader is required");
 
     try {
       Properties defaults = new Properties();
@@ -139,46 +182,59 @@ public class PropertiesBuilder implements Builder<Properties> {
       return from(defaults);
     }
     catch (IOException cause) {
-      throw new SystemException(String.format("Failed to load properties from reader [%s]", reader), cause);
+      throw newSystemException(cause, "Failed to load properties from reader [%s]", reader);
     }
   }
 
   /**
-   * Factory method to construct a new instance of the {@link PropertiesBuilder} class initialized
-   * with the System environment variables.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with
+   * {@link System#getenv() System environment variables}.
    *
-   * @return a newly constructed {@link PropertiesBuilder} initialized with the System properties.
-   * @see java.lang.System#getProperties()
+   * @return a new {@link PropertiesBuilder} initialized with {@link System#getenv() System environment variables}.
+   * @see org.cp.elements.lang.annotation.Dsl
+   * @see java.lang.System#getenv()
+   * @see #fromSystemProperties()
    * @see #from(Properties)
    */
-  public static PropertiesBuilder fromEnvironmentVariables() {
+  @Dsl
+  public static @NotNull PropertiesBuilder fromEnvironmentVariables() {
     return from(System.getenv());
   }
 
   /**
-   * Factory method to construct a new instance of the {@link PropertiesBuilder} class initialized
-   * from the System properties.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized from
+   * Java {@link System#getProperties() System properties}.
    *
-   * @return a newly constructed {@link PropertiesBuilder} initialized with the System properties.
+   * @return a new {@link PropertiesBuilder} initialized with Java {@link System#getProperties() System properties}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.lang.System#getProperties()
+   * @see #fromEnvironmentVariables()
    * @see #from(Properties)
    */
-  public static PropertiesBuilder fromSystemProperties() {
+  @Dsl
+  public static @NotNull PropertiesBuilder fromSystemProperties() {
     return from(System.getProperties());
   }
 
   /**
-   * Factory method to load {@link Properties} from the given XML {@link InputStream}.
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with {@link Properties}
+   * loaded from the given, required {@literal XML} {@link InputStream}.
    *
-   * @param inputStream an XML input source containing the {@link Properties} to load.
-   * @return an instance of the {@link PropertiesBuilder} class initialized with the properties
-   * from the given XML input source.
-   * @throws SystemException if the properties from the given XML {@link InputStream} could not be loaded.
+   * @param inputStream {@literal XML} input source containing {@link Properties} to load; must not be {@literal null}.
+   * @return a new {@link PropertiesBuilder} initialized with properties loaded from the given, required {@literal XML}
+   * input source.
+   * @throws IllegalArgumentException if the {@link InputStream} is {@literal null}.
+   * @throws SystemException if properties from the given, required {@literal XML} {@link InputStream}
+   * could not be loaded.
    * @see java.util.Properties#loadFromXML(InputStream)
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.io.InputStream
    * @see #from(Properties)
    */
-  public static PropertiesBuilder fromXml(InputStream inputStream) {
+  @Dsl
+  public static @NotNull PropertiesBuilder fromXml(@NotNull InputStream inputStream) {
+
+    Assert.notNull(inputStream, "InputStream is required");
 
     try {
       Properties defaults = new Properties();
@@ -186,71 +242,93 @@ public class PropertiesBuilder implements Builder<Properties> {
       return from(defaults);
     }
     catch (IOException cause) {
-      throw new SystemException(String.format("Failed to load properties from input stream [%s]", inputStream), cause);
+      throw newSystemException(cause, "Failed to load properties from input stream [%s]", inputStream);
     }
   }
 
   /**
-   * Factory method used to construct a new, empty {@link PropertiesBuilder} instance.  This factory method serves
-   * the same purpose as the {@code new} operator
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} with no {@link Properties}.
    *
-   * @return an instance of the {@link PropertiesBuilder} class.
+   * This factory method serves the same purpose as the {@code new} operator, but can be used in
+   * a {@link Dsl DSL} style.
+   *
+   * @return a new {@link PropertiesBuilder} instance.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #PropertiesBuilder()
    */
-  public static PropertiesBuilder newInstance() {
+  @Dsl
+  public static @NotNull PropertiesBuilder newInstance() {
     return new PropertiesBuilder();
   }
 
+  private final Properties properties;
+
   /**
-   * Constructs an instance of the PropertiesBuilder class with an empty set of {@link Properties}.
+   * Constructs a new instance of {@link PropertiesBuilder} initialized with an empty set of {@link Properties}.
+   *
+   * @see java.util.Properties
    */
   public PropertiesBuilder() {
-    properties = new Properties();
-  }
-
-  /**
-   * Constructs an instance of the PropertiesBuilder class initialized with the given set of default {@link Properties}.
-   *
-   * @param defaults the {@link Properties} used as defaults.
-   * @see java.util.Properties
-   */
-  public PropertiesBuilder(Properties defaults) {
     this.properties = new Properties();
-    this.properties.putAll(defaults);
   }
 
   /**
-   * Returns the raw {@link Properties} object being constructed by this builder.
+   * Constructs a new instance of {@link PropertiesBuilder} initialized with the given set of {@link Properties}
+   * used as {@literal defaults}.
    *
-   * @return a reference to the {@link Properties} object under construction.
+   * @param defaults {@link Properties} used as {@literal defaults}; may be {@literal null}.
    * @see java.util.Properties
    */
-  protected Properties getProperties() {
+  public PropertiesBuilder(@Nullable Properties defaults) {
+
+    this.properties = new Properties();
+
+    if (defaults != null) {
+      this.properties.putAll(defaults);
+    }
+  }
+
+  /**
+   * Returns the raw {@link Properties} object being constructed by this {@link Builder}.
+   *
+   * @return a reference to the raw {@link Properties} object under construction.
+   * @see java.util.Properties
+   */
+  protected @NotNull Properties getProperties() {
     return this.properties;
   }
 
   /**
-   * Sets the named property to the given value.
+   * Sets the {@link String named} property to the given {@link Object value}.
    *
-   * @param propertyName the name of the property to set.
-   * @param propertyValue the value to assign to the property.
-   * @return a reference to this builder.
+   * The {@link String} of the given {@link Object value} is computed with {@link String#valueOf(Object)}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the property to set;
+   * must not be {@literal null}.
+   * @param propertyValue {@link Object} containing the {@literal value} to assign to the property.
+   * @return this {@link Builder}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #set(String, String)
    */
-  public PropertiesBuilder set(String propertyName, Object propertyValue) {
+  @Dsl
+  public @NotNull PropertiesBuilder set(@NotNull String propertyName, @Nullable Object propertyValue) {
     return set(propertyName, String.valueOf(propertyValue));
   }
 
   /**
-   * Sets the named property to the given value.
+   * Sets the {@link String named} property to the given, required {@link String value}.
    *
-   * @param propertyName the name of the property to set.
-   * @param propertyValue the value to assign to the property.
-   * @return a reference to this builder.
+   * @param propertyName {@link String} containing the {@literal name} of the property to set;
+   * must not be {@literal null}.
+   * @param propertyValue {@link String} containing the {@literal value} to assign to the property;
+   * must not be {@literal null}.
+   * @return this {@link Builder}.
    * @see java.util.Properties#setProperty(String, String)
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #getProperties()
    */
-  public PropertiesBuilder set(String propertyName, String propertyValue) {
+  @Dsl
+  public @NotNull PropertiesBuilder set(@NotNull String propertyName, @NotNull String propertyValue) {
     getProperties().setProperty(propertyName, propertyValue);
     return this;
   }
@@ -258,30 +336,33 @@ public class PropertiesBuilder implements Builder<Properties> {
   /**
    * Returns the constructed {@link Properties} object.
    *
-   * @return the constructed {@link Properties} object.
+   * @return the constructed {@link Properties} object; never {@literal null}.
    * @see java.util.Properties
    * @see #getProperties()
    */
-  public Properties build() {
+  public @NotNull Properties build() {
     return getProperties();
   }
 
   /**
-   * Constructs a {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
+   * Constructs a new instance of {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
    *
    * @return a {@link PropertiesAdapter} from this {@link PropertiesBuilder}.
    * @see org.cp.elements.util.PropertiesAdapter
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #build()
    */
-  public PropertiesAdapter buildPropertiesAdapter() {
+  @Dsl
+  public @NotNull PropertiesAdapter buildPropertiesAdapter() {
     return PropertiesAdapter.from(build());
   }
 
   /**
-   * Returns a String description of the constructed {@link Properties}.
+   * Returns a {@link String} representation of the constructed {@link Properties}.
    *
-   * @return a String describing the constructed {@link Properties}.
+   * @return a {@link String} describing the constructed {@link Properties}.
    * @see java.util.Properties#toString()
+   * @see java.lang.String
    * @see #getProperties()
    */
   @Override
