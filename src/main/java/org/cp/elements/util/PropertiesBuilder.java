@@ -30,6 +30,7 @@ import java.util.Properties;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
+import org.cp.elements.lang.NullSafeOperations;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -280,12 +281,8 @@ public class PropertiesBuilder implements Builder<Properties> {
    * @see java.util.Properties
    */
   public PropertiesBuilder(@Nullable Properties defaults) {
-
     this.properties = new Properties();
-
-    if (defaults != null) {
-      this.properties.putAll(defaults);
-    }
+    NullSafeOperations.ifNotNullDo(defaults, this.properties::putAll);
   }
 
   /**
