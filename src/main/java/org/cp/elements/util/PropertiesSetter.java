@@ -19,11 +19,14 @@ import java.util.Properties;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.FluentApiExtension;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link PropertiesSetter} class is abstract utility class for setting properties on a {@link Properties} object.
+ * Abstract class used to set properties on a {@link Properties} object.
  *
  * @author John J. Blum
  * @see java.util.Properties
@@ -31,57 +34,59 @@ import org.cp.elements.lang.annotation.FluentApi;
  * @see org.cp.elements.lang.annotation.FluentApi
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 @FluentApi
+@SuppressWarnings("unused")
 public abstract class PropertiesSetter implements FluentApiExtension {
+
+  /**
+   * Factory method used to construct a new instance of {@link PropertiesSetter} initialized with the given,
+   * required {@link String property name}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the property to set;
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link PropertiesSetter} initialized with the given, required {@link String property name}.
+   * @throws IllegalArgumentException if the {@link String property name} was not specified.
+   * @see org.cp.elements.util.PropertiesSetter
+   * @see org.cp.elements.lang.annotation.Dsl
+   */
+  @Dsl
+  public static @NotNull PropertiesSetter set(@NotNull String propertyName) {
+    return new PropertiesSetter(propertyName) {};
+  }
 
   private Properties properties;
 
   private final String propertyName;
 
   /**
-   * Factory method to construct an instance of {@link PropertiesSetter} initialized with the given property name.
+   * Constructs a new instance of {@link PropertiesSetter} initialized with the given,
+   * required {@link String property name}.
    *
-   * @param propertyName {@link String} indicating the name of the property to set.
-   * @return a new instance of {@link PropertiesSetter} initialized with the given property name.
-   * @throws IllegalArgumentException if {@code propertyName} was not specified.
-   * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.util.PropertiesSetter
+   * @param propertyName {@link String} containing the {@literal name} of the property to set;
+   * must not be {@literal null} or {@literal empty}.
+   * @throws IllegalArgumentException if the {@link String property name} was not specified.
    */
-  @Dsl
-  public static PropertiesSetter set(String propertyName) {
-    return new PropertiesSetter(propertyName) {};
-  }
-
-  /**
-   * Constructs an instance of the {@link PropertiesSetter} initialized with the given property name.
-   *
-   * @param propertyName {@link String} indicating the name of the property to set.
-   * @throws IllegalArgumentException if {@code propertyName} was not specified.
-   */
-  protected PropertiesSetter(String propertyName) {
-    Assert.hasText(propertyName, "Property name must be specified");
-    this.propertyName = propertyName;
+  protected PropertiesSetter(@NotNull String propertyName) {
+    this.propertyName = StringUtils.requireText(propertyName, "Property name [%s] must be specified");
   }
 
   /**
    * Returns a reference to the {@link Properties} object on which the property will be set.
    *
    * @return a reference to the {@link Properties} object on which the property will be set.
-   * @throws IllegalStateException if the {@link Properties} reference is {@literal null}.
+   * @throws IllegalStateException if the {@link Properties} object is {@literal null}.
    * @see java.util.Properties
    */
-  protected Properties getProperties() {
-    Assert.state(this.properties != null, "Properties were not specified");
-    return this.properties;
+  protected @NotNull Properties getProperties() {
+    return ObjectUtils.requireState(this.properties, "Properties were not initialized");
   }
 
   /**
-   * Returns the name of the property to set.
+   * Returns the {@link String name} of the property to set.
    *
-   * @return a {@link String} indicating the name of the property to set.
+   * @return the {@link String name} of the property to set.
    */
-  protected String getPropertyName() {
+  protected @NotNull String getPropertyName() {
     return this.propertyName;
   }
 
@@ -90,42 +95,57 @@ public abstract class PropertiesSetter implements FluentApiExtension {
    *
    * @param properties {@link Properties} object on which the property will be set.
    * @return this {@link PropertiesSetter}.
-   * @throws IllegalArgumentException if {@link Properties} is {@literal null}.
+   * @throws IllegalArgumentException if the {@link Properties} object is {@literal null}.
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see java.util.Properties
    */
-  public PropertiesSetter of(Properties properties) {
-    Assert.notNull(properties, "Properties cannot be null");
-    this.properties = properties;
+  @Dsl
+  public @NotNull PropertiesSetter of(@NotNull Properties properties) {
+    this.properties = ObjectUtils.requireObject(properties, "Properties are required");
     return this;
   }
 
   /**
-   * Sets the identified property to the given value.
+   * Sets the {@link #getPropertyName() configured property} to the given {@link String value}.
    *
-   * @param propertyValue {@link String} containing the value to which the property will be set.
-   * @throws IllegalStateException if the {@link Properties} reference is {@literal null}.
+   * @param propertyValue {@link String} containing the {@literal value} used to set the property.
+   * @throws IllegalArgumentException if the {@link String property value} is {@literal null}.
+   * @throws IllegalStateException if the {@link Properties} object is {@literal null}.
    * @see java.util.Properties#setProperty(String, String)
-   * @see #getProperties()
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #getPropertyName()
+   * @see #getProperties()
    */
-  public void to(String propertyValue) {
+  @Dsl
+  public void to(@NotNull String propertyValue) {
+    Assert.notNull(propertyValue, "Property value is required");
     getProperties().setProperty(getPropertyName(), propertyValue);
   }
 
   /**
-   * Sets the identified property with name to the value of the property from the given {@link Properties}.
+   * Sets the {@link #getPropertyName() configured property} to the {@link String value} of the property
+   * from the given, required {@link Properties}.
    *
    * @param source {@link Properties} used as the source of the value for the named property to set.
    * @throws IllegalArgumentException if source {@link Properties} are {@literal null}.
-   * @throws IllegalStateException if target {@link Properties} are {@literal null}.
-   * @see java.util.Properties#getProperty(String)
+   * @throws IllegalStateException if target {@link Properties} are {@literal null}
+   * or the source {@link Properties} does not contain the configured {@link #getPropertyName() property name}.
    * @see java.util.Properties#setProperty(String, String)
-   * @see #getProperties()
+   * @see java.util.Properties#getProperty(String)
+   * @see org.cp.elements.lang.annotation.Dsl
    * @see #getPropertyName()
+   * @see #getProperties()
    */
-  public void with(Properties source) {
-    Assert.notNull(source, "Source properties cannot be null");
+  @Dsl
+  public void with(@NotNull Properties source) {
+
+    Assert.notNull(source, "Source Properties are required");
+
     String propertyName = getPropertyName();
+
+    Assert.state(source.containsKey(propertyName),
+      "Source Properties does not contain property name [%s]", propertyName);
+
     getProperties().setProperty(propertyName, source.getProperty(propertyName));
   }
 }
