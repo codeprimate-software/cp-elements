@@ -65,7 +65,7 @@ No corporate entity owns or controls *Elements*, and therefore, you will never b
 * Logic and Math utilities along with Logical and Relational Operators.
 * IO, NIO and Network utilities and classes.
 * Process Execution / Lifecycle Management framework
-* Pagination for Java Collections
+* Sophisticated Sorting and Pagination for Java Collections
 * Utilities for Classes, Objects, Arrays, Booleans, Characters, Collections, Functions, JavaBeans, Maps, Numbers,
 Primitive Types, Processes, Properties, Reflection, Runtime/System, Streams, Strings, Threads, and on and on.
 * Testing support with robust assertions.
