@@ -46,7 +46,7 @@ No corporate entity owns or controls *Elements*, and therefore, you will never b
 
 * Software Design Patterns as Code: _Abstract Factory, Builder, Composite, DAO, Proxy, Template, Visitor_.
 * Domain Specific Languages (DSLs) and Fluent APIs to write concise yet expressive code.
-* Annotations for writing descriptive code: [ `@Conditional`, `@Dsl`, `@Experimental`, `FluentApi`, `@GuardedBy`,
+* Annotations for writing descriptive code: [ `@Conditional`, `@Dsl`, `@Experimental`, `@FluentApi`, `@GuardedBy`,
 `@Immutable`, `@InitializationSafe`, `@NotNull`, `@Nullable`, `@NullSafe`, `@Repository`, `@Service`, `@ThreadSafe` ]
 * Addition of intuitive and applicable `RuntimeException` classes.
 * _JavaBeans_ API and framework extensions and support.
