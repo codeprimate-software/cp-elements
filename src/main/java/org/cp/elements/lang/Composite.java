@@ -77,7 +77,7 @@ public interface Composite<T> {
    * @see #compose(Object, Object)
    */
   @NullSafe
-  default @Nullable T compose(Iterable<T> iterable) {
+  default @Nullable T compose(@Nullable Iterable<T> iterable) {
 
     T composite = null;
 
