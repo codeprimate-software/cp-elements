@@ -87,7 +87,7 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   public PropertiesAdapter(@NotNull Properties properties) {
 
-    this.delegate = ObjectUtils.requireObject(properties, "Properties to adapt is required");
+    this.delegate = ObjectUtils.requireObject(properties, "The Properties to adapt is required");
     this.conversionService = ServiceLoader.load(ConversionService.class).iterator().next();
   }
 

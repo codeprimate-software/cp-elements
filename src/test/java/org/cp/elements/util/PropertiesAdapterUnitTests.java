@@ -108,7 +108,7 @@ public class PropertiesAdapterUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> new PropertiesAdapter(null))
-      .withMessage("Properties to adapt is required")
+      .withMessage("The Properties to adapt is required")
       .withNoCause();
   }
 
