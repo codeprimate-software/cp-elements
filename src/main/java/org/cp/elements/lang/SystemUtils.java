@@ -15,8 +15,16 @@
  */
 package org.cp.elements.lang;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.Charset;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Stream;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * {@link SystemUtils} is an abstract utility class designed to interact with and access properties
@@ -232,6 +240,66 @@ public abstract class SystemUtils {
    */
   protected static boolean isOS(final String expectedOsName) {
     return StringUtils.contains(System.getProperty("os.name"), expectedOsName);
+  }
+
+  /**
+   * Gets the configured {@link String value} for the {@literal java.class.path}
+   * {@link System#getProperty(String) System property}.
+   *
+   * @return the value of {@literal java.class.path} {@link System#getProperty(String) System property}.
+   * @see java.util.Optional
+   */
+  public static Optional<String> javaSystemClasspath() {
+
+    return Optional.ofNullable(System.getProperty("java.class.path"))
+      .filter(StringUtils::hasText);
+  }
+
+  /**
+   * Gets the configured {@link String classpath} for the given, required {@link ClassLoader}
+   * as an {@link Optional} value.
+   *
+   * This method only works when the Java {@link ClassLoader} is a {@link URLClassLoader}. For more powerful logic
+   * determining the {@link String classpath} of a Java {@link ClassLoader} use {@literal ClassGraph}.
+   *
+   * @param classLoader {@link ClassLoader} from which to get the configured {@literal String classpath}.
+   * @return an {@link Optional} {@link String classpath} configured for the given, required {@link ClassLoader}.
+   * @throws IllegalArgumentException if the {@link ClassLoader} is {@literal null}.
+   * @see <a href="https://github.com/classgraph/classgraph">ClassGraph</a>
+   * @see java.net.URLClassLoader
+   * @see java.lang.ClassLoader
+   * @see java.util.Optional
+   */
+  public static Optional<String> classLoaderClassPath(@NotNull ClassLoader classLoader) {
+
+    Assert.notNull(classLoader, "ClassLoader is required");
+
+    String[] classpathElements = Optional.of(classLoader)
+      .filter(URLClassLoader.class::isInstance)
+      .map(URLClassLoader.class::cast)
+      .map(URLClassLoader::getURLs)
+      .map(Stream::of)
+      .orElseGet(Stream::empty)
+      .filter(Objects::nonNull)
+      .map(URL::getFile)
+      .toArray(String[]::new);
+
+    return ArrayUtils.isNotEmpty(classpathElements)
+      ? Optional.of(StringUtils.concat(classpathElements, System.getProperty("path.separator", ":")))
+      : Optional.empty();
+  }
+
+  /**
+   * Gets the configured {@link String classpath} for the {@link Thread#currentThread() current Thread's}
+   * {@link Thread#getContextClassLoader() context ClassLoadder} as an {@link Optional} value.
+   *
+   * @return the configured {@link String classpath} for the {@link Thread#currentThread() current Thread's}
+   * {@link Thread#getContextClassLoader() context ClassLoadder}
+   * @see java.lang.Thread#getContextClassLoader()
+   * @see java.util.Optional
+   */
+  public static Optional<String> threadContextClassLoaderClasspath() {
+    return classLoaderClassPath(Thread.currentThread().getContextClassLoader());
   }
 
   /**

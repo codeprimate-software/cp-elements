@@ -16,10 +16,22 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.lang.management.ManagementFactory;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.junit.Test;
+
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * Unit Tests for {@link SystemUtils}.
@@ -101,5 +113,83 @@ public class SystemUtilsUnitTests {
   public void isUnixBasedOperatingSystem() {
     assertThat(SystemUtils.isUnixBasedOperatingSystem())
       .isEqualTo(isOs(SystemUtils.LINUX_OS_NAME) || isOs(SystemUtils.MAC_OSX_NAME));
+  }
+
+  @Test
+  public void javaSystemClasspathIsCorrect() {
+    assertThat(SystemUtils.javaSystemClasspath().orElse(null))
+      .isEqualTo(System.getProperty("java.class.path", ""));
+  }
+
+  @Test
+  public void urlClassLoaderClasspathIsCorrect() throws MalformedURLException {
+
+    URLClassLoader mockClassLoader = mock(URLClassLoader.class);
+
+    URL urlOne = URI.create("file:///path/to/first.jar"). toURL();
+    URL urlTwo = URI.create("file:///path/to/second.jar").toURL();
+
+    doReturn(ArrayUtils.asArray(urlOne, null, urlTwo, null, null)).when(mockClassLoader).getURLs();
+
+    String classloaderClasspath = SystemUtils.classLoaderClassPath(mockClassLoader).orElse(null);
+
+    assertThat(classloaderClasspath).isNotNull();
+    assertThat(classloaderClasspath)
+      .isEqualTo("/path/to/first.jar" + System.getProperty("path.separator") + "/path/to/second.jar");
+
+    verify(mockClassLoader, times(1)).getURLs();
+    verifyNoMoreInteractions(mockClassLoader);
+  }
+
+  @Test
+  public void urlClassLoaderClasspathWithNoClasspath() {
+
+    URLClassLoader mockClassLoader = mock(URLClassLoader.class);
+
+    doReturn(ArrayUtils.asArray((URL[]) null)).when(mockClassLoader).getURLs();
+
+    assertThat(SystemUtils.classLoaderClassPath(mockClassLoader)).isNotPresent();
+
+    verify(mockClassLoader, times(1)).getURLs();
+    verifyNoMoreInteractions(mockClassLoader);
+  }
+
+  @Test
+  public void urlClassLoaderClasspathWithSingleElementClasspathIsCorrect()
+    throws MalformedURLException {
+
+    URLClassLoader mockClassLoader = mock(URLClassLoader.class);
+
+    URL url = URI.create("file:///path/to/lib.jar").toURL();
+
+    doReturn(ArrayUtils.asArray(null, null, url, null)).when(mockClassLoader).getURLs();
+
+    String classloaderClasspath = SystemUtils.classLoaderClassPath(mockClassLoader).orElse(null);
+
+    assertThat(classloaderClasspath).isNotNull();
+    assertThat(classloaderClasspath).isEqualTo("/path/to/lib.jar");
+
+    verify(mockClassLoader, times(1)).getURLs();
+    verifyNoMoreInteractions(mockClassLoader);
+  }
+
+  @Test
+  public void classLoaderClasspathWithNonUrlClassLoader() {
+
+    ClassLoader mockClassLoader = mock(ClassLoader.class);
+
+    assertThat(SystemUtils.classLoaderClassPath(mockClassLoader)).isNotPresent();
+
+    verifyNoInteractions(mockClassLoader);
+  }
+
+  @Test
+  public void threadContextClassloaderClasspathContainsContents() {
+
+    String threadContextClassLoaderClasspath = SystemUtils.threadContextClassLoaderClasspath().orElse(null);
+
+    assertThat(threadContextClassLoaderClasspath)
+      .describedAs("Expected non-blank classpath; but was [%s]", threadContextClassLoaderClasspath)
+      .isNotBlank();
   }
 }
