@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import java.util.HashMap;
@@ -24,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Builder;
 
 /**
  * The {@link MapBuilder} class is an implementation of the Builder Software Design Pattern and is used to build
@@ -36,10 +36,11 @@ import org.cp.elements.lang.Assert;
  * @see java.util.Map
  * @see java.util.SortedMap
  * @see java.util.concurrent.ConcurrentMap
+ * @see org.cp.elements.lang.Builder
  * @since 1.0.0
  */
 @SuppressWarnings("all")
-public class MapBuilder<KEY, VALUE> {
+public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
 
   private final Map<KEY, VALUE> map;
 
@@ -158,7 +159,7 @@ public class MapBuilder<KEY, VALUE> {
    * @see #getMap()
    */
   @SuppressWarnings("unchecked")
-  public <T extends Map<KEY, VALUE>> T build() {
-    return (T) getMap();
+  public Map<KEY, VALUE> build() {
+    return getMap();
   }
 }
