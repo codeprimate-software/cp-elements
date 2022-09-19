@@ -13,39 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect.support;
 
-import static java.util.Arrays.asList;
-import static org.cp.elements.util.ArrayUtils.asArray;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newUnhandledMethodInvocationException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
+import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link ComposableInvocationHandler} class is an implementation of the {@link InvocationHandler}
- * {@link Class interface} composed of a collection of {@link InvocationHandler InvocationHandlers}
- * forming a Composite object serving as a single instance of {@link InvocationHandler}.
+ * Implementation of the {@link InvocationHandler} interface composed of an array or a collection of
+ * {@link InvocationHandler InvocationHandlers} forming a {@literal Composite} object serving as
+ * a single instance of {@link InvocationHandler}.
  *
  * @author John Blum
  * @see java.lang.Iterable
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
+ * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Composite Software Design Pattern</a>
  * @since 1.0.0
  */
 public class ComposableInvocationHandler implements InvocationHandler, Iterable<InvocationHandler> {
 
-  private final List<InvocationHandler> invocationHandlers;
-
   /**
-   * Factory method to compose the array of {@link InvocationHandler InvocationHandlers} into a Composite object.
+   * Factory method used to compose an array of {@link InvocationHandler InvocationHandlers} into a Composite object.
    *
    * @param <T> {@link Class} type of the {@link InvocationHandler}.
    * @param invocationHandlers array of {@link InvocationHandler InvocationHandlers} to compose.
@@ -55,12 +55,12 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    * @see java.lang.reflect.InvocationHandler
    */
   @SafeVarargs
-  public static <T extends InvocationHandler> ComposableInvocationHandler compose(T... invocationHandlers) {
+  public static @NotNull <T extends InvocationHandler> ComposableInvocationHandler compose(T... invocationHandlers) {
     return new ComposableInvocationHandler(invocationHandlers);
   }
 
   /**
-   * Factory method to compose the {@link Iterable} of {@link InvocationHandler InvocationHandlers}
+   * Factory method used to compose an {@link Iterable} of {@link InvocationHandler InvocationHandlers}
    * into a Composite object.
    *
    * @param invocationHandlers {@link Iterable} of {@link InvocationHandler InvocationHandlers} to compose.
@@ -69,13 +69,15 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    * @see #ComposableInvocationHandler(InvocationHandler...)
    * @see java.lang.reflect.InvocationHandler
    */
-  @SuppressWarnings("unchecked")
-  public static ComposableInvocationHandler compose(Iterable<? extends InvocationHandler> invocationHandlers) {
-    return new ComposableInvocationHandler(asArray((Iterable) invocationHandlers, InvocationHandler.class));
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public static @NotNull ComposableInvocationHandler compose(Iterable<? extends InvocationHandler> invocationHandlers) {
+    return new ComposableInvocationHandler(ArrayUtils.asArray((Iterable) invocationHandlers, InvocationHandler.class));
   }
 
+  private final List<InvocationHandler> invocationHandlers;
+
   /**
-   * Constructs an instance of {@link ComposableInvocationHandler} initialized with the given
+   * Constructs a new instance of {@link ComposableInvocationHandler} initialized with the given
    * array of {@link InvocationHandler} objects.
    *
    * @param invocationHandlers array of {@link InvocationHandler InvocationHandlers} to compose as a single,
@@ -84,7 +86,7 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    */
   @NullSafe
   protected ComposableInvocationHandler(InvocationHandler... invocationHandlers) {
-    this.invocationHandlers = asList(nullSafeArray(invocationHandlers, InvocationHandler.class));
+    this.invocationHandlers = Arrays.asList(ArrayUtils.nullSafeArray(invocationHandlers, InvocationHandler.class));
   }
 
   /**
@@ -94,7 +96,7 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    * @see java.lang.reflect.InvocationHandler
    */
   @SuppressWarnings("all")
-  protected Iterable<InvocationHandler> getInvocationHandlers() {
+  protected @NotNull Iterable<InvocationHandler> getInvocationHandlers() {
     return Collections.unmodifiableList(this.invocationHandlers);
   }
 
@@ -103,16 +105,17 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    *
    * @return an {@link Iterator} over the collection of {@link InvocationHandler} objects contained in this Composite.
    * @see java.lang.reflect.InvocationHandler
+   * @see #getInvocationHandlers()
    * @see java.util.Iterator
    */
   @Override
-  public Iterator<InvocationHandler> iterator() {
-    return Collections.unmodifiableList(this.invocationHandlers).iterator();
+  public @NotNull Iterator<InvocationHandler> iterator() {
+    return getInvocationHandlers().iterator();
   }
 
   /**
-   * Composite operation that delegates the invocation of the given {@link Method} on the {@code proxy}
-   * to each {@link InvocationHandler} contained in this Composite returning the value
+   * Composite operation that delegates the invocation of the given {@link Method} on the {@code Proxy}
+   * to each {@link InvocationHandler} contained in this {@literal Composite} returning the value
    * of the first {@link InvocationHandler} in the collection to handle the {@link Method} invocation.
    *
    * If no {@link InvocationHandler} can successfully handle the {@link Method} invocation,
@@ -128,15 +131,15 @@ public class ComposableInvocationHandler implements InvocationHandler, Iterable<
    * @see java.lang.reflect.InvocationHandler#invoke(Object, Method, Object[])
    */
   @Override
-  public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+  public @Nullable Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
     for (InvocationHandler invocationHandler : this) {
       try {
         return invocationHandler.invoke(proxy, method, args);
       }
-      catch (UnhandledMethodInvocationException ignore) {
-      }
+      catch (UnhandledMethodInvocationException ignore) { }
     }
 
-    throw new UnhandledMethodInvocationException(String.format("Method [%s] was not handled", method.getName()));
+    throw newUnhandledMethodInvocationException("Method [%s] was not handled", method.getName());
   }
 }
