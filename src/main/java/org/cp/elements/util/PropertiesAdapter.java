@@ -480,4 +480,16 @@ public class PropertiesAdapter implements Iterable<String> {
 
     return map;
   }
+
+  /**
+   * Converts this {@link PropertiesAdapter} into an {@link String associative array}.
+   *
+   * @return this {@link PropertiesAdapter} as an {@link String associative array}.
+   * @see org.cp.elements.util.MapUtils#toAssociativeArray(Map)
+   * @see java.util.Map
+   * @see #toMap()
+   */
+  public @NotNull String[] toAssociativeArray() {
+    return MapUtils.toAssociativeArray(toMap());
+  }
 }

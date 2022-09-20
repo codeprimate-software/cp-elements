@@ -644,7 +644,7 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
-  public void toPropertiesIsSuccessful() {
+  public void toPropertiesIsCorrect() {
 
     Properties properties = new Properties();
 
@@ -678,7 +678,7 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
-  public void toMapIsSuccessful() {
+  public void toMapIsCorrect() {
 
     Properties properties = new Properties();
 
@@ -713,5 +713,32 @@ public class PropertiesAdapterUnitTests {
 
     assertThat(map).isNotNull();
     assertThat(map).isEmpty();
+  }
+
+  @Test
+  public void toAssociativeArrayIsCorrect() {
+
+    String[] expectedAssociativeArray = {
+      "booleanProperty=true",
+      "characterProperty=X",
+      "doubleProperty=3.14159",
+      "integerProperty=2",
+      "nullProperty=null",
+      "stringProperty=test"
+    };
+
+    assertThat(propertiesAdapter.toAssociativeArray())
+      .describedAs("Expected [%s]; but was [%s]",
+        Arrays.toString(expectedAssociativeArray), Arrays.toString(propertiesAdapter.toAssociativeArray()))
+      .containsExactlyInAnyOrder(expectedAssociativeArray);
+  }
+
+  @Test
+  public void toAssociateArrayWithEmptyPropertiesAdapter() {
+
+    String[] associativeArray = PropertiesAdapter.empty().toAssociativeArray();
+
+    assertThat(associativeArray).isNotNull();
+    assertThat(associativeArray).isEmpty();
   }
 }
