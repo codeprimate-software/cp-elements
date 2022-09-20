@@ -116,6 +116,27 @@ public class PropertiesAdapter implements Iterable<String> {
   }
 
   /**
+   * Gets the {@link String value} of the {@link String named} property or returns the {@link String default value}
+   * if the {@link String named} property is not declared or defined (set).
+   *
+   * The {@link String value} of the {@link String named} property, when declared and defined, is returned as is,
+   * as defined, without any alterations.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @param defaultValue {@link String} containing the {@literal default value} to return for the property
+   * if the {@link String named} property is not declared or defined (set).
+   * @return the {@link String value} of the {@link String named} property or the {@link String default value}
+   * if the {@link String named} property is not declared or defined (set); may be {@literal null}.
+   * @throws IllegalArgumentException if the {@link String property name} is {@literal null} or {@literal empty}.
+   * @see java.util.Properties#getProperty(String, String)
+   * @see #getProperties()
+   */
+  protected @Nullable String getPropertyValue(@NotNull String propertyName, @Nullable String defaultValue) {
+    return getProperties().getProperty(StringUtils.requireText(propertyName, "Property name [%s] is required"),
+      defaultValue);
+  }
+
+  /**
    * Determines whether this {@link PropertiesAdapter} contains any properties.
    *
    * @return a boolean value indicating whether this {@link PropertiesAdapter} contains any properties.
@@ -281,12 +302,11 @@ public class PropertiesAdapter implements Iterable<String> {
    * is not declared or defined.
    * @return the assigned {@link String value} of the {@link String named} property
    * or the {@link String default value} if the {@link String named} property is not declared or defined.
-   * @see java.util.Properties#getProperty(String, String)
-   * @see #getProperties()
+   * @see #getPropertyValue(String, String)
    * @see #valueOf(String)
    */
   public @Nullable String get(@NotNull String propertyName, @Nullable String defaultValue) {
-    return valueOf(getProperties().getProperty(propertyName, defaultValue));
+    return valueOf(getPropertyValue(propertyName, defaultValue));
   }
 
   /**

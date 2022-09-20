@@ -19,8 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -98,7 +100,7 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
-  public void constructPropertiesAdapterWithProperties() {
+  public void zconstructPropertiesAdapterWithProperties() {
 
     PropertiesAdapter propertiesAdapter = new PropertiesAdapter(this.mockProperties);
 
@@ -132,6 +134,33 @@ public class PropertiesAdapterUnitTests {
     assertThat(propertiesAdapter).isNotNull();
     assertThat(propertiesAdapter.getProperties()).isSameAs(this.mockProperties);
     assertThat(propertiesAdapter.getConversionService()).isNotNull();
+  }
+
+  @Test
+  public void getPropertyValueCallsPropertiesGetProperty() {
+
+    Properties mockProperties = mock(Properties.class);
+
+    doReturn("test").when(mockProperties).getProperty(anyString(), any());
+
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(mockProperties);
+
+    assertThat(propertiesAdapter).isNotNull();
+    assertThat(propertiesAdapter.getProperties()).isEqualTo(mockProperties);
+    assertThat(propertiesAdapter.getPropertyValue("mockProperty", null)).isEqualTo("test");
+
+    verify(mockProperties, times(1)).getProperty(eq("mockProperty"), isNull());
+    verifyNoMoreInteractions(mockProperties);
+  }
+
+  @Test
+  public void getPropertyValueWithIllegalPropertyName() {
+
+    Arrays.asList("  ", "", null).forEach(propertyName ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> propertiesAdapter.getPropertyValue(propertyName, "test"))
+        .withMessage("Property name [%s] is required", propertyName)
+        .withNoCause());
   }
 
   @Test
