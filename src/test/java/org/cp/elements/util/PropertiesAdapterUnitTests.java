@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.util.PropertiesUtils.singletonProperties;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -28,13 +27,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -79,6 +81,7 @@ public class PropertiesAdapterUnitTests {
     properties.setProperty("characterProperty", "X");
     properties.setProperty("doubleProperty", "3.14159");
     properties.setProperty("integerProperty", "2");
+    properties.setProperty("nullProperty", "null");
     properties.setProperty("stringProperty", "test");
 
     propertiesAdapter = PropertiesAdapter.from(properties);
@@ -91,7 +94,7 @@ public class PropertiesAdapterUnitTests {
     assertThat(propertiesAdapter.getProperties()).isNotNull();
     assertThat(propertiesAdapter.getConversionService()).isNotNull();
     assertThat(propertiesAdapter).isNotEmpty();
-    assertThat(propertiesAdapter).hasSize(5);
+    assertThat(propertiesAdapter).hasSize(6);
   }
 
   @Test
@@ -288,10 +291,7 @@ public class PropertiesAdapterUnitTests {
 
     ConversionService mockConversionService = mock(ConversionService.class);
 
-    doReturn("test").when(this.mockProperties).getProperty(anyString(), any());
-
-    doAnswer((invocationOnMock) -> invocationOnMock.getArgument(0)).
-      when(mockConversionService).convert(anyString(), eq(String.class));
+    doAnswer(invocationOnMock -> "test").when(mockConversionService).convert(anyString(), eq(String.class));
 
     PropertiesAdapter propertiesAdapter = spy(new PropertiesAdapter(this.mockProperties));
 
@@ -299,11 +299,11 @@ public class PropertiesAdapterUnitTests {
 
     assertThat(propertiesAdapter.getConversionService()).isSameAs(mockConversionService);
     assertThat(propertiesAdapter.getProperties()).isSameAs(this.mockProperties);
-    assertThat(propertiesAdapter.convert("propertyName", String.class)).isEqualTo("test");
+    assertThat(propertiesAdapter.convert("mock", String.class)).isEqualTo("test");
 
-    verify(this.mockProperties, times(1)).getProperty(eq("propertyName"), eq(null));
-    verify(mockConversionService, times(1)).convert(eq("test"), eq(String.class));
+    verify(mockConversionService, times(1)).convert(eq("mock"), eq(String.class));
     verifyNoMoreInteractions(mockConversionService);
+    verifyNoInteractions(this.mockProperties);
   }
 
   @Test
@@ -316,10 +316,10 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
-  public void convertWithUndeclaredProperty() {
+  public void convertWithNullValuedProperty() {
 
     assertThatExceptionOfType(ConversionException.class)
-      .isThrownBy(() -> propertiesAdapter.convert("nonExistingProperty", Integer.class))
+      .isThrownBy(() -> propertiesAdapter.convert(null, Integer.class))
       .withMessage("Cannot convert [null] to [java.lang.Integer]")
       .withNoCause();
   }
@@ -327,47 +327,46 @@ public class PropertiesAdapterUnitTests {
   @Test
   public void convertWithUndefinedProperty() {
 
-    Properties properties = new Properties();
-
-    properties.setProperty("blankProperty", "  ");
-    properties.setProperty("emptyProperty", "");
-
-    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(properties);
+    PropertiesAdapter propertiesAdapter = PropertiesAdapter.from(this.mockProperties);
 
     assertThat(propertiesAdapter).isNotNull();
-    assertThat(properties).hasSize(2);
 
-    properties.stringPropertyNames().forEach(propertyName ->
+    Arrays.asList("  ", "").forEach(propertyValue ->
       assertThatExceptionOfType(ConversionException.class)
-        .isThrownBy(() -> propertiesAdapter.convert(propertyName, Integer.class))
-        .withMessage("[%s] is not a valid number of the qualifying type [java.lang.Integer]",
-          properties.getProperty(propertyName))
+        .isThrownBy(() -> propertiesAdapter.convert(propertyValue, Integer.class))
+        .withMessage("[%s] is not a valid number of the qualifying type [java.lang.Integer]", propertyValue)
         .withNoCause());
   }
 
   @Test
   public void returnDefaultValueIfNotSetReturnsPropertyValue() {
 
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("booleanProperty", String.class, "false")).isEqualTo("true");
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("characterProperty", String.class, "Y")).isEqualTo("X");
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("doubleProperty", String.class, "1.21")).isEqualTo("3.14159");
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("integerProperty", String.class, "4")).isEqualTo("2");
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("stringProperty", String.class, "mock")).isEqualTo("test");
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("booleanProperty", String.class, () -> "false")).isEqualTo("true");
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("characterProperty", String.class, () -> "Y")).isEqualTo("X");
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("doubleProperty", String.class, () -> "1.21")).isEqualTo("3.14159");
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("integerProperty", String.class, () -> "4")).isEqualTo("2");
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("stringProperty", String.class, () -> "mock")).isEqualTo("test");
   }
 
   @Test
   public void returnDefaultValueIfNotSetReturnsDefaultValue() {
 
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("boolProperty", Boolean.TYPE, false)).isFalse();
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("charProperty", Character.TYPE, 'Y')).isEqualTo('Y');
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("floatProperty", Float.TYPE, 3.14f)).isEqualTo(3.14f);
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("intProperty", Integer.TYPE, 4)).isEqualTo(4);
-    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("strProperty", String.class, "TEST")).isEqualTo("TEST");
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("boolProperty", Boolean.TYPE, () -> false)).isFalse();
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("charProperty", Character.TYPE, () -> 'Y')).isEqualTo('Y');
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("floatProperty", Float.TYPE, () -> 3.14f)).isEqualTo(3.14f);
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("intProperty", Integer.TYPE, () -> 4)).isEqualTo(4);
+    assertThat(propertiesAdapter.returnDefaultValueIfNotSet("strProperty", String.class, () -> "TEST")).isEqualTo("TEST");
   }
 
   @Test
   public void valueOfStringIsString() {
+
+    assertThat(propertiesAdapter.valueOf("mock")).isEqualTo("mock");
+    assertThat(propertiesAdapter.valueOf("nil")).isEqualTo("nil");
     assertThat(propertiesAdapter.valueOf("test")).isEqualTo("test");
+    assertThat(propertiesAdapter.valueOf("x")).isEqualTo("x");
+    assertThat(propertiesAdapter.valueOf("  ")).isEqualTo("  ");
+    assertThat(propertiesAdapter.valueOf("")).isEqualTo("");
   }
 
   @Test
@@ -429,6 +428,16 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
+  public void getExistingPropertyWithNullValueReturnsNull() {
+    assertThat(propertiesAdapter.get("nullProperty")).isNull();
+  }
+
+  @Test
+  public void getExistingPropertyWithSuppliedDefaultValueReturnsPropertyValue() {
+    assertThat(propertiesAdapter.get("characterProperty", () -> "Y")).isEqualTo("X");
+  }
+
+  @Test
   public void getExistingPropertyAsTypeReturnsTypedPropertyValue() {
 
     assertThat(propertiesAdapter.getAsType("booleanProperty", Boolean.class)).isTrue();
@@ -445,6 +454,12 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
+  public void getExistingPropertyAsTypeWithSuppliedDefaultValueReturnsTypedPropertyValue() {
+    assertThat(propertiesAdapter.<Integer>getAsType("integerProperty", Integer.class, () -> 4))
+      .isEqualTo(2);
+  }
+
+  @Test
   public void getNonExistingPropertyReturnsNull() {
     assertThat(propertiesAdapter.get("nonExistingProperty")).isNull();
   }
@@ -452,6 +467,20 @@ public class PropertiesAdapterUnitTests {
   @Test
   public void getNonExistingPropertyWithDefaultValueReturnsDefaultValue() {
     assertThat(propertiesAdapter.get("nonExistingProperty", "TEST")).isEqualTo("TEST");
+  }
+
+  @Test
+  public void getNonExistingPropertyWithSuppliedDefaultValueReturnsSuppliedDefaultValue() {
+    assertThat(propertiesAdapter.get("nonExistingProperty", () -> "MOCK")).isEqualTo("MOCK");
+  }
+
+  @Test
+  public void getNonExistingPropertyWithNullSupplierThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> propertiesAdapter.get("nonExistingProperty", (Supplier<String>) null))
+      .withMessage("Supplier used to supply the default value is required")
+      .withNoCause();
   }
 
   @Test
@@ -463,6 +492,22 @@ public class PropertiesAdapterUnitTests {
   public void getNonExistingPropertyAsTypeWithDefaultValueReturnsDefaultValue() {
     assertThat(propertiesAdapter.getAsType("nonExistingProperty", Double.TYPE, 123.45d))
       .isEqualTo(123.45d);
+  }
+
+  @Test
+  public void getNonExistingPropertyAsTypeWithSuppliedDefaultValueReturnsSuppliedDefaultValue() {
+    assertThat(propertiesAdapter.<Integer>getAsType("nonExistingProperty", Integer.TYPE, () -> 4))
+      .isEqualTo(4);
+  }
+
+  @Test
+  public void getNonExistingPropertyAsTypeWithNullSupplierThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> propertiesAdapter.getAsType("nonExistingProperty", Instant.class,
+        (Supplier<Instant>) null))
+      .withMessage("Supplier used to supply the default value is required")
+      .withNoCause();
   }
 
   @Test
@@ -573,17 +618,9 @@ public class PropertiesAdapterUnitTests {
       + "\n\tcharacterProperty = X,"
       + "\n\tdoubleProperty = 3.14159,"
       + "\n\tintegerProperty = 2,"
+      + "\n\tnullProperty = null,"
       + "\n\tstringProperty = test"
       + "\n]";
-
-    assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
-  }
-
-  @Test
-  public void toStringWithSinglePropertyIsSuccessful() {
-
-    String actualPropertiesString = PropertiesAdapter.from(singletonProperties("1", "one")).toString();
-    String expectedPropertiesString = "[\n\t1 = one\n]";
 
     assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
   }
@@ -593,6 +630,15 @@ public class PropertiesAdapterUnitTests {
 
     String actualPropertiesString = PropertiesAdapter.empty().toString();
     String expectedPropertiesString = "[]";
+
+    assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
+  }
+
+  @Test
+  public void toStringWithSinglePropertyIsSuccessful() {
+
+    String actualPropertiesString = PropertiesAdapter.from(singletonProperties("1", "one")).toString();
+    String expectedPropertiesString = "[\n\t1 = one\n]";
 
     assertThat(actualPropertiesString).isEqualTo(expectedPropertiesString);
   }
