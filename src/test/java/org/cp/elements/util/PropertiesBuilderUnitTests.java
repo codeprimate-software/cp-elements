@@ -42,6 +42,7 @@ import java.util.Properties;
 import org.junit.Test;
 
 import org.cp.elements.io.NoSuchFileException;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.annotation.IntegrationTest;
 
 import lombok.EqualsAndHashCode;
@@ -205,15 +206,6 @@ public class PropertiesBuilderUnitTests {
   }
 
   @Test
-  public void fromNullPropertiesIsNullSafe() {
-
-    PropertiesBuilder propertiesBuilder = PropertiesBuilder.from((Properties) null);
-
-    assertThat(propertiesBuilder).isNotNull();
-    assertThat(propertiesBuilder.build()).isEmpty();
-  }
-
-  @Test
   public void fromPropertiesLoadsProperties() {
 
     Properties expected = new Properties();
@@ -225,6 +217,15 @@ public class PropertiesBuilderUnitTests {
 
     assertThat(propertiesBuilder).isNotNull();
     assertThat(propertiesBuilder.build()).isEqualTo(expected);
+  }
+
+  @Test
+  public void fromNullPropertiesIsNullSafe() {
+
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.from((Properties) null);
+
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.build()).isEmpty();
   }
 
   @Test
@@ -281,6 +282,49 @@ public class PropertiesBuilderUnitTests {
       .causedBy(IOException.class)
       .havingMessage("test")
       .withNoCause();
+  }
+
+  @Test
+  public void fromAssociativeArrayLoadsProperties() {
+
+    String[] associativeArray = {
+      "booleanProperty=true",
+      "characterProperty=x",
+      "doubleProperty=3.14159",
+      "integerProperty=2",
+      "stringProperty=test"
+    };
+
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromAssociativeArray(associativeArray);
+
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).hasSize(5);
+    assertThat(propertiesBuilder.getProperties().getProperty("booleanProperty")).isEqualTo("true");
+    assertThat(propertiesBuilder.getProperties().getProperty("characterProperty")).isEqualTo("x");
+    assertThat(propertiesBuilder.getProperties().getProperty("doubleProperty")).isEqualTo("3.14159");
+    assertThat(propertiesBuilder.getProperties().getProperty("integerProperty")).isEqualTo("2");
+    assertThat(propertiesBuilder.getProperties().getProperty("stringProperty")).isEqualTo("test");
+  }
+
+  @Test
+  public void fromEmptyAssociativeArray() {
+
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromAssociativeArray(StringUtils.EMPTY_STRING_ARRAY);
+
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).isEmpty();
+  }
+
+  @Test
+  public void fromNullAssociativeArray() {
+
+    PropertiesBuilder propertiesBuilder = PropertiesBuilder.fromAssociativeArray(null);
+
+    assertThat(propertiesBuilder).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).isNotNull();
+    assertThat(propertiesBuilder.getProperties()).isEmpty();
   }
 
   @Test

@@ -188,6 +188,19 @@ public class PropertiesBuilder implements Builder<Properties> {
   }
 
   /**
+   * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized from
+   * the given {@literal associative array}, of the form:
+   * {@literal [ "keyOne=valueOne", "keyTwo=valueTwo", ..., "keyN=valueN" ]}.
+   *
+   * @param associativeArray {@link String array} of {@literal String key/value mappings}.
+   * @return a new {@link PropertiesBuilder}.
+   * @see #from(Map)
+   */
+  public static @NotNull PropertiesBuilder fromAssociativeArray(String[] associativeArray) {
+    return from(MapUtils.fromAssociativeArray(associativeArray));
+  }
+
+  /**
    * Factory method used to construct a new instance of {@link PropertiesBuilder} initialized with
    * {@link System#getenv() System environment variables}.
    *
