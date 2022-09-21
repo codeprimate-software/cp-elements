@@ -29,6 +29,7 @@ import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.Alias;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
@@ -145,6 +146,19 @@ public class PropertiesAdapter implements Iterable<String> {
    */
   public boolean isEmpty() {
     return getProperties().isEmpty();
+  }
+
+  /**
+   * Alias for {@link #contains(String)}.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the property.
+   * @return a boolean value indicating whether the given {@link String named} property is contained (exists)
+   * in this collection of properties.
+   * @see #contains(String)
+   */
+  @Alias(forMember = "contains")
+  public boolean isPresent(@Nullable String propertyName) {
+    return contains(propertyName);
   }
 
   /**

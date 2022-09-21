@@ -191,6 +191,27 @@ public class PropertiesAdapterUnitTests {
   }
 
   @Test
+  public void isPresentCallsContains() {
+
+    PropertiesAdapter propertiesAdapterSpy = spy(propertiesAdapter);
+
+    doReturn(false).when(propertiesAdapterSpy).contains(any());
+    doReturn(true).when(propertiesAdapterSpy).contains(eq("mockProperty"));
+    doReturn(true).when(propertiesAdapterSpy).contains(eq("testProperty"));
+
+    assertThat(propertiesAdapterSpy.isPresent("mockProperty")).isTrue();
+    assertThat(propertiesAdapterSpy.isPresent("nonExistingProperty")).isFalse();
+    assertThat(propertiesAdapterSpy.isPresent("testProperty")).isTrue();
+
+    Arrays.asList("mockProperty", "nonExistingProperty", "testProperty").forEach(propertyName -> {
+      verify(propertiesAdapterSpy, times(1)).isPresent(eq(propertyName));
+      verify(propertiesAdapterSpy, times(1)).contains(eq(propertyName));
+    });
+
+    verifyNoMoreInteractions(propertiesAdapterSpy);
+  }
+
+  @Test
   public void isSetWithSetProperties() {
 
     Properties properties = new Properties();
