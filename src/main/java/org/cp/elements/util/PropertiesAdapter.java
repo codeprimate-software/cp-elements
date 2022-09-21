@@ -364,10 +364,10 @@ public class PropertiesAdapter implements Iterable<String> {
    * the requested {@link Class type} or the {@link T default value} if the {@link String named} property
    * was not declared or is undefined (not set).
    * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
-   * @see #returnDefaultValueIfNotSet(String, Class, Supplier)
+   * @see #getAsType(String, Class, Supplier)
    */
   public @Nullable <T> T getAsType(@NotNull String propertyName, @NotNull Class<T> type, @Nullable T defaultValue) {
-    return returnDefaultValueIfNotSet(propertyName, type, () -> defaultValue);
+    return this.<T>getAsType(propertyName, type, () -> defaultValue);
   }
 
   /**
