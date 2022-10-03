@@ -31,6 +31,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newConstructorNotFo
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newDataAccessException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newDecompressionException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newDeserializationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newEmbeddedProcessExecutionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newEqualityException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFailedTestException;
@@ -101,6 +102,7 @@ import org.cp.elements.data.compression.CompressionException;
 import org.cp.elements.data.compression.DecompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
+import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
@@ -327,6 +329,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newConversionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newConversionException(this.mockCause, "%s is a {1}", "This", "test"),
       ConversionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newDeserializationExceptionWithMessage() {
+    assertThrowable(newDeserializationException("test"), DeserializationException.class, "test");
+  }
+
+  @Test
+  public void newDeserializationExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newDeserializationException(this.mockCause, "%s is a {1}", "This", "test"),
+      DeserializationException.class, "This is a test", this.mockCause);
   }
 
   @Test
