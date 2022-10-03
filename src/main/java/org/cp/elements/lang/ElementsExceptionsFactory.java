@@ -28,6 +28,7 @@ import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.caching.CacheNotFoundException;
+import org.cp.elements.data.compression.CompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -501,6 +502,37 @@ public abstract class ElementsExceptionsFactory {
    */
   public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
     return new ConversionException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link CompressionException} initialized with the given {@link String message}
+   * to describe the {@link CompressionException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link CompressionException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders
+   * in the {@link String message}.
+   * @return a new {@link CompressionException}.
+   * @see #newCompressionException(Throwable, String, Object...)
+   * @see org.cp.elements.data.compression.CompressionException
+   */
+  public static CompressionException newCompressionException(String message, Object... args) {
+    return newCompressionException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link CompressionException} initialized with the given {@link String message}
+   * to describe the {@link CompressionException} along with a {@link Throwable cause} used as the reason
+   * why the {@link CompressionException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link CompressionException}.
+   * @param message {@link String} containing a message to describe the {@link CompressionException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders
+   * in the {@link String message}.
+   * @return a new {@link CompressionException}.
+   * @see org.cp.elements.data.compression.CompressionException
+   */
+  public static CompressionException newCompressionException(Throwable cause, String message, Object... args) {
+    return new CompressionException(format(message, args), cause);
   }
 
   /**

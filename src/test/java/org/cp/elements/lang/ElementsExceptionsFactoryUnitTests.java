@@ -25,6 +25,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCloneException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newComparisonException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newCompressionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConstructorNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -94,6 +95,7 @@ import org.cp.elements.context.configure.ConfigurationException;
 import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.caching.CacheNotFoundException;
+import org.cp.elements.data.compression.CompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -299,6 +301,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newConversionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newConversionException(this.mockCause, "%s is a {1}", "This", "test"),
       ConversionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newCompressionExceptionWithMessage() {
+    assertThrowable(newCompressionException("test"), CompressionException.class, "test");
+  }
+
+  @Test
+  public void newCompressionExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newCompressionException(this.mockCause, "%s is a {1}", "This", "test"),
+      CompressionException.class, "This is a test", this.mockCause);
   }
 
   @Test
