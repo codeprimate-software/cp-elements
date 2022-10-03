@@ -30,6 +30,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationExc
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConstructorNotFoundException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newDataAccessException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newDecompressionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newEmbeddedProcessExecutionException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newEqualityException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newFailedTestException;
@@ -96,6 +97,7 @@ import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.caching.CacheNotFoundException;
 import org.cp.elements.data.compression.CompressionException;
+import org.cp.elements.data.compression.DecompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -293,17 +295,6 @@ public class ElementsExceptionsFactoryUnitTests {
   }
 
   @Test
-  public void newConversionExceptionWithMessage() {
-    assertThrowable(newConversionException("test"), ConversionException.class, "test");
-  }
-
-  @Test
-  public void newConversionExceptionWithFormattedMessageAndCause() {
-    assertThrowable(newConversionException(this.mockCause, "%s is a {1}", "This", "test"),
-      ConversionException.class, "This is a test", this.mockCause);
-  }
-
-  @Test
   public void newCompressionExceptionWithMessage() {
     assertThrowable(newCompressionException("test"), CompressionException.class, "test");
   }
@@ -312,6 +303,28 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newCompressionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newCompressionException(this.mockCause, "%s is a {1}", "This", "test"),
       CompressionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newDecompressionExceptionWithMessage() {
+    assertThrowable(newDecompressionException("test"), DecompressionException.class, "test");
+  }
+
+  @Test
+  public void newDecompressionExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newDecompressionException(this.mockCause, "%s is a {1}", "This", "test"),
+      DecompressionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newConversionExceptionWithMessage() {
+    assertThrowable(newConversionException("test"), ConversionException.class, "test");
+  }
+
+  @Test
+  public void newConversionExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newConversionException(this.mockCause, "%s is a {1}", "This", "test"),
+      ConversionException.class, "This is a test", this.mockCause);
   }
 
   @Test

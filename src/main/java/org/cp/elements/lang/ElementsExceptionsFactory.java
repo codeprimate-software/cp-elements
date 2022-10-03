@@ -29,6 +29,7 @@ import org.cp.elements.dao.DataAccessException;
 import org.cp.elements.data.caching.CacheException;
 import org.cp.elements.data.caching.CacheNotFoundException;
 import org.cp.elements.data.compression.CompressionException;
+import org.cp.elements.data.compression.DecompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.io.NoSuchFileException;
@@ -85,6 +86,8 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.context.configure.ConfigurationException
  * @see org.cp.elements.dao.DataAccessException
  * @see org.cp.elements.data.caching.CacheException
+ * @see org.cp.elements.data.compression.CompressionException
+ * @see org.cp.elements.data.compression.DecompressionException
  * @see org.cp.elements.data.conversion.ConversionException
  * @see org.cp.elements.data.mapping.MappingException
  * @see org.cp.elements.io.NoSuchFileException
@@ -476,35 +479,6 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link ConversionException} initialized with the given {@link String message}
-   * to describe the {@link ConversionException}.
-   *
-   * @param message {@link String} containing a message to describe the {@link ConversionException}.
-   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link ConversionException}.
-   * @see #newConversionException(Throwable, String, Object...)
-   * @see org.cp.elements.data.conversion.ConversionException
-   */
-  public static ConversionException newConversionException(String message, Object... args) {
-    return newConversionException(null, message, args);
-  }
-
-  /**
-   * Constructs a new instance of {@link ConversionException} initialized with the given {@link String message}
-   * to describe the {@link ConversionException} along with a {@link Throwable cause} used as the reason
-   * why the {@link ConversionException} was thrown.
-   *
-   * @param cause {@link Throwable} used as the cause of the {@link ConversionException}.
-   * @param message {@link String} containing a message to describe the {@link ConversionException}.
-   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link ConversionException}.
-   * @see org.cp.elements.data.conversion.ConversionException
-   */
-  public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
-    return new ConversionException(format(message, args), cause);
-  }
-
-  /**
    * Constructs a new instance of {@link CompressionException} initialized with the given {@link String message}
    * to describe the {@link CompressionException}.
    *
@@ -533,6 +507,66 @@ public abstract class ElementsExceptionsFactory {
    */
   public static CompressionException newCompressionException(Throwable cause, String message, Object... args) {
     return new CompressionException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link DecompressionException} initialized with the given {@link String message}
+   * to describe the {@link DecompressionException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link DecompressionException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders
+   * in the {@link String message}.
+   * @return a new {@link DecompressionException}.
+   * @see #newDecompressionException(Throwable, String, Object...)
+   * @see org.cp.elements.data.compression.DecompressionException
+   */
+  public static DecompressionException newDecompressionException(String message, Object... args) {
+    return newDecompressionException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link DecompressionException} initialized with the given {@link String message}
+   * to describe the {@link DecompressionException} along with a {@link Throwable cause} used as the reason
+   * why the {@link DecompressionException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link DecompressionException}.
+   * @param message {@link String} containing a message to describe the {@link DecompressionException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders
+   * in the {@link String message}.
+   * @return a new {@link DecompressionException}.
+   * @see org.cp.elements.data.compression.DecompressionException
+   */
+  public static DecompressionException newDecompressionException(Throwable cause, String message, Object... args) {
+    return new DecompressionException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link ConversionException} initialized with the given {@link String message}
+   * to describe the {@link ConversionException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link ConversionException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ConversionException}.
+   * @see #newConversionException(Throwable, String, Object...)
+   * @see org.cp.elements.data.conversion.ConversionException
+   */
+  public static ConversionException newConversionException(String message, Object... args) {
+    return newConversionException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link ConversionException} initialized with the given {@link String message}
+   * to describe the {@link ConversionException} along with a {@link Throwable cause} used as the reason
+   * why the {@link ConversionException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link ConversionException}.
+   * @param message {@link String} containing a message to describe the {@link ConversionException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
+   * @return a new {@link ConversionException}.
+   * @see org.cp.elements.data.conversion.ConversionException
+   */
+  public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
+    return new ConversionException(format(message, args), cause);
   }
 
   /**
