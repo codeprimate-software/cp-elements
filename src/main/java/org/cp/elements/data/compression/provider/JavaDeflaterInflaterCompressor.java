@@ -15,12 +15,13 @@
  */
 package org.cp.elements.data.compression.provider;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newCompressionException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newDecompressionException;
+
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
-import org.cp.elements.data.compression.CompressionException;
 import org.cp.elements.data.compression.Compressor;
-import org.cp.elements.data.compression.DecompressionException;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -95,7 +96,7 @@ public class JavaDeflaterInflaterCompressor implements Compressor {
       return toCompressedBytes(output, compressedDataLength);
     }
     catch (Exception cause) {
-      throw new CompressionException("Failed to compress input", cause);
+      throw newCompressionException(cause, "Failed to compress input");
     }
   }
 
@@ -162,7 +163,7 @@ public class JavaDeflaterInflaterCompressor implements Compressor {
       return result;
     }
     catch (Exception cause) {
-      throw new DecompressionException("Failed to decompress input", cause);
+      throw newDecompressionException(cause, "Failed to decompress input");
     }
   }
 
