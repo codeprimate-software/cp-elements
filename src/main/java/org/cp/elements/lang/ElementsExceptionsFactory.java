@@ -32,6 +32,7 @@ import org.cp.elements.data.compression.CompressionException;
 import org.cp.elements.data.compression.DecompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
+import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -89,6 +90,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.data.compression.CompressionException
  * @see org.cp.elements.data.compression.DecompressionException
  * @see org.cp.elements.data.conversion.ConversionException
+ * @see org.cp.elements.data.serialization.SerializationException
  * @see org.cp.elements.data.mapping.MappingException
  * @see org.cp.elements.io.NoSuchFileException
  * @see org.cp.elements.lang.AssertionException
@@ -567,6 +569,37 @@ public abstract class ElementsExceptionsFactory {
    */
   public static ConversionException newConversionException(Throwable cause, String message, Object... args) {
     return new ConversionException(format(message, args), cause);
+  }
+
+  /**
+   * Constructs a new instance of {@link SerializationException} initialized with the given {@link String message}
+   * to describe the {@link SerializationException}.
+   *
+   * @param message {@link String} containing a message to describe the {@link SerializationException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders
+   * in the {@link String message}.
+   * @return a new {@link SerializationException}.
+   * @see #newSerializationException(Throwable, String, Object...)
+   * @see org.cp.elements.data.serialization.SerializationException
+   */
+  public static SerializationException newSerializationException(String message, Object... args) {
+    return newSerializationException(null, message, args);
+  }
+
+  /**
+   * Constructs a new instance of {@link SerializationException} initialized with the given {@link String message}
+   * to describe the {@link SerializationException} along with a {@link Throwable cause} used as the reason
+   * why the {@link SerializationException} was thrown.
+   *
+   * @param cause {@link Throwable} used as the cause of the {@link SerializationException}.
+   * @param message {@link String} containing a message to describe the {@link SerializationException}.
+   * @param args optional array of {@link Object arguments} used to replace the placeholders
+   * in the {@link String message}.
+   * @return a new {@link SerializationException}.
+   * @see org.cp.elements.data.serialization.SerializationException
+   */
+  public static SerializationException newSerializationException(Throwable cause, String message, Object... args) {
+    return new SerializationException(format(message, args), cause);
   }
 
   /**

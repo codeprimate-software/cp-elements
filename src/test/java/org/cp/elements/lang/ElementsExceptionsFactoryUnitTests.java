@@ -68,6 +68,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newResourceNotFound
 import static org.cp.elements.lang.ElementsExceptionsFactory.newRuleException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSearchException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newSecurityException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newSerializationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceUnavailableException;
@@ -100,6 +101,7 @@ import org.cp.elements.data.compression.CompressionException;
 import org.cp.elements.data.compression.DecompressionException;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.mapping.MappingException;
+import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.io.NoSuchFileException;
 import org.cp.elements.lang.factory.NoSuchConstructorException;
 import org.cp.elements.lang.factory.ObjectInstantiationException;
@@ -325,6 +327,17 @@ public class ElementsExceptionsFactoryUnitTests {
   public void newConversionExceptionWithFormattedMessageAndCause() {
     assertThrowable(newConversionException(this.mockCause, "%s is a {1}", "This", "test"),
       ConversionException.class, "This is a test", this.mockCause);
+  }
+
+  @Test
+  public void newSerializationExceptionWithMessage() {
+    assertThrowable(newSerializationException("test"), SerializationException.class, "test");
+  }
+
+  @Test
+  public void newSerializationExceptionWithFormattedMessageAndCause() {
+    assertThrowable(newSerializationException(this.mockCause, "%s is a {1}", "This", "test"),
+      SerializationException.class, "This is a test", this.mockCause);
   }
 
   @Test
