@@ -16,7 +16,7 @@
 package org.cp.elements.data.serialization;
 
 /**
- * Java {@link RuntimeException} used to classify problems during {@link Object} or data serialization.
+ * Java {@link RuntimeException} used to classify Java {@link Object} or general data serialization errors.
  *
  * @author John Blum
  * @see java.lang.RuntimeException
