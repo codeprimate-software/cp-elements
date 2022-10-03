@@ -15,13 +15,14 @@
  */
 package org.cp.elements.data.serialization.provider;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newDeserializationException;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newSerializationException;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 
-import org.cp.elements.data.serialization.DeserializationException;
-import org.cp.elements.data.serialization.SerializationException;
 import org.cp.elements.data.serialization.Serializer;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
@@ -60,7 +61,7 @@ public class JavaSerializationSerializer implements Serializer {
       return byteBufferOutput.getByteBuffer();
     }
     catch (IOException cause) {
-      throw new SerializationException(String.format("Failed to serialize object [%s]", target), cause);
+      throw newSerializationException(cause, String.format("Failed to serialize object [%s]", target));
     }
   }
 
@@ -74,7 +75,7 @@ public class JavaSerializationSerializer implements Serializer {
       return (T) objectInput.readObject();
     }
     catch (IOException | ClassNotFoundException cause) {
-      throw new DeserializationException("Failed to deserialize object from bytes", cause);
+      throw newDeserializationException(cause, "Failed to deserialize object from bytes");
     }
   }
 }
