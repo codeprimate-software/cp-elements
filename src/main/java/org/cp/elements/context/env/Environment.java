@@ -320,6 +320,71 @@ public class Environment implements Iterable<String> {
   }
 
   /**
+   * Get the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
+   * as an instance of the given, required {@link Class type T}.
+   *
+   * @param propertyName {@link String} containing the {@literal name}
+   * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
+   * @param type converted {@link Class type} of the property value; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty},
+   * or the {@link Class type} is {@literal null}.
+   * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class)
+   * @see #systemProperties()
+   */
+  public @Nullable <T> T getPropertyAsType(@NotNull String propertyName, @NotNull Class<T> type) {
+    return systemProperties().getAsType(propertyName, type);
+  }
+
+  /**
+   * Get the {@link T value} of the {@link String named} {@link System#getProperty(String) System property},
+   * as an instance of the given, required {@link Class type T}, or return the given {@link T default value}
+   * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
+   *
+   * @param propertyName {@link String} containing the {@literal name}
+   * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
+   * @param type converted {@link Class type} of the property value; must not be {@literal null}.
+   * @param defaultValue value of {@link Class type T} to return if the {@link String named}
+   * {@link System#getProperty(String) System property} is not declared or defined (set).
+   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty},
+   * or the {@link Class type} is {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
+   * or return the given {@link T default value} if the {@link String named}
+   * {@link System#getProperty(String) System property} is not declared or defined (set).
+   * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Object)
+   * @see #systemProperties()
+   */
+  public @Nullable <T> T getPropertyAsType(@NotNull String propertyName, @NotNull Class<T> type,
+      @Nullable T defaultValue) {
+
+    return systemProperties().getAsType(propertyName, type, defaultValue);
+  }
+
+  /**
+   * Get the {@link T value} of the {@link String named} {@link System#getProperty(String) System property},
+   * as an instance of the given, required {@link Class type T}, or return the given, required
+   * {@link Supplier supplied default value} if the {@link String named}
+   * {@link System#getProperty(String) System property} is not declared or defined (set).
+   *
+   * @param propertyName {@link String} containing the {@literal name}
+   * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
+   * @param type converted {@link Class type} of the property value; must not be {@literal null}.
+   * @param defaultValue {@link Supplier supplied default value} of {@link Class type T} to return
+   * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
+   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty},
+   * the {@link Class type} is {@literal null}, or the {@link Supplier} is {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
+   * or return the given {@link Supplier supplied default value}
+   * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
+   * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Supplier)
+   * @see #systemProperties()
+   */
+  public @Nullable <T> T getPropertyAsType(@NotNull String propertyName, @NotNull Class<T> type,
+      @NotNull Supplier<T> defaultValue) {
+
+    return systemProperties().getAsType(propertyName, type, defaultValue);
+  }
+
+  /**
    * Get the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}.
    *
    * @param environmentVariableName {@link String} containing the {@literal name}
@@ -377,29 +442,17 @@ public class Environment implements Iterable<String> {
     return environmentVariables().get(environmentVariableName, defaultValue);
   }
 
-  public @Nullable <T> T getPropertyAsType(@NotNull String propertyName, @NotNull Class<T> type) {
-    return systemProperties().getAsType(propertyName, type);
-  }
-
-  public @Nullable <T> T getPropertyAsType(@NotNull String propertyName, @NotNull Class<T> type,
-      @Nullable T defaultValue) {
-
-    return systemProperties().getAsType(propertyName, type, defaultValue);
-  }
-
-  public @Nullable <T> T getPropertyAsType(@NotNull String propertyName, @NotNull Class<T> type,
-      @NotNull Supplier<T> defaultValue) {
-
-    return systemProperties().getAsType(propertyName, type, defaultValue);
-  }
-
   /**
-   * Returns the value set for the environment variable identified by the given name as the given {@link Class} type.
+   * Get the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
+   * as an instance of the given, required {@link Class type T}.
    *
-   * @param <T> {@link Class} type to convert the environment variable value to.
-   * @param environmentVariableName {@link String} name of the environment variable.
-   * @param type {@link Class} type to convert the environment variable value to.
-   * @return the value set the environment variable identified by the given name as the given {@link Class} type.
+   * @param environmentVariableName {@link String} containing the {@literal name}
+   * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
+   * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
+   * or {@literal empty}, or the {@link Class type} is {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}.
+   * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class)
    * @see #environmentVariables()
    */
   public @Nullable <T> T getVariableAsType(@NotNull String environmentVariableName, @NotNull Class<T> type) {
@@ -407,15 +460,21 @@ public class Environment implements Iterable<String> {
   }
 
   /**
-   * Returns the value set for the environment variable identified by the given name as the given {@link Class} type.
-   * Returns the {@code defaultValue} if the named environment variable is not set.
+   * Get the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
+   * as an instance of the given, required {@link Class type T}, or returns the given {@link T default value}
+   * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    *
-   * @param <T> {@link Class} type to convert the environment variable value to.
-   * @param environmentVariableName {@link String} name of the environment variable.
-   * @param type {@link Class} type to convert the environment variable value to.
-   * @param defaultValue the default value to return if the specified environment variable is not set.
-   * @return the value set the environment variable identified by the given name as the given {@link Class} type
-   * or {@code defaultValue} if the named environment variable is not set.
+   * @param environmentVariableName {@link String} containing the {@literal name}
+   * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
+   * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
+   * @param defaultValue value of {@link Class type T} to return if the {@link String named}
+   * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
+   * or {@literal empty}, or the {@link Class type} is {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
+   * returning the given {@link T default value} if the {@link String named}
+   * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Object)
    * @see #environmentVariables()
    */
   public @Nullable <T> T getVariableAsType(@NotNull String environmentVariableName, @NotNull Class<T> type,
@@ -424,6 +483,25 @@ public class Environment implements Iterable<String> {
     return environmentVariables().getAsType(environmentVariableName, type, defaultValue);
   }
 
+  /**
+   * Get the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
+   * as an instance of the given, required {@link Class type T}, or returns the given, required
+   * {@link Supplier suppolied default value}
+   * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   *
+   * @param environmentVariableName {@link String} containing the {@literal name}
+   * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
+   * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
+   * @param defaultValue {@link Supplier supplied default value} of {@link Class type T} to return
+   * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
+   * or {@literal empty}, the {@link Class type} is {@literal null}, or the {@link Supplier} is {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
+   * returning the given {@link Supplier supplied default value}
+   * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Supplier)
+   * @see #environmentVariables()
+   */
   public @Nullable <T> T getVariableAsType(@NotNull String environmentVariableName, @NotNull Class<T> type,
       @NotNull Supplier<T> defaultValue) {
 

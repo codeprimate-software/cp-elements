@@ -27,6 +27,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.junit.Test;
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Version;
+import org.cp.elements.security.model.User;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
@@ -453,6 +455,75 @@ public class EnvironmentUnitTests {
   }
 
   @Test
+  public void getPropertyAsTypeCallsSystemPropertiesGetPropertyNameAndClassType() {
+
+    PropertiesAdapter mockSystemProperties = mock(PropertiesAdapter.class);
+
+    Environment environment = spy(Environment.fromEnvironmentVariables());
+
+    doReturn(mockSystemProperties).when(environment).systemProperties();
+    doReturn(true).when(mockSystemProperties).getAsType(anyString(), eq(Boolean.class));
+
+    assertThat(environment.getPropertyAsType("mockProperty", Boolean.class)).isTrue();
+
+    verify(environment, times(1)).getPropertyAsType(eq("mockProperty"), eq(Boolean.class));
+    verify(environment, times(1)).systemProperties();
+    verify(mockSystemProperties, times(1)).getAsType(eq("mockProperty"), eq(Boolean.class));
+    verifyNoMoreInteractions(environment, mockSystemProperties);
+  }
+
+  @Test
+  public void getPropertyAsTypeWihDefaultValueCallsSystemPropertiesGetPropertyNameClassTypeAndDefaultValue() {
+
+    PropertiesAdapter mockSystemProperties = mock(PropertiesAdapter.class);
+
+    Environment environment = spy(Environment.fromEnvironmentVariables());
+
+    doReturn(mockSystemProperties).when(environment).systemProperties();
+    doReturn(2).when(mockSystemProperties).getAsType(anyString(), eq(Integer.class), any(Integer.class));
+
+    assertThat(environment.getPropertyAsType("mockProperty", Integer.class, 4)).isEqualTo(2);
+
+    verify(environment, times(1))
+      .getPropertyAsType(eq("mockProperty"), eq(Integer.class), eq(4));
+
+    verify(environment, times(1)).systemProperties();
+
+    verify(mockSystemProperties, times(1))
+      .getAsType(eq("mockProperty"), eq(Integer.class), eq(4));
+
+    verifyNoMoreInteractions(environment, mockSystemProperties);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getPropertyAsTypeWihSuppliedDefaultValueCallsSystemPropertiesGetPropertyNameClassTypeAndSuppliedDefaultValue() {
+
+    Instant now = Instant.now();
+
+    Supplier<Instant> mockSupplier = mock(Supplier.class);
+
+    PropertiesAdapter mockSystemProperties = mock(PropertiesAdapter.class);
+
+    Environment environment = spy(Environment.fromEnvironmentVariables());
+
+    doReturn(mockSystemProperties).when(environment).systemProperties();
+    doReturn(now).when(mockSystemProperties).getAsType(anyString(), eq(Instant.class), any(Supplier.class));
+
+    assertThat(environment.getPropertyAsType("mockProperty", Instant.class, mockSupplier)).isEqualTo(now);
+
+    verify(environment, times(1))
+      .getPropertyAsType(eq("mockProperty"), eq(Instant.class), eq(mockSupplier));
+
+    verify(environment, times(1)).systemProperties();
+
+    verify(mockSystemProperties, times(1))
+      .getAsType(eq("mockProperty"), eq(Instant.class), eq(mockSupplier));
+
+    verifyNoMoreInteractions(environment, mockSystemProperties);
+  }
+
+  @Test
   public void getVariableCallsEnvironmentVariablesGetWithPropertyName() {
 
     PropertiesAdapter mockEnvironmentVariables = mock(PropertiesAdapter.class);
@@ -467,7 +538,7 @@ public class EnvironmentUnitTests {
     verify(environment, times(1)).getVariable(eq("mockVariable"));
     verify(environment, times(1)).environmentVariables();
     verify(mockEnvironmentVariables, times(1)).get(eq("mockVariable"));
-    verifyNoMoreInteractions(mockEnvironmentVariables, environment);
+    verifyNoMoreInteractions(environment, mockEnvironmentVariables);
   }
 
   @Test
@@ -485,7 +556,7 @@ public class EnvironmentUnitTests {
     verify(environment, times(1)).getVariable(eq("mockVariable"), eq("DEFAULT"));
     verify(environment, times(1)).environmentVariables();
     verify(mockEnvironmentVariables, times(1)).get(eq("mockVariable"), eq("DEFAULT"));
-    verifyNoMoreInteractions(mockEnvironmentVariables, environment);
+    verifyNoMoreInteractions(environment, mockEnvironmentVariables);
   }
 
   @Test
@@ -506,7 +577,78 @@ public class EnvironmentUnitTests {
     verify(environment, times(1)).getVariable(eq("mockVariable"), eq(mockSupplier));
     verify(environment, times(1)).environmentVariables();
     verify(mockEnvironmentVariables, times(1)).get(eq("mockVariable"), eq(mockSupplier));
-    verifyNoMoreInteractions(mockEnvironmentVariables, environment);
+    verifyNoMoreInteractions(environment, mockEnvironmentVariables);
+  }
+
+  @Test
+  public void getEnvironmentVariableAsTypeCallsEnvironmentVariablesGetPropertyNameAndClassType() {
+
+    PropertiesAdapter mockEnvironmentVariables = mock(PropertiesAdapter.class);
+
+    Environment environment = spy(Environment.fromEnvironmentVariables());
+
+    doReturn(mockEnvironmentVariables).when(environment).environmentVariables();
+    doReturn(false).when(mockEnvironmentVariables).getAsType(anyString(), eq(Boolean.class));
+
+    assertThat(environment.getVariableAsType("mockVariable", Boolean.class)).isFalse();
+
+    verify(environment, times(1)).getVariableAsType(eq("mockVariable"), eq(Boolean.class));
+    verify(environment, times(1)).environmentVariables();
+    verify(mockEnvironmentVariables, times(1)).getAsType(eq("mockVariable"), eq(Boolean.class));
+    verifyNoMoreInteractions(environment, mockEnvironmentVariables);
+  }
+
+  @Test
+  public void getEnvironmentVariableAsTypeWithDefaultValueCallsEnvironmentVariablesGetPropertyNameClassTypeAndDefaultValue() {
+
+    PropertiesAdapter mockEnvironmentVariables = mock(PropertiesAdapter.class);
+
+    Environment environment = spy(Environment.fromEnvironmentVariables());
+
+    doReturn(mockEnvironmentVariables).when(environment).environmentVariables();
+    doReturn(Math.PI).when(mockEnvironmentVariables).getAsType(anyString(), eq(Double.class), any(Double.class));
+
+    assertThat(environment.getVariableAsType("mockVariable", Double.class, 3.143159d))
+      .isEqualTo(Math.PI);
+
+    verify(environment, times(1))
+      .getVariableAsType(eq("mockVariable"), eq(Double.class), eq(3.143159d));
+
+    verify(environment, times(1)).environmentVariables();
+
+    verify(mockEnvironmentVariables, times(1))
+      .getAsType(eq("mockVariable"), eq(Double.class), eq(3.143159d));
+
+    verifyNoMoreInteractions(environment, mockEnvironmentVariables);
+  }
+
+  @Test
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public void getEnvironmentVariableAsTypeWithSuppliedDefaultValueCallsEnvironmentVariablesGetPropertyNameClassTypeAndSuppliedDefaultValue() {
+
+    User mockUser = mock(User.class);
+
+    Supplier<User> mockSupplier = mock(Supplier.class);
+
+    PropertiesAdapter mockEnvironmentVariables = mock(PropertiesAdapter.class);
+
+    Environment environment = spy(Environment.fromEnvironmentVariables());
+
+    doReturn(mockEnvironmentVariables).when(environment).environmentVariables();
+    doReturn(mockUser).when(mockEnvironmentVariables).getAsType(anyString(), eq(User.class), any(Supplier.class));
+
+    assertThat(environment.getVariableAsType("mockVariable", User.class, mockSupplier))
+      .isEqualTo(mockUser);
+
+    verify(environment, times(1))
+      .getVariableAsType(eq("mockVariable"), eq(User.class), eq(mockSupplier));
+
+    verify(environment, times(1)).environmentVariables();
+
+    verify(mockEnvironmentVariables, times(1))
+      .getAsType(eq("mockVariable"), eq(User.class), eq(mockSupplier));
+
+    verifyNoMoreInteractions(environment, mockEnvironmentVariables);
   }
 
   @Test
