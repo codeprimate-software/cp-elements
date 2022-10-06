@@ -13,35 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.Comparator;
 
 import org.cp.elements.lang.Orderable;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The OrderableComparator class is an implementation of the Comparator interface to compare Orderable objects.
+ * {@link Comparator} implementation used to compare {@link Orderable} objects.
  *
  * @author John J. Blum
- * @param <T> a type parameter indicating the class of the Orderable type.
+ * @param <T> {@link Class type} parameter indicating the specific class of the {@link Orderable} type.
  * @see java.util.Comparator
  * @see org.cp.elements.lang.Orderable
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public class OrderableComparator<T extends Comparable<T>> implements Comparator<Orderable<T>> {
 
   /**
-   * Compares two Orderable objects to determine their relative order by their order property.
+   * Compares two {@link Orderable} objects to determine their relative order by their order property.
    *
-   * @param orderable1 the first Orderable object in the order comparison.
-   * @param orderable2 the second Orderable object in the order comparison.
-   * @return an integer value indicating one Orderable object's order relative to another Orderable object.
+   * @param orderableOne first {@link Orderable} object in the order comparison; must not be {@literal null}.
+   * @param orderableTwo second {@link Orderable} object in the order comparison; must not be {@literal null}.
+   * @return an {@link Integer value} indicating an {@link Orderable} object's order relative to
+   * another {@link Orderable} object.
+   * @see org.cp.elements.lang.Orderable
    */
   @Override
-  public int compare(final Orderable<T> orderable1, final Orderable<T> orderable2) {
-    return orderable1.getOrder().compareTo(orderable2.getOrder());
+  public int compare(@NotNull Orderable<T> orderableOne, @NotNull Orderable<T> orderableTwo) {
+    return orderableOne.getOrder().compareTo(orderableTwo.getOrder());
   }
-
 }
