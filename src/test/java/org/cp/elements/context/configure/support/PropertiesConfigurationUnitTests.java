@@ -27,6 +27,9 @@ import java.util.stream.StreamSupport;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.cp.elements.context.configure.AbstractConfiguration;
+import org.cp.elements.context.configure.Configuration;
+
 /**
  * Unit Tests for {@link PropertiesConfiguration}.
  *
@@ -34,6 +37,8 @@ import org.junit.Test;
  * @see java.io.File
  * @see java.util.Properties
  * @see org.junit.Test
+ * @see org.cp.elements.context.configure.AbstractConfiguration
+ * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.PropertiesConfiguration
  * @since 1.0.0
  */
@@ -58,6 +63,7 @@ public class PropertiesConfigurationUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void constructPropertiesConfigurationWithProperties() {
 
     Properties properties = new Properties();
@@ -66,6 +72,14 @@ public class PropertiesConfigurationUnitTests {
 
     assertThat(configuration).isNotNull();
     assertThat(configuration.getProperties()).isEqualTo(properties);
+
+    Configuration.Descriptor<Properties> configurationDescriptor =
+      (Configuration.Descriptor<Properties>) configuration.getDescriptor();
+
+    assertThat(configurationDescriptor).isInstanceOf(AbstractConfiguration.PropertiesConfigurationDescriptor.class);
+    assertThat(configurationDescriptor.getSource()).isEqualTo(properties);
+    assertThat(configurationDescriptor.isFile()).isFalse();
+    assertThat(configurationDescriptor.isProperties()).isTrue();
   }
 
   @Test

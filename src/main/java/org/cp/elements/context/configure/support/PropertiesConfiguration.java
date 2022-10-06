@@ -67,7 +67,9 @@ public class PropertiesConfiguration extends AbstractConfiguration {
    * @param parent {@link Configuration} used as the {@literal parent} of this {@link Configuration}.
    * @throws IllegalArgumentException if {@link File} is {@literal null}.
    * @throws IOException if an error occurs while reading the {@link File}.
+   * @see org.cp.elements.context.configure.AbstractConfiguration.FileConfigurationDescriptor
    * @see org.cp.elements.context.configure.Configuration
+   * @see #setDescriptor(Descriptor)
    * @see java.io.File
    */
   public PropertiesConfiguration(@NotNull File propertiesFile, @Nullable Configuration parent) throws IOException {
@@ -75,6 +77,8 @@ public class PropertiesConfiguration extends AbstractConfiguration {
     super(parent);
 
     Assert.notNull(propertiesFile, "The file to load properties from is required");
+
+    setDescriptor(FileConfigurationDescriptor.from(propertiesFile));
 
     this.properties = new Properties();
 
@@ -102,7 +106,9 @@ public class PropertiesConfiguration extends AbstractConfiguration {
    * @param properties {@link Properties} used for this {@link Configuration}; must not be {@literal null}.
    * @param parent {@link Configuration} used as the {@literal parent} of this {@link Configuration}.
    * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+   * @see org.cp.elements.context.configure.AbstractConfiguration.PropertiesConfigurationDescriptor
    * @see org.cp.elements.context.configure.Configuration
+   * @see #setDescriptor(Descriptor)
    * @see java.util.Properties
    */
   public PropertiesConfiguration(@NotNull Properties properties, @Nullable Configuration parent) {
@@ -111,6 +117,8 @@ public class PropertiesConfiguration extends AbstractConfiguration {
 
     this.properties = ObjectUtils.requireObject(properties,
       "The Properties used to back this Configuration is required");
+
+    setDescriptor(PropertiesConfigurationDescriptor.from(this.properties));
   }
 
   /**

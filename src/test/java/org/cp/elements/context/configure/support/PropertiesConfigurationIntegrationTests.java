@@ -24,6 +24,8 @@ import java.util.Properties;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.cp.elements.context.configure.AbstractConfiguration;
+import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.io.FileSystemUtils;
 
 /**
@@ -33,6 +35,7 @@ import org.cp.elements.io.FileSystemUtils;
  * @see java.io.File
  * @see java.util.Properties
  * @see org.junit.Test
+ * @see org.cp.elements.context.configure.AbstractConfiguration
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.PropertiesConfiguration
  * @since 1.0.0
@@ -45,6 +48,7 @@ public class PropertiesConfigurationIntegrationTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void propertiesFileBaseConfigurationIsCorrect() throws Exception {
 
     Properties testJdbcProperties = new Properties();
@@ -77,5 +81,13 @@ public class PropertiesConfigurationIntegrationTests {
     assertThat(configuration.getPropertyValue("jdbc.username")).isEqualTo("dba");
     assertThat(configuration.getPropertyValue("jdbc.password")).isEqualTo("p@55W0rd");
     assertThat(configuration.getPropertyValue("jdbc.auto-commit", false)).isNull();
+
+    Configuration.Descriptor<File> configurationDescriptor =
+      (Configuration.Descriptor<File>) configuration.getDescriptor();
+
+    assertThat(configurationDescriptor).isInstanceOf(AbstractConfiguration.FileConfigurationDescriptor.class);
+    assertThat(configurationDescriptor.getSource()).isEqualTo(testJdbcPropertiesFile);
+    assertThat(configurationDescriptor.isFile()).isTrue();
+    assertThat(configurationDescriptor.isProperties()).isFalse();
   }
 }
