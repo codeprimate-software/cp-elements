@@ -25,10 +25,13 @@ import java.util.Properties;
 import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The PropertiesConfiguration class is a Configuration implementation for reading configuration information
- * backed by a Properties object.
+ * {@link Configuration} implementation for reading configuration information backed by a {@link Properties} object.
  *
  * @author John J. Blum
  * @see java.util.Properties
@@ -41,15 +44,37 @@ public class PropertiesConfiguration extends AbstractConfiguration {
 
   private final Properties properties;
 
-  public PropertiesConfiguration(File propertiesFile) throws IOException {
+  /**
+   * Constructs a new instance of {@link PropertiesConfiguration} initialized with {@link Properties}
+   * contained in the given, required {@link File}.
+   *
+   * @param propertiesFile {@link File} containing {@link Properties} for this {@link Configuration};
+   * must not be {@literal null}.
+   * @throws IllegalArgumentException if {@link File} is {@literal null}.
+   * @throws IOException if an error occurs while reading the {@link File}.
+   * @see java.io.File
+   */
+  public PropertiesConfiguration(@NotNull File propertiesFile) throws IOException {
     this(propertiesFile, null);
   }
 
-  public PropertiesConfiguration(File propertiesFile, Configuration parent) throws IOException {
+  /**
+   * Constructs a new instance of {@link PropertiesConfiguration} initialized with {@link Properties}
+   * contained in the given, required {@link File} and the {@link Configuration parent} as backup.
+   *
+   * @param propertiesFile {@link File} containing {@link Properties} for this {@link Configuration};
+   * must not be {@literal null}.
+   * @param parent {@link Configuration} used as the {@literal parent} of this {@link Configuration}.
+   * @throws IllegalArgumentException if {@link File} is {@literal null}.
+   * @throws IOException if an error occurs while reading the {@link File}.
+   * @see org.cp.elements.context.configure.Configuration
+   * @see java.io.File
+   */
+  public PropertiesConfiguration(@NotNull File propertiesFile, @Nullable Configuration parent) throws IOException {
 
     super(parent);
 
-    Assert.notNull(propertiesFile, "The file to load properties from cannot be null");
+    Assert.notNull(propertiesFile, "The file to load properties from is required");
 
     this.properties = new Properties();
 
@@ -58,41 +83,70 @@ public class PropertiesConfiguration extends AbstractConfiguration {
     }
   }
 
-  public PropertiesConfiguration(Properties properties) {
+  /**
+   * Constructs a new instance of {@link PropertiesConfiguration} initialized with the given,
+   * required {@link Properties}.
+   *
+   * @param properties {@link Properties} used for this {@link Configuration}; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+   * @see java.util.Properties
+   */
+  public PropertiesConfiguration(@NotNull Properties properties) {
     this(properties, null);
   }
 
-  public PropertiesConfiguration(Properties properties, Configuration parent) {
-    super(parent);
-    Assert.notNull(properties, "The Properties object used to back this Configuration cannot be null");
-    this.properties = properties;
-  }
+  /**
+   * Constructs a new instance of {@link PropertiesConfiguration} initialized with the given,
+   * required {@link Properties} and {@link Configuration parent} as backup.
+   *
+   * @param properties {@link Properties} used for this {@link Configuration}; must not be {@literal null}.
+   * @param parent {@link Configuration} used as the {@literal parent} of this {@link Configuration}.
+   * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+   * @see org.cp.elements.context.configure.Configuration
+   * @see java.util.Properties
+   */
+  public PropertiesConfiguration(@NotNull Properties properties, @Nullable Configuration parent) {
 
-  protected Properties getProperties() {
-    return properties;
+    super(parent);
+
+    this.properties = ObjectUtils.requireObject(properties,
+      "The Properties used to back this Configuration is required");
   }
 
   /**
-   * Determines whether the configuration property identified by name is present in the configuration settings, which
-   * means the configuration property was declared but not necessarily defined.
+   * Gets the {@link Properties} object used to back this {@link Configuration}.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return a boolean value indicating if the property identified by name is present (declared) in the configuration
-   * settings.
+   * @return the {@link Properties} object used to back this {@link Configuration}.
+   * @see java.util.Properties
+   */
+  protected @NotNull Properties getProperties() {
+    return this.properties;
+  }
+
+  /**
+   * Determines whether the configuration property identified by {@link String name} is present (declared)
+   * in this {@link Configuration}.
+   *
+   * If the configuration property is {@literal present}, then it simply means the configuration property
+   * was declared, but not necessarily defined.
+   *
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a boolean value indicating whether the configuration property identified by {@link String name}
+   * is present (declared) in this {@link Configuration}.
    * @see #isSet(String)
    */
   @Override
-  public boolean isPresent(String propertyName) {
-    return getProperties().containsKey(propertyName);
+  public boolean isPresent(@Nullable String propertyName) {
+    return StringUtils.hasText(propertyName) && getProperties().containsKey(propertyName);
   }
 
   @Override
-  protected String doGetPropertyValue(String propertyName) {
+  protected @Nullable String doGetPropertyValue(@NotNull String propertyName) {
     return getProperties().getProperty(propertyName);
   }
 
   @Override
-  public Iterator<String> iterator() {
+  public @NotNull Iterator<String> iterator() {
     return Collections.unmodifiableSet(getProperties().stringPropertyNames()).iterator();
   }
 }
