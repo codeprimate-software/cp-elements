@@ -31,7 +31,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.junit.After;
@@ -128,6 +130,17 @@ public class ConfigurationUnitTests {
     verify(this.mockConfiguration, times(3)).isSet(eq("mockProperty"));
     verify(this.mockConfiguration, times(3))
       .getPropertyValue(eq("mockProperty"), eq(Configuration.NOT_REQUIRED));
+    verifyNoMoreInteractions(this.mockConfiguration);
+  }
+
+  @Test
+  public void getDescriptorIsNull() {
+
+    doCallRealMethod().when(this.mockConfiguration).getDescriptor();
+
+    assertThat(this.mockConfiguration.getDescriptor()).isNull();
+
+    verify(this.mockConfiguration, times(1)).getDescriptor();
     verifyNoMoreInteractions(this.mockConfiguration);
   }
 
@@ -484,6 +497,50 @@ public class ConfigurationUnitTests {
     verifyNoMoreInteractions(this.mockConfiguration, mockConfigurationTwo);
   }
 
+  @Test
+  @SuppressWarnings("unchecked")
+  public void configurationDescriptorWithFileSource() {
+
+    File mockFile = mock(File.class);
+
+    Configuration.Descriptor<File> configurationDescriptor = mock(Configuration.Descriptor.class);
+
+    doReturn(mockFile).when(configurationDescriptor).getSource();
+    doCallRealMethod().when(configurationDescriptor).isFile();
+    doCallRealMethod().when(configurationDescriptor).isProperties();
+
+    assertThat(configurationDescriptor.isFile()).isTrue();
+    assertThat(configurationDescriptor.isProperties()).isFalse();
+
+    verify(configurationDescriptor, times(2)).getSource();
+    verify(configurationDescriptor, times(1)).isFile();
+    verify(configurationDescriptor, times(1)).isProperties();
+    verifyNoMoreInteractions(configurationDescriptor);
+    verifyNoInteractions(mockFile);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void configurationDescriptorWithPropertiesSource() {
+
+    Properties mockProperties = mock(Properties.class);
+
+    Configuration.Descriptor<File> configurationDescriptor = mock(Configuration.Descriptor.class);
+
+    doReturn(mockProperties).when(configurationDescriptor).getSource();
+    doCallRealMethod().when(configurationDescriptor).isFile();
+    doCallRealMethod().when(configurationDescriptor).isProperties();
+
+    assertThat(configurationDescriptor.isFile()).isFalse();
+    assertThat(configurationDescriptor.isProperties()).isTrue();
+
+    verify(configurationDescriptor, times(2)).getSource();
+    verify(configurationDescriptor, times(1)).isFile();
+    verify(configurationDescriptor, times(1)).isProperties();
+    verifyNoMoreInteractions(configurationDescriptor);
+    verifyNoInteractions(mockProperties);
+  }
+
   interface NonProfiledConfiguration extends Configuration { }
 
   @Profile(names = { "profileOne", "profileTwo" })
@@ -492,6 +549,7 @@ public class ConfigurationUnitTests {
   @Profile(names = { "  ", "" })
   interface UndeclaredProfileConfiguration extends Configuration { }
 
+  @SuppressWarnings("all")
   @Profile(names = "mockProfile")
   static class MockConfiguration implements ProfiledConfiguration {
 

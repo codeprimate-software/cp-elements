@@ -15,15 +15,19 @@
  */
 package org.cp.elements.context.configure;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.cp.elements.context.annotation.Profile;
+import org.cp.elements.context.configure.Configuration.Descriptor;
 import org.cp.elements.data.conversion.provider.SimpleTypeConversions;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.Describable;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
@@ -39,13 +43,16 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.io.Serializable
  * @see java.lang.FunctionalInterface
  * @see java.lang.Iterable
+ * @see java.util.Properties
  * @see org.cp.elements.context.annotation.Profile
+ * @see org.cp.elements.context.configure.Configuration.Descriptor
+ * @see org.cp.elements.lang.Describable
  * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 @FunctionalInterface
-public interface Configuration extends Iterable<String>, Nameable<String>, Serializable {
+public interface Configuration extends Describable<Descriptor<?>>, Iterable<String>, Nameable<String>, Serializable {
 
   boolean REQUIRED = true;
   boolean NOT_REQUIRED = false;
@@ -82,6 +89,16 @@ public interface Configuration extends Iterable<String>, Nameable<String>, Seria
   @NullSafe
   default boolean isSet(@Nullable String propertyName) {
     return StringUtils.hasText(propertyName) && StringUtils.hasText(getPropertyValue(propertyName, NOT_REQUIRED));
+  }
+
+  /**
+   * Returns a {@link Configuration.Descriptor} used to describe this {@link Configuration}.
+   *
+   * @return a {@link Configuration.Descriptor} used to describe this {@link Configuration}.
+   * @see org.cp.elements.context.configure.Configuration.Descriptor
+   */
+  default @Nullable Descriptor<?> getDescriptor() {
+    return null;
   }
 
   /**
@@ -305,5 +322,38 @@ public interface Configuration extends Iterable<String>, Nameable<String>, Seria
   @Override
   default Iterator<String> iterator() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+  }
+
+  @FunctionalInterface
+  interface Descriptor<SOURCE> {
+
+    /**
+     * Gets the {@link SOURCE} of the {@link Configuration}.
+     *
+     * @return the {@link SOURCE} of the {@link Configuration}.
+     */
+    SOURCE getSource();
+
+    /**
+     * Determines if the {@link #getSource()} comes from a {@link File}.
+     *
+     * @return a boolean value indicating whether the {@link #getSource()} comes from a {@link File}.
+     * @see java.io.File
+     * @see #getSource()
+     */
+    default boolean isFile() {
+      return getSource() instanceof File;
+    }
+
+    /**
+     * Determines if the {@link #getSource()} comes from a {@link Properties} object.
+     *
+     * @return a boolean value indicating whether the {@link #getSource()} comes from a {@link Properties} object.
+     * @see java.util.Properties
+     * @see #getSource()
+     */
+    default boolean isProperties() {
+      return getSource() instanceof Properties;
+    }
   }
 }
