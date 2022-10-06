@@ -21,13 +21,16 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.StreamSupport;
+
+import org.junit.Test;
 
 import org.cp.elements.context.configure.Configuration;
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link SystemPropertiesConfiguration}.
@@ -39,12 +42,12 @@ import org.junit.Test;
  * @see org.cp.elements.context.configure.support.SystemPropertiesConfiguration
  * @since 1.0.0
  */
-public class SystemPropertiesConfigurationTests {
+public class SystemPropertiesConfigurationUnitTests {
 
   private final SystemPropertiesConfiguration configuration = new SystemPropertiesConfiguration();
 
   @Test
-  public void isPresent() {
+  public void isPresentReturnsTrue() {
 
     assertThat(this.configuration.isPresent("java.class.path")).isTrue();
     assertThat(this.configuration.isPresent("java.home")).isTrue();
@@ -52,11 +55,15 @@ public class SystemPropertiesConfigurationTests {
     assertThat(this.configuration.isPresent("user.dir")).isTrue();
     assertThat(this.configuration.isPresent("user.home")).isTrue();
     assertThat(this.configuration.isPresent("user.name")).isTrue();
+  }
+
+  @Test
+  public void isPresentReturnsFalse() {
     assertThat(this.configuration.isPresent("unset.system.property")).isFalse();
   }
 
   @Test
-  public void doGetPropertyValue() {
+  public void doGetPropertyValueIsCorrect() {
 
     assertThat(this.configuration.doGetPropertyValue("java.class.path")).isEqualTo(System.getProperty("java.class.path"));
     assertThat(this.configuration.doGetPropertyValue("java.home")).isEqualTo(System.getProperty("java.home"));
@@ -67,20 +74,32 @@ public class SystemPropertiesConfigurationTests {
   }
 
   @Test
+  public void doGetNonExistingPropertyValueReturnsNull() {
+    assertThat(this.configuration.doGetPropertyValue("non-existing.property")).isNull();
+  }
+
+  @Test
   public void getParentPropertyValue() {
 
     Configuration mockParentConfiguration = mock(Configuration.class);
 
-    when(mockParentConfiguration.getPropertyValue(eq("custom.system.property"), anyBoolean())).thenReturn("test");
+    when(mockParentConfiguration.getPropertyValue(eq("mock.system.property"), anyBoolean())).thenReturn("test");
 
     SystemPropertiesConfiguration configuration = new SystemPropertiesConfiguration(mockParentConfiguration);
 
     assertThat(configuration.getPropertyValue("java.version")).isEqualTo(System.getProperty("java.version"));
-    assertThat(configuration.getPropertyValue("custom.system.property")).isEqualTo("test");
+    assertThat(configuration.getPropertyValue("mock.system.property")).isEqualTo("test");
+    assertThat(configuration.getPropertyValue("test.system.property", false)).isNull();
     assertThat(configuration.getPropertyValue("unset.system.property", false)).isNull();
 
-    verify(mockParentConfiguration, times(1)).getPropertyValue(eq("custom.system.property"), eq(true));
-    verify(mockParentConfiguration, times(1)).getPropertyValue(eq("unset.system.property"), anyBoolean());
+    verify(mockParentConfiguration, times(1))
+      .getPropertyValue(eq("mock.system.property"), eq(true));
+    verify(mockParentConfiguration, times(1))
+      .getPropertyValue(eq("test.system.property"), eq(false));
+    verify(mockParentConfiguration, times(1))
+      .getPropertyValue(eq("unset.system.property"), eq(false));
+
+    verifyNoMoreInteractions(mockParentConfiguration);
   }
 
   @Test
@@ -88,12 +107,11 @@ public class SystemPropertiesConfigurationTests {
 
     Set<String> expectedSystemPropertyNames = new HashSet<>(System.getProperties().stringPropertyNames());
 
-    assertThat(expectedSystemPropertyNames.isEmpty()).isFalse();
+    assertThat(expectedSystemPropertyNames).isNotEmpty();
 
-    for (String actualSystemPropertyName : this.configuration) {
-      assertThat(expectedSystemPropertyNames.remove(actualSystemPropertyName)).isTrue();
-    }
+    StreamSupport.stream(this.configuration.spliterator(), false).forEach(actualSystemPropertyName ->
+      assertThat(expectedSystemPropertyNames.remove(actualSystemPropertyName)).isTrue());
 
-    assertThat(expectedSystemPropertyNames.isEmpty()).isTrue();
+    assertThat(expectedSystemPropertyNames).isEmpty();
   }
 }
