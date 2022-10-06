@@ -25,19 +25,23 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
+import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
 
 /**
  * Unit Tests for {@link SystemPropertiesConfiguration}.
  *
  * @author John J. Blum
+ * @see java.util.Properties
  * @see org.junit.Test
  * @see org.mockito.Mockito
+ * @see org.cp.elements.context.configure.AbstractConfiguration
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.SystemPropertiesConfiguration
  * @since 1.0.0
@@ -45,6 +49,19 @@ import org.cp.elements.context.configure.Configuration;
 public class SystemPropertiesConfigurationUnitTests {
 
   private final SystemPropertiesConfiguration configuration = new SystemPropertiesConfiguration();
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getDescriptor() {
+
+    Configuration.Descriptor<Properties> configurationDescriptor =
+      (Configuration.Descriptor<Properties>) this.configuration.getDescriptor();
+
+    assertThat(configurationDescriptor).isInstanceOf(AbstractConfiguration.PropertiesConfigurationDescriptor.class);
+    assertThat(configurationDescriptor.getSource()).isEqualTo(System.getProperties());
+    assertThat(configurationDescriptor.isFile()).isFalse();
+    assertThat(configurationDescriptor.isProperties()).isTrue();
+  }
 
   @Test
   public void isPresentReturnsTrue() {

@@ -43,18 +43,24 @@ public class SystemPropertiesConfiguration extends AbstractConfiguration {
    *
    * @see java.lang.System#getProperties()
    */
-  public SystemPropertiesConfiguration() { }
+  public SystemPropertiesConfiguration() {
+    this(null);
+  }
 
   /**
    * Constructs a new instance of {@link SystemPropertiesConfiguration} initialized with
    * the given {@link Configuration parent} and Java {@link System#getProperties() System properties}.
    *
    * @param parent {@link Configuration} used as the parent of this {@link Configuration}.
+   * @see org.cp.elements.context.configure.AbstractConfiguration.PropertiesConfigurationDescriptor
    * @see org.cp.elements.context.configure.Configuration
    * @see java.lang.System#getProperties()
+   * @see #setDescriptor(Descriptor)
+   * @see java.util.Properties
    */
   public SystemPropertiesConfiguration(@Nullable Configuration parent) {
     super(parent);
+    setDescriptor(PropertiesConfigurationDescriptor.from(System.getProperties()));
   }
 
   /**
