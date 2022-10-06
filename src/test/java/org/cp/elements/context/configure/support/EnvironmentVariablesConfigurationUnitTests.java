@@ -24,25 +24,44 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
+import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
  * Unit Tests for {@link EnvironmentVariablesConfiguration}.
  *
  * @author John J. Blum
+ * @see java.util.Map
  * @see org.junit.Test
+ * @see org.cp.elements.context.configure.AbstractConfiguration
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.EnvironmentVariablesConfiguration
  * @since 1.0.0
  */
 public class EnvironmentVariablesConfigurationUnitTests {
 
+  @SubjectUnderTest
   private final EnvironmentVariablesConfiguration configuration = new EnvironmentVariablesConfiguration();
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void getDescriptor() {
+
+    Configuration.Descriptor<Map<String, String>> configurationDescriptor =
+      (Configuration.Descriptor<Map<String, String>>) this.configuration.getDescriptor();
+
+    assertThat(configurationDescriptor).isInstanceOf(AbstractConfiguration.MapConfigurationDescriptor.class);
+    assertThat(configurationDescriptor.getSource()).isEqualTo(System.getenv());
+    assertThat(configurationDescriptor.isFile()).isFalse();
+    assertThat(configurationDescriptor.isProperties()).isFalse();
+  }
 
   @Test
   public void isPresentReturnsTrue() {

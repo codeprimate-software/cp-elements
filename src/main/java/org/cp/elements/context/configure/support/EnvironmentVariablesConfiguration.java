@@ -42,7 +42,9 @@ public class EnvironmentVariablesConfiguration extends AbstractConfiguration {
    *
    * @see java.lang.System#getenv()
    */
-  public EnvironmentVariablesConfiguration() { }
+  public EnvironmentVariablesConfiguration() {
+    this(null);
+  }
 
   /**
    * Constructs a new instance of {@link EnvironmentVariablesConfiguration} initialized with the given
@@ -50,11 +52,15 @@ public class EnvironmentVariablesConfiguration extends AbstractConfiguration {
    * the {@link System#getenv() System environment}.
    *
    * @param parent {@link Configuration} used as the parent of this {@link Configuration}.
+   * @see org.cp.elements.context.configure.AbstractConfiguration.MapConfigurationDescriptor
    * @see org.cp.elements.context.configure.Configuration
+   * @see #setDescriptor(Descriptor)
    * @see java.lang.System#getenv()
+   * @see java.util.Map
    */
   public EnvironmentVariablesConfiguration(@Nullable Configuration parent) {
     super(parent);
+    setDescriptor(MapConfigurationDescriptor.from(System.getenv()));
   }
 
   /**
