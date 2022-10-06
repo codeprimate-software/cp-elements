@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.context.configure.support;
 
 import java.util.Iterator;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The EnvironmentVariablesConfiguration class is a Configuration implementation for reading configuration information
- * from System Environment Variables.
+ * {@link Configuration} implementation used to read configuration
+ * from {@link System#getenv() System Environment Variables}.
  *
  * @author John J. Blum
- * @see java.lang.System
+ * @see java.lang.System#getenv()
  * @see org.cp.elements.context.configure.AbstractConfiguration
  * @see org.cp.elements.context.configure.Configuration
  * @since 1.0.0
@@ -34,35 +36,48 @@ import org.cp.elements.context.configure.Configuration;
 @SuppressWarnings("unused")
 public class EnvironmentVariablesConfiguration extends AbstractConfiguration {
 
-  public EnvironmentVariablesConfiguration() {
-  }
+  /**
+   * Constructs a new instance of {@link EnvironmentVariablesConfiguration} with
+   * initial {@literal environment variables} provided by the {@link System#getenv() System environment}.
+   *
+   * @see java.lang.System#getenv()
+   */
+  public EnvironmentVariablesConfiguration() { }
 
-  public EnvironmentVariablesConfiguration(final Configuration parent) {
+  /**
+   * Constructs a new instance of {@link EnvironmentVariablesConfiguration} initialized with the given
+   * {@link Configuration parent} and initial {@literal environment variables} provided by
+   * the {@link System#getenv() System environment}.
+   *
+   * @param parent {@link Configuration} used as the parent of this {@link Configuration}.
+   * @see org.cp.elements.context.configure.Configuration
+   * @see java.lang.System#getenv()
+   */
+  public EnvironmentVariablesConfiguration(@Nullable Configuration parent) {
     super(parent);
   }
 
   /**
-   * Determines whether the configuration property identified by name is present in the configuration settings, which
-   * means the configuration property was declared but not necessarily defined.
+   * Determines whether the configuration property identified by {@link String name} is present (declared)
+   * in the {@link System#getenv() System Environment Variables}.
    *
-   * @param propertyName a String value indicating the name of the configuration property.
-   * @return a boolean value indicating if the property identified by name is present (declared) in the configuration
-   * settings.
+   * @param propertyName {@link String} containing the {@literal name} of the configuration property.
+   * @return a boolean value indicating whether the configuration property identified by {@link String name}
+   * is present (declared) in the {@link System#getenv() System Environment Variables}.
    * @see #isSet(String)
    */
   @Override
-  public boolean isPresent(final String propertyName) {
-    return System.getenv().containsKey(propertyName);
+  public boolean isPresent(@Nullable String propertyName) {
+    return StringUtils.hasText(propertyName) && System.getenv().containsKey(propertyName);
   }
 
   @Override
-  protected String doGetPropertyValue(final String propertyName) {
+  protected @Nullable String doGetPropertyValue(@NotNull String propertyName) {
     return System.getenv(propertyName);
   }
 
   @Override
-  public Iterator<String> iterator() {
+  public @NotNull Iterator<String> iterator() {
     return System.getenv().keySet().iterator();
   }
-
 }
