@@ -27,14 +27,17 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
@@ -44,6 +47,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.cp.elements.context.annotation.Profile;
+import org.cp.elements.context.configure.AbstractConfiguration.AbstractConfigurationDescriptor;
+import org.cp.elements.context.configure.AbstractConfiguration.FileConfigurationDescriptor;
+import org.cp.elements.context.configure.AbstractConfiguration.MapConfigurationDescriptor;
+import org.cp.elements.context.configure.AbstractConfiguration.PropertiesConfigurationDescriptor;
 import org.cp.elements.data.conversion.AbstractConversionService;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
@@ -285,6 +292,24 @@ public class AbstractConfigurationUnitTests {
   }
 
   @Test
+  public void setAndGetDescriptor() {
+
+    AbstractConfiguration configuration = new TestConfiguration(this.configurationProperties);
+
+    Configuration.Descriptor<?> mockConfigurationDescriptor = mock(Configuration.Descriptor.class);
+
+    assertThat(configuration.getDescriptor()).isNull();
+
+    configuration.setDescriptor(mockConfigurationDescriptor);
+
+    assertThat(configuration.getDescriptor()).isSameAs(mockConfigurationDescriptor);
+
+    configuration.setDescriptor(null);
+
+    assertThat(configuration.getDescriptor()).isNull();
+  }
+
+  @Test
   public void getPropertyValue() {
 
     AbstractConfiguration configuration = new TestConfiguration(this.configurationProperties);
@@ -521,6 +546,68 @@ public class AbstractConfigurationUnitTests {
       .causedBy(ConversionException.class)
       .havingMessage("Cannot convert username [hacker3000] into a User")
       .withNoCause();
+  }
+
+  @Test
+  public void constructNewAbstractConfigurationDescriptor() {
+
+    Object source = spy(new Object());
+
+    AbstractConfigurationDescriptor<Object> configurationDescriptor =
+      new AbstractConfigurationDescriptor<Object>(source) {};
+
+    assertThat(configurationDescriptor).isNotNull();
+
+    verifyNoInteractions(source);
+  }
+
+  @Test
+  public void constructNewAbstractConfigurationDescriptorWithNullSource() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new AbstractConfigurationDescriptor<Object>(null) { })
+      .withMessage("Source is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNewFileConfigurationDescriptor() {
+
+    File mockFile = mock(File.class);
+
+    FileConfigurationDescriptor configurationDescriptor = FileConfigurationDescriptor.from(mockFile);
+
+    assertThat(configurationDescriptor).isNotNull();
+    assertThat(configurationDescriptor.getSource()).isEqualTo(mockFile);
+
+    verifyNoInteractions(mockFile);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void fromNewMapConfigurationDescriptor() {
+
+    Map<String, String> mockMap = mock(Map.class);
+
+    MapConfigurationDescriptor configurationDescriptor = MapConfigurationDescriptor.from(mockMap);
+
+    assertThat(configurationDescriptor).isNotNull();
+    assertThat(configurationDescriptor.getSource()).isEqualTo(mockMap);
+
+    verifyNoInteractions(mockMap);
+  }
+
+  @Test
+  public void fromNewPropertiesConfigurationDescriptor() {
+
+    Properties mockProperties = mock(Properties.class);
+
+    PropertiesConfigurationDescriptor configurationDescriptor = PropertiesConfigurationDescriptor.from(mockProperties);
+
+    assertThat(configurationDescriptor).isNotNull();
+    assertThat(configurationDescriptor.getSource()).isEqualTo(mockProperties);
+
+    verifyNoInteractions(mockProperties);
   }
 
   private static final class TestConfiguration extends AbstractConfiguration {

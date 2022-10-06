@@ -18,6 +18,10 @@ package org.cp.elements.context.configure;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConfigurationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
+import java.io.File;
+import java.util.Map;
+import java.util.Properties;
+
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.data.conversion.ConversionServiceAware;
@@ -33,7 +37,11 @@ import org.cp.elements.lang.annotation.Nullable;
  * Abstract base class encapsulating functionality common to all {@link Configuration} implementations.
  *
  * @author John J. Blum
+ * @see java.io.File
+ * @see java.util.Map
+ * @see java.util.Properties
  * @see org.cp.elements.context.configure.Configuration
+ * @see org.cp.elements.context.configure.Configuration.Descriptor
  * @see org.cp.elements.data.conversion.ConversionService
  * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @since 1.0.0
@@ -42,6 +50,8 @@ import org.cp.elements.lang.annotation.Nullable;
 public abstract class AbstractConfiguration implements Configuration, ConversionServiceAware {
 
   private final Configuration parent;
+
+  private Configuration.Descriptor<?> descriptor;
 
   // TODO: Use PropertyEditors in addition to ConversionService!?!
   private ConversionService conversionService;
@@ -211,6 +221,27 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
   }
 
   /**
+   * Returns the configured {@link Configuration.Descriptor} used to describe this {@link Configuration}.
+   *
+   * @return the configured {@link Configuration.Descriptor} used to describe this {@link Configuration}.
+   * @see org.cp.elements.context.configure.Configuration.Descriptor
+   */
+  @Override
+  public @Nullable Descriptor<?> getDescriptor() {
+    return this.descriptor;
+  }
+
+  /**
+   * Sets (configures) the {@link Configuration.Descriptor} used to describe this {@link Configuration}.
+   *
+   * @param descriptor {@link Configuration.Descriptor} used to describe this {@link Configuration}.
+   * @see org.cp.elements.context.configure.Configuration.Descriptor
+   */
+  protected void setDescriptor(@Nullable Descriptor<?> descriptor) {
+    this.descriptor = descriptor;
+  }
+
+  /**
    * Gets the {@link String value} of the configuration property identified by the given {@link String name}.
    *
    * The {@code required} parameter is used to indicate whether the configuration property is {@literal required}
@@ -292,4 +323,133 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    */
   protected abstract String doGetPropertyValue(String propertyName);
 
+  /**
+   * Abstract base class for {@link Configuration.Descriptor} implementations.
+   *
+   * @param <SOURCE> {@link Class type} parameter of the {@link Configuration} {@link Object source}.
+   * @see org.cp.elements.context.configure.Configuration.Descriptor
+   */
+  protected static abstract class AbstractConfigurationDescriptor<SOURCE> implements Configuration.Descriptor<SOURCE> {
+
+    private final SOURCE source;
+
+    /**
+     * Constructs a new instance of {@link AbstractConfigurationDescriptor} initialized with the given, required {@link SOURCE}.
+     *
+     * @param source {@link SOURCE} object used as the {@literal source} of this {@link Configuration}.
+     * @throws IllegalArgumentException if the {@link SOURCE} is {@literal null}.
+     */
+    protected AbstractConfigurationDescriptor(@NotNull SOURCE source) {
+      this.source = ObjectUtils.requireObject(source, "Source is required");
+    }
+
+    /**
+     * Gets the {@link SOURCE} {@link Object} of this {@link Configuration}.
+     *
+     * @return the {@link SOURCE} {@link Object} of this {@link Configuration}.
+     */
+    @Override
+    public @NotNull SOURCE getSource() {
+      return this.source;
+    }
+  }
+
+  /**
+   * {@link Configuration.Descriptor} implementation sourced from a {@link File}.
+   *
+   * @see java.io.File
+   */
+  public static class FileConfigurationDescriptor extends AbstractConfigurationDescriptor<File> {
+
+    /**
+     * Factory method used to construct a new instance of {@link FileConfigurationDescriptor} initialized with
+     * the given, required {@link File} used as the {@literal source} of the {@link Configuration}.
+     *
+     * @param file {@link File} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @return a new {@link FileConfigurationDescriptor}.
+     * @throws IllegalArgumentException if the {@link File} is {@literal null}.
+     * @see java.io.File
+     */
+    public static @NotNull FileConfigurationDescriptor from(@NotNull File file) {
+      return new FileConfigurationDescriptor(file);
+    }
+
+    /**
+     * Constructs a new instance of {@link FileConfigurationDescriptor} initialized with the given, required {@link File}
+     * used as the {@literal source} of the {@link Configuration}.
+     *
+     * @param file {@link File} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @throws IllegalArgumentException if the {@link File} is {@literal null}.
+     * @see java.io.File
+     */
+    public  FileConfigurationDescriptor(@NotNull File file) {
+      super(file);
+    }
+  }
+
+  /**
+   * {@link Configuration.Descriptor} implementation sourced from a {@link Map}.
+   *
+   * @see java.util.Map
+   */
+  public static class MapConfigurationDescriptor extends AbstractConfigurationDescriptor<Map<String, String>> {
+
+    /**
+     * Factory method used to construct a new instance of {@link MapConfigurationDescriptor} initialized with
+     * the given, required {@link Map} used as the {@literal source} of the {@link Configuration}.
+     *
+     * @param map {@link Map} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @return a new {@link MapConfigurationDescriptor}.
+     * @throws IllegalArgumentException if the {@link Map} is {@literal null}.
+     * @see java.util.Map
+     */
+    public static @NotNull MapConfigurationDescriptor from(@NotNull Map<String, String> map) {
+      return new MapConfigurationDescriptor(map);
+    }
+
+    /**
+     * Constructs a new instance of {@link MapConfigurationDescriptor} initialized with the given, required {@link Map}
+     * used as the {@literal source} of the {@link Configuration}.
+     *
+     * @param map {@link Map} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @throws IllegalArgumentException if the {@link Map} is {@literal null}.
+     * @see java.util.Map
+     */
+    public MapConfigurationDescriptor(@NotNull Map<String, String> map) {
+      super(map);
+    }
+  }
+
+  /**
+   * {@link Configuration.Descriptor} implementation sourced from a {@link Properties} object.
+   *
+   * @see java.util.Properties
+   */
+  public static class PropertiesConfigurationDescriptor extends AbstractConfigurationDescriptor<Properties> {
+
+    /**
+     * Factory method used to construct a new instance of {@link PropertiesConfigurationDescriptor} initialized with
+     * the given, required {@link Properties} used as the {@literal source} of the {@link Configuration}.
+     *
+     * @param properties {@link Properties} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @return a new {@link PropertiesConfigurationDescriptor}.
+     * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+     * @see java.util.Properties
+     */
+    public static @NotNull PropertiesConfigurationDescriptor from(@NotNull Properties properties) {
+      return new PropertiesConfigurationDescriptor(properties);
+    }
+
+    /**
+     * Constructs a new instance of {@link PropertiesConfigurationDescriptor} initialized with
+     * the given, required {@link Properties} used as the {@literal source} of the {@link Configuration}.
+     *
+     * @param properties {@link Properties} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
+     * @see java.util.Properties
+     */
+    public PropertiesConfigurationDescriptor(@NotNull Properties properties) {
+      super(properties);
+    }
+  }
 }
