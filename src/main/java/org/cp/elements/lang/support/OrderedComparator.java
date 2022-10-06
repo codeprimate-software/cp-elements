@@ -30,6 +30,8 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 public class OrderedComparator implements Comparator<Ordered> {
 
+  public static final OrderedComparator INSTANCE = new OrderedComparator();
+
   /**
    * Compares two {@link Ordered} objects to determine their relative order using an {@link Integer index}.
    *

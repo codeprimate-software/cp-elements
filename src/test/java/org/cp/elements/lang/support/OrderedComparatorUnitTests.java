@@ -13,74 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Ordered;
-import org.junit.Test;
 
 /**
- * The OrderedComparatorTest class is a test suite of test cases testing the contract and functionality of
- * the OrderedComparator class.
+ * Unit Tests for {@link OrderedComparator}.
  *
  * @author John J. Blum
- * @see org.cp.elements.lang.support.OrderedComparator
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @see org.cp.elements.lang.support.OrderedComparator
  * @since 1.0.0
  */
-public class OrderedComparatorTest {
+public class OrderedComparatorUnitTests {
 
   @Test
-  public void testCompare() {
-    final Priority necessary = new Priority(1, "Necessary");
-    final Priority requirement = new Priority(2, "Requirement");
-    final Priority niceToHave = new Priority(3, "Nice-to-Have");
-    final Priority useless = new Priority(4, "Useless");
+  public void compareIsCorrect() {
 
-    final List<Priority> priorities = new ArrayList<>(Arrays.asList(useless, niceToHave, necessary, requirement));
+    Priority necessary = new Priority(1, "Necessary");
+    Priority requirement = new Priority(2, "Requirement");
+    Priority niceToHave = new Priority(3, "Nice-to-Have");
+    Priority useless = new Priority(4, "Useless");
+
+    List<Priority> priorities = new ArrayList<>(Arrays.asList(useless, niceToHave, necessary, requirement));
 
     Collections.sort(priorities);
 
-    final List<Priority> sortedPriorities = Arrays.asList(necessary, niceToHave, requirement, useless);
+    assertThat(priorities).containsExactly(necessary, niceToHave, requirement, useless);
 
-    assertEquals(sortedPriorities, priorities);
+    priorities.sort(OrderedComparator.INSTANCE);
 
-    Collections.sort(priorities, new OrderedComparator());
-
-    final List<Priority> orderedPriorities = Arrays.asList(necessary, requirement, niceToHave, useless);
-
-    assertEquals(orderedPriorities, priorities);
+    assertThat(priorities).containsExactly(necessary, requirement, niceToHave, useless);
   }
 
-  protected static final class Priority implements Comparable<Priority>, Ordered {
+  static final class Priority implements Comparable<Priority>, Ordered {
 
     private final int index;
     private final String name;
 
     public Priority(final int index, final String name) {
-      assert index > 0 : "The index of the Priority must be positive!";
-      assert name != null : "The name of the Priority cannot be null!";
+
+      assert index > 0 : "The index of the Priority must be positive";
+      assert name != null : "The name of the Priority cannot be null";
+
       this.index = index;
       this.name = name;
     }
 
     @Override
     public int getIndex() {
-      return index;
+      return this.index;
     }
 
     @Override
-    public void setIndex(final int index) {
+    public void setIndex(int index) {
       throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
 
@@ -90,13 +87,14 @@ public class OrderedComparatorTest {
 
     @Override
     @SuppressWarnings("all")
-    public int compareTo(final Priority priority) {
+    public int compareTo(Priority priority) {
       return getName().compareTo(priority.getName());
     }
 
     @Override
-    public boolean equals(final Object obj) {
-      if (obj == this) {
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
         return true;
       }
 
@@ -104,16 +102,14 @@ public class OrderedComparatorTest {
         return false;
       }
 
-      final Priority that = (Priority) obj;
+      Priority that = (Priority) obj;
 
       return ObjectUtils.equals(getName(), that.getName());
     }
 
     @Override
     public int hashCode() {
-      int hashValue = 17;
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getName());
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getName());
     }
 
     @Override
@@ -121,5 +117,4 @@ public class OrderedComparatorTest {
       return getName();
     }
   }
-
 }
