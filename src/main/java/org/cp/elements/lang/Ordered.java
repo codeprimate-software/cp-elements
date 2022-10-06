@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The Ordered interface defines a contract for classes where an object's order is determined according to an index.
+ * Interface defining a contract for {@link Object Objects} whose {@link Class types} defines an order
+ * determined by an {@link Integer index}.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Orderable
@@ -26,17 +26,21 @@ package org.cp.elements.lang;
 @SuppressWarnings("unused")
 public interface Ordered {
 
+  int DEFAULT_PRIORITY = 0;
+  int LOWEST_PRIORITY = Integer.MAX_VALUE;
+  int HIGHEST_PRIORITY = Integer.MIN_VALUE;
+
   /**
-   * Gets the index of this object in an ordered context.
+   * Gets the {@link Integer index} of this {@link Object} in an ordered context.
    *
-   * @return a integer value indicating this object's index in the ordered context.
+   * @return the {@link Integer index} of this {@link Object} in an ordered context.
    */
   int getIndex();
 
   /**
-   * Sets the index of this object in the ordered context.
+   * Set the {@link Integer index} of this {@link Object} in an ordered context.
    *
-   * @param index an integer value indicating this object's index in the ordered context.
+   * @param index {@link Integer} indicating the order of this {@link Object} in an ordered context.
    */
   void setIndex(int index);
 
