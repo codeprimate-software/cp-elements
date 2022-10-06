@@ -16,14 +16,15 @@
 package org.cp.elements.lang;
 
 /**
- * The {@link Orderable} interface defines a contract for objects that can be organized in an ordered context,
- * such as an ordered data structure using arrays or {@link java.util.List Lists}.
+ * The {@link Orderable} interface defines a contract for {@link Object objects} that can be organized
+ * in an ordered context, such as an ordered data structure, like an array or {@link java.util.List}.
  *
- * In general, the order of objects can be applied in many different ways including sort order, prioritization,
- * or to ascertain precedence between {@link Orderable} objects of the same type.
+ * In general, the order of {@link Object objects} can be applied in different ways including sort order,
+ * prioritization, or to ascertain precedence between {@link Orderable} {@link Object objects}
+ * of the same {@link Class type}.
  *
  * @author John J. Blum
- * @param <T> {@link Class} type parameter specifying the class of the {@link Comparable} type.
+ * @param <T> {@link Class type} parameter specifying the class of the {@link Comparable} object.
  * @see java.lang.Comparable
  * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Ordered
@@ -34,9 +35,11 @@ package org.cp.elements.lang;
 public interface Orderable<T extends Comparable<T>> {
 
   /**
-   * Gets the value of the order property which indicates the order of this object relative to it's peers.
+   * Gets the value of the order property which indicates the order of this {@link Object} relative to
+   * other {@link Object objects} of the same {@link Class type}.
    *
-   * @return a Comparable value of type T indicating this object's order of precedence.
+   * @return a {@link Comparable value} of {@link Class type T} indicating this {@link Object object's}
+   * sort order, prioritization or precedence.
    */
   T getOrder();
 
