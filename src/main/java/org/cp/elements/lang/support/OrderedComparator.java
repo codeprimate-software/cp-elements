@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.Comparator;
 
 import org.cp.elements.lang.Ordered;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The OrderedComparator class is an implementation of the Comparator interface for Ordered objects.
+ * {@link Comparator} implementation for {@link Ordered} objects.
  *
  * @author John J. Blum
  * @see java.util.Comparator
  * @see org.cp.elements.lang.Ordered
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public class OrderedComparator implements Comparator<Ordered> {
 
   /**
-   * Compares two Ordered objects to determine their relative order by index.
+   * Compares two {@link Ordered} objects to determine their relative order using an {@link Integer index}.
    *
-   * @param ordered1 the first Ordered object in the order comparison.
-   * @param ordered2 the second Ordered object in the order comparison.
-   * @return an integer value indicating one Ordered object's order relative to another Ordered object.
+   * @param orderedOne first {@link Ordered} object in the order comparison; must not be {@literal null}.
+   * @param orderedTwo second {@link Ordered} object in the order comparison; must not be {@literal null}.
+   * @return an {@link Integer value} indicating an {@link Ordered} object's order relative to
+   * another {@link Ordered} object.
+   * @see org.cp.elements.lang.Ordered
    */
   @Override
-  public int compare(final Ordered ordered1, final Ordered ordered2) {
-    return (ordered1.getIndex() < ordered2.getIndex() ? -1 : (ordered1.getIndex() > ordered2.getIndex() ? 1 : 0));
+  public int compare(@NotNull Ordered orderedOne, @NotNull Ordered orderedTwo) {
+    return Integer.compare(orderedOne.getIndex(), orderedTwo.getIndex());
   }
-
 }
