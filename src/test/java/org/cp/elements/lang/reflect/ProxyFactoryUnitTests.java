@@ -16,35 +16,42 @@
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.reflect.ProxyFactory.newProxyFactory;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.Serializable;
 
-import org.cp.elements.lang.Auditable;
-import org.cp.elements.lang.Identifiable;
 import org.junit.Test;
 
-import lombok.Data;
-import lombok.NonNull;
+import org.cp.elements.lang.Auditable;
+import org.cp.elements.lang.Describable;
+import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.Nameable;
+import org.cp.elements.test.annotation.SubjectUnderTest;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Unit Tests for {@link ProxyFactory}.
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @since 1.0.0
  */
-public class ProxyFactoryTests {
+public class ProxyFactoryUnitTests {
 
+  @SubjectUnderTest
   private final Object target = new Object();
 
   @Test
-  public void newProxyFactoryIsNotNull() {
+  public void newProxyFactoryIsCorrect() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
@@ -58,19 +65,21 @@ public class ProxyFactoryTests {
 
     Contact johnBlum = Contact.newContact("John Blum");
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory(johnBlum, Auditable.class, Identifiable.class, Runnable.class);
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory(johnBlum,
+      Auditable.class, Describable.class, Identifiable.class, Nameable.class, Runnable.class);
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
     assertThat(proxyFactory.getProxyClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
-    assertThat(proxyFactory.getProxyInterfaces()).contains(Auditable.class, Identifiable.class, Runnable.class);
+    assertThat(proxyFactory.getProxyInterfaces())
+      .containsExactlyInAnyOrder(Auditable.class, Describable.class, Identifiable.class, Nameable.class, Runnable.class);
     assertThat(proxyFactory.getTarget()).isEqualTo(johnBlum);
   }
 
   @Test
   public void resolvesGivenInterfaces() {
     assertThat(ProxyFactory.resolveInterfaces(Contact.newContact("John Blum"), Auditable.class, Identifiable.class))
-      .contains(Auditable.class, Identifiable.class);
+      .containsExactlyInAnyOrder(Auditable.class, Identifiable.class);
   }
 
   @Test
@@ -93,24 +102,27 @@ public class ProxyFactoryTests {
   }
 
   @Test
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @SuppressWarnings("unchecked")
   public void adviseWithMethodInterceptors() {
 
-    MethodInterceptor mockMethodInterceptorOne = mock(MethodInterceptor.class);
-    MethodInterceptor mockMethodInterceptorTwo = mock(MethodInterceptor.class);
+    MethodInterceptor<Object> mockMethodInterceptorOne = mock(MethodInterceptor.class);
+    MethodInterceptor<Object> mockMethodInterceptorTwo = mock(MethodInterceptor.class);
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
     assertThat(proxyFactory.adviseWith(mockMethodInterceptorOne, mockMethodInterceptorTwo)).isSameAs(proxyFactory);
-    assertThat(proxyFactory.getMethodInterceptors()).contains(mockMethodInterceptorOne, mockMethodInterceptorTwo);
+    assertThat(proxyFactory.getMethodInterceptors())
+      .containsExactlyInAnyOrder(mockMethodInterceptorOne, mockMethodInterceptorTwo);
+
+    verifyNoInteractions(mockMethodInterceptorOne, mockMethodInterceptorTwo);
   }
 
   @Test
   public void adviseWithNullMethodInterceptors() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getMethodInterceptors()).isEmpty();
@@ -121,46 +133,46 @@ public class ProxyFactoryTests {
   @Test
   public void implementingInterfaces() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getProxyInterfaces()).isEmpty();
-    assertThat(proxyFactory.implementing(Auditable.class, Identifiable.class)).isSameAs(proxyFactory);
-    assertThat(proxyFactory.getProxyInterfaces()).contains(Auditable.class, Identifiable.class);
+    assertThat(proxyFactory.implementing(Auditable.class, Nameable.class)).isSameAs(proxyFactory);
+    assertThat(proxyFactory.getProxyInterfaces()).containsExactlyInAnyOrder(Auditable.class, Nameable.class);
   }
 
   @Test
   @SuppressWarnings("rawtypes")
   public void implementingNoInterfaces() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory(target, Auditable.class, Identifiable.class);
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory(this.target, Auditable.class, Nameable.class);
 
     assertThat(proxyFactory).isNotNull();
-    assertThat(proxyFactory.getProxyInterfaces()).contains(Auditable.class, Identifiable.class);
-    assertThat(proxyFactory.getTarget()).isSameAs(target);
+    assertThat(proxyFactory.getProxyInterfaces()).containsExactlyInAnyOrder(Auditable.class, Nameable.class);
+    assertThat(proxyFactory.getTarget()).isSameAs(this.target);
     assertThat(proxyFactory.implementing((Class[]) null)).isSameAs(proxyFactory);
     assertThat(proxyFactory.getProxyInterfaces()).isEmpty();
-    assertThat(proxyFactory.getTarget()).isSameAs(target);
+    assertThat(proxyFactory.getTarget()).isSameAs(this.target);
   }
 
   @Test
   public void proxyTarget() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getTarget()).isNull();
-    assertThat(proxyFactory.proxy(target)).isSameAs(proxyFactory);
-    assertThat(proxyFactory.getTarget()).isSameAs(target);
+    assertThat(proxyFactory.proxy(this.target)).isSameAs(proxyFactory);
+    assertThat(proxyFactory.getTarget()).isSameAs(this.target);
   }
 
   @Test
   public void proxyNull() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory(target);
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory(this.target);
 
     assertThat(proxyFactory).isNotNull();
-    assertThat(proxyFactory.getTarget()).isSameAs(target);
+    assertThat(proxyFactory.getTarget()).isSameAs(this.target);
     assertThat(proxyFactory.proxy(null)).isSameAs(proxyFactory);
     assertThat(proxyFactory.getTarget()).isNull();
   }
@@ -168,7 +180,7 @@ public class ProxyFactoryTests {
   @Test
   public void usingSystemClassLoader() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
     assertThat(proxyFactory.getProxyClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
@@ -179,9 +191,10 @@ public class ProxyFactoryTests {
   @Test
   public void usingThreadContextClassLoader() {
 
-    ProxyFactory<Object> proxyFactory = newProxyFactory();
+    ProxyFactory<Object> proxyFactory = ProxyFactory.newProxyFactory();
 
     assertThat(proxyFactory).isNotNull();
+    assertThat(proxyFactory.getProxyClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
     assertThat(proxyFactory.using(null)).isSameAs(proxyFactory);
     assertThat(proxyFactory.getProxyClassLoader()).isEqualTo(Thread.currentThread().getContextClassLoader());
   }
@@ -193,9 +206,14 @@ public class ProxyFactoryTests {
 
   static abstract class Golfer extends Person { }
 
-  @Data
+  @Getter
+  @ToString(of = "name")
+  @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "newContact")
   static class Contact {
-    @NonNull String name;
+
+    @lombok.NonNull
+    private final String name;
+
   }
 }
