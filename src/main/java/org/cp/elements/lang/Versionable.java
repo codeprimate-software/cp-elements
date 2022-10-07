@@ -34,6 +34,6 @@ public interface Versionable<T> {
    *
    * @return the {@link T version} of {@literal this} {@link Object}.
    */
-  T version();
+  T getVersion();
 
 }
