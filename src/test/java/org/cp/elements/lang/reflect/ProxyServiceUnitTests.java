@@ -13,38 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.lang.reflect.ProxyService.newProxyService;
 
 import java.util.Iterator;
 
-import org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory;
 import org.junit.Test;
 
-import lombok.Data;
-import lombok.NonNull;
+import org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
- * Unit tests for the {@link ProxyService}.
+ * Unit Tests for {@link ProxyService}.
  *
  * @author John Blum
  * @see org.junit.Test
- * @see lombok
+ * @see org.cp.elements.lang.reflect.ProxyFactory
  * @see org.cp.elements.lang.reflect.ProxyService
  * @see org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory
  * @since 1.0.0
  */
-public class ProxyServiceTests {
+public class ProxyServiceUnitTests {
 
   @Test
+  @SuppressWarnings("rawtypes")
   public void newProxyServiceIsSuccessful() {
-    ProxyService<?> proxyService = newProxyService();
+
+    ProxyService<?> proxyService = ProxyService.newProxyService();
 
     assertThat(proxyService).isNotNull();
+    assertThat(ProxyService.newProxyService()).isSameAs(proxyService);
 
     Iterator<ProxyFactory> iterator = proxyService.iterator();
 
@@ -54,28 +57,35 @@ public class ProxyServiceTests {
   }
 
   @Test
-  public void canProxyInterface() {
-    assertThat(newProxyService().canProxy(new Object(), ContactRepository.class)).isTrue();
+  public void cannotProxyClass() {
+
+    Contact johnBlum = Contact.newContact("John Blum");
+
+    assertThat(ProxyService.newProxyService().canProxy(johnBlum)).isFalse();
   }
 
   @Test
-  public void cannotProxyClass() {
-    Contact johnBlum = Contact.newContact("John Blum");
-
-    assertThat(newProxyService().canProxy(johnBlum)).isFalse();
+  public void canProxyInterface() {
+    assertThat(ProxyService.newProxyService().canProxy(new Object(), ContactRepository.class)).isTrue();
   }
 
   @Test
   public void reloadIsSuccessful() {
-    newProxyService().reload();
+    ProxyService.newProxyService().reload();
   }
 
-  @Data
+  @Getter
+  @ToString(of = "name")
+  @EqualsAndHashCode(of = "name")
   @RequiredArgsConstructor(staticName = "newContact")
   static class Contact {
-    @NonNull String name;
+
+    @lombok.NonNull
+    private final String name;
+
   }
 
+  @SuppressWarnings("unused")
   interface ContactRepository {
     Contact findBy(Long id);
     Iterable<Contact> findBy(String name);
