@@ -90,7 +90,7 @@ public abstract class ProxyFactory<T> {
    * @see #proxy(Object)
    * @see #implementing(Class[])
    */
-  public static <T> ProxyFactory<T> newProxyFactory(T target, Class<?>... proxyInterfaces) {
+  public static <T> ProxyFactory<T> newProxyFactory(@Nullable T target, Class<?>... proxyInterfaces) {
 
     return ProxyFactory.<T>newProxyFactory()
       .proxy(target)
@@ -110,7 +110,7 @@ public abstract class ProxyFactory<T> {
    * @see java.lang.Object
    */
   @NullSafe
-  protected static Class<?>[] resolveInterfaces(Object obj, Class<?>... interfaces) {
+  protected static Class<?>[] resolveInterfaces(@Nullable Object obj, Class<?>... interfaces) {
 
     Set<Class<?>> allImplementedInterfaces = new HashSet<>(ClassUtils.getInterfaces(obj));
 
@@ -194,7 +194,7 @@ public abstract class ProxyFactory<T> {
    * @return the {@link Object} to Proxy.
    * @see java.lang.Object
    */
-  public T getTarget() {
+  public @Nullable T getTarget() {
     return this.target;
   }
 

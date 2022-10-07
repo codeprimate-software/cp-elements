@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
-import static org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory;
-import static org.cp.elements.lang.reflect.support.MethodInvokingMethodInterceptor.newMethodInvokingMethodInterceptor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.reflect.support.MethodInvokingMethodInterceptor;
 import org.cp.elements.lang.support.AbstractIdentifiable;
-import org.junit.Test;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,18 +35,17 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Unit tests for {@link JdkDynamicProxiesFactory}.
+ * Unit Tests for {@link JdkDynamicProxiesFactory}.
  *
  * @author John Blum
  * @see org.junit.Test
- * @see lombok
  * @see org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory
  * @since 1.0.0
  */
-public class JdkDynamicProxiesFactoryTests {
+public class JdkDynamicProxiesFactoryUnitTests {
 
   @SuppressWarnings("all")
-  protected Golfer newGolfer(Long id) {
+  private Golfer newGolfer(Long id) {
     Golfer golfer = Golfer.newGolfer();
     golfer.setId(id);
     return golfer;
@@ -55,38 +53,43 @@ public class JdkDynamicProxiesFactoryTests {
 
   @Test
   public void canProxyClassExtendingClassImplementingInterfaceIsTrue() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(new Golfer(), Serializable.class)).isTrue();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory()
+      .canProxy(new Golfer(), Serializable.class)).isTrue();
   }
 
   @Test
   public void canProxyClassImplementingInterfaceIsTrue() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(new ContactRepositorySupport() {})).isTrue();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory()
+      .canProxy(new ContactRepositorySupport() {})).isTrue();
   }
 
   @Test
   public void canProxyClassWithInterfaceIsTrue() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(Contact.newContact("John Blum"), Comparable.class)).isTrue();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory()
+      .canProxy(Contact.newContact("John Blum"), Comparable.class)).isTrue();
   }
 
   @Test
   public void canProxyInterfaceIsTrue() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(new Object(), ContactRepository.class)).isTrue();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory().canProxy(new Object(), ContactRepository.class)).isTrue();
   }
 
   @Test
   public void cannotProxyClass() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(Contact.newContact("John Blum"))).isFalse();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory().canProxy(Contact.newContact("John Blum"))).isFalse();
   }
 
   @Test
   public void cannotProxyClassOnlyImplementingSerializableInterface() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(Contact.newContact("John Blum"), Serializable.class)).isFalse();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory()
+      .canProxy(Contact.newContact("John Blum"), Serializable.class)).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void cannotProxyJavaTypes() {
-    JdkDynamicProxiesFactory<?> proxyFactory = newJdkDynamicProxiesFactory();
+
+    JdkDynamicProxiesFactory<?> proxyFactory = JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory();
 
     assertThat(proxyFactory.canProxy(new BigDecimal(3.14159d), Identifiable.class)).isFalse();
     assertThat(proxyFactory.canProxy(new BigInteger("42"), Identifiable.class)).isFalse();
@@ -112,16 +115,18 @@ public class JdkDynamicProxiesFactoryTests {
 
   @Test
   public void cannotProxyNull() {
-    assertThat(newJdkDynamicProxiesFactory().canProxy(null, Comparable.class)).isTrue();
+    assertThat(JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory().canProxy(null, Comparable.class)).isTrue();
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void newProxyIsSuccessful() {
+  public void newProxyIsCorrect() {
+
     Golfer golfer = newGolfer(1L);
 
-    Identifiable<Long> golferProxy = (Identifiable<Long>) newJdkDynamicProxiesFactory().proxy(golfer)
-      .adviseWith(newMethodInvokingMethodInterceptor(golfer))
+    Identifiable<Long> golferProxy =
+      (Identifiable<Long>) JdkDynamicProxiesFactory.newJdkDynamicProxiesFactory().proxy(golfer)
+        .adviseWith(MethodInvokingMethodInterceptor.newMethodInvokingMethodInterceptor(golfer))
         .newProxy();
 
     assertThat(golferProxy).isNotNull();
@@ -136,8 +141,7 @@ public class JdkDynamicProxiesFactoryTests {
 
   @RequiredArgsConstructor(staticName = "newGolfer")
   @SuppressWarnings("all")
-  static class Golfer extends Person {
-  }
+  static class Golfer extends Person { }
 
   @Data
   @RequiredArgsConstructor(staticName = "newContact")
@@ -151,7 +155,7 @@ public class JdkDynamicProxiesFactoryTests {
     Iterable<Contact> findBy(String name);
   }
 
-  abstract class ContactRepositorySupport implements ContactRepository {
+  abstract static class ContactRepositorySupport implements ContactRepository {
 
     @Override
     public Contact findBy(Long id) {

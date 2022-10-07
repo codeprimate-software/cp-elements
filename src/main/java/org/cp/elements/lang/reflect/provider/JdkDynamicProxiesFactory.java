@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect.provider;
-
-import static org.cp.elements.lang.reflect.support.ComposableInvocationHandler.compose;
-import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -26,17 +22,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.cp.elements.lang.JavaType;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.ProxyFactory;
+import org.cp.elements.lang.reflect.support.ComposableInvocationHandler;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The {@link JdkDynamicProxiesFactory} class is a {@link ProxyFactory} service provider implementation that uses
- * JDK Dynamic Proxies to proxy a given target {@link Object} with a set of {@link Class interfaces}.
+ * A {@link ProxyFactory} Service Provider Implementation (SPI) that uses JDK Dynamic Proxies
+ * to proxy a given {@link Object target} with a set of {@link Class interfaces}.
  *
  * @author John Blum
- * @param <T> {@link Class} type of the {@link Object} to proxy.
+ * @param <T> {@link Class type} of {@link Object} to proxy.
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Proxy
+ * @see org.cp.elements.lang.JavaType
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @since 1.0.0
@@ -51,45 +52,45 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
 
   /**
    * Factory method used to construct a new instance of the {@link JdkDynamicProxiesFactory}
-   * to create JDK Dynamic Proxies for a given target {@link Object}.
+   * to create JDK Dynamic Proxies for a given target {@link Object target}.
    *
-   * @param <T> preferred {@link Class} type of the Proxy.
-   * @return a new instance of the {@link JdkDynamicProxiesFactory} to create JDK Dynamic Proxies.
+   * @param <T> preferred {@link Class type} of the {@literal Proxy} object.
+   * @return a new {@link JdkDynamicProxiesFactory} used to create JDK Dynamic Proxies.
    * @see org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory
    */
-  @SuppressWarnings("unchecked")
-  public static <T> JdkDynamicProxiesFactory<T> newJdkDynamicProxiesFactory() {
+  public static @NotNull <T> JdkDynamicProxiesFactory<T> newJdkDynamicProxiesFactory() {
     return new JdkDynamicProxiesFactory<>();
   }
 
   /**
-   * Determines whether the given target {@link Object} can be proxied by this factory using JDK Dynamic Proxies.
+   * Determines whether the given {@link Object target} can be proxied by this {@link ProxyFactory}
+   * using JDK Dynamic Proxies.
    *
    * @param target {@link Object} to evaluate.
-   * @param proxyInterfaces array of {@link Class interfaces} to use in the proxy, which are also used
-   * as part of the evaluation of determining whether the target {@link Object} can be proxied.
-   * @return a boolean value indicating whether the given target {@link Object} can be proxied by this factory
-   * using JDK Dynamic Proxies.
+   * @param proxyInterfaces array of {@link Class interfaces} to use in the {@literal Proxy}, which are also used
+   * as part of the evaluation for determining whether the {@link Object target} can be proxied.
+   * @return a boolean value indicating whether the given {@link Object target} can be proxied by
+   * this {@link ProxyFactory} using JDK Dynamic Proxies.
    * @see #resolveInterfaces(Object, Class[])
-   * @see #canProxy(Object)
    * @see #canProxy(Class[])
+   * @see #canProxy(Object)
    */
   @Override
-  public boolean canProxy(Object target, Class<?>... proxyInterfaces) {
-    return (canProxy(target) && canProxy(resolveInterfaces(target, proxyInterfaces)));
+  public boolean canProxy(@Nullable Object target, Class<?>... proxyInterfaces) {
+    return canProxy(target) && canProxy(resolveInterfaces(target, proxyInterfaces));
   }
 
   /**
-   * Determines whether the given target {@link Object} can be proxied with a JDK Dynamic Proxy.
+   * Determines whether the given {@link Object target} can be proxied with a JDK Dynamic Proxy.
    *
    * @param target {@link Object} to evaluate.
-   * @return a boolean value indicating whether the given target {@link Object} can be proxied
+   * @return a boolean value indicating whether the given {@link Object target} can be proxied
    * with a JDK Dynamic Proxy.
    * @see org.cp.elements.lang.JavaType#isJavaType(Object)
    * @see java.lang.Object
    */
-  private boolean canProxy(Object target) {
-    return (target == null || !JavaType.isJavaType(target));
+  private boolean canProxy(@Nullable Object target) {
+    return target == null || !JavaType.isJavaType(target);
   }
 
   /**
@@ -101,20 +102,27 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
    * @see java.lang.Class
    */
   private boolean canProxy(Class<?>... proxyInterfaces) {
-    return stream(proxyInterfaces).filter(proxyInterface -> !NON_PROXYABLE_TYPES.contains(proxyInterface))
+
+    return StreamUtils.stream(proxyInterfaces)
+      .filter(proxyInterface -> !NON_PROXYABLE_TYPES.contains(proxyInterface))
       .anyMatch(Class::isInterface);
   }
 
   /**
-   * Constructs a new proxy for the given {@code target} {@link Object} implementing the given array of
-   * {@link Class interfaces} and using the {@link Iterable} collection of {@link MethodInterceptor} to intercept
-   * {@link Method} invocations on the proxy and handle the proxied invocation according to the interception.
+   * Constructs a new {@literal Proxy} for the given {@link Object target} implementing the given array of
+   * {@link Class interfaces}, using the {@link Iterable} collection of {@link MethodInterceptor} objects
+   * to intercept {@link Method} invocations on the {@literal Proxy} and handle the proxied invocation
+   * according to the interception.
    *
-   * @param <R> desired {@link Class} type of the proxied {@link Object}.
-   * @param proxyClassLoader {@link ClassLoader} used to create the proxy {@link Class} type.
+   * @param <R> desired {@link Class type} of the proxied {@link Object}.
+   * @param proxyClassLoader {@link ClassLoader} used to create the {@literal Proxy} {@link Class type}.
    * @param target {@link Object} to proxy.
-   * @param proxyInterfaces array of {@link Class interfaces} for the constructed proxied {@link Object} to implement.
+   * @param proxyInterfaces array of {@link Class interfaces} for the constructed, proxied {@link Object}
+   * to implement.
    * @return a new JDK Dynamic Proxy instance.
+   * @see org.cp.elements.lang.reflect.MethodInterceptor
+   * @see #resolveInterfaces(Object, Class[])
+   * @see java.lang.ClassLoader
    */
   @Override
   @SuppressWarnings("unchecked")
@@ -122,6 +130,6 @@ public class JdkDynamicProxiesFactory<T> extends ProxyFactory<T> {
       Iterable<MethodInterceptor<T>> methodInterceptors) {
 
     return (R) Proxy.newProxyInstance(proxyClassLoader, resolveInterfaces(target, proxyInterfaces),
-      compose(methodInterceptors));
+      ComposableInvocationHandler.compose(methodInterceptors));
   }
 }
