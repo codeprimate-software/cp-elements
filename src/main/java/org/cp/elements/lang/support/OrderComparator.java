@@ -48,6 +48,6 @@ public class OrderComparator implements Comparator<Object> {
       .filter(type -> type.isAnnotationPresent(Order.class))
       .map(type -> type.getAnnotation(Order.class))
       .map(Order::value)
-      .orElse(Ordered.DEFAULT_PRIORITY);
+      .orElse(Ordered.DEFAULT);
   }
 }

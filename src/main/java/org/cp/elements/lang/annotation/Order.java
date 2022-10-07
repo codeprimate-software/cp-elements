@@ -46,10 +46,10 @@ public @interface Order {
   /**
    * Gets the {@link Object object's} declared order.
    *
-   * Declared with a {@link Ordered#DEFAULT_PRIORITY} by default.
+   * Declared with a {@link Ordered#DEFAULT} order by default.
    *
    * @return the {@link Object object's} declared order.
    */
-  int value() default Ordered.DEFAULT_PRIORITY;
+  int value() default Ordered.DEFAULT;
 
 }

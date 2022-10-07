@@ -26,9 +26,9 @@ package org.cp.elements.lang;
 @SuppressWarnings("unused")
 public interface Ordered {
 
-  int DEFAULT_PRIORITY = 0;
-  int LOWEST_PRIORITY = Integer.MAX_VALUE;
-  int HIGHEST_PRIORITY = Integer.MIN_VALUE;
+  int DEFAULT = 0;
+  int FIRST = Integer.MIN_VALUE;
+  int LAST = Integer.MAX_VALUE;
 
   /**
    * Gets the {@link Integer index} of this {@link Object} in an ordered context.

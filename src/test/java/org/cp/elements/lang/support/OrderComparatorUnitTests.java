@@ -37,37 +37,37 @@ import org.cp.elements.lang.annotation.Order;
  */
 public class OrderComparatorUnitTests {
 
-  private final HighestOrderedType high = new HighestOrderedType();
-  private final LowestOrderedType low = new LowestOrderedType();
-  private final NonOrderedType normal = new NonOrderedType();
+  private final OrderedLastType last = new OrderedLastType();
+  private final OrderedFirstType first = new OrderedFirstType();
+  private final NonOrderedType middle = new NonOrderedType();
 
   @Test
   public void compareIsCorrect() {
 
-    assertThat(OrderComparator.INSTANCE.compare(this.high, this.low)).isLessThan(0);
-    assertThat(OrderComparator.INSTANCE.compare(this.high, this.normal)).isLessThan(0);
-    assertThat(OrderComparator.INSTANCE.compare(this.normal, this.high)).isGreaterThan(0);
-    assertThat(OrderComparator.INSTANCE.compare(this.normal, this.low)).isLessThan(0);
-    assertThat(OrderComparator.INSTANCE.compare(this.low, this.high)).isGreaterThan(0);
-    assertThat(OrderComparator.INSTANCE.compare(this.low, this.normal)).isGreaterThan(0);
+    assertThat(OrderComparator.INSTANCE.compare(this.first, this.last)).isLessThan(0);
+    assertThat(OrderComparator.INSTANCE.compare(this.first, this.middle)).isLessThan(0);
+    assertThat(OrderComparator.INSTANCE.compare(this.middle, this.first)).isGreaterThan(0);
+    assertThat(OrderComparator.INSTANCE.compare(this.middle, this.last)).isLessThan(0);
+    assertThat(OrderComparator.INSTANCE.compare(this.last, this.first)).isGreaterThan(0);
+    assertThat(OrderComparator.INSTANCE.compare(this.last, this.middle)).isGreaterThan(0);
   }
 
   @Test
   public void compareWithOrderObjectsInArray() {
 
-    Object[] array = { this.normal, this.low, this.high };
+    Object[] array = { this.middle, this.last, this.first };
 
     Arrays.sort(array, OrderComparator.INSTANCE);
 
-    assertThat(array).containsExactly(this.high, this.normal, this.low);
+    assertThat(array).containsExactly(this.first, this.middle, this.last);
   }
 
-  @Order(Ordered.HIGHEST_PRIORITY)
-  static final class HighestOrderedType { }
-
-  @Order(Ordered.LOWEST_PRIORITY)
-  static final class LowestOrderedType { }
-
   static final class NonOrderedType { }
+
+  @Order(Ordered.FIRST)
+  static final class OrderedFirstType { }
+
+  @Order(Ordered.LAST)
+  static final class OrderedLastType { }
 
 }
