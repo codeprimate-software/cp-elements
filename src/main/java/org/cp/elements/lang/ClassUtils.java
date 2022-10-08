@@ -46,7 +46,7 @@ import org.cp.elements.lang.reflect.ModifierUtils;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * {@link ClassUtils} is an abstract utility class providing methods for working with {@link Class} types.
+ * Abstract utility class providing methods for processing {@link Class} types.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -70,13 +70,19 @@ public abstract class ClassUtils {
   @SuppressWarnings("rawtypes")
   public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
+  @SuppressWarnings("rawtypes")
+  public static final Constructor[] EMPTY_CONSTRUCTOR_ARRAY = new Constructor[0];
+
   public static final Field[] EMPTY_FIELD_ARRAY = new Field[0];
 
   public static final Method[] EMPTY_METHOD_ARRAY = new Method[0];
 
   public static final String CLASS_FILE_EXTENSION = ".class";
   public static final String CLONE_METHOD_NAME = "clone";
+  public static final String GETTER_METHOD_NAME_PREFIX = "get";
+  public static final String IS_METHOD_NAME_PREFIX = "is";
   public static final String MAIN_METHOD_NAME = "main";
+  public static final String SETTER_METHOD_NAME_PREFIX = "set";
 
   /**
    * Determines whether a given Class type is assignable to a declared Class type.  A given Class type is assignable to
