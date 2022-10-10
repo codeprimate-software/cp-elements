@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
-
-import static org.cp.elements.lang.reflect.MethodInvocation.newMethodInvocation;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
 /**
- * The {@link MethodInterceptor} interface is a Java {@link InvocationHandler} implementation that intercepts
- * and handles {@link Method} invocations on a Proxy for a given target {@link Object}.
+ * Java {@link InvocationHandler} implementation that intercepts and handles {@link Method} invocations
+ * on a {@literal Proxy} of a given {@link Object target}.
  *
  * @author John Blum
- * @param <T> {@link Class} type of the {@link #getTarget() target} {@link Object}.
+ * @param <T> {@link Class type} of {@link Object target}.
  * @see java.lang.Object
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
@@ -38,21 +35,21 @@ import java.util.Optional;
 public interface MethodInterceptor<T> extends InvocationHandler {
 
   /**
-   * Gets the target {@link Object} on which the {@link Method} invocation will be intercepted.
+   * Gets the {@link Object target} on which the {@link Method} invocation will be intercepted.
    *
-   * @return the target {@link Object} on which the {@link Method} invocation will be intercepted.
+   * @return {@link Object target} on which the {@link Method} invocation will be intercepted.
    * @see org.cp.elements.lang.reflect.MethodInvocation#getTarget()
    * @see java.lang.Object
    */
   T getTarget();
 
   /**
-   * Intercepts the {@link Method} identified and encapsulated in the given {@link MethodInvocation}.
+   * Intercepts the {@link Method} identified and encapsulated by the given {@link MethodInvocation}.
    *
-   * @param <R> {@link Class} type of the {@link Method} return value.
+   * @param <R> {@link Class type} of the {@link Method Method's} return value.
    * @param methodInvocation {@link MethodInvocation} encapsulating details of the intercepted {@link Method} invocation
-   * on the {@link #getTarget() target} {@link Object}.
-   * @return the result of the intercepted {@link Method} invocation wrapped in an {@link Optional}
+   * on the {@link Object target}.
+   * @return the result of the intercepted {@link Method} invocation wrapped in an {@link Optional} instance
    * to guard against {@literal null}.
    * @see org.cp.elements.lang.reflect.MethodInvocation
    * @see #invoke(Object, Method, Object[])
@@ -62,22 +59,23 @@ public interface MethodInterceptor<T> extends InvocationHandler {
   <R> Optional<R> intercept(MethodInvocation methodInvocation);
 
   /**
-   * Invokes the given {@link Method} with the array of {@link Object} arguments.
+   * Invokes the given {@link Method} with the given array of {@link Object} arguments.
    *
-   * @param proxy {@link Object Proxy} on which the {@link Method} was invoked to intercept the {@link Method} call.
+   * @param proxy {@link Object Proxy} on which the {@link Method} was invoked, intercepting the {@link Method} call.
    * @param method {@link Method} to invoke.
-   * @param args array of {@link Object} arguments to pass to the {@link Method} invocation.
-   * @return the return value of the {@link Method} invocation, or {@literal null}
+   * @param args array of {@link Object} arguments passed to the {@link Method} invocation.
+   * @return the {@link Object return value} from the {@link Method} invocation, or {@literal null}
    * if the {@link Method} does not return a value.
    * @throws Throwable if the {@link Method} invocation fails.
    * @see org.cp.elements.lang.reflect.MethodInvocation#newMethodInvocation(Object, Method, Object...)
    * @see #intercept(MethodInvocation)
-   * @see #getTarget()
    * @see java.lang.reflect.Method
    * @see java.lang.Object
+   * @see #getTarget()
    */
   @Override
   default Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-    return intercept(newMethodInvocation(getTarget(), method, args)).orElse(null);
+    return intercept(MethodInvocation.newMethodInvocation(getTarget(), method, args))
+      .orElse(null);
   }
 }
