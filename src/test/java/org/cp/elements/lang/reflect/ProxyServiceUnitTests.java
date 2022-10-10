@@ -16,12 +16,22 @@
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 import org.junit.Test;
 
 import org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory;
+import org.cp.elements.util.ArrayUtils;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,6 +43,7 @@ import lombok.ToString;
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @see org.cp.elements.lang.reflect.ProxyService
  * @see org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory
@@ -67,6 +78,61 @@ public class ProxyServiceUnitTests {
   @Test
   public void canProxyInterface() {
     assertThat(ProxyService.newProxyService().canProxy(new Object(), ContactRepository.class)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void findFirstProxyFactoryIsSuccessful() {
+
+    ProxyFactory<Object> mockProxyFactoryOne = mock(ProxyFactory.class);
+    ProxyFactory<Object> mockProxyFactoryTwo = mock(ProxyFactory.class);
+
+    doReturn(false).when(mockProxyFactoryOne).canProxy(any(), any());
+    doReturn(true).when(mockProxyFactoryTwo).canProxy(any(), any());
+
+    ProxyService<Object> proxyService = spy(ProxyService.newProxyService());
+
+    doReturn(ArrayUtils.asIterable(mockProxyFactoryOne, mockProxyFactoryTwo).spliterator())
+      .when(proxyService).spliterator();
+
+    Optional<ProxyFactory<Object>> proxyFactory = proxyService.findFirstProxyFactory(null, Runnable.class);
+
+    assertThat(proxyFactory).isNotNull();
+    assertThat(proxyFactory).isNotEmpty();
+    assertThat(proxyFactory.orElse(null)).isEqualTo(mockProxyFactoryTwo);
+
+    verify(proxyService, times(1)).findFirstProxyFactory(eq(null), eq(Runnable.class));
+    verify(proxyService, times(1)).spliterator();
+    verify(mockProxyFactoryOne, times(1)).canProxy(eq(null), eq(Runnable.class));
+    verify(mockProxyFactoryTwo, times(1)).canProxy(eq(null), eq(Runnable.class));
+    verifyNoMoreInteractions(mockProxyFactoryOne, mockProxyFactoryTwo, proxyService);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void findsNoProxyFactory() {
+
+    ProxyFactory<Object> mockProxyFactoryOne = mock(ProxyFactory.class);
+    ProxyFactory<Object> mockProxyFactoryTwo = mock(ProxyFactory.class);
+
+    doReturn(false).when(mockProxyFactoryOne).canProxy(any(), any());
+    doReturn(false).when(mockProxyFactoryTwo).canProxy(any(), any());
+
+    ProxyService<Object> proxyService = spy(ProxyService.newProxyService());
+
+    doReturn(ArrayUtils.asIterable(mockProxyFactoryOne, mockProxyFactoryTwo).spliterator())
+      .when(proxyService).spliterator();
+
+    Optional<ProxyFactory<Object>> proxyFactory = proxyService.findFirstProxyFactory(null, Runnable.class);
+
+    assertThat(proxyFactory).isNotNull();
+    assertThat(proxyFactory).isEmpty();
+
+    verify(proxyService, times(1)).findFirstProxyFactory(eq(null), eq(Runnable.class));
+    verify(proxyService, times(1)).spliterator();
+    verify(mockProxyFactoryOne, times(1)).canProxy(eq(null), eq(Runnable.class));
+    verify(mockProxyFactoryTwo, times(1)).canProxy(eq(null), eq(Runnable.class));
+    verifyNoMoreInteractions(mockProxyFactoryOne, mockProxyFactoryTwo, proxyService);
   }
 
   @Test

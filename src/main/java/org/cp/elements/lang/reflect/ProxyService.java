@@ -16,8 +16,11 @@
 package org.cp.elements.lang.reflect;
 
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.ServiceTemplate;
@@ -85,6 +88,28 @@ public final class ProxyService<T> implements Iterable<ProxyFactory>, ServiceTem
   @SuppressWarnings("unchecked")
   public boolean canProxy(Object target, Class<?>... proxyInterfaces) {
     return StreamUtils.stream(this).anyMatch(proxyFactory -> proxyFactory.canProxy(target, proxyInterfaces));
+  }
+
+  /**
+   * Finds the first {@link ProxyFactory} aggregated by this {@link ProxyService} that is capable of proxying
+   * the given {@link Object target} with the given array of {@link Class interfaces}.
+   *
+   * @param target {@link Object} to proxy; may be {@literal null}.
+   * @param interfaces array of {@link Class interfaces} to be implemented by the {@literal Proxy} object.
+   * @return the first, {@link Optional} {@link ProxyFactory} capable of proxying  the given {@link Object target}
+   * with the given array of {@link Class interfaces}.
+   * @see org.cp.elements.lang.reflect.ProxyFactory#canProxy(Object, Class[])
+   * @see org.cp.elements.lang.reflect.ProxyFactory
+   * @see java.util.Optional
+   */
+  @SuppressWarnings("unchecked")
+  public Optional<ProxyFactory<T>> findFirstProxyFactory(Object target, Class<?>... interfaces) {
+
+    return StreamSupport.stream(this.spliterator(), false)
+      .filter(Objects::nonNull)
+      .filter(proxyFactory -> proxyFactory.canProxy(target, interfaces))
+      .map(proxyFactory -> (ProxyFactory<T>) proxyFactory)
+      .findFirst();
   }
 
   /**
