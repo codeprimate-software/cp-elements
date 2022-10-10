@@ -27,8 +27,9 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
+
+import org.cp.elements.test.TestUtils;
 
 /**
  * Unit Tests for {@link MethodInvocation}.
@@ -43,7 +44,7 @@ import org.junit.Test;
  */
 public class MethodInvocationTests {
 
-  private Object target = new Object();
+  private final Object target = new Object();
 
   @Test
   public void newMethodInvocationWithMethodAndArguments() throws NoSuchMethodException {
@@ -96,7 +97,7 @@ public class MethodInvocationTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> newMethodInvocation((Class<?>) null, "testMethod", "argOne", "argTwo"),
-        () -> "Class type cannot be null");
+        () -> "Class type is required");
   }
 
   @Test
@@ -119,7 +120,7 @@ public class MethodInvocationTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> newMethodInvocation((Object) null, "mockMethod", "argOne", "argTwo"),
-        () -> "Target object cannot be null");
+        () -> "Target object is required");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -127,7 +128,7 @@ public class MethodInvocationTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> new MethodInvocation(target, null, "argOne", "argTwo"),
-        () -> "Method cannot be null");
+        () -> "Method is required");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -177,7 +178,7 @@ public class MethodInvocationTests {
 
     TestUtils.doIllegalArgumentExceptionThrowingOperation(
       () -> methodInvocation.validateArguments(null, "argOne", "argTwo"),
-        () -> "Method cannot be null");
+        () -> "Method is required");
   }
 
   @Test(expected = IllegalArgumentException.class)

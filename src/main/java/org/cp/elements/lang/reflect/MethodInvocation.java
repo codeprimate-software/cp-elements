@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.reflect;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,7 +24,10 @@ import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The {@link MethodInvocation} class encapsulates all the necessary information to invoke a {@link Method}
@@ -54,7 +55,7 @@ public class MethodInvocation {
    * @see #newMethodInvocation(Object, Method, Object...)
    * @see java.lang.reflect.Method
    */
-  public static MethodInvocation newMethodInvocation(Method method, Object... args) {
+  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Method method, Object... args) {
     return newMethodInvocation(null, method, args);
   }
 
@@ -75,13 +76,13 @@ public class MethodInvocation {
    * @see java.lang.reflect.Method
    * @see java.lang.Object
    */
-  public static MethodInvocation newMethodInvocation(Object target, Method method, Object... args) {
+  public static @NotNull MethodInvocation newMethodInvocation(Object target, @NotNull Method method, Object... args) {
     return new MethodInvocation(target, method, args);
   }
 
   /**
-   * Factory method used to construct an instance of {@link MethodInvocation} initialized with  the given
-   * {@link Class type} on which the {@code methodName named} {@link Method} accepting the given
+   * Factory method used to construct a new instance of {@link MethodInvocation} initialized with the given,
+   * required {@link Class type} on which the {@code methodName named} {@link Method} accepting the given
    * array of {@link Object arguments} is declared.
    *
    * The {@link String named} {@link Method} is expected to be a {@link java.lang.reflect.Modifier#STATIC},
@@ -96,8 +97,9 @@ public class MethodInvocation {
    * @see #MethodInvocation(Object, Method, Object...)
    * @see java.lang.Class
    */
-  public static MethodInvocation newMethodInvocation(Class<?> type, String methodName, Object... args) {
-    Assert.notNull(type, "Class type cannot be null");
+  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Class<?> type, String methodName, Object... args) {
+
+    Assert.notNull(type, "Class type is required");
 
     return new MethodInvocation(null, ClassUtils.findMethod(type, methodName, args), args);
   }
@@ -119,8 +121,9 @@ public class MethodInvocation {
    * @see #MethodInvocation(Object, Method, Object...)
    * @see java.lang.Object
    */
-  public static MethodInvocation newMethodInvocation(Object target, String methodName, Object... args) {
-    Assert.notNull(target, "Target object cannot be null");
+  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Object target, String methodName, Object... args) {
+
+    Assert.notNull(target, "Target object is required");
 
     return new MethodInvocation(target, ClassUtils.findMethod(target.getClass(), methodName, args), args);
   }
@@ -132,21 +135,22 @@ public class MethodInvocation {
   private Object[] arguments;
 
   /**
-   * Constructs an instance of {@link MethodInvocation} initialized with the given {@link Object target}
-   * on which the given {@link Method} will invoked, passing the given array of {@link Object arguments}
+   * Constructs a new instance of {@link MethodInvocation} initialized with the given {@link Object target}
+   * on which the given {@link Method} will be invoked, passing the given array of {@link Object arguments}
    * to the {@link Method} during invocation.
    *
    * @param target {@link Object} on which the given {@link Method} is invoked.
-   * @param method {@link Method} to invoke.
+   * @param method {@link Method} to invoke; must not be {@literal null}.
    * @param args array of {@link Object arguments} passed to the {@link Method}.
-   * @throws IllegalArgumentException if {@link Method} is {@literal null}, or {@link Object target} is {@literal null}
-   * and the {@link Method} is not {@link java.lang.reflect.Modifier#STATIC}.
+   * @throws IllegalArgumentException if the {@link Method} is {@literal null}, or {@link Object target}
+   * is {@literal null} and the {@link Method} is not {@link java.lang.reflect.Modifier#STATIC}.
    * @see #validateArguments(Method, Object...)
    * @see java.lang.reflect.Method
    * @see java.lang.Object
    */
-  public MethodInvocation(Object target, Method method, Object... args) {
-    Assert.notNull(method, "Method cannot be null");
+  public MethodInvocation(@Nullable Object target, @NotNull Method method, Object... args) {
+
+    Assert.notNull(method, "Method is required");
 
     Assert.isTrue(target != null || ModifierUtils.isStatic(method),
       "Method must be static if target is null");
@@ -168,10 +172,11 @@ public class MethodInvocation {
    * of the corresponding {@link Method} parameter.
    * @see java.lang.reflect.Method
    */
-  protected Object[] validateArguments(Method method, Object... args) {
-    Assert.notNull(method, "Method cannot be null");
+  protected Object[] validateArguments(@NotNull Method method, Object... args) {
 
-    Object[] arguments = nullSafeArray(args);
+    Assert.notNull(method, "Method is required");
+
+    Object[] arguments = ArrayUtils.nullSafeArray(args);
 
     int methodParameterCount = method.getParameterCount();
 
@@ -203,7 +208,7 @@ public class MethodInvocation {
    */
   @NullSafe
   public Object[] getArguments() {
-    return nullSafeArray(this.arguments);
+    return ArrayUtils.nullSafeArray(this.arguments);
   }
 
   /**
@@ -214,7 +219,7 @@ public class MethodInvocation {
    * @see #getMethod()
    */
   @NullSafe
-  public Class<?> getDeclaringClass() {
+  public @NotNull Class<?> getDeclaringClass() {
     return getMethod().getDeclaringClass();
   }
 
@@ -224,7 +229,7 @@ public class MethodInvocation {
    * @return the target {@link Method} for this invocation.
    * @see java.lang.reflect.Method
    */
-  public Method getMethod() {
+  public @NotNull Method getMethod() {
     return this.method;
   }
 
@@ -234,7 +239,7 @@ public class MethodInvocation {
    * @return the configured target {@link Object} on which the {@link Method} will be invoked.
    * @see java.lang.Object
    */
-  public Object getTarget() {
+  public @Nullable Object getTarget() {
     return this.target;
   }
 
@@ -269,7 +274,9 @@ public class MethodInvocation {
    */
   @SuppressWarnings("unchecked")
   public <T> Optional<T> invoke(Object target) {
+
     Object resolvedTarget = resolveTarget(target);
+
     Method method = getMethod();
 
     try {
@@ -318,6 +325,7 @@ public class MethodInvocation {
    * @see #getMethod()
    */
   public MethodInvocation on(Object target) {
+
     Assert.isTrue(target != null || ModifierUtils.isStatic(getMethod()),
       "Method must be static if target is null");
 
