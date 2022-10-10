@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,12 +30,13 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.cp.elements.lang.Constants;
-import org.cp.elements.lang.Registry;
 import org.junit.Test;
 
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.Registry;
+
 /**
- * Unit tests for {@link ConversionService}.
+ * Unit Tests for {@link ConversionService}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -45,6 +45,15 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class ConversionServiceTests {
+
+  @Test
+  public void getLoaderReturnsSingleInstance() {
+
+    ConversionService.Loader conversionServiceLoader = ConversionService.getLoader();
+
+    assertThat(conversionServiceLoader).isNotNull();
+    assertThat(conversionServiceLoader).isSameAs(ConversionService.getLoader());
+  }
 
   @Test
   public void canConvertObjectReturnsTrue() {

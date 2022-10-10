@@ -15,9 +15,12 @@
  */
 package org.cp.elements.data.conversion;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.service.ServiceTemplate;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.annotation.Service;
+import org.cp.elements.service.loader.ServiceLoaderSupport;
 
 /**
  * The {@link ConversionService} interface defines a contract for application {@link Service} components
@@ -27,13 +30,27 @@ import org.cp.elements.service.annotation.Service;
  * @see org.cp.elements.data.conversion.AbstractConversionService
  * @see org.cp.elements.data.conversion.Converter
  * @see org.cp.elements.data.conversion.ConverterRegistry
- * @see org.cp.elements.service.ServiceTemplate
  * @see org.cp.elements.service.annotation.Service
+ * @see org.cp.elements.service.loader.ServiceLoaderSupport
  * @since 1.0.0
  */
 @Service
 @SuppressWarnings("unused")
-public interface ConversionService extends ConverterRegistry, ServiceTemplate<ConversionService> {
+public interface ConversionService extends ConverterRegistry {
+
+  AtomicReference<Loader> LOADER_REFERENCE = new AtomicReference<>(null);
+
+  /**
+   * Gets a reference to the {@link ConversionService.Loader} used to load
+   * the {@literal Service Provider Implementation (SPI)} of this {@link ConversionService}.
+   *
+   * @return a reference to the {@link ConversionService.Loader} used to load
+   * the {@literal Service Provider Implementation (SPI)} of this {@link ConversionService}.
+   * @see org.cp.elements.data.conversion.ConversionService.Loader
+   */
+  static @NotNull ConversionService.Loader getLoader() {
+    return LOADER_REFERENCE.updateAndGet(it -> it != null ? it : new ConversionService.Loader() { });
+  }
 
   /**
    * Determines whether this {@link ConversionService} can convert the given {@link Object}
@@ -86,4 +103,17 @@ public interface ConversionService extends ConverterRegistry, ServiceTemplate<Co
    */
   <T> T convert(Object value, Class<T> toType);
 
+  /**
+   * {@link ServiceLoaderSupport} implementation used to load the {@link ConversionService}
+   * provider implementation (SPI).
+   *
+   * @see org.cp.elements.service.loader.ServiceLoaderSupport
+   */
+  interface Loader extends ServiceLoaderSupport<ConversionService> {
+
+    @Override
+    default Class<ConversionService> getType() {
+      return ConversionService.class;
+    }
+  }
 }
