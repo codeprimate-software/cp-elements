@@ -55,6 +55,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
@@ -63,8 +65,6 @@ import org.cp.elements.lang.reflect.ReflectionUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
-
-import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -124,7 +124,51 @@ public class ClassUtilsUnitTests extends AbstractBaseTestSuite {
   }
 
   @Test
-  public void getCla$$() {
+  public void castNullToInstantIsSafe() {
+
+    Instant value = ClassUtils.castTo(null, Instant.class);
+
+    assertThat(value).isNull();
+  }
+
+  @Test
+  public void castObjectToIntegerIsCorrect() {
+
+    Object target = 2;
+    Integer number = ClassUtils.castTo(target, Integer.class);
+
+    assertThat(number).isEqualTo(target);
+  }
+
+  @Test
+  public void castObjectToStringIsCorrect() {
+
+    Object target = "test";
+    String value = ClassUtils.castTo(target, String.class);
+
+    assertThat(value).isEqualTo(target);
+  }
+
+  @Test
+  public void castValueToInvalidTypeThrowsIllegalArgumentException() {
+
+    assertThatExceptionOfType(IllegalTypeException.class)
+      .isThrownBy(() -> ClassUtils.castTo("test", Integer.class))
+      .withMessage("Object [test] is not an instance of Class [java.lang.Integer]")
+      .withNoCause();
+  }
+
+  @Test
+  public void castToWithNullTypeThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ClassUtils.castTo("test", null))
+      .withMessage("The Class type used to cast is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void getClassIsCorrect() {
 
     assertEquals(Object.class, ClassUtils.getClass(new Object()));
     assertEquals(Boolean.class, ClassUtils.getClass(true));

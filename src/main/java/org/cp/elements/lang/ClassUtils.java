@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newIllegalTypeException;
 import static org.cp.elements.lang.ObjectUtils.safeGetValue;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.util.stream.StreamUtils.stream;
@@ -99,6 +100,28 @@ public abstract class ClassUtils {
   @NullSafe
   public static boolean assignableTo(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
     return (toType != null && (fromType == null || toType.isAssignableFrom(fromType)));
+  }
+
+  /**
+   * Casts the given {@link Object} to the given, required {@link Class type}.
+   *
+   * It is safe to cast {@literal null} to an instance of the give, required {@link Class type}.
+   *
+   * @param <T> {@link Class type} of the cast.
+   * @param target {@link Object} to cast as an instance of the given, required {@link Class type}.
+   * @param type {@link Class} used to cast the {@link Object} to; must not be {@literal null}.
+   * @return the given {@link Object} cast to an instance of the given, required {@link Class type}.
+   * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+   * @throws IllegalTypeException if the {@link Object} has value and is not an instance of {@link Class type}.
+   */
+  public static @Nullable <T> T castTo(@Nullable Object target, @NotNull Class<T> type) {
+
+    Assert.notNull(type, "The Class type used to cast is required");
+
+    Assert.isTrue(target == null || type.isInstance(target),
+      newIllegalTypeException("Object [%s] is not an instance of Class [%s]", target, getName(type)));
+
+    return type.cast(target);
   }
 
   /**
