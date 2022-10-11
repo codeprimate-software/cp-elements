@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.function.Supplier;
 
 import org.junit.After;
@@ -99,18 +98,8 @@ public class AbstractConfigurationUnitTests {
     this.configurationProperties = null;
   }
 
-  ConversionService loadConversionService() {
-
-    ServiceLoader<ConversionService> serviceLoader = ServiceLoader.load(ConversionService.class);
-
-    assertThat(serviceLoader).isNotNull();
-
-    Iterator<ConversionService> iterator = serviceLoader.iterator();
-
-    assertThat(iterator).isNotNull();
-    assertThat(iterator).hasNext();
-
-    return iterator.next();
+  private ConversionService loadConversionService() {
+    return ConversionService.getLoader().getServiceInstance();
   }
 
   @Test
@@ -437,7 +426,7 @@ public class AbstractConfigurationUnitTests {
 
     Properties customConfigurationProperties = new Properties();
 
-    customConfigurationProperties.setProperty("os.user.admin", "root");
+    customConfigurationProperties.setProperty("system.os.user.admin", "root");
 
     AbstractConfiguration configuration = new TestConfiguration(customConfigurationProperties);
 
@@ -445,7 +434,7 @@ public class AbstractConfigurationUnitTests {
 
     assertThat(configuration.getConversionService()).isInstanceOf(TestConversionService.class);
 
-    User root = configuration.getPropertyValueAs("os.user.admin", User.class);
+    User root = configuration.getPropertyValueAs("system.os.user.admin", User.class);
 
     assertThat(root).isNotNull();
     assertThat(root.getName()).isEqualTo("root");
@@ -507,6 +496,24 @@ public class AbstractConfigurationUnitTests {
 
     assertThat(configuration.getConversionService()).isInstanceOf(TestConversionService.class);
     assertThat(configuration.getPropertyValueAs("jdbc.username", User.class, false)).isNull();
+  }
+
+  @Test
+  public void getNonRequiredPropertyValueAsIllegalTypeThrowsException() {
+
+    AbstractConfiguration configuration = new TestConfiguration(this.configurationProperties);
+
+    this.configurationProperties.setProperty("jdbc.connection.max", "ten");
+
+    configuration.setConversionService(loadConversionService());
+
+    assertThat(configuration.getConversionService()).isNotNull();
+
+    assertThatThrowableOfType(ConfigurationException.class)
+      .isThrownBy(args -> configuration.getPropertyValueAs("jdbc.connection.max", Integer.class, false))
+      .causedBy(ConversionException.class)
+      .havingMessage("[ten] is not a valid number of the qualifying type [java.lang.Integer]")
+      .withNoCause();
   }
 
   @Test

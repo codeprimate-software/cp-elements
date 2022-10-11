@@ -289,7 +289,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    * @return the value of the configuration property identified by the given {@link String name}
    * as a {@link T value} of the specified {@link Class type T}.
    * @throws ConfigurationException if the configuration property is required and the property
-   * is undeclared or undefined.
+   * is undeclared or undefined of a {@link ConversionException} occurs while converting
+   * the {@link String property value} into an instance of {@link Class type T}.
    * @see #getPropertyValue(String, boolean)
    * @see #convert(String, Class)
    */
@@ -304,7 +305,9 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     }
     catch (ConversionException cause) {
 
-      if (required) {
+      boolean throwConfigurationException = required || StringUtils.hasText(propertyValue);
+
+      if (throwConfigurationException) {
         String message = "Failed to get value [%1$s] of configuration property [%2$s] as an instance of type [%3$s]";
         throw newConfigurationException(cause, message, propertyValue, propertyName, ClassUtils.getName(type));
       }
