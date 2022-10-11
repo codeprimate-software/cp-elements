@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,16 +45,17 @@ import org.cp.elements.util.stream.StreamUtils;
 public abstract class ProxyFactory<T> {
 
   /**
-   * Returns a reference to a {@link ProxyFactory} service provider implementation provided by Elements that delegates
-   * all proxy operations to any/all application configured {@link ProxyFactory} service provider implementations.
+   * Returns a reference to a {@link ProxyFactory} Service Provider Implementation (SPI) provided by Elements
+   * that delegates all proxy operations to any and all application configured {@link ProxyFactory}
+   * Service Provider Implementations (SPI).
    *
-   * @param <T> {@link Class} type of the {@link Object} to proxy.
-   * @return a reference to the Elements-defined {@link ProxyFactory} service provider implementation.
+   * @param <T> {@link Class type} of the {@link Object} to proxy.
+   * @return a reference to the Elements-defined {@link ProxyFactory} Service Provider Implementation (SPI).
    * @see org.cp.elements.lang.reflect.ProxyFactory
    * @see org.cp.elements.lang.reflect.ProxyService
    */
   @SuppressWarnings("all")
-  protected static <T> ProxyFactory<T> newProxyFactory() {
+  protected static @NotNull <T> ProxyFactory<T> newProxyFactory() {
 
     return new ProxyFactory<T>() {
 
@@ -64,7 +66,7 @@ public abstract class ProxyFactory<T> {
 
       @Override
       @SuppressWarnings("unchecked")
-      public <R> R newProxy(ClassLoader proxyClassLoader, T target, Class<?>[] proxyInterfaces,
+      protected <R> R newProxy(ClassLoader proxyClassLoader, T target, Class<?>[] proxyInterfaces,
           Iterable<MethodInterceptor<T>> methodInterceptors) {
 
         return (R) StreamUtils.stream(ProxyService.newProxyService())
@@ -78,19 +80,19 @@ public abstract class ProxyFactory<T> {
   }
 
   /**
-   * Factory method used to constract a new instance of {@link ProxyFactory} that will be used to create a proxy
-   * for the given {@link Object} implementing the given array of {@link Class interfaces}.
+   * Factory method used to construct a new instance of {@link ProxyFactory} that will be used to
+   * create a {@literal Proxy} for the given {@link Object} implementing the given array of {@link Class interfaces}.
    *
-   * @param <T> {@link Class} type of the {@link Object} to proxy.
+   * @param <T> {@link Class type} of the {@link Object} to proxy.
    * @param target {@link Object} to proxy.
-   * @param proxyInterfaces array of {@link Class interfaces} to be implemented by the Proxy.
-   * @return a new instance of the Elements-defined {@link ProxyFactory} service provider implementation
-   * used to create a proxy for the given target {@link Object}.
+   * @param proxyInterfaces array of {@link Class interfaces} implemented by the {@literal Proxy}.
+   * @return a new instance of the Elements-defined {@link ProxyFactory} Service Provider Implementation (SPI)
+   * used to create a {@literal Proxy} for the given {@link Object target}.
    * @see #newProxyFactory()
-   * @see #proxy(Object)
    * @see #implementing(Class[])
+   * @see #proxy(Object)
    */
-  public static <T> ProxyFactory<T> newProxyFactory(@Nullable T target, Class<?>... proxyInterfaces) {
+  public static @NotNull <T> ProxyFactory<T> newProxyFactory(@Nullable T target, Class<?>... proxyInterfaces) {
 
     return ProxyFactory.<T>newProxyFactory()
       .proxy(target)
@@ -125,7 +127,7 @@ public abstract class ProxyFactory<T> {
 
   private ClassLoader proxyClassLoader;
 
-  private final List<MethodInterceptor<T>> methodInterceptors = new ArrayList<>();
+  private List<MethodInterceptor<T>> methodInterceptors = Collections.emptyList();
 
   private T target;
 
@@ -172,8 +174,7 @@ public abstract class ProxyFactory<T> {
 
     ClassLoader proxyClassLoader = this.proxyClassLoader;
 
-    return proxyClassLoader != null ? proxyClassLoader :
-      Thread.currentThread().getContextClassLoader();
+    return proxyClassLoader != null ? proxyClassLoader : Thread.currentThread().getContextClassLoader();
   }
 
   /**
@@ -213,6 +214,7 @@ public abstract class ProxyFactory<T> {
   @NullSafe
   @SuppressWarnings("unchecked")
   public @NotNull ProxyFactory<T> adviseWith(MethodInterceptor<T>... methodInterceptors) {
+    this.methodInterceptors = new ArrayList<>(ArrayUtils.nullSafeLength(methodInterceptors));
     Collections.addAll(this.methodInterceptors, ArrayUtils.nullSafeArray(methodInterceptors, MethodInterceptor.class));
     return this;
   }
@@ -227,7 +229,11 @@ public abstract class ProxyFactory<T> {
    * @see #getProxyInterfaces()
    */
   public @NotNull ProxyFactory<T> implementing(Class<?>... proxyInterfaces) {
-    this.proxyInterfaces = proxyInterfaces;
+
+    this.proxyInterfaces = Arrays.stream(ArrayUtils.nullSafeArray(proxyInterfaces, Class.class))
+      .filter(Objects::nonNull)
+      .toArray(Class[]::new);
+
     return this;
   }
 
