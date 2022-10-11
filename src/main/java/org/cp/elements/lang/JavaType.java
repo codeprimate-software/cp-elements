@@ -15,19 +15,17 @@
  */
 package org.cp.elements.lang;
 
-import static org.cp.elements.lang.ClassUtils.assignableTo;
-import static org.cp.elements.lang.ClassUtils.getName;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newTypeNotFoundException;
-import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The {@link JavaType} enum represents various Java {@link Class} types.
+ * The {@link JavaType} enum is an enumeration of various Java {@link Class types}.
  *
  * @author John Blum
  * @see java.lang.Class
@@ -58,71 +56,86 @@ public enum JavaType {
   SHORT_TYPE(Short.TYPE),
   STRING(String.class),
   THREAD(Thread.class),
-  THROWABLE(Throwable.class);
+  THROWABLE(Throwable.class),
+  URI(java.net.URI.class),
+  URL(java.net.URL.class),
+  CLOCK(java.time.Clock.class),
+  DURATION(java.time.Duration.class),
+  INSTANT(java.time.Instant.class),
+  LOCAL_DATE(java.time.LocalDate.class),
+  LOCAL_DATE_TIME(java.time.LocalDateTime.class),
+  LOCAL_TIME(java.time.LocalTime.class),
+  MONTH_DAY(java.time.MonthDay.class),
+  OFFSET_DATE_TIME(java.time.OffsetDateTime.class),
+  OFFSET_TIME(java.time.OffsetTime.class),
+  PERIOD(java.time.Period.class),
+  YEAR(java.time.Year.class),
+  YEAR_MONTH(java.time.YearMonth.class),
+  ZONED_DATE_TIME(java.time.ZonedDateTime.class),
+  ZONED_ID(java.time.ZoneId.class),
+  ZONED_OFFSET(java.time.ZoneOffset.class);
 
   /**
    * Determines whether the given {@link Object} is a {@link JavaType}.
    *
-   * @param obj {@link Object} to evaluate as a {@link JavaType}.
+   * @param target {@link Object} to evaluate as a {@link JavaType}.
    * @return a boolean value indicating whether the given {@link Object} is an instance of a {@link JavaType}.
    * @see java.lang.Class#isInstance(Object)
    * @see java.lang.Object
    * @see #values()
-   * @see #getType()
    */
-  public static boolean isJavaType(@Nullable Object obj) {
-    return stream(values()).anyMatch(javaType -> javaType.getType().isInstance(obj));
+  public static boolean isJavaType(@Nullable Object target) {
+    return StreamUtils.stream(values()).anyMatch(javaType -> javaType.getType().isInstance(target));
   }
 
   /**
-   * Determines whether the given {@link Class} type is a {@link JavaType}.
+   * Determines whether the given {@link Class type} is a {@link JavaType}.
    *
    * @param type {@link Class} to evaluate as a {@link JavaType}.
-   * @return a boolean value indicating whether the given {@link Class} type is a {@link JavaType}.
+   * @return a boolean value indicating whether the given {@link Class type} is a {@link JavaType}.
    * @see org.cp.elements.lang.ClassUtils#assignableTo(Class, Class)
    * @see java.lang.Class
    * @see #values()
    */
   public static boolean isJavaType(@Nullable Class<?> type) {
-    return stream(values()).anyMatch(javaType -> type != null && assignableTo(type, javaType.getType()));
+
+    return StreamUtils.stream(values())
+      .anyMatch(javaType -> type != null && ClassUtils.assignableTo(type, javaType.getType()));
   }
 
   /**
-   * Returns a {@link JavaType} enumerated value for the given {@link Class} type.
+   * Factory method used to return a {@link JavaType} enumerated value for the given {@link Class type}.
    *
    * @param type {@link Class} of the {@link JavaType} to return.
-   * @return a {@link JavaType} enumerated value for the given {@link Class} type.
-   * @throws TypeNotFoundException if no {@link JavaType} matches the given {@link Class} type.
+   * @return a {@link JavaType} enumerated value for the given {@link Class type}.
+   * @throws TypeNotFoundException if no {@link JavaType} matches the given {@link Class type}.
    * @see java.lang.Class
    */
   public static @NotNull JavaType valueOf(@Nullable Class<?> type) {
 
-    return stream(values())
+    return StreamUtils.stream(values())
       .filter(javaType -> javaType.getType().equals(type))
       .findFirst()
-      .orElseThrow(() -> newTypeNotFoundException("No JavaType found for class type [%s]", getName(type)));
+      .orElseThrow(() -> newTypeNotFoundException("No JavaType found for class type [%s]", ClassUtils.getName(type)));
   }
 
   private final Class<?> type;
 
   /**
    * Constructs a new instance of the {@link JavaType} enumerated value initialized with
-   * the given Java {@link Class} type.
+   * the given Java {@link Class type}.
    *
-   * @param type {@link Class} representing a Java {@link Class Type}.
+   * @param type {@link Class} representing the Java {@link Class type}.
    * @see java.lang.Class
    */
   JavaType(@NotNull Class<?> type) {
-
-    Assert.notNull(type, "Class type cannot be null");
-
-    this.type = type;
+    this.type = ObjectUtils.requireObject(type, "Class type is required");
   }
 
   /**
-   * Return the actual {@link Class} type of the {@link JavaType} enumerated value.
+   * Return the actual Java {@link Class type} of the {@link JavaType} enumerated value.
    *
-   * @return the actual {@link Class} type of the {@link JavaType} enumerated value.
+   * @return the actual Java {@link Class type} of the {@link JavaType} enumerated value.
    * @see java.lang.Class
    */
   public @NotNull Class<?> getType() {
@@ -132,11 +145,11 @@ public enum JavaType {
   /**
    * Returns a {@link String} representation (view) of this {@link JavaType}.
    *
-   * @return a {@link String} snapshot containing the current state of this {@link JavaType}.
+   * @return a {@link String} describing this {@link JavaType}.
    * @see java.lang.Object#toString()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return getType().getName();
   }
 }
