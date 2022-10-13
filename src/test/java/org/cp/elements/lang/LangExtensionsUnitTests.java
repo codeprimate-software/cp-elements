@@ -16,12 +16,16 @@
 package org.cp.elements.lang;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.LangExtensions.$;
 import static org.cp.elements.lang.LangExtensions.AssertThat;
 import static org.cp.elements.lang.LangExtensions.AssertThatWrapper;
 import static org.cp.elements.lang.LangExtensions.Is;
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.LangExtensions.from;
 import static org.cp.elements.lang.LangExtensions.is;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 import static org.cp.elements.util.CollectionUtils.nullSafeList;
 import static org.junit.Assert.assertFalse;
@@ -49,11 +53,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.assertj.core.api.Assertions;
+import org.junit.Test;
+
+import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
-import org.junit.Test;
+
+import org.assertj.core.api.Assertions;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -2183,6 +2190,108 @@ public class LangExtensionsUnitTests {
       verify(assertThat, never()).isLessThanOrGreaterThan(eq(3), eq(1));
       verifyNoMoreInteractions(assertThat);
     }
+  }
+
+  @Test
+  public void fromObjectCastToInteger() {
+
+    Object target = 2;
+    Integer result = from(target).castTo(Integer.class);
+
+    assertThat(result).isEqualTo(2);
+  }
+
+  @Test
+  public void fromObjectCastToString() {
+
+    Object target = "test";
+    String result = from(target).castTo(String.class);
+
+    assertThat(result).isEqualTo("test");
+  }
+
+  @Test
+  public void fromObjectToCastIncompatibleType() {
+
+    assertThatExceptionOfType(IllegalTypeException.class)
+      .isThrownBy(() -> from("mock").castTo(Integer.class))
+      .withMessage("Object [mock] is not an instance of Class [java.lang.Integer]")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromObjectCastToNullType() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> from(2).castTo(null))
+      .withMessage("The Class type used to cast is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNullConvertToNumberType() {
+
+    assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> from(null).convertTo(Byte.class))
+      .havingMessage("Cannot convert [null] into a Byte")
+      .causedBy(NumberFormatException.class)
+      .withNoCause();
+  }
+
+  @Test
+  public void fromNullConvertToStringIsNullSafe() {
+    assertThat(from(null).convertTo(String.class)).isEqualTo("null");
+  }
+
+  @Test
+  public void fromObjectConvertToNumber() {
+
+    assertThat(from("2").convertTo(Integer.class)).isEqualTo(2);
+    assertThat(from("3.14159").convertTo(Double.class)).isEqualTo(3.14159d);
+  }
+
+  @Test
+  public void fromObjectConvertToString() {
+
+    assertThat(from(true).convertTo(String.class)).isEqualTo("true");
+    assertThat(from('x').convertTo(String.class)).isEqualTo("x");
+    assertThat(from(2).convertTo(String.class)).isEqualTo("2");
+    assertThat(from(3.14159d).convertTo(String.class)).isEqualTo("3.14159");
+    assertThat(from("test").convertTo(String.class)).isEqualTo("test");
+  }
+
+  @Test
+  public void fromObjectConvertToIncompatibleType() {
+
+    assertThatThrowableOfType(ConversionException.class)
+      .isThrownBy(args -> from("test").convertTo(Integer.class))
+      .havingMessage("Cannot convert [test] into an Integer")
+      .causedBy(NumberFormatException.class)
+      .havingMessageContaining("test")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromObjectConvertToNullType() {
+
+    assertThatThrowableOfType(IllegalArgumentException.class)
+      .isThrownBy(args -> from("MockUser").convertTo(null))
+      .havingMessage("No SimpleTypeConversion exists for target type [null]")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromStringConvertToUser() {
+
+    assertThatThrowableOfType(IllegalArgumentException.class)
+      .isThrownBy(args -> from("TestUser").convertTo(User.class))
+      .havingMessage("No SimpleTypeConversion exists for target type [%s]", User.class.getName())
+      .withNoCause();
+  }
+
+  @Test
+  public void fromUserConvertToString() {
+    assertThat(from(User.as("MockUser")).convertTo(String.class)).isEqualTo("MockUser");
   }
 
   @Test

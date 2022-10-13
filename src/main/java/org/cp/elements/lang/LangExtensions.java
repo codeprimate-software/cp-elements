@@ -30,6 +30,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import org.cp.elements.data.conversion.provider.SimpleTypeConversions;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.annotation.FluentApi;
@@ -259,6 +260,7 @@ public abstract class LangExtensions {
    * @return a new instance of the {@link AssertThat} {@link Dsl} {@link FluentApi} expression for making assertions
    * about an @{@link Object Object's} state.
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
+   * @see org.cp.elements.lang.LangExtensions.AssertThat
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
@@ -1508,6 +1510,85 @@ public abstract class LangExtensions {
   }
 
   /**
+   * The {@literal from} operator can be used to adapt, transform or transition an {@link Object}
+   * into another type of {@link Object}.
+   *
+   * @param target {@link Object} to adapt or transform.
+   * @return a new instance of the {@link From} operator.
+   * @see org.cp.elements.lang.LangExtensions.From
+   * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.annotation.Dsl
+   */
+  public static @NotNull From from(@Nullable Object target) {
+    return new FromExpression(target);
+  }
+
+  /**
+   * The {@link From} interface defines operations to {@literal cast} or {@literal convert} an {@link Object target}
+   * from its {@link Class base type} to a {@link Class requested type}.
+   *
+   * @see org.cp.elements.lang.DslExtension
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.annotation.FluentApi
+   */
+  @FluentApi
+  public interface From extends DslExtension, FluentApiExtension {
+
+    /**
+     * Casts a {@link Object target} into an instance of the given, required {@link Class type}.
+     *
+     * @param <T> {@link Class type} used to cast an {@link Object}.
+     * @param type {@link Class type} of {@link Object} resulting from the cast operation.
+     * @return the given {@link Object target} as an instance of the given, required {@link Class type}.
+     * @throws IllegalTypeException if the {@link Object target} cannot be cast as an instance of the given,
+     * required {@link Class type}.
+     * @see org.cp.elements.lang.ClassUtils#castTo(Object, Class)
+     */
+    <T> T castTo(Class<T> type);
+
+    /**
+     * Converts a {@link Object target} into an {@link Object} of the requested, required {@link Class type}.
+     *
+     * For example, this operation may be used to convert a {@link String} into a {@link Integer}.
+     *
+     * If more complex and sophisticated conversions are required, then users should consider Element's
+     * {@link org.cp.elements.data.conversion.ConversionService}.
+     *
+     * @param <T> {@link Class type} of the {@link Object} resulting from the conversion.
+     * @param type {@link Class type} of the {@link Object} resulting from the conversion of the {@link Object target}.
+     * @return the converted {@link Object} of {@link Class type T}.
+     * @throws org.cp.elements.data.conversion.ConversionException if the {@link Object} cannot be converted into
+     * an {@link Object} of {@link Class type T}.
+     * @see org.cp.elements.data.conversion.provider.SimpleTypeConversions
+     */
+    <T> T convertTo(Class<T> type);
+
+  }
+
+  private static class FromExpression implements From {
+
+    private final Object target;
+
+    private FromExpression(@Nullable Object target) {
+      this.target = target;
+    }
+
+    private @Nullable Object getTarget() {
+      return this.target;
+    }
+
+    @Override
+    public <T> T castTo(@NotNull Class<T> type) {
+      return ObjectUtils.castTo(getTarget(), type);
+    }
+
+    @Override
+    public <T> T convertTo(Class<T> type) {
+      return SimpleTypeConversions.findBy(type).convert(getTarget());
+    }
+  }
+
+  /**
    * The {@literal is} operator can be used to make logical determinations about an {@link Object} such as boolean,
    * equality, identity, relational or type comparisons with other {@link Object Objects}, and so on.
    *
@@ -1515,6 +1596,7 @@ public abstract class LangExtensions {
    * @param obj {@link Object} that is the {@literal subject} of the operation.
    * @return a new instance of the {@literal is} operator.
    * @see org.cp.elements.lang.LangExtensions.IsExpression
+   * @see org.cp.elements.lang.LangExtensions.Is
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
