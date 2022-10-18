@@ -33,7 +33,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.Orderable;
+import org.cp.elements.lang.Ordered;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.Order;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -200,6 +204,25 @@ public class AbstractConfigurationServiceUnitTests {
   }
 
   @Test
+  public void orderAfterRegistrationIsCorrect() {
+
+    DefaultOrderTestConfiguration defaultTestConfiguration = new DefaultOrderTestConfiguration();
+    FirstOrderTestConfiguration firstTestConfiguration = new FirstOrderTestConfiguration();
+    LastOrderTestConfiguration lastTestConfiguration = new LastOrderTestConfiguration();
+    MiddleOrderTestConfiguration middleTestConfiguration = new MiddleOrderTestConfiguration();
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThat(configurationService).isEmpty();
+    assertThat(configurationService.register(middleTestConfiguration)).isTrue();
+    assertThat(configurationService.register(lastTestConfiguration)).isTrue();
+    assertThat(configurationService.register(firstTestConfiguration)).isTrue();
+    assertThat(configurationService.register(defaultTestConfiguration)).isTrue();
+    assertThat(configurationService)
+      .containsExactly(firstTestConfiguration, defaultTestConfiguration, middleTestConfiguration, lastTestConfiguration);
+  }
+
+  @Test
   public void registerAndUnregisterConfiguration() {
 
     Configuration mockConfigurationOne = mock(Configuration.class, "MockConfigurationOne");
@@ -213,7 +236,7 @@ public class AbstractConfigurationServiceUnitTests {
     assertThat(configurationService.register(mockConfigurationOne)).isFalse();
     assertThat(configurationService).containsExactly(mockConfigurationOne);
     assertThat(configurationService.register(mockConfigurationTwo)).isTrue();
-    assertThat(configurationService).containsExactly(mockConfigurationOne, mockConfigurationTwo);
+    assertThat(configurationService).containsExactlyInAnyOrder(mockConfigurationOne, mockConfigurationTwo);
     assertThat(configurationService.unregister(mockConfigurationOne)).isTrue();
     assertThat(configurationService).containsExactly(mockConfigurationTwo);
     assertThat(configurationService.unregister(mockConfigurationOne)).isFalse();
@@ -341,6 +364,46 @@ public class AbstractConfigurationServiceUnitTests {
     assertThat(configurationService).isEmpty();
   }
 
-  static final class TestConfigurationService extends AbstractConfigurationService { }
+  static class TestConfigurationService extends AbstractConfigurationService { }
+
+  static class AbstractBaseConfiguration implements Configuration {
+
+    @Override
+    public String getPropertyValue(String propertyName, boolean required) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
+
+    @SuppressWarnings("unused")
+    public void setIndex(int index) {
+      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+    }
+  }
+
+  static class DefaultOrderTestConfiguration extends AbstractBaseConfiguration { }
+
+  @Order(Ordered.LAST)
+  static class FirstOrderTestConfiguration extends AbstractBaseConfiguration implements Orderable<Integer>, Ordered {
+
+    @Override
+    public Integer getOrder() {
+      return Ordered.FIRST;
+    }
+
+    @Override
+    public int getIndex() {
+      return 1_000_00;
+    }
+  }
+
+  static class MiddleOrderTestConfiguration extends AbstractBaseConfiguration implements Ordered {
+
+    @Override
+    public int getIndex() {
+      return Ordered.DEFAULT + 1_000;
+    }
+  }
+
+  @Order(Ordered.LAST)
+  static class LastOrderTestConfiguration extends AbstractBaseConfiguration { }
 
 }
