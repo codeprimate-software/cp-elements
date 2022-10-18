@@ -16,6 +16,7 @@
 package org.cp.elements.context.configure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 
 import java.net.URI;
 import java.util.Properties;
@@ -32,8 +33,12 @@ import org.cp.elements.util.PropertiesBuilder;
  * Integration Tests for {@link AbstractConfigurationService}.
  *
  * @author John Blum
+ * @see java.util.Properties
  * @see org.junit.Test
  * @see org.cp.elements.context.configure.AbstractConfigurationService
+ * @see org.cp.elements.context.configure.annotation.ConfigurationProperties
+ * @see org.cp.elements.context.configure.support.PropertiesConfiguration
+ * @see org.cp.elements.util.PropertiesBuilder
  * @since 1.0.0
  */
 public class AbstractConfigurationServiceIntegrationTests {
@@ -50,12 +55,15 @@ public class AbstractConfigurationServiceIntegrationTests {
 
     Configuration configuration = new PropertiesConfiguration(jdbcProperties);
 
-    AbstractConfigurationService configurationService = new TestConfigurationService();
-
-    assertThat(configurationService.register(configuration)).isTrue();
-    assertThat(configurationService).containsExactly(configuration);
     assertThat(configuration).containsExactlyInAnyOrder("jdbc.driver-class-name", "jdbc.url",
       "jdbc.username", "jdbc.password");
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThat(configurationService).isNotNull();
+    assertThat(configurationService).isEmpty();
+    assertThat(configurationService.register(configuration)).isTrue();
+    assertThat(configurationService).containsExactly(configuration);
 
     JdbcConfiguration jdbcConfiguration = configurationService.proxy(JdbcConfiguration.class);
 
@@ -76,13 +84,14 @@ public class AbstractConfigurationServiceIntegrationTests {
       .set("jdbc.password", "s3cr3t")
       .set("jdbc.connection.auto-commit", "false")
       .set("jdbc.connection.max", "100")
-      //.set("jdbc.connection.min", "10")
+      //.set("jdbc.connection.min", "100")
       .build();
 
     Configuration configuration = new PropertiesConfiguration(jdbcProperties);
 
     AbstractConfigurationService configurationService = new TestConfigurationService();
 
+    assertThat(configurationService).isEmpty();
     assertThat(configurationService.register(configuration)).isTrue();
     assertThat(configurationService).containsExactly(configuration);
 
@@ -102,6 +111,87 @@ public class AbstractConfigurationServiceIntegrationTests {
     assertThat(jdbcConnectionConfiguration.getMin()).isNull();
     assertThat(jdbcConnectionConfiguration.getMin(1)).isOne();
     assertThat(jdbcConnectionConfiguration.getMin(() -> 10)).isEqualTo(10);
+  }
+
+  @Test
+  public void proxyGetPropertyWhenRequiredButNotSetThrowsConfigurationException() {
+
+    Properties properties = PropertiesBuilder.newInstance()
+      .set("jdbc.connection.min", "10")
+      .build();
+
+    Configuration configuration = new PropertiesConfiguration(properties);
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThat(configurationService).isEmpty();
+    assertThat(configurationService.register(configuration)).isTrue();
+    assertThat(configurationService).containsExactly(configuration);
+
+    ExtendedJdbcConfiguration jdbcConfiguration = configurationService.proxy(ExtendedJdbcConfiguration.class);
+
+    assertThat(jdbcConfiguration).isNotNull();
+    assertThat(jdbcConfiguration.getConnection()).isNotNull();
+    assertThat(jdbcConfiguration.getConnection().getMin()).isEqualTo(10);
+
+    assertThatThrowableOfType(ConfigurationException.class)
+      .isThrownBy(args -> jdbcConfiguration.getConnection().getMax())
+      .havingMessage("Failed to resolve a qualified property name in the set of possible property names"
+        + " [[Max, max]] for the given method name [getMax] using the base property name [jdbc.connection]")
+      .withNoCause();
+  }
+
+  @Test
+  public void proxyPropertiesAccessorsPrefixedWithClassName() {
+
+    Properties properties = PropertiesBuilder.newInstance()
+      .set("jdbc.username", "mockUser")
+      .build();
+
+    Configuration configuration = new PropertiesConfiguration(properties);
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThat(configurationService).isEmpty();
+    assertThat(configurationService.register(configuration)).isTrue();
+    assertThat(configurationService).containsExactly(configuration);
+
+    Jdbc jdbcConfiguration = configurationService.proxy(Jdbc.class);
+
+    assertThat(jdbcConfiguration).isNotNull();
+    assertThat(jdbcConfiguration.getUsername()).isEqualTo("mockUser");
+    assertThat(jdbcConfiguration.getPassword()).isNull();
+  }
+
+  @Test
+  public void proxyTypeHierarchyConfiguration() {
+
+    Properties properties = PropertiesBuilder.newInstance()
+      .set("test.properties.grand-parent-property", "GrandParent")
+      .set("test.properties.parent.parent-property", "Parent")
+      .set("test.properties.parent.child.child-property", "Child")
+      .build();
+
+    Configuration configuration = new PropertiesConfiguration(properties);
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThat(configurationService).isEmpty();
+    assertThat(configurationService.register(configuration)).isTrue();
+    assertThat(configurationService).containsExactly(configuration);
+
+    GrandParentConfiguration testConfiguration = configurationService.proxy(GrandParentConfiguration.class);
+
+    assertThat(testConfiguration.getGrandParentProperty()).isEqualTo("GrandParent");
+    assertThat(testConfiguration.getParent()).isNotNull();
+    assertThat(testConfiguration.getParent().getParentProperty()).isEqualTo("Parent");
+    assertThat(testConfiguration.getParent().getChild()).isNotNull();
+    assertThat(testConfiguration.getParent().getChild().getChildProperty()).isEqualTo("Child");
+  }
+
+  interface Jdbc {
+    String getUsername();
+    String getPassword();
   }
 
   @ConfigurationProperties(propertyPrefix = "jdbc")
@@ -131,6 +221,23 @@ public class AbstractConfigurationServiceIntegrationTests {
       @Required
       Integer getMin(Supplier<Integer> defaultMin);
 
+    }
+  }
+
+  @ConfigurationProperties(propertyPrefix = "test.properties")
+  interface GrandParentConfiguration {
+
+    String getGrandParentProperty();
+    ParentConfiguration getParent();
+
+    interface ParentConfiguration {
+
+      String getParentProperty();
+      ChildConfiguration getChild();
+
+      interface ChildConfiguration {
+        String getChildProperty();
+      }
     }
   }
 

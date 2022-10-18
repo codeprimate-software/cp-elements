@@ -33,11 +33,13 @@ import java.util.List;
 
 import org.junit.Test;
 
+import org.cp.elements.context.configure.AbstractConfigurationService.ConfigurationPropertiesInterfaceMethodInterceptor;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Orderable;
 import org.cp.elements.lang.Ordered;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.Order;
+import org.cp.elements.lang.reflect.MethodInvocation;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -49,6 +51,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see org.mockito.Spy
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.AbstractConfigurationService
+ * @see org.cp.elements.context.configure.AbstractConfigurationService.ConfigurationPropertiesInterfaceMethodInterceptor
  * @since 1.0.0
  */
 public class AbstractConfigurationServiceUnitTests {
@@ -364,6 +367,159 @@ public class AbstractConfigurationServiceUnitTests {
     assertThat(configurationService).isEmpty();
   }
 
+  @Test
+  public void proxyClassType() {
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> configurationService.proxy(TestClassType.class))
+      .withMessage("The type to proxy [%s] must be an interface", TestClassType.class.getName())
+      .withNoCause();
+  }
+
+  @Test
+  public void proxyNull() {
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> configurationService.proxy(null))
+      .withMessage("The interface to proxy is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void proxyWithInvalidPropertyPrefixes() {
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    Arrays.stream(ArrayUtils.asArray("  ", "", null)).forEach(propertyPrefix ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> configurationService.proxy(TestInterfaceType.class, propertyPrefix))
+        .withMessage("Property prefix [%s] is required", propertyPrefix)
+        .withNoCause());
+  }
+
+  @Test
+  public void constructConfigurationPropertiesInterfaceMethodInterceptorIsCorrect() {
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    ConfigurationPropertiesInterfaceMethodInterceptor methodInterceptor =
+      new ConfigurationPropertiesInterfaceMethodInterceptor(configurationService, TestInterfaceType.class,
+        "test.property.prefix");
+
+    assertThat(methodInterceptor).isNotNull();
+    assertThat(methodInterceptor.getConfigurationPropertiesInterface()).isEqualTo(TestInterfaceType.class);
+    assertThat(methodInterceptor.getConfigurationService()).isEqualTo(configurationService);
+    assertThat(methodInterceptor.getPropertyPrefix()).isEqualTo("test.property.prefix");
+    assertThat(methodInterceptor.getQualifiedPropertyName("mock")).isEqualTo("test.property.prefix.mock");
+    assertThat(methodInterceptor.getTarget()).isNotNull();
+  }
+
+  @Test
+  public void constructConfigurationPropertiesInterfaceMethodInterceptorWithNullConfigurationService() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConfigurationPropertiesInterfaceMethodInterceptor(null,
+        TestInterfaceType.class,"test.property.prefix"))
+      .withMessage("ConfigurationService is required")
+      .withNoCause();
+
+  }
+
+  @Test
+  public void constructConfigurationPropertiesInterfaceMethodInterceptorWithNullConfigurationPropertiesInterface() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConfigurationPropertiesInterfaceMethodInterceptor(mock(AbstractConfigurationService.class),
+        null,"test.property.prefix"))
+      .withMessage("Interface is required")
+      .withNoCause();
+
+  }
+
+  @Test
+  public void constructConfigurationPropertiesInterfaceMethodInterceptorWithInvalidPropertyPrefix() {
+
+    Arrays.stream(ArrayUtils.asArray("  ", "", null)).forEach(propertyPrefix ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() ->
+          new ConfigurationPropertiesInterfaceMethodInterceptor(mock(AbstractConfigurationService.class),
+            TestInterfaceType.class, propertyPrefix))
+        .withMessage("Property prefix [%s] is required", propertyPrefix)
+        .withNoCause());
+  }
+
+  private ConfigurationPropertiesInterfaceMethodInterceptor newConfigurationPropertiesInterfaceMethodInterceptor() {
+    return new ConfigurationPropertiesInterfaceMethodInterceptor(mock(AbstractConfigurationService.class),
+      TestInterfaceType.class, "test.properties");
+  }
+
+  @Test
+  public void interceptWithNullMethodInvocation() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newConfigurationPropertiesInterfaceMethodInterceptor().intercept(null))
+      .withMessage("MethodInvocation is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void interceptNullPropertyAccessorMethod() {
+
+    MethodInvocation mockMethodInvocation = mock(MethodInvocation.class);
+
+    doReturn(null).when(mockMethodInvocation).getMethod();
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newConfigurationPropertiesInterfaceMethodInterceptor().intercept(mockMethodInvocation))
+      .withMessage("Property accessor method is required")
+      .withNoCause();
+
+    verify(mockMethodInvocation, times(1)).getMethod();
+    verifyNoMoreInteractions(mockMethodInvocation);
+  }
+
+  @Test
+  public void interceptInvalidPropertyAccessorMethod() throws NoSuchMethodException {
+
+    MethodInvocation methodInvocation = MethodInvocation
+      .newMethodInvocation(this, TestInterfaceType.class.getDeclaredMethod("invalidProperty"));
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newConfigurationPropertiesInterfaceMethodInterceptor().intercept(methodInvocation))
+      .withMessage("Property accessor method name [invalidProperty] must start with [[get, is]]")
+      .withNoCause();
+  }
+
+  @Test
+  public void interceptSetterPropertyAccessorMethod() throws NoSuchMethodException {
+
+    MethodInvocation methodInvocation = MethodInvocation
+      .newMethodInvocation(this, TestInterfaceType.class.getDeclaredMethod("setMockProperty", String.class),
+        "testValue");
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newConfigurationPropertiesInterfaceMethodInterceptor().intercept(methodInvocation))
+      .withMessage("Using property setter methods [setMockProperty] to set properties is not supported")
+      .withNoCause();
+  }
+
+  @Test
+  public void interceptVoidPropertyAccessorMethod() throws NoSuchMethodException {
+
+    MethodInvocation methodInvocation = MethodInvocation
+      .newMethodInvocation(this, TestInterfaceType.class.getDeclaredMethod("getVoidProperty"));
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> newConfigurationPropertiesInterfaceMethodInterceptor().intercept(methodInvocation))
+      .withMessage("Property accessor method [getVoidProperty] must not have a [%s] return type",
+        Void.class.getSimpleName())
+      .withNoCause();
+  }
+
   static class TestConfigurationService extends AbstractConfigurationService { }
 
   static class AbstractBaseConfiguration implements Configuration {
@@ -406,4 +562,11 @@ public class AbstractConfigurationServiceUnitTests {
   @Order(Ordered.LAST)
   static class LastOrderTestConfiguration extends AbstractBaseConfiguration { }
 
+  static class TestClassType { }
+
+  interface TestInterfaceType {
+    void getVoidProperty();
+    String invalidProperty();
+    void setMockProperty(String value);
+  }
 }

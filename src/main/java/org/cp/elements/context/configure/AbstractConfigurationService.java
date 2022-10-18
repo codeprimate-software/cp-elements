@@ -388,6 +388,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
     @SuppressWarnings("unchecked")
     public <R> Optional<R> intercept(@NotNull MethodInvocation methodInvocation) {
 
+      Assert.notNull(methodInvocation, "MethodInvocation is required");
+
       Method method = validatePropertyAccessorMethod(methodInvocation.getMethod());
 
       Class<R> returnType = resolveReturnType(method);
@@ -480,8 +482,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
 
       throw newConfigurationException("Failed to resolve a qualified property name"
         + " in the set of possible property names [%1$s] for the given method name [%2$s]"
-        + " using the base property name [%3$s]", Arrays.toString(possiblePropertyNames.toArray()),
-        methodName, getPropertyPrefix());
+        + " using the base property name [%3$s]",
+        Arrays.toString(ArrayUtils.sort(possiblePropertyNames.toArray(new String[0]))), methodName, getPropertyPrefix());
     }
 
     // Property Name is already in "PascalCase" after stripping the Method.getName() of the accessor method name prefix.
@@ -524,7 +526,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
 
       Class<T> methodReturnType = (Class<T>) method.getReturnType();
 
-      Assert.isFalse(Void.class.equals(methodReturnType),
+      // Void.class.equals(methodReturnType) does not work!
+      Assert.isFalse(Void.class.getSimpleName().equalsIgnoreCase(methodReturnType.getName()),
         "Property accessor method [%1$s] must not have a [%2$s] return type",
         method.getName(), Void.class.getSimpleName());
 
@@ -552,11 +555,16 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
 
       String methodName = ObjectUtils.requireObject(method, "Property accessor method is required").getName();
 
-      boolean validMethodName = Stream.of(ClassUtils.GETTER_METHOD_NAME_PREFIX, ClassUtils.IS_METHOD_NAME_PREFIX)
+      boolean setterMethodName = methodName.startsWith(ClassUtils.SETTER_METHOD_NAME_PREFIX);
+
+      Assert.isFalse(setterMethodName,
+        "Using property setter methods [%s] to set properties is not supported", methodName);
+
+      boolean readAccessorMethodName = Stream.of(ClassUtils.GETTER_METHOD_NAME_PREFIX, ClassUtils.IS_METHOD_NAME_PREFIX)
           .anyMatch(methodName::startsWith);
 
-      Assert.isTrue(validMethodName, "Property accessor method name [%1$s] must start with [%2$s]", methodName,
-        Arrays.toString(ArrayUtils.asArray(ClassUtils.GETTER_METHOD_NAME_PREFIX, ClassUtils.IS_METHOD_NAME_PREFIX)));
+      Assert.isTrue(readAccessorMethodName, "Property accessor method name [%1$s] must start with [%2$s]",
+        methodName, Arrays.toString(ArrayUtils.asArray(ClassUtils.GETTER_METHOD_NAME_PREFIX, ClassUtils.IS_METHOD_NAME_PREFIX)));
 
       return method;
     }
@@ -572,6 +580,7 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
    * if the {@link Configuration} {@link Class type} is annotated with the {@link Order} annotation, then
    * the {@link Integer value} is determined from the annotation.
    *
+   * @see org.cp.elements.context.configure.Configuration
    * @see java.util.Comparator
    */
   protected static class ConfigurationComparator implements Comparator<Configuration> {
