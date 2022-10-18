@@ -109,6 +109,9 @@ public interface ConfigurationService extends Iterable<Configuration> {
   /**
    * Gets an array of {@link String profile names} that are active for this {@link ConfigurationService}.
    *
+   * Alternatively, users can set the {@literal elements.configuration.profiles} property
+   * in a {@literal application.properties} file.
+   *
    * @return an array of {@link String profile names} that are active for this {@link ConfigurationService}.
    * @see org.cp.elements.context.annotation.ActiveProfiles
    */
