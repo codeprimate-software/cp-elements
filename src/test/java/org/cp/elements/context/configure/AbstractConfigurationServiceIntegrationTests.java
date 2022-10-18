@@ -164,6 +164,34 @@ public class AbstractConfigurationServiceIntegrationTests {
   }
 
   @Test
+  public void proxyPropertiesUsingCamelKebabLowerPascalAndSnakeCase() {
+
+    Properties properties = PropertiesBuilder.newInstance()
+      .set("test.properties.camelCase", "camel")
+      .set("test.properties.kebab-case", "kebab")
+      .set("test.properties.lowercase", "lower")
+      .set("test.properties.PascalCase", "pascal")
+      .set("test.properties.snake_case", "snake")
+      .build();
+
+    Configuration configuration = new PropertiesConfiguration(properties);
+
+    AbstractConfigurationService configurationService = new TestConfigurationService();
+
+    assertThat(configurationService.register(configuration)).isTrue();
+    assertThat(configurationService).containsExactly(configuration);
+
+    CaseBasedConfiguration caseBasedConfiguration = configurationService.proxy(CaseBasedConfiguration.class);
+
+    assertThat(caseBasedConfiguration).isNotNull();
+    assertThat(caseBasedConfiguration.getCamelCase()).isEqualTo("camel");
+    assertThat(caseBasedConfiguration.getKebabCase()).isEqualTo("kebab");
+    assertThat(caseBasedConfiguration.getLowerCase()).isEqualTo("lower");
+    assertThat(caseBasedConfiguration.getPascalCase()).isEqualTo("pascal");
+    assertThat(caseBasedConfiguration.getSnakeCase()).isEqualTo("snake");
+  }
+
+  @Test
   public void proxyTypeHierarchyConfiguration() {
 
     Properties properties = PropertiesBuilder.newInstance()
@@ -239,6 +267,15 @@ public class AbstractConfigurationServiceIntegrationTests {
         String getChildProperty();
       }
     }
+  }
+
+  @ConfigurationProperties(propertyPrefix = "test.properties")
+  interface CaseBasedConfiguration {
+    String getCamelCase();
+    String getKebabCase();
+    String getLowerCase();
+    String getPascalCase();
+    String getSnakeCase();
   }
 
   static class TestConfigurationService extends AbstractConfigurationService { }
