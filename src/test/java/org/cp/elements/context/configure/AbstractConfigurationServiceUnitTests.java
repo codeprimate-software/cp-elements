@@ -17,7 +17,10 @@ package org.cp.elements.context.configure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -34,6 +37,7 @@ import java.util.List;
 import org.junit.Test;
 
 import org.cp.elements.context.configure.AbstractConfigurationService.ConfigurationPropertiesInterfaceMethodInterceptor;
+import org.cp.elements.context.container.DependencyInjection;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Orderable;
 import org.cp.elements.lang.Ordered;
@@ -179,6 +183,45 @@ public class AbstractConfigurationServiceUnitTests {
       .isThrownBy(() -> new TestConfigurationService().isProfileActive(null))
       .withMessage("Configuration is required")
       .withNoCause();
+  }
+
+  @Test
+  public void initializeIsCorrect() {
+
+    AbstractConfigurationService configurationService = spy(new TestConfigurationService());
+
+    Configuration mockConfiguration = mock(Configuration.class);
+
+    DependencyInjection mockDependencyInjection = mock(DependencyInjection.class);
+
+    doReturn(mockDependencyInjection).when(configurationService).getDependencyInjectionContainer();
+    doAnswer(invocation -> invocation.getArgument(0)).when(mockDependencyInjection).inject(any());
+
+    assertThat(configurationService.initialize(mockConfiguration)).isEqualTo(mockConfiguration);
+
+    verify(configurationService, times(1)).initialize(eq(mockConfiguration));
+    verify(configurationService, times(1)).getDependencyInjectionContainer();
+    verify(mockDependencyInjection, times(1)).inject(eq(mockConfiguration));
+    verifyNoMoreInteractions(configurationService, mockDependencyInjection);
+    verifyNoInteractions(mockConfiguration);
+  }
+
+  @Test
+  public void initializeIsNullSafe() {
+
+    AbstractConfigurationService configurationService = spy(new TestConfigurationService());
+
+    DependencyInjection mockDependencyInjection = mock(DependencyInjection.class);
+
+    doReturn(mockDependencyInjection).when(configurationService).getDependencyInjectionContainer();
+    doAnswer(invocation -> invocation.getArgument(0)).when(mockDependencyInjection).inject(any());
+
+    assertThat(configurationService.<Configuration>initialize(null)).isNull();
+
+    verify(configurationService, times(1)).initialize(isNull());
+    verify(mockDependencyInjection, never()).inject(any());
+    verifyNoMoreInteractions(configurationService);
+    verifyNoInteractions(mockDependencyInjection);
   }
 
   @Test
@@ -426,7 +469,6 @@ public class AbstractConfigurationServiceUnitTests {
         TestInterfaceType.class,"test.property.prefix"))
       .withMessage("ConfigurationService is required")
       .withNoCause();
-
   }
 
   @Test
@@ -437,7 +479,6 @@ public class AbstractConfigurationServiceUnitTests {
         null,"test.property.prefix"))
       .withMessage("Interface is required")
       .withNoCause();
-
   }
 
   @Test

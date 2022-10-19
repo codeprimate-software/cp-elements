@@ -121,6 +121,17 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
   }
 
   /**
+   * Gets a reference to the configured {@link DependencyInjection} container used by
+   * this {@link AbstractConfigurationService} to initialize {@link Configuration} objects.
+   *
+   * @return reference to the configured {@link DependencyInjection} container.
+   * @see org.cp.elements.context.container.DependencyInjection
+   */
+  protected @NotNull DependencyInjection getDependencyInjectionContainer() {
+    return this.dependencyInjectionContainer;
+  }
+
+  /**
    * Determines whether the {@literal Profiles} declared by the given, required {@link Configuration} are active
    * as declared and specified by this {@link ConfigurationService}.
    *
@@ -245,8 +256,19 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
       && this.configurations.add(initialize(configuration));
   }
 
-  private @NotNull Configuration initialize(@NotNull Configuration configuration) {
-    return this.dependencyInjectionContainer.inject(configuration);
+  /**
+   * Initializes the given {@link Configuration} object with references to required services provided by Elements
+   * using {@link DependencyInjection}.
+   *
+   * @param <T> {@link Class type} of {@link Configuration} object.
+   * @param configuration {@link Configuration} object to initialize (auto-wire with collaborator dependencies).
+   * @return the given {@link Configuration} object after initialization.
+   * @see org.cp.elements.context.container.DependencyInjection#inject(Object)
+   * @see org.cp.elements.context.configure.Configuration
+   * @see #getDependencyInjectionContainer()
+   */
+  protected @Nullable <T extends Configuration> T initialize(@Nullable T configuration) {
+    return configuration != null ? getDependencyInjectionContainer().inject(configuration) : configuration;
   }
 
   /**
