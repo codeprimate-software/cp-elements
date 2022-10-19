@@ -18,14 +18,34 @@ package org.cp.elements.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.cp.elements.data.caching.Cache;
-import org.cp.elements.data.caching.CacheNotFoundException;
-import org.cp.elements.data.conversion.ConversionService;
+import java.util.Optional;
 
 import org.junit.Test;
+
+import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.context.configure.ConfigurationService;
+import org.cp.elements.context.configure.provider.ElementsConfigurationService;
+import org.cp.elements.context.container.DependencyInjection;
+import org.cp.elements.context.container.provider.Syringe;
+import org.cp.elements.data.caching.Cache;
+import org.cp.elements.data.caching.CacheNotFoundException;
+import org.cp.elements.data.caching.support.CachingTemplate;
+import org.cp.elements.data.conversion.ConversionService;
+import org.cp.elements.data.conversion.provider.SimpleConversionService;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * Unit Tests for {@link ServiceTemplate}.
@@ -49,19 +69,122 @@ public class ServiceTemplateUnitTests {
 
     assertThat(cache).isNotNull();
     assertThat(cache.getName()).isEqualTo(null);
+
+    verify(serviceTemplate, times(1)).getCache(isNull());
+    verifyNoMoreInteractions(serviceTemplate);
   }
 
   @Test
-  public void loadNamedCache() {
+  public void loadMockCache() {
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doCallRealMethod().when(serviceTemplate).getCache(anyString());
+
+    Cache<Integer, Object> cache = serviceTemplate.getCache("MockCache");
+
+    assertThat(cache).isNotNull();
+    assertThat(cache.getName()).isEqualTo("MockCache");
+
+    verify(serviceTemplate, times(1)).getCache(eq("MockCache"));
+    verifyNoMoreInteractions(serviceTemplate);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void loadMockCachingTemplate() {
+
+    Cache<Integer, Object> mockCache = mock(Cache.class);
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doReturn(mockCache).when(serviceTemplate).getCache(anyString());
+    doCallRealMethod().when(serviceTemplate).getCachingTemplate(anyString());
+
+    CachingTemplate<Integer, Object> cacheTemplate = serviceTemplate.getCachingTemplate("MockCache");
+
+    assertThat(cacheTemplate).isNotNull();
+    assertThat(ObjectUtils.invoke(cacheTemplate, "getCache", Cache.class)).isEqualTo(mockCache);
+
+    verify(serviceTemplate, times(1)).getCachingTemplate(eq("MockCache"));
+    verify(serviceTemplate, times(1)).getCache(eq("MockCache"));
+    verifyNoMoreInteractions(serviceTemplate);
+    verifyNoInteractions(mockCache);
+  }
+
+  @Test
+  public void loadNonExistingNamedCache() {
 
     ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
 
     doCallRealMethod().when(serviceTemplate).getCache(any());
 
     assertThatExceptionOfType(CacheNotFoundException.class)
-      .isThrownBy(() -> serviceTemplate.getCache("nonExistingCache"))
-      .withMessage("Cache with name [nonExistingCache] not found")
+      .isThrownBy(() -> serviceTemplate.getCache("NonExistingCache"))
+      .withMessage("Cache with name [NonExistingCache] not found")
       .withNoCause();
+  }
+
+  @Test
+  public void loadConfigurationByName() {
+
+    Configuration mockConfiguration = mock(Configuration.class);
+
+    ConfigurationService mockConfigurationService = mock(ConfigurationService.class);
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doCallRealMethod().when(serviceTemplate).getConfiguration(anyString());
+    doReturn(Optional.of(mockConfigurationService)).when(serviceTemplate).getConfigurationService();
+    doReturn(ArrayUtils.asIterable(null, null, mockConfiguration, null).spliterator())
+      .when(mockConfigurationService).spliterator();
+    doReturn("MockConfiguration").when(mockConfiguration).getName();
+
+    Configuration configuration = serviceTemplate.getConfiguration("MockConfiguration").orElse(null);
+
+    assertThat(configuration).isEqualTo(mockConfiguration);
+
+    verify(serviceTemplate, times(1)).getConfiguration(eq("MockConfiguration"));
+    verify(serviceTemplate, times(1)).getConfigurationService();
+    verify(mockConfigurationService, times(1)).spliterator();
+    verify(mockConfiguration, times(1)).getName();
+    verifyNoMoreInteractions(serviceTemplate, mockConfigurationService, mockConfiguration);
+  }
+
+  @Test
+  public void loadNonExistingConfigurationByName() {
+
+    ConfigurationService mockConfigurationService = mock(ConfigurationService.class);
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doCallRealMethod().when(serviceTemplate).getConfiguration(anyString());
+    doReturn(Optional.of(mockConfigurationService)).when(serviceTemplate).getConfigurationService();
+    doReturn(CollectionUtils.emptyIterable().spliterator()).when(mockConfigurationService).spliterator();
+
+    Configuration configuration = serviceTemplate.getConfiguration("TestConfiguration").orElse(null);
+
+    assertThat(configuration).isNull();
+
+    verify(serviceTemplate, times(1)).getConfiguration(eq("TestConfiguration"));
+    verify(serviceTemplate, times(1)).getConfigurationService();
+    verify(mockConfigurationService, times(1)).spliterator();
+    verifyNoMoreInteractions(serviceTemplate, mockConfigurationService);
+  }
+
+  @Test
+  public void loadsConfigurationService() {
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doCallRealMethod().when(serviceTemplate).getConfigurationService();
+
+    ConfigurationService configurationService = serviceTemplate.getConfigurationService().orElse(null);
+
+    assertThat(configurationService).isInstanceOf(ElementsConfigurationService.class);
+
+    verify(serviceTemplate, times(1)).getConfigurationService();
+    verifyNoMoreInteractions(serviceTemplate);
   }
 
   @Test
@@ -73,6 +196,26 @@ public class ServiceTemplateUnitTests {
 
     ConversionService conversionService = serviceTemplate.getConversionService().orElse(null);
 
-    assertThat(conversionService).isNotNull();
+    assertThat(conversionService).isInstanceOf(SimpleConversionService.class);
+
+    verify(serviceTemplate, times(1)).getConversionService();
+    verifyNoMoreInteractions(serviceTemplate);
+  }
+
+  @Test
+  public void loadsDependencyInjectionContainer() {
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doCallRealMethod().when(serviceTemplate).getDependencyInjectionContainer();
+
+    DependencyInjection dependencyInjectionContainer =
+      serviceTemplate.getDependencyInjectionContainer().orElse(null);
+
+    assertThat(dependencyInjectionContainer).isInstanceOf(Syringe.class);
+
+    verify(serviceTemplate, times(1)).getDependencyInjectionContainer();
+    verifyNoMoreInteractions(serviceTemplate);
+
   }
 }
