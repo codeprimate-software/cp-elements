@@ -33,6 +33,8 @@ import org.junit.Test;
 
 import org.cp.elements.context.annotation.Profile;
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.data.conversion.ConversionService;
+import org.cp.elements.data.conversion.ConversionServiceAware;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -67,6 +69,43 @@ public class DelegatingConfigurationUnitTests {
       .isThrownBy(() -> new DelegatingConfiguration(null))
       .withMessage("Configuration to be used as the delegate is required")
       .withNoCause();
+  }
+
+  @Test
+  public void setConversionServiceOnConversionServiceAwareConfiguration() {
+
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    ConversionServiceAwareConfiguration mockConversionServiceAwareConfiguration =
+      mock(ConversionServiceAwareConfiguration.class);
+
+    DelegatingConfiguration delegatingConfiguration =
+      new DelegatingConfiguration(mockConversionServiceAwareConfiguration);
+
+    assertThat(delegatingConfiguration.getDelegate()).isEqualTo(mockConversionServiceAwareConfiguration);
+
+    delegatingConfiguration.setConversionService(mockConversionService);
+
+    verify(mockConversionServiceAwareConfiguration, times(1))
+      .setConversionService(eq(mockConversionService));
+    verifyNoMoreInteractions(mockConversionServiceAwareConfiguration);
+    verifyNoInteractions(mockConversionService);
+  }
+
+  @Test
+  public void setConversionServiceOnNonConversionServiceAwareConfiguration() {
+
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    Configuration mockConfiguration = mock(Configuration.class);
+
+    DelegatingConfiguration delegatingConfiguration = new DelegatingConfiguration(mockConfiguration);
+
+    assertThat(delegatingConfiguration.getDelegate()).isEqualTo(mockConfiguration);
+
+    delegatingConfiguration.setConversionService(mockConversionService);
+
+    verifyNoInteractions(mockConfiguration, mockConversionService);
   }
 
   @Test
@@ -159,4 +198,7 @@ public class DelegatingConfigurationUnitTests {
       return null;
     }
   }
+
+  interface ConversionServiceAwareConfiguration extends Configuration, ConversionServiceAware { }
+
 }

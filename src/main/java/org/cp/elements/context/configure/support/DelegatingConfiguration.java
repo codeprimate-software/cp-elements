@@ -18,6 +18,8 @@ package org.cp.elements.context.configure.support;
 import java.util.Iterator;
 
 import org.cp.elements.context.configure.Configuration;
+import org.cp.elements.data.conversion.ConversionService;
+import org.cp.elements.data.conversion.ConversionServiceAware;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -26,10 +28,12 @@ import org.cp.elements.lang.annotation.NotNull;
  *
  * @author John Blum
  * @see org.cp.elements.context.configure.Configuration
+ * @see org.cp.elements.data.conversion.ConversionService
+ * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class DelegatingConfiguration implements Configuration {
+public class DelegatingConfiguration implements Configuration, ConversionServiceAware {
 
   protected static final String DELEGATE_NAME_SUFFIX = "Delegate";
 
@@ -45,6 +49,16 @@ public class DelegatingConfiguration implements Configuration {
    */
   public DelegatingConfiguration(@NotNull Configuration delegate) {
     this.delegate = ObjectUtils.requireObject(delegate, "Configuration to be used as the delegate is required");
+  }
+
+  @Override
+  public void setConversionService(@NotNull ConversionService conversionService) {
+
+    Configuration configuration = getDelegate();
+
+    if (configuration instanceof ConversionServiceAware) {
+      ((ConversionServiceAware) configuration).setConversionService(conversionService);
+    }
   }
 
   protected @NotNull Configuration getDelegate() {
