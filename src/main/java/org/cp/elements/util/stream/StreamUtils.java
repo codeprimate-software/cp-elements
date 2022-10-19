@@ -17,6 +17,8 @@ package org.cp.elements.util.stream;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -26,9 +28,11 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * Abstract utility class containing a collection of methods for processing Java 8 {@link Stream Streams}.
@@ -84,6 +88,20 @@ public abstract class StreamUtils {
   }
 
   /**
+   * Streams the contents from the given, required {@link Enumeration}.
+   *
+   * @param <T> {@link Class type} of the {@link Object elements} contained in the {@link Enumeration}.
+   * @param enumeration {@link Enumeration} to stream; must not be {@literal null}.
+   * @return a {@link Stream} over the contents of the given, required {@link Enumeration}.
+   * @throws IllegalArgumentException if the {@link Enumeration} is {@literal null}.
+   * @see java.util.stream.Stream
+   * @see java.util.Enumeration
+   */
+  public static @NotNull <T> Stream<T> stream(@NotNull Enumeration<T> enumeration) {
+    return stream(CollectionUtils.asIterable(ObjectUtils.requireObject(enumeration, "Enumeration is required")));
+  }
+
+  /**
    * Returns a {@link Stream} from the given {@link Iterable} collection of elements.
    *
    * @param <T> {@link Class type} of elements in the {@link Iterable}.
@@ -100,6 +118,20 @@ public abstract class StreamUtils {
     return iterable instanceof Collection
       ? ((Collection<T>) iterable).stream()
       : StreamSupport.stream(iterable.spliterator(), false);
+  }
+
+  /**
+   * Streams the contents from the given, required {@link Iterator}.
+   *
+   * @param <T> {@link Class type} of the {@link Object elements} contained in the {@link Iterator}.
+   * @param iterator {@link Iterator} to stream; must not be {@literal null}.
+   * @return a {@link Stream} over the contents of the given, required {@link Iterator}.
+   * @throws IllegalArgumentException if the {@link Iterator} is {@literal null}.
+   * @see java.util.stream.Stream
+   * @see java.util.Iterator
+   */
+  public static @NotNull <T> Stream<T> stream(@NotNull Iterator<T> iterator) {
+    return stream(CollectionUtils.asIterable(ObjectUtils.requireObject(iterator, "Iterator is required")));
   }
 
   /**

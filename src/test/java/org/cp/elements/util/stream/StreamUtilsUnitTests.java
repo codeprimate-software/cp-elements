@@ -21,6 +21,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -28,14 +32,18 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.util.ArrayUtils;
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link StreamUtils}.
  *
  * @author John J. Blum
+ * @see java.lang.Iterable
+ * @see java.util.Enumeration
+ * @see java.util.Iterator
  * @see java.util.stream.Stream
  * @see org.junit.Test
  * @see org.mockito.Mockito
@@ -167,9 +175,118 @@ public class StreamUtilsUnitTests {
   }
 
   @Test
+  public void streamFromIterator() {
+
+    Iterator<Integer> iterator = Arrays.asList(1, 2, 3).iterator();
+
+    Stream<Integer> stream = StreamUtils.stream(iterator);
+
+    assertThat(stream).isNotNull();
+
+    Collection<Integer> collection = stream.collect(Collectors.toList());
+
+    assertThat(collection).isNotNull();
+    assertThat(collection).hasSize(3);
+    assertThat(collection).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  public void streamFromSingleElementIterator() {
+
+    Iterator<Integer> iterator = Collections.singleton(1).iterator();
+
+    Stream<Integer> stream = StreamUtils.stream(iterator);
+
+    assertThat(stream).isNotNull();
+
+    Collection<Integer> collection = stream.collect(Collectors.toSet());
+
+    assertThat(collection).isNotNull();
+    assertThat(collection).hasSize(1);
+    assertThat(collection).containsExactly(1);
+  }
+
+  @Test
+  public void streamFromEmptyIterator() {
+
+    Stream<?> stream = StreamUtils.stream(Collections.emptyIterator());
+
+    assertThat(stream).isNotNull();
+
+    Collection<?> collection = stream.collect(Collectors.toSet());
+
+    assertThat(collection).isNotNull();
+    assertThat(collection).isEmpty();
+  }
+
+  @Test
+  public void streamFromNullIterator() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> StreamUtils.stream((Iterator<?>) null))
+      .withMessage("Iterator is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void streamFromEnumeration() {
+
+    Enumeration<Integer> enumeration = ArrayUtils.asEnumeration(1, 2, 3);
+
+    Stream<Integer> stream = StreamUtils.stream(enumeration);
+
+    assertThat(stream).isNotNull();
+
+    Collection<Integer> collection = stream.collect(Collectors.toList());
+
+    assertThat(collection).isNotNull();
+    assertThat(collection).hasSize(3);
+    assertThat(collection).containsExactly(1, 2, 3);
+  }
+
+  @Test
+  public void streamFromSingleElementEnumeration() {
+
+    Enumeration<Integer> enumeration = ArrayUtils.asEnumeration(1);
+
+    Stream<Integer> stream = StreamUtils.stream(enumeration);
+
+    assertThat(stream).isNotNull();
+
+    Collection<Integer> collection = stream.collect(Collectors.toList());
+
+    assertThat(collection).isNotNull();
+    assertThat(collection).hasSize(1);
+    assertThat(collection).containsExactly(1);
+  }
+
+  @Test
+  public void streamFromEmptyEnumeration() {
+
+    Stream<?> stream = StreamUtils.stream(Collections.emptyEnumeration());
+
+    assertThat(stream).isNotNull();
+
+    Collection<?> collection = stream.collect(Collectors.toList());
+
+    assertThat(collection).isNotNull();
+    assertThat(collection).isEmpty();
+  }
+
+  @Test
+  public void streamFromNullEnumeration() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> StreamUtils.stream((Enumeration<?>) null))
+      .withMessage("Enumeration is required")
+      .withNoCause();
+  }
+
+  @Test
   public void streamFromCollection() {
 
     List<Integer> list = Arrays.asList(1, 2, 3);
+
     Stream<Integer> stream = StreamUtils.stream(list);
 
     assertThat(stream).isNotNull();
