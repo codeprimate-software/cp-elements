@@ -18,13 +18,13 @@ package org.cp.elements.io;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
-import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
@@ -32,7 +32,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Abstract utility class used to perform basic input and output (I/O) operations.
+ * Abstract utility class used to execute basic input and output (I/O) operations.
  *
  * @author John J. Blum
  * @see java.io.ByteArrayInputStream
@@ -51,23 +51,22 @@ public abstract class IOUtils {
   protected static final int DEFAULT_BUFFER_SIZE = 32768;
 
   /**
-   * Attempts to close the {@link Closeable} object, ignoring any {@link IOException} that may occur as a result
-   * of the close operation.
+   * Attempts to close the {@link Closeable object}, ignoring any {@link IOException} that may by thrown as a result
+   * of the {@link Closeable#close()} operation.
    *
-   * @param obj the {@link Closeable} object who's {@code close} method will be called.
-   * @return a boolean value indicating if the close operation was successful or not.
+   * @param target {@link Closeable object} to close.
+   * @return a boolean value indicating if the {@link Closeable#close()} operation was successful.
    * @see java.io.Closeable
    */
   @NullSafe
-  public static boolean close(@Nullable Closeable obj) {
+  public static boolean close(@Nullable Closeable target) {
 
-    if (obj != null) {
+    if (target != null) {
       try {
-        obj.close();
+        target.close();
         return true;
       }
-      catch (IOException ignore) {
-      }
+      catch (IOException ignore) { }
     }
 
     return false;
@@ -76,13 +75,16 @@ public abstract class IOUtils {
   /**
    * Copies the contents of the source {@link InputStream} to the target {@link OutputStream}.
    *
-   * @param in the source {@link InputStream} to copy bytes from.
-   * @param out the target {@link OutputStream} to copy bytes to.
-   * @throws IOException if the copy operation results in an I/O error.
+   * @param in {@link InputStream} used as the source to copy bytes from; must not be {@literal null}.
+   * @param out {@link OutputStream} used as the target to copy bytes to; must not be {@literal null}.
+   * @throws IOException if this copy operation results in an I/O error.
    * @see java.io.InputStream
    * @see java.io.OutputStream
    */
   public static void copy(@NotNull InputStream in, @NotNull OutputStream out) throws IOException {
+
+    Assert.notNull(in, "InputStream is required");
+    Assert.notNull(out, "OutputStream is required");
 
     byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
 
@@ -93,14 +95,17 @@ public abstract class IOUtils {
   }
 
   /**
-   * Performs a Input/Output (I/O) operation in a safe manner, handling any {@link IOException} that may be thrown
-   * while performing the IO.
+   * Performs the given, required Input/Output (I/O) operation in a safe manner, handling any {@link IOException}
+   * that may be thrown while performing the I/O.
    *
-   * @param operation I/O operation to perform.
-   * @return a boolean value indicating whether the I/O operation was successful or not.
+   * @param operation {@link IoExceptionThrowingOperation} to perform; must not be {@literal null}.
+   * @return a boolean value indicating whether the I/O operation was successful.
+   * @throws IllegalArgumentException if the given I/O operation is {@literal null}.
    * @see org.cp.elements.io.IOUtils.IoExceptionThrowingOperation
    */
   public static boolean doSafeIo(@NotNull IoExceptionThrowingOperation operation) {
+
+    Assert.notNull(operation, "I/O operation is required");
 
     try {
       operation.doIo();
@@ -112,14 +117,16 @@ public abstract class IOUtils {
   }
 
   /**
-   * Deserializes the given byte array back into an {@link Object} of the desired {@link Class} type.
+   * Deserializes the given, required byte array into an {@link Object} of the declared {@link Class type}.
    *
-   * @param <T> class type of the object deserialized from the given bytes.
-   * @param serializedObjectBytes an array containing the bytes of a serialized object.
-   * @return a {@link java.io.Serializable} object from the array of bytes.
-   * @throws ClassNotFoundException if the class type of the serialized object cannot be resolved.
-   * @throws IOException if an I/O error occurs during the deserialization process.
-   * @throws NullPointerException if the serialized object byte array is null.
+   * @param <T> {@link Class type} of {@link Object} deserialized from the given bytes.
+   * @param serializedObjectBytes byte array containing the bytes of the object to deserialize;
+   * must not be {@literal null}.
+   * @return an {@link Object} deserialized from the given array of bytes.
+   * @throws ClassNotFoundException if the {@link Class type} of the serialized {@link Object} cannot be resolved.
+   * @throws EOFException if the byte array does not contain the complete contents of a serialized {@link Object}.
+   * @throws IOException if an I/O error occurs during deserialization.
+   * @throws IllegalArgumentException if the byte array is {@literal null}.
    * @see #deserialize(byte[], ClassLoader)
    * @see #serialize(Object)
    * @see java.io.ByteArrayInputStream
@@ -129,59 +136,53 @@ public abstract class IOUtils {
   @SuppressWarnings("unchecked")
   public static <T> T deserialize(byte[] serializedObjectBytes) throws ClassNotFoundException, IOException {
 
-    ObjectInputStream in = null;
+    Assert.notNull(serializedObjectBytes, "An array of bytes to deserialize as an Object is required");
 
-    try {
-      in = new ObjectInputStream(new ByteArrayInputStream(serializedObjectBytes));
+    try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(serializedObjectBytes))){
       return (T) in.readObject();
-    }
-    finally {
-      close(in);
     }
   }
 
   /**
-   * Deserializes the given byte array back into an {@link Object} of a desired {@link Class} type that is resolvable
-   * with the given {@link ClassLoader}.
+   * Deserializes the given, required byte array into an {@link Object} of the declared {@link Class type}
+   * that is resolvable from the given {@link ClassLoader}.
    *
-   * @param <T> class type of the object deserialized from the given bytes.
-   * @param serializedObjectBytes an array containing the bytes of a serialized object.
-   * @param classLoader the Java {@link ClassLoader} used to resolve the {@link Class} type
+   * @param <T> {@link Class type} of {@link Object} deserialized from the given bytes.
+   * @param serializedObjectBytes byte array containing the bytes of the object to deserialize;
+   * must not be {@literal null}.
+   * @param classLoader Java {@link ClassLoader} used to resolve the {@link Class type}
    * of the serialized {@link Object}.
-   * @return a {@link java.io.Serializable} object from the array of bytes.
-   * @throws ClassNotFoundException if the class type of the serialized object cannot be resolved
-   * by the specified Java {@link ClassLoader}.
-   * @throws IOException if an I/O error occurs while deserializing the object from the array of bytes.
-   * @throws NullPointerException if the serialized object byte array is null.
+   * @return an {@link Object} deserialized from the given array of bytes.
+   * @throws ClassNotFoundException if the {@link Class type} of the serialized {@link Object} cannot be resolved
+   * using the given Java {@link ClassLoader}.
+   * @throws EOFException if the byte array does not contain the complete contents of a serialized {@link Object}.
+   * @throws IOException if an I/O error occurs during deserialization.
+   * @throws IllegalArgumentException if the byte array is {@literal null}.
+   * @see org.cp.elements.io.IOUtils.ClassLoaderObjectInputStream
    * @see #deserialize(byte[])
    * @see #serialize(Object)
-   * @see IOUtils.ClassLoaderObjectInputStream
-   * @see java.lang.ClassLoader
    * @see java.io.ByteArrayInputStream
    * @see java.io.ObjectInputStream
    * @see java.io.Serializable
+   * @see java.lang.ClassLoader
    */
   @SuppressWarnings("unchecked")
   public static <T> T deserialize(byte[] serializedObjectBytes, ClassLoader classLoader)
       throws ClassNotFoundException, IOException {
 
-    ObjectInputStream in = null;
+    Assert.notNull(serializedObjectBytes, "An array of bytes to deserialize as an Object is required");
 
-    try {
-      in = new ClassLoaderObjectInputStream(new ByteArrayInputStream(serializedObjectBytes), classLoader);
+    try (ObjectInputStream in = new ClassLoaderObjectInputStream(new ByteArrayInputStream(serializedObjectBytes), classLoader)){
       return (T) in.readObject();
-    }
-    finally {
-      close(in);
     }
   }
 
   /**
-   * Serializes the given {@link java.io.Serializable} object into an array fo bytes.
+   * Serializes the given {@link java.io.Serializable} {@link Object} into an array of bytes.
    *
-   * @param obj the {@link java.io.Serializable} object to serialize into an array of bytes.
-   * @return the byte array of the serialized object.
-   * @throws IOException if an I/O error occurs during the serialization process.
+   * @param obj {@link java.io.Serializable} {@link Object} to serialize into an array of bytes.
+   * @return the byte array of the serialized {@link Object}.
+   * @throws IOException if an I/O error occurs during serialization.
    * @see #deserialize(byte[])
    * @see java.io.ByteArrayOutputStream
    * @see java.io.ObjectOutputStream
@@ -191,34 +192,27 @@ public abstract class IOUtils {
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    ObjectOutputStream objOut = null;
-
-    try {
-      objOut = new ObjectOutputStream(out);
-      objOut.writeObject(obj);
-      objOut.flush();
-
+    try (ObjectOutputStream objectOutput = new ObjectOutputStream(out)) {
+      objectOutput.writeObject(obj);
+      objectOutput.flush();
       return out.toByteArray();
-    }
-    finally {
-      close(objOut);
     }
   }
 
   /**
-   * Reads the contents of the specified {@link InputStream} into a byte array.
+   * Reads the contents of the given, required {@link InputStream} into a byte array.
    *
-   * @param in the {@link InputStream} to read content from.
+   * @param in {@link InputStream} to read content from; must not be {@literal null}.
    * @return a byte array containing the contents of the given {@link InputStream}.
-   * @throws IOException if an I/O error occurs while reading the {@link InputStream}.
-   * @throws NullPointerException if the {@link InputStream} source is null.
+   * @throws IOException if an I/O error occurs while reading from the {@link InputStream}.
+   * @throws IllegalArgumentException if the {@link InputStream} is {@literal null}.
    * @see java.io.ByteArrayOutputStream
    * @see java.io.InputStream
    */
   @NullSafe
   public static byte[] toByteArray(@NotNull InputStream in) throws IOException {
 
-    Assert.notNull(in, "The InputStream to read bytes from cannot be null");
+    Assert.notNull(in, "InputStream is required");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream(in.available());
 
@@ -235,31 +229,52 @@ public abstract class IOUtils {
   }
 
   /**
-   * The ClassLoaderObjectInputStream class is a {@link ObjectInputStream} implementation that resolves
-   * the {@link Class} type of the {@link Object} being deserialized with the specified Java {@link ClassLoader}.
+   * {@link ObjectInputStream} implementation that resolves the {@link Class type} of the {@link Object}
+   * being deserialized with the configured Java {@link ClassLoader}.
    *
    * @see java.lang.ClassLoader
+   * @see java.lang.ClassLoader#getSystemClassLoader()
    * @see java.lang.Thread#getContextClassLoader()
    * @see java.io.ObjectInputStream
    */
   protected static class ClassLoaderObjectInputStream extends ObjectInputStream {
 
+    protected static final ClassLoader DEFAULT_CLASS_LOADER = Thread.currentThread().getContextClassLoader();
+
     private final ClassLoader classLoader;
 
-    protected ClassLoaderObjectInputStream(InputStream in, ClassLoader classLoader) throws IOException {
+    /**
+     * Constructs a new instance of {@link ClassLoaderObjectInputStream} initialized with the given,
+     * required {@link InputStream} from which the {@link Object} will be read and deserialized along with
+     * the given {@link ClassLoader} used to resolve the {@link Class type} of the serialized {@link Object}.
+     *
+     * @param in {@link InputStream} source for the serialized {@link Object} bytes; must not be {@literal null}.
+     * @param classLoader {@link ClassLoader} used to resolve the {@link Class type} of the serialized {@link Object}.
+     * @throws IOException if an I/O error occurs during initialization.
+     * @see java.lang.ClassLoader
+     * @see java.io.InputStream
+     */
+    protected ClassLoaderObjectInputStream(@NotNull InputStream in, @Nullable ClassLoader classLoader)
+        throws IOException {
 
       super(in);
-
-      this.classLoader = Optional.ofNullable(classLoader)
-        .orElseGet(() -> Thread.currentThread().getContextClassLoader());
+      this.classLoader = classLoader != null ? classLoader : DEFAULT_CLASS_LOADER;
     }
 
-    protected ClassLoader getClassLoader() {
+    /**
+     * Returns a reference to the configured {@link ClassLoader} used to resolve the {@link Class type}
+     * of the serialized {@link Object}.
+     *
+     * @return a reference to the configured {@link ClassLoader} used to resolve the {@link Class type}
+     * of the serialized {@link Object}.
+     * @see java.lang.ClassLoader
+     */
+    protected @NotNull ClassLoader getClassLoader() {
       return this.classLoader;
     }
 
     @Override
-    protected Class<?> resolveClass(ObjectStreamClass descriptor) throws ClassNotFoundException , IOException {
+    protected @NotNull Class<?> resolveClass(@NotNull ObjectStreamClass descriptor) throws ClassNotFoundException {
       return Class.forName(descriptor.getName(), false, getClassLoader());
     }
   }
