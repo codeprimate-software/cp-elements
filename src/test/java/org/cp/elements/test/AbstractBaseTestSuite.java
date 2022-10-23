@@ -13,21 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.test;
 
 import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.stream.StreamUtils;
+
 /**
- * The {@link AbstractBaseTestSuite} class is an abstract base class containing functionality common to
- * all test classes and test suites in the cp-elements project.
+ * Abstract base class containing functionality common to all test classes and test suites
+ * in the {@literal cp-elements} project.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see java.util.logging.Logger
  * @since 1.0.0
  */
@@ -37,6 +44,11 @@ public abstract class AbstractBaseTestSuite {
   protected static final File TEMPORARY_DIRECTORY = new File(System.getProperty("java.io.tmpdir"));
   protected static final File USER_HOME = new File(System.getProperty("user.home"));
   protected static final File WORKING_DIRECTORY = new File(System.getProperty("user.dir"));
+
+  protected static final String BUILD_DIRECTORY_NAME = "build";
+  protected static final String CLASSES_DIRECTORY_NAME = "classes";
+  protected static final String SOURCE_DIRECTORY_NAME = "src";
+  protected static final String TARGET_DIRECTORY_NAME = "target";
 
   private final Logger logger;
 
@@ -56,7 +68,7 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected String getBuildDirectoryName() {
-    return Boolean.getBoolean("gradle.build") ? "build" : "target";
+    return Boolean.getBoolean("gradle.build") ? BUILD_DIRECTORY_NAME : TARGET_DIRECTORY_NAME;
   }
 
   protected File getClassesDirectory() {
@@ -65,11 +77,12 @@ public abstract class AbstractBaseTestSuite {
 
   protected String getClassesDirectoryName() {
 
-    return Boolean.getBoolean("gradle.build") ?
-      String.format("%1$s%2$s%3$s%4$s%5$s", "classes", File.separator, "java", File.separator, "main") : "classes";
+    return Boolean.getBoolean("gradle.build")
+      ? CLASSES_DIRECTORY_NAME.concat(File.separator).concat("java").concat(File.separator).concat("main")
+      : CLASSES_DIRECTORY_NAME;
   }
 
-  protected File getLocation(Class type) {
+  protected File getLocation(Class<?> type) {
 
     String pathname = type.getName().replaceAll("\\.", "/").concat(".class");
 
@@ -78,17 +91,53 @@ public abstract class AbstractBaseTestSuite {
 
   protected File getProjectHomeDirectory() {
 
-    File projectHomeDirectory = WORKING_DIRECTORY;
+    if (!WORKING_DIRECTORY.getAbsolutePath().contains(getProjectHomeDirectoryName())) {
 
-    while (projectHomeDirectory != null && !getProjectHomeDirectoryName().equals(projectHomeDirectory.getName())) {
-      projectHomeDirectory = projectHomeDirectory.getParentFile();
+      File resolvedProjectHomeDirectory =  searchForProjectHomeDirectory(WORKING_DIRECTORY);
+
+      Assert.state(resolvedProjectHomeDirectory != null,
+        "Unable to find project directory [%s] in working directory [%s]",
+        getProjectHomeDirectoryName(), WORKING_DIRECTORY);
+
+      return resolvedProjectHomeDirectory;
     }
-
-    return projectHomeDirectory;
+    else {
+      int index = WORKING_DIRECTORY.getAbsolutePath().indexOf(getProjectHomeDirectoryName());
+      Assert.isTrue(index > -1,
+        "Expected project home directory [%s] to be in the path of the working directory [%s]",
+        getProjectHomeDirectoryName(), WORKING_DIRECTORY);
+      return new File(WORKING_DIRECTORY.getAbsolutePath().substring(0, index), getProjectHomeDirectoryName());
+    }
   }
 
   protected String getProjectHomeDirectoryName() {
     return "cp-elements";
+  }
+
+  private @Nullable File searchForProjectHomeDirectory(@NotNull File baseDirectory) {
+
+    Assert.notNull(baseDirectory, "Directory to search is required");
+    Assert.isTrue(baseDirectory.isDirectory(), "Pathname [%s] must be a directory", baseDirectory);
+
+    FileFilter matchingDirectoryFilter = file ->
+      file != null && file.getName().equals(getProjectHomeDirectoryName());
+
+    File[] subdirectories = ArrayUtils.nullSafeArray(baseDirectory.listFiles(file ->
+      file != null && file.isDirectory()), File.class);
+
+    for (File subdirectory : subdirectories) {
+      if (matchingDirectoryFilter.accept(subdirectory)) {
+        return subdirectory;
+      }
+      else {
+        File resolvedProjectHomeDirectory = searchForProjectHomeDirectory(subdirectory);
+        if (matchingDirectoryFilter.accept(resolvedProjectHomeDirectory)) {
+          return resolvedProjectHomeDirectory;
+        }
+      }
+    }
+
+    return null;
   }
 
   protected File getSourceDirectory() {
@@ -96,10 +145,10 @@ public abstract class AbstractBaseTestSuite {
   }
 
   protected String getSourceDirectoryName() {
-    return "src";
+    return SOURCE_DIRECTORY_NAME;
   }
 
-  protected void logDebug(final String message) {
+  protected void logDebug(String message) {
 
     if (this.logger.isLoggable(Level.FINE) || this.logger.isLoggable(Level.FINER)
         || this.logger.isLoggable(Level.FINEST)) {
@@ -108,39 +157,39 @@ public abstract class AbstractBaseTestSuite {
     }
   }
 
-  protected void logConfig(final String message) {
+  protected void logConfig(String message) {
 
     if (this.logger.isLoggable(Level.CONFIG)) {
       this.logger.config(message);
     }
   }
 
-  protected void logInfo(final String message) {
+  protected void logInfo(String message) {
 
     if (this.logger.isLoggable(Level.INFO)) {
       this.logger.info(message);
     }
   }
 
-  protected void logWarning(final String message) {
+  protected void logWarning(String message) {
 
     if (this.logger.isLoggable(Level.WARNING)) {
       this.logger.warning(message);
     }
   }
 
-  protected void logError(final String message) {
+  protected void logError(String message) {
 
     if (this.logger.isLoggable(Level.SEVERE)) {
       this.logger.severe(message);
     }
   }
 
-  protected void setLogLevel(final Level logLevel) {
+  protected void setLogLevel(Level logLevel) {
 
     this.logger.setLevel(logLevel);
 
-    stream(this.logger.getHandlers()).forEach(logHandler -> {
+    StreamUtils.stream(this.logger.getHandlers()).forEach(logHandler -> {
       if (logHandler instanceof ConsoleHandler) {
         logHandler.setLevel(logLevel);
       }

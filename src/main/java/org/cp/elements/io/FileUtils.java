@@ -15,8 +15,6 @@
  */
 package org.cp.elements.io;
 
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,16 +28,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
- * Abstract utility {@link Class} encapsulating several utility methods for procesing {@link File Files}.
+ * Abstract utility class encapsulating methods used to process {@link File Files}.
  *
  * @author John J. Blum
  * @see java.io.File
+ * @see java.io.FileOutputStream
  * @see java.io.FileReader
  * @see java.io.InputStream
  * @see java.io.OutputStream
@@ -54,11 +55,15 @@ public abstract class FileUtils extends IOUtils {
   public static final String JAVA_FILE_EXTENSION = ".java";
   public static final String KOTLIN_FILE_EXTENSION = ".kt";
 
+  protected static final String FILE_EXTENSION_SEPARATOR = StringUtils.DOT_SEPARATOR;
+  protected static final String NO_FILE_EXTENSION = StringUtils.EMPTY_STRING;
+  protected static final String NO_FILE_NAME = StringUtils.EMPTY_STRING;
+
   /**
    * Asserts that the given {@link File} exists.
    *
    * @param path {@link File} to assert for existence.
-   * @return a reference back to the given {@link File}.
+   * @return the given {@link File}; never {@literal null}.
    * @throws java.io.FileNotFoundException if the {@link File} does not exist.
    * @see #isExisting(File)
    * @see java.io.File
@@ -74,16 +79,16 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Creates a file system directory with the given {@link File} path.
+   * Creates a file system directory with the given {@link File path}.
    *
-   * @param path the given {@link File} indicating the file system path of the directory to create.
-   * @return true if the path represented by the {@link File} object is not null, is not an existing file,
-   * or the path can be created as a directory if it does not already exist.  Returns true if the directory
-   * already exists.
+   * @param path {@link File} referring to the file system path of the directory to create.
+   * @return {@literal true} if the {@literal path} represented by the {@link File} is not {@literal null},
+   * is not an existing {@link File#isFile()}, or the {@literal path} can be created as a directory.
+   * Returns {@literal true} if the directory already exists.
    * @see java.io.File#mkdirs()
    */
   @NullSafe
-  public static boolean createDirectory(File path) {
+  public static boolean createDirectory(@Nullable File path) {
 
     return path != null
       && !path.isFile()
@@ -91,15 +96,16 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Creates a file system file with the given {@link File} path.
+   * Creates a file system file with the given {@link File path}.
    *
-   * @param path the given {@link File} indicating the absolute location and name of the file.
-   * @return true if the path represented by the {@link File} object is not null, is not an existing directory,
-   * or the path can be created as a file if it does not already exist.  Returns true if the file already exists.
+   * @param path {@link File} referring to the absolute location and name of the file to create.
+   * @return {@literal true} if the path represented by the {@link File} is not {@literal null},
+   * is not an existing {@link File#isDirectory()}, or the {@literal path} can be created as a file.
+   * Returns {@literal true} if the file already exists.
    * @see java.io.File#createNewFile()
    */
   @NullSafe
-  public static boolean createFile(File path) {
+  public static boolean createFile(@Nullable File path) {
 
     try {
       return path != null
@@ -114,81 +120,85 @@ public abstract class FileUtils extends IOUtils {
   /**
    * Deletes the given {@link File}.
    *
-   * @param path the {@link File} to delete.
+   * @param path {@link File} to delete.
    * @return a boolean value indicating whether the given {@link File} was deleted successfully.
-   * Returns false if the {@link File} references is null or does not exist.
+   * Returns {@literal false} if the {@link File} references is {@literal null}
+   * or does not {@link #isExisting(File) exist}.
    * @see java.io.File#delete()
    * @see #isExisting(File)
    */
   @NullSafe
-  public static boolean delete(File path) {
+  public static boolean delete(@Nullable File path) {
     return isExisting(path) && path.delete();
   }
 
   /**
-   * Returns the {@link String extension} of the given {@link File}.
+   * Returns the {@link String extension} of the given, required {@link File}.
    *
-   * @param file {@link File} from which to get the {@link String extension}.
-   * @return the {@link File} {@link String extension} of the given {@link File} or an empty {@link String}
-   * if the {@link File} does not have an extension.
-   * @throws java.lang.NullPointerException if the {@link File} reference is {@literal null}.
+   * @param file {@link File} from which to get the {@link String extension}; must not be {@literal null}.
+   * @return the {@link File} {@link String extension} or an empty {@link String} if the {@link File}
+   * does not have an {@link String extension}.
+   * @throws IllegalArgumentException if the {@link File} reference is {@literal null}.
    * @see java.io.File#getName()
    */
-  public static String getExtension(@NotNull File file) {
+  public static @NotNull String getExtension(@NotNull File file) {
 
-    Assert.notNull(file, "File cannot be null");
+    Assert.notNull(file, "File is required");
 
     String filename = file.getName();
 
-    int dotIndex = filename.indexOf(StringUtils.DOT_SEPARATOR);
+    int dotIndex = filename.indexOf(FILE_EXTENSION_SEPARATOR);
 
-    return dotIndex != -1 ? filename.substring(dotIndex + 1) : StringUtils.EMPTY_STRING;
+    return dotIndex > -1 ? filename.substring(dotIndex + 1) : NO_FILE_EXTENSION;
   }
 
   /**
-   * Returns the {@link String absolute path} of the given {@link File}.
+   * Returns the {@link String absolute path (location)} of the given, required {@link File}.
    *
-   * @param file {@link File} from which to get the {@link String absolute filesystem path}.
-   * @return a {@link String} containing the absolute filesystem pathname (location) of the given {@link File}.
-   * @throws java.lang.NullPointerException if the {@link File} reference is {@literal null}.
+   * @param file {@link File} to determine {@link String absolute filesystem path}; must not be {@literal null}.
+   * @return a {@link String} containing the {@literal absolute filesystem pathname (location)} of the given {@link File}.
+   * @throws IllegalArgumentException if the {@link File} reference is {@literal null}.
    * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    * @see java.io.File#getParentFile()
    */
-  public static String getLocation(@NotNull File file) {
+  public static @NotNull String getLocation(@NotNull File file) {
 
-    Assert.notNull(file, "File cannot be null");
+    Assert.notNull(file, "File is required");
 
     File parent = file.getParentFile();
 
-    Assert.notNull(parent, newIllegalArgumentException("Unable to determine the location of file [%1$s]", file));
+    Assert.notNull(parent, "Location of file [%s] cannot be determined", file);
 
     return tryGetCanonicalPathElseGetAbsolutePath(parent);
   }
 
   /**
-   * Returns the {@link String name} of the given {@link File} without it's extension.
+   * Returns the {@link String name} of the given, required {@link File}
+   * without the {@link File File's} {@link String extension}.
    *
-   * @param file {@link File} from which to get the {@link String name}.
-   * @return a {@link String} containing the name of the {@link File} without it's extension.
-   * @throws java.lang.NullPointerException if the {@link File} reference is {@literal null}.
+   * @param file {@link File} to get the {@link String name} of; must not be {@literal null}.
+   * @return a {@link String} containing the {@literal name} of the {@link File}.
+   * @throws IllegalArgumentException if the {@link File} reference is {@literal null}.
    * @see java.io.File#getName()
    */
-  public static String getName(@NotNull File file) {
+  public static @NotNull String getName(@NotNull File file) {
 
-    Assert.notNull(file, "File cannot be null");
+    Assert.notNull(file, "File is required");
 
     String filename = file.getName();
 
-    int dotIndex = filename.indexOf(StringUtils.DOT_SEPARATOR);
+    int dotIndex = filename.indexOf(FILE_EXTENSION_SEPARATOR);
 
-    return dotIndex != -1 ? filename.substring(0, dotIndex) : filename;
+    filename = dotIndex != -1 ? filename.substring(0, dotIndex) : filename;
+
+    return filename.trim();
   }
 
   /**
-   * Determines whether the given file actually exists and is a directory.
+   * Determines whether the given {@link File} exists and is a {@link File#isDirectory() directory}.
    *
-   * @param path the {@link File} to be evaluated as a directory.
-   * @return a boolean valued indicating whether the given file actually exists and is a directory.
+   * @param path {@link File} to evaluate as a directory.
+   * @return a boolean value indicating whether the given {@link File} is a {@link File#isDirectory() directory}.
    * @see java.io.File#isDirectory()
    */
   @NullSafe
@@ -199,21 +209,41 @@ public abstract class FileUtils extends IOUtils {
   /**
    * Determines whether the given {@link File} has any content.
    *
-   * @param path the {@link File} to evaluate.
+   * If the {@link File} refers to a {@link File#isDirectory() directory}, then the directory is empty
+   * if it contains not files or subdirectories.
+   *
+   * @param path {@link File} to evaluate for content.
    * @return a boolean value indicating whether the given {@link File} has any content.
    * @see java.io.File#length()
+   * @see #isDirectory(File)
    * @see #size(File)
    */
   @NullSafe
   public static boolean isEmpty(@Nullable File path) {
-    return size(path) == 0L;
+
+    return isDirectory(path)
+      ? ArrayUtils.nullSafeLength(path.listFiles()) == 0
+      : size(path) == 0L;
   }
 
   /**
-   * Determines whether the given file actually exists.
+   * Determines whether the given {@link File} has any content.
    *
-   * @param path the {@link File} to evaluate.
-   * @return a boolean valued indicating whether the given file actually exists.
+   * @param path {@link File} to evaluate for content.
+   * @return a boolean value indicating whether the given {@link File} has any content.
+   * @see #isEmpty(File)
+   * @see java.io.File
+   */
+  @NullSafe
+  public static boolean isNotEmpty(@Nullable File path) {
+    return !isEmpty(path);
+  }
+
+  /**
+   * Determines whether the given {@link File} {@link File#exists()}.
+   *
+   * @param path {@link File} to evaluate.
+   * @return a boolean valued indicating whether the given {@link File} {@link File#exists()}.
    * @see java.io.File#exists()
    */
   @NullSafe
@@ -222,10 +252,22 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Determines whether the given file actually exists and is a file.
+   * Determines whether the given {@link File} {@link File#exists()}.
    *
-   * @param path the {@link File} to be evaluated as a file.
-   * @return a boolean valued indicating whether the given file actually exists and is a file.
+   * @param path {@link File} to evaluate.
+   * @return a boolean valued indicating whether the given {@link File} {@link File#exists()}.
+   * @see #isExisting(File)
+   * @see java.io.File
+   */
+  public static boolean isNonExisting(@Nullable File path) {
+    return !isExisting(path);
+  }
+
+  /**
+   * Determines whether the given {@link File} exists and is a {@link File#isFile() file}.
+   *
+   * @param path {@link File} to evaluate as a file.
+   * @return a boolean valued indicating whether the given {@link File} exists and is a {@link File#isFile() file}.
    * @see java.io.File#isFile()
    */
   @NullSafe
@@ -234,25 +276,26 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Creates a new instance of {@link File} initialized with the given {@link String pathname}.
+   * Constructs a new instance of {@link File} initialized with the given {@link String pathname}.
    *
-   * @param pathname {@link String} containing the path of the {@link File} to create.
-   * @return a new {@link File} initialized with the given {@link String pathname}.
-   * @throws NullPointerException if {@link String pathname} is {@literal null}.
+   * @param pathname {@link String} containing the {@literal pathname} of the {@link File} to create;
+   * must not be {@literal null}.
+   * @return a new {@link File} with the given {@link String pathname}.
+   * @throws IllegalArgumentException if the {@link String pathname} is {@literal null}.
    * @see java.io.File#File(String)
    */
   public static @NotNull File newFile(@NotNull String pathname) {
-    return new File(pathname);
+    return new File(ObjectUtils.requireObject(pathname, "A pathname for the File is required"));
   }
 
   /**
-   * Reads the contents from the given {@link File} into a {@link String}.
+   * Reads the contents of the given, required {@link File} into a {@link String}.
    *
-   * @param file {@link File} to read.
+   * @param file {@link File} to read; must not be {@literal null}.
    * @return a {@link String} containing the contents of the {@link File}.
-   * @throws IOException if the given {@link File} cannot be read.
-   * @throws IllegalArgumentException if the {@link File} is not valid.
+   * @throws IllegalArgumentException if the {@link File} is not a valid file.
    * @throws IllegalStateException if the {@link File} is not readable.
+   * @throws IOException if the given {@link File} cannot be read.
    * @see #readLines(File)
    * @see java.io.File
    */
@@ -269,20 +312,21 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Reads the contents of the given {@link File} into a {@link String}.
+   * Reads the contents of the given, required {@link File} into a {@link List} containing an {@link String element}
+   * for each {@link String line} in the {@link File}.
    *
-   * @param file the source {@link File} to read the contents from.
-   * @return a {@link String} containing the contents of the given {@link File}.
+   * @param file {@link File} to read the contents from; must not be {@literal null}.
+   * @return a {@link List} of {@link String Strings} containing the contents of the {@link File}.
    * @throws IOException if an I/O error occurs while reading the {@link File}.
    * @throws IllegalArgumentException if the {@link File} is not a valid file.
-   * @throws IllegalStateException if the file cannot be read.
+   * @throws IllegalStateException if the {@link File} cannot be read.
    * @see java.io.File#canRead()
    * @see #isFile(File)
    */
   public static List<String> readLines(@NotNull File file) throws IOException {
 
-    Assert.isTrue(isFile(file), "[%s] must be a valid file", file);
-    Assert.state(file.canRead(), "[%s] is unreadable", tryGetCanonicalPathElseGetAbsolutePath(file));
+    Assert.isTrue(isFile(file), "[%s] must be a file", file);
+    Assert.state(file.canRead(), "[%s] is not readable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
     try (BufferedReader fileReader = new BufferedReader(new FileReader(file))) {
       return fileReader.lines().collect(Collectors.toList());
@@ -290,12 +334,13 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Determines the size in bytes of the given {@link File}.  If the {@link File} is null or does not exist,
-   * then 0 is returned.
+   * Determines the size in bytes of the given {@link File}.
    *
-   * @param path the {@link File} to evaluate.
-   * @return a long value indicating the size of the given {@link File} in bytes.  If the {@link File} is null
-   * or does not exist, then 0 is returned.
+   * If the {@link File} is {@literal null} or does not {@link File#exists() exist}, then {@literal 0} is returned.
+   *
+   * @param path {@link File} to evaluate.
+   * @return a {@link Long#TYPE} value for the size of the {@link File} in bytes. If the {@link File} is {@literal null}
+   * or does not {@link File#exists() exist}, then {@literal 0} is returned.
    * @see java.io.File#length()
    * @see #isFile(File)
    */
@@ -305,18 +350,20 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Attempts to the get the canonical form of the given file, otherwise returns the absolute form of the file.
+   * Attempts to the get the {@link File#getCanonicalFile() canonical form} of the given {@link File},
+   * otherwise returns the {@link File#getAbsoluteFile() absolute form} of the {@link File}.
    *
-   * @param file the {@link File} from which the canonical or absolute file will be returned.
-   * @return the canonical form of the file unless an IOException occurs then return the absolute form of the file.
-   * @throws NullPointerException if the file reference is null.
-   * @see java.io.File#getAbsoluteFile()
+   * @param file {@link File} from which to return the {@link File#getCanonicalFile()}; must not be {@literal null}.
+   * @return the {@link File#getCanonicalFile() canonical form} of the {@link File} unless an {@link IOException} occurs
+   * then return the {@link File#getAbsoluteFile() absolute form} of the {@link File}.
+   * @throws IllegalArgumentException if the {@link File} reference is {@literal null}.
    * @see java.io.File#getCanonicalFile()
+   * @see java.io.File#getAbsoluteFile()
    */
   public static @NotNull File tryGetCanonicalFileElseGetAbsoluteFile(@NotNull File file) {
 
     try {
-      return file.getCanonicalFile();
+      return ObjectUtils.requireObject(file, "File is required").getCanonicalFile();
     }
     catch (IOException ignore) {
       return file.getAbsoluteFile();
@@ -324,17 +371,20 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Attempts to the get the canonical path of the given file, otherwise returns the absolute path of the file.
+   * Attempts to the get the {@link File#getCanonicalPath() canonical form} of the given {@link File},
+   * otherwise returns the {@link File#getAbsolutePath() absolute form} of the {@link File}.
    *
-   * @param file the {@link File} from which the canonical or absolute path will be returned.
-   * @return the canonical path of the file unless an IOException occurs then return the absolute path of the file.
-   * @see java.io.File#getAbsolutePath()
+   * @param file {@link File} from which to return the {@link File#getCanonicalPath()}; must not be {@literal null}.
+   * @return the {@link File#getCanonicalPath() canonical form} of the {@link File} unless an {@link IOException} occurs
+   * then return the {@link File#getAbsolutePath() absolute form} of the {@link File}.
+   * @throws IllegalArgumentException if the {@link File} reference is {@literal null}.
    * @see java.io.File#getCanonicalPath()
+   * @see java.io.File#getAbsolutePath()
    */
   public static @NotNull String tryGetCanonicalPathElseGetAbsolutePath(@NotNull File file) {
 
     try {
-      return file.getCanonicalPath();
+      return ObjectUtils.requireObject(file, "File is required").getCanonicalPath();
     }
     catch (IOException ignore) {
       return file.getAbsolutePath();
@@ -342,25 +392,25 @@ public abstract class FileUtils extends IOUtils {
   }
 
   /**
-   * Writes the contents of the given {@link InputStream} out to the given {@link File}.
+   * Writes the contents of the given, required {@link InputStream} to the given, required {@link File}.
    *
-   * @param in the {@link InputStream} that is used as the source of the {@link File} content.
-   * @param file the {@link File} to write the contents of the {@link InputStream} to.
-   * @return the {@link File} be written.
-   * @throws IOException if writing the contents of the {@link InputStream} to the {@link File}
-   * results in an I/O error.
-   * @throws NullPointerException if either the {@link InputStream} or {@link File} reference are null.
-   * @throws IllegalStateException if the file exists and is not writable.
+   * @param in {@link InputStream} used as the source of the {@link File} content; must not be {@literal null}.
+   * @param file {@link File} to write the contents of the {@link InputStream} to; must not be {@literal null}.
+   * @return the given {@link File} reference containing the contents of the {@link InputStream}.
+   * @throws IllegalArgumentException if either the {@link InputStream} or {@link File} reference are {@literal null}.
+   * @throws IllegalStateException if the {@link File} {@link File#exists()} and is not {@link File#canWrite() writable}.
+   * @throws IOException if an I/O error occurs while writing the contents of the {@link InputStream}
+   * to the {@link File}.
+   * @see #copy(InputStream, OutputStream)
    * @see java.io.InputStream
    * @see java.io.File
-   * @see #copy(InputStream, OutputStream)
    */
   public static File write(@NotNull InputStream in, @NotNull File file) throws IOException {
 
-    Assert.notNull(in, "InputStream cannot be null");
-    Assert.notNull(file, "File cannot be null");
+    Assert.notNull(in, "InputStream is required");
+    Assert.notNull(file, "File is required");
 
-    boolean isWritable = !isExisting(file) || file.canWrite();
+    boolean isWritable = isNonExisting(file) || file.canWrite();
 
     Assert.state(isWritable, "[%s] is not writable", tryGetCanonicalPathElseGetAbsolutePath(file));
 
