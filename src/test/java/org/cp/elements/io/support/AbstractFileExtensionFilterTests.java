@@ -16,13 +16,16 @@
 package org.cp.elements.io.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.cp.elements.io.FileExtensionFilter;
 import org.junit.Test;
+
+import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * {@link AbstractFileExtensionFilterTests} is an abstract base class containing test cases common to all
@@ -44,7 +47,7 @@ public abstract class AbstractFileExtensionFilterTests {
 
   protected abstract FileExtensionFilter fileExtensionFilter();
 
-  protected File newFile(String pathname) {
+  protected @NotNull File newFile(@NotNull String pathname) {
     return new File(pathname);
   }
 
@@ -52,6 +55,7 @@ public abstract class AbstractFileExtensionFilterTests {
 
   @Test
   public void acceptIsSuccessfulWithExpectedFileExtensions() {
+
     Set<String> fileExtensions = fileExtensionFilter().getFileExtensions();
 
     assertThat(fileExtensions).isNotNull();
@@ -63,23 +67,18 @@ public abstract class AbstractFileExtensionFilterTests {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void acceptWithNullThrowsIllegalArgumentException() {
 
-    try {
-      fileExtensionFilter().accept(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("File cannot be null");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> fileExtensionFilter().accept(null))
+      .withMessage("File is required")
+      .withNoCause();
   }
 
   @Test
   public void rejectIsSuccessfulWithUnexpectedFileExtensions() {
+
     for (String fileExtension : unexpectedFileExtensions()) {
       assertThat(fileExtensionFilter().accept(newFile(fileExtension))).isFalse();
     }

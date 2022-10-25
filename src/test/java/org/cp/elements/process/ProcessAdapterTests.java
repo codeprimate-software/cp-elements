@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 import static org.mockito.ArgumentMatchers.any;
@@ -568,22 +569,18 @@ public class ProcessAdapterTests {
     }
   }
 
-  @Test(expected = PidUnknownException.class)
+  @Test
   public void getIdThrowsPidUnknownExceptionForNonExistingPidFile() {
 
-    try {
-      this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
-      newProcessAdapter(this.mockProcess, this.processContext).getId();
-    }
-    catch (PidUnknownException expected) {
-
-      assertThat(expected).hasMessage("Failed to read Process ID (PID) from file [null]");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessage("[null] must be a valid file");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    assertThatThrowableOfType(PidUnknownException.class)
+      .isThrownBy(args -> {
+        this.processContext.ranIn(FileSystemUtils.TEMPORARY_DIRECTORY);
+        return newProcessAdapter(this.mockProcess, this.processContext).getId();
+      })
+      .havingMessage("Failed to read Process ID (PID) from file [null]")
+      .causedBy(IllegalArgumentException.class)
+      .havingMessage("[null] must be a file")
+      .withNoCause();
   }
 
   @Test
