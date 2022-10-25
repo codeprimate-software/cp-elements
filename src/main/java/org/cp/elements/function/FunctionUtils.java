@@ -100,6 +100,19 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Null-safe method used to guard against a {@literal null} {@link Function}.
+   *
+   * @param <T> {@link Class type} of the {@link Function Function's} parameter and return value.
+   * @param function {@link Function} to guard against {@literal null}.
+   * @return the given {@link Function} if not {@literal null} or {@link Function#identity()}.
+   * @see java.util.function.Function
+   */
+  @NullSafe
+  public static @NotNull <T> Function<T, T> nullSafeFunction(@Nullable Function<T, T> function) {
+    return function != null ? function : Function.identity();
+  }
+
+  /**
    * Null-safe method used to guard against a {@literal null} {@link Predicate} reference.
    *
    * @param <T> {@link Class type} of {@link Object} tested by the {{@link Predicate}.

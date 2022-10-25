@@ -144,6 +144,26 @@ public class FunctionUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void nullSafeFunctionWithNonNullFunction() {
+
+    Function<Object, Object> mockFunction = mock(Function.class);
+
+    assertThat(FunctionUtils.nullSafeFunction(mockFunction)).isSameAs(mockFunction);
+
+    verifyNoInteractions(mockFunction);
+  }
+
+  @Test
+  public void nullSafeFunctionWithNullFunction() {
+
+    Function<Object, Object> function = FunctionUtils.nullSafeFunction(null);
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply("test")).isEqualTo("test");
+  }
+
+  @Test
   public void nullSafePredicateMatchAllWithNonNullPredicate() {
 
     Predicate<?> mockPredicate = mock(Predicate.class);
