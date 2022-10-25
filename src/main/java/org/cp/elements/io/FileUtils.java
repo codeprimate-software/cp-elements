@@ -18,9 +18,11 @@ package org.cp.elements.io;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,6 +56,9 @@ public abstract class FileUtils extends IOUtils {
   public static final String GROOVY_FILE_EXTENSION = ".groovy";
   public static final String JAVA_FILE_EXTENSION = ".java";
   public static final String KOTLIN_FILE_EXTENSION = ".kt";
+
+  protected static final boolean DEFAULT_FILE_FILTER_ACCEPT_RETURN_VALUE = true;
+  protected static final boolean DEFAULT_FILENAME_FILTER_ACCEPT_RETURN_VALUE = true;
 
   protected static final String FILE_EXTENSION_SEPARATOR = StringUtils.DOT_SEPARATOR;
   protected static final String NO_FILE_EXTENSION = StringUtils.EMPTY_STRING;
@@ -286,6 +291,65 @@ public abstract class FileUtils extends IOUtils {
    */
   public static @NotNull File newFile(@NotNull String pathname) {
     return new File(ObjectUtils.requireObject(pathname, "A pathname for the File is required"));
+  }
+
+  /**
+   * Utility method used to guard against a potentially {@literal null} {@link FileFilter}.
+   *
+   * By default, the {@link FileFilter} returned when the given {@link FileFilter} is {@literal null}
+   * {@link FileFilter#accept(File) accepts} all {@link File files}.
+   *
+   * @param fileFilter {@link FileFilter} to evaluate.
+   * @return the given {@link FileFilter} if not {@literal null}, otherwise returns a {@link FileFilter}
+   * {@link FileFilter#accept(File) accepting} all {@link File files}.
+   * @see #nullSafeFileFilter(FileFilter, boolean)
+   * @see java.io.FileFilter
+   */
+  public static @NotNull FileFilter nullSafeFileFilter(@Nullable FileFilter fileFilter) {
+    return nullSafeFileFilter(fileFilter, DEFAULT_FILE_FILTER_ACCEPT_RETURN_VALUE);
+  }
+
+  /**
+   * Utility method used to guard against a potentially {@literal null} {@link FileFilter}.
+   *
+   * @param fileFilter {@link FileFilter} to evaluate.
+   * @param accept boolean value returned by the generated {@link FileFilter} when the given {@link FileFilter}
+   * is {@literal null}.
+   * @return the given {@link FileFilter} if not {@literal null}, otherwise returns a generated {@link FileFilter}.
+   * @see java.io.FileFilter
+   */
+  public static @NotNull FileFilter nullSafeFileFilter(@Nullable FileFilter fileFilter, boolean accept) {
+    return fileFilter != null ? fileFilter : file -> accept;
+  }
+
+  /**
+   * Utility method used to guard against a potentially {@literal null} {@link FilenameFilter}.
+   *
+   * By default, the {@link FilenameFilter} returned when the given {@link FilenameFilter} is {@literal null}
+   * {@link FilenameFilter#accept(File, String) accepts} all {@link File files}.
+   *
+   * @param filenameFilter {@link FilenameFilter} to evaluate.
+   * @return the given {@link FilenameFilter} if not {@literal null}, otherwise returns a {@link FilenameFilter}
+   * {@link FilenameFilter#accept(File, String) accepting} all {@link File files}.
+   * @see #nullSafeFilenameFilter(FilenameFilter, boolean)
+   * @see java.io.FilenameFilter
+   */
+  public static @NotNull FilenameFilter nullSafeFilenameFilter(@Nullable FilenameFilter filenameFilter) {
+    return nullSafeFilenameFilter(filenameFilter, DEFAULT_FILENAME_FILTER_ACCEPT_RETURN_VALUE);
+  }
+
+  /**
+   * Utility method used to guard against a potentially {@literal null} {@link FilenameFilter}.
+   *
+   * @param filenameFilter {@link FilenameFilter} to evaluate.
+   * @param accept boolean value returned by the generated {@link FilenameFilter}
+   * when the given {@link FilenameFilter} is {@literal null}.
+   * @return the given {@link FilenameFilter} if not {@literal null},
+   * otherwise returns a generated {@link FilenameFilter}.
+   * @see java.io.FilenameFilter
+   */
+  public static @NotNull FilenameFilter nullSafeFilenameFilter(@Nullable FilenameFilter filenameFilter, boolean accept) {
+    return filenameFilter != null ? filenameFilter : (file, filename) -> accept;
   }
 
   /**

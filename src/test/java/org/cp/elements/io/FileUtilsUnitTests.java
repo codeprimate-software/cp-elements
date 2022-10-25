@@ -31,7 +31,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -658,6 +660,62 @@ public class FileUtilsUnitTests extends AbstractBaseTestSuite {
       .isThrownBy(() -> FileUtils.newFile(null))
       .withMessage("A pathname for the File is required")
       .withNoCause();
+  }
+
+  @Test
+  public void nullSafeFileFilterWithNonNullFileFilter() {
+
+    FileFilter mockFileFilter = mock(FileFilter.class);
+
+    assertThat(FileUtils.nullSafeFileFilter(mockFileFilter)).isSameAs(mockFileFilter);
+
+    verifyNoInteractions(mockFileFilter);
+  }
+
+  @Test
+  public void nullSafeFileFilterWithNullFileFilterAcceptsFiles() {
+
+    FileFilter fileFilter = FileUtils.nullSafeFileFilter(null);
+
+    assertThat(fileFilter).isNotNull();
+    assertThat(fileFilter.accept(newFile("test"))).isTrue();
+  }
+
+  @Test
+  public void nullSafeFileFilterWithNullFileFilterRejectsFiles() {
+
+    FileFilter fileFilter = FileUtils.nullSafeFileFilter(null, false);
+
+    assertThat(fileFilter).isNotNull();
+    assertThat(fileFilter.accept(newFile("test"))).isFalse();
+  }
+
+  @Test
+  public void nullSafeFilenameFilterWithNonNullFilenameFilter() {
+
+    FilenameFilter mockFilenameFilter = mock(FilenameFilter.class);
+
+    assertThat(FileUtils.nullSafeFilenameFilter(mockFilenameFilter)).isSameAs(mockFilenameFilter);
+
+    verifyNoInteractions(mockFilenameFilter);
+  }
+
+  @Test
+  public void nullSafeFilenameFilterWithNullFilenameFilterAcceptsFiles() {
+
+    FilenameFilter filenameFilter = FileUtils.nullSafeFilenameFilter(null);
+
+    assertThat(filenameFilter).isNotNull();
+    assertThat(filenameFilter.accept(WORKING_DIRECTORY, "file.ext")).isTrue();
+  }
+
+  @Test
+  public void nullSafeFilenameFilterWithNullFilenameFilterRejectsFiles() {
+
+    FilenameFilter filenameFilter = FileUtils.nullSafeFilenameFilter(null, false);
+
+    assertThat(filenameFilter).isNotNull();
+    assertThat(filenameFilter.accept(WORKING_DIRECTORY, "file.ext")).isFalse();
   }
 
   @Test
