@@ -19,15 +19,16 @@ package org.cp.elements.lang;
 /**
  * Interface defining a contract for {@link Object Objects} that can be {@literal versioned}.
  *
- * The {@link Version} interface can serve as an alternative to {@link Auditable} object metadata in transactional,
+ * The {@link Versioned} interface can serve as an alternative to {@link Auditable} object metadata in transactional,
  * optimistic locking use cases.
  *
  * @author John Blum
  * @param <T> {@link Class type} of {@link Object} modeling the {@literal version}.
+ * @see <a href="https://en.wikipedia.org/wiki/Optimistic_concurrency_control">Optimistic Concurrency Control (aka Optimistic Locking)</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Versionable<T> {
+public interface Versioned<T> {
 
   /**
    * Gets the {@link T version} of {@literal this} {@link Object}.
