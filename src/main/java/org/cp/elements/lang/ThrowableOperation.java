@@ -20,6 +20,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newThrowableOperati
 
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -40,118 +41,200 @@ import org.cp.elements.lang.annotation.Nullable;
  * @since 1.0.0
  */
 @FunctionalInterface
-public interface ThrowableOperation<T> extends Callable<T>, Consumer<T>, Runnable, Supplier<T> {
+public interface ThrowableOperation<T> {
 
   @SuppressWarnings("unused")
   ThrowableOperation<Object> NO_OP = args -> null;
 
   /**
-   * Factory method used to construct a new instance of {@link ThrowableOperation}
-   * from the given, required {@link VoidReturningThrowableOperation}.
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link Callable}.
    *
-   * @param <T> {@link Class type} of the {@link Object return value}.
-   * @param operation {@link VoidReturningThrowableOperation} to convert into a {@link ThrowableOperation}.
-   * @return a new {@link ThrowableOperation} from the {@link VoidReturningThrowableOperation}
-   * @throws IllegalArgumentException if the {@link VoidReturningThrowableOperation} is {@literal null}.
-   * @see VoidReturningThrowableOperation
+   * @param <T> {@link Class type} of the {@link Callable Callable's} {@link Object return value}.
+   * @param callable {@link Callable} to adapt/wrap as an instance of {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link Callable}.
+   * @throws IllegalArgumentException if the {@link Callable} is {@literal null}.
+   * @see java.util.concurrent.Callable
    */
-  static <T> ThrowableOperation<T> from(@NotNull VoidReturningThrowableOperation operation) {
+  static @NotNull <T> ThrowableOperation<T> fromCallable(@NotNull Callable<T> callable) {
+    Assert.notNull(callable, "Callable is required");
+    return args -> callable.call();
 
-    Assert.notNull(operation, "VoidReturningThrowableOperation is required");
+  }
 
-    return args -> {
-      operation.run(args);
+  /**
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link Consumer}.
+   *
+   * @param <T> {@link Class type} of the {@link Consumer Consumer's} {@link Object return value};
+   * defaults to {@literal null}.
+   * @param consumer {@link Consumer} to adapt/wrap as an instance of {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link Consumer}.
+   * @throws IllegalArgumentException if the {@link Consumer} is {@literal null}.
+   * @see java.util.function.Consumer
+   */
+  static @NotNull <T> ThrowableOperation<T> fromConsumer(@NotNull Consumer<Object> consumer) {
+
+    Assert.notNull(consumer, "Consumer is required");
+
+    return arguments -> {
+      consumer.accept(arguments);
       return null;
     };
   }
 
   /**
-   * Alias for {@link #run(Object...)}.
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link Function}.
    *
-   * Ignores any return value computed and returned from {@link #run(Object...)}.
-   *
-   * @param target {@link Object} processed by {@literal this} operation.
-   * @throws RuntimeException wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
-   * @see java.util.function.Consumer#accept(Object)
-   * @see #run(Object...)
+   * @param <T> {@link Class type} of the {@link Function} {@link Object return value}.
+   * @param function {@link Function} to adapt/wrap as an instance of {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link Function}.
+   * @throws IllegalArgumentException if the {@link Function} is {@literal null}.
+   * @see java.util.function.Function
    */
-  @Override
-  default void accept(T target) {
-
-    try {
-      run(target);
-    }
-    catch (Throwable cause) {
-      throw newThrowableOperationException(cause, "Accept failed to operate on target [%s]", target);
-    }
+  static @NotNull <T> ThrowableOperation<T> fromFunction(@NotNull Function<Object, T> function) {
+    Assert.notNull(function, "Function is required");
+    return function::apply;
   }
 
   /**
-   * Alias for {@link #run(Object...)}.
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link Runnable}.
    *
-   * @return the {@link Object result} of {@literal this} operation.
-   * @throws Exception wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
-   * @see java.util.concurrent.Callable#call()
-   * @see #run(Object...)
+   * @param <T> {@link Class type} of the {@link Runnable Runnable's} {@link Object return value};
+   * defaults to {@literal null}.
+   * @param runnable {@link Runnable} to adapt/wrap as an instance of {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link Runnable}.
+   * @throws IllegalArgumentException if the {@link Runnable} is {@literal null}.
+   * @see java.lang.Runnable
    */
-  @Override
-  default T call() throws Exception {
+  static @NotNull <T> ThrowableOperation<T> fromRunnable(@NotNull Runnable runnable) {
 
-    try {
-      return run(ObjectUtils.EMPTY_OBJECT_ARRAY);
-    }
-    catch (Throwable cause) {
-      throw newThrowableOperationException(cause, "Call failed to complete operation");
-    }
+    Assert.notNull(runnable, "Runnable is required");
+
+    return arguments -> {
+      runnable.run();
+      return null;
+    };
   }
 
   /**
-   * Alias for {@link #run(Object...)}.
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link Supplier}.
    *
-   * @return the {@link Object result} of {@literal this} operation.
-   * @throws RuntimeException wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
-   * @see java.util.function.Supplier#get()
-   * @see #run(Object...)
+   * @param <T> {@link Class type} of the {@link Supplier Supplier's} {@link Object return value}.
+   * @param supplier {@link Supplier} to adapt/wrap as an instance of {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link Supplier}.
+   * @throws IllegalArgumentException if the {@link Supplier} is {@literal null}.
+   * @see java.util.function.Supplier
    */
-  @Override
-  default T get() {
-
-    try {
-      return run(ObjectUtils.EMPTY_OBJECT_ARRAY);
-    }
-    catch (Throwable cause) {
-      throw newThrowableOperationException(cause, "Get failed to return the result of the operation");
-    }
+  static @NotNull <T> ThrowableOperation<T> fromSupplier(@NotNull Supplier<T> supplier) {
+    Assert.notNull(supplier, "Supplier is required");
+    return arguments -> supplier.get();
   }
 
   /**
-   * Alias for {@link #run(Object...)}.
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link VoidReturningThrowableOperation}.
    *
-   * Accepts no arguments and ignores the {@link Object result} of the operation.
-   *
-   * @throws RuntimeException wrapping the {@link Throwable cause} if {@literal this} operation results in an error.
-   * @see java.lang.Runnable#run()
-   * @see #run(Object...)
+   * @param <T> {@link Class type} of the {@link Object return value}.
+   * @param operation {@link VoidReturningThrowableOperation} to adapt/wrap as a {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link VoidReturningThrowableOperation}
+   * @throws IllegalArgumentException if the {@link VoidReturningThrowableOperation} is {@literal null}.
+   * @see VoidReturningThrowableOperation
    */
-  @Override
-  default void run() {
+  static @NotNull <T> ThrowableOperation<T> fromVoidReturning(@NotNull VoidReturningThrowableOperation operation) {
 
-    try {
-      run(ObjectUtils.EMPTY_OBJECT_ARRAY);
-    }
-    catch (Throwable cause) {
-      throw newThrowableOperationException(cause, "Run failed to complete operation");
-    }
+    return args -> {
+      ObjectUtils.requireObject(operation, "VoidReturningThrowableOperation is required").run(args);
+      return null;
+    };
+  }
+
+  /**
+   * Adapts (wraps) this {@link ThrowableOperation} as a {@link Callable}.
+   *
+   * @return a {@link Callable} object adapting/wrapping this {@link ThrowableOperation}.
+   * @see java.util.concurrent.Callable
+   */
+  default @NotNull Callable<T> asCallable() {
+    return this::safeRun;
+  }
+
+  /**
+   * Adapts (wraps) this {@link ThrowableOperation} as a {@link Consumer}.
+   *
+   * @return a {@link Consumer} object adapting/wrapping this {@link ThrowableOperation}.
+   * @see java.util.function.Consumer
+   */
+  default @NotNull Consumer<Object> asConsumer() {
+    return this::safeRun;
+  }
+
+  /**
+   * Adapts (wraps) this {@link ThrowableOperation} as a {@link Function}.
+   *
+   * @return a {@link Function} object adapting/wrapping this {@link ThrowableOperation}.
+   * @see java.util.function.Function
+   */
+  default @NotNull Function<Object, T> asFunction() {
+    return this::safeRun;
+  }
+
+  /**
+   * Adapts (wraps) this {@link ThrowableOperation} as a {@link Runnable}.
+   *
+   * @return a {@link Runnable} object adapting/wrapping this {@link ThrowableOperation}.
+   * @see java.lang.Runnable
+   */
+  default @NotNull Runnable asRunnable() {
+    return this::safeRun;
+  }
+
+  /**
+   * Adapts (wraps) this {@link ThrowableOperation} as a {@link Supplier}.
+   *
+   * @return a {@link Supplier} object adapting/wrapping this {@link ThrowableOperation}.
+   * @see java.util.function.Supplier
+   */
+  default @NotNull Supplier<T> asSupplier() {
+    return this::safeRun;
   }
 
   /**
    * Performs an operation on the given, optional arguments.
    *
    * @param args optional array of {@link Object arguments} to process.
-   * @return the {@link Object result} of the operation.
+   * @return the {@link Object result} of this operation.
    * @throws Throwable if the operation fails.
    */
   T run(Object... args) throws Throwable;
+
+  /**
+   * Safely {@link #run(Object...) runs} this {@link ThrowableOperation} by handling any {@link Throwable object}
+   * thrown during the execution of this {@link ThrowableOperation}.
+   *
+   * @param args optional array of {@link Object arguments} to process.
+   * @return the {@link Object result} of this operation.
+   * @throws ThrowableOperationException wrapping any {@link Throwable} thrown by this {@link ThrowableOperation}.
+   * @see #run(Object...)
+   */
+  default T safeRun(Object... args) {
+
+    try {
+      return run(args);
+    }
+    catch (Throwable cause) {
+      throw newThrowableOperationException(cause, "Failed to run ThrowableOperation [%s]", this);
+    }
+  }
 
   /**
    * Builder method used to compose this {@link ThrowableOperation} with the given {@link ThrowableOperation}.

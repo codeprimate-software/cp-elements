@@ -17,7 +17,9 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -27,13 +29,17 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.cp.elements.lang.ThrowableOperation.VoidReturningThrowableOperation;
-import org.cp.elements.security.model.User;
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.junit.Test;
+
+import org.cp.elements.test.CheckedTestException;
+
 import org.mockito.InOrder;
 
 /**
@@ -49,195 +55,389 @@ import org.mockito.InOrder;
 public class ThrowableOperationUnitTests {
 
   @Test
-  public void fromVoidReturnThrowableOperation() throws Throwable {
+  public void fromCallable() throws Throwable {
 
-    VoidReturningThrowableOperation mockOperation = mock(VoidReturningThrowableOperation.class);
+    Callable<Object> mockCallable = mock(Callable.class);
 
-    User<?> mockUser = mock(User.class);
+    doReturn("test").when(mockCallable).call();
 
-    ThrowableOperation<?> throwableOperation = ThrowableOperation.from(mockOperation);
+    ThrowableOperation<Object> operation = ThrowableOperation.fromCallable(mockCallable);
 
-    assertThat(throwableOperation).isNotNull();
-    assertThat(throwableOperation.run(1, "test", mockUser)).isNull();
+    assertThat(operation).isNotNull();
+    assertThat(operation.run("mock")).isEqualTo("test");
 
-    verify(mockOperation, times(1)).run(eq(1), eq("test"), eq(mockUser));
-    verifyNoMoreInteractions(mockOperation);
-    verifyNoInteractions(mockUser);
+    verify(mockCallable, times(1)).call();
+    verifyNoMoreInteractions(mockCallable);
   }
 
   @Test
-  public void fromNullVoidReturningThrowableOperation() {
+  public void fromCallableThrowingException() throws Throwable {
+
+    Callable<Object> mockCallable = mock(Callable.class);
+
+    doThrow(new CheckedTestException("TEST")).when(mockCallable).call();
+
+    ThrowableOperation<Object> operation = ThrowableOperation.fromCallable(mockCallable);
+
+    assertThat(operation).isNotNull();
+
+    assertThatExceptionOfType(CheckedTestException.class)
+      .isThrownBy(operation::run)
+      .withMessage("TEST")
+      .withNoCause();
+
+    verify(mockCallable, times(1)).call();
+    verifyNoMoreInteractions(mockCallable);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void fromNullCallable() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> ThrowableOperation.from(null))
-      .withMessage("VoidReturningThrowableOperation is required")
+      .isThrownBy(() -> ThrowableOperation.fromCallable((Callable<?>) null))
+      .withMessage("Callable is required")
       .withNoCause();
   }
 
   @Test
-  public void acceptInvokesRunWithArguments() throws Throwable {
+  public void fromConsumer() throws Throwable {
 
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
+    Consumer<Object> mockConsumer = mock(Consumer.class);
 
-    doCallRealMethod().when(mockOperation).accept(any());
+    ThrowableOperation<Object> operation = ThrowableOperation.fromConsumer(mockConsumer);
 
-    mockOperation.accept("mock");
+    assertThat(operation).isNotNull();
+    assertThat(operation.run("mock", "test")).isNull();
 
-    verify(mockOperation, times(1)).accept(eq("mock"));
-    verify(mockOperation, times(1)).run(eq("mock"));
-    verifyNoMoreInteractions(mockOperation);
-  }
-
-  @Test(expected = ThrowableOperationException.class)
-  public void acceptHandlesThrowable() throws Throwable {
-
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
-
-    doCallRealMethod().when(mockOperation).accept(any());
-    doThrow(new IllegalArgumentException("test")).when(mockOperation).run(any());
-
-    try {
-      mockOperation.accept("mock");
-    }
-    catch (ThrowableOperationException expected) {
-
-      assertThat(expected).hasMessage("Accept failed to operate on target [mock]");
-      assertThat(expected).hasCauseInstanceOf(IllegalArgumentException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockOperation, times(1)).accept(eq("mock"));
-      verify(mockOperation, times(1)).run(eq("mock"));
-      verifyNoMoreInteractions(mockOperation);
-    }
+    verify(mockConsumer, times(1)).accept(eq(new Object[] { "mock", "test" }));
+    verifyNoMoreInteractions(mockConsumer);
   }
 
   @Test
-  public void callInvokesRunWithArguments() throws Throwable {
+  @SuppressWarnings("all")
+  public void fromNullConsumer() {
 
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
-
-    doCallRealMethod().when(mockOperation).call();
-    doReturn("mock").when(mockOperation).run(any());
-
-    assertThat(mockOperation.call()).isEqualTo("mock");
-
-    verify(mockOperation, times(1)).call();
-    verify(mockOperation, times(1)).run(any());
-    verifyNoMoreInteractions(mockOperation);
-  }
-
-  @Test(expected = ThrowableOperationException.class)
-  public void callHandlesThrowable() throws Throwable {
-
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
-
-    doCallRealMethod().when(mockOperation).call();
-    doThrow(new IllegalStateException("test")).when(mockOperation).run(any());
-
-    try {
-      mockOperation.call();
-    }
-    catch (ThrowableOperationException cause) {
-
-      assertThat(cause).hasMessage("Call failed to complete operation");
-      assertThat(cause).hasCauseInstanceOf(IllegalStateException.class);
-      assertThat(cause.getCause()).hasMessage("test");
-      assertThat(cause.getCause()).hasNoCause();
-
-      throw cause;
-    }
-    finally {
-      verify(mockOperation, times(1)).call();
-      verify(mockOperation, times(1)).run(any());
-      verifyNoMoreInteractions(mockOperation);
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableOperation.fromConsumer((Consumer<Object>) null))
+      .withMessage("Consumer is required")
+      .withNoCause();
   }
 
   @Test
-  public void getInvokesRunWithArguments() throws Throwable {
+  public void fromFunction() throws Throwable {
 
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
+    Function<Object, Object> mockFunction = mock(Function.class);
 
-    doCallRealMethod().when(mockOperation).get();
-    doReturn("mock").when(mockOperation).run(any());
+    doReturn("test").when(mockFunction).apply(any());
 
-    assertThat(mockOperation.get()).isEqualTo("mock");
+    ThrowableOperation<Object> operation = ThrowableOperation.fromFunction(mockFunction);
 
-    verify(mockOperation, times(1)).get();
-    verify(mockOperation, times(1)).run(any());
-    verifyNoMoreInteractions(mockOperation);
-  }
+    assertThat(operation).isNotNull();
+    assertThat(operation.run("mockOne", "mockTwo")).isEqualTo("test");
 
-  @Test(expected = ThrowableOperationException.class)
-  public void getHandlesThrowable() throws Throwable {
-
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
-
-    doCallRealMethod().when(mockOperation).get();
-    doThrow(new UnsupportedOperationException("test")).when(mockOperation).run(any());
-
-    try {
-      mockOperation.get();
-    }
-    catch (ThrowableOperationException cause) {
-
-      assertThat(cause).hasMessage("Get failed to return the result of the operation");
-      assertThat(cause).hasCauseInstanceOf(UnsupportedOperationException.class);
-      assertThat(cause.getCause()).hasMessage("test");
-      assertThat(cause.getCause()).hasNoCause();
-
-      throw cause;
-    }
-    finally {
-      verify(mockOperation, times(1)).get();
-      verify(mockOperation, times(1)).run(any());
-      verifyNoMoreInteractions(mockOperation);
-    }
+    verify(mockFunction, times(1)).apply(eq(new Object[] { "mockOne", "mockTwo" }));
+    verifyNoMoreInteractions(mockFunction);
   }
 
   @Test
-  public void runInvokesRunWithArguments() throws Throwable {
+  public void fromNullFunction() {
 
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
-
-    doCallRealMethod().when(mockOperation).run();
-
-    mockOperation.run();
-
-    verify(mockOperation, times(1)).run();
-    verify(mockOperation, times(1)).run(any());
-    verifyNoMoreInteractions(mockOperation);
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableOperation.fromFunction(null))
+      .withMessage("Function is required")
+      .withNoCause();
   }
 
-  @Test(expected = ThrowableOperationException.class)
-  public void runHandlesThrowable() throws Throwable {
+  @Test
+  public void fromRunnable() throws Throwable {
 
-    ThrowableOperation<Object> mockOperation = mock(ThrowableOperation.class);
+    Runnable mockRunnable = mock(Runnable.class);
 
-    doCallRealMethod().when(mockOperation).run();
-    doThrow(new RuntimeException("test")).when(mockOperation).run(any());
+    ThrowableOperation<Object> operation = ThrowableOperation.fromRunnable(mockRunnable);
 
-    try {
-      mockOperation.run();
-    }
-    catch (ThrowableOperationException expected) {
+    assertThat(operation).isNotNull();
+    assertThat(operation.run("mock")).isNull();
 
-      assertThat(expected).hasMessage("Run failed to complete operation");
-      assertThat(expected).hasCauseInstanceOf(RuntimeException.class);
-      assertThat(expected.getCause()).hasMessage("test");
-      assertThat(expected.getCause()).hasNoCause();
+    verify(mockRunnable, times(1)).run();
+    verifyNoMoreInteractions(mockRunnable);
+  }
 
-      throw expected;
-    }
-    finally {
-      verify(mockOperation, times(1)).run();
-      verify(mockOperation, times(1)).run(any());
-      verifyNoMoreInteractions(mockOperation);
-    }
+  @Test
+  @SuppressWarnings("all")
+  public void fromNullRunnable() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableOperation.fromRunnable((Runnable) null))
+      .withMessage("Runnable is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromSupplier() throws Throwable {
+
+    Supplier<Object> mockSupplier = mock(Supplier.class);
+
+    doReturn("test").when(mockSupplier).get();
+
+    ThrowableOperation<Object> operation = ThrowableOperation.fromSupplier(mockSupplier);
+
+    assertThat(operation).isNotNull();
+    assertThat(operation.run("mock")).isEqualTo("test");
+
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void fromNullSupplier() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableOperation.fromSupplier((Supplier<?>) null))
+      .withMessage("Supplier is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void asCallable() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doReturn("test").when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asCallable();
+
+    Callable<Object> callable = operation.asCallable();
+
+    assertThat(callable).isNotNull();
+    assertThat(callable.call()).isEqualTo("test");
+
+    verify(operation, times(1)).asCallable();
+    verify(operation, times(1)).safeRun();
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asCallableThrowingException() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asCallable();
+
+    Callable<Object> callable = operation.asCallable();
+
+    assertThat(callable).isNotNull();
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(callable::call)
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(CheckedTestException.class);
+
+    verify(operation, times(1)).asCallable();
+    verify(operation, times(1)).safeRun();
+    verify(operation, times(1)).run();
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asConsumer() {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doCallRealMethod().when(operation).asConsumer();
+
+    Consumer<Object> consumer = operation.asConsumer();
+
+    consumer.accept(new Object[] { "mock", "test" });
+
+    verify(operation, times(1)).asConsumer();
+    verify(operation, times(1)).safeRun(eq(new Object[] { "mock", "test" }));
+  }
+
+  @Test
+  public void asConsumerThrowingException() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asConsumer();
+
+    Consumer<Object> consumer = operation.asConsumer();
+
+    assertThat(consumer).isNotNull();
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(() -> consumer.accept(new Object[] { "mock", "test" }))
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(CheckedTestException.class);
+
+    verify(operation, times(1)).asConsumer();
+    verify(operation, times(1)).safeRun(eq(new Object[] { "mock", "test" }));
+    verify(operation, times(1)).run(eq(new Object[] { "mock", "test" }));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asFunction() {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doReturn("test").when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asFunction();
+
+    Function<Object, Object> function = operation.asFunction();
+
+    assertThat(function).isNotNull();
+    assertThat(function.apply(new Object[] { "mockOne", "mockTwo" })).isEqualTo("test");
+
+    verify(operation, times(1)).asFunction();
+    verify(operation, times(1)).safeRun(eq(new Object[] { "mockOne", "mockTwo" }));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asFunctionThrowingException() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asFunction();
+
+    Function<Object, Object> function = operation.asFunction();
+
+    assertThat(function).isNotNull();
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(() -> function.apply(new Object[] { "mockOne", "mockTwo" }))
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(CheckedTestException.class);
+
+
+    verify(operation, times(1)).asFunction();
+    verify(operation, times(1)).run(eq(new Object[] { "mockOne", "mockTwo" }));
+    verify(operation, times(1)).safeRun(eq(new Object[] { "mockOne", "mockTwo" }));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asRunnable() {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doCallRealMethod().when(operation).asRunnable();
+
+    Runnable runnable = operation.asRunnable();
+
+    assertThat(runnable).isNotNull();
+
+    runnable.run();
+
+    verify(operation, times(1)).asRunnable();
+    verify(operation, times(1)).safeRun();
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asRunnableThrowingException() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asRunnable();
+
+    Runnable runnable = operation.asRunnable();
+
+    assertThat(runnable).isNotNull();
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(runnable::run)
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(CheckedTestException.class);
+
+    verify(operation, times(1)).asRunnable();
+    verify(operation, times(1)).safeRun();
+    verify(operation, times(1)).run();
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asSupplier() {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doReturn("test").when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asSupplier();
+
+    Supplier<Object> supplier = operation.asSupplier();
+
+    assertThat(supplier).isNotNull();
+    assertThat(supplier.get()).isEqualTo("test");
+
+    verify(operation, times(1)).asSupplier();
+    verify(operation, times(1)).safeRun();
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asSupplierThrowingException() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asSupplier();
+
+    Supplier<Object> supplier = operation.asSupplier();
+
+    assertThat(supplier).isNotNull();
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(supplier::get)
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(CheckedTestException.class);
+
+    verify(operation, times(1)).asSupplier();
+    verify(operation, times(1)).safeRun();
+    verify(operation, times(1)).run();
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void safeRunCallsRun() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doReturn("test").when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+
+    assertThat(operation.safeRun("mockOne", "mockTwo")).isEqualTo("test");
+
+    verify(operation, times(1)).safeRun(eq("mockOne"), eq("mockTwo"));
+    verify(operation, times(1)).run(eq("mockOne"), eq("mockTwo"));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void safeRunHandlesThrowableThrownByRun() throws Throwable {
+
+    ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
+
+    doThrow(newRuntimeException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(() -> operation.safeRun("mock"))
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(RuntimeException.class);
+
+    verify(operation, times(1)).safeRun(eq("mock"));
+    verify(operation, times(1)).run(eq("mock"));
+    verifyNoMoreInteractions(operation);
   }
 
   @Test
