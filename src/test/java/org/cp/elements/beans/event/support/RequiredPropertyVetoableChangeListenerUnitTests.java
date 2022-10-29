@@ -29,6 +29,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.time.Instant;
 
+import org.junit.Test;
+
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyNotSetException;
 import org.cp.elements.beans.annotation.Required;
@@ -37,8 +39,6 @@ import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.security.model.User;
 import org.cp.elements.test.annotation.SubjectUnderTest;
-
-import org.junit.Test;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -81,7 +81,7 @@ public class RequiredPropertyVetoableChangeListenerUnitTests {
       BeanUtils.newPropertyChangeEvent(RequiredNameFieldUser.as("froDoe"), "lastAccess", Instant.now(), null);
 
     assertThatThrowableOfType(PropertyVetoException.class)
-      .isThrownBy(ThrowableOperation.from(args -> this.listener.vetoableChange(event)))
+      .isThrownBy(ThrowableOperation.fromVoidReturning(args -> this.listener.vetoableChange(event)))
       .havingMessage("Failed to process event [%s]", event)
       .causedBy(PropertyNotSetException.class)
       .havingMessage("Property [lastAccess] not set")
@@ -104,7 +104,7 @@ public class RequiredPropertyVetoableChangeListenerUnitTests {
       spy(BeanUtils.newPropertyChangeEvent(mock(User.class), "mockProperty", 1, 2));
 
     assertThatThrowableOfType(PropertyVetoException.class)
-      .isThrownBy(ThrowableOperation.from(args -> this.listener.vetoableChange(event)))
+      .isThrownBy(ThrowableOperation.fromVoidReturning(args -> this.listener.vetoableChange(event)))
       .havingMessage("Failed to process event [%s]", event)
       .causedBy(PropertyNotFoundException.class)
       .havingMessage("Property with name [mockProperty] not found")
@@ -123,7 +123,7 @@ public class RequiredPropertyVetoableChangeListenerUnitTests {
     doReturn(null).when(event).getSource();
 
     assertThatIllegalArgumentException()
-      .isThrownBy(ThrowableOperation.from(args -> this.listener.vetoableChange(event)))
+      .isThrownBy(ThrowableOperation.fromVoidReturning(args -> this.listener.vetoableChange(event)))
       .havingMessage("A target object to adapt as a JavaBean is required")
       .withNoCause();
 
@@ -140,7 +140,7 @@ public class RequiredPropertyVetoableChangeListenerUnitTests {
       BeanUtils.newPropertyChangeEvent(source, propertyName, source.getName(), null);
 
     assertThatThrowableOfType(PropertyVetoException.class)
-      .isThrownBy(ThrowableOperation.from(args -> this.listener.vetoableChange(event)))
+      .isThrownBy(ThrowableOperation.fromVoidReturning(args -> this.listener.vetoableChange(event)))
       .havingMessage("Failed to process event [%s]", event)
       .causedBy(PropertyNotSetException.class)
       .havingMessage("Property [name] not set")

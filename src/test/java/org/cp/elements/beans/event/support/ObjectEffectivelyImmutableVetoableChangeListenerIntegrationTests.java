@@ -20,14 +20,14 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType
 
 import java.beans.VetoableChangeListener;
 
+import org.junit.Test;
+
 import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.lang.ImmutableObjectException;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.security.model.User;
-
-import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -65,12 +65,12 @@ public class ObjectEffectivelyImmutableVetoableChangeListenerIntegrationTests {
     bean.register(ObjectEffectivelyImmutableVetoableChangeListener.INSTANCE);
 
     assertThatThrowableOfType(ImmutableObjectException.class)
-      .isThrownBy(ThrowableOperation.from(args -> bean.setId(2)))
+      .isThrownBy(ThrowableOperation.fromConsumer(args -> bean.setId(2)))
       .havingMessage("Cannot change property [id]; Object [%s] is immutable", bean)
       .withNoCause();
 
     assertThatThrowableOfType(ImmutableObjectException.class)
-      .isThrownBy(ThrowableOperation.from(args -> bean.setName(null)))
+      .isThrownBy(ThrowableOperation.fromConsumer(args -> bean.setName(null)))
       .havingMessage("Cannot change property [name]; Object [%s] is immutable", bean)
       .withNoCause();
 

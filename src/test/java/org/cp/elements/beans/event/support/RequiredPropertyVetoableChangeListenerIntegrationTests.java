@@ -86,7 +86,7 @@ public class RequiredPropertyVetoableChangeListenerIntegrationTests {
     assertThat(janeDoe.isEventDispatchEnabled()).isTrue();
 
     assertThatThrowableOfType(IllegalPropertyValueException.class)
-      .isThrownBy(ThrowableOperation.from(args -> janeDoe.setName(null)))
+      .isThrownBy(ThrowableOperation.fromConsumer(args -> janeDoe.setName(null)))
       .havingMessage("The new value [null] for property [name] of Bean [%s] is not valid", janeDoe.getClass().getName())
       .causedBy(PropertyVetoException.class)
       .havingMessageStartingWith("Failed to process event [")

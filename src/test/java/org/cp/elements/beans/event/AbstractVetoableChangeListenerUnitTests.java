@@ -31,11 +31,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.util.Arrays;
 
+import org.junit.Test;
+
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.ThrowableOperation;
-
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link AbstractVetoableChangeListener}.
@@ -98,7 +98,7 @@ public class AbstractVetoableChangeListenerUnitTests {
     doThrow(new IllegalPropertyValueException("TEST")).when(listener).handle(any(PropertyChangeEvent.class));
 
     assertThatThrowableOfType(PropertyVetoException.class)
-      .isThrownBy(ThrowableOperation.from(args -> listener.vetoableChange(mockEvent)))
+      .isThrownBy(ThrowableOperation.fromVoidReturning(args -> listener.vetoableChange(mockEvent)))
       .havingMessage("Failed to process event [%s]", mockEvent)
       .causedBy(IllegalPropertyValueException.class)
       .havingMessage("TEST")
