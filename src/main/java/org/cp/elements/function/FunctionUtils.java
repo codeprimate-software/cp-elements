@@ -44,6 +44,18 @@ import org.cp.elements.util.ArrayUtils;
 public abstract class FunctionUtils {
 
   /**
+   * Gets the given, existing {@link Object return value} wrapped in a {@link Supplier}.
+   *
+   * @param <T> {@link Class type} of the {@link Object value} returned by the {@link Supplier}.
+   * @param returnValue {@link Object} to wrap in a {@link Supplier}.
+   * @return the given, existing {@link Object return value} wrapped in a {@link Supplier}.
+   * @see java.util.function.Supplier
+   */
+  public static @NotNull <T> Supplier<T> asSupplier(@Nullable T returnValue) {
+    return () -> returnValue;
+  }
+
+  /**
    * Composes the given array of {@link Function Functions} into a single {@link Function}
    * using the {@literal Composite Software Design Pattern}.
    *

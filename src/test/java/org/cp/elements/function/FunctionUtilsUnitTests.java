@@ -53,6 +53,24 @@ import org.cp.elements.security.model.User;
 public class FunctionUtilsUnitTests {
 
   @Test
+  public void asSupplierWithNonNullReturnValue() {
+
+    Supplier<?> supplier = FunctionUtils.asSupplier("test");
+
+    assertThat(supplier).isNotNull();
+    assertThat(supplier.get()).isEqualTo("test");
+  }
+
+  @Test
+  public void asSupplierWithNullReturnValue() {
+
+    Supplier<?> supplier = FunctionUtils.asSupplier(null);
+
+    assertThat(supplier).isNotNull();
+    assertThat(supplier.get()).isNull();
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void composeFunctionsIsCorrect() {
 
