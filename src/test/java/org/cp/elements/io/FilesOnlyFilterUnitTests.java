@@ -37,110 +37,118 @@ import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.mockito.quality.Strictness;
 
 /**
- * Unit Tests for {@link DirectoriesOnlyFilter}..
+ * Unit Tests for {@link FilesOnlyFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see org.junit.Test
  * @see org.mockito.Mockito
- * @see org.cp.elements.io.DirectoriesOnlyFilter
+ * @see org.cp.elements.io.FilesOnlyFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
-public class DirectoriesOnlyFilterUnitTests extends AbstractBaseTestSuite {
+public class FilesOnlyFilterUnitTests extends AbstractBaseTestSuite {
 
   @SubjectUnderTest
-  private final DirectoriesOnlyFilter directoriesOnlyFilter = DirectoriesOnlyFilter.INSTANCE;
+  private final FilesOnlyFilter filesOnlyFilter = FilesOnlyFilter.INSTANCE;
 
   private @NotNull File newFile(@Nullable File parent, @NotNull String pathname) {
     return new File(parent, pathname);
   }
 
   @Test
-  public void acceptsDirectoryReturnsTrue() {
+  public void acceptsDirectoryReturnsFalse() {
 
     File mockFile = mock(File.class, withSettings().strictness(Strictness.LENIENT));
 
     doReturn(true).when(mockFile).isDirectory();
-    doReturn(false).when(mockFile).exists();
+    doReturn(false).when(mockFile).isFile();
+    doReturn(true).when(mockFile).exists();
 
-    assertThat(this.directoriesOnlyFilter.accept(mockFile)).isTrue();
+    assertThat(this.filesOnlyFilter.accept(mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, never()).isDirectory();
     verify(mockFile, never()).exists();
     verifyNoMoreInteractions(mockFile);
   }
 
   @Test
-  public void acceptsFileReturnsFalse() {
+  public void acceptsFileReturnsTrue() {
 
     File mockFile = mock(File.class, withSettings().strictness(Strictness.LENIENT));
 
+    doReturn(false).when(mockFile).isDirectory();
     doReturn(true).when(mockFile).isFile();
-    doReturn(true).when(mockFile).exists();
+    doReturn(false).when(mockFile).exists();
 
-    assertThat(this.directoriesOnlyFilter.accept(mockFile)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isDirectory();
-    verify(mockFile, never()).isFile();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, never()).isDirectory();
     verify(mockFile, never()).exists();
     verifyNoMoreInteractions(mockFile);
   }
 
   @Test
-  public void acceptsNonDirectoryReturnsFalse() {
+  public void acceptsNonFileReturnsFalse() {
 
-    File mockFile = mock(File.class);
+    File mockFile = mock(File.class, withSettings().strictness(Strictness.LENIENT));
 
     doReturn(false).when(mockFile).isDirectory();
+    doReturn(false).when(mockFile).isFile();
     doReturn(true).when(mockFile).exists();
 
-    assertThat(this.directoriesOnlyFilter.accept(mockFile)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isDirectory();
+    verify(mockFile, times(1)).isFile();
+    verify(mockFile, never()).isDirectory();
     verify(mockFile, never()).exists();
     verifyNoMoreInteractions(mockFile);
   }
 
   @Test
   public void acceptsNullIsNullSafeReturnsFalse() {
-    assertThat(this.directoriesOnlyFilter.accept(null)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(null)).isFalse();
   }
 
   @Test
   @IntegrationTest
-  public void acceptsDirectories() {
+  public void acceptsRealFileReturnsTrue() {
 
-    assertThat(this.directoriesOnlyFilter.accept(TEMPORARY_DIRECTORY)).isTrue();
-    assertThat(this.directoriesOnlyFilter.accept(USER_HOME)).isTrue();
-    assertThat(this.directoriesOnlyFilter.accept(WORKING_DIRECTORY)).isTrue();
+    File filesOnlyFilterClass = getLocation(FilesOnlyFilter.class);
+
+    assertThat(filesOnlyFilterClass).isNotNull();
+    assertThat(filesOnlyFilterClass).isFile();
+    assertThat(this.filesOnlyFilter.accept(filesOnlyFilterClass)).isTrue();
   }
 
   @Test
   @IntegrationTest
-  public void rejectsFile() {
+  public void rejectsDirectories() {
 
-    File directoriesOnlyFilterClass = getLocation(DirectoriesOnlyFilter.class);
-
-    assertThat(directoriesOnlyFilterClass).isFile();
-    assertThat(this.directoriesOnlyFilter.accept(directoriesOnlyFilterClass)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(TEMPORARY_DIRECTORY)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(USER_HOME)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(WORKING_DIRECTORY)).isFalse();
   }
 
   @Test
   public void rejectsNonExistingDirectory() {
 
-    File nonExistingDirectory = newFile(WORKING_DIRECTORY, "relative/path/to/non/existing/directory/");
+    File nonExistingDirectory = newFile(USER_HOME, "relative/path/to/non/existing/directory/");
 
+    assertThat(nonExistingDirectory).isNotNull();
     assertThat(nonExistingDirectory).doesNotExist();
-    assertThat(this.directoriesOnlyFilter.accept(nonExistingDirectory)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(nonExistingDirectory)).isFalse();
   }
 
   @Test
   public void rejectsNonExistingFile() {
 
-    File nonExistingFile = newFile(USER_HOME, "relative/path/to/non/existing/file.ext");
+    File nonExistingFile = newFile(WORKING_DIRECTORY, "relative/path/to/non/existing/file.ext");
 
+    assertThat(nonExistingFile).isNotNull();
     assertThat(nonExistingFile).doesNotExist();
-    assertThat(this.directoriesOnlyFilter.accept(nonExistingFile)).isFalse();
+    assertThat(this.filesOnlyFilter.accept(nonExistingFile)).isFalse();
   }
 }

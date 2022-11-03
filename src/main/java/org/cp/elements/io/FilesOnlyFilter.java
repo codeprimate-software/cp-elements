@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The FilesOnlyFilter class is a {@link FileFilter} and {@link Filter} implementation filtering {@link File}s
- * that include only actual files in the file system (i.e. excluding directories).
+ * Java {@link FileFilter} and Elements {@link Filter} implementation evaluating and filtering {@link File Files}
+ * that include only actual {@link File#isFile() files} (not {@link File#isDirectory() directories}) in the file system.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -37,16 +38,18 @@ public class FilesOnlyFilter implements FileFilter, Filter<File> {
   public static final FilesOnlyFilter INSTANCE = new FilesOnlyFilter();
 
   /**
-   * Accepts all {@link File}s referencing actual files in the file system.
+   * Accepts all {@link File Files} referring to actual {@link File#isFile() files} in the file system.
    *
-   * @param file the {@link File} to evaluate.
-   * @return a boolean value indicating whether the given {@link File} is an actual file in the file system.
+   * @param file {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} is an actual {@link File#isFile() file}
+   * in the file system.
    * @see org.cp.elements.io.FileUtils#isFile(java.io.File)
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
-  public boolean accept(File file) {
+  @NullSafe
+  public boolean accept(@Nullable File file) {
     return FileUtils.isFile(file);
   }
 }
