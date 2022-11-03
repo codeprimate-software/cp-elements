@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The InverseFileFilter class is a {@link FileFilter} and {@link Filter} implementation that returns the inverse
- * result of the delegating {@link FileFilter} from which the {@link InverseFileFilter} is composed.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation that returns the inverse result
+ * of the delegating {@link FileFilter} from which the {@link InverseFileFilter} is composed.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -35,32 +35,47 @@ import org.cp.elements.lang.Filter;
 @SuppressWarnings("unused")
 public class InverseFileFilter implements FileFilter, Filter<File> {
 
+  /**
+   * Factory method used to construct a new instance of {@link InverseFileFilter} initialized with the given,
+   * required {@link FileFilter} used as the delegate to invert and filter {@link File Files}.
+   *
+   * @param fileFilter {@link FileFilter} used as the delegate and filter for {@link File} objects;
+   * must not be {@literal null}.
+   * @return a new {@link InverseFileFilter}.
+   * @throws IllegalArgumentException if the {@link FileFilter} is {@literal null}.
+   * @see java.io.FileFilter
+   */
+  public static @NotNull InverseFileFilter invert(@NotNull FileFilter fileFilter) {
+    return new InverseFileFilter(fileFilter);
+  }
+
   private final FileFilter delegate;
 
   /**
-   * Constructs an instance of the InverseFileFilter class initialized with the required, delegating FileFilter.
+   * Constructs a new instance of {@link InverseFileFilter} initialized with the given, required {@link FileFilter}
+   * used as the delegate to invert and filter {@link File Files}.
    *
-   * @param delegate the FileFilter used as the delegate for the actual file filtering operation.
-   * @throws java.lang.NullPointerException if the delegating FileFilter reference is null.
+   * @param delegate {@link FileFilter} used as the delegate and filter for {@link File} objects;
+   * must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link FileFilter} is {@literal null}.
    * @see java.io.FileFilter
    */
-  public InverseFileFilter(FileFilter delegate) {
-    Assert.notNull(delegate, "FileFilter must not be null");
-    this.delegate = delegate;
+  public InverseFileFilter(@NotNull FileFilter delegate) {
+    this.delegate = ObjectUtils.requireObject(delegate, "FileFilter is required");
   }
 
   /**
-   * Gets the {@link FileFilter} used as the delegate for the {@link InverseFileFilter}.
+   * Gets a reference to the configured {@link FileFilter} used as the delegate for filtering {@link File Files}.
    *
-   * @return the backing, delegating {@link FileFilter} instance.
+   * @return a reference to the configured {@link FileFilter} used as the delegate for filtering {@link File Files}.
    * @see java.io.FileFilter
    */
-  protected FileFilter getDelegate() {
-    return delegate;
+  protected @NotNull FileFilter getDelegate() {
+    return this.delegate;
   }
 
   /**
-   * Determines whether the specified {@link File} is accepted by this {@link FileFilter}.
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter}.
    *
    * @param file {@link File} to filter.
    * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.

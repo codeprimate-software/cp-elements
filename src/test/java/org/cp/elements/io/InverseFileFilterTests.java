@@ -16,20 +16,21 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileFilter;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -40,7 +41,6 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.InverseFileFilter
@@ -60,22 +60,49 @@ public class InverseFileFilterTests {
 
     InverseFileFilter inverseFileFilter = new InverseFileFilter(this.mockFileFilter);
 
+    assertThat(inverseFileFilter).isNotNull();
     assertThat(inverseFileFilter.getDelegate()).isSameAs(this.mockFileFilter);
-  }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructInverseFileFilterWithNullDelegate() {
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> new InverseFileFilter(null),
-      () -> "FileFilter must not be null");
+    verifyNoInteractions(this.mockFileFilter);
   }
 
   @Test
-  public void accept() {
+  public void constructInverseFileFilterWithNullDelegate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new InverseFileFilter(null))
+      .withMessage("FileFilter is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void invertFileFilter() {
+
+    InverseFileFilter inverseFileFilter = InverseFileFilter.invert(this.mockFileFilter);
+
+    assertThat(inverseFileFilter).isNotNull();
+    assertThat(inverseFileFilter.getDelegate()).isSameAs(this.mockFileFilter);
+
+    verifyNoInteractions(this.mockFileFilter);
+  }
+
+  @Test
+  public void invertNullFileFilter() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> InverseFileFilter.invert(null))
+      .withMessage("FileFilter is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void acceptsFile() {
 
     InverseFileFilter inverseFileFilter = new InverseFileFilter(this.mockFileFilter);
 
-    when(this.mockFileFilter.accept(any(File.class))).thenReturn(false);
+    doReturn(false).when(this.mockFileFilter).accept(any());
 
+    assertThat(inverseFileFilter.getDelegate()).isSameAs(this.mockFileFilter);
     assertThat(inverseFileFilter.accept(this.mockFile)).isTrue();
 
     verify(this.mockFileFilter, times(1)).accept(eq(this.mockFile));
@@ -84,12 +111,13 @@ public class InverseFileFilterTests {
   }
 
   @Test
-  public void reject() {
+  public void rejectsFile() {
 
     InverseFileFilter inverseFileFilter = new InverseFileFilter(this.mockFileFilter);
 
-    when(this.mockFileFilter.accept(any(File.class))).thenReturn(true);
+    doReturn(true).when(this.mockFileFilter).accept(any());
 
+    assertThat(inverseFileFilter.getDelegate()).isSameAs(this.mockFileFilter);
     assertThat(inverseFileFilter.accept(this.mockFile)).isFalse();
 
     verify(this.mockFileFilter, times(1)).accept(eq(this.mockFile));
