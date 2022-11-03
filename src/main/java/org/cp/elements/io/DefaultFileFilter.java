@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The DefaultFileFilter class is a {@link FileFilter} as well as {@link Filter} implementation that evaluates
- * and filters {@link File}s based on a predetermined result.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation that evaluates and filters {@link File Files}
+ * based on a predetermined result.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -40,41 +42,41 @@ public class DefaultFileFilter implements FileFilter, Filter<File> {
   private final boolean acceptReturnValue;
 
   /**
-   * Factory method to obtain a {@link FileFilter} implementation that will either accept or reject all {@link File}s
-   * based on the argument to the accept parameter.
+   * Factory method used to get reference to a Singleton instance of {@link DefaultFileFilter} that will either
+   * accept or reject all {@link File Files} based on the argument to the accept parameter.
    *
-   * @param accept a boolean value indicating whether all {@link File}s are accepted or rejected by the returned
-   * {@link FileFilter}.
-   * @return a default {@link FileFilter} implementation that will either accept or reject all {@link File}s based on
-   * the boolean argument.
+   * @param accept boolean value indicating whether all {@link File Files} are accepted or rejected
+   * by the {@link FileFilter}.
+   * @return a default {@link FileFilter} implementation that will either accept or reject all {@link File Files}
+   * based on the boolean argument.
    * @see java.io.FileFilter
    */
-  public static FileFilter getInstance(boolean accept) {
-    return (accept ? DEFAULT_ACCEPT : DEFAULT_REJECT);
+  public static @NotNull FileFilter getInstance(boolean accept) {
+    return accept ? DEFAULT_ACCEPT : DEFAULT_REJECT;
   }
 
   /**
-   * Constructs an instance of {@link DefaultFileFilter} initialized with the predetermined return value
-   * for the {@link #accept(File)} method.
+   * Constructs a new instance of {@link DefaultFileFilter} initialized with the predetermined
+   * {@link Boolean return value} returned by the {@link #accept(File)} method.
    *
-   * @param acceptReturnValue a boolean value specifying the predetermined result of the {@link #accept(File)} method.
-   * @see #accept(File)
+   * @param acceptReturnValue predetermined {@link Boolean boolean value} returned by the {@link #accept(File)} method.
    */
-  public DefaultFileFilter(boolean acceptReturnValue) {
+  protected DefaultFileFilter(boolean acceptReturnValue) {
     this.acceptReturnValue = acceptReturnValue;
   }
 
   /**
    * Evaluates the given {@link File} and determines whether it is accepted by this {@link FileFilter}.
    *
-   * @param pathname the {@link File} to evaluate.
-   * @return a boolean value indicating whether the given {@link File} was accepted by this {@link FileFilter}.
+   * @param pathname {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
+  @NullSafe
   @Override
-  public boolean accept(final File pathname) {
+  public boolean accept(@Nullable File pathname) {
     return this.acceptReturnValue;
   }
 }

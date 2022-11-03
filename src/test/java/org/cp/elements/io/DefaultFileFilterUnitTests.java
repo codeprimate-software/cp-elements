@@ -16,11 +16,19 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.withSettings;
 
 import java.io.File;
 
-import org.cp.elements.test.AbstractBaseTestSuite;
 import org.junit.Test;
+
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.test.AbstractBaseTestSuite;
+
+import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link DefaultFileFilter}.
@@ -29,13 +37,14 @@ import org.junit.Test;
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.io.DefaultFileFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
-public class DefaultFileFilterTests extends AbstractBaseTestSuite {
+public class DefaultFileFilterUnitTests extends AbstractBaseTestSuite {
 
-  protected File newFile(String pathname) {
+  private @NotNull File newFile(@NotNull String pathname) {
     return new File(pathname);
   }
 
@@ -53,9 +62,29 @@ public class DefaultFileFilterTests extends AbstractBaseTestSuite {
   public void acceptsAllFiles() {
 
     assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(WORKING_DIRECTORY)).isTrue();
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(USER_HOME)).isTrue();
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(TEMPORARY_DIRECTORY)).isTrue();
     assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(getLocation(DefaultFileFilter.class))).isTrue();
     assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(newFile("/absolute/path/to/non/existing/directory"))).isTrue();
     assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(newFile("relative/path/to/non/existing/file.ext"))).isTrue();
+  }
+
+  @Test
+  public void acceptsMockFileReturnsTrue() {
+
+    File mockFile = mock(File.class, withSettings().strictness(Strictness.LENIENT));
+
+    doReturn(false).when(mockFile).isDirectory();
+    doReturn(false).when(mockFile).isFile();
+    doReturn(false).when(mockFile).exists();
+
+    assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(mockFile)).isTrue();
+
+    verifyNoInteractions(mockFile);
+  }
+
+  @Test
+  public void acceptsNullIsNullSafeReturnsTrue() {
     assertThat(DefaultFileFilter.DEFAULT_ACCEPT.accept(null)).isTrue();
   }
 
@@ -63,9 +92,29 @@ public class DefaultFileFilterTests extends AbstractBaseTestSuite {
   public void rejectsAllFiles() {
 
     assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(WORKING_DIRECTORY)).isFalse();
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(USER_HOME)).isFalse();
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(TEMPORARY_DIRECTORY)).isFalse();
     assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(getLocation(DefaultFileFilter.class))).isFalse();
     assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(newFile("/absolute/path/to/non/existing/directory"))).isFalse();
     assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(newFile("relative/path/to/non/existing/file.ext"))).isFalse();
+  }
+
+  @Test
+  public void rejectsMockFileReturnsFalse() {
+
+    File mockFile = mock(File.class, withSettings().strictness(Strictness.LENIENT));
+
+    doReturn(false).when(mockFile).isDirectory();
+    doReturn(true).when(mockFile).isFile();
+    doReturn(true).when(mockFile).exists();
+
+    assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(mockFile)).isFalse();
+
+    verifyNoInteractions(mockFile);
+  }
+
+  @Test
+  public void rejectsNullIsNullSafeReturnsFalse() {
     assertThat(DefaultFileFilter.DEFAULT_REJECT.accept(null)).isFalse();
   }
 }
