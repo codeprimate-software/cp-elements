@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The DirectoriesOnlyFilter class is a {@link FileFilter} as well as {@link Filter} implementation that evaluates
- * and filters {@link File}s to only include file system directories.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation that evaluates and filters {@link File Files}
+ * to only include file system {@link File#isDirectory() directories}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -37,16 +38,17 @@ public class DirectoriesOnlyFilter implements FileFilter, Filter<File> {
   public static final DirectoriesOnlyFilter INSTANCE = new DirectoriesOnlyFilter();
 
   /**
-   * Accepts all {@link File}s referring to directories in the file system.
+   * Accepts all {@link File Files} referring to {@link File#isDirectory() directories} in the file system.
    *
-   * @param file the {@link File} to evaluate.
-   * @return a boolean value indicating whether the given {@link File} refers to a directory.
+   * @param file {@link File} to evaluate.
+   * @return a boolean value indicating whether the given {@link File} refers to a {@link File#isDirectory() directory}.
    * @see org.cp.elements.io.FileUtils#isDirectory(File)
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
-  public boolean accept(File file) {
+  @NullSafe
+  public boolean accept(@Nullable File file) {
     return FileUtils.isDirectory(file);
   }
 }
