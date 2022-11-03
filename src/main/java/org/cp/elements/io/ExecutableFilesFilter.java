@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The ExecutableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation filtering {@link File}s
- * based on whether they are executable.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation evaluating and filtering {@link File Files}
+ * based on whether they are {@link File#canExecute() executable}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -38,32 +39,47 @@ public class ExecutableFilesFilter implements FileFilter, Filter<File> {
   public static final ExecutableFilesFilter EXECUTABLE_FILES = new ExecutableFilesFilter(true);
   public static final ExecutableFilesFilter NON_EXECUTABLE_FILES = new ExecutableFilesFilter(false);
 
+  /**
+   * Factory method used to return a Singleton instance of {@link ExecutableFilesFilter} based on whether it accepts
+   * or rejects {@link File#canExecute() executable} {@link File Files}.
+   *
+   * @param accept boolean value determining whether {@link File#canExecute() executable} {@link File Files}
+   * are accepted or rejected by the {@link FileFilter}.
+   * @return a Singleton instance of {@link ExecutableFilesFilter}.
+   */
+  public static @NotNull ExecutableFilesFilter getInstance(boolean accept) {
+    return accept ? EXECUTABLE_FILES : NON_EXECUTABLE_FILES;
+  }
+
   private final boolean executable;
 
   /**
-   * Constructs an instance of ExecutableFilesFilter initialized with the given boolean value to indicate whether
-   * executable {@link File}s are accepted or rejected by this {@link FileFilter}.
+   * Constructs a new instance of {@link ExecutableFilesFilter} initialized with the given boolean value used to
+   * indicate whether {@link File#canExecute() executable} {@link File Files} are accepted or rejected by
+   * this {@link FileFilter}.
    *
-   * @param executable a boolean value determining whether executable {@link File}s are accepted or rejected
-   * by this {@link FileFilter}.
+   * @param executable boolean value determining whether {@link File#canExecute() executable} {@link File Files}
+   * are accepted or rejected by this {@link FileFilter}.
    */
   protected ExecutableFilesFilter(boolean executable) {
     this.executable = executable;
   }
 
   /**
-   * Accepts or rejects the given {@link File} based on whether it is executable or not.  This method is null-safe
-   * and guards against null {@link File} references.
+   * Null-safe method used to accept or reject the given {@link File} based on whether it
+   * is {@link File#canExecute() executable}.
    *
-   * @param pathname the {@link File} to evaluate.
-   * @return a boolean value indicating whether the executable {@link File} is accepted or rejected.
+   * @param pathname {@link File} to evaluate.
+   * @return a boolean value indicating whether the {@link File#canExecute() executable} {@link File}
+   * is accepted or rejected.
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File#canExecute()
+   * @see java.io.File
    */
   @NullSafe
   @Override
-  public boolean accept(File pathname) {
-    return (pathname != null && pathname.canExecute() == executable);
+  public boolean accept(@Nullable File pathname) {
+    return pathname != null && pathname.canExecute() == this.executable;
   }
 }
