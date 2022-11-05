@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.regex.Pattern;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The RegexFileFilter class is a {@link FileFilter} and {@link Filter} implementation that uses a regular expression
- * to match and filter {@link File}s.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation that uses a {@link Pattern Regular Expression}
+ * to match and filter {@link File Files}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -42,64 +44,85 @@ public class RegexFileFilter implements FileFilter, Filter<File> {
   private final Pattern regularExpression;
 
   /**
-   * Constructs an instance of the {@link RegexFileFilter} class initialized with the given regular expression (regex),
-   * expressed as a {@link String}.
+   * Constructs a new instance of {@link RegexFileFilter} initialized with the given {@literal Regular Expression}
+   * expressed as a {@literal pattern} contained in the given, required {@link String}.
    *
-   * @param regularExpression regular expression (regex) used to match and filter {@link File}s.
+   * @param regularExpression {@link String} containing the {@literal Regular Expression (REGEX) Pattern} used to
+   * match and filter {@link File Files}; must not be {@literal null} or {@literal empty}.
+   * @throws IllegalArgumentException if the given {@link String pattern} used in the Regular Expression (REGEX)
+   * is {@literal null} or {@literal empty}.
    * @see java.util.regex.Pattern#compile(String)
    */
-  public RegexFileFilter(String regularExpression) {
-    this(Pattern.compile(regularExpression));
+  public RegexFileFilter(@NotNull String regularExpression) {
+    this(Pattern.compile(StringUtils.requireText(regularExpression,
+      "Regular Expression Pattern [%s] is required")));
   }
 
   /**
-   * Constructs an instance of the {@link RegexFileFilter} class initialized with the given regular expression (regex),
-   * expressed as a {@link Pattern}.
+   * Constructs a new instance of {@link RegexFileFilter} initialized with a compiled {@literal Regular Expression}
+   * expressed in the given, required {@link Pattern} object.
    *
-   * @param regularExpression regular expression (regex) used to match and filter {@link File}s.
-   * @throws IllegalArgumentException if the regular expression {@link Pattern} is null.
+   * @param regularExpression {@link Pattern} containing the compiled {@literal Regular Expression (REGEX)} used to
+   * match and filter {@link File Files}; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link Pattern} is {@literal null}.
    * @see java.util.regex.Pattern
    */
-  public RegexFileFilter(Pattern regularExpression) {
-    Assert.notNull(regularExpression, "The Regular Expression (Pattern) cannot be null");
-    this.regularExpression = regularExpression;
+  public RegexFileFilter(@NotNull Pattern regularExpression) {
+    this.regularExpression = ObjectUtils.requireObject(regularExpression,
+      "Regular Expression Pattern is required");
   }
 
   /**
-   * Returns the regular expression (regex) {@link Pattern} used in the filtering operation of the accept method.
+   * Returns a reference to the configured, compiled {@literal Regular Expression (REGEX)} {@link Pattern} used to
+   * match and filter {@link File Files}.
    *
-   * @return the regular expression {@link Pattern} used in the filtering operation of the accept method.
+   * @return the configured, compiled {@literal Regular Expression (REGEX)} {@link Pattern} used to match and filter
+   * {@link File Files}.
    * @see java.util.regex.Pattern
    */
-  protected Pattern getPattern() {
-    return regularExpression;
+  protected @NotNull Pattern getPattern() {
+    return this.regularExpression;
   }
 
   /**
-   * Returns the regular expression (regex) used in the filtering operation of the accept method.
+   * Returns the configured {@literal Regular Expression (REGEX)} {@link String Patten} used to
+   * match and filter {@link File Files}.
    *
-   * @return a {@link String} value representing the regular expression (regex) used in the filtering operation
-   * of the accept method.
+   * @return a {@link String} containing the {@literal pattern} of the {@literal Regular Expression (REGEX)} used to
+   * match and filter {@link File Files}.
    * @see java.util.regex.Pattern#pattern()
+   * @see #getPattern()
    */
-  public String getRegularExpression() {
-    return regularExpression.pattern();
+  public @NotNull String getRegularExpression() {
+    return getPattern().pattern();
   }
 
   /**
-   * Determines whether the given {@link File} matches the regular expression used by this {@link FileFilter}
-   * to accept or reject {@link File}s.
+   * Determines whether the given {@link File} matches the {@literal Regular Expression (REGEX)} used by
+   * this {@link FileFilter} to match and filter {@link File Files}.
+   *
+   * The {@link File File's} {@link File#getCanonicalPath()} or {@link File#getAbsolutePath()} are used in
+   * the match against the {@literal Regular Expression (REGEX} {@link Pattern}.
    *
    * @param file {@link File} to filter.
-   * @return a boolean value indicating whether the given {@link File} matches the regular expression
-   * used by this {@link FileFilter} to accept or reject {@link File}s.
+   * @return a boolean value indicating whether the given {@link File} matches the {@literal Regular Expression (REGEX)}
+   * used by this {@link FileFilter} to accept or reject {@link File Files}.
+   * @see org.cp.elements.io.FileUtils#tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    * @see java.util.regex.Pattern#matcher(CharSequence)
    * @see java.util.regex.Matcher#matches()
-   * @see org.cp.elements.io.FileUtils#tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
+   * @see #getPattern()
+   * @see java.io.File
    */
-  @Override
   @NullSafe
-  public boolean accept(File file) {
-    return (file != null && getPattern().matcher(FileUtils.tryGetCanonicalPathElseGetAbsolutePath(file)).matches());
+  @Override
+  public boolean accept(@Nullable File file) {
+    return getPattern().matcher(getPath(file)).matches();
+  }
+
+  private @NotNull String getPath(@Nullable File file) {
+
+    return file != null
+      ? FileUtils.tryGetCanonicalPathElseGetAbsolutePath(file)
+      : StringUtils.EMPTY_STRING;
   }
 }
