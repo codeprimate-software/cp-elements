@@ -16,14 +16,16 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -34,7 +36,6 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
@@ -42,7 +43,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class WritableFilesFilterTests {
+public class WritableFilesFilterUnitTests {
 
   @Mock
   private File mockFile;
@@ -51,50 +52,57 @@ public class WritableFilesFilterTests {
   @SuppressWarnings("all")
   public void writableFilesFilterAcceptsWritableFile() {
 
-    when(this.mockFile.canWrite()).thenReturn(true);
+    doReturn(true).when(this.mockFile).canWrite();
 
     assertThat(WritableFilesFilter.WRITABLE_FILES.accept(this.mockFile)).isTrue();
 
     verify(this.mockFile, times(1)).canWrite();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void writableFilesFilterRejectsNonWritableFile() {
 
-    when(this.mockFile.canWrite()).thenReturn(false);
+    doReturn(false).when(this.mockFile).canWrite();
 
     assertThat(WritableFilesFilter.WRITABLE_FILES.accept(this.mockFile)).isFalse();
 
     verify(this.mockFile, times(1)).canWrite();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  public void writableFilesFilterRejectsNullFileIsNullSafe() {
+    assertThat(WritableFilesFilter.WRITABLE_FILES.accept(null)).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void nonWritableFilesFilterAcceptsNonWritableFile() {
 
-    when(this.mockFile.canWrite()).thenReturn(false);
+    doReturn(false).when(this.mockFile).canWrite();
 
     assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(this.mockFile)).isTrue();
 
     verify(this.mockFile, times(1)).canWrite();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void nonWritableFilesFilterRejectsWritableFile() {
 
-    when(this.mockFile.canWrite()).thenReturn(true);
+    doReturn(true).when(this.mockFile).canWrite();
 
     assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(this.mockFile)).isFalse();
 
     verify(this.mockFile, times(1)).canWrite();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
-  public void nonWritableFilesFilterRejectsNull() {
-
+  public void nonWritableFilesFilterRejectsNullIsNullSafe() {
     assertThat(WritableFilesFilter.NON_WRITABLE_FILES.accept(null)).isFalse();
-    assertThat(WritableFilesFilter.WRITABLE_FILES.accept(null)).isFalse();
   }
 }

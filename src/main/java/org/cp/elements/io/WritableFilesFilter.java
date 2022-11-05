@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
@@ -21,10 +20,11 @@ import java.io.FileFilter;
 
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The WritableFilesFilter class is a {@link FileFilter} and {@link Filter} implementation that filters {@link File}s
- * by whether they are writable or not.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation that evaluates and filters {@link File Files}
+ * by whether or not they are {@link File#canWrite() writable}.
  *
  * @author John J. blum
  * @see java.io.File
@@ -41,29 +41,31 @@ public class WritableFilesFilter implements FileFilter, Filter<File> {
   private final boolean writable;
 
   /**
-   * Constructs an instance of the {@link WritableFilesFilter} class initialized with the given boolean value
-   * to indicate whether writable {@link File}s are accepted or rejected by this {@link FileFilter}.
-   *
-   * @param writable a boolean value indicating whether writable {@link File}s are accepted or rejected
+   * Constructs a new instance of {@link WritableFilesFilter} initialized with the given boolean value
+   * used to indicate whether {@link File#canWrite() writable} {@link File Files} are accepted or rejected
    * by this {@link FileFilter}.
+   *
+   * @param writable a boolean value indicating whether {@link File#canWrite() writable} {@link File Files}
+   * are accepted or rejected by this {@link FileFilter}.
    */
   protected WritableFilesFilter(boolean writable) {
     this.writable = writable;
   }
 
   /**
-   * Determines whether the given {@link File} is accepted by this {@link FileFilter}, evaluating whether
-   * the {@link File} is writable or not.
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter} based on whether the {@link File}
+   * is {@link File#canWrite() writable}.
    *
    * @param pathname {@link File} to evaluate.
-   * @return a boolean value indicating whether writable {@link File}s are accepted or rejected.
+   * @return a boolean value indicating whether {@link File#canWrite() writable} {@link File Files}
+   * are accepted or rejected by this {@link FileFilter}.
    * @see org.cp.elements.lang.Filter#accept(Object)
    * @see java.io.FileFilter#accept(File)
    * @see java.io.File#canWrite()
    */
-  @Override
   @NullSafe
-  public boolean accept(File pathname) {
-    return (pathname != null && pathname.canWrite() == writable);
+  @Override
+  public boolean accept(@Nullable File pathname) {
+    return pathname != null && pathname.canWrite() == this.writable;
   }
 }
