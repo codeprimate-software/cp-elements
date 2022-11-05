@@ -16,14 +16,16 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -34,7 +36,6 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
@@ -42,7 +43,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ReadableFilesFilterTests {
+public class ReadableFilesFilterUnitTests {
 
   @Mock
   private File mockFile;
@@ -51,50 +52,57 @@ public class ReadableFilesFilterTests {
   @SuppressWarnings("all")
   public void readableFilesFilterAcceptsReadableFile() {
 
-    when(this.mockFile.canRead()).thenReturn(true);
+    doReturn(true).when(this.mockFile).canRead();
 
     assertThat(ReadableFilesFilter.READABLE_FILES.accept(this.mockFile)).isTrue();
 
     verify(this.mockFile, times(1)).canRead();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void readableFilesFilterRejectsNonReadableFile() {
 
-    when(this.mockFile.canRead()).thenReturn(false);
+    doReturn(false).when(this.mockFile).canRead();
 
     assertThat(ReadableFilesFilter.READABLE_FILES.accept(this.mockFile)).isFalse();
 
     verify(this.mockFile, times(1)).canRead();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  public void readableFilesFilterRejectsNullFilesIsNullSafe() {
+    assertThat(ReadableFilesFilter.READABLE_FILES.accept(null)).isFalse();
   }
 
   @Test
   @SuppressWarnings("all")
   public void nonReadableFilesFilterAcceptsNonReadableFile() {
 
-    when(this.mockFile.canRead()).thenReturn(false);
+    doReturn(false).when(this.mockFile).canRead();
 
     assertThat(ReadableFilesFilter.NON_READABLE_FILES.accept(this.mockFile)).isTrue();
 
     verify(this.mockFile, times(1)).canRead();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void nonReadableFilesFilterRejectsReadableFile() {
 
-    when(this.mockFile.canRead()).thenReturn(true);
+    doReturn(true).when(this.mockFile).canRead();
 
     assertThat(ReadableFilesFilter.NON_READABLE_FILES.accept(this.mockFile)).isFalse();
 
     verify(this.mockFile, times(1)).canRead();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
-  public void readableFilesFilterRejectsNull() {
-
+  public void nonReadableFilesFilterRejectsNullIsNullSafe() {
     assertThat(ReadableFilesFilter.NON_READABLE_FILES.accept(null)).isFalse();
-    assertThat(ReadableFilesFilter.READABLE_FILES.accept(null)).isFalse();
   }
 }
