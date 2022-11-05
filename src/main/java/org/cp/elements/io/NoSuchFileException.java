@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 /**
- * The NoSuchFileException class is a {@link RuntimeException} indicating a missing {@link java.io.File}.
+ * Java {@link RuntimeException} used to indicate a missing {@link java.io.File}.
  *
  * @author John J. Blum
  * @see java.io.FileNotFoundException
@@ -28,26 +27,27 @@ package org.cp.elements.io;
 public class NoSuchFileException extends RuntimeException {
 
   /**
-   * Constructs an uninitialized instance of the {@link NoSuchFileException} class.
+   * Constructs a new instance of {@link NoSuchFileException} having no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public NoSuchFileException() {
-  }
+  public NoSuchFileException() { }
 
   /**
-   * Constructs an instance of the {@link NoSuchFileException} class initialized with the given message describing
-   * the details of the missing {@link java.io.File}.
+   * Constructs a new instance of {@link NoSuchFileException} initialized with the given {@link String message}
+   * describing the missing {@link java.io.File}.
    *
-   * @param message description for the cause of this exception.
+   * @param message {@link String} containing a description for this {@link RuntimeException}.
+   * @see java.lang.String
    */
   public NoSuchFileException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the {@link NoSuchFileException} class initialized with the given {@link Throwable}
-   * indicating the reason this exception was thrown.
+   * Constructs a new instance of {@link NoSuchFileException} initialized with the given {@link Throwable}
+   * used as the cause of this {@link RuntimeException}.
    *
-   * @param cause {@link Throwable} indicating the cause of this exception.
+   * @param cause {@link Throwable} used as the cause of this {@link RuntimeException}.
    * @see java.lang.Throwable
    */
   public NoSuchFileException(Throwable cause) {
@@ -55,13 +55,14 @@ public class NoSuchFileException extends RuntimeException {
   }
 
   /**
-   * Constructs an instance of the {@link NoSuchFileException} class initialized with the given message describing
-   * the details of the missing {@link java.io.File} along with the {@link Throwable} indicating the reason
-   * this exception was thrown.
+   * Constructs a new instance of {@link NoSuchFileException} initialized with the given {@link String message}
+   * describing the missing {@link java.io.File} along with the given {@link Throwable} used as the cause
+   * of this {@link RuntimeException}.
    *
-   * @param message description for the cause of this exception.
-   * @param cause {@link Throwable} indicating the cause of this exception.
+   * @param message {@link String} containing a description for this {@link RuntimeException}.
+   * @param cause {@link Throwable} used as the cause of this {@link RuntimeException}.
    * @see java.lang.Throwable
+   * @see java.lang.String
    */
   public NoSuchFileException(String message, Throwable cause) {
     super(message, cause);
