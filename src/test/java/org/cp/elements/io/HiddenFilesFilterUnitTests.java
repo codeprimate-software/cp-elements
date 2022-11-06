@@ -16,14 +16,16 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -34,7 +36,6 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.io.File
  * @see java.io.FileFilter
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
@@ -42,7 +43,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @since 1.0.0
  */
 @RunWith(MockitoJUnitRunner.class)
-public class HiddenFilesFilterTests {
+public class HiddenFilesFilterUnitTests {
 
   @Mock
   private File mockFile;
@@ -51,26 +52,28 @@ public class HiddenFilesFilterTests {
   @SuppressWarnings("all")
   public void hiddenFilesFilterAcceptsHiddenFile() {
 
-    when(mockFile.isHidden()).thenReturn(true);
+    doReturn(true).when(this.mockFile).isHidden();
 
-    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(mockFile)).isTrue();
+    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isHidden();
+    verify(this.mockFile, times(1)).isHidden();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void hiddenFilesFilterRejectsNonHiddenFile() {
 
-    when(mockFile.isHidden()).thenReturn(false);
+    doReturn(false).when(this.mockFile).isHidden();
 
-    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(mockFile)).isFalse();
+    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isHidden();
+    verify(this.mockFile, times(1)).isHidden();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
-  public void hiddenFilesFilterRejectsNull() {
+  public void hiddenFilesFilterRejectsNullIsNullSafe() {
     assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(null)).isFalse();
   }
 
@@ -78,28 +81,28 @@ public class HiddenFilesFilterTests {
   @SuppressWarnings("all")
   public void nonHiddenFilesFilterAcceptsNonHiddenFile() {
 
-    when(mockFile.isHidden()).thenReturn(false);
+    doReturn(false).when(this.mockFile).isHidden();
 
-    assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(mockFile)).isTrue();
+    assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(this.mockFile)).isTrue();
 
-    verify(mockFile, times(1)).isHidden();
+    verify(this.mockFile, times(1)).isHidden();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void nonHiddenFilesFilterRejectsHiddenFile() {
 
-    when(mockFile.isHidden()).thenReturn(true);
+    doReturn(true).when(this.mockFile).isHidden();
 
-    assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(mockFile)).isFalse();
+    assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(this.mockFile)).isFalse();
 
-    verify(mockFile, times(1)).isHidden();
+    verify(this.mockFile, times(1)).isHidden();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test
-  public void nonHiddenFilesFilterRejectsNull() {
-
+  public void nonHiddenFilesFilterRejectsNullIsNullSafe() {
     assertThat(HiddenFilesFilter.NON_HIDDEN_FILES.accept(null)).isFalse();
-    assertThat(HiddenFilesFilter.HIDDEN_FILES.accept(null)).isFalse();
   }
 }
