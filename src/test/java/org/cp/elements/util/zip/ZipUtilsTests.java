@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -33,11 +34,12 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.junit.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.annotation.UnitTest;
 import org.cp.elements.util.SystemException;
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link ZipUtils}.
@@ -56,13 +58,13 @@ public class ZipUtilsTests {
   @SuppressWarnings("all")
   public void newZipEntryUsesFileNameAsZipEntryName() {
 
-    long lastModified = System.currentTimeMillis();
+    long lastModified = 12345L;
 
     File mockFile = mock(File.class);
 
-    when(mockFile.getName()).thenReturn("MockFile.ext");
-    when(mockFile.getTotalSpace()).thenReturn(1024L);
-    when(mockFile.lastModified()).thenReturn(lastModified);
+    doReturn("MockFile.ext").when(mockFile).getName();
+    doReturn(1024L).when(mockFile).getTotalSpace();
+    doReturn(lastModified).when(mockFile).lastModified();
 
     ZipEntry zipEntry = ZipUtils.newZipEntry(null, mockFile);
 
@@ -74,22 +76,23 @@ public class ZipUtilsTests {
     verify(mockFile, times(1)).getName();
     verify(mockFile, times(1)).getTotalSpace();
     verify(mockFile, times(1)).lastModified();
+    verifyNoMoreInteractions(mockFile);
   }
 
   @Test
   @SuppressWarnings("all")
   public void newZipEntryUsesRelativeFilePathAsZipEntryName() throws IOException {
 
-    long lastModified = System.currentTimeMillis();
+    long lastModified = 12345L;
 
     File mockDirectory = mock(File.class);
     File mockFile = mock(File.class);
 
-    when(mockDirectory.isDirectory()).thenReturn(true);
-    when(mockDirectory.getName()).thenReturn("directory");
-    when(mockFile.getAbsolutePath()).thenReturn("/absolute/path/to/directory/relative/path/to/MockFile.ext");
-    when(mockFile.getTotalSpace()).thenReturn(2024L);
-    when(mockFile.lastModified()).thenReturn(lastModified);
+    doReturn(true).when(mockDirectory).isDirectory();
+    doReturn("directory").when(mockDirectory).getName();
+    doReturn("/absolute/path/to/directory/relative/path/to/MockFile.ext").when(mockFile).getAbsolutePath();
+    doReturn(2024L).when(mockFile).getTotalSpace();
+    doReturn(lastModified).when(mockFile).lastModified();
 
     ZipEntry zipEntry = ZipUtils.newZipEntry(mockDirectory, mockFile);
 
