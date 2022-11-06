@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
 
 import java.io.File;
 import java.io.FileFilter;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Composite;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.LogicalOperator;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link ComposableFileFilter} class is a {@link FileFilter} and {@link Filter} implementation composed of
- * multiple {@link FileFilter FileFilters} joined by logical operators: AND, OR and XOR.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation composed of multiple {@link FileFilter FileFilters}
+ * joined by {@link LogicalOperator logical operators}: [ {@link LogicalOperator#AND}, {@link LogicalOperator#OR},
+ * {@link LogicalOperator#XOR} ].
  *
  * @author John J. Blum
  * @see java.io.File
@@ -42,177 +45,238 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
 
   protected static final ComposableFileFilter INSTANCE = new ComposableFileFilter();
 
+  protected static final FileFilter DEFAULT_FILE_FILTER = FileUtils.nullSafeFileFilter(null, false);
+
+  protected static final LogicalOperator DEFAULT_OPERATOR = LogicalOperator.AND;
+
+  /**
+   * Factory method used to return a Singleton instance of {@link ComposableFileFilter} that can be used to
+   * compose two or more individual {@link FileFilter} objects into a single, {@link Composite}
+   * {@link FileFilter} object.
+   *
+   * @return the Singleton instance of {@link ComposableFileFilter} used to compose {@link FileFilter FileFilters}.
+   * @see org.cp.elements.io.ComposableFileFilter
+   */
+  public static @NotNull ComposableFileFilter builder() {
+    return INSTANCE;
+  }
+
+  /**
+   * Factory method used to construct a new instance of {@link ComposableFileFilter} composed of two {@link FileFilter}
+   * operands joined by the given {@link LogicalOperator}.
+   *
+   * @param leftOperand {@link FileFilter} operand used in the left-hand side (lhs) of the logical expression.
+   * @param rightOperand {@link FileFilter} operand used in the right-hand side (rhs) of the logical expression.
+   * @param operator {@link LogicalOperator} used to join the {@link FileFilter} operands.
+   * @return a {@link ComposableFileFilter} consisting of two {@link FileFilter} operands joined by
+   * the {@link LogicalOperator}. Returns the {@link FileFilter left operand} if the {@link FileFilter right operand}
+   * is {@literal null}. Returns the {@link FileFilter right operand} if the {@link FileFilter left operand}
+   * is {@literal null}. Returns both {@link FileFilter operands} joined by the {@link LogicalOperator}
+   * if neither is {@literal null}.
+   * @see org.cp.elements.lang.LogicalOperator
+   * @see java.io.FileFilter
+   */
+  @NullSafe
+  protected static @Nullable FileFilter compose(@Nullable FileFilter leftOperand, @Nullable FileFilter rightOperand,
+      @Nullable LogicalOperator operator) {
+
+    return leftOperand == null ? rightOperand
+      : rightOperand == null ? leftOperand
+      : new ComposableFileFilter(leftOperand, rightOperand, nullSafeOperator(operator));
+  }
+
+  /**
+   * Creates a single, {@literal Composite} {@link FileFilter} composed from the array of {@link FileFilter FileFilters}.
+   *
+   * @param fileFilters array of {@link FileFilter FileFilters} to compose.
+   * @param operator {@link LogicalOperator} used to join the array of {@link FileFilter FileFilters} together
+   * in a composition, as a single, {@literal Composite} {@link FileFilter}.
+   * @return a single, {@literal Composite} {@link FileFilter} composed from the array of {@link FileFilter FileFilters}.
+   * @see org.cp.elements.lang.LogicalOperator
+   * @see java.io.FileFilter
+   */
+  @NullSafe
+  protected static @NotNull FileFilter compositeOf(@Nullable FileFilter[] fileFilters,
+      @Nullable LogicalOperator operator) {
+
+    FileFilter composedFileFilter = null;
+
+    for (FileFilter fileFilter : ArrayUtils.nullSafeArray(fileFilters, FileFilter.class)) {
+      composedFileFilter = compose(composedFileFilter, fileFilter, operator);
+    }
+
+    return nullSafeFileFilter(composedFileFilter);
+  }
+
+  /**
+   * Composes two {@link FileFilter} objects in an expression joined by {@link LogicalOperator#AND}.
+   *
+   * @param fileFilters array of {@link FileFilter FileFilters} to compose in an expression
+   * joined by {@link LogicalOperator#AND}.
+   * @return a {@link FileFilter} implementation composed of two {@link FileFilter} objects in an expression
+   * joined by {@link LogicalOperator#AND}.
+   * @see #compositeOf(FileFilter[], LogicalOperator)
+   * @see org.cp.elements.lang.LogicalOperator#AND
+   * @see java.io.FileFilter
+   */
+  @NullSafe
+  public static @NotNull FileFilter and(FileFilter... fileFilters) {
+    return compositeOf(fileFilters, LogicalOperator.AND);
+  }
+
+  /**
+   * Composes two {@link FileFilter} objects in an expression joined by {@link LogicalOperator#OR}.
+   *
+   * @param fileFilters array of {@link FileFilter FileFilters} to compose into an expression
+   * joined by {@link LogicalOperator#OR}.
+   * @return a {@link FileFilter} implementation composed of two {@link FileFilter} objects in an expression
+   * joined by {@link LogicalOperator#OR}.
+   * @see #compositeOf(FileFilter[], LogicalOperator)
+   * @see org.cp.elements.lang.LogicalOperator#OR
+   * @see java.io.FileFilter
+   */
+  @NullSafe
+  public static @NotNull FileFilter or(FileFilter... fileFilters) {
+    return compositeOf(fileFilters, LogicalOperator.OR);
+  }
+
+  /**
+   * Composes two {@link FileFilter} objects in an expression joined by {@link LogicalOperator#XOR}.
+   *
+   * @param leftOperand {@link FileFilter} operand used in the left-hand side (lhs) of the logical expression.
+   * @param rightOperand {@link FileFilter} operand used in the right-hand side (lhs) of the logical expression.
+   * @return a {@link FileFilter} implementation composed of two {@link FileFilter} objects in an expression
+   * joined by {@link LogicalOperator#XOR}.
+   * @see #compositeOf(FileFilter[], LogicalOperator)
+   * @see org.cp.elements.lang.LogicalOperator#XOR
+   * @see java.io.FileFilter
+   */
+  @NullSafe
+  public static @NotNull FileFilter xor(@Nullable FileFilter leftOperand, @Nullable FileFilter rightOperand) {
+    return nullSafeFileFilter(compose(leftOperand, rightOperand, LogicalOperator.XOR));
+  }
+
+  /**
+   * Utility method used to guard against a {@literal null} {@link FileFilter}, returning a default {@link FileFilter}
+   * rejecting all {@link File Files} if the given {@link FileFilter} is {@literal null}.
+   *
+   * @param fileFilter {@link FileFilter} to evaluate.
+   * @return the given {@link FileFilter} if not {@literal null}, otherwise returns a default {@link FileFilter}
+   * that rejects all {@link File Files}.
+   * @see java.io.FileFilter
+   */
+  @NullSafe
+  private static @NotNull FileFilter nullSafeFileFilter(@Nullable FileFilter fileFilter) {
+    return fileFilter != null ? fileFilter : DEFAULT_FILE_FILTER;
+  }
+
+  /**
+   * Utility method used to guard against a {@literal null} {@link LogicalOperator}, returning the default
+   * {@link LogicalOperator#AND} operator if the given {@link LogicalOperator } is {@literal null}.
+   *
+   * @param operator {@link LogicalOperator} to evaluate.
+   * @return the given {@link LogicalOperator} if not {@literal null}, otherwise returns {@link LogicalOperator#AND}.
+   * @see org.cp.elements.lang.LogicalOperator
+   */
+  @NullSafe
+  private static @NotNull LogicalOperator nullSafeOperator(@Nullable LogicalOperator operator) {
+    return operator != null ? operator : DEFAULT_OPERATOR;
+  }
+
   private final FileFilter leftOperand;
   private final FileFilter rightOperand;
 
   private final LogicalOperator operator;
 
   /**
-   * Factory method that returns the single instance of {@link ComposableFileFilter} used to compose 2
-   * or more individual {@link FileFilter} objects into a {@link Composite} {@link FileFilter} object.
-   *
-   * @return the single instance of {@link ComposableFileFilter}.
-   * @see org.cp.elements.io.ComposableFileFilter
-   */
-  public static ComposableFileFilter builder() {
-    return INSTANCE;
-  }
-
-  /**
-   * Default, private constructor used to construct a Singleton instance of {@link ComposableFileFilter} used to compose
-   * 2 or more individual {@link FileFilter} objects into a {@link Composite} {@link FileFilter} object.
+   * Default, private constructor used to construct a Singleton instance of {@link ComposableFileFilter} that can
+   * compose 2 or more individual {@link FileFilter} objects into a single, {@link Composite} {@link FileFilter}
+   * object.
    */
   private ComposableFileFilter() {
-    this.leftOperand = (file) -> false;
-    this.rightOperand = (file) -> false;
+
+    this.leftOperand = file -> false;
+    this.rightOperand = file -> false;
     this.operator = LogicalOperator.AND;
   }
 
   /**
-   * Constructs an instance of {@link ComposableFileFilter} initialized with the {@link LogicalOperator} used to perform
-   * a logical operation on the left and right {@link FileFilter} operands in the filtering process.
+   * Constructs a new instance of {@link ComposableFileFilter} initialized with {@link FileFilter left}
+   * and {@link FileFilter right} operands joined by the given, required {@link LogicalOperator}
+   * when used in the filtering process.
    *
-   * @param operator {@link LogicalOperator logical operation} to perform.
-   * @param leftOperand {@link FileFilter} operand used in the left hand side of the logical expression.
-   * @param rightOperand {@link FileFilter} operand used in the right hand side of the logical expression.
-   * @throws java.lang.IllegalArgumentException if the {@link LogicalOperator} or either {@link FileFilter} operand
-   * is {@literal null}.
+   * @param leftOperand {@link FileFilter} used in the left-hand side (lhs) of the logical expression;
+   * must not be {@literal null}.
+   * @param rightOperand {@link FileFilter} used in the right-hand side (rhs) of the logical expression;
+   * must not be {@literal null}.
+   * @param operator {@link LogicalOperator} used to join the left and right {@link FileFilter} operands.
+   * @throws java.lang.IllegalArgumentException if the {@link LogicalOperator} or either {@link FileFilter}
+   * operand is {@literal null}.
    * @see org.cp.elements.lang.LogicalOperator
    * @see java.io.FileFilter
    */
-  private ComposableFileFilter(LogicalOperator operator, FileFilter leftOperand, FileFilter rightOperand) {
-    Assert.notNull(operator, "The logical operator must be specified");
-    Assert.notNull(leftOperand, "The left FileFilter operand cannot be null");
-    Assert.notNull(rightOperand, "The right FileFilter operand cannot be null");
+  private ComposableFileFilter(@NotNull FileFilter leftOperand, @NotNull FileFilter rightOperand,
+      @NotNull LogicalOperator operator) {
 
-    this.operator = operator;
-    this.leftOperand = leftOperand;
-    this.rightOperand = rightOperand;
+    this.leftOperand = ObjectUtils.requireObject(leftOperand, "Left operand is required");
+    this.rightOperand = ObjectUtils.requireObject(rightOperand, "Right operand is required");
+    this.operator = ObjectUtils.requireObject(operator, "Operator is required");
   }
 
   /**
-   * Factory method to construct a {@link ComposableFileFilter} composed of two {@link FileFilter} operands joined by
-   * the given {@link LogicalOperator}.
+   * Composes two {@link FileFilter} objects into a single, {@link Composite} {@link FileFilter} object
+   * joined by {@link LogicalOperator#AND}.
    *
-   * @param operator the logical operation to perform.
-   * @param leftOperand {@link FileFilter} operand used in the left hand side of the logical expression.
-   * @param rightOperand {@link FileFilter} operand used in the right hand side of the logical expression.
-   * @return a {@link ComposableFileFilter} consisting of two {@link FileFilter} operands joined by the given logical
-   * operator. Returns the left operand if the right operand is null, the right operand if the left operand is null,
-   * or both operands joined by the logical operator if neither is null.
-   * @see java.io.FileFilter
-   * @see org.cp.elements.lang.LogicalOperator
-   */
-  protected static FileFilter compose(LogicalOperator operator, FileFilter leftOperand, FileFilter rightOperand) {
-    return (leftOperand == null ? rightOperand : (rightOperand == null ? leftOperand :
-      new ComposableFileFilter(operator, leftOperand, rightOperand)));
-  }
-
-  /**
-   * Composes two {@link FileFilter} operands in an expression joined by the logical AND operator.
-   *
-   * @param fileFilters an array of {@link FileFilter}s to compose into a logical expression with the logical AND operator.
-   * @return a {@link FileFilter} implementation composed of two {@link FileFilter} operands in an expression
-   * joined by the logical AND operator.
-   * @see #compose(org.cp.elements.lang.LogicalOperator, java.io.FileFilter, java.io.FileFilter)
+   * @param leftOperand {@link FileFilter} used in the left-hand side (lhs) of the logical expression.
+   * @param rightOperand {@link FileFilter} used in the right-hand side (rhs) of the logical expression.
+   * @return a single, {@link Composite} {@link FileFilter} object composed of the given {@link FileFilter} objects
+   * using {@link LogicalOperator#AND}.
+   * @see #compose(FileFilter, FileFilter, LogicalOperator)
    * @see org.cp.elements.lang.LogicalOperator#AND
    * @see java.io.FileFilter
    */
-  public static FileFilter and(FileFilter... fileFilters) {
-    FileFilter composedFileFilter = null;
-
-    for (FileFilter fileFilter : ArrayUtils.nullSafeArray(fileFilters, FileFilter.class)) {
-      composedFileFilter = compose(LogicalOperator.AND, composedFileFilter, fileFilter);
-    }
-
-    return composedFileFilter;
-  }
-
-  /**
-   * Composes two {@link FileFilter} operands in an expression joined by the logical OR operator.
-   *
-   * @param fileFilters an array of {@link FileFilter}s to compose into a logical expression with the logical OR operator.
-   * @return a {@link FileFilter} implementation composed of two {@link FileFilter} operands in an expression
-   * joined by the logical OR operator.
-   * @see #compose(org.cp.elements.lang.LogicalOperator, java.io.FileFilter, java.io.FileFilter)
-   * @see org.cp.elements.lang.LogicalOperator#OR
-   * @see java.io.FileFilter
-   */
-  public static FileFilter or(FileFilter... fileFilters) {
-    FileFilter composedFileFilter = null;
-
-    for (FileFilter fileFilter : ArrayUtils.nullSafeArray(fileFilters, FileFilter.class)) {
-      composedFileFilter = compose(LogicalOperator.OR, composedFileFilter, fileFilter);
-    }
-
-    return composedFileFilter;
-  }
-
-  /**
-   * Composes two {@link FileFilter} operands in an expression joined by the logical XOR operator.
-   *
-   * @param leftOperand {@link FileFilter} operand used in the left hand side of the logical expression.
-   * @param rightOperand {@link FileFilter} operand used in the right hand side of the logical expression.
-   * @return a {@link FileFilter} implementation composed of two {@link FileFilter} operands in an expression
-   * joined by the logical XOR operator.
-   * @see #compose(org.cp.elements.lang.LogicalOperator, java.io.FileFilter, java.io.FileFilter)
-   * @see org.cp.elements.lang.LogicalOperator#XOR
-   * @see java.io.FileFilter
-   */
-  public static FileFilter xor(FileFilter leftOperand, FileFilter rightOperand) {
-    return compose(LogicalOperator.XOR, leftOperand, rightOperand);
-  }
-
-  /**
-   * Compose the given {@link FileFilter} objects into a {@link Composite} object.
-   *
-   * @return a {@link FileFilter} {@link Composite} object composed of the given {@link FileFilter} objects
-   * as an instance of {@link FileFilter}.
-   * @see #compose(LogicalOperator, FileFilter, FileFilter)
-   * @see org.cp.elements.lang.LogicalOperator#AND
-   * @see java.io.FileFilter
-   */
+  @NullSafe
   @Override
-  public FileFilter compose(FileFilter one, FileFilter two) {
-    return compose(LogicalOperator.AND, one, two);
+  public @NotNull FileFilter compose(@Nullable FileFilter leftOperand, @Nullable FileFilter rightOperand) {
+    return nullSafeFileFilter(compose(leftOperand, rightOperand, LogicalOperator.AND));
   }
 
   /**
-   * Returns the {@link FileFilter} operand on the left hand side of the logical expression.
+   * Returns the {@link FileFilter} operand on the left-hand side (lhs) of the logical expression.
    *
-   * @return {@link FileFilter} operand used in the left hand side of the logical expression.
+   * @return {@link FileFilter} operand used in the left-hand side (lhs) of the logical expression.
    * @see java.io.FileFilter
    */
-  protected FileFilter getLeftOperand() {
+  protected @NotNull FileFilter getLeftOperand() {
     return this.leftOperand;
   }
 
   /**
-   * Returns the {@link LogicalOperator} used to compose the {@link FileFilter} operands into a logical expression.
+   * Returns the {@link LogicalOperator} used to compose (join) the {@link FileFilter} operands in a logical expression.
    *
-   * @return the {@link LogicalOperator} used to compose the {@link FileFilter} operands into a logical expression.
+   * @return the {@link LogicalOperator} used to compose (join) the {@link FileFilter} operands in a logical expression.
    * @see org.cp.elements.lang.LogicalOperator
    */
-  protected LogicalOperator getOperator() {
+  protected @NotNull LogicalOperator getOperator() {
     return this.operator;
   }
 
   /**
-   * Returns the {@link FileFilter} operand on the right hand side of the logical expression.
+   * Returns the {@link FileFilter} operand on the right-hand side (rhs) of the logical expression.
    *
-   * @return {@link FileFilter} operand used in the right hand side of the logical expression.
+   * @return {@link FileFilter} operand used in the right-hand side (rhs) of the logical expression.
    * @see java.io.FileFilter
    */
-  protected FileFilter getRightOperand() {
+  protected @NotNull FileFilter getRightOperand() {
     return this.rightOperand;
   }
 
   /**
    * Determines whether the given {@link File} matches the criteria of this {@link FileFilter}.
    *
-   * @param file the {@link File} to evaluate.
+   * @param file {@link File} to evaluate.
    * @return a boolean value indicating whether the given {@link File} matches the criteria of this {@link FileFilter}.
-   * @see java.io.FileFilter#accept(java.io.File)
+   * @see java.io.FileFilter#accept(File)
    * @see java.io.File
    */
   @Override
