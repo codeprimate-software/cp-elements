@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +50,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
+import org.cp.elements.time.Month;
 
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -805,6 +808,57 @@ public class FileUtilsUnitTests extends AbstractBaseTestSuite {
   @Test
   public void sizeOfNullIsNullSafe() {
     assertThat(FileUtils.size(null)).isEqualTo(0L);
+  }
+
+  @Test
+  public void toLocalDateTimeFromFileLastModifiedTimestamp() {
+
+    ZonedDateTime dateTime = ZonedDateTime.of(2022, Month.NOVEMBER.getJavaTimeMonth().getValue(), 7,
+      13, 31, 30, 0, ZoneId.systemDefault());
+
+    doReturn(dateTime.toInstant().toEpochMilli()).when(this.mockFile).lastModified();
+
+    assertThat(FileUtils.toLastModifiedDateTime(this.mockFile)).isEqualTo(dateTime.toLocalDateTime());
+
+    verify(this.mockFile, times(1)).lastModified();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  public void toLocalDateTimeFromNullFileThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FileUtils.toLastModifiedDateTime(null))
+      .withMessage("File is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void toLocalDateFromFileLastModifiedTimestamp() {
+
+    ZonedDateTime dateTime = ZonedDateTime.of(2022, Month.NOVEMBER.getJavaTimeMonth().getValue(), 7,
+      13, 36, 30, 0, ZoneId.systemDefault());
+
+    doReturn(dateTime.toInstant().toEpochMilli()).when(this.mockFile).lastModified();
+
+    assertThat(FileUtils.toLastModifiedDate(this.mockFile)).isEqualTo(dateTime.toLocalDate());
+
+    verify(this.mockFile, times(1)).lastModified();
+    verifyNoMoreInteractions(this.mockFile);
+  }
+
+  @Test
+  public void toLocalTimeFromFileLastModifiedTimestamp() {
+
+    ZonedDateTime dateTime = ZonedDateTime.of(2022, Month.NOVEMBER.getJavaTimeMonth().getValue(), 7,
+      13, 36, 30, 0, ZoneId.systemDefault());
+
+    doReturn(dateTime.toInstant().toEpochMilli()).when(this.mockFile).lastModified();
+
+    assertThat(FileUtils.toLastModifiedTime(this.mockFile)).isEqualTo(dateTime.toLocalTime());
+
+    verify(this.mockFile, times(1)).lastModified();
+    verifyNoMoreInteractions(this.mockFile);
   }
 
   @Test

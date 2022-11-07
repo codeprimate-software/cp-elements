@@ -26,6 +26,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -413,6 +418,57 @@ public abstract class FileUtils extends IOUtils {
   @NullSafe
   public static long size(@Nullable File path) {
     return isFile(path) ? path.length() : 0L;
+  }
+
+  /**
+   * Converts the given, required {@link File File's} {@link File#lastModified() last modified timestamp}
+   * to a {@link LocalDateTime}.
+   *
+   * @param file {@link File} to process; must not be {@literal null}.
+   * @return a {@link LocalDateTime} for the {@link File File's} {@link File#lastModified() last modified timestamp}.
+   * @throws IllegalArgumentException if the {@link File} is {@literal null}.
+   * @see java.time.LocalDateTime
+   * @see java.io.File
+   */
+  public static @NotNull LocalDateTime toLastModifiedDateTime(@NotNull File file) {
+
+    Assert.notNull(file, "File is required");
+
+    return Instant.ofEpochMilli(file.lastModified())
+      .atZone(ZoneId.systemDefault())
+      .toLocalDateTime();
+  }
+
+  /**
+   * Converts the given, required {@link File File's} {@link File#lastModified() last modified timestamp}
+   * to a {@link LocalDate}, stripping off the {@link LocalTime time} component.
+   *
+   * @param file {@link File} to process; must not be {@literal null}.
+   * @return the {@link LocalDate} from the {@link File File's} {@link File#lastModified() last modified timestamp}
+   * stripping off the {@link LocalTime time} component.
+   * @throws IllegalArgumentException if the {@link File} is {@literal null}.
+   * @see #toLastModifiedDateTime(File)
+   * @see java.time.LocalDate
+   * @see java.io.File
+   */
+  public static @NotNull LocalDate toLastModifiedDate(@NotNull File file) {
+    return toLastModifiedDateTime(file).toLocalDate();
+  }
+
+  /**
+   * Converts the given, required {@link File File's} {@link File#lastModified() last modified timestamp}
+   * to a {@link LocalTime}, stripping off the {@link LocalDate date} component.
+   *
+   * @param file {@link File} to process; must not be {@literal null}.
+   * @return the {@link LocalTime} from the {@link File File's} {@link File#lastModified() last modified timestamp}
+   * stripping off the {@link LocalTime date} component.
+   * @throws IllegalArgumentException if the {@link File} is {@literal null}.
+   * @see #toLastModifiedDateTime(File)
+   * @see java.time.LocalTime
+   * @see java.io.File
+   */
+  public static @NotNull LocalTime toLastModifiedTime(@NotNull File file) {
+    return toLastModifiedDateTime(file).toLocalTime();
   }
 
   /**
