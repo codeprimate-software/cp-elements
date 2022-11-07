@@ -16,15 +16,22 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -35,16 +42,15 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.io.File
  * @see java.util.Comparator
  * @see org.junit.Test
- * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.io.FileComparatorFactory
  * @since 1.0.0
  */
-@SuppressWarnings("all")
 @RunWith(MockitoJUnitRunner.class)
-public class FileComparatorFactoryTests {
+@SuppressWarnings("all")
+public class FileComparatorFactoryUnitTests {
 
   @Mock
   private File mockFileOne;
@@ -52,18 +58,30 @@ public class FileComparatorFactoryTests {
   @Mock
   private File mockFileTwo;
 
+  @Before
+  public void setupMockFiles() throws IOException {
+    doThrow(newIOException("TEST")).when(this.mockFileOne).getCanonicalPath();
+    doThrow(newIOException("TEST")).when(this.mockFileTwo).getCanonicalPath();
+  }
+
+  @After
+  public void verifyMockFiles() {
+    verifyNoMoreInteractions(this.mockFileOne, this.mockFileTwo);
+  }
+
   @Test
   public void fileExtensionComparator() {
 
-    when(this.mockFileOne.getName()).thenReturn("/path/to/source/file.groovy");
-    when(this.mockFileTwo.getName()).thenReturn("/path/to/source/file.java");
+    doReturn("relative/path/to/source/file.groovy").when(this.mockFileOne).getName();
+    doReturn("/absolute/path/to/source/file.java").when(this.mockFileTwo).getName();
 
     Comparator<File> fileExtensionComparator = FileComparatorFactory.fileExtensionComparator();
 
-    assertThat(fileExtensionComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(fileExtensionComparator).isNotNull();
+    assertThat(fileExtensionComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(fileExtensionComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(fileExtensionComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
-    assertThat(fileExtensionComparator.compare(this.mockFileTwo, this.mockFileTwo)).isEqualTo(0);
+    assertThat(fileExtensionComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).getName();
     verify(this.mockFileTwo, times(4)).getName();
@@ -72,31 +90,34 @@ public class FileComparatorFactoryTests {
   @Test
   public void fileExtensionComparatorComparesFileWithoutExtensionToFileWithExtensionSuccessfully() {
 
-    when(this.mockFileOne.getName()).thenReturn("/path/to/file");
-    when(this.mockFileTwo.getName()).thenReturn("/path/to/file.ext");
+    doReturn("/path/to/file").when(this.mockFileOne).getName();
+    doReturn("/path/to/file.ext").when(this.mockFileTwo).getName();
 
     Comparator<File> fileExtensionComparator = FileComparatorFactory.fileExtensionComparator();
 
-    assertThat(fileExtensionComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(fileExtensionComparator).isNotNull();
+    assertThat(fileExtensionComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(fileExtensionComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(fileExtensionComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
+    assertThat(fileExtensionComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).getName();
-    verify(this.mockFileTwo, times(2)).getName();
+    verify(this.mockFileTwo, times(4)).getName();
   }
 
   @Test
   public void fileLastModifiedComparator() {
 
-    when(this.mockFileOne.lastModified()).thenReturn(1l);
-    when(this.mockFileTwo.lastModified()).thenReturn(2l);
+    doReturn(1L).when(this.mockFileOne).lastModified();
+    doReturn(2L).when(this.mockFileTwo).lastModified();
 
     Comparator<File> fileLastModifiedComparator = FileComparatorFactory.fileLastModifiedComparator();
 
-    assertThat(fileLastModifiedComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(fileLastModifiedComparator).isNotNull();
+    assertThat(fileLastModifiedComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(fileLastModifiedComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(fileLastModifiedComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
-    assertThat(fileLastModifiedComparator.compare(this.mockFileTwo, this.mockFileTwo)).isEqualTo(0);
+    assertThat(fileLastModifiedComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).lastModified();
     verify(this.mockFileTwo, times(4)).lastModified();
@@ -105,15 +126,16 @@ public class FileComparatorFactoryTests {
   @Test
   public void fileNameComparator() {
 
-    when(this.mockFileOne.getName()).thenReturn("/path/to/source/fileOne.java");
-    when(this.mockFileTwo.getName()).thenReturn("/path/to/source/fileTwo.java");
+    doReturn("relative/path/to/source/fileOne.java").when(this.mockFileOne).getName();
+    doReturn("/absolute/path/to/source/fileTwo.java").when(this.mockFileTwo).getName();
 
     Comparator<File> fileNameComparator = FileComparatorFactory.fileNameComparator();
 
-    assertThat(fileNameComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(fileNameComparator).isNotNull();
+    assertThat(fileNameComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(fileNameComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(fileNameComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
-    assertThat(fileNameComparator.compare(this.mockFileTwo, this.mockFileTwo)).isEqualTo(0);
+    assertThat(fileNameComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).getName();
     verify(this.mockFileTwo, times(4)).getName();
@@ -122,65 +144,75 @@ public class FileComparatorFactoryTests {
   @Test
   public void fileNameComparatorComparesFileWithoutNameToFileWithNameSuccessfully() {
 
-    when(this.mockFileOne.getName()).thenReturn("/path/to/.ext");
-    when(this.mockFileTwo.getName()).thenReturn("/path/to/file.ext");
+    doReturn("/path/to/.ext").when(this.mockFileOne).getName();
+    doReturn("/path/to/file.ext").when(this.mockFileTwo).getName();
 
     Comparator<File> fileNameComparator = FileComparatorFactory.fileNameComparator();
 
-    assertThat(fileNameComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(fileNameComparator).isNotNull();
+    assertThat(fileNameComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(fileNameComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(fileNameComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
+    assertThat(fileNameComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).getName();
-    verify(this.mockFileTwo, times(2)).getName();
+    verify(this.mockFileTwo, times(4)).getName();
   }
 
   @Test
-  public void filePathComparator() {
+  public void filePathComparator() throws IOException {
 
-    when(this.mockFileOne.getAbsolutePath()).thenReturn("/absolute/path/to/file.ext");
-    when(this.mockFileTwo.getAbsolutePath()).thenReturn("/relative/path/to/file.ext");
+    doReturn("/absolute/path/to/file.ext").when(this.mockFileOne).getAbsolutePath();
+    doReturn("relative/path/to/file.ext").when(this.mockFileTwo).getAbsolutePath();
 
     Comparator<File> filePathComparator = FileComparatorFactory.filePathComparator();
 
-    assertThat(filePathComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(filePathComparator).isNotNull();
+    assertThat(filePathComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(filePathComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(filePathComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
-    assertThat(filePathComparator.compare(this.mockFileTwo, this.mockFileTwo)).isEqualTo(0);
+    assertThat(filePathComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).getAbsolutePath();
+    verify(this.mockFileOne, times(4)).getCanonicalPath();
     verify(this.mockFileTwo, times(4)).getAbsolutePath();
+    verify(this.mockFileTwo, times(4)).getCanonicalPath();
   }
 
   @Test
   // NOTE: sorts directories before files appropriately
-  public void filePathComparatorComparesFileWithoutPathToFileWithPathSuccessfully() {
+  public void filePathComparatorComparesFileWithoutPathToFileWithPathSuccessfully() throws IOException {
 
-    when(this.mockFileOne.getAbsolutePath()).thenReturn("file.ext");
-    when(this.mockFileTwo.getAbsolutePath()).thenReturn("/a/path/to/file.ext");
+    doReturn("file.ext").when(this.mockFileOne).getAbsolutePath();
+    doReturn("/a/path/to/file.ext").when(this.mockFileTwo).getAbsolutePath();
 
     Comparator<File> filePathComparator = FileComparatorFactory.filePathComparator();
 
-    assertThat(filePathComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(filePathComparator).isNotNull();
+    assertThat(filePathComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(filePathComparator.compare(this.mockFileOne, this.mockFileTwo)).isGreaterThan(0);
     assertThat(filePathComparator.compare(this.mockFileTwo, this.mockFileOne)).isLessThan(0);
+    assertThat(filePathComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).getAbsolutePath();
-    verify(this.mockFileTwo, times(2)).getAbsolutePath();
+    verify(this.mockFileOne, times(4)).getCanonicalPath();
+    verify(this.mockFileTwo, times(4)).getAbsolutePath();
+    verify(this.mockFileTwo, times(4)).getCanonicalPath();
   }
 
   @Test
   public void fileSizeComparator() {
 
-    when(this.mockFileOne.length()).thenReturn(1024l);
-    when(this.mockFileTwo.length()).thenReturn(1024000l);
+    doReturn(1024L).when(this.mockFileOne).length();
+    doReturn(1024000L).when(this.mockFileTwo).length();
 
     Comparator<File> fileSizeComparator = FileComparatorFactory.fileSizeComparator();
 
-    assertThat(fileSizeComparator.compare(this.mockFileOne, this.mockFileOne)).isEqualTo(0);
+    assertThat(fileSizeComparator).isNotNull();
+    assertThat(fileSizeComparator.compare(this.mockFileOne, this.mockFileOne)).isZero();
     assertThat(fileSizeComparator.compare(this.mockFileOne, this.mockFileTwo)).isLessThan(0);
     assertThat(fileSizeComparator.compare(this.mockFileTwo, this.mockFileOne)).isGreaterThan(0);
-    assertThat(fileSizeComparator.compare(this.mockFileTwo, this.mockFileTwo)).isEqualTo(0);
+    assertThat(fileSizeComparator.compare(this.mockFileTwo, this.mockFileTwo)).isZero();
 
     verify(this.mockFileOne, times(4)).length();
     verify(this.mockFileTwo, times(4)).length();

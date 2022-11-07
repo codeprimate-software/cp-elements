@@ -18,9 +18,11 @@ package org.cp.elements.io;
 import java.io.File;
 import java.util.Comparator;
 
+import org.cp.elements.lang.annotation.NotNull;
+
 /**
- * The FileComparatorFactory class is a factory returning different {@link File} {@link Comparator} implementations
- * based on various {@link File} properties and attributes.
+ * Abstract factory class used to return different {@link File} {@link Comparator} implementations based on
+ * different {@link File} properties and attributes.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -30,65 +32,69 @@ import java.util.Comparator;
 public abstract class FileComparatorFactory {
 
   /**
-   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their extension.
+   * Returns a {@link Comparator} used to compare {@link File Files} by extension.
    *
-   * @return a {@link Comparator} used to compare {@link File}s for order by their extension.
+   * @return a {@link Comparator} used to compare {@link File Files} by extension.
    * @see org.cp.elements.io.FileUtils#getExtension(File)
-   * @see java.lang.Comparable#compareTo(Object)
    * @see java.util.Comparator
    * @see java.io.File
    */
-  public static Comparator<File> fileExtensionComparator() {
+  public static @NotNull Comparator<File> fileExtensionComparator() {
     return Comparator.comparing(FileUtils::getExtension);
   }
 
   /**
-   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their last modified
-   * timestamp.
+   * Returns a {@link Comparator} used to compare {@link File Files} by
+   * {@link File#lastModified() last modified timestamp}.
    *
-   * @return a {@link Comparator} used to compare {@link File}s for order by their last modified timestamp.
+   * @return a {@link Comparator} used to compare {@link File Files} by
+   * {@link File#lastModified() last modified timestamp}.
    * @see java.io.File#lastModified()
-   * @see java.lang.Comparable#compareTo(Object)
    * @see java.util.Comparator
+   * @see java.io.File
    */
-  public static Comparator<File> fileLastModifiedComparator() {
+  public static @NotNull Comparator<File> fileLastModifiedComparator() {
     return Comparator.comparingLong(File::lastModified);
   }
 
   /**
-   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their name.
+   * Returns a {@link Comparator} used to compare {@link File Files} by {@link File#getName() name}.
    *
-   * @return a {@link Comparator} used to compare {@link File}s for order by their name.
+   * @return a {@link Comparator} used to compare {@link File Files} by {@link File#getName() name}.
+   * @see org.cp.elements.io.FileUtils#getName(File)
    * @see java.io.File#getName()
-   * @see java.lang.Comparable#compareTo(Object)
    * @see java.util.Comparator
+   * @see java.io.File
    */
-  public static Comparator<File> fileNameComparator() {
-    return Comparator.comparing(File::getName);
+  public static @NotNull Comparator<File> fileNameComparator() {
+    return Comparator.comparing(FileUtils::getName);
   }
 
   /**
-   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their
-   * file system location (absolute path).
+   * Returns a {@link Comparator} used to compare {@link File Files} by
+   * {@link File#getAbsolutePath() file system location (absolute path)}.
    *
-   * @return a {@link Comparator} used to compare {@link File}s for order by their file system location (absolute path).
+   * @return a {@link Comparator} used to compare {@link File Files} by
+   * {@link File#getAbsolutePath() file system location (absolute path)}.
+   * @see org.cp.elements.io.FileUtils#tryGetCanonicalPathElseGetAbsolutePath(File)
    * @see java.io.File#getAbsolutePath()
-   * @see java.lang.Comparable#compareTo(Object)
+   * @see java.io.File#getCanonicalPath()
    * @see java.util.Comparator
+   * @see java.io.File
    */
-  public static Comparator<File> filePathComparator() {
-    return Comparator.comparing(File::getAbsolutePath);
+  public static @NotNull Comparator<File> filePathComparator() {
+    return Comparator.comparing(FileUtils::tryGetCanonicalPathElseGetAbsolutePath);
   }
 
   /**
-   * Returns a {@link Comparator} used to compare two different {@link File}s for order based on their size.
+   * Returns a {@link Comparator} used to compare {@link File Files} by {@link File#length() size}.
    *
-   * @return a {@link Comparator} used to compare {@link File}s for order by their size.
+   * @return a {@link Comparator} used to compare {@link File Files} by {@link File#length() size}.
    * @see java.io.File#length()
-   * @see java.lang.Comparable#compareTo(Object)
    * @see java.util.Comparator
+   * @see java.io.File
    */
-  public static Comparator<File> fileSizeComparator() {
+  public static @NotNull Comparator<File> fileSizeComparator() {
     return Comparator.comparingLong(File::length);
   }
 }
