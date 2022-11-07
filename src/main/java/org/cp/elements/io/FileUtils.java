@@ -193,8 +193,10 @@ public abstract class FileUtils extends IOUtils {
     String filename = file.getName();
 
     int dotIndex = filename.indexOf(FILE_EXTENSION_SEPARATOR);
+    int fileSeparatorIndex = filename.lastIndexOf(File.separator);
 
     filename = dotIndex != -1 ? filename.substring(0, dotIndex) : filename;
+    filename = fileSeparatorIndex != -1 ? filename.substring(fileSeparatorIndex) : filename;
 
     return filename.trim();
   }
