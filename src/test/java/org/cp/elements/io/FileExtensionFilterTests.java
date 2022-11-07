@@ -16,148 +16,152 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.cp.elements.util.ArrayUtils.asIterable;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.cp.elements.lang.StringUtils;
-import org.cp.elements.test.AbstractBaseTestSuite;
-import org.cp.elements.util.stream.StreamUtils;
 import org.junit.Test;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.test.AbstractBaseTestSuite;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.stream.StreamUtils;
+
 /**
- * Unit Tests {@link FileExtensionFilter}.
+ * Unit Tests for {@link FileExtensionFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.junit.rules.ExpectedException
  * @see org.cp.elements.io.FileExtensionFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0
  */
 public class FileExtensionFilterTests extends AbstractBaseTestSuite {
 
-  private File newFile(String pathname) {
+  private @NotNull File newFile(@NotNull String pathname) {
     return new File(pathname);
   }
 
-  private File newFile(File parent, String pathname) {
+  @SuppressWarnings("unused")
+  private @NotNull File newFile(@Nullable File parent, @NotNull String pathname) {
     return new File(parent, pathname);
   }
 
   @Test
-  public void constructWithClassExtension() {
+  public void constructFileExtensionFilterWithClassExtension() {
 
     FileExtensionFilter fileFilter = new FileExtensionFilter("class");
 
     Set<String> fileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.size()).isEqualTo(1);
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).hasSize(1);
     assertThat(fileExtensions.contains("class")).isTrue();
     assertThat(fileExtensions.contains(".class")).isFalse();
   }
 
   @Test
-  public void constructWithDotJavaExtension() {
+  public void constructFileExtensionFilterWithDotJavaExtension() {
 
     FileExtensionFilter fileFilter = new FileExtensionFilter(".java");
 
     Set<String> fileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.size()).isEqualTo(1);
-    assertThat(fileExtensions.contains(".java")).isFalse();
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).hasSize(1);
     assertThat(fileExtensions.contains("java")).isTrue();
+    assertThat(fileExtensions.contains(".java")).isFalse();
   }
 
   @Test
-  public void constructWithAnArrayOfFileExtensions() {
+  public void constructFileExtensionFilterWithArrayOfFileExtensions() {
 
-    String[] expectedFileExtensions = { "ada", ".c", ".cpp", "groovy", "java", ".rb" };
+    String[] expectedFileExtensions = { "ada", ".c", ".cpp", "groovy", "java", ".kt", ".rb" };
 
     FileExtensionFilter fileFilter = new FileExtensionFilter(expectedFileExtensions);
 
     Set<String> actualFileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(actualFileExtensions).isInstanceOf(Set.class);
-    assertThat(actualFileExtensions.size()).isEqualTo(expectedFileExtensions.length);
+    assertThat(actualFileExtensions).isNotNull();
+    assertThat(actualFileExtensions).hasSize(expectedFileExtensions.length);
     assertThat(actualFileExtensions.containsAll(StreamUtils.stream(expectedFileExtensions)
-      .map((fileExtension) -> fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension
-        .substring(1) : fileExtension)
-      .collect(Collectors.toSet()))).isTrue();
+      .map(FileExtensionFilter.FILE_EXTENSION_RESOLVER)
+      .collect(Collectors.toSet())))
+      .isTrue();
   }
 
   @Test
-  public void constructWithAnIterableCollectionOfFileExtensions() {
+  public void constructFileExtensionFilterWithIterableOfFileExtensions() {
 
-    Iterable<String> expectedFileExtensions = asIterable(".groovy", "java");
+    Iterable<String> expectedFileExtensions = ArrayUtils.asIterable(".groovy", "java", ".kt");
 
     FileExtensionFilter fileFilter = new FileExtensionFilter(expectedFileExtensions);
 
     Set<String> actualFileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(actualFileExtensions).isInstanceOf(Set.class);
-    assertThat(actualFileExtensions.size()).isEqualTo(2);
+    assertThat(actualFileExtensions).isNotNull();
+    assertThat(actualFileExtensions).hasSize(3);
     assertThat(actualFileExtensions.containsAll(StreamUtils.stream(expectedFileExtensions)
-      .map((fileExtension) -> fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension.substring(1)
-        : fileExtension)
-      .collect(Collectors.toSet()))).isTrue();
+      .map(FileExtensionFilter.FILE_EXTENSION_RESOLVER)
+      .collect(Collectors.toSet())))
+      .isTrue();
   }
 
   @Test
-  public void constructWithBlankEmptyAndNullFileExtensions() {
+  public void constructFileExtensionFilterWithBlankEmptyAndNullFileExtensions() {
 
     FileExtensionFilter fileFilter = new FileExtensionFilter("  ", "", null);
 
     Set<String> fileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.isEmpty()).isTrue();
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).isEmpty();
   }
 
   @Test
-  public void constructWithNullArrayOfFileExtensions() {
+  public void constructFileExtensionFilterWithNullArrayOfFileExtensionsIsNullSafe() {
 
     FileExtensionFilter fileFilter = new FileExtensionFilter((String[]) null);
 
     Set<String> fileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.isEmpty()).isTrue();
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).isEmpty();
   }
 
   @Test
-  public void constructWithNullIterableCollectionFoFileExtensions() {
+  public void constructFileExtensionsWithNullIterableOfFileExtensionsIsNullSafe() {
 
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> new FileExtensionFilter((Iterable<String>) null))
-      .withMessage("Iterable is required");
+    FileExtensionFilter fileFilter = new FileExtensionFilter((Iterable<String>) null);
+
+    Set<String> fileExtensions = fileFilter.getFileExtensions();
+
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).isEmpty();
   }
 
   @Test
-  public void acceptsAllFilesWithOrWithoutAnExtension() {
+  public void acceptsAllFiles() {
 
     FileExtensionFilter fileFilter = new FileExtensionFilter();
 
     Set<String> fileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.isEmpty()).isTrue();
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).isEmpty();
 
     File fileWithExtension = newFile("/path/to/file.ext");
     File fileWithNoExtension = newFile("/path/to/some/file");
+    File fileWithNoName = newFile("/path/to/some/no/named/file/.ext");
 
     assertThat(fileFilter.accept(fileWithExtension)).isTrue();
     assertThat(fileFilter.accept(fileWithNoExtension)).isTrue();
+    assertThat(fileFilter.accept(fileWithNoName)).isTrue();
   }
 
   @Test
@@ -167,54 +171,70 @@ public class FileExtensionFilterTests extends AbstractBaseTestSuite {
 
     Set<String> fileExtensions = classFileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.size()).isEqualTo(1);
-    assertThat(fileExtensions.contains("class")).isTrue();
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).hasSize(1);
+    assertThat(fileExtensions).containsExactly("class");
 
-    File cFile = newFile("absolute/path/to/source.c");
+    File cFile = newFile("/absolute/path/to/source.c");
     File classFile = newFile("/class/path/to/java/file.class");
+    File groovyFile = newFile("/path/to/file.groovy");
     File javaFile = newFile("/path/to/file.java");
+    File kotlinFile = newFile("/path/to/file.kt");
 
     assertThat(classFileFilter.accept(cFile)).isFalse();
     assertThat(classFileFilter.accept(classFile)).isTrue();
+    assertThat(classFileFilter.accept(groovyFile)).isFalse();
     assertThat(classFileFilter.accept(javaFile)).isFalse();
+    assertThat(classFileFilter.accept(kotlinFile)).isFalse();
     assertThat(classFileFilter.accept(FileSystemUtils.WORKING_DIRECTORY)).isFalse();
   }
 
   @Test
-  public void acceptsJavaClassFilesAndFilesWithoutAnExtension() {
+  public void acceptsJavaClassFilesAndFilesWithNoExtension() {
 
     FileExtensionFilter fileFilter = new FileExtensionFilter("java", ".CLASS", ".");
 
     Set<String> fileExtensions = fileFilter.getFileExtensions();
 
-    assertThat(fileExtensions).isInstanceOf(Set.class);
-    assertThat(fileExtensions.size()).isEqualTo(3);
-    assertThat(fileExtensions.containsAll(Arrays.asList("class", "java", ""))).isTrue();
+    assertThat(fileExtensions).isNotNull();
+    assertThat(fileExtensions).hasSize(3);
+    assertThat(fileExtensions).containsExactlyInAnyOrder("class", "java", "");
     assertThat(fileFilter.accept(newFile("/path/to/source.java"))).isTrue();
-    assertThat(fileFilter.accept(newFile("class/path/to/file.class"))).isTrue();
+    assertThat(fileFilter.accept(newFile("classpath/to/file.class"))).isTrue();
     assertThat(fileFilter.accept(newFile("/path/to/file/with/no/extension"))).isTrue();
     assertThat(fileFilter.accept(newFile("file."))).isTrue();
     assertThat(fileFilter.accept(newFile("file"))).isTrue();
-    assertThat(fileFilter.accept(newFile("/path/to/source.cpp"))).isFalse();
+    assertThat(fileFilter.accept(newFile(".ext"))).isFalse();
     assertThat(fileFilter.accept(newFile("/path/to/source.c"))).isFalse();
+    assertThat(fileFilter.accept(newFile("/path/to/source.cpp"))).isFalse();
+    assertThat(fileFilter.accept(newFile("/path/to/source.groovy"))).isFalse();
+    assertThat(fileFilter.accept(newFile("/path/to/source.kotlin"))).isFalse();
     assertThat(fileFilter.accept(newFile("/path/to/class.file"))).isFalse();
   }
 
   @Test
   public void iterationOfFileExtensions() {
 
-    String[] expectedFileExtensions = { "a", "b", "c", "d", "e" };
+    String[] expectedFileExtensions = { "a", "b", "c", "d", "e", "f" };
 
-    FileExtensionFilter fileExtensionFilter = new FileExtensionFilter(expectedFileExtensions);
+    FileExtensionFilter fileFilter = new FileExtensionFilter(expectedFileExtensions);
 
     List<String> actualFileExtensions = new ArrayList<>(expectedFileExtensions.length);
 
-    for (String fileExtension : fileExtensionFilter) {
+    for (String fileExtension : fileFilter) {
       actualFileExtensions.add(fileExtension);
     }
 
-    assertThat(actualFileExtensions.size()).isEqualTo(expectedFileExtensions.length);
-    assertThat(actualFileExtensions.containsAll(Arrays.asList(expectedFileExtensions))).isTrue();
+    assertThat(actualFileExtensions).hasSize(expectedFileExtensions.length);
+    assertThat(actualFileExtensions).containsExactly(expectedFileExtensions);
+  }
+
+  @Test
+  public void rejectsNullFilesIsNullSafe() {
+
+    FileExtensionFilter fileFilter = new FileExtensionFilter("null", "nil");
+
+    assertThat(fileFilter.getFileExtensions()).containsExactlyInAnyOrder("null", "nil");
+    assertThat(fileFilter.accept(null)).isFalse();
   }
 }

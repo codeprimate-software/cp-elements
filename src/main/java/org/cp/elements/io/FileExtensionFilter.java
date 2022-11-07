@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io;
-
-import static org.cp.elements.util.ArrayUtils.asIterable;
-import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The FileExtensionFilter class is a {@link FileFilter} and {@link Filter} implementation
- * filtering {@link File}s by extension.
+ * Java {@link FileFilter} and Elements {@link Filter} implementation evaluating and filtering {@link File Files}
+ * by {@link String extension}.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -44,42 +46,56 @@ import org.cp.elements.lang.annotation.NullSafe;
 @SuppressWarnings("unused")
 public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<String> {
 
+  protected static final Function<String, String> STRIP_FILE_EXTENSION_SEPARATOR = fileExtension ->
+    fileExtension.startsWith(FileUtils.FILE_EXTENSION_SEPARATOR)
+      ? fileExtension.substring(1)
+      : fileExtension;
+
+  protected static final Function<String, String> TO_LOWER_CASE_AND_TRIM =
+    value -> StringUtils.toLowerCase(StringUtils.trim(value));
+
+  protected static final Function<String, String> FILE_EXTENSION_RESOLVER =
+    TO_LOWER_CASE_AND_TRIM.andThen(STRIP_FILE_EXTENSION_SEPARATOR);
+
   private final Set<String> fileExtensions;
 
   /**
-   * Constructs an instance of {@link FileExtensionFilter} initialized with the given array of file extensions
-   * used to define filtering criteria used by this {@link FileFilter} to filter files.
+   * Constructs a new instance of {@link FileExtensionFilter} initialized with the given array of {@link File}
+   * {@link String extensions} used to define filtering criteria for matching with this {@link FileFilter}.
    *
-   * @param fileExtensions array of file extensions used as the filtering criteria by this {@link FileFilter}
-   * to filter files.
+   * @param fileExtensions array of {@link File} {@link String extensions} used to define filtering criteria
+   * for matching with this {@link FileFilter}.
    * @see #FileExtensionFilter(Iterable)
    */
   @NullSafe
-  public FileExtensionFilter(String... fileExtensions) {
-    this(asIterable(fileExtensions));
+  public FileExtensionFilter(@Nullable String... fileExtensions) {
+    this(ArrayUtils.asIterable(fileExtensions));
   }
 
   /**
-   * Constructs an instance of {@link FileExtensionFilter} initialized with the given {@link Iterable} collection
-   * of file extensions used to define filtering criteria used by this {@link FileFilter} to filter files.
+   * Constructs a new instance of {@link FileExtensionFilter} initialized with the given {@link Iterable} collection
+   * of {@link File} {@link String extensions} used to define filtering criteria for matching
+   * with this {@link FileFilter}.
    *
-   * @param fileExtensions {@link Iterable} collection of file extensions used to define filtering criteria used
-   * by this {#link FileFilter} to filter files.
+   * @param fileExtensions {@link Iterable} collection of {@link File} {@link String extensions} used to
+   * define filtering criteria for matching with this {#link FileFilter}.
    * @see java.lang.Iterable
    */
-  public FileExtensionFilter(Iterable<String> fileExtensions) {
-    this.fileExtensions = stream(fileExtensions).filter(StringUtils::hasText).map((fileExtension) ->
-      (fileExtension.startsWith(StringUtils.DOT_SEPARATOR) ? fileExtension.substring(1)
-        : fileExtension).toLowerCase().trim()
-    ).collect(Collectors.toSet());
+  @NullSafe
+  public FileExtensionFilter(@NotNull Iterable<String> fileExtensions) {
+
+    this.fileExtensions = StreamUtils.stream(CollectionUtils.nullSafeIterable(fileExtensions))
+      .filter(StringUtils::hasText)
+      .map(FILE_EXTENSION_RESOLVER)
+      .collect(Collectors.toSet());
   }
 
   /**
-   * Returns the {@link Set} of file extensions used by this {@link FileFilter} as filtering criteria to evaluate
-   * and filter files.
+   * Returns the configured {@link Set} of {@link File} {@link String extensions} used by this {@link FileFilter}
+   * as filtering criteria to evaluate (match) and filter {@link File Files}.
    *
-   * @return the {@link Set} of file extensions used by this {@link FileFilter} as filtering criteria to evaluate
-   * and filter files.
+   * @return the configured {@link Set} of {@link File} {@link String extensions} used by this {@link FileFilter}
+   * as filtering criteria to evaluate (match) and filter {@link File Files}.
    * @see java.util.Set
    */
   public Set<String> getFileExtensions() {
@@ -87,26 +103,34 @@ public class FileExtensionFilter implements FileFilter, Filter<File>, Iterable<S
   }
 
   /**
-   * Determines whether the given {@link File} is accepted by this {@link FileFilter} based on it's extension.
+   * Determines whether the given {@link File} is accepted by this {@link FileFilter} based on {@link File} extension.
    *
    * @param file {@link File} to evaluate.
-   * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}.
+   * @return a boolean value indicating whether the given {@link File} is accepted by this {@link FileFilter}
+   * based on {@link File} extension.
    * @see org.cp.elements.io.FileUtils#getExtension(java.io.File)
    * @see #getFileExtensions()
    * @see java.io.File
    */
+  @NullSafe
   @Override
-  public boolean accept(File file) {
+  public boolean accept(@NotNull File file) {
+
     Set<String> fileExtensions = getFileExtensions();
 
-    return (fileExtensions.isEmpty() || fileExtensions.contains(FileUtils.getExtension(file).toLowerCase().trim()));
+    return file != null
+      && (fileExtensions.isEmpty()
+      || fileExtensions.contains(FILE_EXTENSION_RESOLVER.apply(FileUtils.getExtension(file))));
   }
 
   /**
-   * Returns an {@link Iterator} over the file extensions used in the filtering criteria of this {@link FileFilter}.
+   * Returns an {@link Iterator} iterating over the configured {@link File} extensions used as filtering criteria
+   * and matching by this {@link FileFilter}.
    *
-   * @return an {@link Iterator} over the file extensions used in the filtering criteria of this {@link FileFilter}.
+   * @return an {@link Iterator} iterating over the configured {@link File} extensions used as filtering criteria
+   * and matching by this {@link FileFilter}.
    * @see java.lang.Iterable#iterator()
+   * @see #getFileExtensions()
    * @see java.util.Iterator
    */
   @Override
