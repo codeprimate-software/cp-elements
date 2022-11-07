@@ -17,10 +17,15 @@ package org.cp.elements.time;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 
-import org.cp.elements.test.TestUtils;
 import org.junit.Test;
+
+import org.cp.elements.test.TestUtils;
 
 /**
  * Unit Tests for {@link DateTimeUtils}.
@@ -59,6 +64,48 @@ public class DateTimeUtilsUnitTests {
     assertThat(actualDateTime).isNotNull();
     assertThat(actualDateTime).isNotSameAs(expectedDateTime);
     assertThat(actualDateTime).isEqualTo(expectedDateTime);
+  }
+
+  @Test
+  public void fromInstantToMilliseconds() {
+
+    Instant now = Instant.now();
+
+    assertThat(DateTimeUtils.toMilliseconds(now)).isEqualTo(now.toEpochMilli());
+  }
+
+  @Test
+  public void fromNullInstantToMillisecondsIsNullSafe() {
+    assertThat(DateTimeUtils.toMilliseconds((Instant) null)).isZero();
+  }
+
+  @Test
+  public void fromLocalDateTimeToMilliseconds() {
+
+    LocalDateTime dateTime = LocalDateTime.of(2022, Month.NOVEMBER.getJavaTimeMonth().getValue(), 7,
+      11, 17, 30);
+
+    assertThat(DateTimeUtils.toMilliseconds(dateTime))
+      .isEqualTo(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+  }
+
+  @Test
+  public void fromNullLocalDateTimeToMillisecondsIsNullSafe() {
+    assertThat(DateTimeUtils.toMilliseconds((LocalDateTime) null)).isZero();
+  }
+
+  @Test
+  public void fromZonedDateTimeToMilliseconds() {
+
+    ZonedDateTime dateTime = ZonedDateTime.of(2022, Month.NOVEMBER.getJavaTimeMonth().getValue(), 7,
+      11, 21, 30, 0, ZoneId.systemDefault());
+
+    assertThat(DateTimeUtils.toMilliseconds(dateTime)).isEqualTo(dateTime.toInstant().toEpochMilli());
+  }
+
+  @Test
+  public void fromNullZonedDateTimeToMillisecondsIsNullSafe() {
+    assertThat(DateTimeUtils.toMilliseconds((ZonedDateTime) null)).isZero();
   }
 
   @Test

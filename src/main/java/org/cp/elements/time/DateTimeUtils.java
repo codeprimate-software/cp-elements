@@ -15,6 +15,10 @@
  */
 package org.cp.elements.time;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -99,6 +103,42 @@ public abstract class DateTimeUtils {
     dateTime.setTimeInMillis(timeInMilliseconds);
 
     return dateTime;
+  }
+
+  /**
+   * Converts the given {@link Instant} into {@link Long milliseconds since the epoch in UTC (GMT)}.
+   *
+   * @param instant {@link Instant} to process.
+   * @return the given {@link Instant} converted into {@link Long milliseconds since the epoch in UTC (GMT)}.
+   * @see java.time.Instant
+   */
+  public static long toMilliseconds(@Nullable Instant instant) {
+    return instant != null ? instant.toEpochMilli() : 0L;
+  }
+
+  /**
+   * Converts the given {@link LocalDateTime} into {@link Long milliseconds since the epoch in UTC (GMT)}.
+   *
+   * @param dateTime {@link LocalDateTime} to process.
+   * @return the given {@link LocalDateTime} converted into {@link Long milliseconds since the epoch in UTC (GMT)}.
+   * @see java.time.ZoneId#systemDefault()
+   * @see #toMilliseconds(ZonedDateTime)
+   * @see java.time.LocalDateTime
+   */
+  public static long toMilliseconds(@Nullable LocalDateTime dateTime) {
+    return dateTime != null ? toMilliseconds(dateTime.atZone(ZoneId.systemDefault())) : 0L;
+  }
+
+  /**
+   * Converts the given {@link ZonedDateTime} into {@link Long milliseconds since the epoch in UTC (GMT)}.
+   *
+   * @param dateTime {@link ZonedDateTime} to process.
+   * @return the given {@link ZonedDateTime} converted into {@link Long milliseconds since the epoch in UTC (GMT)}.
+   * @see #toMilliseconds(Instant)
+   * @see java.time.ZonedDateTime
+   */
+  public static long toMilliseconds(@Nullable ZonedDateTime dateTime) {
+    return dateTime != null ? toMilliseconds(dateTime.toInstant()) : 0L;
   }
 
   /**
