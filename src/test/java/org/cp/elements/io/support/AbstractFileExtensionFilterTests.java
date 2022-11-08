@@ -18,7 +18,6 @@ package org.cp.elements.io.support;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Set;
 
 import org.junit.Test;
@@ -27,7 +26,7 @@ import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * Abstract base class containing test case methods common to all {@link org.cp.elements.io.FileExtensionFilter} tests
+ * Abstract base class containing test case methods common to all {@link FileExtensionFilter} tests
  * in the {@link org.cp.elements.io.support} package.
  *
  * @author John Blum
@@ -53,13 +52,13 @@ public abstract class AbstractFileExtensionFilterTests {
   protected abstract String[] unexpectedFileExtensions();
 
   @Test
-  public void acceptIsSuccessfulWithExpectedFileExtensions() {
+  public void acceptsExpectedFileExtensions() {
 
     Set<String> fileExtensions = fileExtensionFilter().getFileExtensions();
 
     assertThat(fileExtensions).isNotNull();
-    assertThat(fileExtensions.size()).isEqualTo(expectedSize());
-    assertThat(fileExtensions.containsAll(Arrays.asList(expectedFileExtensions()))).isTrue();
+    assertThat(fileExtensions).hasSize(expectedSize());
+    assertThat(fileExtensions).containsExactlyInAnyOrder(expectedFileExtensions());
 
     for (String fileExtension : fileExtensions) {
       assertThat(fileExtensionFilter().accept(newFile(String.format("file.%s", fileExtension)))).isTrue();
@@ -72,7 +71,7 @@ public abstract class AbstractFileExtensionFilterTests {
   }
 
   @Test
-  public void rejectIsSuccessfulWithUnexpectedFileExtensions() {
+  public void rejectsUnexpectedFileExtensions() {
 
     for (String fileExtension : unexpectedFileExtensions()) {
       assertThat(fileExtensionFilter().accept(newFile(fileExtension))).isFalse();
