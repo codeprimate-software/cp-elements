@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
+
+import java.io.File;
 
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ConfigurationFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
- * that filters {@link java.io.File}s by configuration file types.
+ * {@link FileExtensionFilter} implementation that filters {@link File Files} by configuration file types.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
@@ -43,7 +44,7 @@ public class ConfigurationFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs an instance of the {@link ConfigurationFileExtensionsFilter} class to filter {@link java.io.File}s
+   * Constructs a new instance of {@link ConfigurationFileExtensionsFilter} to filter {@link File Files}
    * by configuration file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
