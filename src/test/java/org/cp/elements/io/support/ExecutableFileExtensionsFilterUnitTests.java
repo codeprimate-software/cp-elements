@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
 import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ExecutableFileExtensionsFilter} class.
+ * Unit Tests for {@link ExecutableFileExtensionsFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see org.junit.Test
  * @see org.cp.elements.io.support.AbstractFileExtensionFilterTests
- * @see ExecutableFileExtensionsFilter
+ * @see org.cp.elements.io.support.ExecutableFileExtensionsFilter
  * @since 1.0.0
  */
-public class ExecutableFileExtensionsFilterTests extends AbstractFileExtensionFilterTests {
+public class ExecutableFileExtensionsFilterUnitTests extends AbstractFileExtensionFilterTests {
 
-  private ExecutableFileExtensionsFilter fileExtensionFilter = new ExecutableFileExtensionsFilter();
+  @SubjectUnderTest
+  private final ExecutableFileExtensionsFilter fileExtensionFilter = new ExecutableFileExtensionsFilter();
 
   @Override
   protected String[] expectedFileExtensions() {
@@ -39,11 +40,12 @@ public class ExecutableFileExtensionsFilterTests extends AbstractFileExtensionFi
 
   @Override
   protected FileExtensionFilter fileExtensionFilter() {
-    return fileExtensionFilter;
+    return this.fileExtensionFilter;
   }
 
   @Override
   protected String[] unexpectedFileExtensions() {
+
     return new String[] {
       "/path/to/a/file.pid",
       "absolute/path/to/a/file.txt",
