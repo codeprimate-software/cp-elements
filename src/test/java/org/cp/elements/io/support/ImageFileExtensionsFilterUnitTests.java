@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
 import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link ImageFileExtensionsFilter} class.
+ * Unit Tests for {@link ImageFileExtensionsFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -28,9 +28,10 @@ import org.cp.elements.io.FileExtensionFilter;
  * @see org.cp.elements.io.support.ImageFileExtensionsFilter
  * @since 1.0.0
  */
-public class ImageFileExtensionsFilterTests extends AbstractFileExtensionFilterTests {
+public class ImageFileExtensionsFilterUnitTests extends AbstractFileExtensionFilterTests {
 
-  private ImageFileExtensionsFilter fileExtensionFilter = new ImageFileExtensionsFilter();
+  @SubjectUnderTest
+  private final ImageFileExtensionsFilter fileExtensionFilter = new ImageFileExtensionsFilter();
 
   @Override
   protected String[] expectedFileExtensions() {
@@ -39,11 +40,12 @@ public class ImageFileExtensionsFilterTests extends AbstractFileExtensionFilterT
 
   @Override
   protected FileExtensionFilter fileExtensionFilter() {
-    return fileExtensionFilter;
+    return this.fileExtensionFilter;
   }
 
   @Override
   protected String[] unexpectedFileExtensions() {
+
     return new String[] {
       "/path/to/a/audio/file.mp3",
       "absolute/path/to/a/image/file.img",

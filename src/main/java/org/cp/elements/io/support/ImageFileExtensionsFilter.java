@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
+
+import java.io.File;
 
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ImageFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
- * that filters {@link java.io.File}s by image file types.
+ * {@link FileExtensionFilter} implementation that filters {@link File Files} by image file types.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
@@ -45,8 +46,7 @@ public class ImageFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs an instance of the {@link ImageFileExtensionsFilter} class to filter {@link java.io.File}s
-   * by image file types.
+   * Constructs a new instance of {@link ImageFileExtensionsFilter} to filter {@link File Files} by image file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */
