@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
 import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link CompressedFileExtensionsFilter} class.
+ * Unit Tests for {@link CompressedFileExtensionsFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -28,9 +28,10 @@ import org.cp.elements.io.FileExtensionFilter;
  * @see org.cp.elements.io.support.CompressedFileExtensionsFilter
  * @since 1.0.0
  */
-public class CompressedFileExtensionsFilterTests extends AbstractFileExtensionFilterTests {
+public class CompressedFileExtensionsFilterUnitTests extends AbstractFileExtensionFilterTests {
 
-  private CompressedFileExtensionsFilter fileExtensionFilter = new CompressedFileExtensionsFilter();
+  @SubjectUnderTest
+  private final CompressedFileExtensionsFilter fileExtensionFilter = new CompressedFileExtensionsFilter();
 
   @Override
   protected String[] expectedFileExtensions() {
@@ -39,11 +40,12 @@ public class CompressedFileExtensionsFilterTests extends AbstractFileExtensionFi
 
   @Override
   protected FileExtensionFilter fileExtensionFilter() {
-    return fileExtensionFilter;
+    return this.fileExtensionFilter;
   }
 
   @Override
   protected String[] unexpectedFileExtensions() {
+
     return new String[] {
       "/path/to/a/file/archive.tar",
       "absolute/path/to/a/file.jar",
