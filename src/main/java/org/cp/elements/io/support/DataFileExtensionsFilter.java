@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
+
+import java.io.File;
 
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The DataFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
- * that filters {@link java.io.File}s by data file types.
+ * {@link FileExtensionFilter} implementation that filters {@link File Files} by data file types.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */
@@ -44,7 +45,7 @@ public class DataFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs an instance of the {@link DataFileExtensionsFilter} class to filter {@link java.io.File}s
+   * Constructs a new instance of {@link DataFileExtensionsFilter} to filter {@link File Files}
    * by data file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)

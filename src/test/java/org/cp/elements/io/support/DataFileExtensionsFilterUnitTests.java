@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
 import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link DataFileExtensionsFilter} class.
+ * Unit Tests for {@link DataFileExtensionsFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
  * @see org.junit.Test
  * @see org.cp.elements.io.support.AbstractFileExtensionFilterTests
- * @see DataFileExtensionsFilter
+ * @see org.cp.elements.io.support.DataFileExtensionsFilter
  * @since 1.0.0
  */
-public class DataFileExtensionsFilterTests extends AbstractFileExtensionFilterTests {
+public class DataFileExtensionsFilterUnitTests extends AbstractFileExtensionFilterTests {
 
-  private DataFileExtensionsFilter fileExtensionFilter = new DataFileExtensionsFilter();
+  @SubjectUnderTest
+  private final DataFileExtensionsFilter fileExtensionFilter = new DataFileExtensionsFilter();
 
   @Override
   protected String[] expectedFileExtensions() {
@@ -39,11 +40,12 @@ public class DataFileExtensionsFilterTests extends AbstractFileExtensionFilterTe
 
   @Override
   protected FileExtensionFilter fileExtensionFilter() {
-    return fileExtensionFilter;
+    return this.fileExtensionFilter;
   }
 
   @Override
   protected String[] unexpectedFileExtensions() {
+
     return new String[] {
       "/path/to/a/file.junk",
       "absolute/path/to/a/file.txt",
