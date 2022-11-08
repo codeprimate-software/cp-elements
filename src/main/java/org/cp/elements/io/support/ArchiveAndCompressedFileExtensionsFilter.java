@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
+
+import java.io.File;
 
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The ArchiveAndCompressedFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
- * that filters {@link java.io.File}s by archive and compression file types.
+ * {@link FileExtensionFilter} implementation that filters {@link File Files} by archive and compression file types.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.cp.elements.io.FileExtensionFilter
  * @see <a href="http://en.wikipedia.org/wiki/List_of_archive_formats">List of file archive and compression formats</a>
  * @since 1.0.0
@@ -66,8 +67,8 @@ public class ArchiveAndCompressedFileExtensionsFilter extends FileExtensionFilte
   };
 
   /**
-   * Constructs an instance of the {@link ArchiveAndCompressedFileExtensionsFilter} class to filter
-   * {@link java.io.File}s by archive and compression file types.
+   * Constructs a new instance of {@link ArchiveAndCompressedFileExtensionsFilter} to filter {@link File Files}
+   * by archive and compression file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
    */

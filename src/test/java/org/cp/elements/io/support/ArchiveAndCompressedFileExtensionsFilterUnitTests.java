@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
 import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
- * Test suite of test cases testing the contract and functionality
- * of the {@link ArchiveAndCompressedFileExtensionsFilter} class.
+ * Unit Tests for {@link ArchiveAndCompressedFileExtensionsFilter}.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.junit.Test
  * @see org.cp.elements.io.support.AbstractFileExtensionFilterTests
  * @see org.cp.elements.io.support.ArchiveAndCompressedFileExtensionsFilter
  * @since 1.0.0
  */
-public class ArchiveAndCompressedFilesExtensionFilterTests extends AbstractFileExtensionFilterTests {
+public class ArchiveAndCompressedFileExtensionsFilterUnitTests extends AbstractFileExtensionFilterTests {
 
-  private ArchiveAndCompressedFileExtensionsFilter fileExtensionFilter = new ArchiveAndCompressedFileExtensionsFilter();
+  @SubjectUnderTest
+  private final ArchiveAndCompressedFileExtensionsFilter fileExtensionFilter = new ArchiveAndCompressedFileExtensionsFilter();
 
   @Override
   protected String[] expectedFileExtensions() {
@@ -39,11 +40,12 @@ public class ArchiveAndCompressedFilesExtensionFilterTests extends AbstractFileE
 
   @Override
   protected FileExtensionFilter fileExtensionFilter() {
-    return fileExtensionFilter;
+    return this.fileExtensionFilter;
   }
 
   @Override
   protected String[] unexpectedFileExtensions() {
+
     return new String[] {
       "/path/to/file/archive.tar",
       "absolute/path/to/file/archive.iso",
