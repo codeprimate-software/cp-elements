@@ -16,7 +16,6 @@
 package org.cp.elements.io.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -28,8 +27,8 @@ import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * {@link AbstractFileExtensionFilterTests} is an abstract base class containing test cases common to all
- * {@link org.cp.elements.io.FileExtensionFilter} tests in the {@link org.cp.elements.io.support} package.
+ * Abstract base class containing test case methods common to all {@link org.cp.elements.io.FileExtensionFilter} tests
+ * in the {@link org.cp.elements.io.support} package.
  *
  * @author John Blum
  * @see java.io.File
@@ -68,12 +67,8 @@ public abstract class AbstractFileExtensionFilterTests {
   }
 
   @Test
-  public void acceptWithNullThrowsIllegalArgumentException() {
-
-    assertThatIllegalArgumentException()
-      .isThrownBy(() -> fileExtensionFilter().accept(null))
-      .withMessage("File is required")
-      .withNoCause();
+  public void acceptWithNullIsNullSafeReturnsFalse() {
+    assertThat(fileExtensionFilter().accept(null)).isFalse();
   }
 
   @Test
