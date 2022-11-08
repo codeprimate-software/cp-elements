@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
 
 import org.cp.elements.io.FileExtensionFilter;
+import org.cp.elements.test.annotation.SubjectUnderTest;
 
 /**
- * Test suite of test cases testing the contract and functionality of the {@link SourceCodeFileExtensionsFilter} class.
+ * Unit Tests for {@link SourceCodeFileExtensionsFilter}.
  *
  * @author John J. Blum
  * @see java.io.File
@@ -28,9 +28,10 @@ import org.cp.elements.io.FileExtensionFilter;
  * @see org.cp.elements.io.support.SourceCodeFileExtensionsFilter
  * @since 1.0.0
  */
-public class SourceCodeFileExtensionsFilterTests extends AbstractFileExtensionFilterTests {
+public class SourceCodeFileExtensionsFilterUnitTests extends AbstractFileExtensionFilterTests {
 
-  private SourceCodeFileExtensionsFilter fileExtensionFilter = new SourceCodeFileExtensionsFilter();
+  @SubjectUnderTest
+  private final SourceCodeFileExtensionsFilter fileExtensionFilter = new SourceCodeFileExtensionsFilter();
 
   @Override
   protected String[] expectedFileExtensions() {
@@ -39,11 +40,12 @@ public class SourceCodeFileExtensionsFilterTests extends AbstractFileExtensionFi
 
   @Override
   protected FileExtensionFilter fileExtensionFilter() {
-    return fileExtensionFilter;
+    return this.fileExtensionFilter;
   }
 
   @Override
   protected String[] unexpectedFileExtensions() {
+
     return new String[] {
       "/path/to/a/file.binary",
       "absolute/path/to/a/file.exe",

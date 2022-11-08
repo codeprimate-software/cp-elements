@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.io.support;
+
+import java.io.File;
 
 import org.cp.elements.io.FileExtensionFilter;
 
 /**
- * The SourceCodeFileExtensionsFilter class is a {@link FileExtensionFilter} implementation
- * that filters {@link java.io.File}s by source code file types.
+ * {@link FileExtensionFilter} implementation that filters {@link File Files} by source code file types.
  *
  * @author John J. Blum
+ * @see java.io.File
  * @see org.cp.elements.io.FileExtensionFilter
  * @see <a href="http://www.file-extensions.org/filetype/extension/name/source-code-and-script-files">file-extensions.org</a>
  * @since 1.0.0
@@ -32,6 +33,7 @@ public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
 
   protected static final String[] SOURCE_CODE_FILE_EXTENSIONS = {
     "ada",
+    "asp",
     "bin",
     "c",
     "cpp",
@@ -39,6 +41,7 @@ public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
     "ddl",
     "dml",
     "dtd",
+    "groovy",
     "htm",
     "html",
     "html5",
@@ -46,6 +49,7 @@ public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
     "js",
     "json",
     "jsp",
+    "kt",
     "perl",
     "phl",
     "php2",
@@ -60,7 +64,7 @@ public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
   };
 
   /**
-   * Constructs an instance of the {@link SourceCodeFileExtensionsFilter} class to filter {@link java.io.File}s
+   * Constructs a new instance of {@link SourceCodeFileExtensionsFilter} to filter {@link File Files}
    * by source code file types.
    *
    * @see org.cp.elements.io.FileExtensionFilter#FileExtensionFilter(String...)
