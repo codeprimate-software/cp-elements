@@ -16,6 +16,7 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -29,6 +30,7 @@ import java.time.ZoneId;
 
 import org.junit.Test;
 
+import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.time.Month;
 
@@ -56,6 +58,24 @@ public class FileLastModifiedFilterUnitTests {
       .atStartOfDay(ZoneId.systemDefault())
       .toInstant()
       .toEpochMilli();
+  }
+
+  @Test
+  public void createFileLastModifiedFilterWithNullFileFunction() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FileLastModifiedFilter.create(RelationalOperator.equalTo(0L), null))
+      .withMessage("Function used to transform the File for relational comparison is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void createFileLastModifiedFilterWithNullRelationaOperator() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FileLastModifiedFilter.create(null))
+      .withMessage("RelationalOperator is required")
+      .withNoCause();
   }
 
   private void acceptTest(@NotNull FileFilter fileFilter, boolean before, boolean on, boolean after) {
