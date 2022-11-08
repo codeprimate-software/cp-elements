@@ -16,15 +16,19 @@
 package org.cp.elements.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import org.junit.Test;
+
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * Unit Tests for {@link FileSizeFilter}.
@@ -38,13 +42,13 @@ import org.junit.Test;
  * @since 1.0.0
  */
 @SuppressWarnings("all")
-public class FileSizeFilterTests {
+public class FileSizeFilterUnitTests {
 
-  protected File mockFile(String name) {
+  private @NotNull File mockFile(@NotNull String name) {
     return mock(File.class, name);
   }
 
-  protected void acceptSizeTest(FileFilter fileFilter,
+  private void acceptSizeTest(@NotNull FileFilter fileFilter,
       boolean smaller, boolean onMin, boolean between, boolean onMax, boolean bigger) {
 
     File fileSmaller = mockFile("fileSmaller");
@@ -53,11 +57,11 @@ public class FileSizeFilterTests {
     File fileOnMax = mockFile("fileOnMax");
     File fileBigger = mockFile("fileBigger");
 
-    when(fileSmaller.length()).thenReturn(1024l);
-    when(fileOnMin.length()).thenReturn(2048l);
-    when(fileBetween.length()).thenReturn(3072l);
-    when(fileOnMax.length()).thenReturn(4096l);
-    when(fileBigger.length()).thenReturn(8192l);
+    doReturn(1024L).when(fileSmaller).length();
+    doReturn(2048L).when(fileOnMin).length();
+    doReturn(3072L).when(fileBetween).length();
+    doReturn(4096L).when(fileOnMax).length();
+    doReturn(8192L).when(fileBigger).length();
 
     assertThat(fileFilter.accept(fileSmaller)).isEqualTo(smaller);
     assertThat(fileFilter.accept(fileOnMin)).isEqualTo(onMin);
@@ -70,77 +74,87 @@ public class FileSizeFilterTests {
     verify(fileBetween, atLeast(1)).length();
     verify(fileOnMax, atLeast(1)).length();
     verify(fileBigger, atLeast(1)).length();
+    verifyNoMoreInteractions(fileSmaller, fileOnMin, fileBetween, fileOnMax, fileBigger);
+  }
+
+  @Test
+  public void createWithNullRelationalOperator() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> FileSizeFilter.create(null))
+      .withMessage("RelationalOperator is required")
+      .withNoCause();
   }
 
   @Test
   public void acceptBetween() {
-    acceptSizeTest(FileSizeFilter.between(2048l, 4096l),
+    acceptSizeTest(FileSizeFilter.between(2048L, 4096L),
       false, true, true, true, false);
   }
 
   @Test
-  public void acceptNotBetween() {
-    acceptSizeTest(new InverseFileFilter(FileSizeFilter.between(2048l, 4096l)),
+  public void rejectNotBetween() {
+    acceptSizeTest(InverseFileFilter.invert(FileSizeFilter.between(2048l, 4096l)),
       true, false, false, false, true);
   }
 
   @Test
   public void acceptEqualTo() {
-    acceptSizeTest(FileSizeFilter.equalTo(3072l),
+    acceptSizeTest(FileSizeFilter.equalTo(3072L),
       false, false, true, false, false);
   }
 
   @Test
-  public void acceptNotEqualTo() {
-    acceptSizeTest(new InverseFileFilter(FileSizeFilter.equalTo(3072l)),
+  public void rejectNotEqualTo() {
+    acceptSizeTest(InverseFileFilter.invert(FileSizeFilter.equalTo(3072L)),
       true, true, false, true, true);
   }
 
   @Test
   public void acceptGreaterThan() {
-    acceptSizeTest(FileSizeFilter.greaterThan(3072l),
+    acceptSizeTest(FileSizeFilter.greaterThan(3072L),
       false, false, false, true, true);
   }
 
   @Test
   public void acceptGreaterThanEqualTo() {
-    acceptSizeTest(ComposableFileFilter.or(FileSizeFilter.greaterThan(3072l), FileSizeFilter.equalTo(3072l)),
+    acceptSizeTest(ComposableFileFilter.or(FileSizeFilter.greaterThan(3072L), FileSizeFilter.equalTo(3072L)),
       false, false, true, true, true);
   }
 
   @Test
-  public void acceptNotGreaterThan() {
-    acceptSizeTest(new InverseFileFilter(FileSizeFilter.greaterThan(3072l)),
+  public void rejectGreaterThan() {
+    acceptSizeTest(InverseFileFilter.invert(FileSizeFilter.greaterThan(3072L)),
       true, true, true, false, false);
   }
 
   @Test
   public void acceptLessThan() {
-    acceptSizeTest(FileSizeFilter.lessThan(3072l),
+    acceptSizeTest(FileSizeFilter.lessThan(3072L),
       true, true, false, false, false);
   }
 
   @Test
   public void acceptLessThanEqualTo() {
-    acceptSizeTest(ComposableFileFilter.or(FileSizeFilter.lessThan(3072l), FileSizeFilter.equalTo(3072l)),
+    acceptSizeTest(ComposableFileFilter.or(FileSizeFilter.lessThan(3072L), FileSizeFilter.equalTo(3072L)),
       true, true, true, false, false);
   }
 
   @Test
-  public void acceptNotLessThan() {
-    acceptSizeTest(new InverseFileFilter(FileSizeFilter.lessThan(3072l)),
+  public void rejectLessThan() {
+    acceptSizeTest(new InverseFileFilter(FileSizeFilter.lessThan(3072L)),
       false, false, true, true, true);
   }
 
   @Test
   public void acceptOutside() {
-    acceptSizeTest(FileSizeFilter.outside(2048l, 4096l),
-      true, true, false, true, true);
+    acceptSizeTest(FileSizeFilter.outside(2048L, 4096L),
+      true, false, false, false, true);
   }
 
   @Test
-  public void acceptNotOutside() {
-    acceptSizeTest(new InverseFileFilter(FileSizeFilter.outside(2048l, 4096l)),
-      false, false, true, false, false);
+  public void rejectOutside() {
+    acceptSizeTest(InverseFileFilter.invert(FileSizeFilter.outside(2048L, 4096L)),
+      false, true, true, true, false);
   }
 }
