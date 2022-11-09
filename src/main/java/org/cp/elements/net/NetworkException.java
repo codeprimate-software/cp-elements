@@ -16,7 +16,7 @@
 package org.cp.elements.net;
 
 /**
- * {@link RuntimeException} to indicate that an error occurred in the network.
+ * {@link RuntimeException} used to classify and indicate that a network error occurred.
  *
  * @author John Blum
  * @see java.lang.RuntimeException
@@ -26,8 +26,7 @@ package org.cp.elements.net;
 public class NetworkException extends RuntimeException {
 
   /**
-   * Constructs a new, uninitialized instance of {@link NetworkException} with no {@link String message}
-   * and no {@link Throwable cause}.
+   * Constructs a new instance of {@link NetworkException} with no {@link String message} and no {@link Throwable cause}.
    */
   public NetworkException() { }
 
@@ -35,7 +34,7 @@ public class NetworkException extends RuntimeException {
    * Constructs a new instance of {@link NetworkException} initialized with the given {@link String message}
    * describing the network error.
    *
-   * @param message {@link String} containing the message describing the network error.
+   * @param message {@link String} containing a message describing the network error.
    */
   public NetworkException(String message) {
     super(message);
@@ -43,9 +42,9 @@ public class NetworkException extends RuntimeException {
 
   /**
    * Constructs a new instance of {@link NetworkException} initialized with the given {@link Throwable cause}
-   * used as the reason why this network error occurred.
+   * used as the reason this network error was thrown.
    *
-   * @param cause {@link Throwable} used as the reason why this network error occurred.
+   * @param cause {@link Throwable} used as the reason this network error was thrown.
    */
   public NetworkException(Throwable cause) {
     super(cause);
@@ -54,10 +53,10 @@ public class NetworkException extends RuntimeException {
   /**
    * Constructs a new instance of {@link NetworkException} initialized with the given {@link String message}
    * describing the network error along with the given {@link Throwable cause} used as the reason
-   * why this network error occurred.
+   * this network error was thrown.
    *
-   * @param message {@link String} containing the message describing the network error.
-   * @param cause {@link Throwable} used as the reason why this network error occurred.
+   * @param message {@link String} containing a message describing the network error.
+   * @param cause {@link Throwable} used as the reason this network error was thrown.
    */
   public NetworkException(String message, Throwable cause) {
     super(message, cause);
