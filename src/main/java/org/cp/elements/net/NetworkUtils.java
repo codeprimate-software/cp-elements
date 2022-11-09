@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.lang.StringUtils.getDigits;
-import static org.cp.elements.lang.StringUtils.trim;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Optional;
 
+import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link NetworkUtils} class encapsulates utility methods related to networking.
+ * Abstract utility class encapsulating functionality related to networking.
  *
  * @author John J. Blum
  * @see java.net.InetSocketAddress
@@ -42,42 +42,42 @@ import org.cp.elements.lang.annotation.NullSafe;
 public abstract class NetworkUtils {
 
   /**
-   * Gets an available network port used by a network service on which to listen for client {@link Socket} connections.
+   * Gets an {@link Integer available network port} used by a network service to listen for network client
+   * {@link Socket} connections.
    *
-   * @return in integer value indicating an available network port.
+   * @return an {@link Integer available network port}.
    */
   public static int availablePort() {
-    ServerSocket serverSocket = null;
 
-    try {
-      serverSocket = new ServerSocket(0);
+    try (ServerSocket serverSocket = new ServerSocket(0)) {
+      serverSocket.setReuseAddress(true);
       return serverSocket.getLocalPort();
     }
     catch (IOException cause) {
       throw new NoAvailablePortException("No port available", cause);
     }
-    finally {
-      close(serverSocket);
-    }
   }
 
   /**
    * Attempts to close the given {@link ServerSocket} returning a boolean value to indicate whether the operation
-   * was successful or not.
+   * was successful.
+   *
+   * Ignores any {@link IOException} thrown while attempting to {@link ServerSocket#close()} the {@link ServerSocket}.
    *
    * @param serverSocket {@link ServerSocket} to close.
-   * @return a boolean value indicating whether the {@link ServerSocket} was successfully closed or not.
+   * @return a boolean value indicating whether the {@link ServerSocket} was successfully closed.
    * @see java.net.ServerSocket#close()
+   * @see java.net.ServerSocket
    */
   @NullSafe
-  public static boolean close(ServerSocket serverSocket) {
+  public static boolean close(@Nullable ServerSocket serverSocket) {
+
     if (serverSocket != null) {
       try {
         serverSocket.close();
         return true;
       }
-      catch (IOException ignore) {
-      }
+      catch (IOException ignore) { }
     }
 
     return false;
@@ -85,104 +85,108 @@ public abstract class NetworkUtils {
 
   /**
    * Attempts to close the given {@link Socket} returning a boolean value to indicate whether the operation
-   * was successful or not.
+   * was successful.
+   *
+   * Ignores any {@link IOException} thrown while attempting to {@link Socket#close()} the {@link Socket}.
    *
    * @param socket {@link Socket} to close.
-   * @return a boolean value indicating whether the {@link Socket} was successfully closed or not.
+   * @return a boolean value indicating whether the {@link Socket} was successfully closed.
    * @see java.net.Socket#close()
+   * @see java.net.Socket
    */
   @NullSafe
-  public static boolean close(Socket socket) {
+  public static boolean close(@Nullable Socket socket) {
+
     if (socket != null) {
       try {
         socket.close();
         return true;
       }
-      catch (IOException ignore) {
-      }
+      catch (IOException ignore) { }
     }
 
     return false;
   }
 
   /**
-   * Leniently parses the given {@link String} as a numeric port number.
+   * Leniently parses the given, required {@link String} as a {@link Integer numeric value} representing a network port.
    *
-   * This method works by stripping the digits from the given {@link String}.  Therefore, this method
-   * is capable of handling {@link String} values such as "hostname:port".
+   * This parse method works by stripping the digits from the given {@link String}. Therefore, this method is capable
+   * of parsing {@link String values} of the form {@literal hostname:port}, for example: {@literal skullbox:8080}.
    *
-   * For example: skullbox:8080
-   *
-   * @param port {@link String} to parse as a numeric port number.
-   * @return a numeric port number from the given {@link String}.
-   * @throws IllegalArgumentException if the {@link String} port number is not valid
-   * and {@code defaultPort} is {@literal null}.
+   * @param port {@link String} to parse as a {@link Integer numeric value} representing a network port;
+   * must not be {@literal null} or {@literal empty}.
+   * @return a {@link Integer numeric value} representing the network port parsed from the given,
+   * required {@link String}.
+   * @throws IllegalArgumentException if {@link String port} is not valid and the {@link Integer defaultPort}
+   * is {@literal null}.
    * @see #lenientParsePort(String, Integer)
    */
-  public static int lenientParsePort(String port) {
+  public static int lenientParsePort(@NotNull String port) {
     return lenientParsePort(port, null);
   }
 
   /**
-   * Leniently parses the given {@link String} as a numeric port number.
+   * Leniently parses the given {@link String} as a {@link Integer numeric value} representing a network port.
    *
-   * This method works by stripping the digits from the given {@link String}.  Therefore, this method
-   * is capable of handling {@link String} values such as "hostname:port".
+   * This parse method works by stripping the digits from the given {@link String}. Therefore, this method is capable
+   * of parsing {@link String values} of the form {@literal hostname:port}, for example: {@literal skullbox:8080}.
    *
-   * For example: skullbox:8080
-   *
-   * @param port {@link String} to parse as a numeric port number.
-   * @param defaultPort {@link Integer} value used as the default port number
-   * if the {@link String} port number is not valid.
-   * @return a numeric port number from the given {@link String}.
-   * @throws IllegalArgumentException if the {@link String} port number is not valid
-   * and {@code defaultPort} is {@literal null}.
+   * @param port {@link String} to parse as a {@link Integer numeric value} representing a network port.
+   * @param defaultPort {@link Integer value} used as the default port if {@link String port} is not valid.
+   * @return a {@link Integer numeric value} representing the network port parsed from the given {@link String port}.
+   * Returns the {@link Integer default port} if {@link String port} is not valid.
+   * @throws IllegalArgumentException if {@link String port} is not valid and the {@link Integer defaultPort}
+   * is {@literal null}.
    * @see #parsePort(String, Integer)
    */
-  public static int lenientParsePort(String port, Integer defaultPort) {
-    return parsePort(getDigits(port), defaultPort);
+  public static int lenientParsePort(@Nullable String port, @Nullable Integer defaultPort) {
+    return parsePort(StringUtils.getDigits(String.valueOf(port)), defaultPort);
   }
 
   /**
-   * Parses the given {@link String} as a numeric port number.
+   * Parses the given, required {@link String} as a {@link Integer numeric value} representing a network port.
    *
-   * @param port {@link String} to parse as a numeric port number.
-   * @return a numeric port number from the given {@link String}.
-   * @throws IllegalArgumentException if the {@link String} port number is not valid
-   * and {@code defaultPort} is {@literal null}.
+   * @param port {@link String} to parse as a {@link Integer numeric value} representing a network port;
+   * must not be {@literal null} or {@literal empty}.
+   * @return a {@link Integer numeric value} representing the network port parsed from the given,
+   * required {@link String}.
+   * @throws IllegalArgumentException if {@link String port} is not valid and the {@link Integer defaultPort}
+   * is {@literal null}.
    * @see #parsePort(String, Integer)
    */
-  public static int parsePort(String port) {
+  public static int parsePort(@NotNull String port) {
     return parsePort(port, null);
   }
 
   /**
-   * Parses the given {@link String} as a numeric port number.
+   * Parses the given {@link String} as a {@link Integer numeric value} representing a network port.
    *
-   * @param port {@link String} to parse as a numeric port number.
-   * @param defaultPort {@link Integer} value used as the default port number
-   * if the {@link String} port number is not valid.
-   * @return a numeric port number from the given {@link String}.
-   * @throws IllegalArgumentException if the {@link String} port number is not valid
-   * and {@code defaultPort} is {@literal null}.
+   * @param port {@link String} to parse as a {@link Integer numeric value} representing a network port.
+   * @param defaultPort {@link Integer value} used as the default port if {@link String port} is not valid.
+   * @return a {@link Integer numeric value} representing the network port parsed from the given {@link String port}.
+   * Returns the {@link Integer default port} if {@link String port} is not valid.
+   * @throws IllegalArgumentException if {@link String port} is not valid and the {@link Integer defaultPort}
+   * is {@literal null}.
    * @see java.lang.Integer#parseInt(String)
    */
-  public static int parsePort(String port, Integer defaultPort) {
+  public static int parsePort(@Nullable String port, @Nullable Integer defaultPort) {
+
     try {
-      return Integer.parseInt(trim(port));
+      return Integer.parseInt(StringUtils.trim(port));
     }
     catch (NumberFormatException cause) {
-      return Optional.ofNullable(defaultPort)
-        .orElseThrow(() -> newIllegalArgumentException(cause, "Port [%s] is not valid", port));
+      Assert.notNull(defaultPort, newIllegalArgumentException(cause, "Port [%s] is not valid", port));
+      return defaultPort;
     }
   }
 
   /**
-   * Constructs a new instance of {@link SocketAddress} bound {@link Integer port}.
+   * Constructs a new instance of {@link SocketAddress} bound to the given {@link Integer port}.
    *
-   * @param port {@link Integer} specifying the port number to which the {@link SocketAddress} will bind.
-   * @return a new instance of {@link SocketAddress} bound to the given {@link Integer port}.
-   * @throws IllegalArgumentException if the port parameter is outside the range of valid port values.
+   * @param port {@link Integer} declaring the network port on which the {@link SocketAddress} will be bound.
+   * @return a new {@link SocketAddress} bound to the given {@link Integer port}.
+   * @throws IllegalArgumentException if the {@link Integer port} is outside the range of valid network ports.
    * @see #newSocketAddress(String, int)
    */
   public static SocketAddress newSocketAddress(int port) {
@@ -192,16 +196,19 @@ public abstract class NetworkUtils {
   /**
    * Constructs a new instance of {@link SocketAddress} bound to the given {@link String host} and {@link Integer port}.
    *
-   * @param host {@link String} containing the name of the host to whichthe {@link SocketAddress} will be bound.
-   * @param port {@link Integer} specifying the port number to which the {@link SocketAddress} will be bound.
-   * @return a new instance of {@link SocketAddress} bound to the given {@link Integer port}.
-   * @throws IllegalArgumentException if the port parameter is outside the range of valid port values.
-   * @see #newSocketAddress(String, int)
+   * @param host {@link String} containing the name of the host on which the {@link SocketAddress} will be bound.
+   * @param port {@link Integer} declaring the network port on which the {@link SocketAddress} will be bound.
+   * @return a new {@link SocketAddress} bound to the given {@link String host} and {@link Integer port}.
+   * If the {@link String host} is {@literal null} or {@literal empty}, then the {@link SocketAddress} will only
+   * be bound to the given {@link Integer port}.
+   * @throws IllegalArgumentException if the {@link Integer port} is outside the range of valid network ports.
    * @see java.net.InetSocketAddress
    * @see java.net.SocketAddress
    */
-  public static SocketAddress newSocketAddress(String host, int port) {
-    return Optional.ofNullable(host).map(hostname -> new InetSocketAddress(host, port))
-      .orElseGet(() -> new InetSocketAddress(port));
+  public static SocketAddress newSocketAddress(@Nullable String host, int port) {
+
+    return StringUtils.hasText(host)
+      ? new InetSocketAddress(host, port)
+      : new InetSocketAddress(port);
   }
 }

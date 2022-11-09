@@ -16,18 +16,23 @@
 package org.cp.elements.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.CheckedExceptionsFactory.newIOException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Arrays;
 
 import org.junit.Test;
+
+import org.assertj.core.api.InstanceOfAssertFactories;
 
 /**
  * Unit Tests for {@link NetworkUtils}.
@@ -37,19 +42,17 @@ import org.junit.Test;
  * @see java.net.ServerSocket
  * @see java.net.Socket
  * @see java.net.SocketAddress
- * @see org.junit.Rule
  * @see org.junit.Test
- * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.net.NetworkUtils
  * @since 1.0.0
  */
-public class NetworkUtilsTests {
+public class NetworkUtilsUnitTests {
 
   private static final int COUNT = 100;
 
   @Test
-  public void availablePortReturnsNonZeroPortGreaterThan1024AndLessThan65536() {
+  public void availablePortReturnsNonZeroPortGreaterThan0AndLessThan65536() {
 
     for (int count = 0, port = NetworkUtils.availablePort(); count < COUNT;
          count++, port = NetworkUtils.availablePort()) {
@@ -67,22 +70,24 @@ public class NetworkUtilsTests {
     assertThat(NetworkUtils.close(mockServerSocket)).isTrue();
 
     verify(mockServerSocket, times(1)).close();
+    verifyNoMoreInteractions(mockServerSocket);
   }
 
   @Test
-  public void closeServerSocketReturnsFalse() throws Exception {
+  public void closeServerSocketThrowingIOExceptionReturnsFalse() throws Exception {
 
     ServerSocket mockServerSocket = mock(ServerSocket.class);
 
-    doThrow(new IOException("test")).when(mockServerSocket).close();
+    doThrow(newIOException("test")).when(mockServerSocket).close();
 
     assertThat(NetworkUtils.close(mockServerSocket)).isFalse();
 
     verify(mockServerSocket, times(1)).close();
+    verifyNoMoreInteractions(mockServerSocket);
   }
 
   @Test
-  public void closeNullServerSocketReturnsFalse() {
+  public void closeNullServerSocketIsNullSafeReturnsFalse() {
     assertThat(NetworkUtils.close((ServerSocket) null)).isFalse();
   }
 
@@ -94,22 +99,24 @@ public class NetworkUtilsTests {
     assertThat(NetworkUtils.close(mockSocket)).isTrue();
 
     verify(mockSocket, times(1)).close();
+    verifyNoMoreInteractions(mockSocket);
   }
 
   @Test
-  public void closeSocketReturnsFalse() throws Exception {
+  public void closeSocketThrowingIOExceptionReturnsFalse() throws Exception {
 
     Socket mockSocket = mock(Socket.class);
 
-    doThrow(new IOException("test")).when(mockSocket).close();
+    doThrow(newIOException("test")).when(mockSocket).close();
 
     assertThat(NetworkUtils.close(mockSocket)).isFalse();
 
     verify(mockSocket, times(1)).close();
+    verifyNoMoreInteractions(mockSocket);
   }
 
   @Test
-  public void closeNullSocketReturnsFalse() {
+  public void closeNullSocketIsNullSafeReturnsFalse() {
     assertThat(NetworkUtils.close((Socket) null)).isFalse();
   }
 
@@ -119,12 +126,12 @@ public class NetworkUtilsTests {
   }
 
   @Test
-  public void lenientParsePortWithHostnamePortNumberIsSuccessful() {
+  public void lenientParsePortWithHostnameAndPortNumberIsSuccessful() {
     assertThat(NetworkUtils.lenientParsePort("skullbox:8080")).isEqualTo(8080);
   }
 
   @Test
-  public void lenientParsePortWithMixedPortNumberIsSuccessful() {
+  public void lenientParsePortWithScrambledPortNumberIsSuccessful() {
     assertThat(NetworkUtils.lenientParsePort("1 2#4%O L^B8(-?n 0 I")).isEqualTo(12480);
   }
 
@@ -133,20 +140,15 @@ public class NetworkUtilsTests {
     assertThat(NetworkUtils.lenientParsePort("$O.OOL", 1234)).isEqualTo(1234);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void lenientParsePortWithInvalidPortNumberThrowsIllegalArgumentExceptoin() {
+  @Test
+  public void lenientParsePortWithInvalidPortNumberThrowsIllegalArgumentException() {
 
-    try {
-      NetworkUtils.lenientParsePort("invalid");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Port [] is not valid");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    Arrays.asList("invalid", "BOBO", "$##!", "  ", "", null).forEach(invalidPort ->
+      assertThatThrowableOfType(IllegalArgumentException.class)
+        .isThrownBy(args -> NetworkUtils.lenientParsePort(invalidPort))
+        .havingMessage("Port [] is not valid")
+        .causedBy(NumberFormatException.class)
+        .withNoCause());
   }
 
   @Test
@@ -161,20 +163,15 @@ public class NetworkUtilsTests {
     assertThat(NetworkUtils.parsePort(" 1  23 4", 5678)).isEqualTo(5678);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void parsePortWithInvalidPortNumberThrowsIllegalArgumentException() {
 
-    try {
-      NetworkUtils.parsePort("invalid");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Port [invalid] is not valid");
-      assertThat(expected).hasCauseInstanceOf(NumberFormatException.class);
-      assertThat(expected.getCause()).hasNoCause();
-
-      throw expected;
-    }
+    Arrays.asList("invalid", "BOBO", "$##!", "  ", "", null).forEach(invalidPort ->
+      assertThatThrowableOfType(IllegalArgumentException.class)
+        .isThrownBy(args -> NetworkUtils.parsePort(invalidPort))
+        .havingMessage("Port [%s] is not valid", invalidPort)
+        .causedBy(NumberFormatException.class)
+        .withNoCause());
   }
 
   @Test
@@ -183,18 +180,37 @@ public class NetworkUtilsTests {
     SocketAddress socketAddress = NetworkUtils.newSocketAddress("skullbox", 9876);
 
     assertThat(socketAddress).isInstanceOf(InetSocketAddress.class);
-    assertThat(((InetSocketAddress) socketAddress).getHostName()).isEqualTo("skullbox");
-    assertThat(((InetSocketAddress) socketAddress).getPort()).isEqualTo(9876);
+
+    assertThat(socketAddress)
+      .asInstanceOf(InstanceOfAssertFactories.type(InetSocketAddress.class))
+      .extracting(InetSocketAddress::getHostName)
+      .isEqualTo("skullbox");
+
+    assertThat(socketAddress)
+      .asInstanceOf(InstanceOfAssertFactories.type(InetSocketAddress.class))
+      .extracting(InetSocketAddress::getPort)
+      .isEqualTo(9876);
   }
 
   @Test
-  public void newSocketAddressWithNullHostAndPort() {
+  public void newSocketAddressWithUndeclaredHostAndPort() {
 
-    SocketAddress socketAddress = NetworkUtils.newSocketAddress(null, 9876);
+    Arrays.asList("  ", "", null).forEach(host -> {
 
-    assertThat(socketAddress).isInstanceOf(InetSocketAddress.class);
-    assertThat(((InetSocketAddress) socketAddress).getHostName()).isEqualTo("0.0.0.0");
-    assertThat(((InetSocketAddress) socketAddress).getPort()).isEqualTo(9876);
+      SocketAddress socketAddress = NetworkUtils.newSocketAddress(host, 9876);
+
+      assertThat(socketAddress).isInstanceOf(InetSocketAddress.class);
+
+      assertThat(socketAddress)
+        .asInstanceOf(InstanceOfAssertFactories.type(InetSocketAddress.class))
+        .extracting(InetSocketAddress::getHostName)
+        .isEqualTo("0.0.0.0");
+
+      assertThat(socketAddress)
+        .asInstanceOf(InstanceOfAssertFactories.type(InetSocketAddress.class))
+        .extracting(InetSocketAddress::getPort)
+        .isEqualTo(9876);
+    });
   }
 
   @Test
@@ -203,7 +219,15 @@ public class NetworkUtilsTests {
     SocketAddress socketAddress = NetworkUtils.newSocketAddress(1234);
 
     assertThat(socketAddress).isInstanceOf(InetSocketAddress.class);
-    assertThat(((InetSocketAddress) socketAddress).getHostName()).isEqualTo("0.0.0.0");
-    assertThat(((InetSocketAddress) socketAddress).getPort()).isEqualTo(1234);
+
+    assertThat(socketAddress)
+      .asInstanceOf(InstanceOfAssertFactories.type(InetSocketAddress.class))
+      .extracting(InetSocketAddress::getHostName)
+      .isEqualTo("0.0.0.0");
+
+    assertThat(socketAddress)
+      .asInstanceOf(InstanceOfAssertFactories.type(InetSocketAddress.class))
+      .extracting(InetSocketAddress::getPort)
+      .isEqualTo(1234);
   }
 }
