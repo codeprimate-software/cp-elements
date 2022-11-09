@@ -110,7 +110,7 @@ public abstract class StringUtils {
    */
   public static String concat(String[] values, String delimiter) {
 
-    Assert.notNull(values, "The array of String values to concatenate cannot be null!");
+    Assert.notNull(values, "An array of String values to concatenate is required");
 
     StringBuilder buffer = new StringBuilder();
 
@@ -131,7 +131,7 @@ public abstract class StringUtils {
    * @see java.lang.String#contains(CharSequence)
    */
   @NullSafe
-  public static boolean contains(String text, String value) {
+  public static boolean contains(@Nullable String text, @Nullable String value) {
     return text != null && value != null && text.contains(value);
   }
 
@@ -144,7 +144,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isDigit(char)
    */
   @NullSafe
-  public static boolean containsDigits(String value) {
+  public static boolean containsDigits(@Nullable String value) {
 
     for (char chr : toCharArray(value)) {
       if (Character.isDigit(chr)) {
@@ -164,7 +164,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isLetter(char)
    */
   @NullSafe
-  public static boolean containsLetters(String value) {
+  public static boolean containsLetters(@Nullable String value) {
 
     for (char chr: toCharArray(value)) {
       if (Character.isLetter(chr)) {
@@ -184,7 +184,7 @@ public abstract class StringUtils {
    * @see java.lang.Character#isWhitespace(char)
    */
   @NullSafe
-  public static boolean containsWhitespace(String value) {
+  public static boolean containsWhitespace(@Nullable String value) {
 
     for (char chr : toCharArray(value)) {
       if (Character.isWhitespace(chr)) {
@@ -206,8 +206,7 @@ public abstract class StringUtils {
    * @see #isBlank(String)
    * @see #hasText(String)
    */
-  @NullSafe
-  public static String defaultIfBlank(String value, String... defaultValues) {
+  public static @Nullable String defaultIfBlank(@Nullable String value, String... defaultValues) {
 
     if (isBlank(value)) {
       for (String defaultValue : defaultValues) {
@@ -229,23 +228,25 @@ public abstract class StringUtils {
    * @see java.lang.String#equalsIgnoreCase(String)
    */
   @NullSafe
-  public static boolean equalsIgnoreCase(String stringOne, String stringTwo) {
+  public static boolean equalsIgnoreCase(@Nullable String stringOne, @Nullable String stringTwo) {
     return stringOne != null && stringOne.equalsIgnoreCase(stringTwo);
   }
 
   /**
-   * Extracts numbers from the String value.
+   * Extracts numbers from the {@link String value}.
    *
-   * @param value the String value from which to extract numbers.
-   * @return only numbers from the String value.
-   * @throws NullPointerException if the String value is null.
+   * @param value {@link String} from which to extract numbers.
+   * @return only numbers from the given {@link String value}.
+   * Returns empty {@link String} if the {@link String value}
+   * contains no digits.
    * @see java.lang.Character#isDigit(char)
    */
-  public static String getDigits(String value) {
+  @NullSafe
+  public static @NotNull String getDigits(@Nullable String value) {
 
-    StringBuilder digits = new StringBuilder(value.length());
+    StringBuilder digits = new StringBuilder(length(value));
 
-    for (char chr : value.toCharArray()) {
+    for (char chr : toCharArray(value)) {
       if (Character.isDigit(chr)) {
         digits.append(chr);
       }
@@ -255,18 +256,20 @@ public abstract class StringUtils {
   }
 
   /**
-   * Extracts letters from the String value.
+   * Extracts letters from the {@link String value}.
    *
-   * @param value the String value from which to extract letters.
-   * @return only letters from the String value.
-   * @throws NullPointerException if the String value is null.
+   * @param value {@link String} from which to extract letters.
+   * @return only letters from the {@link String value}.
+   * Returns empty {@link String} if the {@link String value}
+   * contains no letters.
    * @see java.lang.Character#isLetter(char)
    */
-  public static String getLetters(String value) {
+  @NullSafe
+  public static @NotNull String getLetters(@Nullable String value) {
 
-    StringBuilder letters = new StringBuilder(value.length());
+    StringBuilder letters = new StringBuilder(length(value));
 
-    for (char chr : value.toCharArray()) {
+    for (char chr : toCharArray(value)) {
       if (Character.isLetter(chr)) {
         letters.append(chr);
       }
@@ -306,7 +309,7 @@ public abstract class StringUtils {
    * @see #isBlank(String)
    */
   @NullSafe
-  public static boolean hasText(String value) {
+  public static boolean hasText(@Nullable String value) {
     return !isBlank(value);
   }
 
@@ -322,7 +325,7 @@ public abstract class StringUtils {
    * @see #lastIndexOf(String, String)
    */
   @NullSafe
-  public static int indexOf(String text, String value) {
+  public static int indexOf(@Nullable String text, @Nullable String value) {
     return text != null && value != null ? text.indexOf(value) : -1;
   }
 
@@ -336,7 +339,7 @@ public abstract class StringUtils {
    * @see #hasText(String)
    */
   @NullSafe
-  public static boolean isBlank(String value) {
+  public static boolean isBlank(@Nullable String value) {
     return value == null || value.trim().isEmpty();
   }
 
@@ -350,7 +353,7 @@ public abstract class StringUtils {
    * @see #toCharArray(String)
    */
   @NullSafe
-  public static boolean isDigits(String value) {
+  public static boolean isDigits(@Nullable String value) {
 
     for (char chr : toCharArray(value)) {
       if (!Character.isDigit(chr)) {
@@ -371,7 +374,7 @@ public abstract class StringUtils {
    * @see java.lang.String#isEmpty()
    */
   @NullSafe
-  public static boolean isEmpty(String value) {
+  public static boolean isEmpty(@Nullable String value) {
     return EMPTY_STRING.equals(value);
   }
 
@@ -385,7 +388,7 @@ public abstract class StringUtils {
    * @see #toCharArray(String)
    */
   @NullSafe
-  public static boolean isLetters(String value) {
+  public static boolean isLetters(@Nullable String value) {
 
     for (char chr : toCharArray(value)) {
       if (!Character.isLetter(chr)) {
@@ -408,7 +411,7 @@ public abstract class StringUtils {
    * @see #indexOf(String, String)
    */
   @NullSafe
-  public static int lastIndexOf(String text, String value) {
+  public static int lastIndexOf(@Nullable String text, @Nullable String value) {
     return text != null && value != null ? text.lastIndexOf(value) : -1;
   }
 
@@ -421,7 +424,7 @@ public abstract class StringUtils {
    * @see java.lang.String#length()
    */
   @NullSafe
-  public static int length(String value) {
+  public static int length(@Nullable String value) {
     return value != null ? value.length() : 0;
   }
 

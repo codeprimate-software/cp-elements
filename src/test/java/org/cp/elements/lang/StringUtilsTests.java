@@ -107,7 +107,7 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void testConcat() {
+  public void concatWithStrings() {
 
     assertEquals("one, two, three", StringUtils.concat("one", "two", "three"));
     assertEquals("org.cp.elements", StringUtils.concat(new String[] { "org", "cp", "elements" }, StringUtils.DOT_SEPARATOR));
@@ -115,18 +115,19 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void testConcatWithBlankString() {
-    assertEquals("  ", StringUtils.concat("  "));
+  public void concatWithNonValueStrings() {
+
+    Arrays.asList("  ", "").forEach(string ->
+      assertThat(StringUtils.concat(string)).isEqualTo(string));
   }
 
   @Test
-  public void testConcatWithEmptyString() {
-    assertEquals(StringUtils.EMPTY_STRING, StringUtils.concat(StringUtils.EMPTY_STRING));
-  }
-
-  @Test(expected = IllegalArgumentException.class)
   public void testConcatWithNullStringArray() {
-    StringUtils.concat((String[]) null);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> StringUtils.concat((String[]) null))
+      .withMessage("An array of String values to concatenate is required")
+      .withNoCause();
   }
 
   @Test
@@ -139,6 +140,7 @@ public class StringUtilsTests {
   }
 
   @Test
+  @SuppressWarnings("all")
   public void testContainsWithNonContainedText() {
 
     assertFalse(StringUtils.contains("null", "nil"));
@@ -265,15 +267,8 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void testGetDigits() {
+  public void getDigitsFromDigitStringsIsCorrect() {
 
-    assertEquals("", StringUtils.getDigits(""));
-    assertEquals("", StringUtils.getDigits("  "));
-    assertEquals("", StringUtils.getDigits("abc"));
-    assertEquals("", StringUtils.getDigits("lOlOl"));
-    assertEquals("", StringUtils.getDigits("oneTwoThree"));
-    assertEquals("", StringUtils.getDigits("$###.##"));
-    assertEquals("", StringUtils.getDigits(".lS%"));
     assertEquals("123", StringUtils.getDigits("123"));
     assertEquals("123", StringUtils.getDigits("abc123"));
     assertEquals("00", StringUtils.getDigits("l0l0l"));
@@ -287,16 +282,25 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void testGetLetters() {
+  public void getDigitsFromNonDigitStrings() {
 
-    assertEquals("", StringUtils.getLetters(""));
-    assertEquals("", StringUtils.getLetters("  "));
-    assertEquals("", StringUtils.getLetters("123"));
-    assertEquals("", StringUtils.getLetters("10101"));
-    assertEquals("", StringUtils.getLetters("8007"));
-    assertEquals("", StringUtils.getLetters("$100.50"));
-    assertEquals("", StringUtils.getLetters("50%"));
-    assertEquals("", StringUtils.getLetters("@$$4013"));
+    assertEquals("", StringUtils.getDigits("abc"));
+    assertEquals("", StringUtils.getDigits("lOlOl"));
+    assertEquals("", StringUtils.getDigits("oneTwoThree"));
+    assertEquals("", StringUtils.getDigits("$###.##"));
+    assertEquals("", StringUtils.getDigits(".lS%"));
+    assertEquals("", StringUtils.getDigits("  "));
+    assertEquals("", StringUtils.getDigits(""));
+  }
+
+  @Test
+  public void getDigitsFromNullIsNullSafe() {
+    assertThat(StringUtils.getDigits(null)).isEmpty();
+  }
+
+  @Test
+  public void getLettersFromLetterStrings() {
+
     assertEquals("abc", StringUtils.getLetters("abc"));
     assertEquals("abc", StringUtils.getLetters("abc123"));
     assertEquals("ABC", StringUtils.getLetters("1A2BC3"));
@@ -308,7 +312,25 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void testGetSpaces() {
+  public void getLettersFromNonLetterStrings() {
+
+    assertEquals("", StringUtils.getLetters("123"));
+    assertEquals("", StringUtils.getLetters("10101"));
+    assertEquals("", StringUtils.getLetters("8007"));
+    assertEquals("", StringUtils.getLetters("$100.50"));
+    assertEquals("", StringUtils.getLetters("50%"));
+    assertEquals("", StringUtils.getLetters("@$$4013"));
+    assertEquals("", StringUtils.getLetters("  "));
+    assertEquals("", StringUtils.getLetters(""));
+  }
+
+  @Test
+  public void getLettersFromNullIsNullSafe() {
+    assertThat(StringUtils.getLetters(null)).isEmpty();
+  }
+
+  @Test
+  public void getSpacesIsCorrect() {
 
     assertEquals("", StringUtils.getSpaces(0));
     assertEquals(" ", StringUtils.getSpaces(1));
@@ -448,8 +470,8 @@ public class StringUtilsTests {
   }
 
   @Test
-  public void testIsEmpty() throws Exception {
-    assertTrue(StringUtils.isEmpty(""));
+  public void isEmptyWithEmptyStringReturnsTrue() {
+    assertThat(StringUtils.isEmpty("")).isTrue();
   }
 
   @Test
