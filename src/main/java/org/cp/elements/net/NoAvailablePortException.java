@@ -16,9 +16,10 @@
 package org.cp.elements.net;
 
 /**
- * A {@link NetworkException} used to indicate that no available system port could be found.
+ * {@link NetworkException} used to indicate that no system port was available for use by network services.
  *
  * @author John Blum
+ * @see java.lang.RuntimeException
  * @see org.cp.elements.net.NetworkException
  * @since 1.0.0
  */
@@ -26,16 +27,16 @@ package org.cp.elements.net;
 public class NoAvailablePortException extends NetworkException {
 
   /**
-   * Constructs a new, uninitialized instance of {@link NoAvailablePortException} with no {@link String message}
+   * Constructs a new instance of {@link NoAvailablePortException} with no {@link String message}
    * and no {@link Throwable cause}.
    */
   public NoAvailablePortException() { }
 
   /**
    * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
-   * to describe the port error.
+   * describing the no available network port error.
    *
-   * @param message {@link String} containing a description of the port error.
+   * @param message {@link String} containing a message describing the network port error.
    */
   public NoAvailablePortException(String message) {
     super(message);
@@ -43,9 +44,9 @@ public class NoAvailablePortException extends NetworkException {
 
   /**
    * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link Throwable cause}
-   * used as the reason why this port error occurred.
+   * used as the reason this no available network port error was thrown.
    *
-   * @param cause {@link Throwable} used as the reason why this port error occurred.
+   * @param cause {@link Throwable} used as the reason this no available network port error ws thrown.
    */
   public NoAvailablePortException(Throwable cause) {
     super(cause);
@@ -53,11 +54,11 @@ public class NoAvailablePortException extends NetworkException {
 
   /**
    * Constructs a new instance of {@link NoAvailablePortException} initialized with the given {@link String message}
-   * to describe the port error along with the given {@link Throwable cause} used as the reason
-   * why this port error occurred.
+   * describing the no available network port error along with the given {@link Throwable cause} used as the reason
+   * this no available network port error was thrown.
    *
-   * @param message {@link String} containing a description of the port error.
-   * @param cause {@link Throwable} used as the reason why this port error occurred.
+   * @param message {@link String} containing a message describing the network port error.
+   * @param cause {@link Throwable} used as the reason this no available network port error ws thrown.
    */
   public NoAvailablePortException(String message, Throwable cause) {
     super(message, cause);
