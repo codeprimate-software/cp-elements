@@ -27,6 +27,9 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * {@link NumberConverter} converts an {@link Object} to a {@link Number} of a {@link Class qualified numerical type}.
@@ -48,7 +51,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
   protected static final String CONVERSION_EXCEPTION_MESSAGE =
     "[%1$s] is not a valid number of the qualifying type [%2$s]";
 
-  protected <QT extends Number> QT parseNumber(String number, Class<QT> numberType) {
+  protected @NotNull <QT extends Number> QT parseNumber(@NotNull String number, @NotNull Class<QT> numberType) {
 
     if (AtomicInteger.class.isAssignableFrom(numberType)) {
       return numberType.cast(new AtomicInteger(Integer.parseInt(number)));
@@ -84,7 +87,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
     throw newConversionException("[%s] is not a valid Number type", numberType.getName());
   }
 
-  protected <QT extends Number> QT toQualifyingNumber(Number number, Class<QT> numberType) {
+  protected @NotNull <QT extends Number> QT toQualifyingNumber(@NotNull Number number, @NotNull Class<QT> numberType) {
 
     if (AtomicInteger.class.isAssignableFrom(numberType)) {
       return numberType.cast(new AtomicInteger(number.intValue()));
@@ -131,8 +134,9 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
    * @see org.cp.elements.data.conversion.ConversionService#canConvert(Class, Class)
    * @see #canConvert(Object, Class)
    */
+  @NullSafe
   @Override
-  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+  public boolean canConvert(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
     return fromType != null && isAssignableTo(fromType, Number.class, String.class)
       && toType != null && Number.class.isAssignableFrom(toType);
   }
@@ -150,7 +154,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
    * @see #convert(Object)
    */
   @Override
-  public <QT extends Number> QT convert(Object value, Class<QT> qualifyingType) {
+  public @NotNull <QT extends Number> QT convert(@Nullable Object value, @NotNull Class<QT> qualifyingType) {
 
     Assert.notNull(qualifyingType, "Qualifying type is required");
 
@@ -161,7 +165,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
       else if (value instanceof Number) {
         return toQualifyingNumber((Number) value, qualifyingType);
       }
-      else if (value instanceof String && StringUtils.containsDigits(value.toString().trim())) {
+      else if (isStringWithDigits(value)) {
         return parseNumber(value.toString().trim(), qualifyingType);
       }
       else {
@@ -176,5 +180,10 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
 
       throw newConversionException(cause, CONVERSION_EXCEPTION_MESSAGE, value, qualifyingType.getName());
     }
+  }
+
+  @NullSafe
+  private boolean isStringWithDigits(@Nullable Object value) {
+    return value instanceof String && StringUtils.containsDigits(value.toString());
   }
 }
