@@ -512,7 +512,7 @@ public class AbstractConfigurationUnitTests {
     assertThatThrowableOfType(ConfigurationException.class)
       .isThrownBy(args -> configuration.getPropertyValueAs("jdbc.connection.max", Integer.class, false))
       .causedBy(ConversionException.class)
-      .havingMessage("[ten] is not a valid number of the qualifying type [java.lang.Integer]")
+      .havingMessage("Cannot convert [ten] to [java.lang.Integer]")
       .withNoCause();
   }
 
