@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net.protocols.http;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The HttpHeader enum is an enumeration of all HTTP protocol request/response headers.
+ * An {@link Enum Enueration} of all HTTP request/response headers.
  *
  * @author John J. Blum
+ * @see java.lang.Enum
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html">Hypertext Transfer Protocol - HTTP/1.1 - RFC2616</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum HttpHeader {
+
   ACCEPT("Accept"),
   ACCEPT_CHARSET("Accept-Charset"),
   ACCEPT_ENCODING("Accept-Encoding"),
@@ -76,30 +78,33 @@ public enum HttpHeader {
   WARNING("Warning"),
   WWW_AUTHENTICATE("WWW-Authenticate");
 
-  // name of the Http request/response header
+  // Name of the Http request/response header
   private final String name;
 
   /**
-   * Constructs an instance of the {@link HttpHeader} enum initialized with the given HTTP request/response header name.
+   * Constructs a new instance of {@link HttpHeader} initialized with the given, required HTTP request/response header
+   * {@link String name}.
    *
-   * @param name name of the HTTP request/response header.
-   * @throws java.lang.IllegalArgumentException if the HTTP header name is null or empty.
+   * @param name {@link String} containing the {@literal name} of the HTTP request/response header.
+   * @throws java.lang.IllegalArgumentException if the HTTP request/response header {@link String name}
+   * is {@literal null} or {@literal empty}.
    */
-  HttpHeader(String name) {
-    Assert.hasText(name, "HTTP protocol request/response header name is required");
-    this.name = name;
+  HttpHeader(@NotNull String name) {
+    this.name = StringUtils.requireText(name, "HTTP protocol request/response header name is required");
   }
 
   /**
-   * Returns an {@link HttpHeader} enumerated value for the given name of the HTTP request/response header
-   * or null if no match was found.
+   * Returns an {@link HttpHeader} enumerated value for the given {@link String name} of the HTTP request/response
+   * header or {@literal null} if no match was found.
    *
-   * @param name name of the HTTP request/response header.
-   * @return an {@link HttpHeader} enumerated value matching the given name of the HTTP request/response header
-   * or null if no match was found.
-   * @see #name()
+   * @param name {@link String} containing the {@literal name} of the HTTP request/response header.
+   * @return an {@link HttpHeader} enumerated value matching the given {@link String name}
+   * of the HTTP request/response header or {@literal null} if no match was found.
+   * @see #getName()
+   * @see #values()
    */
-  public static HttpHeader valueOfIgnoreCase(String name) {
+  public static @Nullable HttpHeader valueOfNameIgnoreCase(@Nullable String name) {
+
     for (HttpHeader httpHeader : values()) {
       if (httpHeader.getName().equalsIgnoreCase(StringUtils.trim(name))) {
         return httpHeader;
@@ -110,11 +115,11 @@ public enum HttpHeader {
   }
 
   /**
-   * Returns the name of the HTTP request/response header.
+   * Returns the {@link String name} of this HTTP request/response header.
    *
-   * @return a String with the name of the HTTP request/response header.
+   * @return the {@link String name} of this HTTP request/response header.
    */
-  public String getName() {
-    return name;
+  public @NotNull String getName() {
+    return this.name;
   }
 }
