@@ -384,7 +384,7 @@ public class PropertiesAdapterUnitTests {
     Arrays.asList("  ", "").forEach(propertyValue ->
       assertThatExceptionOfType(ConversionException.class)
         .isThrownBy(() -> propertiesAdapter.convert(propertyValue, Integer.class))
-        .withMessage("[%s] is not a valid number of the qualifying type [java.lang.Integer]", propertyValue)
+        .withMessage("Cannot convert [%s] to [java.lang.Integer]", propertyValue)
         .withNoCause());
   }
 
