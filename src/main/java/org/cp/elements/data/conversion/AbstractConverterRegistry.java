@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
-
-import static java.util.Arrays.stream;
-import static org.cp.elements.data.conversion.AbstractConverterRegistry.ConverterDescriptor.describe;
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,12 +26,17 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Registry;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
 
 /**
  * The {@link AbstractConverterRegistry} class is an abstract base class for a registry of {@link Converter Converters}.
  *
  * @author John Blum
+ * @see java.lang.reflect.ParameterizedType
+ * @see java.lang.reflect.Type
  * @see java.util.Map
  * @see org.cp.elements.data.conversion.ConverterRegistry
  * @see org.cp.elements.lang.Registry
@@ -91,7 +92,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
 
     Assert.notNull(converter, "Converter is required");
 
-    getRegistry().put(describe(converter), converter);
+    getRegistry().put(ConverterDescriptor.describe(converter), converter);
 
     if (this instanceof ConversionService) {
       converter.setConversionService((ConversionService) this);
@@ -148,27 +149,33 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @see org.cp.elements.data.conversion.AbstractConversionService.ConverterDescriptor
      * @see org.cp.elements.data.conversion.Converter
      */
-    protected static ConverterDescriptor describe(Converter<?, ?> converter) {
+    @SuppressWarnings("all")
+    protected static @NotNull ConverterDescriptor describe(@NotNull Converter<?, ?> converter) {
 
       Assert.notNull(converter, "Converter is required");
 
       ParameterizedType parameterizedType =
-        stream(nullSafeArray(converter.getClass().getGenericInterfaces(), Type.class))
+        Arrays.stream(ArrayUtils.nullSafeArray(converter.getClass().getGenericInterfaces(), Type.class))
           .filter(ConverterDescriptor::isParameterizedConverterType)
           .findFirst()
-          .map(it -> (ParameterizedType) it)
+          .map(ParameterizedType.class::cast)
           .orElseGet(() -> {
 
             Type genericSuperclass = converter.getClass().getGenericSuperclass();
 
-            return isParameterizedConverterType(genericSuperclass) ? (ParameterizedType) genericSuperclass : null;
+            return isParameterizedConverterType(genericSuperclass)
+              ? (ParameterizedType) genericSuperclass
+              : null;
+
           });
 
       Assert.notNull(parameterizedType, "Converter [%s] was not properly parameterized",
         converter.getClass().getName());
 
-      Class<?> fromType = ClassUtils.toRawType(parameterizedType.getActualTypeArguments()[0]);
-      Class<?> toType = ClassUtils.toRawType(parameterizedType.getActualTypeArguments()[1]);
+      Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+
+      Class<?> fromType = ClassUtils.toRawType(actualTypeArguments[0]);
+      Class<?> toType = ClassUtils.toRawType(actualTypeArguments[1]);
 
       return new ConverterDescriptor(converter, fromType, toType);
     }
@@ -186,8 +193,8 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
     }
 
     /**
-     * Constructs a new instance of the {@link ConverterDescriptor} describing the {@link Class from type}
-     * {@link Class to type} conversion performed by {@link Converter}.
+     * Constructs a new instance of {@link ConverterDescriptor} describing the {@link Class from type}
+     * and {@link Class to type} conversion performed by {@link Converter}.
      *
      * @param converter {@link Converter} being described.
      * @param fromType {@link Class type} to convert from.
@@ -197,15 +204,12 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @see org.cp.elements.data.conversion.Converter
      * @see java.lang.Class
      */
-    protected ConverterDescriptor(Converter<?, ?> converter, Class<?> fromType, Class<?> toType) {
+    protected ConverterDescriptor(@NotNull Converter<?, ?> converter,
+        @NotNull Class<?> fromType, @NotNull Class<?> toType) {
 
-      Assert.notNull(converter, "Converter is required");
-      Assert.notNull(fromType, "From type is required");
-      Assert.notNull(toType, "To type is required");
-
-      this.converter = converter;
-      this.fromType = fromType;
-      this.toType = toType;
+      this.converter = ObjectUtils.requireObject(converter, "Converter is required");
+      this.fromType = ObjectUtils.requireObject(fromType, "From type is required");
+      this.toType = ObjectUtils.requireObject(toType, "To type is required");
     }
 
     /**
@@ -214,7 +218,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @return a reference to the described {@link Converter}.
      * @see org.cp.elements.data.conversion.Converter
      */
-    public Converter<?, ?> getConverter() {
+    public @NotNull Converter<?, ?> getConverter() {
       return this.converter;
     }
 
@@ -224,7 +228,8 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @return the {@link Class type} to convert from.
      * @see java.lang.Class
      */
-    public Class getFromType() {
+    @SuppressWarnings("rawtypes")
+    public @NotNull Class getFromType() {
       return this.fromType;
     }
 
@@ -234,7 +239,8 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @return the {@link Class type} to convert to.
      * @see java.lang.Class
      */
-    public Class getToType() {
+    @SuppressWarnings("rawtypes")
+    public @NotNull Class getToType() {
       return this.toType;
     }
 
@@ -248,12 +254,14 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @return a boolean indicating whether the {@link Converter} performs an exact {@link Class type} conversion.
      * @see java.lang.Class
      */
-    public boolean isExactConversion(Class targetType) {
+    @NullSafe
+    @SuppressWarnings("rawtypes")
+    public boolean isExactConversion(@Nullable Class targetType) {
       return getToType().equals(targetType);
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(Object obj) {
 
       if (this == obj) {
         return true;
@@ -271,13 +279,7 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
 
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getFromType());
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(getToType());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getFromType(), getToType());
     }
 
     @Override
