@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -22,6 +21,8 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.DefaultableConverter;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * {@link IntegerConverter} converts an {@link Object} to an {@link Integer}.
@@ -29,6 +30,7 @@ import org.cp.elements.lang.StringUtils;
  * @author John J. Blum
  * @see java.lang.Integer
  * @see java.lang.Object
+ * @see java.lang.String
  * @see org.cp.elements.data.conversion.DefaultableConverter
  * @since 1.0.0
  */
@@ -66,7 +68,7 @@ public class IntegerConverter extends DefaultableConverter<Object, Integer> {
     if (value instanceof Number) {
       return ((Number) value).intValue();
     }
-    else if (value instanceof String && StringUtils.containsDigits(value.toString().trim())) {
+    else if (isStringWithDigits(value)) {
       try {
         return Integer.parseInt(value.toString().trim());
       }
@@ -77,5 +79,10 @@ public class IntegerConverter extends DefaultableConverter<Object, Integer> {
     else {
       return super.convert(value);
     }
+  }
+
+  @NullSafe
+  private boolean isStringWithDigits(@Nullable Object value) {
+    return value instanceof String && StringUtils.containsDigits(value.toString());
   }
 }
