@@ -15,7 +15,6 @@
  */
 package org.cp.elements.data.conversion.provider;
 
-import static org.cp.elements.lang.ClassUtils.CLASS_FILE_EXTENSION;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
 
 import java.io.File;
@@ -70,12 +69,15 @@ import org.cp.elements.util.CollectionUtils;
  *
  * @author John J. Blum
  * @see org.cp.elements.data.conversion.AbstractConversionService
+ * @see org.cp.elements.data.conversion.AbstractConverterRegistry
  * @see org.cp.elements.data.conversion.Converter
  * @see org.cp.elements.data.conversion.converters.StringConverter
+ * @see org.cp.elements.service.annotation.Service
  * @see <a href="http://stackoverflow.com/questions/176527/how-can-i-enumerate-all-classes-in-a-package-and-add-them-to-a-list">How can I enumerate all classes in a package and add them to a List?</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@Service
 public class SimpleConversionService extends AbstractConversionService {
 
   protected static final Class<?> CONVERTER_CLASS = StringConverter.class;
@@ -89,12 +91,15 @@ public class SimpleConversionService extends AbstractConversionService {
 
   /**
    * Constructs a new instance of {@link SimpleConversionService} initialized with all the {@link Converter Converters}
-   * defined in {@link org.cp.elements.data.conversion.converters}.
+   * defined in the {@link org.cp.elements.data.conversion.converters} package.
    *
    * @throws IllegalArgumentException if the resource {@link URL} of the chosen {@link Converter} {@link Class}
    * cannot be resolved.
+   * @see #registerConverters()
+   * @see #initDefaultValues()
    */
   public SimpleConversionService() {
+
     registerConverters();
     initDefaultValues();
   }
@@ -129,17 +134,14 @@ public class SimpleConversionService extends AbstractConversionService {
     }
   }
 
-  /* (non-Javadoc) */
   private String toResourceName(Class<?> type) {
     return ObjectUtils.getResourceName(type);
   }
 
-  /* (non-Javadoc) */
   private URL resolveResourceLocation(String resourceName) {
     return Thread.currentThread().getContextClassLoader().getResource(resourceName);
   }
 
-  /* (non-Javadoc) */
   private boolean isJarFile(URL resourceLocation) {
 
     String resourceLocationString = resourceLocation.toExternalForm();
@@ -147,7 +149,6 @@ public class SimpleConversionService extends AbstractConversionService {
     return resourceLocationString.startsWith("jar:file:") || resourceLocationString.contains(".jar!");
   }
 
-  /* (non-Javadoc) */
   private void registerConvertersFromPackage() {
 
     register(new BigDecimalConverter());
@@ -176,7 +177,8 @@ public class SimpleConversionService extends AbstractConversionService {
     String convertersPackageResourceName = CONVERTERS_PACKAGE.getName().replaceAll("\\.", "/");
 
     String jarFilePathname = converterClassResourceLocationString.contains(".jar!/")
-      ? converterClassResourceLocationString.substring(0, converterClassResourceLocationString.indexOf(".jar!/")).concat(".jar")
+      ? converterClassResourceLocationString.substring(0, converterClassResourceLocationString.indexOf(".jar!/"))
+        .concat(".jar")
       : converterClassResourceLocationString;
 
     jarFilePathname = jarFilePathname.startsWith("jar:file:")
@@ -194,8 +196,8 @@ public class SimpleConversionService extends AbstractConversionService {
 
           String converterClassName = jarEntryName.replaceAll("/", ".");
 
-          converterClassName = converterClassName.endsWith(CLASS_FILE_EXTENSION)
-            ? converterClassName.substring(0, converterClassName.indexOf(CLASS_FILE_EXTENSION))
+          converterClassName = converterClassName.endsWith(ClassUtils.CLASS_FILE_EXTENSION)
+            ? converterClassName.substring(0, converterClassName.indexOf(ClassUtils.CLASS_FILE_EXTENSION))
             : converterClassName;
 
           register(converterClassName);
@@ -218,7 +220,7 @@ public class SimpleConversionService extends AbstractConversionService {
           "Directory for Converters package [%s] does not exist", convertersPackagePath.getAbsolutePath());
 
       File[] classFiles = ArrayUtils.nullSafeArray(convertersPackagePath
-        .listFiles(new FileExtensionFilter(CLASS_FILE_EXTENSION)), File.class);
+        .listFiles(new FileExtensionFilter(ClassUtils.CLASS_FILE_EXTENSION)), File.class);
 
       for (File classFile : classFiles) {
 
