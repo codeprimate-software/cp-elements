@@ -24,10 +24,11 @@ import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * Interface defining a contract for application components that convert an {@link Object}
- * from one {@link Class type} to another {@link @Class type}.
+ * from one {@link Class type} to another {@link Class type}.
  *
  * @author John J. Blum
  * @param <S> {@link Class source type} to convert from.
@@ -41,11 +42,11 @@ import org.cp.elements.lang.annotation.NullSafe;
 public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> {
 
   /**
-   * Applies this {@link Converter} / {@link Function} to the given {@link S argument}
+   * Applies this {@link Converter} and {@link Function} to the given {@link S argument}
    * converting the value into an {@link Object} of {@link Class type T}.
    *
-   * @param value {@link Object} applied to this {@link Converter} / {@link Function}.
-   * @return the converted {@link T value} from applying this {@link Converter} /  {@link Function}
+   * @param value {@link Object} applied to this {@link Converter} and {@link Function}.
+   * @return the converted {@link T value} from applying this {@link Converter} and {@link Function}
    * to the given {@link S argument}.
    * @see java.util.function.Function#apply(Object)
    * @see #convert(Object)
@@ -70,7 +71,7 @@ public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> 
    * @see #canConvert(Object, Class)
    */
   @NullSafe
-  default boolean canConvert(Class<?> fromType, Class<?> toType) {
+  default boolean canConvert(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
     return ClassUtils.assignableTo(fromType, toType);
   }
 
@@ -86,7 +87,7 @@ public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> 
    * @see #canConvert(Class, Class)
    */
   @NullSafe
-  default boolean canConvert(Object value, Class<?> toType) {
+  default boolean canConvert(@Nullable Object value, @Nullable Class<?> toType) {
     return canConvert(ObjectUtils.getClass(value), toType);
   }
 
@@ -98,6 +99,7 @@ public interface Converter<S, T> extends ConversionServiceAware, Function<S, T> 
    * @throws ConversionException if the {@link Object} cannot be converted.
    * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
    * @see #convert(Object, Class)
+   * @see #apply(Object)
    */
   T convert(S value);
 
