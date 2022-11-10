@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.ServiceLoader;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -90,7 +89,7 @@ public class PropertiesAdapter implements Iterable<String> {
   public PropertiesAdapter(@NotNull Properties properties) {
 
     this.delegate = ObjectUtils.requireObject(properties, "The Properties to adapt is required");
-    this.conversionService = ServiceLoader.load(ConversionService.class).iterator().next();
+    this.conversionService = ConversionService.getLoader().getServiceInstance();
   }
 
   /**
