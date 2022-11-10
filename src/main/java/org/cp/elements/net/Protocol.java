@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net;
 
+import java.net.URI;
+import java.util.function.Predicate;
+
+import org.cp.elements.function.FunctionUtils;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The Protocol enum defines constants for well-known network protocols.
+ * An {@link Enum Enumeration} of constants defining well-known network protocols.
  *
  * @author John J. Blum
  * @see org.cp.elements.net.ServicePort
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public enum Protocol {
+
   FTP(ServicePort.FTP, "ftp://", "File Transfer Protocol"),
   HTTP(ServicePort.HTTP, "http://", "Hypertext Transfer Protocol"),
   HTTPS(ServicePort.HTTPS, "https://", "Secure Hypertext Transfer Protocol"),
@@ -41,100 +46,102 @@ public enum Protocol {
   private final String scheme;
 
   /**
-   * Constructs an instance of the {@link Protocol} enum initialized with the given {@link ServicePort}, Scheme
-   * and Description of the network protocol.
+   * Constructs a new instance of {@link Protocol} initialized with the given {@link ServicePort}, {@link String scheme}
+   * and {@link String description} of the network protocol.
    *
    * @param servicePort {@link ServicePort} used by the network protocol.
-   * @param scheme scheme of the network protocol.
-   * @param description a String describing the network protocol.
+   * @param scheme {@link String} declaring the scheme used by the network protocol.
+   * @param description {@link String} describing the network protocol.
    * @see org.cp.elements.net.ServicePort
    */
-  Protocol(ServicePort servicePort, String scheme, String description) {
-    this.servicePort = servicePort;
-    this.scheme = scheme;
-    this.description = description;
+  Protocol(@NotNull ServicePort servicePort, @NotNull String scheme, @NotNull String description) {
+
+    this.servicePort = ObjectUtils.requireObject(servicePort, "ServicePort is required");
+    this.scheme = ObjectUtils.requireObject(scheme, "Scheme used by the protocol is required");
+    this.description = StringUtils.requireText(description, "A description of the protocol is required");
   }
 
   /**
-   * Returns a {@link Protocol} enumerated value matching the given name of the network protocol.
+   * Factory method used to search for and return an instance of {@link Protocol} matching the given,
+   * required {@link Predicate}.
    *
-   * @param name name of the network protocol to lookup.
-   * @return a {@link Protocol} enumerated value matching the given name of the network protocol
-   * or null if no match could be found.
+   * @param protocolPredicate {@link Predicate} used to match the {@link Protocol}; must not be {@literal null}.
+   * @return a {@link Protocol} enumerated value matching the {@link Predicate} or {@literal null}
+   * if no {@link Protocol} matches the given {@link Predicate}.
+   * @see java.util.function.Predicate
+   * @see #values()
+   */
+  private static @Nullable Protocol valueOf(@NotNull Predicate<Protocol> protocolPredicate) {
+
+    for (Protocol protocol : values()) {
+      if (FunctionUtils.nullSafePredicateMatchNone(protocolPredicate).test(protocol)) {
+        return protocol;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns a {@link Protocol} enumerated value matching the given {@link String name} of the network protocol.
+   *
+   * The match on {@link String name} is case-insensitive.
+   *
+   * @param name {@link String} containing the name of the network protocol to match.
+   * @return a {@link Protocol} enumerated value matching the given {@link String name} of the network protocol
+   * or {@literal null} if no match could be found.
+   * @see #valueOf(Predicate)
    * @see #name()
    */
-  @NullSafe
-  public static Protocol valueOfIgnoreCase(String name) {
-    for (Protocol protocol : values()) {
-      if (protocol.name().equalsIgnoreCase(StringUtils.trim(name))) {
-        return protocol;
-      }
-    }
-
-    return null;
+  public static @Nullable Protocol valueOfNameIgnoreCase(@Nullable String name) {
+    return valueOf(protocol -> protocol.name().equalsIgnoreCase(StringUtils.trim(name)));
   }
 
   /**
-   * Returns a {@link Protocol} enumerated value matching the given network port number.
+   * Returns a {@link Protocol} enumerated value matching the given {@link Integer port number}
+   * of the network protocol.
    *
-   * @param portNumber network port number used to match the {@link Protocol}.
-   * @return a {@link Protocol} enumerated value matching the given network port number
-   * or null if no match could be found.
+   * @param portNumber {@link Integer} declaring the port number of the network protocol to match.
+   * @return a {@link Protocol} enumerated value matching the given {@link Integer port number}
+   * of the network protocol or {@literal null} if no match could be found.
+   * @see #valueOf(Predicate)
    * @see #portNumber()
    */
-  @NullSafe
-  public static Protocol valueOfPortNumber(int portNumber) {
-    for (Protocol protocol : values()) {
-      if (protocol.portNumber() == portNumber) {
-        return protocol;
-      }
-    }
-
-    return null;
+  public static @Nullable Protocol valueOfPortNumber(int portNumber) {
+    return valueOf(protocol -> protocol.portNumber() == portNumber);
   }
 
   /**
-   * Returns a {@link Protocol} enumerated value for the given scheme.
+   * Returns a {@link Protocol} enumerated value matching the given {@link String scheme} of the network protocol.
    *
-   * @param scheme scheme used to match the {@link Protocol}.
-   * @return a {@link Protocol} enumerated value for the given scheme or null if no match could be found.
+   * @param scheme {@link String} containing the scheme of the network protocol to match.
+   * @return a {@link Protocol} enumerated value matching the given {@link String scheme} of the network protocol
+   * or {@literal null} if no match could be found.
+   * @see #valueOf(Predicate)
    * @see #scheme()
    */
-  @NullSafe
-  public static Protocol valueOfScheme(String scheme) {
-    for (Protocol protocol : values()) {
-      if (protocol.scheme().equals(StringUtils.trim(scheme))) {
-        return protocol;
-      }
-    }
-
-    return null;
+  public static @Nullable Protocol valueOfScheme(@Nullable String scheme) {
+    return valueOf(protocol -> protocol.scheme().equals(StringUtils.trim(scheme)));
   }
 
   /**
-   * Returns a {@link Protocol} enumerated value for the given {@link ServicePort}.
+   * Returns a {@link Protocol} enumerated value matching the given {@link ServicePort} of the network protocol.
    *
-   * @param servicePort {@link ServicePort} used to lookup and match the {@link Protocol}.
-   * @return a {@link Protocol} enumerated value for the given {@link ServicePort}
-   * or null if no match could be found.
-   * @see org.cp.elements.net.ServicePort
+   * @param servicePort {@link ServicePort} of the network protocol to match.
+   * @return a {@link Protocol} enumerated value matching the given {@link ServicePort} of the network protocol
+   * or {@literal null} if no match could be found.
+   * @see #valueOf(Predicate)
    * @see #servicePort()
    */
-  @NullSafe
-  public static Protocol valueOfServicePort(ServicePort servicePort) {
-    for (Protocol protocol : values()) {
-      if (protocol.servicePort().equals(servicePort)) {
-        return protocol;
-      }
-    }
-
-    return null;
+  public static @Nullable Protocol valueOfServicePort(@Nullable ServicePort servicePort) {
+    return valueOf(protocol -> protocol.servicePort().equals(servicePort));
   }
 
   /**
-   * Gets the network port number for the network protocol.
+   * Gets the {@link Integer port number} used by the network protocol.
    *
-   * @return an integer value with the network port number of this network protocol.
+   * @return the {@link Integer port number} used by the network protocol.
+   * @see org.cp.elements.net.ServicePort#portNumber()
    * @see #servicePort()
    */
   public int portNumber() {
@@ -142,29 +149,29 @@ public enum Protocol {
   }
 
   /**
-   * Gets the scheme used by this network protocol in the URI.
+   * Gets the {@link String scheme} used by this network protocol in the {@link URI}.
    *
-   * @return a String value with the scheme used by this network protocol in the URI.
+   * @return a {@link String value} with the scheme used by this network protocol in the {@link URI}.
    */
-  public String scheme() {
-    return scheme;
+  public @NotNull String scheme() {
+    return this.scheme;
   }
 
   /**
    * Gets the {@link ServicePort} used by this network protocol.
    *
-   * @return a {@link ServicePort} enumerated value indicating the network port number used by this {@link Protocol}.
+   * @return a {@link ServicePort} enumerated value declaring the {@link Integer port number}
+   * used by this {@link Protocol}.
    * @see org.cp.elements.net.ServicePort
    */
-  public ServicePort servicePort() {
+  public @NotNull ServicePort servicePort() {
     return servicePort;
   }
 
   /**
-   * Returns a String representation of this network protocol.
+   * Returns a {@link String} representation of this network protocol.
    *
-   * @return a String describing this network protocol.
-   * @see #description
+   * @return a {@link String} describing this network protocol.
    */
   @Override
   public String toString() {
