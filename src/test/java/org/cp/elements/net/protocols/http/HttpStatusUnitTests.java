@@ -17,17 +17,19 @@ package org.cp.elements.net.protocols.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 /**
- * Unit Tests for the {@link HttpStatus} enum.
+ * Unit Tests for {@link HttpStatus}.
  *
  * @author John J. Blum
  * @see org.junit.Test
  * @see org.cp.elements.net.protocols.http.HttpStatus
  * @since 1.0.0
  */
-public class HttpStatusTests {
+public class HttpStatusUnitTests {
 
   @Test
   public void valueOfHttpStatusCodeReturnsHttpStatus() {
@@ -35,6 +37,16 @@ public class HttpStatusTests {
     for (HttpStatus httpStatus : HttpStatus.values()) {
       assertThat(HttpStatus.valueOf(httpStatus.code())).isEqualTo(httpStatus);
     }
+  }
+
+  @Test
+  public void valueOfInvalidHttpStatusCodeReturnsNull() {
+
+    assertThat(HttpStatus.valueOf(Integer.MIN_VALUE)).isNull();
+    assertThat(HttpStatus.valueOf(-404)).isNull();
+    assertThat(HttpStatus.valueOf(0)).isNull();
+    assertThat(HttpStatus.valueOf(600)).isNull();
+    assertThat(HttpStatus.valueOf(Integer.MAX_VALUE)).isNull();
   }
 
   @Test
@@ -48,20 +60,35 @@ public class HttpStatusTests {
   }
 
   @Test
-  public void valueOfInvalidHttpStatusCodeReturnsNull() {
-
-    assertThat(HttpStatus.valueOf(-404)).isNull();
-    assertThat(HttpStatus.valueOf(0)).isNull();
-    assertThat(HttpStatus.valueOf(600)).isNull();
-    assertThat(HttpStatus.valueOf(1100)).isNull();
-  }
-
-  @Test
   public void valueOfDescriptionReturnsHttpStatus() {
 
     for (HttpStatus httpStatus : HttpStatus.values()) {
       assertThat(HttpStatus.valueOfDescription(httpStatus.description())).isEqualTo(httpStatus);
     }
+  }
+
+  @Test
+  public void valueOfInvalidDescriptionReturnsNull() {
+
+    assertThat(HttpStatus.valueOfDescription("pause")).isNull();
+    assertThat(HttpStatus.valueOfDescription("NOT OK")).isNull();
+    assertThat(HttpStatus.valueOfDescription("Lost and Found")).isNull();
+    assertThat(HttpStatus.valueOfDescription("NO t F ound")).isNull();
+    assertThat(HttpStatus.valueOfDescription("Not Fine")).isNull();
+    assertThat(HttpStatus.valueOfDescription("External Server Error")).isNull();
+    assertThat(HttpStatus.valueOfDescription("invalid description")).isNull();
+  }
+
+  @Test
+  public void valueOfNoDescriptionReturnsNull() {
+
+    assertThat(HttpStatus.valueOfDescription("  ")).isNull();
+    assertThat(HttpStatus.valueOfDescription("")).isNull();
+  }
+
+  @Test
+  public void valueOfNullDescriptionIsNullSafeReturnsNull() {
+    assertThat(HttpStatus.valueOfDescription(null)).isNull();
   }
 
   @Test
@@ -75,32 +102,12 @@ public class HttpStatusTests {
   }
 
   @Test
-  public void valueOfInvalidDescriptionReturnsNull() {
-
-    assertThat(HttpStatus.valueOfDescription("pause")).isNull();
-    assertThat(HttpStatus.valueOfDescription("NOT OK")).isNull();
-    assertThat(HttpStatus.valueOfDescription("Lost and Found")).isNull();
-    assertThat(HttpStatus.valueOfDescription("NO t F ound")).isNull();
-    assertThat(HttpStatus.valueOfDescription("External Server Error")).isNull();
-    assertThat(HttpStatus.valueOfDescription("invalid description")).isNull();
-  }
-
-  @Test
-  public void valueOfNullEmptyAndBlankDescriptionsReturnsNull() {
-
-    assertThat(HttpStatus.valueOfDescription("  ")).isNull();
-    assertThat(HttpStatus.valueOfDescription("")).isNull();
-    assertThat(HttpStatus.valueOfDescription(null)).isNull();
-  }
-
-  @Test
   public void isInformational() {
 
-    for (HttpStatus httpStatus : HttpStatus.values()) {
+    Arrays.stream(HttpStatus.values()).forEach(httpStatus ->
       assertThat(httpStatus.isInformational())
         .describedAs("%s is not Informational", httpStatus)
-        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("1"));
-    }
+        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("1")));
   }
 
   @Test
@@ -108,30 +115,43 @@ public class HttpStatusTests {
 
     assertThat(HttpStatus.CONTINUE.isInformational()).isTrue();
     assertThat(HttpStatus.SWITCHING_PROTOCOLS.isInformational()).isTrue();
+  }
+
+  @Test
+  public void isNotInformationalForSelectHttpStatuses() {
+
     assertThat(HttpStatus.OK.isInformational()).isFalse();
     assertThat(HttpStatus.ACCEPTED.isInformational()).isFalse();
     assertThat(HttpStatus.MULTIPLE_CHOICES.isInformational()).isFalse();
     assertThat(HttpStatus.FOUND.isInformational()).isFalse();
     assertThat(HttpStatus.BAD_REQUEST.isInformational()).isFalse();
     assertThat(HttpStatus.NOT_FOUND.isInformational()).isFalse();
+    assertThat(HttpStatus.REQUEST_TIMEOUT.isInformational()).isFalse();
     assertThat(HttpStatus.INTERNAL_SERVER_ERROR.isInformational()).isFalse();
+    assertThat(HttpStatus.BAD_GATEWAY.isInformational()).isFalse();
   }
 
   @Test
   public void isSuccessful() {
 
-    for (HttpStatus httpStatus : HttpStatus.values()) {
+    Arrays.stream(HttpStatus.values()).forEach(httpStatus ->
       assertThat(httpStatus.isSuccessful())
         .describedAs("%s is not Successful", httpStatus)
-        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("2"));
-    }
+        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("2")));
   }
 
   @Test
   public void isSuccessfulForSelectHttpStatuses() {
 
-    assertThat(HttpStatus.CONTINUE.isSuccessful()).isFalse();
     assertThat(HttpStatus.OK.isSuccessful()).isTrue();
+    assertThat(HttpStatus.ACCEPTED.isSuccessful()).isTrue();
+    assertThat(HttpStatus.NO_CONTENT.isSuccessful()).isTrue();
+  }
+
+  @Test
+  public void isNotSuccessfulForSelectHttpStatuses() {
+
+    assertThat(HttpStatus.CONTINUE.isSuccessful()).isFalse();
     assertThat(HttpStatus.MULTIPLE_CHOICES.isSuccessful()).isFalse();
     assertThat(HttpStatus.BAD_REQUEST.isSuccessful()).isFalse();
     assertThat(HttpStatus.INTERNAL_SERVER_ERROR.isSuccessful()).isFalse();
@@ -140,19 +160,26 @@ public class HttpStatusTests {
   @Test
   public void isRedirection() {
 
-    for (HttpStatus httpStatus : HttpStatus.values()) {
+    Arrays.stream(HttpStatus.values()).forEach(httpStatus ->
       assertThat(httpStatus.isRedirection())
-        .describedAs("%s is not a Redirection!", httpStatus)
-        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("3"));
-    }
+        .describedAs("%s is not Redirection", httpStatus)
+        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("3")));
   }
 
   @Test
   public void isRedirectionForSelectHttpStatuses() {
 
+    assertThat(HttpStatus.MULTIPLE_CHOICES.isRedirection()).isTrue();
+    assertThat(HttpStatus.FOUND.isRedirection()).isTrue();
+    assertThat(HttpStatus.NOT_MODIFIED.isRedirection()).isTrue();
+    assertThat(HttpStatus.UNUSED.isRedirection()).isTrue();
+  }
+
+  @Test
+  public void isNotRedirectionForSelectHttpStatuses() {
+
     assertThat(HttpStatus.CONTINUE.isRedirection()).isFalse();
     assertThat(HttpStatus.OK.isRedirection()).isFalse();
-    assertThat(HttpStatus.MULTIPLE_CHOICES.isRedirection()).isTrue();
     assertThat(HttpStatus.BAD_REQUEST.isRedirection()).isFalse();
     assertThat(HttpStatus.INTERNAL_SERVER_ERROR.isRedirection()).isFalse();
   }
@@ -160,41 +187,59 @@ public class HttpStatusTests {
   @Test
   public void isClientError() {
 
-    for (HttpStatus httpStatus : HttpStatus.values()) {
+    Arrays.stream(HttpStatus.values()).forEach(httpStatus ->
       assertThat(httpStatus.isClientError())
         .describedAs("%s is not a Client Error", httpStatus)
-        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("4"));
-    }
+        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("4")));
   }
 
   @Test
   public void isClientErrorForSelectHttpStatuses() {
 
+    assertThat(HttpStatus.BAD_REQUEST.isClientError()).isTrue();
+    assertThat(HttpStatus.UNAUTHORIZED.isClientError()).isTrue();
+    assertThat(HttpStatus.PAYMENT_REQUIRED.isClientError()).isTrue();
+    assertThat(HttpStatus.FORBIDDEN.isClientError()).isTrue();
+    assertThat(HttpStatus.NOT_FOUND.isClientError()).isTrue();
+    assertThat(HttpStatus.REQUEST_TIMEOUT.isClientError()).isTrue();
+    assertThat(HttpStatus.CONFLICT.isClientError()).isTrue();
+    assertThat(HttpStatus.UNSUPPORTED_MEDIA_TYPE.isClientError()).isTrue();
+  }
+
+  @Test
+  public void isNotClientErrorForSelectHttpStatuses() {
+
     assertThat(HttpStatus.CONTINUE.isClientError()).isFalse();
     assertThat(HttpStatus.OK.isClientError()).isFalse();
     assertThat(HttpStatus.MULTIPLE_CHOICES.isClientError()).isFalse();
-    assertThat(HttpStatus.BAD_REQUEST.isClientError()).isTrue();
     assertThat(HttpStatus.INTERNAL_SERVER_ERROR.isClientError()).isFalse();
   }
 
   @Test
   public void isServerError() {
 
-    for (HttpStatus httpStatus : HttpStatus.values()) {
+    Arrays.stream(HttpStatus.values()).forEach(httpStatus ->
       assertThat(httpStatus.isServerError())
         .describedAs("%s is not a Server Error", httpStatus)
-        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("5"));
-    }
+        .isEqualTo(String.valueOf(httpStatus.code()).startsWith("5")));
   }
 
   @Test
   public void isServerErrorForSelectHttpStatuses() {
 
+    assertThat(HttpStatus.INTERNAL_SERVER_ERROR.isServerError()).isTrue();
+    assertThat(HttpStatus.NOT_IMPLEMENTED.isServerError()).isTrue();
+    assertThat(HttpStatus.SERVICE_UNAVAILABLE.isServerError()).isTrue();
+    assertThat(HttpStatus.HTTP_VERSION_NOT_SUPPORTED.isServerError()).isTrue();
+  }
+
+  @Test
+  public void isNotServerErrorForSelectHttpStatuses() {
+
     assertThat(HttpStatus.CONTINUE.isServerError()).isFalse();
     assertThat(HttpStatus.OK.isServerError()).isFalse();
     assertThat(HttpStatus.MULTIPLE_CHOICES.isServerError()).isFalse();
     assertThat(HttpStatus.BAD_REQUEST.isServerError()).isFalse();
-    assertThat(HttpStatus.INTERNAL_SERVER_ERROR.isServerError()).isTrue();
   }
 
   @Test

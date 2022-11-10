@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net.protocols.http;
 
+import java.util.function.Predicate;
+
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The HttpStatus enum is an enumeration of all HTTP status codes.
+ * An {@link Enum Enumeration} of all HTTP status codes.
  *
  * @author John J. Blum
+ * @see java.lang.Enum
  * @see <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">Hypertext Transfer Protocol - HTTP/1.1 - RFC-2616</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public enum HttpStatus {
+
   // 1xx Informational
   CONTINUE(100, "Continue"),
   SWITCHING_PROTOCOLS(101, "Switching Protocols"),
@@ -86,73 +92,90 @@ public enum HttpStatus {
   private final String description;
 
   /**
-   * Constructs an instance of the {@link HttpStatus} enum initialized with the corresponding HTTP status code
-   * and description of the HTTP status code.
+   * Constructs a new instance of {@link HttpStatus} initialized with the corresponding {@link Integer numeric value}
+   * and {@link String description} for the HTTP status code.
    *
-   * @param httpStatusCode numeric HTTP status code.
-   * @param description HTTP status code description.
+   * @param httpStatusCode {@link Integer} declaring the numeric value for the HTTP status code.
+   * @param description {@link String} containing a description of the HTTP status code.
+   * @throws IllegalArgumentException if the {@link String description} is {@literal null}
+   * or {@literal empty}.
    */
-  HttpStatus(int httpStatusCode, String description) {
+  HttpStatus(int httpStatusCode, @NotNull String description) {
     this.httpStatusCode = httpStatusCode;
-    this.description = description;
+    this.description = StringUtils.requireText(description, "Description [%s] is required");
   }
 
   /**
-   * Returns an {@link HttpStatus} enumerated value matching the numeric HTTP status code
-   * or null if no match was found.
+   * Factory method used to search for and return an instance of {@link HttpStatus} matching the given,
+   * required {@link Predicate} or returns {@literal null} if no match was found.
    *
-   * @param httpStatusCode numeric HTTP status code used to match the {@link HttpStatus}.
-   * @return an {@link HttpStatus} enumerated value for the given numeric HTTP status code
-   * or null if no match was found.
+   * @param httpStatusPredicate {@link Predicate} used to match the requested {@link HttpStatus};
+   * must not be {@literal null}.
+   * @return an {@link HttpStatus} matching the given, required {@link Predicate} or returns {@literal null}
+   * if no match was found.
+   * @see java.util.function.Predicate
+   * @see #values()
+   */
+  private static @Nullable HttpStatus valueOf(@NotNull Predicate<HttpStatus> httpStatusPredicate) {
+
+    for (HttpStatus httpStatus : values()) {
+      if (FunctionUtils.nullSafePredicateMatchNone(httpStatusPredicate).test(httpStatus)) {
+        return httpStatus;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns an {@link HttpStatus} enumerated value matching the {@link Integer numeric value} of the HTTP status code
+   * or {@literal null} if no match was found.
+   *
+   * @param httpStatusCode {@link Integer} with the numeric value of the HTTP status code
+   * used to match the {@link HttpStatus}.
+   * @return an {@link HttpStatus} enumerated value matching the {@link Integer numeric value} of the HTTP status code
+   * or {@literal null} if no match was found.
+   * @see #valueOf(Predicate)
    * @see #code()
    */
-  public static HttpStatus valueOf(int httpStatusCode) {
-    for (HttpStatus httpStatus : values()) {
-      if (httpStatus.code() == httpStatusCode) {
-        return httpStatus;
-      }
-    }
-
-    return null;
+  public static @Nullable HttpStatus valueOf(int httpStatusCode) {
+    return valueOf(httpStatus -> httpStatus.code() == httpStatusCode);
   }
 
   /**
-   * Returns an {@link HttpStatus} enumerated value for the given HTTP status code description
-   * or null if no match was found.
+   * Returns an {@link HttpStatus} enumerated value matching the given {@link String description} of the HTTP status
+   * or {@literal null} if no match was found.
    *
-   * @param description HTTP status code description.
-   * @return an {@link HttpStatus} enumerated value for the given HTTP status code description
-   * or null if no match was found.
+   * @param description {@link String} containing a {@literal description} of the HTTP status.
+   * @return an {@link HttpStatus} enumerated value matching the given {@link String description} of the HTTP status
+   * or {@literal null} if no match was found.
+   * @see #valueOf(Predicate)
    * @see #description()
    */
-  public static HttpStatus valueOfDescription(String description) {
-    for (HttpStatus httpStatus : values()) {
-      if (httpStatus.description().equalsIgnoreCase(StringUtils.trim(description))) {
-        return httpStatus;
-      }
-    }
-
-    return null;
+  public static @Nullable HttpStatus valueOfDescription(@Nullable String description) {
+    return valueOf(httpStatus -> httpStatus.description().equalsIgnoreCase(StringUtils.trim(description)));
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value is in a given HTTP statsus code category
-   * based on it's HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value is in a given HTTP status code classification
+   * or category based on it's HTTP status code.
    *
-   * @param httpStatusCodeBase base numeric HTTP status code for the category (e.g. 400).
-   * @return a boolean valued indicating whether this {@link HttpStatus} enumerated value is in
-   * a particular category of HTTP status codes.
-   * @see org.cp.elements.lang.RelationalOperator#greaterThanAndLessThan(Comparable, Comparable)
+   * @param httpStatusCodeBase {@link Integer base numeric value} used for classification or categorization
+   * of the HTTP status code, for example {@literal 400}.
+   * @return a boolean valued indicating whether this {@link HttpStatus} enumerated value is in a given HTTP status code
+   * classification or category based on it's HTTP status code.
+   * @see #code()
    */
   boolean is(int httpStatusCodeBase) {
-    return RelationalOperator.greaterThanAndLessThan(-1, 100).evaluate(code() - httpStatusCodeBase);
+    return RelationalOperator.greaterThanAndLessThan(-1, 100)
+      .evaluate(code() - httpStatusCodeBase);
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value represents an "Informational" HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value represents an {@literal Informational} HTTP status code.
    *
-   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents an "Informational"
-   * HTTP status code.
+   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents
+   * an {@literal Informational} HTTP status code.
    * @see #is(int)
    */
   public boolean isInformational() {
@@ -160,10 +183,10 @@ public enum HttpStatus {
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value represents an "Successful" HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value represents a {@literal Successful} HTTP status code.
    *
-   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents an "Successful"
-   * HTTP status code.
+   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents
+   * a {@literal Successful} HTTP status code.
    * @see #is(int)
    */
   public boolean isSuccessful() {
@@ -171,10 +194,10 @@ public enum HttpStatus {
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value represents an "Redirection" HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value represents a {@literal Redirection} HTTP status code.
    *
-   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents an "Redirection"
-   * HTTP status code.
+   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents
+   * a {@literal Redirection} HTTP status code.
    * @see #is(int)
    */
   public boolean isRedirection() {
@@ -182,10 +205,10 @@ public enum HttpStatus {
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value represents an "Client Error" HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value represents a {@literal Client Error} HTTP status code.
    *
-   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents an "Client Error"
-   * HTTP status code.
+   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents
+   * a {@literal Client Error} HTTP status code.
    * @see #is(int)
    */
   public boolean isClientError() {
@@ -193,10 +216,10 @@ public enum HttpStatus {
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value represents an "Server Error" HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value represents a {@literal Server Error} HTTP status code.
    *
-   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents an "Server Error"
-   * HTTP status code.
+   * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents
+   * a {@literal Server Error} HTTP status code.
    * @see #is(int)
    */
   public boolean isServerError() {
@@ -204,33 +227,35 @@ public enum HttpStatus {
   }
 
   /**
-   * Returns the numeric HTTP status code represented by this {@link HttpStatus} enumerated value.
+   * Returns the {@link Integer numeric HTTP status code} for this {@link HttpStatus} enumerated value.
    *
-   * @return the numeric HTTP status code for this enum.
+   * @return the {@link Integer numeric HTTP status code} for this {@link HttpStatus} enumerated value.
    */
   public int code() {
-    return httpStatusCode;
+    return this.httpStatusCode;
   }
 
   /**
-   * Returns a description of the HTTP status code represented by this {@link HttpStatus} enumerated value.
+   * Returns a {@link String description} to describe this {@link HttpStatus}.
    *
-   * @return a description of the HTTP status code for this enum.
+   * @return a {@link String description} to describe this {@link HttpStatus}.
    */
-  public String description() {
-    return description;
+  public @NotNull String description() {
+    return this.description;
   }
 
   /**
-   * Returns a String description of the {@link HttpStatus} enumerated value as ### - description, where ###
-   * is the numeric HTTP status code.
+   * Returns a {@link String description} of the {@link HttpStatus} enumerated value as {@literal ### - description},
+   * where {@literal ###} is the {@link Integer numeric HTTP status code} and the {@literal description}
+   * describes the HTTP status code.
    *
-   * @return a String describing this {@link HttpStatus} enumerated value.
+   * @return a {@link String} describing this {@link HttpStatus} enumerated value.
+   * @see java.lang.Object#toString()
    * @see #description()
    * @see #code()
    */
   @Override
-  public String toString() {
+  public @NotNull String toString() {
     return String.format("%1$d - %2$s", code(), description());
   }
 }
