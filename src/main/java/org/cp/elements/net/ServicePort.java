@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
+import java.util.function.Predicate;
+
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.StringUtils;
-import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The ServicePort enum defines an enumeration of well-known named network service ports.
+ * An {@link Enum Enumeration} of well-known {@link String named} network service ports.
  *
  * @author John J. Blum
  * @see org.cp.elements.net.Protocol
@@ -30,6 +34,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  */
 @SuppressWarnings("unused")
 public enum ServicePort {
+
   DNS(53),
   EPHEMERAL(0),
   FTP(21),
@@ -50,73 +55,88 @@ public enum ServicePort {
   private final int portNumber;
 
   /**
-   * Constructs an instance of the {@link ServicePort} enum initialized to the given network port number.
+   * Constructs a new instance of {@link ServicePort} initialized with the given
+   * {@link Integer network service port number}.
    *
-   * @param portNumber well-known network service port number.
-   * @throws java.lang.IllegalArgumentException if the port number is outside the valid network port number range
-   * [0-65535].
+   * @param portNumber {@link Integer value} declaring the well-known, network service port number.
+   * @throws java.lang.IllegalArgumentException if the {@link Integer port number} is outside the range of
+   * valid network port numbers {@literal [0-65535]}.
    */
   ServicePort(int portNumber) {
-    assertThat(portNumber).throwing(new IllegalArgumentException(String.format(
-      "port number [%s] must be greater than equal 0 and less than equal 65535", portNumber)))
-        .isGreaterThanEqualToAndLessThanEqualTo(MIN_PORT, MAX_PORT);
+
+    assertThat(portNumber)
+      .throwing(newIllegalArgumentException("Port number [%s] must be greater than equal to 0 and less than equal to 65535", portNumber))
+      .isGreaterThanEqualToAndLessThanEqualTo(MIN_PORT, MAX_PORT);
 
     this.portNumber = portNumber;
   }
 
   /**
-   * Returns a {@link ServicePort} enumerated value for the given network service port number.
+   * Factory method used to search for and return an instance of a {@link ServicePort} enumerated value
+   * matching the given, required {@link Predicate}
    *
-   * @param portNumber network service port number to lookup.
-   * @return a {@link ServicePort} enumerated value for the given network service port number.
+   * @param servicePortPredicate {@link Predicate} used to find and match a {@link ServicePort}
+   * @return an instance of a {@link ServicePort} enumerated value matching the given {@link Predicate}.
+   * Returns {@literal null} if no {@link ServicePort} could be found matching the given {@link Predicate}.
+   * @see java.util.function.Predicate
+   */
+  private static @Nullable ServicePort valueOf(@NotNull Predicate<ServicePort> servicePortPredicate) {
+
+    for (ServicePort servicePort : values()) {
+      if (FunctionUtils.nullSafePredicateMatchNone(servicePortPredicate).test(servicePort)) {
+        return servicePort;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Returns a {@link ServicePort} enumerated value for the given {@link Integer network service port number}.
+   *
+   * @param portNumber {@link Integer} specifying the network service port number to search.
+   * @return a {@link ServicePort} enumerated value for the given {@link Integer network service port number}.
+   * Returns {@literal null} if no {@link ServicePort} could be found
+   * matching the {@link Integer network service port number}.
+   * @see #valueOf(Predicate)
    * @see #portNumber()
    */
-  public static ServicePort valueOf(int portNumber) {
-    for (ServicePort servicePort : values()) {
-      if (servicePort.portNumber() == portNumber) {
-        return servicePort;
-      }
-    }
-
-    return null;
+  public static @Nullable ServicePort valueOf(int portNumber) {
+    return valueOf(servicePort -> servicePort.portNumber() == portNumber);
   }
 
   /**
-   * Returns a {@link ServicePort} enumerated value matching the given name of the network service.
+   * Returns a {@link ServicePort} enumerated value matching the given {@link String name} of the network service.
    *
-   * @param name name of the network service.
-   * @return a {@link ServicePort} enumerated value matching the given name of the network service.
-   * Returns null if no {@link ServicePort} matching the network service by name could be found.
+   * @param name {@link String} containing the name of the network service.
+   * @return a {@link ServicePort} enumerated value matching the given {@link String name} of the network service.
+   * Returns {@literal null} if no {@link ServicePort} could be found matching the network service
+   * by {@link String name}.
+   * @see #valueOf(Predicate)
    * @see #name()
    */
-  @NullSafe
-  public static ServicePort valueOfIgnoreCase(String name) {
-    for (ServicePort servicePort : values()) {
-      if (servicePort.name().equalsIgnoreCase(StringUtils.trim(name))) {
-        return servicePort;
-      }
-    }
-
-    return null;
+  public static @Nullable ServicePort valueOfNameIgnoreCase(@Nullable String name) {
+    return valueOf(servicePort -> servicePort.name().equalsIgnoreCase(StringUtils.trim(name)));
   }
 
   /**
-   * Determines whether this ServicePort is reserved by the operating system.  Any port number that is 1024 or below
-   * is reserved.
+   * Determines whether this {@link ServicePort} is reserved by the operating system (OS).
    *
-   * @return a boolean indicating whether this ServicePort is reserved.
+   * Any port number that is less than or equal to {@literal 1024}  is reserved.
+   *
+   * @return a boolean indicating whether this {@link ServicePort} is reserved by the operating system (OS).
    * @see #portNumber()
    */
   public boolean isReserved() {
-    return (portNumber() <= MAX_RESERVED_PORT);
+    return portNumber() <= MAX_RESERVED_PORT;
   }
 
   /**
-   * Gets the port number of this network service.
+   * Gets the {@link Integer port number} of this network service.
    *
-   * @return an integer value indicating the port number of this network service.
+   * @return the {@link Integer port number} of this network service.
    */
   public int portNumber() {
-    return portNumber;
+    return this.portNumber;
   }
 }

@@ -27,7 +27,7 @@ import org.junit.Test;
  * @see org.cp.elements.net.ServicePort
  * @since 1.0.0
  */
-public class ServicePortTests {
+public class ServicePortUnitTests {
 
   @Test
   public void isReserved() {
@@ -55,30 +55,36 @@ public class ServicePortTests {
   }
 
   @Test
-  public void valueOfIgnoreCaseReturnsServicePort() {
+  public void valueOfNameIgnoreCaseReturnsServicePort() {
 
-    assertThat(ServicePort.valueOfIgnoreCase("DNS")).isEqualTo(ServicePort.DNS);
-    assertThat(ServicePort.valueOfIgnoreCase("Ldap")).isEqualTo(ServicePort.LDAP);
-    assertThat(ServicePort.valueOfIgnoreCase(" ssh")).isEqualTo(ServicePort.SSH);
-    assertThat(ServicePort.valueOfIgnoreCase(" tiME  ")).isEqualTo(ServicePort.TIME);
-    assertThat(ServicePort.valueOfIgnoreCase("WhoIs   ")).isEqualTo(ServicePort.WHOIS);
+    assertThat(ServicePort.valueOfNameIgnoreCase("DNS")).isEqualTo(ServicePort.DNS);
+    assertThat(ServicePort.valueOfNameIgnoreCase("Ldap")).isEqualTo(ServicePort.LDAP);
+    assertThat(ServicePort.valueOfNameIgnoreCase(" ssh")).isEqualTo(ServicePort.SSH);
+    assertThat(ServicePort.valueOfNameIgnoreCase(" tiME  ")).isEqualTo(ServicePort.TIME);
+    assertThat(ServicePort.valueOfNameIgnoreCase("WhoIs   ")).isEqualTo(ServicePort.WHOIS);
   }
 
   @Test
-  public void valueOfIgnoreCaseWithInvalidValueReturnsNull() {
+  public void valueOfNameIgnoreCaseWithInvalidNameReturnsNull() {
 
-    assertThat(ServicePort.valueOfIgnoreCase("SND")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase(" FTTP")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("FTPS ")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("  htp ")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase(" shttp  ")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("PLAD")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("SH")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("Telephone")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("DATE")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("  ")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase("")).isNull();
-    assertThat(ServicePort.valueOfIgnoreCase(null)).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("SND")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase(" FTTP")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("FTPS ")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("  htp ")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("htttp")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase(" shttp  ")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("PLAD")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("PADL")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("SH")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("Telephone")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("DATE")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("  ")).isNull();
+    assertThat(ServicePort.valueOfNameIgnoreCase("")).isNull();
+  }
+
+  @Test
+  public void valueOfNameWithNullIsNullSafeReturnsNull() {
+    assertThat(ServicePort.valueOfNameIgnoreCase(null)).isNull();
   }
 
   @Test
@@ -95,6 +101,7 @@ public class ServicePortTests {
     assertThat(ServicePort.valueOf(Integer.MIN_VALUE)).isNull();
     assertThat(ServicePort.valueOf(-1)).isNull();
     assertThat(ServicePort.valueOf(65536)).isNull();
+    assertThat(ServicePort.valueOf(1)).isNull();
     assertThat(ServicePort.valueOf(Integer.MAX_VALUE)).isNull();
   }
 }
