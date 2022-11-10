@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -94,7 +93,7 @@ public class NumberConverter extends AbstractConverter<Object, Number> {
       return numberType.cast(new AtomicLong(number.longValue()));
     }
     else if (BigDecimal.class.isAssignableFrom(numberType)) {
-      return numberType.cast(new BigDecimal(number.doubleValue()));
+      return numberType.cast(BigDecimal.valueOf(number.doubleValue()));
     }
     else if (BigInteger.class.isAssignableFrom(numberType)) {
       return numberType.cast(new BigInteger(number.toString()));
