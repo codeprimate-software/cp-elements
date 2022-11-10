@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -43,7 +42,7 @@ public abstract class AbstractConversionService extends AbstractConverterRegistr
    * @see org.cp.elements.data.conversion.Converter#convert(Object, Class)
    * @see org.cp.elements.data.conversion.Converter#convert(Object)
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public <T> T convert(Object value, Class<T> toType) {
 
     for (ConverterDescriptor descriptor : getRegistry().keySet()) {
