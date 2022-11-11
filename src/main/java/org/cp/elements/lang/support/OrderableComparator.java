@@ -21,10 +21,11 @@ import org.cp.elements.lang.Orderable;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * {@link Comparator} implementation used to compare {@link Orderable} objects.
+ * {@link Comparator} implementation used to compare {@link Orderable objects}.
  *
  * @author John J. Blum
- * @param <T> {@link Class type} parameter indicating the specific class of the {@link Orderable} type.
+ * @param <T> {@link Class type} parameter indicating the specific {@link Class} of the {@link Orderable} type.
+ * @see java.lang.Comparable
  * @see java.util.Comparator
  * @see org.cp.elements.lang.Orderable
  * @since 1.0.0
@@ -32,12 +33,13 @@ import org.cp.elements.lang.annotation.NotNull;
 public class OrderableComparator<T extends Comparable<T>> implements Comparator<Orderable<T>> {
 
   /**
-   * Compares two {@link Orderable} objects to determine their relative order by their order property.
+   * Compares two {@link Orderable objects} to determine their relative sort order
+   * by their {@link Orderable#getOrder() order property}.
    *
-   * @param orderableOne first {@link Orderable} object in the order comparison; must not be {@literal null}.
-   * @param orderableTwo second {@link Orderable} object in the order comparison; must not be {@literal null}.
-   * @return an {@link Integer value} indicating an {@link Orderable} object's order relative to
-   * another {@link Orderable} object.
+   * @param orderableOne first {@link Orderable object} in the order comparison; must not be {@literal null}.
+   * @param orderableTwo second {@link Orderable object} in the order comparison; must not be {@literal null}.
+   * @return an {@link Integer value} indicating an {@link Orderable object's} order relative to
+   * another {@link Orderable object}.
    * @see org.cp.elements.lang.Orderable
    */
   @Override
