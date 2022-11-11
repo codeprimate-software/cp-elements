@@ -48,17 +48,11 @@ public abstract class OrderUtils {
    */
   public static int getOrder(@Nullable Object target) {
 
-    return target != null
-      ? doGetOrder(target)
-      : Ordered.DEFAULT;
-  }
-
-  private static int doGetOrder(@NotNull Object target) {
-
     return isNumericallyOrderable(target) ? getNumericallyOrderableObjectOrder(target)
       : isOrdered(target) ? getOrderedObjectOrder(target)
       : isOrderAnnotated(target) ? getOrderAnnotatedObjectOrder(target)
-      : Ordered.DEFAULT;
+      : target != null ? Ordered.DEFAULT
+      : Ordered.LAST;
   }
 
   @NullSafe

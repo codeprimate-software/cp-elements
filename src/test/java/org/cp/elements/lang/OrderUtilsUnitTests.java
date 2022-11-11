@@ -105,8 +105,8 @@ public class OrderUtilsUnitTests {
   }
 
   @Test
-  public void getOrderFromNullIsNullSafeReturnsDefaultOrder() {
-    assertThat(OrderUtils.getOrder(null)).isEqualTo(Ordered.DEFAULT);
+  public void getOrderFromNullIsNullSafeReturnsOrderedLast() {
+    assertThat(OrderUtils.getOrder(null)).isEqualTo(Ordered.LAST);
   }
 
   @Test
