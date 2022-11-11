@@ -260,6 +260,35 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
       return getToType().equals(targetType);
     }
 
+    /**
+     * Alias for {@link Converter#canConvert(Class, Class)}.
+     *
+     * @param fromType {@link Class type} to convert from.
+     * @param toType {@link Class type} to convert to.
+     * @return a boolean value indicating whether the given {@link Class fromType}
+     * can be converted to the {@link Class toType}.
+     * @see org.cp.elements.data.conversion.Converter#canConvert(Class, Class)
+     * @see #getConverter()
+     */
+    public boolean canConvert(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
+      return getConverter().canConvert(fromType, toType);
+    }
+
+    /**
+     * Alias for {@link Converter#canConvert(Object, Class)}.
+     *
+     * @param value {@link Object} to convert.
+     * @param toType {@link Class type} to convert the given {@link Object} to.
+     * @return a boolean value indicating whether the given {@link Object}
+     * can be converted into the given {@link Class type}.
+     * @see org.cp.elements.data.conversion.Converter#canConvert(Object, Class)
+     * @see #getConverter()
+     */
+    @NullSafe
+    public boolean canConvert(@Nullable Object value, @Nullable Class<?> toType) {
+      return getConverter().canConvert(value, toType);
+    }
+
     @Override
     public boolean equals(Object obj) {
 

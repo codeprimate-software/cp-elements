@@ -13,34 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.data.conversion.AbstractConverterRegistry.ConverterDescriptor;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Map;
 
-import org.cp.elements.lang.Constants;
 import org.junit.Test;
 
+import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.annotation.NotNull;
+
+import org.mockito.ArgumentMatchers;
+
 /**
- * Unit tests for {@link AbstractConverterRegistry}.
+ * Unit Tests for {@link AbstractConverterRegistry}.
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.AbstractConverterRegistry
  * @since 1.0.0
  */
 public class AbstractConverterRegistryTests {
 
-  protected AbstractConverterRegistry newConverterRegistry() {
+  private @NotNull AbstractConverterRegistry newConverterRegistry() {
     return new AbstractConverterRegistry() { };
   }
 
   @SuppressWarnings("unchecked")
-  protected <T extends ConversionService> T newConversionService() {
+  private @NotNull <T extends ConversionService> T newConversionService() {
     return (T) new TestConversionService();
   }
 
@@ -79,24 +91,17 @@ public class AbstractConverterRegistryTests {
     assertThat(testConverter.getConversionService().orElse(null)).isEqualTo(testConversionService);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void registerNullConverterThrowsException() {
 
     AbstractConverterRegistry converterRegistry = newConverterRegistry();
 
-    try {
-      converterRegistry.register(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> converterRegistry.register(null))
+      .withMessage("Converter is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Converter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      assertThat(converterRegistry).isEmpty();
-    }
+    assertThat(converterRegistry).isEmpty();
   }
 
   @Test
@@ -168,83 +173,113 @@ public class AbstractConverterRegistryTests {
     assertThat(converterDescriptor.getToType()).isEqualTo(String.class);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructConverterDescriptionWithNullConverterThrowsException() {
+  @Test
+  public void constructConverterDescriptorWithNullConverterThrowsException() {
 
-    try {
-      new ConverterDescriptor(null, String.class, Enum.class);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Converter is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConverterDescriptor(null, String.class, Enum.class))
+      .withMessage("Converter is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructConverterDescriptionWithNullFromTypeThrowsException() {
+  @Test
+  public void constructConverterDescriptorWithNullFromTypeThrowsException() {
 
-    try {
-      new ConverterDescriptor(mock(Converter.class), null, Enum.class);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("From type is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConverterDescriptor(mock(Converter.class), null, Enum.class))
+      .withMessage("From type is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructConverterDescriptionWithNullToTypeThrowsException() {
+  @Test
+  public void constructConverterDescriptorWithNullToTypeThrowsException() {
 
-    try {
-      new ConverterDescriptor(mock(Converter.class), String.class, null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("To type is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new ConverterDescriptor(mock(Converter.class), String.class, null))
+      .withMessage("To type is required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void describeNullConverterThrowsException() {
+  @Test
+  public void describeNonParameterizedConverterThrowsIllegalArgumentException() {
 
-    try {
-      ConverterDescriptor.describe(null);
-    }
-    catch (IllegalArgumentException expected) {
+    Converter<?, ?> mockConverter = mock(Converter.class);
 
-      assertThat(expected).hasMessage("Converter is required");
-      assertThat(expected).hasNoCause();
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ConverterDescriptor.describe(mockConverter))
+      .withMessage("Converter [%s] was not properly parameterized", mockConverter.getClass().getName())
+      .withNoCause();
 
-      throw expected;
-    }
+    verifyNoInteractions(mockConverter);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void describeNonParameterizedConverter() {
+  @Test
+  public void describeNullConverterThrowsIllegalArgumentException() {
 
-    Converter mockConverter = mock(Converter.class);
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ConverterDescriptor.describe(null))
+      .withMessage("Converter is required")
+      .withNoCause();
+  }
 
-    try {
-      ConverterDescriptor.describe(mockConverter);
-    }
-    catch (IllegalArgumentException expected) {
+  @Test
+  public void isExactConversionReturnsTrue() {
 
-      assertThat(expected).hasMessage("Converter [%s] was not properly parameterized",
-        mockConverter.getClass().getName());
+    ConverterDescriptor converterDescriptor =
+      new AbstractConverterRegistry.ConverterDescriptor(mock(Converter.class), Object.class, Integer.class);
 
-      assertThat(expected).hasNoCause();
+    assertThat(converterDescriptor.isExactConversion(Integer.class)).isTrue();
+  }
 
-      throw expected;
-    }
+  @Test
+  public void isExactConversionWithGenericTypeArgumentReturnsFalse() {
+
+    ConverterDescriptor converterDescriptor =
+      new AbstractConverterRegistry.ConverterDescriptor(mock(Converter.class), Object.class, Integer.class);
+
+    assertThat(converterDescriptor.isExactConversion(Number.class)).isFalse();
+  }
+
+  @Test
+  public void isExactConversionWithSpecificTypeArgumentReturnsFalse() {
+
+    ConverterDescriptor converterDescriptor =
+      new AbstractConverterRegistry.ConverterDescriptor(mock(Converter.class), Object.class, Number.class);
+
+    assertThat(converterDescriptor.isExactConversion(Integer.class)).isFalse();
+    assertThat(converterDescriptor.isExactConversion(Double.class)).isFalse();
+  }
+
+  @Test
+  public void canConvertFromObjectToTypeDelegatesToConverter() {
+
+    Converter<?, ?> mockConverter = mock(Converter.class);
+
+    doReturn(true).when(mockConverter).canConvert(ArgumentMatchers.<Object>any(), any(Class.class));
+
+    ConverterDescriptor converterDescriptor =
+      new AbstractConverterRegistry.ConverterDescriptor(mockConverter, Object.class, Number.class);
+
+    assertThat(converterDescriptor.canConvert("123.45", Double.class)).isTrue();
+
+    verify(mockConverter, times(1)).canConvert(eq("123.45"), eq(Double.class));
+    verifyNoMoreInteractions(mockConverter);
+  }
+
+  @Test
+  public void canConvertFromTypeToTypeDelegatesToConverter() {
+
+    Converter<?, ?> mockConverter = mock(Converter.class);
+
+    doReturn(true).when(mockConverter).canConvert(any(Class.class), any(Class.class));
+
+    ConverterDescriptor converterDescriptor =
+      new AbstractConverterRegistry.ConverterDescriptor(mockConverter, Object.class, Number.class);
+
+    assertThat(converterDescriptor.canConvert(String.class, Integer.class)).isTrue();
+
+    verify(mockConverter, times(1)).canConvert(eq(String.class), eq(Integer.class));
+    verifyNoMoreInteractions(mockConverter);
   }
 
   @Test
