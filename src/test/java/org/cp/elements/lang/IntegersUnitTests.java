@@ -31,6 +31,29 @@ import org.junit.Test;
 public class IntegersUnitTests {
 
   @Test
+  public void invertNegativeNumber() {
+
+    for (int number = 1; number < 100_000; number *= 2) {
+      int negativeNumber = number * -1;
+      assertThat(Integers.invert(negativeNumber)).isEqualTo(number);
+    }
+  }
+
+  @Test
+  public void invertPositiveNumber() {
+
+    for (int number = 1; number < 100_000; number *= 2) {
+      int negativeNumber = number * -1;
+      assertThat(Integers.invert(number)).isEqualTo(negativeNumber);
+    }
+  }
+
+  @Test
+  public void invertZero() {
+    assertThat(Integers.invert(0)).isZero();
+  }
+
+  @Test
   public void minusOneIsNotGreaterThanZero() {
     assertThat(Integers.isGreaterThanZero(-1)).isFalse();
   }
