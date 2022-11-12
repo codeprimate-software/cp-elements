@@ -272,6 +272,17 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
   }
 
   /**
+   * Determines whether {@literal this} {@link JavaVersion} is {@literal Java 14}.
+   *
+   * @return a boolean value indicating whether {@literal this} {@link JavaVersion} is {@literal Java 14}.
+   * @see JavaVersion#ELEVEN
+   * @see #getMajor()
+   */
+  public boolean isJava14() {
+    return FOURTEEN.getMajor().equals(getMajor());
+  }
+
+  /**
    * Determines whether {@literal this} {@link JavaVersion} is {@literal Java 17}.
    *
    * @return a boolean value indicating whether {@literal this} {@link JavaVersion} is {@literal Java 17}.
