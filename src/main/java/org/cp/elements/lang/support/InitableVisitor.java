@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.Map;
@@ -22,10 +21,11 @@ import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ParameterizedInitable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The InitiableVisitor class is a Visitor implementation visiting a graph of objects initializing each object visited
- * in the hierarchy.
+ * A {@link Visitor} implementation visiting a graph of {@link Object objects} initializing each {@link Object} visited
+ * in the {@link Object} hierarchy.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Initable
@@ -42,7 +42,7 @@ public class InitableVisitor implements Visitor {
   private final Object[] args;
 
   /**
-   * Constructs an instance of the InitableVisitor class with no argument or parameters.
+   * Constructs a new instance of {@link InitableVisitor} with no argument and no parameters.
    */
   public InitableVisitor() {
     this.args = null;
@@ -50,24 +50,24 @@ public class InitableVisitor implements Visitor {
   }
 
   /**
-   * Constructs an instance of the InitableVisitor class initialized with the specified arguments.
+   * Constructs a new instance of {@link InitableVisitor} initialized with the given array of {@link Object arguments}.
    *
-   * @param args an array of Object arguments used by this Visitor when initializing both ParameterizedInitable
-   * and Initable objects it visits.
+   * @param args array of {@link Object arguments} used by this {@link Visitor} to initialize
+   * both {@link ParameterizedInitable} and {@link Initable} objects when visited.
    */
-  public InitableVisitor(final Object... args) {
+  public InitableVisitor(@Nullable Object... args) {
     this.args = args;
     this.parameters = null;
   }
 
   /**
-   * Constructs an instance of the InitableVisitor class initialized with the specified parameters.
+   * Constructs a new instance of {@link InitableVisitor} initialized with the given {@link Map parameters}.
    *
-   * @param parameters a Map of parameters used by this Visitor when initializing both ParameterizedInitable
-   * and Initable objects it visits.
+   * @param parameters {@link Map} of parameters used by this {@link Visitor} to initialize
+   * a {@link ParameterizedInitable} object when visited.
    * @see java.util.Map
    */
-  public InitableVisitor(final Map<?, ?> parameters) {
+  public InitableVisitor(@Nullable Map<?, ?> parameters) {
     this.parameters = parameters;
     this.args = null;
   }
@@ -77,8 +77,8 @@ public class InitableVisitor implements Visitor {
    *
    * @return an array or arguments used to initialize ParameterizedInitable and Initable objects visited by this Visitor.
    */
-  public Object[] getArguments() {
-    return args;
+  public @Nullable Object[] getArguments() {
+    return this.args;
   }
 
   /**
@@ -89,8 +89,8 @@ public class InitableVisitor implements Visitor {
    * by this Visitor.
    * @see java.util.Map
    */
-  public Map<?, ?> getParameters() {
-    return parameters;
+  public @Nullable Map<?, ?> getParameters() {
+    return this.parameters;
   }
 
   /**
@@ -106,7 +106,8 @@ public class InitableVisitor implements Visitor {
    * @see org.cp.elements.lang.Visitable
    */
   @Override
-  public void visit(final Visitable visitable) {
+  public void visit(@Nullable Visitable visitable) {
+
     if (visitable instanceof ParameterizedInitable) {
       if (getParameters() != null) {
         ((ParameterizedInitable) visitable).init(getParameters());
@@ -122,5 +123,4 @@ public class InitableVisitor implements Visitor {
       ((Initable) visitable).init();
     }
   }
-
 }

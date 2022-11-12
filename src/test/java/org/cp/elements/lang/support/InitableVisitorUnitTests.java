@@ -13,70 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.Test;
 
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.ParameterizedInitable;
 import org.cp.elements.lang.Visitable;
-import org.junit.Test;
 
 /**
- * Unit tests for {@link InitableVisitor}.
+ * Unit Tests for {@link InitableVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Test
  * @see org.cp.elements.lang.Initable
+ * @see org.cp.elements.lang.ParameterizedInitable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.support.InitableVisitor
  * @since 1.0.0
  */
-@SuppressWarnings({ "deprecation", "unused" })
-public class InitableVisitorTest {
+public class InitableVisitorUnitTests {
 
   @Test
-  public void testConstruct() {
+  public void constructInitableVisitor() {
 
     InitableVisitor visitor = new InitableVisitor();
 
-    assertNotNull(visitor);
-    assertNull(visitor.getArguments());
-    assertNull(visitor.getParameters());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isNull();
+    assertThat(visitor.getParameters()).isNull();
   }
 
   @Test
-  public void testConstructWithArguments() {
+  public void constructInitableVisitorWithArguments() {
 
     Object[] expectedArguments = { true, 'x', 2, Math.PI, "test" };
 
     InitableVisitor visitor = new InitableVisitor(expectedArguments);
 
-    assertNotNull(visitor);
-    assertSame(expectedArguments, visitor.getArguments());
-    assertNull(visitor.getParameters());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isSameAs(expectedArguments);
+    assertThat(visitor.getParameters()).isNull();
   }
 
   @Test
-  public void testConstructWithParameters() {
+  public void constructInitableVisitorWithParameters() {
 
     Map<String, String> expectedParameters = new HashMap<>(3);
 
@@ -86,52 +81,64 @@ public class InitableVisitorTest {
 
     InitableVisitor visitor = new InitableVisitor(expectedParameters);
 
-    assertNotNull(visitor);
-    assertNull(visitor.getArguments());
-    assertSame(expectedParameters, visitor.getParameters());
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isNull();
+    assertThat(visitor.getParameters()).isSameAs(expectedParameters);
   }
 
   @Test
   public void visitNonInitableVisitable() {
-    new InitableVisitor().visit(mock(Visitable.class));
+
+    Visitable mockVisitable = mock(Visitable.class);
+
+    new InitableVisitor().visit(mockVisitable);
+
+    verifyNoInteractions(mockVisitable);
   }
 
   @Test
-  public void visitInitableCallsInit() {
+  public void visitNullVisitableObjectIsNullSafe() {
+    new InitableVisitor().visit(null);
+  }
+
+  @Test
+  public void visitInitableObjectCallsInit() {
 
     InitableVisitable mockInitable = mock(InitableVisitable.class);
 
     InitableVisitor visitor = new InitableVisitor(ObjectUtils.EMPTY_OBJECT_ARRAY);
 
-    assertThat(visitor, is(notNullValue()));
-    assertThat(visitor.getArguments(), is(sameInstance(ObjectUtils.EMPTY_OBJECT_ARRAY)));
-    assertThat(visitor.getParameters(), is(nullValue()));
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isSameAs(ObjectUtils.EMPTY_OBJECT_ARRAY);
+    assertThat(visitor.getParameters()).isNull();
 
     visitor.visit(mockInitable);
 
     verify(mockInitable, times(1)).init();
+    verifyNoMoreInteractions(mockInitable);
   }
 
   @Test
-  public void visitParameterizedInitableCallsInit() {
+  public void visitParameterizedInitableObjectCallsInit() {
 
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
     InitableVisitor visitor = new InitableVisitor();
 
-    assertThat(visitor, is(notNullValue()));
-    assertThat(visitor.getArguments(), is(nullValue()));
-    assertThat(visitor.getParameters(), is(nullValue()));
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isNull();
+    assertThat(visitor.getParameters()).isNull();
 
     visitor.visit(mockParameterizedInitable);
 
     verify(mockParameterizedInitable, never()).init(any(Map.class));
     verify(mockParameterizedInitable, never()).init(any(Object[].class));
     verify(mockParameterizedInitable, times(1)).init();
+    verifyNoMoreInteractions(mockParameterizedInitable);
   }
 
   @Test
-  public void visitParameterizedInitableCallsInitWithArguments() {
+  public void visitParameterizedInitableObjectCallsInitWithArguments() {
 
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
@@ -139,19 +146,20 @@ public class InitableVisitorTest {
 
     InitableVisitor visitor = new InitableVisitor(expectedArguments);
 
-    assertThat(visitor, is(notNullValue()));
-    assertThat(visitor.getArguments(), is(sameInstance(expectedArguments)));
-    assertThat(visitor.getParameters(), is(nullValue()));
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isSameAs(expectedArguments);
+    assertThat(visitor.getParameters()).isNull();
 
     visitor.visit(mockParameterizedInitable);
 
     verify(mockParameterizedInitable, never()).init(any(Map.class));
     verify(mockParameterizedInitable, times(1)).init(expectedArguments);
     verify(mockParameterizedInitable, never()).init();
+    verifyNoMoreInteractions(mockParameterizedInitable);
   }
 
   @Test
-  public void visitParameterizedInitableCallsInitWithParameters() {
+  public void visitParameterizedInitableObjectCallsInitWithParameters() {
 
     ParameterizedInitableVisitable mockParameterizedInitable = mock(ParameterizedInitableVisitable.class);
 
@@ -163,19 +171,20 @@ public class InitableVisitorTest {
 
     InitableVisitor visitor = new InitableVisitor(expectedParameters);
 
-    assertThat(visitor, is(notNullValue()));
-    assertThat(visitor.getArguments(), is(nullValue()));
-    assertThat(visitor.getParameters(), is(sameInstance(expectedParameters)));
+    assertThat(visitor).isNotNull();
+    assertThat(visitor.getArguments()).isNull();
+    assertThat(visitor.getParameters()).isSameAs(expectedParameters);
 
     visitor.visit(mockParameterizedInitable);
 
     verify(mockParameterizedInitable, times(1)).init(eq(expectedParameters));
     verify(mockParameterizedInitable, never()).init(any(Object[].class));
     verify(mockParameterizedInitable, never()).init();
+    verifyNoMoreInteractions(mockParameterizedInitable);
   }
 
-  protected interface ParameterizedInitableVisitable extends ParameterizedInitable, Visitable { }
+  interface ParameterizedInitableVisitable extends ParameterizedInitable, Visitable { }
 
-  protected interface InitableVisitable extends Initable, Visitable { }
+  interface InitableVisitable extends Initable, Visitable { }
 
 }
