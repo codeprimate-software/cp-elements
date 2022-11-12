@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -134,6 +135,8 @@ public class SystemUtilsUnitTests {
   @Test
   public void systemClassloaderClasspathContainsContents() {
 
+    assumeThat(JavaVersion.current().isJava8()).isTrue();
+
     String systemClassLoaderClasspath = SystemUtils.systemClassLoaderClasspath().orElse(null);
 
     assertThat(systemClassLoaderClasspath)
@@ -143,6 +146,8 @@ public class SystemUtilsUnitTests {
 
   @Test
   public void threadContextClassloaderClasspathContainsContents() {
+
+    assumeThat(JavaVersion.current().isJava8()).isTrue();
 
     String threadContextClassLoaderClasspath = SystemUtils.threadContextClassLoaderClasspath().orElse(null);
 
