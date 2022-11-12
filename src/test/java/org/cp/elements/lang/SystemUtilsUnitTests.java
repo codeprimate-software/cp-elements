@@ -122,6 +122,36 @@ public class SystemUtilsUnitTests {
   }
 
   @Test
+  public void classLoaderClasspathWithNonUrlClassLoader() {
+
+    ClassLoader mockClassLoader = mock(ClassLoader.class);
+
+    assertThat(SystemUtils.classLoaderClassPath(mockClassLoader)).isNotPresent();
+
+    verifyNoInteractions(mockClassLoader);
+  }
+
+  @Test
+  public void systemClassloaderClasspathContainsContents() {
+
+    String systemClassLoaderClasspath = SystemUtils.systemClassLoaderClasspath().orElse(null);
+
+    assertThat(systemClassLoaderClasspath)
+      .describedAs("Expected non-blank classpath; but was [%s]", systemClassLoaderClasspath)
+      .isNotBlank();
+  }
+
+  @Test
+  public void threadContextClassloaderClasspathContainsContents() {
+
+    String threadContextClassLoaderClasspath = SystemUtils.threadContextClassLoaderClasspath().orElse(null);
+
+    assertThat(threadContextClassLoaderClasspath)
+      .describedAs("Expected non-blank classpath; but was [%s]", threadContextClassLoaderClasspath)
+      .isNotBlank();
+  }
+
+  @Test
   public void urlClassLoaderClasspathIsCorrect() throws MalformedURLException {
 
     URLClassLoader mockClassLoader = mock(URLClassLoader.class);
@@ -155,8 +185,7 @@ public class SystemUtilsUnitTests {
   }
 
   @Test
-  public void urlClassLoaderClasspathWithSingleElementClasspathIsCorrect()
-    throws MalformedURLException {
+  public void urlClassLoaderClasspathWithSingleElementClasspathIsCorrect() throws MalformedURLException {
 
     URLClassLoader mockClassLoader = mock(URLClassLoader.class);
 
@@ -171,25 +200,5 @@ public class SystemUtilsUnitTests {
 
     verify(mockClassLoader, times(1)).getURLs();
     verifyNoMoreInteractions(mockClassLoader);
-  }
-
-  @Test
-  public void classLoaderClasspathWithNonUrlClassLoader() {
-
-    ClassLoader mockClassLoader = mock(ClassLoader.class);
-
-    assertThat(SystemUtils.classLoaderClassPath(mockClassLoader)).isNotPresent();
-
-    verifyNoInteractions(mockClassLoader);
-  }
-
-  @Test
-  public void threadContextClassloaderClasspathContainsContents() {
-
-    String threadContextClassLoaderClasspath = SystemUtils.threadContextClassLoaderClasspath().orElse(null);
-
-    assertThat(threadContextClassLoaderClasspath)
-      .describedAs("Expected non-blank classpath; but was [%s]", threadContextClassLoaderClasspath)
-      .isNotBlank();
   }
 }

@@ -24,6 +24,8 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -238,7 +240,8 @@ public abstract class SystemUtils {
    * @return a boolean value indicating whether this OS is the expected OS.
    * @see java.lang.System#getProperty(String)
    */
-  protected static boolean isOS(final String expectedOsName) {
+  @NullSafe
+  protected static boolean isOS(@Nullable String expectedOsName) {
     return StringUtils.contains(System.getProperty("os.name"), expectedOsName);
   }
 
@@ -287,6 +290,19 @@ public abstract class SystemUtils {
     return ArrayUtils.isNotEmpty(classpathElements)
       ? Optional.of(StringUtils.concat(classpathElements, System.getProperty("path.separator", ":")))
       : Optional.empty();
+  }
+
+  /**
+   * Gets the configured {@link String classpath} for the {@link ClassLoader#getSystemClassLoader() System ClassLoader}
+   * as an {@link Optional} value.
+   *
+   * @return the configured {@link String classpath}
+   * for the {@link ClassLoader#getSystemClassLoader() System ClassLoader}.
+   * @see java.lang.ClassLoader#getSystemClassLoader()
+   * @see java.util.Optional
+   */
+  public static Optional<String> systemClassLoaderClasspath() {
+    return classLoaderClassPath(ClassLoader.getSystemClassLoader());
   }
 
   /**
