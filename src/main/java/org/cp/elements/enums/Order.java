@@ -18,11 +18,12 @@ package org.cp.elements.enums;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum enumeration} of {@literal sort orders} used in {@literal ORDER BY} clauses of query statements.
+ * An {@link Enum Enumeration} of {@literal sort orders} used in {@literal ORDER BY} clauses of query statements.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -61,7 +62,7 @@ public enum Order {
   }
 
   /**
-   * Factory method used to find and match an {@link Order} by the given {@link Predicate}.
+   * Factory method used to find and match an {@link Order} by the given, required {@link Predicate}.
    *
    * @param predicate {@link Predicate} used to find and match an {@link Order}.
    * @return an {@link Order} matching the given {@link Predicate} or {@literal null}
@@ -72,7 +73,7 @@ public enum Order {
   private static @Nullable Order valueOfPredicate(@NotNull Predicate<Order> predicate) {
 
     return Arrays.stream(values())
-      .filter(predicate)
+      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
       .findFirst()
       .orElse(null);
   }

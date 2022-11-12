@@ -20,12 +20,13 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum enumeration} of weight measurements.
+ * An {@link Enum Enumeration} of weight measurements.
  *
  * @author John Blum
  * @see java.lang.Enum
@@ -59,7 +60,7 @@ public enum WeightUnit {
   }
 
   /**
-   * Factory method used to find a {@link WeightUnit} by {@link String abbreviation}.
+   * Factory method used to find and match a {@link WeightUnit} by {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the {@literal abbreviation} of the {@link WeightUnit} to find.
    * @return a {@link WeightUnit} with the given {@link String abbreviation}, or {@literal null}
@@ -72,7 +73,7 @@ public enum WeightUnit {
   }
 
   /**
-   * Factory method used to find a {@link WeightUnit} by {@link String name}.
+   * Factory method used to find and match a {@link WeightUnit} by {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link WeightUnit} to find.
    * @return a {@link WeightUnit} with the given {@link String name}, or {@literal null}
@@ -85,7 +86,7 @@ public enum WeightUnit {
   }
 
   /**
-   * Factory method used to find a {@link WeightUnit} matching the given, required {@link Predicate}.
+   * Factory method used to find and match a {@link WeightUnit} matching the given, required {@link Predicate}.
    *
    * @param predicate {@link Predicate} used to find and match a {@link WeightUnit}; must not be {@literal null}.
    * @return a {@link WeightUnit} matching the given, required {@link Predicate} or {@literal null}
@@ -96,7 +97,7 @@ public enum WeightUnit {
   private static @Nullable WeightUnit valueOf(@NotNull Predicate<WeightUnit> predicate) {
 
     return Arrays.stream(values())
-      .filter(predicate)
+      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
       .findFirst()
       .orElse(null);
   }

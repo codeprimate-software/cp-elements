@@ -18,11 +18,12 @@ package org.cp.elements.enums;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum enumeration} of the genders [{@literal male}, {@literal female}] for people.
+ * An {@link Enum Enumeration} of the genders [{@literal male}, {@literal female}] for people.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -36,7 +37,7 @@ public enum Gender {
   NON_BINARY("N", "NonBinary");
 
   /**
-   * Factory method used to find a {@link Gender} by {@link String abbreviation}.
+   * Factory method used to find and match a {@link Gender} by {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the {@literal abbreviation} of the {@link Gender} to find.
    * @return the {@link Gender} with the given {@link String abbreviation}, or {@literal null}
@@ -49,7 +50,7 @@ public enum Gender {
   }
 
   /**
-   * Factory method used to find a {@link Gender} by {@link String name}.
+   * Factory method used to find and match a {@link Gender} by {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} of the {@link Gender} to find.
    * @return the {@link Gender} with the given {@link String name}, or {@literal null}
@@ -62,7 +63,7 @@ public enum Gender {
   }
 
   /**
-   * Factory method used to find a {@link Gender} by the given, required {@link Predicate}.
+   * Factory method used to find and match a {@link Gender} by the given, required {@link Predicate}.
    *
    * @param predicate {@link Predicate} used to fina and match a {@link Gender}; must not be {@literal null}.
    * @return a {@link Gender} matching the given, required {@link Predicate} or {@literal null} if no {@link Gender}
@@ -70,10 +71,10 @@ public enum Gender {
    * @see java.util.function.Predicate
    * @see #values()
    */
-  private static @Nullable Gender valueOf(Predicate<Gender> predicate) {
+  private static @Nullable Gender valueOf(@NotNull Predicate<Gender> predicate) {
 
     return Arrays.stream(values())
-      .filter(predicate)
+      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
       .findFirst()
       .orElse(null);
   }

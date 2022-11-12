@@ -18,11 +18,12 @@ package org.cp.elements.enums;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An {@link Enum enumeration} for different races as defined by the OMB standards.
+ * An {@link Enum Enumeration} for different races as defined by the OMB standards.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -39,7 +40,7 @@ public enum Race {
   WHITE("White", "White");
 
   /**
-   * Factory method used to find a {@link Race} by {@link String abbreviation}.
+   * Factory method used to find and match a {@link Race} by {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the {@literal abbreviation} used to
    * find and match a {@link Race} enum.
@@ -53,7 +54,7 @@ public enum Race {
   }
 
   /**
-   * Factory method used to find a {@link Race} by {@link String name}.
+   * Factory method used to find and match a {@link Race} by {@link String name}.
    *
    * @param name {@link String} containing the {@literal name} used to find and match a {@link Race} enum.
    * @return a {@link Race} matching the given {@link String name} or {@literal null}
@@ -66,7 +67,7 @@ public enum Race {
   }
 
   /**
-   * Factory method used to find a {@link Race} by the given, required {@link Predicate}.
+   * Factory method used to find and match a {@link Race} by the given, required {@link Predicate}.
    *
    * @param predicate {@link Predicate} used to find and match a {@link Race} enumerated value.
    * @return a {@link Race} matching the given, required {@link Predicate} or {@literal null}
@@ -77,7 +78,7 @@ public enum Race {
   private static @Nullable Race valueOf(@NotNull Predicate<Race> predicate) {
 
     return Arrays.stream(values())
-      .filter(predicate)
+      .filter(FunctionUtils.nullSafePredicateMatchNone(predicate))
       .findFirst()
       .orElse(null);
   }
