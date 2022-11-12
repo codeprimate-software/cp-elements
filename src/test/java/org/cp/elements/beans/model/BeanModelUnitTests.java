@@ -29,9 +29,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.UUID;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.security.model.User;
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link BeanModel}.
