@@ -22,8 +22,9 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Builder;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * The {@link MapBuilder} class is an implementation of the Builder Software Design Pattern and is used to build
@@ -54,7 +55,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @see java.util.concurrent.ConcurrentMap
    * @see #MapBuilder(Map)
    */
-  public static <KEY, VALUE> MapBuilder<KEY, VALUE> newConcurrentMap() {
+  public static @NotNull <KEY, VALUE> MapBuilder<KEY, VALUE> newConcurrentMap() {
     return new MapBuilder<>(new ConcurrentHashMap<>());
   }
 
@@ -68,7 +69,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @see java.util.HashMap
    * @see #MapBuilder(Map)
    */
-  public static <KEY, VALUE> MapBuilder<KEY, VALUE> newHashMap() {
+  public static @NotNull <KEY, VALUE> MapBuilder<KEY, VALUE> newHashMap() {
     return new MapBuilder<>(new HashMap<>());
   }
 
@@ -82,7 +83,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @see java.util.SortedMap
    * @see #MapBuilder(Map)
    */
-  public static <KEY, VALUE> MapBuilder<KEY, VALUE> newSortedMap() {
+  public static @NotNull <KEY, VALUE> MapBuilder<KEY, VALUE> newSortedMap() {
     return new MapBuilder<>(new TreeMap<>());
   }
 
@@ -94,9 +95,8 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @throws IllegalArgumentException if {@link Map} is {@literal null}.
    * @see java.util.Map
    */
-  protected MapBuilder(Map<KEY, VALUE> map) {
-    Assert.notNull(map, "Map is required");
-    this.map = map;
+  protected MapBuilder(@NotNull Map<KEY, VALUE> map) {
+    this.map = ObjectUtils.requireObject(map, "Map is required");
   }
 
   /**
@@ -105,7 +105,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @return a reference to the {@link Map} being built.
    * @see java.util.Map
    */
-  protected Map<KEY, VALUE> getMap() {
+  protected @NotNull Map<KEY, VALUE> getMap() {
     return this.map;
   }
 
@@ -118,7 +118,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @return this {@link MapBuilder}.
    * @see java.util.Map#put(Object, Object)
    */
-  public MapBuilder<KEY, VALUE> put(KEY key, VALUE value) {
+  public @NotNull MapBuilder<KEY, VALUE> put(KEY key, VALUE value) {
     getMap().put(key, value);
     return this;
   }
@@ -131,7 +131,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @return this {@link MapBuilder}.
    * @see java.util.Map#putAll(Map)
    */
-  public MapBuilder<KEY, VALUE> putAll(Map<KEY, VALUE> map) {
+  public @NotNull MapBuilder<KEY, VALUE> putAll(Map<KEY, VALUE> map) {
     getMap().putAll(map);
     return this;
   }
@@ -145,7 +145,7 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
    * @return this {@link MapBuilder}.
    * @see java.util.Map#putIfAbsent(Object, Object)
    */
-  public MapBuilder<KEY, VALUE> putIfAbsent(KEY key, VALUE value) {
+  public @NotNull MapBuilder<KEY, VALUE> putIfAbsent(KEY key, VALUE value) {
     getMap().putIfAbsent(key, value);
     return this;
   }
@@ -153,13 +153,12 @@ public class MapBuilder<KEY, VALUE> implements Builder<Map<KEY, VALUE>> {
   /**
    * Builds the {@link Map}.
    *
-   * @param <T> {@link Class sub-type} of the built {@link Map}.
    * @return the built {@link Map}.
    * @see java.util.Map
    * @see #getMap()
    */
   @SuppressWarnings("unchecked")
-  public Map<KEY, VALUE> build() {
+  public @NotNull Map<KEY, VALUE> build() {
     return getMap();
   }
 }
