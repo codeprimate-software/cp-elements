@@ -29,6 +29,7 @@ import org.cp.elements.lang.Registry;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.support.SmartComparator;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -129,14 +130,10 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
    * {@link Class to type} conversion performed by the {@link Converter}.
    *
    * @see org.cp.elements.data.conversion.Converter
+   * @see java.lang.Comparable
    * @see java.lang.Class
    */
-  protected static class ConverterDescriptor {
-
-    private final Class<?> fromType;
-    private final Class<?> toType;
-
-    private final Converter<?, ?> converter;
+  protected static class ConverterDescriptor implements Comparable<ConverterDescriptor> {
 
     /**
      * Factory method used to construct a new instance of {@link ConverterDescriptor} that describes
@@ -196,6 +193,11 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
     private static boolean isParameterizedConverterType(@Nullable Type type) {
       return type instanceof ParameterizedType && ClassUtils.assignableTo(ClassUtils.toRawType(type), Converter.class);
     }
+
+    private final Class<?> fromType;
+    private final Class<?> toType;
+
+    private final Converter<?, ?> converter;
 
     /**
      * Constructs a new instance of {@link ConverterDescriptor} describing the {@link Class from type}
@@ -292,6 +294,11 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
     @NullSafe
     public boolean canConvert(@Nullable Object value, @Nullable Class<?> toType) {
       return getConverter().canConvert(value, toType);
+    }
+
+    @Override
+    public int compareTo(@NotNull ConverterDescriptor that) {
+      return SmartComparator.newSmartComparator().compare(this.getConverter(), that.getConverter());
     }
 
     @Override
