@@ -49,6 +49,11 @@ public class IntegersUnitTests {
   }
 
   @Test
+  public void invertPositiveNumberThenInvertNegativeNumber() {
+    assertThat(Integers.invert(Integers.invert(4))).isEqualTo(4);
+  }
+
+  @Test
   public void invertZero() {
     assertThat(Integers.invert(0)).isZero();
   }
