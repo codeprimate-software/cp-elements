@@ -174,6 +174,10 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
 
       Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
 
+      Assert.isTrue(actualTypeArguments.length > 1,
+        "Expected the parameterized type [%s] to have 2 type parameters",
+        parameterizedType.getClass().getName());
+
       Class<?> fromType = ClassUtils.toRawType(actualTypeArguments[0]);
       Class<?> toType = ClassUtils.toRawType(actualTypeArguments[1]);
 
@@ -188,7 +192,8 @@ public abstract class AbstractConverterRegistry implements ConverterRegistry {
      * @return a boolean if the {@link Type} represents a generic, parameterized {@link Converter} {@link Class type}.
      * @see java.lang.reflect.Type
      */
-    private static boolean isParameterizedConverterType(Type type) {
+    @NullSafe
+    private static boolean isParameterizedConverterType(@Nullable Type type) {
       return type instanceof ParameterizedType && ClassUtils.assignableTo(ClassUtils.toRawType(type), Converter.class);
     }
 
