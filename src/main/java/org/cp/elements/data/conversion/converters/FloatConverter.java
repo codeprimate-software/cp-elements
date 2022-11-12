@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -22,6 +21,7 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.DefaultableConverter;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.Order;
 
 /**
  * {@link FloatConverter} converts an {@link Object} to a {@link Float}.
@@ -30,9 +30,11 @@ import org.cp.elements.lang.StringUtils;
  * @see java.lang.Float
  * @see java.lang.Object
  * @see org.cp.elements.data.conversion.DefaultableConverter
+ * @see org.cp.elements.lang.annotation.Order
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@Order(-1_000_000)
 public class FloatConverter extends DefaultableConverter<Object, Float> {
 
   /**

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -24,6 +23,7 @@ import java.math.MathContext;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.annotation.Order;
 
 /**
  * {@link BigDecimalConverter} converts a {@link String} to a {@link BigDecimal}.
@@ -32,9 +32,11 @@ import org.cp.elements.data.conversion.Converter;
  * @see java.lang.String
  * @see java.math.BigDecimal
  * @see org.cp.elements.data.conversion.AbstractConverter
+ * @see org.cp.elements.lang.annotation.Order
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@Order(-1_000_000)
 public class BigDecimalConverter extends AbstractConverter<String, BigDecimal> {
 
   private final MathContext mathContext;

@@ -30,6 +30,7 @@ import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.annotation.Order;
 
 /**
  * {@link NumberConverter} converts an {@link Object} to a {@link Number} of a {@link Class qualified numerical type}.
@@ -43,9 +44,11 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.util.concurrent.atomic.AtomicInteger
  * @see java.util.concurrent.atomic.AtomicLong
  * @see org.cp.elements.data.conversion.AbstractConverter
+ * @see org.cp.elements.lang.annotation.Order
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@Order(-100_000)
 public class NumberConverter extends AbstractConverter<Object, Number> {
 
   protected static final String CONVERSION_EXCEPTION_MESSAGE =

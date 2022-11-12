@@ -23,6 +23,7 @@ import org.cp.elements.data.conversion.DefaultableConverter;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.annotation.Order;
 
 /**
  * {@link IntegerConverter} converts an {@link Object} to an {@link Integer}.
@@ -32,9 +33,11 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.lang.Object
  * @see java.lang.String
  * @see org.cp.elements.data.conversion.DefaultableConverter
+ * @see org.cp.elements.lang.annotation.Order
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@Order(-1_000_000)
 public class IntegerConverter extends DefaultableConverter<Object, Integer> {
 
   /**
