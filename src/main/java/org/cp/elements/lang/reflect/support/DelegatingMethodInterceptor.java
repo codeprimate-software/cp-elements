@@ -30,7 +30,7 @@ import org.cp.elements.lang.reflect.MethodInvocation;
  * all {@link Method} invocations and intercepting operations to the configured delegate.
  *
  * @author John Blum
- * @param <T> {@link Class} type of the target {@link Object}.
+ * @param <T> {@link Class type} of the {@link Object target}.
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @since 1.0.0
  */
@@ -42,6 +42,7 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
   /**
    * Factory method used to construct a new, uninitialized instance of {@link DelegatingMethodInterceptor}.
    *
+   * @param <T> {@link Class type} of the {@link Object target}.
    * @return a new, uninitialized instance of {@link DelegatingMethodInterceptor}.
    * @see org.cp.elements.lang.reflect.support.DelegatingMethodInterceptor
    * @see #DelegatingMethodInterceptor()

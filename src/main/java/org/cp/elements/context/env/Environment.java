@@ -323,9 +323,11 @@ public class Environment implements Iterable<String> {
    * Get the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
    * as an instance of the given, required {@link Class type T}.
    *
+   * @param <T> {@link Class type} of the returned property {@link Object value}.
    * @param propertyName {@link String} containing the {@literal name}
    * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the property value; must not be {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}.
    * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty},
    * or the {@link Class type} is {@literal null}.
    * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class)
@@ -340,6 +342,7 @@ public class Environment implements Iterable<String> {
    * as an instance of the given, required {@link Class type T}, or return the given {@link T default value}
    * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
    *
+   * @param <T> {@link Class type} of the returned property {@link Object value}.
    * @param propertyName {@link String} containing the {@literal name}
    * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the property value; must not be {@literal null}.
@@ -365,6 +368,7 @@ public class Environment implements Iterable<String> {
    * {@link Supplier supplied default value} if the {@link String named}
    * {@link System#getProperty(String) System property} is not declared or defined (set).
    *
+   * @param <T> {@link Class type} of the returned property {@link Object value}.
    * @param propertyName {@link String} containing the {@literal name}
    * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the property value; must not be {@literal null}.
@@ -446,6 +450,7 @@ public class Environment implements Iterable<String> {
    * Get the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * as an instance of the given, required {@link Class type T}.
    *
+   * @param <T> {@link Class type} of the returned variable {@link Object value}.
    * @param environmentVariableName {@link String} containing the {@literal name}
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
@@ -464,6 +469,7 @@ public class Environment implements Iterable<String> {
    * as an instance of the given, required {@link Class type T}, or returns the given {@link T default value}
    * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    *
+   * @param <T> {@link Class type} of the returned variable {@link Object value}.
    * @param environmentVariableName {@link String} containing the {@literal name}
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
@@ -489,6 +495,7 @@ public class Environment implements Iterable<String> {
    * {@link Supplier suppolied default value}
    * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    *
+   * @param <T> {@link Class type} of the returned variable {@link Object value}.
    * @param environmentVariableName {@link String} containing the {@literal name}
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.

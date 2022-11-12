@@ -47,7 +47,7 @@ import org.cp.elements.lang.annotation.NotNull;
  *
  * <pre>
  * <code>
- *   UPDATE tableName SET <fields> WHERE version = <currentVersion>
+ *   UPDATE tableName SET fields WHERE version = currentVersion
  * </code>
  * </pre>
  *

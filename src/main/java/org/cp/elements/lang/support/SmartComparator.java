@@ -374,7 +374,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     /**
      * Gets the resolved {@link Class type} of the {@link Comparator Comparator's} type parameter.
      *
-     * For instance, if a user's {@literal CustomComparator} implements {@link Comparator Comparator<User>},
+     * For instance, if a user's {@literal CustomComparator} implements {@link Comparator Comparator&lt;User&gt;},
      * then this method returns {@literal User}.
      *
      * @return the resolved {@link Class type} of the {@link Comparator Comparator's} type parameter.
