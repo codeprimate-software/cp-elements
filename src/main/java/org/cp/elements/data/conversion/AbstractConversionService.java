@@ -17,6 +17,10 @@ package org.cp.elements.data.conversion;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The {@link AbstractConversionService} class is an abstract base class encapsulating functionality
  * common to all service application components that perform value {@link Class type} conversions.
@@ -45,7 +49,11 @@ public abstract class AbstractConversionService extends AbstractConverterRegistr
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public <T> T convert(Object value, Class<T> toType) {
 
-    for (ConverterDescriptor descriptor : getRegistry().keySet()) {
+    List<ConverterDescriptor> descriptors = new ArrayList<>(getRegistry().keySet());
+
+    Collections.sort(descriptors);
+
+    for (ConverterDescriptor descriptor : descriptors) {
 
       Converter converter = descriptor.getConverter();
 
