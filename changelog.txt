@@ -3,6 +3,112 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0-M9 - 2022-November-11
+---------------------------
+Extends Codeprimate Elements with robust Configuration API/model and Dependency Injection framework.
+
+* Built on Oracle Java (JDK) 8; 1.8.0_351.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Builds and supports Codeprimate Elements on Gradle 7.5.1.
+* Adds asSupplier(:Object) method to o.c.elements.function.FunctionUtils class.
+* Adds noopSupplier():Supplier<T> factory method to o.c.elements.function.FunctionUtils class.
+* Adds nullSafeConsumer(:Consumer) utility method to o.c.elements.function.FunctionUtils class.
+* Adds nullSafeFunction(:Function<T, T>) utility method to o.c.elements.function.FunctionUtils class.
+* Adds nullSafeSupplier(:Supplier<T>) utility method to o.c.elements.function.FunctionUtils class.
+* Adds nullSafeFileFilter(:FileFilter) and nullSafeFilenameFilter(:FilenameFilter) methods
+to o.c.elements.io.FileUtils class.
+* Adds isBinaryString(:String) and isHexadecimalString(:String) utility methods to o.c.elements.lang.NumberUtils class.
+* Adds castTo(:Object, :Class<T>) method in o.c.elements.lang.ClassUtils class.
+* Adds from(:Object) operator (DSL builder method) to the o.c.elements.lang.LangExtensions class.
+* Adds requireState(..) utility method to o.c.elements.lang.ObjectUtils class.
+* Adds requireText(..) utility method to o.c.elements.lang.StringUtils class.
+* Adds findFirstProxyFactory(:Object, :Class<?>[]) method to the o.c.elements.lang.reflect.ProxyService class.
+* Adds utility methods to the o.c.elements.time.DataTimeUtils class converting Instant, LocalDateTime and ZonedDateTime
+java.time types to milliseconds.
+* Adds toAssociativeArray() method to o.c.elements.util.PropertiesAdapter class.
+* Adds fromAssociativeArray(:String[]) factory method to o.c.elements.util.PropertiesBuilder class.
+* Adds stream(:Enumeration) and stream(:Iterator) utility methods to o.c.elements.util.stream.StreamUtils class.
+* Applies a precedence to the registered Converters in the ConversionService (ConverterRegistry) based on
+the Converter's declared order.
+* Changed o.c.elements.io.FileUtils.getName(:File) to handle Files with paths in their names.
+* Changed o.c.elements.lang.ThrowableOperation from being a (is-a) Callable<?>, Consumer<?>, Runnable and Supplier<?>
+to providing factory methods and conversion methods.
+* Creates new Profile annotation in the org.cp.elements.context.annotation package.
+* Creates new ConfigurationService interface in the org.cp.elements.context.configure package.
+* Creates new AbstractConfigurationService class in the org.cp.elements.context.configure package.
+* Creates new ConfigurationProperties annotation in the org.cp.elements.context.configure.annotation package.
+* Creates new ElementsConfigurationService provider implementation of the ConfigurationService interface
+in the org.cp.elements.context.configure.provider package.
+* Creates new DelegatingConfiguration class in the org.cp.elements.context.configure.support package.
+* Creates new DependencyInjection interface in the org.cp.elements.context.container package.
+* Creates new VersionedObjectRepository interface in the org.cp.elements.dao.support package.
+* Creates new CompressionException, Java RuntimeException class in the org.cp.elements.data.compression package.
+* Creates new DecompressionException, Java RuntimeException class in the org.cp.elements.data.compression package.
+* Creates new JavaDeflaterInflaterCompressor class in the org.cp.elements.data.compression.provider package
+implementing the Compressor interface with Java's java.util.zip.Deflater and java.util.zip.Inflater classes.
+* Creates new SimpleTypeConversions class and provider in the org.cp.elements.data.conversion.provider package.
+* Creates new DeserializationException, Java RuntimeException class in the org.cp.elements.data.serialization package.
+* Creates new SerializationException, Java RuntimeException class in the org.cp.elements.data.serialization package.
+* Creates new JavaSerializationSerializer class in the org.cp.elements.data.serialization.provider package implementing
+the Serializer interface with Java Serialization.
+* Creates new TriFunction, @FunctionalInterface in the org.cp.elements.function package.
+* Creates new FileLastModifiedFilterExtension class in the org.cp.elements.io package.
+* Creates new Integers class in the org.cp.elements.lang package.
+* Creates new NullSafeOperations class in the org.cp.elements.lang package.
+* Creates new OrderUtils class in the org.cp.elements.lang package.
+* Creates new Sourced interface in the org.cp.elements.lang package.
+* Creates new Alias annotation in the org.cp.elements.lang.annotation package.
+* Creates new Order annotation in the org.cp.elements.lang.annotation package.
+* Creates new OrderComparator class in the org.cp.elements.lang.support package.
+* Creates new SmartComparator class in the org.cp.elements.lang.support package.
+* Creates new ServiceLoaderSupport class in the org.cp.elements.service.loader package.
+* Creates new CheckedTestException class extending from java.lang.Exception in the org.cp.elements.test package.
+* Declares @Order annotation on all numeric Converters.
+* Defined constants for order in the o.c.elements.lang.Ordered interface.
+* Defined the UndefinedPropertyException class in the org.cp.elements.util package for undefined (unset)
+property configuration.
+* Defined the UndeclaredPropertyException class in the org.cp.elements.util package for undeclared (not found)
+property configuration.
+* Moves o.c.elements.util.Environment class to org.cp.elements.context.env package.
+* Renames the version() method to getVersion() in the o.c.elements.lang.Versionable interface.
+* Renames the Versionable interface in the org.cp.elements.lang package to Versioned.
+* Refactored the o.c.elements.data.conversion.provider.SimpleConversionService class.
+* Refactored the getDigits(:String) and getLetters(:String) methods in o.c.elements.lang.StringUtils to be null-safe.
+* Refactored the o.c.elements.lang.reflect.DelegatingMethodInterceptor class.
+* Refactored the o.c.elements.lang.reflect.MethodInterceptor interface.
+* Refactored the o.c.elements.lang.reflect.MethodInvocation class.
+* Refactored the o.c.elements.lang.reflect.MethodInvokingMethodInterceptor class
+* Refactored the o.c.elements.lang.reflect.ProxyService class.
+* Refactored the o.c.elements.lang.reflect.ProxyFactory class.
+* Refactored the o.c.elements.lang.reflect.provider.JdkDynamicProxiesFactory class.
+* Refactored the o.c.elements.lang.reflect.support.ComposableInvocationHandler class.
+* Refactored the o.c.elements.lang.support.OrderableComparator class.
+* Refactored the o.c.elements.lang.support.OrderedComparator class.
+* Refactored the o.c.elements.service.ServiceTemplate class.
+* Refactored the o.c.elements.util.PropertiesAdapter class.
+* Reviewed and refactored the org.cp.elements.context.configure.Configuration interface.
+* Reviewed and refactored the org.cp.elements.context.configure.AbstractConfiguration class.
+* Reviewed and refactored the org.cp.elements.context.configure.support.EnvironmentVariablesConfiguration class.
+* Reviewed and refactored the org.cp.elements.context.configure.support.PropertiesConfiguration class.
+* Reviewed and refactored the org.cp.elements.context.configure.support.SystemPropertiesConfiguration class.
+* Reviewed and refactored the org.cp.elements.context.env.Environment class.
+* Reviewed and refactored the org.cp.elements.data.conversion.Converter interface.
+* Reviewed and refactored the org.cp.elements.data.conversion.AbstractConverter class.
+* Reviewed and refactored the org.cp.elements.data.conversion.DefaultableConverter class.
+* Reviewed and refactored all classes, enums, interfaces and components in the org.cp.elements.io package.
+* Reviewed and refactored the org.cp.elements.lang.JavaType enum.
+* Reviewed and refactored the org.cp.elements.lang.support.OrderableComparator class.
+* Reviewed and refactored all classes, enums, interfaces and components in the org.cp.elements.net package.
+* Reviewed and refactored the org.cp.elements.util.PropertiesAdapter class.
+* Reviewed and refactored the org.cp.elements.util.PropertiesBuilder class.
+* Reviewed and refactored the org.cp.elements.util.PropertiesSetter class.
+* Reviewed and refactored the org.cp.elements.util.PropertiesUtils class.
+* Upgrades Gradle build to Freefair Lombok Gradle Plugin 6.5.1.
+* Upgrades to Codeprimate Core 1.9.0.
+* Upgrades to JUnit (BOM) 5.9.1.
+* Upgrades to Mockito 4.8.1.
+
+
 1.0.0-M8 - 2022-September-09
 ----------------------------
 Extends Codeprimate Elements with JavaBeans API and framework support.
@@ -97,7 +203,7 @@ and RetentionPolicies (e.g. SOURCE vs. RUNTIME).
 
 
 1.0.0-M7 - 2022-April-16
---------------------------
+------------------------
 Continued development of Codeprimate Elements beginning with a project review and refactoring.
 
 * Built on Java (JDK) 8; 1.8.0_331.
