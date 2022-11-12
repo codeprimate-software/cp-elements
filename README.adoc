@@ -1,6 +1,6 @@
 [[codeprimate-elements]]
 = Codeprimate Elements
-:version: 1.0.0-M8
+:version: 1.0.0-M9
 
 *Codeprimate Elements* (or simply just *Elements*) is a Java library and micro-framework for simplifying
 the development of software applications written in **Java**.
