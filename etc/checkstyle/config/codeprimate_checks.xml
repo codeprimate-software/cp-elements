@@ -14,8 +14,8 @@
   </module>
 
   <module name="FileLength">
-    <property name="fileExtensions" value="${checkstyle.Filelength.fileExtensions}" default="java"/>
-    <property name="max" value="3000"/>
+    <property name="fileExtensions" value="${checkstyle.FileLength.fileExtensions}" default="java"/>
+    <property name="max" value="10000"/>
     <property name="severity" value="warning"/>
   </module>
 
@@ -54,17 +54,23 @@
     <property name="tabWidth" value="${checkstyle.tabWidth}" default="2"/>
 
     <!-- Checks for Annotations -->
+    <!--module name="AnnotationLocation"/-->
+    <!--module name="AnnotationOnSameLine"/-->
+    <!--module name="AnnotationUseStyle"/-->
     <module name="MissingDeprecated"/>
     <module name="MissingOverride"/>
-    <!--module name="AnnotationUseStyle"/-->
     <!--module name="PackageAnnotation"/-->
     <!--module name="SuppressWarnings"/-->
+    <!--module name="SuppressWarningsHolder"/-->
 
     <!-- Checks for Blocks -->
     <module name="AvoidNestedBlocks"/>
     <module name="EmptyBlock"/>
-    <module name="NeedBraces"/>
+    <module name="EmptyCatchBlock">
+      <property name="exceptionVariableName" value="ignore"/>
+    </module>
     <!--module name="LeftCurly"/-->
+    <module name="NeedBraces"/>
     <!--module name="RightCurly"/-->
 
     <!-- Checks for Class Design -->
@@ -72,18 +78,22 @@
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InnerTypeLast"/>
-    <module name="InterfaceIsType"/>
+    <!--module name="InterfaceIsType"/-->
+    <module name="MutableException"/>
+    <module name="OneTopLevelClass"/>
     <module name="ThrowsCount">
       <property name="max" value="${checkstyle.ThrowsCount.max}" default="3"/>
       <property name="severity" value="warning"/>
     </module>
-    <!--module name="MutableException"/-->
     <!--module name="VisibilityModifier"/-->
 
     <!-- Checks for Coding -->
-    <module name="ArrayTrailingComma"/>
+    <!--module name="ArrayTrailingComma"/-->
+    <module name="AvoidDoubleBraceInitialization"/>
+    <!--module name="AvoidInlineConditionals"/-->
+    <module name="AvoidNoArgumentSuperConstructorCall"/>
     <module name="CovariantEquals"/>
-    <module name="DeclarationOrder"/>
+    <!--module name="DeclarationOrder"/-->
     <module name="DefaultComesLast"/>
     <module name="EmptyStatement"/>
     <module name="EqualsAvoidNull"/>
@@ -92,24 +102,31 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="FallThrough"/>
-    <module name="FinalLocalVariable"/>
+    <!--module name="FinalLocalVariable"/-->
     <module name="HiddenField">
       <property name="severity" value="warning"/>
     </module>
-    <module name="IllegalCatch">
+    <!--module name="IllegalCatch"/-->
+    <module name="IllegalInstantiation">
+      <property name="classes" value="java.lang.Boolean"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="IllegalThrows">
+      <property name="illegalClassNames" value="java.lang.Throwable"/>
       <property name="severity" value="warning"/>
     </module>
-    <module name="IllegalInstantiation"/>
+    <!--module name="IllegalToken"/-->
+    <!--module name="IllegalTokenText"/-->
     <module name="IllegalType"/>
     <module name="InnerAssignment"/>
     <module name="MagicNumber"/>
+    <!--module name="MatchXpath"/-->
+    <!--module name="MissingCtor"/-->
     <module name="MissingSwitchDefault">
       <property name="severity" value="warning"/>
     </module>
     <module name="ModifiedControlVariable"/>
+    <!--module name="MultipleStringLiterals"/-->
     <module name="MultipleVariableDeclarations"/>
     <module name="NestedForDepth">
       <property name="max" value="${checkstyle.NestedForDepth.max}" default="3"/>
@@ -120,14 +137,21 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="NestedTryDepth">
-      <property name="max" value="${checkstyle.NestedTryDepth.max}" default="2"/>
+      <property name="max" value="${checkstyle.NestedTryDepth.max}" default="3"/>
       <property name="severity" value="warning"/>
     </module>
+    <!--module name="NoArrayTrailingComma"/-->
+    <module name="NoClone"/>
+    <!--module name="NoEnumTrailingComma"/-->
     <module name="NoFinalizer"/>
     <module name="OneStatementPerLine"/>
     <module name="PackageDeclaration"/>
     <module name="ParameterAssignment">
       <property name="severity" value="warning"/>
+    </module>
+    <module name="RequireThis">
+      <property name="checkMethods" value="false"/>
+      <property name="validateOnlyOverlapping" value="false"/>
     </module>
     <module name="ReturnCount">
       <property name="max" value="${checkstyle.ReturnCount.max}" default="3"/>
@@ -136,48 +160,77 @@
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
     <module name="StringLiteralEquality"/>
-    <module name="SuperClone"/>
-    <!--module name="AvoidInlineConditionals"/-->
-    <!--module name="DoubleCheckedLocking"/-->
-    <!--module name="IllegalToken"/-->
-    <!--module name="IllegalTokenText"/-->
-    <!--module name="JUnitTestCase"/-->
-    <!--module name="MissingCtor"/-->
-    <!--module name="MultipleStringLiterals"/-->
-    <!--module name="NoClone"/-->
-    <!--module name="RequireThis"/-->
+    <!--module name="SuperClone"/-->
     <!--module name="SuperFinalize"/-->
     <!--module name="UnnecessaryParentheses"/-->
+    <module name="UnnecessarySemicolonAfterOuterTypeDeclaration"/>
+    <module name="UnnecessarySemicolonAfterTypeMemberDeclaration"/>
+    <!--module name="UnnecessarySemicolonInEnumeration"/-->
+    <module name="UnnecessarySemicolonInTryWithResources"/>
+    <module name="UnusedLocalVariable"/>
+    <module name="VariableDeclarationUsageDistance">
+      <property name="allowedDistance" value="25"/>
+    </module>
 
     <!-- Checks for Duplicate Code (@see Checker module)-->
 
     <!-- Checks for Headers -->
+    <!--module name="Header"/-->
+    <!--module name="RegexpHeader"/-->
 
     <!-- Checks for Imports -->
     <module name="AvoidStarImport"/>
+    <!--module name="AvoidStaticImport"/-->
+    <module name="CustomImportOrder">
+      <property name="separateLineBetweenGroups" value="true"/>
+      <property name="sortImportsInGroupAlphabetically" value="true"/>
+    </module>
     <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+    <!--module name="ImportControl"/-->
     <module name="ImportOrder">
-      <property name="groups" value="${checkstyle.ImportOrder.groups}" default="java, javax, junit, com, net, org"/>
+      <property name="groups" value="${checkstyle.ImportOrder.groups}" default="java, javax, junit, io, com, net, org"/>
       <property name="option" value="${checkstyle.ImportOrder.option}" default="top"/>
       <property name="ordered" value="${checkstyle.ImportOrder.ordered}" default="true"/>
       <property name="separated" value="${checkstyle.ImportOrder.separated}" default="true"/>
+      <property name="sortStaticImportsAlphabetically" value="${checkstyle.ImportOrder.sortStaticImportsAlphabetically}" default="true"/>
     </module>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
-    <!--module name="AvoidStaticImport"/-->
-    <!--module name="ImportControl"/-->
 
     <!-- Checks for Javadoc Comments -->
-    <module name="JavadocType"/>
-    <module name="JavadocMethod"/>
-    <module name="JavadocVariable">
-      <property name="scope" value="protected"/>
-      <property name="excludeScope" value="private"/>
-      <property name="severity" value="warning"/>
+    <module name="AtclauseOrder">
+      <property name="tagOrder" value="@author, @param, @return, @throws, @exception, @serial, @serialData, @serialField, @see, @since, @version, @deprecated"/>
+    </module>
+    <!--module name="InvalidJavadocPosition"/-->
+    <module name="JavadocBlockTagLocation"/>
+    <module name="JavadocContentLocation"/>
+    <module name="JavadocMethod">
+      <property name="accessModifiers" value="public, protected, package"/>
+    </module>
+    <module name="JavadocMissingLeadingAsterisk"/>
+    <module name="JavadocMissingWhitespaceAfterAsterisk"/>
+    <!--module name="JavadocPackage"/-->
+    <module name="JavadocParagraph">
+      <property name="allowNewlineParagraph" value="false"/>
     </module>
     <module name="JavadocStyle">
       <property name="severity" value="warning"/>
     </module>
+    <!--module name="JavadocTagContinuationIndentation"/-->
+    <module name="JavadocType"/>
+    <module name="JavadocMethod"/>
+    <module name="JavadocVariable">
+      <property name="scope" value="public"/>
+      <property name="excludeScope" value="private, protected, package"/>
+      <property name="severity" value="warning"/>
+    </module>
+    <module name="MissingJavadocMethod"/>
+    <!--module name="MissingJavadocPackage"/-->
+    <module name="MissingJavadocType"/>
+    <module name="NonEmptyAtclauseDescription"/>
+    <module name="RequireEmptyLineBeforeBlockTagGroup"/>
+    <!--module name="SingleLineJavadoc"/-->
+    <module name="SummaryJavadoc"/>
     <!--module name="WriteTag"/-->
 
     <!-- Checks for Metrics -->
@@ -192,20 +245,23 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="CyclomaticComplexity">
-      <property name="max" value="${checkstyle.CyclomaticComplexity.max}" default="5"/>
+      <property name="max" value="${checkstyle.CyclomaticComplexity.max}" default="10"/>
     </module>
     <module name="JavaNCSS">
-      <property name="classMaximum" value="${checkstyle.JavaNCSS.classMaximum}" default="3000"/>
+      <property name="classMaximum" value="${checkstyle.JavaNCSS.classMaximum}" default="5000"/>
       <property name="fileMaximum" value="${checkstyle.JavaNCSS.fileMaximum}" default="10000"/>
       <property name="methodMaximum" value="${checkstyle.JavaNCSS.methodMaximum}" default="60"/>
+      <property name="recordMaximum" value="${checkstyle.JavaNCSS.recordMaximum}" default="1000"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="NPathComplexity">
-      <property name="max" value="${checkstyle.NPathComplexity.max}" default="20"/>
+      <property name="max" value="${checkstyle.NPathComplexity.max}" default="200"/>
     </module>
 
     <!-- Checks for the Miscellaneous -->
     <module name="ArrayTypeStyle"/>
+    <!--module name="AvoidEscapedUnicodeCharacters"/-->
+    <module name="CommentsIndentation"/>
     <module name="DescendantToken"> <!-- Explicitly check for return statements in a finally clause of a try/catch block -->
       <property name="tokens" value="LITERAL_FINALLY"/>
       <property name="limitedTokens" value="LITERAL_RETURN"/>
@@ -225,9 +281,7 @@
       <property name="minimumNumber" value="1"/>
       <property name="severity" value="warning"/>
     </module>
-    <module name="FinalParameters">
-      <property name="tokens" value="CTOR_DEF, METHOD_DEF"/>
-    </module>
+    <!--module name="FinalParameters"/-->
     <module name="Indentation">
       <property name="arrayInitIndent" value="${checkstyle.Indentation.arrayInitIdent}" default="2"/>
       <property name="basicOffset" value="${checkstyle.Indentation.basicOffset}" default="2"/>
@@ -241,13 +295,14 @@
       <property name="format" value="TODO(:)?"/>
       <property name="severity" value="warning"/>
     </module>
-    <module name="TrailingComment">
-      <property name="severity" value="warning"/>
-    </module>
-    <module name="UncommentedMain"/>
+    <!--module name="TrailingComment"/-->
+    <!--module name="UncommentedMain"/-->
+    <module name="UniqueProperties"/>
     <module name="UpperEll"/>
 
     <!-- Checks for Modifiers -->
+    <module name="ClassMemberImpliedModifier"/>
+    <!--module name="InterfaceMemberImpliedModifier"/-->
     <module name="ModifierOrder"/>
     <module name="RedundantModifier">
       <property name="tokens" value="METHOD_DEF,VARIABLE_DEF,ANNOTATION_FIELD_DEF"/>
@@ -255,13 +310,25 @@
     </module>
 
     <!--  Checks for Naming Conventions -->
+    <module name="AbbreviationAsWordInName">
+      <property name="allowedAbbreviationLength" value="4"/>
+      <property name="ignoreFinal" value="false"/>
+      <property name="ignoreStatic" value="false"/>
+      <property name="ignoreStaticFinal" value="false"/>
+    </module>
     <module name="AbstractClassName">
       <property name="format" value="^Abstract[A-Z][a-zA-Z0-9]*$"/>
+    </module>
+    <module name="CatchParameterName">
+      <property name="format" value="[a-zA-Z]{3,}"/>
     </module>
     <module name="ClassTypeParameterName">
       <property name="format" value="^[A-Z]+$"/>
     </module>
     <module name="ConstantName"/>
+    <module name="IllegalIdentifierName"/>
+    <module name="InterfaceTypeParameterName"/>
+    <module name="LambdaParameterName"/>
     <module name="LocalFinalVariableName"/>
     <module name="LocalVariableName"/>
     <module name="MemberName"/>
@@ -271,10 +338,17 @@
       <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
     </module>
     <module name="ParameterName"/>
+    <module name="PatternVariableName"/>
+    <module name="RecordComponentName"/>
+    <module name="RecordTypeParameterName"/>
     <module name="StaticVariableName"/>
     <module name="TypeName"/>
 
     <!-- Checks for Regular Expressions (@see Checker module) -->
+    <module name="Regexp"/>
+    <module name="RegexpMultiline"/>
+    <!--module name="RegexpOnFilename"/-->
+    <!--module name="RegexpSingleline"/-->
     <module name="RegexpSinglelineJava">
       <property name="format" value="System\.(out)|(err)\.print(ln)?\("/>
       <property name="ignoreCase" value="false"/>
@@ -291,30 +365,47 @@
     </module>
 
     <!-- Checks for Size Violations -->
+    <module name="AnonInnerLength">
+      <property name="max" value="60"/>
+    </module>
     <module name="ExecutableStatementCount">
       <property name="severity" value="warning"/>
+    </module>
+    <module name="FileLength">
+      <property name="max" value="5000"/>
+    </module>
+    <module name="MethodCount">
+      <property name="maxTotal" value="500"/>
     </module>
     <module name="MethodLength">
       <property name="max" value="${checkstyle.MethodLength.max}" default="60"/>
       <property name="severity" value="warning"/>
     </module>
+    <module name="OuterTypeNumber"> <!-- Useful for Unit/Integration Tests that define helper classes -->
+      <property name="max" value="10"/>
+    </module>
     <module name="ParameterNumber">
       <property name="max" value="${checkstyle.ParameterNumber.max}" default="10"/>
       <property name="severity" value="warning"/>
     </module>
-    <!--module name="AnonInnerLength"/-->
-    <!--module name="MethodCount"/-->
-    <!--module name="OuterTypeNumber"/-->
+    <module name="RecordComponentNumber"/>
 
     <!-- Check for Whitespace -->
-    <module name="GenericWhitespace"/>
-    <module name="EmptyForInitializerPad"/>
-    <module name="EmptyForIteratorPad"/>
+    <!--module name="EmptyForInitializerPad"/-->
+    <!--module name="EmptyForIteratorPad"/-->
+    <module name="FileTabCharacter"/>
+    <module name="GenericWhitespace">
+      <property name="tokens" value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, RECORD_DEF, STATIC_INIT, INSTANCE_INIT, CTOR_DEF, COMPACT_CTOR_DEF, METHOD_DEF, VARIABLE_DEF"/>
+    </module>
     <module name="MethodParamPad"/>
+    <module name="NoLineWrap"/>
     <module name="NoWhitespaceAfter"/>
     <module name="NoWhitespaceBefore"/>
+    <module name="NoWhitespaceBeforeCaseDefaultColon"/>
     <module name="OperatorWrap"/>
     <module name="ParenPad"/>
+    <!--module name="SeparatorWrap"/-->
+    <module name="SingleSpaceSeparator"/>
     <module name="TypecastParenPad"/>
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround"/>
