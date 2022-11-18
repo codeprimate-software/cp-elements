@@ -39,6 +39,8 @@
     <property name="headerFile" value="${checkstyle.header.file}"/>
   </module>
 
+  <module name="RegexpMultiline"/>
+
   <module name="RegexpSingleline">
     <property name="format" value="\s+$"/>
     <property name="minimum" value="0"/>
@@ -49,6 +51,8 @@
   <!--module name="StrictDuplicateCode"/-->
 
   <module name="Translation"/>
+
+  <module name="UniqueProperties"/>
 
   <module name="TreeWalker">
     <property name="tabWidth" value="${checkstyle.tabWidth}" default="2"/>
@@ -176,7 +180,6 @@
 
     <!-- Checks for Headers -->
     <!--module name="Header"/-->
-    <!--module name="RegexpHeader"/-->
 
     <!-- Checks for Imports -->
     <module name="AvoidStarImport"/>
@@ -209,7 +212,6 @@
     </module>
     <module name="JavadocMissingLeadingAsterisk"/>
     <module name="JavadocMissingWhitespaceAfterAsterisk"/>
-    <!--module name="JavadocPackage"/-->
     <module name="JavadocParagraph">
       <property name="allowNewlineParagraph" value="false"/>
     </module>
@@ -221,7 +223,6 @@
     <module name="JavadocMethod"/>
     <module name="JavadocVariable">
       <property name="scope" value="public"/>
-      <property name="excludeScope" value="private, protected, package"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="MissingJavadocMethod"/>
@@ -297,7 +298,6 @@
     </module>
     <!--module name="TrailingComment"/-->
     <!--module name="UncommentedMain"/-->
-    <module name="UniqueProperties"/>
     <module name="UpperEll"/>
 
     <!-- Checks for Modifiers -->
@@ -346,9 +346,7 @@
 
     <!-- Checks for Regular Expressions (@see Checker module) -->
     <module name="Regexp"/>
-    <module name="RegexpMultiline"/>
     <!--module name="RegexpOnFilename"/-->
-    <!--module name="RegexpSingleline"/-->
     <module name="RegexpSinglelineJava">
       <property name="format" value="System\.(out)|(err)\.print(ln)?\("/>
       <property name="ignoreCase" value="false"/>
@@ -371,9 +369,6 @@
     <module name="ExecutableStatementCount">
       <property name="severity" value="warning"/>
     </module>
-    <module name="FileLength">
-      <property name="max" value="5000"/>
-    </module>
     <module name="MethodCount">
       <property name="maxTotal" value="500"/>
     </module>
@@ -393,10 +388,7 @@
     <!-- Check for Whitespace -->
     <!--module name="EmptyForInitializerPad"/-->
     <!--module name="EmptyForIteratorPad"/-->
-    <module name="FileTabCharacter"/>
-    <module name="GenericWhitespace">
-      <property name="tokens" value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, RECORD_DEF, STATIC_INIT, INSTANCE_INIT, CTOR_DEF, COMPACT_CTOR_DEF, METHOD_DEF, VARIABLE_DEF"/>
-    </module>
+    <module name="GenericWhitespace"/>
     <module name="MethodParamPad"/>
     <module name="NoLineWrap"/>
     <module name="NoWhitespaceAfter"/>
