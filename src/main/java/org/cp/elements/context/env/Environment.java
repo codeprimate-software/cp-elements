@@ -81,7 +81,6 @@ public class Environment implements Iterable<String> {
    * @return a new {@link Environment} initialized with the given associative array.
    * @see org.cp.elements.util.PropertiesBuilder#fromAssociativeArray(String[])
    * @see #Environment(PropertiesAdapter)
-   * @see java.lang.String[]
    */
   public static @NotNull Environment from(@NotNull String[] associativeArray) {
     return new Environment(PropertiesBuilder.fromAssociativeArray(associativeArray).buildPropertiesAdapter());
