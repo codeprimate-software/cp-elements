@@ -87,18 +87,18 @@ public abstract class CollectionUtils {
   }
 
   /**
- 	 * Adds all elements from the given {@link Iterable} to the given {@link Collection}.
- 	 *
- 	 * @param <E> {@link Class} type of the elements in the {@link Collection} and {@link Iterable}.
- 	 * @param <T> {@link Class} type of the target {@link Collection}.
- 	 * @param collection {@link Collection} in which to add the elements from the {@link Iterable};
+   * Adds all elements from the given {@link Iterable} to the given {@link Collection}.
+   *
+   * @param <E> {@link Class} type of the elements in the {@link Collection} and {@link Iterable}.
+   * @param <T> {@link Class} type of the target {@link Collection}.
+   * @param collection {@link Collection} in which to add the elements from the {@link Iterable};
    * must not be {@literal null}.
- 	 * @param iterable {@link Iterable} containing the elements to add to the target {@link Collection}.
- 	 * @return the given {@link Collection}.
- 	 * @throws IllegalArgumentException if {@link Collection} is {@literal null}.
- 	 * @see java.util.Collection
- 	 * @see java.lang.Iterable
- 	 */
+   * @param iterable {@link Iterable} containing the elements to add to the target {@link Collection}.
+   * @return the given {@link Collection}.
+   * @throws IllegalArgumentException if {@link Collection} is {@literal null}.
+   * @see java.util.Collection
+   * @see java.lang.Iterable
+   */
  	public static @NotNull <E, T extends Collection<E>> T addAll(@NotNull T collection, Iterable<E> iterable) {
 
  		Assert.notNull(collection, "Collection is required");
