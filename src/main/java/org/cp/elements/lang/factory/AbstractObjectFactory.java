@@ -175,10 +175,10 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    *
    * @param <T> {@link Class type} in which the {@link Constructor} is declared.
    * @param objectType {@link Class} from which the {@link Constructor} is resolved.
-   * @param parameterTypes array of {@link Class[] types} used to determine the signature of the resolved constructor.
+   * @param parameterTypes array of {@link Class types} used to determine the signature of the resolved constructor.
    * @return a {@link Constructor} from the given {@link Class} with a matching signature based on
-   * the arry of {@link Class[] parameter types}.
-   * @throws NullPointerException if either the {@literal Class objectType} or {@link Class[] parameterTypes}
+   * the array of {@link Class parameter types}.
+   * @throws NullPointerException if either the {@literal Class objectType} or array of {@link Class parameterTypes}
    * are {@literal null}.
    * @see #resolveCompatibleConstructor(Class, Class[])
    * @see java.lang.reflect.Constructor
@@ -211,17 +211,17 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
   }
 
   /**
-   * Resolves a matching {@link Constructor} for the given {@link Class} whose actual {@literal public}
-   * {@link Constructor} {@link Object[] argument types} are assignment compatible with the expected
-   * array of {@link Class[] parameter types}.
+   * Resolves a matching {@link Constructor} for the given {@link Class} whose actual array of {@literal public}
+   * {@link Constructor} {@link Object argument types} are assignment compatible with the expected
+   * array of {@link Class parameter types}.
    *
    * @param <T> {@link Class type} in which the {@link Constructor} is declared.
    * @param objectType {@link Class} from which the {@link Constructor} is resolved.
-   * @param parameterTypes array of {@link Class[] types} used to determine the signature of the resolved constructor.
-   * @return a matching {@link Constructor} from the given {@link Class} whose actual {@literal public}
-   * {@link Constructor} {@link Object[] argument types} are assignment compatible with the expected
-   * array of {@link Class[] parameter types}.
-   * @throws NullPointerException if either the {@link Class objectType} or {@link Class[] parameterTypes}
+   * @param parameterTypes array of {@link Class types} used to determine the signature of the resolved constructor.
+   * @return a matching {@link Constructor} from the given {@link Class} whose actual array of {@literal public}
+   * {@link Constructor} {@link Object argument types} are assignment compatible with the expected
+   * array of {@link Class parameter types}.
+   * @throws NullPointerException if either the {@link Class objectType} or the array of {@link Class parameterTypes}
    * are {@literal null}.
    * @see #resolveConstructor(Class, Class[])
    * @see java.lang.reflect.Constructor
@@ -260,8 +260,8 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
    *
    * @param <T> {@link Class type} of {@link Object} to create.
    * @param object {@link Object} created by {@literal this} {@link ObjectFactory}.
-   * @param args array of {@link Object[] arguments} used during post construction initialization and configuration
-   * if no {@link Constructor} could be found with a signature matching the {@link Object[] argument types}.
+   * @param args array of {@link Object arguments} used during post construction initialization and configuration
+   * if no {@link Constructor} could be found with a signature matching the array of {@link Object argument types}.
    * @return the {@link Object} after post construction initialization and configuration.
    * @see java.util.function.Function#apply(Object)
    * @see #getObjectPostProcessor()
@@ -273,17 +273,17 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
 
   /**
    * Creates an {@link Object} from the given {@link Class type} initialized with
-   * the given array of constructor {@link Object[] arguments} corresponding to the given array of constructor
-   * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
+   * the given array of constructor {@link Object arguments} corresponding to the given array of constructor
+   * {@link Class parameter types}, which specify the exact signature of the constructor used to construct
    * the {@link Object}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.
    * @param objectType {@link Class type} from which the {@link Object }instance will be created.
-   * @param parameterTypes array of {@link Class[] types} specifying the signature of the constructor
+   * @param parameterTypes array of {@link Class types} specifying the signature of the constructor
    * used to construct the {@link Object}.
-   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @param args array of {@link Object arguments} passed to the constructor used to initialize the {@link Object}.
    * @return a new {@link Object} of the given {@link Class type} initialized with
-   * the given array of {@link Object[] arguments}.
+   * the given array of {@link Object arguments}.
    * @see java.lang.Class
    */
   @Override
