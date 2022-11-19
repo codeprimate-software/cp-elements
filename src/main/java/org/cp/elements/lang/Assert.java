@@ -1008,7 +1008,6 @@ public abstract class Assert {
    * @param array {@link Object array} to evaluate.
    * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see #notEmpty(Object[], String, Object...)
-   * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array) {
     notEmpty(array, "Array is empty");
@@ -1027,7 +1026,6 @@ public abstract class Assert {
    * when formatting the {@link String message}.
    * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see #notEmpty(Object[], RuntimeException)
-   * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array, String message, Object... messagePlaceholderValues) {
     notEmpty(array, new IllegalArgumentException(format(message, messagePlaceholderValues)));
@@ -1044,7 +1042,6 @@ public abstract class Assert {
    * thrown if the assertion fails.
    * @throws java.lang.IllegalArgumentException if the {@link Object array} is {@literal null} or {@literal empty}.
    * @see java.util.function.Supplier
-   * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array, Supplier<String> message) {
     if (isEmpty(array)) {
@@ -1061,7 +1058,6 @@ public abstract class Assert {
    * @param array {@link Object array} to evaluate.
    * @param cause {@link RuntimeException} thrown if the assertion fails.
    * @throws java.lang.RuntimeException if the {@link Object array} is {@literal null} or {@literal empty}.
-   * @see java.lang.Object[]
    */
   public static void notEmpty(Object[] array, RuntimeException cause) {
     if (isEmpty(array)) {
