@@ -26,7 +26,7 @@
   </module>
 
   <module name="LineLength">
-    <property name="max" value="${checkstyle.LineLength.max}" default="120"/>
+    <property name="max" value="${checkstyle.LineLength.max}" default="125"/>
     <property name="severity" value="warning"/>
   </module>
 
@@ -391,6 +391,10 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="MethodCount">
+      <property name="maxPrivate" value="500"/>
+      <property name="maxPackage" value="500"/>
+      <property name="maxProtected" value="500"/>
+      <property name="maxPublic" value="500"/>
       <property name="maxTotal" value="500"/>
     </module>
     <module name="MethodLength">
