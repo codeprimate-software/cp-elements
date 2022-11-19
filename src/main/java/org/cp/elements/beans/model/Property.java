@@ -180,14 +180,14 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
     return annotationsResolver != null ? annotationsResolver : DEFAULT_ANNOTATIONS_RESOLVER;
   }
 
-  private transient final AtomicReference<Field> fieldReference = new AtomicReference<>(null);
+  private final transient AtomicReference<Field> fieldReference = new AtomicReference<>(null);
 
-  private transient final FieldResolver fieldResolver = new PropertyNameFieldResolver();
+  private final transient FieldResolver fieldResolver = new PropertyNameFieldResolver();
 
   private final BeanModel beanModel;
 
-  private transient final Map<Field, Set<Annotation>> fieldAnnotations = new WeakHashMap<>();
-  private transient final Map<Method, Set<Annotation>> methodAnnotations = new WeakHashMap<>();
+  private final transient Map<Field, Set<Annotation>> fieldAnnotations = new WeakHashMap<>();
+  private final transient Map<Method, Set<Annotation>> methodAnnotations = new WeakHashMap<>();
 
   private final PropertyDescriptor propertyDescriptor;
 
@@ -347,7 +347,7 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
    * @see java.lang.reflect.Field
    */
   protected @Nullable Field getField() {
-    return fieldReference.updateAndGet(field -> field != null ? field
+    return this.fieldReference.updateAndGet(field -> field != null ? field
       : this.fieldResolver.resolve(this));
   }
 

@@ -37,7 +37,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public class ChangeSupport implements Iterable<ChangeListener> {
 
   // List of registered ChangeListeners listening for change events on the source Object.
-  private transient final List<ChangeListener> changeListeners = new CopyOnWriteArrayList<>();
+  private final transient List<ChangeListener> changeListeners = new CopyOnWriteArrayList<>();
 
   // Reference to the source Object of the change events.
   private final Object source;

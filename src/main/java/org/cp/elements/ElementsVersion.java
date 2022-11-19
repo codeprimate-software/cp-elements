@@ -65,16 +65,16 @@ public class ElementsVersion implements Runnable {
 
   private @NotNull Properties loadMavenProperties() {
 
-    Properties maven = new Properties();
+    Properties mavenProperties = new Properties();
 
     try (InputStream inputStream = ElementsVersion.class.getResourceAsStream(MAVEN_PROPERTIES_FILE_LOCATION)) {
       if (inputStream != null) {
-        IOUtils.doSafeIo(() -> maven.load(inputStream));
+        IOUtils.doSafeIo(() -> mavenProperties.load(inputStream));
       }
     }
     catch (IOException ignore) { }
 
-    return maven;
+    return mavenProperties;
   }
 
   private void log(@NotNull String message, @NotNull Object... args) {

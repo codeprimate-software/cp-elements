@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.function.Supplier;
 
 /**
- * The LogicalOperator class defines class representations for the standard logical operators AND ({@literal &&})
- * and OR ({@literal ||}).
+ * Abstract base class representations for the standard logical operators AND ({@literal &&}) and OR ({@literal ||}).
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.RelationalOperator
  * @since 1.0.0
  */
+@SuppressWarnings("all")
 public abstract class LogicalOperator {
 
   public static final LogicalOperator AND = new LogicalAnd();
@@ -134,7 +133,7 @@ public abstract class LogicalOperator {
   /**
    * The abstract base class for all subclasses of the LogicalOperator class.
    */
-  protected static abstract class AbstractLogicalOperator extends LogicalOperator {
+  protected abstract static class AbstractLogicalOperator extends LogicalOperator {
 
     private final String description;
     private final String symbol;

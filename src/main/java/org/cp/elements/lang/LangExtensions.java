@@ -2138,7 +2138,7 @@ public abstract class LangExtensions {
 
     @Override
     public Is<T> not() {
-      return new IsExpression<>(getTarget(), !expected);
+      return new IsExpression<>(getTarget(), !this.expected);
     }
   }
 }

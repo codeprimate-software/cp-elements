@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newNoSuchElementException;
 import static org.cp.elements.util.CollectionUtils.asIterable;
 
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The BreadthFirstIterator class is an Iterator implementation and facade for an Iterator of Iterators
+ * {@link Iterator} implementation and facade used for an {@link Iterator} of {@link Iterator Iterators}
  * iterating elements in row order, left to right, top to bottom.
  *
  * @author John Blum
@@ -38,7 +38,7 @@ import org.cp.elements.lang.Assert;
 @SuppressWarnings("unused")
 public class BreadthFirstIterator<T> implements Iterator<T> {
 
-  private AtomicBoolean nextCalled = new AtomicBoolean(false);
+  private final AtomicBoolean nextCalled = new AtomicBoolean(false);
 
   private final Deque<Iterator<T>> iterators = new LinkedList<>();
 
@@ -50,7 +50,8 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    * @throws java.lang.NullPointerException if the Iterator of Iterators reference is null.
    * @see java.util.Iterator
    */
-  public BreadthFirstIterator(final Iterator<Iterator<T>> iterators) {
+  public BreadthFirstIterator(@NotNull Iterator<Iterator<T>> iterators) {
+
     Assert.notNull(iterators, "The Iterator of Iterators must not be null!");
 
     for (Iterator<T> iterator : asIterable(iterators)) {
@@ -68,11 +69,12 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public boolean hasNext() {
-    while (!(iterators.isEmpty() || iterators.peek().hasNext())) {
-      Assert.isFalse(iterators.removeFirst().hasNext(), new IllegalStateException("removing a non-empty Iterator"));
+
+    while (!(this.iterators.isEmpty() || this.iterators.peek().hasNext())) {
+      Assert.isFalse(this.iterators.removeFirst().hasNext(), new IllegalStateException("removing a non-empty Iterator"));
     }
 
-    return (!iterators.isEmpty() && iterators.peek().hasNext());
+    return (!this.iterators.isEmpty() && this.iterators.peek().hasNext());
   }
 
   /**
@@ -85,9 +87,9 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public T next() {
-    Assert.isTrue(hasNext(), new NoSuchElementException("The iteration has no more elements!"));
-    T value = iterators.peek().next();
-    nextCalled.set(true);
+    Assert.isTrue(hasNext(), newNoSuchElementException("The iteration has no more elements!"));
+    T value = this.iterators.peek().next();
+    this.nextCalled.set(true);
     return value;
   }
 
@@ -100,7 +102,7 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public void remove() {
-    Assert.state(nextCalled.compareAndSet(true, false), "next was not called before remove");
-    iterators.peek().remove();
+    Assert.state(this.nextCalled.compareAndSet(true, false), "next was not called before remove");
+    this.iterators.peek().remove();
   }
 }

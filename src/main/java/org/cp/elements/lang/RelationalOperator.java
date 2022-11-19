@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 /**
- * The RelationalOperator class defines class representations for the relation operators ({@literal ==},
- * {@literal >}, {@literal >=}, {@literal <}, {@literal <=}).
+ * Abstract base class defining {@link Class type} representations for the relation operators:
+ * [{@literal ==}, {@literal >}, {@literal >=}, {@literal <}, {@literal <=} ].
  *
  * @author John J. Blum
- * @param <T> a {@link Comparable} class type for the values evaluated by this operator.
+ * @param <T> {@link Comparable} {@link Class type} for the {@link Object values} evaluated by this operator.
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.LogicalOperator
  * @since 1.0.0
@@ -243,7 +242,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @see org.cp.elements.lang.RelationalOperator.LessThanEqualToOperator
    * @see org.cp.elements.lang.RelationalOperator.ComposableRelationalOperator
    */
-  protected static abstract class AbstractRelationalOperator<T extends Comparable<T>> extends RelationalOperator<T> {
+  protected abstract static class AbstractRelationalOperator<T extends Comparable<T>> extends RelationalOperator<T> {
 
     private final String description;
     private final String symbol;
@@ -302,7 +301,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @return the expected Comparable value used in the relational comparison to constrain the actual values.
      */
     protected final T getExpectedValue() {
-      return expectedValue;
+      return this.expectedValue;
     }
 
     /**
@@ -313,7 +312,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      */
     @Override
     public String getSymbol() {
-      return symbol;
+      return this.symbol;
     }
 
     /**
@@ -334,7 +333,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    * @see org.cp.elements.lang.LogicalOperator
    */
-  protected static final class ComposableRelationalOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
+  protected static class ComposableRelationalOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
 
     private final LogicalOperator operator;
 
@@ -387,7 +386,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @return the RelationalOperator constituting the operand on the left-side of the logical operation.
      */
     protected RelationalOperator<T> getLeftOperand() {
-      return leftOperand;
+      return this.leftOperand;
     }
 
     /**
@@ -398,7 +397,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @see org.cp.elements.lang.LogicalOperator
      */
     protected LogicalOperator getOperator() {
-      return operator;
+      return this.operator;
     }
 
     /**
@@ -407,7 +406,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @return the RelationalOperator constituting the operand on the right-side of the logical operation.
      */
     protected RelationalOperator<T> getRightOperand() {
-      return rightOperand;
+      return this.rightOperand;
     }
 
     /**

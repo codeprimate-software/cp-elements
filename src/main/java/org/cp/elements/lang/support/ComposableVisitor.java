@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.Collections;
@@ -27,11 +26,12 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Composite;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The {@link ComposableVisitor} class is a collection of {@link Visitor} objects enabling multiple
- * {@link Visitor Visitors} to visit a graph of {@link Visitable} objects simultaneously.
+ * {@link Composite} {@link Visitor} implementation and collection of {@link Visitor objects} enabling multiple
+ * {@link Visitor Visitors} to visit a graph / hierarchy of {@link Visitable objects} all at once.
  *
  * @author John J. Blum
  * @see java.lang.Iterable
@@ -54,11 +54,12 @@ public class ComposableVisitor implements Composite<Visitor>, Iterable<Visitor>,
    * @throws NullPointerException if the Visitor is null.
    * @see #contains(org.cp.elements.lang.Visitor)
    */
-  public boolean add(Visitor visitor) {
+  @SuppressWarnings("all")
+  public boolean add(@NotNull Visitor visitor) {
 
     Assert.notNull(visitor, "The Visitor to add to this composite cannot be null");
 
-    return visitor != this && !contains(visitor) && visitors.add(visitor);
+    return visitor != this && !contains(visitor) && this.visitors.add(visitor);
   }
 
   /**

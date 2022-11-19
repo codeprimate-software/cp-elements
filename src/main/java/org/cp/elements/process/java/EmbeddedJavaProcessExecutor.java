@@ -240,17 +240,11 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    */
   static class CallableExecutor<T> implements JavaClassExecutor<T> {
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean isExecutable(Class type) {
       return Callable.class.isAssignableFrom(type);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
@@ -281,9 +275,6 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
       return Executable.class.isAssignableFrom(type);
     }
 
-    /**
-     * @inheritDoc
-     */
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
       Executable<T> executable = this.<Executable<T>>constructInstance(type, args);
@@ -306,9 +297,6 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
       return Arrays.stream(type.getDeclaredMethods()).anyMatch(ClassUtils::isMainMethod);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
@@ -343,9 +331,6 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
       return Runnable.class.isAssignableFrom(type);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {

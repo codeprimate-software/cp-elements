@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * The SearchType enum is an enumeration of different type of searching algorithms.
+ * An {@link Enum Enumeration} of different types of search algorithms.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -25,6 +27,7 @@ package org.cp.elements.util.search;
  */
 @SuppressWarnings("unused")
 public enum SearchType {
+
   BINARY_SEARCH("BINARY", "Binary Search"),
   INDEX_SEARCH("INDEX", "Index Search"),
   LINEAR_SEARCH("LINEAR", "Linear Search"),
@@ -39,7 +42,8 @@ public enum SearchType {
    * @param abbreviation a String specifying a search type abbreviation.
    * @param name a String specifying the search type name.
    */
-  SearchType(final String abbreviation, final String name) {
+  SearchType(@NotNull String abbreviation, @NotNull String name) {
+
     this.abbreviation = abbreviation;
     this.name = name;
   }
@@ -51,7 +55,8 @@ public enum SearchType {
    * @return a SearchType enumerated value for the given abbreviation or null if no match was found.
    * @see #getAbbreviation()
    */
-  public static SearchType valueOfAbbreviation(final String abbreviation) {
+  public static @Nullable SearchType valueOfAbbreviation(@Nullable String abbreviation) {
+
     for (SearchType value : values()) {
       if (value.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return value;
@@ -68,7 +73,8 @@ public enum SearchType {
    * @return a SearchType enumerated value for the given name or null if no match was found.
    * @see #getName()
    */
-  public static SearchType valueOfName(final String name) {
+  public static @Nullable SearchType valueOfName(@Nullable String name) {
+
     for (SearchType value : values()) {
       if (value.getName().equalsIgnoreCase(name)) {
         return value;
@@ -83,8 +89,8 @@ public enum SearchType {
    *
    * @return a String specifying the abbreviation of this SearchType.
    */
-  public String getAbbreviation() {
-    return abbreviation;
+  public @NotNull String getAbbreviation() {
+    return this.abbreviation;
   }
 
   /**
@@ -92,8 +98,8 @@ public enum SearchType {
    *
    * @return a String specifying the name of this SearchType.
    */
-  public String getName() {
-    return name;
+  public @NotNull String getName() {
+    return this.name;
   }
 
   /**
@@ -102,8 +108,7 @@ public enum SearchType {
    * @return a String describing this SearchType.
    */
   @Override
-  public String toString() {
-    return this.name;
+  public @NotNull String toString() {
+    return getName();
   }
-
 }

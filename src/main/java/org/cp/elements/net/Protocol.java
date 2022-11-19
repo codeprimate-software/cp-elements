@@ -166,7 +166,7 @@ public enum Protocol {
    * @see org.cp.elements.net.ServicePort
    */
   public @NotNull ServicePort servicePort() {
-    return servicePort;
+    return this.servicePort;
   }
 
   /**

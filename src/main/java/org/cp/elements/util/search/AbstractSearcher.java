@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search;
+
+import static org.cp.elements.lang.ElementsExceptionsFactory.newSearchException;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,10 +27,10 @@ import java.util.List;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ClassUtils;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The AbstractSearcher class is a base class encapsulating functionality common to all
- * {@link Searcher} implementations.
+ * Abstract base class encapsulating functionality common to all {@link Searcher} implementations.
  *
  * @author John J. Blum
  * @see MatcherHolder
@@ -46,6 +47,7 @@ public abstract class AbstractSearcher implements Searcher {
 
   private boolean customMatcherAllowed = DEFAULT_CUSTOM_MATCHER_ALLOWED;
 
+  @SuppressWarnings("rawtypes")
   private Matcher matcher;
 
   /**
@@ -57,7 +59,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see #setCustomMatcherAllowed(boolean)
    */
   public boolean isCustomMatcherAllowed() {
-    return customMatcherAllowed;
+    return this.customMatcherAllowed;
   }
 
   /**
@@ -68,7 +70,7 @@ public abstract class AbstractSearcher implements Searcher {
    * Searcher's Matcher during the search operation.
    * @see #isCustomMatcherAllowed()
    */
-  public void setCustomMatcherAllowed(final boolean customMatcherAllowed) {
+  public void setCustomMatcherAllowed(boolean customMatcherAllowed) {
     this.customMatcherAllowed = customMatcherAllowed;
   }
 
@@ -85,13 +87,14 @@ public abstract class AbstractSearcher implements Searcher {
   @Override
   @SuppressWarnings("unchecked")
   public <E> Matcher<E> getMatcher() {
+
     Matcher<E> localMatcher = (Matcher<E>) MatcherHolder.get();
 
-    Assert.state(localMatcher != null || matcher != null,
+    Assert.state(localMatcher != null || this.matcher != null,
       "A reference to a Matcher used by this Searcher ({0}) for searching and matching elements in the collection was not properly configured!",
         getClass().getName());
 
-    return ObjectUtils.returnFirstNonNullValue(localMatcher, matcher);
+    return ObjectUtils.returnFirstNonNullValue(localMatcher, this.matcher);
   }
 
   /**
@@ -103,7 +106,8 @@ public abstract class AbstractSearcher implements Searcher {
    * @see #getMatcher()
    * @see org.cp.elements.util.search.Matcher
    */
-  public void setMatcher(final Matcher matcher) {
+  @SuppressWarnings("rawtypes")
+  public void setMatcher(@NotNull Matcher matcher) {
     Assert.notNull(matcher, "The Matcher used to match elements in the collection during the search operation by this Searcher ({0}) cannot be null!",
       getClass().getName());
     this.matcher = matcher;
@@ -121,7 +125,7 @@ public abstract class AbstractSearcher implements Searcher {
    */
   @Override
   @SuppressWarnings({ "unchecked", "varargs" })
-  public <E> E search(final E... array) {
+  public <E> E search(E... array) {
     return search(Arrays.asList(array));
   }
 
@@ -137,7 +141,8 @@ public abstract class AbstractSearcher implements Searcher {
    * @see org.cp.elements.util.search.Searchable#asList()
    */
   @Override
-  public <E> E search(final Searchable<E> searchable) {
+  public <E> E search(Searchable<E> searchable) {
+
     try {
       return search(configureMatcher(searchable).asList());
     }
@@ -160,9 +165,10 @@ public abstract class AbstractSearcher implements Searcher {
    * @see org.cp.elements.util.search.annotation.Searchable#listMethod()
    */
   @Override
-  public <E> E search(final Object searchableAnnotatedObject) {
+  public <E> E search(Object searchableAnnotatedObject) {
+
     try {
-      return search(this.<E>asList(searchableAnnotatedObject, configureMatcher(getSearchableMetaData(
+      return search(this.asList(searchableAnnotatedObject, configureMatcher(getSearchableMetaData(
         searchableAnnotatedObject))));
     }
     finally {
@@ -182,7 +188,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.util.Arrays#asList(Object[])
    */
   @SuppressWarnings({ "unchecked", "varargs" })
-  public <E> Iterable<E> searchForAll(final E... array) {
+  public <E> Iterable<E> searchForAll(E... array) {
     return searchForAll(Arrays.asList(array));
   }
 
@@ -199,10 +205,11 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see java.util.Collection
    */
-  public <E> Iterable<E> searchForAll(final Collection<E> collection) {
+  public <E> Iterable<E> searchForAll(Collection<E> collection) {
+
     Assert.notNull(collection, "The collection to search cannot be null!");
 
-    final List<E> results = new ArrayList<>(collection.size());
+    List<E> results = new ArrayList<>(collection.size());
 
     for (E element : collection) {
       if (getMatcher().isMatch(element)) {
@@ -227,7 +234,8 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see org.cp.elements.util.search.Searchable#asList()
    */
-  public <E> Iterable<E> searchForAll(final Searchable<E> searchable) {
+  public <E> Iterable<E> searchForAll(Searchable<E> searchable) {
+
     try {
       return searchForAll(configureMatcher(searchable).asList());
     }
@@ -252,9 +260,10 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see org.cp.elements.util.search.annotation.Searchable#listMethod()
    */
-  public <E> Iterable<E> searchForAll(final Object searchableAnnotatedObject) {
+  public <E> Iterable<E> searchForAll(Object searchableAnnotatedObject) {
+
     try {
-      return searchForAll(this.<E>asList(searchableAnnotatedObject, configureMatcher(getSearchableMetaData(
+      return searchForAll(this.asList(searchableAnnotatedObject, configureMatcher(getSearchableMetaData(
         searchableAnnotatedObject))));
     }
     finally {
@@ -271,7 +280,8 @@ public abstract class AbstractSearcher implements Searcher {
    * @throws SearchException if the object's Class type is not annotated with @Searchable annotation meta-data.
    * @see org.cp.elements.util.search.annotation.Searchable
    */
-  protected org.cp.elements.util.search.annotation.Searchable getSearchableMetaData(final Object obj) {
+  protected org.cp.elements.util.search.annotation.Searchable getSearchableMetaData(@NotNull Object obj) {
+
     Assert.notNull(obj, "The object to search cannot be null!");
 
     org.cp.elements.util.search.annotation.Searchable searchableAnnotation = obj.getClass().getAnnotation(
@@ -297,8 +307,10 @@ public abstract class AbstractSearcher implements Searcher {
    * @see MatcherHolder#set(Matcher)
    * @see org.cp.elements.util.search.Searchable#getMatcher()
    */
-  protected <T> Searchable<T> configureMatcher(final Searchable<T> searchable) {
+  protected <T> Searchable<T> configureMatcher(Searchable<T> searchable) {
+
     if (isCustomMatcherAllowed()) {
+
       Matcher<T> matcher = searchable.getMatcher();
 
       if (matcher != null) {
@@ -321,9 +333,13 @@ public abstract class AbstractSearcher implements Searcher {
    * @see MatcherHolder#set(Matcher)
    * @see org.cp.elements.util.search.annotation.Searchable#matcher()
    */
-  protected org.cp.elements.util.search.annotation.Searchable configureMatcher(final org.cp.elements.util.search.annotation.Searchable searchableAnnotation) {
+  @SuppressWarnings("rawtypes")
+  protected org.cp.elements.util.search.annotation.Searchable configureMatcher(
+      org.cp.elements.util.search.annotation.Searchable searchableAnnotation) {
+
     try {
       if (isCustomMatcherAllowed()) {
+
         Class<? extends Matcher> matcherClass = searchableAnnotation.matcher();
 
         if (!Matcher.class.equals(matcherClass)) {
@@ -355,16 +371,17 @@ public abstract class AbstractSearcher implements Searcher {
    * @see org.cp.elements.util.search.annotation.Searchable
    */
   @SuppressWarnings("unchecked")
-  protected <E> List<E> asList(final Object obj, final org.cp.elements.util.search.annotation.Searchable searchableAnnotation) {
+  protected <E> List<E> asList(Object obj, org.cp.elements.util.search.annotation.Searchable searchableAnnotation) {
+
     try {
       Method listMethod = ClassUtils.getMethod(obj.getClass(), searchableAnnotation.listMethod());
       List<E> collection = (List<E>) listMethod.invoke(obj);
-      return ObjectUtils.returnFirstNonNullValue(collection, Collections.<E>emptyList());
+      return ObjectUtils.returnFirstNonNullValue(collection, Collections.emptyList());
     }
-    catch (Exception e) {
-      throw new SearchException(String.format(
+    catch (Exception cause) {
+      throw newSearchException(cause,
         "Error occurred getting the list of elements to search from the (%1$s) method on object of type (%2$s)!",
-          searchableAnnotation.listMethod(), obj.getClass().getName()), e);
+          searchableAnnotation.listMethod(), obj.getClass().getName());
     }
   }
 
@@ -394,5 +411,4 @@ public abstract class AbstractSearcher implements Searcher {
       MATCHER_HOLDER.remove();
     }
   }
-
 }

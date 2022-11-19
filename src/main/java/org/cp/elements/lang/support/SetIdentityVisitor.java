@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The SetIdentityVisitor class is a {@link Visitor} implementation that assigns an unique identifier (ID) to
- * an {@link Identifiable} object.
+ * A {@link Visitor} implementation that assigns an unique identifier (ID) to an {@link Identifiable object}.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Identifiable
@@ -59,10 +60,12 @@ public class SetIdentityVisitor<T extends Comparable<T>> implements Visitor {
    * @throws IllegalArgumentException if the IdentifierSequence is null.
    * @see org.cp.elements.lang.IdentifierSequence
    */
-  @SuppressWarnings("unchecked")
-  public SetIdentityVisitor(final IdentifierSequence identifierSequence) {
-    assertThat(identifierSequence).throwing(new IllegalArgumentException(
-      "The IdentifierSequence cannot be null")).isNotNull();
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public SetIdentityVisitor(@NotNull IdentifierSequence identifierSequence) {
+
+    assertThat(identifierSequence)
+      .throwing(newIllegalArgumentException("The IdentifierSequence cannot be null"))
+      .isNotNull();
 
     this.identifierSequence = identifierSequence;
   }
@@ -75,7 +78,7 @@ public class SetIdentityVisitor<T extends Comparable<T>> implements Visitor {
    * @see org.cp.elements.lang.IdentifierSequence
    */
   protected IdentifierSequence<T> getIdentifierSequence() {
-    return identifierSequence;
+    return this.identifierSequence;
   }
 
   /**
@@ -89,10 +92,10 @@ public class SetIdentityVisitor<T extends Comparable<T>> implements Visitor {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public void visit(final Visitable visitable) {
+  public void visit(@Nullable Visitable visitable) {
+
     if (visitable instanceof Identifiable) {
       ((Identifiable<T>) visitable).setId(getIdentifierSequence().nextId());
     }
   }
-
 }

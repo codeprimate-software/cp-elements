@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link FilterBuilder} class is an implementation of the Builder Software Design Pattern
- * for composing {@link Filter} objects with the help of the {@link ComposableFilter} class.
- * This Builder class can be used in place of the {@link ComposableFilter} if the Composite
- * Software Design Pattern is less desirable.
+ * {@link Builder} implementation of the {@literal Builder Software Design Pattern} used to compose
+ * {@link Filter objects} with the help of the {@link ComposableFilter} class.
+ *
+ * This {@link Builder} class can be used in place of the {@link ComposableFilter}
+ * if the {@literal Composite Software Design Pattern} is less desirable.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Builder
@@ -43,8 +45,8 @@ public class FilterBuilder<T> implements Builder<Filter<T>> {
    * @return this FilterBuilder instance.
    * @see org.cp.elements.lang.Filter
    */
-  public FilterBuilder<T> addWithAnd(final Filter<T> filter) {
-    filterInstance = ComposableFilter.and(filterInstance, filter);
+  public @NotNull FilterBuilder<T> addWithAnd(@Nullable Filter<T> filter) {
+    this.filterInstance = ComposableFilter.and(this.filterInstance, filter);
     return this;
   }
 
@@ -55,8 +57,8 @@ public class FilterBuilder<T> implements Builder<Filter<T>> {
    * @return this FilterBuilder instance.
    * @see org.cp.elements.lang.Filter
    */
-  public FilterBuilder<T> addWithOr(final Filter<T> filter) {
-    filterInstance = ComposableFilter.or(filterInstance, filter);
+  public @NotNull FilterBuilder<T> addWithOr(@Nullable Filter<T> filter) {
+    this.filterInstance = ComposableFilter.or(this.filterInstance, filter);
     return this;
   }
 
@@ -66,7 +68,7 @@ public class FilterBuilder<T> implements Builder<Filter<T>> {
    * @return a Filter composition.
    * @see org.cp.elements.lang.Filter
    */
-  public Filter<T> build() {
-    return filterInstance;
+  public @Nullable Filter<T> build() {
+    return this.filterInstance;
   }
 }

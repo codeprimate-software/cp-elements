@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
 import java.util.List;
 
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 
 /**
- * The QuickSort class is an implementation of the Quick Sort algorithm
- * and the {@link org.cp.elements.util.sort.Sorter} interface.
+ * {@link Sorter} implementation of the {@literal Quick Sort algorithm}.
  *
  * @author John J. Blum
  * @see java.util.List
@@ -57,7 +56,7 @@ public class QuickSort extends AbstractSorter {
    * @see #getSorter()
    */
   public int getSizeThreshold() {
-    return Math.max(sizeThreshold, DEFAULT_SIZE_THRESHOLD);
+    return Math.max(this.sizeThreshold, DEFAULT_SIZE_THRESHOLD);
   }
 
   /**
@@ -68,7 +67,7 @@ public class QuickSort extends AbstractSorter {
    * from the collection to use a non-recursive sorting algorithm on.
    * @see #getSizeThreshold()
    */
-  public void setSizeThreshold(final int sizeThreshold) {
+  public void setSizeThreshold(int sizeThreshold) {
     this.sizeThreshold = sizeThreshold;
   }
 
@@ -84,7 +83,7 @@ public class QuickSort extends AbstractSorter {
    * @see org.cp.elements.util.sort.Sorter
    */
   public Sorter getSorter() {
-    return ObjectUtils.returnFirstNonNullValue(sorter, DEFAULT_SORTER);
+    return ObjectUtils.returnFirstNonNullValue(this.sorter, DEFAULT_SORTER);
   }
 
   /**
@@ -96,7 +95,7 @@ public class QuickSort extends AbstractSorter {
    * @see #getSorter()
    * @see org.cp.elements.util.sort.Sorter
    */
-  public void setSorter(final Sorter sorter) {
+  public void setSorter(Sorter sorter) {
     this.sorter = sorter;
   }
 
@@ -110,7 +109,8 @@ public class QuickSort extends AbstractSorter {
    * @see java.util.List
    */
   @Override
-  public <E> List<E> sort(final List<E> elements) {
+  public @NotNull <E> List<E> sort(@NotNull List<E> elements) {
+
     int elementsSize = elements.size();
 
     if (elementsSize <= getSizeThreshold()) {
@@ -143,5 +143,4 @@ public class QuickSort extends AbstractSorter {
       return elements;
     }
   }
-
 }

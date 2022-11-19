@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * InOutParameter is a utility class for creating methods with in/out parameters.  This class is a wrapper around
- * the value it encapsulates.  In essence, an instance of this class is the same thing as the value itself,
- * as determined by the equals and hashCode methods and so this class also serves as value holder.
+ * Abstract Data Type (ADT) used to create methods with in/out parameters.
+ *
+ * This class is a wrapper around the value it encapsulates. In essence, an instance of this class is the same as
+ * the {@link Object value} itself, as determined by the {@literal equals} and {@literal hashCode} methods
+ * and so this class also serves as {@link Object value holder}.
  *
  * @author John J. Blum
- * @param <T> class type of the in/out parameter's value.
+ * @param <T> {@link Class type} of the in/out parameter's {@link Object value}.
+ * @see org.cp.elements.lang.ValueHolder
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -33,15 +37,14 @@ public class InOutParameter<T> {
   /**
    * Default constructor creating an instance of InOutParameter initialized with a null value.
    */
-  public InOutParameter() {
-  }
+  public InOutParameter() { }
 
   /**
    * Constructs an instance of InOutParameter with the specified value.
    *
    * @param value initial value of this parameter.
    */
-  public InOutParameter(final T value) {
+  public InOutParameter(@Nullable T value) {
     this.value = value;
   }
 
@@ -52,7 +55,7 @@ public class InOutParameter<T> {
    * @see #setValue(Object)
    */
   public T getValue() {
-    return value;
+    return this.value;
   }
 
   /**
@@ -77,7 +80,8 @@ public class InOutParameter<T> {
    */
   @Override
   public boolean equals(Object obj) {
-    if (obj == this) {
+
+    if (this == obj) {
       return true;
     }
 
@@ -85,7 +89,7 @@ public class InOutParameter<T> {
       obj = ((InOutParameter) obj).getValue();
     }
 
-    return ObjectUtils.equalsIgnoreNull(value, obj);
+    return ObjectUtils.equalsIgnoreNull(this.value, obj);
   }
 
   /**
@@ -96,7 +100,7 @@ public class InOutParameter<T> {
    */
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCode(value);
+    return ObjectUtils.hashCodeOf(getValue());
   }
 
   /**
@@ -107,7 +111,6 @@ public class InOutParameter<T> {
    */
   @Override
   public String toString() {
-    return String.valueOf(value);
+    return String.valueOf(getValue());
   }
-
 }

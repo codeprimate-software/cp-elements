@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Configurable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The ConfigurableVisitor class is a Visitor implementation that visits an object graph/hierarchy configuring
- * each object visited.
+ * {@link Visitor} implementation that visits an {@link Object} graph / hierarchy to configure
+ * each {@link Object} visited.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Configurable
@@ -56,9 +56,10 @@ public class ConfigurableVisitor<T> implements Visitor {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public void visit(Visitable visitable) {
+  public void visit(@Nullable Visitable visitable) {
+
     if (visitable instanceof Configurable) {
-      ((Configurable<T>) visitable).configure(configuration);
+      ((Configurable<T>) visitable).configure(this.configuration);
     }
   }
 }

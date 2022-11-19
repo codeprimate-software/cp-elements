@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
@@ -56,11 +55,13 @@ public class ConnectionTester implements Condition, Tester {
 
   protected static final String HOST_PORT_SEPARATOR = ":";
 
-  /* (non-Javadoc) */
   public static void main(String[] args) {
+
     Arrays.stream(args).forEach(hostPort -> {
+
       String[] hostPortSplit = hostPort.split(HOST_PORT_SEPARATOR);
       String host = (hostPortSplit.length > 1 ? hostPortSplit[0] : null);
+
       int port = lenientParsePort(hostPortSplit.length > 1 ? hostPortSplit[1] : hostPortSplit[0]);
 
       System.out.printf("Connection to [%1$s:%2$d] was %3$ssuccessful%n",
@@ -127,7 +128,7 @@ public class ConnectionTester implements Condition, Tester {
    * @see #isNotConnected()
    */
   public boolean isConnected() {
-    return connected.get();
+    return this.connected.get();
   }
 
   /**
@@ -208,7 +209,9 @@ public class ConnectionTester implements Condition, Tester {
    */
   @Override
   public boolean test() {
+
     if (isNotConnected()) {
+
       Socket socket = null;
 
       try {

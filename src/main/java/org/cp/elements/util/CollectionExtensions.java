@@ -109,9 +109,6 @@ public abstract class CollectionExtensions {
       this.array = array;
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull List<T> toList() {
 
@@ -131,9 +128,6 @@ public abstract class CollectionExtensions {
         : new HashSet<>(toList());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public String toString() {
 

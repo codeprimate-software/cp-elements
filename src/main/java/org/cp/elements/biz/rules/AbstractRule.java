@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.biz.rules;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
 
 /**
- * The AbstractRule class is an abstract base class for encapsulating functionality common to all Rule implementations.
+ * Abstract base class for encapsulating functionality common to all {@link Rule} implementations.
  *
  * @author John J. Blum
- * @param <T> the Class type of Objects evaluated by this business rule.
+ * @param <T> {@link Class type} of {@link Object objects} evaluated by this business rule.
  * @see org.cp.elements.biz.rules.Rule
  * @since 1.0.0
  */
@@ -46,8 +45,8 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * @throws IllegalStateException if the identifier for this Rule was not properly set.
    */
   public ID getId() {
-    Assert.state(id != null, "The identifier for Rule ({0}) was not properly initialized!", getClass().getName());
-    return id;
+    Assert.state(this.id != null, "The identifier for Rule ({0}) was not properly initialized!", getClass().getName());
+    return this.id;
   }
 
   /**
@@ -80,7 +79,7 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * @see #evaluate(Object)
    */
   public boolean getExpectedOutcome() {
-    return expectedOutcome;
+    return this.expectedOutcome;
   }
 
   /**
@@ -103,7 +102,7 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * @see #evaluate(Object)
    */
   public boolean isThrowExceptionOnFailure() {
-    return throwExceptionOnFailure;
+    return this.throwExceptionOnFailure;
   }
 
   /**

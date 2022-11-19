@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * The SortType enum is an enumeration of different type of sorting algorithms.
+ * An {@link Enum Enumeration} of different types of sorting algorithms.
  *
  * @author John J. Blum
  * @see java.lang.Enum
@@ -25,6 +27,7 @@ package org.cp.elements.util.sort;
  */
 @SuppressWarnings("unused")
 public enum SortType {
+
   BUBBLE_SORT("BUBBLE", "Bubble Sort"),
   COMB_SORT("COMB", "Comb Sort"),
   HEAP_SORT("HEAP", "Heap Sort"),
@@ -44,7 +47,8 @@ public enum SortType {
    * @param abbreviation a String specifying a sort type abbreviation.
    * @param name a String specifying the sort type name.
    */
-  SortType(final String abbreviation, final String name) {
+  SortType(@NotNull String abbreviation, @NotNull String name) {
+
     this.abbreviation = abbreviation;
     this.name = name;
   }
@@ -56,7 +60,8 @@ public enum SortType {
    * @return a SortType enumerated value for the given abbreviation or null if no match was found.
    * @see #getAbbreviation()
    */
-  public static SortType valueOfAbbreviation(final String abbreviation) {
+  public static @Nullable SortType valueOfAbbreviation(@Nullable String abbreviation) {
+
     for (SortType value : values()) {
       if (value.getAbbreviation().equalsIgnoreCase(abbreviation)) {
         return value;
@@ -73,7 +78,7 @@ public enum SortType {
    * @return a SortType enumerated value for the given name or null if no match was found.
    * @see #getName()
    */
-  public static SortType valueOfName(final String name) {
+  public static @Nullable SortType valueOfName(@Nullable String name) {
     for (SortType value : values()) {
       if (value.getName().equalsIgnoreCase(name)) {
         return value;
@@ -88,8 +93,8 @@ public enum SortType {
    *
    * @return a String specifying the abbreviation of this SortType.
    */
-  public String getAbbreviation() {
-    return abbreviation;
+  public @NotNull String getAbbreviation() {
+    return this.abbreviation;
   }
 
   /**
@@ -97,8 +102,8 @@ public enum SortType {
    *
    * @return a String specifying the name of this SortType.
    */
-  public String getName() {
-    return name;
+  public @NotNull String getName() {
+    return this.name;
   }
 
   /**
@@ -107,8 +112,7 @@ public enum SortType {
    * @return a String describing this SortType.
    */
   @Override
-  public String toString() {
-    return this.name;
+  public @NotNull String toString() {
+    return getName();
   }
-
 }

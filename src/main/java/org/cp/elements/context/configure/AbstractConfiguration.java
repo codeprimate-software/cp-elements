@@ -332,7 +332,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
    * @param <SOURCE> {@link Class type} parameter of the {@link Configuration} {@link Object source}.
    * @see org.cp.elements.context.configure.Configuration.Descriptor
    */
-  protected static abstract class AbstractConfigurationDescriptor<SOURCE> implements Configuration.Descriptor<SOURCE> {
+  protected abstract static class AbstractConfigurationDescriptor<SOURCE> implements Configuration.Descriptor<SOURCE> {
 
     private final SOURCE source;
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
@@ -44,6 +43,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.net.Socket
  * @see java.util.concurrent.ExecutorService
  * @see java.util.concurrent.Executors
+ * @see java.util.concurrent.TimeUnit
  * @see org.cp.elements.net.ServicePort
  * @see org.cp.elements.tools.net.support.AbstractClientServerSupport
  * @since 1.0.0
@@ -63,6 +63,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see #newEchoServer(int)
    */
   public static void main(String[] args) {
+
     validateArguments(args);
     newEchoServer(lenientParsePort(args[0])).run();
   }
@@ -73,6 +74,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @param args array of {@link String arguments} passed into this program from the command-line.
    */
   private static void validateArguments(String[] args) {
+
     if (ArrayUtils.isEmpty(args)) {
       System.err.printf("$ java -server ... %s <port>%n", EchoServer.class.getName());
       System.exit(1);
@@ -105,6 +107,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see #newServerSocket(int)
    */
   public EchoServer(int port) {
+
     assertThat(port)
       .throwing(newIllegalArgumentException("Port [%d] must be greater than 1024 and less than equal to 65535", port))
       .isGreaterThanAndLessThanEqualTo(ServicePort.MAX_RESERVED_PORT, ServicePort.MAX_PORT);
@@ -197,6 +200,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see #waitFor(long)
    */
   public EchoServer runAndWaitFor(long duration) {
+
     run();
     waitFor(duration);
 
@@ -210,11 +214,12 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see java.net.ServerSocket
    */
   protected void runEchoService(ServerSocket serverSocket) {
+
     if (isRunning(serverSocket)) {
 
-      echoService = newExecutorService();
+      this.echoService = newExecutorService();
 
-      echoService.submit(() -> {
+      this.echoService.submit(() -> {
         try {
           while (isRunning(serverSocket)) {
             Socket echoClient = serverSocket.accept();
@@ -222,7 +227,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
             getLogger().info(() -> String.format("EchoClient connected from [%s]",
               echoClient.getRemoteSocketAddress()));
 
-            echoService.submit(() -> {
+            this.echoService.submit(() -> {
               sendResponse(echoClient, receiveMessage(echoClient));
               close(echoClient);
             });
@@ -260,7 +265,9 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    */
   @Override
   protected String receiveMessage(Socket socket) {
+
     try {
+
       String message = super.receiveMessage(socket);
 
       getLogger().fine(() -> String.format("Received message [%1$s] from EchoClient [%2$s]",
@@ -287,6 +294,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see AbstractClientServerSupport#sendMessage(Socket, String)
    */
   protected void sendResponse(Socket socket, String message) {
+
     try {
       getLogger().info(() -> String.format("Sending response [%1$s] to EchoClient [%2$s]",
         message, socket.getRemoteSocketAddress()));
@@ -305,6 +313,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * Stops this {@link EchoServer} taking it offline and out-of-service.
    */
   public void shutdown() {
+
     getLogger().info("Stopping EchoServer...");
 
     closeServerSocket();
@@ -319,6 +328,7 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see #getServerSocket()
    */
   protected void closeServerSocket() {
+
     ServerSocket serverSocket = getServerSocket();
 
     if (!close(serverSocket)) {
@@ -335,26 +345,28 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see #getEchoService()
    */
   protected boolean stopEchoService() {
-    return Optional.ofNullable(getEchoService()).map(localEchoService -> {
 
-      localEchoService.shutdown();
+    return Optional.ofNullable(getEchoService())
+      .map(localEchoService -> {
 
-      try {
-        if (!localEchoService.awaitTermination(30, TimeUnit.SECONDS)) {
-          localEchoService.shutdownNow();
+        localEchoService.shutdown();
 
+        try {
           if (!localEchoService.awaitTermination(30, TimeUnit.SECONDS)) {
-            getLogger().warning("Failed to shutdown EchoService");
+            localEchoService.shutdownNow();
+
+            if (!localEchoService.awaitTermination(30, TimeUnit.SECONDS)) {
+              getLogger().warning("Failed to shutdown EchoService");
+            }
           }
         }
-      }
-      catch (InterruptedException ignore) {
-        Thread.currentThread().interrupt();
-      }
+        catch (InterruptedException ignore) {
+          Thread.currentThread().interrupt();
+        }
 
-      return localEchoService.isShutdown();
+        return localEchoService.isShutdown();
 
-    }).orElse(false);
+      }).orElse(false);
   }
 
   /**

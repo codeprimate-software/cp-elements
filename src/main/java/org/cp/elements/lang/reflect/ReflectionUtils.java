@@ -56,8 +56,7 @@ import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.ComparatorUtils;
 
 /**
- * The {@link ReflectionUtils} class is an abstract base class encapsulating commons operations used in
- * the Java Introspection and Reflection APIs.
+ * Abstract base class encapsulating operations commonly used with the Java Introspection and Reflection APIs.
  *
  * @author John J. Blum
  * @see java.lang.Class
@@ -976,7 +975,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.FluentApiExtension
    */
   @FluentApi
-  public static abstract class WithExpression<T extends Member> implements FluentApiExtension {
+  public abstract static class WithExpression<T extends Member> implements FluentApiExtension {
 
     private volatile boolean accepted = false;
 

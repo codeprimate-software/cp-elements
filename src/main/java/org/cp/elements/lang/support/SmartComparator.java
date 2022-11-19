@@ -480,7 +480,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
   }
 
   @SuppressWarnings("unused")
-  protected static abstract class TypeUtils extends ClassUtils {
+  protected abstract static class TypeUtils extends ClassUtils {
 
     @NullSafe
     protected static boolean areMaybeComparable(@Nullable Object objectOne, @Nullable Object objectTwo) {

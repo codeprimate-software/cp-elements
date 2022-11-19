@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.cp.elements.util.CollectionUtils.asIterable;
@@ -25,10 +24,11 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The DepthFirstIterator class is an Iterator implementation and facade for an Iterator of Iterators iterating elements
- * in column order, from top to bottom, left to right.
+ * {@link Iterator} implementation and facade used for an {@link Iterator} of {@link Iterator Iterators}
+ * iterating elements in column order, from top to bottom, left to right.
  *
  * @author John J. Blum
  * @see java.util.Iterator
@@ -52,12 +52,13 @@ public class DepthFirstIterator<T> implements Iterator<T> {
    * @throws java.lang.NullPointerException if the Iterator of Iterators references is null.
    * @see java.util.Iterator
    */
-  public DepthFirstIterator(final Iterator<Iterator<T>> iterators) {
+  public DepthFirstIterator(@NotNull Iterator<Iterator<T>> iterators) {
+
     Assert.notNull(iterators, "The Iterator of Iterators must not be null!");
 
     for (Iterator<T> iterator : asIterable(iterators)) {
       if (iterator != null) {
-        iteratorList.add(iterator);
+        this.iteratorList.add(iterator);
       }
     }
   }
@@ -70,12 +71,15 @@ public class DepthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public boolean hasNext() {
-    while (!(iteratorList.isEmpty() || iteratorList.get(currentIteratorIndex).hasNext())) {
-      Assert.isFalse(iteratorList.remove(currentIteratorIndex).hasNext(), "removing a non-empty Iterator");
-      currentIteratorIndex = (iteratorList.isEmpty() ? 0 : (currentIteratorIndex % iteratorList.size()));
+
+    while (!(this.iteratorList.isEmpty() || this.iteratorList.get(this.currentIteratorIndex).hasNext())) {
+      Assert.isFalse(this.iteratorList.remove(this.currentIteratorIndex).hasNext(),
+        "removing a non-empty Iterator");
+      this.currentIteratorIndex = this.iteratorList.isEmpty() ? 0
+        : this.currentIteratorIndex % this.iteratorList.size();
     }
 
-    return !iteratorList.isEmpty();
+    return !this.iteratorList.isEmpty();
   }
 
   /**
@@ -89,9 +93,9 @@ public class DepthFirstIterator<T> implements Iterator<T> {
   @Override
   public T next() {
     Assert.isTrue(hasNext(), new NoSuchElementException("The iteration has no more elements!"));
-    T nextValue = iteratorList.get(currentIteratorIndex).next();
-    currentIteratorIndex = (++currentIteratorIndex % iteratorList.size());
-    nextCalled.set(true);
+    T nextValue = this.iteratorList.get(this.currentIteratorIndex).next();
+    this.currentIteratorIndex = ++this.currentIteratorIndex % this.iteratorList.size();
+    this.nextCalled.set(true);
     return nextValue;
   }
 
@@ -104,9 +108,9 @@ public class DepthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public void remove() {
-    Assert.state(nextCalled.compareAndSet(true, false), "next was not called before remove");
-    int iteratorIndexForRemove = (currentIteratorIndex - 1);
-    iteratorIndexForRemove = (iteratorIndexForRemove < 0 ? iteratorList.size() - 1 : iteratorIndexForRemove);
-    iteratorList.get(iteratorIndexForRemove).remove();
+    Assert.state(this.nextCalled.compareAndSet(true, false), "next was not called before remove");
+    int iteratorIndexForRemove = this.currentIteratorIndex - 1;
+    iteratorIndexForRemove = iteratorIndexForRemove < 0 ? this.iteratorList.size() - 1 : iteratorIndexForRemove;
+    this.iteratorList.get(iteratorIndexForRemove).remove();
   }
 }

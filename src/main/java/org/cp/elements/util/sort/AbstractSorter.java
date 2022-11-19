@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort;
+
+import static org.cp.elements.lang.ElementsExceptionsFactory.newSortException;
 
 import java.lang.reflect.Method;
 import java.util.AbstractList;
@@ -24,10 +25,11 @@ import java.util.List;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.search.SearchException;
 
 /**
- * The AbstractSorter class is base class encapsulating functionality common to all Sorter implementations.
+ * Abstract base class encapsulating functionality common to all {@link Sorter} implementations.
  *
  * @author John J. Blum
  * @see org.cp.elements.util.sort.Sorter
@@ -40,6 +42,7 @@ public abstract class AbstractSorter implements Sorter {
 
   private boolean customComparatorAllowed = DEFAULT_CUSTOM_COMPARATOR_ALLOWED;
 
+  @SuppressWarnings("rawtypes")
   private Comparator orderBy;
 
   /**
@@ -51,7 +54,7 @@ public abstract class AbstractSorter implements Sorter {
    * @see #setCustomComparatorAllowed(boolean)
    */
   public boolean isCustomComparatorAllowed() {
-    return customComparatorAllowed;
+    return this.customComparatorAllowed;
   }
 
   /**
@@ -62,7 +65,7 @@ public abstract class AbstractSorter implements Sorter {
    * when sorting and ordering elements in the collection being sorted.
    * @see #isCustomComparatorAllowed()
    */
-  public void setCustomComparatorAllowed(final boolean customComparatorAllowed) {
+  public void setCustomComparatorAllowed(boolean customComparatorAllowed) {
     this.customComparatorAllowed = customComparatorAllowed;
   }
 
@@ -76,8 +79,9 @@ public abstract class AbstractSorter implements Sorter {
   @Override
   @SuppressWarnings("unchecked")
   public <E> Comparator<E> getOrderBy() {
-    return ObjectUtils.returnFirstNonNullValue(ComparatorHolder.get(), ObjectUtils.returnFirstNonNullValue(
-      orderBy, ComparableComparator.INSTANCE));
+
+    return ObjectUtils.returnFirstNonNullValue(ComparatorHolder.get(),
+      ObjectUtils.returnFirstNonNullValue(this.orderBy, ComparableComparator.INSTANCE));
   }
 
   /**
@@ -86,7 +90,8 @@ public abstract class AbstractSorter implements Sorter {
    * @param orderBy the Comparator to use for ordering the collection elements.
    * @see java.util.Comparator
    */
-  public void setOrderBy(final Comparator orderBy) {
+  @SuppressWarnings("rawtypes")
+  public void setOrderBy(Comparator orderBy) {
     this.orderBy = orderBy;
   }
 
@@ -102,8 +107,8 @@ public abstract class AbstractSorter implements Sorter {
    * @see java.util.ArrayList
    */
   @Override
-  @SuppressWarnings("unchecked")
-  public <E> E[] sort(final E... elements) {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public <E> E[] sort(E... elements) {
     sort(new SortableArrayList(elements));
     return elements;
   }
@@ -121,7 +126,8 @@ public abstract class AbstractSorter implements Sorter {
    * @see org.cp.elements.util.sort.Sortable#asList()
    */
   @Override
-  public <E> Sortable<E> sort(final Sortable<E> sortable) {
+  public <E> Sortable<E> sort(Sortable<E> sortable) {
+
     try {
       sort(configureComparator(sortable).asList());
       return sortable;
@@ -146,7 +152,8 @@ public abstract class AbstractSorter implements Sorter {
    * @see org.cp.elements.util.sort.annotation.Sortable#listMethod()
    */
   @Override
-  public <T> T sort(final T sortableAnnotatedObject) {
+  public <T> T sort(T sortableAnnotatedObject) {
+
     try {
       sort(asList(sortableAnnotatedObject, configureComparator(getSortableMetaData(sortableAnnotatedObject))));
       return sortableAnnotatedObject;
@@ -167,15 +174,16 @@ public abstract class AbstractSorter implements Sorter {
    * @see java.lang.Class#getAnnotation(Class)
    * @see org.cp.elements.util.sort.annotation.Sortable
    */
-  protected org.cp.elements.util.sort.annotation.Sortable getSortableMetaData(final Object sortableAnnotatedObject) {
+  protected org.cp.elements.util.sort.annotation.Sortable getSortableMetaData(Object sortableAnnotatedObject) {
+
     Assert.notNull(sortableAnnotatedObject, "The @Sortable annotated object cannot be null!");
 
-    org.cp.elements.util.sort.annotation.Sortable sortableMetaData = sortableAnnotatedObject.getClass().getAnnotation(
-      org.cp.elements.util.sort.annotation.Sortable.class);
+    org.cp.elements.util.sort.annotation.Sortable sortableMetaData = sortableAnnotatedObject.getClass()
+      .getAnnotation(org.cp.elements.util.sort.annotation.Sortable.class);
 
-    Assert.notNull(sortableMetaData, new SortException(String.format(
+    Assert.notNull(sortableMetaData, newSortException(
       "To sort an object of type (%1$s), the class must be annotated with the (%2$s) annotation!",
-        sortableAnnotatedObject.getClass().getName(), org.cp.elements.util.sort.annotation.Sortable.class.getName())));
+        sortableAnnotatedObject.getClass().getName(), org.cp.elements.util.sort.annotation.Sortable.class.getName()));
 
     return sortableMetaData;
   }
@@ -193,8 +201,10 @@ public abstract class AbstractSorter implements Sorter {
    * @see org.cp.elements.util.sort.Sortable#getOrderBy()
    * @see java.util.Comparator
    */
-  protected <T> Sortable<T> configureComparator(final Sortable<T> sortable) {
+  protected <T> Sortable<T> configureComparator(Sortable<T> sortable) {
+
     if (isCustomComparatorAllowed()) {
+
       Comparator<?> comparator = sortable.getOrderBy();
 
       if (comparator != null) {
@@ -219,9 +229,13 @@ public abstract class AbstractSorter implements Sorter {
    * @see org.cp.elements.util.sort.annotation.Sortable#orderBy()
    * @see java.util.Comparator
    */
-  protected org.cp.elements.util.sort.annotation.Sortable configureComparator(final org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
+  @SuppressWarnings("rawtypes")
+  protected org.cp.elements.util.sort.annotation.Sortable configureComparator(
+      org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
+
     try {
       if (isCustomComparatorAllowed()) {
+
         Class<? extends Comparator> comparatorClass = sortableMetaData.orderBy();
 
         if (!Comparator.class.equals(comparatorClass)) {
@@ -231,11 +245,11 @@ public abstract class AbstractSorter implements Sorter {
 
       return sortableMetaData;
     }
-    catch (Exception e) {
-      throw new SortException(String.format(
+    catch (Exception cause) {
+      throw newSortException(cause,
         "Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
           + " The Comparator class (%1$s) must have a public no-arg constructor!",
-            sortableMetaData.orderBy().getName(), this.getClass().getName()), e);
+            sortableMetaData.orderBy().getName(), this.getClass().getName());
     }
   }
 
@@ -254,16 +268,17 @@ public abstract class AbstractSorter implements Sorter {
    * @see java.util.Collections#emptyList()
    */
   @SuppressWarnings("unchecked")
-  protected <E> List<E> asList(final Object obj, final org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
+  protected <E> List<E> asList(Object obj, org.cp.elements.util.sort.annotation.Sortable sortableMetaData) {
+
     try {
       Method asList = obj.getClass().getMethod(sortableMetaData.listMethod());
       List<E> list = (List<E>) asList.invoke(obj);
-      return ObjectUtils.returnFirstNonNullValue(list, Collections.<E>emptyList());
+      return ObjectUtils.returnFirstNonNullValue(list, Collections.emptyList());
     }
-    catch (Exception e) {
-      throw new SortException(String.format(
+    catch (Exception cause) {
+      throw newSortException(cause,
         "Error occurred getting the list of elements to sort from the (%1$s) method on object of type (%2$s)!",
-          sortableMetaData.listMethod(), obj.getClass().getName()), e);
+          sortableMetaData.listMethod(), obj.getClass().getName());
     }
   }
 
@@ -276,8 +291,10 @@ public abstract class AbstractSorter implements Sorter {
    * @param index2 the index of the second element to swap.
    * @see java.util.List
    */
-  protected <E> void swap(final List<E> elements, final int index1, final int index2) {
+  protected <E> void swap(List<E> elements, int index1, int index2) {
+
     E elementFromIndex1 = elements.get(index1);
+
     elements.set(index1, elements.get(index2));
     elements.set(index2, elementFromIndex1);
   }
@@ -290,10 +307,11 @@ public abstract class AbstractSorter implements Sorter {
    */
   protected static class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
 
+    @SuppressWarnings("rawtypes")
     protected static final ComparableComparator INSTANCE = new ComparableComparator();
 
     @Override
-    public int compare(final T comparable1, final T comparable2) {
+    public int compare(@NotNull T comparable1, @NotNull T comparable2) {
       return comparable1.compareTo(comparable2);
     }
   }
@@ -336,27 +354,26 @@ public abstract class AbstractSorter implements Sorter {
     private final E[] elements;
 
     @SafeVarargs
-    public SortableArrayList(final E... elements) {
+    public SortableArrayList(E... elements) {
       Assert.notNull(elements, "The array of elements to wrap in a List cannot be null!");
       this.elements = elements;
     }
 
     @Override
-    public E get(final int index) {
-      return elements[index];
+    public E get(int index) {
+      return this.elements[index];
     }
 
     @Override
     public E set(final int index, final E element) {
-      E previousElement = elements[index];
-      elements[index] = element;
+      E previousElement = this.elements[index];
+      this.elements[index] = element;
       return previousElement;
     }
 
     @Override
     public int size() {
-      return elements.length;
+      return this.elements.length;
     }
   }
-
 }

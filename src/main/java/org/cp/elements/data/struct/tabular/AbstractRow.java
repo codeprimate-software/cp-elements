@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMappingException;
@@ -31,14 +30,14 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The AbstractRow class is an abstract base class implementing the Row interface encapsulating functionality common
- * to all Row implementations.
+ * Abstract base class implementing the {@link Row} interface encapsulating functionality common to
+ * all {@link Row} implementations.
  *
  * @author John J. Blum
- * @see Column
- * @see Row
- * @see Table
- * @see View
+ * @see org.cp.elements.data.struct.tabular.Column
+ * @see org.cp.elements.data.struct.tabular.Row
+ * @see org.cp.elements.data.struct.tabular.Table
+ * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
@@ -136,12 +135,9 @@ public abstract class AbstractRow implements Row {
 
             String propertyName = propertyDescriptor.getName();
 
-            view.getColumn(propertyName).ifPresent(column -> {
-
+            this.view.getColumn(propertyName).ifPresent(column -> {
               Object value = getValue(column);
-
               ObjectUtils.invoke(instance, writeMethod, ArrayUtils.asArray(value), Void.class);
-
             });
           }));
 

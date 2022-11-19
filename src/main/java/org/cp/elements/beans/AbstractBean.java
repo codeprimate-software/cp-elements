@@ -862,9 +862,6 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
     REGISTERED_STATE_CHANGE_CALLBACK {
 
-      /**
-       * @inheritDoc
-       */
       @Override
       public @Nullable Boolean apply(@NotNull PropertyChangeEvent event, @Nullable Boolean returnValue) {
 
@@ -887,9 +884,6 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
 
     REFLECTION_BASED_STATE_CHANGE {
 
-      /**
-       * @inheritDoc
-       */
       @Override
       @SuppressWarnings("all")
       public @Nullable Boolean apply(@NotNull PropertyChangeEvent event, @Nullable Boolean returnValue) {
