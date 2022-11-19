@@ -64,7 +64,7 @@ public class InOutParameter<T> {
    * @param value the Object value to set this in/out parameter to.
    * @see #getValue()
    */
-  public void setValue(final T value) {
+  public void setValue(T value) {
     this.value = value;
   }
 
@@ -86,7 +86,7 @@ public class InOutParameter<T> {
     }
 
     if (obj instanceof InOutParameter) {
-      obj = ((InOutParameter) obj).getValue();
+      obj = ((InOutParameter<?>) obj).getValue();
     }
 
     return ObjectUtils.equalsIgnoreNull(this.value, obj);
@@ -100,7 +100,7 @@ public class InOutParameter<T> {
    */
   @Override
   public int hashCode() {
-    return ObjectUtils.hashCodeOf(getValue());
+    return ObjectUtils.hashCode(getValue());
   }
 
   /**
