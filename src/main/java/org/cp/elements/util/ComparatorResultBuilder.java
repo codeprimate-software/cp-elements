@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util;
 
 import static org.cp.elements.util.ComparatorUtils.compareIgnoreNull;
@@ -36,7 +35,7 @@ import org.cp.elements.lang.annotation.NullSafe;
 @SuppressWarnings("unused")
 public class ComparatorResultBuilder<T extends Comparable<T>> implements Builder<Integer>, Comparator<T> {
 
-  private int result = 0;
+  private int result;
 
   /**
    * Factory method to construct a new instance of {@link ComparatorResultBuilder}.

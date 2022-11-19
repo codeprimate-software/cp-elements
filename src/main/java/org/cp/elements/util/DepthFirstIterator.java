@@ -42,7 +42,7 @@ public class DepthFirstIterator<T> implements Iterator<T> {
 
   private final List<Iterator<T>> iteratorList = new ArrayList<>();
 
-  private int currentIteratorIndex = 0;
+  private int currentIteratorIndex;
 
   /**
    * Constructs an instance of the DepthFirstIterator class initialized with Iterator of Iterators to collectively

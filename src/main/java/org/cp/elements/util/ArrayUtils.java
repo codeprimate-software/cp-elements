@@ -165,7 +165,7 @@ public abstract class ArrayUtils {
 
     return array == null ? Collections.emptyEnumeration() : new Enumeration<T>() {
 
-      private int index = 0;
+      private int index;
 
       @Override
       public boolean hasMoreElements() {
@@ -213,7 +213,7 @@ public abstract class ArrayUtils {
 
     return array == null ? Collections.emptyIterator() : new Iterator<T>() {
 
-      private int index = 0;
+      private int index;
 
       @Override
       public boolean hasNext() {

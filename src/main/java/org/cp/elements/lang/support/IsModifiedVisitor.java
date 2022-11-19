@@ -33,7 +33,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public class IsModifiedVisitor implements Visitor {
 
-  private volatile boolean modified = false;
+  private volatile boolean modified;
 
   /**
    * Determines whether any of the {@link Auditable}, {@link Visitable} objects visited were modified.

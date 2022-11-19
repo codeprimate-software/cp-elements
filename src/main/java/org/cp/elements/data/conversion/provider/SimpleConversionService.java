@@ -84,7 +84,7 @@ public class SimpleConversionService extends AbstractConversionService {
 
   protected static final Package CONVERTERS_PACKAGE = CONVERTER_CLASS.getPackage();
 
-  private volatile boolean defaultsEnabled = false;
+  private volatile boolean defaultsEnabled;
 
   private final Map<Class<?>, Object> defaultValues =
     Collections.synchronizedMap(new HashMap<>(13, 0.95f));

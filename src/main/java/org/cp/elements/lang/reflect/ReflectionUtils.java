@@ -977,7 +977,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   @FluentApi
   public abstract static class WithExpression<T extends Member> implements FluentApiExtension {
 
-    private volatile boolean accepted = false;
+    private volatile boolean accepted;
 
     private final Filter<T> defaultFilter = Objects::nonNull;
 

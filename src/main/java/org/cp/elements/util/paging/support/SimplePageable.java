@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.paging.support;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newPageNotFoundException;
@@ -184,9 +183,10 @@ public class SimplePageable<T> implements Pageable<T> {
 
     return new Iterator<Page<T>>() {
 
-      int currentIndex = 0;
+      int currentIndex;
       int currentPageNumber = 1;
-      int pageSize = getPageSize();
+
+      final int pageSize = getPageSize();
 
       @Override
       public boolean hasNext() {

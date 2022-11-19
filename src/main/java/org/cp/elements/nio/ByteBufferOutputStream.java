@@ -52,7 +52,7 @@ public class ByteBufferOutputStream extends OutputStream {
     return new ByteBufferOutputStream(byteBuffer);
   }
 
-  private volatile boolean closed = false;
+  private volatile boolean closed;
 
   private ByteBuffer byteBuffer;
 
