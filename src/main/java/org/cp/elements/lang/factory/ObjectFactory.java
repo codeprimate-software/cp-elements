@@ -36,17 +36,17 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
 
   /**
    * Creates an {@link Object} from the given {@link String fully-qualified class name}, initialized with
-   * the given array of constructor {@link Object[] arguments}.
+   * the given array of constructor {@link Object arguments}.
    *
-   * The {@link Class[] parameter types} of the constructor used to construct the {@link Object}
-   * are determined from the {@link Object[] arguments}.
+   * The array {@link Class parameter types} in the constructor used to construct the {@link Object}
+   * are determined from the array of {@link Object arguments}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.
    * @param objectTypeName {@link String} containing the {@literal fully-qualified class name}
    * for the {@link Class type} of {@link Object} to create.
-   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @param args array of {@link Object arguments} passed to the constructor used to initialize the {@link Object}.
    * @return a new {@link Object} of the given {@link Class type} initialized with
-   * the given array of {@link Object[] arguments}.
+   * the given array of {@link Object arguments}.
    * @see #create(Class, Class[], Object...)
    */
   default <T> T create(String objectTypeName, Object... args) {
@@ -55,18 +55,18 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
 
   /**
    * Creates an {@link Object} from the given {@link String fully-qualified class name}, initialized with
-   * the given array of constructor {@link Object[] arguments} corresponding to the given array of constructor
-   * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
+   * the given array of constructor {@link Object arguments} corresponding to the given array of constructor
+   * {@link Class parameter types}, which specify the exact signature of the constructor used to construct
    * the {@link Object}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.
    * @param objectTypeName {@link String} containing the {@literal fully-qualified class name}
    * for the {@link Class type} of {@link Object} to create.
-   * @param parameterTypes array of {@link Class[] types} specifying the signature of the constructor
+   * @param parameterTypes array of {@link Class types} specifying the signature of the constructor
    * used to construct the {@link Object}.
-   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @param args array of {@link Object arguments} passed to the constructor used to initialize the {@link Object}.
    * @return a new {@link Object} of the given {@link Class type} initialized with
-   * the given array of {@link Object[] arguments}.
+   * the given array of {@link Object arguments}.
    * @see #create(Class, Class[], Object...)
    */
   default <T> T create(String objectTypeName, Class<?>[] parameterTypes, Object... args) {
@@ -75,16 +75,16 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
 
   /**
    * Creates an {@link Object} from the given {@link Class type} initialized with
-   * the given array of constructor {@link Object[] arguments}.
+   * the given array of constructor {@link Object arguments}.
    *
    * The {@link Class[] parameter types} of the constructor used to construct the {@link Object}
-   * are determined from the {@link Object[] arguments}.
+   * are determined from the array of {@link Object arguments}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.
    * @param objectType {@link Class type} from which the {@link Object }instance will be created.
-   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @param args array of {@link Object arguments} passed to the constructor used to initialize the {@link Object}.
    * @return a new {@link Object} of the given {@link Class type} initialized with
-   * the given array of {@link Object[] arguments}.
+   * the given array of {@link Object arguments}.
    * @see #create(Class, Class[], Object...)
    * @see java.lang.Class
    */
@@ -94,7 +94,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
 
   /**
    * Creates an {@link Object} from the given {@link Class type} initialized with
-   * the given array of constructor {@link Object[] arguments} corresponding to the given array of constructor
+   * the given array of constructor {@link Object arguments} corresponding to the given array of constructor
    * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
    * the {@link Object}.
    *
@@ -102,9 +102,9 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * @param objectType {@link Class type} from which the {@link Object }instance will be created.
    * @param parameterTypes array of {@link Class[] types} specifying the signature of the constructor
    * used to construct the {@link Object}.
-   * @param args array of {@link Object[] arguments} passed to the constructor used to initialize the {@link Object}.
+   * @param args array of {@link Object arguments} passed to the constructor used to initialize the {@link Object}.
    * @return a new {@link Object} of the given {@link Class type} initialized with
-   * the given array of {@link Object[] arguments}.
+   * the given array of {@link Object arguments}.
    * @see java.lang.Class
    */
   <T> T create(Class<T> objectType, Class<?>[] parameterTypes, Object... args);
