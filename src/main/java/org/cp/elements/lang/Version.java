@@ -526,11 +526,6 @@ public class Version implements Comparable<Version> {
    */
   @Override
   public @NotNull String toString() {
-
-    int buildNumber = getBuildNumber();
-
-    Qualifier qualifier = getQualifier();
-
     return String.format("%1$d.%2$d.%3$d%4$s%5$s%6$s", getMajor(), getMinor(), getMaintenance(),
       toQualifierString(), toBuildNumberString(), toReleaseDateTimeString());
   }
