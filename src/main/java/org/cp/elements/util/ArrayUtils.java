@@ -819,7 +819,7 @@ public abstract class ArrayUtils {
   }
 
   /**
-   * Create a sub-array containing elements at the specified indices in the given, required {@link T[] array}.
+   * Create a sub-array containing elements at the specified indices in the given, required {@link T array}.
    *
    * @param <T> {@link Class type} of elements contained in the array.
    * @param array source array; must not be {@literal null}.
