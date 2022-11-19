@@ -39,7 +39,7 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs a new instance of {@link CloneNotSupportedException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link CloneNotSupportedException}; must not be {@literal null}.
    * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
@@ -68,7 +68,7 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs a new instance of {@link CloneNotSupportedException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link CloneNotSupportedException}.
    * @param message {@link String} describing the {@link CloneNotSupportedException}; must not be {@literal null}.
@@ -86,7 +86,7 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs a new instance of {@link IOException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IOException}; must not be {@literal null}.
    * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
@@ -113,7 +113,7 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs a new instance of {@link IOException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IOException}.
    * @param message {@link String} describing the {@link IOException}; must not be {@literal null}.
@@ -130,7 +130,7 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs a new instance of {@link TimeoutException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link TimeoutException}; must not be {@literal null}.
    * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
@@ -157,7 +157,7 @@ public abstract class CheckedExceptionsFactory {
 
   /**
    * Constructs a new instance of {@link TimeoutException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TimeoutException}.
    * @param message {@link String} describing the {@link TimeoutException}; must not be {@literal null}.
