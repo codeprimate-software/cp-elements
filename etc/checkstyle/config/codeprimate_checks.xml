@@ -234,7 +234,7 @@
     <module name="JavadocType"/>
     <module name="JavadocMethod"/>
     <module name="JavadocVariable">
-      <property name="ignoreNamePattern" value="[A-Z]+"/>
+      <property name="ignoreNamePattern" value="[A-Z_]+"/>
       <property name="scope" value="public"/>
       <property name="severity" value="warning"/>
     </module>
