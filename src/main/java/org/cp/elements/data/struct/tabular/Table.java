@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
@@ -36,7 +35,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "rawtypes", "unused" })
 public interface Table extends View {
 
   /**
@@ -102,7 +101,7 @@ public interface Table extends View {
   default boolean remove(Column column) {
 
     return Optional.of(indexOf(column))
-      .filter(index ->  index > -1)
+      .filter(index -> index > -1)
       .map(this::removeColumn)
       .orElse(false);
   }

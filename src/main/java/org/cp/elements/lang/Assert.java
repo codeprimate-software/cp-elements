@@ -187,7 +187,7 @@ public abstract class Assert {
    * evaluates to {@literal true}.
    * @see java.util.function.Predicate
    */
-  private static @NotNull <T>  Predicate<T> nullSafePredicate(@Nullable Predicate<T> predicate) {
+  private static @NotNull <T> Predicate<T> nullSafePredicate(@Nullable Predicate<T> predicate) {
     return predicate != null ? predicate : argument -> true;
   }
 

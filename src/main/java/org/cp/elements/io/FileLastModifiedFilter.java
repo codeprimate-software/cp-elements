@@ -72,7 +72,7 @@ public abstract class FileLastModifiedFilter implements FileFilter, Filter<File>
    * @see org.cp.elements.lang.RelationalOperator
    * @see java.util.function.Function
    */
-  protected static @NotNull <T extends Comparable<T>>  FileLastModifiedFilter create(
+  protected static @NotNull <T extends Comparable<T>> FileLastModifiedFilter create(
       @NotNull RelationalOperator<T> operator, @NotNull Function<File, T> fileFunction) {
 
     Assert.notNull(operator, "RelationalOperator is required");

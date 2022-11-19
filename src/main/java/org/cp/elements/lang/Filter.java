@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * @since 1.0.0
  */
 @FunctionalInterface
-public interface Filter<T> extends Predicate<T>  {
+public interface Filter<T> extends Predicate<T> {
 
   /**
    * Returns a {@link Filter} implementation that accepts all {@link Object objects}.

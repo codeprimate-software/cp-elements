@@ -371,7 +371,7 @@ public abstract class CollectionUtils {
    * @see java.util.function.Predicate
    * @see java.util.Collection
    */
-  public static @NotNull <T> Collection<T> filter(@NotNull Collection<T>  collection, @NotNull Predicate<T> predicate) {
+  public static @NotNull <T> Collection<T> filter(@NotNull Collection<T> collection, @NotNull Predicate<T> predicate) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(predicate, "Predicate is required");

@@ -81,7 +81,7 @@ public class DelegatingMethodInterceptor<T> implements MethodInterceptor<T> {
    * @see org.cp.elements.lang.reflect.MethodInterceptor
    */
   public DelegatingMethodInterceptor(@Nullable MethodInterceptor<T> delegate) {
-    this.delegate =  delegate;
+    this.delegate = delegate;
   }
 
   /**

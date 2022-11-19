@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools;
 
 import static org.cp.elements.data.struct.SystemPropertyValue.newSystemPropertyValue;
@@ -31,13 +30,13 @@ import java.util.Arrays;
  */
 public class GetSystemPropertyValue {
 
-  /* (non-Javadoc) */
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
+
     if (args.length < 1) {
       System.err.printf("$ java ... %s systemProperty [systemProperty]*%n", GetSystemPropertyValue.class.getName());
       System.exit(1);
     }
 
-    Arrays.stream(args).forEach(systemProperty ->  System.out.println(newSystemPropertyValue(systemProperty)));
+    Arrays.stream(args).forEach(systemProperty -> System.out.println(newSystemPropertyValue(systemProperty)));
   }
 }

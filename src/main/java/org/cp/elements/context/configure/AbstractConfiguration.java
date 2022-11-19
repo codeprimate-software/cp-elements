@@ -385,7 +385,7 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
      * @throws IllegalArgumentException if the {@link File} is {@literal null}.
      * @see java.io.File
      */
-    public  FileConfigurationDescriptor(@NotNull File file) {
+    public FileConfigurationDescriptor(@NotNull File file) {
       super(file);
     }
   }

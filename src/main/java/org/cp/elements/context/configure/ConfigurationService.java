@@ -120,7 +120,7 @@ public interface ConfigurationService extends Iterable<Configuration> {
     if (isPresent(ACTIVE_PROFILES_PROPERTY)) {
       return StringUtils.toStringArray(getPropertyValue(ACTIVE_PROFILES_PROPERTY, Configuration.NOT_REQUIRED));
     }
-    else  {
+    else {
 
       Class<?> type = getClass();
 

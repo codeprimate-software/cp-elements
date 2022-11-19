@@ -35,7 +35,7 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 @SuppressWarnings("unused")
 public abstract class AuditableSupport<USER, PROCESS, ID extends Comparable<ID>> extends IdentifiableSupport<ID>
-    implements Auditable<USER, PROCESS, ID>  {
+    implements Auditable<USER, PROCESS, ID> {
 
   private static final String USER_NAME_SYSTEM_PROPERTY = "user.name";
 
