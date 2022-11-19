@@ -38,7 +38,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IllegalArgumentException} initialized with the given {@link String message}
-   * formatted with the {@link Object[] arguments}.
+   * formatted with the array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IllegalArgumentException}; must not be {@literal null}.
    * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
@@ -65,11 +65,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IllegalArgumentException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IllegalArgumentException}.
    * @param message {@link String} describing the {@link IllegalArgumentException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IllegalArgumentException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -83,10 +83,10 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IllegalStateException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IllegalStateException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IllegalStateException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newIllegalStateException(Throwable, String, Object...)
@@ -98,7 +98,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IllegalStateException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link IllegalStateException}.
    * @return a new {@link IllegalStateException} initialized with the given {@link Throwable cause}.
@@ -111,11 +111,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IllegalStateException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link IllegalStateException}.
    * @param message {@link String} describing the {@link IllegalStateException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IllegalStateException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -129,10 +129,10 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IndexOutOfBoundsException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IndexOutOfBoundsException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IndexOutOfBoundsException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newIndexOutOfBoundsException(Throwable, String, Object...)
@@ -146,7 +146,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IndexOutOfBoundsException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IndexOutOfBoundsException}.
    * @return a new {@link IndexOutOfBoundsException} initialized with the given {@link Throwable cause}.
@@ -159,11 +159,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link IndexOutOfBoundsException} initialized with the given {@link Throwable}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IndexOutOfBoundsException}.
    * @param message {@link String} describing the {@link IndexOutOfBoundsException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IndexOutOfBoundsException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -177,10 +177,10 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link NoSuchElementException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link NoSuchElementException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link NoSuchElementException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newNoSuchElementException(Throwable, String, Object...)
@@ -192,7 +192,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link NoSuchElementException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link NoSuchElementException}.
    * @return a new {@link NoSuchElementException} initialized with the given {@link Throwable cause}.
@@ -205,11 +205,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link NoSuchElementException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of this {@link NoSuchElementException}.
    * @param message {@link String} describing the {@link NoSuchElementException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link NoSuchElementException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -223,10 +223,10 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link NullPointerException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link NullPointerException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link NullPointerException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newNullPointerException(Throwable, String, Object...)
@@ -250,11 +250,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link NullPointerException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link NullPointerException}.
    * @param message {@link String} describing the {@link NullPointerException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link NullPointerException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -268,10 +268,10 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link RuntimeException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link RuntimeException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link RuntimeException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newRuntimeException(Throwable, String, Object...)
@@ -295,11 +295,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link RuntimeException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link RuntimeException}.
    * @param message {@link String} describing the {@link RuntimeException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link RuntimeException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -313,10 +313,10 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link TypeNotPresentException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link TypeNotPresentException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link TypeNotPresentException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newTypeNotPresentException(Throwable, String, Object...)
@@ -340,11 +340,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link TypeNotPresentException} initialized with the given {@link Throwable cause}
-   * and {@link String message} formatted with the given {@link Object[] arguments}.
+   * and {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TypeNotPresentException}.
    * @param message {@link String} describing the {@link TypeNotPresentException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link TypeNotPresentException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -357,11 +357,11 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
   }
 
   /**
-   * Constructs a new instance of {@link UnsupportedOperationException} initialized with the given {@link String message}
-   * formatted with the given {@link Object[] arguments}.
+   * Constructs a new instance of {@link UnsupportedOperationException} initialized with
+   * the given {@link String message} formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link UnsupportedOperationException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link UnsupportedOperationException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newUnsupportedOperationException(Throwable, String, Object...)
@@ -388,11 +388,12 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
 
   /**
    * Constructs a new instance of {@link UnsupportedOperationException} initialized with
-   * the given {@link Throwable cause} and {@link String message} formatted with the given {@link Object[] arguments}.
+   * the given {@link Throwable cause} and {@link String message} formatted with
+   * the given array of {@link Object arguments}.
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link UnsupportedOperationException}.
    * @param message {@link String} describing the {@link UnsupportedOperationException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link UnsupportedOperationException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
