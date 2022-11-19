@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static java.util.Arrays.stream;
@@ -45,8 +44,9 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
 
   protected static final float DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE = 0.01f; // 1%
 
+  protected static final int THIRTY_TWO_BITS = 32;
   protected static final int DEFAULT_BIT_ARRAY_LENGTH = 16384;
-  protected static final int DEFAULT_NUMBER_OF_BITS = DEFAULT_BIT_ARRAY_LENGTH * 32; // 64 KB filter
+  protected static final int DEFAULT_NUMBER_OF_BITS = DEFAULT_BIT_ARRAY_LENGTH * THIRTY_TWO_BITS; // 64 KB filter
   protected static final int DEFAULT_NUMBER_OF_HASH_FUNCTIONS = 11;
 
   protected static final int[] BIT_MASKS = new int[32];
@@ -270,10 +270,10 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    */
   protected int getBitArrayLength(int requiredNumberOfBits) {
 
-    int remainder = (requiredNumberOfBits % 32);
-    int additionalNumberOfBits = (remainder != 0 ? 32 - remainder : 0);
+    int remainder = requiredNumberOfBits % THIRTY_TWO_BITS;
+    int additionalNumberOfBits = (remainder != 0 ? THIRTY_TWO_BITS - remainder : 0);
 
-    return (requiredNumberOfBits + additionalNumberOfBits) / 32;
+    return (requiredNumberOfBits + additionalNumberOfBits) / THIRTY_TWO_BITS;
   }
 
   /**
@@ -293,7 +293,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * @see #getBitArray()
    */
   protected int getFilterSize() {
-    return (getBitArray().length * 32);
+    return getBitArray().length * THIRTY_TWO_BITS;
   }
 
   /**
@@ -331,7 +331,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
 
       for (int count = 0; accepted && count < hashFunctionCount; count++) {
         int bitIndex = this.random.nextInt(filterSize);
-        accepted = ((this.bitArray[bitIndex / 32] & BIT_MASKS[bitIndex % 32]) != 0);
+        accepted = ((this.bitArray[bitIndex / THIRTY_TWO_BITS] & BIT_MASKS[bitIndex % THIRTY_TWO_BITS]) != 0);
       }
     }
 
@@ -355,7 +355,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
 
     for (int count = 0; count < hashFunctionCount; count++) {
       int bitIndex = this.random.nextInt(filterSize);
-      this.bitArray[bitIndex / 32] |= BIT_MASKS[bitIndex % 32];
+      this.bitArray[bitIndex / THIRTY_TWO_BITS] |= BIT_MASKS[bitIndex % THIRTY_TWO_BITS];
     }
   }
 
