@@ -747,14 +747,15 @@ public abstract class ClassUtils {
 
   /**
    * Null-safe method to determine whether the given {@link Constructor} accepts a single argument
-   * of type {@link Object[]} used to pass arguments much like a Java {@link Class} {@literal main} method.
+   * of type {@link Object array} used to pass arguments much like a Java {@link Class} {@literal main} method.
    *
    * This determination makes no effort to distinguish {@link Constructor Constructors} that accept an arbitrary
    * {@link Object[]} that do not represent arguments.  Therefore, this method should only be used when the developer
    * knows such a constructor exists for his/her particular UC.
    *
    * @param constructor {@link Constructor} to evaluate.
-   * @return a boolean value indicating whether the given {@link Constructor} accepts a {@link Object[]} of arguments.
+   * @return a boolean value indicating whether the given {@link Constructor} accepts
+   * an array of {@link Object arguments}.
    * @see java.lang.reflect.Constructor
    */
   @NullSafe
