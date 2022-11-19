@@ -416,7 +416,9 @@
     <module name="GenericWhitespace"/>
     <module name="MethodParamPad"/>
     <module name="NoLineWrap"/>
-    <module name="NoWhitespaceAfter"/>
+    <module name="NoWhitespaceAfter">
+      <property name="tokens" value="AT, INC, DEC, UNARY_MINUS, UNARY_PLUS, BNOT, LNOT, DOT, INDEX_OP"/>
+    </module>
     <module name="NoWhitespaceBefore"/>
     <module name="NoWhitespaceBeforeCaseDefaultColon"/>
     <module name="OperatorWrap"/>
