@@ -58,7 +58,7 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
    *
    * @param <T> {@link Class type} of {@link Object} created by {@literal this} {@link ObjectFactory}.
    * @param object {@link Object} created by {@literal this} {@link ObjectFactory}.
-   * @param args array of {@link Object[] arguments} used during post construction to configure and initialize
+   * @param args array of {@link Object arguments} used during post construction to configure and initialize
    * the created {@link Object} if no constructor could be found with a signature
    * matching the argument {@link Class types}.
    * @return the fully configured and initialized {@link Object}.
@@ -96,7 +96,7 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
   }
 
   /**
-   * Initializes the given {@link Object} with the array of {@link Object[] arguments} providing the {@link Object}
+   * Initializes the given {@link Object} with the array of {@link Object arguments} providing the {@link Object}
    * implements the {@link ParameterizedInitable} interface. Alternatively, this method will call the no argument
    * {@link Initable#init()} method if the {@link Object} implements the {@link Initable} interface.
    *
@@ -104,7 +104,7 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
    *
    * @param <T> {@link Class type} of {@link Object} to initialize.
    * @param object {@link Object} to initialize.
-   * @param args array of {@link Object[] arguments} used to initialize the {@link Object}.
+   * @param args array of {@link Object arguments} used to initialize the {@link Object}.
    * @return the given {@link Object} after initialization.
    * @see org.cp.elements.lang.ParameterizedInitable#init(Object...)
    * @see org.cp.elements.lang.Initable#init()

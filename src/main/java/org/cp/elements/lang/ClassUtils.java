@@ -750,8 +750,8 @@ public abstract class ClassUtils {
    * of type {@link Object array} used to pass arguments much like a Java {@link Class} {@literal main} method.
    *
    * This determination makes no effort to distinguish {@link Constructor Constructors} that accept an arbitrary
-   * {@link Object[]} that do not represent arguments.  Therefore, this method should only be used when the developer
-   * knows such a constructor exists for his/her particular UC.
+   * array of {@link Object objects} that do not represent arguments. Therefore, this method should only be used
+   * when the developer knows such a constructor exists for his/her particular UC.
    *
    * @param constructor {@link Constructor} to evaluate.
    * @return a boolean value indicating whether the given {@link Constructor} accepts

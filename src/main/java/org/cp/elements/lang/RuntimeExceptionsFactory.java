@@ -41,7 +41,7 @@ public abstract class RuntimeExceptionsFactory extends CheckedExceptionsFactory 
    * formatted with the array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IllegalArgumentException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IllegalArgumentException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newIllegalArgumentException(Throwable, String, Object...)

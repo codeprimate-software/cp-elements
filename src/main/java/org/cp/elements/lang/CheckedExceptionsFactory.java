@@ -42,7 +42,7 @@ public abstract class CheckedExceptionsFactory {
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link CloneNotSupportedException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link CloneNotSupportedException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newCloneNotSupportedException(Throwable, String, Object...)
@@ -72,7 +72,7 @@ public abstract class CheckedExceptionsFactory {
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link CloneNotSupportedException}.
    * @param message {@link String} describing the {@link CloneNotSupportedException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link CloneNotSupportedException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
@@ -89,7 +89,7 @@ public abstract class CheckedExceptionsFactory {
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link IOException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IOException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newIOException(Throwable, String, Object...)
@@ -117,7 +117,7 @@ public abstract class CheckedExceptionsFactory {
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link IOException}.
    * @param message {@link String} describing the {@link IOException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link IOException} initialized with the given {@link String message} and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see java.io.IOException
@@ -133,7 +133,7 @@ public abstract class CheckedExceptionsFactory {
    * formatted with the given array of {@link Object arguments}.
    *
    * @param message {@link String} describing the {@link TimeoutException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link TimeoutException} initialized with the given {@link String message}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
    * @see #newTimeoutException(Throwable, String, Object...)
@@ -161,7 +161,7 @@ public abstract class CheckedExceptionsFactory {
    *
    * @param cause {@link Throwable} used as the {@literal cause} of the {@link TimeoutException}.
    * @param message {@link String} describing the {@link TimeoutException}; must not be {@literal null}.
-   * @param args {@link Object[] arguments} used to replace format placeholders in the {@link String message}.
+   * @param args array of {@link Object arguments} used to replace format placeholders in the {@link String message}.
    * @return a new {@link TimeoutException} initialized with the given {@link String message}
    * and {@link Throwable cause}.
    * @throws NullPointerException if the {@link String message} is {@literal null}.
