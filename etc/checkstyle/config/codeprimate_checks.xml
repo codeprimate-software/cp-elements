@@ -78,7 +78,9 @@
     <!--module name="RightCurly"/-->
 
     <!-- Checks for Class Design -->
-    <module name="DesignForExtension"/>
+    <module name="DesignForExtension">
+      <property name="ignoredAnnotations" value="Override"/>
+    </module>
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InnerTypeLast"/>
@@ -108,6 +110,9 @@
     <module name="FallThrough"/>
     <!--module name="FinalLocalVariable"/-->
     <module name="HiddenField">
+      <property name="ignoreConstructorParameter" value="true"/>
+      <property name="ignoreFormat" value="^this\..+"/>
+      <property name="setterCanReturnItsClass" value="true"/>
       <property name="severity" value="warning"/>
     </module>
     <!--module name="IllegalCatch"/-->
@@ -123,7 +128,10 @@
     <!--module name="IllegalTokenText"/-->
     <module name="IllegalType"/>
     <module name="InnerAssignment"/>
-    <module name="MagicNumber"/>
+    <module name="MagicNumber">
+      <property name="ignoreAnnotation" value="true"/>
+      <property name="ignoreHashCodeMethod" value="true"/>
+    </module>
     <!--module name="MatchXpath"/-->
     <!--module name="MissingCtor"/-->
     <module name="MissingSwitchDefault">
@@ -185,6 +193,8 @@
     <module name="AvoidStarImport"/>
     <!--module name="AvoidStaticImport"/-->
     <module name="CustomImportOrder">
+      <property name="customImportOrderRules"
+                value="STATIC###STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE"/>
       <property name="separateLineBetweenGroups" value="true"/>
       <property name="sortImportsInGroupAlphabetically" value="true"/>
     </module>
@@ -212,9 +222,10 @@
     </module>
     <module name="JavadocMissingLeadingAsterisk"/>
     <module name="JavadocMissingWhitespaceAfterAsterisk"/>
-    <module name="JavadocParagraph">
+    <!--module name="JavadocParagraph">
       <property name="allowNewlineParagraph" value="false"/>
-    </module>
+      <property name="violateExecutionOnNonTightHtml" value="true"/>
+    </module-->
     <module name="JavadocStyle">
       <property name="severity" value="warning"/>
     </module>
@@ -222,16 +233,21 @@
     <module name="JavadocType"/>
     <module name="JavadocMethod"/>
     <module name="JavadocVariable">
+      <property name="ignoreNamePattern" value="[A-Z]+"/>
       <property name="scope" value="public"/>
       <property name="severity" value="warning"/>
     </module>
-    <module name="MissingJavadocMethod"/>
+    <module name="MissingJavadocMethod">
+      <property name="ignoreMethodNamesRegex" value="main"/>
+    </module>
     <!--module name="MissingJavadocPackage"/-->
     <module name="MissingJavadocType"/>
     <module name="NonEmptyAtclauseDescription"/>
     <module name="RequireEmptyLineBeforeBlockTagGroup"/>
     <!--module name="SingleLineJavadoc"/-->
-    <module name="SummaryJavadoc"/>
+    <module name="SummaryJavadoc">
+      <property name="violateExecutionOnNonTightHtml" value="true"/>
+    </module>
     <!--module name="WriteTag"/-->
 
     <!-- Checks for Metrics -->
@@ -240,6 +256,7 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="ClassDataAbstractionCoupling">
+      <property name="max" value="10"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="ClassFanOutComplexity">
@@ -301,7 +318,7 @@
     <module name="UpperEll"/>
 
     <!-- Checks for Modifiers -->
-    <module name="ClassMemberImpliedModifier"/>
+    <!--module name="ClassMemberImpliedModifier"/-->
     <!--module name="InterfaceMemberImpliedModifier"/-->
     <module name="ModifierOrder"/>
     <module name="RedundantModifier">
@@ -314,10 +331,10 @@
       <property name="allowedAbbreviationLength" value="4"/>
       <property name="ignoreFinal" value="false"/>
       <property name="ignoreStatic" value="false"/>
-      <property name="ignoreStaticFinal" value="false"/>
+      <property name="ignoreStaticFinal" value="true"/>
     </module>
     <module name="AbstractClassName">
-      <property name="format" value="^Abstract[A-Z][a-zA-Z0-9]*$"/>
+      <property name="format" value="^Abstract[A-Z][a-zA-Z0-9|^Exception|^Utils]*$"/>
     </module>
     <module name="CatchParameterName">
       <property name="format" value="[a-zA-Z]{3,}"/>
@@ -327,13 +344,17 @@
     </module>
     <module name="ConstantName"/>
     <module name="IllegalIdentifierName"/>
-    <module name="InterfaceTypeParameterName"/>
+    <module name="InterfaceTypeParameterName">
+      <property name="format" value="^[A-Z]+$"/>
+    </module>
     <module name="LambdaParameterName"/>
     <module name="LocalFinalVariableName"/>
     <module name="LocalVariableName"/>
     <module name="MemberName"/>
     <module name="MethodName"/>
-    <module name="MethodTypeParameterName"/>
+    <module name="MethodTypeParameterName">
+      <property name="format" value="^[A-Z]+$"/>
+    </module>
     <module name="PackageName">
       <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
     </module>

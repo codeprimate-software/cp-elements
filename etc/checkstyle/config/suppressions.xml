@@ -10,6 +10,7 @@
   <!-- Suppresses checks for all Maven generated files -->
   <suppress checks=".*" files="[/\\]target[/\\]"/>
   <suppress checks="AbbreviationAsWordInName" files=".*Test.*"/>
+  <suppress checks="DesignForExtension" files=".*Test.*"/>
   <suppress checks="EmptyCatchBlock" files=".*Test.*"/>
   <suppress checks="FileLength" files=".*Test.*"/>
   <suppress checks="InnerTypeLast" files=".*Test.*"/>
