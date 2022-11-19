@@ -316,7 +316,7 @@ public abstract class AbstractObjectFactory implements ObjectFactory {
     }
     catch (Exception cause) {
 
-      String message =  String.format( "Failed to instantiate an instance of class [%1$s] with constructor"
+      String message =  String.format("Failed to instantiate an instance of class [%1$s] with constructor"
           + " having signature [%2$s] using arguments [%3$s]!", ClassUtils.getName(objectType),
         CollectionExtensions.from(parameterTypes), CollectionExtensions.from(args));
 
