@@ -77,7 +77,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
    * Creates an {@link Object} from the given {@link Class type} initialized with
    * the given array of constructor {@link Object arguments}.
    *
-   * The {@link Class[] parameter types} of the constructor used to construct the {@link Object}
+   * The array of {@link Class parameter types} of the constructor used to construct the {@link Object}
    * are determined from the array of {@link Object arguments}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.
@@ -95,7 +95,7 @@ public interface ObjectFactory extends ConfigurationAware, ConversionServiceAwar
   /**
    * Creates an {@link Object} from the given {@link Class type} initialized with
    * the given array of constructor {@link Object arguments} corresponding to the given array of constructor
-   * {@link Class[] parameter types}, which specify the exact signature of the constructor used to construct
+   * {@link Class parameter types}, which specify the exact signature of the constructor used to construct
    * the {@link Object}.
    *
    * @param <T> {@link Class type} of {@link Object} to create.

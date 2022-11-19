@@ -370,7 +370,7 @@ public class ThreadAdapter {
    * Gets the {@literal stack trace} of {@literal this} {@link Thread} contained in
    * an array of {@link StackTraceElement StackTraceElements} representing each call in the stack.
    *
-   * @return array of {@link StackTraceElement[] StackTraceElements} representing a stack dump
+   * @return array of {@link StackTraceElement StackTraceElements} representing a stack dump
    * of {@literal this} {@link Thread}.
    * @see java.lang.Thread#getStackTrace()
    * @see java.lang.StackTraceElement
