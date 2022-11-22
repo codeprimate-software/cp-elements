@@ -597,10 +597,10 @@ public abstract class ThreadUtils {
       long timeout = System.currentTimeMillis() + getDurationTimeUnit().toMillis(getDuration());
       long interval = getIntervalTimeUnit().toMillis(getInterval());
 
-      condition = condition != null ? condition : Condition.FALSE_CONDITION;
+      Condition resolvedCondition = condition != null ? condition : Condition.FALSE_CONDITION;
 
       try {
-        while (!condition.evaluate() && System.currentTimeMillis() < timeout) {
+        while (!resolvedCondition.evaluate() && System.currentTimeMillis() < timeout) {
           synchronized (this.waitTaskMonitor) {
             interval = Math.min(interval, (timeout - System.currentTimeMillis()));
             TimeUnit.MILLISECONDS.timedWait(this.waitTaskMonitor, interval);
@@ -611,7 +611,7 @@ public abstract class ThreadUtils {
         Thread.currentThread().interrupt();
       }
 
-      return Condition.FALSE_CONDITION.equals(condition) || condition.evaluate();
+      return Condition.FALSE_CONDITION.equals(resolvedCondition) || resolvedCondition.evaluate();
     }
 
     /**

@@ -87,8 +87,10 @@ public abstract class ThrowableUtils {
   @SuppressWarnings("all")
   public static @Nullable Throwable getRootCause(@Nullable Throwable throwable) {
 
-    while (getCause(throwable) != null) {
-      throwable = throwable.getCause();
+    Throwable throwableCause = throwable;
+
+    while (getCause(throwableCause) != null) {
+      throwableCause = throwableCause.getCause();
     }
 
     return throwable;

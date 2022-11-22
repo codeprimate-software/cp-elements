@@ -17,6 +17,7 @@ package org.cp.elements.lang;
 
 import java.math.BigInteger;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
@@ -175,19 +176,22 @@ public abstract class MathUtils {
    * @throws java.lang.IllegalArgumentException if the number value is null or less than 0.
    * @see java.math.BigInteger
    */
-  public static BigInteger factorial(BigInteger value) {
+  public static @NotNull BigInteger factorial(@NotNull BigInteger value) {
 
     Assert.notNull(value, "value must not be null");
     Assert.isTrue(value.compareTo(BigInteger.ZERO) >= 0, NUMBER_LESS_THAN_ZERO_ERROR_MESSAGE, value);
 
     if (value.compareTo(TWO) <= 0) {
-      return (value.equals(TWO) ? TWO : BigInteger.ONE);
+      return value.equals(TWO) ? TWO : BigInteger.ONE;
     }
 
     BigInteger result = value;
+    BigInteger multiplier = value;
 
-    for (value = result.add(NEGATIVE_ONE) ; value.compareTo(BigInteger.ONE) > 0; value = value.add(NEGATIVE_ONE)) {
-      result = result.multiply(value);
+    for (multiplier = multiplier.add(NEGATIVE_ONE) ; multiplier.compareTo(BigInteger.ONE) > 0;
+          multiplier = multiplier.add(NEGATIVE_ONE)) {
+
+      result = result.multiply(multiplier);
     }
 
     return result;
@@ -392,11 +396,13 @@ public abstract class MathUtils {
    */
   public static double roundToNearestTenth(double value) {
 
-    value *= 10.0d;
-    value = Math.round(value);
-    value /= 10.0d;
+    double result = value;
 
-    return value;
+    result *= 10.0d;
+    result = Math.round(result);
+    result /= 10.0d;
+
+    return result;
   }
 
   /**

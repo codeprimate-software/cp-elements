@@ -1040,9 +1040,11 @@ public abstract class ReflectionUtils extends ClassUtils {
 
       Assert.notNull(type, "Class type must not be null");
 
-      while (type != null) {
-        Collections.addAll(this.members, members(type));
-        type = type.getSuperclass();
+      Class<?> typeToProcess = type;
+
+      while (typeToProcess != null) {
+        Collections.addAll(this.members, members(typeToProcess));
+        typeToProcess = typeToProcess.getSuperclass();
       }
 
       return this;

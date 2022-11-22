@@ -757,13 +757,13 @@ public abstract class CollectionUtils {
 
     StringBuilder buffer = new StringBuilder("[");
 
-    renderer = renderer != null ? renderer : new ToStringRenderer<>();
+    Renderer<T> resolvedRenderer = renderer != null ? renderer : new ToStringRenderer<>();
 
     int count = 0;
 
     for (T element : nullSafeIterable(iterable)) {
       buffer.append(count++ > 0 ? StringUtils.COMMA_SPACE_DELIMITER : StringUtils.EMPTY_STRING)
-        .append(renderer.render(element));
+        .append(resolvedRenderer.render(element));
     }
 
     buffer.append("]");

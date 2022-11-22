@@ -105,14 +105,14 @@ public abstract class BufferUtils {
     Assert.isTrue(additionalCapacity > -1,
       "Additional capacity [%d] must be greater than equal to 0", additionalCapacity);
 
-    buffer = prepareByteBufferToCopy(buffer);
+    ByteBuffer bufferToCopy = prepareByteBufferToCopy(buffer);
 
-    Assert.state(buffer.position() == 0, "Failed to rewind the given ByteBuffer");
-    Assert.state(buffer.remaining() > 0, "The given ByteBuffer has no remaining content to copy");
+    Assert.state(bufferToCopy.position() == 0, "Failed to rewind the given ByteBuffer");
+    Assert.state(bufferToCopy.remaining() > 0, "The given ByteBuffer has no remaining content to copy");
 
-    return buffer.isDirect()
-      ? allocateDirect(buffer, additionalCapacity)
-      : allocateNonDirect(buffer, additionalCapacity);
+    return bufferToCopy.isDirect()
+      ? allocateDirect(bufferToCopy, additionalCapacity)
+      : allocateNonDirect(bufferToCopy, additionalCapacity);
   }
 
   private static @NotNull ByteBuffer allocateDirect(@NotNull ByteBuffer existingBuffer, int additionalCapacity) {
@@ -158,12 +158,13 @@ public abstract class BufferUtils {
   @NullSafe
   public static Byte[] toBigByteArray(byte[] array) {
 
-    array = nullSafeArray(array);
+    byte[] nullSafeArray = nullSafeArray(array);
 
-    Byte[] bigByteArray = new Byte[array.length];
+    Byte[] bigByteArray = new Byte[nullSafeArray.length];
+
     int index = 0;
 
-    for (byte element : array) {
+    for (byte element : nullSafeArray) {
       bigByteArray[index++] = element;
     }
 
@@ -185,12 +186,12 @@ public abstract class BufferUtils {
   @NullSafe
   public static byte[] toPrimitiveByteArray(Byte[] array) {
 
-    array = ArrayUtils.nullSafeArray(array, Byte.class);
+    Byte[] nullSafeArray = ArrayUtils.nullSafeArray(array, Byte.class);
 
-    byte[] primitiveByteArray = new byte[array.length];
+    byte[] primitiveByteArray = new byte[nullSafeArray.length];
     int index = 0;
 
-    for (Byte element : array) {
+    for (Byte element : nullSafeArray) {
       primitiveByteArray[index++] = NumberUtils.byteValue(element);
     }
 

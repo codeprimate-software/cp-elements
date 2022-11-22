@@ -160,14 +160,15 @@ public class ListFiles implements Runnable {
    */
   public void listFiles(@NotNull File directory, @Nullable String indent) {
 
-    directory = validateDirectory(directory);
+    File resolvedDirectory = validateDirectory(directory);
+
     indent = StringUtils.hasText(indent) ? indent : StringUtils.EMPTY_STRING;
 
-    printDirectoryName(indent, directory);
+    printDirectoryName(indent, resolvedDirectory);
 
     String directoryContentIndent = buildDirectoryContentIndent(indent);
 
-    Arrays.stream(sort(ArrayUtils.nullSafeArray(directory.listFiles(), File.class))).forEach(file -> {
+    Arrays.stream(sort(ArrayUtils.nullSafeArray(resolvedDirectory.listFiles(), File.class))).forEach(file -> {
       if (FileSystemUtils.isDirectory(file)) {
         listFiles(file, directoryContentIndent);
       }
@@ -187,12 +188,11 @@ public class ListFiles implements Runnable {
 
   @NotNull String concatIndentAndDirectoryName(@Nullable String indent, @NotNull File directory) {
 
-    indent = Optional.ofNullable(indent)
-      .filter(StringUtils::hasText)
-      .map(it -> it + SUB_DIRECTORY_DASH_PLUS_OFFSET)
-      .orElse(StringUtils.EMPTY_STRING);
+    String resolvedIndent = StringUtils.hasText(indent)
+      ? indent + SUB_DIRECTORY_DASH_PLUS_OFFSET
+      : StringUtils.EMPTY_STRING;
 
-    return String.format(indent + DIRECTORY_MARKER_WITH_DIRECTORY_NAME, directory.getName());
+    return String.format(resolvedIndent + DIRECTORY_MARKER_WITH_DIRECTORY_NAME, directory.getName());
   }
 
   @NotNull String concatIndentAndFileName(@Nullable String indent, @NotNull File file) {

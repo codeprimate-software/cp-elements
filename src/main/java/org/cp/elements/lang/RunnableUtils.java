@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.Optional;
@@ -21,7 +20,7 @@ import java.util.Optional;
 import org.cp.elements.lang.concurrent.ThreadUtils;
 
 /**
- * The {@link RunnableUtils} class is a utility class for working with {@link Runnable} objects.
+ * Abstract utility class used to process {@link Runnable objects}.
  *
  * @author John Blum
  * @see java.lang.Runnable
@@ -204,21 +203,23 @@ public abstract class RunnableUtils {
    * {@link Thread#sleep(long, int)} for the given number of milliseconds uninterrupted.
    * @see java.lang.Thread#sleep(long, int)
    */
+  @SuppressWarnings("all")
   private static boolean safeSleep(long milliseconds) {
 
     boolean interrupted = false;
 
-    long timeout = (System.currentTimeMillis() + milliseconds);
+    long remainingMilliseconds = milliseconds;
+    long timeout = System.currentTimeMillis() + milliseconds;
 
     while (System.currentTimeMillis() < timeout) {
       try {
-        Thread.sleep(milliseconds);
+        Thread.sleep(remainingMilliseconds);
       }
       catch (InterruptedException cause) {
         interrupted = true;
       }
       finally {
-        milliseconds = Math.min(timeout - System.currentTimeMillis(), 0);
+        remainingMilliseconds = Math.min(timeout - System.currentTimeMillis(), 0);
       }
     }
 

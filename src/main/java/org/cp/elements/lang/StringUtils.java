@@ -291,10 +291,12 @@ public abstract class StringUtils {
 
     StringBuilder spaces = new StringBuilder(Math.max(number, 0));
 
-    while (number > 0) {
-      int count = Math.min(SPACES.length - 1, number);
+    int remainingCount = number;
+
+    while (remainingCount > 0) {
+      int count = Math.min(SPACES.length - 1, remainingCount);
       spaces.append(SPACES[count]);
-      number -= count;
+      remainingCount -= count;
     }
 
     return spaces.toString();
@@ -499,11 +501,13 @@ public abstract class StringUtils {
   @NullSafe
   public static String replaceAll(String value, String pattern, String replacement) {
 
+    String result = value;
+
     if (!ObjectUtils.areAnyNull(value, pattern, replacement)) {
-      value = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
+      result = Pattern.compile(pattern).matcher(value).replaceAll(replacement);
     }
 
-    return value;
+    return result;
   }
 
   /**
@@ -710,11 +714,11 @@ public abstract class StringUtils {
     int spaceIndex;
 
     // if indent is null, then do not indent the wrapped lines
-    indent = (indent != null ? indent : EMPTY_STRING);
+    String resolvedIndent = indent != null ? indent : EMPTY_STRING;
 
     while (line.length() > widthInCharacters) {
       spaceIndex = line.substring(0, widthInCharacters).lastIndexOf(SINGLE_SPACE);
-      buffer.append(lineCount++ > 1 ? indent : EMPTY_STRING);
+      buffer.append(lineCount++ > 1 ? resolvedIndent : EMPTY_STRING);
       // throws IndexOutOfBoundsException if spaceIndex is -1, implying no word boundary was found within
       // the given width; this also avoids the infinite loop
       buffer.append(line.substring(0, spaceIndex));
@@ -723,7 +727,7 @@ public abstract class StringUtils {
       line = line.substring(spaceIndex + 1);
     }
 
-    buffer.append(lineCount > 1 ? indent : EMPTY_STRING);
+    buffer.append(lineCount > 1 ? resolvedIndent : EMPTY_STRING);
     buffer.append(line);
 
     return buffer.toString();

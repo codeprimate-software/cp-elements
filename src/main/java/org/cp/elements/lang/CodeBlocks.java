@@ -200,10 +200,12 @@ public abstract class CodeBlocks {
     Assert.notNull(whileCondition, "The condition for the while-loop is required");
     Assert.notNull(whileBlock, "The Function of the while-loop is required");
 
-    while (whileCondition.test(target)) {
-      target = whileBlock.apply(target);
+    T result = target;
+
+    while (whileCondition.test(result)) {
+      result = whileBlock.apply(result);
     }
 
-    return target;
+    return result;
   }
 }

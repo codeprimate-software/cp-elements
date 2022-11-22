@@ -374,14 +374,14 @@ public abstract class MapUtils {
 
     int count = 0;
 
-    map = new TreeMap<Object, Object>(nullSafeMap(map));
+    Map<?, ?> resolvedMap = new TreeMap<>(nullSafeMap(map));
 
-    for (Map.Entry<?, ?> entry : map.entrySet()) {
+    for (Map.Entry<?, ?> entry : resolvedMap.entrySet()) {
       builder.append("\n\t");
       builder.append(entry.getKey());
       builder.append(" = ");
       builder.append(entry.getValue());
-      builder.append(++count == map.size() ? "\n" : ",");
+      builder.append(++count == resolvedMap.size() ? "\n" : ",");
     }
 
     builder.append("]");

@@ -85,11 +85,13 @@ public class InOutParameter<T> {
       return true;
     }
 
+    Object thatValue = obj;
+
     if (obj instanceof InOutParameter) {
-      obj = ((InOutParameter<?>) obj).getValue();
+      thatValue = ((InOutParameter<?>) obj).getValue();
     }
 
-    return ObjectUtils.equalsIgnoreNull(this.value, obj);
+    return ObjectUtils.equalsIgnoreNull(this.value, thatValue);
   }
 
   /**

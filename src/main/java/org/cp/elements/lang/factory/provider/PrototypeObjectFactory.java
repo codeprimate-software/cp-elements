@@ -68,11 +68,13 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
   @Override
   protected <T> T postConstruct(T object, Object... args) {
 
-    object = super.postConstruct(object, args);
-    object = configure(object);
-    object = initialize(object, args);
+    T result = object;
 
-    return object;
+    result = super.postConstruct(result, args);
+    result = configure(result);
+    result = initialize(result, args);
+
+    return result;
   }
 
   /**
