@@ -36,6 +36,8 @@ public class ByteBufferOutputStream extends OutputStream {
 
   protected static final float LOAD_FACTOR = 0.85f;
 
+  private static final int MASK = 0x000000FF;
+
   /**
    * Factory method used to construct a new instance of {@link ByteBufferOutputStream} to write data into the given,
    * required {@link ByteBuffer}.
@@ -142,7 +144,7 @@ public class ByteBufferOutputStream extends OutputStream {
 
   protected byte convertToByte(int value) {
     //return Integer.valueOf(value).byteValue();
-    return (byte) (value & 0x000000FF);
+    return (byte) (value & MASK);
   }
 
   protected void reallocateBuffer() {

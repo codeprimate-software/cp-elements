@@ -35,6 +35,8 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 public abstract class NumberUtils {
 
+  private static final int MASK = 0xFF;
+
   public static final String BINARY_PREFIX_NOTATION = "b";
   public static final String HEXADECIMAL_PREFIX_NOTATION = "0x";
 
@@ -171,10 +173,10 @@ public abstract class NumberUtils {
 
     byte[] valueBytes = new byte[4];
 
-    valueBytes[0] = (byte) (value >>> 24 & 0xFF);
-    valueBytes[1] = (byte) (value >>> 16 & 0xFF);
-    valueBytes[2] = (byte) (value >>> 8 & 0xFF);
-    valueBytes[3] = (byte) (value & 0xFF);
+    valueBytes[0] = (byte) (value >>> 24 & MASK);
+    valueBytes[1] = (byte) (value >>> 16 & MASK);
+    valueBytes[2] = (byte) (value >>> 8 & MASK);
+    valueBytes[3] = (byte) (value & MASK);
 
     return valueBytes;
   }

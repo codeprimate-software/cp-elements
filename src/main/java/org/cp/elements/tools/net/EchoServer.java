@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.ThrowableUtils;
 import org.cp.elements.lang.concurrent.ThreadUtils;
 import org.cp.elements.net.ServicePort;
@@ -54,6 +55,8 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
   protected static final int EXECUTOR_THREAD_POOL_SIZE = 10;
 
   protected static final long DEFAULT_DURATION_MILLISECONDS = TimeUnit.SECONDS.toMillis(15);
+
+  private static final int THIRTY = 30;
 
   /**
    * Main method used to run the {@link EchoServer} program.
@@ -352,10 +355,10 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
         localEchoService.shutdown();
 
         try {
-          if (!localEchoService.awaitTermination(30, TimeUnit.SECONDS)) {
+          if (!localEchoService.awaitTermination(THIRTY, TimeUnit.SECONDS)) {
             localEchoService.shutdownNow();
 
-            if (!localEchoService.awaitTermination(30, TimeUnit.SECONDS)) {
+            if (!localEchoService.awaitTermination(THIRTY, TimeUnit.SECONDS)) {
               getLogger().warning("Failed to shutdown EchoService");
             }
           }
@@ -387,6 +390,9 @@ public class EchoServer extends AbstractClientServerSupport implements Runnable 
    * @see ThreadUtils#waitFor(long)
    */
   public boolean waitFor(long duration) {
-    return ThreadUtils.waitFor(duration).checkEvery(500L).on(this::isRunning);
+
+    return ThreadUtils.waitFor(duration)
+      .checkEvery(Integers.FIVE_HUNDRED)
+      .on(this::isRunning);
   }
 }
