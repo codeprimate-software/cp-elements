@@ -27,11 +27,27 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.lang.Integer
  * @since 1.0.0
  */
+@SuppressWarnings("unused")
 public abstract class Integers {
 
   public static final Integer ZERO = 0;
   public static final Integer ONE = 1;
   public static final Integer TWO = 2;
+  public static final Integer FOUR = 4;
+  public static final Integer EIGHT = 8;
+  public static final Integer SIXTEEN = 16;
+  public static final Integer THIRTY_TWO = 32;
+  public static final Integer SIXTY_FOUR = 64;
+  public static final Integer ONE_HUNDRED = 100;
+  public static final Integer ONE_HUNDRED_TWENTY_EIGHT = 128;
+  public static final Integer TWO_HUNDRED_FIFTY_SIX = 256;
+  public static final Integer FIVE_HUNDRED = 500;
+  public static final Integer FIVE_HUNDRED_TWELVE = 512;
+  public static final Integer ONE_THOUSAND = 1000;
+  public static final Integer ONE_THOUSAND_TWENTY_FOUR = 1024;
+  public static final Integer TWO_THOUSAND_FOURTY_EIGHT = 2048;
+  public static final Integer FOUR_THOUSAND_NINETY_SIX = 4096;
+  public static final Integer EIGHT_THOUSAND_ONE_HUNDRED_NINETY_TWO = 8192;
 
   /**
    * Converts a {@link Integer positive number} into a {@link Integer negative number}
