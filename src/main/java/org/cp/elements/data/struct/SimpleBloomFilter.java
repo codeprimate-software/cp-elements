@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
@@ -44,7 +45,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
 
   protected static final float DEFAULT_ACCEPTABLE_FALSE_POSITIVE_RATE = 0.01f; // 1%
 
-  protected static final int THIRTY_TWO_BITS = 32;
+  protected static final int THIRTY_TWO_BITS = Integers.THIRTY_TWO;
   protected static final int DEFAULT_BIT_ARRAY_LENGTH = 16384;
   protected static final int DEFAULT_NUMBER_OF_BITS = DEFAULT_BIT_ARRAY_LENGTH * THIRTY_TWO_BITS; // 64 KB filter
   protected static final int DEFAULT_NUMBER_OF_HASH_FUNCTIONS = 11;
