@@ -23,8 +23,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Test;
+
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * Unit Tests for {@link ThrowableUtils}.
@@ -37,7 +38,7 @@ import org.junit.Test;
  * @see org.cp.elements.lang.ThrowableUtils
  * @since 1.0.0
  */
-public class ThrowableUtilsTests {
+public class ThrowableUtilsUnitTests {
 
   private @NotNull String toString(@NotNull Throwable throwable) {
 
@@ -78,7 +79,7 @@ public class ThrowableUtilsTests {
   }
 
   @Test
-  public void getCauseFromNull() {
+  public void getCauseFromNullIsNullSafe() {
     assertThat(ThrowableUtils.getCause(null)).isNull();
   }
 
@@ -97,7 +98,7 @@ public class ThrowableUtilsTests {
   }
 
   @Test
-  public void getCauseOfInvocationTargetExceptionFromNull() {
+  public void getCauseOfInvocationTargetExceptionFromNullIsNullSafe() {
     assertThat(ThrowableUtils.getCauseOfInvocationTargetException(null)).isNull();
   }
 
@@ -127,7 +128,7 @@ public class ThrowableUtilsTests {
   }
 
   @Test
-  public void getMessageFromNull() {
+  public void getMessageFromNullIsNullSafe() {
     assertThat(ThrowableUtils.getMessage(null)).isNull();
   }
 
@@ -159,7 +160,7 @@ public class ThrowableUtilsTests {
   }
 
   @Test
-  public void getRootCauseWithFromNull() {
+  public void getRootCauseWithFromNullIsNullSafe() {
     assertThat(ThrowableUtils.getRootCause(null)).isNull();
   }
 
@@ -172,7 +173,7 @@ public class ThrowableUtilsTests {
   }
 
   @Test
-  public void getStackTraceFromNull() {
+  public void getStackTraceFromNullIsNullSafe() {
     assertThat(ThrowableUtils.getStackTrace(null)).isNull();
   }
 }

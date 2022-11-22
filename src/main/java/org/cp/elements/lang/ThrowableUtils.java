@@ -93,7 +93,7 @@ public abstract class ThrowableUtils {
       throwableCause = throwableCause.getCause();
     }
 
-    return throwable;
+    return throwableCause;
   }
 
   /**
