@@ -167,7 +167,7 @@
       <property name="validateOnlyOverlapping" value="false"/>
     </module>
     <module name="ReturnCount">
-      <property name="max" value="${checkstyle.ReturnCount.max}" default="5"/>
+      <property name="max" value="${checkstyle.ReturnCount.max}" default="10"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="SimplifyBooleanExpression"/>
