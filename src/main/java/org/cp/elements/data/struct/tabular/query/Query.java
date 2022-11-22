@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular.query;
 
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
@@ -36,19 +35,19 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The {@link Query} class is a Abstract Data Type (ADT) modeling a query (e.g. {@literal SELECT} statement)
- * on a tabular data structure.
+ * Abstract Data Type (ADT) modeling a query (e.g. {@literal SELECT} statement) on a tabular data structure.
  *
  * @author John Blum
  * @see java.lang.Runnable
  * @see java.util.Comparator
+ * @see java.util.List
  * @see java.util.function.Predicate
  * @see org.cp.elements.data.struct.tabular.Column
  * @see org.cp.elements.data.struct.tabular.Row
  * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "rawtypes", "unused" })
 public class Query implements Runnable {
 
   private final AtomicReference<View> resultSet = new AtomicReference<>();
@@ -100,7 +99,7 @@ public class Query implements Runnable {
    * @see org.cp.elements.data.struct.tabular.Column
    * @see java.util.List
    */
-  private Query(List<Column> projection) {
+  protected Query(List<Column> projection) {
 
     Assert.notEmpty(projection, "The projection must contain columns");
 
