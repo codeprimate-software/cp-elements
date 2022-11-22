@@ -317,12 +317,14 @@ public abstract class ProcessUtils {
 
     for (File file : searchFiles) {
 
+      File pidFile = file;
+
       if (file.isDirectory()) {
-        file = findPidFile(file);
+        pidFile = findPidFile(file);
       }
 
-      if (PID_FILE_FILTER.accept(file)) {
-        return file;
+      if (PID_FILE_FILTER.accept(pidFile)) {
+        return pidFile;
       }
     }
 
