@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process;
 
 import static java.lang.ProcessBuilder.Redirect;
@@ -27,11 +26,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.annotation.NullSafe;
-import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link ProcessContext} class captures details about the operating environment (context)

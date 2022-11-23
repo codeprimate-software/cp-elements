@@ -41,6 +41,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.cp.elements.context.env.Environment;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
@@ -54,7 +55,6 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.process.event.ProcessStreamListener;
 import org.cp.elements.process.util.ProcessUtils;
 import org.cp.elements.util.CollectionUtils;
-import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link ProcessAdapter} class is an Adapter (wrapper) for a Java {@link Process} object.

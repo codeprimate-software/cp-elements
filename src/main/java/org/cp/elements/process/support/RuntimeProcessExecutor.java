@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.support;
 
 import static org.cp.elements.io.FileUtils.isDirectory;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.cp.elements.context.env.Environment;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.SystemUtils;
 import org.cp.elements.lang.annotation.NullSafe;
@@ -32,7 +32,6 @@ import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.process.ProcessContext;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
-import org.cp.elements.context.env.Environment;
 
 /**
  * The {@link RuntimeProcessExecutor} class is a {@link ProcessExecutor} using the {@link Runtime} API
