@@ -173,12 +173,38 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
     return getConfigurations().iterator();
   }
 
+  /**
+   * Proxies the given, required {@link Class#isInterface() interface} to enable access to configuration properties
+   * using object-oriented techniques.
+   *
+   * @param <T> {@link Class type} of the interface.
+   * @param interfaceType {@link Class interface type} to proxy; must not be {@literal null}.
+   * @return a {@link Object JDK Dynamic Proxy} enabling access to configuration properties
+   * in an object-oriented manner.
+   * @throws IllegalArgumentException if the {@link Class interface type} is {@literal null}.
+   * @see #proxy(Class, String)
+   */
   @Override
   public @NotNull <T> T proxy(@NotNull Class<T> interfaceType) {
     return proxy(ObjectUtils.requireObject(interfaceType, "The interface to proxy is required"),
       resolvePropertyPrefix(interfaceType));
   }
 
+  /**
+   * Proxies the given, required {@link Class#isInterface() interface} to enable access to configuration properties
+   * using object-oriented techniques.
+   *
+   * @param <T> {@link Class type} of the interface.
+   * @param interfaceType {@link Class interface type} to proxy; must not be {@literal null}.
+   * @param propertyPrefix {@link String} containing the {@literal prefix} to append to properties on access;
+   * must ot be {@literal null} or {@literal empty}.
+   * @return a {@link Object JDK Dynamic Proxy} enabling access to configuration properties
+   * in an object-oriented manner.
+   * @throws IllegalArgumentException if the {@link Class interface type} is {@literal null},
+   * or the {@link Class type} is not an {@link Class#isInterface() interface},
+   * or the {@link String propertyPrefix} is {@literal null} or {@literal empty}.
+   * @see #proxy(Class, String)
+   */
   protected @NotNull <T> T proxy(@NotNull Class<T> interfaceType, @NotNull String propertyPrefix) {
 
     Assert.notNull(interfaceType, "The interface to proxy is required");
