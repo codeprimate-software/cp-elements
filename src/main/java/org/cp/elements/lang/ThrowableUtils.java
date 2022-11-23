@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2011-Present Author or Authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
- /**
+/**
  * {@link ThrowableUtils} provides methods for working with {@link Throwable} objects
   * ({@link Error Errors} and {@link Exception Exceptions}).
  *
