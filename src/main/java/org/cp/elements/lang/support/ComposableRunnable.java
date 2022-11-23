@@ -52,8 +52,8 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
    */
   private ComposableRunnable() {
 
-    this.runnableOne = () -> {};
-    this.runnableTwo = () -> {};
+    this.runnableOne = () -> { };
+    this.runnableTwo = () -> { };
   }
 
   /**

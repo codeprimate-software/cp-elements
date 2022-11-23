@@ -258,7 +258,7 @@ public abstract class ZipUtils {
       outputStream.putNextEntry(entry);
     }
     catch (IOException cause) {
-      throw newSystemException(cause,"Failed to zip entry [%s]", entry.getName());
+      throw newSystemException(cause, "Failed to zip entry [%s]", entry.getName());
     }
 
     IOUtils.doSafeIo(outputStream::closeEntry);

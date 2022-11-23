@@ -82,7 +82,7 @@ public abstract class FunctionUtils {
    */
   @NullSafe
   public static @NotNull <T> Consumer<T> noopConsumer() {
-    return argument -> {};
+    return argument -> { };
   }
 
   /**

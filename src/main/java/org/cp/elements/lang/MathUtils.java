@@ -188,7 +188,7 @@ public abstract class MathUtils {
     BigInteger result = value;
     BigInteger multiplier = value;
 
-    for (multiplier = multiplier.add(NEGATIVE_ONE) ; multiplier.compareTo(BigInteger.ONE) > 0;
+    for (multiplier = multiplier.add(NEGATIVE_ONE); multiplier.compareTo(BigInteger.ONE) > 0;
           multiplier = multiplier.add(NEGATIVE_ONE)) {
 
       result = result.multiply(multiplier);

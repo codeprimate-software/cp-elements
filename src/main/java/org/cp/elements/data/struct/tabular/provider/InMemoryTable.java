@@ -84,7 +84,7 @@ public class InMemoryTable extends AbstractTable {
    */
   public static InMemoryTable of(Iterable<Column> columns) {
 
-    Assert.notNull(columns,"Columns are required");
+    Assert.notNull(columns, "Columns are required");
 
     Column[] columnArray = ArrayUtils.asArray(columns, Column.class);
 

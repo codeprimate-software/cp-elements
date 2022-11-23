@@ -671,7 +671,7 @@ public abstract class ArrayUtils {
    */
   @NullSafe
   @SuppressWarnings("unchecked")
-  public static @NotNull<T> T[] nullSafeArray(@Nullable T[] array, @Nullable Class<?> componentType) {
+  public static @NotNull <T> T[] nullSafeArray(@Nullable T[] array, @Nullable Class<?> componentType) {
     return array != null ? array : (T[]) Array.newInstance(ObjectUtils.returnFirstNonNullValue(componentType, Object.class), 0);
   }
 

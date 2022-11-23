@@ -138,7 +138,7 @@ public abstract class IOUtils {
 
     Assert.notNull(serializedObjectBytes, "An array of bytes to deserialize as an Object is required");
 
-    try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(serializedObjectBytes))){
+    try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(serializedObjectBytes))) {
       return (T) in.readObject();
     }
   }
@@ -172,7 +172,9 @@ public abstract class IOUtils {
 
     Assert.notNull(serializedObjectBytes, "An array of bytes to deserialize as an Object is required");
 
-    try (ObjectInputStream in = new ClassLoaderObjectInputStream(new ByteArrayInputStream(serializedObjectBytes), classLoader)){
+    try (ObjectInputStream in =
+           new ClassLoaderObjectInputStream(new ByteArrayInputStream(serializedObjectBytes), classLoader)) {
+
       return (T) in.readObject();
     }
   }

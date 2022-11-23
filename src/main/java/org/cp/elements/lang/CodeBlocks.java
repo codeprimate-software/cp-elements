@@ -35,7 +35,7 @@ import org.cp.elements.lang.annotation.Nullable;
 @SuppressWarnings("unused")
 public abstract class CodeBlocks {
 
-  public static final Runnable NO_OP_RUNNABLE = () -> {};
+  public static final Runnable NO_OP_RUNNABLE = () -> { };
 
   /**
    * Implementation of an {@literal if-else} code block.

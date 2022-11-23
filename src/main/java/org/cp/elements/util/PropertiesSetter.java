@@ -51,7 +51,7 @@ public abstract class PropertiesSetter implements FluentApiExtension {
    */
   @Dsl
   public static @NotNull PropertiesSetter set(@NotNull String propertyName) {
-    return new PropertiesSetter(propertyName) {};
+    return new PropertiesSetter(propertyName) { };
   }
 
   private Properties properties;
