@@ -41,9 +41,9 @@ public class ClassLocator {
   }
 
   private static Optional<URL> resolve(String binaryClassName) {
-   return Optional.ofNullable(ClassUtils.locateClass(binaryClassName));
+    return Optional.ofNullable(ClassUtils.locateClass(binaryClassName));
   }
 
-  private ClassLocator() {}
+  private ClassLocator() { }
 
 }
