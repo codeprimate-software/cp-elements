@@ -99,7 +99,7 @@ public abstract class CollectionUtils {
    * @see java.util.Collection
    * @see java.lang.Iterable
    */
- 	public static @NotNull <E, T extends Collection<E>> T addAll(@NotNull T collection, Iterable<E> iterable) {
+  public static @NotNull <E, T extends Collection<E>> T addAll(@NotNull T collection, Iterable<E> iterable) {
 
  		Assert.notNull(collection, "Collection is required");
 
