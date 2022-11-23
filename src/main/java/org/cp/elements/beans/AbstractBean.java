@@ -720,7 +720,8 @@ public abstract class AbstractBean<ID extends Comparable<ID>, USER, PROCESS> ext
    * @return the mapped {@link StateChangeCallback} to the given {@link String named} property.
    * @see StateChangeCallback
    */
-  protected @Nullable StateChangeCallback<Object> unmapPropertyNameToStateChangeCallback(@Nullable String propertyName) {
+  protected @Nullable StateChangeCallback<Object> unmapPropertyNameToStateChangeCallback(
+      @Nullable String propertyName) {
 
     return StringUtils.hasText(propertyName)
       ? this.propertyNameToStateChangeCallbackMapping.remove(propertyName)

@@ -104,8 +104,8 @@ public abstract class AbstractClientServerSupport {
    * @see java.net.Socket
    */
   protected PrintWriter newPrintWriter(Socket socket) throws IOException {
-    return new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Charset.defaultCharset())),
-      true);
+    return new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),
+      Charset.defaultCharset())), true);
   }
 
   /**

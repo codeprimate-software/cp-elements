@@ -59,9 +59,12 @@ import org.cp.elements.util.ArrayUtils;
  * to all {@link ConfigurationService} provider implementations.
  *
  * @author John Blum
+ * @see java.lang.reflect.Method
  * @see org.cp.elements.context.configure.ConfigurationService
  * @see org.cp.elements.context.configure.annotation.ConfigurationProperties
  * @see org.cp.elements.context.container.DependencyInjection
+ * @see org.cp.elements.lang.reflect.MethodInterceptor
+ * @see org.cp.elements.lang.reflect.MethodInvocation
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @see org.cp.elements.lang.reflect.ProxyService
  * @since 1.0.0
@@ -135,10 +138,10 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
    * Determines whether the {@literal Profiles} declared by the given, required {@link Configuration} are active
    * as declared and specified by this {@link ConfigurationService}.
    *
-   * If the given, required {@link Configuration} did not declare any {@literal Profiles}, then the {@link Configuration}
-   * is part of the {@literal DEFAULT Profile} and is active by default. Otherwise, the {@literal Profile}
-   * or at least one of the {@literal Profiles} declared by the {@link Configuration} must be contained in
-   * the {@link List} of {@literal Active Profiles} declared by this {@link ConfigurationService}.
+   * If the given, required {@link Configuration} did not declare any {@literal Profiles},
+   * then the {@link Configuration} is part of the {@literal DEFAULT Profile} and is active by default.
+   * Otherwise, the {@literal Profile} or at least one of the {@literal Profiles} declared by the {@link Configuration}
+   * must be contained in the {@link List} of {@literal Active Profiles} declared by this {@link ConfigurationService}.
    *
    * @param configuration {@link Configuration} to evaluate; must not be {@literal null}.
    * @return a boolean value indicating whether the {@literal Profiles} declared by the given,
@@ -364,8 +367,9 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
      * @throws IllegalArgumentException if the reference to the {@link AbstractConfigurationService}
      * or {@link ConfigurationProperties} {@link Class interface} or {@link String property prefix} are {@literal null}.
      */
-    protected ConfigurationPropertiesInterfaceMethodInterceptor(@NotNull AbstractConfigurationService configurationService,
-        @NotNull Class<?> configurationPropertiesInterface, @NotNull String propertyPrefix) {
+    protected ConfigurationPropertiesInterfaceMethodInterceptor(
+        @NotNull AbstractConfigurationService configurationService, @NotNull Class<?> configurationPropertiesInterface,
+        @NotNull String propertyPrefix) {
 
       this.configurationService =
         ObjectUtils.requireObject(configurationService, "ConfigurationService is required");
@@ -528,10 +532,12 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
         return qualifiedPropertyName;
       }
 
+      String possiblePropertyNamesString =
+        Arrays.toString(ArrayUtils.sort(possiblePropertyNames.toArray(new String[0])));
+
       throw newConfigurationException("Failed to resolve a qualified property name"
         + " in the set of possible property names [%1$s] for the given method name [%2$s]"
-        + " using the base property name [%3$s]",
-        Arrays.toString(ArrayUtils.sort(possiblePropertyNames.toArray(new String[0]))), methodName, getPropertyPrefix());
+        + " using the base property name [%3$s]", possiblePropertyNamesString, methodName, getPropertyPrefix());
     }
 
     // Property Name is already in "PascalCase" after stripping the Method.getName() of the accessor method name prefix.
@@ -612,7 +618,8 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
           .anyMatch(methodName::startsWith);
 
       Assert.isTrue(readAccessorMethodName, "Property accessor method name [%1$s] must start with [%2$s]",
-        methodName, Arrays.toString(ArrayUtils.asArray(ClassUtils.GETTER_METHOD_NAME_PREFIX, ClassUtils.IS_METHOD_NAME_PREFIX)));
+        methodName, Arrays.toString(ArrayUtils.asArray(ClassUtils.GETTER_METHOD_NAME_PREFIX,
+          ClassUtils.IS_METHOD_NAME_PREFIX)));
 
       return method;
     }

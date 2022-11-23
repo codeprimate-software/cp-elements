@@ -91,7 +91,8 @@ public abstract class AbstractSearcher implements Searcher {
     Matcher<E> localMatcher = (Matcher<E>) MatcherHolder.get();
 
     Assert.state(localMatcher != null || this.matcher != null,
-      "A reference to a Matcher used by this Searcher ({0}) for searching and matching elements in the collection was not properly configured!",
+      "A reference to a Matcher used by this Searcher ({0}) for searching and matching elements"
+        + " in the collection was not properly configured!",
         getClass().getName());
 
     return ObjectUtils.returnFirstNonNullValue(localMatcher, this.matcher);
@@ -108,7 +109,8 @@ public abstract class AbstractSearcher implements Searcher {
    */
   @SuppressWarnings("rawtypes")
   public void setMatcher(@NotNull Matcher matcher) {
-    Assert.notNull(matcher, "The Matcher used to match elements in the collection during the search operation by this Searcher ({0}) cannot be null!",
+    Assert.notNull(matcher, "The Matcher used to match elements in the collection during the search operation"
+        + " by this Searcher ({0}) cannot be null!",
       getClass().getName());
     this.matcher = matcher;
   }

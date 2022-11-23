@@ -172,7 +172,8 @@ public enum HttpStatus {
   }
 
   /**
-   * Determines whether this {@link HttpStatus} enumerated value represents an {@literal Informational} HTTP status code.
+   * Determines whether this {@link HttpStatus} enumerated value represents an {@literal Informational}
+   * HTTP status code.
    *
    * @return a boolean value indicating whether this {@link HttpStatus} enumerated value represents
    * an {@literal Informational} HTTP status code.

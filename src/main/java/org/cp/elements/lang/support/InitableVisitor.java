@@ -73,9 +73,11 @@ public class InitableVisitor implements Visitor {
   }
 
   /**
-   * Gets the array of arguments used to initialize ParameterizedInitable and Initable objects visited by this Visitor.
+   * Gets the array of arguments used to initialize {@link ParameterizedInitable} and {@link Initable} objects
+   * visited by this {@link Visitor}.
    *
-   * @return an array or arguments used to initialize ParameterizedInitable and Initable objects visited by this Visitor.
+   * @return an array of arguments used to initialize {@link ParameterizedInitable} and {@link Initable} objects
+   * visited by this {@link Visitor}.
    */
   public @Nullable Object[] getArguments() {
     return this.args;

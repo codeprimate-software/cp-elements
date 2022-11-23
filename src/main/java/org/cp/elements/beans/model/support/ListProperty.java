@@ -91,7 +91,9 @@ public class ListProperty extends AbstractIndexedProperty<Integer> {
    * @see org.cp.elements.beans.model.BeanModel
    * @see java.beans.PropertyDescriptor
    */
-  public static @NotNull ListProperty from(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
+  public static @NotNull ListProperty from(@NotNull BeanModel beanModel,
+      @NotNull PropertyDescriptor propertyDescriptor) {
+
     return new ListProperty(beanModel, propertyDescriptor);
   }
 

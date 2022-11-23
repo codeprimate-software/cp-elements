@@ -22,9 +22,9 @@ import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * A {@link Visitor} implementation used to walk an application domain object graph after the application domain objects have
- * been persisted to a persistent data store in order to update the persistent state of the application domain objects
- * to committed.
+ * A {@link Visitor} implementation used to walk an application domain object graph after the application domain objects
+ * have been persisted to a persistent data store in order to update the persistent state of the application domain
+ * objects to committed.
  *
  * @author John J. Blum
  * @see org.cp.elements.lang.Auditable

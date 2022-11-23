@@ -43,7 +43,8 @@ public class Version implements Comparable<Version> {
   protected static final String VERSION_NUMBER_SEPARATOR = "\\.";
 
   /**
-   * Factory method used to construct a new instance of {@link Version} initialized with major and minor version numbers.
+   * Factory method used to construct a new instance of {@link Version} initialized with major and minor
+   * version numbers.
    *
    * @param major major version number.
    * @param minor minor version number.

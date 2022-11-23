@@ -154,8 +154,10 @@ public abstract class LogicalOperator {
     }
 
     /**
-     * Indicates whether this logical operator is a binary operation.  A binary operator is an operator with two operands.
-     * With LogicalOperator implementations, such as AND and OR, this is expanded to mean two or more operands.
+     * Indicates whether this logical operator is a binary operation.
+     *
+     * A binary operator is an operator with two operands. With LogicalOperator implementations, such as AND and OR,
+     * this is expanded to mean two or more operands.
      *
      * @return a boolean value indicating if this logical operator is a binary operator.
      * @see #isTernary()

@@ -270,7 +270,8 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
    */
-  public static @Nullable <T> T getValue(@NotNull Class<?> type, @NotNull String fieldName, @NotNull Class<T> fieldType) {
+  public static @Nullable <T> T getValue(@NotNull Class<?> type, @NotNull String fieldName,
+      @NotNull Class<T> fieldType) {
 
     try {
       return getValue(null, getField(type, fieldName), fieldType);
@@ -497,7 +498,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Class, String, Class[], Object[], Class)
    */
-  public static @Nullable <T> T invoke(@NotNull Class<?> type, @NotNull String methodName, Object[] arguments, Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Class<?> type, @NotNull String methodName, Object[] arguments,
+      Class<T> returnType) {
+
     return invoke(type, methodName, getArgumentTypes(arguments), arguments, returnType);
   }
 
@@ -518,7 +521,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static void invoke(@NotNull Class<?> type, @NotNull String methodName, Class<?>[] parameterTypes, Object... arguments) {
+  public static void invoke(@NotNull Class<?> type, @NotNull String methodName, Class<?>[] parameterTypes,
+      Object... arguments) {
+
     invoke(null, resolveMethod(type, methodName, parameterTypes, arguments, Void.class), arguments, Void.class);
   }
 
@@ -628,7 +633,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getArgumentTypes(Object...)
    * @see #invoke(Object, String, Class[], Object[], Class)
    */
-  public static @Nullable <T> T invoke(@NotNull Object obj, @NotNull String methodName, Object[] arguments, Class<T> returnType) {
+  public static @Nullable <T> T invoke(@NotNull Object obj, @NotNull String methodName, Object[] arguments,
+      Class<T> returnType) {
+
     return invoke(obj, methodName, getArgumentTypes(arguments), arguments, returnType);
   }
 
@@ -650,7 +657,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see #getMethodSignature(String, Class[], Class)
    * @see #invoke(Object, java.lang.reflect.Method, Object[], Class)
    */
-  public static void invoke(@NotNull Object obj, @NotNull String methodName, Class<?>[] parameterTypes, Object... arguments) {
+  public static void invoke(@NotNull Object obj, @NotNull String methodName, Class<?>[] parameterTypes,
+      Object... arguments) {
+
     invoke(obj, resolveMethod(obj.getClass(), methodName, parameterTypes, arguments, Void.class),
       arguments, Void.class);
   }
@@ -898,7 +907,8 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     /**
      * Constructs a new instance of {@link MethodReference} initialized with the given, required {@link Class type}
-     * from which the {@link Method} will be resolved and {@link String method name} used to identify the {@link Method}.
+     * from which the {@link Method} will be resolved and {@link String method name}
+     * used to identify the {@link Method}.
      *
      * @param referenceType {@link Class type} from which the {@link Method} by {@link String name} is resolved.
      * @param methodName {@link String} containing the {@literal name} of the {@link Method} to resolve.

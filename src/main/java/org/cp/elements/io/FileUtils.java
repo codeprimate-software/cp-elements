@@ -166,7 +166,8 @@ public abstract class FileUtils extends IOUtils {
    * Returns the {@link String absolute path (location)} of the given, required {@link File}.
    *
    * @param file {@link File} to determine {@link String absolute filesystem path}; must not be {@literal null}.
-   * @return a {@link String} containing the {@literal absolute filesystem pathname (location)} of the given {@link File}.
+   * @return a {@link String} containing the {@literal absolute filesystem pathname (location)}
+   * of the given {@link File}.
    * @throws IllegalArgumentException if the {@link File} reference is {@literal null}.
    * @see #tryGetCanonicalPathElseGetAbsolutePath(java.io.File)
    * @see java.io.File#getParentFile()
@@ -355,7 +356,9 @@ public abstract class FileUtils extends IOUtils {
    * otherwise returns a generated {@link FilenameFilter}.
    * @see java.io.FilenameFilter
    */
-  public static @NotNull FilenameFilter nullSafeFilenameFilter(@Nullable FilenameFilter filenameFilter, boolean accept) {
+  public static @NotNull FilenameFilter nullSafeFilenameFilter(@Nullable FilenameFilter filenameFilter,
+      boolean accept) {
+
     return filenameFilter != null ? filenameFilter : (file, filename) -> accept;
   }
 
@@ -520,7 +523,8 @@ public abstract class FileUtils extends IOUtils {
    * @param file {@link File} to write the contents of the {@link InputStream} to; must not be {@literal null}.
    * @return the given {@link File} reference containing the contents of the {@link InputStream}.
    * @throws IllegalArgumentException if either the {@link InputStream} or {@link File} reference are {@literal null}.
-   * @throws IllegalStateException if the {@link File} {@link File#exists()} and is not {@link File#canWrite() writable}.
+   * @throws IllegalStateException if the {@link File} {@link File#exists()}
+   * and is not {@link File#canWrite() writable}.
    * @throws IOException if an I/O error occurs while writing the contents of the {@link InputStream}
    * to the {@link File}.
    * @see #copy(InputStream, OutputStream)

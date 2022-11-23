@@ -52,8 +52,8 @@ public abstract class ThrowableUtils {
    * when a method on some object is invoked reflectively.
    *
    * @param throwable {@link Throwable} object to evaluate as a {@link InvocationTargetException}.
-   * @return a {@link Throwable} object indicating the underlying cause of {@code throwable} if {@code throwable} is an instance
-   * of {@link InvocationTargetException} otherwise return {@code throwable}.
+   * @return a {@link Throwable} object indicating the underlying cause of {@code throwable} if {@code throwable}
+   * is an instance of {@link InvocationTargetException} otherwise return {@code throwable}.
    * @see java.lang.reflect.InvocationTargetException
    * @see java.lang.Throwable#getCause()
    */

@@ -84,8 +84,8 @@ public abstract class BeanUtils extends ObjectUtils {
   }
 
   /**
-   * Constructs a new instance of {@link PropertyChangeEvent} initialized with the given, required {@link Object source},
-   * {@link String propertyName}, {@link Object old value} and {@link Object new value}.
+   * Constructs a new instance of {@link PropertyChangeEvent} initialized with the given, required
+   * {@link Object source}, {@link String propertyName}, {@link Object old value} and {@link Object new value}.
    *
    * @param source {@link Object} source of the {@link PropertyChangeEvent}; must not be {@literal null}.
    * @param propertyName {@link String} containing the {@literal name} of the bean property that changed;
@@ -97,8 +97,8 @@ public abstract class BeanUtils extends ObjectUtils {
    * or the {@link String propertyName} is {@literal null} or {@literal empty}.
    * @see java.beans.PropertyChangeEvent
    */
-  public static @NotNull PropertyChangeEvent newPropertyChangeEvent(@NotNull Object source, @NotNull String propertyName,
-      @Nullable Object oldValue, @Nullable Object newValue) {
+  public static @NotNull PropertyChangeEvent newPropertyChangeEvent(@NotNull Object source,
+      @NotNull String propertyName, @Nullable Object oldValue, @Nullable Object newValue) {
 
     Assert.notNull(source, "Source is required");
     Assert.hasText(propertyName, "Property name [%s] is required", propertyName);

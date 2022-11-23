@@ -107,7 +107,8 @@ public abstract class MapUtils {
    * @see java.util.function.Predicate
    * @see java.util.Map
    */
-  public static @NotNull <K, V> Map<K, V> filter(@NotNull Map<K, V> map, @NotNull Predicate<Map.Entry<K, V>> predicate) {
+  public static @NotNull <K, V> Map<K, V> filter(@NotNull Map<K, V> map,
+      @NotNull Predicate<Map.Entry<K, V>> predicate) {
 
     Assert.notNull(map, "Map is required");
     Assert.notNull(predicate, "Predicate is required");
@@ -160,7 +161,9 @@ public abstract class MapUtils {
    * @see #filter(Map, Predicate)
    * @see java.util.Map
    */
-  public static @NotNull <K, V> Map<K, V> findAll(@NotNull Map<K, V> map, @NotNull Predicate<Map.Entry<K, V>> predicate) {
+  public static @NotNull <K, V> Map<K, V> findAll(@NotNull Map<K, V> map,
+      @NotNull Predicate<Map.Entry<K, V>> predicate) {
+
     return filter(map, predicate);
   }
 

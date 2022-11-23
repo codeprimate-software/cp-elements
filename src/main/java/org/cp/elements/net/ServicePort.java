@@ -53,6 +53,9 @@ public enum ServicePort {
   public static final int MAX_PORT = 65535;
   public static final int MAX_RESERVED_PORT = 1024;
 
+  private static final String INVALID_PORT_EXCEPTION_MESSAGE =
+    "Port number [%s] must be greater than equal to 0 and less than equal to 65535";
+
   private final int portNumber;
 
   /**
@@ -66,7 +69,7 @@ public enum ServicePort {
   ServicePort(int portNumber) {
 
     assertThat(portNumber)
-      .throwing(newIllegalArgumentException("Port number [%s] must be greater than equal to 0 and less than equal to 65535", portNumber))
+      .throwing(newIllegalArgumentException(INVALID_PORT_EXCEPTION_MESSAGE, portNumber))
       .isGreaterThanEqualToAndLessThanEqualTo(MIN_PORT, MAX_PORT);
 
     this.portNumber = portNumber;

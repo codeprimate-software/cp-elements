@@ -95,7 +95,8 @@ public class GetEnvironmentVariableValueInteractive implements Runnable {
         String environmentVariableValue = userInputReader.next();
 
         try {
-          Runtime.getRuntime().exec(String.format("bash export %s=%s", environmentVariableName, environmentVariableValue));
+          Runtime.getRuntime().exec(String.format("bash export %s=%s",
+            environmentVariableName, environmentVariableValue));
         }
         catch (IOException cause) {
           System.err.printf("Failed to set environment variable ['%s'] to value ['%s']; %s",

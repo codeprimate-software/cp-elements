@@ -88,7 +88,9 @@ public class MapProperty extends AbstractIndexedProperty<Object> {
    * @see org.cp.elements.beans.model.BeanModel
    * @see java.beans.PropertyDescriptor
    */
-  public static @NotNull MapProperty from(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
+  public static @NotNull MapProperty from(@NotNull BeanModel beanModel,
+      @NotNull PropertyDescriptor propertyDescriptor) {
+
     return new MapProperty(beanModel, propertyDescriptor);
   }
 

@@ -1275,7 +1275,9 @@ public abstract class ElementsExceptionsFactory {
    * @see #newUnhandledMethodInvocationException(Throwable, String, Object...)
    * @see org.cp.elements.lang.reflect.UnhandledMethodInvocationException
    */
-  public static UnhandledMethodInvocationException newUnhandledMethodInvocationException(String message, Object... args) {
+  public static UnhandledMethodInvocationException newUnhandledMethodInvocationException(String message,
+      Object... args) {
+
     return newUnhandledMethodInvocationException(null, message, args);
   }
 
@@ -1479,8 +1481,8 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with the given {@link String message}
-   * to describe the {@link ProcessNotRespondingException}.
+   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with
+   * the given {@link String message} to describe the {@link ProcessNotRespondingException}.
    *
    * @param message {@link String} containing a message to describe the {@link ProcessNotRespondingException}.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
@@ -1493,9 +1495,9 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with the given {@link String message}
-   * to describe the {@link ProcessNotRespondingException} along with a {@link Throwable cause} used as the reason
-   * why the {@link ProcessNotRespondingException} was thrown.
+   * Constructs a new instance of {@link ProcessNotRespondingException} initialized with
+   * the given {@link String message} to describe the {@link ProcessNotRespondingException} along with
+   * a {@link Throwable cause} used as the reason why the {@link ProcessNotRespondingException} was thrown.
    *
    * @param cause {@link Throwable} used as the cause of the {@link ProcessNotRespondingException}.
    * @param message {@link String} containing a message to describe the {@link ProcessNotRespondingException}.

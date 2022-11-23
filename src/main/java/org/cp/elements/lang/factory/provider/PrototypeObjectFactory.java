@@ -44,7 +44,8 @@ public class PrototypeObjectFactory extends AbstractObjectFactory {
 
   /**
    * Constructs a new instance of {@link PrototypeObjectFactory} setting a reference to {@literal this}
-   * {@link ObjectFactory} using the {@link ObjectFactoryReferenceHolder} providing a reference has not already been set.
+   * {@link ObjectFactory} using the {@link ObjectFactoryReferenceHolder} providing a reference
+   * has not already been set.
    *
    * @see org.cp.elements.lang.factory.ObjectFactoryReferenceHolder#compareAndSet(org.cp.elements.lang.factory.ObjectFactory, org.cp.elements.lang.factory.ObjectFactory)
    */

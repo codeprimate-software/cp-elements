@@ -69,7 +69,8 @@ public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
   }
 
   /**
-   * Determines whether the given {@link PropertyDescriptor} describes a {@link SortedSet SortedSet-based} bean property.
+   * Determines whether the given {@link PropertyDescriptor} describes a {@link SortedSet SortedSet-based}
+   * bean property.
    *
    * @param propertyDescriptor {@link PropertyDescriptor} to evaluate.
    * @return a boolean value indicating whether the given {@link PropertyDescriptor}
@@ -89,14 +90,16 @@ public class SortedSetProperty extends AbstractIndexedProperty<Integer> {
    *
    * @param beanModel {@link BeanModel} modeling the bean containing the property; must not be {@literal null}.
    * @param propertyDescriptor {@link PropertyDescriptor} describing the property; must not be {@literal null}.
-   * @return a new {@link SortedSetProperty} initialized with the given {@link BeanModel} and {@link PropertyDescriptor}.
+   * @return a new {@link SortedSetProperty} initialized with the {@link BeanModel} and {@link PropertyDescriptor}.
    * @throws IllegalArgumentException if the {@link BeanModel} or {@link PropertyDescriptor} are {@literal null}
    * or the {@link PropertyDescriptor} does not describe a {@link SortedSet} bean property.
    * @see #SortedSetProperty(BeanModel, PropertyDescriptor)
    * @see java.beans.PropertyDescriptor
    * @see java.util.SortedSet
    */
-  public static @NotNull SortedSetProperty from(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
+  public static @NotNull SortedSetProperty from(@NotNull BeanModel beanModel,
+      @NotNull PropertyDescriptor propertyDescriptor) {
+
     return new SortedSetProperty(beanModel, propertyDescriptor);
   }
 

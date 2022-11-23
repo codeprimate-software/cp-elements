@@ -175,12 +175,13 @@ public enum SimpleTypeConversions {
   };
 
   /**
-   * Computes a {@link Number} from the given {@link Object value} constructed with the given, required {@link Function}.
+   * Computes a {@link Number} from the given {@link Object value} constructed with the given,
+   * required {@link Function}.
    *
    * @param <T> {@link Class type} of {@link Number} to be computed.
    * @param value {@link Object} to compute as a {@link Number}.
-   * @param numberConstructorFunction {@link Function} used to construct a specific {@link Class type} of {@link Number};
-   * must not be {@literal null}.
+   * @param numberConstructorFunction {@link Function} used to construct a specific {@link Class type}
+   * of {@link Number}; must not be {@literal null}.
    * @return a {@link Number} computed from the given {@link Object value}.
    * @throws IllegalArgumentException if the {@link Function} is {@literal null}.
    * @see java.util.function.Function

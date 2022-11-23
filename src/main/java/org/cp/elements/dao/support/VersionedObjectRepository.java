@@ -69,10 +69,10 @@ public interface VersionedObjectRepository<VERSION> {
    * Query method used to query the backend data store and determine whether a record for a persistent entity
    * with the given {@literal version} exists, or is present.
    *
-   * The {@link Integer value} may indicate a count of the number of records in the backend data store that
-   * have the given {@literal version}. However, when the {@literal version} is used for {@literal optimistic locking},
-   * then the returned {@link Integer value} will be equal to {@literal 1} when a record with the given {@literal version}
-   * exists in the backend data store and {@literal null} will be returned when no record with the given {@literal version}
+   * The {@link Integer value} may indicate a count of the number of records in the backend data store that have the
+   * given {@literal version}. However, when the {@literal version} is used for {@literal optimistic locking}, then the
+   * returned {@link Integer value} will be equal to {@literal 1} when a record with the given {@literal version} exists
+   * in the backend data store and {@literal null} will be returned when no record with the given {@literal version}
    * exists in the backend data store, likely because the record was changed and the {@literal version} was updated.
    *
    * @param version {@link VERSION version} to query for existence.

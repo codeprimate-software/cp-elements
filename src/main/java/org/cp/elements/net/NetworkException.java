@@ -26,7 +26,8 @@ package org.cp.elements.net;
 public class NetworkException extends RuntimeException {
 
   /**
-   * Constructs a new instance of {@link NetworkException} with no {@link String message} and no {@link Throwable cause}.
+   * Constructs a new instance of {@link NetworkException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
   public NetworkException() { }
 

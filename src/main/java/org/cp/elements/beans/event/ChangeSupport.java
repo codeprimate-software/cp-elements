@@ -79,7 +79,8 @@ public class ChangeSupport implements Iterable<ChangeListener> {
   }
 
   /**
-   * Determines whether the given {@link ChangeListener} is registered with {@literal this} {@link ChangeSupport} object.
+   * Determines whether the given {@link ChangeListener} is registered with
+   * {@literal this} {@link ChangeSupport} object.
    *
    * @param listener {@link ChangeListener} to evaluate.
    * @return {@literal true} if the given {@link ChangeListener} is not {@literal null} and has been registered with

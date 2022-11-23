@@ -162,7 +162,9 @@ public class Property implements Comparable<Property>, Describable<PropertyDescr
 
           // Key is never cached; Value is always computed with the given Function.
           @Override
-          public Set<Annotation> computeIfAbsent(T key, Function<? super T, ? extends Set<Annotation>> mappingFunction) {
+          public Set<Annotation> computeIfAbsent(T key,
+              Function<? super T, ? extends Set<Annotation>> mappingFunction) {
+
             return mappingFunction.apply(key);
           }
 

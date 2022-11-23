@@ -436,7 +436,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<VALU
    * Puts the given {@link Identifiable} object in this {@link Cache} iff if the {@link Identifiable} object
    * is already present.
    *
-   * @param newEntity {@link Identifiable} object replacing the existing object with the same {@link Identifiable#getId() ID}.
+   * @param newEntity {@link Identifiable} object replacing the existing object with the same
+   * {@link Identifiable#getId() ID}; must not be {@literal null}.
    * @return the existing {@link VALUE value} if present, otherwise return {@literal null}.
    * @throws ClassCastException if the {@link Identifiable} object is not an instance of {@link VALUE}.
    * @see org.cp.elements.lang.Identifiable

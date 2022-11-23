@@ -342,7 +342,9 @@ public abstract class CollectionUtils {
  	 * @return {@code iterable} if not {@literal null} or empty otherwise return {@code defaultIterable}.
  	 * @see java.lang.Iterable
  	 */
-  public static @Nullable <E, T extends Iterable<E>> T defaultIfEmpty(@Nullable T iterable, @Nullable T defaultIterable) {
+  public static @Nullable <E, T extends Iterable<E>> T defaultIfEmpty(@Nullable T iterable,
+      @Nullable T defaultIterable) {
+
     return iterable != null && iterable.iterator().hasNext() ? iterable : defaultIterable;
   }
 
@@ -782,7 +784,8 @@ public abstract class CollectionUtils {
    * @see org.cp.elements.lang.Transformer
    * @see java.util.Collection
    */
-  public static @NotNull <T> Collection<T> transform(@NotNull Collection<T> collection, @NotNull Transformer<T> transformer) {
+  public static @NotNull <T> Collection<T> transform(@NotNull Collection<T> collection,
+      @NotNull Transformer<T> transformer) {
 
     Assert.notNull(collection, "Collection is required");
     Assert.notNull(transformer, "Transformer is required");

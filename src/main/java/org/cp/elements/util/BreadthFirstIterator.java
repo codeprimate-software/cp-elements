@@ -15,6 +15,7 @@
  */
 package org.cp.elements.util;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newNoSuchElementException;
 import static org.cp.elements.util.CollectionUtils.asIterable;
 
@@ -71,7 +72,7 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
   public boolean hasNext() {
 
     while (!(this.iterators.isEmpty() || this.iterators.peek().hasNext())) {
-      Assert.isFalse(this.iterators.removeFirst().hasNext(), new IllegalStateException("removing a non-empty Iterator"));
+      Assert.isFalse(this.iterators.removeFirst().hasNext(), newIllegalStateException("removing a non-empty Iterator"));
     }
 
     return (!this.iterators.isEmpty() && this.iterators.peek().hasNext());
@@ -87,9 +88,13 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public T next() {
+
     Assert.isTrue(hasNext(), newNoSuchElementException("The iteration has no more elements!"));
+
     T value = this.iterators.peek().next();
+
     this.nextCalled.set(true);
+
     return value;
   }
 
@@ -102,7 +107,10 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    */
   @Override
   public void remove() {
-    Assert.state(this.nextCalled.compareAndSet(true, false), "next was not called before remove");
+
+    Assert.state(this.nextCalled.compareAndSet(true, false),
+      "next was not called before remove");
+
     this.iterators.peek().remove();
   }
 }

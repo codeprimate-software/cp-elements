@@ -856,8 +856,9 @@ public abstract class ClassUtils {
   }
 
   /**
-   * Loads the Class object for the specified, fully qualified class name using the current Thread's context ClassLoader,
-   * following by initializing the class.
+   * Loads the {@link Class} object for the specified, {@link String fully qualified class name} using
+   * the {@link Thread#currentThread() current Thread's} {@link Thread#getContextClassLoader() context ClassLoader},
+   * followed by initializing the class.
    *
    * @param <T> {@link Class} type of T.
    * @param fullyQualifiedClassName a String value indicating the fully qualified class name of the Class to load.

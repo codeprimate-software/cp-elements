@@ -51,6 +51,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see java.lang.Iterable
  * @see java.util.Comparator
  * @see org.cp.elements.lang.annotation.FluentApi
+ * @see org.cp.elements.lang.support.SmartComparator.ComparatorDescriptor
  * @since 1.0.0
  */
 @FluentApi
@@ -82,7 +83,8 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    * is {@link #register(Comparator) registered}, the {@link ParameterizedType type parameter} of the {@link Comparator}
    * is inspected is used to determine if one of the {@link Object object's} {@link Class type}
    * is {@link Class#isAssignableFrom(Class) assignment compatible}. If such a {@link Comparator} is found,
-   * then the {@link Comparator} is used to {@link Comparator#compare(Object, Object) compare} the {@link Object objects}.
+   * then the {@link Comparator} is used to {@link Comparator#compare(Object, Object) compare}
+   * the {@link Object objects}.
    *
    * If an appropriate {@link Comparator} cannot be found to {@link Comparator#compare(Object, Object) compare}
    * the {@link Object objects}, and if either or both of the {@link Object objects} are {@link Comparable},
@@ -183,7 +185,8 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    * @see ComparatorDescriptor
    * @see java.util.Optional
    */
-  private Optional<ComparatorDescriptor> findBy(@NotNull Predicate<ComparatorDescriptor> comparatorDescriptorPredicate) {
+  private Optional<ComparatorDescriptor> findBy(
+      @NotNull Predicate<ComparatorDescriptor> comparatorDescriptorPredicate) {
 
     return StreamUtils.stream(this)
       .filter(Objects::nonNull)
@@ -297,7 +300,8 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
   /**
    * Unregisters the given, required {@link ComparatorDescriptor} from this {@link SmartComparator}.
    *
-   * Internally, {@link Comparator Comparators} are described and registered as {@link ComparatorDescriptor descriptors}.
+   * Internally, {@link Comparator Comparators} are described and registered as
+   * {@link ComparatorDescriptor descriptors}.
    *
    * @param comparatorDescriptor {@link ComparatorDescriptor} to unregister
    * @return a boolean value indicating whether the given {@link ComparatorDescriptor} was successfully

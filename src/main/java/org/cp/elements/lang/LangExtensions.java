@@ -199,7 +199,7 @@ public abstract class LangExtensions {
     }
 
     /**
-     * Invokes the given {@link Method} with the array of {@link Object arguments} on the resolved {@link Object target}.
+     * Invokes the {@link Method} with the array of {@link Object arguments} on the resolved {@link Object target}.
      *
      * @param proxy {@link Object Proxy} on which the {@link Method} was invoked in order to
      * intercept the {@link Method} call.

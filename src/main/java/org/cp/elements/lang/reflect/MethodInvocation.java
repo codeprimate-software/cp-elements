@@ -98,7 +98,8 @@ public class MethodInvocation {
    * @see #MethodInvocation(Object, Method, Object...)
    * @see java.lang.Class
    */
-  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Class<?> type, String methodName, Object... args) {
+  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Class<?> type, String methodName,
+      Object... args) {
 
     Assert.notNull(type, "Class type is required");
 
@@ -122,7 +123,8 @@ public class MethodInvocation {
    * @see #MethodInvocation(Object, Method, Object...)
    * @see java.lang.Object
    */
-  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Object target, String methodName, Object... args) {
+  public static @NotNull MethodInvocation newMethodInvocation(@NotNull Object target, String methodName,
+      Object... args) {
 
     Assert.notNull(target, "Target object is required");
 
@@ -181,10 +183,12 @@ public class MethodInvocation {
 
     int methodParameterCount = method.getParameterCount();
 
+    String exceptionMessage =
+      "The number of arguments [%1$d] does not match the number of parameters [%2$d] for method [%3$s] in class [%4$s]";
+
     assertThat(arguments.length)
-      .throwing(newIllegalArgumentException(
-        "The number of arguments [%1$d] does not match the number of parameters [%2$d] for method [%3$s] in class [%4$s]",
-        arguments.length, methodParameterCount, method.getName(), method.getDeclaringClass().getName()))
+      .throwing(newIllegalArgumentException(exceptionMessage, arguments.length, methodParameterCount, method.getName(),
+        method.getDeclaringClass().getName()))
       .isEqualTo(methodParameterCount);
 
     Class<?>[] parameterTypes = method.getParameterTypes();

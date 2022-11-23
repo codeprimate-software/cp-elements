@@ -49,15 +49,23 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.beans.PropertyDescriptor
  * @see org.cp.elements.beans.model.BeanModel
  * @see org.cp.elements.beans.model.Property
+ * @see org.cp.elements.data.struct.KeyValue
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class AbstractIndexedProperty<INDEX> extends Property {
 
   protected static final Predicate<Class<?>> IS_ARRAY = ClassUtils::isArray;
-  protected static final Predicate<Class<?>> IS_LIST = type -> List.class.isAssignableFrom(nullSafeType(type));
-  protected static final Predicate<Class<?>> IS_MAP = type -> Map.class.isAssignableFrom(nullSafeType(type));
-  protected static final Predicate<Class<?>> IS_SORTED_SET = type -> SortedSet.class.isAssignableFrom(nullSafeType(type));
+
+  protected static final Predicate<Class<?>> IS_LIST =
+    type -> List.class.isAssignableFrom(nullSafeType(type));
+
+  protected static final Predicate<Class<?>> IS_MAP =
+    type -> Map.class.isAssignableFrom(nullSafeType(type));
+
+  protected static final Predicate<Class<?>> IS_SORTED_SET =
+    type -> SortedSet.class.isAssignableFrom(nullSafeType(type));
+
   protected static final Predicate<Class<?>> IS_INDEXED = IS_ARRAY.or(IS_LIST).or(IS_MAP).or(IS_SORTED_SET);
 
   /**

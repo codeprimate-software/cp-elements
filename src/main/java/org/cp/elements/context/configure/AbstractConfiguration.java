@@ -337,7 +337,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     private final SOURCE source;
 
     /**
-     * Constructs a new instance of {@link AbstractConfigurationDescriptor} initialized with the given, required {@link SOURCE}.
+     * Constructs a new instance of {@link AbstractConfigurationDescriptor} initialized with the given,
+     * required {@link SOURCE}.
      *
      * @param source {@link SOURCE} object used as the {@literal source} of this {@link Configuration}.
      * @throws IllegalArgumentException if the {@link SOURCE} is {@literal null}.
@@ -378,8 +379,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
     }
 
     /**
-     * Constructs a new instance of {@link FileConfigurationDescriptor} initialized with the given, required {@link File}
-     * used as the {@literal source} of the {@link Configuration}.
+     * Constructs a new instance of {@link FileConfigurationDescriptor} initialized with the given,
+     * required {@link File} used as the {@literal source} of the {@link Configuration}.
      *
      * @param file {@link File} used as the source of the {@link Configuration}; must not be {@literal null}.
      * @throws IllegalArgumentException if the {@link File} is {@literal null}.
@@ -434,7 +435,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
      * Factory method used to construct a new instance of {@link PropertiesConfigurationDescriptor} initialized with
      * the given, required {@link Properties} used as the {@literal source} of the {@link Configuration}.
      *
-     * @param properties {@link Properties} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @param properties {@link Properties} used as the source of the {@link Configuration};
+     * must not be {@literal null}.
      * @return a new {@link PropertiesConfigurationDescriptor}.
      * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
      * @see java.util.Properties
@@ -447,7 +449,8 @@ public abstract class AbstractConfiguration implements Configuration, Conversion
      * Constructs a new instance of {@link PropertiesConfigurationDescriptor} initialized with
      * the given, required {@link Properties} used as the {@literal source} of the {@link Configuration}.
      *
-     * @param properties {@link Properties} used as the source of the {@link Configuration}; must not be {@literal null}.
+     * @param properties {@link Properties} used as the source of the {@link Configuration};
+     * must not be {@literal null}.
      * @throws IllegalArgumentException if the {@link Properties} are {@literal null}.
      * @see java.util.Properties
      */

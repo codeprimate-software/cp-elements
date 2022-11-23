@@ -28,9 +28,9 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * Java {@link FileFilter} and Elements {@link Filter} implementation composed of multiple {@link FileFilter FileFilters}
- * joined by {@link LogicalOperator logical operators}: [ {@link LogicalOperator#AND}, {@link LogicalOperator#OR},
- * {@link LogicalOperator#XOR} ].
+ * Java {@link FileFilter} and Elements {@link Filter} implementation composed of
+ * multiple {@link FileFilter FileFilters} joined by {@link LogicalOperator logical operators}:
+ * [ {@link LogicalOperator#AND}, {@link LogicalOperator#OR}, {@link LogicalOperator#XOR} ].
  *
  * @author John J. Blum
  * @see java.io.File
@@ -86,12 +86,12 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
   }
 
   /**
-   * Creates a single, {@literal Composite} {@link FileFilter} composed from the array of {@link FileFilter FileFilters}.
+   * Creates a single {@literal Composite} {@link FileFilter} composed from the array of {@link FileFilter FileFilters}.
    *
    * @param fileFilters array of {@link FileFilter FileFilters} to compose.
    * @param operator {@link LogicalOperator} used to join the array of {@link FileFilter FileFilters} together
    * in a composition, as a single, {@literal Composite} {@link FileFilter}.
-   * @return a single, {@literal Composite} {@link FileFilter} composed from the array of {@link FileFilter FileFilters}.
+   * @return a single {@literal Composite} {@link FileFilter} composed from the array of {@link FileFilter FileFilters}.
    * @see org.cp.elements.lang.LogicalOperator
    * @see java.io.FileFilter
    */

@@ -21,7 +21,7 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The {@link BiFeederFunction} {@link FunctionalInterface} defines a {@link BiFunction} type that accepts two arguments,
+ * {@link BiFeederFunction} {@link FunctionalInterface} defines a {@link BiFunction} type that accepts two arguments,
  * where the first argument is an arbitrary value and the second argument is a possible, merged return value
  * from a {@link BiFeederFunction} proceeding {@literal this} {@link BiFeederFunction} in a composition of
  * {@link BiFeederFunction BiFeederFunctions}.

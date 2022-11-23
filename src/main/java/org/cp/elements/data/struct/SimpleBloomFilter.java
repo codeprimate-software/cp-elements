@@ -183,7 +183,8 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * returned by the Bloom Filter.
    * @return the required number of bits needed by the Bloom Filter.
    */
-  protected static int computeRequiredNumberOfBits(double approximateNumberOfElements, double acceptableFalsePositiveRate) {
+  protected static int computeRequiredNumberOfBits(double approximateNumberOfElements,
+      double acceptableFalsePositiveRate) {
 
     double numberOfBits = Math.abs((approximateNumberOfElements * Math.log(acceptableFalsePositiveRate))
       / Math.pow(Math.log(2.0d), 2.0d));
@@ -208,7 +209,8 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * of false positives.
    * @return the optimal number of hash functions used by the Bloom Filter.
    */
-  protected static int computeOptimalNumberOfHashFunctions(double approximateNumberOfElements, double requiredNumberOfBits) {
+  protected static int computeOptimalNumberOfHashFunctions(double approximateNumberOfElements,
+      double requiredNumberOfBits) {
 
     double numberOfHashFunctions = (requiredNumberOfBits / approximateNumberOfElements) * Math.log(2.0d);
 

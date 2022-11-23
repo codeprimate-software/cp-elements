@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
 import java.util.List;
@@ -84,7 +83,8 @@ public class HeapSort extends AbstractSorter {
         swapIndex = leftChildIndex;
       }
 
-      if (rightChildIndex <= endIndex && getOrderBy().compare(elements.get(swapIndex), elements.get(rightChildIndex)) < 0) {
+      if (rightChildIndex <= endIndex
+          && getOrderBy().compare(elements.get(swapIndex), elements.get(rightChildIndex)) < 0) {
         swapIndex = rightChildIndex;
       }
 
@@ -97,5 +97,4 @@ public class HeapSort extends AbstractSorter {
       }
     }
   }
-
 }

@@ -86,7 +86,9 @@ public class ArrayProperty extends AbstractIndexedProperty<Integer> {
    * @see org.cp.elements.beans.model.BeanModel
    * @see java.beans.PropertyDescriptor
    */
-  public static @NotNull ArrayProperty from(@NotNull BeanModel beanModel, @NotNull PropertyDescriptor propertyDescriptor) {
+  public static @NotNull ArrayProperty from(@NotNull BeanModel beanModel,
+      @NotNull PropertyDescriptor propertyDescriptor) {
+
     return new ArrayProperty(beanModel, propertyDescriptor);
   }
 
