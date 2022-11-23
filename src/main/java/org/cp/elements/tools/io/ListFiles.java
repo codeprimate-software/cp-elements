@@ -162,11 +162,11 @@ public class ListFiles implements Runnable {
 
     File resolvedDirectory = validateDirectory(directory);
 
-    indent = StringUtils.hasText(indent) ? indent : StringUtils.EMPTY_STRING;
+    String resolvedIndent = StringUtils.hasText(indent) ? indent : StringUtils.EMPTY_STRING;
 
-    printDirectoryName(indent, resolvedDirectory);
+    printDirectoryName(resolvedIndent, resolvedDirectory);
 
-    String directoryContentIndent = buildDirectoryContentIndent(indent);
+    String directoryContentIndent = buildDirectoryContentIndent(resolvedIndent);
 
     Arrays.stream(sort(ArrayUtils.nullSafeArray(resolvedDirectory.listFiles(), File.class))).forEach(file -> {
       if (FileSystemUtils.isDirectory(file)) {

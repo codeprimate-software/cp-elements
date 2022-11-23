@@ -715,16 +715,17 @@ public abstract class StringUtils {
 
     // if indent is null, then do not indent the wrapped lines
     String resolvedIndent = indent != null ? indent : EMPTY_STRING;
+    String lineToProcess = line;
 
-    while (line.length() > widthInCharacters) {
-      spaceIndex = line.substring(0, widthInCharacters).lastIndexOf(SINGLE_SPACE);
+    while (lineToProcess.length() > widthInCharacters) {
+      spaceIndex = lineToProcess.substring(0, widthInCharacters).lastIndexOf(SINGLE_SPACE);
       buffer.append(lineCount++ > 1 ? resolvedIndent : EMPTY_STRING);
       // throws IndexOutOfBoundsException if spaceIndex is -1, implying no word boundary was found within
       // the given width; this also avoids the infinite loop
-      buffer.append(line.substring(0, spaceIndex));
+      buffer.append(lineToProcess.substring(0, spaceIndex));
       buffer.append(LINE_SEPARATOR);
       // possible infinite loop if spaceIndex is -1, see comment above
-      line = line.substring(spaceIndex + 1);
+      lineToProcess = lineToProcess.substring(spaceIndex + 1);
     }
 
     buffer.append(lineCount > 1 ? resolvedIndent : EMPTY_STRING);
