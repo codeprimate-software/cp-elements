@@ -40,8 +40,8 @@ public abstract class NumberUtils {
   public static final String BINARY_PREFIX_NOTATION = "b";
   public static final String HEXADECIMAL_PREFIX_NOTATION = "0x";
 
-  protected static final Pattern binaryPattern = Pattern.compile("b?[01]+");
-  protected static final Pattern hexadecimalPattern = Pattern.compile("0x[0-9A-Fa-f]+");
+  protected static final Pattern BINARY_PATTERN = Pattern.compile("b?[01]+");
+  protected static final Pattern HEXADECIMAL_PATTERN = Pattern.compile("0x[0-9A-Fa-f]+");
 
   /**
    * Determines whether the given {@link String value} represents a binary value, consisting of
@@ -52,7 +52,7 @@ public abstract class NumberUtils {
    * consisting of only {@literal 1s} and {@literal 0s}.
    */
   public static boolean isBinaryString(@Nullable String value) {
-    return StringUtils.hasText(value) && binaryPattern.matcher(value).matches();
+    return StringUtils.hasText(value) && BINARY_PATTERN.matcher(value).matches();
   }
 
   /**
@@ -92,7 +92,7 @@ public abstract class NumberUtils {
    * only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
    */
   public static boolean isHexadecimalString(@Nullable String value) {
-    return StringUtils.hasText(value) && hexadecimalPattern.matcher(value).matches();
+    return StringUtils.hasText(value) && HEXADECIMAL_PATTERN.matcher(value).matches();
   }
 
   /**
