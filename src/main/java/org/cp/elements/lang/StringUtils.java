@@ -729,7 +729,7 @@ public abstract class StringUtils {
     }
 
     buffer.append(lineCount > 1 ? resolvedIndent : EMPTY_STRING);
-    buffer.append(line);
+    buffer.append(lineToProcess);
 
     return buffer.toString();
   }
