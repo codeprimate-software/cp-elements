@@ -44,7 +44,8 @@ public enum SimpleTypeConversions {
 
   BIG_DECIMAL_CONVERTER(BigDecimal.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, BigDecimal> conversionFunction() {
       return argument -> SimpleTypeConversions.computeNumber(argument, BigDecimal::new);
     }
@@ -52,7 +53,8 @@ public enum SimpleTypeConversions {
 
   BIG_INTEGER_CONVERTER(BigInteger.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, BigInteger> conversionFunction() {
       return argument -> SimpleTypeConversions.computeNumber(argument, BigInteger::new);
     }
@@ -60,7 +62,8 @@ public enum SimpleTypeConversions {
 
   BOOLEAN_CONVERTER(Boolean.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Boolean> conversionFunction() {
       return argument -> Boolean.parseBoolean(String.valueOf(argument).trim());
     }
@@ -68,7 +71,8 @@ public enum SimpleTypeConversions {
 
   BYTE_CONVERTER(Byte.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Byte> conversionFunction() {
       return argument -> {
         try {
@@ -83,7 +87,8 @@ public enum SimpleTypeConversions {
 
   SHORT_CONVERTER(Short.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Short> conversionFunction() {
       return argument -> {
         try {
@@ -98,7 +103,8 @@ public enum SimpleTypeConversions {
 
   INTEGER_CONVERTER(Integer.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Integer> conversionFunction() {
       return argument -> {
         try {
@@ -113,7 +119,8 @@ public enum SimpleTypeConversions {
 
   LONG_CONVERTER(Long.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Long> conversionFunction() {
       return argument -> {
         try {
@@ -128,7 +135,8 @@ public enum SimpleTypeConversions {
 
   FLOAT_CONVERTER(Float.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Float> conversionFunction() {
       return argument -> {
         try {
@@ -143,7 +151,8 @@ public enum SimpleTypeConversions {
 
   DOUBLE_CONVERTER(Double.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, Double> conversionFunction() {
       return argument -> {
         try {
@@ -158,7 +167,8 @@ public enum SimpleTypeConversions {
 
   STRING_CONVERTER(String.class) {
 
-    @Override @SuppressWarnings("unchecked")
+    @Override
+    @SuppressWarnings("unchecked")
     public @NotNull Function<Object, String> conversionFunction() {
       return String::valueOf;
     }
