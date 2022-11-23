@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -22,9 +21,9 @@ import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The SimpleIdentifierSequence class is an implementation of the {@link IdentifierSequence} interface generating
- * unique, Long-typed identifiers.  This implementation uses the Thread-safe {@link AtomicLong} class, making
- * this class Thread-safe.
+ * {@link IdentifierSequence} interface generating unique, {@link Long} typed identifiers.
+ *
+ * This implementation uses the Thread-safe {@link AtomicLong} class, making this class Thread-safe.
  *
  * While this maybe useful for testing purposes, it should not be used in distributed systems where multiple application
  * or system components may generate ID's using different instances of this class in separate JVMs.
@@ -33,13 +32,14 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * @see java.lang.Long
  * @see java.util.concurrent.atomic.AtomicLong
  * @see org.cp.elements.lang.IdentifierSequence
+ * @see org.cp.elements.lang.concurrent.ThreadSafe
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 @ThreadSafe
 public class SimpleIdentifierSequence implements IdentifierSequence<Long> {
 
-  private static final AtomicLong ID_SEQUENCE = new AtomicLong(0l);
+  private static final AtomicLong ID_SEQUENCE = new AtomicLong(0L);
 
   /**
    * Generates the next unique ID in sequence.
@@ -51,5 +51,4 @@ public class SimpleIdentifierSequence implements IdentifierSequence<Long> {
   public Long nextId() {
     return ID_SEQUENCE.incrementAndGet();
   }
-
 }
