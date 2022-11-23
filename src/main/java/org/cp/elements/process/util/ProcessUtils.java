@@ -93,8 +93,8 @@ public abstract class ProcessUtils {
         try {
           return Integer.parseInt(runtimeMxBeanName.substring(0, atSignIndex));
         }
-        catch (NumberFormatException e) {
-          cause = e;
+        catch (NumberFormatException exception) {
+          cause = exception;
         }
       }
     }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.process.java;
 
 import static java.util.Arrays.asList;
@@ -21,6 +20,7 @@ import static org.cp.elements.lang.ClassUtils.getName;
 import static org.cp.elements.lang.ClassUtils.getSimpleName;
 import static org.cp.elements.lang.ClassUtils.isConstructorWithArrayParameter;
 import static org.cp.elements.lang.ClassUtils.isDefaultConstructor;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newEmbeddedProcessExecutionException;
 import static org.cp.elements.lang.ObjectUtils.isNullOrEqualTo;
 import static org.cp.elements.util.ArrayUtils.indexOf;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
@@ -53,7 +53,7 @@ import org.cp.elements.process.ProcessExecutor;
  * @author John Blum
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "rawtypes", "unused" })
 public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
   protected static final Collection<JavaClassExecutor> JAVA_CLASS_EXECUTORS = Collections.unmodifiableList(asList(
@@ -208,9 +208,10 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     default <T> Constructor<T> findConstructor(Class<T> type) {
 
       return (Constructor<T>) stream(nullSafeArray(type.getDeclaredConstructors(), Constructor.class))
-        .filter(this::isTargetConstructor).sorted((constructorOne, constructorTwo) ->
+        .filter(this::isTargetConstructor)
+        .min((constructorOne, constructorTwo) ->
           constructorTwo.getParameterCount() - constructorOne.getParameterCount())
-        .findFirst().orElseThrow(() -> new EmbeddedProcessExecutionException(String.format(
+        .orElseThrow(() -> new EmbeddedProcessExecutionException(String.format(
           "No default constructor or constructor with arguments (%1$s(:Object[]) for type [%2$s] was found",
             getSimpleName(type), getName(type))));
     }
@@ -225,9 +226,9 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
         return (isConstructorWithArrayParameter(constructor) ? constructor.newInstance((Object) args)
           : constructor.newInstance());
       }
-      catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-        throw new EmbeddedProcessExecutionException(
-          String.format("Failed to construct an instance of Java class [%s]", getName(type)), e);
+      catch (IllegalAccessException | InstantiationException | InvocationTargetException cause) {
+        throw newEmbeddedProcessExecutionException(cause, "Failed to construct an instance of Java class [%s]",
+          getName(type));
       }
     }
   }
@@ -253,8 +254,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
         Callable<T> callable = this.<Callable<T>>constructInstance(type, args);
         return Optional.ofNullable(callable.call());
       }
-      catch (Exception e) {
-        throw new EmbeddedProcessExecutionException(String.format("Failed to call Java class [%s]", getName(type)), e);
+      catch (Exception cause) {
+        throw newEmbeddedProcessExecutionException(cause, "Failed to call Java class [%s]", getName(type));
       }
     }
   }
@@ -278,7 +279,7 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
     @SuppressWarnings("unchecked")
     public Optional<T> execute(Class type, Object... args) {
       Executable<T> executable = this.<Executable<T>>constructInstance(type, args);
-      return Optional.ofNullable(executable.execute((Object[]) args));
+      return Optional.ofNullable(executable.execute(args));
     }
   }
 
@@ -308,9 +309,9 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
 
         return Optional.empty();
       }
-      catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-        throw new EmbeddedProcessExecutionException(
-          String.format("Failed to execute Java class [%s] using main method", getName(type)), e);
+      catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException cause) {
+        throw newEmbeddedProcessExecutionException(cause, "Failed to execute Java class [%s] using main method",
+          getName(type));
       }
     }
   }

@@ -16,6 +16,7 @@
 package org.cp.elements.process.support;
 
 import static org.cp.elements.io.FileUtils.isDirectory;
+import static org.cp.elements.lang.ElementsExceptionsFactory.newProcessExecutionException;
 import static org.cp.elements.process.ProcessAdapter.newProcessAdapter;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
 
@@ -105,9 +106,9 @@ public class ProcessBuilderProcessExecutor implements ProcessExecutor<ProcessAda
 
       return newProcessAdapter(process, processContext);
     }
-    catch (IOException e) {
-      throw new ProcessExecutionException(String.format("Failed to execute program %1$s in directory [%2$s]",
-        Arrays.toString(commandLine), directory), e);
+    catch (IOException cause) {
+      throw newProcessExecutionException(cause, "Failed to execute program %1$s in directory [%2$s]",
+        Arrays.toString(commandLine), directory);
     }
   }
 

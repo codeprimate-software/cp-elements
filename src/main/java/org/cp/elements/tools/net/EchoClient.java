@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
@@ -51,6 +50,7 @@ public class EchoClient extends AbstractClientServerSupport {
    * @see #sendMessage(String)
    */
   public static void main(String[] args) {
+
     validateArguments(args);
 
     EchoClient echoClient = newEchoClient(lenientParsePort(args[0]));
@@ -66,6 +66,7 @@ public class EchoClient extends AbstractClientServerSupport {
    * @param args array of {@link String arguments} passed into this program from the command-line.
    */
   private static void validateArguments(String[] args) {
+
     if (ArrayUtils.isEmpty(args)) {
       System.err.printf("$ java ... %s <port> [<message1> <message2> ... <messageN>]%n", EchoClient.class.getName());
       System.exit(1);
@@ -124,6 +125,7 @@ public class EchoClient extends AbstractClientServerSupport {
    * @throws IllegalArgumentException if {@code port} is not valid.
    */
   public EchoClient(String host, int port) {
+
     assertThat(port)
       .throwing(newIllegalArgumentException("Port [%d] must be greater than 0 and less than equal to 65535", port))
       .isGreaterThanAndLessThanEqualTo(ServicePort.MIN_PORT, ServicePort.MAX_PORT);
@@ -160,6 +162,7 @@ public class EchoClient extends AbstractClientServerSupport {
    * @see #receiveResponse(Socket)
    */
   public String sendMessage(String message) {
+
     Socket socket = null;
 
     try {
@@ -171,32 +174,34 @@ public class EchoClient extends AbstractClientServerSupport {
     }
   }
 
-  /* (non-Javadoc) */
   @Override
   protected Socket sendMessage(Socket socket, String message) {
+
     try {
       return super.sendMessage(socket, message);
     }
-    catch (IOException e) {
+    catch (IOException cause) {
+
       getLogger().severe(String.format("Failed to send message [%1$s] to EchoServer [%2$s]",
         message, socket.getRemoteSocketAddress()));
 
-      getLogger().severe(ThrowableUtils.getStackTrace(e));
+      getLogger().severe(ThrowableUtils.getStackTrace(cause));
 
       return socket;
     }
   }
 
-  /* (non-Javadoc) */
   protected String receiveResponse(Socket socket) {
+
     try {
       return super.receiveMessage(socket);
     }
-    catch (IOException e) {
+    catch (IOException cause) {
+
       getLogger().severe(String.format("Failed to receive response from EchoServer [%s]",
         socket.getRemoteSocketAddress()));
 
-      getLogger().severe(ThrowableUtils.getStackTrace(e));
+      getLogger().severe(ThrowableUtils.getStackTrace(cause));
 
       return "No Reply";
     }

@@ -349,11 +349,11 @@ public abstract class AbstractSearcher implements Searcher {
 
       return searchableAnnotation;
     }
-    catch (Exception e) {
-      throw new SearchException(String.format(
+    catch (Exception cause) {
+      throw newSearchException(cause,
         "Error occurred creating an instance of Matcher class (%1$s) to be used by this Searcher (%2$s)!"
           + " The Matcher class (%1$s) must have a public no-arg constructor!",
-            searchableAnnotation.matcher().getName(), this.getClass().getName()), e);
+            searchableAnnotation.matcher().getName(), this.getClass().getName());
     }
   }
 

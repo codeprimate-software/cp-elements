@@ -582,15 +582,15 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
           getLogger().info(String.format("Process [%d] has been stopped", safeGetId()));
           return exitValue;
         }
-        catch (ExecutionException e) {
+        catch (ExecutionException cause) {
           if (getLogger().isLoggable(Level.FINE)) {
-            getLogger().fine(ThrowableUtils.getStackTrace(e));
+            getLogger().fine(ThrowableUtils.getStackTrace(cause));
           }
         }
-        catch (InterruptedException e) {
+        catch (InterruptedException cause) {
           Thread.currentThread().interrupt();
         }
-        catch (TimeoutException e) {
+        catch (TimeoutException cause) {
           getLogger().warning(String.format("Process [%1$d] could not be stopped within the given timeout [%2$d ms]",
             safeGetId(), unit.toMillis(timeout)));
         }

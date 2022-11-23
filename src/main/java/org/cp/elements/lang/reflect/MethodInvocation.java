@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang.reflect;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodInvocationException;
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 
@@ -282,9 +283,9 @@ public class MethodInvocation {
     try {
       return Optional.ofNullable((T) method.invoke(resolvedTarget, getArguments()));
     }
-    catch (IllegalAccessException | InvocationTargetException e) {
-      throw new MethodInvocationException(String.format("Failed to invoke method [%1$s] on target object [%2$s]",
-        method.getName(), resolvedTarget), e);
+    catch (IllegalAccessException | InvocationTargetException cause) {
+      throw newMethodInvocationException(cause, "Failed to invoke method [%1$s] on target object [%2$s]",
+        method.getName(), resolvedTarget);
     }
   }
 
