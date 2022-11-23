@@ -36,6 +36,11 @@ public final class ObjectFactoryReferenceHolder {
   private static ObjectFactory objectFactoryReference;
 
   /**
+   * Default, private constructor to prevent instantiation of the {@link ObjectFactoryReferenceHolder}.
+   */
+  private ObjectFactoryReferenceHolder() { }
+
+  /**
    * Determines whether {@literal this} reference holder holds a reference to an {@link ObjectFactory}.
    *
    * @return a boolean value indicating whether {@literal this} reference holder holds a reference to

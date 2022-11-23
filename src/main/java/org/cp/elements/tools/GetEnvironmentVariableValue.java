@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools;
 
 import static org.cp.elements.data.struct.EnvironmentVariableValue.newEnvironmentVariableValue;
@@ -30,8 +29,8 @@ import java.util.Arrays;
  */
 public class GetEnvironmentVariableValue {
 
-  /* (non-Javadoc) */
   public static void main(String[] args) {
+
     if (args.length < 1) {
       System.err.printf("$ java ... %s environmentVariable [environmentVariable]*%n",
         GetEnvironmentVariableValue.class.getName());
@@ -41,4 +40,7 @@ public class GetEnvironmentVariableValue {
     Arrays.stream(args).forEach(environmentVariable ->
       System.out.println(newEnvironmentVariableValue(environmentVariable)));
   }
+
+  private GetEnvironmentVariableValue() { }
+
 }

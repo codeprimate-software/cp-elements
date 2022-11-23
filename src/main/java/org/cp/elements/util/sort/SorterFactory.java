@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort;
 
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.sort.support.BubbleSort;
 import org.cp.elements.util.sort.support.CombSort;
 import org.cp.elements.util.sort.support.HeapSort;
@@ -43,7 +44,7 @@ import org.cp.elements.util.sort.support.ShellSort;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SorterFactory {
+public final class SorterFactory {
 
   /**
    * Creates an instance of the Sorter interface implementing the sorting algorithm based on the SortType.
@@ -54,9 +55,12 @@ public class SorterFactory {
    * @see org.cp.elements.util.sort.Sorter
    * @see org.cp.elements.util.sort.SortType
    */
-  @SuppressWarnings("unchecked")
-  public static <T extends Sorter> T createSorter(final SortType type) {
-    switch (ObjectUtils.returnFirstNonNullValue(type, SortType.UNKONWN)) {
+  @SuppressWarnings("all")
+  public static @NotNull <T extends Sorter> T createSorter(@Nullable SortType type) {
+
+    SortType resolvedSortType = ObjectUtils.returnFirstNonNullValue(type, SortType.UNKONWN);
+
+    switch (resolvedSortType) {
       case BUBBLE_SORT:
         return (T) new BubbleSort();
       case COMB_SORT:
@@ -94,7 +98,9 @@ public class SorterFactory {
    * @see org.cp.elements.util.sort.Sorter
    * @see org.cp.elements.util.sort.SortType
    */
-  public static <T extends Sorter> T createSorterElseDefault(final SortType type, final T defaultSorter) {
+  public static @Nullable <T extends Sorter> T createSorterElseDefault(@Nullable SortType type,
+      @Nullable T defaultSorter) {
+
     try {
       return createSorter(type);
     }
@@ -102,5 +108,7 @@ public class SorterFactory {
       return defaultSorter;
     }
   }
+
+  private SorterFactory() { }
 
 }

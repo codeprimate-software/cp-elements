@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.tools;
 
 import java.net.URL;
@@ -34,7 +33,6 @@ import org.cp.elements.lang.ClassUtils;
  */
 public class ClassLocator {
 
-  /* (non-Javadoc) */
   public static void main(String[] args) {
     Arrays.stream(args).forEach(binaryClassName -> {
       System.out.printf("class [%1$s] %2$s%n", binaryClassName, resolve(binaryClassName)
@@ -42,8 +40,10 @@ public class ClassLocator {
     });
   }
 
-  /* (non-Javadoc) */
-  protected static Optional<URL> resolve(String binaryClassName) {
+  private static Optional<URL> resolve(String binaryClassName) {
    return Optional.ofNullable(ClassUtils.locateClass(binaryClassName));
   }
+
+  private ClassLocator() {}
+
 }

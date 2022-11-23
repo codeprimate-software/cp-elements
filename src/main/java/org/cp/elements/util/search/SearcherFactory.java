@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search;
 
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.search.support.BinarySearch;
 import org.cp.elements.util.search.support.LinearSearch;
 
@@ -32,7 +33,7 @@ import org.cp.elements.util.search.support.LinearSearch;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SearcherFactory {
+public final class SearcherFactory {
 
   /**
    * Creates an instance of the Searcher interface implementing the searching algorithm based on the SearchType.
@@ -43,9 +44,12 @@ public class SearcherFactory {
    * @see org.cp.elements.util.search.Searcher
    * @see org.cp.elements.util.search.SearchType
    */
-  @SuppressWarnings("unchecked")
-  public static <T extends Searcher> T createSearcher(final SearchType type) {
-    switch (ObjectUtils.returnFirstNonNullValue(type, SearchType.UNKNOWN_SEARCH)) {
+  @SuppressWarnings("all")
+  public static @NotNull <T extends Searcher> T createSearcher(@Nullable SearchType type) {
+
+    SearchType resolvedSearchType = ObjectUtils.returnFirstNonNullValue(type, SearchType.UNKNOWN_SEARCH);
+
+    switch (resolvedSearchType) {
       case BINARY_SEARCH:
         return (T) new BinarySearch();
       case LINEAR_SEARCH:
@@ -71,7 +75,9 @@ public class SearcherFactory {
    * @see org.cp.elements.util.search.Searcher
    * @see org.cp.elements.util.search.SearchType
    */
-  public static <T extends Searcher> T createSearcherElseDefault(final SearchType type, final T defaultSearcher) {
+  public static @Nullable <T extends Searcher> T createSearcherElseDefault(@Nullable SearchType type,
+      @Nullable T defaultSearcher) {
+
     try {
       return createSearcher(type);
     }
@@ -79,5 +85,7 @@ public class SearcherFactory {
       return defaultSearcher;
     }
   }
+
+  private SearcherFactory() { }
 
 }

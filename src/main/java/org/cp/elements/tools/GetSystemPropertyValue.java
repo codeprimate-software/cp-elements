@@ -39,4 +39,7 @@ public class GetSystemPropertyValue {
 
     Arrays.stream(args).forEach(systemProperty -> System.out.println(newSystemPropertyValue(systemProperty)));
   }
+
+  private GetSystemPropertyValue() { }
+
 }
