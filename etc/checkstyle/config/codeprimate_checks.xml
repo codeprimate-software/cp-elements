@@ -26,8 +26,8 @@
   </module>
 
   <module name="LineLength">
+    <property name="ignorePattern" value="\@see"/>
     <property name="max" value="${checkstyle.LineLength.max}" default="120"/>
-    <property name="pattern" value="\@see"/>
     <property name="severity" value="warning"/>
   </module>
 
