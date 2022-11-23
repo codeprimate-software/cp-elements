@@ -216,9 +216,9 @@ public class InMemoryTable extends AbstractTable {
    * Removes the {@link Column} at the given {@link Integer index} from this {@link Table}.
    *
    * @param index {@link Integer} value indicating the index of the {@link Column} to remove.
+   * @return a boolean value if the {@link Column} was successfully removed.
    * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Column} index
    * in this {@link Table}
-   * @return a boolean value if the {@link Column} was successfully removed.
    */
   @Override
   public boolean removeColumn(int index) {
@@ -238,9 +238,9 @@ public class InMemoryTable extends AbstractTable {
    * Removes the {@link Row} at the given {@link Integer index} from this {@link Table}.
    *
    * @param index {@link Integer} value indicating the index of the {@link Row} to remove.
+   * @return a boolean value if the {@link Row} was successfully removed.
    * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Row} index
    * in this {@link Table}
-   * @return a boolean value if the {@link Row} was successfully removed.
    */
   @Override
   public boolean removeRow(int index) {

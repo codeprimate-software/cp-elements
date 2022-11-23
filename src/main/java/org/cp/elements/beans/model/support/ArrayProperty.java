@@ -129,10 +129,10 @@ public class ArrayProperty extends AbstractIndexedProperty<Integer> {
    *
    * @param array {@link Object} array to used in the assertion.
    * @param index {@link Integer#TYPE} to evaluate as an array index.
+   * @return the given array index if valid.
    * @throws ArrayIndexOutOfBoundsException if the array index is less than {@literal 0}
    * or greater than equal to {@literal array.length}.
    * @throws IllegalArgumentException if the {@code array} argument is not an actual array.
-   * @return the given array index if valid.
    */
   protected int assertArrayIndex(@NotNull Object array, int index) {
 

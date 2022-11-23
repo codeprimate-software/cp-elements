@@ -41,8 +41,8 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * Gets the identifier for this Rule.
    *
    * @return the identifier for this Rule.
-   * @see org.cp.elements.lang.Identifiable#getId()
    * @throws IllegalStateException if the identifier for this Rule was not properly set.
+   * @see org.cp.elements.lang.Identifiable#getId()
    */
   public ID getId() {
     Assert.state(this.id != null, "The identifier for Rule ({0}) was not properly initialized!", getClass().getName());
@@ -53,8 +53,8 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * Sets the identifier for this Rule.
    *
    * @param id a value of type T assigned as this object's unique identifier.
-   * @see org.cp.elements.lang.Identifiable#setId(Comparable)
    * @throws NullPointerException if the identifier for this Rule is null.
+   * @see org.cp.elements.lang.Identifiable#setId(Comparable)
    */
   public final void setId(final ID id) {
     Assert.notNull(id, "The identifier for Rule ({0}) cannot be null!", getClass().getName());

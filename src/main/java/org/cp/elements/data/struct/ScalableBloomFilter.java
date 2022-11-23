@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.cp.elements.util.ArrayUtils.asIterator;
@@ -278,9 +277,9 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    *
    * @param acceptableFalsePositiveRate a floating point value indicating the acceptable percentage of false positives
    * returned by this {@link BloomFilter}.
+   * @return this {@link ScalableBloomFilter}.
    * @throws IllegalArgumentException if the {@code acceptableFalsePositiveRate} is less than equal to 0.0
    * or greater than equal to 1.0.
-   * @return this {@link ScalableBloomFilter}.
    */
   public ScalableBloomFilter<T> with(float acceptableFalsePositiveRate) {
 
@@ -298,8 +297,8 @@ public class ScalableBloomFilter<T> implements BloomFilter<T>, Iterable<BloomFil
    *
    * @param approximateNumberOfElementsPerFilter integer value indicating the approximate, estimated number of elements
    * the user expects will be added to each {@link BloomFilter}.
-   * @throws IllegalArgumentException if the {@code approximateNumberOfElementsPerFilter} is less than equal to 0.
    * @return this {@link ScalableBloomFilter}.
+   * @throws IllegalArgumentException if the {@code approximateNumberOfElementsPerFilter} is less than equal to 0.
    */
   public ScalableBloomFilter<T> with(int approximateNumberOfElementsPerFilter) {
 

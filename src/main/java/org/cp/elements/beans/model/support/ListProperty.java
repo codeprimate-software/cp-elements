@@ -134,9 +134,9 @@ public class ListProperty extends AbstractIndexedProperty<Integer> {
    *
    * @param list {@link List} used in the assertion.
    * @param index {@link Integer#TYPE} value to evaluate as a valid {@link List} index.
+   * @return the given {@link List} index if valid.
    * @throws IndexOutOfBoundsException if the {@link List} index is less than {@literal 0}
    * or greater than equal to {@link List#size()}.
-   * @return the given {@link List} index if valid.
    * @see java.util.List
    */
   @NullSafe

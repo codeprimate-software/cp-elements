@@ -845,8 +845,8 @@ public abstract class ReflectionUtils extends ClassUtils {
      *
      * @param methodName {@link String} containing the {@literal name} of the {@link Method} to resolve;
      * must not be {@literal null} or {@literal empty}.
-     * @throws IllegalArgumentException if the {@link String method name} is {@literal null} or {@literal empty}.
      * @return this {@link MethodReference}.
+     * @throws IllegalArgumentException if the {@link String method name} is {@literal null} or {@literal empty}.
      */
     @Dsl
     public @NotNull MethodReference havingName(@NotNull String methodName) {

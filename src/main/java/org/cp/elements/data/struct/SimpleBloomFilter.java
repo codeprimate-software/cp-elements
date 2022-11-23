@@ -138,9 +138,9 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
    * the user expects will be added to the returned {@link SimpleBloomFilter} instance.
    * @param acceptableFalsePositiveRate a floating point value indicating the acceptable percentage of false positives
    * returned by the constructed {@link SimpleBloomFilter}.
+   * @return a new instance of {@link SimpleBloomFilter}.
    * @throws IllegalArgumentException if the approximate number of elements is less than equal to 0 or the acceptable,
    * false positive rate is less than equal to 0.0 or greater than equal to 1.0.
-   * @return a new instance of {@link SimpleBloomFilter}.
    * @see #computeRequiredNumberOfBits(double, double)
    * @see #computeOptimalNumberOfHashFunctions(double, double)
    * @see org.cp.elements.data.struct.SimpleBloomFilter

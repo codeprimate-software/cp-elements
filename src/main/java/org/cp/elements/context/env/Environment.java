@@ -268,8 +268,8 @@ public class Environment implements Iterable<String> {
    *
    * @param propertyName {@link String} containing the {@literal name}
    * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
-   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty}.
    * @return the {@link String value} of the {@link String named} {@link System#getProperty(String) System property}.
+   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty}.
    * @see org.cp.elements.util.PropertiesAdapter#get(String)
    * @see #systemProperties()
    */
@@ -286,8 +286,8 @@ public class Environment implements Iterable<String> {
    * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
    * @param defaultValue {@link String value} to return if the {@link String named}
    * {@link System#getProperty(String) System property} is not declared or defined (set).
-   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty}.
    * @return the {@link String value} of the {@link String named} {@link System#getProperty(String) System property}
+   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty}.
    * or return the given {@link String default value} if the {@link String named}
    * {@link System#getProperty(String) System property} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#get(String, String)
@@ -306,8 +306,8 @@ public class Environment implements Iterable<String> {
    * of the {@link System#getProperty(String) System property}; must not be {@literal null} or {@literal empty}.
    * @param defaultValue {@link Supplier} supplying the {@link String default value} to return
    * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
-   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty}.
    * @return the {@link String value} of the {@link String named} {@link System#getProperty(String) System property}
+   * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty}.
    * or return the given {@link String default value} if the {@link String named}
    * {@link System#getProperty(String) System property} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#get(String, Supplier)
@@ -347,9 +347,9 @@ public class Environment implements Iterable<String> {
    * @param type converted {@link Class type} of the property value; must not be {@literal null}.
    * @param defaultValue value of {@link Class type T} to return if the {@link String named}
    * {@link System#getProperty(String) System property} is not declared or defined (set).
+   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
    * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty},
    * or the {@link Class type} is {@literal null}.
-   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
    * or return the given {@link T default value} if the {@link String named}
    * {@link System#getProperty(String) System property} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Object)
@@ -373,9 +373,9 @@ public class Environment implements Iterable<String> {
    * @param type converted {@link Class type} of the property value; must not be {@literal null}.
    * @param defaultValue {@link Supplier supplied default value} of {@link Class type T} to return
    * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
+   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
    * @throws IllegalArgumentException if the {@link String name} of the property is {@literal null} or {@literal empty},
    * the {@link Class type} is {@literal null}, or the {@link Supplier} is {@literal null}.
-   * @return the {@link T value} of the {@link String named} {@link System#getProperty(String) System property}
    * or return the given {@link Supplier supplied default value}
    * if the {@link String named} {@link System#getProperty(String) System property} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Supplier)
@@ -392,9 +392,9 @@ public class Environment implements Iterable<String> {
    *
    * @param environmentVariableName {@link String} containing the {@literal name}
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
+   * @return the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}.
    * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
    * or {@literal empty}.
-   * @return the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}.
    * @see org.cp.elements.util.PropertiesAdapter#get(String)
    * @see #environmentVariables()
    */
@@ -411,9 +411,9 @@ public class Environment implements Iterable<String> {
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
    * @param defaultValue {@link String value} to return if the {@link String named}
    * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @return the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
    * or {@literal empty}.
-   * @return the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * or return the given {@link String default value} if the {@link String named}
    * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#get(String, String)
@@ -432,9 +432,9 @@ public class Environment implements Iterable<String> {
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
    * @param defaultValue {@link Supplier} supplying the {@link String default value} to return
    * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @return the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
    * or {@literal empty}.
-   * @return the {@link String value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * or return the given {@link String default value} if the {@link String named}
    * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#get(String, Supplier)
@@ -453,9 +453,9 @@ public class Environment implements Iterable<String> {
    * @param environmentVariableName {@link String} containing the {@literal name}
    * of the {@link System#getenv(String) Environment Variable}; must not be {@literal null} or {@literal empty}.
    * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
+   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}.
    * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
    * or {@literal empty}, or the {@link Class type} is {@literal null}.
-   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}.
    * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class)
    * @see #environmentVariables()
    */
@@ -474,9 +474,9 @@ public class Environment implements Iterable<String> {
    * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
    * @param defaultValue value of {@link Class type T} to return if the {@link String named}
    * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
    * or {@literal empty}, or the {@link Class type} is {@literal null}.
-   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * returning the given {@link T default value} if the {@link String named}
    * {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Object)
@@ -500,9 +500,9 @@ public class Environment implements Iterable<String> {
    * @param type converted {@link Class type} of the environment variable value; must not be {@literal null}.
    * @param defaultValue {@link Supplier supplied default value} of {@link Class type T} to return
    * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
+   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * @throws IllegalArgumentException if the {@link String name} of the environment variable is {@literal null}
    * or {@literal empty}, the {@link Class type} is {@literal null}, or the {@link Supplier} is {@literal null}.
-   * @return the {@link T value} of the {@link String named} {@link System#getenv(String) Environment Variable}
    * returning the given {@link Supplier supplied default value}
    * if the {@link String named} {@link System#getenv(String) Environment Variable} is not declared or defined (set).
    * @see org.cp.elements.util.PropertiesAdapter#getAsType(String, Class, Supplier)
