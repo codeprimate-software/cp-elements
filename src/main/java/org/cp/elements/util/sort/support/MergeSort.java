@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
 import java.lang.reflect.Array;
@@ -48,8 +47,9 @@ public class MergeSort extends AbstractSorter {
    */
   @Override
   @SuppressWarnings("unchecked")
-  public <E> E[] sort(final E... elements) {
-    return (E[]) sort(new SortableArrayList(elements)).toArray(
+  public <E> E[] sort(E... elements) {
+
+    return (E[]) sort(new SortableArrayList<>(elements)).toArray(
       (E[]) Array.newInstance(elements.getClass().getComponentType(), elements.length));
   }
 
@@ -63,7 +63,8 @@ public class MergeSort extends AbstractSorter {
    * @see java.util.List
    */
   @Override
-  public <E> List<E> sort(final List<E> elements) {
+  public <E> List<E> sort(List<E> elements) {
+
     if (elements.size() > 1) {
       int size = elements.size();
       int count = ((size / 2) + (size % 2));
@@ -87,8 +88,9 @@ public class MergeSort extends AbstractSorter {
    * @return a new List containing the elements from the left and right Lists merged in sorted order.
    * @see java.util.List
    */
-  // TODO solve the ArrayList allocation (memory resource consumption) problem
-  protected <E> List<E> merge(final List<E> leftElements, final List<E> rightElements) {
+  // TODO: Solve the ArrayList allocation (memory resource consumption) problem!
+  protected <E> List<E> merge(List<E> leftElements, List<E> rightElements) {
+
     int leftIndex = 0;
     int leftSize = leftElements.size();
     int rightIndex = 0;
@@ -120,5 +122,4 @@ public class MergeSort extends AbstractSorter {
 
     return mergedElements;
   }
-
 }
