@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Filter;
@@ -31,7 +30,10 @@ import org.cp.elements.lang.Filter;
  */
 public final class DefaultFilter<T> implements Filter<T> {
 
+  @SuppressWarnings("rawtypes")
   public static final DefaultFilter ACCEPT = new DefaultFilter<>(true);
+
+  @SuppressWarnings("rawtypes")
   public static final DefaultFilter REJECT = new DefaultFilter<>(false);
 
   private final boolean acceptReturnValue;
@@ -47,7 +49,7 @@ public final class DefaultFilter<T> implements Filter<T> {
    */
   @SuppressWarnings("unchecked")
   public static <T> DefaultFilter<T> getInstance(boolean acceptReturnValue) {
-    return (acceptReturnValue ? ACCEPT : REJECT);
+    return acceptReturnValue ? ACCEPT : REJECT;
   }
 
   /**
@@ -64,7 +66,7 @@ public final class DefaultFilter<T> implements Filter<T> {
    *
    * @return a boolean value indicating the result of the accept method.
    */
-  final boolean isAccepting() {
+  boolean isAccepting() {
     return this.acceptReturnValue;
   }
 

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * The InverseFilter class negates the outcome of the target Filter wrapped by an instance of this class.
@@ -39,9 +39,9 @@ public final class InverseFilter<T> implements Filter<T> {
    *
    * @param filter the Filter object being wrapped by an instance of the InverseFilter.
    */
-  public InverseFilter(final Filter<T> filter) {
-    Assert.notNull(filter, "The target Filter being wrapped by the InverseFilter cannot be null!");
-    this.filter = filter;
+  public InverseFilter(@NotNull Filter<T> filter) {
+    this.filter = ObjectUtils.requireObject(filter,
+      "The target Filter being wrapped by the InverseFilter is required");
   }
 
   /**
@@ -50,7 +50,7 @@ public final class InverseFilter<T> implements Filter<T> {
    *
    * @return the Filter object wrapped by this InverseFilter.
    */
-  final Filter<T> getFilter() {
+  @NotNull Filter<T> getFilter() {
     return this.filter;
   }
 
@@ -60,8 +60,7 @@ public final class InverseFilter<T> implements Filter<T> {
    * @param obj the Object being evaluated by this Filter.
    * @return a boolean value indicating whether the specified Object satisfies the criteria (rules) of this Filter.
    */
-  public boolean accept(final T obj) {
+  public boolean accept(T obj) {
     return !getFilter().accept(obj);
   }
-
 }

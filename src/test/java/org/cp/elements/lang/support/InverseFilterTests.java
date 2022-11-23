@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
@@ -28,11 +28,12 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.cp.elements.lang.Filter;
 import org.junit.Test;
 
+import org.cp.elements.lang.Filter;
+
 /**
- * Unit tests for {@link InverseFilter}.
+ * Unit Tests for {@link InverseFilter}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -55,9 +56,13 @@ public class InverseFilterTests {
     assertSame(mockFilter, inverseFilter.getFilter());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void createInverseFilterWithNullFilter() {
-    new InverseFilter<>(null);
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new InverseFilter<>(null))
+      .withMessage("The target Filter being wrapped by the InverseFilter is required")
+      .withNoCause();
   }
 
   @Test
