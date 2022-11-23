@@ -15,7 +15,6 @@
  */
 package org.cp.elements.util.search;
 
-import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.search.support.BinarySearch;
@@ -44,10 +43,10 @@ public final class SearcherFactory {
    * @see org.cp.elements.util.search.Searcher
    * @see org.cp.elements.util.search.SearchType
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public static @NotNull <T extends Searcher> T createSearcher(@Nullable SearchType type) {
 
-    SearchType resolvedSearchType = ObjectUtils.returnFirstNonNullValue(type, SearchType.UNKNOWN_SEARCH);
+    SearchType resolvedSearchType = type != null ? type : SearchType.UNKNOWN_SEARCH;
 
     switch (resolvedSearchType) {
       case BINARY_SEARCH:

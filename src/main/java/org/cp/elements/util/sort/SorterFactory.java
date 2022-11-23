@@ -15,7 +15,6 @@
  */
 package org.cp.elements.util.sort;
 
-import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.sort.support.BubbleSort;
@@ -55,10 +54,10 @@ public final class SorterFactory {
    * @see org.cp.elements.util.sort.Sorter
    * @see org.cp.elements.util.sort.SortType
    */
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public static @NotNull <T extends Sorter> T createSorter(@Nullable SortType type) {
 
-    SortType resolvedSortType = ObjectUtils.returnFirstNonNullValue(type, SortType.UNKONWN);
+    SortType resolvedSortType = type != null ? type : SortType.UNKONWN;
 
     switch (resolvedSortType) {
       case BUBBLE_SORT:

@@ -91,6 +91,7 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor<Object
    * on the configured {@link #getTarget() target} object.  If {@link #getTarget() target} is {@literal null}
    * then the {@link Method} will be invoked on the configured target of the {@link MethodInvocation}.
    *
+   * @param <T> {@link Class type} of the {@link Object return value}.
    * @param methodInvocation {@link MethodInvocation} being intercepted.
    * @return an {@link Optional} return value containing the result of the interception.
    * @see org.cp.elements.lang.reflect.MethodInvocation
@@ -98,8 +99,7 @@ public class MethodInvokingMethodInterceptor implements MethodInterceptor<Object
    * @see #getTarget()
    */
   @Override
-  @SuppressWarnings("unchecked")
-  public Optional<Object> intercept(@NotNull MethodInvocation methodInvocation) {
+  public <T> Optional<T> intercept(@NotNull MethodInvocation methodInvocation) {
     return methodInvocation.makeAccessible().invoke(getTarget());
   }
 }
