@@ -333,15 +333,15 @@ public abstract class CollectionUtils {
   }
 
   /**
- 	 * Returns the given {@link Iterable} if not {@literal null} or empty, otherwise returns the {@code defaultIterable}.
- 	 *
- 	 * @param <E> {@link Class} type of the elements in the {@link Iterable Iterables}.
- 	 * @param <T> {@link Class} type of the {@link Iterable}.
- 	 * @param iterable {@link Iterable} to evaluate.
- 	 * @param defaultIterable {@link Iterable} to return if the given {@code iterable} is {@literal null} or empty.
- 	 * @return {@code iterable} if not {@literal null} or empty otherwise return {@code defaultIterable}.
- 	 * @see java.lang.Iterable
- 	 */
+   * Returns the given {@link Iterable} if not {@literal null} or empty, otherwise returns the {@code defaultIterable}.
+   *
+   * @param <E> {@link Class} type of the elements in the {@link Iterable Iterables}.
+   * @param <T> {@link Class} type of the {@link Iterable}.
+   * @param iterable {@link Iterable} to evaluate.
+   * @param defaultIterable {@link Iterable} to return if the given {@code iterable} is {@literal null} or empty.
+   * @return {@code iterable} if not {@literal null} or empty otherwise return {@code defaultIterable}.
+   * @see java.lang.Iterable
+   */
   public static @Nullable <E, T extends Iterable<E>> T defaultIfEmpty(@Nullable T iterable,
       @Nullable T defaultIterable) {
 
