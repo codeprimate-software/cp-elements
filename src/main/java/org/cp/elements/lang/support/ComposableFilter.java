@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Composite;
@@ -154,7 +153,7 @@ public class ComposableFilter<T> implements Composite<Filter<T>>, Filter<T> {
    * @see org.cp.elements.lang.LogicalOperator
    * @see org.cp.elements.lang.Filter
    */
-  private ComposableFilter(Filter<T> filterOne, LogicalOperator op, Filter<T> filterTwo) {
+  protected ComposableFilter(Filter<T> filterOne, LogicalOperator op, Filter<T> filterTwo) {
 
     this.filterOne = filterOne;
     this.op = op;

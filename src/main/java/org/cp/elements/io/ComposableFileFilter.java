@@ -215,7 +215,7 @@ public class ComposableFileFilter implements Composite<FileFilter>, FileFilter, 
    * @see org.cp.elements.lang.LogicalOperator
    * @see java.io.FileFilter
    */
-  private ComposableFileFilter(@NotNull FileFilter leftOperand, @NotNull FileFilter rightOperand,
+  protected ComposableFileFilter(@NotNull FileFilter leftOperand, @NotNull FileFilter rightOperand,
       @NotNull LogicalOperator operator) {
 
     this.leftOperand = ObjectUtils.requireObject(leftOperand, "Left operand is required");

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Composite;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Transformer;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * The ComposableTransformer class is a Transformer implementation combining two or more Transformer objects
@@ -64,13 +64,10 @@ public class ComposableTransformer<T> implements Composite<Transformer<T>>, Tran
    * @throws IllegalArgumentException if either {@link Transformer} argument is {@literal null}.
    * @see org.cp.elements.lang.Transformer
    */
-  private ComposableTransformer(Transformer<T> transformerOne, Transformer<T> transformerTwo) {
+  protected ComposableTransformer(@NotNull Transformer<T> transformerOne, @NotNull Transformer<T> transformerTwo) {
 
-    Assert.notNull(transformerOne, "Transformer one is required");
-    Assert.notNull(transformerTwo, "Transformer two is required");
-
-    this.transformerOne = transformerOne;
-    this.transformerTwo = transformerTwo;
+    this.transformerOne = ObjectUtils.requireObject(transformerOne, "Transformer one is required");
+    this.transformerTwo = ObjectUtils.requireObject(transformerTwo, "Transformer two is required");
   }
 
   /**

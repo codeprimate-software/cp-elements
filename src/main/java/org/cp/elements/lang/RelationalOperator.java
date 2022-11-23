@@ -333,7 +333,28 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
    * @param <T> the Class type of the Comparable operands used in the relational comparison.
    * @see org.cp.elements.lang.LogicalOperator
    */
-  protected static class ComposableRelationalOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
+  protected static final class ComposableRelationalOperator<T extends Comparable<T>> extends AbstractRelationalOperator<T> {
+
+    /**
+     * Factory method used in composing a compound relational operator comparison, such as
+     * {@literal >} {@literal &&} {@literal <} or {@literal <} {@literal ||} {@literal >}.
+     *
+     * @param <T> the Class type of the Comparable operands used in the relational comparison.
+     * @param leftOperand a RelationalOperator operand on the left-side of the logical operation.
+     * @param operator the LogicalOperator used to the combine the two ReltaionalOperator operands in a compound
+     * relational comparison.
+     * @param rightOperand a RelationalOperator operand on the right-side of the logical operation.
+     * @return the left RelationalOperator operand if the right operand is null, or the right RelationalOperator
+     * operand if the left is null, or a new ComposableRelationalOperator combining the two individual
+     * RelationalOperator operands into a compound relational comparison using the specified LogicalOperator.
+     */
+    public static <T extends Comparable<T>> RelationalOperator<T> compose(
+        RelationalOperator<T> leftOperand, LogicalOperator operator, RelationalOperator<T> rightOperand) {
+
+      return leftOperand == null ? rightOperand
+        : rightOperand == null ? leftOperand
+        : new ComposableRelationalOperator<>(leftOperand, operator, rightOperand);
+    }
 
     private final LogicalOperator operator;
 
@@ -361,31 +382,11 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
     }
 
     /**
-     * Factory method used in composing a compound relational operator comparison, such as
-     * {@literal >} {@literal &&} {@literal <} or {@literal <} {@literal ||} {@literal >}.
-     *
-     * @param <T> the Class type of the Comparable operands used in the relational comparison.
-     * @param leftOperand a RelationalOperator operand on the left-side of the logical operation.
-     * @param operator the LogicalOperator used to the combine the two ReltaionalOperator operands in a compound
-     * relational comparison.
-     * @param rightOperand a RelationalOperator operand on the right-side of the logical operation.
-     * @return the left RelationalOperator operand if the right operand is null, or the right RelationalOperator
-     * operand if the left is null, or a new ComposableRelationalOperator combining the two individual
-     * RelationalOperator operands into a compound relational comparison using the specified LogicalOperator.
-     */
-    public static <T extends Comparable<T>> RelationalOperator<T> compose(
-        RelationalOperator<T> leftOperand, LogicalOperator operator, RelationalOperator<T> rightOperand) {
-
-      return (leftOperand == null ? rightOperand : (rightOperand == null ? leftOperand
-        : new ComposableRelationalOperator<>(leftOperand, operator, rightOperand)));
-    }
-
-    /**
      * Gets the left-side operand in the logical operation.
      *
      * @return the RelationalOperator constituting the operand on the left-side of the logical operation.
      */
-    protected RelationalOperator<T> getLeftOperand() {
+    RelationalOperator<T> getLeftOperand() {
       return this.leftOperand;
     }
 
@@ -396,7 +397,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      * @return the LogicalOperator used to combine the two RelationalOperators into a compound relational comparison.
      * @see org.cp.elements.lang.LogicalOperator
      */
-    protected LogicalOperator getOperator() {
+    LogicalOperator getOperator() {
       return this.operator;
     }
 
@@ -405,7 +406,7 @@ public abstract class RelationalOperator<T extends Comparable<T>> {
      *
      * @return the RelationalOperator constituting the operand on the right-side of the logical operation.
      */
-    protected RelationalOperator<T> getRightOperand() {
+    RelationalOperator<T> getRightOperand() {
       return this.rightOperand;
     }
 

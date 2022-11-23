@@ -864,7 +864,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.Nameable
    */
   @FluentApi
-  public static class MethodReference implements DslExtension, FluentApiExtension, Nameable<String> {
+  public static final class MethodReference implements DslExtension, FluentApiExtension, Nameable<String> {
 
     private final AtomicReference<Method> methodReference = new AtomicReference<>(null);
 
@@ -926,7 +926,7 @@ public abstract class ReflectionUtils extends ClassUtils {
      * @return an array containing the {@link Method Method's} parameter {@link Class types}.
      * @see #getName()
      */
-    protected Class<?>[] getParameterTypes() {
+    Class<?>[] getParameterTypes() {
       return ArrayUtils.nullSafeArray(this.parameterTypes, Class.class);
     }
 

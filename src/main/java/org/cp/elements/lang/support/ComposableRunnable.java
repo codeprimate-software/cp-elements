@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Composite;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * The ComposableRunnable class is an implementation of the Runnable interface and the Composite Design Pattern to
@@ -63,13 +63,10 @@ public class ComposableRunnable implements Composite<Runnable>, Runnable {
    * @param runnableTwo the right Runnable node in the composed graph.
    * @throws NullPointerException if either the left or right Runnable object is null.
    */
-  private ComposableRunnable(Runnable runnableOne, Runnable runnableTwo) {
+  protected ComposableRunnable(@NotNull Runnable runnableOne, @NotNull Runnable runnableTwo) {
 
-    Assert.notNull(runnableOne, "Runnable one is required");
-    Assert.notNull(runnableTwo, "Runnable two is required");
-
-    this.runnableOne = runnableOne;
-    this.runnableTwo = runnableTwo;
+    this.runnableOne = ObjectUtils.requireObject(runnableOne, "Runnable one is required");
+    this.runnableTwo = ObjectUtils.requireObject(runnableTwo, "Runnable two is required");
   }
 
   /**

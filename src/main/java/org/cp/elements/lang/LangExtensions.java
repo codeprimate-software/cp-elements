@@ -110,7 +110,7 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.reflect.MethodInterceptor
    * @see java.lang.reflect.InvocationHandler
    */
-  //@FluentApi
+  @org.cp.elements.lang.annotation.FluentApi
   protected static class SafeNavigationHandler<T> implements DslExtension, FluentApiExtension,
       org.cp.elements.lang.reflect.MethodInterceptor<T> {
 
@@ -146,11 +146,8 @@ public abstract class LangExtensions {
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
      * @see org.cp.elements.lang.reflect.ProxyFactory
      */
-    private SafeNavigationHandler(@NotNull ProxyFactory<T> proxyFactory) {
-
-      Assert.notNull(proxyFactory, "ProxyFactory is required");
-
-      this.proxyFactory = proxyFactory;
+    protected SafeNavigationHandler(@NotNull ProxyFactory<T> proxyFactory) {
+      this.proxyFactory = ObjectUtils.requireObject(proxyFactory, "ProxyFactory is required");
     }
 
     /**
@@ -716,7 +713,7 @@ public abstract class LangExtensions {
    *
    * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.
    */
-  private static class AssertThatExpression<T> implements AssertThat<T> {
+  private static final class AssertThatExpression<T> implements AssertThat<T> {
 
     private static final boolean DEFAULT_EXPECTED = true;
 
@@ -1565,7 +1562,10 @@ public abstract class LangExtensions {
 
   }
 
-  private static class FromExpression implements From {
+  /**
+   * {@link FromExpression} is a default implementation of the {@link From} interface.
+   */
+  private static final class FromExpression implements From {
 
     private final Object target;
 
@@ -1941,7 +1941,7 @@ public abstract class LangExtensions {
    * @param <T> {@link Class type} of the the {@link Object} subject.
    * @see org.cp.elements.lang.LangExtensions.Is
    */
-  private static class IsExpression<T> implements Is<T> {
+  private static final class IsExpression<T> implements Is<T> {
 
     private static final boolean DEFAULT_EXPECTED = true;
 
@@ -1958,7 +1958,7 @@ public abstract class LangExtensions {
       this.expected = expected;
     }
 
-    protected T getTarget() {
+    private T getTarget() {
       return this.obj;
     }
 
