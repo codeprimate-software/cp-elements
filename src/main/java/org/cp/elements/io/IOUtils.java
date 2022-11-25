@@ -281,8 +281,18 @@ public abstract class IOUtils {
     }
   }
 
+  /**
+   * Java {@link FunctionalInterface} defining a operation that throws an {@link IOException}.
+   */
   @FunctionalInterface
   public interface IoExceptionThrowingOperation {
+
+    /**
+     * Performs the IO operation with the possibility of throwing an {@link IOException}.
+     *
+     * @throws IOException if an IO error occurs during the operation.
+     */
     void doIo() throws IOException;
+
   }
 }
