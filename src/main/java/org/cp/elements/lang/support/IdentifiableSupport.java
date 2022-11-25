@@ -23,6 +23,7 @@ import org.cp.elements.lang.annotation.Id;
  * the {@link Identifiable} interface.
  *
  * @author John Blum
+ * @param <ID> {@link Comparable} {@link Class type} of the identifier.
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.annotation.Id

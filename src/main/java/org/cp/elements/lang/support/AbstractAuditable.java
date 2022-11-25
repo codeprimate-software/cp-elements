@@ -19,6 +19,7 @@ import java.time.Instant;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.Identifiable;
 
 /**
  * The {@link AbstractAuditable} class is abstract base class provided to conveniently implement
@@ -27,6 +28,7 @@ import org.cp.elements.lang.Constants;
  * @author John J. Blum
  * @param <USER> {@link Class type} used to track the user.
  * @param <PROCESS> {@link Class type} used to track the process.
+ * @param <ID> {@link Class type} used as the {@link Identifiable} object's identifier.
  * @see java.lang.Comparable
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable

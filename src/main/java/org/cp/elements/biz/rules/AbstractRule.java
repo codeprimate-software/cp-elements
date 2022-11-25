@@ -23,6 +23,7 @@ import org.cp.elements.lang.Constants;
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of {@link Object objects} evaluated by this business rule.
+ * @param <ID> {@link Comparable} {@link Class type} of the identifier identifying the {@link Rule}.
  * @see org.cp.elements.biz.rules.Rule
  * @since 1.0.0
  */

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.function.Function;
@@ -22,9 +21,13 @@ import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Transformer;
 
 /**
- * The FunctionToTransformerAdapter class...
+ * Adapter used to adapt a Java {@link Function} as a Elements {@link Transformer}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object} to transform.
+ * @see java.util.function.Function
+ * @see org.cp.elements.lang.Transformer
+ * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter Software Design Pattern</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

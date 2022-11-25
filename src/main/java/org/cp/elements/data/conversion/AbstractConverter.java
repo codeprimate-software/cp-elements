@@ -35,6 +35,8 @@ import org.cp.elements.util.ArrayUtils;
  * An abstract base class encapsulating functionality and behavior common to all {@link Converter} implementations.
  *
  * @author John J. Blum
+ * @param <S> {@link Class source type} to convert from.
+ * @param <T> {@link Class target type} to convert to.
  * @see java.util.function.Function
  * @see org.cp.elements.data.conversion.ConversionServiceAware
  * @see org.cp.elements.data.conversion.Converter

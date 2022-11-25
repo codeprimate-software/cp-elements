@@ -29,6 +29,8 @@ import org.cp.elements.lang.concurrent.ThreadSafe;
  * modeling both a key and a value mapped to the key.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the key.
+ * @param <VALUE> {@link Class type} of the value.
  * @see java.util.Map
  * @see java.util.Map.Entry
  * @see org.cp.elements.data.struct.KeyValue

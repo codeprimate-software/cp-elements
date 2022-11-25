@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.support;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
@@ -29,6 +28,8 @@ import org.cp.elements.data.conversion.Converter;
  * the {@link Converter} interface to be used in data conversions.
  *
  * @author John Blum
+ * @param <T> {@link Class source type} to convert from.
+ * @param <R> {@link Class target type} to convert to.
  * @see java.util.function.Function
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @see org.cp.elements.data.conversion.Converter

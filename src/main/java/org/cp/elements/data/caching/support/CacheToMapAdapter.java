@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import java.util.AbstractCollection;
@@ -34,6 +33,8 @@ import org.cp.elements.lang.Assert;
  * This class adapts the {@link Cache} interface into an instance of a {@link Map}.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the {@link Cache} key.
+ * @param <VALUE> {@link Class type} of the {@link Cache} value.
  * @see java.lang.Comparable
  * @see java.util.AbstractMap
  * @see org.cp.elements.data.caching.Cache
@@ -326,7 +327,7 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
         return false;
       }
 
-      Map.Entry that = (Entry) obj;
+      Map.Entry<?, ?> that = (Map.Entry<?, ?>) obj;
 
       return this.getKey().equals(that.getKey());
     }

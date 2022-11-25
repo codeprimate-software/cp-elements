@@ -27,6 +27,8 @@ import org.cp.elements.lang.annotation.NullSafe;
  * accumulating the result.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the {@link Object objects} compared by the built {@link Comparator}
+ * in the comparison.
  * @see java.lang.Comparable
  * @see java.util.Comparator
  * @see org.cp.elements.lang.Builder

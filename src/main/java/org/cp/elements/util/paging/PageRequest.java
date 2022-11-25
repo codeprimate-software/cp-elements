@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.paging;
 
 import org.cp.elements.lang.Orderable;
@@ -24,6 +23,7 @@ import org.cp.elements.lang.Orderable;
  * per {@link Page}.
  *
  * @author John J. Blum
+ * @param <T> {@link Comparable} {@link Class type} of the {@link Object objects} contained on the {@link Page}.
  * @see java.lang.Comparable
  * @see org.cp.elements.lang.Orderable
  * @since 1.0.0

@@ -24,6 +24,10 @@ import org.cp.elements.lang.annotation.NotNull;
  * {@link FunctionalInterface} defining a contract for functions that accept 3 arguments.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the first input value.
+ * @param <U> {@link Class type} of the second input value.
+ * @param <V> {@link Class type} of the third input value.
+ * @param <R> {@link Class type} of the return value.
  * @see java.lang.FunctionalInterface
  * @see java.util.function.BiFunction
  * @see java.util.function.Function

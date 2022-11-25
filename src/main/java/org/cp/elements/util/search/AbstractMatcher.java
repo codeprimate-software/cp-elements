@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search;
 
 /**
- * The AbstractMatcher class is abstract base class encapsulating functionality common to all Matcher implementations.
+ * Abstract base class encapsulating functionality common to all {@link Matcher} implementations.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the {@link Object objects} to match while searching.
  * @see org.cp.elements.util.search.Matcher
  * @since 1.0.0
  */
@@ -51,5 +51,4 @@ public abstract class AbstractMatcher<T> implements Matcher<T> {
   public boolean isMatch(final T obj) {
     return (match(obj) == 0);
   }
-
 }

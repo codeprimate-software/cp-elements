@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.search;
 
 import org.cp.elements.lang.Filter;
 
 /**
- * The Matcher interface defines a contract for objects that match other objects based on criteria defined
- * by the Matcher.
+ * Interface defining a contract for objects used to match {@link Object objects} based on search criteria
+ * defined by the {@link Matcher} implementation.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the {@link Object objects} to match while searching.
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.util.search.Searcher
  * @since 1.0.0

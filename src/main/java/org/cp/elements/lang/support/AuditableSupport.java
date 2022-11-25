@@ -19,6 +19,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.cp.elements.lang.Auditable;
+import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -27,6 +28,9 @@ import org.cp.elements.lang.annotation.Nullable;
  * {@link AuditableSupport} is an abstract base class supporting implementations of the {@link Auditable} interface.
  *
  * @author John Blum
+ * @param <USER> {@link Class type} used to track the user.
+ * @param <PROCESS> {@link Class type} used track the process.
+ * @param <ID> {@link Class type} used as the {@link Identifiable} object's identifier.
  * @see java.lang.Comparable
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable

@@ -35,6 +35,8 @@ import org.cp.elements.lang.annotation.NotNull;
  * Implementors of {@literal this} interface must implement the {@link #merge(Object, Object)} operation.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the input value.
+ * @param <R> {@link Class type} of the return value.
  * @see java.lang.FunctionalInterface
  * @see java.util.function.BiFunction
  * @since 1.0.0

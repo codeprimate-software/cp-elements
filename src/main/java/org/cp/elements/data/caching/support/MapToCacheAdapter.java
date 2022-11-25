@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import static org.cp.elements.util.MapUtils.nullSafeMap;
@@ -35,6 +34,8 @@ import org.cp.elements.lang.annotation.NullSafe;
  * This class adapts the {@link Map} interface into an instance of {@link Cache}.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the {@link Cache} key.
+ * @param <VALUE> {@link Class type} of the {@link Cache} value.
  * @see java.lang.Comparable
  * @see java.util.Map
  * @see org.cp.elements.data.caching.AbstractCache

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.biz.rules;
 
 import org.cp.elements.lang.Identifiable;
@@ -23,6 +22,7 @@ import org.cp.elements.lang.Identifiable;
  *
  * @author John J. Blum
  * @param <T> the Class type of objects evaluated by this business rule.
+ * @param <ID> {@link Comparable} {@link Class type} of the identifier identifying the {@link Rule}.
  * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0
  */

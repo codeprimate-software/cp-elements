@@ -26,6 +26,8 @@ import org.cp.elements.lang.annotation.Nullable;
  * Abstract Data Type (ADT) defining an {@link Auditor} capable of {@literal auditing} an {@link Auditable} object.
  *
  * @author John Blum
+ * @param <USER> {@link Class type} of the user used by the application for auditing.
+ * @param <PROCESS> {@link Class type} of the process used by the application for auditing.
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
  * @since 1.0.0

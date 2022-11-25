@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.service.support;
 
 import java.util.Optional;
@@ -25,10 +24,12 @@ import org.cp.elements.data.caching.provider.ConcurrentMapCache;
 import org.cp.elements.data.caching.support.CachingTemplate;
 
 /**
- * {@link AbstractCacheableService} is an abstract base class extended by application service classes
- * in order to keep track of the cacheable state of the service's operations.
+ * Abstract base class extended by application service classes in order to keep track of the cacheable state
+ * of the service's operations.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the keys used by the {@link Cache} served by this service.
+ * @param <VALUE> {@link Class type} of the values stored by the {@link Cache} served by this service.
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

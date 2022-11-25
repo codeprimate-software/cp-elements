@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.Transformer;
@@ -22,6 +21,7 @@ import org.cp.elements.lang.Transformer;
  * The DefaultTransformer class is a no-op {@link Transformer} implementation that returns all objects unaltered.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the {@link Object} to transform.
  * @see org.cp.elements.lang.Transformer
  * @since 1.0.0
  */

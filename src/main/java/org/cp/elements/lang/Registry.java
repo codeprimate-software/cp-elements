@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.Iterator;
@@ -26,6 +25,7 @@ import org.cp.elements.lang.annotation.NullSafe;
  * and unregister other interesting {@link Object Objects}.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object objects} registered by this {@link Registry}.
  * @see java.lang.Iterable
  * @since 1.0.0
  */

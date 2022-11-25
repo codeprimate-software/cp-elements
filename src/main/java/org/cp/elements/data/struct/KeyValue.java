@@ -25,6 +25,8 @@ import org.cp.elements.util.MapUtils;
  * mapped to the key.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the key.
+ * @param <VALUE> {@link Class type} of the value.
  * @see java.util.Map
  * @see java.util.Optional
  * @since 1.0.0

@@ -24,6 +24,8 @@ import java.util.Set;
  * {@link AbstractCache} is an abstract base class supporting the implementation of different {@link Cache Caches}.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the {@link Cache} key.
+ * @param <VALUE> {@link Class type} of the {@link Cache} value.
  * @see java.lang.Comparable
  * @see org.cp.elements.data.caching.Cache
  * @since 1.0.0

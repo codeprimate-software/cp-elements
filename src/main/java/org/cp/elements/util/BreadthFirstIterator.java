@@ -32,6 +32,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * iterating elements in row order, left to right, top to bottom.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object objects} iterated over by this {@link Iterator}.
  * @see java.util.Iterator
  * @see org.cp.elements.util.DepthFirstIterator
  * @since 1.0.0
@@ -87,6 +88,7 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    * @see #hasNext()
    */
   @Override
+  @SuppressWarnings("all")
   public T next() {
 
     Assert.isTrue(hasNext(), newNoSuchElementException("The iteration has no more elements!"));
@@ -106,6 +108,7 @@ public class BreadthFirstIterator<T> implements Iterator<T> {
    * @see java.util.Iterator#remove()
    */
   @Override
+  @SuppressWarnings("all")
   public void remove() {
 
     Assert.state(this.nextCalled.compareAndSet(true, false),

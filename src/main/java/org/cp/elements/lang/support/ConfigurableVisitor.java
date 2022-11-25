@@ -26,6 +26,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * each {@link Object} visited.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the configuration object.
  * @see org.cp.elements.lang.Configurable
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor

@@ -31,6 +31,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * iterating elements in column order, from top to bottom, left to right.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the {@link Object objects} iterated over by this {@link Iterator}.
  * @see java.util.Iterator
  * @see org.cp.elements.util.BreadthFirstIterator
  * @since 1.0.0

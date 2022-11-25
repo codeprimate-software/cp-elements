@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.function.Predicate;
@@ -26,8 +25,10 @@ import org.cp.elements.lang.Filter;
  * into an instance of the {@link Filter} interface.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object objects} to filter.
  * @see java.util.function.Predicate
  * @see org.cp.elements.lang.Filter
+ * @see <a href="https://en.wikipedia.org/wiki/Adapter_pattern">Adapter Software Design Pattern</a>
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

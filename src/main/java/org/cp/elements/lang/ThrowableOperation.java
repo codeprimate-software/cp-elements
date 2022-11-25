@@ -32,6 +32,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * Implementation of the {@link Callable}, {@link Consumer}, {@link Runnable} and {@link Supplier} interfaces.
  *
  * @author John Blum
+ * @param <T> {@link Class type} of the {@link Object} returned by this operation.
  * @see java.lang.FunctionalInterface
  * @see java.lang.Runnable
  * @see java.util.concurrent.Callable

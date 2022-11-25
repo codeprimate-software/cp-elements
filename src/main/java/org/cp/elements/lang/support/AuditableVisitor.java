@@ -31,6 +31,8 @@ import org.cp.elements.lang.annotation.Nullable;
  * of {@link Auditable} objects in the graph.
  *
  * @author John J. Blum
+ * @param <USER> {@link Class type} used to track the user.
+ * @param <PROCESS> {@link Class type} used track the process.
  * @see java.time.Instant
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.Auditor

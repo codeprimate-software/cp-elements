@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.caching.support;
 
 import java.util.Collections;
@@ -28,6 +27,8 @@ import org.cp.elements.data.caching.Cache;
  * immutable {@link Cache} operations, effectively making this implementation a Read-only {@link Cache}.
  *
  * @author John Blum
+ * @param <KEY> {@link Class type} of the {@link Cache} key.
+ * @param <VALUE> {@link Class type} of the {@link Cache} value.
  * @see java.lang.Comparable
  * @see org.cp.elements.data.caching.AbstractCache
  * @since 1.0.0

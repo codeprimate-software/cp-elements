@@ -20,6 +20,7 @@ package org.cp.elements.lang;
  * of a given {@link Class type}.
  *
  * @author John J. Blum
+ * @param <ID> {@link Comparable} {@link Class type} of the identifier.
  * @see java.lang.Comparable
  * @since 1.0.0
  */

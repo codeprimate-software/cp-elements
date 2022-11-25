@@ -29,6 +29,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * A {@link Visitor} implementation that assigns an unique identifier (ID) to an {@link Identifiable object}.
  *
  * @author John J. Blum
+ * @param <T> {@link Comparable} {@link Class type} of the identifier.
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.IdentifierSequence
  * @see org.cp.elements.lang.Visitable

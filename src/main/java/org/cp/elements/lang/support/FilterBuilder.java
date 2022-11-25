@@ -28,6 +28,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * if the {@literal Composite Software Design Pattern} is less desirable.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the {@link Object objects} to filter.
  * @see org.cp.elements.lang.Builder
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.support.ComposableFilter

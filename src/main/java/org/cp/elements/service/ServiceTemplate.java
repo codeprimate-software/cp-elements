@@ -44,6 +44,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * encapsulating business logic and other service operations common to all services.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of the service object implementing this interface.
  * @see java.util.ServiceLoader
  * @see org.cp.elements.context.configure.ConfigurationService
  * @see org.cp.elements.context.container.DependencyInjection

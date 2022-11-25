@@ -452,6 +452,8 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
   /**
    * {@link Comparator} implementation of {@link Comparable} objects.
    *
+   * @param <T> {@link Comparable} {@link Class type} of the {@link Object objects} in the comparison
+   * expected by this {@link Comparator}.
    * @see java.lang.Comparable
    * @see java.util.Comparator
    */

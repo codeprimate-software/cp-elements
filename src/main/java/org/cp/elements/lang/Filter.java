@@ -22,6 +22,7 @@ import java.util.function.Predicate;
  * a {@literal filter} for other {@link Object objects}.
  *
  * @author John J. Blum
+ * @param <T> {@link Class type} of {@link Object} to filter.
  * @see java.lang.FunctionalInterface
  * @see java.util.function.Predicate
  * @since 1.0.0
