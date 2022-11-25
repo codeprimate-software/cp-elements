@@ -90,37 +90,82 @@ public abstract class PrimitiveTypeUtils {
     return WRAPPER_TO_PRIMITIVE_TYPE;
   }
 
+  /**
+   * Mapping of Java primitive types (for example: {@link Integer#TYPE int})
+   * to Java's wrapper types (for example: {@link Integer}).
+   */
   public static class PrimitiveToWrapperTypeAssociation {
 
     private final Class<?> primitiveType;
     private final Class<?> wrapperType;
 
+    /**
+     * Constructs a new instance of {@link PrimitiveToWrapperTypeAssociation} initialized with the given,
+     * required primitive type and associated wrapper type.
+     *
+     * @param primitiveType Java primitive type; must not be {@literal null}.
+     * @param wrapperType Java wrappter type; must not be {@literal null}.
+     */
     protected PrimitiveToWrapperTypeAssociation(@NotNull Class<?> primitiveType, @NotNull Class<?> wrapperType) {
 
       this.primitiveType = ObjectUtils.requireObject(primitiveType, "Primitive type is required");
       this.wrapperType = ObjectUtils.requireObject(wrapperType, "Wrapper type is required");
     }
 
+    /**
+     * Gets the Java primitive type in this association.
+     *
+     * @return the Java primitive type in this association.
+     * @see #getWrapperType()
+     */
     public @NotNull Class<?> getPrimitiveType() {
       return this.primitiveType;
     }
 
+    /**
+     * Gets the Java wrapper type in this association.
+     *
+     * @return the Java wrapper type in this association.
+     * @see #getPrimitiveType()
+     */
     public @NotNull Class<?> getWrapperType() {
       return this.wrapperType;
     }
 
+    /**
+     * Builder used to construct and initialize a new instance of {@link PrimitiveToWrapperTypeAssociation}.
+     */
     public static class Builder {
 
+      /**
+       * Factory method used to construct a new instance of this {@link Builder} used to construct and initialize
+       * a new {@link PrimitiveToWrapperTypeAssociation}.
+       *
+       * @param primitiveType Java primitive type.
+       * @return a new {@link Builder}.
+       */
       public static Builder from(@NotNull Class<?> primitiveType) {
         return new Builder(primitiveType);
       }
 
       private final Class<?> primitiveType;
 
+      /**
+       * Constructs a new instance of this {@link Builder} used to construct and initialize
+       * a new {@link PrimitiveToWrapperTypeAssociation}.
+       *
+       * @param primitiveType Java primitive type.
+       */
       protected Builder(@NotNull Class<?> primitiveType) {
         this.primitiveType = primitiveType;
       }
 
+      /**
+       * Builder method used to capture the Java wrapper type to associate with the configured Java primitive type.
+       *
+       * @param wrapperType Java wrapper type.
+       * @return this {@link Builder}.
+       */
       public @NotNull PrimitiveToWrapperTypeAssociation to(@NotNull Class<?> wrapperType) {
         return new PrimitiveToWrapperTypeAssociation(this.primitiveType, wrapperType);
       }
