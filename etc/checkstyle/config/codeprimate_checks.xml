@@ -258,6 +258,7 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="ClassDataAbstractionCoupling">
+      <property name="excludedClasses" value="ElementsExceptionsFactory"/>
       <property name="max" value="10"/>
       <property name="severity" value="warning"/>
     </module>
