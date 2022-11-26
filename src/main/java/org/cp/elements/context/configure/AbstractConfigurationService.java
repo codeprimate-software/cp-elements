@@ -242,12 +242,16 @@ public abstract class AbstractConfigurationService implements ConfigurationServi
       ConfigurationProperties configurationPropertiesAnnotation =
         interfaceType.getAnnotation(ConfigurationProperties.class);
 
-      OUT: if (configurationPropertiesAnnotation == null) {
+      if (configurationPropertiesAnnotation == null) {
+
         Class<?>[] interfaceTypeExtensions = ArrayUtils.nullSafeArray(interfaceType.getInterfaces(), Class.class);
+
         for (Class<?> interfaceTypeExtension : interfaceTypeExtensions) {
+
           configurationPropertiesAnnotation = resolveConfigurationPropertiesAnnotation(interfaceTypeExtension);
+
           if (configurationPropertiesAnnotation != null) {
-            break OUT;
+            return configurationPropertiesAnnotation;
           }
         }
       }
