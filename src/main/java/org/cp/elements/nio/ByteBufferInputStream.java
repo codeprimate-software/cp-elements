@@ -150,16 +150,16 @@ public class ByteBufferInputStream extends InputStream {
 
     if (buffer.length > 0) {
 
-      String OFFSET_EXCEPTION_MESSAGE = "Offset [%d] must be greater than equal to 0 and less than [%d]";
+      String offsetExceptionMessage = "Offset [%d] must be greater than equal to 0 and less than [%d]";
 
       assertThat(offset)
-        .throwing(newIndexOutOfBoundsException(OFFSET_EXCEPTION_MESSAGE, offset, buffer.length))
+        .throwing(newIndexOutOfBoundsException(offsetExceptionMessage, offset, buffer.length))
         .isGreaterThanEqualToAndLessThan(0, buffer.length);
 
-      String LENGTH_EXCEPTION_MESSAGE = "Length [%d] must be greater than equal to 0 and less than equal to [%d]";
+      String lengthExceptionMessage = "Length [%d] must be greater than equal to 0 and less than equal to [%d]";
 
       assertThat(length)
-        .throwing(newIndexOutOfBoundsException(LENGTH_EXCEPTION_MESSAGE, length, buffer.length - offset))
+        .throwing(newIndexOutOfBoundsException(lengthExceptionMessage, length, buffer.length - offset))
         .isGreaterThanEqualToAndLessThanEqualTo(0, buffer.length - offset);
 
       int numberOfBytesToRead = Math.min(available(), length);
