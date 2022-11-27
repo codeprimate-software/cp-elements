@@ -23,6 +23,7 @@ import java.math.MathContext;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Order;
 
 /**
@@ -41,11 +42,20 @@ public class BigDecimalConverter extends AbstractConverter<String, BigDecimal> {
 
   private final MathContext mathContext;
 
+  /**
+   * Constructs a new instance of {@link BigDecimalConverter} with no {@link MathContext}.
+   */
   public BigDecimalConverter() {
     this(null);
   }
 
-  public BigDecimalConverter(MathContext mathContext) {
+  /**
+   * Constructs a new instance of {@link BigDecimalConverter} initialized with the given {@link MathContext}.
+   *
+   * @param mathContext {@link MathContext} used to initialize the {@link BigDecimal} value.
+   * @see java.math.MathContext
+   */
+  public BigDecimalConverter(@Nullable MathContext mathContext) {
     this.mathContext = mathContext;
   }
 

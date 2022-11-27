@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
-
-import static org.cp.elements.util.ArrayUtils.nullSafeArray;
-import static org.cp.elements.util.CollectionUtils.asSet;
 
 import java.util.Collections;
 import java.util.Set;
@@ -25,6 +21,9 @@ import java.util.Set;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.DefaultableConverter;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.ArrayUtils;
+import org.cp.elements.util.CollectionUtils;
 
 /**
  * {@link BooleanConverter} converts an {@link Object} to a {@link Boolean}.
@@ -40,22 +39,44 @@ public class BooleanConverter extends DefaultableConverter<Object, Boolean> {
 
   protected final Set<String> trueValues;
 
+  /**
+   * Constructs a new instance of {@link BooleanConverter}.
+   */
   public BooleanConverter() {
     this(Boolean.TRUE.toString());
   }
 
+  /**
+   * Constructs a new instance of {@link BooleanConverter} initialized with an array of {@link String values}
+   * representing {@literal true} values.
+   *
+   * @param trueValues array of {@link String values} representing {@literal true} values.
+   */
   public BooleanConverter(String... trueValues) {
-    this.trueValues = Collections.unmodifiableSet(asSet(nullSafeArray(trueValues, String.class)));
+    this.trueValues = Collections.unmodifiableSet(CollectionUtils.asSet(ArrayUtils
+      .nullSafeArray(trueValues, String.class)));
   }
 
-  protected boolean isTrue(Object value) {
+  /**
+   * Determines whether the given {@link Object value} is {@literal true}.
+   *
+   * @param value {@link Object} to evaluate.
+   * @return a boolean value indicating whether the given {@link Object value} is {@literal true}.
+   */
+  protected boolean isTrue(@Nullable Object value) {
 
     String valueString = String.valueOf(value).trim();
 
     return Boolean.parseBoolean(valueString) || isTrue(valueString);
   }
 
-  protected boolean isTrue(String value) {
+  /**
+   * Determines whether the given {@link String value} is {@literal true}.
+   *
+   * @param value {@link String} to evaluate.
+   * @return a boolean value indicating whether the given {@link Object value} is {@literal true}.
+   */
+  protected boolean isTrue(@Nullable String value) {
     return this.trueValues.stream().anyMatch(trueValue -> trueValue.equalsIgnoreCase(value));
   }
 

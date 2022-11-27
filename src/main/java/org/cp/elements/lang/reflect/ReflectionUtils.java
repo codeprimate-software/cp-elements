@@ -19,7 +19,6 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newFieldAccessExcep
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodInvocationException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMethodNotFoundException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.util.stream.StreamUtils.stream;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
@@ -54,6 +53,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.support.ComposableFilter;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.ComparatorUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * Abstract base class encapsulating operations commonly used with the Java Introspection and Reflection APIs.
@@ -777,7 +777,15 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @see org.cp.elements.lang.reflect.ReflectionUtils.MethodCallback
    */
   public interface MemberCallback<T extends Member> {
+
+    /**
+     * Performs a function on the given {@link Member}.
+     *
+     * @param member {@link Member} to process.
+     * @see java.lang.reflect.Member
+     */
     void with(T member);
+
   }
 
   /**
@@ -995,6 +1003,13 @@ public abstract class ReflectionUtils extends ClassUtils {
 
     private final Set<T> members = newMemberSet();
 
+    /**
+     * Constructs a new instance of {@link WithExpression} initialized with the given array of {@link Member Members}
+     * to process.
+     *
+     * @param members array of {@link Member Members} to process.
+     * @see java.lang.reflect.Member
+     */
     @SuppressWarnings({ "unchecked", "varargs" })
     protected WithExpression(T... members) {
       if (members != null) {
@@ -1002,14 +1017,34 @@ public abstract class ReflectionUtils extends ClassUtils {
       }
     }
 
+    /**
+     * Gets the configured {@link Filter} used to filter the {@link Member Members}.
+     *
+     * @return the configured {@link Filter} used to filter the {@link Member Members}.
+     * @see org.cp.elements.lang.Filter
+     */
     protected @NotNull Filter<T> getFilter() {
       return ComposableFilter.and(this.defaultFilter, this.filter);
     }
 
+    /**
+     * Gets the {@link Member Members} to process.
+     *
+     * @return an {@link Iterable} over the {@link Member Members} to process.
+     * @see java.lang.reflect.Member
+     * @see java.lang.Iterable
+     */
     protected @NotNull Iterable<T> getMembers() {
       return this.members;
     }
 
+    /**
+     * Evaluates whether the given {@link Member} is accepted by this expression.
+     *
+     * @param member {@link Member} to evaluate.
+     * @return a boolean value indicating whether the given {@link Member} is accepted by this expression.
+     * @see #getFilter()
+     */
     protected boolean accepts(T member) {
       boolean localAccepted = getFilter().accept(member);
       synchronized (this) {
@@ -1018,33 +1053,76 @@ public abstract class ReflectionUtils extends ClassUtils {
       return localAccepted;
     }
 
+    /**
+     * Builder methods used to call the {@link MemberCallback} on all {@link Member Members}
+     * configured in this expression.
+     *
+     * @param callback {@link MemberCallback} used to process the {@link Member Members}
+     * configured in this expression.
+     * @return this {@link WithExpression}.
+     * @see org.cp.elements.lang.reflect.ReflectionUtils.MemberCallback
+     */
     @Dsl
     public @NotNull WithExpression<T> call(@NotNull MemberCallback<T> callback) {
 
-      stream(getMembers())
+      StreamUtils.stream(getMembers())
         .filter(this::accepts)
         .forEach(callback::with);
 
       return this;
     }
 
+    /**
+     * Builder method used to configure the {@link Filter} used to match {@link Member Members} to process.
+     *
+     * @param filter {@link Filter} used to match {@link Member Members} to process.
+     * @return this {@link WithExpression}.
+     * @see org.cp.elements.lang.Filter
+     */
     @Dsl
     public @NotNull WithExpression<T> matching(@Nullable Filter<T> filter) {
       this.filter = filter;
       return this;
     }
 
+    /**
+     * Gets an array of {@link Member Members} of the given {@link Class type}.
+     *
+     * @param type {@link Class type} of {@link Member Members} to return in the array.
+     * @return an array of {@link Member Members} of the given {@link Class type}.
+     */
     protected abstract T[] members(Class<?> type);
 
+    /**
+     * Constructs a new {@link Set} to hold {@link Member} objects to process.
+     *
+     * @return a new {@link Set} to hold {@link Member} objects to process.
+     * @see java.util.Set
+     */
     protected Set<T> newMemberSet() {
       return new HashSet<>();
     }
 
+    /**
+     * Builder method used to extract {@link Member Members} from the given, required {@link Object}
+     * targeted to be processed.
+     *
+     * @param obj {@link Object} from which to extract {@link Member Members} to process.
+     * @return this {@link WithExpression}.
+     */
     @Dsl
     public @NotNull WithExpression<T> on(@NotNull Object obj) {
       return on(ClassUtils.getClass(obj));
     }
 
+    /**
+     * Builder method used to extract {@link Member Members} from the given, required {@link Class type}
+     * targeted to be processed.
+     *
+     * @param type {@link Class type} from which to extract {@link Member Members} to process.
+     * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
+     * @return this {@link WithExpression}.
+     */
     @Dsl
     public @NotNull WithExpression<T> on(@NotNull Class<?> type) {
 
@@ -1060,6 +1138,12 @@ public abstract class ReflectionUtils extends ClassUtils {
       return this;
     }
 
+    /**
+     * Throws the given {@link RuntimeException} if the {@link Member Members} are not accepted by this expression.
+     *
+     * @param cause {@link RuntimeException} to throw if the {@link Member Members} are not accepted by this expression.
+     * @return this {@link WithExpression}
+     */
     @Dsl
     @SuppressWarnings("all")
     public @NotNull WithExpression<T> throwing(@NotNull RuntimeException cause) {
@@ -1081,12 +1165,18 @@ public abstract class ReflectionUtils extends ClassUtils {
   @FluentApi
   public static class WithFields extends WithExpression<Field> {
 
+    /**
+     * Constructs a new instance of {@link WithFields} initialized with an array of {@link Field Fields} to process.
+     *
+     * @param fields array of {@link Field Fields} to process.
+     * @see java.lang.reflect.Field
+     */
     public WithFields(Field... fields) {
       super(fields);
     }
 
     /**
-     * Returns all {@link Field} members declared on the given {@link Class} type.
+     * Returns all {@link Field} {@link Member Members} declared on the given {@link Class} type.
      *
      * @param type {@link Class} type declaring the {@link Field Fields} to return.
      * @return an array of {@link Field Fields} declared on the given {@link Class} type.
@@ -1098,6 +1188,12 @@ public abstract class ReflectionUtils extends ClassUtils {
       return type.getDeclaredFields();
     }
 
+    /**
+     * Constructs a {@link TreeSet} to hold the {@link Member Members} to process.
+     *
+     * @return a new {@link TreeSet}.
+     * @see java.util.TreeSet
+     */
     @Override
     protected @NotNull Set<Field> newMemberSet() {
 
@@ -1120,12 +1216,18 @@ public abstract class ReflectionUtils extends ClassUtils {
   @FluentApi
   public static class WithMethods extends WithExpression<Method> {
 
+    /**
+     * Constructs a new instance of {@link WithMethods} initialized with an array of {@link Method Methods} to process.
+     *
+     * @param methods array of {@link Method Methods} to process.
+     * @see java.lang.reflect.Method
+     */
     public WithMethods(Method... methods) {
       super(methods);
     }
 
     /**
-     * Returns all {@link Method} members declared on the given {@link Class} type.
+     * Returns all {@link Method} {@link Member Members} declared on the given {@link Class} type.
      *
      * @param type {@link Class} type declaring the {@link Method Methods} to return.
      * @return an array of {@link Method Methods} declared on the given {@link Class} type.

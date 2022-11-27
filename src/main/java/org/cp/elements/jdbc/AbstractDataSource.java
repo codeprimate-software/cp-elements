@@ -65,6 +65,12 @@ public abstract class AbstractDataSource implements DataSource {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);
   }
 
+  /**
+   * This method is only present in Java 8.
+   *
+   * @return the parent {@link Logger}.
+   * @see java.util.logging.Logger
+   */
   //@Override
   public Logger getParentLogger() {
     throw new UnsupportedOperationException(Constants.OPERATION_NOT_SUPPORTED);

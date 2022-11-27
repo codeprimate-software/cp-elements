@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -25,6 +24,8 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.ObjectFactoryAware;
 import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
@@ -46,20 +47,43 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
 
   private ObjectFactory objectFactory;
 
+  /**
+   * Constructs a new instance of {@link IdentifiableConverter}.
+   */
   public IdentifiableConverter() {
     this(ObjectFactoryReferenceHolder.hasReference() ? ObjectFactoryReferenceHolder.get()
       : ServiceLoader.load(ObjectFactory.class).iterator().next());
   }
 
-  public IdentifiableConverter(ObjectFactory objectFactory) {
+  /**
+   * Constructs a new instance of {@link IdentifiableConverter} initialized with the given {@link ObjectFactory}
+   * used to construct an {@link Object} from an {@literal identifier (ID)}.
+   *
+   * @param objectFactory {@link ObjectFactory} used to construct an {@link Object} from an {@literal identifier (ID}.
+   * @see org.cp.elements.lang.factory.ObjectFactory
+   */
+  public IdentifiableConverter(@NotNull ObjectFactory objectFactory) {
     setObjectFactory(objectFactory);
   }
 
+  /**
+   * Configures the {@link ObjectFactory} used to construct an {@link Object} from an {@literal identifier (ID)}.
+   *
+   * @param objectFactory reference to an {@link ObjectFactory}.
+   * @see org.cp.elements.lang.factory.ObjectFactory
+   */
   @Override
-  public final void setObjectFactory(ObjectFactory objectFactory) {
+  public final void setObjectFactory(@NotNull ObjectFactory objectFactory) {
     this.objectFactory = objectFactory;
   }
 
+  /**
+   * Gets a reference to the configured {@link ObjectFactory}.
+   *
+   * @return a reference to the configured {@link ObjectFactory}.
+   * @throws IllegalStateException if the {@link ObjectFactory} was not configured.
+   * @see org.cp.elements.lang.factory.ObjectFactory
+   */
   protected ObjectFactory getObjectFactory() {
 
     Assert.state(this.objectFactory != null, "No ObjectFactory was configured");
@@ -79,7 +103,7 @@ public class IdentifiableConverter extends AbstractConverter<Long, Identifiable<
    * @see #canConvert(Object, Class)
    */
   @Override
-  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+  public boolean canConvert(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
     return Long.class.equals(fromType) && toType != null && Identifiable.class.isAssignableFrom(toType);
   }
 

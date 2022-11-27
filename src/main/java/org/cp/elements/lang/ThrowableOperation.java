@@ -258,6 +258,14 @@ public interface ThrowableOperation<T> {
    * capable of throwing a {@link Throwable}.
    */
   interface VoidReturningThrowableOperation {
+
+    /**
+     * Runs the operation with the potential of throwing a {@link Throwable}.
+     *
+     * @param args array of {@link Object arguments} to pass to the operation.
+     * @throws Throwable if the operation is not successful.
+     */
     void run(Object... args) throws Throwable;
+
   }
 }

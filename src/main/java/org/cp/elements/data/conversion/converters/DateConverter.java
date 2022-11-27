@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.conversion.converters;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newConversionException;
@@ -28,6 +27,8 @@ import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.data.conversion.DefaultableConverter;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
  * {@link DateConverter} converts an {@link Object } to a {@link Date}.
@@ -45,15 +46,30 @@ public class DateConverter extends DefaultableConverter<Object, Date> {
 
   private final DateFormat dateFormat;
 
+  /**
+   * Constructs a new instance of {@link DateConverter} using the default date/time {@link String format pattern}.
+   */
   public DateConverter() {
     this(DEFAULT_PATTERN);
   }
 
-  public DateConverter(String pattern) {
+  /**
+   * Constructs a new instance of {@link DateConverter} using the given, required date/time
+   * {@link String format pattern}.
+   *
+   * @param pattern {@link String} containing the format pattern used to parse date/time {@link String values}.
+   */
+  public DateConverter(@NotNull String pattern) {
     this.dateFormat = new SimpleDateFormat(pattern);
   }
 
-  protected DateFormat getDateFormat() {
+  /**
+   * Gets the configured {@link DateFormat} used to parse date/time {@link String values}.
+   *
+   * @return the configured {@link DateFormat} used to parse date/time {@link String values}.
+   * @see java.text.DateFormat
+   */
+  protected @NotNull DateFormat getDateFormat() {
     return this.dateFormat;
   }
 
@@ -69,7 +85,7 @@ public class DateConverter extends DefaultableConverter<Object, Date> {
    * @see #canConvert(Object, Class)
    */
   @Override
-  public boolean canConvert(Class<?> fromType, Class<?> toType) {
+  public boolean canConvert(@Nullable Class<?> fromType, @Nullable Class<?> toType) {
     return isAssignableTo(fromType, Calendar.class, Date.class, Number.class, String.class)
       && Date.class.equals(toType);
   }

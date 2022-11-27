@@ -163,6 +163,7 @@ public abstract class Assert {
    * Null-safe utility method used to determine whether the given {@link Object argument}
    * tested by the given {@link Predicate argument predicate} evaluates to {@literal true}.
    *
+   * @param <T> {@link Class type} of the {@link Object} processed by the given {@link Predicate}.
    * @param argument {@link Object} value to test and validate.
    * @param argumentPredicate {@link Predicate} used to test and validate the argument;
    * must not be {@literal null}.

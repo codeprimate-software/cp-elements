@@ -188,8 +188,17 @@ public class ValueHolder<T> {
    */
   public static class ComparableValueHolder<T extends Comparable<T>> extends ValueHolder<T> implements Comparable<T> {
 
+    /**
+     * Constructs a new instance of {@link ComparableValueHolder}.
+     */
     public ComparableValueHolder() { }
 
+    /**
+     * Constructs a new instance of {@link ComparableValueHolder} initialized with the given {@link Comparable object}.
+     *
+     * @param value {@link Comparable object} used in the comparison.
+     * @see java.lang.Comparable
+     */
     public ComparableValueHolder(@Nullable T value) {
       super(value);
     }
@@ -211,8 +220,18 @@ public class ValueHolder<T> {
 
     private static final long serialVersionUID = 421081248;
 
+    /**
+     * Constructs a new instance of {@link SerializableValueHolder}.
+     */
     public SerializableValueHolder() { }
 
+    /**
+     * Constructs a new instance of {@link SerializableValueHolder} initialized with
+     * the given {@link Serializable object}.
+     *
+     * @param value {@link Serializable object} to serialize to a stream.
+     * @see java.io.Serializable
+     */
     public SerializableValueHolder(@Nullable T value) {
       super(value);
     }

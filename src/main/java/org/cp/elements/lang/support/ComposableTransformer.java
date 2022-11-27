@@ -35,8 +35,15 @@ public class ComposableTransformer<T> implements Composite<Transformer<T>>, Tran
 
   protected static final ComposableTransformer<?> INSTANCE = new ComposableTransformer<>();
 
+  /**
+   * Builder method used to construct and initialize a new instance of {@link ComposableTransformer}.
+   *
+   * @param <T> {@link Class type} of the {@link Object objects} processed by
+   * the composed {@link Transformer Transformers}.
+   * @return a builder instance.
+   */
   @SuppressWarnings("unchecked")
-  public static <T> ComposableTransformer<T> builder() {
+  public static @NotNull <T> ComposableTransformer<T> builder() {
     return (ComposableTransformer<T>) INSTANCE;
   }
 

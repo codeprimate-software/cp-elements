@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import org.cp.elements.data.conversion.AbstractConverter;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Order;
 
 /**
@@ -40,11 +41,19 @@ public class BigIntegerConverter extends AbstractConverter<String, BigInteger> {
 
   private final Integer radix;
 
+  /**
+   * Constructs a new instance of {@link BigIntegerConverter} with no {@link Integer radix}.
+   */
   public BigIntegerConverter() {
     this(null);
   }
 
-  public BigIntegerConverter(Integer radix) {
+  /**
+   * Constructs a new instance of {@link BigIntegerConverter} initialized with the given {@link Integer radix}.
+   *
+   * @param radix {@link Integer} value used to initialize the {@link BigInteger}.
+   */
+  public BigIntegerConverter(@Nullable Integer radix) {
     this.radix = radix;
   }
 
