@@ -364,7 +364,7 @@ public abstract class MathUtils {
   }
 
   /**
-   * Calculates the surface area of a rectangular prism;
+   * Calculates the surface area of a rectangular prism.
    *
    * @param length a double value indicating the length of the rectangular prism (x axis).
    * @param height a double value indicating the height of the rectangular prism (y axis).

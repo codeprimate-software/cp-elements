@@ -77,7 +77,7 @@ public enum ServicePort {
 
   /**
    * Factory method used to search for and return an instance of a {@link ServicePort} enumerated value
-   * matching the given, required {@link Predicate}
+   * matching the given, required {@link Predicate}.
    *
    * @param servicePortPredicate {@link Predicate} used to find and match a {@link ServicePort}
    * @return an instance of a {@link ServicePort} enumerated value matching the given {@link Predicate}.

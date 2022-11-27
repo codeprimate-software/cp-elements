@@ -67,7 +67,7 @@ public enum Modifiers implements Predicate<Object> {
   }
 
   /**
-   * Factory method used to compute the Java {@link Modifier Modifiers} from the given
+   * Factory method used to compute the Java {@link Modifier Modifiers} from the given {@link Object target}.
    *
    * @param target {@link Object} to evaluate.
    * @return a {@link Set} of enumerated {@link Modifiers} values representing the Java {@link Modifier Modifiers}

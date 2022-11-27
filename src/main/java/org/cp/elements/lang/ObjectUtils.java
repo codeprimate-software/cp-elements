@@ -240,7 +240,7 @@ public abstract class ObjectUtils extends ReflectionUtils {
   }
 
   /**
-   * Requires the {@link Object} reference to have been initialized, that is, to not be {@literal null}
+   * Requires the {@link Object} reference to have been initialized, that is, to not be {@literal null}.
    *
    * @param <T> {@link Class type} of {@link Object}.
    * @param object {@link Object} reference to evaluate.

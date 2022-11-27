@@ -259,7 +259,7 @@ public enum SimpleTypeConversions {
   public abstract @NotNull <T> Function<Object, T> conversionFunction();
 
   /**
-   * Converts the given {@link Object} into a value of the target type {@link Class T}
+   * Converts the given {@link Object} into a value of the target type {@link Class T}.
    *
    * @param <T> {@link Class target type} of the {@link Object} resulting from the conversion.
    * @param value {@link Object} to convert.

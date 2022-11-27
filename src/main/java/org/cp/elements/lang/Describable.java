@@ -30,7 +30,7 @@ package org.cp.elements.lang;
 public interface Describable<T> {
 
   /**
-   * Gets a {@link Object description} for {@literal this} {@link Object}
+   * Gets a {@link Object description} for {@literal this} {@link Object}.
    *
    * @return a {@link Object description} for {@literal this} {@link Object}.
    */
