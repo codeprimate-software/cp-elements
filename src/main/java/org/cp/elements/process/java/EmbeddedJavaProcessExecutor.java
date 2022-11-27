@@ -234,8 +234,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
   }
 
   /**
-   * Execution stragey for executing {@link Callable} Java {@link Class Classes}.
-
+   * Execution strategy for executing {@link Callable} Java {@link Class Classes}.
+   *
    * @param <T> {@link Class} type of the executions return value (result).
    * @see java.util.concurrent.Callable
    */
@@ -261,8 +261,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
   }
 
   /**
-   * Execution stragey for executing {@link Executable} Java {@link Class Classes}.
-
+   * Execution strategy for executing {@link Executable} Java {@link Class Classes}.
+   *
    * @param <T> {@link Class} type of the executions return value (result).
    * @see org.cp.elements.lang.Executable
    */
@@ -284,8 +284,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
   }
 
   /**
-   * Execution stragey for executing Java {@link Class Classes} having a {@literal main} {@link Method}.
-
+   * Execution strategy for executing Java {@link Class Classes} having a {@literal main} {@link Method}.
+   *
    * @param <T> {@link Class} type of the executions return value (result).
    */
   static class MainMethodExecutor<T> implements JavaClassExecutor<T> {
@@ -317,8 +317,8 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
   }
 
   /**
-   * Execution stragey for executing {@link Runnable} Java {@link Class Classes}.
-
+   * Execution strategy for executing {@link Runnable} Java {@link Class Classes}.
+   *
    * @param <T> {@link Class} type of the executions return value (result).
    * @see java.lang.Runnable
    */

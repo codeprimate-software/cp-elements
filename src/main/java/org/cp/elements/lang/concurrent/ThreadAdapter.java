@@ -497,7 +497,7 @@ public class ThreadAdapter {
    *
    * The currently executing {@link Thread} will wait until the timeout or the currently executing {@link Thread}
    * is interrupted.
-
+   *
    * @param milliseconds number of milliseconds to wait for {@literal this} {@link Thread} to terminate.
    * @param nanoseconds number of nanoseconds to wait for {@literal this} {@link Thread} to terminate.
    * @throws java.lang.InterruptedException if the {@link Thread#currentThread() current Thread} is interrupted
