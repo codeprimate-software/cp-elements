@@ -8,7 +8,7 @@
   <property name="localeLanguage" value="${locale.language}" default="en"/>
   <property name="severity" value="warning"/>
 
-  <!-- declare suppressions file to prevent certain Checkstyle checks on Java source code files -->
+  <!-- Declare Suppressions file to prevent certain Checkstyle checks (rules) on Java source code files -->
   <module name="SuppressionFilter">
     <property name="file" value="${checkstyle.suppressions.file}"/>
   </module>
@@ -44,18 +44,17 @@
 
   <module name="RegexpSingleline">
     <property name="format" value="\s+$"/>
-    <property name="minimum" value="0"/>
     <property name="maximum" value="0"/>
+    <property name="minimum" value="0"/>
     <property name="message" value="Line has trailing spaces."/>
   </module>
-
-  <!--module name="StrictDuplicateCode"/-->
 
   <module name="Translation"/>
 
   <module name="UniqueProperties"/>
 
   <module name="TreeWalker">
+
     <property name="tabWidth" value="${checkstyle.tabWidth}" default="2"/>
 
     <!-- Checks for Annotations -->
@@ -74,9 +73,11 @@
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="ignore"/>
     </module>
-    <!--module name="LeftCurly"/-->
+    <module name="LeftCurly"/>
     <module name="NeedBraces"/>
-    <!--module name="RightCurly"/-->
+    <module name="RightCurly">
+      <property name="option" value="alone_or_singleline"/>
+    </module>
 
     <!-- Checks for Class Design -->
     <module name="DesignForExtension">
@@ -125,7 +126,7 @@
       <property name="illegalClassNames" value="java.lang.Throwable"/>
       <property name="severity" value="warning"/>
     </module>
-    <!--module name="IllegalToken"/-->
+    <module name="IllegalToken"/>
     <!--module name="IllegalTokenText"/-->
     <module name="IllegalType"/>
     <module name="InnerAssignment"/>
@@ -235,7 +236,7 @@
     <module name="JavadocType"/>
     <module name="JavadocMethod"/>
     <module name="JavadocVariable">
-      <property name="ignoreNamePattern" value="[A-Z_]+"/>
+      <property name="ignoreNamePattern" value="[A-Z0-9_]+"/>
       <property name="scope" value="public"/>
       <property name="severity" value="warning"/>
     </module>
@@ -258,12 +259,12 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="ClassDataAbstractionCoupling">
-      <property name="excludedClasses" value="ElementsExceptionsFactory"/>
+      <property name="excludeClassesRegexps" value="ElementsExceptionsFactory"/>
       <property name="max" value="10"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="ClassFanOutComplexity">
-      <property name="excludedClasses" value="ElementsExceptionsFactory"/>
+      <property name="excludeClassesRegexps" value="ElementsExceptionsFactory"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="CyclomaticComplexity">
@@ -338,7 +339,7 @@
       <property name="ignoreStaticFinal" value="true"/>
     </module>
     <module name="AbstractClassName">
-      <property name="format" value="^Abstract[A-Z][a-zA-Z0-9|^Exception|^Utils]*$"/>
+      <property name="format" value="^(?!.*Exception)^(?!.*Utils)Abstract[A-Z][a-zA-Z0-9]*$"/>
     </module>
     <module name="CatchParameterName">
       <property name="format" value="[a-zA-Z]{3,}"/>
