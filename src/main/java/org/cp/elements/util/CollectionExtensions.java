@@ -117,9 +117,6 @@ public abstract class CollectionExtensions {
         : Arrays.asList(this.array);
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public @NotNull Set<T> toSet() {
 

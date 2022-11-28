@@ -177,6 +177,9 @@ public class ConnectionTester implements Condition, Tester {
   }
 
   /**
+   * Executes the test.
+   *
+   * @return a boolean value indicating if the test was successful.
    * @see #test()
    */
   @Override

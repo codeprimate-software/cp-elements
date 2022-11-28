@@ -906,7 +906,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     };
 
     /**
-     * Default constructor used for testing/mocking purposes only!
+     * Default constructor used for testing/mocking purposes only.
      */
     private MethodReference() {
       this.referenceType = null;

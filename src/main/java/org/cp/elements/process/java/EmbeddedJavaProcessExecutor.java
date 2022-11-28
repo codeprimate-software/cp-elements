@@ -48,9 +48,12 @@ import org.cp.elements.process.EmbeddedProcessExecutionException;
 import org.cp.elements.process.ProcessExecutor;
 
 /**
- * The EmbeddedJavaProcessExecutor class...
+ * Launches an embedded Java process.
  *
  * @author John Blum
+ * @see java.io.File
+ * @see org.cp.elements.lang.Executable
+ * @see org.cp.elements.process.ProcessExecutor
  * @since 1.0.0
  */
 @SuppressWarnings({ "rawtypes", "unused" })
@@ -268,9 +271,6 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    */
   static class ExecutableExecutor<T> implements JavaClassExecutor<T> {
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean isExecutable(Class type) {
       return Executable.class.isAssignableFrom(type);
@@ -290,9 +290,6 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    */
   static class MainMethodExecutor<T> implements JavaClassExecutor<T> {
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean isExecutable(Class type) {
       return Arrays.stream(type.getDeclaredMethods()).anyMatch(ClassUtils::isMainMethod);
@@ -324,9 +321,6 @@ public class EmbeddedJavaProcessExecutor implements ProcessExecutor<Void> {
    */
   static class RunnableExecutor<T> implements JavaClassExecutor<T> {
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean isExecutable(Class type) {
       return Runnable.class.isAssignableFrom(type);
