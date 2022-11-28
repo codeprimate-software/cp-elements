@@ -33,7 +33,7 @@ import org.cp.elements.data.caching.support.CachingTemplate;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AbstractCacheableService<KEY extends Comparable<KEY>, VALUE> {
+public abstract class AbstractCacheableService<KEY extends Comparable<KEY>, VALUE> {
 
   private final AtomicBoolean cacheMiss = new AtomicBoolean(false);
 
