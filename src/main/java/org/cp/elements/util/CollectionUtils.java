@@ -101,14 +101,14 @@ public abstract class CollectionUtils {
    */
   public static @NotNull <E, T extends Collection<E>> T addAll(@NotNull T collection, Iterable<E> iterable) {
 
- 		Assert.notNull(collection, "Collection is required");
+    Assert.notNull(collection, "Collection is required");
 
- 		for (E element : nullSafeIterable(iterable)) {
- 			collection.add(element);
- 		}
+    for (E element : nullSafeIterable(iterable)) {
+      collection.add(element);
+    }
 
- 		return collection;
- 	}
+    return collection;
+  }
 
   /**
    * Adapts the {@link Iterator} into an instance of the {@link Enumeration} interface.
@@ -574,6 +574,7 @@ public abstract class CollectionUtils {
   public static @NotNull <T> Collection<T> nullSafeCollection(@Nullable Collection<T> collection) {
     return collection != null ? collection : Collections.emptyList();
   }
+
   /**
    * Null-safe method returning the given {@link Enumeration} or an empty {@link Enumeration} if null.
    *
