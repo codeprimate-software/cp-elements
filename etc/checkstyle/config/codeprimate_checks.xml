@@ -55,6 +55,8 @@
     <property name="message" value="^.+'interval'.+$"/>
   </module>
 
+  <module name="SuppressWarningsFilter"/>
+
   <module name="FileLength">
     <property name="fileExtensions" value="${checkstyle.FileLength.fileExtensions}" default="java"/>
     <property name="max" value="10000"/>
@@ -306,7 +308,6 @@
       <property name="severity" value="warning"/>
     </module>
     <module name="ClassFanOutComplexity">
-      <property name="excludeClassesRegexps" value="ElementsExceptionsFactory"/>
       <property name="severity" value="warning"/>
     </module>
     <module name="CyclomaticComplexity">
@@ -477,6 +478,9 @@
     <module name="TypecastParenPad"/>
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround"/>
+
+    <module name="SuppressWarningsHolder"/>
+
   </module>
 
 </module>
