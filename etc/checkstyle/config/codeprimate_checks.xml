@@ -8,9 +8,51 @@
   <property name="localeLanguage" value="${locale.language}" default="en"/>
   <property name="severity" value="warning"/>
 
-  <!-- Declare Suppressions file to prevent certain Checkstyle checks (rules) on Java source code files -->
+  <!-- Exclude package-info.java and module-info.java files -->
+  <module name="BeforeExecutionExclusionFileFilter">
+    <property name="fileNamePattern" value="(package|module)\-info\.java$"/>
+  </module>
+
+  <!-- Declare Suppressions file to prevent certain Checkstyle Checks (Rules) on Java source code files -->
   <module name="SuppressionFilter">
     <property name="file" value="${checkstyle.suppressions.file}"/>
+    <property name="optional" value="true"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="AbstractClassName"/>
+    <property name="files" value="Assert|Constants|ThrowableAssertions|.+Exception|.+Extension(s)??|.+Factory|.+Utils\.java"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="FinalClass"/>
+    <property name="files" value="ClassLocator|GetEnvironmentVariableValue|GetSystemPropertyValue\.java"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="IllegalThrows"/>
+    <property name="files" value="ThrowableAssertions|ThrowableOperation\.java"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="MagicNumber"/>
+    <property name="files" value="SimpleBloomFilter.java"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="MutableException"/>
+    <property name="files" value="SecurityException.java"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="RegexpSinglelineJava"/>
+    <property name="files" value="org[\\/]cp[\\/]elements[\\/]tools[\\/]"/>
+  </module>
+
+  <module name="SuppressionSingleFilter">
+    <property name="checks" value="RequireThis"/>
+    <property name="files" value="ThreadUtils.java"/>
+    <property name="message" value="^.+'interval'.+$"/>
   </module>
 
   <module name="FileLength">
@@ -339,7 +381,7 @@
       <property name="ignoreStaticFinal" value="true"/>
     </module>
     <module name="AbstractClassName">
-      <property name="format" value="^(?!.*Exception)^(?!.*Utils)Abstract[A-Z][a-zA-Z0-9]*$"/>
+      <property name="format" value="^(?!.+Exception|.+Extension(s)?|.+Factory|.+Utils)(Abstract.+)$"/>
     </module>
     <module name="CatchParameterName">
       <property name="format" value="[a-zA-Z]{3,}"/>
