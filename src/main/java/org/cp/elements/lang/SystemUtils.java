@@ -321,6 +321,7 @@ public abstract class SystemUtils {
   /**
    * Prompts the user to press the enter key to exit the JVM process.
    */
+  @SuppressWarnings("RegexpSinglelineJava")
   public static void promptPressEnterToExit() {
     System.err.println("Press <enter> to exit...");
     new Scanner(System.in, Charset.defaultCharset().name()).nextLine();
