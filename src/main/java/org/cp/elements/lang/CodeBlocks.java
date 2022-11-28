@@ -32,7 +32,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.util.function.Predicate
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "AbstractClassName", "unused" })
 public abstract class CodeBlocks {
 
   public static final Runnable NO_OP_RUNNABLE = () -> { };

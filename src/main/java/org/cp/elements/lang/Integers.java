@@ -27,7 +27,7 @@ import org.cp.elements.lang.annotation.Nullable;
  * @see java.lang.Integer
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "AbstractClassName", "unused" })
 public abstract class Integers {
 
   public static final Integer ZERO = 0;

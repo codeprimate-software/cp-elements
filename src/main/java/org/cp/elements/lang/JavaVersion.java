@@ -29,7 +29,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.Comparable
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "AbstractClassName", "unused" })
 public abstract class JavaVersion implements Comparable<JavaVersion> {
 
   public static final JavaVersion ONE_ZERO = JavaVersion.of(1, 0, 0);
