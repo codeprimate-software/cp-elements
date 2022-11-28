@@ -16,6 +16,7 @@
 package org.cp.elements.lang.reflect;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,16 +39,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -118,6 +120,7 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     SuperType.stringField = null;
   }
 
+  @SuppressWarnings("unused")
   private int getLineNumberForLine(String line) {
 
     //printReflectionUtilsClassSource();
@@ -218,19 +221,22 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
   }
 
-  @Test(expected = NullPointerException.class)
-  public void getValueThrowsNullPointerException() {
+  @Test
+  public void getValueWithNullFieldReferenceThrowsIllegalArgumentException() {
 
-    try {
-      ReflectionUtils.getValue(new Object(), (Field) null, Object.class);
-    }
-    catch (NullPointerException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ReflectionUtils.getValue(new Object(), (Field) null, Object.class))
+      .withMessage("Field is required")
+      .withNoCause();
+  }
 
-      assertThat(expected.getStackTrace()[0].getLineNumber())
-        .isEqualTo(getLineNumberForLine("boolean currentAccessible = field.isAccessible();"));
+  @Test
+  public void getValueWithNullFieldTypeThrowsIllegalArgumentException() {
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ReflectionUtils.getValue(new DerivedType(), "id", null))
+      .withMessage("Field type is required")
+      .withNoCause();
   }
 
   @Test
@@ -365,19 +371,13 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
   }
 
-  @Test(expected = NullPointerException.class)
-  public void setFieldThrowsNullPointerException() {
+  @Test
+  public void setFieldWithNullFieldReferenceThrowsIllegalArgumentException() {
 
-    try {
-      ReflectionUtils.setField(new Object(), (Field) null, "test");
-    }
-    catch (NullPointerException expected) {
-
-      assertThat(expected.getStackTrace()[0].getLineNumber())
-        .isEqualTo(getLineNumberForLine("Assert.isFalse(Modifier.isFinal(field.getModifiers()),"));
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ReflectionUtils.setField(new Object(), (Field) null, "test"))
+      .withMessage("Field is required")
+      .withNoCause();
   }
 
   @Test
@@ -610,8 +610,8 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
 
     try {
       assertThat(METHOD_NAME.get()).isNull();
-
-      ReflectionUtils.invoke(new DerivedType(), "methodNine", ArrayUtils.asArray("test"), Object.class);
+      ReflectionUtils.invoke(new DerivedType(), "methodNine",
+        ArrayUtils.asArray("test"), Object.class);
     }
     catch (MethodInvocationException expected) {
 
@@ -630,19 +630,22 @@ public class ReflectionUtilsTests extends AbstractBaseTestSuite {
     }
   }
 
-  @Test(expected = NullPointerException.class)
-  public void invokeMethodThrowsNullPointerException() {
+  @Test
+  public void invokeMethodWithNullMethodReferenceThrowsIllegalArgumentException() {
 
-    try {
-      ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class);
-    }
-    catch (NullPointerException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ReflectionUtils.invoke(new Object(), (Method) null, ArrayUtils.emptyArray(), Void.class))
+      .withMessage("Method is required")
+      .withNoCause();
+  }
 
-      assertThat(expected.getStackTrace()[0].getLineNumber())
-        .isEqualTo(getLineNumberForLine("boolean currentAccessible = method.isAccessible();"));
+  @Test
+  public void invokeMethodWithNullMethodReturnTypeThrowsIllegalArgumentException() {
 
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ReflectionUtils.invoke(new DerivedType(), "methodFive", (Class<?>) null))
+      .withMessage("Return type is required")
+      .withNoCause();
   }
 
   @Test

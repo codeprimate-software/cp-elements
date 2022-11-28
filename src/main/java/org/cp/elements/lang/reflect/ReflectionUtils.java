@@ -187,8 +187,7 @@ public abstract class ReflectionUtils extends ClassUtils {
   @NullSafe
   protected static boolean overriddenMethodEquals(@NotNull MethodReference methodOne, @NotNull Method methodTwo) {
     // Methods with the same name must have the same number, order and type of parameters.
-    return methodOne.get() != methodTwo
-      && isMatchingMethods(methodOne, methodTwo, Arrays::equals);
+    return methodOne.get() != methodTwo && isMatchingMethods(methodOne, methodTwo, Arrays::equals);
   }
 
   private static List<Method> resolveAllMatchingDeclaredMethods(@NotNull MethodReference methodReference) {
@@ -225,7 +224,6 @@ public abstract class ReflectionUtils extends ClassUtils {
   private static boolean isNonNullNonObjectType(@Nullable Class<?> type) {
     return !(type == null || Object.class.equals(type));
   }
-
 
   /**
    * Determines the {@link Class types} for all the given arguments.
@@ -267,8 +265,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws IllegalArgumentException if the given class type does not declare a static member field
    * with the specified name.
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
-   * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
+   * @see #getField(Class, String)
+   * @see java.lang.Class
    */
   public static @Nullable <T> T getValue(@NotNull Class<?> type, @NotNull String fieldName,
       @NotNull Class<T> fieldType) {
@@ -295,8 +294,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws IllegalArgumentException if the given object's class type does not declare a instance member field
    * with the specified name.
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
-   * @see #getField(Class, String)
    * @see #getValue(Object, java.lang.reflect.Field, Class)
+   * @see #getField(Class, String)
+   * @see java.lang.Object
    */
   public static @Nullable <T> T getValue(@NotNull Object obj, @NotNull String fieldName, @NotNull Class<T> fieldType) {
 
@@ -310,20 +310,29 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * Gets the value of the field on the given object cast to the desired class type.  If the "target" object is null,
-   * then this method assumes the field is a static (class) member field; otherwise the field is considered
-   * an instance (object) member field.  This method is not null-safe!
+   * Gets the {@link Object value} of the {@link Field} on the given {@link Object} cast to
+   * the requested {@link Class type}.
+   *
+   * If the {@link Object target} is {@literal null}, then this method assumes the {@link Field}
+   * is a static (class) member; otherwise the {@link Field} is considered to be an instance ({@link Object}) member.
    *
    * @param <T> the desired return type in which the field's value will be cast; should be compatible with
    * the field's declared type.
-   * @param target the Object on which the field is defined.
-   * @param field the specified Field from which to get the value.
-   * @param fieldType the desired return type of the field's value; should be compatible with the field's declared type.
+   * @param target {@link Object} on which the {@link Field} is defined.
+   * @param field {@link Field} from which to get the value; must not be {@literal null}.
+   * @param fieldType {@link Class return type} of the {@link Field Field's} {@link Object}value};
+   * should be compatible with the {@link Field Fields's} {@link Field#getType() declared type}.
    * @return the value of the given field on the given object cast to the desired type.
    * @throws FieldAccessException if the value for the specified field could not be retrieved.
-   * @throws NullPointerException if the field or type parameter arguments are null.
+   * @throws IllegalArgumentException if the {@link Field} or {@link Class fieldType} parameter arguments
+   * are {@literal null}.
+   * @see java.lang.reflect.Field
+   * @see java.lang.Object
    */
   public static @Nullable <T> T getValue(@Nullable Object target, @NotNull Field field, @NotNull Class<T> fieldType) {
+
+    Assert.notNull(field, "Field is required");
+    Assert.notNull(fieldType, "Field type is required");
 
     try {
       boolean currentAccessible = field.isAccessible();
@@ -331,9 +340,6 @@ public abstract class ReflectionUtils extends ClassUtils {
       Object value = field.get(target);
       field.setAccessible(currentAccessible);
       return fieldType.cast(value);
-    }
-    catch (NullPointerException cause) {
-      throw cause;
     }
     catch (Exception cause) {
       throw newFieldAccessException(cause, "Failed to get value of field [%s] from %s type [%s]", field.getName(),
@@ -351,8 +357,9 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws IllegalArgumentException if the given class type does not declare a static member field
    * with the specified name.
    * @throws FieldAccessException if the value for the specified field could not be set.
-   * @see #getField(Class, String)
    * @see #setField(Object, java.lang.reflect.Field, Object)
+   * @see #getField(Class, String)
+   * @see java.lang.Class
    */
   public static void setField(@NotNull Class<?> type, @NotNull String fieldName, @Nullable Object value) {
 
@@ -377,6 +384,7 @@ public abstract class ReflectionUtils extends ClassUtils {
    * @throws FieldAccessException if the value for the specified field could not be set.
    * @see #getField(Class, String)
    * @see #setField(Object, java.lang.reflect.Field, Object)
+   * @see java.lang.Object
    */
   public static void setField(@NotNull Object obj, @NotNull String fieldName, @Nullable Object value) {
 
@@ -390,20 +398,27 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * Sets the field on the given object to the given value. If the "target" object is null, then this method assumes
-   * the field is a static (class) member field; otherwise the field is considered an instance (object) member field.
-   * This method is not null-safe!
+   * Sets the {@link Field} on the given {@link Object} to the given {@link Object value}.
    *
-   * @param target the Object on which the field is defined.
-   * @param field the specified Field on which to set the value.
-   * @param value the Object value to set the specified field to.
-   * @throws FieldAccessException if the field is final, or the value for the specified field could not be set.
-   * @throws NullPointerException if the field parameter argument is null.
+   * If the {@link Object target} is {@literal null}, then this method assumes the {@link Field} is a static
+   * ({@link Class}) member; otherwise the {@link Field} is considered an instance ({@link Object}) member.
+   *
+   * @param target {@link Object} on which the {@link Field} is defined.
+   * @param field {@link Field} on which to set the {@link Object value}; must not be {@literal null}.
+   * @param value {@link Object value} to set the {@link Field} to.
+   * @throws FieldAccessException if the {@link Field} is {@literal final}, or the {@link Object value}
+   * for the {@link Field} could not be set.
+   * @throws IllegalArgumentException if the {@link Field} is {@literal null}.
+   * @see java.lang.reflect.Field
+   * @see java.lang.Object
    */
   @SuppressWarnings("all")
   public static void setField(@Nullable Object target, @NotNull Field field, @Nullable Object value) {
 
+    Assert.notNull(field, "Field is required");
+
     try {
+
       Assert.isFalse(Modifier.isFinal(field.getModifiers()),
         newFieldAccessException("Cannot set the value of a final field [%s] on %s type [%s]", field.getName(),
           BooleanUtils.toString(target == null, "class", "object of"),
@@ -416,9 +431,6 @@ public abstract class ReflectionUtils extends ClassUtils {
       field.setAccessible(currentAccessible);
     }
     catch (FieldAccessException cause) {
-      throw cause;
-    }
-    catch (NullPointerException cause) {
       throw cause;
     }
     catch (Exception cause) {
@@ -701,26 +713,35 @@ public abstract class ReflectionUtils extends ClassUtils {
   }
 
   /**
-   * Calls the method with the specified name on the given object, passing the given arguments and casting
-   * the method's return value to the desired class type.  If the target object is null, then this method assumes
-   * the "method" to invoke is a static (class) member method, otherwise the "method" to invoke is considered
-   * an instance (object) member method.
+   * Calls the {@link Method} on the given {@link Object}, passing the given array of {@link Object arguments}
+   * then casting the {@link Object return value} to the requested {@link Class type}.
    *
-   * @param <T> the desired return type in which the method's return value will be cast; should be compatible with
-   * the method's return type.
-   * @param target the Object on which the method is defined and will be invoked.
-   * @param method the Method to invoke.
-   * @param arguments an array of objects constituting the method's signature as well as the arguments
-   * to the method's parameters.
-   * @param returnType the desired Class type in which to cast the method's return value.
-   * @return the specified method's return value cast to the desired return type.
-   * @throws MethodInvocationException if the method invocation (call) fails to be executed successfully.
-   * @throws NullPointerException if the method or returnType parameter arguments are null.
-   * @see #getMethodSignature(String, Class[], Class)
+   * If the {@link Object target} is {@literal null}, then this method assumes the {@link Method} to invoke
+   * is a static ({@link Class}) member, otherwise the {@link Method} to invoke is considered to be
+   * an instance ({@link Object}) member.
+   *
+   * @param <T> requested {@link Class return type} in which the {@link Method Method's} {@link Object return value}
+   * will be cast; should be compatible with the {@link Method Method's} {@link Method#getReturnType() return type}.
+   * @param target {@link Object} on which the {@link Method} is defined and will be invoked.
+   * @param method {@link Method} to invoke; must not be {@literal null}.
+   * @param arguments array of {@link Object arguments} constituting the {@link Method Method's} signature
+   * as well as the arguments to the {@link Method Method's} parameters.
+   * @param returnType requested {@link Class type} in which the {@link Method Method's} {@link Object return value}
+   * will be cast.
+   * @return the specified {@link Method Method's} {@link Object return value}
+   * cast to the requested {@link Class return type}.
+   * @throws MethodInvocationException if the {@link Method} invocation (call) fails to be executed successfully.
+   * @throws IllegalArgumentException if the {@link Method} or {@link Class returnType} are {@literal null}.
    * @see java.lang.reflect.Method#invoke(Object, Object...)
    * @see java.lang.reflect.Method#setAccessible(boolean)
+   * @see #getMethodSignature(String, Class[], Class)
+   * @see java.lang.Object
    */
-  public static <T> T invoke(@NotNull Object target, @NotNull Method method, Object[] arguments, Class<T> returnType) {
+  public static <T> T invoke(@NotNull Object target, @NotNull Method method,
+      Object[] arguments, @NotNull Class<T> returnType) {
+
+    Assert.notNull(method, "Method is required");
+    Assert.notNull(returnType, "Return type is required");
 
     try {
       boolean currentAccessible = method.isAccessible();
@@ -728,9 +749,6 @@ public abstract class ReflectionUtils extends ClassUtils {
       Object returnValue = method.invoke(target, arguments);
       method.setAccessible(currentAccessible);
       return returnType.cast(returnValue);
-    }
-    catch (NullPointerException cause) {
-      throw cause;
     }
     catch (Exception cause) {
       throw newMethodInvocationException(cause, "Failed to invoke method [%s] on %s type [%s]",
@@ -894,6 +912,7 @@ public abstract class ReflectionUtils extends ClassUtils {
     private final Function<Class<?>, Method> safeGetMethod = type -> {
 
       String methodName = getName();
+
       Class<?>[] parameterTypes = getParameterTypes();
 
       try {
