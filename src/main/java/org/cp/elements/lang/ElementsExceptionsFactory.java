@@ -145,7 +145,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.util.sort.SortException
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({ "ClassDataAbstractionCoupling", "ClassFanOutComplexity", "unused" })
 public abstract class ElementsExceptionsFactory {
 
   // package org.cp.elements.beans

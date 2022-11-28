@@ -76,8 +76,8 @@ import org.cp.elements.util.CollectionUtils;
  * @see <a href="http://stackoverflow.com/questions/176527/how-can-i-enumerate-all-classes-in-a-package-and-add-them-to-a-list">How can I enumerate all classes in a package and add them to a List?</a>
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 @Service
+@SuppressWarnings("unused")
 public class SimpleConversionService extends AbstractConversionService {
 
   protected static final Class<?> CONVERTER_CLASS = StringConverter.class;
