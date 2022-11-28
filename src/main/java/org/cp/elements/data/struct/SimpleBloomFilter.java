@@ -50,7 +50,7 @@ public class SimpleBloomFilter<T> implements BloomFilter<T> {
   protected static final int DEFAULT_NUMBER_OF_BITS = DEFAULT_BIT_ARRAY_LENGTH * THIRTY_TWO_BITS; // 64 KB filter
   protected static final int DEFAULT_NUMBER_OF_HASH_FUNCTIONS = 11;
 
-  protected static final int[] BIT_MASKS = new int[32];
+  static final int[] BIT_MASKS = new int[32];
 
   static {
     BIT_MASKS[0] = 0x00000001;
