@@ -1120,8 +1120,8 @@ public abstract class ReflectionUtils extends ClassUtils {
      * targeted to be processed.
      *
      * @param type {@link Class type} from which to extract {@link Member Members} to process.
-     * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
      * @return this {@link WithExpression}.
+     * @throws IllegalArgumentException if the {@link Class type} is {@literal null}.
      */
     @Dsl
     public @NotNull WithExpression<T> on(@NotNull Class<?> type) {
