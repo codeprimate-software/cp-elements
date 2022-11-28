@@ -16,6 +16,7 @@
 package org.cp.elements.tools;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 import org.cp.elements.ElementsVersion;
@@ -70,7 +71,7 @@ public class GetEnvironmentVariableValueInteractive implements Runnable {
   @Override
   public void run() {
 
-    Scanner userInputReader = new Scanner(System.in);
+    Scanner userInputReader = new Scanner(System.in, Charset.defaultCharset().name());
 
     int userSelection;
 
