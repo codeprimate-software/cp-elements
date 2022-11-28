@@ -64,6 +64,8 @@ public abstract class ArrayUtils {
   @SuppressWarnings("all")
   public static final Object[] EMPTY_ARRAY = new Object[0];
 
+  private static final Random random = new Random();
+
   /**
    * Adds (inserts) the element to the end of the array.
    *
@@ -777,11 +779,11 @@ public abstract class ArrayUtils {
 
     if (isNotEmpty(array)) {
 
-      Random random = new Random(System.currentTimeMillis());
+      random.setSeed(System.currentTimeMillis());
 
       for (int index = 0, lengthMinusOne = array.length - 1; index < lengthMinusOne; index++) {
 
-        int randomIndex = (random.nextInt(lengthMinusOne - index) + 1);
+        int randomIndex = random.nextInt(lengthMinusOne - index) + 1;
 
         swap(array, index, index + randomIndex);
       }

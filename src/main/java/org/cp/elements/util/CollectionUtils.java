@@ -64,6 +64,8 @@ import org.cp.elements.lang.support.ToStringRenderer;
 @SuppressWarnings("unused")
 public abstract class CollectionUtils {
 
+  private static final Random random = new Random();
+
   /**
    * Adds all elements from the given array to the given {@link Collection}.
    *
@@ -673,10 +675,10 @@ public abstract class CollectionUtils {
 
     if (isNotEmpty(list)) {
 
-      Random random = new Random(System.currentTimeMillis());
+      random.setSeed(System.currentTimeMillis());
 
       for (int index = 0, sizeMinusOne = nullSafeSize(list) - 1; index < sizeMinusOne; index++) {
-        int randomIndex = (random.nextInt(sizeMinusOne - index) + 1);
+        int randomIndex = random.nextInt(sizeMinusOne - index) + 1;
         Collections.swap(list, index, index + randomIndex);
       }
     }
