@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class ConfigurationFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] CONFIGURATION_FILE_EXTENSIONS = {
+  static final String[] CONFIGURATION_FILE_EXTENSIONS = {
     "cfg",
     "cnf",
     "conf",

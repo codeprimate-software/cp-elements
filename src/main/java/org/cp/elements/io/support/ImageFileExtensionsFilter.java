@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class ImageFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] IMAGE_FILE_EXTENSIONS = {
+  static final String[] IMAGE_FILE_EXTENSIONS = {
     "bmp",
     "gif",
     "giff",

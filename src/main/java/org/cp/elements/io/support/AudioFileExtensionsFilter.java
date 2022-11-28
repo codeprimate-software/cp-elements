@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class AudioFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] AUDIO_FILE_EXTENSIONS = {
+  static final String[] AUDIO_FILE_EXTENSIONS = {
     "au",
     "m4a",
     "mid",

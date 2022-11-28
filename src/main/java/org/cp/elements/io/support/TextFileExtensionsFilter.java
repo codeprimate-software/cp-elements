@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class TextFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] TEXT_FILE_EXTENSIONS = {
+  static final String[] TEXT_FILE_EXTENSIONS = {
     "dbg",
     "log",
     "rtf",

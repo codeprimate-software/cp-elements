@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class VideoFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] VIDEO_FILE_EXTENSIONS = {
+  static final String[] VIDEO_FILE_EXTENSIONS = {
     "avi",
     "divx",
     "mov",

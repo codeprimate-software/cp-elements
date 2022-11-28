@@ -31,7 +31,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class SourceCodeFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] SOURCE_CODE_FILE_EXTENSIONS = {
+  static final String[] SOURCE_CODE_FILE_EXTENSIONS = {
     "ada",
     "asp",
     "bin",

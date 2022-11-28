@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class DataFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] DATA_FILE_EXTENSIONS = {
+  static final String[] DATA_FILE_EXTENSIONS = {
     "csv",
     "dat",
     "data",

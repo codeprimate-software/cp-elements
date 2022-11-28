@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class BackupFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] BACKUP_FILE_EXTENSIONS = {
+  static final String[] BACKUP_FILE_EXTENSIONS = {
     "backup",
     "bak",
     "bu",

@@ -31,7 +31,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class ArchiveAndCompressedFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] ARCHIVE_AND_COMPRESSED_FILE_EXTENSIONS = {
+  static final String[] ARCHIVE_AND_COMPRESSED_FILE_EXTENSIONS = {
     "7z",
     "apk",
     "arc",

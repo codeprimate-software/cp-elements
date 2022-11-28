@@ -31,7 +31,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class ArchiveFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] ARCHIVE_FILE_EXTENSIONS = {
+  static final String[] ARCHIVE_FILE_EXTENSIONS = {
     "a",
     "ar",
     "cpio",

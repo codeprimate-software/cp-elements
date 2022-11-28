@@ -30,7 +30,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class ExecutableFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] EXECUTABLE_FILE_EXTENSIONS = {
+  static final String[] EXECUTABLE_FILE_EXTENSIONS = {
     "bat",
     "bin",
     "cmd",

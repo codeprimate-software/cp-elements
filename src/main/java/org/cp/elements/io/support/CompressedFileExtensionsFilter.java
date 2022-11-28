@@ -31,7 +31,7 @@ import org.cp.elements.io.FileExtensionFilter;
 @SuppressWarnings("unused")
 public class CompressedFileExtensionsFilter extends FileExtensionFilter {
 
-  protected static final String[] COMPRESSED_FILE_EXTENSIONS = {
+  static final String[] COMPRESSED_FILE_EXTENSIONS = {
     "bz",
     "bz2",
     "bzip",
