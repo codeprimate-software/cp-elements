@@ -26,18 +26,18 @@ import org.cp.elements.io.FileUtils;
 import org.junit.Test;
 
 /**
- * Unit Tests for {@link BaseProcess}.
+ * Unit Tests for {@link AbstractBaseProcess}.
  *
  * @author John Blum
  * @see java.io.File
  * @see java.lang.Process
  * @see org.junit.Test
- * @see org.cp.elements.process.BaseProcess
+ * @see AbstractBaseProcess
  * @since 1.0.0
  */
 public class BaseProcessUnitTests {
 
-  private final BaseProcess testProcess = new TestProcess();
+  private final AbstractBaseProcess testProcess = new TestBaseProcess();
 
   @Test
   public void getIdFromPidFile() throws IOException {
@@ -100,6 +100,6 @@ public class BaseProcessUnitTests {
     assertThat(this.testProcess.exitValue()).isEqualTo(-1);
   }
 
-  static final class TestProcess extends BaseProcess { }
+  static final class TestBaseProcess extends AbstractBaseProcess { }
 
 }

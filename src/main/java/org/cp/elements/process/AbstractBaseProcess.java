@@ -38,7 +38,7 @@ import org.cp.elements.process.util.ProcessUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public abstract class BaseProcess extends Process implements Identifiable<Integer>, Nameable<String> {
+public abstract class AbstractBaseProcess extends Process implements Identifiable<Integer>, Nameable<String> {
 
   /**
    * Gets the Operating System (OS) assigned {@link Integer ID} for this {@link Process}.

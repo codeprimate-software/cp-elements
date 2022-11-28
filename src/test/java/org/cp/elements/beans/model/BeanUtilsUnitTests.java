@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.model.support.ArrayProperty;
-import org.cp.elements.process.BaseProcess;
+import org.cp.elements.process.AbstractBaseProcess;
 import org.cp.elements.security.model.User;
 
 import org.junit.Test;
@@ -113,7 +113,7 @@ public class BeanUtilsUnitTests {
   @Test
   public void acquireBeanInfoFromProcess() {
 
-    Process process = new TestProcess();
+    Process process = new TestBaseProcess();
 
     BeanInfo processInfo = BeanUtils.acquireBeanInformation(process);
 
@@ -193,7 +193,7 @@ public class BeanUtilsUnitTests {
   public void getNonExistingPropertyFromObject() {
 
     assertThatExceptionOfType(PropertyNotFoundException.class)
-      .isThrownBy(() -> BeanUtils.getProperty(new TestProcess(), "nonExistingProperty"))
+      .isThrownBy(() -> BeanUtils.getProperty(new TestBaseProcess(), "nonExistingProperty"))
       .withMessage("Property with name [nonExistingProperty] not found")
       .withNoCause();
   }
@@ -312,7 +312,7 @@ public class BeanUtilsUnitTests {
     assertThat(BeanUtils.resolveType(null)).isEqualTo(Object.class);
   }
 
-  private static class TestProcess extends BaseProcess { }
+  private static class TestBaseProcess extends AbstractBaseProcess { }
 
   @EqualsAndHashCode
   @ToString(of = "name")
