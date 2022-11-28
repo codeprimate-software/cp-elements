@@ -46,28 +46,27 @@ No corporate entity owns or controls *Elements*, and therefore, you will never b
 
 * Software Design Patterns as Code: _Abstract Factory, Builder, Composite, DAO, Proxy, Template, Visitor_.
 * Domain Specific Languages (DSLs) and Fluent APIs to write concise yet expressive code.
-* Annotations for writing descriptive code: [ `@Conditional`, `@Dsl`, `@Experimental`, `@FluentApi`, `@GuardedBy`,
-`@Immutable`, `@InitializationSafe`, `@NotNull`, `@Nullable`, `@NullSafe`, `@Repository`, `@Service`, `@ThreadSafe` ]
+* Annotations for writing descriptive code: [ `@Immutable`, `@NullSafe`, `@ThreadSafe` ]
 * Addition of intuitive and applicable `RuntimeException` classes.
 * _JavaBeans_ API and framework extensions and support.
-* `Enums` (Enumerations) for general use cases: [ `LengthUnit`, `Order`, `Month`, `TimeUnit`, `Weekday`, `WeightUnit` ]
+* `Enums` to classify general types, for example: [ `LengthUnit`, `WeightUnit` ]
 * Environment-Aware, Context-Driven Configuration Model.
 * Comprehensive Data Structures and Data Management:
 ** Auditing & Identity Management
 ** Bloom Filter
 ** Caching
+** Compression
 ** Data Conversion
 ** Key/Value Data Structure
+** Serialization
 ** Table-based (Tabular) Data Structure
-* Pluggable support for common Algorithms:
-** Searching: _Binary Search, Linear Search_
-** Sorting: _Bubble Sort, Comb Sort, Heap Sort, Insertion Sort, Merge Sort, Quick Sort, Selection Sort, Shell Sort_
 * Logic and Math utilities along with Logical and Relational Operators.
 * IO, NIO and Network utilities and classes.
 * Process Execution / Lifecycle Management framework
-* Sophisticated Sorting and Pagination for Java Collections
-* Utilities for Classes, Objects, Arrays, Booleans, Characters, Collections, Functions, JavaBeans, Maps, Numbers,
-Primitive Types, Processes, Properties, Reflection, Runtime/System, Streams, Strings, Threads, and on and on.
+* Pluggable support for Searching and Sorting Algorithms:
+* Sophisticated Sorting, Searching and Pagination for Java Collections
+* Utilities for Classes, Objects, Arrays, Booleans, Characters, Collections, Files, File Systems, Functions, JavaBeans,
+Maps, Numbers, Primitive Types, Processes, Properties, Reflection, Runtime/System, Streams, Strings, Threads, etc.
 * Testing support with robust assertions.
 
 This list is not nearly complete. Elements covers so much more.
