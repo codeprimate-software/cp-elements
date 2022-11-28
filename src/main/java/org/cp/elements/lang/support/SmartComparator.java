@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang.support;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -49,13 +50,14 @@ import org.cp.elements.util.stream.StreamUtils;
  *
  * @author John Blum
  * @see java.lang.Iterable
+ * @see java.io.Serializable
  * @see java.util.Comparator
  * @see org.cp.elements.lang.annotation.FluentApi
  * @see org.cp.elements.lang.support.SmartComparator.ComparatorDescriptor
  * @since 1.0.0
  */
 @FluentApi
-public class SmartComparator implements Comparator<Object>, Iterable<ComparatorDescriptor> {
+public class SmartComparator implements Comparator<Object>, Iterable<ComparatorDescriptor>, Serializable {
 
   /**
    * Factory method used to construct a new instance of {@link SmartComparator}.

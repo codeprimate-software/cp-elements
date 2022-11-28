@@ -17,25 +17,27 @@ package org.cp.elements.util;
 
 import static org.cp.elements.util.ComparatorUtils.compareIgnoreNull;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.annotation.NullSafe;
 
 /**
- * The {@link ComparatorResultBuilder} class is a {@link Comparator} implementation that builds a comparison expression
- * accumulating the result.
+ * A {@link Comparator} implementation that builds a comparison expression, accumulating the result.
  *
  * @author John J. Blum
  * @param <T> {@link Class type} of the {@link Object objects} compared by the built {@link Comparator}
  * in the comparison.
  * @see java.lang.Comparable
+ * @see java.io.Serializable
  * @see java.util.Comparator
  * @see org.cp.elements.lang.Builder
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class ComparatorResultBuilder<T extends Comparable<T>> implements Builder<Integer>, Comparator<T> {
+public class ComparatorResultBuilder<T extends Comparable<T>>
+    implements Builder<Integer>, Comparator<T>, Serializable {
 
   private int result;
 
@@ -86,7 +88,7 @@ public class ComparatorResultBuilder<T extends Comparable<T>> implements Builder
    */
   @NullSafe
   public ComparatorResultBuilder<T> doCompare(T obj1, T obj2) {
-    this.result = (this.result != 0 ? this.result : compare(obj1, obj2));
+    this.result = this.result != 0 ? this.result : compare(obj1, obj2);
     return this;
   }
 

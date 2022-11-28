@@ -15,6 +15,7 @@
  */
 package org.cp.elements.lang.support;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.cp.elements.lang.Orderable;
@@ -26,11 +27,12 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John J. Blum
  * @param <T> {@link Class type} parameter indicating the specific {@link Class} of the {@link Orderable} type.
  * @see java.lang.Comparable
+ * @see java.io.Serializable
  * @see java.util.Comparator
  * @see org.cp.elements.lang.Orderable
  * @since 1.0.0
  */
-public class OrderableComparator<T extends Comparable<T>> implements Comparator<Orderable<T>> {
+public class OrderableComparator<T extends Comparable<T>> implements Comparator<Orderable<T>>, Serializable {
 
   /**
    * Compares two {@link Orderable objects} to determine their relative sort order
