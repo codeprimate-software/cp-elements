@@ -75,7 +75,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     return new SmartComparator();
   }
 
-  private transient final ComparatorRegistry comparatorRegistry = new ComparatorRegistry();
+  private final transient ComparatorRegistry comparatorRegistry = new ComparatorRegistry();
 
   /**
    * Smartly {@link Comparator#compare(Object, Object) compares} two {@link Object objects}.
@@ -492,7 +492,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    */
   protected static class ComparatorRegistry implements Registry<ComparatorDescriptor> {
 
-    private transient final Set<ComparatorDescriptor> registry = Collections.synchronizedSet(new HashSet<>());
+    private final transient Set<ComparatorDescriptor> registry = Collections.synchronizedSet(new HashSet<>());
 
     /**
      * Determines whether the given {@link Comparator} has been registered with this {@link Registry}.
