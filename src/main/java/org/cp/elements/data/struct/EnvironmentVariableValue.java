@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import java.util.Optional;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The {@link EnvironmentVariableValue} class is {@link KeyValue} data structure providing access to the value
- * of a given System environment variable.
+ * A {@link StringBasedKeyValue} data structure providing access to the {@link String value} of
+ * a given system environment variable.
  *
  * @author John Blum
  * @see java.lang.System#getenv()
@@ -37,29 +37,30 @@ public class EnvironmentVariableValue extends StringBasedKeyValue {
    * Factory method used to construct a new instance of {@link EnvironmentVariableValue} initialized with
    * the given system environment variable.
    *
-   * @param environmentVariable System environment variable.
-   * @return a new instance of {@link EnvironmentVariableValue} initialized with the given system environment variable.
-   * @throws IllegalArgumentException if environment variable is {@literal null}.
+   * @param environmentVariable System environment variable; must not be {@literal null}.
+   * @return a new {@link EnvironmentVariableValue} initialized with the given system environment variable.
+   * @throws IllegalArgumentException if the environment variable is {@literal null}.
    * @see #EnvironmentVariableValue(String)
    */
-  public static EnvironmentVariableValue newEnvironmentVariableValue(String environmentVariable) {
+  public static EnvironmentVariableValue newEnvironmentVariableValue(@NotNull String environmentVariable) {
     return new EnvironmentVariableValue(environmentVariable);
   }
 
   /**
-   * Constructs a new instance of {@link EnvironmentVariableValue} initialized with the given environment variable.
+   * Constructs a new instance of {@link EnvironmentVariableValue} initialized with
+   * the given system environment variable.
    *
-   * @param environmentVariable System environment variable.
-   * @throws IllegalArgumentException if environment variable is {@literal null}.
+   * @param environmentVariable System environment variable; must not be {@literal null}.
+   * @throws IllegalArgumentException if the environment variable is {@literal null}.
    */
   public EnvironmentVariableValue(String environmentVariable) {
     super(environmentVariable);
   }
 
   /**
-   * Get the value of this environment variable as a {@literal null-safe} {@link Optional} value.
+   * Get the {@link String value} of this environment variable as a {@literal null-safe} {@link Optional} value.
    *
-   * @return the value of this environment variable as a {@literal null-safe} {@link Optional} value.
+   * @return the {@link String value} of this environment variable as a {@literal null-safe} {@link Optional} value.
    * @see java.lang.System#getenv(String)
    * @see java.util.Optional
    */

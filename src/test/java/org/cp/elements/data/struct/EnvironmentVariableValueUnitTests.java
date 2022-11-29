@@ -13,47 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.data.struct.EnvironmentVariableValue.newEnvironmentVariableValue;
 
 import java.util.Optional;
 
 import org.junit.Test;
 
 /**
- * Unit tests for {@link EnvironmentVariableValue}.
+ * Unit Tests for {@link EnvironmentVariableValue}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.elements.data.struct.EnvironmentVariableValue
  * @since 1.0.0
  */
-public class EnvironmentVariableValueTests {
+public class EnvironmentVariableValueUnitTests {
 
   @Test
   public void newEnvironmentVariableValueIsSuccessful() {
-    EnvironmentVariableValue environmentVariableValue = newEnvironmentVariableValue("USER");
+
+    EnvironmentVariableValue environmentVariableValue = EnvironmentVariableValue.newEnvironmentVariableValue("USER");
 
     assertThat(environmentVariableValue).isNotNull();
     assertThat(environmentVariableValue.getKey()).isEqualTo("USER");
     assertThat(environmentVariableValue.getValue()).isInstanceOf(Optional.class);
+    assertThat(environmentVariableValue.getValue()).isPresent();
     assertThat(environmentVariableValue.getValue("default")).isNotEqualTo("default");
   }
 
   @Test
   public void getValueForExistingEnvironmentVariable() {
-    assertThat(newEnvironmentVariableValue("USER").getValue("default"))
-      .isEqualTo(System.getenv("USER"));
+
+    System.getenv().keySet().forEach(environmentVariable ->
+      assertThat(EnvironmentVariableValue.newEnvironmentVariableValue(environmentVariable).getValue("default"))
+        .isEqualTo(System.getenv(environmentVariable)));
   }
 
   @Test
   public void getValueForNonExistingEnvironmentVariable() {
-    EnvironmentVariableValue environmentVariableValue = newEnvironmentVariableValue("non.existing.variable");
+
+    EnvironmentVariableValue environmentVariableValue =
+      EnvironmentVariableValue.newEnvironmentVariableValue("non.existing.variable");
 
     assertThat(environmentVariableValue.getValue()).isInstanceOf(Optional.class);
+    assertThat(environmentVariableValue.getValue()).isNotPresent();
     assertThat(environmentVariableValue.getValue("default")).isEqualTo("default");
   }
 }
