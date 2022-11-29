@@ -189,6 +189,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see java.util.Arrays#asList(Object[])
    */
+  @Override
   @SuppressWarnings({ "unchecked", "varargs" })
   public <E> Iterable<E> searchForAll(E... array) {
     return searchForAll(Arrays.asList(array));
@@ -207,7 +208,8 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see java.util.Collection
    */
-  public <E> Iterable<E> searchForAll(Collection<E> collection) {
+  @Override
+  public <E> Iterable<E> searchForAll(@NotNull Collection<E> collection) {
 
     Assert.notNull(collection, "The collection to search cannot be null!");
 
@@ -236,6 +238,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see org.cp.elements.util.search.Searchable#asList()
    */
+  @Override
   public <E> Iterable<E> searchForAll(Searchable<E> searchable) {
 
     try {
@@ -262,6 +265,7 @@ public abstract class AbstractSearcher implements Searcher {
    * @see java.lang.Iterable
    * @see org.cp.elements.util.search.annotation.Searchable#listMethod()
    */
+  @Override
   public <E> Iterable<E> searchForAll(Object searchableAnnotatedObject) {
 
     try {
