@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
 import java.util.List;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.sort.AbstractSorter;
 
 /**
- * The SelectionSort class is a implementation of the Selection Sort algorithm
- * and the {@link org.cp.elements.util.sort.Sorter} interface.
+ * {@link AbstractSorter} implementation of the {@literal Selection Sort algorithm}.
  *
  * @author John J. Blum
  * @see java.util.List
@@ -44,8 +43,10 @@ public class SelectionSort extends AbstractSorter {
    * @see java.util.List
    */
   @Override
-  public <E> List<E> sort(final List<E> elements) {
+  public @NotNull <E> List<E> sort(@NotNull List<E> elements) {
+
     for (int index = 0, size = elements.size(), length = (size - 1); index < length; index++) {
+
       int minIndex = index;
 
       for (int j = (index + 1); j < size; j++) {
@@ -61,5 +62,4 @@ public class SelectionSort extends AbstractSorter {
 
     return elements;
   }
-
 }
