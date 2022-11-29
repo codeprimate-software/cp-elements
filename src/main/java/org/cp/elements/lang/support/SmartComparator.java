@@ -62,6 +62,8 @@ import org.cp.elements.util.stream.StreamUtils;
 @FluentApi
 public class SmartComparator implements Comparator<Object>, Iterable<ComparatorDescriptor>, Serializable {
 
+  private static final long serialVersionUID = -1851003770115084180L;
+
   /**
    * Factory method used to construct a new instance of {@link SmartComparator}.
    *
@@ -472,6 +474,10 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     public int compare(@NotNull T objectOne, @NotNull T objectTwo) {
       return objectOne.compareTo(objectTwo);
     }
+
+    private @NotNull Object readResolve() {
+      return INSTANCE;
+    }
   }
 
   /**
@@ -489,6 +495,10 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     @Override
     public int compare(@Nullable Object objectOne, @Nullable Object objectTwo) {
       return Integer.compare(ObjectUtils.hashCode(objectOne), ObjectUtils.hashCode(objectTwo));
+    }
+
+    private @NotNull Object readResolve() {
+      return INSTANCE;
     }
   }
 
