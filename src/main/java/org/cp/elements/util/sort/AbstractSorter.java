@@ -25,7 +25,9 @@ import java.util.List;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
-import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.support.SmartComparator;
 import org.cp.elements.util.search.SearchException;
 
 /**
@@ -79,9 +81,8 @@ public abstract class AbstractSorter implements Sorter {
   @Override
   @SuppressWarnings("unchecked")
   public <E> Comparator<E> getOrderBy() {
-
-    return ObjectUtils.returnFirstNonNullValue(ComparatorHolder.get(),
-      ObjectUtils.returnFirstNonNullValue(this.orderBy, ComparableComparator.INSTANCE));
+    return ObjectUtils.returnFirstNonNullValue(ComparatorHolder.get(), this.orderBy,
+      SmartComparator.ComparableComparator.INSTANCE);
   }
 
   /**
@@ -300,24 +301,7 @@ public abstract class AbstractSorter implements Sorter {
   }
 
   /**
-   * The ComparableComparator class is a Comparator implementation comparing two Comparable objects using the natural
-   * ordering of the objects to determine order.
-   *
-   * @param <T> the Comparable Class type of the objects to compare.
-   */
-  protected static class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
-
-    @SuppressWarnings("rawtypes")
-    protected static final ComparableComparator INSTANCE = new ComparableComparator();
-
-    @Override
-    public int compare(@NotNull T comparable1, @NotNull T comparable2) {
-      return comparable1.compareTo(comparable2);
-    }
-  }
-
-  /**
-   * The ComparatorHolder class is a holder of a Comparable for the calling Thread during the sort operation.
+   * A holder of a {@link Comparable object} used by the calling {@link Thread} during the sort operation.
    *
    * @see java.lang.ThreadLocal
    * @see java.util.Comparator
@@ -326,15 +310,16 @@ public abstract class AbstractSorter implements Sorter {
 
     private static final ThreadLocal<Comparator<?>> COMPARATOR_HOLDER = new ThreadLocal<>();
 
-    public static Comparator<?> get() {
+    public static @Nullable Comparator<?> get() {
       return COMPARATOR_HOLDER.get();
     }
 
+    @NullSafe
     public static boolean isSet() {
-      return (get() != null);
+      return get() != null;
     }
 
-    public static void set(final Comparator<?> comparator) {
+    public static void set(@Nullable Comparator<?> comparator) {
       COMPARATOR_HOLDER.set(comparator);
     }
 
@@ -344,19 +329,20 @@ public abstract class AbstractSorter implements Sorter {
   }
 
   /**
-   * The SorableArrayList class is a List implementation wrapping an modifiable array of elements that can be sorted.
+   * {@link List} implementation wrapping a modifiable array of elements that can be sorted.
    *
-   * @param <E> the Class type of the elements in the array/List.
+   * @param <E> {@link Class type} of the elements in the array / {@link List}.
    * @see java.util.AbstractList
    */
+  @SuppressWarnings("PMD.ArrayIsStoredDirectly")
   protected static class SortableArrayList<E> extends AbstractList<E> {
 
     private final E[] elements;
 
     @SafeVarargs
     public SortableArrayList(E... elements) {
-      Assert.notNull(elements, "The array of elements to wrap in a List cannot be null!");
-      this.elements = elements;
+      this.elements = ObjectUtils.requireObject(elements,
+        "The array of elements to wrap in a List is required");
     }
 
     @Override
@@ -365,7 +351,7 @@ public abstract class AbstractSorter implements Sorter {
     }
 
     @Override
-    public E set(final int index, final E element) {
+    public E set(int index, E element) {
       E previousElement = this.elements[index];
       this.elements[index] = element;
       return previousElement;
