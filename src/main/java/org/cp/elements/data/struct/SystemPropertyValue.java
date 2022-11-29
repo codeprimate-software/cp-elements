@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import java.util.Optional;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The {@link SystemPropertyValue} class is {@link KeyValue} data structure providing access to the value
- * of a given Java System Property.
+ * A {@link StringBasedKeyValue} data structure providing access to the {@link String value} of
+ * a given Java System Property.
  *
  * @author John Blum
  * @see java.lang.System#getProperties()
@@ -35,31 +35,36 @@ public class SystemPropertyValue extends StringBasedKeyValue {
 
   /**
    * Factory method used to construct a new instance of {@link SystemPropertyValue} initialized with
-   * the given system property.
+   * the given Java {@link String system property}.
    *
-   * @param systemProperty Java system property.
-   * @return a new instance of the {@link SystemPropertyValue} initialized with the given system property.
-   * @throws IllegalArgumentException if system property is {@literal null}.
+   * @param systemProperty {@link String} containing the {@literal Java system property};
+   * must not be {@literal null} or {@literal empty}.
+   * @return a new {@link SystemPropertyValue} initialized with the given Java {@link String system property}.
+   * @throws IllegalArgumentException if the {@literal Java system property} is {@literal null} or {@literal empty}.
    * @see #SystemPropertyValue(String)
    */
-  public static SystemPropertyValue newSystemPropertyValue(String systemProperty) {
+  public static SystemPropertyValue newSystemPropertyValue(@NotNull String systemProperty) {
     return new SystemPropertyValue(systemProperty);
   }
 
   /**
-   * Constructs a new instance of {@link SystemPropertyValue} initialized with the given system property.
+   * Constructs a new instance of {@link SystemPropertyValue} initialized with
+   * the given Java {@link String system property}.
    *
-   * @param systemProperty Java system property.
-   * @throws IllegalArgumentException if system property is {@literal null}.
+   * @param systemProperty {@link String} containing the {@literal Java system property};
+   * must not be {@literal null} or {@literal empty}.
+   * @throws IllegalArgumentException if the {@literal Java system property} is {@literal null} or {@literal empty}.
    */
-  public SystemPropertyValue(String systemProperty) {
+  public SystemPropertyValue(@NotNull String systemProperty) {
     super(systemProperty);
   }
 
   /**
-   * Get the value of this system property as a {@literal null-safe} {@link Optional} value.
+   * Get the {@link String value} of this {@literal Java system property} as a {@literal null-safe}
+   * {@link Optional} value.
    *
-   * @return the value of this system property as a {@literal null-safe} {@link Optional} value.
+   * @return the {@link String value} of this {@literal Java system property} as a {@literal null-safe}
+   * {@link Optional} value.
    * @see java.lang.System#getProperty(String)
    * @see java.util.Optional
    */

@@ -13,45 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.cp.elements.data.struct.SystemPropertyValue.newSystemPropertyValue;
 
 import java.util.Optional;
 
 import org.junit.Test;
 
 /**
- * Unit tests for {@link SystemPropertyValue}.
+ * Unit Tests for {@link SystemPropertyValue}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.elements.data.struct.SystemPropertyValue
  * @since 1.0.0
  */
-public class SystemPropertyValueTests {
+public class SystemPropertyValueUnitTests {
 
   @Test
   public void newSystemPropertyValueIsSuccessful() {
-    SystemPropertyValue systemPropertyValue = newSystemPropertyValue("user.name");
+
+    SystemPropertyValue systemPropertyValue = SystemPropertyValue.newSystemPropertyValue("user.name");
 
     assertThat(systemPropertyValue).isNotNull();
     assertThat(systemPropertyValue.getKey()).isEqualTo("user.name");
     assertThat(systemPropertyValue.getValue()).isInstanceOf(Optional.class);
+    assertThat(systemPropertyValue.getValue()).isPresent();
     assertThat(systemPropertyValue.getValue("default")).isNotEqualTo("default");
   }
 
   @Test
   public void getValueForExistingSystemProperty() {
-    assertThat(newSystemPropertyValue("user.name").getValue("default"))
-      .isEqualTo(System.getProperty("user.name"));
+
+    System.getProperties().stringPropertyNames().forEach(propertyName ->
+      assertThat(SystemPropertyValue.newSystemPropertyValue(propertyName).getValue("default"))
+        .isEqualTo(System.getProperty(propertyName)));
   }
 
   @Test
   public void getValueForNonExistingSystemProperty() {
-    SystemPropertyValue systemPropertyValue = newSystemPropertyValue("non.existing.property");
+
+    SystemPropertyValue systemPropertyValue = SystemPropertyValue.newSystemPropertyValue("non.existing.property");
 
     assertThat(systemPropertyValue.getValue()).isInstanceOf(Optional.class);
     assertThat(systemPropertyValue.getValue("default"))
