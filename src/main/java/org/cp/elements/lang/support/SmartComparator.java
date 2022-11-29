@@ -36,6 +36,7 @@ import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.OrderUtils;
 import org.cp.elements.lang.Ordered;
+import org.cp.elements.lang.Registry;
 import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
@@ -74,7 +75,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     return new SmartComparator();
   }
 
-  private transient final Set<ComparatorDescriptor> registry = Collections.synchronizedSet(new HashSet<>());
+  private transient final ComparatorRegistry comparatorRegistry = new ComparatorRegistry();
 
   /**
    * Smartly {@link Comparator#compare(Object, Object) compares} two {@link Object objects}.
@@ -265,7 +266,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    */
   @Override
   public @NotNull Iterator<ComparatorDescriptor> iterator() {
-    return Collections.unmodifiableSet(this.registry).iterator();
+    return this.comparatorRegistry.iterator();
   }
 
   /**
@@ -281,7 +282,10 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    */
   @NullSafe
   public boolean register(@NotNull Comparator<?> comparator) {
-    return comparator != null && this.registry.add(ComparatorDescriptor.from(comparator));
+
+    return comparator != null
+      && this.comparatorRegistry.<ComparatorRegistry>register(ComparatorDescriptor.from(comparator))
+        .isRegistered(comparator);
   }
 
   /**
@@ -317,7 +321,8 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    * @see #unregister(Comparator)
    */
   private boolean unregister(@NotNull ComparatorDescriptor comparatorDescriptor) {
-    return comparatorDescriptor != null && this.registry.remove(comparatorDescriptor);
+    return comparatorDescriptor != null
+      && !this.comparatorRegistry.unregister(comparatorDescriptor).isRegistered(comparatorDescriptor);
   }
 
   /**
@@ -343,7 +348,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
   protected static class ComparatorDescriptor {
 
     /**
-     * Factor method used to construct a new instance of {@link ComparatorDescriptor} initialized with the given,
+     * Factory method used to construct a new instance of {@link ComparatorDescriptor} initialized with the given,
      * required {@link Comparator} that will be described by the {@link ComparatorDescriptor descriptor}.
      *
      * @param comparator {@link Comparator} to describe with the {@link ComparatorDescriptor descriptor};
@@ -453,6 +458,61 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
         parameterizedType.getClass().getName());
 
       return ObjectUtils.toRawType(actualTypeParameters[0]);
+    }
+  }
+
+  /**
+   * {@link Registry} implementation for {@link Comparator} objects wrapped as a {@link ComparatorDescriptor}.
+   *
+   * @see org.cp.elements.lang.support.SmartComparator.ComparatorDescriptor
+   * @see org.cp.elements.lang.Registry
+   * @see java.util.Comparator
+   */
+  protected static class ComparatorRegistry implements Registry<ComparatorDescriptor> {
+
+    private transient final Set<ComparatorDescriptor> registry = Collections.synchronizedSet(new HashSet<>());
+
+    /**
+     * Determines whether the given {@link Comparator} has been registered with this {@link Registry}.
+     *
+     * @param comparator {@link Comparator} to evaluate for registration.
+     * @return a boolean value indicating whether the given {@link Comparator} has been registered with
+     * this {@link Registry}.
+     * @see java.util.Comparator
+     */
+    protected boolean isRegistered(@Nullable Comparator<?> comparator) {
+
+      return comparator != null && StreamUtils.stream(this)
+        .anyMatch(comparatorDescriptor -> comparatorDescriptor.getComparator().equals(comparator));
+    }
+
+    @Override
+    public Iterator<ComparatorDescriptor> iterator() {
+      return Collections.unmodifiableSet(this.registry).iterator();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @NotNull <R extends Registry<ComparatorDescriptor>> R register(
+      @NotNull ComparatorDescriptor comparatorDescriptor) {
+
+      if (comparatorDescriptor != null) {
+        this.registry.add(comparatorDescriptor);
+      }
+
+      return (R) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public @NotNull <R extends Registry<ComparatorDescriptor>> R unregister(
+      @NotNull ComparatorDescriptor comparatorDescriptor) {
+
+      if (comparatorDescriptor != null) {
+        this.registry.remove(comparatorDescriptor);
+      }
+
+      return (R) this;
     }
   }
 
