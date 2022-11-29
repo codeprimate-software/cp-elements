@@ -25,8 +25,8 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The {@link SimpleKeyValue} class is a {@link ThreadSafe Thread-safe} data structure
- * modeling both a key and a value mapped to the key.
+ * A {@link ThreadSafe Thread-safe} {@link KeyValue} data structure implementation modeling both a {@link Object key}
+ * and a {@link Object value}.
  *
  * @author John Blum
  * @param <KEY> {@link Class type} of the key.
@@ -48,8 +48,9 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
    *
    * @param <KEY> {@link Class type} of the key.
    * @param <VALUE> {@link Class type} of the value.
-   * @param mapEntry {@link Map.Entry} used to construct and initialize an instance of {@link SimpleKeyValue}.
+   * @param mapEntry {@link Map.Entry} used to construct and initialize a new instance of {@link SimpleKeyValue}.
    * @return a new {@link SimpleKeyValue} initialized from the given, required {@link Map.Entry}.
+   * @throws IllegalArgumentException if the {@link Map.Entry} is {@literal null}.
    * @see #newKeyValue(Object, Object)
    * @see java.util.Map.Entry
    */
@@ -62,14 +63,14 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
 
   /**
    * Factory method used to construct a new instance of {@link SimpleKeyValue} initialized with
-   * the given, required {@code key} and a {@literal null} value.
+   * the given, required {@link KEY key} and a {@literal null} value.
    *
    * @param <KEY> {@link Class type} of the key.
    * @param <VALUE> {@link Class type} of the value.
-   * @param key key in the key/value mapping; must not be {@literal null}.
-   * @return a new  {@link SimpleKeyValue} initialized with the given, required {@code key}
+   * @param key {@link KEY} in the key/value mapping; must not be {@literal null}.
+   * @return a new {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
    * and a {@literal null} value.
-   * @throws IllegalArgumentException if {@code key} is {@literal null}.
+   * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
    * @see #SimpleKeyValue(Object)
    */
   public static @NotNull <KEY, VALUE> SimpleKeyValue<KEY, VALUE> newKeyValue(@NotNull KEY key) {
@@ -78,14 +79,14 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
 
   /**
    * Factory method used to construct a new instance of {@link SimpleKeyValue} initialized with
-   * the given, required {@code key} and {@code value}.
+   * the given, required {@link KEY key} and {@link VALUE value}.
    *
    * @param <KEY> {@link Class type} of the key.
    * @param <VALUE> {@link Class type} of the value.
-   * @param key key in the key/value mapping; must not be {@literal null}.
-   * @param value value in the key/value mapping; may be {@literal null}.
-   * @return a new {@link SimpleKeyValue} initialized with the given, required {@code key} and {@code value}.
-   * @throws IllegalArgumentException if {@code key} is {@literal null}.
+   * @param key {@link KEY key} in the key/value mapping; must not be {@literal null}.
+   * @param value {@link VALUE value} in the key/value mapping; may be {@literal null}.
+   * @return a new {@link SimpleKeyValue} initialized with the given, required {@link KEY key} and {@link VALUE value}.
+   * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
    * @see #SimpleKeyValue(Object, Object)
    */
   public static @NotNull <KEY, VALUE> SimpleKeyValue<KEY, VALUE> newKeyValue(@NotNull KEY key, @Nullable VALUE value) {
@@ -97,11 +98,11 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   private final VALUE value;
 
   /**
-   * Constructs a new instance of {@link SimpleKeyValue} initialized with the given, required {@code key}
+   * Constructs a new instance of {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
    * and a {@literal null} value.
    *
-   * @param key key in the key/value mapping; must not be {@literal null}.
-   * @throws IllegalArgumentException if {@code key} is {@literal null}.
+   * @param key {@link KEY key} in the key/value mapping; must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
    * @see #SimpleKeyValue(Object, Object)
    */
   public SimpleKeyValue(@NotNull KEY key) {
@@ -109,12 +110,12 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Constructs a new instance of {@link SimpleKeyValue} initialized with the given, required {@code key}
-   * and {@code value}.
+   * Constructs a new instance of {@link SimpleKeyValue} initialized with the given, required {@link KEY key}
+   * and {@link VALUE value}.
    *
-   * @param key key in the key/value mapping; must not be {@literal null}.
-   * @param value value in the key/value mapping; may be {@literal null}.
-   * @throws IllegalArgumentException if {@code key} is {@literal null}.
+   * @param key {@link KEY key} in the key/value mapping; must not be {@literal null}.
+   * @param value {@link VALUE value} in the key/value mapping; may be {@literal null}.
+   * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
    */
   public SimpleKeyValue(@NotNull KEY key, @Nullable VALUE value) {
 
@@ -123,20 +124,9 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Determines whether the {@link #getKey() key} is mapped to a value.
+   * Returns the {@link KEY key} in this key/value mapping.
    *
-   * @return a boolean value indicating whether the {@link #getKey() key} has a value.
-   * @see #getValue(Object)
-   */
-  @Override
-  public boolean isSet() {
-    return getValue(null) != null;
-  }
-
-  /**
-   * Return the key in the key/value mapping.
-   *
-   * @return the key.
+   * @return the {@link KEY key}.
    */
   @Override
   public @NotNull KEY getKey() {
@@ -144,9 +134,9 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Return the value as a null-safe {@link Optional} value in the key/value mapping.
+   * Returns the {@link VALUE value} as a null-safe {@link Optional} value in this key/value mapping.
    *
-   * @return an {@link Optional} value.
+   * @return an {@link Optional value}.
    * @see java.util.Optional
    * @see #getValue(Object)
    */
@@ -186,7 +176,7 @@ public class SimpleKeyValue<KEY, VALUE> implements KeyValue<KEY, VALUE> {
   /**
    * Computes the hash code for this {@link SimpleKeyValue}.
    *
-   * @return an integer value containing the computed hash code of this {@link SimpleKeyValue}.
+   * @return an {@link Integer value} containing the computed hash code of this {@link SimpleKeyValue}.
    * @see java.lang.Object#hashCode()
    */
   @Override
