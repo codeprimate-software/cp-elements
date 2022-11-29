@@ -459,6 +459,28 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
 
       return ObjectUtils.toRawType(actualTypeParameters[0]);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (this == obj) {
+        return true;
+      }
+
+      if (!(obj instanceof ComparatorDescriptor)) {
+        return false;
+      }
+
+      ComparatorDescriptor that = (ComparatorDescriptor) obj;
+
+      return ObjectUtils.equals(this.getComparator(), that.getComparator())
+        && ObjectUtils.equalsIgnoreNull(this.lazyResolvedType.get(), that.lazyResolvedType.get());
+    }
+
+    @Override
+    public int hashCode() {
+      return ObjectUtils.hashCodeOf(getComparator(), this.lazyResolvedType.get());
+    }
   }
 
   /**
