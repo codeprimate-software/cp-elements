@@ -21,52 +21,52 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * A Java {@link SecurityException} noting a security violation.
+ * A Java {@link java.lang.SecurityException} and abstract base class for classifying security violations.
  *
  * @author John J. Blum
- * @see java.lang.RuntimeException
+ * @see java.lang.SecurityException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class SecurityException extends java.lang.SecurityException {
+public abstract class AbstractSecurityException extends java.lang.SecurityException {
 
   private Object code;
 
   /**
-   * Constructs a new, uninitialized instance of {@link SecurityException} with no {@link String message}
+   * Constructs a new instance of {@link AbstractSecurityException} with no {@link String message}
    * and no {@link Throwable cause}.
    */
-  public SecurityException() { }
+  public AbstractSecurityException() { }
 
   /**
-   * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
+   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link String message}
    * describing the security violation.
    *
    * @param message {@link String} used to describe the security violation.
    */
-  public SecurityException(String message) {
+  public AbstractSecurityException(String message) {
     super(message);
   }
 
   /**
-   * Constructs a new instance of {@link SecurityException} initialized with the given {@link Throwable cause}
+   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link Throwable cause}
    * used as the reason this security violation was thrown.
    *
    * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
-  public SecurityException(Throwable cause) {
+  public AbstractSecurityException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
+   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link String message}
    * describing the security violation along with the given {@link Throwable cause} used as the reason
    * this security violation was thrown.
    *
    * @param message {@link String} used to describe the security violation.
    * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
-  public SecurityException(String message, Throwable cause) {
+  public AbstractSecurityException(String message, Throwable cause) {
     super(message, cause);
   }
 
@@ -93,9 +93,9 @@ public class SecurityException extends java.lang.SecurityException {
    * Builder method used to set the security code used to represent the security violation in a non-obvious, secure way.
    *
    * @param securityCode used to represent the security violation in a secure way.
-   * @return this {@link SecurityException} instance.
+   * @return this {@link AbstractSecurityException} instance.
    */
-  public @NotNull SecurityException with(@Nullable Object securityCode) {
+  public @NotNull AbstractSecurityException with(@Nullable Object securityCode) {
     setCode(securityCode);
     return this;
   }

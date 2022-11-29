@@ -50,9 +50,9 @@ import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessException;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessNotRespondingException;
+import org.cp.elements.security.AbstractSecurityException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
-import org.cp.elements.security.SecurityException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.service.ServiceUnavailableException;
@@ -81,9 +81,9 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.beans.BeansException
  * @see org.cp.elements.beans.IllegalPropertyValueException
  * @see org.cp.elements.beans.PropertyNotFoundException
+ * @see org.cp.elements.beans.PropertyNotSetException
  * @see org.cp.elements.beans.PropertyReadException
  * @see org.cp.elements.beans.PropertyWriteException
- * @see PropertyNotSetException
  * @see org.cp.elements.biz.rules.RuleException
  * @see org.cp.elements.context.configure.ConfigurationException
  * @see org.cp.elements.dao.DataAccessException
@@ -125,7 +125,7 @@ import org.cp.elements.util.sort.SortException;
  * @see org.cp.elements.process.ProcessNotRespondingException
  * @see org.cp.elements.security.AuthenticationException
  * @see org.cp.elements.security.AuthorizationException
- * @see org.cp.elements.security.SecurityException
+ * @see org.cp.elements.security.AbstractSecurityException
  * @see org.cp.elements.service.ServiceInvocationException
  * @see org.cp.elements.test.FailedTestException
  * @see org.cp.elements.test.HungTestException
@@ -1572,32 +1572,32 @@ public abstract class ElementsExceptionsFactory {
   }
 
   /**
-   * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
-   * to describe the {@link SecurityException}.
+   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link String message}
+   * to describe the {@link AbstractSecurityException}.
    *
-   * @param message {@link String} containing a message to describe the {@link SecurityException}.
+   * @param message {@link String} containing a message to describe the {@link AbstractSecurityException}.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link SecurityException}.
+   * @return a new {@link AbstractSecurityException}.
    * @see #newSecurityException(Throwable, String, Object...)
-   * @see org.cp.elements.security.SecurityException
+   * @see AbstractSecurityException
    */
-  public static SecurityException newSecurityException(String message, Object... args) {
+  public static AbstractSecurityException newSecurityException(String message, Object... args) {
     return newSecurityException(null, message, args);
   }
 
   /**
-   * Constructs a new instance of {@link SecurityException} initialized with the given {@link String message}
-   * to describe the {@link SecurityException} along with a {@link Throwable cause} used as the reason
-   * why the {@link SecurityException} was thrown.
+   * Constructs a new instance of {@link AbstractSecurityException} initialized with the given {@link String message}
+   * to describe the {@link AbstractSecurityException} along with a {@link Throwable cause} used as the reason
+   * why the {@link AbstractSecurityException} was thrown.
    *
-   * @param cause {@link Throwable} used as the cause of the {@link SecurityException}.
-   * @param message {@link String} containing a message to describe the {@link SecurityException}.
+   * @param cause {@link Throwable} used as the cause of the {@link AbstractSecurityException}.
+   * @param message {@link String} containing a message to describe the {@link AbstractSecurityException}.
    * @param args optional array of {@link Object arguments} used to replace the placeholders in the message.
-   * @return a new {@link SecurityException}.
-   * @see org.cp.elements.security.SecurityException
+   * @return a new {@link AbstractSecurityException}.
+   * @see AbstractSecurityException
    */
-  public static SecurityException newSecurityException(Throwable cause, String message, Object... args) {
-    return new SecurityException(format(message, args), cause);
+  public static AbstractSecurityException newSecurityException(Throwable cause, String message, Object... args) {
+    return new AbstractSecurityException(format(message, args), cause) { };
   }
 
   // TODO: Edit Javadoc

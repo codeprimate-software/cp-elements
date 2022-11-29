@@ -13,54 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.security;
 
 /**
- * The AuthenticationException class is a AuthenticationException indicating the user could not be identified.
+ * An {@link AbstractSecurityException} used to indicate that a user could not be identified.
  *
  * @author John J. Blum
- * @see org.cp.elements.security.SecurityException
+ * @see org.cp.elements.security.AbstractSecurityException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AuthenticationException extends SecurityException {
+public class AuthenticationException extends AbstractSecurityException {
 
   /**
-   * Constructs an uninitialized instance of the AuthenticationException class.
+   * Constructs a new instance of {@link AuthenticationException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public AuthenticationException() {
-  }
+  public AuthenticationException() { }
 
   /**
-   * Constructs an instance of the AuthenticationException class with the specified message describing the security
-   * violation.
+   * Constructs a new instance of {@link AuthenticationException} initialized with the given {@link String message}
+   * describing the security violation.
    *
-   * @param message a String describing the security violation.
+   * @param message {@link String} used to describe the security violation.
    */
-  public AuthenticationException(final String message) {
+  public AuthenticationException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the AuthenticationException class with the underlying cause, or reason for the security
-   * violation.
+   * Constructs a new instance of {@link AuthenticationException} initialized with the given {@link Throwable cause}
+   * used as the reason this security violation was thrown.
    *
-   * @param cause a Throwable indicating the cause of the security violation.
+   * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
-  public AuthenticationException(final Throwable cause) {
+  public AuthenticationException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the AuthenticationException class with the specified message describing the security
-   * violation along with the underlying cause, or reason of the security violation.
+   * Constructs a new instance of {@link AuthenticationException} initialized with the given {@link String message}
+   * describing the security violation along with the given {@link Throwable cause} used as the reason
+   * this security violation was thrown.
    *
-   * @param message a String describing the security violation.
-   * @param cause a Throwable indicating the cause of the security violation.
+   * @param message {@link String} used to describe the security violation.
+   * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
-  public AuthenticationException(final String message, final Throwable cause) {
+  public AuthenticationException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }

@@ -13,55 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.security;
 
 /**
- * The AuthorizationException class is a AuthorizationException indicating the user is not authorized, or does not have
- * permission to access the target resource.
+ * An {@link AbstractSecurityException} used to indicate a user is not authorized (no privileges),
+ * or does not have permission to access the target resource.
  *
  * @author John J. Blum
- * @see org.cp.elements.security.SecurityException
+ * @see AbstractSecurityException
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class AuthorizationException extends SecurityException {
+public class AuthorizationException extends AbstractSecurityException {
 
   /**
-   * Constructs an uninitialized instance of the AuthorizationException class.
+   * Constructs a new instance of {@link AuthorizationException} with no {@link String message}
+   * and no {@link Throwable cause}.
    */
-  public AuthorizationException() {
-  }
+  public AuthorizationException() { }
 
   /**
-   * Constructs an instance of the AuthorizationException class with the specified message describing the security
-   * violation.
+   * Constructs a new instance of {@link AuthorizationException} initialized with the given {@link String message}
+   * describing the security violation.
    *
-   * @param message a String describing the security violation.
+   * @param message {@link String} used to describe the security violation.
    */
-  public AuthorizationException(final String message) {
+  public AuthorizationException(String message) {
     super(message);
   }
 
   /**
-   * Constructs an instance of the AuthorizationException class with the underlying cause, or reason for the security
-   * violation.
+   * Constructs a new instance of {@link AuthorizationException} initialized with the given {@link Throwable cause}
+   * used as the reason this security violation was thrown.
    *
-   * @param cause a Throwable indicating the cause of the security violation.
+   * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
-  public AuthorizationException(final Throwable cause) {
+  public AuthorizationException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * Constructs an instance of the AuthorizationException class with the specified message describing the security
-   * violation along with the underlying cause, or reason of the security violation.
+   * Constructs a new instance of {@link AuthorizationException} initialized with the given {@link String message}
+   * describing the security violation along with the given {@link Throwable cause} used as the reason
+   * this security violation was thrown.
    *
-   * @param message a String describing the security violation.
-   * @param cause a Throwable indicating the cause of the security violation.
+   * @param message {@link String} used to describe the security violation.
+   * @param cause {@link Throwable} used as the reason this security violation was thrown.
    */
-  public AuthorizationException(final String message, final Throwable cause) {
+  public AuthorizationException(String message, Throwable cause) {
     super(message, cause);
   }
-
 }

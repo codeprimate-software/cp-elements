@@ -120,9 +120,9 @@ import org.cp.elements.process.PidUnknownException;
 import org.cp.elements.process.ProcessException;
 import org.cp.elements.process.ProcessExecutionException;
 import org.cp.elements.process.ProcessNotRespondingException;
+import org.cp.elements.security.AbstractSecurityException;
 import org.cp.elements.security.AuthenticationException;
 import org.cp.elements.security.AuthorizationException;
-import org.cp.elements.security.SecurityException;
 import org.cp.elements.service.ServiceException;
 import org.cp.elements.service.ServiceInvocationException;
 import org.cp.elements.service.ServiceUnavailableException;
@@ -696,13 +696,13 @@ public class ElementsExceptionsFactoryUnitTests {
 
   @Test
   public void newSecurityExceptionWithMessage() {
-    assertThrowable(newSecurityException("test"), SecurityException.class, "test");
+    assertThrowable(newSecurityException("test"), AbstractSecurityException.class, "test");
   }
 
   @Test
   public void newSecurityExceptionWithFormattedMessageAndCause() {
     assertThrowable(newSecurityException(this.mockCause, "%s is a {1}", "This", "test"),
-      SecurityException.class, "This is a test", this.mockCause);
+      AbstractSecurityException.class, "This is a test", this.mockCause);
   }
 
   @Test
