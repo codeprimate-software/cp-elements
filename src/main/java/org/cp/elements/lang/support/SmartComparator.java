@@ -48,6 +48,9 @@ import org.cp.elements.util.stream.StreamUtils;
 /**
  * {@link Comparator} implementation capable of comparing {@link Object Objects} using a variety of strategies.
  *
+ * It should be noted that since {@link Comparator} objects are not {@link Serializable} by default,
+ * then the "registered" {@link Comparator Comparators} by {@link Class type} are not serialized.
+ *
  * @author John Blum
  * @see java.lang.Iterable
  * @see java.io.Serializable
@@ -69,7 +72,7 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
     return new SmartComparator();
   }
 
-  private final Set<ComparatorDescriptor> registry = Collections.synchronizedSet(new HashSet<>());
+  private transient final Set<ComparatorDescriptor> registry = Collections.synchronizedSet(new HashSet<>());
 
   /**
    * Smartly {@link Comparator#compare(Object, Object) compares} two {@link Object objects}.
@@ -456,11 +459,12 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    *
    * @param <T> {@link Comparable} {@link Class type} of the {@link Object objects} in the comparison
    * expected by this {@link Comparator}.
+   * @see java.io.Serializable
    * @see java.lang.Comparable
    * @see java.util.Comparator
    */
   @SuppressWarnings({ "rawtypes" })
-  protected static class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
+  protected static class ComparableComparator<T extends Comparable<T>> implements Comparator<T>, Serializable {
 
     protected static final ComparableComparator INSTANCE = new ComparableComparator();
 
@@ -473,10 +477,11 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
   /**
    * {@link Comparator} implementation of an {@link Object Object's} {@link Object#hashCode() hash code}.
    *
+   * @see java.io.Serializable
    * @see java.util.Comparator
    */
   @SuppressWarnings("unused")
-  protected static class HashCodeComparator implements Comparator<Object> {
+  protected static class HashCodeComparator implements Comparator<Object>, Serializable {
 
     protected static final HashCodeComparator INSTANCE = new HashCodeComparator();
 
