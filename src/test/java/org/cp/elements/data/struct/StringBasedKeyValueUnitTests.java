@@ -13,22 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
+import java.util.Optional;
 
 import org.junit.Test;
 
+import org.cp.elements.util.stream.StreamUtils;
+
 /**
- * Unit tests for {@link StringBasedKeyValue}.
+ * Unit Tests for {@link StringBasedKeyValue}.
  *
  * @author John Blum
  * @see org.junit.Test
  * @see org.cp.elements.data.struct.StringBasedKeyValue
  * @since 1.0.0
  */
-public class StringBasedKeyValueTests {
+public class StringBasedKeyValueUnitTests {
+
+  @Test
+  public void constructStringBasedKeyValue() {
+
+    TestStringBasedKeyValue keyValue = new TestStringBasedKeyValue("mockKey", "mockValue");
+
+    assertThat(keyValue).isNotNull();
+    assertThat(keyValue.getConversionService()).isNotNull();
+    assertThat(keyValue.getKey()).isEqualTo("mockKey");
+    assertThat(keyValue.getValue()).isInstanceOf(Optional.class);
+    assertThat(keyValue.getValue()).isPresent();
+    assertThat(keyValue.getValue("testValue")).isEqualTo("mockValue");
+  }
+
+  @Test
+  public void constructStringBasedKeyValueWithUnspecifiedValues() {
+
+    StreamUtils.stream("  ", "", null).forEach(value -> {
+
+      TestStringBasedKeyValue keyValue = new TestStringBasedKeyValue("testKey", value);
+
+      assertThat(keyValue).isNotNull();
+      assertThat(keyValue.getKey()).isEqualTo("testKey");
+      assertThat(keyValue.getValue()).isInstanceOf(Optional.class);
+      assertThat(keyValue.getValue()).isNotPresent();
+      assertThat(keyValue.getValue("testValue")).isEqualTo("testValue");
+    });
+  }
+
+  @Test
+  public void constructStringBasedKeyValueValueWithInvalidKeys() {
+
+    StreamUtils.stream("  ", "", null).forEach(key ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> new TestStringBasedKeyValue(key, "testValue"))
+        .withMessage("Key [%s] is required", key)
+        .withNoCause());
+  }
 
   @Test
   public void getDefaultValueAsBoolean() {
@@ -85,9 +127,9 @@ public class StringBasedKeyValueTests {
     StringBasedKeyValue emptyKeyValue = new TestStringBasedKeyValue("key", "");
     StringBasedKeyValue nullKeyValue = new TestStringBasedKeyValue("key");
 
-    assertThat(blankKeyValue.getValueAs(String.class, "test")).isEqualTo("test");
+    assertThat(blankKeyValue.getValueAs(String.class, "mock")).isEqualTo("mock");
     assertThat(emptyKeyValue.getValueAs(String.class, "test")).isEqualTo("test");
-    assertThat(nullKeyValue.getValueAs(String.class, "test")).isEqualTo("test");
+    assertThat(nullKeyValue.getValueAs(String.class, "X")).isEqualTo("X");
   }
 
   @Test

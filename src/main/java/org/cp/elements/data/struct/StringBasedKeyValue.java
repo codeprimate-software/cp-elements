@@ -16,13 +16,15 @@
 package org.cp.elements.data.struct;
 
 import java.util.Optional;
-import java.util.ServiceLoader;
 
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * Implementation of the {@link SimpleKeyValue} data structure where both the key and value are {@link String Strings}.
+ * Abstract extension and implementation of the {@link SimpleKeyValue} data structure where both the {@link Object key}
+ * and {@link Object value} are {@link String Strings}.
  *
  * @author John Blum
  * @see java.lang.String
@@ -33,52 +35,60 @@ import org.cp.elements.lang.StringUtils;
 @SuppressWarnings("unused")
 public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String> {
 
-  private final ConversionService conversionService = ServiceLoader.load(ConversionService.class).iterator().next();
+  private final ConversionService conversionService = ConversionService.getLoader().getServiceInstance();
 
   /**
-   * Constructs an instance of the {@link StringBasedKeyValue} initialized with the given {@link String key}
+   * Constructs a new instance of {@link StringBasedKeyValue} initialized with the given {@link String key}
    * having no value.
    *
-   * @param key {@link String key} in the key/value data structure.
+   * @param key {@link String key} in this key/value data structure.
    */
-  protected StringBasedKeyValue(String key) {
+  protected StringBasedKeyValue(@NotNull String key) {
     super(key);
   }
 
   /**
-   * Constructs an instance of the {@link StringBasedKeyValue} initialized with the given {@link String key}
+   * Constructs a new instance of {@link StringBasedKeyValue} initialized with the given {@link String key}
    * and {@link String value}.
    *
-   * @param key {@link String key} in the key/value data structure.
-   * @param value {@link String value} in the key/value data structure.
+   * @param key {@link String key} in this key/value data structure; must not be {@literal null} or {@literal empty}.
+   * @param value {@link String value} in this key/value data structure.
+   * @throws IllegalArgumentException if the {@link String key} is {@literal null} or {@literal empty}.
    */
-  protected StringBasedKeyValue(String key, String value) {
-    super(key, value);
+  protected StringBasedKeyValue(@NotNull String key, @Nullable String value) {
+    super(StringUtils.requireText(key, "Key [%s] is required"), value);
   }
 
   /**
-   * Returns a reference to the configured {@link ConversionService} used to convert values
-   * into the desired {@link Class type}.
+   * Returns a reference to the configured {@link ConversionService} used to convert {@link String values}
+   * into the requested {@link Class type}.
    *
    * @return a reference to the configured {@link ConversionService}.
    * @see org.cp.elements.data.conversion.ConversionService
    */
-  protected ConversionService getConversionService() {
+  protected @NotNull ConversionService getConversionService() {
     return this.conversionService;
   }
 
+  @Override
+  public Optional<String> getValue() {
+    return super.getValue()
+      .filter(StringUtils::hasText);
+  }
+
   /**
-   * Returns the {@link String value} as an instance of the given {@link Class type}.
+   * Returns the {@link String value} as an instance of the requested, required {@link Class type}.
    *
    * @param <T> {@link Class type} used in the conversion of the {@link String value}.
    * @param type {@link Class type} used in the conversion of the {@link String value}.
-   * @return the {@link String value} of this key/value data structure as an instance
-   * of the given {@link Class type}.
+   * @return the {@link String value} of this key/value data structure as an instance of
+   * the requested {@link Class type}.
+   * @see org.cp.elements.data.conversion.ConversionService#convert(Object, Class)
    * @see #getConversionService()
-   * @see #getValue()
    * @see java.lang.Class
+   * @see #getValue()
    */
-  public <T> Optional<T> getValueAs(Class<T> type) {
+  public <T> Optional<T> getValueAs(@NotNull Class<T> type) {
 
     return getValue()
       .filter(StringUtils::hasText)
@@ -86,21 +96,21 @@ public abstract class StringBasedKeyValue extends SimpleKeyValue<String, String>
   }
 
   /**
-   * Returns the {@link String value} as an instance of the given {@link Class type}
-   * or returns the {@literal defaultValue} if the {@link #getValue() value} is {@literal null}
-   * or {@link String blank/empty}.
+   * Returns the {@link String value} as an instance of the requested, required {@link Class type}
+   * or returns the {@link T defaultValue} if the {@link #getValue() value} is {@literal null}
+   * or {@link String empty}.
    *
    * @param <T> {@link Class type} used in the conversion of the {@link String value}.
    * @param type {@link Class type} used in the conversion of the {@link String value}.
-   * @param defaultValue value to return if {@link #getValue() value} is {@literal null}
-   * or {@link #getValue() value} is {@link String blank/empty}.
-   * @return the {@link String value} of this key/value data structure as an instance
-   * of the given {@link Class type}.
+   * @param defaultValue {@link T value} to return if {@link #getValue() value} is {@literal null}
+   * or {@link #getValue() value} is {@link String empty}.
+   * @return the {@link String value} of this key/value data structure as an instance of
+   * the requested {@link Class type}.
    * @see #getConversionService()
    * @see #getValue()
    * @see java.lang.Class
    */
-  public <T> T getValueAs(Class<T> type, T defaultValue) {
+  public @Nullable <T> T getValueAs(@NotNull Class<T> type, @Nullable T defaultValue) {
 
     return getValue()
       .filter(StringUtils::hasText)

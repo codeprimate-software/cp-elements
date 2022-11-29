@@ -388,7 +388,7 @@ public class SimpleConversionService extends AbstractConversionService {
    * @see java.lang.Class
    */
   @Override
-  public <T> T convert(Object value, final Class<T> toType) {
+  public <T> T convert(Object value, Class<T> toType) {
     return useDefault(value, toType) ? getDefaultValue(toType) : super.convert(value, toType);
   }
 
