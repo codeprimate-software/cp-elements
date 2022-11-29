@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.util.sort.support;
 
 import java.util.List;
 
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.sort.AbstractSorter;
 
 /**
- * The CombSort class is an implementation of the Comb Sort algorithm
- * and the {@link org.cp.elements.util.sort.Sorter} interface.
+ * {@link AbstractSorter} implementation of the {@literal Comb Sort algorithm}.
  *
  * @author John J. Blum
  * @see java.util.List
@@ -46,10 +45,15 @@ public class CombSort extends AbstractSorter {
    * @see java.util.List
    */
   @Override
-  public <E> List<E> sort(final List<E> elements) {
+  public @NotNull <E> List<E> sort(@NotNull List<E> elements) {
+
     boolean swapped = true;
 
-    for (int size = elements.size(), gap = size; gap > 0 && swapped; ) {
+    int size = elements.size();
+    int gap = size;
+
+    while (gap > 0 && swapped) {
+
       gap = Math.max(1, (int) Math.floor(gap / SHRINK));
       swapped = false;
 
@@ -63,5 +67,4 @@ public class CombSort extends AbstractSorter {
 
     return elements;
   }
-
 }
