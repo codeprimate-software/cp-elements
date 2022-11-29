@@ -548,9 +548,9 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    * @see java.util.Comparator
    */
   @SuppressWarnings({ "rawtypes" })
-  protected static class ComparableComparator<T extends Comparable<T>> implements Comparator<T>, Serializable {
+  public static class ComparableComparator<T extends Comparable<T>> implements Comparator<T>, Serializable {
 
-    protected static final ComparableComparator INSTANCE = new ComparableComparator();
+    public static final ComparableComparator INSTANCE = new ComparableComparator();
 
     @Override
     public int compare(@NotNull T objectOne, @NotNull T objectTwo) {
@@ -569,9 +569,9 @@ public class SmartComparator implements Comparator<Object>, Iterable<ComparatorD
    * @see java.util.Comparator
    */
   @SuppressWarnings("unused")
-  protected static class HashCodeComparator implements Comparator<Object>, Serializable {
+  public static class HashCodeComparator implements Comparator<Object>, Serializable {
 
-    protected static final HashCodeComparator INSTANCE = new HashCodeComparator();
+    public static final HashCodeComparator INSTANCE = new HashCodeComparator();
 
     @NullSafe
     @Override
