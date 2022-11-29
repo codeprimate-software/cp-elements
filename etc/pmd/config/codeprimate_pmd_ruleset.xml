@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Custom Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    Codeprimate Elements PMD Rules.
+  </description>
+
+  <!-- Best Practices -->
+  <rule ref="category/java/bestpractices.xml">
+    <exclude name="AccessorClassGeneration"/>
+    <exclude name="AccessorMethodGeneration"/>
+    <exclude name="JUnit4SuitesShouldUseSuiteAnnotation"/>
+    <exclude name="JUnit4TestShouldUseAfterAnnotation"/>
+    <exclude name="JUnit4TestShouldUseBeforeAnnotation"/>
+    <exclude name="JUnit5TestShouldBePackagePrivate"/>
+    <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+    <exclude name="JUnitTestContainsTooManyAsserts"/>
+    <exclude name="JUnitUseExpected"/>
+    <!--exclude name="MissingOverride"/-->
+    <exclude name="ReplaceEnumerationWithIterator"/>
+    <exclude name="SimplifiableTestAssertion"/>
+    <exclude name="SystemPrintln"/>
+    <exclude name="UseVarargs"/>
+  </rule>
+
+  <rule ref="category/java/bestpractices.xml/AbstractClassWithoutAbstractMethod">
+    <properties>
+      <property name="violationSuppressXPath"
+                value="Assert|Constants|ThrowableAssertions|.+Exception|.+Extension(s)??|.+Factory|.+Utils"/>
+    </properties>
+  </rule>
+
+  <rule ref="category/java/bestpractices.xml/ForLoopVariableCount">
+    <properties>
+      <property name="maximumVariables" value="3"/>
+    </properties>
+  </rule>
+
+</ruleset>
