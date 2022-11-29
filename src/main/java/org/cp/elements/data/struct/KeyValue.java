@@ -21,14 +21,14 @@ import java.util.Optional;
 import org.cp.elements.util.MapUtils;
 
 /**
- * The {@link KeyValue} interface defines a contract for a data structure modeling both a key and a value
- * mapped to the key.
+ * The {@link KeyValue} interface defines a contract for a data structure modeling both a {@link Object key}
+ * and a {@link Object value} mapped to the required {@link Object key}.
  *
  * @author John Blum
  * @param <KEY> {@link Class type} of the key.
  * @param <VALUE> {@link Class type} of the value.
- * @see java.util.Map
  * @see java.util.Optional
+ * @see java.util.Map
  * @since 1.0.0
  */
 @FunctionalInterface
@@ -46,14 +46,14 @@ public interface KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Return the {@link KEY key} in the key/value mapping.
+   * Return the {@link KEY key} in this key/value mapping.
    *
    * @return the {@link KEY key}.
    */
   KEY getKey();
 
   /**
-   * Return a null-safe {@link Optional} {@link VALUE value} in the key/value mapping.
+   * Returns a null-safe {@link Optional} {@link VALUE value} in this key/value mapping.
    *
    * Defaults to {@link Optional#empty()}.
    *
@@ -66,13 +66,15 @@ public interface KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Return a materialized {@link Object value} in the key/value mapping.
+   * Return a materialized {@link Object value} in this key/value mapping.
    *
-   * If the {@link VALUE value} is {@literal null}, then returns the type compatible {@link VALUE defaultValue}.
+   * If the {@link VALUE value} is {@literal null}, then this method will return the type compatible
+   * {@link VALUE defaultValue}.
    *
    * @param defaultValue {@link VALUE default value} to return if the {@link VALUE value} is {@literal null}.
-   * @return the {@link VALUE value} in the key/value mapping or {@link VALUE defaultValue}
-   * if {@link VALUE value} is {@literal null}.
+   * @return the {@link VALUE value} in this key/value mapping or {@link VALUE defaultValue} if {@link VALUE value}
+   * is {@literal null}.
+   * @see java.util.Optional#orElse(Object)
    * @see #getValue()
    */
   default VALUE getValue(VALUE defaultValue) {
@@ -80,9 +82,9 @@ public interface KeyValue<KEY, VALUE> {
   }
 
   /**
-   * Returns this {@link SimpleKeyValue} object as an immutable instance of {@link Map.Entry}.
+   * Returns this {@link KeyValue} object as an immutable instance of {@link Map.Entry}.
    *
-   * @return this {@link SimpleKeyValue} object as an immutable instance of {@link Map.Entry}.
+   * @return this {@link KeyValue} object as an immutable instance of {@link Map.Entry}.
    * @see org.cp.elements.util.MapUtils#newMapEntry(Object, Object)
    * @see java.util.Map.Entry
    * @see #getValue(Object)

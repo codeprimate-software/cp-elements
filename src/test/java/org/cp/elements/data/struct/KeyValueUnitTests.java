@@ -84,6 +84,9 @@ public class KeyValueUnitTests {
 
     assertThat(value).isNotNull();
     assertThat(value).isNotPresent();
+
+    verify(mockKeyValue, times(1)).getValue();
+    verifyNoMoreInteractions(mockKeyValue);
   }
 
   @Test
@@ -125,7 +128,7 @@ public class KeyValueUnitTests {
     KeyValue<Object, Object> mockKeyValue = mock(KeyValue.class);
 
     doReturn("myKey").when(mockKeyValue).getKey();
-    doReturn(Optional.of("mock")).when(mockKeyValue).getValue();
+    doReturn(Optional.of("mockValue")).when(mockKeyValue).getValue();
     doCallRealMethod().when(mockKeyValue).getValue(any());
     doCallRealMethod().when(mockKeyValue).asMapEntry();
 
@@ -133,7 +136,7 @@ public class KeyValueUnitTests {
 
     assertThat(mapEntry).isNotNull();
     assertThat(mapEntry.getKey()).isEqualTo("myKey");
-    assertThat(mapEntry.getValue()).isEqualTo("mock");
+    assertThat(mapEntry.getValue()).isEqualTo("mockValue");
 
     verify(mockKeyValue, times(1)).asMapEntry();
     verify(mockKeyValue, times(1)).getKey();
