@@ -15,10 +15,6 @@
  */
 package org.cp.elements.lang;
 
-import static org.cp.elements.lang.LangExtensions.SafeNavigationHandler.newSafeNavigationHandler;
-import static org.cp.elements.lang.reflect.MethodInvocation.newMethodInvocation;
-import static org.cp.elements.lang.reflect.ProxyFactory.newProxyFactory;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -50,6 +46,7 @@ import org.cp.elements.lang.reflect.ProxyFactory;
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
  * @see java.text.MessageFormat
+ * @see java.util.Optional
  * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see java.util.function.Supplier
@@ -92,10 +89,10 @@ public abstract class LangExtensions {
   @SuppressWarnings("unchecked")
   public static <T> T $(T obj, Class<?>... interfaces) {
 
-    ProxyFactory<T> proxyFactory = newProxyFactory(obj, interfaces);
+    ProxyFactory<T> proxyFactory = ProxyFactory.newProxyFactory(obj, interfaces);
 
     return proxyFactory
-      .adviseWith(newSafeNavigationHandler(proxyFactory))
+      .adviseWith(SafeNavigationHandler.newSafeNavigationHandler(proxyFactory))
       .newProxy();
   }
 
@@ -217,7 +214,7 @@ public abstract class LangExtensions {
     @Override
     public @Nullable Object invoke(@NotNull Object proxy, @NotNull Method method, Object[] arguments) {
 
-      return intercept(newMethodInvocation(resolveTarget(proxy), method, arguments))
+      return intercept(MethodInvocation.newMethodInvocation(resolveTarget(proxy), method, arguments))
         .orElse(null);
     }
 
@@ -252,13 +249,11 @@ public abstract class LangExtensions {
    * The {@literal assertThat} operator is used to assert the state of an object, such as its equality,
    * identity, nullity, relational value, and so on.
    *
-   * @param <T> {@link Class type} of the {@link Object} being asserted.
+   * @param <T> {@link Class type} of {@link Object} to assert.
    * @param obj {@link Object} to assert.
    * @return a new instance of the {@link AssertThat} {@link Dsl} {@link FluentApi} expression for making assertions
    * about an @{@link Object Object's} state.
-   * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    * @see org.cp.elements.lang.LangExtensions.AssertThat
-   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
@@ -271,11 +266,12 @@ public abstract class LangExtensions {
    * or component of the application or system.
    *
    * @param <T> {@link Class type} of the {@link Object} to evaluate and assert.
-   * @see org.cp.elements.lang.DslExtension
-   * @see org.cp.elements.lang.FluentApiExtension
    * @see org.cp.elements.lang.LangExtensions.AssertThatExpression
    * @see org.cp.elements.lang.LangExtensions.AssertThatWrapper
    * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.DslExtension
+   * @see #assertThat(Object)
    */
   @FluentApi
   public interface AssertThat<T> extends DslExtension, FluentApiExtension {
@@ -708,10 +704,11 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@link AssertThatExpression} class is the default implementation of the {@link AssertThat} interface
-   * implementing all the assertion operations.
+   * Implementation of the {@link AssertThat} interface implementing all the assertion operations.
    *
-   * @param <T> {@link Class type} of the {@link Object} to evaluate and make an assertion.
+   * @param <T> {@link Class type} of the {@link Object} to evaluate and assert.
+   * @see org.cp.elements.lang.LangExtensions.AssertThat
+   * @see #assertThat(Object)
    */
   private static final class AssertThatExpression<T> implements AssertThat<T> {
 
@@ -1260,13 +1257,14 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@link AssertThatWrapper} class is a {@literal Decorator} used to decorate or modify the existing behavior
-   * and/or functionality of an existing assertion ({@link AssertThat} instance).
+   * A {@literal Decorator} used to decorate or modify the existing behavior and functionality of an existing assertion
+   * ({@link AssertThat} instance).
    *
    * This class makes it easier to extend and customize any existing assertion in the {@code transform(..)} operation.
    *
-   * @param <T> {@link Class type} of {@link Object} to evaluate and make an assertion.
-   * @see AssertThat
+   * @param <T> {@link Class type} of {@link Object} to evaluate and assert.
+   * @see org.cp.elements.lang.LangExtensions.AssertThat
+   * @see #assertThat(Object)
    */
   public static class AssertThatWrapper<T> implements AssertThat<T> {
 
@@ -1513,7 +1511,6 @@ public abstract class LangExtensions {
    * @param target {@link Object} to adapt or transform.
    * @return a new instance of the {@link From} operator.
    * @see org.cp.elements.lang.LangExtensions.From
-   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
   public static @NotNull From from(@Nullable Object target) {
@@ -1524,9 +1521,11 @@ public abstract class LangExtensions {
    * The {@link From} interface defines operations to {@literal cast} or {@literal convert} an {@link Object target}
    * from its {@link Class base type} to a {@link Class requested type}.
    *
-   * @see org.cp.elements.lang.DslExtension
-   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.LangExtensions.FromExpression
    * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.DslExtension
+   * @see #from(Object)
    */
   @FluentApi
   public interface From extends DslExtension, FluentApiExtension {
@@ -1563,7 +1562,10 @@ public abstract class LangExtensions {
   }
 
   /**
-   * {@link FromExpression} is a default implementation of the {@link From} interface.
+   * Implementation of the {@link From} interface.
+   *
+   * @see org.cp.elements.lang.LangExtensions.From
+   * @see #from(Object)
    */
   private static final class FromExpression implements From {
 
@@ -1589,15 +1591,153 @@ public abstract class LangExtensions {
   }
 
   /**
+   * The {@literal given} operator is used to perform multiple test evaluations a given {@link Object target}
+   * and its composition structure.
+   *
+   * @param <T> {@link Class type} of the {@link Object} to evaluate.
+   * @param target {@link Object} to evaluate.
+   * @return a new {@link Given} operator instance.
+   * @see org.cp.elements.lang.LangExtensions.Given
+   * @see org.cp.elements.lang.annotation.Dsl
+   */
+  @Dsl
+  public static @NotNull <T> Given<T> given(@Nullable T target) {
+    return new GivenExpression<>(target);
+  }
+
+  /**
+   * The {@link Given} interface define a contract for evaluating a given {@link Object target} testing whether it
+   * satisfies certain pre-conditions.
+   *
+   * @param <T> {@link Class type} of the {@link Object target} to evaluate.
+   * @see org.cp.elements.lang.LangExtensions.GivenExpression
+   * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.DslExtension
+   * @see #given(Object)
+   */
+  @FluentApi
+  public interface Given<T> extends DslExtension, FluentApiExtension {
+
+    /**
+     * Gets a reference to the configured {@link Object target} of the test evaluation.
+     *
+     * @return a reference to the configured {@link Object target} of the test evaluation.
+     */
+    T getTarget();
+
+    /**
+     * Returns the final result of the all {@link Predicate#test(Object) test evaluations}
+     * performed on the {@link #getTarget() target}.
+     *
+     * Returns {@literal true} by default.
+     *
+     * @return the final result of the all {@link Predicate#test(Object) test evaluation}
+     * performed on the {@link #getTarget() target}.
+     * @see #test(Predicate)
+     */
+    default boolean result() {
+      return true;
+    }
+
+    /**
+     * Evaluates the {@link #getTarget() target} with the given {@link Predicate}.
+     *
+     * @param predicate {@link Predicate} used to evaluate the {@link #getTarget() target}.
+     * @return this {@link Given} object.
+     * @see java.util.function.Predicate
+     */
+    Given<T> test(Predicate<T> predicate);
+
+    /**
+     * Applies the given {@link Function} to the {@link #getTarget() target} in order to follow the {@literal has-a}
+     * relationships of the {@link #getTarget() target} and extract a composed {@link Object collaborator}
+     * for further {@link #test(Predicate) test evaluation}.
+     *
+     * For instance, the current {@link Given} object may be composed of a {@literal Person} object
+     * having a composed {@link java.time.LocalDate birthDate} property. This method can be used to extract
+     * the {@literal Person's} {@link java.time.LocalDate birthDate} using {@literal thenGiven(Person:getBirthDate)}.
+     *
+     * @param <R> {@link Class type} of composed {@link Object part} from the {@link #getTarget() target}.
+     * @param extractionFunction {@link Function} used to extract some {@link Object part}
+     * of the {@link #getTarget() target}.
+     * @return a new {@link Given} object containing the {@link #getTarget() target's} composed {@link Object part}.
+     * @see java.util.function.Function
+     */
+    <R> Given<R> thenGiven(Function<T, R> extractionFunction);
+
+  }
+
+  /**
+   * Implementation of the {@link Given} interface.
+   *
+   * @param <T> {@link Class type} of {@link Object} to evaluate
+   * @see org.cp.elements.lang.LangExtensions.Given
+   * @see #given(Object)
+   */
+  private static final class GivenExpression<T> implements Given<T> {
+
+    private volatile boolean result;
+
+    private final T target;
+
+    private GivenExpression(@Nullable T target) {
+      this(target, target != null);
+    }
+
+    private GivenExpression(@Nullable T target, boolean result) {
+      this.target = target;
+      this.result = result && target != null;
+    }
+
+    @Override
+    public @Nullable T getTarget() {
+      return this.target;
+    }
+
+    @Override
+    public boolean result() {
+      return this.result;
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public @NotNull Given<T> test(@Nullable Predicate<T> predicate) {
+
+      Assert.notNull(predicate, "Predicate used to test the target [%s] is required",
+        ObjectUtils.getClassName(getTarget()));
+
+      this.result = this.result && predicate.test(getTarget());
+      //this.result &= predicate.test(getTarget()); // NPE (WTF JAVA)
+
+      return this;
+    }
+
+    @Override
+    public @NotNull <R> Given<R> thenGiven(@NotNull Function<T, R> extractionFunction) {
+
+      Assert.notNull(extractionFunction,
+        "Function used to extract a collaborator from target [%s] is required",
+        ObjectUtils.getClassName(getTarget()));
+
+      T currentTarget = getTarget();
+
+      R extractedTarget = currentTarget != null
+        ? extractionFunction.apply(currentTarget)
+        : null;
+
+      return new GivenExpression<>(extractedTarget, result());
+    }
+  }
+
+  /**
    * The {@literal is} operator can be used to make logical determinations about an {@link Object} such as boolean,
    * equality, identity, relational or type comparisons with other {@link Object Objects}, and so on.
    *
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
    * @param obj {@link Object} that is the {@literal subject} of the operation.
    * @return a new instance of the {@literal is} operator.
-   * @see org.cp.elements.lang.LangExtensions.IsExpression
    * @see org.cp.elements.lang.LangExtensions.Is
-   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
@@ -1610,9 +1750,11 @@ public abstract class LangExtensions {
    * state, type or relationship to another {@link Object}.
    *
    * @param <T> {@link Class type} of {@link Object} as the {@literal subject} of the {@literal is} operator.
+   * @see org.cp.elements.lang.LangExtensions.IsExpression
    * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.FluentApiExtension
    * @see org.cp.elements.lang.DslExtension
+   * @see #is(Object)
    */
   @FluentApi
   public interface Is<T> extends DslExtension, FluentApiExtension {
@@ -1932,14 +2074,15 @@ public abstract class LangExtensions {
   }
 
   /**
-   * The {@link IsExpression} class is an implementation of the Is interface, is operator.
+   * Implementation of the {@link Is} interface.
    *
    * Note, this implementation is Thread-safe, although it is very unlikely that a {@link Thread}
    * will share an instance of this class since every invocation of the {@link #is(Object)} operator factory method
    * will return a new instance of this class, at least for the time being.
    *
-   * @param <T> {@link Class type} of the the {@link Object} subject.
+   * @param <T> {@link Class type} of the {@link Object subject}.
    * @see org.cp.elements.lang.LangExtensions.Is
+   * @see #is(Object)
    */
   private static final class IsExpression<T> implements Is<T> {
 

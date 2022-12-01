@@ -24,6 +24,7 @@ import static org.cp.elements.lang.LangExtensions.AssertThatWrapper;
 import static org.cp.elements.lang.LangExtensions.Is;
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.LangExtensions.from;
+import static org.cp.elements.lang.LangExtensions.given;
 import static org.cp.elements.lang.LangExtensions.is;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.cp.elements.util.ArrayUtils.nullSafeArray;
@@ -56,16 +57,15 @@ import java.util.function.Predicate;
 import org.junit.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
+import org.cp.elements.lang.LangExtensions.Given;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ComparatorUtils;
 
 import org.assertj.core.api.Assertions;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -2295,6 +2295,99 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
+  public void givenSimpleObjectTestReturnsTrue() {
+    assertThat(given("test").test("test"::equals).result()).isTrue();
+  }
+
+  @Test
+  public void givenSimpleObjectTestReturnsFalse() {
+    assertThat(given("test").test("mock"::equals).result()).isFalse();
+  }
+
+  @Test
+  public void givenObjectWithNullExtractionFunction() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> given("mock").thenGiven(null).result())
+      .withMessage("Function used to extract a collaborator from target [java.lang.String] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void givenObjectWithNullTestPredicate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> given("test").test(null).result())
+      .withMessage("Predicate used to test the target [java.lang.String] is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void givenNullObjectIsNullSafeTestReturnsFalse() {
+
+    Given<Invoice> givenInvoice = given((Invoice) null)
+      .test(target -> target.getTotal().compareTo(BigDecimal.valueOf(100)) < 0);
+
+    assertThat(givenInvoice).isNotNull();
+    assertThat(givenInvoice.getTarget()).isNull();
+    assertThat(givenInvoice.result()).isFalse();
+  }
+
+  @Test
+  public void givenComposedObjectTestReturnsTrue() {
+
+    Invoice invoice = TestInvoice.of(Collections.singletonList((TestLineItem.newLineItem(TestProduct
+      .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
+
+    Given<?> givenInvoice = given(invoice)
+      .test(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .thenGiven(targetInvoice -> targetInvoice.findBy("Junk"))
+      .test(targetLineItem -> targetLineItem.getQuantity() == 1)
+      .thenGiven(LineItem::getProduct)
+      .test(targetProduct -> "Junk".equals(targetProduct.getName()))
+      .test(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+
+    assertThat(givenInvoice.getTarget()).isInstanceOf(Product.class);
+    assertThat(givenInvoice.result()).isTrue();
+  }
+
+  @Test
+  public void givenComposedObjectTestReturnsFalse() {
+
+    Invoice invoice = TestInvoice.of(Collections.singletonList((TestLineItem.newLineItem(TestProduct
+      .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
+
+    Given<?> givenInvoice = given(invoice)
+      .test(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .thenGiven(targetInvoice -> targetInvoice.findBy("Junk"))
+      .test(targetLineItem -> targetLineItem.getQuantity() < 1)
+      .thenGiven(LineItem::getProduct)
+      .test(targetProduct -> "Junk".equals(targetProduct.getName()))
+      .test(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+
+    assertThat(givenInvoice.getTarget()).isInstanceOf(Product.class);
+    assertThat(givenInvoice.result()).isFalse();
+  }
+
+  @Test
+  public void givenNullComposedObjectTestReturnsFalse() {
+
+    Invoice invoice = TestInvoice.of(Collections.singletonList((TestLineItem.newLineItem(TestProduct
+      .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
+
+    Given<?> givenInvoice = given(invoice)
+      .test(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .thenGiven(targetInvoice -> targetInvoice.findBy("NonJunk"))
+      .test(targetLineItem -> targetLineItem.getQuantity() == 1)
+      .thenGiven(LineItem::getProduct)
+      .test(targetProduct -> "Junk".equals(targetProduct.getName()))
+      .test(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+
+    assertThat(givenInvoice.getTarget()).isNull();
+    assertThat(givenInvoice.result()).isFalse();
+  }
+
+  @Test
   public void isAssignableTo() {
 
     assertTrue(is(Object.class).assignableTo(Object.class));
@@ -2974,39 +3067,33 @@ public class LangExtensionsUnitTests {
       .isNull();
   }
 
-  @Data
+  @Getter
   @RequiredArgsConstructor(staticName = "newPerson")
-  protected static class Person implements Comparable<Person> {
+  private static class Person implements Comparable<Person> {
 
-    @NonNull
+    @lombok.NonNull
     private final Long id;
 
-    @NonNull
+    @lombok.NonNull
     private final String firstName;
 
-    @NonNull
+    @lombok.NonNull
     private final String lastName;
 
     public String getName() {
       return String.format("%1$s %2$s", getFirstName(), getLastName());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     @SuppressWarnings("all")
     public int compareTo(@NotNull Person person) {
 
-      int compareValue = ComparatorUtils.compareIgnoreNull(getFirstName(), person.getFirstName());
+      int compareValue = ComparatorUtils.compareIgnoreNull(this.getFirstName(), person.getFirstName());
 
-      return (compareValue != 0 ? compareValue : ComparatorUtils.compareIgnoreNull(getLastName(),
-        person.getLastName()));
+      return compareValue != 0 ? compareValue
+        : ComparatorUtils.compareIgnoreNull(this.getLastName(), person.getLastName());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public boolean equals(Object obj) {
 
@@ -3020,29 +3107,14 @@ public class LangExtensionsUnitTests {
 
       Person that = (Person) obj;
 
-      return (ObjectUtils.equalsIgnoreNull(this.getId(), that.getId()));
-      //&& ObjectUtils.equals(this.getFirstName(), that.getFirstName())
-      //&& ObjectUtils.equals(this.getLastName(), that.getLastName()));
+      return ObjectUtils.equalsIgnoreNull(this.getId(), that.getId());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public int hashCode() {
-
-      int hashValue = 17;
-
-      hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getId());
-      //hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getFirstName());
-      //hashValue = 37 * hashValue + ObjectUtils.hashCode(this.getLastName());
-
-      return hashValue;
+      return ObjectUtils.hashCodeOf(getId());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public String toString() {
       return String.format("{ id = %1$s, firstName = %2$s, lastName = %3$s }", getId(), getFirstName(), getLastName());
@@ -3066,7 +3138,7 @@ public class LangExtensionsUnitTests {
   @RequiredArgsConstructor(staticName = "of")
   public static class TestInvoice implements Invoice {
 
-    @NonNull
+    @lombok.NonNull
     private List<TestLineItem> lineItems;
 
     public LineItem findBy(int index) {
@@ -3113,10 +3185,10 @@ public class LangExtensionsUnitTests {
   @RequiredArgsConstructor(staticName = "newLineItem")
   public static class TestLineItem implements LineItem {
 
-    @NonNull
+    @lombok.NonNull
     private final Product product;
 
-    @NonNull
+    @lombok.NonNull
     private final Integer quantity;
 
     public BigDecimal getCost() {
@@ -3138,10 +3210,10 @@ public class LangExtensionsUnitTests {
   @RequiredArgsConstructor(staticName = "newProduct")
   public static class TestProduct implements Product {
 
-    @NonNull
+    @lombok.NonNull
     private final String name;
 
-    @NonNull
+    @lombok.NonNull
     private final BigDecimal price;
 
     public BigDecimal getCost(int quantity) {
@@ -3158,17 +3230,11 @@ public class LangExtensionsUnitTests {
     @lombok.NonNull
     private final String name;
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public int compareTo(@NotNull User other) {
       return getName().compareTo(other.getName());
     }
 
-    /**
-     * @inheritDoc
-     */
     @Override
     public String toString() {
       return getName();
