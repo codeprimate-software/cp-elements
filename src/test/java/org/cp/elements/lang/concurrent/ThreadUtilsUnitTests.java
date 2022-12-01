@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -28,13 +29,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import org.cp.elements.lang.Condition;
-import org.cp.elements.test.TestUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.lang.Condition;
+import org.cp.elements.test.TestUtils;
+
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -647,6 +651,74 @@ public class ThreadUtilsUnitTests {
 
     assertThat(success).isFalse();
     assertThat(t1 - t0).isLessThan(1000L);
+  }
+
+  @Test
+  public void runAtomicallyUsingRunnableIsCorrect() {
+
+    AtomicBoolean run = new AtomicBoolean(false);
+
+    Object lock = new Object();
+
+    Runnable operation = () -> {
+      assertThat(Thread.currentThread().holdsLock(lock));
+      run.set(true);
+    };
+
+    ThreadUtils.runAtomically(lock, operation);
+
+    assertThat(run.get()).isTrue();
+  }
+
+  @Test
+  public void runAtomicallyUsingRunnableWithoutLockIsCorrect() {
+
+    AtomicBoolean run = new AtomicBoolean(false);
+
+    Runnable operation = () -> run.set(true);
+
+    ThreadUtils.runAtomically(null, operation);
+
+    assertThat(run.get()).isTrue();
+  }
+
+  @Test
+  public void runAtomicallyUsingRunnableWithNullOperation() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThreadUtils.runAtomically(null, (Runnable) null))
+      .withMessage("Operation to run is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void runAtomicallyUsingSupplierIsCorrect() {
+
+    Object lock = new Object();
+
+    Supplier<String> operation = () -> {
+      assertThat(Thread.currentThread().holdsLock(lock));
+      return "test";
+    };
+
+    assertThat(ThreadUtils.runAtomically(lock, operation)).isEqualTo("test");
+  }
+
+  @Test
+  public void runAtomicallyUsingSupplierWithoutLockIsCorrect() {
+
+    Supplier<String> operation = () -> "mock";
+
+    assertThat(ThreadUtils.runAtomically(null, operation)).isEqualTo("mock");
+  }
+
+  @Test
+  public void runAtomicallyUsingSupplierWithNullOperation() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThreadUtils.runAtomically(null, (Supplier<?>) null))
+      .withMessage("Operation to run is required")
+      .withNoCause();
   }
 
   @Test

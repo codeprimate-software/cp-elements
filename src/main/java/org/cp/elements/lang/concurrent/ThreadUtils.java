@@ -16,6 +16,7 @@
 package org.cp.elements.lang.concurrent;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Condition;
@@ -373,6 +374,52 @@ public abstract class ThreadUtils {
     }
 
     return false;
+  }
+
+  /**
+   * Runs the given, required {@link Runnable operation} atomically if the given {@link Object lock}
+   * is not {@literal null}, otherwise runs the {@link Runnable operation} normally.
+   *
+   * @param lock {@link Object} used as the lock.
+   * @param operation {@link Runnable} containing the operation (logic) to run;
+   * must not be {@literal null}.
+   * @throws IllegalArgumentException if the {@link Runnable operation} reference is {@literal null}.
+   * @see java.lang.Runnable
+   */
+  public static void runAtomically(@Nullable Object lock, @NotNull Runnable operation) {
+
+    Assert.notNull(operation, "Operation to run is required");
+
+    runAtomically(lock, () -> {
+      operation.run();
+      return null;
+    });
+  }
+
+  /**
+   * Runs the given, required {@link Supplier operation} atomically if the given {@link Object lock}
+   * is not {@literal null}, otherwise runs the {@link Supplier operation} normally.
+   *
+   * @param <T> {@link Class type} of the {@link Supplier operation's} return value.
+   * @param lock {@link Object} used as the lock.
+   * @param operation {@link Supplier} containing the operation (logic) to run;
+   * must not be {@literal null}.
+   * @return the computational result of the {@link Supplier operation}.
+   * @throws IllegalArgumentException if the {@link Supplier operation} reference is {@literal null}.
+   * @see java.util.function.Supplier
+   */
+  @SuppressWarnings("all")
+  public static <T> T runAtomically(@Nullable Object lock, @NotNull Supplier<T> operation) {
+
+    Assert.notNull(operation, "Operation to run is required");
+
+    if (lock != null) {
+      synchronized (lock) {
+        return operation.get();
+      }
+    }
+
+    return operation.get();
   }
 
   /**
