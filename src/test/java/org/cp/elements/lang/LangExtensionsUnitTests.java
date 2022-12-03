@@ -117,19 +117,13 @@ public class LangExtensionsUnitTests {
     assertThat(jonDoe).asType(toUserFunction).isEqualTo(User.as("jonDoe"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void assertThatAsWithNullConverterFunction() {
 
-    try {
-      assertThat("mock").asType(null).isEqualTo("test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      Assertions.assertThat(expected).hasMessage("The Function used to convert the target (subject) is required");
-      Assertions.assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> assertThat("mock").asType(null).isEqualTo("test"))
+      .withMessage("The Function used to convert the target (subject) is required")
+      .withNoCause();
   }
 
   @Test

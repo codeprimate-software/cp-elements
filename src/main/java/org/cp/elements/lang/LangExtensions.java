@@ -19,7 +19,6 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newExpectationExcep
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,11 +32,11 @@ import org.cp.elements.lang.annotation.Dsl;
 import org.cp.elements.lang.annotation.Experimental;
 import org.cp.elements.lang.annotation.FluentApi;
 import org.cp.elements.lang.annotation.NotNull;
-import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.MethodInterceptor;
 import org.cp.elements.lang.reflect.MethodInvocation;
 import org.cp.elements.lang.reflect.ProxyFactory;
+import org.cp.elements.text.FormatUtils;
 
 /**
  * The {@link LangExtensions} class provides methods to write natural language expressions for various conditions,
@@ -351,6 +350,8 @@ public abstract class LangExtensions {
      * @throws AssertionException if the {@link Object} being evaluated is not comparable
      * to the given {@link Comparable} object.
      * @see java.lang.Comparable#compareTo(Object)
+     * @see #isComparableTo(Comparable)
+     * @see #not()
      */
     AssertThat<T> isNotComparableTo(Comparable<T> obj);
 
@@ -374,6 +375,7 @@ public abstract class LangExtensions {
      * @return this assertion.
      * @throws AssertionException if the object being evaluated is equal to the given object.
      * @see java.lang.Object#equals(Object)
+     * @see #isNotSameAs(Object)
      * @see #isEqualTo(Object)
      * @see #not()
      */
@@ -584,6 +586,7 @@ public abstract class LangExtensions {
      * @param obj the object used in the identity comparison with the object being evaluated.
      * @return this assertion.
      * @throws AssertionException if the objects are the same.
+     * @see #isNotEqualTo(Object)
      * @see #isSameAs(Object)
      * @see #not()
      */
@@ -812,25 +815,20 @@ public abstract class LangExtensions {
     }
 
     private boolean conditionHolds() {
-      return nullSafeCondition(this.condition).evaluate();
+      return Condition.nullSafeCondition(this.condition, true).evaluate();
     }
 
     private boolean notEqualToExpected(boolean actual) {
       return actual != getExpected();
     }
 
-    @NullSafe
-    private @NotNull Condition nullSafeCondition(@Nullable Condition condition) {
-      return condition != null ? condition : DEFAULT_CONDITION;
-    }
-
     @Override
-    public <S> AssertThat<S> as(Class<S> type) {
+    public @NotNull <S> AssertThat<S> as(@NotNull Class<S> type) {
       return new AssertThatExpression<>(getTargetAs(type), getExpected());
     }
 
     @Override
-    public AssertThat<String> asString() {
+    public @NotNull AssertThat<String> asString() {
 
       T target = getTarget();
 
@@ -838,7 +836,7 @@ public abstract class LangExtensions {
     }
 
     @Override
-    public <S> AssertThat<S> asType(@NotNull Function<T, S> converter) {
+    public @NotNull <S> AssertThat<S> asType(@NotNull Function<T, S> converter) {
 
       Assert.notNull(converter, "The Function used to convert the target (subject) is required");
 
@@ -1197,7 +1195,7 @@ public abstract class LangExtensions {
 
     @Override
     public @NotNull AssertThat<T> stating(@NotNull String message, @NotNull Object... args) {
-      return stating(() -> format(message, args));
+      return stating(() -> FormatUtils.format(message, args));
     }
 
     @Override
@@ -1214,27 +1212,17 @@ public abstract class LangExtensions {
 
     @Override
     public @NotNull AssertThat<T> transform(@NotNull Transformer<AssertThat<T>> assertionTransformer) {
-      Assert.notNull(assertionTransformer, "The Transformer used to transform this assertion is required");
-      this.transformer = assertionTransformer;
+
+      this.transformer = ObjectUtils.requireObject(assertionTransformer,
+        "The Transformer used to transform this assertion is required");
+
       return assertionTransformer.transform(this);
     }
 
     @Override
     public @NotNull AssertThat<T> when(@Nullable Condition condition) {
-      this.condition = condition != null ? condition : DEFAULT_CONDITION;
+      this.condition = Condition.nullSafeCondition(condition, true);
       return this;
-    }
-
-    private String format(String message, Object... args) {
-      return stringFormat(messageFormat(message, args), args);
-    }
-
-    private String messageFormat(String message, Object... args) {
-      return MessageFormat.format(message, args);
-    }
-
-    private String stringFormat(String message, Object... args) {
-      return String.format(message, args);
     }
 
     private String negate(String value) {
@@ -1252,7 +1240,9 @@ public abstract class LangExtensions {
       Supplier<String> message = this.message;
 
       String suppliedMessage = message != null ? message.get() : null;
-      String resolvedMessage = is(suppliedMessage).notBlank() ? suppliedMessage : format(defaultMessage, args);
+
+      String resolvedMessage = is(suppliedMessage).notBlank() ? suppliedMessage
+        : FormatUtils.format(defaultMessage, args);
 
       return resolvedMessage;
     }
