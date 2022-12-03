@@ -13,27 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 
 /**
- * Unit tests for {@link Condition}.
+ * Unit Tests for {@link Condition}.
  *
  * @author John Blum
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Condition
  * @since 1.0.0
  */
-public class ConditionTests {
+public class ConditionUnitTests {
+
+  @Test
+  public void nullSafetyWithNullConditionReturningTrue() {
+
+    Condition condition = Condition.nullSafeCondition(null, true);
+
+    assertThat(condition).isNotNull();
+    assertThat(condition.evaluate()).isTrue();
+  }
+
+  @Test
+  public void nullSafetyWithNullConditionReturningFalse() {
+
+    Condition condition = Condition.nullSafeCondition(null, false);
+
+    assertThat(condition).isNotNull();
+    assertThat(condition.evaluate()).isFalse();
+  }
+
+  @Test
+  public void nullSafetyWithNonNullCondition() {
+
+    Condition mockCondition = mock(Condition.class);
+
+    assertThat(Condition.nullSafeCondition(mockCondition, true)).isSameAs(mockCondition);
+  }
 
   @Test
   public void trueConditionReturnsTrue() {
@@ -52,6 +80,7 @@ public class ConditionTests {
 
   @Test
   public void falseAndThenTrueConditionReturnsFalse() {
+
     assertThat(Condition.FALSE_CONDITION.andThen(Condition.TRUE_CONDITION).evaluate()).isFalse();
     assertThat(Condition.TRUE_CONDITION.andThen(Condition.FALSE_CONDITION).evaluate()).isFalse();
   }
@@ -68,6 +97,7 @@ public class ConditionTests {
 
   @Test
   public void falseOrElseTrueConditionReturnsTrue() {
+
     assertThat(Condition.FALSE_CONDITION.orElse(Condition.TRUE_CONDITION).evaluate()).isTrue();
     assertThat(Condition.TRUE_CONDITION.orElse(Condition.FALSE_CONDITION).evaluate()).isTrue();
   }
@@ -84,6 +114,7 @@ public class ConditionTests {
 
   @Test
   public void trueXorFalseConditionReturnsTrue() {
+
     assertThat(Condition.TRUE_CONDITION.xor(Condition.FALSE_CONDITION).evaluate()).isTrue();
     assertThat(Condition.FALSE_CONDITION.xor(Condition.TRUE_CONDITION).evaluate()).isTrue();
   }
@@ -94,55 +125,57 @@ public class ConditionTests {
   }
 
   @Test
-  public void trueAndThenMustEvaluateCondition() {
+  public void withTrueAndThenMustEvaluateCondition() {
 
     Condition mockCondition = mock(Condition.class);
 
-    when(mockCondition.evaluate()).thenReturn(false);
+    doReturn(false).when(mockCondition).evaluate();
 
     assertThat(Condition.TRUE_CONDITION.andThen(mockCondition).evaluate()).isFalse();
 
     verify(mockCondition, times(1)).evaluate();
+    verifyNoMoreInteractions(mockCondition);
   }
 
   @Test
-  public void falseAndThenDoesNotEvaluateCondition() {
+  public void withFalseAndThenDoesNotEvaluateCondition() {
 
     Condition mockCondition = mock(Condition.class);
 
-    when(mockCondition.evaluate()).thenReturn(true);
+    doReturn(true).when(mockCondition).evaluate();
 
     assertThat(Condition.FALSE_CONDITION.andThen(mockCondition).evaluate()).isFalse();
 
-    verify(mockCondition, never()).evaluate();
+    verifyNoInteractions(mockCondition);
   }
 
   @Test
-  public void trueOrElseDoesNotEvaluateCondition() {
+  public void withTrueOrElseDoesNotEvaluateCondition() {
 
     Condition mockCondition = mock(Condition.class);
 
-    when(mockCondition.evaluate()).thenReturn(false);
+    doReturn(false).when(mockCondition).evaluate();
 
     assertThat(Condition.TRUE_CONDITION.orElse(mockCondition).evaluate()).isTrue();
 
-    verify(mockCondition, never()).evaluate();
+    verifyNoInteractions(mockCondition);
   }
 
   @Test
-  public void falseOrElseMustEvaluateCondition() {
+  public void withFalseOrElseMustEvaluateCondition() {
 
     Condition mockCondition = mock(Condition.class);
 
-    when(mockCondition.evaluate()).thenReturn(true);
+    doReturn(true).when(mockCondition).evaluate();
 
     assertThat(Condition.FALSE_CONDITION.orElse(mockCondition).evaluate()).isTrue();
 
     verify(mockCondition, times(1)).evaluate();
+    verifyNoMoreInteractions(mockCondition);
   }
 
   @Test
-  public void xorMustEvaluateThisConditionWithTheChainedCondition() {
+  public void xorMustEvaluateThisConditionWithTheGivenCondition() {
 
     Condition mockCondition = mock(Condition.class);
 
@@ -152,5 +185,6 @@ public class ConditionTests {
     assertThat(Condition.FALSE_CONDITION.xor(mockCondition).evaluate()).isFalse();
 
     verify(mockCondition, times(2)).evaluate();
+    verifyNoMoreInteractions(mockCondition);
   }
 }

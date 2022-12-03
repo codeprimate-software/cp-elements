@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * The {@link Condition} interface defines a contract for implementing objects used to evaluate a required condition
+ * {@link FunctionalInterface} defining a contract for implementing objects used to evaluate a required condition
  * of the application or system.
  *
  * @author John Blum
@@ -32,9 +34,29 @@ public interface Condition {
   Condition TRUE_CONDITION = () -> true;
 
   /**
-   * Evaluates the required criteria of this condition to determine whether the condition holds.
+   * Factory method used to evaluate the given {@link Condition} for null-safety, returning the given {@link Condition}
+   * if not {@literal null} or returning {@link Condition#TRUE_CONDITION} if {@link Boolean returnTrue}
+   * is {@literal true} and {@link Condition#FALSE_CONDITION} otherwise.
    *
-   * @return a boolean value indicating whether the condition holds.
+   * @param condition {@link Condition} to evaluate for null-safety.
+   * @param returnTrue {@link Boolean} value indicating whether to return a {@link Condition#TRUE_CONDITION}
+   * or {@link Condition#FALSE_CONDITION} when the given {@link Condition} is {@literal null}.
+   * @return the given {@link Condition} if not {@literal null} or the {@link Condition#TRUE_CONDITION}
+   * or {@link Condition#FALSE_CONDITION} when {@link Condition} is {@literal null}.
+   */
+  static @NotNull Condition nullSafeCondition(@Nullable Condition condition, boolean returnTrue) {
+    return condition != null ? condition : returnTrue ? TRUE_CONDITION : FALSE_CONDITION;
+  }
+
+  /**
+   * Evaluates the criteria of this {@link Condition} to determine whether the still criteria holds.
+   *
+   * {@link Condition} evaluation can be dynamic. Therefore, it is possible, during the runtime of the program,
+   * that the conditions satisfying the criteria of this {@link Condition} change and therefore may no longer hold,
+   * or the conditions switch from unsatisfied to now being upheld. This might change several times during runtime
+   * as well.
+   *
+   * @return a boolean value indicating whether the criteria of this {@link Condition} holds.
    */
   boolean evaluate();
 
@@ -45,7 +67,7 @@ public interface Condition {
    * @return a new {@link Condition} composed of this {@link Condition} with the given {@link Condition}
    * using the logical AND operator.
    */
-  default Condition andThen(Condition condition) {
+  default @NotNull Condition andThen(@NotNull Condition condition) {
     return () -> this.evaluate() && condition.evaluate();
   }
 
@@ -56,7 +78,7 @@ public interface Condition {
    * @return a new {@link Condition} composed of this {@link Condition} with the given {@link Condition}
    * using the logical OR operator.
    */
-  default Condition orElse(Condition condition) {
+  default @NotNull Condition orElse(@NotNull Condition condition) {
     return () -> this.evaluate() || condition.evaluate();
   }
 
@@ -67,7 +89,7 @@ public interface Condition {
    * @return a new {@link Condition} composed of this {@link Condition} with the given {@link Condition}
    * using the XOR operator.
    */
-  default Condition xor(Condition condition) {
+  default @NotNull Condition xor(@NotNull Condition condition) {
     return () -> this.evaluate() ^ condition.evaluate();
   }
 }
