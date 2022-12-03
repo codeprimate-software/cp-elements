@@ -2296,12 +2296,12 @@ public class LangExtensionsUnitTests {
 
   @Test
   public void givenSimpleObjectTestReturnsTrue() {
-    assertThat(given("test").test("test"::equals).result()).isTrue();
+    assertThat(given("test").expectThat("test"::equals).result()).isTrue();
   }
 
   @Test
   public void givenSimpleObjectTestReturnsFalse() {
-    assertThat(given("test").test("mock"::equals).result()).isFalse();
+    assertThat(given("test").expectThat("mock"::equals).result()).isFalse();
   }
 
   @Test
@@ -2317,7 +2317,7 @@ public class LangExtensionsUnitTests {
   public void givenObjectWithNullTestPredicate() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> given("test").test(null).result())
+      .isThrownBy(() -> given("test").expectThat(null).result())
       .withMessage("Predicate used to test the target [java.lang.String] is required")
       .withNoCause();
   }
@@ -2326,7 +2326,7 @@ public class LangExtensionsUnitTests {
   public void givenNullObjectIsNullSafeTestReturnsFalse() {
 
     Given<Invoice> givenInvoice = given((Invoice) null)
-      .test(target -> target.getTotal().compareTo(BigDecimal.valueOf(100)) < 0);
+      .expectThat(target -> target.getTotal().compareTo(BigDecimal.valueOf(100)) > 0);
 
     assertThat(givenInvoice).isNotNull();
     assertThat(givenInvoice.getTarget()).isNull();
@@ -2340,12 +2340,12 @@ public class LangExtensionsUnitTests {
       .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
 
     Given<?> givenInvoice = given(invoice)
-      .test(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
       .thenGiven(targetInvoice -> targetInvoice.findBy("Junk"))
-      .test(targetLineItem -> targetLineItem.getQuantity() == 1)
+      .expectThat(targetLineItem -> targetLineItem.getQuantity() == 1)
       .thenGiven(LineItem::getProduct)
-      .test(targetProduct -> "Junk".equals(targetProduct.getName()))
-      .test(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+      .expectThat(targetProduct -> "Junk".equals(targetProduct.getName()))
+      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
 
     assertThat(givenInvoice.getTarget()).isInstanceOf(Product.class);
     assertThat(givenInvoice.result()).isTrue();
@@ -2358,12 +2358,12 @@ public class LangExtensionsUnitTests {
       .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
 
     Given<?> givenInvoice = given(invoice)
-      .test(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
       .thenGiven(targetInvoice -> targetInvoice.findBy("Junk"))
-      .test(targetLineItem -> targetLineItem.getQuantity() < 1)
+      .expectThat(targetLineItem -> targetLineItem.getQuantity() < 1)
       .thenGiven(LineItem::getProduct)
-      .test(targetProduct -> "Junk".equals(targetProduct.getName()))
-      .test(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+      .expectThat(targetProduct -> "Junk".equals(targetProduct.getName()))
+      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
 
     assertThat(givenInvoice.getTarget()).isInstanceOf(Product.class);
     assertThat(givenInvoice.result()).isFalse();
@@ -2376,12 +2376,12 @@ public class LangExtensionsUnitTests {
       .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
 
     Given<?> givenInvoice = given(invoice)
-      .test(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
       .thenGiven(targetInvoice -> targetInvoice.findBy("NonJunk"))
-      .test(targetLineItem -> targetLineItem.getQuantity() == 1)
+      .expectThat(targetLineItem -> targetLineItem.getQuantity() == 1)
       .thenGiven(LineItem::getProduct)
-      .test(targetProduct -> "Junk".equals(targetProduct.getName()))
-      .test(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+      .expectThat(targetProduct -> "Junk".equals(targetProduct.getName()))
+      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
 
     assertThat(givenInvoice.getTarget()).isNull();
     assertThat(givenInvoice.result()).isFalse();

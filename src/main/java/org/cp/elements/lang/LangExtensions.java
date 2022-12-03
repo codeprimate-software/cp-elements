@@ -1620,39 +1620,42 @@ public abstract class LangExtensions {
   public interface Given<T> extends DslExtension, FluentApiExtension {
 
     /**
-     * Gets a reference to the configured {@link Object target} of the test evaluation.
+     * Gets a reference to the configured {@link Object target} used in the evaluation of applied expectations.
      *
-     * @return a reference to the configured {@link Object target} of the test evaluation.
+     * @return a reference to the configured {@link Object target} used in the evaluation of applied expectations.
      */
     T getTarget();
 
     /**
-     * Returns the final result of the all {@link Predicate#test(Object) test evaluations}
-     * performed on the {@link #getTarget() target}.
+     * {@link Predicate#test(Object) Tests} the configured {@link #getTarget() target} against
+     * the given {@link Predicate} defining the expectations used in the evaluation.
+     *
+     * @param predicate {@link Predicate} defining expectations used to test and evaluate
+     * the configured {@link #getTarget() target}.
+     * @return this {@link Given} object.
+     * @see java.util.function.Predicate
+     * @see #getTarget()
+     */
+    Given<T> expectThat(Predicate<T> predicate);
+
+    /**
+     * Returns the final {@link Boolean result} of all the {@link Predicate#test(Object) test evaluations}
+     * applied to the {@link #getTarget() target}.
      *
      * Returns {@literal true} by default.
      *
-     * @return the final result of the all {@link Predicate#test(Object) test evaluation}
-     * performed on the {@link #getTarget() target}.
-     * @see #test(Predicate)
+     * @return the final {@link Boolean result} of all the {@link Predicate#test(Object) test evaluations}
+     * applied to the {@link #getTarget() target}.
+     * @see #expectThat(Predicate)
      */
     default boolean result() {
       return true;
     }
 
     /**
-     * Evaluates the {@link #getTarget() target} with the given {@link Predicate}.
-     *
-     * @param predicate {@link Predicate} used to evaluate the {@link #getTarget() target}.
-     * @return this {@link Given} object.
-     * @see java.util.function.Predicate
-     */
-    Given<T> test(Predicate<T> predicate);
-
-    /**
      * Applies the given {@link Function} to the {@link #getTarget() target} in order to follow the {@literal has-a}
      * relationships of the {@link #getTarget() target} and extract a composed {@link Object collaborator}
-     * for further {@link #test(Predicate) test evaluation}.
+     * for further {@link #expectThat(Predicate) test evaluation}.
      *
      * For instance, the current {@link Given} object may be composed of a {@literal Person} object
      * having a composed {@link java.time.LocalDate birthDate} property. This method can be used to extract
@@ -1696,13 +1699,8 @@ public abstract class LangExtensions {
     }
 
     @Override
-    public boolean result() {
-      return this.result;
-    }
-
-    @Override
     @SuppressWarnings("all")
-    public @NotNull Given<T> test(@Nullable Predicate<T> predicate) {
+    public @NotNull Given<T> expectThat(@Nullable Predicate<T> predicate) {
 
       Assert.notNull(predicate, "Predicate used to test the target [%s] is required",
         ObjectUtils.getClassName(getTarget()));
@@ -1711,6 +1709,11 @@ public abstract class LangExtensions {
       //this.result &= predicate.test(getTarget()); // NPE (WTF JAVA)
 
       return this;
+    }
+
+    @Override
+    public boolean result() {
+      return this.result;
     }
 
     @Override
