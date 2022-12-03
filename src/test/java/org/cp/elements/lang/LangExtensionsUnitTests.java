@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -2305,11 +2306,22 @@ public class LangExtensionsUnitTests {
   }
 
   @Test
+  public void givenSimpleObjectTestUsingThrowOnFailedExpectationsReturnsTrue() {
+
+    assertThat(given(2)
+      .expectThat(Objects::nonNull)
+      .expectThat(Integers::isGreaterThanZero)
+      .expectThat(NumberUtils::isEven)
+      .throwOnFailedExpectations()
+      .result()).isTrue();
+  }
+
+  @Test
   public void givenObjectWithNullExtractionFunction() {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> given("mock").thenGiven(null).result())
-      .withMessage("Function used to extract a collaborator from target [java.lang.String] is required")
+      .withMessage("Function used to extract a collaborator from target [mock] is required")
       .withNoCause();
   }
 
@@ -2318,7 +2330,7 @@ public class LangExtensionsUnitTests {
 
     assertThatIllegalArgumentException()
       .isThrownBy(() -> given("test").expectThat(null).result())
-      .withMessage("Predicate used to test the target [java.lang.String] is required")
+      .withMessage("Predicate used to test the target [test] is required")
       .withNoCause();
   }
 
@@ -2331,6 +2343,15 @@ public class LangExtensionsUnitTests {
     assertThat(givenInvoice).isNotNull();
     assertThat(givenInvoice.getTarget()).isNull();
     assertThat(givenInvoice.result()).isFalse();
+  }
+
+  @Test
+  public void givenNullObjectTestUsingThrowOnFailedExpectations() {
+
+    assertThatThrowableOfType(ExpectationException.class)
+      .isThrownBy(args -> assertThat(given(null).throwOnFailedExpectations().result()).isTrue())
+      .havingMessage("Target [null] has failed expectation(s)")
+      .withNoCause();
   }
 
   @Test
@@ -2358,12 +2379,12 @@ public class LangExtensionsUnitTests {
       .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
 
     Given<?> givenInvoice = given(invoice)
-      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50.0d)) < 0)
       .thenGiven(targetInvoice -> targetInvoice.findBy("Junk"))
       .expectThat(targetLineItem -> targetLineItem.getQuantity() < 1)
       .thenGiven(LineItem::getProduct)
       .expectThat(targetProduct -> "Junk".equals(targetProduct.getName()))
-      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69d)) == 0);
 
     assertThat(givenInvoice.getTarget()).isInstanceOf(Product.class);
     assertThat(givenInvoice.result()).isFalse();
@@ -2376,15 +2397,38 @@ public class LangExtensionsUnitTests {
       .newProduct("Junk", BigDecimal.valueOf(16.69)), 1))));
 
     Given<?> givenInvoice = given(invoice)
-      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50)) < 0)
+      .expectThat(targetInvoice -> targetInvoice.getTotal().compareTo(BigDecimal.valueOf(50.0d)) < 0)
       .thenGiven(targetInvoice -> targetInvoice.findBy("NonJunk"))
       .expectThat(targetLineItem -> targetLineItem.getQuantity() == 1)
       .thenGiven(LineItem::getProduct)
       .expectThat(targetProduct -> "Junk".equals(targetProduct.getName()))
-      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69)) == 0);
+      .expectThat(targetProduct -> targetProduct.getPrice().compareTo(BigDecimal.valueOf(16.69d)) == 0);
 
     assertThat(givenInvoice.getTarget()).isNull();
     assertThat(givenInvoice.result()).isFalse();
+  }
+
+  @Test
+  public void givenComplexObjectTestUsingThrowOnFailedExpectationsShortcircuits() {
+
+    Invoice invoice = TestInvoice.of(Arrays.asList(
+      TestLineItem.newLineItem(TestProduct.newProduct("ProductOne", BigDecimal.valueOf(20.0d)), 2),
+      TestLineItem.newLineItem(TestProduct.newProduct("ProductTwo", BigDecimal.valueOf(10.0d)), 1)
+    ));
+
+    assertThatThrowableOfType(ExpectationException.class)
+      .isThrownBy(args -> given(invoice)
+        .expectThat(it -> BigDecimal.valueOf(100.0d).compareTo(it.getTotal()) > 0)
+        .throwOnFailedExpectations()
+        .thenGiven(it -> it.findBy("ProductOne"))
+        .expectThat(lineItemOne -> Integers.TWO.equals(lineItemOne.getQuantity()))
+        .expectThat(lineItemOne -> BigDecimal.valueOf(20.0d).equals(lineItemOne.getCost()))
+        .throwOnFailedExpectations()
+        .thenGiven(LineItem::getProduct)
+        .expectThat(product -> BigDecimal.valueOf(10.0d).equals(product.getPrice()))
+        .throwOnFailedExpectations())
+      .havingMessage("Target [ProductOne(20.0)|2] has failed expectation(s)")
+      .withNoCause();
   }
 
   @Test
@@ -3194,6 +3238,11 @@ public class LangExtensionsUnitTests {
     public BigDecimal getCost() {
       return getProduct().getCost(getQuantity());
     }
+
+    @Override
+    public String toString() {
+      return String.format("%s|%d", getProduct(), getQuantity());
+    }
   }
 
   public interface Product {
@@ -3218,6 +3267,11 @@ public class LangExtensionsUnitTests {
 
     public BigDecimal getCost(int quantity) {
       return getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+
+    @Override
+    public String toString() {
+      return String.format("%s(%s)", getName(), getPrice());
     }
   }
 

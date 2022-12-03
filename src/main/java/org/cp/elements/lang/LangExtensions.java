@@ -15,6 +15,8 @@
  */
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.ElementsExceptionsFactory.newExpectationException;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
@@ -1669,6 +1671,23 @@ public abstract class LangExtensions {
      */
     <R> Given<R> thenGiven(Function<T, R> extractionFunction);
 
+    /**
+     * Throws an {@link ExpectationException} if the configured {@link #getTarget() target} has failed any expectations
+     * made up to this call.
+     *
+     * @return this {@link Given} object.
+     * @throws ExpectationException if the configured {@link #getTarget() target} has failed any expectations made
+     * up to this call.
+     * @see #result()
+     */
+    default Given<T> throwOnFailedExpectations() {
+
+      if (!result()) {
+        throw newExpectationException("Target [%s] has failed expectation(s)", getTarget());
+      }
+
+      return this;
+    }
   }
 
   /**
@@ -1702,8 +1721,7 @@ public abstract class LangExtensions {
     @SuppressWarnings("all")
     public @NotNull Given<T> expectThat(@Nullable Predicate<T> predicate) {
 
-      Assert.notNull(predicate, "Predicate used to test the target [%s] is required",
-        ObjectUtils.getClassName(getTarget()));
+      Assert.notNull(predicate, () -> String.format("Predicate used to test the target [%s] is required", getTarget()));
 
       this.result = this.result && predicate.test(getTarget());
       //this.result &= predicate.test(getTarget()); // NPE (WTF JAVA)
@@ -1720,8 +1738,7 @@ public abstract class LangExtensions {
     public @NotNull <R> Given<R> thenGiven(@NotNull Function<T, R> extractionFunction) {
 
       Assert.notNull(extractionFunction,
-        "Function used to extract a collaborator from target [%s] is required",
-        ObjectUtils.getClassName(getTarget()));
+        () -> String.format("Function used to extract a collaborator from target [%s] is required", getTarget()));
 
       T currentTarget = getTarget();
 
