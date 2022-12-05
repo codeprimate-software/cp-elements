@@ -17,11 +17,13 @@ package org.cp.elements.data.caching;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -35,6 +37,7 @@ import static org.mockito.Mockito.withSettings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import org.junit.Before;
@@ -792,6 +795,71 @@ public class CacheUnitTests {
     verify(this.cache, times(1)).getLock();
     verify(this.cache, times(1)).contains(eq(1));
     verify(this.cache, times(1)).get(eq(1));
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void getCacheEntryForKey() {
+
+    AtomicReference<Object> value = new AtomicReference<>("A");
+
+    doReturn(true).when(this.cache).contains(eq("mockKey"));
+    doAnswer(invocation -> value.get()).when(this.cache).get(eq("mockKey"));
+    doCallRealMethod().when(this.cache).getEntry(any());
+
+    Cache.Entry<?, ?> cacheEntry = this.cache.getEntry("mockKey");
+
+    assertThat(cacheEntry).isNotNull();
+    assertThat(cacheEntry.getKey()).isEqualTo("mockKey");
+    assertThat(cacheEntry.getSource()).isSameAs(this.cache);
+    assertThat(cacheEntry.getValue()).isEqualTo("A");
+
+    value.set("B");
+
+    assertThat(cacheEntry.getValue()).isEqualTo("B");
+
+    verify(this.cache, times(1)).getEntry(eq("mockKey"));
+    verify(this.cache, times(4)).contains(eq("mockKey"));
+    verify(this.cache, times(2)).get(eq("mockKey"));
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void getEntryForNonExistingKey() {
+
+    doReturn(false).when(this.cache).contains(any());
+    doCallRealMethod().when(this.cache).getEntry(any());
+
+    assertThat(this.cache.getEntry("testKey")).isNull();
+
+    verify(this.cache, times(1)).getEntry(eq("testKey"));
+    verify(this.cache, times(1)).contains(eq("testKey"));
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void getEntryOperationsAfterDetached() {
+
+    doReturn("MockCache").when(this.cache).getName();
+    doReturn(true, true, false).when(this.cache).contains(eq("mockKey"));
+    doReturn("A", (Object) null).when(this.cache).get(eq("mockKey"));
+    doCallRealMethod().when(this.cache).getEntry(any());
+
+    Cache.Entry<?, ?> cacheEntry = this.cache.getEntry("mockKey");
+
+    assertThat(cacheEntry).isNotNull();
+    assertThat(cacheEntry.getKey()).isEqualTo("mockKey");
+    assertThat(cacheEntry.getValue()).isEqualTo("A");
+
+    assertThatIllegalStateException()
+      .isThrownBy(cacheEntry::getValue)
+      .withMessage("Cache [MockCache] no longer contains key [mockKey]")
+      .withNoCause();
+
+    verify(this.cache, times(1)).getEntry(eq("mockKey"));
+    verify(this.cache, times(3)).contains(eq("mockKey"));
+    verify(this.cache, times(1)).get(eq("mockKey"));
+    verify(this.cache, times(1)).getName();
     verifyNoMoreInteractions(this.cache);
   }
 

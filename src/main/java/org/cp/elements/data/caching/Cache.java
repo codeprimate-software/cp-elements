@@ -466,6 +466,50 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
+   * Gets the {@link Cache.Entry} mapping from this {@link Cache} for the given {@link KEY}.
+   *
+   * The {@link Cache.Entry} returned by this method is considered {@literal attached}. Any changes to
+   * the key/value mapping in this {@link Cache} are reflected in the {@link Cache.Entry} returned for
+   * the given {@link KEY key}.
+   *
+   * @param key {@link KEY key} for which to return the {@link Cache.Entry} mapping in this {@link Cache}.
+   * @return a {@link Cache.Entry} mapping from this {@link Cache} for this given {@link KEY key}
+   * or return {@literal null} if this {@link Cache} does not {@link #contains(Comparable) contain} a mapping
+   * for the given {@link KEY key}.
+   * @see org.cp.elements.data.caching.Cache.Entry
+   * @see #contains(Comparable)
+   */
+  default @Nullable Cache.Entry<KEY, VALUE> getEntry(KEY key) {
+
+    return contains(key) ? new Cache.Entry<KEY, VALUE>() {
+
+      private <T> T assertCacheEntryExists(T returnValue) {
+
+        Assert.state(contains(getKey()),
+          () -> String.format("Cache [%s] no longer contains key [%s]", getName(), getKey()));
+
+        return returnValue;
+      }
+
+      @Override
+      public KEY getKey() {
+        return key;
+      }
+
+      @Override
+      public @NotNull Cache<KEY, VALUE> getSource() {
+        return assertCacheEntryExists(Cache.this);
+      }
+
+      @Override
+      public @NotNull VALUE getValue() {
+        return getSource().get(getKey());
+      }
+    }
+    : null;
+  }
+
+  /**
    * Returns all {@link KEY keys} in this {@link Cache}.
    *
    * @return a {@link Set} containing all the {@link KEY keys} from this {@link Cache}.
