@@ -48,6 +48,7 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.test.annotation.SubjectUnderTest;
+import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.MapBuilder;
 
@@ -125,7 +126,7 @@ public class CacheUnitTests {
   @Test
   public void isEmptyReturnsTrueWhenSizeIsZero() {
 
-    doReturn(0).when(this.cache).size();
+    doReturn(0L).when(this.cache).size();
     doCallRealMethod().when(this.cache).isEmpty();
 
     assertThat(this.cache.isEmpty()).isTrue();
@@ -139,7 +140,7 @@ public class CacheUnitTests {
   @Test
   public void isEmptyReturnsFalseWhenSizeIsNotZero() {
 
-    doReturn(1).doReturn(-1).when(this.cache).size();
+    doReturn(1L).doReturn(-1L).when(this.cache).size();
     doCallRealMethod().when(this.cache).isEmpty();
 
     assertThat(this.cache.isEmpty()).isFalse();
@@ -1352,13 +1353,45 @@ public class CacheUnitTests {
   }
 
   @Test
-  public void sizeReturnsDefaultSize() {
+  public void sizeOfCacheWithNoEntriesReturnsZero() {
+
+    doReturn(CollectionUtils.emptyIterable().spliterator()).when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).size();
+
+    assertThat(this.cache.size()).isZero();
+
+    verify(this.cache, times(1)).size();
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void sizeOfCacheWithSingleEntryReturnsOne() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry(1, "mock")).spliterator())
+      .when(this.cache).spliterator();
 
     doCallRealMethod().when(this.cache).size();
 
-    assertThat(this.cache.size()).isEqualTo(Cache.DEFAULT_SIZE);
+    assertThat(this.cache.size()).isOne();
 
     verify(this.cache, times(1)).size();
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void sizeOfCacheWithTwoEntriesReturnsTwo() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry(1, "mock"), mockCacheEntry(2, "test")).spliterator())
+      .when(this.cache).spliterator();
+
+    doCallRealMethod().when(this.cache).size();
+
+    assertThat(this.cache.size()).isEqualTo(2);
+
+    verify(this.cache, times(1)).size();
+    verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
 

@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import org.cp.elements.data.caching.Cache.Entry;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
-import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Sourced;
@@ -83,8 +82,6 @@ import org.cp.elements.util.stream.StreamUtils;
 @SuppressWarnings("unused")
 public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entry<KEY, VALUE>>, Nameable<String> {
 
-  int DEFAULT_SIZE = Integers.ZERO;
-
   /**
    * Gets the configured {@link Object lock} used to run operations on this {@link Cache} atomically / synchronously.
    *
@@ -107,7 +104,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    */
   @NullSafe
   default boolean isEmpty() {
-    return ThreadUtils.runAtomically(getLock(), () -> Integers.isZero(size()));
+    return ThreadUtils.runAtomically(getLock(), () -> size() == 0L);
   }
 
   /**
@@ -759,13 +756,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   /**
    * Determines the number of entries contained in this {@link Cache}.
    *
-   * Returns {@literal 0} by default.
-   *
    * @return an {@link Integer} value with the number of entries contained in this {@link Cache}.
+   * @see #iterator()
    * @see #isEmpty()
    */
-  default int size() {
-    return DEFAULT_SIZE;
+  default long size() {
+    return StreamUtils.stream(this).count();
   }
 
   /**
