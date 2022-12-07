@@ -589,6 +589,47 @@ public class CacheUnitTests {
   }
 
   @Test
+  public void getValueForExistingKey() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
+      .when(this.cache).spliterator();
+
+    doCallRealMethod().when(this.cache).get(any());
+
+    assertThat(this.cache.get("keyTwo")).isEqualTo("B");
+
+    verify(this.cache, times(1)).get(eq("keyTwo"));
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void getValueForNonExistingKey() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry("testKey", "A")).spliterator())
+      .when(this.cache).spliterator();
+
+    doCallRealMethod().when(this.cache).get(any());
+
+    assertThat(this.cache.get("mockKey")).isNull();
+
+    verify(this.cache, times(1)).get(eq("mockKey"));
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void getValueForNullKeyIsNullSafeReturnsNull() {
+
+    doCallRealMethod().when(this.cache).get(any());
+
+    assertThat(this.cache.get(null)).isNull();
+
+    verify(this.cache, times(1)).get(isNull());
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
   public void getAllWithArrayReturnsList() {
 
     doReturn("A", "B", "C").when(this.cache).get(any());

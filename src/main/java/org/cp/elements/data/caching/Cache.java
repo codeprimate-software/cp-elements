@@ -266,13 +266,25 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * Returns {@literal null} if the {@link VALUE value} mapped to the given {@link KEY key} is {@literal null},
    * or this {@link Cache} does not contain an {@link Cache.Entry} mapped to the given {@link KEY key}.
    *
+   * Even the {@link Cache} interface provides a default implementation, cache providers are still encouraged to
+   * override this method and provide a more efficient, custom implementation that is conducive to the underlying
+   * data store as recommended in the {@link Cache} interface Javadoc.
+   *
    * @param key {@link KEY key} mapped to the {@link VALUE value} returned.
    * @return the {@link VALUE value} mapped to the given {@link KEY key}, or return {@literal null}
    * if an {@link Cache.Entry entry} with the given {@link KEY key} does not exist,
    * or a {@link VALUE value} for the given {@link KEY key} is {@literal null}.
    * @see #put(Comparable, Object)
    */
-  VALUE get(KEY key);
+  default @Nullable VALUE get(@NotNull KEY key) {
+
+    return key != null ? StreamUtils.stream(this)
+      .filter(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key))
+      .findFirst()
+      .map(Cache.Entry::getValue)
+      .orElse(null)
+      : null;
+  }
 
   /**
    * Gets all {@link VALUE values} stored in this {@link Cache} mapped to {@link KEY keys} in the given array.
