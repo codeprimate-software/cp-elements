@@ -37,6 +37,7 @@ import static org.mockito.Mockito.withSettings;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
@@ -899,6 +900,36 @@ public class CacheUnitTests {
     verify(this.cache, times(3)).contains(eq("mockKey"));
     verify(this.cache, times(1)).get(eq("mockKey"));
     verify(this.cache, times(1)).getName();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void keysReturnsKeysFromAllCacheEntries() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
+      .when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).keys();
+
+    assertThat(this.cache.keys()).containsExactlyInAnyOrder("keyOne", "keyTwo");
+
+    verify(this.cache, times(1)).keys();
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void keysFromEmptyCacheReturnsEmptySet() {
+
+    doReturn(CollectionUtils.emptyIterable().spliterator()).when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).keys();
+
+    Set<?> keys = this.cache.keys();
+
+    assertThat(keys).isNotNull();
+    assertThat(keys).isEmpty();
+
+    verify(this.cache, times(1)).keys();
+    verify(this.cache, times(1)).spliterator();
     verifyNoMoreInteractions(this.cache);
   }
 

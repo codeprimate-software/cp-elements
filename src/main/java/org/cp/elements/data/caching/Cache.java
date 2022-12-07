@@ -523,7 +523,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * in this {@link Cache}.
    * @see java.util.Set
    */
-  Set<KEY> keys();
+  default Set<KEY> keys() {
+
+    return StreamUtils.stream(this)
+      .map(Cache.Entry::getKey)
+      .collect(Collectors.toSet());
+  }
 
   /**
    * Puts the {@link VALUE value} in this {@link Cache} mapped to the given {@link KEY key}.
