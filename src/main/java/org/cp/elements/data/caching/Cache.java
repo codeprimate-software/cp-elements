@@ -73,6 +73,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * @see java.lang.Iterable
  * @see java.util.Map
  * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
+ * @see org.cp.elements.data.caching.support.CachingTemplate
  * @see org.cp.elements.data.caching.AbstractCache
  * @see org.cp.elements.data.caching.Cache.Entry
  * @see org.cp.elements.lang.Identifiable
@@ -97,9 +98,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Determines whether this {@link Cache} contains any entries.
+   * Determines whether this {@link Cache} contains any {@link Cache.Entry entries}.
    *
-   * @return a boolean value indicating whether this {@link Cache} contains any entries.
+   * @return a boolean value indicating whether this {@link Cache} contains any {@link Cache.Entry entries}.
    * @see #size()
    */
   @NullSafe
@@ -108,7 +109,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Clears the entire contents of (all entries from) this {@link Cache}.
+   * Clears the entire contents of (all {@link Cache.Entry entries} from) this {@link Cache}.
    *
    * @see #evictAll(Iterable)
    * @see #keys()
@@ -119,20 +120,21 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Determines whether this {@link Cache} contains an entry mapped to the given {@link KEY key}.
+   * Determines whether this {@link Cache} contains an {@link Cache.Entry} mapped to the given {@link KEY key}.
    *
    * @param key {@link KEY key} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains an entry mapped to
+   * @return a boolean value indicating whether this {@link Cache} contains an {@link Cache.Entry} mapped to
    * the given {@link KEY key}.
    */
   boolean contains(KEY key);
 
   /**
-   * Determines whether this {@link Cache} contains entries for each {@link KEY key} in the given array.
+   * Determines whether this {@link Cache} contains {@link Cache.Entry entries} for each {@link KEY key}
+   * in the given array.
    *
    * @param keys array of {@link KEY keys} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains entries for each {@link KEY key}
-   * in the given array.
+   * @return a boolean value indicating whether this {@link Cache} contains {@link Cache.Entry entries}
+   * for each {@link KEY key} in the given array.
    * @see #containsAll(Iterable)
    * @see #contains(Comparable)
    */
@@ -144,11 +146,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Determines whether this {@link Cache} contains entries for each {@link KEY key} in the {@link Iterable} object.
+   * Determines whether this {@link Cache} contains {@link Cache.Entry entries} for each {@link KEY key}
+   * in the {@link Iterable} object.
    *
    * @param keys {@link Iterable} of {@link KEY keys} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains entries for each {@link KEY key}
-   * in the {@link Iterable} object.
+   * @return a boolean value indicating whether this {@link Cache} contains {@link Cache.Entry entries}
+   * for each {@link KEY key} in the {@link Iterable} object.
    * @see #containsAll(Comparable[])
    * @see #contains(Comparable)
    * @see java.lang.Iterable
@@ -160,11 +163,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Determines whether this {@link Cache} contains at least 1 entry mapped to a {@link KEY key} from the given array.
+   * Determines whether this {@link Cache} contains at least 1 {@link Cache.Entry} mapped to a {@link KEY key}
+   * from the given array.
    *
    * @param keys array of {@link KEY keys} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains at least 1 entry mapped to
-   * a {@link KEY key} from the given array.
+   * @return a boolean value indicating whether this {@link Cache} contains at least 1 {@link Cache.Entry}
+   * mapped to a {@link KEY key} from the given array.
    * @see #containsAny(Iterable)
    * @see #contains(Comparable)
    */
@@ -176,12 +180,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Determines whether this {@link Cache} contains at least 1 entry mapped to a {@link KEY key}
+   * Determines whether this {@link Cache} contains at least 1 {@link Cache.Entry} mapped to a {@link KEY key}
    * from the given {@link Iterable}.
    *
    * @param keys {@link Iterable} of {@link KEY keys} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains at least 1 entry mapped to
-   * a {@link KEY key} from the given {@link Iterable}.
+   * @return a boolean value indicating whether this {@link Cache} contains at least 1 {@link Cache.Entry}
+   * mapped to a {@link KEY key} from the given {@link Iterable}.
    * @see #containsAny(Comparable[])
    * @see #contains(Comparable)
    * @see java.lang.Iterable
@@ -193,16 +197,17 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Removes the {@link Cache.Entry entry} mapped to the given {@link KEY key} in this {@link Cache}.
+   * Removes the {@link Cache.Entry} mapped to the given {@link KEY key} in this {@link Cache}.
    *
-   * @param key {@link KEY key} identifying the entry to remove (evict) from this {@link Cache}.
+   * @param key {@link KEY key} identifying the {@link Cache.Entry} to remove (evict) from this {@link Cache}.
    */
   void evict(KEY key);
 
   /**
-   * Removes all entries mapped to {@link KEY keys} in the given array from this {@link Cache}.
+   * Removes all {@link Cache.Entry entries} mapped to {@link KEY keys} in the given array from this {@link Cache}.
    *
-   * @param keys array of {@link KEY keys} identifying entries to remove (evict) from this {@link Cache}.
+   * @param keys array of {@link KEY keys} identifying {@link Cache.Entry entries} to remove (evict)
+   * from this {@link Cache}.
    * @see #evictAll(Iterable)
    * @see #evict(Comparable)
    */
@@ -217,9 +222,11 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Removes all entries mapped to {@link KEY keys} in the given {@link Iterable} from this {@link Cache}.
+   * Removes all {@link Cache.Entry entries} mapped to {@link KEY keys} in the given {@link Iterable}
+   * from this {@link Cache}.
    *
-   * @param keys {@link Iterable} of {@link KEY keys} identifying entries to remove (evict) from this {@link Cache}.
+   * @param keys {@link Iterable} of {@link KEY keys} identifying {@link Cache.Entry entries} to remove (evict)
+   * from this {@link Cache}.
    * @see #evictAll(Comparable[])
    * @see #evict(Comparable)
    * @see java.lang.Iterable
@@ -255,7 +262,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * Gets the {@link VALUE value} stored in this {@link Cache} mapped to the given {@link KEY}.
    *
    * Returns {@literal null} if the {@link VALUE value} mapped to the given {@link KEY key} is {@literal null},
-   * or this {@link Cache} does not contain an entry mapped to the given {@link KEY key}.
+   * or this {@link Cache} does not contain an {@link Cache.Entry} mapped to the given {@link KEY key}.
    *
    * @param key {@link KEY key} mapped to the {@link VALUE value} returned.
    * @return the {@link VALUE value} mapped to the given {@link KEY key}, or return {@literal null}
@@ -463,7 +470,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Gets the {@link Cache.Entry} mapping from this {@link Cache} for the given {@link KEY}.
+   * Gets the {@link Cache.Entry}, key/value mapping from this {@link Cache} for the given {@link KEY}.
    *
    * The {@link Cache.Entry} returned by this method is considered {@literal attached}. Any changes to
    * the key/value mapping in this {@link Cache} are reflected in the {@link Cache.Entry} returned for
@@ -510,7 +517,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * Returns all {@link KEY keys} in this {@link Cache}.
    *
    * @return a {@link Set} containing all the {@link KEY keys} from this {@link Cache}.
-   * Returns an {@link Set#isEmpty() empty Set} if there are no entries in this {@link Cache}.
+   * Returns an {@link Set#isEmpty() empty Set} if there are no {@link Cache.Entry entries}
+   * in this {@link Cache}.
    * @see java.util.Set
    */
   Set<KEY> keys();
@@ -528,7 +536,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   /**
    * Puts the given, required {@link Cache.Entry} in this {@link Cache}.
    *
-   * @param cacheEntry {@link Cache.Entry} to stare in this {@link Cache.Entry};
+   * @param cacheEntry {@link Cache.Entry} to stare in this {@link Cache};
    * must not be {@literal null}.
    * @throws IllegalArgumentException if the {@link Cache.Entry} is {@literal null}.
    * @see org.cp.elements.data.caching.Cache.Entry
@@ -626,7 +634,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
 
   /**
    * Puts the {@link KEY key} mapped to the {@link VALUE value} in this {@link Cache}
-   * iff an entry with the given {@link KEY key} does not already exist.
+   * only if a {@link Cache.Entry} with the given {@link KEY key} does not already exist.
    *
    * @param key {@link KEY} used to map the {@link VALUE value}; must not be {@literal null}.
    * @param value {@link VALUE} to put in this {@link Cache} mapped to the given {@link KEY key}.
@@ -690,7 +698,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
 
   /**
    * Puts the {@link KEY key} mapped to the {@link VALUE new value} in this {@link Cache}
-   * iff an entry with the given {@link KEY key} already exists in this {@link Cache}.
+   * only if an {@link Cache.Entry} with the given {@link KEY key} already exists in this {@link Cache}.
    *
    * @param key {@link KEY key} mapped to the {@link VALUE new value} in this {@link Cache};
    * must not be {@literal null}.
@@ -754,9 +762,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   }
 
   /**
-   * Determines the number of entries contained in this {@link Cache}.
+   * Determines the number of {@link Cache.Entry entries} contained in this {@link Cache}.
    *
-   * @return an {@link Integer} value with the number of entries contained in this {@link Cache}.
+   * @return an {@link Integer} value with the number of {@link Cache.Entry entries} contained in this {@link Cache}.
    * @see #iterator()
    * @see #isEmpty()
    */
@@ -767,7 +775,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
   /**
    * Returns this {@link Cache} as an instance of {@link Map}.
    *
-   * @return a {@link Map} containing all the entries in this {@link Cache}.
+   * @return a {@link Map} containing all the {@link Cache.Entry entries} in this {@link Cache}.
    * @see java.util.Map
    * @see #keys()
    */
