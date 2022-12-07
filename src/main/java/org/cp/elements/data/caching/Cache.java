@@ -55,10 +55,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * the following {@link Cache} operations:
  *
  * <li>
- *   <ul>{@link #contains(Comparable)}</ul>
  *   <ul>{@link #evict(Comparable)}</ul>
  *   <ul>{@link #get(Comparable)}</ul>
- *   <ul>{@link #keys()}</ul>
  *   <ul>{@link #put(Comparable, Object)}</ul>
  * </li>
  *
@@ -126,7 +124,11 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * @return a boolean value indicating whether this {@link Cache} contains an {@link Cache.Entry} mapped to
    * the given {@link KEY key}.
    */
-  boolean contains(KEY key);
+  default boolean contains(KEY key) {
+
+    return key != null && StreamUtils.stream(this)
+      .anyMatch(cacheEntry -> ObjectUtils.equals(cacheEntry.getKey(), key));
+  }
 
   /**
    * Determines whether this {@link Cache} contains {@link Cache.Entry entries} for each {@link KEY key}

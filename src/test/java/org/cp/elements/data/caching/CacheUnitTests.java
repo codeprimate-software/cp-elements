@@ -185,6 +185,44 @@ public class CacheUnitTests {
   }
 
   @Test
+  public void containsKeyWhenKeyIsPresentReturnsTrue() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry("keyOne", "A"), mockCacheEntry("keyTwo", "B")).spliterator())
+      .when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).contains(any());
+
+    assertThat(this.cache.contains("keyTwo")).isTrue();
+
+    verify(this.cache, times(1)).contains(eq("keyTwo"));
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void containsNonExistingKeyReturnsFalse() {
+
+    doReturn(ArrayUtils.asIterable(mockCacheEntry("testKey", "A")).spliterator()).when(this.cache).spliterator();
+    doCallRealMethod().when(this.cache).contains(any());
+
+    assertThat(this.cache.contains("mockKey")).isFalse();
+
+    verify(this.cache, times(1)).contains(eq("mockKey"));
+    verify(this.cache, times(1)).spliterator();
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
+  public void containsNullKeyReturnsFalse() {
+
+    doCallRealMethod().when(this.cache).contains(any());
+
+    assertThat(this.cache.contains(null)).isFalse();
+
+    verify(this.cache, times(1)).contains(isNull());
+    verifyNoMoreInteractions(this.cache);
+  }
+
+  @Test
   public void containsAllWithArrayWhenAllKeysArePresentReturnsTrue() {
 
     doReturn(true).when(this.cache).contains(any());
