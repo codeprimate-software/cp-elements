@@ -78,11 +78,6 @@ public class AbstractCacheUnitTests {
   }
 
   @Test
-  public void containsKeyReturnsFalse() {
-    assertThat(this.cache.contains(1)).isFalse();
-  }
-
-  @Test
   public void evictionIsNotSupported() {
 
     assertThatUnsupportedOperationException()
@@ -98,13 +93,6 @@ public class AbstractCacheUnitTests {
       .isThrownBy(args -> this.cache.get(1))
       .havingMessage("Get is not supported")
       .withNoCause();
-  }
-
-  @Test
-  public void keysReturnsEmptySet() {
-
-    assertThat(this.cache.keys()).isNotNull();
-    assertThat(this.cache.keys()).isEmpty();
   }
 
   @Test

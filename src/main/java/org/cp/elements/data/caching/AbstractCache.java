@@ -17,9 +17,7 @@ package org.cp.elements.data.caching;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -80,20 +78,6 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   @Override
   public void clear() {
     throw new UnsupportedOperationException("Clear is not supported");
-  }
-
-  /**
-   * Determines whether this {@link Cache} contains an entry mapped to the given {@link KEY key}.
-   *
-   * Returns {@literal false} by default.
-   *
-   * @param key {@link KEY key} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains an entry mapped to
-   * the given {@link KEY key}.
-   */
-  @Override
-  public boolean contains(KEY key) {
-    return false;
   }
 
   /**
@@ -164,20 +148,6 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
         return AttachedCacheEntry.from(AbstractCache.this, this.keys.next());
       }
     };
-  }
-
-  /**
-   * Returns all {@link KEY keys} in this {@link Cache}.
-   *
-   * Returns {@link Collections#emptySet() empty Set} by default.
-   *
-   * @return a {@link Set} containing all the {@link KEY keys} from this {@link Cache}.
-   * Returns an {@link Set#isEmpty() empty Set} if there are no entries in this {@link Cache}.
-   * @see java.util.Set
-   */
-  @Override
-  public Set<KEY> keys() {
-    return Collections.emptySet();
   }
 
   /**
@@ -348,6 +318,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
      * @throws IllegalArgumentException if the {@link KEY key} is {@literal null}.
      */
     public SimpleCacheEntry(@NotNull KEY key, @Nullable VALUE value) {
+
       this.key = ObjectUtils.requireObject(key, "Key is required");
       this.value = value;
     }
