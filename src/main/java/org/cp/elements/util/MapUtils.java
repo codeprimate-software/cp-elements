@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -36,22 +35,25 @@ import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * An abstract utility {@link Class} providing methods and functionality for working with the Java Collections Framework
- * and specifically the {@link Map} class.
+ * Abstract base class providing functionality and utility methods for working with the Java Collections Framework
+ * and specifically processing {@link Map Maps}.
  *
  * @author John J. Blum
  * @see java.util.Collections
- * @see java.util.Map
  * @see java.util.Map.Entry
- * @see java.util.function.Predicate
- * @see java.util.stream.Collectors
- * @see org.cp.elements.lang.Constants
- * @see org.cp.elements.lang.FilteringTransformer
- * @see org.cp.elements.lang.Transformer
+ * @see java.util.Map
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class MapUtils {
+
+  public static final Predicate<Map.Entry<Object, Object>> NO_NULL_ENTRIES = Objects::nonNull;
+
+  public static final Predicate<Map.Entry<Object, Object>> NO_NULL_KEYS =
+    mapEntry -> Objects.nonNull(mapEntry.getKey());
+
+  public static final Predicate<Map.Entry<Object, Object>> NO_NULL_VALUES =
+    mapEntry -> Objects.nonNull(mapEntry.getValue());
 
   /**
    * Determines the number of {@link Map.Entry entries} in the {@link Map}.
@@ -84,7 +86,7 @@ public abstract class MapUtils {
    * @see java.util.function.Predicate
    * @see java.util.Map
    */
-  public static <K, V> long count(@Nullable Map<K, V> map, @NotNull Predicate<Entry<K, V>> predicate) {
+  public static <K, V> long count(@Nullable Map<K, V> map, @NotNull Predicate<Map.Entry<K, V>> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 

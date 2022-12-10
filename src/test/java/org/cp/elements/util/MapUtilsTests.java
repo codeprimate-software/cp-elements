@@ -17,18 +17,25 @@ package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+
+import org.junit.Test;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link MapUtils}.
@@ -41,6 +48,17 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class MapUtilsTests {
+
+  @SuppressWarnings("unchecked")
+  private <K, V> Map.Entry<K, V> mockMapEntry(K key, V value) {
+
+    Map.Entry<K, V> mockMapEntry = mock(Map.Entry.class);
+
+    doReturn(key).when(mockMapEntry).getKey();
+    doReturn(value).when(mockMapEntry).getValue();
+
+    return mockMapEntry;
+  }
 
   @Test
   public void countMapReturnsSize() {
@@ -172,7 +190,7 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    Map<String, Integer> resultMap = MapUtils.filter(map, (entry) -> true);
+    Map<String, Integer> resultMap = MapUtils.filter(map, entry -> true);
 
     assertThat(resultMap).isNotNull();
     assertThat(resultMap).isNotSameAs(map);
@@ -191,7 +209,7 @@ public class MapUtilsTests {
     map.put("one", 1);
     map.put("two", 2);
 
-    Map<String, Integer> resultMap = MapUtils.filter(map, (entry) -> false);
+    Map<String, Integer> resultMap = MapUtils.filter(map, entry -> false);
 
     assertThat(resultMap).isNotNull();
     assertThat(resultMap).isNotSameAs(map);
@@ -202,7 +220,7 @@ public class MapUtilsTests {
   public void filterEmptyMap() {
 
     Map<Object, Object> emptyMap = Collections.emptyMap();
-    Map<Object, Object> resultMap = MapUtils.filter(emptyMap, (entry) -> true);
+    Map<Object, Object> resultMap = MapUtils.filter(emptyMap, entry -> true);
 
     assertThat(resultMap).isNotNull();
     assertThat(resultMap).isNotSameAs(emptyMap);
@@ -222,9 +240,31 @@ public class MapUtilsTests {
   public void filterWithNullMap() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> MapUtils.filter(null, (entry) -> true))
+      .isThrownBy(() -> MapUtils.filter(null, entry -> true))
       .withMessage("Map is required")
       .withNoCause();
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void filterMapWithNullEntriesAndNullKeysOrNullValues() {
+
+    Map<Object, Object> mockMap = mock(Map.class);
+
+    Set<Entry<Object, Object>> mapEntrySet = CollectionUtils.asSet(mockMapEntry(1, "A"), null,
+      mockMapEntry(2, null), null, null, mockMapEntry(null, "B"), mockMapEntry(3, "C"));
+
+    doReturn(mapEntrySet).when(mockMap).entrySet();
+
+    Map<Object, Object> actualMap =
+      MapUtils.filter(mockMap, MapUtils.NO_NULL_ENTRIES.and(MapUtils.NO_NULL_KEYS).and(MapUtils.NO_NULL_VALUES));
+
+    assertThat(actualMap).isNotNull();
+    assertThat(actualMap).hasSize(2);
+    assertThat(actualMap).isEqualTo(MapBuilder.newHashMap().put(1, "A").put(3, "C").build());
+
+    verify(mockMap, times(1)).entrySet();
+    verifyNoMoreInteractions(mockMap);
   }
 
   @Test
