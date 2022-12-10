@@ -16,14 +16,29 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -34,10 +49,15 @@ import org.cp.elements.util.ArrayUtils;
  *
  * @author John J. Blum
  * @see org.junit.Test
+ * @see org.mockito.Mockito
  * @see org.cp.elements.lang.StringUtils
  * @since 1.0.0
  */
 public class StringUtilsTests {
+
+  private <T> Iterable<T> toIterable(Iterator<T> iterator) {
+    return () -> iterator;
+  }
 
   @Test
   public void capitalizeCharacter() {
@@ -730,6 +750,106 @@ public class StringUtilsTests {
   }
 
   @Test
+  public void toIteratorFromCharacterIterator() {
+
+    AtomicInteger index = new AtomicInteger(0);
+
+    CharacterIterator mockCharacterIterator = mock(CharacterIterator.class);
+
+    doReturn(3).when(mockCharacterIterator).getEndIndex();
+
+    doAnswer(invocation -> index.get()).when(mockCharacterIterator).getIndex();
+
+    doAnswer(invocation -> {
+      index.set(invocation.getArgument(0));
+      switch (index.get()) {
+        case 0: return 'A';
+        case 1: return 'B';
+        case 2: return 'C';
+        default: return CharacterIterator.DONE;
+      }
+    }).when(mockCharacterIterator).setIndex(anyInt());
+
+    Iterator<Character> iterator = StringUtils.toIterator(mockCharacterIterator);
+
+    assertThat(iterator).isNotNull();
+    assertThat(iterator).hasNext();
+    assertThat(toIterable(iterator)).containsExactly('A', 'B', 'C');
+    assertThat(iterator).isExhausted();
+
+    verify(mockCharacterIterator, times(6)).getIndex();
+    verify(mockCharacterIterator, times(6)).getEndIndex();
+
+    IntStream.range(0, 3).forEach(idx ->
+      verify(mockCharacterIterator, times(1)).setIndex(eq(idx)));
+
+    verifyNoMoreInteractions(mockCharacterIterator);
+  }
+
+  @Test
+  public void toIteratorFromEmptyCharacterIteratorThrowsNoSuchElementExceptionOnNext() {
+
+    CharacterIterator mockCharacterIterator = mock(CharacterIterator.class);
+
+    doReturn(0).when(mockCharacterIterator).getIndex();
+    doReturn(0).when(mockCharacterIterator).getEndIndex();
+    doReturn(CharacterIterator.DONE).when(mockCharacterIterator).setIndex(anyInt());
+
+    Iterator<Character> characterIterator = StringUtils.toIterator(mockCharacterIterator);
+
+    assertThat(characterIterator).isNotNull();
+    assertThat(characterIterator).isExhausted();
+
+    assertThatExceptionOfType(NoSuchElementException.class)
+      .isThrownBy(characterIterator::next)
+      .withMessage("No more characters available")
+      .withNoCause();
+
+    verify(mockCharacterIterator, times(1)).getIndex();
+    verify(mockCharacterIterator, times(1)).getEndIndex();
+    verify(mockCharacterIterator, times(1)).setIndex(eq(0));
+    verifyNoMoreInteractions(mockCharacterIterator);
+  }
+
+  @Test
+  public void toIteratorFromStringCharacterIterator() {
+
+    String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    StringCharacterIterator stringCharacterIterator = new StringCharacterIterator(alphabet);
+
+    IntStream.range(0, alphabet.length()).forEach(index -> {
+      char actualChar = index == 0 ? stringCharacterIterator.first() : stringCharacterIterator.next();
+      char expectedChar = alphabet.charAt(index);
+      assertThat(actualChar).isEqualTo(expectedChar);
+    });
+
+    assertThat(stringCharacterIterator.first()).isEqualTo('A');
+
+    Iterator<Character> characterIterator = StringUtils.toIterator(stringCharacterIterator);
+
+    assertThat(characterIterator).isNotNull();
+    assertThat(characterIterator).hasNext();
+
+    StringBuilder stringBuilder = new StringBuilder();
+
+    characterIterator.forEachRemaining(stringBuilder::append);
+
+    assertThat(characterIterator).isExhausted();
+    assertThat(stringBuilder.toString()).isEqualTo(alphabet);
+  }
+
+  @Test
+  public void toIteratorFromNullCharacterIterator() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> StringUtils.toIterator(null))
+      .withMessage("CharacterIterator is required")
+      .withNoCause();
+  }
+
+  @Test
+  @SuppressWarnings("all")
   public void testToLowerCase() {
 
     assertNull(StringUtils.toLowerCase(null));

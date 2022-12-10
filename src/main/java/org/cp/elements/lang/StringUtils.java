@@ -16,8 +16,11 @@
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newNoSuchElementException;
 
+import java.text.CharacterIterator;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -570,6 +573,43 @@ public abstract class StringUtils {
   @NullSafe
   public static char[] toCharArray(String value) {
     return value != null ? value.toCharArray() : EMPTY_CHAR_ARRAY;
+  }
+
+  /**
+   * Converts the given, required {@link CharacterIterator} into regular {@link Iterator}.
+   *
+   * @param characterIterator {@link CharacterIterator} to convert into a {@link Iterator;
+   * must not be {@literal null}.
+   * @return an {@link Iterator} backed by the given {@link CharacterIterator}.
+   * @throws IllegalArgumentException if {@link CharacterIterator} is {@literal null}.
+   * @see java.text.CharacterIterator
+   * @see java.util.Iterator
+   */
+  public static @NotNull Iterator<Character> toIterator(@NotNull CharacterIterator characterIterator) {
+
+    Assert.notNull(characterIterator, "CharacterIterator is required");
+
+    return new Iterator<Character>() {
+
+      int index = 0;
+
+      @Override
+      public boolean hasNext() {
+        return characterIterator.getIndex() + 1 < characterIterator.getEndIndex();
+      }
+
+      @Override
+      public Character next() {
+
+        char character = characterIterator.setIndex(this.index++);
+
+        if (character == CharacterIterator.DONE) {
+          throw newNoSuchElementException("No more characters available");
+        }
+
+        return character;
+      }
+    };
   }
 
   /**
