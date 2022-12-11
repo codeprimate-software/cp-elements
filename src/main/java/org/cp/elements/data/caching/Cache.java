@@ -17,6 +17,7 @@ package org.cp.elements.data.caching;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheNotFoundException;
 import static org.cp.elements.lang.LangExtensions.given;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -520,11 +521,6 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
       public @NotNull Cache<KEY, VALUE> getSource() {
         return assertCacheEntryExists(Cache.this);
       }
-
-      @Override
-      public @NotNull VALUE getValue() {
-        return getSource().get(getKey());
-      }
     };
 
     return contains(key) ? cacheEntrySupplier.get() : null;
@@ -824,8 +820,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     /**
      * Factory method used to copy a given, required {@link Cache.Entry} as a new instance.
      *
-     * The resulting {@link Cache.Entry} will be {@link #materialize() materialized} and will be effectively
-     * independent of the {@link Cache.Entry} on which the new instance is based.
+     * The resulting {@link Cache.Entry} will be {@link #materialize() materialized} and therefore,
+     * will effectively be independent of the {@link Cache.Entry} on which the new instance is based.
+     * The {@link #setValue(Object)} method is not supported.
      *
      * @param <KEY> {@link Class type} of the {@link Cache.Entry#getKey() key}.
      * @param <VALUE> {@link Class type} of the {@link Cache.Entry#getValue()} value}.
@@ -848,13 +845,18 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
         }
 
         @Override
-        public Cache<KEY, VALUE> getSource() {
+        public @NotNull Cache<KEY, VALUE> getSource() {
           return cacheEntry.getSource();
         }
 
         @Override
         public @Nullable VALUE getValue() {
           return this.cacheEntryValue;
+        }
+
+        @Override
+        public void setValue(VALUE value) {
+          throw newUnsupportedOperationException("Value for Cache.Entry(%s) copy cannot be set", getKey());
         }
 
         @Override
@@ -869,7 +871,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      *
      * @param <KEY> {@link Class type} of the {@link Map.Entry} key.
      * @param <VALUE> {@link Class type} of the {@link Map.Entry} value.
-     * @param mapEntry {@link Map.Entry} to copy an dconvert into a {@link Cache.Entry};
+     * @param mapEntry {@link Map.Entry} to copy an convert into a {@link Cache.Entry};
      * must not be {@literal null}.
      * @throws IllegalArgumentException if the {@link Map.Entry} is {@literal null}.
      * @return a new {@link Cache.Entry}.
@@ -900,6 +902,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
         }
 
         @Override
+        public void setValue(VALUE value) {
+          throw newUnsupportedOperationException("Value for Cache.Entry(%s) sourced from Map.Entry cannot be set",
+            getKey());
+        }
+
+        @Override
         public Entry<KEY, VALUE> materialize() {
           return this;
         }
@@ -920,7 +928,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      * @throws CacheNotFoundException by default.
      */
     @Override
-    default Cache<KEY, VALUE> getSource() {
+    default @NotNull Cache<KEY, VALUE> getSource() {
       throw newCacheNotFoundException("Cache cannot be determined");
     }
 
