@@ -17,7 +17,9 @@ package org.cp.elements.data.caching;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -70,8 +72,8 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    *
    * This {@link Cache} operation is not supported by default since it can be a very costly operation,
    * especially in a distributed context. Caching providers and implementors should therefore provide
-   * a custom and efficient implementation to clear the contents/entries from this {@link Cache},
-   * which is likely to be data store dependent.
+   * a custom and efficient implementation to clear the contents and {@link Cache.Entry entries} from
+   * this {@link Cache}, which is likely to be data store dependent.
    *
    * @throws UnsupportedOperationException by default.
    */
@@ -125,8 +127,12 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
   /**
    * Returns an {@link Iterator} iterating over the {@link Cache.Entry entries} in this {@link Cache}.
    *
+   * When extending from {@link AbstractCache}, caching providers must be careful to either override
+   * the {@link #keys()} or this {@literal iterator} method, since {@literal iterator()} calls {@link #keys()}
+   * and {@link #keys()} calls {@literal iterator()}, which will end up in infinite recursion.
+   *
    * @return an {@link Iterator} iterating over the {@link Cache.Entry entries} in this {@link Cache}.
-   * @see AttachedCacheEntry
+   * @see org.cp.elements.data.caching.AbstractCache.AttachedCacheEntry
    * @see org.cp.elements.data.caching.Cache.Entry
    * @see java.util.Iterator
    * @see #keys()
@@ -148,6 +154,22 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
         return AttachedCacheEntry.from(AbstractCache.this, this.keys.next());
       }
     };
+  }
+
+  /**
+   * Returns all {@link KEY keys} in this {@link Cache}.
+   *
+   * Returns an {@link Collections#emptySet()} by default.
+   *
+   * @return a {@link Set} containing all the {@link KEY keys} from this {@link Cache}.
+   * Returns an {@link Set#isEmpty() empty Set} if there are no {@link Cache.Entry entries}
+   * in this {@link Cache}.
+   * @see java.util.Set
+   * @see #iterator()
+   */
+  @Override
+  public Set<KEY> keys() {
+    return Collections.emptySet();
   }
 
   /**

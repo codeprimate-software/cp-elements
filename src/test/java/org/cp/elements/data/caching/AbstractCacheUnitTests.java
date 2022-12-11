@@ -18,6 +18,8 @@ package org.cp.elements.data.caching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
 
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -93,6 +95,15 @@ public class AbstractCacheUnitTests {
       .isThrownBy(args -> this.cache.get(1))
       .havingMessage("Get is not supported")
       .withNoCause();
+  }
+
+  @Test
+  public void keysReturnsEmptSet() {
+
+    Set<?> keys = this.cache.keys();
+
+    assertThat(keys).isNotNull();
+    assertThat(keys).isEmpty();
   }
 
   @Test
