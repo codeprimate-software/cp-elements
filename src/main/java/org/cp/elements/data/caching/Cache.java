@@ -17,7 +17,6 @@ package org.cp.elements.data.caching;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newCacheNotFoundException;
 import static org.cp.elements.lang.LangExtensions.given;
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -955,10 +954,10 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      * Materializes this {@link Cache.Entry} into a static, unchanging {@link KEY key} / {@link VALUE value} pair.
      *
      * @return this {@link Cache.Entry} as a static, unchanging {@link KEY key} / {@link VALUE value} pair.
-     * @throws UnsupportedOperationException by default.
+     * @see org.cp.elements.data.caching.Cache.Entry#copy(Entry)
      */
-    default Entry<KEY, VALUE> materialize() {
-      throw newUnsupportedOperationException("Cache.Entry cannot be materialized");
+    default @NotNull Cache.Entry<KEY, VALUE> materialize() {
+      return copy(this);
     }
   }
 }

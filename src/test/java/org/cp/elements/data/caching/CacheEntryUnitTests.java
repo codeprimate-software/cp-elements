@@ -26,10 +26,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 
@@ -230,18 +232,33 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  public void defaultMaterializeThrowsUnsupportedOperationException() {
+  public void defaultMaterializeCopiesCacheEntry() {
+
+    Cache<?, ?> mockCache = mock(Cache.class);
 
     Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
 
+    doReturn(mockCache).when(mockCacheEntry).getSource();
+    doReturn("testKey").when(mockCacheEntry).getKey();
+    doReturn("mockValue").when(mockCacheEntry).getValue();
     doCallRealMethod().when(mockCacheEntry).materialize();
 
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(mockCacheEntry::materialize)
-      .withMessage("Cache.Entry cannot be materialized")
-      .withNoCause();
+    Cache.Entry<?, ?> materializedCacheEntry = mockCacheEntry.materialize();
+
+    assertThat(materializedCacheEntry).isNotNull();
+    assertThat(materializedCacheEntry).isNotSameAs(mockCacheEntry);
+
+    IntStream.range(0, 10).forEach(count -> {
+      assertThat(materializedCacheEntry.getSource()).isSameAs(mockCache);
+      assertThat(materializedCacheEntry.getKey()).isEqualTo("testKey");
+      assertThat(materializedCacheEntry.getValue()).isEqualTo("mockValue");
+    });
 
     verify(mockCacheEntry, times(1)).materialize();
+    verify(mockCacheEntry, times(10)).getSource();
+    verify(mockCacheEntry, times(10)).getKey();
+    verify(mockCacheEntry, times(1)).getValue();
     verifyNoMoreInteractions(mockCacheEntry);
+    verifyNoInteractions(mockCache);
   }
 }
