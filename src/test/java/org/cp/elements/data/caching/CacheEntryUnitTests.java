@@ -212,6 +212,38 @@ public class CacheEntryUnitTests {
 
   @Test
   @SuppressWarnings("unchecked")
+  public void defaultGetValueWithDefaultValueReturnsCacheEntryValue() {
+
+    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn("test").when(mockCacheEntry).getValue();
+    doCallRealMethod().when(mockCacheEntry).getValue(any());
+
+    assertThat(mockCacheEntry.getValue("mock")).isEqualTo("test");
+
+    verify(mockCacheEntry, times(1)).getValue(eq("mock"));
+    verify(mockCacheEntry, times(1)).getValue();
+    verifyNoMoreInteractions(mockCacheEntry);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void defaultGetValueWithDefaultValueReturnsDefaultValue() {
+
+    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn(null).when(mockCacheEntry).getValue();
+    doCallRealMethod().when(mockCacheEntry).getValue(any());
+
+    assertThat(mockCacheEntry.getValue("mock")).isEqualTo("mock");
+
+    verify(mockCacheEntry, times(1)).getValue(eq("mock"));
+    verify(mockCacheEntry, times(1)).getValue();
+    verifyNoMoreInteractions(mockCacheEntry);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
   public void defaultSetValueSetsKeyWithCachePut() {
 
     Cache<String, Object> mockCache = mock(Cache.class);

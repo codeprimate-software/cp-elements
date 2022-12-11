@@ -947,6 +947,20 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     }
 
     /**
+     * Gets the current {@link VALUE value} of this {@link Cache.Entry} or returns the given {@link VALUE default value}
+     * if the {@link VALUE} of this {@link Cache.Entry} is {@literal null}.
+     *
+     * @param defaultValue {@link VALUE default value} to return if this {@link Cache.Entry entry's}
+     * {@link #getValue() value} is {@literal null}.
+     * @return the {@link VALUE value} of this {@link Cache.Entry} or the given {@link VALUE default value}
+     * if the {@link VALUE} of this {@link Cache.Entry} is {@literal null}.
+     */
+    @SuppressWarnings("unchecked")
+    default @Nullable VALUE getValue(@Nullable VALUE defaultValue) {
+      return ObjectUtils.returnFirstNonNullValue(getValue(), defaultValue);
+    }
+
+    /**
      * Sets the {@link VALUE value} of this {@link Cache.Entry} and key/value mapping in the {@link Cache}.
      *
      * @param value new {@link VALUE} to set the {@link Cache.Entry} and key/value mapping to in the {@link Cache}.
