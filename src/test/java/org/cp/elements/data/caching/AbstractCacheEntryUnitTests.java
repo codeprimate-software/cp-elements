@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -26,11 +27,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.Test;
 
 import org.cp.elements.data.caching.AbstractCache.AbstractEntry;
 import org.cp.elements.data.caching.AbstractCache.AttachedCacheEntry;
 import org.cp.elements.data.caching.AbstractCache.SimpleCacheEntry;
+import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 
 /**
@@ -84,17 +88,22 @@ public class AbstractCacheEntryUnitTests {
 
     Cache<Integer, String> mockCache = mock(Cache.class);
 
-    doReturn("A", "B", "C").when(mockCache).get(any());
+    AtomicReference<String> cacheEntryValue = new AtomicReference<>("A");
+
+    doAnswer(invocation -> ObjectUtils.equals(invocation.getArgument(0), 1) ? cacheEntryValue.get() : null)
+      .when(mockCache).get(any());
 
     AbstractEntry<Integer, String> cacheEntry = new TestEntry<>(mockCache, 1);
 
     assertThat(cacheEntry.getSource()).isSameAs(mockCache);
     assertThat(cacheEntry.getKey()).isEqualTo(1);
     assertThat(cacheEntry.getValue()).isEqualTo("A");
-    assertThat(cacheEntry.getValue()).isEqualTo("B");
-    assertThat(cacheEntry.getValue()).isEqualTo("C");
 
-    verify(mockCache, times(3)).get(eq(1));
+    cacheEntryValue.set("B");
+
+    assertThat(cacheEntry.getValue()).isEqualTo("B");
+
+    verify(mockCache, times(2)).get(eq(1));
     verifyNoMoreInteractions(mockCache);
   }
 

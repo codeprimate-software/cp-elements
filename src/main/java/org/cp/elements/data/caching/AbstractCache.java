@@ -207,7 +207,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    * @see org.cp.elements.data.caching.Cache.Entry
    * @see java.lang.Comparable
    */
-  protected static class AbstractEntry<KEY extends Comparable<KEY>, VALUE> implements Cache.Entry<KEY, VALUE> {
+  protected static abstract class AbstractEntry<KEY extends Comparable<KEY>, VALUE> implements Cache.Entry<KEY, VALUE> {
 
     private final Cache<KEY, VALUE> cache;
 
@@ -237,16 +237,6 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
     @Override
     public @NotNull KEY getKey() {
       return this.key;
-    }
-
-    @Override
-    public @Nullable VALUE getValue() {
-      return getSource().get(getKey());
-    }
-
-    @Override
-    public @NotNull Cache.Entry<KEY, VALUE> materialize() {
-      return Cache.Entry.copy(this);
     }
   }
 
@@ -358,6 +348,11 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
     @Override
     public @Nullable VALUE getValue() {
       return this.value;
+    }
+
+    @Override
+    public void setValue(VALUE value) {
+      throw newUnsupportedOperationException("Value of Cache.Entry(%s) cannot be set", getKey());
     }
 
     @Override

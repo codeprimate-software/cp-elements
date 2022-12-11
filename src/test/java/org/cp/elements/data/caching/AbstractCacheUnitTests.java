@@ -66,7 +66,7 @@ public class AbstractCacheUnitTests {
   }
 
   @Test
-  public void getNameWhenUnsetReturnsNull() {
+  public void getNameWhenUnnamedReturnsNull() {
     assertThat(this.cache.getName()).isNull();
   }
 
@@ -98,7 +98,7 @@ public class AbstractCacheUnitTests {
   }
 
   @Test
-  public void keysReturnsEmptSet() {
+  public void keysReturnsEmptySet() {
 
     Set<?> keys = this.cache.keys();
 
