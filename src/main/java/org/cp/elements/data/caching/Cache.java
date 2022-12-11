@@ -940,6 +940,18 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
     }
 
     /**
+     * Sets the {@link VALUE value} of this {@link Cache.Entry} and key/value mapping in the {@link Cache}.
+     *
+     * @param value new {@link VALUE} to set the {@link Cache.Entry} and key/value mapping to in the {@link Cache}.
+     * @see org.cp.elements.data.caching.Cache#put(Comparable, Object)
+     * @see #getSource()
+     * @see #getKey()
+     */
+    default void setValue(@Nullable VALUE value) {
+      getSource().put(getKey(), value);
+    }
+
+    /**
      * Materializes this {@link Cache.Entry} into a static, unchanging {@link KEY key} / {@link VALUE value} pair.
      *
      * @return this {@link Cache.Entry} as a static, unchanging {@link KEY key} / {@link VALUE value} pair.

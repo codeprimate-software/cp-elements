@@ -91,6 +91,27 @@ public class CacheEntryUnitTests {
   }
 
   @Test
+  public void setValueOnCacheEntryCopyThrowsUnsupportedOperationException() {
+
+    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<?, ?> cacheEntryCopy = Cache.Entry.copy(mockCacheEntry);
+
+    doReturn("testKey").when(mockCacheEntry).getKey();
+
+    assertThat(cacheEntryCopy).isNotNull();
+    assertThat(cacheEntryCopy).isNotSameAs(mockCacheEntry);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> cacheEntryCopy.setValue(null))
+      .withMessage("Value for Cache.Entry(testKey) copy cannot be set")
+      .withNoCause();
+
+    verify(mockCacheEntry, times(1)).getKey();
+    verify(mockCacheEntry, times(1)).getValue();
+    verifyNoMoreInteractions(mockCacheEntry);
+  }
+
+  @Test
   @SuppressWarnings("unchecked")
   public void fromMapEntry() {
 
@@ -127,6 +148,29 @@ public class CacheEntryUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void setValueOnCacheEntrySourcedFromMapThrowsUnsupportedOperationException() {
+
+    Map.Entry<String, Object> mockMapEntry = mock(Map.Entry.class);
+
+    doReturn("mockKey").when(mockMapEntry).getKey();
+
+    Cache.Entry<String, Object> cacheEntry = Cache.Entry.from(mockMapEntry);
+
+    assertThat(cacheEntry).isNotNull();
+    assertThat(cacheEntry).isNotSameAs(mockMapEntry);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> cacheEntry.setValue(null))
+      .withMessage("Value for Cache.Entry(mockKey) sourced from Map.Entry cannot be set")
+      .withNoCause();
+
+    verify(mockMapEntry, times(1)).getKey();
+    verify(mockMapEntry, times(1)).getValue();
+    verifyNoMoreInteractions(mockMapEntry);
+  }
+
+  @Test
   public void defaultGetSourceThrowsCacheNotFoundException() {
 
     Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
@@ -159,6 +203,27 @@ public class CacheEntryUnitTests {
 
     verify(mockCache, times(1)).get(eq("mockKey"));
     verify(mockCacheEntry, times(1)).getValue();
+    verify(mockCacheEntry, times(1)).getSource();
+    verify(mockCacheEntry, times(1)).getKey();
+    verifyNoMoreInteractions(mockCache, mockCacheEntry);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void defaultSetValueSetsKeyWithCachePut() {
+
+    Cache<String, Object> mockCache = mock(Cache.class);
+
+    Cache.Entry<String, Object> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn(mockCache).when(mockCacheEntry).getSource();
+    doReturn("testKey").when(mockCacheEntry).getKey();
+    doCallRealMethod().when(mockCacheEntry).setValue(any());
+
+    mockCacheEntry.setValue("mockValue");
+
+    verify(mockCache, times(1)).put(eq("testKey"), eq("mockValue"));
+    verify(mockCacheEntry, times(1)).setValue(eq("mockValue"));
     verify(mockCacheEntry, times(1)).getSource();
     verify(mockCacheEntry, times(1)).getKey();
     verifyNoMoreInteractions(mockCache, mockCacheEntry);
