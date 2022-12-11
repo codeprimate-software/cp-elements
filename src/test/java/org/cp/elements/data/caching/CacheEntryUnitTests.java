@@ -30,6 +30,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -238,6 +239,45 @@ public class CacheEntryUnitTests {
     assertThat(mockCacheEntry.getValue("mock")).isEqualTo("mock");
 
     verify(mockCacheEntry, times(1)).getValue(eq("mock"));
+    verify(mockCacheEntry, times(1)).getValue();
+    verifyNoMoreInteractions(mockCacheEntry);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void defaultGetOptionalValue() {
+
+    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn("test").when(mockCacheEntry).getValue();
+    doCallRealMethod().when(mockCacheEntry).getOptionalValue();
+
+    Optional<Object> optionalValue = mockCacheEntry.getOptionalValue();
+
+    assertThat(optionalValue).isNotNull();
+    assertThat(optionalValue).isPresent();
+    assertThat(optionalValue).hasValue("test");
+
+    verify(mockCacheEntry, times(1)).getOptionalValue();
+    verify(mockCacheEntry, times(1)).getValue();
+    verifyNoMoreInteractions(mockCacheEntry);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void defaultGetOptionalValueIsEmtpyWhenCacheEntryValueIsNull() {
+
+    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn(null).when(mockCacheEntry).getValue();
+    doCallRealMethod().when(mockCacheEntry).getOptionalValue();
+
+    Optional<Object> optionalValue = mockCacheEntry.getOptionalValue();
+
+    assertThat(optionalValue).isNotNull();
+    assertThat(optionalValue).isNotPresent();
+
+    verify(mockCacheEntry, times(1)).getOptionalValue();
     verify(mockCacheEntry, times(1)).getValue();
     verifyNoMoreInteractions(mockCacheEntry);
   }

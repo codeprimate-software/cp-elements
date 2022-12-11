@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -954,10 +955,22 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      * {@link #getValue() value} is {@literal null}.
      * @return the {@link VALUE value} of this {@link Cache.Entry} or the given {@link VALUE default value}
      * if the {@link VALUE} of this {@link Cache.Entry} is {@literal null}.
+     * @see #getValue()
      */
     @SuppressWarnings("unchecked")
     default @Nullable VALUE getValue(@Nullable VALUE defaultValue) {
       return ObjectUtils.returnFirstNonNullValue(getValue(), defaultValue);
+    }
+
+    /**
+     * Returns the {@link #getValue() value} of this {@link Cache.Entry} wrapped in an {@link Optional}.
+     *
+     * @return the {@link #getValue() value} of this {@link Cache.Entry} wrapped in an {@link Optional}.
+     * @see java.util.Optional
+     * @see #getValue()
+     */
+    default Optional<VALUE> getOptionalValue() {
+      return Optional.ofNullable(getValue());
     }
 
     /**
