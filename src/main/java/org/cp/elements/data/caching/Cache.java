@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.cp.elements.data.caching.Cache.Entry;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
@@ -79,7 +79,8 @@ import org.cp.elements.util.stream.StreamUtils;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entry<KEY, VALUE>>, Nameable<String> {
+public interface Cache<KEY extends Comparable<KEY>, VALUE>
+    extends Iterable<Cache.Entry<KEY, VALUE>>, Nameable<String> {
 
   /**
    * Gets the configured {@link Object lock} used to run operations on this {@link Cache} atomically / synchronously.
@@ -123,6 +124,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * @param key {@link KEY key} to evaluate.
    * @return a boolean value indicating whether this {@link Cache} contains an {@link Cache.Entry} mapped to
    * the given {@link KEY key}.
+   * @see #iterator()
    */
   default boolean contains(KEY key) {
 
@@ -266,8 +268,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * Returns {@literal null} if the {@link VALUE value} mapped to the given {@link KEY key} is {@literal null},
    * or this {@link Cache} does not contain an {@link Cache.Entry} mapped to the given {@link KEY key}.
    *
-   * Even the {@link Cache} interface provides a default implementation, cache providers are still encouraged to
-   * override this method and provide a more efficient, custom implementation that is conducive to the underlying
+   * Even though the {@link Cache} interface provides a default implementation, cache providers are still encouraged
+   * to override this method and provide a more efficient, custom implementation that is conducive to the underlying
    * data store as recommended in the {@link Cache} interface Javadoc.
    *
    * @param key {@link KEY key} mapped to the {@link VALUE value} returned.
@@ -275,6 +277,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * if an {@link Cache.Entry entry} with the given {@link KEY key} does not exist,
    * or a {@link VALUE value} for the given {@link KEY key} is {@literal null}.
    * @see #put(Comparable, Object)
+   * @see #iterator()
    */
   default @Nullable VALUE get(@NotNull KEY key) {
 
@@ -499,7 +502,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    */
   default @Nullable Cache.Entry<KEY, VALUE> getEntry(KEY key) {
 
-    return contains(key) ? new Cache.Entry<KEY, VALUE>() {
+    Supplier<Cache.Entry<KEY, VALUE>> cacheEntrySupplier = () -> new Cache.Entry<KEY, VALUE>() {
 
       private <T> T assertCacheEntryExists(T returnValue) {
 
@@ -523,8 +526,9 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
       public @NotNull VALUE getValue() {
         return getSource().get(getKey());
       }
-    }
-    : null;
+    };
+
+    return contains(key) ? cacheEntrySupplier.get() : null;
   }
 
   /**
@@ -534,6 +538,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE> extends Iterable<Entr
    * Returns an {@link Set#isEmpty() empty Set} if there are no {@link Cache.Entry entries}
    * in this {@link Cache}.
    * @see java.util.Set
+   * @see #iterator()
    */
   default Set<KEY> keys() {
 
