@@ -18,6 +18,8 @@ package org.cp.elements.data.caching;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -45,7 +47,7 @@ import org.junit.Test;
 public class CacheEntryUnitTests {
 
   @Test
-  public void copiesCacheEntry() {
+  public void copyCacheEntry() {
 
     AtomicInteger value = new AtomicInteger(1);
 
@@ -60,6 +62,7 @@ public class CacheEntryUnitTests {
     Cache.Entry<?, ?> cacheEntryCopy = Cache.Entry.copy(mockCacheEntry);
 
     assertThat(cacheEntryCopy).isNotNull();
+    assertThat(cacheEntryCopy).isNotSameAs(mockCacheEntry);
     assertThat(cacheEntryCopy.getKey()).isEqualTo("testKey");
     assertThat(cacheEntryCopy.getKey()).isEqualTo("testKey");
     assertThat(cacheEntryCopy.getSource()).isEqualTo(mockCache);
@@ -67,12 +70,14 @@ public class CacheEntryUnitTests {
     assertThat(mockCacheEntry.getValue()).isEqualTo(4);
     assertThat(mockCacheEntry.getValue()).isEqualTo(8);
     assertThat(mockCacheEntry.getValue()).isEqualTo(16);
+    assertThat(mockCacheEntry.getValue()).isEqualTo(32);
+    assertThat(mockCacheEntry.getValue()).isEqualTo(64);
     assertThat(cacheEntryCopy.getValue()).isEqualTo(2);
     assertThat(cacheEntryCopy.materialize()).isSameAs(cacheEntryCopy);
 
     verify(mockCacheEntry, times(2)).getKey();
     verify(mockCacheEntry, times(1)).getSource();
-    verify(mockCacheEntry, times(4)).getValue();
+    verify(mockCacheEntry, times(6)).getValue();
     verifyNoMoreInteractions(mockCacheEntry);
   }
 
@@ -97,6 +102,7 @@ public class CacheEntryUnitTests {
     Cache.Entry<String, ?> cacheEntry = Cache.Entry.from(mockMapEntry);
 
     assertThat(cacheEntry).isNotNull();
+    assertThat(cacheEntry).isNotSameAs(mockMapEntry);
     assertThat(cacheEntry.getKey()).isEqualTo("mockKey");
     assertThat(cacheEntry.getKey()).isEqualTo("mockKey");
     assertThat(cacheEntry.getSource()).isNull();
@@ -121,7 +127,7 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  public void getDefaultSourceThrowsCacheNotFoundException() {
+  public void defaultGetSourceThrowsCacheNotFoundException() {
 
     Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
 
@@ -137,16 +143,25 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  public void getDefaultValueIsNull() {
+  @SuppressWarnings("unchecked")
+  public void defaultGetValueReturnsValueFromCacheGet() {
 
-    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache<String, Object> mockCache = mock(Cache.class);
 
+    Cache.Entry<String, Object> mockCacheEntry = mock(Cache.Entry.class);
+
+    doReturn("test").when(mockCache).get(any());
+    doReturn("mockKey").when(mockCacheEntry).getKey();
+    doReturn(mockCache).when(mockCacheEntry).getSource();
     doCallRealMethod().when(mockCacheEntry).getValue();
 
-    assertThat(mockCacheEntry.getValue()).isNull();
+    assertThat(mockCacheEntry.getValue()).isEqualTo("test");
 
+    verify(mockCache, times(1)).get(eq("mockKey"));
     verify(mockCacheEntry, times(1)).getValue();
-    verifyNoMoreInteractions(mockCacheEntry);
+    verify(mockCacheEntry, times(1)).getSource();
+    verify(mockCacheEntry, times(1)).getKey();
+    verifyNoMoreInteractions(mockCache, mockCacheEntry);
   }
 
   @Test

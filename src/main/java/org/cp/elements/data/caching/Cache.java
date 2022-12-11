@@ -931,9 +931,12 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      * Returns {@literal null} by default.
      *
      * @return the {@link VALUE value} from this {@link Cache.Entry}.
+     * @see org.cp.elements.data.caching.Cache#get(Comparable)
+     * @see #getSource()
+     * @see #getKey()
      */
-    default VALUE getValue() {
-      return null;
+    default @Nullable VALUE getValue() {
+      return getSource().get(getKey());
     }
 
     /**
