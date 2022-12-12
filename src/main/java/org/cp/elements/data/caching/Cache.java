@@ -816,7 +816,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
    * @see java.lang.Comparable
    */
   @FunctionalInterface
-  interface Entry<KEY extends Comparable<KEY>, VALUE> extends Sourced<Cache<KEY, VALUE>> {
+  interface Entry<KEY extends Comparable<KEY>, VALUE>
+      extends Sourced<Cache<KEY, VALUE>>, Comparable<Cache.Entry<KEY, VALUE>> {
 
     /**
      * Factory method used to copy a given, required {@link Cache.Entry} as a new instance.
@@ -983,6 +984,20 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      */
     default void setValue(@Nullable VALUE value) {
       getSource().put(getKey(), value);
+    }
+
+    /**
+     * Compares this {@link Cache.Entry} to the given, required {@link Cache.Entry} to determine sort order.
+     *
+     * @param cacheEntry {@link Cache.Entry} to compare with this {@link Cache.Entry}; must not be {@literal null}.
+     * @return an {@link Integer} value reflecting the order of this {@link Cache.Entry} to the given,
+     * required {@link Cache.Entry}.
+     * @throws NullPointerException if the given {@link Cache.Entry} is {@literal null}.
+     * @see java.lang.Comparable#compareTo(Object)
+     */
+    @Override
+    default int compareTo(@NotNull Cache.Entry<KEY, VALUE> cacheEntry) {
+      return getKey().compareTo(cacheEntry.getKey());
     }
 
     /**

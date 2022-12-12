@@ -304,6 +304,30 @@ public class CacheEntryUnitTests {
   }
 
   @Test
+  @SuppressWarnings("all")
+  public void defaultCompareTo() {
+
+    Cache.Entry<String, Object> mockCacheEntryOne = mock(Cache.Entry.class);
+    Cache.Entry<String, Object> mockCacheEntryTwo = mock(Cache.Entry.class);
+
+    doReturn("mockKey").when(mockCacheEntryOne).getKey();
+    doReturn("testKey").when(mockCacheEntryTwo).getKey();
+    doCallRealMethod().when(mockCacheEntryOne).compareTo(any());
+    doCallRealMethod().when(mockCacheEntryTwo).compareTo(any());
+
+    assertThat(mockCacheEntryOne.compareTo(mockCacheEntryOne)).isZero();
+    assertThat(mockCacheEntryOne.compareTo(mockCacheEntryTwo)).isLessThan(0);
+    assertThat(mockCacheEntryTwo.compareTo(mockCacheEntryOne)).isGreaterThan(0);
+
+    verify(mockCacheEntryOne, times(1)).compareTo(eq(mockCacheEntryOne));
+    verify(mockCacheEntryOne, times(1)).compareTo(eq(mockCacheEntryTwo));
+    verify(mockCacheEntryOne, times(4)).getKey();
+    verify(mockCacheEntryTwo, times(1)).compareTo(eq(mockCacheEntryOne));
+    verify(mockCacheEntryTwo, times(2)).getKey();
+    verifyNoMoreInteractions(mockCacheEntryOne, mockCacheEntryTwo);
+  }
+
+  @Test
   public void defaultMaterializeCopiesCacheEntry() {
 
     Cache<?, ?> mockCache = mock(Cache.class);
