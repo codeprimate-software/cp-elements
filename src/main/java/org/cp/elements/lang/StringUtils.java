@@ -591,7 +591,7 @@ public abstract class StringUtils {
 
     return new Iterator<Character>() {
 
-      int index = 0;
+      int index;
 
       @Override
       public boolean hasNext() {
