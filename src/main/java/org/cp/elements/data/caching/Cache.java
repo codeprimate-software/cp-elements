@@ -875,8 +875,8 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
      * @param <VALUE> {@link Class type} of the {@link Map.Entry} value.
      * @param mapEntry {@link Map.Entry} to copy an convert into a {@link Cache.Entry};
      * must not be {@literal null}.
-     * @throws IllegalArgumentException if the {@link Map.Entry} is {@literal null}.
      * @return a new {@link Cache.Entry}.
+     * @throws IllegalArgumentException if the {@link Map.Entry} is {@literal null}.
      * @see java.util.Map.Entry
      */
     static @NotNull <KEY extends Comparable<KEY>, VALUE> Cache.Entry<KEY, VALUE> from(
