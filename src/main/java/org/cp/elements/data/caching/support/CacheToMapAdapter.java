@@ -199,8 +199,8 @@ public class CacheToMapAdapter<KEY extends Comparable<KEY>, VALUE> extends Abstr
       implements Map.Entry<KEY, VALUE>, Sourced<Cache<KEY, VALUE>>, Comparable<Map.Entry<KEY, VALUE>> {
 
     /**
-     * Factory method used to construct a new instance of {@link CacheMapEntry} initialized with the given {@link KEY key}
-     * identifying the target {@link Cache.Entry} in the given {@link Cache}.
+     * Factory method used to construct a new instance of {@link CacheMapEntry} initialized with
+     * the given {@link KEY key} identifying the target {@link Cache.Entry} in the given {@link Cache}.
      *
      * @param <KEY> {@link Comparable} {@link Class type} of the {@link Cache} key.
      * @param <VALUE> {@link Class type} of the {@link Cache} value.
