@@ -15,84 +15,142 @@
  */
 package org.cp.elements.data.caching.support;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+
+import java.util.Map;
+import java.util.function.Function;
 
 import org.cp.elements.data.caching.AbstractCache;
 import org.cp.elements.data.caching.Cache;
+import org.cp.elements.lang.Identifiable;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * {@link ReadOnlyCache} is an abstract class implementing {@link Cache} supporting only
- * immutable {@link Cache} operations, effectively making this implementation a Read-only {@link Cache}.
+ * Abstract base class implementing the {@link Cache} interface and supporting only immutable {@link Cache} operations,
+ * effectively making this implementation a Read-only {@link Cache}.
  *
  * @author John Blum
  * @param <KEY> {@link Class type} of the {@link Cache} key.
  * @param <VALUE> {@link Class type} of the {@link Cache} value.
- * @see java.lang.Comparable
  * @see org.cp.elements.data.caching.AbstractCache
+ * @see java.lang.Comparable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 public abstract class ReadOnlyCache<KEY extends Comparable<KEY>, VALUE> extends AbstractCache<KEY, VALUE> {
 
-  /**
-   * Determines whether this {@link Cache} contains an entry mapped with the given {@link KEY key}.
-   *
-   * @param key {@link KEY key} to evaluate.
-   * @return a boolean value indicating whether this {@link Cache} contains an entry
-   * mapped with the given {@link KEY key}.
-   */
   @Override
-  public boolean contains(KEY key) {
-    return false;
+  public final void from(Map<KEY, VALUE> map) {
+    throw newUnsupportedOperationException("From Map is not supported");
   }
 
-  /**
-   * Gets the {@link VALUE value} mapped to the given {@link KEY} in this {@link Cache}.
-   *
-   * Returns {@literal null} if the {@link VALUE value} for the given {@link KEY key} is {@literal null},
-   * or this {@link Cache} does not contain an entry with the given {@link KEY key}.
-   *
-   * @param key {@link KEY key} used to lookup the desired {@link VALUE value}.
-   * @return the {@link VALUE value} mapped to the given {@link KEY key}.
-   * @see #put(Comparable, Object)
-   */
+  @NullSafe
   @Override
-  public VALUE get(KEY key) {
+  public @Nullable VALUE get(@NotNull KEY key) {
     return null;
   }
 
-  /**
-   * Returns an {@link Iterator} iterating over the value in this {@link Cache}.
-   *
-   * @return an {@link Iterator} iterating over the value in this {@link Cache}.
-   * @see java.util.Iterator
-   */
   @Override
-  public Iterator<VALUE> iterator() {
-    return Collections.emptyIterator();
+  public final VALUE getAndEvict(KEY key) {
+    throw newUnsupportedOperationException("Get and Evict is not supported");
   }
 
-  /**
-   * Returns all the {@link KEY keys} in this {@link Cache}.
-   *
-   * @return a {@link Set} containing all of the {@link KEY keys} in this {@link Cache}.
-   * @see java.util.Set
-   */
   @Override
-  public Set<KEY> keys() {
-    return Collections.emptySet();
+  public final VALUE getAndEvict(KEY key, VALUE expectedValue) {
+    throw newUnsupportedOperationException("Get and Evict is not supported");
   }
 
-  /**
-   * Determines the number of entries contained in this {@link Cache}.
-   *
-   * @return an integer value with the number of entries contained in this {@link Cache}.
-   * @see #isEmpty()
-   */
   @Override
-  public int size() {
-    return 0;
+  public final VALUE getAndPut(KEY key, VALUE newValue) {
+    throw newUnsupportedOperationException("Get and Put is not supported");
+  }
+
+  @Override
+  public final VALUE getAndReplace(KEY key, VALUE newValue) {
+    throw newUnsupportedOperationException("Get and Replace is not supported");
+  }
+
+  @Override
+  public final VALUE getAndReplace(KEY key, VALUE expectedValue, VALUE newValue) {
+    throw newUnsupportedOperationException("Get and Replace is not supported");
+  }
+
+  @Override
+  public @Nullable Cache.Entry<KEY, VALUE> getEntry(KEY key) {
+
+    Cache.Entry<KEY, VALUE> existingCacheEntry = doGetEntry(key);
+
+    Function<Cache.Entry<KEY, VALUE>, Cache.Entry<KEY, VALUE>> readOnlyCacheEntryFunction = cacheEntry ->
+      new Cache.Entry<KEY, VALUE>() {
+
+        @Override
+        public @NotNull KEY getKey() {
+          return cacheEntry.getKey();
+        }
+
+        @Override
+        public @NotNull Cache<KEY, VALUE> getSource() {
+          return cacheEntry.getSource();
+        }
+
+        @Override
+        public @Nullable VALUE getValue() {
+          return cacheEntry.getValue();
+        }
+
+        @Override
+        public void setValue(VALUE value) {
+          throw newUnsupportedOperationException("Setting the value of Cache.Entry(%s) is not supported", getKey());
+        }
+
+        @Override
+        public @NotNull Cache.Entry<KEY, VALUE> materialize() {
+          return cacheEntry.materialize();
+        }
+      };
+
+    return existingCacheEntry != null ? readOnlyCacheEntryFunction.apply(existingCacheEntry) : null;
+  }
+
+  @Nullable
+  Cache.Entry<KEY, VALUE> doGetEntry(KEY key) {
+    return super.getEntry(key);
+  }
+
+  @Override
+  public final void put(KEY key, VALUE value) {
+    throw newUnsupportedOperationException("Put is not supported");
+  }
+
+  @Override
+  public final void put(Cache.Entry<KEY, VALUE> cacheEntry) {
+    throw newUnsupportedOperationException("Put is not supported");
+  }
+
+  @Override
+  public final void put(Identifiable<KEY> entity) {
+    throw newUnsupportedOperationException("Put is not supported");
+  }
+
+  @Override
+  public final VALUE putIfAbsent(KEY key, VALUE value) {
+    throw newUnsupportedOperationException("Put is not supported");
+  }
+
+  @Override
+  public final VALUE putIfAbsent(Identifiable<KEY> entity) {
+    throw newUnsupportedOperationException("Put is not supported");
+  }
+
+  @Override
+  public final VALUE putIfPresent(KEY key, VALUE newValue) {
+    throw newUnsupportedOperationException("Put is not supported");
+  }
+
+  @Override
+  public final VALUE putIfPresent(Identifiable<KEY> newEntity) {
+    throw newUnsupportedOperationException("Put is not supported");
   }
 }
