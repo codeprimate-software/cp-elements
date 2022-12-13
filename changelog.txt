@@ -3,6 +3,33 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0-RC1 - 2022-December-12
+----------------------------
+Extends Codeprimate Elements Caching API and infrastructure. Fixes Checkstyle, PMD and SpotBugs errors/warnings.
+
+* Built on Oracle Java (JDK) 8; 1.8.0_351.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Builds and supports Codeprimate Elements on Gradle 7.6.
+* Adds package-info.java source files to the Elements library.
+* Adds given(..) operator to o.c.elements.lang.LangExtensions.
+* Adds runAtomically(..) method to o.c.elements.lang.concurrent.ThreadUtils.
+* Fixed 5520 Checkstyle errors and warnings.
+* Fixed many PMD errors.
+* Fixed 29 SpotBugs bugs.
+* Fixed and edited Javadoc.
+* Renames o.c.elements.security.SecurityException to AbstractSecurityException and declares the class as abstract.
+* Reviewed and refactored all Enums in the org.cp.elements.enums package.
+* Reviewed and refactored the Elements Cache API and infrastructure in the org.cp.elements.data.caching package.
+* Reviewed and refactored org.cp.elements.data.struct.KeyValue interface.
+* Reviewed and refactored org.cp.elements.data.struct.SimpleKeyValue class.
+* Reviewed and refactored org.cp.elements.data.struct.StringBasedKeyValue class.
+* Reviewed and refactored org.cp.elements.data.struct.EnvironmentVariableValue class.
+* Reviewed and refactored org.cp.elements.data.struct.SystemPropertyValue class.
+* Upgrades to Codeprimate Core 1.10.0.
+* Upgrades to Gradle 7.6.
+* Upgrades to Mockito 4.9.0.
+
+
 1.0.0-M9 - 2022-November-11
 ---------------------------
 Extends Codeprimate Elements with robust Configuration API/model and Dependency Injection framework.
