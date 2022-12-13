@@ -578,7 +578,7 @@ public abstract class StringUtils {
   /**
    * Converts the given, required {@link CharacterIterator} into regular {@link Iterator}.
    *
-   * @param characterIterator {@link CharacterIterator} to convert into a {@link Iterator;
+   * @param characterIterator {@link CharacterIterator} to convert into a {@link Iterator};
    * must not be {@literal null}.
    * @return an {@link Iterator} backed by the given {@link CharacterIterator}.
    * @throws IllegalArgumentException if {@link CharacterIterator} is {@literal null}.

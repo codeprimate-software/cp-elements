@@ -55,11 +55,11 @@ import org.cp.elements.util.stream.StreamUtils;
  * Caching providers and implementors of this {@link Cache} interface, must minimally provide implementations of
  * the following {@link Cache} operations:
  *
- * <li>
- *   <ul>{@link #evict(Comparable)}</ul>
- *   <ul>{@link #get(Comparable)}</ul>
- *   <ul>{@link #put(Comparable, Object)}</ul>
- * </li>
+ * <ul>
+ *   <li>{@link #evict(Comparable)}</li>
+ *   <li>{@link #get(Comparable)}</li>
+ *   <li>{@link #put(Comparable, Object)}</li>
+ * </ul>
  *
  * If the {@link Cache} implementation should support atomic (synchronous) operations with locking,
  * then caching providers should additionally override the {@link #getLock()} method to return a {@literal non-null}
