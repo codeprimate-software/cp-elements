@@ -207,7 +207,7 @@ public abstract class AbstractCache<KEY extends Comparable<KEY>, VALUE> implemen
    * @see org.cp.elements.data.caching.Cache.Entry
    * @see java.lang.Comparable
    */
-  protected static abstract class AbstractEntry<KEY extends Comparable<KEY>, VALUE> implements Cache.Entry<KEY, VALUE> {
+  protected abstract static class AbstractEntry<KEY extends Comparable<KEY>, VALUE> implements Cache.Entry<KEY, VALUE> {
 
     private final Cache<KEY, VALUE> cache;
 
