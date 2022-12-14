@@ -99,6 +99,11 @@
               <mainClass>org.cp.elements.ElementsVersion</mainClass>
             </manifest>
           </archive>
+<!--
+          <excludes>
+            <exclude>**/package-info.class</exclude>
+          </excludes>
+-->
         </configuration>
       </plugin>
     </plugins>
