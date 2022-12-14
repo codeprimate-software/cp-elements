@@ -28,6 +28,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.Map;
 import java.util.Optional;
@@ -35,6 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import org.junit.Test;
+
+import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link Cache.Entry}.
@@ -49,6 +52,17 @@ import org.junit.Test;
  */
 public class CacheEntryUnitTests {
 
+  @SuppressWarnings("unchecked")
+  private <KEY extends Comparable<KEY>, VALUE> Cache.Entry<KEY, VALUE> mockCacheEntry(KEY key, VALUE value) {
+
+    Cache.Entry<KEY, VALUE> mockCacheEntry = mock(Cache.Entry.class, withSettings().strictness(Strictness.LENIENT));
+
+    doReturn(key).when(mockCacheEntry).getKey();
+    doReturn(value).when(mockCacheEntry).getValue();
+
+    return mockCacheEntry;
+  }
+
   @Test
   public void copyCacheEntry() {
 
@@ -56,9 +70,8 @@ public class CacheEntryUnitTests {
 
     Cache<?, ?> mockCache = mock(Cache.class);
 
-    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("testKey", null);
 
-    doReturn("testKey").when(mockCacheEntry).getKey();
     doReturn(mockCache).when(mockCacheEntry).getSource();
     doAnswer(invocation -> value.updateAndGet(it -> it * 2)).when(mockCacheEntry).getValue();
 
@@ -96,10 +109,8 @@ public class CacheEntryUnitTests {
   @Test
   public void setValueOnCacheEntryCopyThrowsUnsupportedOperationException() {
 
-    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("testKey", null);
     Cache.Entry<?, ?> cacheEntryCopy = Cache.Entry.copy(mockCacheEntry);
-
-    doReturn("testKey").when(mockCacheEntry).getKey();
 
     assertThat(cacheEntryCopy).isNotNull();
     assertThat(cacheEntryCopy).isNotSameAs(mockCacheEntry);
@@ -176,7 +187,7 @@ public class CacheEntryUnitTests {
   @Test
   public void defaultGetSourceThrowsCacheNotFoundException() {
 
-    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry(null, null);
 
     doCallRealMethod().when(mockCacheEntry).getSource();
 
@@ -195,10 +206,9 @@ public class CacheEntryUnitTests {
 
     Cache<String, Object> mockCache = mock(Cache.class);
 
-    Cache.Entry<String, Object> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<String, Object> mockCacheEntry = mockCacheEntry("mockKey", null);
 
     doReturn("test").when(mockCache).get(any());
-    doReturn("mockKey").when(mockCacheEntry).getKey();
     doReturn(mockCache).when(mockCacheEntry).getSource();
     doCallRealMethod().when(mockCacheEntry).getValue();
 
@@ -212,12 +222,10 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void defaultGetValueWithDefaultValueReturnsCacheEntryValue() {
 
-    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<Integer, Object> mockCacheEntry = mockCacheEntry(null, "test");
 
-    doReturn("test").when(mockCacheEntry).getValue();
     doCallRealMethod().when(mockCacheEntry).getValue(any());
 
     assertThat(mockCacheEntry.getValue("mock")).isEqualTo("test");
@@ -228,12 +236,10 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void defaultGetValueWithDefaultValueReturnsDefaultValue() {
 
-    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<Integer, Object> mockCacheEntry = mockCacheEntry(null, null);
 
-    doReturn(null).when(mockCacheEntry).getValue();
     doCallRealMethod().when(mockCacheEntry).getValue(any());
 
     assertThat(mockCacheEntry.getValue("mock")).isEqualTo("mock");
@@ -244,12 +250,10 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void defaultGetOptionalValue() {
 
-    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<Integer, Object> mockCacheEntry = mockCacheEntry(null, "test");
 
-    doReturn("test").when(mockCacheEntry).getValue();
     doCallRealMethod().when(mockCacheEntry).getOptionalValue();
 
     Optional<Object> optionalValue = mockCacheEntry.getOptionalValue();
@@ -264,12 +268,10 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  @SuppressWarnings("unchecked")
   public void defaultGetOptionalValueIsEmtpyWhenCacheEntryValueIsNull() {
 
-    Cache.Entry<Integer, Object> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<Integer, Object> mockCacheEntry = mockCacheEntry(null, null);
 
-    doReturn(null).when(mockCacheEntry).getValue();
     doCallRealMethod().when(mockCacheEntry).getOptionalValue();
 
     Optional<Object> optionalValue = mockCacheEntry.getOptionalValue();
@@ -288,10 +290,9 @@ public class CacheEntryUnitTests {
 
     Cache<String, Object> mockCache = mock(Cache.class);
 
-    Cache.Entry<String, Object> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<String, Object> mockCacheEntry = mockCacheEntry("testKey", null);
 
     doReturn(mockCache).when(mockCacheEntry).getSource();
-    doReturn("testKey").when(mockCacheEntry).getKey();
     doCallRealMethod().when(mockCacheEntry).setValue(any());
 
     mockCacheEntry.setValue("mockValue");
@@ -304,14 +305,12 @@ public class CacheEntryUnitTests {
   }
 
   @Test
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "all" })
   public void defaultCompareTo() {
 
-    Cache.Entry<String, Object> mockCacheEntryOne = mock(Cache.Entry.class);
-    Cache.Entry<String, Object> mockCacheEntryTwo = mock(Cache.Entry.class);
+    Cache.Entry<String, Object> mockCacheEntryOne = mockCacheEntry("mockKey", null);
+    Cache.Entry<String, Object> mockCacheEntryTwo = mockCacheEntry("testKey", null);
 
-    doReturn("mockKey").when(mockCacheEntryOne).getKey();
-    doReturn("testKey").when(mockCacheEntryTwo).getKey();
     doCallRealMethod().when(mockCacheEntryOne).compareTo(any());
     doCallRealMethod().when(mockCacheEntryTwo).compareTo(any());
 
@@ -332,11 +331,9 @@ public class CacheEntryUnitTests {
 
     Cache<?, ?> mockCache = mock(Cache.class);
 
-    Cache.Entry<?, ?> mockCacheEntry = mock(Cache.Entry.class);
+    Cache.Entry<?, ?> mockCacheEntry = mockCacheEntry("testKey", "mockValue");
 
     doReturn(mockCache).when(mockCacheEntry).getSource();
-    doReturn("testKey").when(mockCacheEntry).getKey();
-    doReturn("mockValue").when(mockCacheEntry).getValue();
     doCallRealMethod().when(mockCacheEntry).materialize();
 
     Cache.Entry<?, ?> materializedCacheEntry = mockCacheEntry.materialize();

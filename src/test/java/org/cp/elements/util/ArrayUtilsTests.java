@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
 import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.Transformer;
 import org.cp.elements.test.TestUtils;
-
-import org.junit.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -57,6 +57,8 @@ import lombok.RequiredArgsConstructor;
  * @since 1.0.0
  */
 public class ArrayUtilsTests {
+
+  private static final Object[] NULL_OBJECT_ARRAY = null;
 
   @SafeVarargs
   private final <T> void assertElements(T[] array, T... elements) {
@@ -226,7 +228,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void asArrayWithNull() {
-    assertThat(ArrayUtils.asArray((Object[]) null)).isNull();
+    assertThat(ArrayUtils.asArray(NULL_OBJECT_ARRAY)).isNull();
   }
 
   @Test
@@ -1014,7 +1016,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void getFirstFromNullArray() {
-    assertThat(ArrayUtils.getFirstElement((Object[]) null)).isNull();
+    assertThat(ArrayUtils.getFirstElement((Object) NULL_OBJECT_ARRAY)).isNull();
   }
 
   @Test
@@ -1055,7 +1057,7 @@ public class ArrayUtilsTests {
   @Test
   @SuppressWarnings("all")
   public void getLastFromNullArray() {
-    assertThat(ArrayUtils.getLastElement((Object[]) null)).isNull();
+    assertThat(ArrayUtils.getLastElement((Object) NULL_OBJECT_ARRAY)).isNull();
   }
 
   @Test

@@ -87,7 +87,6 @@ public abstract class LangExtensions {
    */
   @Dsl
   @Experimental
-  @SuppressWarnings("unchecked")
   public static <T> T $(T obj, Class<?>... interfaces) {
 
     ProxyFactory<T> proxyFactory = ProxyFactory.newProxyFactory(obj, interfaces);

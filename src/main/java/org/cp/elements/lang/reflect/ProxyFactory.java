@@ -212,8 +212,8 @@ public abstract class ProxyFactory<T> {
    * @see #getMethodInterceptors()
    */
   @NullSafe
-  @SuppressWarnings("unchecked")
-  public @NotNull ProxyFactory<T> adviseWith(MethodInterceptor<T>... methodInterceptors) {
+  @SafeVarargs
+  public final @NotNull ProxyFactory<T> adviseWith(MethodInterceptor<T>... methodInterceptors) {
     this.methodInterceptors = new ArrayList<>(ArrayUtils.nullSafeLength(methodInterceptors));
     Collections.addAll(this.methodInterceptors, ArrayUtils.nullSafeArray(methodInterceptors, MethodInterceptor.class));
     return this;

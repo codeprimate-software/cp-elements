@@ -16,13 +16,9 @@
 package org.cp.elements.util.sort;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -44,10 +40,16 @@ import org.cp.elements.lang.support.SmartComparator.ComparableComparator;
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
 /**
- * Test suite of test cases testing the contract and functionality of the {@link AbstractSorter} class.
+ * Unit Tests for {@link AbstractSorter}.
  *
  * @author John J. Blum
+ * @see java.util.Comparator
  * @see org.junit.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.AbstractSorter
@@ -70,15 +72,15 @@ public class AbstractSorterTest {
 
     AbstractSorter sorter = new TestSorter();
 
-    assertEquals(AbstractSorter.DEFAULT_CUSTOM_COMPARATOR_ALLOWED, sorter.isCustomComparatorAllowed());
+    assertThat(sorter.isCustomComparatorAllowed()).isEqualTo(AbstractSorter.DEFAULT_CUSTOM_COMPARATOR_ALLOWED);
 
     sorter.setCustomComparatorAllowed(false);
 
-    assertFalse(sorter.isCustomComparatorAllowed());
+    assertThat(sorter.isCustomComparatorAllowed()).isFalse();
 
     sorter.setCustomComparatorAllowed(true);
 
-    assertTrue(sorter.isCustomComparatorAllowed());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
   }
 
   @Test
@@ -90,11 +92,11 @@ public class AbstractSorterTest {
 
     sorter.setOrderBy(mockOrderBy);
 
-    assertSame(mockOrderBy, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(mockOrderBy);
 
     sorter.setOrderBy(null);
 
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
   }
 
   @Test
@@ -105,23 +107,23 @@ public class AbstractSorterTest {
     Comparator<?> mockSorterOrderBy = mock(Comparator.class, "MockSorterOrderBy");
     Comparator<?> mockThreadOrderBy = mock(Comparator.class, "MockThreadOrderBy");
 
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     sorter.setOrderBy(mockSorterOrderBy);
 
-    assertSame(mockSorterOrderBy, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(mockSorterOrderBy);
 
     AbstractSorter.ComparatorHolder.set(mockThreadOrderBy);
 
-    assertSame(mockThreadOrderBy, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(mockThreadOrderBy);
 
     sorter.setOrderBy(null);
 
-    assertSame(mockThreadOrderBy, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(mockThreadOrderBy);
 
     AbstractSorter.ComparatorHolder.unset();
 
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
   }
 
   @Test
@@ -129,8 +131,8 @@ public class AbstractSorterTest {
 
     TestSorter sorter = new TestSorter();
 
-    assertSame(ELEMENTS, sorter.sort(ELEMENTS));
-    assertTrue(sorter.isSorted());
+    assertThat(sorter.sort(ELEMENTS)).isSameAs(ELEMENTS);
+    assertThat(sorter.isSorted()).isTrue();
   }
 
   @Test
@@ -138,13 +140,13 @@ public class AbstractSorterTest {
 
     TestSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertEquals(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
-    assertFalse(AbstractSorter.ComparatorHolder.isSet());
-    assertSame(TestSortableWithDefaults.INSTANCE, sorter.sort(TestSortableWithDefaults.INSTANCE));
-    assertTrue(sorter.isSorted());
-    assertEquals(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
-    assertFalse(AbstractSorter.ComparatorHolder.isSet());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isEqualTo(SmartComparator.ComparableComparator.INSTANCE);
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isFalse();
+    assertThat(sorter.sort(TestSortableWithDefaults.INSTANCE)).isSameAs(TestSortableWithDefaults.INSTANCE);
+    assertThat(sorter.isSorted()).isTrue();
+    assertThat(sorter.getOrderBy()).isEqualTo(SmartComparator.ComparableComparator.INSTANCE);
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isFalse();
   }
 
   @Test
@@ -152,13 +154,13 @@ public class AbstractSorterTest {
 
     TestSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertEquals(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
-    assertFalse(AbstractSorter.ComparatorHolder.isSet());
-    assertSame(TestSortableWithOverrides.INSTANCE, sorter.sort(TestSortableWithOverrides.INSTANCE));
-    assertTrue(sorter.isSorted());
-    assertEquals(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
-    assertFalse(AbstractSorter.ComparatorHolder.isSet());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isEqualTo(SmartComparator.ComparableComparator.INSTANCE);
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isFalse();
+    assertThat(sorter.sort(TestSortableWithOverrides.INSTANCE)).isSameAs(TestSortableWithOverrides.INSTANCE);
+    assertThat(sorter.isSorted()).isTrue();
+    assertThat(sorter.getOrderBy()).isEqualTo(SmartComparator.ComparableComparator.INSTANCE);
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isFalse();
   }
 
   @Test
@@ -167,9 +169,9 @@ public class AbstractSorterTest {
     org.cp.elements.util.sort.annotation.Sortable sortable = new TestSorter()
       .getSortableMetaData(TestSortableWithDefaults.INSTANCE);
 
-    assertNotNull(sortable);
-    assertEquals("asList", sortable.listMethod());
-    assertEquals(Comparator.class, sortable.orderBy());
+    assertThat(sortable).isNotNull();
+    assertThat(sortable.listMethod()).isEqualTo("asList");
+    assertThat(sortable.orderBy()).isEqualTo(Comparator.class);
   }
 
   @Test
@@ -178,34 +180,28 @@ public class AbstractSorterTest {
     org.cp.elements.util.sort.annotation.Sortable sortable = new TestSorter()
       .getSortableMetaData(TestSortableWithOverrides.INSTANCE);
 
-    assertNotNull(sortable);
-    assertEquals("toCollection", sortable.listMethod());
-    assertEquals(TestComparator.class, sortable.orderBy());
+    assertThat(sortable).isNotNull();
+    assertThat(sortable.listMethod()).isEqualTo("toCollection");
+    assertThat(sortable.orderBy()).isEqualTo(TestComparator.class);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getSortableMetaDataWithNullSortableAnnotatedObject() {
 
-    try {
-      new TestSorter().getSortableMetaData(null);
-    }
-    catch (IllegalArgumentException expected) {
-      assertEquals("The @Sortable annotated object cannot be null!", expected.getMessage());
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new TestSorter().getSortableMetaData(null))
+      .withMessage("The @Sortable annotated object cannot be null!")
+      .withNoCause();
   }
 
-  @Test(expected = SortException.class)
+  @Test
   public void getSortableMetaDataWithNonSortableAnnotatedObject() {
 
-    try {
-      new TestSorter().getSortableMetaData(new Object());
-    }
-    catch (SortException expected) {
-      assertEquals(String.format("To sort an object of type (%1$s), the class must be annotated with the (%2$s) annotation!",
-        Object.class.getName(), org.cp.elements.util.sort.annotation.Sortable.class.getName()), expected.getMessage());
-      throw expected;
-    }
+    assertThatExceptionOfType(SortException.class)
+      .isThrownBy(() -> new TestSorter().getSortableMetaData(new Object()))
+      .withMessage("To sort an object of type (%1$s), the class must be annotated with the (%2$s) annotation!",
+          Object.class.getName(), org.cp.elements.util.sort.annotation.Sortable.class.getName())
+      .withNoCause();
   }
 
   @Test
@@ -214,20 +210,20 @@ public class AbstractSorterTest {
 
     AbstractSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     Comparator<Comparable<?>> mockComparator = mock(Comparator.class);
     Sortable<Comparable<?>> mockSortable = mock(Sortable.class);
 
     when(mockSortable.getOrderBy()).thenReturn(mockComparator);
 
-    assertSame(mockSortable, sorter.configureComparator(mockSortable));
-    assertSame(mockComparator, sorter.getOrderBy());
+    assertThat(sorter.configureComparator(mockSortable)).isSameAs(mockSortable);
+    assertThat(sorter.getOrderBy()).isSameAs(mockComparator);
 
     AbstractSorter.ComparatorHolder.unset();
 
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     verify(mockSortable, times(1)).getOrderBy();
   }
@@ -237,15 +233,15 @@ public class AbstractSorterTest {
 
     AbstractSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     Sortable<?> mockSortable = mock(Sortable.class);
 
     when(mockSortable.getOrderBy()).thenReturn(null);
 
-    assertSame(mockSortable, sorter.configureComparator(mockSortable));
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.configureComparator(mockSortable)).isSameAs(mockSortable);
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     verify(mockSortable, times(1)).getOrderBy();
   }
@@ -257,13 +253,13 @@ public class AbstractSorterTest {
 
     sorter.setCustomComparatorAllowed(false);
 
-    assertFalse(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isFalse();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     Sortable<?> mockSortable = mock(Sortable.class);
 
-    assertSame(mockSortable, sorter.configureComparator(mockSortable));
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.configureComparator(mockSortable)).isSameAs(mockSortable);
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     verify(mockSortable, never()).getOrderBy();
   }
@@ -273,19 +269,19 @@ public class AbstractSorterTest {
 
     AbstractSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     org.cp.elements.util.sort.annotation.Sortable sortableMetaData =
       sorter.getSortableMetaData(TestSortableWithOverrides.INSTANCE);
 
-    assertSame(sortableMetaData, sorter.configureComparator(sortableMetaData));
-    assertNotEquals(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
-    assertTrue(sorter.<String>getOrderBy() instanceof TestComparator);
+    assertThat(sorter.configureComparator(sortableMetaData)).isSameAs(sortableMetaData);
+    assertThat(sorter.getOrderBy()).isNotEqualTo(SmartComparator.ComparableComparator.INSTANCE);
+    assertThat(sorter.<String>getOrderBy() instanceof TestComparator).isTrue();
 
     AbstractSorter.ComparatorHolder.unset();
 
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
   }
 
   @Test
@@ -293,14 +289,14 @@ public class AbstractSorterTest {
 
     AbstractSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     org.cp.elements.util.sort.annotation.Sortable sortableMetaData =
       sorter.getSortableMetaData(TestSortableWithDefaults.INSTANCE);
 
-    assertSame(sortableMetaData, sorter.configureComparator(sortableMetaData));
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.configureComparator(sortableMetaData)).isSameAs(sortableMetaData);
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
   }
 
   @Test
@@ -310,42 +306,38 @@ public class AbstractSorterTest {
 
     sorter.setCustomComparatorAllowed(false);
 
-    assertFalse(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isFalse();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     org.cp.elements.util.sort.annotation.Sortable sortableMetaData =
       sorter.getSortableMetaData(TestSortableWithOverrides.INSTANCE);
 
-    assertSame(sortableMetaData, sorter.configureComparator(sortableMetaData));
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.configureComparator(sortableMetaData)).isSameAs(sortableMetaData);
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
   }
 
-  @Test(expected = SortException.class)
+  @Test
   public void configureComparatorWithSortableAnnotatedObjectUsingComparatorThrowingException() {
 
     AbstractSorter sorter = new TestSorter();
 
-    assertTrue(sorter.isCustomComparatorAllowed());
-    assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
+    assertThat(sorter.isCustomComparatorAllowed()).isTrue();
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
 
     org.cp.elements.util.sort.annotation.Sortable sortableMetaData =
       sorter.getSortableMetaData(TestSortableWithProblem.INSTANCE);
 
-    try {
-      sorter.configureComparator(sortableMetaData);
-    }
-    catch (SortException expected) {
-      assertEquals(String.format("Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
-        + " The Comparator class (%1$s) must have a public no-arg constructor!",
-          sortableMetaData.orderBy().getName(), sorter.getClass().getName()), expected.getMessage());
-      assertTrue(expected.getCause() instanceof IllegalStateException);
-      assertEquals("Construction Failed!", expected.getCause().getMessage());
+    assertThatThrowableOfType(SortException.class)
+      .isThrownBy(args -> sorter.configureComparator(sortableMetaData))
+      .havingMessage(
+        "Error occurred creating an instance of Comparator class (%1$s) to be used by this Sorter (%2$s)!"
+          + " The Comparator class (%1$s) must have a public no-arg constructor!",
+        sortableMetaData.orderBy().getName(), sorter.getClass().getName())
+      .causedBy(IllegalStateException.class)
+      .havingMessage("Construction Failed")
+      .withNoCause();
 
-      throw expected;
-    }
-    finally {
-      assertSame(SmartComparator.ComparableComparator.INSTANCE, sorter.getOrderBy());
-    }
+    assertThat(sorter.getOrderBy()).isSameAs(SmartComparator.ComparableComparator.INSTANCE);
   }
 
   @Test
@@ -356,10 +348,10 @@ public class AbstractSorterTest {
     List<String> elements = sorter.asList(TestSortableWithDefaults.INSTANCE,
       sorter.getSortableMetaData(TestSortableWithDefaults.INSTANCE));
 
-    assertNotNull(elements);
-    assertEquals(ELEMENTS.length, elements.size());
-    assertTrue(elements.containsAll(Arrays.asList(ELEMENTS)));
-    assertEquals("test", elements.get(0));
+    assertThat(elements).isNotNull();
+    assertThat(elements.size()).isEqualTo(ELEMENTS.length);
+    assertThat(elements.containsAll(Arrays.asList(ELEMENTS))).isTrue();
+    assertThat(elements.get(0)).isEqualTo("test");
   }
 
   @Test
@@ -370,10 +362,10 @@ public class AbstractSorterTest {
     List<String> elements = sorter.asList(TestSortableWithOverrides.INSTANCE,
       sorter.getSortableMetaData(TestSortableWithOverrides.INSTANCE));
 
-    assertNotNull(elements);
-    assertEquals(ELEMENTS.length, elements.size());
-    assertTrue(elements.containsAll(Arrays.asList(ELEMENTS)));
-    assertEquals("tested", elements.get(0));
+    assertThat(elements).isNotNull();
+    assertThat(elements.size()).isEqualTo(ELEMENTS.length);
+    assertThat(elements.containsAll(Arrays.asList(ELEMENTS))).isTrue();
+    assertThat(elements.get(0)).isEqualTo("tested");
   }
 
   @Test
@@ -384,23 +376,21 @@ public class AbstractSorterTest {
     List<String> elements = sorter.asList(TestSortableWithProblem.INSTANCE,
       sorter.getSortableMetaData(TestSortableWithProblem.INSTANCE));
 
-    assertNotNull(elements);
-    assertTrue(elements.isEmpty());
+    assertThat(elements).isNotNull();
+    assertThat(elements.isEmpty()).isTrue();
   }
 
-  @Test(expected = SortException.class)
+  @Test
   public void asListWithNonSortableAnnotatedObject() {
 
-    try {
-      AbstractSorter sorter = new TestSorter();
-      sorter.asList(new Object(), sorter.getSortableMetaData(TestSortableWithDefaults.INSTANCE));
-    }
-    catch (SortException expected) {
-      assertEquals("Error occurred getting the list of elements to sort from the (asList) method on object of type (java.lang.Object)!",
-        expected.getMessage());
-      assertTrue(expected.getCause() instanceof NoSuchMethodException);
-      throw expected;
-    }
+    assertThatExceptionOfType(SortException.class)
+      .isThrownBy(() -> {
+        AbstractSorter sorter = new TestSorter();
+        sorter.asList(new Object(), sorter.getSortableMetaData(TestSortableWithDefaults.INSTANCE));
+      })
+      .withMessage("Error occurred getting the list of elements to sort from the (asList) method"
+        + " on object of type (java.lang.Object)!")
+      .withCauseInstanceOf(NoSuchMethodException.class);
   }
 
   @Test
@@ -408,13 +398,13 @@ public class AbstractSorterTest {
 
     List<String> elements = new ArrayList<>(Arrays.asList("zero", "one", "two", "three"));
 
-    assertEquals("one", elements.get(1));
-    assertEquals("two", elements.get(2));
+    assertThat(elements.get(1)).isEqualTo("one");
+    assertThat(elements.get(2)).isEqualTo("two");
 
     new TestSorter().swap(elements, 1, 2);
 
-    assertEquals("two", elements.get(1));
-    assertEquals("one", elements.get(2));
+    assertThat(elements.get(1)).isEqualTo("two");
+    assertThat(elements.get(2)).isEqualTo("one");
   }
 
   @Test
@@ -423,11 +413,15 @@ public class AbstractSorterTest {
   }
 
   @Test
-  @SuppressWarnings("all")
+  @SuppressWarnings("unchecked")
   public void comparableComparatorCompare() {
-    assertEquals(0, SmartComparator.ComparableComparator.INSTANCE.compare("test", "test"));
-    assertThat(SmartComparator.ComparableComparator.INSTANCE.compare("testing", "test")).isPositive();
-    assertThat(SmartComparator.ComparableComparator.INSTANCE.compare("test", "tested")).isNegative();
+
+    User jonDoe = User.as("JonDoe");
+    User pieDoe = User.as("PieDoe");
+
+    assertThat(SmartComparator.ComparableComparator.INSTANCE.compare(jonDoe, User.as("JonDoe"))).isEqualTo(0);
+    assertThat(SmartComparator.ComparableComparator.INSTANCE.compare(jonDoe, pieDoe)).isNegative();
+    assertThat(SmartComparator.ComparableComparator.INSTANCE.compare(pieDoe, jonDoe)).isPositive();
   }
 
   @Test
@@ -435,18 +429,18 @@ public class AbstractSorterTest {
 
     Comparator<?> mockComparator = mock(Comparator.class);
 
-    assertNull(AbstractSorter.ComparatorHolder.get());
-    assertFalse(AbstractSorter.ComparatorHolder.isSet());
+    assertThat(AbstractSorter.ComparatorHolder.get()).isNull();
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isFalse();
 
     AbstractSorter.ComparatorHolder.set(mockComparator);
 
-    assertSame(mockComparator, AbstractSorter.ComparatorHolder.get());
-    assertTrue(AbstractSorter.ComparatorHolder.isSet());
+    assertThat(AbstractSorter.ComparatorHolder.get()).isSameAs(mockComparator);
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isTrue();
 
     AbstractSorter.ComparatorHolder.unset();
 
-    assertNull(AbstractSorter.ComparatorHolder.get());
-    assertFalse(AbstractSorter.ComparatorHolder.isSet());
+    assertThat(AbstractSorter.ComparatorHolder.get()).isNull();
+    assertThat(AbstractSorter.ComparatorHolder.isSet()).isFalse();
   }
 
   @Test
@@ -456,13 +450,13 @@ public class AbstractSorterTest {
 
     AbstractSorter.SortableArrayList<String> list = new AbstractSorter.SortableArrayList<>(elements);
 
-    assertEquals(elements.length, list.size());
-    assertEquals("test", list.get(0));
-    assertEquals("testing", list.get(1));
-    assertEquals("tested", list.get(2));
-    assertEquals("testing", list.set(1, "tester"));
-    assertEquals("tester", list.get(1));
-    assertEquals(elements.length, list.size());
+    assertThat(list.size()).isEqualTo(elements.length);
+    assertThat(list.get(0)).isEqualTo("test");
+    assertThat(list.get(1)).isEqualTo("testing");
+    assertThat(list.get(2)).isEqualTo("tested");
+    assertThat(list.set(1, "tester")).isEqualTo("testing");
+    assertThat(list.get(1)).isEqualTo("tester");
+    assertThat(list.size()).isEqualTo(elements.length);
   }
 
   protected static class TestComparator implements Comparator<String> {
@@ -476,12 +470,12 @@ public class AbstractSorterTest {
   public static class TestProblemComparator implements Comparator<String> {
 
     public TestProblemComparator() {
-      throw new IllegalStateException("Construction Failed!");
+      throw new IllegalStateException("Construction Failed");
     }
 
     @Override
-    public int compare(String value1, String value2) {
-      return value1.compareTo(value2);
+    public int compare(String valueOne, String valueTwo) {
+      return valueOne.compareTo(valueTwo);
     }
   }
 
@@ -522,12 +516,12 @@ public class AbstractSorterTest {
     private boolean sorted = false;
 
     public boolean isSorted() {
-      return sorted;
+      return this.sorted;
     }
 
     @Override
-    public <E> List<E> sort(final List<E> elements) {
-      sorted = true;
+    public <E> List<E> sort(List<E> elements) {
+      this.sorted = true;
       return elements;
     }
   }
@@ -636,6 +630,21 @@ public class AbstractSorterTest {
     public void finish() {
       super.finish();
       sorter = null;
+    }
+  }
+
+  @Getter
+  @ToString(of = "name")
+  @EqualsAndHashCode(of = "name")
+  @RequiredArgsConstructor(staticName = "as")
+  static class User implements Comparable<User> {
+
+    @lombok.NonNull
+    private final String name;
+
+    @Override
+    public int compareTo(User other) {
+      return this.getName().compareTo(other.getName());
     }
   }
 }

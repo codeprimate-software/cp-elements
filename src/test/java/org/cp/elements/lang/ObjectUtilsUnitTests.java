@@ -41,6 +41,9 @@ import org.junit.Test;
  */
 public class ObjectUtilsUnitTests {
 
+  private static final Object[] NULL_OBJECT_ARRAY = null;
+  private static final Object[][] NULL_TWO_DIMENSIONAL_OBJECT_ARRAY = null;
+
   @Test
   public void areAllNullReturnsTrue() {
 
@@ -372,9 +375,9 @@ public class ObjectUtilsUnitTests {
   // for varargs parameter.
   public void returnFirstNonNullValueWithNullValues() {
 
-    assertThat(ObjectUtils.returnFirstNonNullValue((Object[][]) null)).isNull();
-    assertThat(ObjectUtils.returnFirstNonNullValue(null, (Object[]) null)).isNull();
-    assertThat(ObjectUtils.returnFirstNonNullValue((Object[]) null, null, null)).isNull();
+    assertThat(ObjectUtils.returnFirstNonNullValue((Object) NULL_TWO_DIMENSIONAL_OBJECT_ARRAY)).isNull();
+    assertThat(ObjectUtils.returnFirstNonNullValue(null, NULL_OBJECT_ARRAY)).isNull();
+    assertThat(ObjectUtils.returnFirstNonNullValue(NULL_OBJECT_ARRAY, null, null)).isNull();
   }
 
   @Test
