@@ -16,16 +16,22 @@
 package org.cp.elements.data.caching.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newRuntimeException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +41,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.function.Supplier;
 
-import org.cp.elements.data.caching.Cache;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.cp.elements.data.caching.Cache;
+
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -58,13 +67,13 @@ import edu.umd.cs.mtc.TestFramework;
  */
 @RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class CachingTemplateTests {
+public class CachingTemplateUnitTests {
 
   @Mock
   private Cache mockCache;
 
   @Test
-  public void constructWithNonNullCache() {
+  public void constructCachingTemplate() {
 
     CachingTemplate template = new CachingTemplate(this.mockCache);
 
@@ -73,19 +82,13 @@ public class CachingTemplateTests {
     assertThat(template.getLock()).isNotNull();
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructWithNullCache() {
+  @Test
+  public void constructCachingTemplateWithNullCache() {
 
-    try {
-      new CachingTemplate(null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Cache is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new CachingTemplate(null))
+      .withMessage("Cache is required")
+      .withNoCause();
   }
 
   @Test
@@ -105,57 +108,46 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn("testOne", "testTwo", "testThree");
-    when(this.mockCache.get(any())).thenReturn(null, "testOne");
+    doReturn("A", "B", "C"). when(mockSupplier).get();
+    doReturn(null, "A").when(this.mockCache).get(any());
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
-    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("testOne");
-    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("testOne");
-    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("testOne");
+    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("A");
+    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("A");
+    assertThat(template.withCaching(1, mockSupplier)).isEqualTo("A");
 
     verify(mockSupplier, times(1)).get();
     verify(this.mockCache, times(3)).get(eq(1));
+    verify(this.mockCache, times(1)).put(eq(1), eq("A"));
+
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withCachingUsingNullKey() {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    try {
-      CachingTemplate.with(this.mockCache).withCaching(null, mockSupplier);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCaching(null, mockSupplier))
+      .withMessage("Key is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Key is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(mockSupplier);
-      verifyNoInteractions(this.mockCache);
-    }
+    verifyNoInteractions(mockSupplier);
+    verifyNoInteractions(this.mockCache);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withCachingUsingNullSupplier() {
 
-    try {
-      CachingTemplate.with(this.mockCache).withCaching("key", null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCaching("key", null))
+      .withMessage("Supplier is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Supplier is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(this.mockCache);
-    }
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -163,7 +155,7 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn(null);
+    doReturn(null).when(mockSupplier).get();
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
@@ -171,30 +163,27 @@ public class CachingTemplateTests {
     assertThat(template.withCaching("key", mockSupplier)).isNull();
 
     verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).get(eq("key"));
     verify(this.mockCache, never()).put(any(), any());
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void withCachingWhenSupplierThrowsException() {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
+    doThrow(newRuntimeException("test")).when(mockSupplier).get();
 
-    try {
-      CachingTemplate.with(this.mockCache).withCaching("key", mockSupplier);
-    }
-    catch (RuntimeException expected) {
+    assertThatExceptionOfType(RuntimeException.class)
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCaching("key", mockSupplier))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockSupplier, times(1)).get();
-      verify(this.mockCache, never()).put(any(), any());
-    }
+    verify(mockSupplier, times(1)).get();
+    verify(this.mockCache, times(1)).get(eq("key"));
+    verify(this.mockCache, never()).put(any(), any());
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
   @Test
@@ -202,33 +191,30 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn("test");
+    doReturn("test").when(mockSupplier).get();
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
     assertThat(template.withCacheClear(mockSupplier)).isEqualTo("test");
 
-    verify(mockSupplier, times(1)).get();
-    verify(this.mockCache, times(1)).clear();
+    InOrder order = inOrder(this.mockCache, mockSupplier);
+
+    order.verify(mockSupplier, times(1)).get();
+    order.verify(this.mockCache, times(1)).clear();
+
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withCacheClearUsingNullSupplier() {
 
-    try {
-      CachingTemplate.with(this.mockCache).withCacheClear(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCacheClear(null))
+      .withMessage("Supplier is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Supplier is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(this.mockCache);
-    }
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -236,35 +222,30 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn(null);
+    doReturn(null).when(mockSupplier).get();
 
     assertThat(CachingTemplate.with(this.mockCache).withCacheClear(mockSupplier)).isNull();
 
     verify(mockSupplier, times(1)).get();
     verify(this.mockCache, times(1)).clear();
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void withCacheClearWhenSupplierThrowsException() {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
+    doThrow(newRuntimeException("test")).when(mockSupplier).get();
 
-    try {
-      CachingTemplate.with(this.mockCache).withCacheClear(mockSupplier);
-    }
-    catch (RuntimeException expected) {
+    assertThatExceptionOfType(RuntimeException.class)
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCacheClear(mockSupplier))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockSupplier, times(1)).get();
-      verifyNoInteractions(this.mockCache);
-    }
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -272,33 +253,30 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn("test");
+    doReturn("test").when(mockSupplier).get();
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
     assertThat(template.withCacheEvict("key", mockSupplier)).isEqualTo("test");
 
-    verify(mockSupplier, times(1)).get();
-    verify(this.mockCache, times(1)).evict("key");
+    InOrder order = inOrder(this.mockCache, mockSupplier);
+
+    order.verify(mockSupplier, times(1)).get();
+    order.verify(this.mockCache, times(1)).evict("key");
+
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withCacheEvictUsingNullSupplier() {
 
-    try {
-      CachingTemplate.with(this.mockCache).withCacheEvict(null, null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCacheEvict(null, null))
+      .withMessage("Supplier is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Supplier is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(this.mockCache);
-    }
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -306,35 +284,30 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn(null);
+    doReturn(null).when(mockSupplier).get();
 
     assertThat(CachingTemplate.with(this.mockCache).withCacheEvict("key", mockSupplier)).isNull();
 
     verify(mockSupplier, times(1)).get();
     verify(this.mockCache, times(1)).evict(eq("key"));
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void withCacheEvictWhenSupplierThrowsException() {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
+    doThrow(newRuntimeException("test")).when(mockSupplier).get();
 
-    try {
-      CachingTemplate.with(this.mockCache).withCacheEvict("key", mockSupplier);
-    }
-    catch (RuntimeException expected) {
+    assertThatExceptionOfType(RuntimeException.class)
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCacheEvict("key", mockSupplier))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockSupplier, times(1)).get();
-      verifyNoInteractions(this.mockCache);
-    }
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -342,54 +315,43 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn("test");
+    doReturn("test").when(mockSupplier).get();
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
     assertThat(template).isNotNull();
     assertThat(template.withCachePut("key", mockSupplier)).isEqualTo("test");
 
-    verify(mockSupplier, times(1)).get();
-    verify(this.mockCache, times(1)).put(eq("key"), eq("test"));
+    InOrder order = inOrder(this.mockCache, mockSupplier);
+
+    order.verify(mockSupplier, times(1)).get();
+    order.verify(this.mockCache, times(1)).put(eq("key"), eq("test"));
+
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withCachePutUsingNullKey() {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    try {
-      CachingTemplate.with(this.mockCache).withCachePut(null, mockSupplier);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCachePut(null, mockSupplier))
+      .withMessage("Key is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Key is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(mockSupplier);
-      verifyNoInteractions(this.mockCache);
-    }
+    verifyNoInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void withCachePutUsingNullSupplier() {
 
-    try {
-      CachingTemplate.with(this.mockCache).withCachePut("key", null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCachePut("key", null))
+      .withMessage("Supplier is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Supplier is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verifyNoInteractions(this.mockCache);
-    }
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -397,7 +359,7 @@ public class CachingTemplateTests {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenReturn(null);
+    doReturn(null).when(mockSupplier).get();
 
     CachingTemplate template = CachingTemplate.with(this.mockCache);
 
@@ -406,29 +368,24 @@ public class CachingTemplateTests {
 
     verify(mockSupplier, times(1)).get();
     verify(this.mockCache, never()).put(any(), any());
+    verifyNoMoreInteractions(this.mockCache, mockSupplier);
   }
 
-  @Test(expected = RuntimeException.class)
+  @Test
   public void withCachePutWhenSupplierThrowsException() {
 
     Supplier mockSupplier = mock(Supplier.class);
 
-    when(mockSupplier.get()).thenThrow(new RuntimeException("test"));
+    doThrow(newRuntimeException("test")).when(mockSupplier).get();
 
-    try {
-      CachingTemplate.with(this.mockCache).withCachePut("key", mockSupplier);
-    }
-    catch (RuntimeException expected) {
+    assertThatExceptionOfType(RuntimeException.class)
+      .isThrownBy(() -> CachingTemplate.with(this.mockCache).withCachePut("key", mockSupplier))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockSupplier, times(1)).get();
-      verifyNoInteractions(this.mockCache);
-    }
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+    verifyNoInteractions(this.mockCache);
   }
 
   @Test
@@ -464,7 +421,7 @@ public class CachingTemplateTests {
       this.template = CachingTemplate.with(cache);
     }
 
-    public void threadOne() {
+    public void thread1() {
 
       Thread.currentThread().setName("Cache Get Thread");
 
@@ -473,7 +430,7 @@ public class CachingTemplateTests {
       assertThat(this.template.withCaching(1, () -> "GET")).isEqualTo("PUT");
     }
 
-    public void threadTwo() {
+    public void thread2() {
 
       Thread.currentThread().setName("Cache Put Thread");
 
@@ -494,7 +451,7 @@ public class CachingTemplateTests {
 
     private CachingTemplate template;
 
-    private List<String> threadOrder = new CopyOnWriteArrayList<>();
+    private final List<String> threadOrder = new CopyOnWriteArrayList<>();
 
     @Override
     public void initialize() {
@@ -526,7 +483,7 @@ public class CachingTemplateTests {
       this.template = CachingTemplate.with(cache);
     }
 
-    public void threadOne() {
+    public void thread1() {
 
       Thread.currentThread().setName("Cache Get Thread One");
 
@@ -537,7 +494,7 @@ public class CachingTemplateTests {
       assertTick(3);
     }
 
-    public void threadTwo() {
+    public void thread2() {
 
       Thread.currentThread().setName("Cache Get Thread Two");
 
@@ -548,7 +505,7 @@ public class CachingTemplateTests {
       assertTick(4);
     }
 
-    public void threadThree() {
+    public void thread3() {
 
       Thread.currentThread().setName("Cache Put Thread");
 
@@ -559,7 +516,7 @@ public class CachingTemplateTests {
       assertTick(6);
     }
 
-    public void threadFour() {
+    public void thread4() {
 
       Thread.currentThread().setName("Cache Get Thread Three");
 
