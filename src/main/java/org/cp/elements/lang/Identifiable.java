@@ -15,6 +15,8 @@
  */
 package org.cp.elements.lang;
 
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
+
 /**
  * The {@link Identifiable} interface defines a contract for uniquely identifying {@link Object objects}
  * of a given {@link Class type}.
@@ -25,6 +27,7 @@ package org.cp.elements.lang;
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
+@FunctionalInterface
 public interface Identifiable<ID extends Comparable<ID>> {
 
   /**
@@ -39,9 +42,12 @@ public interface Identifiable<ID extends Comparable<ID>> {
    * Sets the identifier uniquely identifying {@literal this} {@link Object}.
    *
    * @param id value of {@link Class type ID} assigned as {@literal this} {@link Object Object's} unique identifier.
+   * @throws UnsupportedOperationException by default.
    * @see #getId()
    */
-  void setId(ID id);
+  default void setId(ID id) {
+    throw newUnsupportedOperationException("Setting ID is not supported");
+  }
 
   /**
    * Determines whether {@literal this} {@link Identifiable} object is {@literal new}.

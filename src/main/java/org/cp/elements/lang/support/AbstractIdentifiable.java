@@ -35,9 +35,4 @@ public abstract class AbstractIdentifiable<T extends Comparable<T>> implements I
   public T getId() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
-
-  @Override
-  public void setId(T id) {
-    throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-  }
 }
