@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import java.util.UUID;
 
 import org.cp.elements.lang.IdentifierSequence;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
- * The UUIDIdentifierSequence class is an implementation of the {@link IdentifierSequence} interface generating
- * unique, String-typed identifiers in a sequence of IDs using the {@link java.util.UUID} class.
+ * Implementation of the {@link IdentifierSequence} interface generating unique, {@link UUID} identifiers in sequence
+ * using the {@link java.util.UUID} class.
  *
  * @author John J. Blum
- * @see java.lang.String
  * @see java.util.UUID
  * @see org.cp.elements.lang.IdentifierSequence
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
-public class UUIDIdentifierSequence implements IdentifierSequence<String> {
+public class UUIDIdentifierSequence implements IdentifierSequence<UUID> {
 
   /**
    * Generates the next unique ID in sequence.
@@ -40,8 +39,7 @@ public class UUIDIdentifierSequence implements IdentifierSequence<String> {
    * @see java.util.UUID#randomUUID()
    */
   @Override
-  public String nextId() {
-    return UUID.randomUUID().toString();
+  public @NotNull UUID nextId() {
+    return UUID.randomUUID();
   }
-
 }

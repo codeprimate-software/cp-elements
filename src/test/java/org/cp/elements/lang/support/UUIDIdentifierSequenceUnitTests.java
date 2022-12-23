@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ import org.junit.Test;
  * @see org.cp.elements.lang.support.UUIDIdentifierSequence
  * @since 1.0.0
  */
-public class UUIDIdentifierSequenceTest {
+public class UUIDIdentifierSequenceUnitTests {
 
   private static final int COUNT = 100000;
 
@@ -40,7 +41,7 @@ public class UUIDIdentifierSequenceTest {
 
     UUIDIdentifierSequence identifierSequence = new UUIDIdentifierSequence();
 
-    Set<String> identifiers = new HashSet<>(COUNT);
+    Set<UUID> identifiers = new HashSet<>(COUNT);
 
     for (int index = COUNT; index > 0; --index) {
       identifiers.add(identifierSequence.nextId());

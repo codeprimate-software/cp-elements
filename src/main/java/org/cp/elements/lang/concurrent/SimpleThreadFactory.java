@@ -17,6 +17,7 @@ package org.cp.elements.lang.concurrent;
 
 import static java.lang.Thread.UncaughtExceptionHandler;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,7 +67,7 @@ public class SimpleThreadFactory implements ThreadFactory {
 
   private ClassLoader contextClassLoader;
 
-  private final IdentifierSequence<String> threadIdGenerator = new UUIDIdentifierSequence();
+  private final IdentifierSequence<UUID> threadIdGenerator = new UUIDIdentifierSequence();
 
   private Integer priority;
 
@@ -83,7 +84,7 @@ public class SimpleThreadFactory implements ThreadFactory {
    * @see #generateThreadName()
    */
   protected @NotNull String generateThreadId() {
-    return this.threadIdGenerator.nextId();
+    return this.threadIdGenerator.nextId().toString();
   }
 
   /**
