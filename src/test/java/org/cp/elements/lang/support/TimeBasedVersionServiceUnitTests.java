@@ -26,7 +26,6 @@ import java.util.stream.IntStream;
 import org.junit.Test;
 
 import org.cp.elements.lang.VersionService;
-import org.cp.elements.lang.concurrent.ThreadUtils;
 
 /**
  * Unit Tests for {@link TimeBasedVersionService}.
@@ -37,7 +36,7 @@ import org.cp.elements.lang.concurrent.ThreadUtils;
  * @see org.cp.elements.lang.support.TimeBasedVersionService
  * @since 1.0.0
  */
-public class TimeBasedVersionServiceIUnitTests {
+public class TimeBasedVersionServiceUnitTests {
 
   private static final int COUNT = 100;
 
@@ -50,10 +49,7 @@ public class TimeBasedVersionServiceIUnitTests {
 
     Set<Instant> versionNumbers = new TreeSet<>();
 
-    IntStream.range(0, COUNT).forEach(count -> {
-      versionNumbers.add(versionService.newVersion());
-      ThreadUtils.sleep(10L, 0);
-    });
+    IntStream.range(0, COUNT).forEach(count -> versionNumbers.add(versionService.newVersion()));
 
     assertThat(versionNumbers).hasSize(COUNT);
 

@@ -16,9 +16,12 @@
 package org.cp.elements.lang.support;
 
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.cp.elements.lang.VersionService;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.concurrent.ThreadUtils;
 
 /**
  * {@link VersionService} implementation based on {@link Instant time}.
@@ -30,8 +33,27 @@ import org.cp.elements.lang.annotation.NotNull;
  */
 public class TimeBasedVersionService implements VersionService<Instant> {
 
+  private final AtomicReference<Instant> versionNumber = new AtomicReference<>(Instant.now());
+
+  private final Object lock = this;
+
   @Override
   public @NotNull Instant newVersion() {
-    return Instant.now();
+
+    return this.versionNumber.updateAndGet(currentVersionNumber -> {
+
+      Instant newVersionNumber = Instant.now();
+
+      while (!newVersionNumber.isAfter(currentVersionNumber)) {
+
+        synchronized (this.lock) {
+          ThreadUtils.waitFor(1L, TimeUnit.NANOSECONDS);
+        }
+
+        newVersionNumber = Instant.now();
+      }
+
+      return newVersionNumber;
+    });
   }
 }
