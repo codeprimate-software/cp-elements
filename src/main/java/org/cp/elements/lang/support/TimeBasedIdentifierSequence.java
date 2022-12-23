@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import org.cp.elements.lang.IdentifierSequence;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.concurrent.ThreadSafe;
 
 /**
- * The TimeBasedIdentifierSequence class is an implementation of the {@link IdentifierSequence} interface generating
- * unique, Long-typed identifiers based on time.  In particular, this implementation uses the System clock
- * and is Thread-safe.
+ * Implementation of the {@link IdentifierSequence} interface generating unique, {@link Long Long-typed} identifiers
+ * based on {@link System#nanoTime() time}.
  *
- * While this maybe useful for testing purposes, it should not be used in distributed systems where multiple application
- * or system components may generate ID's using different instances of this class in separate JVMs.
- * This is particularly important with respect to clock skew.
+ * In particular, this implementation uses the {@link System} clock and is {@link ThreadSafe Thread-safe}.
+ *
+ * While this maybe useful for testing purposes, it should not be used in distributed systems
+ * where multiple application or system components may generate ID's using different instances
+ * of this class in separate JVMs. This is particularly important with respect to clock skew.
  *
  * @author John J. Blum
  * @see java.lang.Long
@@ -48,6 +49,7 @@ public class TimeBasedIdentifierSequence implements IdentifierSequence<Long> {
    * @see java.lang.System#nanoTime()
    */
   protected static synchronized long nextGlobalId() {
+
     long newIdentifier = System.nanoTime();
 
     while (newIdentifier <= currentIdentifier) {
@@ -75,7 +77,7 @@ public class TimeBasedIdentifierSequence implements IdentifierSequence<Long> {
    * @see #nextGlobalId()
    */
   @Override
-  public synchronized Long nextId() {
+  public synchronized @NotNull Long nextId() {
     return nextGlobalId();
   }
 }

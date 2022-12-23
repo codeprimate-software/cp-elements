@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,8 +27,7 @@ import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
 
 /**
- * The TimeBasedIdentifierSequenceTest class is a test suite of test cases testing the contract and functionality
- * of the TimeBasedIdentifierSequence class.
+ * Unit Tests for {@link TimeBasedIdentifierSequence}.
  *
  * @author John J. Blum
  * @see org.junit.Test
@@ -39,12 +37,13 @@ import edu.umd.cs.mtc.TestFramework;
  * @see edu.umd.cs.mtc.TestFramework
  * @since 1.0.0
  */
-public class TimeBasedIdentifierSequenceTest {
+public class TimeBasedIdentifierSequenceUnitTests {
 
-  private static final int COUNT = 100000;
+  private static final int COUNT = 100_000;
 
   @Test
   public void nextIdIsUnique() {
+
     long previousId = TimeBasedIdentifierSequence.nextGlobalId();
 
     assertThat(previousId).isGreaterThan(0);
@@ -58,6 +57,7 @@ public class TimeBasedIdentifierSequenceTest {
 
   @Test
   public void nextIdGeneratesUniqueIdentifiers() {
+
     TimeBasedIdentifierSequence identifierSequence = new TimeBasedIdentifierSequence();
 
     long previousId = -1;
@@ -71,6 +71,7 @@ public class TimeBasedIdentifierSequenceTest {
 
   @Test
   public void multipleInstancesOfTimeBasedIdentifierSequenceGenerateUniqueIdentifiers() {
+
     TimeBasedIdentifierSequence identifierSequenceOne = new TimeBasedIdentifierSequence();
     TimeBasedIdentifierSequence identifierSequenceTwo = new TimeBasedIdentifierSequence();
 
@@ -97,9 +98,10 @@ public class TimeBasedIdentifierSequenceTest {
     private final TimeBasedIdentifierSequence identifierSequence = new TimeBasedIdentifierSequence();
 
     public void thread1() {
-      assertTick(0);
 
       Thread.currentThread().setName("Time-based Identifier Sequence Thread 1");
+
+      assertTick(0);
 
       for (int index = COUNT; index > 0; --index) {
         identifiersOne.add(identifierSequence.nextId());
@@ -107,9 +109,10 @@ public class TimeBasedIdentifierSequenceTest {
     }
 
     public void thread2() {
-      assertTick(0);
 
       Thread.currentThread().setName("Time-based Identifier Sequence Thread 2");
+
+      assertTick(0);
 
       for (int index = COUNT; index > 0; --index) {
         identifiersTwo.add(identifierSequence.nextId());
@@ -118,6 +121,7 @@ public class TimeBasedIdentifierSequenceTest {
 
     @Override
     public void finish() {
+
       assertThat(identifiersOne.size()).isEqualTo(COUNT);
       assertThat(identifiersTwo.size()).isEqualTo(COUNT);
       assertThat(identifiersOne.removeAll(identifiersTwo)).isFalse();
