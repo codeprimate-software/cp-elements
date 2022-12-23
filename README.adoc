@@ -18,9 +18,9 @@ to solve common, reoccurring problems during software development with ease and 
 == Elemental Objectives
 
 1. Functionally independent with absolutely no additional dependencies on 3rd-party Java libraries.
-2. Simple, robust and proven APIs built on solid OO principles, design patterns, and recommended practices.
-3. Promote "open" collaboration through transparent communication and feedback.
-4. Prioritize quality and reliability over quantity.
+2. Simple, robust, and proven APIs built on solid OO principles, design patterns, and recommended practices.
+3. Priority on quality and reliability over quantity.
+4. Open Source and community-led development.
 
 [[why-elements]]
 == Why Elements
