@@ -15,7 +15,6 @@
  */
 package org.cp.elements.process;
 
-import static org.cp.elements.io.IOUtils.close;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 import static org.cp.elements.lang.concurrent.SimpleThreadFactory.newThreadFactory;
 import static org.cp.elements.process.ProcessContext.newProcessContext;
@@ -64,6 +63,8 @@ import org.cp.elements.util.CollectionUtils;
  *
  * @author John J. Blum
  * @see java.io.File
+ * @see java.io.InputStream
+ * @see java.io.OutputStream
  * @see java.lang.Process
  * @see java.util.UUID
  * @see org.cp.elements.lang.Identifiable
@@ -184,10 +185,7 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
     return () -> {
 
       if (isRunning()) {
-
-        BufferedReader reader = newReader(in);
-
-        try {
+        try (BufferedReader reader = newReader(in)) {
           for (String input = reader.readLine(); input != null; input = reader.readLine()) {
             this.compositeProcessStreamListener.onInput(input);
           }
@@ -195,9 +193,6 @@ public class ProcessAdapter implements Identifiable<Integer>, Initable, Nameable
         catch (IOException ignore) {
           // Ignore IO error and just stop reading from the process input stream
           // The IO error occurred most likely because the process was terminated
-        }
-        finally {
-          close(reader);
         }
       }
     };

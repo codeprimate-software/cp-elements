@@ -18,7 +18,6 @@ package org.cp.elements.tools.net;
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.NumberUtils.intValue;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.net.NetworkUtils.close;
 import static org.cp.elements.net.NetworkUtils.lenientParsePort;
 import static org.cp.elements.net.NetworkUtils.newSocketAddress;
 
@@ -214,20 +213,12 @@ public class ConnectionTester implements Condition, Tester {
   public boolean test() {
 
     if (isNotConnected()) {
-
-      Socket socket = null;
-
-      try {
-        socket = newSocket();
+      try (Socket socket = newSocket()) {
         socket.setReuseAddress(SO_REUSEADDR);
         socket.connect(newSocketAddress(getHost(), getPort()), intValue(CONNECT_TIMEOUT));
         setConnected(socket.isConnected());
       }
-      catch (IOException ignore) {
-      }
-      finally {
-        close(socket);
-      }
+      catch (IOException ignore) { }
     }
 
     return isConnected();

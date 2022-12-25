@@ -366,17 +366,12 @@ public abstract class ProcessUtils {
 
     pidFile.deleteOnExit();
 
-    PrintWriter writer = newPrintWriter(pidFile);
-
-    try {
+    try (PrintWriter writer = newPrintWriter(pidFile)) {
 
       writer.print(pid);
       writer.flush();
 
       return pidFile;
-    }
-    finally {
-      FileSystemUtils.close(writer);
     }
   }
 

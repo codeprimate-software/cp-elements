@@ -17,7 +17,6 @@ package org.cp.elements.tools.net;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
-import static org.cp.elements.net.NetworkUtils.close;
 import static org.cp.elements.net.NetworkUtils.lenientParsePort;
 
 import java.io.IOException;
@@ -163,14 +162,11 @@ public class EchoClient extends AbstractClientServerSupport {
    */
   public String sendMessage(String message) {
 
-    Socket socket = null;
-
-    try {
-      socket = newSocket(getHost(), getPort());
+    try (Socket socket = newSocket(getHost(), getPort())) {
       return receiveResponse(sendMessage(socket, message));
     }
-    finally {
-      close(socket);
+    catch (IOException ignore) {
+      return null;
     }
   }
 

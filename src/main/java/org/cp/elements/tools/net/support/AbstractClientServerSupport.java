@@ -153,6 +153,7 @@ public abstract class AbstractClientServerSupport {
    * @see java.net.Socket
    */
   public Socket newSocket(String host, int port) {
+
     try {
       Socket socket = newSocket();
       socket.setReuseAddress(DEFAULT_REUSE_ADDRESS);
