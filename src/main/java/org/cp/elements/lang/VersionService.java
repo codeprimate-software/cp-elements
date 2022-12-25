@@ -25,6 +25,7 @@ import org.cp.elements.service.annotation.Service;
  * Elements {@link Service} component used to generate new {@link VERSION versions}.
  *
  * @author John Blum
+ * @param <VERSION> {@link Class type} of the {@literal version number}.
  * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Versioned
  * @since 1.0.0

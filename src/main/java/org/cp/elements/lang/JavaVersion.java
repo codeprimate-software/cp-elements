@@ -164,18 +164,8 @@ public abstract class JavaVersion implements Comparable<JavaVersion> {
     return JavaVersion.of(major, minor, patch, buildNumber);
   }
 
-  // TODO: Replace with StringUtils.getDigits(:String).
   private static String parseDigits(@NotNull String value) {
-
-    StringBuilder digits = new StringBuilder();
-
-    for (char character : String.valueOf(value).toCharArray()) {
-      if (Character.isDigit(character)) {
-        digits.append(character);
-      }
-    }
-
-    return digits.toString();
+    return StringUtils.getDigits(value);
   }
 
   private static int parseInt(@NotNull String value) {
