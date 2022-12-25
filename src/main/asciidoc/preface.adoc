@@ -1,22 +1,22 @@
 = Preface
 
-The state of software development today is at the intersection of quantity vs. quality.
+The state of software development today is at the intersection of quality vs. quantity.
 
 Many software organizations race to out pace their competitors in terms of capabilities rather than doing 1 thing
-really well. Instead, they attempt to be a 1 stop shop for everything.  But, there is no holy grail in
-software development, no 1 size fits all.
+really well. Instead, they attempt to be a 1 stop shop for everything. But, there is no holy grail in software
+development, no 1 size fits all.
 
 Likewise, many young, inspiring software engineers lack the experience and skill set to develop highly effective
 software solutions that are simple, easy to understand, easy to maintain and that will stand the test of time.
 Much of a software engineer's early work is throw away and s/he must start over.
 
-Even the Java SE platform itself is riddled with many poorly conceived APIs, lacking key functionality that offers
-too little value or simply tries to be too much.
+Even the Java platform itself is riddled with many poorly conceived APIs, lacking key functionality that offers
+too little value or simply tries to do too much.
 
 The main problems with software today can be summarized as...
 
 1. Not Correct (software that does not work, or fails in certain contexts),
-2. Overly Complex (over or under designed and implemented),
+2. Overly Complex (over or under designed and engineered),
 3. Unbounded Scope (breadth over depth of functionality),
 4. APIs with too much surface area,
 5. Unstructured and Disorganized,
@@ -26,24 +26,24 @@ As a result, quality suffers and the software becomes difficult to understand an
 
 == _Incorrect_
 
-Software that does not function as designed, upholding its contract, is not useful to anyone.  If the software returns
+Software that does not function as designed, upholding its contract, is not useful to anyone. If the software returns
 an incorrect result, then it is not reliable in any sense of the word.
 
-Some software only works in a certain context.  For instance, the software may function reliably in a single-Threaded
-context but fail in a multi-Threaded one.  The software may have dead locks or contain race conditions that violate
-the system's state or an individual object's invariants.
+Some software only works in certain contexts. For instance, the software may function reliably in a single-Threaded
+context but fail in a multi-Threaded one. The software may have unforeseen deadlocks or contain race conditions
+that violate the system's state or an individual object's invariants.
 
 == _Complexity_
 
-Complexity is very elusive and many software engineers equate complexity to mean big.  This is not necessarily the case.
-Complexity is a factor of how much work can be accomplished with the least amount of effort.  For example, if it takes
+Complexity is very elusive and many software engineers equate complexity to mean big. This is not necessarily the case.
+Complexity is a factor of how much work can be accomplished with the least amount of effort. For example, if it takes
 many method calls and lines of code to accomplish a trivial task than the software is inherently complex.
 
-As Albert Einstein stated, "_if we cannot explain a problem simply then we simply do not understand the problem
+As Albert Einstein stated, "_If we cannot explain a problem simply then we simply do not understand the problem
 well enough._"
 
 Therefore, one goal for reducing complexity in piece of software should be to accomplish the most amount of work
-with the least amount of effort, in the fewest number of steps and with minimal lines of code.  Additionally, maximizing
+with the least amount of effort, in the fewest number of steps and with minimal lines of code. Additionally, maximizing
 the amount of work accomplished in a single operation should not be confused with doing everything possible. Rather, it
 simply means doing just enough to solve the problem at hand and no more.
 

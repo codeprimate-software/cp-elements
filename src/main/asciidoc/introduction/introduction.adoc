@@ -1,36 +1,37 @@
 [[introduction]]
 = Introduction
 
-_Codeprimate Elements_ (a.k.a. `cp-elements`, or simply "_Elements_") is a Java class library and micro-framework
+_Codeprimate Elements_, or simply "_Elements_", is a Java library and micro-framework
 for simplifying the development of software applications written in Java.
 
-_Elememts_ is a very simple,  yet highly robust and proven library of Java classes and components built on
-fundamental OO principles, design patterns and best practices to effectively solve common and re-occurring problems
-in software development. 
-
-_Elements_ packages several APIs that solve an array of problems, handle multiple application concerns and address
-different aspects of software development all in one library.
-
-Elements has 4 elementary objectives...
-
-1. Simple, robust and proven APIs built on solid OO principles, design patterns, and best practices.
-2. Functionally independent with no dependencies on 3rd-party Java class libraries.
-3. Open source and transparent project management with community involvement.
-4. Focus on quality and reliability over quantity.
-
-There are many similarities between _Elements_ and other Java class libraries, like _Apache Commons_
-or _Google's Guava_.
-
-However,   _Elements_ is a highly refined library of Java classes and components that is rooted in years
-of research and development along with  extensive experience in deployed enterprise applications.
-_Elements_ maintains a high standard on quality backed by extensive test coverage, code metrics,
-peer review and trusted performance in extreme, enterprise application environments.
-
-  Elements is a foundational Java library that does not introduce any additional dependencies in order to function
-and perform  properly out-of-the-box. Good https://en.wikipedia.org/wiki/Object-oriented_design[Object-Oriented Design]
-based on https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)[SOLID design principles] and effective use
-of https://en.wikipedia.org/wiki/Software_design_pattern[Software Design Patterns] makes _Elements_ immediately familiar
+_Elements_ does not introduce nor require any additional dependencies in order to function and perform properly
+out-of-the-box. Good https://en.wikipedia.org/wiki/Object-oriented_design[Object-Oriented Design] based on
+https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)[SOLID design principles] and effective use of
+https://en.wikipedia.org/wiki/Software_design_pattern[Software Design Patterns] makes _Elements_ immediately familiar
 and easy to use.
 
+_Elememts_ is a very simple, yet robust and proven library of Java classes and components built on fundamental
+Object-oriented (OO) design principles, design patterns and best practices that effectively help software engineers
+solve common and re-occurring problems in software development.
+
+_Elements_ packages many different APIs that can be used to solve a wide array of problems along with handling
+multiple application concerns and aspects of software development in a single library. _Elements_ has 4 fundamental
+objectives:
+
+1. Simple, robust and proven APIs built on solid OO principles, design patterns, and best practices.
+2. Functionally independent with no dependencies on 3rd-party Java libraries.
+3. Open source with transparent project management and community involvement.
+4. Laser focus on quality and reliability over quantity.
+
+While there are many similarities between _Elements_ and other Java libraries, such as, but not limited to,
+_Apache Commons_ or _Google's Guava_, _Elements_ is a highly refined library of Java classes and components
+rooted in 25+ years of research and development and extensive use in deployed, production-grade software
+applications.
+
+_Elements_ maintains a high standard on quality backed by extensive test coverage, code metrics and peer review
+with trusted and proven performance in enterprise-scale software application environments.
+
 Finally, _Elements_ will always be open source, developed in a transparent and collaborative manner where feedback
-is always welcomed, where building high quality and reliable software is essential.
+is welcomed, and building high quality and reliable software is the primary objective.
+
+Thank you for choosing _Elements_!

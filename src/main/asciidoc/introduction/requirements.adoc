@@ -1,4 +1,10 @@
 [[requirements]]
 = Requirements
 
-_Elements_ only requires the *Java SE Runtime Environment (JRE) 8.0* or later.
+_Elements_ only requires the *Java SE Runtime Environment (JRE) 8.0* or later to run correctly. No other dependencies
+are required.
+
+_Elements_ is specifically built with _Oracle_, *Java SE SDK 8 (1.8.0_351)*.
+
+_Elements_ is also built with *Java 11*, *Java 14*, *Java 17* and *Java 18*. Therefore, _Elements_ will function
+and run perfectly fine on all of these Java versions as well.

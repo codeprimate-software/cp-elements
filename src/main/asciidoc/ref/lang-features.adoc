@@ -1,0 +1,130 @@
+[[elements-lang]]
+== Java Language Extensions
+
+This chapter covers Java language extensions and features provided by _Elements_.
+
+[[elements-lang-dsl]]
+=== Domain Specific Languages (DSL)
+
+_Elements_ provides 5 different domain-specific languages (DSL) that you can be used to write concise yet expressive
+code. By statically importing the DSL language operators declared and defined in
+the `org.cp.elements.lang.LangExtensions` class, you can immediately write much more powerful code in fewer lines.
+
+[[elements-lang-dsl-assertThat]]
+==== `assertThat` operator
+
+The `assertThat` operator and DSL enables a developer to make assertions about the state of his or her running programs.
+
+For instance, a developer can assert that an object reference is not `null`.
+
+.AssertThat Not Null
+[source,java]
+[subs="verbatim,attributes"]
+----
+assertThat(objectReference).isNotNull();
+----
+
+The `assertThat` operator and DSL provided by _Elements_ is very similar to https://assertj.github.io/doc/[AssertJ],
+and indeed was partially inspired by AssertJ. However, Elements `assertThat` operator and DSL focuses on the most
+common and useful assertions. For complete assertion coverage, we recommend developers to use AssertJ.
+
+[[elements-lang-dsl-from]]
+==== `from` operator
+
+The `from` operator and DSL enables a developer to _cast_ or _convert_ from one type of object
+to another type of object.
+
+.Casting
+[source,java]
+[subs="verbatim,attributes"]
+----
+var numericObjectReference = 2;
+
+Integer two = from(numericObjectReference).castTo(Integer.class);
+----
+
+.Converting
+[source,java]
+[subs="verbatim,attributes"]
+----
+Double number = from("123.45").convertTo(Double.class);
+----
+
+Under-the-hood, the `from` operator uses _Elements_ powerful Conversion library to perform the conversion.
+
+[[elements-lang-dsl-given]]
+==== `given` operator
+
+The `given` operator and DSL enables developers to declare _expectations_ of an object.
+
+.Given
+[source,java]
+[subs="verbatim,attributes"]
+----
+User jonDoe = ...;
+
+boolean result = given(jonDoe)
+  .expectThat(jonDoe::isActive)
+  .expectThat(jonDoe::isAuthenticated)
+  .thenGiven(jonDoe::getGroups)
+  .expectThat(jonDoeGroups -> jonDoeGroups.contains(Group.AUTHORIZED_USER))
+  .result();
+----
+
+Alternatively, you can throw on a failed expectation.
+
+.Given
+[source,java]
+[subs="verbatim,attributes"]
+----
+User jonDoe = ...;
+
+given(jonDoe)
+  .expectThat(jonDoe::isActive)
+  .expectThat(jonDoe::isAuthenticated)
+  .throwOnFailedExpectations()
+  .thenGiven(jonDoe::getGroups)
+  .expectThat(jonDoeGroups -> jonDoeGroups.contains(Group.AUTHORIZED_USER))
+  .throwOnFailedExpectations();
+----
+
+`given` is a null-safe operator.
+
+[[elements-lang-dsl-is]]
+==== `is` operator
+
+The `is` operator and DSL enables developers to perform conditional tests on an object or expression.
+
+.Is
+[source,java]
+[subs="verbatim,attributes"]
+----
+boolean result = is(objectReference).notNull();
+----
+
+For more complex conditional tests, you can pass in a `java.util.function.Predicate`:
+
+.Is using Predicate
+[source,java]
+[subs="verbatim,attributes"]
+----
+boolean result = is(objectReference).valid(:Prediate);
+----
+
+It is easy to negate the expression using the `not()` function:
+
+.Is Not
+[source,java]
+[subs="verbatim,attributes"]
+----
+boolean result = is(objectReference).not().sameAs(otherObjectReference);
+----
+
+Of course, the `is` operator offers shortcuts for some of the negated conditional expressions:
+
+.Is Not
+[source,java]
+[subs="verbatim,attributes"]
+----
+boolean result = is(objectReference).notSameAs(otherObjectReference);
+----
