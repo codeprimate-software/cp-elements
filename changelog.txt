@@ -3,6 +3,30 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0-RC2 - 2022-December-24
+----------------------------
+Edits Codeprimate Elements Reference Documentation.
+
+* Built on Oracle Java (JDK) 8; 1.8.0_351.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Builds and supports Codeprimate Elements on Gradle 7.6.
+* Adds @Qualifer annotation to qualify reference to collaborators from POJOs.
+* Creates the AbstractVersionedObject class in the org.cp.elements.lang.support package.
+* Creates the VersionService interface in the org.cp.elements.lang package.
+* Creates the SimpleVersionService class implementing the VersionService interface
+in the org.cp.elements.lang.support package.
+* Creates the TimeBasedVersionService class implementing the VersionService interface
+in the org.cp.elements.lang.support package.
+* Creates the UUIdVersionService class implementing the VersionService interface
+in the org.cp.elements.lang.support package.
+* Fixes all source compiler warnings.
+* Fixes additional Checkstyle warnings.
+* Fixes additional PMD errors.
+* Refactors the o.c.elements.lang.support.UUIDIdentifierSequence class to return a UUID.
+* Upgrades to Codeprimate Core 1.11.0.
+* Upgrades to FreeFair Lombok Gradle Plugin 6.6.1.
+
+
 1.0.0-RC1 - 2022-December-12
 ----------------------------
 Extends Codeprimate Elements Caching API and infrastructure. Fixes Checkstyle, PMD and SpotBugs errors/warnings.
