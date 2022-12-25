@@ -19,7 +19,11 @@
     <exclude name="JUnitAssertionsShouldIncludeMessage"/>
     <exclude name="JUnitTestContainsTooManyAsserts"/>
     <exclude name="JUnitUseExpected"/>
-    <!--exclude name="MissingOverride"/-->
+    <!--
+      Questionable exclusion on MissingOverride. However, if a Java library is supporting multiple Java language
+      versions, for example: 8, 11, 14, 17 and so on, then this can be useful to exclude.
+     -->
+    <exclude name="MissingOverride"/>
     <exclude name="ReplaceEnumerationWithIterator"/>
     <exclude name="SimplifiableTestAssertion"/>
     <exclude name="SystemPrintln"/>
