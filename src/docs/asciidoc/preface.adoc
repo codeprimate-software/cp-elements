@@ -24,6 +24,7 @@ The main problems with software today can be summarized as...
 
 As a result, quality suffers and the software becomes difficult to understand and use effectively.
 
+[discrete]
 == _Incorrect_
 
 Software that does not function as designed, upholding its contract, is not useful to anyone. If the software returns
@@ -33,6 +34,7 @@ Some software only works in certain contexts. For instance, the software may fun
 context but fail in a multi-Threaded one. The software may have unforeseen deadlocks or contain race conditions
 that violate the system's state or an individual object's invariants.
 
+[discrete]
 == _Complexity_
 
 Complexity is very elusive and many software engineers equate complexity to mean big. This is not necessarily the case.
@@ -72,6 +74,7 @@ software library, framework or system.
 The importance of Complexity cannot be overstated since, along with data corruption, is arguably the leading cause
 of technical debt that leads to the premature death of any piece of software.
 
+[discrete]
 == _Scope_
 
 A library must have a single focus with intent, or a user will be left wondering what problem(s) the library
@@ -84,12 +87,14 @@ it accomplishes its task, or whether it even ought to do a particular thing in t
 As a general rule of thumb, when in doubt, leave it out.  It is always easier to add it later when the need is real
 than to have to support it with the hope of replacing or removing it after the fact.
 
+[discrete]
 == API
 
 A public API should be as simple and as small as possible so that a user will immediately understand how to use it
 just by looking at the API, without the assistance from documentation if s/he must.  In a sense, an API should be
 self-describing with really well-defined interfaces and high-level types that expresses its intent.
 
+[discrete]
 == _Organization & Structure_
 
 Even complex systems can be inherently simple if organized properly.
@@ -98,6 +103,7 @@ Well-organized and structured libraries and frameworks typically have one progra
 throughout the entire library or framework.  This promotes familiarity.  Organizing the software in a progressively
 layered architecture, with each subsequent layer building on the previous layer is the only sustainable approach.
 
+[discrete]
 == _Dependencies_
 
 Finally, while it usually does not pay to reinvent any wheels, you really have to ask yourself what is the cost
@@ -111,6 +117,7 @@ different version.
 
 The lower in the software stack you go, the fewer the number of "required" dependencies there should be.
 
+[discrete]
 == _So what is the right balance?_
 
 Strive to employ libraries and frameworks that accomplish the most amount of work with the minimal footprint,
@@ -135,12 +142,13 @@ Overtime, requirements and SLAs change and the software must gracefully weather 
 constant and how well a software library or system can adapt to change determines its shelf-life.  If not, it will
 become scrap.
 
+[discrete]
 == _Elements_
 
 _Elements_ is the culmination of years of experience and wisdom acquired through the practice of developing software,
-in many different industries, using many different languages and tools, and employing different methodologies
-(e.g. Waterfall, XP, Lean, Scrum, etc), learning what works and what does not.  It has been rewritten many times
-(maybe 7 or more times).  The core principals on which _Elements_ has been developed has be refined to focus on quality.
+in many different industries, using many different languages and tools, and employing different methodologies,
+for example: Waterfall, XP, Lean, Scrum, and so on, learning what works and what does not. It has been rewritten
+many times (4 times). The core principals on which _Elements_ has been developed has be refined to focus on quality.
 
 The main principles on which _Elements_ was founded and based include:
 
