@@ -20,10 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Test;
+
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
 import org.cp.elements.test.annotation.IntegrationTest;
-import org.junit.Test;
 
 /**
  * Integration Tests for {@link ZipUtils}.
@@ -40,7 +41,7 @@ public class ZipUtilsIntegrationTests extends AbstractBaseTestSuite {
   public void zipThenUnzipSrcMainAsciidocDirectory() throws IOException {
 
     File asciidocZip = null;
-    File sourceDirectory = new File(getSourceDirectory(), "main/asciidoc");
+    File sourceDirectory = new File(getSourceDirectory(), "docs/asciidoc");
     File targetDirectory = FileSystemUtils.TEMPORARY_DIRECTORY;
     File unzippedAsciidocDirectory = new File(targetDirectory, "asciidoc");
 
