@@ -2,8 +2,8 @@
 John Blum
 :revnumber: {version}
 :revdate: {localdate}
-:toc:
-:!toc-placement:
+:stylesheet: css/adoc-maker.css
+:toc: left
 
 Copyright (C) 2011-present. Original authors.
 
