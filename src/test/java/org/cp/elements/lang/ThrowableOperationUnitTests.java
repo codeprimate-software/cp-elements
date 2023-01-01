@@ -33,6 +33,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.junit.Test;
@@ -145,6 +146,31 @@ public class ThrowableOperationUnitTests {
     assertThatIllegalArgumentException()
       .isThrownBy(() -> ThrowableOperation.fromFunction(null))
       .withMessage("Function is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fromPredicate() throws Throwable {
+
+    Predicate<Object> mockPredicate = mock(Predicate.class);
+
+    doReturn(true).when(mockPredicate).test(any());
+
+    ThrowableOperation<Boolean> operation = ThrowableOperation.fromPredicate(mockPredicate);
+
+    assertThat(operation).isNotNull();
+    assertThat(operation.run("mock")).isTrue();
+
+    verify(mockPredicate, times(1)).test(eq(new Object[] { "mock" }));
+    verifyNoMoreInteractions(mockPredicate);
+  }
+
+  @Test
+  public void fromNullPredicate() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> ThrowableOperation.fromPredicate(null))
+      .withMessage("Predicate is required")
       .withNoCause();
   }
 
@@ -330,10 +356,51 @@ public class ThrowableOperationUnitTests {
       .withMessage("Failed to run ThrowableOperation [%s]", operation)
       .withCauseInstanceOf(CheckedTestException.class);
 
-
     verify(operation, times(1)).asFunction();
     verify(operation, times(1)).run(eq(arguments));
     verify(operation, times(1)).safeRun(eq(arguments));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asPredicate() {
+
+    ThrowableOperation<Boolean> operation = mock(ThrowableOperation.class);
+
+    doReturn(true).when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asPredicate();
+
+    Predicate<Object> predicate = operation.asPredicate();
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isTrue();
+
+    verify(operation, times(1)).asPredicate();
+    verify(operation, times(1)).safeRun(eq("mock"));
+    verifyNoMoreInteractions(operation);
+  }
+
+  @Test
+  public void asPredicateThrowingException() throws Throwable {
+
+    ThrowableOperation<Boolean> operation = mock(ThrowableOperation.class);
+
+    doThrow(new CheckedTestException("TEST")).when(operation).run(any());
+    doCallRealMethod().when(operation).safeRun(any());
+    doCallRealMethod().when(operation).asPredicate();
+
+    Predicate<Object> predicate = operation.asPredicate();
+
+    assertThat(predicate).isNotNull();
+
+    assertThatExceptionOfType(ThrowableOperationException.class)
+      .isThrownBy(() -> predicate.test("mock"))
+      .withMessage("Failed to run ThrowableOperation [%s]", operation)
+      .withCauseInstanceOf(CheckedTestException.class);
+
+    verify(operation, times(1)).asPredicate();
+    verify(operation, times(1)).safeRun(eq("mock"));
+    verify(operation, times(1)).run(eq("mock"));
     verifyNoMoreInteractions(operation);
   }
 

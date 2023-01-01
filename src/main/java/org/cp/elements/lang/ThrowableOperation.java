@@ -20,6 +20,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newThrowableOperati
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -99,6 +100,21 @@ public interface ThrowableOperation<T> {
   static @NotNull <T> ThrowableOperation<T> fromFunction(@NotNull Function<Object, T> function) {
     Assert.notNull(function, "Function is required");
     return function::apply;
+  }
+
+  /**
+   * Factory method used to construct a new instance of {@link ThrowableOperation} initialized from
+   * (adapting/wrapping) the given, required {@link Predicate}.
+   *
+   * @param predicate {@link Predicate} to adapt/wrap as an instance of {@link ThrowableOperation};
+   * must not be {@literal null}.
+   * @return a new {@link ThrowableOperation} from the given, required {@link Predicate}.
+   * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
+   * @see java.util.function.Predicate
+   */
+  static @NotNull ThrowableOperation<Boolean> fromPredicate(Predicate<Object> predicate) {
+    Assert.notNull(predicate, "Predicate is required");
+    return predicate::test;
   }
 
   /**
@@ -186,6 +202,17 @@ public interface ThrowableOperation<T> {
    */
   default @NotNull Function<Object, T> asFunction() {
     return this::safeRun;
+  }
+
+  /**
+   * Adapts (wraps) this {@link ThrowableOperation} as a {@link Predicate}.
+   *
+   * @param <ARG> {@link Class type} of the {@link Object argument} to the {@link Predicate}.
+   * @return a {@link Predicate} object adapting/wrapping this {@link ThrowableOperation}.
+   * @see java.util.function.Predicate
+   */
+  default @NotNull <ARG> Predicate<ARG> asPredicate() {
+    return arguments -> Boolean.TRUE.equals(safeRun(arguments));
   }
 
   /**
