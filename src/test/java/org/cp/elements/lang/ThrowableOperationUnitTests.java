@@ -247,12 +247,19 @@ public class ThrowableOperationUnitTests {
 
     doCallRealMethod().when(operation).asConsumer();
 
+    //Object arguments = new Object[] { "mock", "test" };
+    Object arguments = "test";
+
     Consumer<Object> consumer = operation.asConsumer();
 
-    consumer.accept(new Object[] { "mock", "test" });
+    assertThat(consumer).isNotNull();
+
+    consumer.accept(arguments);
 
     verify(operation, times(1)).asConsumer();
-    verify(operation, times(1)).safeRun(eq(new Object[] { "mock", "test" }));
+    verify(operation, times(1)).safeRun(eq(arguments));
+    //verify(operation, times(1)).safeRun(eq("mock"), eq("test"));
+    verifyNoMoreInteractions(operation);
   }
 
   @Test
@@ -264,18 +271,20 @@ public class ThrowableOperationUnitTests {
     doCallRealMethod().when(operation).safeRun(any());
     doCallRealMethod().when(operation).asConsumer();
 
+    Object arguments = "mock";
+
     Consumer<Object> consumer = operation.asConsumer();
 
     assertThat(consumer).isNotNull();
 
     assertThatExceptionOfType(ThrowableOperationException.class)
-      .isThrownBy(() -> consumer.accept(new Object[] { "mock", "test" }))
+      .isThrownBy(() -> consumer.accept(arguments))
       .withMessage("Failed to run ThrowableOperation [%s]", operation)
       .withCauseInstanceOf(CheckedTestException.class);
 
     verify(operation, times(1)).asConsumer();
-    verify(operation, times(1)).safeRun(eq(new Object[] { "mock", "test" }));
-    verify(operation, times(1)).run(eq(new Object[] { "mock", "test" }));
+    verify(operation, times(1)).safeRun(eq(arguments));
+    verify(operation, times(1)).run(eq(arguments));
     verifyNoMoreInteractions(operation);
   }
 
@@ -287,13 +296,16 @@ public class ThrowableOperationUnitTests {
     doReturn("test").when(operation).safeRun(any());
     doCallRealMethod().when(operation).asFunction();
 
+    //Object arguments = new Object[] { "mockOne", "mockTwo" };
+    Object arguments = "rogueOne";
+
     Function<Object, Object> function = operation.asFunction();
 
     assertThat(function).isNotNull();
-    assertThat(function.apply(new Object[] { "mockOne", "mockTwo" })).isEqualTo("test");
+    assertThat(function.apply(arguments)).isEqualTo("test");
 
     verify(operation, times(1)).asFunction();
-    verify(operation, times(1)).safeRun(eq(new Object[] { "mockOne", "mockTwo" }));
+    verify(operation, times(1)).safeRun(eq(arguments));
     verifyNoMoreInteractions(operation);
   }
 
@@ -306,19 +318,22 @@ public class ThrowableOperationUnitTests {
     doCallRealMethod().when(operation).safeRun(any());
     doCallRealMethod().when(operation).asFunction();
 
+    //Object arguments = new Object[] { "mockOne", "mockTwo" };
+    Object arguments = "rogueOne";
+
     Function<Object, Object> function = operation.asFunction();
 
     assertThat(function).isNotNull();
 
     assertThatExceptionOfType(ThrowableOperationException.class)
-      .isThrownBy(() -> function.apply(new Object[] { "mockOne", "mockTwo" }))
+      .isThrownBy(() -> function.apply(arguments))
       .withMessage("Failed to run ThrowableOperation [%s]", operation)
       .withCauseInstanceOf(CheckedTestException.class);
 
 
     verify(operation, times(1)).asFunction();
-    verify(operation, times(1)).run(eq(new Object[] { "mockOne", "mockTwo" }));
-    verify(operation, times(1)).safeRun(eq(new Object[] { "mockOne", "mockTwo" }));
+    verify(operation, times(1)).run(eq(arguments));
+    verify(operation, times(1)).safeRun(eq(arguments));
     verifyNoMoreInteractions(operation);
   }
 
