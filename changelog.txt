@@ -3,6 +3,20 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.0 (GA) - 2022-December-31
+-----------------------------
+Release Codeprimate Elements 1.0.0, first GA!
+
+* Built on Oracle Java (JDK) 8; 1.8.0_351.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Builds and supports Codeprimate Elements on Gradle 7.6.
+* Adds fromPredicate(:Predicate) factory method and asPredicate() builder method to ThrowableOperations.
+* Edits reference documentation.
+* Enabled Asciidoc (Maven Plugin) documentation generation; applied (CSS) styling.
+* Upgrades to Codeprimate Core 1.13.0.
+* Upgrades to Mockito 4.11.0.
+
+
 1.0.0-RC2 - 2022-December-24
 ----------------------------
 Edits Codeprimate Elements Reference Documentation.
