@@ -6,29 +6,29 @@ Many software organizations race to out pace their competitors in terms of capab
 really well. Instead, they attempt to be a 1 stop shop for everything. But, there is no holy grail in software
 development, no 1 size fits all.
 
-Likewise, many young, inspiring software engineers lack the experience and skill set to develop highly effective
-software solutions that are simple, easy to understand, easy to maintain and that will stand the test of time.
-Much of a software engineer's early work is throw away and s/he must start over.
+Likewise, many young, inspiring and talented software engineers lack the experience and skill set to develop
+highly effective software solutions that are simple, easy to understand, easy to maintain and that will stand
+the test of time. Much of a software engineer's early work is throw away and s/he will inevitably start over.
 
-Even the Java platform itself is riddled with many poorly conceived APIs, lacking key functionality that offers
-too little value or simply tries to do too much.
+Even the Java platform itself is riddled with many ill-conceived APIs, lacking key functionality that is too
+low-level offering too little value.
 
 The main problems with software today can be summarized as...
 
-1. Not Correct (software that does not work, or fails in certain contexts),
-2. Overly Complex (over or under designed and engineered),
-3. Unbounded Scope (breadth over depth of functionality),
-4. APIs with too much surface area,
-5. Unstructured and Disorganized,
-6. Too many (required) dependencies.
+1. Not Correct - Software that does not work, or fails in certain contexts
+2. Overly Complex - Over or under designed and engineered
+3. Unbounded Scope - Breadth over depth of functionality
+4. APIs with far too much surface area
+5. Unstructured and Disorganized
+6. Too many (required) dependencies
 
 As a result, quality suffers and the software becomes difficult to understand and use effectively.
 
 [discrete]
 == _Incorrect_
 
-Software that does not function as designed, upholding its contract, is not useful to anyone. If the software returns
-an incorrect result, then it is not reliable in any sense of the word.
+Software that does not function as designed, by upholding its contract, is not useful to anyone. If the software
+returns an incorrect result, then it is not reliable in any sense of the word.
 
 Some software only works in certain contexts. For instance, the software may function reliably in a single-Threaded
 context but fail in a multi-Threaded one. The software may have unforeseen deadlocks or contain race conditions
@@ -39,37 +39,37 @@ that violate the system's state or an individual object's invariants.
 
 Complexity is very elusive and many software engineers equate complexity to mean big. This is not necessarily the case.
 Complexity is a factor of how much work can be accomplished with the least amount of effort. For example, if it takes
-many method calls and lines of code to accomplish a trivial task than the software is inherently complex.
+many method calls and lines of code to accomplish a trivial task than the software is inherently complex, which may
+alude to a design problem: too many layers of abstraction or indirection.
 
 As Albert Einstein stated, "_If we cannot explain a problem simply then we simply do not understand the problem
-well enough._"
+well enough yet._"
 
 Therefore, one goal for reducing complexity in piece of software should be to accomplish the most amount of work
 with the least amount of effort, in the fewest number of steps and with minimal lines of code. Additionally, maximizing
-the amount of work accomplished in a single operation should not be confused with doing everything possible. Rather, it
-simply means doing just enough to solve the problem at hand and no more.
+the amount of work accomplished in a single, indivisible operation should not be confused with doing everything
+possible. Rather, it simply means doing just enough to solve the problem at hand and no more.
 
 It is also important to recognize the 2 main forms of complexity: perceived complexity and implementation complexity.
 
-Perceived complexity involves what the users of our software sees.  This includes the public interfaces and types
-exposed by our libraries and systems.  Without proper, well-conceived abstractions, a library or framework will be
-difficult to understand and use properly.  As a result, the user will abuse our software and use it in unintended ways,
-leading to unexpected consequences.
+Perceived complexity involves what the users of our software see. This includes the public interfaces and types exposed
+by our libraries and systems or applications. Without proper, well-conceived abstractions, a library or framework
+will be difficult to understand and use properly. As a result, the user will abuse our software and use it
+in unintended ways, leading to unexpected consequences.
 
 With implementation complexity, the library or system seems simple on the surface, but under-the-hood, the code
-is tightly coupled with very low cohesion.  The implementation may be inefficient, non-resilient to failures,
-exhibiting unpredictable behavior during concurrent access, unreliable during load, or overall just plain incorrect
-and inaccurate.
+is tightly coupled with low cohesion. The implementation may be inefficient, non-resilient to failures, exhibiting
+unpredictable behavior during concurrent access, unreliable during load, or overall just plain incorrect and inaccurate.
 
 It is important to understand the meaning of these concepts.
 
 Tightly coupled code means that 1 system component relies on the implementation details of another component.
 The components state may even be partially owned or depend on the state of another component, which is characterized
-by low cohesion (i.e. a component not properly encapsulating/owning its state).  This leads to unstable software
+by low cohesion, that is a component does not properly encapsulate or own its state. This leads to unstable software
 where a failure ripples throughout the system affecting seemingly unrelated parts of the system.
 
 Therefore, self-sufficient components and good _Separation of Concerns_ (SoC) is key to any well-designed,
-software library, framework or system.
+software library, framework, system or application.
 
 The importance of Complexity cannot be overstated since, along with data corruption, is arguably the leading cause
 of technical debt that leads to the premature death of any piece of software.
@@ -78,20 +78,20 @@ of technical debt that leads to the premature death of any piece of software.
 == _Scope_
 
 A library must have a single focus with intent, or a user will be left wondering what problem(s) the library
-was meant to solve.  This problem is often characterized by no single point of entry, where the user is not even
+was meant to solve. This problem is often characterized by no single point of entry, where the user is not even
 certain where to start.
 
-With unchecked scope, the main driver of the library becomes more a matter of what the library can do vs. how well
-it accomplishes its task, or whether it even ought to do a particular thing in the first place.
+With unchecked scope, the main driver of the library becomes more a matter of what the library can do vs. how well it
+accomplishes its task, or whether it even ought to do a particular thing in the first place.
 
-As a general rule of thumb, when in doubt, leave it out.  It is always easier to add it later when the need is real
+As a general rule of thumb, when in doubt, leave it out. It is always easier to add it later when the need is real
 than to have to support it with the hope of replacing or removing it after the fact.
 
 [discrete]
 == API
 
 A public API should be as simple and as small as possible so that a user will immediately understand how to use it
-just by looking at the API, without the assistance from documentation if s/he must.  In a sense, an API should be
+just by looking at the API, without the assistance from documentation if s/he must. In a sense, an API should be
 self-describing with really well-defined interfaces and high-level types that expresses its intent.
 
 [discrete]
@@ -100,20 +100,20 @@ self-describing with really well-defined interfaces and high-level types that ex
 Even complex systems can be inherently simple if organized properly.
 
 Well-organized and structured libraries and frameworks typically have one programming model consistently applied
-throughout the entire library or framework.  This promotes familiarity.  Organizing the software in a progressively
+throughout the entire library or framework. This promotes familiarity. Organizing the software in a progressively
 layered architecture, with each subsequent layer building on the previous layer is the only sustainable approach.
 
 [discrete]
 == _Dependencies_
 
-Finally, while it usually does not pay to reinvent any wheels, you really have to ask yourself what is the cost
-of relying on another dependency if the value it provides does not significantly outweigh the cost of introducing
-the dependency.
+Finally, while it usually does not pay to reinvent any wheels, you really have to ask yourself what is the cost of
+relying on another dependency if the value it provides does not significantly outweigh the cost of introducing
+the dependency in the first place.
 
-There is an associated cost for using a dependency as well as not using it (e.g. logging framework).  The moment you
-rely on functionality provided by some other software, your software is only as good as its weakest link.  Using a
-particular dependency may cause conflict with the user's application having the same dependency, but with a
-different version.
+There is an associated cost for using a dependency as well as not using it, for example: logging framework. The moment
+you rely on functionality provided by some other software, your software is only as good as its weakest link. Using a
+particular dependency may cause conflict with the user's application having the same dependency, but with a different
+version.
 
 The lower in the software stack you go, the fewer the number of "required" dependencies there should be.
 
@@ -131,15 +131,16 @@ There are 3 phases in the lifecycle of any software system that it must evolve t
 2. Maintainability
 3. Sustainability
 
-First and foremost, software must be correct and provide the right answers to be truly useful.  If it doesn't,
+First and foremost, software must be correct and provide the right answers to be truly useful. If it doesn't,
 forget about the next two because it does not matter anyway.
 
-Software must be maintained; there are no exceptions.  Bugs happen and enhancements need to be made to simplify
-the software, make it more efficient, to improve on its design, and so on.  As languages and tools evolve, as we learn
-new things, new techniques must be applied to our software to keep them relevant, evolving and simple.
+Software must be maintained; there are no exceptions. Bugs happen and enhancements need to be made to simplify
+the software, make it more efficient, to improve on its design as it evolves, and so on. As languages and tools
+evolve, as we learn new things, new techniques must be applied to our software to keep them relevant, evolving
+and simple.
 
-Overtime, requirements and SLAs change and the software must gracefully weather the changes.  Change is the only
-constant and how well a software library or system can adapt to change determines its shelf-life.  If not, it will
+Overtime, requirements and SLAs change and the software must gracefully weather these changes. Change is the only
+constant and how well a software library or system can adapt to change determines its shelf-life. If not, it will
 become scrap.
 
 [discrete]
@@ -152,13 +153,13 @@ many times (4 times). The core principals on which _Elements_ has been developed
 
 The main principles on which _Elements_ was founded and based include:
 
-1. KISS - Keep It Simple Stupid.  Enough said.
-2. DRY - Do Not Repeat Yourself... Ever!  Duplication is wasteful.
-3. Consistency - Consistency aids understanding and only a virtue if you are not a fuck up.
+1. KISS - Keep It Simple Stupid. Enough said.
+2. DRY - Do Not Repeat Yourself. Duplication is wasteful.
+3. Consistency - Consistency aids understanding and is only a virtue if you are not a screw up.
 4. Test - If it is not correct, or does not work, it does not matter.
 5. Refactor - Change being the only constant, then software, like everything, must evolve.
 
-_Elements_ is the legacy I leave behind, my masterpiece, that I give back to the software development community
+_Elements_ is the legacy I leave behind in my career, that I give back to the software development community
 to help propel this art to the next level.
 
 Thank you for choosing _Elements_.

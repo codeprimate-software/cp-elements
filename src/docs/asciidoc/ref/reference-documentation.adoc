@@ -1,7 +1,7 @@
 [[reference-documentation]]
 = Reference Documentation
 
-This documentation will serve as a reference and source of truth on how to use all of _Elements_ features
+This documentation will serve as a reference and source of truth for how to use all of _Elements_ features
 and functionality effectively and successfully.
 
 include::lang-features.adoc[]
