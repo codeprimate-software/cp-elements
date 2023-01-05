@@ -31,6 +31,21 @@ import org.junit.Test;
 public class IntegersUnitTests {
 
   @Test
+  public void asInteger() {
+
+    assertThat(Integers.asInteger((byte) 64)).isEqualTo(64);
+    assertThat(Integers.asInteger((short) 8192)).isEqualTo(8192);
+    assertThat(Integers.asInteger((long) 1_024_000)).isEqualTo(1_024_000);
+    assertThat(Integers.asInteger(3.14f)).isEqualTo(3);
+    assertThat(Integers.asInteger(Math.PI)).isEqualTo(3);
+  }
+
+  @Test
+  public void asIntegerFromNullIsNullSafe() {
+    assertThat(Integers.asInteger(null)).isNull();
+  }
+
+  @Test
   public void invertNegativeNumber() {
 
     for (int number = 1; number < 100_000; number *= 2) {

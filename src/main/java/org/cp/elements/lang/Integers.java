@@ -50,6 +50,20 @@ public abstract class Integers {
   public static final Integer EIGHT_THOUSAND_ONE_HUNDRED_NINETY_TWO = 8192;
 
   /**
+   * Returns the given {@link Number} as an {@link Integer}.
+   *
+   * @param number {@link Number} to convert to an {@link Integer}.
+   * @return the given {@link Number} as an {@link Integer}.
+   * Returns {@literal null} if the given {@link Number} is {@literal null}.
+   * @see java.lang.Integer
+   * @see java.lang.Number
+   */
+  @NullSafe
+  public static @Nullable Integer asInteger(@Nullable Number number) {
+    return number != null ? number.intValue() : null;
+  }
+
+  /**
    * Converts a {@link Integer positive number} into a {@link Integer negative number}
    * and converts a {@link Integer negative number} into a {@link Integer positive number}.
    *
