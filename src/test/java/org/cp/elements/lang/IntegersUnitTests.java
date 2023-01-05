@@ -99,6 +99,31 @@ public class IntegersUnitTests {
   }
 
   @Test
+  public void minusOneIsLessThanZero() {
+    assertThat(Integers.isLessThanZero(-1)).isTrue();
+  }
+
+  @Test
+  public void nullIsNotLessThanZero() {
+    assertThat(Integers.isLessThanZero(null)).isFalse();
+  }
+
+  @Test
+  public void oneIsNotLessThanZero() {
+    assertThat(Integers.isLessThanZero(1)).isFalse();
+  }
+
+  @Test
+  public void twoIsNotLessThanZero() {
+    assertThat(Integers.isLessThanZero(2)).isFalse();
+  }
+
+  @Test
+  public void zeroIsNotLessThanZero() {
+    assertThat(Integers.isLessThanZero(0)).isFalse();
+  }
+
+  @Test
   public void minusOneIsNotOne() {
     assertThat(Integers.isOne(-1)).isFalse();
   }

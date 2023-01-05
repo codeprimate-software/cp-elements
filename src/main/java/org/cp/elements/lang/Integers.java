@@ -82,11 +82,24 @@ public abstract class Integers {
    *
    * @param value {@link Integer value} to evaluate.
    * @return a boolean value indicating whether the given {@link Integer value} is greater than {@literal 0}.
+   * @see #isLessThanZero(Integer)
    * @see java.lang.Integer
    */
   @NullSafe
   public static boolean isGreaterThanZero(@Nullable Integer value) {
     return value != null && is(value).greaterThan(ZERO);
+  }
+
+  /**
+   * Null-safe method used to determine whether the given {@link Integer value} is less than {@literal 0}.
+   *
+   * @param value {@link Integer value} to evaluate.
+   * @return a boolean value indicating whether the given {@link Integer value} is less than {@literal 0}.
+   * @see #isGreaterThanZero(Integer)
+   * @see java.lang.Integer
+   */
+  public static boolean isLessThanZero(@Nullable Integer value) {
+    return value != null && is(value).lessThan(ZERO);
   }
 
   /**
