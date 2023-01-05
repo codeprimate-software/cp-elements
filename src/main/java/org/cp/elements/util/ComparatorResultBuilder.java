@@ -15,20 +15,20 @@
  */
 package org.cp.elements.util;
 
-import static org.cp.elements.util.ComparatorUtils.compareIgnoreNull;
-
 import java.io.Serializable;
 import java.util.Comparator;
 
 import org.cp.elements.lang.Builder;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * A {@link Comparator} implementation that builds a comparison expression, accumulating the result.
+ * A {@link Comparator} implementation that builds a comparison expression, accumulating the {@link Integer result}
+ * of the comparison.
  *
  * @author John J. Blum
- * @param <T> {@link Class type} of the {@link Object objects} compared by the built {@link Comparator}
- * in the comparison.
+ * @param <T> {@link Comparable} {@link Class type} of {@link Object objects} compared by this {@link Comparator}.
  * @see java.lang.Comparable
  * @see java.io.Serializable
  * @see java.util.Comparator
@@ -39,46 +39,46 @@ import org.cp.elements.lang.annotation.NullSafe;
 public class ComparatorResultBuilder<T extends Comparable<T>>
     implements Builder<Integer>, Comparator<T>, Serializable {
 
-  private int result;
-
   /**
-   * Factory method to construct a new instance of {@link ComparatorResultBuilder}.
+   * Factory method used to construct a new instance of {@link ComparatorResultBuilder}.
    *
-   * @param <T> {@link Class} type of the {@link Comparable} objects evaluated in the comparison operation.
-   * @return a new instance of {@link ComparatorResultBuilder}.
+   * @param <T> {@link Comparable} {@link Class type} of objects evaluated in the comparison operation.
+   * @return a new {@link ComparatorResultBuilder}.
    * @see org.cp.elements.util.ComparatorResultBuilder
    */
-  public static <T extends Comparable<T>> ComparatorResultBuilder<T> create() {
+  public static @NotNull <T extends Comparable<T>> ComparatorResultBuilder<T> create() {
     return new ComparatorResultBuilder<>();
   }
 
+  private int result;
+
   /**
-   * Builds the result of the collective {@link Comparator} operations.
+   * Builds the {@link Integer result} of the aggregated {@link Comparator} operations.
    *
-   * @return an {@link Integer} value containing the result of this {@link Comparator} calculations.
+   * @return an {@link Integer value} containing the result of this {@link Comparator Comparator's} calculations.
    * @see #getResult()
    */
   @Override
-  public Integer build() {
+  public @NotNull Integer build() {
     return getResult();
   }
 
   /**
-   * Compares two {@link Comparable} objects.
+   * Null-safe operation to compare two {@link Comparable} objects.
    *
-   * @param obj1 left hand side {@link Comparable} operand in the comparison expression.
-   * @param obj2 right hand side {@link Comparable} operand in the comparison expression.
-   * @return the result of comparing the {@link Comparable} objects.
+   * @param obj1 left-hand side {@link Comparable} operand in the comparison expression.
+   * @param obj2 right-hand side {@link Comparable} operand in the comparison expression.
+   * @return the {@link Integer result} of comparing the {@link Comparable} objects.
    * @see org.cp.elements.util.ComparatorUtils#compareIgnoreNull(Comparable, Comparable)
    */
   @NullSafe
   @Override
-  public int compare(T obj1, T obj2) {
-    return compareIgnoreNull(obj1, obj2);
+  public int compare(@Nullable T obj1, @Nullable T obj2) {
+    return ComparatorUtils.compareIgnoreNull(obj1, obj2);
   }
 
   /**
-   * Performs the comparison between 2 {@link Comparable} objects.
+   * Builder method used to perform the comparison between two {@link Comparable} objects.
    *
    * @param obj1 {@link Comparable} object in the comparison operation.
    * @param obj2 {@link Comparable} object in the comparison operation.
@@ -87,15 +87,26 @@ public class ComparatorResultBuilder<T extends Comparable<T>>
    * @see #compare(Comparable, Comparable)
    */
   @NullSafe
-  public ComparatorResultBuilder<T> doCompare(T obj1, T obj2) {
+  public @NotNull ComparatorResultBuilder<T> doCompare(@Nullable T obj1, @Nullable T obj2) {
     this.result = this.result != 0 ? this.result : compare(obj1, obj2);
     return this;
   }
 
   /**
-   * Returns the result of the comparison.
+   * Builder method used to invert the {@link Integer} result of the aggregate comparisons.
    *
-   * @return an {@link Integer} value containing the result of the comparison.
+   * @return this {@link ComparatorResultBuilder}.
+   */
+  public ComparatorResultBuilder<T> invert() {
+    this.result *= -1;
+    return this;
+  }
+
+  /**
+   * Returns the {@link Integer result} of the comparison.
+   *
+   * @return the {@link Integer result} of the comparison.
+   * @see #build()
    */
   public int getResult() {
     return this.result;
