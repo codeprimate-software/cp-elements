@@ -71,6 +71,21 @@ public class MathUtilsTest {
   }
 
   @Test
+  public void countNumberOfDecimalPlacesIsCorect() {
+
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.0d)).isOne();
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.00d)).isEqualTo(1);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.000d)).isEqualTo(1);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.123d)).isEqualTo(3);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.124d)).isEqualTo(3);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.1234d)).isEqualTo(4);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.12345d)).isEqualTo(5);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.000001d)).isEqualTo(6);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.000001000d)).isEqualTo(6);
+    assertThat(MathUtils.countNumberOfDecimalPlaces(1.00000100020d)).isEqualTo(10);
+  }
+
+  @Test
   public void testCubeSurfaceArea() {
     assertThat(MathUtils.cubeSurfaceArea(5.0d)).isCloseTo(150.0d, offset(0.0d));
   }

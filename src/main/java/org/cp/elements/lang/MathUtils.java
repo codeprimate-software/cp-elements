@@ -86,6 +86,20 @@ public abstract class MathUtils {
   }
 
   /**
+   * Counts the number of decimal places in the given {@link Double value}.
+   *
+   * @param value {@link Double value} for which to count the number of decimal places.
+   * @return a count of the number of decimal places in the given {@link Double value}.
+   */
+  public static int countNumberOfDecimalPlaces(double value) {
+
+    String stringValue = String.valueOf(value);
+    int indexOfDecimal = stringValue.indexOf(StringUtils.DOT_SEPARATOR);
+
+    return StringUtils.getDigits(stringValue.substring(indexOfDecimal)).length();
+  }
+
+  /**
    * Calculates the surface area of a cube.
    *
    * @param side a double value indicating the side length of the cube.
