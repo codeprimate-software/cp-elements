@@ -35,32 +35,32 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 public enum LengthUnit {
 
-  YOCTOMETER("ym"),
-  ZEPTOMETER("zm"),
-  ATTOMETER("am"),
-  FEMTOMETER("fm"),
-  PICOMETER("pm"),
-  NANOMETER("nm"),
-  MICROMETER("um"),
-  MILLIMETER("mm"),
-  CENTIMETER("cm"),
-  DECIMETER("dm"),
-  METER("m"),
-  DECAMETER("da"),
-  HECTOMETER("hm"),
-  KILOMETER("km"),
-  MEGAMETER("MM"),
-  GIGAMETER("GM"),
-  TERAMETER("TM"),
-  PETAMETER("PM"),
-  EXAMETER("EM"),
-  ZETAMETER("ZM"),
-  YOTTAMETER("YM"),
-  INCH("in"),
-  FOOT("ft"),
-  YARD("yd"),
-  MILE("mi"),
-  LIGHT_YEAR("ly");
+  YOCTOMETER("ym", Math.pow(10, -24)),
+  ZEPTOMETER("zm", Math.pow(10, -21)),
+  ATTOMETER("am", Math.pow(10, -18)),
+  FEMTOMETER("fm", Math.pow(10, -15)),
+  PICOMETER("pm", Math.pow(10, -12)),
+  NANOMETER("nm", Math.pow(10, -9)),
+  MICROMETER("um", Math.pow(10, -6)),
+  MILLIMETER("mm", 0.001d),
+  CENTIMETER("cm", 0.01d),
+  DECIMETER("dm", 0.10d),
+  METER("m", 1.0d),
+  DECAMETER("da", 10.0d),
+  HECTOMETER("hm", 100.0d),
+  KILOMETER("km", 1_000.0d),
+  MEGAMETER("MM", 1_000_000d),
+  GIGAMETER("GM", 1_000_000_000d),
+  TERAMETER("TM", Math.pow(10, 12)),
+  PETAMETER("PM", Math.pow(10, 15)),
+  EXAMETER("EM", Math.pow(10, 18)),
+  ZETAMETER("ZM", Math.pow(10, 21)),
+  YOTTAMETER("YM", Math.pow(10, 24)),
+  INCH("in", 0.0254d),
+  FOOT("ft", 0.3048d),
+  YARD("yd", 0.9144),
+  MILE("mi", 1609.34),
+  LIGHT_YEAR("ly", 9.460528405d * Math.pow(10, 15));
 
   /**
    * Factory method used to get the default unit of length based in the current, default {@link Locale}.
@@ -125,6 +125,8 @@ public enum LengthUnit {
       .orElse(null);
   }
 
+  private final double meterConversionFactor;
+
   private final String abbreviation;
 
   /**
@@ -132,8 +134,10 @@ public enum LengthUnit {
    *
    * @param abbreviation {@link String} containing the abbreviation for {@literal this} {@link LengthUnit}.
    */
-  LengthUnit(@NotNull String abbreviation) {
+  LengthUnit(@NotNull String abbreviation, double meterConversionFactor) {
+
     this.abbreviation = abbreviation;
+    this.meterConversionFactor = meterConversionFactor;
   }
 
   /**
@@ -144,6 +148,17 @@ public enum LengthUnit {
    */
   public @NotNull String getAbbreviation() {
     return this.abbreviation;
+  }
+
+  /**
+   * Gets the {@link Double} conversion factor used to convert measurements in this {@link LengthUnit}
+   * to {@link LengthUnit#METER meters}.
+   *
+   * @return the {@link Double} conversion factor used to convert measurements in this {@link LengthUnit}
+   * to {@link LengthUnit#METER meters}.
+   */
+  public double getMeterConversionFactor() {
+    return this.meterConversionFactor;
   }
 
   /**

@@ -21,8 +21,10 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
+
+import org.cp.elements.lang.MathUtils;
+import org.cp.elements.lang.StringUtils;
 
 /**
  * Unit Tests for {@link LengthUnit}.
@@ -140,6 +142,37 @@ public class LengthUnitTests {
 
     assertThat(LengthUnit.INCH.getPluralName()).isEqualTo("INCHES");
     assertThat(LengthUnit.FOOT.getPluralName()).isEqualTo("FEET");
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void meterConversionFactorIsCorrect() {
+
+    double tenInchesToMeters =
+      MathUtils.truncateToPrecision(10.0d * LengthUnit.INCH.getMeterConversionFactor(), 3);
+
+    assertThat(tenInchesToMeters).isEqualTo(0.254d);
+
+    double twelveFeetToMeters =
+      MathUtils.truncateToPrecision(12.0d * LengthUnit.FOOT.getMeterConversionFactor(),4);
+
+    assertThat(twelveFeetToMeters).isEqualTo(3.6576d);
+
+    assertThat(100.0d * LengthUnit.YARD.getMeterConversionFactor()).isEqualTo(91.44d);
+    assertThat(5.0d * LengthUnit.MILE.getMeterConversionFactor()).isEqualTo(8046.7d);
+    assertThat(1.0d * LengthUnit.METER.getMeterConversionFactor()).isOne();
+    assertThat(10.0d * LengthUnit.METER.getMeterConversionFactor()).isEqualTo(10.0d);
+    assertThat(100.0d * LengthUnit.METER.getMeterConversionFactor()).isEqualTo(100.0d);
+    assertThat(10.0d * LengthUnit.DECAMETER.getMeterConversionFactor()).isEqualTo(100.0d);
+    assertThat(100.0d * LengthUnit.HECTOMETER.getMeterConversionFactor()).isEqualTo(10_000.0d);
+    assertThat(1_000.0d * LengthUnit.KILOMETER.getMeterConversionFactor()).isEqualTo(1_000_000.0d);
+    assertThat(5.0d * LengthUnit.DECIMETER.getMeterConversionFactor()).isEqualTo(0.5d);
+    assertThat(10.0d * LengthUnit.DECIMETER.getMeterConversionFactor()).isEqualTo(1.0d);
+    assertThat(10.0d * LengthUnit.CENTIMETER.getMeterConversionFactor()).isEqualTo(0.1d);
+    assertThat(100.0d * LengthUnit.CENTIMETER.getMeterConversionFactor()).isEqualTo(1.0d);
+    assertThat(10.0d * LengthUnit.MILLIMETER.getMeterConversionFactor()).isEqualTo(0.01d);
+    assertThat(100.0d * LengthUnit.MILLIMETER.getMeterConversionFactor()).isEqualTo(0.1d);
+    assertThat(1000.0d * LengthUnit.MILLIMETER.getMeterConversionFactor()).isEqualTo(1.0d);
   }
 
   @Test
