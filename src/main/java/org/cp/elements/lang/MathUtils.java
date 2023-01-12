@@ -32,6 +32,9 @@ import org.cp.elements.lang.annotation.NullSafe;
 @SuppressWarnings("unused")
 public abstract class MathUtils {
 
+  public static final double BASE_TEN = 10.0d;
+  public static final double BASE_TWO = 2.0d;
+
   public static final BigInteger NEGATIVE_ONE = BigInteger.ONE.negate();
   public static final BigInteger TWO = BigInteger.valueOf(2);
 
@@ -44,7 +47,7 @@ public abstract class MathUtils {
    * @return the area of a circle given the radius.
    * @see #ellipseArea(double, double)
    */
-  public static double circleArea(final double radius) {
+  public static double circleArea(double radius) {
     return ellipseArea(radius, radius);
   }
 
@@ -55,7 +58,7 @@ public abstract class MathUtils {
    * @return the circumference of a circle given the radius.
    * @see java.lang.Math#PI
    */
-  public static double circleCircumference(final double radius) {
+  public static double circleCircumference(double radius) {
     return 2.0d * Math.PI * radius;
   }
 
@@ -65,7 +68,7 @@ public abstract class MathUtils {
    * @param radius a double value indicating the radius of the circle.
    * @return the diameter of a circle given the radius.
    */
-  public static double circleDiameter(final double radius) {
+  public static double circleDiameter(double radius) {
     return 2.0d * radius;
   }
 
@@ -78,7 +81,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#PI
    * @see java.lang.Math#pow(double, double)
    */
-  public static double coneVolume(final double radius, final double height) {
+  public static double coneVolume(double radius, double height) {
     return (Math.PI * Math.pow(radius, 2) * height) / 3.0d;
   }
 
@@ -89,7 +92,7 @@ public abstract class MathUtils {
    * @return the surface area of a cube given a side.
    * @see #squareArea(double)
    */
-  public static double cubeSurfaceArea(final double side) {
+  public static double cubeSurfaceArea(double side) {
     return 6.0d * squareArea(side);
   }
 
@@ -100,7 +103,7 @@ public abstract class MathUtils {
    * @return the volume of a cube given the length of a side.
    * @see java.lang.Math#pow(double, double)
    */
-  public static double cubeVolume(final double side) {
+  public static double cubeVolume(double side) {
     return Math.pow(side, 3);
   }
 
@@ -113,7 +116,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#PI
    * @see java.lang.Math#pow(double, double)
    */
-  public static double cylinderSurfaceArea(final double radius, final double height) {
+  public static double cylinderSurfaceArea(double radius, double height) {
     return (2.0d * Math.PI * Math.pow(radius, 2)) + (2.0d * Math.PI * radius * height);
   }
 
@@ -126,7 +129,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#PI
    * @see java.lang.Math#pow(double, double)
    */
-  public static double cylinderVolume(final double radius, final double height) {
+  public static double cylinderVolume(double radius, double height) {
     return Math.PI * Math.pow(radius, 2) * height;
   }
 
@@ -138,7 +141,7 @@ public abstract class MathUtils {
    * @return the area of an ellipse given the radius length and height.
    * @see java.lang.Math#PI
    */
-  public static double ellipseArea(final double radiusLength, final double radiusHeight) {
+  public static double ellipseArea(double radiusLength, double radiusHeight) {
     return Math.PI * radiusLength * radiusHeight;
   }
 
@@ -151,7 +154,7 @@ public abstract class MathUtils {
    * @return the volume of the ellipsoid given the radius length, height and width.
    * @see java.lang.Math#PI
    */
-  public static double ellipsoidVolume(final double radiusLength, final double radiusHeight, final double radiusWidth) {
+  public static double ellipsoidVolume(double radiusLength, double radiusHeight, double radiusWidth) {
     return (4.0d * Math.PI * radiusLength * radiusHeight * radiusWidth) / 3.0d;
   }
 
@@ -163,7 +166,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#pow(double, double)
    * @see java.lang.Math#sqrt(double)
    */
-  public static double equilateralTriangleArea(final double side) {
+  public static double equilateralTriangleArea(double side) {
     return (Math.sqrt(3.0d) / 4.0d) * Math.pow(side, 2);
   }
 
@@ -205,7 +208,7 @@ public abstract class MathUtils {
    * @throws IllegalArgumentException if the position (n) is less than 1.
    * @see #fibonacciSequence(int)
    */
-  public static int fibonacciNumber(final int n) {
+  public static int fibonacciNumber(int n) {
     return fibonacciSequence(n)[n - 1];
   }
 
@@ -216,7 +219,7 @@ public abstract class MathUtils {
    * @return an integer array containing n elements of the Fibonacci Sequence.
    * @throws IllegalArgumentException if the position (n) is less than 1.
    */
-  public static int[] fibonacciSequence(final int n) {
+  public static int[] fibonacciSequence(int n) {
 
     Assert.argument(n, argument -> argument > 0,
       "The number of elements from the Fibonacci Sequence to calculate must be greater than equal to 0!");
@@ -245,7 +248,7 @@ public abstract class MathUtils {
    * @param height a double value indicating the prism's height.
    * @return the volume of an irregular prism given the base and height.
    */
-  public static double irregularPrismVolume(final double base, final double height) {
+  public static double irregularPrismVolume(double base, double height) {
     return base * height;
   }
 
@@ -259,7 +262,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#max(double, double)
    */
   @NullSafe
-  public static double max(final double... values) {
+  public static double max(double... values) {
 
     double maxValue = Double.NaN;
 
@@ -282,7 +285,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#min(double, double)
    */
   @NullSafe
-  public static double min(final double... values) {
+  public static double min(double... values) {
 
     double minValue = Double.NaN;
 
@@ -302,7 +305,7 @@ public abstract class MathUtils {
    * @return the array of integer numbers multiplied together.
    */
   @NullSafe
-  public static int multiply(final int... numbers) {
+  public static int multiply(int... numbers) {
 
     int result = 0;
 
@@ -324,7 +327,7 @@ public abstract class MathUtils {
    * @return the area of a parallelogram given the base length and height.
    * @see #rectangleArea(double, double)
    */
-  public static double parallelogramArea(final double base, final double height) {
+  public static double parallelogramArea(double base, double height) {
     return rectangleArea(base, height);
   }
 
@@ -335,7 +338,7 @@ public abstract class MathUtils {
    * @param height a double value indicating the height of the pyramid.
    * @return the volume of a pyramid given the base length and height.
    */
-  public static double pyramidVolume(final double base, final double height) {
+  public static double pyramidVolume(double base, double height) {
     return (base * height) / 3.0d;
   }
 
@@ -348,7 +351,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#pow(double, double)
    * @see java.lang.Math#sqrt(double)
    */
-  public static double pythagoreanTheorem(final double a, final double b) {
+  public static double pythagoreanTheorem(double a, double b) {
     return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
   }
 
@@ -359,7 +362,7 @@ public abstract class MathUtils {
    * @param height a double value indicating the height of the rectangle.
    * @return the area of a rectangle given the length and height.
    */
-  public static double rectangleArea(final double length, final double height) {
+  public static double rectangleArea(double length, double height) {
     return length * height;
   }
 
@@ -371,7 +374,7 @@ public abstract class MathUtils {
    * @param width a double value indicating the width of the rectangular prism (z axis).
    * @return the surface area of a rectangular prism given the length, height and width of the sides.
    */
-  public static double rectangularPrismSurfaceArea(final double length, final double height, final double width) {
+  public static double rectangularPrismSurfaceArea(double length, double height, double width) {
     return (2 * length * height) + (2 * length * width) + (2 * height * width);
   }
 
@@ -383,7 +386,7 @@ public abstract class MathUtils {
    * @param width a double value indicating the width of the rectangular prism (z axis).
    * @return the volume of a rectangular prism given the length, height and width.
    */
-  public static double rectangularPrismVolume(final double length, final double height, final double width) {
+  public static double rectangularPrismVolume(double length, double height, double width) {
     return length * height * width;
   }
 
@@ -392,15 +395,32 @@ public abstract class MathUtils {
    *
    * @param value the double value to round to the nearest tenth.
    * @return the double value rounded to the nearest tenth.
-   * @see java.lang.Math#round(double)
+   * @see #roundToPrecision(double, int)
    */
   public static double roundToNearestTenth(double value) {
+    return roundToPrecision(value, 1);
+  }
+
+  /**
+   * Rounds the {@link Double#TYPE double value} to the nearest, given {@link Integer number of decimal places}.
+   *
+   * @param value {@link Double#TYPE value} to round.
+   * @param numberOfDecimalPlaces {@link Integer value} indicating the number of decimal places;
+   * must be greater than {@literal 0}.
+   * @return the given {@link Double#TYPE value} rounded to nearest, given {@link Integer number of decimal places}.
+   * @see java.lang.Math#round(double)
+   */
+  public static double roundToPrecision(double value, int numberOfDecimalPlaces) {
+
+    Assert.isTrue(numberOfDecimalPlaces > 0,
+      "Number of decimal places [%d] must be greater than 0", numberOfDecimalPlaces);
 
     double result = value;
+    double baseTenExponentialFactor = Math.pow(BASE_TEN, numberOfDecimalPlaces);
 
-    result *= 10.0d;
+    result *= baseTenExponentialFactor;
     result = Math.round(result);
-    result /= 10.0d;
+    result /= baseTenExponentialFactor;
 
     return result;
   }
@@ -413,7 +433,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#PI
    * @see java.lang.Math#pow(double, double)
    */
-  public static double sphereSurfaceArea(final double radius) {
+  public static double sphereSurfaceArea(double radius) {
     return 4.0d * Math.PI * Math.pow(radius, 2);
   }
 
@@ -425,7 +445,7 @@ public abstract class MathUtils {
    * @see java.lang.Math#PI
    * @see java.lang.Math#pow(double, double)
    */
-  public static double sphereVolume(final double radius) {
+  public static double sphereVolume(double radius) {
     return (4.0d * Math.PI * Math.pow(radius, 3)) / 3.0d;
   }
 
@@ -436,7 +456,7 @@ public abstract class MathUtils {
    * @return the area of a square given the length of a side.
    * @see #rectangleArea(double, double)
    */
-  public static double squareArea(final double side) {
+  public static double squareArea(double side) {
     return rectangleArea(side, side);
   }
 
@@ -447,7 +467,7 @@ public abstract class MathUtils {
    * @return the sum of all integer values in the array.
    */
   @NullSafe
-  public static int sum(final int... numbers) {
+  public static int sum(int... numbers) {
 
     int sum = 0;
 
@@ -468,7 +488,7 @@ public abstract class MathUtils {
    * @param baseTwo a double value indicating the length of the other trapezoid's bases.
    * @return the area of a trapezoid given the height and length of the 2 bases.
    */
-  public static double trapezoidArea(final double height, final double baseOne, final double baseTwo) {
+  public static double trapezoidArea(double height, double baseOne, double baseTwo) {
     return (height / 2.0d) * (baseOne + baseTwo);
   }
 
@@ -479,7 +499,31 @@ public abstract class MathUtils {
    * @param height a double value indicating the height of one of the triangle's sides.
    * @return the area of a triangle given the base length and height.
    */
-  public static double triangleArea(final double base, final double height) {
+  public static double triangleArea(double base, double height) {
     return (base * height) / 2.0d;
+  }
+
+  /**
+   * Truncates the given {@link Double#TYPE double value} to the given {@link Integer number of decimal places}.
+   *
+   * @param value {@link Double#TYPE value} to truncate.
+   * @param numberOfDecimalPlaces {@link Integer value} indicating the number of decimal places;
+   * must be greater than {@literal 0}.
+   * @return the given {@link Double#TYPE double value} truncated to the given {@link Integer number of decimal places}.
+   * @see java.lang.Math#floor(double)
+   */
+  public static double truncateToPrecision(double value, int numberOfDecimalPlaces) {
+
+    Assert.isTrue(numberOfDecimalPlaces > 0,
+      "Number of decimal places [%d] must be greater than 0", numberOfDecimalPlaces);
+
+    double result = value;
+    double baseTenExponentialFactor = Math.pow(BASE_TEN, numberOfDecimalPlaces);
+
+    result *= baseTenExponentialFactor;
+    result = Math.floor(result);
+    result /= baseTenExponentialFactor;
+
+    return result;
   }
 }

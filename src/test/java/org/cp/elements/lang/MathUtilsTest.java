@@ -16,12 +16,15 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.data.Offset.offset;
 
 import java.math.BigInteger;
+import java.util.stream.IntStream;
+
+import org.junit.Test;
 
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
 
 /**
  * Unit Tests for {@link MathUtils}.
@@ -274,6 +277,30 @@ public class MathUtilsTest {
   }
 
   @Test
+  public void roundToPrecision() {
+
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 1)).isEqualTo(123.1d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 2)).isEqualTo(123.12d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 3)).isEqualTo(123.123d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 4)).isEqualTo(123.1235d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 5)).isEqualTo(123.12346d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 6)).isEqualTo(123.123457d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 7)).isEqualTo(123.1234568d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 8)).isEqualTo(123.12345679d);
+    assertThat(MathUtils.roundToPrecision(123.123456789d, 9)).isEqualTo(123.123456789d);
+  }
+
+  @Test
+  public void roundToPrecisionWithInvalidNumberOfDecimalPlaces() {
+
+    IntStream.of(0, -1, -2).forEach(numberOfDecimalPlaces ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> MathUtils.roundToPrecision(1.23d, numberOfDecimalPlaces))
+        .withMessage("Number of decimal places [%d] must be greater than 0", numberOfDecimalPlaces)
+        .withNoCause());
+  }
+
+  @Test
   public void testSphereSurfaceArea() {
     assertThat(MathUtils.sphereSurfaceArea(5.0d)).isCloseTo(314.1592d, offset(0.00007d));
   }
@@ -307,5 +334,29 @@ public class MathUtilsTest {
   @Test
   public void testTriangleArea() {
     assertThat(MathUtils.triangleArea(5.0d, 6.0d)).isCloseTo(15.0d, offset(0.0d));
+  }
+
+  @Test
+  public void truncateToTheNumberOfDecimalPlaces() {
+
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 1)).isEqualTo(0.1d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 2)).isEqualTo(0.12d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 3)).isEqualTo(0.123d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 4)).isEqualTo(0.1234d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 5)).isEqualTo(0.12345d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 6)).isEqualTo(0.123456d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 7)).isEqualTo(0.1234567d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 8)).isEqualTo(0.12345678d);
+    assertThat(MathUtils.truncateToPrecision(0.123456789d, 9)).isEqualTo(0.123456789d);
+  }
+
+  @Test
+  public void truncateWithInvalidNumberOfDecimalPlaces() {
+
+    IntStream.of(0, -1, -2).forEach(numberOfDecimalPlaces ->
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> MathUtils.truncateToPrecision(0.123d, numberOfDecimalPlaces))
+        .withMessage("Number of decimal places [%d] must be greater than 0", numberOfDecimalPlaces)
+        .withNoCause());
   }
 }
