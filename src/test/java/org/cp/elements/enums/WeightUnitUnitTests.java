@@ -32,7 +32,7 @@ import org.junit.Test;
  * @see org.cp.elements.enums.WeightUnit
  * @since 1.0.0
  */
-public class WeightUnitTests {
+public class WeightUnitUnitTests {
 
   @Test
   public void defaultWeightUnitIsCorrect() {
