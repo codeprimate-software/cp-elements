@@ -34,7 +34,7 @@ import org.cp.elements.lang.StringUtils;
  * @see org.cp.elements.enums.LengthUnit
  * @since 1.0.0
  */
-public class LengthUnitTests {
+public class LengthUnitUnitTests {
 
   @Test
   public void defaultLengthUnitIsCorrect() {
