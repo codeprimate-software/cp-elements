@@ -38,7 +38,9 @@ import java.time.ZonedDateTime;
 import java.util.function.Supplier;
 
 import org.junit.Test;
+
 import org.mockito.ArgumentMatchers;
+import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link Auditor}
@@ -324,7 +326,8 @@ public class AuditorUnitTests {
   private <USER, PROCESS> void testIsCreatedPropertiesUnsetWhenCreatedPropertiesAreNotSetReturnsTrue(
       USER user, Instant dateTime) {
 
-    Auditable<USER, PROCESS, Integer> mockAuditable = mock(Auditable.class, withSettings().lenient());
+    Auditable<USER, PROCESS, Integer> mockAuditable =
+      mock(Auditable.class, withSettings().strictness(Strictness.LENIENT));
 
     doReturn(user).when(mockAuditable).getCreatedBy();
     doReturn(dateTime).when(mockAuditable).getCreatedOn();
@@ -360,7 +363,8 @@ public class AuditorUnitTests {
   @Test
   public void isCreatedPropertiesUnsetWhenCreatedByAndCreatedOnAreSetReturnsFalse() {
 
-    Auditable<Object, Object, Integer> mockAuditable = mock(Auditable.class, withSettings().lenient());
+    Auditable<Object, Object, Integer> mockAuditable =
+      mock(Auditable.class, withSettings().strictness(Strictness.LENIENT));
 
     doReturn("root").when(mockAuditable).getCreatedBy();
     doReturn(Instant.now()).when(mockAuditable).getCreatedOn();

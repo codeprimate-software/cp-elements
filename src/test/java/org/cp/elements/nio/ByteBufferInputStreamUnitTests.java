@@ -32,10 +32,12 @@ import static org.mockito.Mockito.withSettings;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import org.junit.Test;
+
 import org.cp.elements.lang.annotation.NotNull;
 
-import org.junit.Test;
 import org.mockito.InOrder;
+import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link ByteBufferInputStream}.
@@ -55,7 +57,7 @@ public class ByteBufferInputStreamUnitTests {
   // TODO: Refactor mockByteBuffer since all the mocked Buffer methods are final.
   private @NotNull ByteBuffer mockByteBuffer() {
 
-    ByteBuffer mockByteBuffer = mock(ByteBuffer.class, withSettings().lenient());
+    ByteBuffer mockByteBuffer = mock(ByteBuffer.class, withSettings().strictness(Strictness.LENIENT));
 
     doReturn(CAPACITY).when(mockByteBuffer).capacity();
     doReturn(CAPACITY).when(mockByteBuffer).limit();

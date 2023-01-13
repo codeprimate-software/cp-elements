@@ -40,6 +40,8 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.time.Instant;
 
+import org.junit.Test;
+
 import org.cp.elements.beans.AbstractBean.StateChangeCallback;
 import org.cp.elements.beans.event.ChangeEvent;
 import org.cp.elements.beans.event.ChangeListener;
@@ -50,8 +52,9 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.reflect.FieldNotFoundException;
 import org.cp.elements.security.model.User;
-import org.junit.Test;
+
 import org.mockito.InOrder;
+import org.mockito.quality.Strictness;
 import org.mockito.stubbing.Answer;
 
 /**
@@ -68,7 +71,7 @@ public class AbstractBeanUnitTests {
   @SuppressWarnings("unchecked")
   private static @NotNull User<Long> mockUser(@Nullable String name) {
 
-    User<Long> mockUser = mock(User.class, withSettings().lenient());
+    User<Long> mockUser = mock(User.class, withSettings().strictness(Strictness.LENIENT));
 
     doReturn(System.currentTimeMillis()).when(mockUser).getId();
     doReturn(name).when(mockUser).getName();

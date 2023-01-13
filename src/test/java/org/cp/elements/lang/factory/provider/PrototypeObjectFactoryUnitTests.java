@@ -17,7 +17,7 @@ package org.cp.elements.lang.factory.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -26,9 +26,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+
+import org.junit.After;
+import org.junit.Test;
 
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.Configurable;
@@ -36,10 +38,6 @@ import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ParameterizedInitable;
 import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
-import org.junit.After;
-import org.junit.Test;
-import org.mockito.ArgumentMatcher;
-import org.mockito.internal.matchers.VarargMatcher;
 
 /**
  * Unit Tests for {@link PrototypeObjectFactory}.
@@ -52,10 +50,6 @@ import org.mockito.internal.matchers.VarargMatcher;
  */
 @SuppressWarnings("unused")
 public class PrototypeObjectFactoryUnitTests {
-
-  private Object[] equalVarargs(Object... varargs) {
-    return argThat(new CustomVarargsMatcher(varargs));
-  }
 
   @After
   public void tearDown() {
@@ -174,7 +168,7 @@ public class PrototypeObjectFactoryUnitTests {
 
     assertThat(objectFactory.initialize(mockParameterizedInitable, arguments)).isSameAs(mockParameterizedInitable);
 
-    verify(mockParameterizedInitable, times(1)).init(equalVarargs(arguments));
+    verify(mockParameterizedInitable, times(1)).init(eq(arguments));
     verifyNoMoreInteractions(mockParameterizedInitable);
   }
 
@@ -242,26 +236,12 @@ public class PrototypeObjectFactoryUnitTests {
     assertThat(objectFactory.postConstruct(mockConfigurableInitable, arguments)).isSameAs(mockConfigurableInitable);
 
     verify(mockConfigurableInitable, times(1)).configure(same(mockConfiguration));
-    verify(mockConfigurableInitable, times(1)).init(equalVarargs(arguments));
+    verify(mockConfigurableInitable, times(1)).init(eq(arguments));
     verifyNoMoreInteractions(mockConfigurableInitable);
     verifyNoInteractions(mockConfiguration);
   }
 
   interface ConfigurableInitable extends Configurable<Configuration>, ParameterizedInitable { }
-
-  static class CustomVarargsMatcher implements ArgumentMatcher<Object[]>, VarargMatcher {
-
-    private final Object[] expectedVarargs;
-
-    protected CustomVarargsMatcher(Object... expectedVarargs) {
-      this.expectedVarargs = expectedVarargs;
-    }
-
-    @Override
-    public boolean matches(Object[] actualVarargs) {
-      return Arrays.equals(this.expectedVarargs, actualVarargs);
-    }
-  }
 
   static final class TestObjectFactory extends PrototypeObjectFactory {
 
