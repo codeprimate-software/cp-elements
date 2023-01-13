@@ -13,32 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
 /**
- * The LogicUtilsTest class is a test suite of test cases testing the contract and functionality of the
- * LogicUtils class.
+ * Unit Tests for {@link LogicUtils}.
  *
  * @author John Blum
- * @see org.cp.elements.lang.LogicUtils
- * @see org.junit.Assert
  * @see org.junit.Test
+ * @see org.cp.elements.lang.LogicUtils
  */
 @SuppressWarnings("unused")
-public class LogicUtilsTest {
+public class LogicUtilsUnitTests {
 
   @Test
-  public void testXor() {
-    assertFalse(LogicUtils.xor(false, false));
-    assertTrue(LogicUtils.xor(true, false));
-    assertTrue(LogicUtils.xor(false, true));
-    assertFalse(LogicUtils.xor(true, true));
+  @SuppressWarnings("all")
+  public void falseXorFalseIsFalse() {
+    assertThat(LogicUtils.xor(false, false)).isFalse();
   }
 
+  @Test
+  @SuppressWarnings("all")
+  public void falseXorTrueIsTrue() {
+    assertThat(LogicUtils.xor(false, true)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void trueXorFalseIsTrue() {
+    assertThat(LogicUtils.xor(true, false)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void trueXorTrueIsFalse() {
+    assertThat(LogicUtils.xor(true, true)).isFalse();
+  }
 }

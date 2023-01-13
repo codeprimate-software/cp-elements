@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
-/**
- * The LogicUtils class is a utility class for implementing logic operations.
+  /**
+ * Abstract utility class containing common logic operations.
  *
  * @author John J. Blum
  * @since 1.0.0
@@ -26,15 +25,18 @@ package org.cp.elements.lang;
 public abstract class LogicUtils {
 
   /**
-   * Implementation of exclusive OR (XOR), meaning 1 and only 1 value can be true.  If both values are true or both
-   * values are false the result of XOR is false.
+   * Implementation of {@literal exclusive OR (XOR)}.
    *
-   * @param value1 the first value in the XOR expression.
-   * @param value2 the second value in the XOR expression.
-   * @return true if an only if 1 of the 2 values is true.
+   * In {@literal exclusive OR (XOR)}, one, and only one, value can be {@literal true}. If both values
+   * are {@literal true} or both values are {@literal false}, then the {@link Boolean result} of {@literal XOR}
+   * is {@literal false}.
+   *
+   * @param valueOne {@link Boolean first value} in the {@literal XOR expression}.
+   * @param valueTwo {@link Boolean second value} in the {@literal XOR expression}.
+   * @return {@literal true} only if one of the two {@link Boolean values} is {@literal true},
+   * otherwise, returns {@literal false}.
    */
-  public static boolean xor(final boolean value1, final boolean value2) {
-    return ((value1 || value2) && !(value1 && value2));
+  public static boolean xor(boolean valueOne, boolean valueTwo) {
+    return (valueOne || valueTwo) && !(valueOne && valueTwo);
   }
-
 }
