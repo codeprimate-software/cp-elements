@@ -39,6 +39,6 @@ public interface Visitable {
    * @see org.cp.elements.lang.Visitor
    */
   default void accept(@NotNull Visitor visitor) {
-    visitor.visit(this);
+    Visitor.nullSafeVisitor(visitor).visit(this);
   }
 }
