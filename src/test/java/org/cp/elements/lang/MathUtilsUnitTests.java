@@ -24,8 +24,6 @@ import java.util.stream.IntStream;
 
 import org.junit.Test;
 
-import org.cp.elements.test.TestUtils;
-
 /**
  * Unit Tests for {@link MathUtils}.
  *
@@ -35,9 +33,9 @@ import org.cp.elements.test.TestUtils;
  * @see org.cp.elements.lang.MathUtils
  * @since 1.0.0
  */
-public class MathUtilsTest {
+public class MathUtilsUnitTests {
 
-  private void assertEqualIntArrays(int[] expected, int[] actual) {
+  private void assertEqualIntArrays(int[] actual, int[] expected) {
 
     assertThat(actual.length).isEqualTo(expected.length);
 
@@ -51,22 +49,22 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testCircleArea() {
+  public void circleAreaIsCorrect() {
     assertThat(MathUtils.circleArea(5.0d)).isCloseTo(78.5398d, offset(0.0001d));
   }
 
   @Test
-  public void testCircleCircumference() {
+  public void circleCircumferenceIsCorrect() {
     assertThat(MathUtils.circleCircumference(5.0d)).isCloseTo(31.41592d, offset(0.000007d));
   }
 
   @Test
-  public void testCircleDiameter() {
+  public void circleDiameterIsCorrect() {
     assertThat(MathUtils.circleDiameter(5.0d)).isCloseTo(10.0d, offset(0.0d));
   }
 
   @Test
-  public void testConeVolume() {
+  public void coneVolumeIsCorrect() {
     assertThat(MathUtils.coneVolume(5.0d, 4.0d)).isCloseTo(104.7d, offset(0.02d));
   }
 
@@ -86,46 +84,46 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testCubeSurfaceArea() {
+  public void cubeSurfaceAreaIsCorrect() {
     assertThat(MathUtils.cubeSurfaceArea(5.0d)).isCloseTo(150.0d, offset(0.0d));
   }
 
   @Test
-  public void testCubeVolume() {
+  public void cubeVolumeIsCorrect() {
     assertThat(MathUtils.cubeVolume(5.0d)).isCloseTo(125.0d, offset(0.0d));
   }
 
   @Test
-  public void testCylinderSurfaceArea() {
-    assertThat(MathUtils.cylinderSurfaceArea(5.0d, 10.d)).isCloseTo(471.2388d, offset(0.000099d));
+  public void cylinderSurfaceAreaIsCorrect() {
+    assertThat(MathUtils.cylinderSurfaceArea(5.0d, 10.d))
+      .isCloseTo(471.2388d, offset(0.000099d));
   }
 
   @Test
-  public void testCylinderVolume() {
+  public void cylinderVolumeIsCorrect() {
     assertThat(MathUtils.cylinderVolume(5.0d, 4.0d)).isCloseTo(314.1592d, offset(0.00007d));
   }
 
   @Test
-  public void testEllipseArea() {
-    assertThat(MathUtils.ellipseArea(5.0d, 2.0d)).isCloseTo(31.41592d, offset(0.000007d));
+  public void ellipseAreaIsCorrect() {
+    assertThat(MathUtils.ellipseArea(5.0d, 2.0d))
+      .isCloseTo(31.41592d, offset(0.000007d));
   }
 
   @Test
-  public void testEllipsoidVolume() {
-    assertThat(MathUtils.ellipsoidVolume(5.0d, 4.0d, 3.0d)).isCloseTo(251.32d, offset(0.008d));
+  public void ellipseVolumeIsCorrect() {
+    assertThat(MathUtils.ellipseVolume(5.0d, 4.0d, 3.0d))
+      .isCloseTo(251.32d, offset(0.008d));
   }
 
   @Test
-  public void testEquilateralTriangleArea() {
+  public void equilateralTriangleAreaIsCorrect() {
     assertThat(MathUtils.equilateralTriangleArea(5.0d)).isCloseTo(10.825d, offset(0.0004d));
   }
 
   @Test
   public void factorial() {
 
-    assertThat(MathUtils.factorial(BigInteger.ZERO)).isEqualTo(BigInteger.ONE);
-    assertThat(MathUtils.factorial(BigInteger.ONE)).isEqualTo(BigInteger.ONE);
-    assertThat(MathUtils.factorial(MathUtils.TWO)).isEqualTo(MathUtils.TWO);
     assertThat(MathUtils.factorial(BigInteger.valueOf(3)).longValue()).isEqualTo(6L);
     assertThat(MathUtils.factorial(BigInteger.valueOf(4)).longValue()).isEqualTo(24L);
     assertThat(MathUtils.factorial(BigInteger.valueOf(5)).longValue()).isEqualTo(120L);
@@ -136,6 +134,21 @@ public class MathUtilsTest {
     assertThat(MathUtils.factorial(BigInteger.valueOf(10)).longValue()).isEqualTo(3628800L);
     assertThat(MathUtils.factorial(BigInteger.valueOf(11)).longValue()).isEqualTo(39916800L);
     assertThat(MathUtils.factorial(BigInteger.valueOf(12)).longValue()).isEqualTo(479001600L);
+  }
+
+  @Test
+  public void factorialOfZeroIsOne() {
+    assertThat(MathUtils.factorial(BigInteger.ZERO)).isEqualTo(BigInteger.ONE);
+  }
+
+  @Test
+  public void factorialOfOneIsOne() {
+    assertThat(MathUtils.factorial(BigInteger.ONE)).isEqualTo(BigInteger.ONE);
+  }
+
+  @Test
+  public void factorialOfTwoIsTwo() {
+    assertThat(MathUtils.factorial(MathUtils.TWO)).isEqualTo(MathUtils.TWO);
   }
 
   @Test
@@ -150,22 +163,26 @@ public class MathUtilsTest {
     MathUtils.factorial(BigInteger.valueOf(20000));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void factorialOfNegativeOne() {
 
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> MathUtils.factorial(MathUtils.NEGATIVE_ONE),
-      () -> String.format(MathUtils.NUMBER_LESS_THAN_ZERO_ERROR_MESSAGE, MathUtils.NEGATIVE_ONE));
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void factorialOfNullValue() {
-
-    TestUtils.doIllegalArgumentExceptionThrowingOperation(() -> MathUtils.factorial(null),
-      () -> "value must not be null");
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MathUtils.factorial(MathUtils.NEGATIVE_ONE))
+      .withMessage("Value [-1] must be greater than equal to 0")
+      .withNoCause();
   }
 
   @Test
-  public void testFibonacciNumber() {
+  public void factorialOfNullValue() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MathUtils.factorial(null))
+      .withMessage("Value to compute the factorial of is required")
+      .withNoCause();
+  }
+
+  @Test
+  public void fibonacciNumberForPositionIsCorrect() {
 
     assertThat(MathUtils.fibonacciNumber(1)).isEqualTo(0);
     assertThat(MathUtils.fibonacciNumber(2)).isEqualTo(1);
@@ -179,40 +196,49 @@ public class MathUtilsTest {
     assertThat(MathUtils.fibonacciNumber(30)).isEqualTo(514229);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testFibonacciNumberWithIllegalArgument() {
-    MathUtils.fibonacciSequence(-1);
+  @Test
+  public void fibonacciNumberWithIllegalArgument() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MathUtils.fibonacciSequence(-1))
+      .withMessage("The number of elements from the Fibonacci Sequence to calculate must be greater than equal to 0")
+      .withNoCause();
   }
 
   @Test
-  public void testFibonacciSequence() {
+  public void fibonacciSequenceIsCorrect() {
 
-    assertEqualIntArrays(toIntArray(0), MathUtils.fibonacciSequence(1));
-    assertEqualIntArrays(toIntArray(0, 1), MathUtils.fibonacciSequence(2));
-    assertEqualIntArrays(toIntArray(0, 1, 1), MathUtils.fibonacciSequence(3));
-    assertEqualIntArrays(toIntArray(0, 1, 1, 2, 3), MathUtils.fibonacciSequence(5));
-    assertEqualIntArrays(toIntArray(0, 1, 1, 2, 3, 5, 8, 13), MathUtils.fibonacciSequence(8));
-    assertEqualIntArrays(toIntArray(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144), MathUtils.fibonacciSequence(13));
-    assertEqualIntArrays(toIntArray(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181,
-        6765), MathUtils.fibonacciSequence(21));
-    assertEqualIntArrays(toIntArray(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181,
-      6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811), MathUtils.fibonacciSequence(29));
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testFibonacciSequenceWithAnIllegalArgument() {
-    MathUtils.fibonacciSequence(0);
+    assertEqualIntArrays(MathUtils.fibonacciSequence(1), toIntArray(0));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(2), toIntArray(0, 1));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(3), toIntArray(0, 1, 1));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(5), toIntArray(0, 1, 1, 2, 3));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(8), toIntArray(0, 1, 1, 2, 3, 5, 8, 13));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(13),
+      toIntArray(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(21),
+      toIntArray(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765));
+    assertEqualIntArrays(MathUtils.fibonacciSequence(29),
+      toIntArray(0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765,
+        10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811));
   }
 
   @Test
-  public void testIrregularPrismVolume() {
+  public void fibonacciSequenceWithIllegalArgument() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> MathUtils.fibonacciSequence(0))
+      .withMessage("The number of elements from the Fibonacci Sequence to calculate must be greater than equal to 0")
+      .withNoCause();
+  }
+
+  @Test
+  public void irregularPrismVolumeIsCorrect() {
     assertThat(MathUtils.irregularPrismVolume(5.0d, 4.0d)).isCloseTo(20.0d, offset(0.0d));
   }
 
   @Test
-  public void testMax() {
+  public void maximumInNumbersIsCorrect() {
 
-    assertThat(MathUtils.max((double[]) null)).isCloseTo(Double.NaN, offset(0.0d));
     assertThat(MathUtils.max(0)).isCloseTo(0.0d, offset(0.0d));
     assertThat(MathUtils.max(0, 0, 0)).isCloseTo(0.0d, offset(0.0d));
     assertThat(MathUtils.max(0, 1, 2)).isCloseTo(2.0d, offset(0.0d));
@@ -223,9 +249,13 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testMin() {
+  public void maximumInNullNumbersIsNullSafeReturnsNotANumber() {
+    assertThat(MathUtils.max((double[]) null)).isCloseTo(Double.NaN, offset(0.0d));
+  }
 
-    assertThat(MathUtils.min((double[]) null)).isCloseTo(Double.NaN, offset(0.0d));
+  @Test
+  public void minimumInNumbersIsCorrect() {
+
     assertThat(MathUtils.min(0)).isCloseTo(0.0d, offset(0.0d));
     assertThat(MathUtils.min(0, 0, 0)).isCloseTo(0.0d, offset(0.0d));
     assertThat(MathUtils.min(0, 1, 2)).isCloseTo(0.0d, offset(0.0d));
@@ -236,10 +266,13 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testMultiply() {
+  public void minimumInNullNumbersIsNullSafeReturnsNotANumber() {
+    assertThat(MathUtils.min((double[]) null)).isCloseTo(Double.NaN, offset(0.0d));
+  }
 
-    assertThat(MathUtils.multiply((int[]) null)).isEqualTo(0);
-    assertThat(MathUtils.multiply()).isEqualTo(0);
+  @Test
+  public void multiplyIsCorrect() {
+
     assertThat(MathUtils.multiply(0)).isEqualTo(0);
     assertThat(MathUtils.multiply(0, 0, 0)).isEqualTo(0);
     assertThat(MathUtils.multiply(0, 0, 1)).isEqualTo(0);
@@ -250,37 +283,50 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testParallelogramArea() {
+  public void multiplicationOfNoNumbersReturnsZero() {
+    assertThat(MathUtils.multiply()).isEqualTo(0);
+  }
+
+  @Test
+  public void multiplicationOfNullNumbersIsNullSafeReturnsZero() {
+    assertThat(MathUtils.multiply((int[]) null)).isEqualTo(0);
+  }
+
+  @Test
+  public void parallelogramAreaIsCorrect() {
     assertThat(MathUtils.parallelogramArea(5.0d, 6.0d)).isCloseTo(30.0d, offset(0.0d));
   }
 
   @Test
-  public void testPyramidVolume() {
-    assertThat(MathUtils.pyramidVolume(5.0d, 6.0d)).isCloseTo(10.d, offset(0.0d));
+  public void pyramidVolumeIsCorrect() {
+    assertThat(MathUtils.pyramidVolume(5.0d, 6.0d, 4.0))
+      .isCloseTo(40.d, offset(0.0d));
   }
 
   @Test
-  public void testPythagoreanTheorem() {
+  public void pythagoreanTheoremIsCorrect() {
     assertThat(MathUtils.pythagoreanTheorem(3.0d, 4.0d)).isCloseTo(5.0d, offset(0.0d));
   }
 
   @Test
-  public void testRectangleArea() {
+  public void rectangleAreaIsCorrect() {
     assertThat(MathUtils.rectangleArea(5.0d, 8.0d)).isCloseTo(40.0d, offset(0.0d));
   }
 
   @Test
-  public void testRectangularPrismSurfaceArea() {
-    assertThat(MathUtils.rectangularPrismSurfaceArea(5.0d, 4.0d, 3.0d)).isCloseTo(94.0d, offset(0.0d));
+  public void rectangularPrismSurfaceAreaIsCorrect() {
+    assertThat(MathUtils.rectangularPrismSurfaceArea(5.0d, 4.0d, 3.0d))
+      .isCloseTo(94.0d, offset(0.0d));
   }
 
   @Test
-  public void testRectanglePrismVolume() {
-    assertThat(MathUtils.rectangularPrismVolume(5.0d, 6.0d, 8.0d)).isCloseTo(240.0d, offset(0.0d));
+  public void rectanglePrismVolumeIsCorrect() {
+    assertThat(MathUtils.rectangularPrismVolume(5.0d, 6.0d, 8.0d))
+      .isCloseTo(240.0d, offset(0.0d));
   }
 
   @Test
-  public void testRoundToNearestTenth() {
+  public void roundToNearestTenth() {
 
     assertThat(Double.valueOf(MathUtils.roundToNearestTenth(0.0d))).isEqualTo(Double.valueOf(0.0d));
     assertThat(Double.valueOf(MathUtils.roundToNearestTenth(7.0d))).isEqualTo(Double.valueOf(7.0d));
@@ -316,25 +362,23 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testSphereSurfaceArea() {
+  public void sphereSurfaceAreaIsCorrect() {
     assertThat(MathUtils.sphereSurfaceArea(5.0d)).isCloseTo(314.1592d, offset(0.00007d));
   }
 
   @Test
-  public void testSphereVolume() {
+  public void sphereVolumeIsCorrect() {
     assertThat(MathUtils.sphereVolume(3.0d)).isCloseTo(113.09d, offset(0.008d));
   }
 
   @Test
-  public void testSquareArea() {
+  public void squareAreaIsCorrect() {
     assertThat(MathUtils.squareArea(5.0d)).isCloseTo(25.0d, offset(0.0d));
   }
 
   @Test
-  public void testSum() {
+  public void sumOfNumbersIsCorrect() {
 
-    assertThat(MathUtils.sum((int[]) null)).isEqualTo(0);
-    assertThat(MathUtils.sum()).isEqualTo(0);
     assertThat(MathUtils.sum(0)).isEqualTo(0);
     assertThat(MathUtils.sum(0, 0, 0)).isEqualTo(0);
     assertThat(MathUtils.sum(1, 2, 3)).isEqualTo(6);
@@ -342,12 +386,22 @@ public class MathUtilsTest {
   }
 
   @Test
-  public void testTrapezoidArea() {
+  public void sumOfNoNumbersReturnsZero() {
+    assertThat(MathUtils.sum()).isEqualTo(0);
+  }
+
+  @Test
+  public void sumOfNullNumbersIsNullSafeReturnsZero() {
+    assertThat(MathUtils.sum((int[]) null)).isEqualTo(0);
+  }
+
+  @Test
+  public void trapezoidAreaIsCorrect() {
     assertThat(MathUtils.trapezoidArea(10.0d, 2.0d, 3.0d)).isCloseTo(25.0d, offset(0.0d));
   }
 
   @Test
-  public void testTriangleArea() {
+  public void triangleAreaIsCorrect() {
     assertThat(MathUtils.triangleArea(5.0d, 6.0d)).isCloseTo(15.0d, offset(0.0d));
   }
 
