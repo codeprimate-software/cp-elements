@@ -15,6 +15,10 @@
  */
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
  * The {@link Visitor} interface define a contract for {@link Object objects} who's {@link Class type} implements
  * {@literal this} interface in order to walk an {@link Object} graph to perform some operation or make some evaluation
@@ -30,6 +34,18 @@ package org.cp.elements.lang;
  */
 @FunctionalInterface
 public interface Visitor {
+
+  /**
+   * Factory method used to guard against a {@literal null} {@link Visitor}.
+   *
+   * @param visitor {@link Visitor} to evaluate for {@literal null}.
+   * @return the given {@link Visitor} if not {@literal null}, otherwise returns a default,
+   * no-op {@link Visitor} implementation.
+   */
+  @NullSafe
+  static @NotNull Visitor nullSafeVisitor(@Nullable Visitor visitor) {
+    return visitor != null ? visitor : visitable -> {};
+  }
 
   /**
    * Visits the {@link Visitable} object in order to perform a function or make an evaluation of
