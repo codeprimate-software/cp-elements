@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import java.math.BigInteger;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import org.cp.elements.lang.annotation.NotNull;
@@ -35,7 +36,7 @@ import org.cp.elements.lang.annotation.Nullable;
  */
 public abstract class NumberUtils {
 
-  private static final int MASK = 0xFF;
+  private static final int BIT_MASK = 0xFF;
 
   public static final String BINARY_PREFIX_NOTATION = "b";
   public static final String HEXADECIMAL_PREFIX_NOTATION = "0x";
@@ -43,25 +44,43 @@ public abstract class NumberUtils {
   protected static final Pattern BINARY_PATTERN = Pattern.compile("b?[01]+");
   protected static final Pattern HEXADECIMAL_PATTERN = Pattern.compile("0x[0-9A-Fa-f]+");
 
+  private static final Predicate<Number> IS_DECIMAL_NUMBER = NumberUtils::isDecimal;
+  private static final Predicate<Number> IS_WHOLE_NUMBER = NumberUtils::isWhole;
+
+  private static final Predicate<Number> IS_BYTE_SIZE = IS_WHOLE_NUMBER.and(number ->
+    number.longValue() >= Byte.MIN_VALUE && number.longValue() <= Byte.MAX_VALUE);
+
+  private static final Predicate<Number> IS_SHORT_SIZE = IS_WHOLE_NUMBER.and(number ->
+    number.longValue() >= Short.MIN_VALUE && number.longValue() <= Short.MAX_VALUE);
+
+  private static final Predicate<Number> IS_INT_SIZE = IS_WHOLE_NUMBER.and(number ->
+    number.longValue() >= Integer.MIN_VALUE && number.longValue() <= Integer.MAX_VALUE);
+
+  private static final Predicate<Number> IS_FLOAT_SIZE = IS_DECIMAL_NUMBER.and(number ->
+    number.doubleValue() >= Float.MIN_VALUE && number.doubleValue() <= Float.MAX_VALUE);
+
   /**
-   * Determines whether the given {@link String value} represents a binary value, consisting of
-   * only {@literal 1s} and {@literal 0s}.
+   * Determines whether the given {@link String value} represents a {@literal binary value},
+   * consisting of only {@literal 1s} and {@literal 0s}.
    *
    * @param value {@link String} to evaluate.
-   * @return a boolean value indicating whether the given {@link String value} represents a binary value,
+   * @return a boolean value indicating whether the given {@link String value} represents a {@literal binary value},
    * consisting of only {@literal 1s} and {@literal 0s}.
+   * @see #isHexadecimalString(String)
    */
   public static boolean isBinaryString(@Nullable String value) {
     return StringUtils.hasText(value) && BINARY_PATTERN.matcher(value).matches();
   }
 
   /**
-   * Converts the given, required {@link String binary value} into an {@link Integer}.
+   * Converts the given, required {@link String binary string} into an {@link Integer value}.
    *
-   * @param binaryValue {@link String} containing only 1s and 0s.
-   * @return an {@link Integer} representing the {@link String binary value}.
-   * @throws IllegalArgumentException if the {@link String binary value} is {@literal null} or {@literal empty},
-   * or the value is not a valid {@link String binary string}.
+   * @param binaryValue {@link String} containing a {@literal binary value} consisting of
+   * {@literal 1s} and {@literal 0s}; must not be {@literal null} or {@literal empty}.
+   * @return an {@link Integer value} equivalent to the {@link String binary string}.
+   * @throws IllegalArgumentException if the {@link String binary string} is {@literal null} or {@literal empty},
+   * or the {@literal value} of the {@link String binary string} is not valid.
+   * @see #fromHexadecimalString(String)
    * @see #isBinaryString(String)
    */
   public static @NotNull Integer fromBinaryString(@NotNull String binaryValue) {
@@ -84,25 +103,28 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the given {@link String value} is a hexadecimal value, consisting of
-   * only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
+   * Determines whether the given {@link String value} is a {@literal hexadecimal value},
+   * consisting of only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
    *
    * @param value {@link String} to evaluate.
-   * @return a boolean value indicating whether the given {@link String value} is a hexadecimal value, consisting of
-   * only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
+   * @return a boolean value indicating whether the given {@link String value} is a {@literal hexadecimal value},
+   * consisting of only numbers {@literal [0-9]} and letters {@literal [AaBbCcDdEeFf]}.
+   * @see #isBinaryString(String)
    */
   public static boolean isHexadecimalString(@Nullable String value) {
     return StringUtils.hasText(value) && HEXADECIMAL_PATTERN.matcher(value).matches();
   }
 
   /**
-   * Converts the given, required {@link String hexadecimal value} into an {@link Integer}.
+   * Converts the given, required {@link String hexadecimal string} into an {@link Integer value}.
    *
-   * @param hexadecimalValue {@link String} containing digits 0-9 and letters A-F.
-   * @return an {@link Integer} representing the {@link String hexadecimal value}.
-   * @throws IllegalArgumentException if the {@link String hexadecimal value} is {@literal null} or {@literal empty},
-   * or the value is not a valid {@link String hexadecimal string}.
+   * @param hexadecimalValue {@link String} containing a {@literal hexadecimal value} consisting of
+   * digits {@literal 0-9} and letters {@literal A-F}; must not be {@literal null} or {@literal empty}.
+   * @return an {@link Integer value} equivalent to the {@link String hexadecimal string}.
+   * @throws IllegalArgumentException if the {@link String hexadecimal string} is {@literal null} or {@literal empty},
+   * or the {@literal value} of the {@link String hexadecimal string} is not valid.
    * @see #isHexadecimalString(String)
+   * @see #fromBinaryString(String)
    */
   public static @NotNull Integer fromHexadecimalString(@NotNull String hexadecimalValue) {
 
@@ -162,31 +184,35 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Gets the individual bytes of an integer (int) value.  An integer is a 32-bit value consisting of 4 bytes
-   * where each byte of the integer (int) value is returned in an element of a 4-element byte array.
+   * Gets the individual bytes of an {@link Integer value} or {@link Integer#TYPE int value}.
    *
-   * @param value the integer (int) value to convert into a byte array consisting of the int value's 4 bytes
-   * (or 32-bit value).
-   * @return a byte array containing the individual bytes making up the value of the integer (int).
+   * An {@link Integer} is a 32-bit value consisting of 4 bytes where each byte of the {@link Integer}
+   * is returned in an element of a 4-element byte array.
+   *
+   * @param value {@link Integer} to convert into a byte array consisting of the {@link Integer Integer's}
+   * 4 bytes, or 32-bit value.
+   * @return a byte array containing the individual bytes making up the value of
+   * the {@link Integer} of {@link Integer#TYPE int}.
    */
   public static byte[] getBytes(int value) {
 
     byte[] valueBytes = new byte[4];
 
-    valueBytes[0] = (byte) (value >>> 24 & MASK);
-    valueBytes[1] = (byte) (value >>> 16 & MASK);
-    valueBytes[2] = (byte) (value >>> 8 & MASK);
-    valueBytes[3] = (byte) (value & MASK);
+    valueBytes[0] = (byte) (value >>> 24 & BIT_MASK);
+    valueBytes[1] = (byte) (value >>> 16 & BIT_MASK);
+    valueBytes[2] = (byte) (value >>> 8 & BIT_MASK);
+    valueBytes[3] = (byte) (value & BIT_MASK);
 
     return valueBytes;
   }
 
   /**
-   * Determines whether the specified double is a floating-point number, which is defined as a double value having a
-   * fractional value (a non-zero value after the decimal point).
+   * Determines whether the given {@link Double value} is a {@literal floating-point number}, which is defined as
+   * any number having a fractional value, or non-zero value after the decimal point.
    *
-   * @param value the double value being evaluated as a decimal value (floating-point value).
-   * @return a boolean value indicating whether the specified double value is a floating-point number.
+   * @param value {@link Double value} being evaluated as a {@literal decimal}, or {@literal floating-point number}.
+   * @return a boolean value indicating whether the given {@link Double value} is a {@literal floating-point number}.
+   * @see java.lang.Math#floor(double)
    * @see #isWhole(double)
    */
   public static boolean isDecimal(double value) {
@@ -194,12 +220,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the given {@link Number} is a decimal value.
+   * Determines whether the given {@link Number} is a {@literal decimal} or {@literal floating-point number}.
    *
-   * The {@link Number} is considered a decimal value if it is instance of {@link Double} or {@link Float}.
+   * The {@link Number} is considered a {@literal floating-point value} only if the {@link Number}
+   * is an instance of {@link Double} or {@link Float}.
    *
    * @param value {@link Number} to evaluate.
-   * @return a boolean value indicating whether the given {@link Number} is a decimal value.
+   * @return a boolean value indicating whether the given {@link Number} is a {@literal decimal value}
+   * or a {@literal floating-point number}
    * @see java.lang.Double
    * @see java.lang.Float
    * @see java.lang.Number
@@ -210,24 +238,31 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified long value is an even number using modulus, which is any number divisible by 2
-   * with a remainder of 0.
+   * Determines whether the given {@link Long} is an even number.
    *
-   * @param value the long value being evaluated as an even number.
-   * @return a boolean value indicating whether the specified long value is even.
+   * The {@link Long number} is evaluated using the {@literal modulus operator}, which determines that any number
+   * divisible by {@literal 2} with a remainder of {@literal 0} is an even number.
+   *
+   * @param number {@link Long value} to evaluate as an even number.
+   * @return a boolean value indicating whether the given {@link Long} is an even number.
+   * @see java.lang.Math#abs(long)
    * @see #isBitwiseEven(long)
    * @see #isOdd(long)
    */
-  public static boolean isEven(long value) {
-    return Math.abs(value) % 2L == 0;
+  public static boolean isEven(long number) {
+    return Math.abs(number) % 2L == 0;
   }
 
   /**
-   * Determines whether the specified long value is an even number using bitwise 'AND', which is any number
-   * with a 0 in the 0 position of the binary representation of the number.
+   * Determines whether the specified {@link Long} is an even number.
    *
-   * @param value the long value being evaluated as an even number.
-   * @return a boolean value indicating whether the specified long value is even.
+   * The {@link Long number} is evaluated using the {@literal bitwise AND operator}, which determines that any number
+   * with a {@literal 0} in the {@literal 0 position} of the binary representation of the number is an even number.
+   *
+   * @param value {@link Long value} to evaluate as an even number.
+   * @return a boolean value indicating whether the given {@link Long} is an even number.
+   * @see java.lang.Math#abs(double)
+   * @see #isBitwiseOdd(long)
    * @see #isEven(long)
    */
   public static boolean isBitwiseEven(long value) {
@@ -235,10 +270,10 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified double value is negative (less than 0).
+   * Determines whether the given {@link Double value} is a negative number, or less than {@literal 0}.
    *
-   * @param value a double who's value is evaluated as a negative value (less than 0).
-   * @return a boolean value indicating whether the specified double value is negative (less than 0).
+   * @param value {@link Double number} to evaluate as a negative value.
+   * @return a boolean value indicating whether the given {@link Double value} is a negative number.
    * @see #isPositive(double)
    */
   public static boolean isNegative(double value) {
@@ -246,24 +281,31 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified long value is an odd number using modulus, which is any number
-   * having a remainder of 1 when divided by 2.
+   * Determines whether the given {@link Long} is an odd number.
    *
-   * @param value the long value being evaluated as an odd number.
-   * @return a boolean value indicating whether the specified long value is odd.
+   * The {@link Long number} is evaluated using the {@literal modulus operator}, which determines that any number
+   * divisible by {@literal 2} with a remainder of {@literal 1} is an odd number.
+   *
+   * @param number {@link Long value} to evaluate as an odd number.
+   * @return a boolean value indicating whether the given {@link Long} is an odd number.
+   * @see java.lang.Math#abs(long)
    * @see #isBitwiseOdd(long)
    * @see #isEven(long)
    */
-  public static boolean isOdd(long value) {
-    return (Math.abs(value) % 2L == 1);
+  public static boolean isOdd(long number) {
+    return Math.abs(number) % 2L == 1;
   }
 
   /**
-   * Determines whether the specified long value is an odd number using bitwise 'AND', which is any number
-   * with a 1 in the 0 position of the binary representation of the number.
+   * Determines whether the specified {@link Long} is an odd number.
    *
-   * @param value the long value being evaluated as an odd number.
-   * @return a boolean value indicating whether the specified long value is odd.
+   * The {@link Long number} is evaluated using the {@literal bitwise AND operator}, which determines that any number
+   * with a {@literal 1} in the {@literal 0 position} of the binary representation of the number is an odd number.
+   *
+   * @param value {@link Long value} to evaluate as an odd number.
+   * @return a boolean value indicating whether the given {@link Long} is an odd number.
+   * @see java.lang.Math#abs(double)
+   * @see #isBitwiseEven(long)
    * @see #isOdd(long)
    */
   public static boolean isBitwiseOdd(long value) {
@@ -271,10 +313,10 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified double value is positive (greater than 0).
+   * Determines whether the given {@link Double value} is a positive number, or greater than {@literal 0}.
    *
-   * @param value a double who's value is evaluated as a positive value (greater than 0).
-   * @return a boolean value indicating whether the specified double value is positive (greater than 0).
+   * @param value {@link Double number} to evaluate as a positive value.
+   * @return a boolean value indicating whether the given {@link Double value} is a positive number.
    * @see #isNegative(double)
    */
   public static boolean isPositive(double value) {
@@ -282,11 +324,12 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the specified double is a whole number, which is defined as a double value having no
-   * fractional value (containing only zeroes after the decimal point).
+   * Determines whether the given {@link Double value} is a {@literal whole number}, which is defined as
+   * any {@link Double value} having no fractional value, or containing only zeroes after the decimal point.
    *
-   * @param value the double value being evaluated as a whole value (integral value).
-   * @return a boolean value indicating whether the specified double value is a whole number.
+   * @param value {@link Double value} being evaluated as a {@literal whole number}, or an {@literal integral value}.
+   * @return a boolean value indicating whether the given {@link Double value} is a {@literal whole number}.
+   * @see java.lang.Math#floor(double)
    * @see #isDecimal(double)
    */
   public static boolean isWhole(double value) {
@@ -297,7 +340,8 @@ public abstract class NumberUtils {
    * Determines whether the given {@link Number} is {@literal whole}.
    *
    * @param value {@link Number} to evaluate.
-   * @return a boolean value indicating whether the the given {@link Number} is {@literal whole}.
+   * @return a boolean value indicating whether the given {@link Number} is {@literal whole}.
+   * @see #isDecimal(Number)
    * @see java.lang.Number
    */
   @NullSafe
@@ -311,10 +355,10 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Determines whether the given double value is zero.
+   * Determines whether the given {@link Double value} is zero.
    *
-   * @param value double value to evaluate.
-   * @return a boolean value indicating whether the given double value is zero.
+   * @param value {@link Double value} to evaluate.
+   * @return a boolean value indicating whether the given {@link Double value} is zero.
    */
   public static boolean isZero(double value) {
     return value == 0.0d;
@@ -323,55 +367,58 @@ public abstract class NumberUtils {
   /**
    * Determines whether the given {@link Number} is a {@link Byte}.
    *
-   * If the {@link Number} is not an instance of {@link Byte} then the numerical value must be between
-   * {@link Byte#MIN_VALUE} and {@link Byte#MAX_VALUE} inclusive.
+   * If the given {@link Number} is not an instance of {@link Byte} then the numerical value
+   * must be between {@link Byte#MIN_VALUE} and {@link Byte#MAX_VALUE} inclusive.
    *
-   * @param value {@link Number} to evaluate.
+   * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
+   * must be {@link #isWhole(Number) whole}.
+   *
+   * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Byte}.
-   * @see #isWhole(Number)
    * @see java.lang.Number
    * @see java.lang.Byte
    */
   @NullSafe
-  public static boolean isByte(@Nullable Number value) {
-    return value instanceof Byte
-      || (isWhole(value) && value.longValue() >= Byte.MIN_VALUE && value.longValue() <= Byte.MAX_VALUE);
+  public static boolean isByte(@Nullable Number number) {
+    return number instanceof Byte || IS_BYTE_SIZE.test(number);
   }
 
   /**
    * Determines whether the given {@link Number} is a {@link Short}.
    *
-   * If the {@link Number} is not an instance of {@link Short} then the numerical value must be between
-   * {@link Short#MIN_VALUE} and {@link Short#MAX_VALUE} inclusive.
+   * If the given {@link Number} is not an instance of {@link Short} then the numerical value
+   * must be between {@link Short#MIN_VALUE} and {@link Short#MAX_VALUE} inclusive.
    *
-   * @param value {@link Number} to evaluate.
+   * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
+   * must be {@link #isWhole(Number) whole}.
+   *
+   * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Short}.
-   * @see #isWhole(Number)
    * @see java.lang.Number
    * @see java.lang.Short
    */
   @NullSafe
-  public static boolean isShort(@Nullable Number value) {
-    return value instanceof Short
-      || (isWhole(value) && value.longValue() >= Short.MIN_VALUE && value.longValue() <= Short.MAX_VALUE);
+  public static boolean isShort(@Nullable Number number) {
+    return number instanceof Short || IS_SHORT_SIZE.test(number);
   }
 
   /**
    * Determines whether the given {@link Number} is a {@link Integer}.
    *
-   * If the {@link Number} is not an instance of {@link Integer} then the numerical value must be between
-   * {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE} inclusive.
+   * If the given {@link Number} is not an instance of {@link Integer} then the numerical value
+   * must be between {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE} inclusive.
    *
-   * @param value {@link Number} to evaluate.
+   * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
+   * must be {@link #isWhole(Number) whole}.
+   *
+   * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Integer}.
-   * @see #isWhole(Number)
    * @see java.lang.Number
    * @see java.lang.Integer
    */
   @NullSafe
-  public static boolean isInteger(@Nullable Number value) {
-    return value instanceof Integer
-      || (isWhole(value) && value.longValue() >= Integer.MIN_VALUE && value.longValue() <= Integer.MAX_VALUE);
+  public static boolean isInteger(@Nullable Number number) {
+    return number instanceof Integer || IS_INT_SIZE.test(number);
   }
 
   /**
@@ -379,55 +426,62 @@ public abstract class NumberUtils {
    *
    * The {@link Number} must be an instance of {@link Long}.
    *
-   * @param value {@link Number} to evaluate.
+   * If the given {@link Number} is a {@literal floating-point value}, then the {@link Number}
+   * must be {@link #isWhole(Number)} whole}.
+   *
+   * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Long}.
    * @see java.lang.Number
    * @see java.lang.Long
    */
   @NullSafe
-  public static boolean isLong(@Nullable Number value) {
-    return value instanceof Long;
+  public static boolean isLong(@Nullable Number number) {
+    return number instanceof Long;
   }
 
   /**
    * Determines whether the given {@link Number} is a {@link Float}.
    *
-   * If the {@link Number} is not an instance of {@link Float} then the numerical value must be between
-   * {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE} inclusive.
+   * If the given {@link Number} is not an instance of {@link Float} then the numerical value
+   * must be between {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE} inclusive.
    *
-   * @param value {@link Number} to evaluate.
+   * The given {@link Number} must contain a {@link #isDecimal(Number) decimal value}.
+   *
+   * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Float}.
-   * @see #isDecimal(Number)
    * @see java.lang.Number
    * @see java.lang.Float
    */
   @NullSafe
-  public static boolean isFloat(@Nullable Number value) {
-    return value instanceof Float
-      || (isDecimal(value) && value.doubleValue() >= Float.MIN_VALUE && value.doubleValue() <= Float.MAX_VALUE);
+  public static boolean isFloat(@Nullable Number number) {
+    return number instanceof Float || IS_FLOAT_SIZE.test(number);
   }
 
   /**
    * Determines whether the given {@link Number} is a {@link Double}.
    *
-   * The {@link Number} must be an instance of {@link Double}.
+   * The {@link Number} must be an instance of {@link Double}
+   * and contain a {@link #isDecimal(Number) decimal value}.
    *
-   * @param value {@link Number} to evaluate.
+   * @param number {@link Number} to evaluate.
    * @return a boolean value indicating whether the given {@link Number} is a {@link Double}.
    * @see java.lang.Number
    * @see java.lang.Double
    */
   @NullSafe
-  public static boolean isDouble(@Nullable Number value) {
-    return value instanceof Double;
+  public static boolean isDouble(@Nullable Number number) {
+    return number instanceof Double;
   }
 
   /**
-   * Returns the byte value of the given {@link Number} or 0 if {@link Number} is {@literal null}.
+   * Returns the value of the given {@link Number} as a {@link Byte} or {@literal 0}
+   * if {@link Number} is {@literal null}.
    *
    * @param number {@link Number} to evaluate.
-   * @return the byte value of the given {@link Number} or 0 if the {@link Number} is {@literal null}.
+   * @return the {@link Byte value} of the given {@link Number} or {@literal 0}
+   * if the {@link Number} is {@literal null}.
    * @see java.lang.Number#byteValue()
+   * @see java.lang.Byte#TYPE
    */
   @NullSafe
   public static byte byteValue(@Nullable Number number) {
@@ -435,11 +489,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Returns the short value of the given {@link Number} or 0 if {@link Number} is {@literal null}.
+   * Returns the value of the given {@link Number} as a {@link Short} or {@literal 0}
+   * if {@link Number} is {@literal null}.
    *
    * @param number {@link Number} to evaluate.
-   * @return the short value of the given {@link Number} or 0 if the {@link Number} is {@literal null}.
+   * @return the {@link Short value} of the given {@link Number} or {@literal 0}
+   * if the {@link Number} is {@literal null}.
    * @see java.lang.Number#shortValue()
+   * @see java.lang.Short#TYPE
    */
   @NullSafe
   public static short shortValue(@Nullable Number number) {
@@ -447,11 +504,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Returns the int value of the given {@link Number} or 0 if {@link Number} is {@literal null}.
+   * Returns the value of the given {@link Number} as a {@link Integer} or {@literal 0}
+   * if {@link Number} is {@literal null}.
    *
    * @param number {@link Number} to evaluate.
-   * @return the int value of the given {@link Number} or 0 if the {@link Number} is {@literal null}.
+   * @return the {@link Integer value} of the given {@link Number} or {@literal 0}
+   * if the {@link Number} is {@literal null}.
    * @see java.lang.Number#intValue()
+   * @see java.lang.Integer#TYPE
    */
   @NullSafe
   public static int intValue(@Nullable Number number) {
@@ -459,11 +519,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Returns the long value of the given {@link Number} or 0L if {@link Number} is {@literal null}.
+   * Returns the value of the given {@link Number} as a {@link Long} or {@literal 0}
+   * if {@link Number} is {@literal null}.
    *
    * @param number {@link Number} to evaluate.
-   * @return the long value of the given {@link Number} or 0L if the {@link Number} is {@literal null}.
+   * @return the {@link Long value} of the given {@link Number} or {@literal 0}
+   * if the {@link Number} is {@literal null}.
    * @see java.lang.Number#longValue()
+   * @see java.lang.Long#TYPE
    */
   @NullSafe
   public static long longValue(@Nullable Number number) {
@@ -471,11 +534,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Returns the float value of the given {@link Number} or 0.0f if {@link Number} is {@literal null}.
+   * Returns the value of the given {@link Number} as a {@link Float} or {@literal 0}
+   * if {@link Number} is {@literal null}.
    *
    * @param number {@link Number} to evaluate.
-   * @return the float value of the given {@link Number} or 0.0f if the {@link Number} is {@literal null}.
+   * @return the {@link Float value} of the given {@link Number} or {@literal 0}
+   * if the {@link Number} is {@literal null}.
    * @see java.lang.Number#floatValue()
+   * @see java.lang.Float#TYPE
    */
   @NullSafe
   public static float floatValue(@Nullable Number number) {
@@ -483,11 +549,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Returns the double value of the given {@link Number} or 0.0d if {@link Number} is {@literal null}.
+   * Returns the value of the given {@link Number} as a {@link Double} or {@literal 0}
+   * if {@link Number} is {@literal null}.
    *
    * @param number {@link Number} to evaluate.
-   * @return the double value of the given {@link Number} or 0.0d if the {@link Number} is {@literal null}.
+   * @return the {@link Double value} of the given {@link Number} or {@literal 0}
+   * if the {@link Number} is {@literal null}.
    * @see java.lang.Number#doubleValue()
+   * @see java.lang.Double#TYPE
    */
   @NullSafe
   public static double doubleValue(@Nullable Number number) {
@@ -495,12 +564,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Return the primitive byte value of the specified {@link Byte} wrapper object, or 0
+   * Return the primitive byte value of the given {@link Byte} wrapper object or {@literal 0}
    * if the {@link Byte} wrapper object is {@literal null}.
    *
    * @param value {@link Byte} to evaluate.
-   * @return a primitive byte value for the specified {@link Byte}, or 0 if the {@link Byte} is {@literal null}.
+   * @return a primitive byte value for the given {@link Byte} or {@literal 0}
+   * if the {@link Byte} is {@literal null}.
    * @see #byteValue(Number)
+   * @see java.lang.Byte#TYPE
    * @see java.lang.Byte
    */
   @NullSafe
@@ -509,12 +580,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Return the primitive short value of the specified {@link Short} wrapper object, or 0
+   * Return the primitive short value of the given {@link Short} wrapper object or {@literal 0}
    * if the {@link Short} wrapper object is {@literal null}.
    *
    * @param value {@link Short} to evaluate.
-   * @return a primitive short value for the specified {@link Short}, or 0 if the {@link Short} is {@literal null}.
+   * @return a primitive short value for the given {@link Short} or {@literal 0}
+   * if the {@link Short} is {@literal null}.
    * @see #shortValue(Number)
+   * @see java.lang.Short#TYPE
    * @see java.lang.Short
    */
   @NullSafe
@@ -523,13 +596,15 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Return the primitive int value of the specified {@link Integer} wrapper object, or 0
+   * Return the primitive int value of the given {@link Integer} wrapper object or {@literal 0}
    * if the {@link Integer} wrapper object is {@literal null}.
    *
    * @param value {@link Integer} to evaluate.
-   * @return a primitive int value for the specified {@link Integer}, or 0 if the {@link Integer} is {@literal null}.
-   * @see #intValue(Number)
+   * @return a primitive int value for the given {@link Integer} or {@literal 0}
+   * if the {@link Integer} is {@literal null}.
+   * @see java.lang.Integer#TYPE
    * @see java.lang.Integer
+   * @see #intValue(Number)
    */
   @NullSafe
   public static int valueOf(@Nullable Integer value) {
@@ -537,12 +612,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Return the primitive long value of the specified {@link Long} wrapper object, or 0
+   * Return the primitive long value of the given {@link Long} wrapper object or {@literal 0}
    * if the {@link Long} wrapper object is {@literal null}.
    *
    * @param value {@link Long} to evaluate.
-   * @return a primitive long value for the specified {@link Long}, or 0 if the {@link Long} is {@literal null}.
+   * @return a primitive long value for the given {@link Long} or {@literal 0}
+   * if the {@link Long} is {@literal null}.
    * @see #longValue(Number)
+   * @see java.lang.Long#TYPE
    * @see java.lang.Long
    */
   @NullSafe
@@ -551,12 +628,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Return the primitive float value of the specified {@link Float} wrapper object, or 0
+   * Return the primitive float value of the given {@link Float} wrapper object or {@literal 0}
    * if the {@link Float} wrapper object is {@literal null}.
    *
    * @param value {@link Float} to evaluate.
-   * @return a primitive float value for the specified {@link Float}, or 0 if the {@link Float} is {@literal null}.
+   * @return a primitive float value for the given {@link Float} or {@literal 0}
+   * if the {@link Float} is {@literal null}.
    * @see #floatValue(Number)
+   * @see java.lang.Float#TYPE
    * @see java.lang.Float
    */
   @NullSafe
@@ -565,12 +644,14 @@ public abstract class NumberUtils {
   }
 
   /**
-   * Return the primitive double value of the specified {@link Double} wrapper object, or 0
+   * Return the primitive double value of the given {@link Double} wrapper object or {@literal 0}
    * if the {@link Double} wrapper object is {@literal null}.
    *
    * @param value {@link Double} to evaluate.
-   * @return a primitive double value for the specified {@link Double}, or 0 if the {@link Double} is {@literal null}.
+   * @return a primitive double value for the given {@link Double} or {@literal 0}
+   * if the {@link Double} is {@literal null}.
    * @see #doubleValue(Number)
+   * @see java.lang.Double#TYPE
    * @see java.lang.Double
    */
   @NullSafe
