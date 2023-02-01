@@ -32,6 +32,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -66,6 +68,65 @@ public class ConfigurationServiceUnitTests {
 
     assertThat(configurationServiceLoader).isNotNull();
     assertThat(configurationServiceLoader).isSameAs(ConfigurationService.getLoader());
+  }
+
+  @Test
+  public void asCompositeConfiguration() {
+
+    Configuration mockConfigurationOne = mock(Configuration.class);
+    Configuration mockConfigurationTwo = mock(Configuration.class);
+
+    doCallRealMethod().when(mockConfigurationOne).andThen(eq(mockConfigurationTwo));
+    doCallRealMethod().when(mockConfigurationTwo).andThen(eq(mockConfigurationOne));
+
+    ConfigurationService configurationService = mock(ConfigurationService.class);
+
+    doReturn(ArrayUtils.asIterator(mockConfigurationOne, mockConfigurationTwo)).when(configurationService).iterator();
+    doCallRealMethod().when(configurationService).asConfiguration();
+
+    Optional<Configuration> composite = configurationService.asConfiguration();
+
+    assertThat(composite).isNotNull();
+    assertThat(composite).isPresent();
+    assertThat(composite.orElse(null)).isNotSameAs(mockConfigurationOne);
+    assertThat(composite.orElse(null)).isNotSameAs(mockConfigurationTwo);
+
+    verify(mockConfigurationOne, times(1)).andThen(eq(mockConfigurationTwo));
+    verifyNoMoreInteractions(mockConfigurationOne);
+    verifyNoInteractions(mockConfigurationTwo);
+  }
+
+  @Test
+  public void asNoConfiguration() {
+
+    ConfigurationService configurationService = mock(ConfigurationService.class);
+
+    doReturn(Collections.emptyIterator()).when(configurationService).iterator();
+    doCallRealMethod().when(configurationService).asConfiguration();
+
+    Optional<Configuration> configuration = configurationService.asConfiguration();
+
+    assertThat(configuration).isNotNull();
+    assertThat(configuration).isNotPresent();
+  }
+
+  @Test
+  public void asSingleConfiguration() {
+
+    Configuration mockConfiguration = mock(Configuration.class);
+
+    ConfigurationService configurationService = mock(ConfigurationService.class);
+
+    doReturn(ArrayUtils.asIterator(mockConfiguration)).when(configurationService).iterator();
+    doCallRealMethod().when(configurationService).asConfiguration();
+
+    Optional<Configuration> configuration = configurationService.asConfiguration();
+
+    assertThat(configuration).isNotNull();
+    assertThat(configuration).isPresent();
+    assertThat(configuration.orElse(null)).isSameAs(mockConfiguration);
+
+    verifyNoInteractions(mockConfiguration);
   }
 
   @Test

@@ -69,6 +69,32 @@ public interface ConfigurationService extends Iterable<Configuration> {
   }
 
   /**
+   * Builder method used to {@literal compose} the collection of {@link Configuration} objects contained and managed by
+   * this {@link ConfigurationService}.
+   *
+   * @return a {@literal Composite} {@link Configuration} object consisting of all the {@link Configuration} objects
+   * registered with and managed by this {@link ConfigurationService}.
+   * @see <a href="https://en.wikipedia.org/wiki/Composite_pattern">Compsite Software Design Pattern</a>
+   * @see org.cp.elements.context.configure.Configuration#andThen(Configuration)
+   * @see org.cp.elements.context.configure.Configuration
+   * @see java.util.Optional
+   */
+  default Optional<Configuration> asConfiguration() {
+
+    Configuration composite = null;
+
+    for (Configuration configuration : this) {
+      if (configuration != null) {
+        composite = composite != null
+          ? composite.andThen(configuration)
+          : configuration;
+      }
+    }
+
+    return Optional.ofNullable(composite);
+  }
+
+  /**
    * Determines whether a configuration property identified by the given {@link String name} is declared
    * in the composite {@link Configuration} aggregated by this {@link ConfigurationService}.
    *
