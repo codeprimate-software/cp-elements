@@ -99,6 +99,31 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Composes the given array of {@link Predicate Predicates} in a composition
+   * using the {@link Predicate#or(Predicate) logical OR operator}.
+   *
+   * @param <T> {@link Class type} of {@link Object} evaluated by the {@link Predicate Predicates}
+   * in the array.
+   * @param predicates array of {@link Predicate Predicates} to compose.
+   * @return a composition of {@link Predicate Predicates} from the given array.
+   * @see #nullSafePredicateMatchNone(Predicate)
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static @NotNull <T> Predicate<T> composeOr(@NotNull Predicate<T>... predicates) {
+
+    Predicate<T> composition = nullSafePredicateMatchNone(null);
+
+    for (Predicate<T> predicate : ArrayUtils.nullSafeArray(predicates, Predicate.class)) {
+      if (predicate != null) {
+        composition = composition.or(predicate);
+      }
+    }
+
+    return composition;
+  }
+
+  /**
    * Factory method used to construct a new instance of {@link Consumer} that does nothing.
    *
    * @param <T> {@link Class type} of {@link Object} processed by the {@link Consumer}.

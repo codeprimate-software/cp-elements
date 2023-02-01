@@ -206,6 +206,81 @@ public class FunctionUtilsUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void composePredicatesWithOr() {
+
+    Predicate<Object> mockPredicateOne = mockPredicate(false);
+    Predicate<Object> mockPredicateTwo = mockPredicate(true);
+
+    Predicate<Object> composition =
+      FunctionUtils.composeOr(mockPredicateOne, null, mockPredicateTwo, null, null);
+
+    assertThat(composition).isNotNull();
+    assertThat(composition).isNotSameAs(mockPredicateOne);
+    assertThat(composition).isNotSameAs(mockPredicateTwo);
+    assertThat(composition.test("mock")).isTrue();
+
+    verify(mockPredicateOne, times(1)).test(eq("mock"));
+    verify(mockPredicateTwo, times(1)).test(eq("mock"));
+    verifyNoMoreInteractions(mockPredicateOne, mockPredicateTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composePredicatesWithOrShortCircuits() {
+
+    Predicate<Object> mockPredicateOne = mockPredicate(true);
+    Predicate<Object> mockPredicateTwo = mockPredicate(false);
+
+    Predicate<Object> composition =
+      FunctionUtils.composeOr(mockPredicateOne, null, mockPredicateTwo, null, null);
+
+    assertThat(composition).isNotNull();
+    assertThat(composition).isNotSameAs(mockPredicateOne);
+    assertThat(composition).isNotSameAs(mockPredicateTwo);
+    assertThat(composition.test("mock")).isTrue();
+
+    verify(mockPredicateOne, times(1)).test(eq("mock"));
+    verify(mockPredicateTwo, never()).test(any());
+    verifyNoMoreInteractions(mockPredicateOne);
+    verifyNoInteractions(mockPredicateTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeSinglePredicatesWithOr() {
+
+    Predicate<Object> mockPredicate = mockPredicate(true);
+    Predicate<Object> composition = FunctionUtils.composeOr(null, mockPredicate, null);
+
+    assertThat(composition).isNotNull();
+    assertThat(composition).isNotSameAs(mockPredicate);
+    assertThat(composition.test("mock")).isTrue();
+
+    verify(mockPredicate, times(1)).test(eq("mock"));
+    verifyNoMoreInteractions(mockPredicate);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeNoPredicatesWithOr() {
+
+    Predicate<Object> predicate = FunctionUtils.composeOr();
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isFalse();
+  }
+
+  @Test
+  public void composeNullPredicatesWithOrIsNullSafe3() {
+
+    Predicate<Object> predicate = FunctionUtils.composeOr((Predicate<Object>[]) null);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isFalse();
+  }
+
+  @Test
   public void noopConsumerIsCorrect() {
 
     User<?> mockUser = mock(User.class);
