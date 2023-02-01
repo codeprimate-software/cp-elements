@@ -27,10 +27,13 @@ import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
 
 /**
- * The {@link PrototypeObjectFactory} class creates a new instance of JavaBean compliant {@link Object Objects}
- * for every invocation of create.
+ * {@link AbstractObjectFactory} {@literal service provider implementation (SPI)} that constructs a new instance of
+ * {@literal JavaBean} compliant {@link Object Objects} for every invocation of {@literal create(..)}.
+ *
+ * That is, this {@link AbstractObjectFactory} creates {@literal prototype} {@link Object POJOs}.
  *
  * @author John J. Blum
+ * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.lang.Configurable
  * @see org.cp.elements.lang.Initable
  * @see org.cp.elements.lang.ParameterizedInitable
