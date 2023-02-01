@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -50,6 +51,16 @@ import org.cp.elements.security.model.User;
  * @since 1.0.0
  */
 public class FunctionUtilsUnitTests {
+
+  @SuppressWarnings("unchecked")
+  private <T> Predicate<T> mockPredicate(boolean testReturnValue) {
+
+    Predicate<T> mockPredicate = mock(Predicate.class);
+
+    doReturn(testReturnValue).when(mockPredicate).test(any());
+
+    return mockPredicate;
+  }
 
   @Test
   public void asSupplierWithNonNullReturnValue() {
@@ -117,6 +128,81 @@ public class FunctionUtilsUnitTests {
 
     assertThat(function).isNotNull();
     assertThat(function.apply("TEST")).isEqualTo("TEST");
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composePredicatesWithAnd() {
+
+    Predicate<Object> mockPredicateOne = mockPredicate(true);
+    Predicate<Object> mockPredicateTwo = mockPredicate(true);
+
+    Predicate<Object> composition =
+      FunctionUtils.composeAnd(mockPredicateOne, null, mockPredicateTwo, null, null);
+
+    assertThat(composition).isNotNull();
+    assertThat(composition).isNotSameAs(mockPredicateOne);
+    assertThat(composition).isNotSameAs(mockPredicateTwo);
+    assertThat(composition.test("mock")).isTrue();
+
+    verify(mockPredicateOne, times(1)).test(eq("mock"));
+    verify(mockPredicateTwo, times(1)).test(eq("mock"));
+    verifyNoMoreInteractions(mockPredicateOne, mockPredicateTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composePredicatesWithAndShortCircuits() {
+
+    Predicate<Object> mockPredicateOne = mockPredicate(false);
+    Predicate<Object> mockPredicateTwo = mockPredicate(true);
+
+    Predicate<Object> composition =
+      FunctionUtils.composeAnd(null, null, mockPredicateOne, null, mockPredicateTwo, null);
+
+    assertThat(composition).isNotNull();
+    assertThat(composition).isNotSameAs(mockPredicateOne);
+    assertThat(composition).isNotSameAs(mockPredicateTwo);
+    assertThat(composition.test("mock")).isFalse();
+
+    verify(mockPredicateOne, times(1)).test(eq("mock"));
+    verify(mockPredicateTwo, never()).test(any());
+    verifyNoMoreInteractions(mockPredicateOne);
+    verifyNoInteractions(mockPredicateTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeSinglePredicateWithAnd() {
+
+    Predicate<Object> mockPredicate = mockPredicate(false);
+    Predicate<Object> composition = FunctionUtils.composeAnd(null, null, mockPredicate);
+
+    assertThat(composition).isNotNull();
+    assertThat(composition).isNotSameAs(mockPredicate);
+    assertThat(composition.test("mock")).isFalse();
+
+    verify(mockPredicate, times(1)).test(eq("mock"));
+    verifyNoMoreInteractions(mockPredicate);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void composeNoPredicatesWithAnd() {
+
+    Predicate<Object> predicate = FunctionUtils.composeAnd();
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isTrue();
+  }
+
+  @Test
+  public void composeNullPredicatesWithAndIsNullSafe() {
+
+    Predicate<Object> predicate = FunctionUtils.composeAnd((Predicate<Object>[]) null);
+
+    assertThat(predicate).isNotNull();
+    assertThat(predicate.test("mock")).isTrue();
   }
 
   @Test

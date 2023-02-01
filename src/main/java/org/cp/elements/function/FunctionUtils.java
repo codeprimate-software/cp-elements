@@ -74,6 +74,31 @@ public abstract class FunctionUtils {
   }
 
   /**
+   * Composes the given array of {@link Predicate Predicates} in a composition
+   * using the {@link Predicate#and(Predicate) logical AND operator}.
+   *
+   * @param <T> {@link Class type} of {@link Object} evaluated by the {@link Predicate Predicates}
+   * in the array.
+   * @param predicates array of {@link Predicate Predicates} to compose.
+   * @return a composition of {@link Predicate Predicates} from the given array.
+   * @see #nullSafePredicateMatchAll(Predicate)
+   */
+  @NullSafe
+  @SuppressWarnings("unchecked")
+  public static @NotNull <T> Predicate<T> composeAnd(@NotNull Predicate<T>... predicates) {
+
+    Predicate<T> composition = nullSafePredicateMatchAll(null);
+
+    for (Predicate<T> predicate : ArrayUtils.nullSafeArray(predicates, Predicate.class)) {
+      if (predicate != null) {
+        composition = composition.and(predicate);
+      }
+    }
+
+    return composition;
+  }
+
+  /**
    * Factory method used to construct a new instance of {@link Consumer} that does nothing.
    *
    * @param <T> {@link Class type} of {@link Object} processed by the {@link Consumer}.
