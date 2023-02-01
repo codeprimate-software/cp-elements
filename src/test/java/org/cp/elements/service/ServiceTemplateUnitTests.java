@@ -44,8 +44,12 @@ import org.cp.elements.data.caching.support.CachingTemplate;
 import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.data.conversion.provider.SimpleConversionService;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.factory.ObjectFactory;
+import org.cp.elements.lang.factory.provider.PrototypeObjectFactory;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
+
+import org.assertj.core.api.InstanceOfAssertFactories;
 
 /**
  * Unit Tests for {@link ServiceTemplate}.
@@ -216,6 +220,48 @@ public class ServiceTemplateUnitTests {
 
     verify(serviceTemplate, times(1)).getDependencyInjectionContainer();
     verifyNoMoreInteractions(serviceTemplate);
+  }
 
+  @Test
+  public void loadObjectFactory() {
+
+    Configuration mockConfiguration = mock(Configuration.class);
+
+    ConfigurationService mockConfigurationService = mock(ConfigurationService.class);
+
+    doReturn(ArrayUtils.asIterator(mockConfiguration)).when(mockConfigurationService).iterator();
+    doCallRealMethod().when(mockConfigurationService).asConfiguration();
+
+    ConversionService mockConversionService = mock(ConversionService.class);
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doReturn(Optional.of(mockConfigurationService)).when(serviceTemplate).getConfigurationService();
+    doReturn(Optional.of(mockConversionService)).when(serviceTemplate).getConversionService();
+    doCallRealMethod().when(serviceTemplate).getObjectFactory();
+
+    Optional<ObjectFactory> objectFactory = serviceTemplate.getObjectFactory();
+
+    assertThat(objectFactory).isNotNull();
+    assertThat(objectFactory).isPresent();
+
+    assertThat(objectFactory.orElse(null)).isInstanceOf(PrototypeObjectFactory.class);
+
+    assertThat(objectFactory.orElse(null))
+      .asInstanceOf(InstanceOfAssertFactories.type(PrototypeObjectFactory.class))
+      .extracting(prototypeObjectFactory ->
+        ObjectUtils.invoke(prototypeObjectFactory, "getConfiguration", Configuration.class))
+      .isSameAs(mockConfiguration);
+
+    assertThat(objectFactory.orElse(null))
+      .asInstanceOf(InstanceOfAssertFactories.type(PrototypeObjectFactory.class))
+      .extracting(prototypeObjectFactory ->
+        ObjectUtils.invoke(prototypeObjectFactory, "getConversionService", ConversionService.class))
+      .isSameAs(mockConversionService);
+
+    verify(mockConfigurationService, times(1)).asConfiguration();
+    verify(mockConfigurationService, times(1)).iterator();
+    verifyNoMoreInteractions(mockConfigurationService);
+    verifyNoInteractions(mockConfiguration, mockConversionService);
   }
 }

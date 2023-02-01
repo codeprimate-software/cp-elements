@@ -21,10 +21,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.context.configure.ConfigurationService;
+import org.cp.elements.context.configure.ConfigurationServiceAware;
 import org.cp.elements.context.container.DependencyInjection;
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.data.caching.CacheNotFoundException;
@@ -34,6 +36,7 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -44,13 +47,16 @@ import org.cp.elements.util.stream.StreamUtils;
  * encapsulating business logic and other service operations common to all services.
  *
  * @author John J. Blum
- * @param <T> {@link Class type} of the service object implementing this interface.
+ * @param <T> {@link Class type} of the {@link Object service object} implementing this interface.
  * @see java.util.ServiceLoader
+ * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.ConfigurationService
  * @see org.cp.elements.context.container.DependencyInjection
  * @see org.cp.elements.data.caching.Cache
  * @see org.cp.elements.data.caching.support.CachingTemplate
  * @see org.cp.elements.data.conversion.ConversionService
+ * @see org.cp.elements.lang.factory.ObjectFactory
+ * @see org.cp.elements.lang.reflect.ProxyService
  * @see <a href="https://en.wikipedia.org/wiki/Template_method_pattern">Template Method Software Design Pattern</a>
  * @since 1.0.0
  */
@@ -160,5 +166,46 @@ public interface ServiceTemplate<T> {
    */
   default Optional<DependencyInjection> getDependencyInjectionContainer() {
     return Optional.ofNullable(DependencyInjection.getLoader().getServiceInstance());
+  }
+
+  /**
+   * Gets the first, {@link Optional} {@link ObjectFactory} {@literal service provider implementation (SPI)}
+   * configured for this application.
+   *
+   * @return an {@link Optional} {@link ObjectFactory} {@literal service provider implementation (SPI)}
+   * configured for this application.
+   * @see org.cp.elements.lang.factory.ObjectFactory
+   * @see #getConfigurationService()
+   * @see #getConversionService()
+   * @see java.util.ServiceLoader
+   * @see java.util.Optional
+   */
+  default Optional<ObjectFactory> getObjectFactory() {
+
+    Function<ObjectFactory, ObjectFactory> objectFactoryConfigurationInitializerFunction = objectFactory -> {
+
+      getConfigurationService().ifPresent(configurationService -> {
+        if (objectFactory instanceof ConfigurationServiceAware) {
+          ((ConfigurationServiceAware) objectFactory).setConfigurationService(configurationService);
+        }
+        else {
+          configurationService.asConfiguration().ifPresent(objectFactory::setConfiguration);
+        }
+      });
+
+      return objectFactory;
+    };
+
+    Function<ObjectFactory, ObjectFactory> objectFactoryConversionServiceInitializerFunction = objectFactory -> {
+      getConversionService().ifPresent(objectFactory::setConversionService);
+      return objectFactory;
+    };
+
+    ServiceLoader<ObjectFactory> objectFactoryLoader = ServiceLoader.load(ObjectFactory.class);
+
+    return StreamUtils.stream(objectFactoryLoader)
+      .findFirst()
+      .map(objectFactoryConfigurationInitializerFunction)
+      .map(objectFactoryConversionServiceInitializerFunction);
   }
 }
