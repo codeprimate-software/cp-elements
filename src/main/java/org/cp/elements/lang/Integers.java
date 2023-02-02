@@ -98,6 +98,7 @@ public abstract class Integers {
    * @see #isGreaterThanZero(Integer)
    * @see java.lang.Integer
    */
+  @NullSafe
   public static boolean isLessThanZero(@Nullable Integer value) {
     return value != null && is(value).lessThan(ZERO);
   }
