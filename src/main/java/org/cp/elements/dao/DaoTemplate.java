@@ -30,11 +30,12 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
 
 /**
- * The Data Access Object (DAO) Template interface defines the basic contract and functionality
- * for the CRUD (CREATE, READ, UPDATE, DELETE) data access operations.
+ * The Data Access Object (DAO) Template interface defines a basic contract and functionality
+ * for the CRUD ({@literal CREATE, READ, UPDATE, DELETE}) data access operations
+ * as well as simple queries.
  *
  * @author John J. Blum
- * @param <T> {@link Class type} of the application domain model object being persisted.
+ * @param <T> {@link Class type} of {@link Object application domain model object} being persisted.
  * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see java.util.Comparator
@@ -48,14 +49,14 @@ import org.cp.elements.util.CollectionUtils;
 public interface DaoTemplate<T> {
 
   /**
-   * Creates a new instance of a Bean of {@link Class type} {@code T}.
+   * Creates a new instance of a Bean of {@link Class type} {@link T}.
    *
    * @return a new Bean.
    */
   T create();
 
   /**
-   * Creates a new instance of a Bean of {@link Class type} {@code T} initialized with
+   * Creates a new instance of a Bean of {@link Class type} {@link T} initialized with
    * the given, required {@link Function}.
    *
    * The new Bean is passed to the {@code callback} {@link Function} in order to perform any necessary initialization
@@ -177,17 +178,17 @@ public interface DaoTemplate<T> {
   }
 
   /**
-   * Loads the specified Bean from the data store with the given {@code ID}.
+   * Loads the specified Bean having the given {@link ID} from the data store.
    *
    * @param <ID> {@link Class type} of the Bean's identifier ({@literal ID}).
    * @param id Identifier identifying the Bean to load from the data store.
-   * @return the Bean loaded from the data store.
+   * @return the Bean having the given {@link ID} loaded from the data store.
    * @see org.cp.elements.lang.Identifiable#getId()
    */
   <ID> T load(ID id);
 
   /**
-   * Removes the specified Bean from the data store.
+   * Removes the given Bean from the data store.
    *
    * @param bean Bean object specifying the ID of the entity to remove from the data store.
    * @return a boolean value indicating whether a Bean with ID was successfully removed from the data store.
@@ -205,7 +206,7 @@ public interface DaoTemplate<T> {
    * @see #findAll(Predicate)
    * @see #removeAll(Set)
    */
-  default boolean removeAll(Predicate<T> filter) {
+  default boolean removeAll(@NotNull Predicate<T> filter) {
 
     Assert.notNull(filter, "Predicate identifying beans to remove is required");
 
