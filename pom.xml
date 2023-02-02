@@ -17,6 +17,8 @@
 
   <name>Elements</name>
   <description>
+    Java Simplified. Extensions and Useful Constructs for the Java Platform.
+
     Codeprimate Elements (a.k.a. cp-elements) is a Java library and micro-framework used to simplify
     the development of software applications written in Java. Elements packages several APIs into one
     library in order to address various application concerns and aspects of software design and development
