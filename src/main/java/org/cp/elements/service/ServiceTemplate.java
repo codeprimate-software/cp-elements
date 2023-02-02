@@ -37,6 +37,7 @@ import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
 import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.factory.ObjectFactory;
+import org.cp.elements.lang.reflect.ProxyService;
 import org.cp.elements.util.CollectionUtils;
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -207,5 +208,16 @@ public interface ServiceTemplate<T> {
       .findFirst()
       .map(objectFactoryConfigurationInitializerFunction)
       .map(objectFactoryConversionServiceInitializerFunction);
+  }
+
+  /**
+   * Gets a reference to the {@link ProxyService} configured by this application.
+   *
+   * @param <T> {@link Class type} of {@link Object Objects} that can be proxied by the {@link ProxyService}.
+   * @return a reference to the configured {@link ProxyService}.
+   * @see org.cp.elements.lang.reflect.ProxyService
+   */
+  default @NotNull <T> ProxyService<T> getProxyService() {
+    return ProxyService.newProxyService();
   }
 }

@@ -46,6 +46,7 @@ import org.cp.elements.data.conversion.provider.SimpleConversionService;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.provider.PrototypeObjectFactory;
+import org.cp.elements.lang.reflect.ProxyService;
 import org.cp.elements.util.ArrayUtils;
 import org.cp.elements.util.CollectionUtils;
 
@@ -263,5 +264,20 @@ public class ServiceTemplateUnitTests {
     verify(mockConfigurationService, times(1)).iterator();
     verifyNoMoreInteractions(mockConfigurationService);
     verifyNoInteractions(mockConfiguration, mockConversionService);
+  }
+
+  @Test
+  public void loadProxyService() {
+
+    ServiceTemplate<?> serviceTemplate = mock(ServiceTemplate.class);
+
+    doCallRealMethod().when(serviceTemplate).getProxyService();
+
+    ProxyService<?> proxyService = serviceTemplate.getProxyService();
+
+    assertThat(proxyService).isNotNull();
+
+    verify(serviceTemplate, times(1)).getProxyService();
+    verifyNoMoreInteractions(serviceTemplate);
   }
 }
