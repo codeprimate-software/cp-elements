@@ -133,6 +133,8 @@ public enum LengthUnit {
    * Construct a new instance of {@link LengthUnit} initialized with the given, required {@link String abbreviation}.
    *
    * @param abbreviation {@link String} containing the abbreviation for {@literal this} {@link LengthUnit}.
+   * @param meterConversionFactor {@link Double} conversion factor used to convert measurements
+   * in this {@link LengthUnit} to {@link LengthUnit#METER meters}.
    */
   LengthUnit(@NotNull String abbreviation, double meterConversionFactor) {
 
