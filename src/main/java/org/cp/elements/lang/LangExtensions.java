@@ -41,12 +41,11 @@ import org.cp.elements.text.FormatUtils;
 /**
  * The {@link LangExtensions} class provides methods to write natural language expressions for various conditions,
  * such as equality comparisons, identity checks, null checks, negation along with operations such as conversion,
- * etc.
+ * and so on.
  *
  * @author John J. Blum
  * @see java.lang.reflect.InvocationHandler
  * @see java.lang.reflect.Method
- * @see java.text.MessageFormat
  * @see java.util.Optional
  * @see java.util.function.Function
  * @see java.util.function.Predicate
@@ -82,7 +81,6 @@ public abstract class LangExtensions {
    * @see SafeNavigationHandler#newSafeNavigationHandler(ProxyFactory)
    * @see org.cp.elements.lang.reflect.ProxyFactory#newProxy()
    * @see org.cp.elements.lang.annotation.Experimental
-   * @see org.cp.elements.lang.annotation.FluentApi
    * @see org.cp.elements.lang.annotation.Dsl
    */
   @Dsl
@@ -100,12 +98,12 @@ public abstract class LangExtensions {
    * The {@link SafeNavigationHandler} class is a Java {@link InvocationHandler} and Elements {@link MethodInterceptor}
    * used to handle safe object navigation through method chaining.
    *
-   * @param <T> {@link Class type} of the {@link Object} to navigate safely.
-   * @see org.cp.elements.lang.DslExtension
-   * @see org.cp.elements.lang.FluentApiExtension
-   * @see org.cp.elements.lang.annotation.FluentApi
-   * @see org.cp.elements.lang.reflect.MethodInterceptor
+   * @param <T> {@link Class type} of {@link Object} to navigate safely.
    * @see java.lang.reflect.InvocationHandler
+   * @see org.cp.elements.lang.reflect.MethodInterceptor
+   * @see org.cp.elements.lang.annotation.FluentApi
+   * @see org.cp.elements.lang.FluentApiExtension
+   * @see org.cp.elements.lang.DslExtension
    */
   @org.cp.elements.lang.annotation.FluentApi
   protected static class SafeNavigationHandler<T> implements DslExtension, FluentApiExtension,
@@ -115,12 +113,12 @@ public abstract class LangExtensions {
 
     /**
      * Factory method used to construct a new instance of {@link SafeNavigationHandler} initialized with
-     * the given {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method} invocation
-     * call chain.
+     * the given, required {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method}
+     * invocation call chain.
      *
-     * @param <T> {@link Class type} of the {@link Object} to proxy.
+     * @param <T> {@link Class type} of {@link Object} to proxy.
      * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object}
-     * in the {@link Method} invocation call chain.
+     * in the {@link Method} invocation call chain; must not be {@literal null}.
      * @return a new {@link SafeNavigationHandler}.
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
      * @see org.cp.elements.lang.reflect.ProxyFactory
@@ -135,11 +133,12 @@ public abstract class LangExtensions {
     private final ProxyFactory<T> proxyFactory;
 
     /**
-     * Constructs a new instance of {@link SafeNavigationHandler} initialized with the given {@link ProxyFactory}
-     * used to evaluate the next {@link Object} in the {@link Method} invocation call chain.
+     * Constructs a new instance of {@link SafeNavigationHandler} initialized with the given,
+     * required {@link ProxyFactory} used to evaluate the next {@link Object} in the {@link Method} invocation
+     * call chain.
      *
      * @param proxyFactory {@link ProxyFactory} used to evaluate the next {@link Object}
-     * in the {@link Method} invocation call chain.
+     * in the {@link Method} invocation call chain; must not be {@literal null}.
      * @throws IllegalArgumentException if {@link ProxyFactory} is {@literal null}.
      * @see org.cp.elements.lang.reflect.ProxyFactory
      */
@@ -174,11 +173,11 @@ public abstract class LangExtensions {
     /**
      * Intercepts the {@link Method} invocation on the target {@link Object} to handle {@literal null-safe} navigation.
      *
-     * @param <R> {@link Class} type of the return value.
-     * @param methodInvocation {@link MethodInvocation} for the currently invoked {@link Method} in a chain of
-     * {@link Object} accessor invocations using dot notation to navigate the {@link Object} graph.
-     * E.g. obj.getX().getY().getZ();
-     * @return an {@link Optional} to capture the return value of the {@link Object} invocation,
+     * @param <R> {@link Class type} of the {@link Object return value}.
+     * @param methodInvocation {@link MethodInvocation} and context for the currently invoked {@link Method}
+     * in a chain of {@link Object} accessor invocations using dot notation to navigate the {@link Object} graph,
+     * for example: {@literal obj.getX().getY().getZ();}.
+     * @return an {@link Optional} to capture the {@link Object return value} of the {@link Object} invocation,
      * which might be {@literal null}.
      * @see org.cp.elements.lang.reflect.MethodInvocation
      * @see java.util.Optional
@@ -198,18 +197,18 @@ public abstract class LangExtensions {
     /**
      * Invokes the {@link Method} with the array of {@link Object arguments} on the resolved {@link Object target}.
      *
-     * @param proxy {@link Object Proxy} on which the {@link Method} was invoked in order to
-     * intercept the {@link Method} call.
+     * @param proxy {@link Object Proxy} on which the {@link Method} was invoked,
+     * thereby intercepting the {@link Method} call.
      * @param method {@link Method} to invoke.
-     * @param arguments array of {@link Object} arguments to pass to the {@link Method} invocation.
-     * @return the return value of the {@link Method} invocation, or {@literal null}
+     * @param arguments array of {@link Object arguments} to pass to the {@link Method} invocation.
+     * @return the {@link Object return value} of the {@link Method} invocation, or {@literal null}
      * if the {@link Method} does not return a value.
      * @see org.cp.elements.lang.reflect.MethodInvocation#newMethodInvocation(Object, Method, Object...)
      * @see #intercept(MethodInvocation)
      * @see #resolveTarget(Object)
-     * @see java.lang.Object
      * @see java.lang.reflect.Method
      * @see java.util.Optional
+     * @see java.lang.Object
      */
     @Override
     public @Nullable Object invoke(@NotNull Object proxy, @NotNull Method method, Object[] arguments) {
@@ -1504,6 +1503,7 @@ public abstract class LangExtensions {
    * @see org.cp.elements.lang.LangExtensions.From
    * @see org.cp.elements.lang.annotation.Dsl
    */
+  @Dsl
   public static @NotNull From from(@Nullable Object target) {
     return new FromExpression(target);
   }
