@@ -3,6 +3,40 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
+1.0.1 (GA) - 2023-February-02
+-----------------------------
+Release Codeprimate Elements 1.0.1, first patch (maintenance) release of the 1.0 GA!
+
+* Built on Oracle Java (JDK) 8; 1.8.0_361.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Builds and supports Codeprimate Elements on Gradle 7.6.
+* Adds asInteger(:Number) and isLessThanZero(:Integer) methods to the Integers class.
+* Adds the countNumberOfDecimalPlaces(:double), roundToPrecision(..) and truncateToPrecision(..) methods
+to the MathUtils class.
+* Adds the nullSafeVisitor(:Visitor) factory method to the Visitor interface.
+* Adds the asConfiguration() method to the o.c.elements.context.configure.ConfigurationService interface,
+which creates a Composite of all the registered, managed and composed Configuration objects.
+* Adds composeAnd(:Predicat<?>[]) and composeOr(:Predicate<?>[]) utility methods
+to the o.c.elements.function.FunctionUtils class.
+* Adds the getObjectFactory() and getProxyService() methods to the o.c.elements.service.ServiceTemplate interface.
+* Adds the getServiceInstance(qualifierName:String) method to the o.c.elements.service.loader.ServiceLoaderSupport class
+allowing services to be looked up by @Qualifier annotation name().
+* Creates the new CachingSupplier interface in the org.cp.elements.function package, and extension of
+java.util.function.Supplier to introduce caching behavior.
+* Defines all LengthUnit enumerated values in terms of METERS.
+* Edits Javadoc across the library.
+* Fix bug in calculations of the pyramidVolume(..) method of MathUtils.
+* Refactors the accept(:Visitor) method of the Visitable interface to be null-safe.
+* Refactors the Rule interface and AbstractRule class in the org.cp.elements.biz.rules package.
+* Removed the unnecessary use of deprecated MockitoMatchers.
+* Reviewed and refactor the org.cp.elements.lang.LogicUtils class.
+* Reviewed and refactor the org.cp.elements.lang.MathUtils class.
+* Reviewed and refactor the org.cp.elements.lang.NumberUtils class.
+* Reviewed and refactor the org.cp.elements.util.ComparatorResultBuilder class.
+* Upgrades to Codeprimate Core 1.14.0.
+* Upgrades to Maven 3.8.7.
+
+
 1.0.0 (GA) - 2022-December-31
 -----------------------------
 Release Codeprimate Elements 1.0.0, first GA!
