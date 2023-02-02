@@ -44,7 +44,7 @@ public interface Visitor {
    */
   @NullSafe
   static @NotNull Visitor nullSafeVisitor(@Nullable Visitor visitor) {
-    return visitor != null ? visitor : visitable -> {};
+    return visitor != null ? visitor : visitable -> { };
   }
 
   /**
