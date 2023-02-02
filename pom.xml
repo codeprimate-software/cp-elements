@@ -81,6 +81,7 @@
     <java-module-name>codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <mockito.version>4.11.0</mockito.version>
   </properties>
 
   <build>
@@ -216,9 +217,9 @@
                   <type>date</type>
                   <dates>
                     <!-- Begin Date is inclusive -->
-                    <date implementation="java.lang.String">2022-12-26</date>
-                    <!-- End Date is exclusive -->
                     <date implementation="java.lang.String">2023-01-01</date>
+                    <!-- End Date is exclusive -->
+                    <date implementation="java.lang.String">2023-02-03</date>
                   </dates>
                   <dateFormat>yyyy-MM-dd</dateFormat>
                 </configuration>
