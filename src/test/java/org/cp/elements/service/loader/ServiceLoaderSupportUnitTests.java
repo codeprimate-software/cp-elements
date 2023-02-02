@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.awt.Point;
 import java.util.function.Predicate;
 
 import org.junit.Test;
@@ -36,6 +37,9 @@ import org.junit.Test;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.service.annotation.Service;
+import org.cp.elements.service.loader.provider.GoogleGeocodingService;
+import org.cp.elements.service.loader.provider.TestService;
+import org.cp.elements.service.loader.provider.TomTomGeocodingService;
 
 /**
  * Unit Tests for {@link ServiceLoaderSupport}.
@@ -47,24 +51,6 @@ import org.cp.elements.service.annotation.Service;
  * @since 1.0.0
  */
 public class ServiceLoaderSupportUnitTests {
-
-  @Test
-  public void getTypeReturnsTypeOfImplementingClass() {
-
-    MockService mockService = MockService.getInstance();
-
-    assertThat(mockService).isNotNull();
-    assertThat(mockService.getType()).isEqualTo(MockService.class);
-    assertThat(mockService.getType()).isNotEqualTo(mockService.getClass());
-  }
-
-  @Test
-  public void getTypeOfServiceClassWithLoaderReturnsTypeOfServiceClass() {
-
-    MockLoadableService mockService = new MockLoadableService();
-
-    assertThat(mockService.getLoader().getType()).isEqualTo(mockService.getClass());
-  }
 
   @Test
   public void getServiceClassLoaderIsSameAsCurrentThreadContextClassLoader() {
@@ -91,10 +77,45 @@ public class ServiceLoaderSupportUnitTests {
   }
 
   @Test
+  public void getServiceInstanceWithMultipleAvailableServiceInstances() {
+
+    MockGeocodingService mockGeocodingService = MockGeocodingService.getLoader().getServiceInstance();
+
+    assertThat(mockGeocodingService).isInstanceOf(GoogleGeocodingService.class);
+
+    Point coordinates = mockGeocodingService.geocode("200 This Is The Way Seattle, WA 55055");
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates).isEqualTo(new Point(4, 16));
+
+    String address = mockGeocodingService.reverseGeocode(coordinates);
+
+    assertThat(address).isEqualTo("100 Main St. Portland, OR 97205");
+  }
+
+  @Test
+  public void getServiceInstanceWithQualifierReturnsTargetedServiceInstance() {
+
+    MockGeocodingService mockGeocodingService =
+      MockGeocodingService.getLoader().getServiceInstance("TomTom");
+
+    assertThat(mockGeocodingService).isInstanceOf(TomTomGeocodingService.class);
+
+    Point coordinates = mockGeocodingService.geocode("404 Walk This Way, San Diego, CA 69001");
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates).isEqualTo(new Point(16, 64));
+
+    String address = mockGeocodingService.reverseGeocode(coordinates);
+
+    assertThat(address).isEqualTo("1024 One Way Portland, OR 97205");
+  }
+
+  @Test
   public void getServiceInstanceWithNullPredicateThrowsIllegalArgumentException() {
 
     assertThatIllegalArgumentException()
-      .isThrownBy(() -> MockService.getInstance().getServiceInstance(null))
+      .isThrownBy(() -> MockService.getInstance().getServiceInstance((Predicate<MockService>) null))
       .withMessage("A Predicate used to match the service instance is required")
       .withNoCause();
   }
@@ -114,6 +135,35 @@ public class ServiceLoaderSupportUnitTests {
       .isThrownBy(args -> new UnavailableService().getServiceInstance())
       .havingMessageMatching("Failed to find a service instance matching Predicate \\[.*]")
       .withNoCause();
+  }
+
+  @Test
+  public void getUnavailableServiceInstanceWithQualifierThrowsUnavailableServiceException() {
+
+    assertThatThrowableOfType(ServiceUnavailableException.class)
+      .isThrownBy(args -> MockGeocodingService.getLoader().getServiceInstance("testQualifier"))
+      .havingMessageContaining("Failed to find a service instance with named qualifier [testQualifier]")
+      .causedBy(ServiceUnavailableException.class)
+      .havingMessageMatching("Failed to find a service instance matching Predicate \\[.*]")
+      .withNoCause();
+  }
+
+  @Test
+  public void getTypeReturnsTypeOfServiceLoaderSupportImplementingClass() {
+
+    MockService mockService = MockService.getInstance();
+
+    assertThat(mockService).isNotNull();
+    assertThat(mockService.getType()).isEqualTo(MockService.class);
+    assertThat(mockService.getType()).isNotEqualTo(mockService.getClass());
+  }
+
+  @Test
+  public void getTypeOfServiceClassWithLoaderReturnsTypeOfServiceClass() {
+
+    MockLoadableService mockService = new MockLoadableService();
+
+    assertThat(mockService.getLoader().getType()).isEqualTo(mockService.getClass());
   }
 
   @Service

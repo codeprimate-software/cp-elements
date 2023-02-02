@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.cp.elements.service.loader;
+package org.cp.elements.service.loader.provider;
 
 import org.cp.elements.service.annotation.Service;
+import org.cp.elements.service.loader.MockService;
 
 /**
  * Test {@link Service} class used for test purposes.

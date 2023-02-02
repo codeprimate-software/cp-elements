@@ -1,0 +1,2 @@
+org.cp.elements.service.loader.provider.GoogleGeocodingService
+org.cp.elements.service.loader.provider.TomTomGeocodingService

@@ -23,8 +23,10 @@ import java.util.ServiceLoader;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Qualifier;
 import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.util.CollectionUtils;
 
@@ -41,25 +43,13 @@ import org.cp.elements.util.CollectionUtils;
 public interface ServiceLoaderSupport<T> {
 
   /**
-   * Declares the {@link Class type} used to {@link ServiceLoader#load(Class) load the service} with
-   * the Java {@link ServiceLoader}.
+   * Gets the {@link ClassLoader} used to load the {@literal service provider} {@link Class} files and resource files.
    *
-   * By default, returns the {@link Class type} of the {@link Class} implementing this interface.
+   * By default, returns the {@link Thread#currentThread() current Thread}
+   * {@link Thread#getContextClassLoader() context ClassLoader}.
    *
-   * @return a {@link Class type} of the service to load.
-   * @see java.lang.Class
-   */
-  @SuppressWarnings("unchecked")
-  default Class<T> getType() {
-    return (Class<T>) getClass();
-  }
-
-  /**
-   * Gets the {@link ClassLoader} used to load the service provider {@link Class} files and resource files.
-   *
-   * By default, returns the {@link Thread#currentThread()} {@link Thread#getContextClassLoader()}.
-   *
-   * @return the {@link ClassLoader} used to load the service provider {@link Class} files and resource files.
+   * @return the {@link ClassLoader} used to load the {@literal service provider} {@link Class} files
+   * and resource files.
    * @see java.lang.ClassLoader
    */
   default @NotNull ClassLoader getClassLoader() {
@@ -71,10 +61,10 @@ public interface ServiceLoaderSupport<T> {
    *
    * @return the first configured and available {@literal service instance}.
    * @throws ServiceUnavailableException if a {@literal service instance} was not configured
-   * or is generally not available for service.
+   * or is not available for service.
    * @see #getServiceInstance(Predicate)
    */
-  default T getServiceInstance() {
+  default @NotNull T getServiceInstance() {
     return getServiceInstance(serviceInstance -> true);
   }
 
@@ -85,20 +75,20 @@ public interface ServiceLoaderSupport<T> {
    * used to match the {@literal service provider}.
    * @return the first configured and available {@literal service instance} matching the given,
    * required {@link Predicate}.
-   * @throws IllegalArgumentException if the {@link Predicate} is {@literal null}.
-   * @throws ServiceUnavailableException if a {@literal service instance} cannot be found matching the criteria
-   * of the given, required {@link Predicate}.
+   * @throws IllegalArgumentException if the given {@link Predicate} is {@literal null}.
+   * @throws ServiceUnavailableException if a {@literal service instance} cannot be found
+   * matching the criteria of the given, required {@link Predicate}.
    * @see java.util.function.Predicate
    */
-  default T getServiceInstance(@NotNull Predicate<T> serviceInstancePredicate) {
+  @SuppressWarnings("unchecked")
+  default @NotNull T getServiceInstance(@NotNull Predicate<T> serviceInstancePredicate) {
 
     Assert.notNull(serviceInstancePredicate, "A Predicate used to match the service instance is required");
 
     ServiceLoader<T> serviceLoader = ServiceLoader.load(getType(), getClassLoader());
 
-    Predicate<T> nullSafeServiceInstancePredicate = Objects::nonNull;
-
-    nullSafeServiceInstancePredicate = nullSafeServiceInstancePredicate.and(serviceInstancePredicate);
+    Predicate<T> nullSafeServiceInstancePredicate =
+      FunctionUtils.composeAnd(Objects::nonNull, serviceInstancePredicate);
 
     Iterator<T> services = CollectionUtils.nullSafeIterator(serviceLoader.iterator());
 
@@ -107,5 +97,54 @@ public interface ServiceLoaderSupport<T> {
       .findFirst()
       .orElseThrow(() -> newServiceUnavailableException("Failed to find a service instance matching Predicate [%s]",
         serviceInstancePredicate));
+  }
+
+  /**
+   * Resolves a {@literal service instance} by {@link Qualifier#name() Qualifer name}.
+   *
+   * It is assumed that the developer annotated his/her {@literal service provider implementation} (that is
+   * main, primary {@literal service provider} {@link Class}) with Elements' {@link Qualifier} annotation.
+   * The algorithm does not search implementing interfaces or super classes of
+   * the implementing {@literal service provider} class.
+   *
+   * @param qualifierName {@link String} containing the {@literal name} of the {@literal service instance} to resolve;
+   * must not be {@literal null} or {@literal empty}.
+   * @return a {@literal service instance} resolved from the given {@link Qualifier#name() Qualifier name}.
+   * @throws ServiceUnavailableException if a {@literal service instance} of {@link Class type T} cannot be found
+   * with the given, required {@link Qualifier#name() Qualifier name}.
+   * @see org.cp.elements.lang.annotation.Qualifier#name()
+   * @see #getServiceInstance(Predicate)
+   */
+  default @NotNull T getServiceInstance(@NotNull String qualifierName) {
+
+    Predicate<T> qualifierAnnotationPredicate = service -> {
+
+      Class<?> serviceType = service.getClass();
+
+      return serviceType.isAnnotationPresent(Qualifier.class)
+        && serviceType.getAnnotation(Qualifier.class).name().equals(qualifierName);
+    };
+
+    try {
+      return getServiceInstance(qualifierAnnotationPredicate);
+    }
+    catch (ServiceUnavailableException cause) {
+      throw newServiceUnavailableException(cause, "Failed to find a service instance with named qualifier [%s]",
+        qualifierName);
+    }
+  }
+
+  /**
+   * Declares the {@link Class type} used to {@link ServiceLoader#load(Class) load the service} with
+   * the Java {@link ServiceLoader}.
+   *
+   * By default, returns the {@link Class type} of the {@link Class} implementing this interface.
+   *
+   * @return a {@link Class type} of the service to load.
+   * @see java.lang.Class
+   */
+  @SuppressWarnings("unchecked")
+  default @NotNull Class<T> getType() {
+    return (Class<T>) getClass();
   }
 }
