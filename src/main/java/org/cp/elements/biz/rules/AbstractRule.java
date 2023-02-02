@@ -15,15 +15,16 @@
  */
 package org.cp.elements.biz.rules;
 
-import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Constants;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 
 /**
  * Abstract base class for encapsulating functionality common to all {@link Rule} implementations.
  *
  * @author John J. Blum
- * @param <T> {@link Class type} of {@link Object objects} evaluated by this business rule.
- * @param <ID> {@link Comparable} {@link Class type} of the identifier identifying the {@link Rule}.
+ * @param <T> {@link Class type} of {@link Object objects} evaluated by this {@literal business rule}.
+ * @param <ID> {@link Comparable} {@link Class type} of the identifier uniquely identifying the {@link Rule}.
  * @see org.cp.elements.biz.rules.Rule
  * @since 1.0.0
  */
@@ -39,46 +40,54 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
   private volatile ID id;
 
   /**
-   * Gets the identifier for this Rule.
+   * Gets the {@link ID identifier} uniquely identifying this {@link Rule}.
    *
-   * @return the identifier for this Rule.
-   * @throws IllegalStateException if the identifier for this Rule was not properly set.
+   * @return the {@link ID identifier} for this {@link Rule}.
+   * @throws IllegalStateException if the {@link ID identifier} for this {@link Rule} was not properly set.
    * @see org.cp.elements.lang.Identifiable#getId()
    */
-  public ID getId() {
-    Assert.state(this.id != null, "The identifier for Rule ({0}) was not properly initialized!", getClass().getName());
-    return this.id;
+  @Override
+  public @NotNull ID getId() {
+    return ObjectUtils.requireState(this.id,
+      "Identifier for Rule [%s] was not properly initialized", getClass().getName());
   }
 
   /**
-   * Sets the identifier for this Rule.
+   * Sets the {@link ID identifier} uniquely identifying this {@link Rule}.
    *
-   * @param id a value of type T assigned as this object's unique identifier.
-   * @throws NullPointerException if the identifier for this Rule is null.
+   * @param id {@link ID identifier} assigned as this {@link Rule Rule's} unique identifier.
+   * @throws IllegalArgumentException if the {@link ID identifier} is {@literal null}.
    * @see org.cp.elements.lang.Identifiable#setId(Comparable)
    */
-  public final void setId(final ID id) {
-    Assert.notNull(id, "The identifier for Rule ({0}) cannot be null!", getClass().getName());
-    this.id = id;
+  @Override
+  public final void setId(@NotNull ID id) {
+    this.id = ObjectUtils.requireObject(id, "Identifier for Rule [%s] is required", getClass().getName());
   }
 
   /**
-   * Unsupported operation for this Rule.
+   * An unsupported operation for this {@link Rule}.
    *
    * @return boolean indicating whether this Rule is a newly created object.
-   * @throws UnsupportedOperationException operation not support by the Rule class.
+   * @throws UnsupportedOperationException by default.
    */
+  @Override
   public boolean isNew() {
     throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
   }
 
   /**
-   * Determines the outcome expected when evaluating an object with this business rule.  The object is expected to
-   * satisfy or violate the criteria of this business rule when evaluated.
+   * Determines the {@link Boolean outcome expected} when evaluating an {@link Object}
+   * with this {@literal business rule}.
    *
-   * @return the outcome expected when evaluating an object with this business rule.
+   * The {@link Object} is expected to either satisfy or violate the criteria of this {@literal business rule}
+   * when evaluated.
+   *
+   * Returns {@literal true} by default.
+   *
+   * @return the {@link Boolean expected outcome} when evaluating an {@link Object} with this {@literal business rule}.
    * @see #evaluate(Object)
    */
+  @Override
   public boolean getExpectedOutcome() {
     return this.expectedOutcome;
   }
@@ -90,16 +99,21 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * business rule.
    * @see #evaluate(Object)
    */
-  protected final void setExpectedOutcome(final boolean expectedOutcome) {
+  protected final void setExpectedOutcome(boolean expectedOutcome) {
     this.expectedOutcome = expectedOutcome;
   }
 
   /**
-   * Indicates whether this business rule is configured to throw an exception on failure when evaluated.  If the object
-   * evaluated by this business rule violates the criteria, then an exception is thrown.
+   * Indicates whether this {@literal business rule} is configured to throw an {@link Exception} on failure
+   * when the {@link Object} is evaluated.
    *
-   * @return a boolean value indicating whether this business rule is configured to throw an exception on failure
-   * when evaluated.
+   * If the {@link Object} evaluated by this {@literal business rule} violates the criteria,
+   * then an {@link Exception} is thrown.
+   *
+   * Returns {@literal false} by default.
+   *
+   * @return a boolean value indicating whether this {@literal business} rule is configured to throw
+   * an {@link Exception} on failure when the {@link Object} is evaluated.
    * @see #evaluate(Object)
    */
   public boolean isThrowExceptionOnFailure() {
@@ -113,8 +127,7 @@ public abstract class AbstractRule<T, ID extends Comparable<ID>> implements Rule
    * on failure when evaluated.
    * @see #evaluate(Object)
    */
-  protected final void setThrowExceptionOnFailure(final boolean throwExceptionOnFailure) {
+  protected final void setThrowExceptionOnFailure(boolean throwExceptionOnFailure) {
     this.throwExceptionOnFailure = throwExceptionOnFailure;
   }
-
 }
