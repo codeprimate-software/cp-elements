@@ -395,9 +395,9 @@ public abstract class MathUtils {
   /**
    * Calculates the {@literal Pythagorean Theorem}.
    *
-   * {@literal c^2 = a^2 + b^2.
+   * {@literal c^2 = a^2 + b^2}.
    *
-   * @param {@link Double value} for {@literal operand A}.
+   * @param a {@link Double value} for {@literal operand A}.
    * @param b {@link Double value} for {@literal operand B}.
    * @return the {@link Double value} of {@literal C} using the {@literal Pythagorean Theorem}.
    * @see java.lang.Math#pow(double, double)
