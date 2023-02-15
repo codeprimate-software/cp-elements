@@ -17,6 +17,7 @@ package org.cp.elements.util;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.function.Supplier;
 
 import org.cp.elements.lang.Builder;
 import org.cp.elements.lang.annotation.NotNull;
@@ -88,8 +89,12 @@ public class ComparatorResultBuilder<T extends Comparable<T>>
    */
   @NullSafe
   public @NotNull ComparatorResultBuilder<T> doCompare(@Nullable T obj1, @Nullable T obj2) {
-    this.result = this.result != 0 ? this.result : compare(obj1, obj2);
+    this.result = resolveResult(this.result, () -> compare(obj1, obj2));
     return this;
+  }
+
+  private int resolveResult(int result, @NotNull Supplier<Integer> comparison) {
+    return result != 0 ? result : comparison.get();
   }
 
   /**
