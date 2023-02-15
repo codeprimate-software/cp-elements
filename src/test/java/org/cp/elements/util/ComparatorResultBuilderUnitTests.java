@@ -16,8 +16,15 @@
 package org.cp.elements.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Comparator;
+import java.util.function.Supplier;
 
 import org.junit.Test;
 
@@ -107,5 +114,46 @@ public class ComparatorResultBuilderUnitTests {
     assertThat(comparator.getResult()).isLessThan(0);
     assertThat(comparator.invert().getResult()).isGreaterThan(0);
     assertThat(comparator.invert().getResult()).isLessThan(0);
+  }
+
+  @Test
+  public void getResultWithSupplier() {
+
+    Supplier<Integer> mockSupplier = mock(Supplier.class);
+
+    int result = ComparatorResultBuilder.<String>create()
+      .doCompare("first", "second")
+      .getResult(mockSupplier);
+
+    assertThat(result).isLessThan(0);
+
+    verifyNoInteractions(mockSupplier);
+  }
+
+  @Test
+  public void getResultWithSupplierInvokesSupplier() {
+
+    Supplier<Integer> mockSupplier = mock(Supplier.class);
+
+    doReturn(1).when(mockSupplier).get();
+
+    int result = ComparatorResultBuilder.<String>create()
+      .doCompare("one", "one")
+      .getResult(mockSupplier);
+
+    assertThat(result).isOne();
+
+    verify(mockSupplier, times(1)).get();
+    verifyNoMoreInteractions(mockSupplier);
+  }
+
+  @Test
+  public void getResultWithNullSupplierIsNullSafe() {
+
+    int result = ComparatorResultBuilder.<String>create()
+      .doCompare("two", "two")
+      .getResult(null);
+
+    assertThat(result).isZero();
   }
 }

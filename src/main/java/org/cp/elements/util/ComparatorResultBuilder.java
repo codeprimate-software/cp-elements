@@ -93,10 +93,6 @@ public class ComparatorResultBuilder<T extends Comparable<T>>
     return this;
   }
 
-  private int resolveResult(int result, @NotNull Supplier<Integer> comparison) {
-    return result != 0 ? result : comparison.get();
-  }
-
   /**
    * Builder method used to invert the {@link Integer} result of the aggregate comparisons.
    *
@@ -111,9 +107,32 @@ public class ComparatorResultBuilder<T extends Comparable<T>>
    * Returns the {@link Integer result} of the comparison.
    *
    * @return the {@link Integer result} of the comparison.
+   * @see #getResult(Supplier)
    * @see #build()
    */
   public int getResult() {
     return this.result;
+  }
+
+  /**
+   * Returns the {@link Integer result} of the comparison or computes the {@link Integer result}
+   * using the given {@link Supplier} if the current state of {@link #getResult()} is {@literal 0}.
+   *
+   * @param resultSupplier {@link Supplier} to invoke to compute a {@literal result}
+   * if the current {@link #getResult()} is {@literal 0}.
+   * @return the {@link Integer result} of the comparison.
+   * @see java.util.function.Supplier
+   * @see #getResult()
+   */
+  public int getResult(@NotNull Supplier<Integer> resultSupplier) {
+    return resolveResult(getResult(), resultSupplier);
+  }
+
+  private @NotNull Supplier<Integer> nullSafeSupplier(@Nullable Supplier<Integer> supplier) {
+    return supplier != null ? supplier : () -> this.result;
+  }
+
+  private int resolveResult(int result, @NotNull Supplier<Integer> resultSupplier) {
+    return result != 0 ? result : nullSafeSupplier(resultSupplier).get();
   }
 }
