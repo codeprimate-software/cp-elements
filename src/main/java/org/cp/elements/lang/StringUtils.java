@@ -16,6 +16,7 @@
 package org.cp.elements.lang;
 
 import static org.cp.elements.lang.LangExtensions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newNoSuchElementException;
 
 import java.text.CharacterIterator;
@@ -459,8 +460,9 @@ public abstract class StringUtils {
   @SuppressWarnings("all")
   public static String pad(String value, char padding, int length) {
 
-    assertThat(length).throwing(new IllegalArgumentException(String.format(
-      "[%d] must be greater than equal to 0", length))).isGreaterThanEqualTo(0);
+    assertThat(length)
+      .throwing(newIllegalArgumentException("[%d] must be greater than equal to 0", length))
+      .isGreaterThanEqualTo(0);
 
     if (length > 0) {
 
