@@ -70,12 +70,12 @@ public interface ServiceLoaderSupport<T> {
    * Gets the first configured and available {@literal service instance} matching the given, required {@link Predicate}.
    *
    * @param serviceInstancePredicate {@link Predicate} defining the criteria
-   * used to match the {@literal service provider}.
+   * used to match the {@literal service provider}; must not be {@literal null}.
    * @return the first configured and available {@literal service instance} matching the given,
    * required {@link Predicate}.
    * @throws IllegalArgumentException if the given {@link Predicate} is {@literal null}.
    * @throws ServiceUnavailableException if a {@literal service instance} cannot be found
-   * matching the criteria of the given, required {@link Predicate}.
+   * matching the criteria defined by the given, required {@link Predicate}.
    * @see java.util.function.Predicate
    */
   @SuppressWarnings("unchecked")
