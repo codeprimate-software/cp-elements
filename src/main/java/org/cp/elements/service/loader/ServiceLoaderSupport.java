@@ -17,18 +17,16 @@ package org.cp.elements.service.loader;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newServiceUnavailableException;
 
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Qualifier;
 import org.cp.elements.service.ServiceUnavailableException;
-import org.cp.elements.util.CollectionUtils;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
  * Interface defining a contract for Java {@link Object Objects} and services
@@ -90,9 +88,7 @@ public interface ServiceLoaderSupport<T> {
     Predicate<T> nullSafeServiceInstancePredicate =
       FunctionUtils.composeAnd(Objects::nonNull, serviceInstancePredicate);
 
-    Iterator<T> services = CollectionUtils.nullSafeIterator(serviceLoader.iterator());
-
-    return StreamSupport.stream(CollectionUtils.asIterable(services).spliterator(), false)
+    return StreamUtils.stream(serviceLoader)
       .filter(nullSafeServiceInstancePredicate)
       .findFirst()
       .orElseThrow(() -> newServiceUnavailableException("Failed to find a service instance matching Predicate [%s]",
