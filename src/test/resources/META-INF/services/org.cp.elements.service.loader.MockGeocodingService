@@ -1,2 +1,4 @@
 org.cp.elements.service.loader.provider.GoogleGeocodingService
+org.cp.elements.service.loader.provider.AppleMapsGeocodingService
+org.cp.elements.service.loader.provider.BingGeocodingService
 org.cp.elements.service.loader.provider.TomTomGeocodingService

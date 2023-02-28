@@ -37,6 +37,8 @@ import org.junit.Test;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.ServiceUnavailableException;
 import org.cp.elements.service.annotation.Service;
+import org.cp.elements.service.loader.provider.AppleMapsGeocodingService;
+import org.cp.elements.service.loader.provider.BingGeocodingService;
 import org.cp.elements.service.loader.provider.GoogleGeocodingService;
 import org.cp.elements.service.loader.provider.TestService;
 import org.cp.elements.service.loader.provider.TomTomGeocodingService;
@@ -61,52 +63,91 @@ public class ServiceLoaderSupportUnitTests {
   @SuppressWarnings("unchecked")
   public void getServiceInstanceCallsGetServiceInstanceWithPredicate() {
 
-    MockService mockService = spy(MockService.getInstance());
+    MockService service = spy(MockService.getInstance());
 
     ServiceLoaderSupport<MockService> serviceLoaderSupport = mock(ServiceLoaderSupport.class);
 
     doCallRealMethod().when(serviceLoaderSupport).getServiceInstance();
-    doReturn(mockService).when(serviceLoaderSupport).getServiceInstance(any(Predicate.class));
+    doReturn(service).when(serviceLoaderSupport).getServiceInstance(any(Predicate.class));
 
-    assertThat(serviceLoaderSupport.getServiceInstance()).isEqualTo(mockService);
+    assertThat(serviceLoaderSupport.getServiceInstance()).isEqualTo(service);
 
     verify(serviceLoaderSupport, times(1)).getServiceInstance();
     verify(serviceLoaderSupport, times(1)).getServiceInstance(isA(Predicate.class));
     verifyNoMoreInteractions(serviceLoaderSupport);
-    verifyNoInteractions(mockService);
+    verifyNoInteractions(service);
   }
 
   @Test
   public void getServiceInstanceWithMultipleAvailableServiceInstances() {
 
-    MockGeocodingService mockGeocodingService = MockGeocodingService.getLoader().getServiceInstance();
+    MockGeocodingService geocodingService = MockGeocodingService.getLoader().getServiceInstance();
 
-    assertThat(mockGeocodingService).isInstanceOf(GoogleGeocodingService.class);
+    assertThat(geocodingService).isInstanceOf(GoogleGeocodingService.class);
 
-    Point coordinates = mockGeocodingService.geocode("200 This Is The Way Seattle, WA 55055");
+    Point coordinates = geocodingService.geocode("200 This Is The Way San Francisco, CA 55055");
 
     assertThat(coordinates).isNotNull();
     assertThat(coordinates).isEqualTo(new Point(4, 16));
 
-    String address = mockGeocodingService.reverseGeocode(coordinates);
+    String address = geocodingService.reverseGeocode(coordinates);
 
     assertThat(address).isEqualTo("100 Main St. Portland, OR 97205");
   }
 
   @Test
+  public void getServiceInstanceWithNameReturnsTargetedServiceInstance() {
+
+    MockGeocodingService geocodingService =
+      MockGeocodingService.getLoader().getServiceInstance("Apple Maps");
+
+    assertThat(geocodingService).isInstanceOf(AppleMapsGeocodingService.class);
+
+    Point coordinates = geocodingService.geocode("5050 Fortune Ave. Portland, OR 97205");
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates).isEqualTo(new Point(256, 1024));
+
+    String address = geocodingService.reverseGeocode(coordinates);
+
+    assertThat(address).isEqualTo("2 Cents Ave. San Francisco, CA 90210");
+  }
+
+  @Test
+  public void getServiceInstanceWithNameAndQualifierReturnsTargetedServiceInstance() {
+
+    MockGeocodingService geocodingService =
+      MockGeocodingService.getLoader().getServiceInstance("Bing");
+
+    assertThat(geocodingService).isInstanceOf(BingGeocodingService.class);
+
+    assertThat(geocodingService)
+      .isEqualTo(MockGeocodingService.getLoader().getServiceInstance("BingBangBoom"));
+
+    Point coordinates = geocodingService.geocode("5276 NE Oregon St. Portland, OR 97213");
+
+    assertThat(coordinates).isNotNull();
+    assertThat(coordinates).isEqualTo(new Point(64, 256));
+
+    String address = geocodingService.reverseGeocode(coordinates);
+
+    assertThat(address).isEqualTo("4 Highway 101 Los Angeles, CA 96069");
+  }
+
+  @Test
   public void getServiceInstanceWithQualifierReturnsTargetedServiceInstance() {
 
-    MockGeocodingService mockGeocodingService =
+    MockGeocodingService geocodingService =
       MockGeocodingService.getLoader().getServiceInstance("TomTom");
 
-    assertThat(mockGeocodingService).isInstanceOf(TomTomGeocodingService.class);
+    assertThat(geocodingService).isInstanceOf(TomTomGeocodingService.class);
 
-    Point coordinates = mockGeocodingService.geocode("404 Walk This Way, San Diego, CA 69001");
+    Point coordinates = geocodingService.geocode("404 Walk This Way, San Diego, CA 69096");
 
     assertThat(coordinates).isNotNull();
     assertThat(coordinates).isEqualTo(new Point(16, 64));
 
-    String address = mockGeocodingService.reverseGeocode(coordinates);
+    String address = geocodingService.reverseGeocode(coordinates);
 
     assertThat(address).isEqualTo("1024 One Way Portland, OR 97205");
   }
@@ -142,7 +183,7 @@ public class ServiceLoaderSupportUnitTests {
 
     assertThatThrowableOfType(ServiceUnavailableException.class)
       .isThrownBy(args -> MockGeocodingService.getLoader().getServiceInstance("testQualifier"))
-      .havingMessageContaining("Failed to find a service instance with named qualifier [testQualifier]")
+      .havingMessageContaining("Failed to find a service instance with the declared name [testQualifier]")
       .causedBy(ServiceUnavailableException.class)
       .havingMessageMatching("Failed to find a service instance matching Predicate \\[.*]")
       .withNoCause();

@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Qualifier;
 import org.cp.elements.service.ServiceUnavailableException;
@@ -96,14 +97,23 @@ public interface ServiceLoaderSupport<T> {
   }
 
   /**
-   * Resolves a {@literal service instance} by {@link Qualifier#name() Qualifer name}.
+   * Resolves a {@literal service instance} by {@link Nameable#getName() name} or {@link Qualifier#name() Qualifer name}
+   * depending on whether the {@literal service instance} is a {@literal named service} implementing {@link Nameable}
+   * or has been annotated with Elements' {@link Qualifier} annotation.
    *
-   * It is assumed that the developer annotated his/her {@literal service provider implementation} (that is
-   * main, primary {@literal service provider} {@link Class}) with Elements' {@link Qualifier} annotation.
-   * The algorithm does not search implementing interfaces or super classes of
+   * The algorithm considers whether the {@literal service instance} is a {@literal named service} first,
+   * implementing Elements' {@link Nameable} interface and using {@link Nameable#getName()} to match to
+   * the {@code declaredName} for the {@literal service}.
+   *
+   * Alternatively, it is assumed that the developer annotated his/her {@literal service provider implementation},
+   * that is the main {@literal service provider} {@link Class}, with Elements' {@link Qualifier} annotation.
+   * The algorithm does not search interface extensions or super classes of
    * the implementing {@literal service provider} class.
    *
-   * @param qualifierName {@link String} containing the {@literal name} of the {@literal service instance} to resolve;
+   * {@link Nameable} takes precedence over {@link Qualifier} since {@link Nameable} can be dynamic
+   * and {@link Qualifier} is static.
+   *
+   * @param declaredName {@link String} containing the {@literal name} of the {@literal service instance} to resolve;
    * must not be {@literal null} or {@literal empty}.
    * @return a {@literal service instance} resolved from the given {@link Qualifier#name() Qualifier name}.
    * @throws ServiceUnavailableException if a {@literal service instance} of {@link Class type T} cannot be found
@@ -111,22 +121,27 @@ public interface ServiceLoaderSupport<T> {
    * @see org.cp.elements.lang.annotation.Qualifier#name()
    * @see #getServiceInstance(Predicate)
    */
-  default @NotNull T getServiceInstance(@NotNull String qualifierName) {
+  default @NotNull T getServiceInstance(@NotNull String declaredName) {
+
+    Predicate<T> namedServicePredicate = service -> service instanceof Nameable
+      && String.valueOf(((Nameable<?>) service).getName()).equals(declaredName);
 
     Predicate<T> qualifierAnnotationPredicate = service -> {
 
       Class<?> serviceType = service.getClass();
 
       return serviceType.isAnnotationPresent(Qualifier.class)
-        && serviceType.getAnnotation(Qualifier.class).name().equals(qualifierName);
+        && serviceType.getAnnotation(Qualifier.class).name().equals(declaredName);
     };
 
+    Predicate<T> resolvedNameSourcedPredicate = namedServicePredicate.or(qualifierAnnotationPredicate);
+
     try {
-      return getServiceInstance(qualifierAnnotationPredicate);
+      return getServiceInstance(resolvedNameSourcedPredicate);
     }
     catch (ServiceUnavailableException cause) {
-      throw newServiceUnavailableException(cause, "Failed to find a service instance with named qualifier [%s]",
-        qualifierName);
+      throw newServiceUnavailableException(cause, "Failed to find a service instance with the declared name [%s]",
+        declaredName);
     }
   }
 
