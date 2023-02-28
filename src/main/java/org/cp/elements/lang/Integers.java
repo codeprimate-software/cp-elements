@@ -31,6 +31,7 @@ import org.cp.elements.lang.annotation.Nullable;
 public abstract class Integers {
 
   public static final Integer ZERO = 0;
+  public static final Integer MINUS_ONE = -1;
   public static final Integer ONE = 1;
   public static final Integer TWO = 2;
   public static final Integer FOUR = 4;
