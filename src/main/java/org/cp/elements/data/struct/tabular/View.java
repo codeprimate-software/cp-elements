@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIndexOutOfBoundsException;
@@ -21,21 +20,25 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIndexOutOfBoundsE
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
 
 import org.cp.elements.data.struct.tabular.query.Query;
+import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.StringUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+import org.cp.elements.util.stream.StreamUtils;
 
 /**
- * The {@link View} interface defines a limited view (or projection), or image of a tabular data structure.
+ * Abstract Data Type (ADT) defining a limited view, projection, or image of a tabular data structure.
  *
- * @author John J. Blum
+ * @author John Blum
  * @see java.lang.Iterable
- * @see java.util.Comparator
  * @see java.util.function.Predicate
+ * @see org.cp.elements.data.struct.tabular.AbstractView
  * @see org.cp.elements.data.struct.tabular.Column
  * @see org.cp.elements.data.struct.tabular.Row
  * @see org.cp.elements.data.struct.tabular.Table
@@ -43,17 +46,17 @@ import org.cp.elements.lang.annotation.NullSafe;
  * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public interface View extends Iterable<Row>, Nameable<String> {
 
   /**
-   * Returns an {@link Iterable} to iterate over the {@link Column Columns} in this {@link View}.
+   * Returns an {@link Iterable} iterating over the {@link Column Columns} in this {@link View}.
    *
-   * @return an {@link Iterable} to iterate over the {@link Column Columns} in this {@link View}.
+   * @return an {@link Iterable} iterating over the {@link Column Columns} in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see java.lang.Iterable
+   * @see #rows()
    */
-  Iterable<Column> columns();
+  Iterable<Column<?>> columns();
 
   /**
    * Determines whether this {@link View} contains the given {@link Column}.
@@ -61,114 +64,118 @@ public interface View extends Iterable<Row>, Nameable<String> {
    * @param column {@link Column} being evaluated.
    * @return a boolean value indicating whether this {@link View} contains the given {@link Column}.
    * @see org.cp.elements.data.struct.tabular.Column
-   * @see #indexOf(Column)
    * @see #contains(String)
    */
   @NullSafe
-  default boolean contains(Column column) {
-
-    return Optional.ofNullable(column)
-      .map(Column::getName)
-      .filter(this::contains)
-      .isPresent();
+  default boolean contains(@NotNull Column<?> column) {
+    return column != null && contains(column.getName());
   }
 
   /**
    * Determines whether this {@link View} contains a {@link Column} with the given {@link String name}.
    *
-   * @param columnName {@link String} containing the name of the {@link Column} to evaluate.
+   * @param columnName {@link String} containing the {@literal name} of the {@link Column} to evaluate.
    * @return a boolean value indicating whether this {@link View} contains a {@link Column}
    * with the given {@link String name}.
    * @see #columns()
    */
-  default boolean contains(String columnName) {
+  @NullSafe
+  default boolean contains(@NotNull String columnName) {
 
-    return Optional.ofNullable(columnName)
-      .filter(StringUtils::hasText)
-      .filter(it -> StreamSupport.stream(columns().spliterator(), false)
-        .anyMatch(column -> column.getName().equals(columnName)))
-      .isPresent();
+    return StringUtils.hasText(columnName)
+      && StreamUtils.stream(columns()).anyMatch(column -> column.getName().equals(columnName));
   }
 
   /**
-   * Counts the {@link Row Rows} in this {@link View} that match the given {@link Predicate}.
+   * Counts the {@link Row Rows} in this {@link View} that match the given, required {@link Predicate}.
    *
-   * @param predicate {@link Predicate} used to match {@link Row Rows}.
-   * @return a count of the number of {@link Row Rows} matching the given {@link Predicate}.
-   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @param predicate {@link Predicate} used to match {@link Row Rows} included in the {@link Integer count};
+   * must not be {@literal null}.
+   * @return a {@link Integer count} of the number of {@link Row Rows} matching the given {@link Predicate}.
+   * @throws IllegalArgumentException if the given {@link Predicate} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Row
    * @see java.util.function.Predicate
    */
-  default int count(Predicate<Row> predicate) {
+  default int count(@NotNull Predicate<Row> predicate) {
 
     Assert.notNull(predicate, "Predicate is required");
 
-    return Long.valueOf(StreamSupport.stream(rows().spliterator(), false)
+    long count = StreamUtils.stream(rows())
       .filter(predicate)
-      .count()).intValue();
+      .count();
+
+    return Long.valueOf(count).intValue();
   }
 
   /**
-   * Returns the {@link Column} at the given {@link Integer#TYPE index} in this {@link View}.
+   * Returns the {@link Column} in this {@link View} at the given {@link Integer index}.
    *
-   * @param <T> {@link Class type} of {@link Object values} stored by the {@link Column}.
-   * @param index {@link Integer} specifying the index of the {@link Column} in this {@link View} to return.
-   * @return the {@link Column} in this {@link View} at the specified {@link Integer#TYPE index}.
-   * @throws IllegalArgumentException if index is less than {@literal 0}.
-   * @throws IndexOutOfBoundsException if the index is greater than the number of {@link Column Columns}
-   * in this {@link View}.
+   * @param <T> {@link Class type} of {@link Object values} stored in the {@link Column} of this {@link View}.
+   * @param index {@link Integer} declaring the {@literal index} of the {@link Column} to return from this {@link View}.
+   * @return the {@link Column} in this {@link View} at the given {@link Integer index}.
+   * @throws IllegalArgumentException if the given {@link Integer index} is less than {@literal 0}.
+   * @throws IndexOutOfBoundsException if the given {@link Integer index} is greater than
+   * the number of {@link Column Columns} in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see #columns()
    */
   @SuppressWarnings("unchecked")
-  default <T> Column<T> getColumn(int index) {
+  default @NotNull <T> Column<T> getColumn(int index) {
 
-    Assert.isTrue(index > -1, () -> String.format("Index [%d] is not valid", index));
+    Assert.isTrue(index > Integers.MINUS_ONE, () -> String.format("Column index [%d] is not valid", index));
 
     int count = 0;
 
-    for (Column column : columns()) {
+    for (Column<?> column : columns()) {
       if (count++ == index) {
-        return column;
+        return (Column<T>) column;
       }
     }
 
-    throw newIndexOutOfBoundsException("Index [%1$d] is greater than the number of columns [%2$d]", index, count);
+    throw newIndexOutOfBoundsException("Index [%1$d] is greater than the number of columns [%2$d] in this View [%3$s]",
+      index, count, getName());
   }
 
   /**
    * Optionally returns a {@link Column} with the given {@link String name} from this {@link View}.
    *
-   * @param <T> {@link Class type} of {@link Object values} stored by the {@link Column}.
-   * @param name {@link String} containing the {@link String name} of the {@link Column} in this {@link View} to return.
-   * @return an {@link Optional} {@link Column} with the given {@link String} name from this {@link View}
-   * or an {@link Optional#EMPTY} if no {@link Column} with the given {@link String name} in this {@link View} exists.
+   * @param <T> {@link Class type} of {@link Object values} stored in the {@link Column} of this {@link View}.
+   * @param name {@link String} containing the {@link String name} of the {@link Column} to return
+   * from this {@link View}.
+   * @return an {@link Optional} {@link Column} from this {@link View} with the given {@link String name}
+   * or {@link Optional#empty()} if no {@link Column} in this {@link View} with the given {@link String name} exists.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see java.util.Optional
-   * @see #indexOf(Column)
-   * @see #getColumn(int)
+   * @see #columns()
    */
-  default <T> Optional<Column<T>> getColumn(String name) {
+  @SuppressWarnings("unchecked")
+  default <T> Optional<Column<T>> getColumn(@NotNull String name) {
 
-    return Optional.of(indexOf(name))
-      .filter(index -> index > -1)
-      .map(this::getColumn);
+    return StreamUtils.stream(columns())
+      .filter(column -> column.getName().equals(name))
+      .map(column -> (Column<T>) column)
+      .findFirst();
   }
 
   /**
-   * Returns the {@link Row} in this {@link View} at the given {@link Integer#TYPE index}.
+   * Returns the {@link Row} in this {@link View} at the given {@link Integer index}.
    *
-   * @param index {@link Integer} specifying the index of the {@link Row} in this {@link View} to return.
-   * @return the {@link Row} at the given {@link Integer#TYPE index} from this {@link View}.
-   * @throws IllegalArgumentException if index is less than {@literal 0}.
-   * @throws IndexOutOfBoundsException if index is greater than the number of {@link Row Rows} in this {@link View}.
+   * @param index {@link Integer} declaring the {@literal index} of the {@link Row} to return from this {@link View}.
+   * @return the {@link Row} in this {@link View} at the given {@link Integer index}.
+   * @throws IllegalArgumentException if the given {@link Integer index} is less than {@literal 0}.
+   * @throws IndexOutOfBoundsException if given {@link Integer index} is greater than the number of {@link Row Rows}
+   * in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Row
    * @see #rows()
+   * @see #size()
    */
-  default Row getRow(int index) {
+  default @NotNull Row getRow(int index) {
 
-    Assert.isTrue(index > -1 && index < size(),
-      () -> String.format("Index [%d] is not valid; Index must be greater than -1 and less than %d", index, size()));
+    int size = size();
+
+    Assert.isTrue(index > Integers.MINUS_ONE && index < size,
+      () -> String.format("Row index [%1$d] is not valid; Row index must be greater than [-1] and less than [%2$d]",
+        index, size));
 
     int count = 0;
 
@@ -178,113 +185,136 @@ public interface View extends Iterable<Row>, Nameable<String> {
       }
     }
 
-    throw newIndexOutOfBoundsException("Index [%1$d] is greater than the number of rows [%2$d]", index, count);
+    throw newIndexOutOfBoundsException("Row index [%1$d] is greater than the number of rows [%2$d] in this View [%3$s]",
+      index, count, getName());
   }
 
   /**
-   * Optionally return the first {@link Row} in this {@link View} matching the specified {@link Predicate}.
+   * Optionally return the first {@link Row} in this {@link View} matching the given, required {@link Predicate}.
    *
-   * @param predicate {@link Predicate} defining the criteria used to match the {@link Row}.
-   * @return the first {@link Row} in this {@link View} matching the specified {@link Predicate}
-   * or an {@link Optional#EMPTY} if no {@link Row} matches the {@link Predicate}.
-   * @throws IllegalArgumentException if {@link Predicate} is {@literal null}.
+   * @param predicate {@link Predicate} defining criteria used to match the {@link Row}; must not be {@literal null}.
+   * @return the first {@link Row} in this {@link View} matching the given {@link Predicate}
+   * or {@link Optional#empty()} if no {@link Row} in this {@link View} matches the given {@link Predicate}
+   * or {@link Optional#empty()} if the given {@link Predicate} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Row
    * @see java.util.function.Predicate
    * @see java.util.Optional
    * @see #rows()
    */
-  default Optional<Row> getRow(Predicate<Row> predicate) {
+  default Optional<Row> getRow(@NotNull Predicate<Row> predicate) {
 
-    Assert.notNull(predicate, "Predicate is required");
+    Predicate<Row> resolvedPredicate = FunctionUtils.nullSafePredicateMatchNone(predicate);
 
-    return StreamSupport.stream(rows().spliterator(), false)
-      .filter(predicate)
+    return StreamUtils.stream(rows())
+      .filter(resolvedPredicate)
       .findFirst();
   }
 
   /**
-   * Returns the {@link Object value} in this {@link View} at the specified {@link Row} and {@link Column} index.
+   * Returns the {@link Object value} in this {@link View} at the given {@link Integer row index}
+   * and {@link Integer column index}.
    *
-   * @param <T> {@link Class type} of the value.
-   * @param rowIndex integer value indicating the {@link Row} index from which to get the {@link Object value}.
-   * @param columnIndex integer value indicating the {@link Column} index from wihch to get the {@link Object value}.
-   * @return the {@link Object value} at the specified {@link Row} and {@link Column} index in this {@link View}.
+   * @param <T> {@link Class type} of the {@link Object value}.
+   * @param rowIndex {@link Integer} declaring the {@literal index} of a {@link Row} in this {@link View}.
+   * @param columnIndex {@link Integer} declaring the {@literal index} of a {@link Column} in this {@link View}.
+   * @return the {@link Object value} in this {@link View} at the given {@link Integer row index}
+   * and {@link Integer column index}.
+   * @throws IllegalArgumentException if the given {@link Integer row index} or {@link Integer column index}
+   * are less than {@literal 0}.
+   * @throws IndexOutOfBoundsException if the {@link Integer row index} or {@link Integer column index}
+   * are not valid indexes in this tabular {@link View}.
    * @see org.cp.elements.data.struct.tabular.Row#getValue(int)
    * @see #getRow(int)
    */
-  default <T> T getValue(int rowIndex, int columnIndex) {
+  default @Nullable <T> T getValue(int rowIndex, int columnIndex) {
     return getRow(rowIndex).getValue(columnIndex);
   }
 
   /**
-   * Returns the {@link Object value} in this {@link View} at the specified {@link Row} index
+   * Returns the {@link Object value} in this {@link View} at the given {@link Integer row index}
    * and {@link Column} with the given {@link String name}.
    *
-   * @param <T> {@link Class type} of the value.
-   * @param rowIndex integer value indicating the {@link Row} index from which to get the {@link Object value}.
-   * @param columnName {@link String} containing the name of the {@link Column} from which to get
-   * the {@link Object value}.
-   * @return the {@link Object value} at the specified {@link Row} index and {@link String named} {@link Column}
-   * from this {@link View}.
+   * @param <T> {@link Class type} of the {@link Object value}.
+   * @param rowIndex {@link Integer} declaring the {@literal index} of a {@link Row} in this {@link View}.
+   * @param columnName {@link String} containing the {@literal name} of the {@link Column} from this {@link View}
+   * in which the {@link Object value} will be returned.
+   * @return the {@link Object value} in this {@link View} at the given {@link Integer row index}
+   * and {@link Column} with the given {@link String name}.
+   * @throws IllegalArgumentException if the given {@link Integer row index} is less than {@literal 0}
+   * or a {@link Column} with {@link String name} does not exist in this {@link View}.
+   * @throws IndexOutOfBoundsException if the {@link Integer row index} is not valid index
+   * in this tabular {@link View}.
+   * @see #getValue(int, int)
    * @see #indexOf(String)
-   * @see #getValue(int, int)
    */
-  @NullSafe
-  default <T> T getValue(int rowIndex, String columnName) {
-    return getValue(rowIndex, indexOf(columnName));
+  default @Nullable <T> T getValue(int rowIndex, @NotNull String columnName) {
+
+    int columnIndex = indexOf(columnName);
+
+    Assert.isTrue(columnIndex > Integers.MINUS_ONE,
+      () -> String.format("Column with name [%1$s] does not exist in this View [%2$s]", columnName, getName()));
+
+    return getValue(rowIndex, columnIndex);
   }
 
   /**
-   * Returns the {@link Object value} at the specified {@link Row} index and {@link Column} from this {@link View}.
+   * Returns the {@link Object value} in this {@link View} at the given {@link Integer row index} and {@link Column}.
    *
-   * @param <T> {@link Class type} of the value.
-   * @param rowIndex integer value indicating the {@link Row} index from which to get the {@link Object value}.
-   * @param column {@link Column} from which to get the {@link Object value}.
-   * @return the {@link Object value} at the specified {@link Row} index and {@link Column} from this {@link View}.
+   * @param <T> {@link Class type} of the {@link Object value}.
+   * @param rowIndex {@link Integer} declaring the {@literal index} of a {@link Row} in this {@link View}.
+   * @param column {@link Column} in this {@link View} from which to get the {@link Object value}.
+   * @return the {@link Object value} in this {@link View} at the given {@link Integer row index} and {@link Column}.
+   * @throws IllegalArgumentException if the given {@link Integer row index} is less than {@literal 0}
+   * or the given {@link Column} does not exist in this {@link View}.
+   * @throws IndexOutOfBoundsException if the {@link Integer row index} is not a valid index
+   * in this tabular {@link View}.
    * @see org.cp.elements.data.struct.tabular.Column
-   * @see #indexOf(Column)
    * @see #getValue(int, int)
+   * @see #indexOf(Column)
    */
-  @NullSafe
-  default <T> T getValue(int rowIndex, Column column) {
-    return getValue(rowIndex, indexOf(column));
+  default @Nullable <T> T getValue(int rowIndex, @NotNull Column<?> column) {
+
+    int columnIndex = indexOf(column);
+
+    Assert.isTrue(columnIndex > Integers.MINUS_ONE,
+      () -> String.format("Column [%1$s] does not exist in this View [%2$s]", column, getName()));
+
+    return getValue(rowIndex, columnIndex);
   }
 
   /**
-   * Determines the {@link Integer#TYPE index} of the given {@link Column} in this {@link View}.
+   * Determines the {@link Integer# index} of the given {@link Column} in this {@link View} if present.
+   *
+   * The first {@link Column} is at {@link Integer index} {@literal 0}.
    *
    * @param column {@link Column} to evaluate.
-   * @return an integer value indicating the index of the given {@link Column} in this {@link View},
-   * or a {@literal -1} if the {@link Column} is not contained in this {@link View}.
+   * @return the {@link Integer index} of the given {@link Column} in this {@link View},
+   * or {@literal -1} if the {@link Column} is not contained in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Column
-   * @see #contains(String)
+   * @see #indexOf(String)
    */
   @NullSafe
-  default int indexOf(Column column) {
-
-    return Optional.ofNullable(column)
-      .map(Column::getName)
-      .map(this::indexOf)
-      .orElse(-1);
+  default int indexOf(@NotNull Column<?> column) {
+    return column != null ? indexOf(column.getName()) : Integers.MINUS_ONE;
   }
 
   /**
-   * Determines the {@link Integer#TYPE index} of {@link Column column} with the given {@link String name}
-   * in this {@link View}.
+   * Determines the {@link Integer index} of a {@link Column} with the given {@link String name} in this {@link View}
+   * if present.
    *
-   * The first {@link Column} is at index {@literal 0}.
+   * The first {@link Column} is at {@link Integer index} {@literal 0}.
    *
-   * @param columnName {@link String} containing the name of the {@link Column}.
-   * @return an integer value indicating the index of the {@link String named} {@link Column} in this {@link View},
-   * or a {@literal -1} if the {@link String named} {@link Column} is not contained in this {@link View}.
+   * @param columnName {@link String} containing the {@literal name} of the {@link Column} to index.
+   * @return the {@link Integer index} of a {@link Column} with the given {@link String name} in this {@link View},
+   * or {@literal -1} if a {@link Column} with {@link String name} is not contained in this {@link View}.
    * @see #columns()
    */
-  default int indexOf(String columnName) {
+  @NullSafe
+  default int indexOf(@NotNull String columnName) {
 
     int index = 0;
 
-    for (Column column : columns()) {
-
+    for (Column<?> column : columns()) {
       if (column.getName().equals(columnName)) {
         return index;
       }
@@ -292,20 +322,20 @@ public interface View extends Iterable<Row>, Nameable<String> {
       index++;
     }
 
-    return -1;
+    return Integers.MINUS_ONE;
   }
 
   /**
-   * Determines the index of the given {@link Row} in this {@link View}.
+   * Determines the {@link Integer index} of the given {@link Row} in this {@link View} if present.
    *
    * @param row {@link Row} to evaluate.
-   * @return an integer value indicating the index of the {@link Row} in this {@link View},
-   * or a {@literal -1} if the {@link Row} is not contained in this {@link View}.
+   * @return the {@link Integer index} of the given {@link Row} in this {@link View},
+   * or {@literal -1} if the {@link Row} is not contained in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Row
    * @see #rows()
    */
   @NullSafe
-  default int indexOf(Row row) {
+  default int indexOf(@NotNull Row row) {
 
     int index = 0;
 
@@ -317,34 +347,37 @@ public interface View extends Iterable<Row>, Nameable<String> {
       index++;
     }
 
-    return -1;
+    return Integers.MINUS_ONE;
   }
 
   /**
-   * Determines whether this {@link View} is empty, i.e. contains any {@link Row Rows}.
+   * Determines whether this {@link View} is {@literal empty}, or whether this {@link View}
+   * contains any {@link Row Rows}.
+   *
+   * By default, this {@link View} is considered {@literal empty} if {@link #size()} is {@literal 0}.
    *
    * @return a boolean value indicating whether this {@link View} contains any {@link Row Rows}.
    * @see #size()
    */
   default boolean isEmpty() {
-    return size() == 0;
+    return size() < Integers.ONE;
   }
 
   /**
-   * Queries this {@link View} using the given {@link Query Query definition} and returns a new {@link View}
-   * from the result set.
+   * Queries this {@link View} with the given {@link Query} and returns a new {@link View} from the result set.
    *
-   * The {@link Query} matches {@link Row Rows} (data) in this {@link View} defined by a {@link Predicate},
-   * ordered (sorted) by a {@link Comparator} and projected using an array or {@link Iterable}
-   * of {@link Column Columns}.
+   * The {@link Query} matches {@link Row Rows}, or {@literal data} contained in this {@link View}
+   * defined by a {@link Predicate}, ordered/sorted by a {@link Comparator} and projected using an array
+   * or {@link Iterable} of {@link Column Columns}.
    *
-   * @param query {@link Query} object defining the query for this {@link View}.
+   * @param query {@link Query} object defining the {@literal query} on this {@link View};
+   * must not be {@literal null}.
    * @return a new {@link View} from the result set produced by the given {@link Query}.
-   * @throws IllegalArgumentException if {@link Query} is {@literal null}.
+   * @throws IllegalArgumentException if the given {@link Query} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.query.Query
    * @see org.cp.elements.data.struct.tabular.View
    */
-  default View query(Query query) {
+  default @NotNull View query(@NotNull Query query) {
 
     Assert.notNull(query, "Query is required");
 
@@ -352,20 +385,21 @@ public interface View extends Iterable<Row>, Nameable<String> {
   }
 
   /**
-   * Returns an {@link Iterable} to iterate over the {@link Row Rows} in this {@link View}.
+   * Returns an {@link Iterable} iterating over the {@link Row Rows} in this {@link View}.
    *
-   * @return an {@link Iterable} to iterate over the {@link Row Rows} in this {@link View}.
+   * @return an {@link Iterable} iterating over the {@link Row Rows} in this {@link View}.
    * @see org.cp.elements.data.struct.tabular.Row
    * @see java.lang.Iterable
+   * @see #columns()
    */
   default Iterable<Row> rows() {
     return this;
   }
 
   /**
-   * Returns the number of {@link Row Rows} in this {@link View}.
+   * Returns the {@link Integer number} of {@link Row Rows} in this {@link View}.
    *
-   * @return an integer value indicating the number of {@link Row Rows} in this {@link View}.
+   * @return the {@link Integer number} of {@link Row Rows} in this {@link View}.
    * @see #count(Predicate)
    */
   default int size() {
