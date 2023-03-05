@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import java.util.Optional;
 
+import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.Nameable;
 
 /**
- * The {@link Column} interface is an Abstract Data Type (ADT) modeling a column in a tabular data structure.
+ * Abstract Data Type (ADT) modeling a column in a tabular data structure.
  *
- * @author John J. Blum
+ * @author John Blum
  * @param <T> {@link Class type} of {@link Object values} stored in this {@link Column}.
  * @see org.cp.elements.data.struct.tabular.Row
  * @see org.cp.elements.data.struct.tabular.Table
@@ -31,59 +31,74 @@ import org.cp.elements.lang.Nameable;
  * @see org.cp.elements.lang.Nameable
  * @since 1.0.0
  */
-@SuppressWarnings("unused")
 public interface Column<T> extends Nameable<String> {
 
   /**
-   * Sets the {@link String alias}, or alternate name for referring to this {@link Column}.
+   * Returns an {@link Optional} {@link String alias} used as an {@link String alternate name}
+   * when referring to this {@link Column}.
    *
-   * @param alias {@link String} containing the alias, or alternate name for this {@link Column}.
+   * Returns {@link Optional#empty()} by default.
+   *
+   * @return an {@link Optional} {@link String alias} used as an {@link String alternate name}
+   * when referring to this {@link Column}.
+   * @see java.util.Optional
+   * @see #getName()
+   */
+  default Optional<String> getAlias() {
+    return Optional.empty();
+  }
+
+  /**
+   * Sets the {@link String alias} used as an {@link String alternate name} when referring to this {@link Column}.
+   *
+   * @param alias {@link String} containing the {@literal alias}, or {@link String alternate name},
+   * used when referring to this {@link Column}.
    */
   void setAlias(String alias);
 
   /**
-   * Returns an {@link Optional} {@link String alias}, or alternate name for referring to this {@link Column}.
+   * Returns an {@link Optional} {@link Object default value} used as the {@link Object value} for this {@link Column}
+   * when a {@link Object value} is not provided.
    *
-   * @return an {@link Optional} {@link String alias}, or alternate name for referring to this {@link Column}.
+   * Returns {@link Optional#empty()} by default.
+   *
+   * @return an {@link Optional} {@link Object default value} used as the {@link Object value} for this {@link Column}
+   * when a {@link Object value} is not provided.
    * @see java.util.Optional
-   * @see #getName()
    */
-  Optional<String> getAlias();
+  default Optional<T> getDefaultValue() {
+    return Optional.empty();
+  }
 
   /**
-   * Sets the {@link Object default value} used when a {@link Object value} is not specified for this {@link Column}.
+   * Sets the {@link Object default value} used as the {@link Object value} for this {@link Column}
+   * when a {@link Object value} is not provided.
    *
-   * @param defaultValue {@link Object default value} used when a {@link Object value} is not specified
-   * for this {@link Column}.
+   * @param defaultValue {@link Object default value} used as the {@link Object value} for this {@link Column}
+   * when a {@link Object value} is not provided.
    */
   void setDefaultValue(T defaultValue);
 
   /**
-   * Returns an {@link Optional} {@link Object default value} used when a {@link Object value}
-   * is not specified for this {@link Column}.
+   * Returns an {@link Optional} {@link String description} of the data stored in this {@link Column}.
    *
-   * @return an {@link Optional} {@link Object default value} used when a {@link Object value}
-   * is not specified for this {@link Column}.
-   * @see java.util.Optional
-   */
-  Optional<T> getDefaultValue();
-
-  /**
-   * Sets a {@link String} to describe the data stored by this {@link Column}.
+   * Returns {@link Optional#empty()} by default.
    *
-   * @param description {@link String} containing the description for this {@link Column}.
-   */
-  void setDescription(String description);
-
-  /**
-   * Returns an {@link Optional} {@link String} to describe the data stored by this {@link Column}.
-   *
-   * @return an {@link Optional} {@link String} to describe the data stored by this {@link Column}.
+   * @return an {@link Optional} {@link String description} of the data stored in this {@link Column}.
    * @see java.util.Optional
    * @see #getAlias()
    * @see #getName()
    */
-  Optional<String> getDescription();
+  default Optional<String> getDescription() {
+    return Optional.empty();
+  }
+
+  /**
+   * Sets a {@link String description} to describe the data stored in this {@link Column}.
+   *
+   * @param description {@link String} containing a {@literal description} for this {@link Column}.
+   */
+  void setDescription(String description);
 
   /**
    * Returns the {@link String name} of this {@link Column}.
@@ -91,6 +106,7 @@ public interface Column<T> extends Nameable<String> {
    * @return the {@link String name} of this {@link Column}.
    * @see org.cp.elements.lang.Nameable#getName()
    * @see #getDescription()
+   * @see java.lang.String
    * @see #getAlias()
    */
   @Override
@@ -99,24 +115,31 @@ public interface Column<T> extends Nameable<String> {
   /**
    * Returns the {@link Class type} of {@link Object values} stored in this {@link Column}.
    *
-   * @return {@link Class type} of {@link Object values} stored in this {@link Column}.
+   * @return the {@link Class type} of {@link Object values} stored in this {@link Column}.
    * @see java.lang.Class
    */
   Class<T> getType();
 
   /**
-   * Returns the {@link View} containing this {@link Column}.
+   * Returns an {@link Optional} {@link View} containing this {@link Column}.
    *
-   * @return the {@link View} containing this {@link Column}.
+   * This {@link Column} may not be necessarily defined inside the context of a {@link View}.
+   *
+   * Returns {@link Optional#empty()} by default.
+   *
+   * @return an {@link Optional} {@link View} containing this {@link Column}.
    * @see org.cp.elements.data.struct.tabular.View
+   * @see java.util.Optional
    */
-  Optional<View> getView();
+  default Optional<View> getView() {
+    return Optional.empty();
+  }
 
   /**
    * Returns the {@link Integer index} of this {@link Column} in the {@link View}.
    *
-   * @return the {@link Integer index} of this {@link Column} in the {@link View}, or a {@literal -1}
-   * this {@link Column} is not presently contained by a {@link View}.
+   * @return the {@link Integer index} of this {@link Column} in the {@link View}.
+   * Returns a {@literal -1} if this {@link Column} is not present in the {@link View}.
    * @see org.cp.elements.data.struct.tabular.View#indexOf(Column)
    * @see #getView()
    */
@@ -124,6 +147,6 @@ public interface Column<T> extends Nameable<String> {
 
     return getView()
       .map(view -> view.indexOf(this))
-      .orElse(-1);
+      .orElse(Integers.MINUS_ONE);
   }
 }
