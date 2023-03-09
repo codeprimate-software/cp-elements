@@ -16,6 +16,8 @@
 package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -38,6 +40,13 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.junit.Test;
+
+import org.cp.elements.lang.annotation.NotNull;
+
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+
+import edu.umd.cs.mtc.MultithreadedTestCase;
+import edu.umd.cs.mtc.TestFramework;
 
 /**
  * Unit Tests for {@link Assert}.
@@ -1766,6 +1775,29 @@ public class AssertUnitTests {
   }
 
   @Test
+  public void assertNotInterruptedIsSuccessful() throws InterruptedException {
+    Assert.notInterrupted();
+  }
+
+  @Test
+  public void assertNotInterruptedWhenCurrentThreadIsInterrupted() throws Throwable {
+    TestFramework.runOnce(new InterruptedThreadCallingAssertNotInterruptedTestCase(Assert::notInterrupted,
+      "Thread [Interrupted Thread calling Assert.notInterrupted(..)] was interrupted"));
+  }
+
+  @Test
+  public void assertNotInterruptedWhenCurrentThreadIsInterruptedWithFormattedMessage() throws Throwable {
+    TestFramework.runOnce(new InterruptedThreadCallingAssertNotInterruptedTestCase(
+      () -> Assert.notInterrupted("%s Thread was interrupted", "User"),
+      "User Thread was interrupted"));
+  }
+
+  @Test
+  public void assertNotInterruptedWhenCurrentThreadIsInterruptedWithRuntimeException() throws Throwable {
+    TestFramework.runOnce(new InterruptedThreadCallingAssertNotInterruptedWithRuntimeExceptionTestCase());
+  }
+
+  @Test
   public void assertNotNull() {
 
     Assert.notNull(false);
@@ -2329,6 +2361,60 @@ public class AssertUnitTests {
       assertThat(expected).hasNoCause();
 
       throw expected;
+    }
+  }
+
+  private static final class InterruptedThreadCallingAssertNotInterruptedTestCase extends MultithreadedTestCase {
+
+    private final String expectedMessage;
+
+    private final ThrowingCallable throwingCallable;
+
+    private InterruptedThreadCallingAssertNotInterruptedTestCase(@NotNull ThrowingCallable throwingCallable,
+        @NotNull String expectedMessage) {
+
+      this.throwingCallable = ObjectUtils.requireObject(throwingCallable, "ThrowingCallable is required");
+      this.expectedMessage = StringUtils.requireText(expectedMessage, "Expected message is required");
+    }
+
+    private @NotNull String getExpectedMessage() {
+      return this.expectedMessage;
+    }
+
+    private @NotNull ThrowingCallable getThrowingCallable() {
+      return this.throwingCallable;
+    }
+
+    public void thread1() {
+
+      Thread.currentThread().setName("Interrupted Thread calling Assert.notInterrupted(..)");
+
+      assertTick(0);
+
+      Thread.currentThread().interrupt();
+
+      assertThatExceptionOfType(InterruptedException.class)
+        .isThrownBy(getThrowingCallable())
+        .withMessage(getExpectedMessage())
+        .withNoCause();
+    }
+  }
+
+  private static final class InterruptedThreadCallingAssertNotInterruptedWithRuntimeExceptionTestCase
+      extends MultithreadedTestCase {
+
+    public void thread1() {
+
+      Thread.currentThread().setName("Interrupted Thread calling Assert.notInterrupted(..)");
+
+      assertTick(0);
+
+      Thread.currentThread().interrupt();
+
+      assertThatIllegalStateException()
+        .isThrownBy(() -> Assert.notInterrupted(new IllegalStateException("test")))
+        .withMessage("test")
+        .withNoCause();
     }
   }
 

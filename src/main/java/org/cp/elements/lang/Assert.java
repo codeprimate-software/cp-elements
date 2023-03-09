@@ -1343,6 +1343,67 @@ public abstract class Assert {
   }
 
   /**
+   * Assert that the {@link Thread#currentThread() current Thread} has not been interrupted.
+   *
+   * @throws InterruptedException if the {@link Thread#currentThread() current Thread} was interrupted.
+   * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread#isInterrupted()
+   * @see #notInterrupted(Supplier)
+   */
+  public static void notInterrupted() throws InterruptedException {
+    notInterrupted(()-> format("Thread [%s] was interrupted", Thread.currentThread().getName()));
+  }
+
+  /**
+   * Assert that the {@link Thread#currentThread() current Thread} has not been interrupted.
+   *
+   * @param message {@link String} containing the description used in the {@link InterruptedException}
+   * thrown if the assertion fails.
+   * @param messagePlaceholderValues array of {@link Object arguments} used as placeholder values
+   * when formatting the {@link String message}.
+   * @throws InterruptedException if the {@link Thread#currentThread() current Thread} was interrupted.
+   * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread#isInterrupted()
+   * @see #notInterrupted(Supplier)
+   */
+  public static void notInterrupted(String message, Object... messagePlaceholderValues) throws InterruptedException {
+    notInterrupted(() -> format(message, messagePlaceholderValues));
+  }
+
+  /**
+   * Assert that the {@link Thread#currentThread() current Thread} has not been interrupted.
+   *
+   * @param message {@link Supplier} containing the message used in the {@link InterruptedException}
+   * thrown if the assertion fails.
+   * @throws InterruptedException if the {@link Thread#currentThread() current Thread} was interrupted.
+   * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread#isInterrupted()
+   * @see #notInterrupted(Supplier)
+   */
+  public static void notInterrupted(Supplier<String> message) throws InterruptedException {
+
+    if (Thread.currentThread().isInterrupted()) {
+      throw new InterruptedException(message.get());
+    }
+  }
+
+  /**
+   * Assert that the {@link Thread#currentThread() current Thread} has not been interrupted.
+   *
+   * @param cause {@link RuntimeException} thrown if the assertion fails.
+   * @throws RuntimeException if the {@link Thread#currentThread() current Thread} was interrupted.
+   * @see java.lang.Thread#currentThread()
+   * @see java.lang.Thread#isInterrupted()
+   * @see #notInterrupted(Supplier)
+   */
+  public static void notInterrupted(RuntimeException cause) {
+
+    if (Thread.currentThread().isInterrupted()) {
+      throw cause;
+    }
+  }
+
+  /**
    * Asserts that the {@link Object} reference is not {@literal null}.
    *
    * The assertion holds if and only if (iff) the {@link Object} reference is not {@literal null}.
