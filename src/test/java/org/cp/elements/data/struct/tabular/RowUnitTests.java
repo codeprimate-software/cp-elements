@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,10 +29,11 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 
 import org.junit.Test;
+
 import org.mockito.ArgumentMatchers;
 
 /**
- * Unit tests for {@link Row}.
+ * Unit Tests for {@link Row}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -41,7 +41,7 @@ import org.mockito.ArgumentMatchers;
  * @see org.cp.elements.data.struct.tabular.Row
  * @since 1.0.0
  */
-public class RowTests {
+public class RowUnitTests {
 
   @Test
   public void getValueWithColumnName() {
