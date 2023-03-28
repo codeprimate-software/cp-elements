@@ -20,10 +20,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -50,15 +53,18 @@ public class RowUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockRow.getValue(anyInt())).thenReturn("test");
-    when(mockRow.getValue(anyString())).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(anyString())).thenReturn(1);
+    doReturn(Optional.of(mockView)).when(mockRow).getView();
+    doCallRealMethod().when(mockRow).getValue(anyString());
+    doReturn(1).when(mockView).indexOf(anyString());
+    doReturn("test").when(mockRow).getValue(anyInt());
 
     assertThat(mockRow.<String>getValue("TestColumn")).isEqualTo("test");
 
-    verify(mockView, times(1)).indexOf(eq("TestColumn"));
+    verify(mockRow, times(1)).getValue(eq("TestColumn"));
+    verify(mockRow, times(1)).getView();
     verify(mockRow, times(1)).getValue(eq(1));
+    verify(mockView, times(1)).indexOf(eq("TestColumn"));
+    verifyNoMoreInteractions(mockRow, mockView);
   }
 
   @Test(expected = IllegalStateException.class)
