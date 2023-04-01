@@ -16,19 +16,25 @@
 package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIndexOutOfBoundsException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -45,6 +51,46 @@ import org.mockito.ArgumentMatchers;
  * @since 1.0.0
  */
 public class RowUnitTests {
+
+  @Test
+  public void getValueAtColumnIndex() {
+
+    Row mockRow = mock(Row.class);
+
+    Object[] values = { true, 'x', 1, Math.PI, "test" };
+
+    doReturn(values).when(mockRow).values();
+    doCallRealMethod().when(mockRow).getValue(anyInt());
+
+    assertThat(mockRow.<Boolean>getValue(0)).isTrue();
+    assertThat(mockRow.<Character>getValue(1)).isEqualTo('x');
+    assertThat(mockRow.<Integer>getValue(2)).isEqualTo(1);
+    assertThat(mockRow.<Double>getValue(3)).isEqualTo(Math.PI);
+    assertThat(mockRow.<String>getValue(4)).isEqualTo("test");
+
+    verify(mockRow, times(5)).getValue(anyInt());
+    verify(mockRow, times(5)).index();
+    verify(mockRow, times(5)).values();
+    verifyNoMoreInteractions(mockRow);
+  }
+
+  @Test
+  public void getValueAtInvalidColumnIndex() {
+
+    Row mockRow = mock(Row.class);
+
+    doReturn(2).when(mockRow).index();
+    doCallRealMethod().when(mockRow).getValue(anyInt());
+
+    assertThatExceptionOfType(IndexOutOfBoundsException.class)
+      .isThrownBy(() -> mockRow.getValue(-1))
+      .withMessage("Column index [-1] for Row [2] must be greater than equal to 0")
+      .withNoCause();
+
+    verify(mockRow, times(1)).getValue(eq(-1));
+    verify(mockRow, times(1)).index();
+    verifyNoMoreInteractions(mockRow);
+  }
 
   @Test
   public void getValueWithColumnName() {
@@ -67,190 +113,123 @@ public class RowUnitTests {
     verifyNoMoreInteractions(mockRow, mockView);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void getValueWithColumnNameWhenViewIsNullThrowsIllegalStateException() {
+  @Test
+  public void getValueWithColumnNameHavingNoView() {
 
     Row mockRow = mock(Row.class);
 
-    when(mockRow.getView()).thenReturn(Optional.empty());
-    when(mockRow.getValue(anyString())).thenCallRealMethod();
+    doReturn(Optional.empty()).when(mockRow).getView();
+    doCallRealMethod().when(mockRow).getValue(anyString());
+    doReturn(-1).when(mockRow).index();
 
-    try {
-      mockRow.getValue("TestColumn");
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> mockRow.getValue("MockColumn"))
+      .withMessage("This Row [-1] is not associated with a View")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("This Row is not associated with a View");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, never()).getValue(anyInt());
-    }
+    verify(mockRow, times(1)).getValue(eq("MockColumn"));
+    verify(mockRow, times(1)).getView();
+    verify(mockRow, times(1)).index();
+    verifyNoMoreInteractions(mockRow);
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void getValueWithInvalidColumnNameThrowsIndexOutOfBoundsException() {
+  @Test
+  public void getValueWithInvalidNonExistingColumnName() {
 
     Row mockRow = mock(Row.class);
 
     View mockView = mock(View.class);
 
-    when(mockRow.getValue(anyString())).thenCallRealMethod();
-    when(mockRow.getValue(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(anyString())).thenReturn(-1);
+    doCallRealMethod().when(mockRow).getValue(anyString());
+    doReturn(Optional.of(mockView)).when(mockRow).getView();
+    doReturn(-1).when(mockView).indexOf(anyString());
+    doThrow(newIndexOutOfBoundsException("test")).when(mockRow).getValue(anyInt());
 
-    try {
-      mockRow.getValue("TestColumn");
-    }
-    catch (IndexOutOfBoundsException expected) {
+    assertThatExceptionOfType(IndexOutOfBoundsException.class)
+      .isThrownBy(() -> mockRow.getValue("InvalidNonExistingColumn"))
+      .withMessage("test")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).getValue(eq(-1));
-      verify(mockView, times(1)).indexOf(eq("TestColumn"));
-    }
-  }
-
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void getValueWithNullColumnNameThrowsIndexOutOfBoundsException() {
-
-    Row mockRow = mock(Row.class);
-
-    View mockView = mock(View.class);
-
-    when(mockRow.getValue(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockRow.getValue(ArgumentMatchers.<String>any())).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(ArgumentMatchers.<String>any())).thenReturn(-1);
-
-    try {
-      mockRow.getValue((String) null);
-    }
-    catch (IndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).getValue(eq(-1));
-      verify(mockView, times(1)).indexOf(ArgumentMatchers.<String>isNull());
-    }
+    verify(mockRow, times(1)).getValue(eq("InvalidNonExistingColumn"));
+    verify(mockRow, times(1)).getView();
+    verify(mockRow, times(1)).getValue(eq(-1));
+    verify(mockView, times(1)).indexOf(eq("InvalidNonExistingColumn"));
+    verifyNoMoreInteractions(mockRow, mockView);
   }
 
   @Test
   public void getValueWithColumn() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Row mockRow = mock(Row.class);
 
-    when(mockColumn.getName()).thenReturn("TestColumn");
-    when(mockRow.getValue(anyString())).thenReturn("test");
-    when(mockRow.getValue(any(Column.class))).thenCallRealMethod();
+    doCallRealMethod().when(mockRow).getValue(any(Column.class));
+    doReturn("TestColumn").when(mockColumn).getName();
+    doReturn("test").when(mockRow).getValue(anyString());
 
     assertThat(mockRow.<String>getValue(mockColumn)).isEqualTo("test");
 
+    verify(mockRow, times(1)).getValue(eq(mockColumn));
     verify(mockColumn, times(1)).getName();
     verify(mockRow, times(1)).getValue(eq("TestColumn"));
+    verifyNoMoreInteractions(mockColumn, mockRow);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void getValueWithColumnWhenViewIsNullThrowsIllegalArgumentException() {
+  @Test
+  public void getValueWithColumnHavingNoView() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Row mockRow = mock(Row.class);
 
-    when(mockColumn.getName()).thenReturn("TestColumn");
-    when(mockRow.getValue(anyString())).thenCallRealMethod();
-    when(mockRow.getValue(ArgumentMatchers.<Column>any())).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.empty());
+    doCallRealMethod().when(mockRow).getValue(eq(mockColumn));
+    doReturn(2).when(mockRow).index();
+    doReturn(Optional.empty()).when(mockRow).getView();
 
-    try {
-      mockRow.getValue(mockColumn);
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockRow.getValue(mockColumn))
+      .withMessage("[%s] is not a Column in this Row [2]", mockColumn)
+      .withNoCause();
 
-      assertThat(expected).hasMessage("This Row is not associated with a View");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockColumn, times(1)).getName();
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).getValue(eq("TestColumn"));
-      verify(mockRow, never()).getValue(anyInt());
-    }
+    verify(mockRow, times(1)).getValue(eq(mockColumn));
+    verify(mockColumn, times(1)).getName();
+    verify(mockRow, times(1)).index();
+    verifyNoMoreInteractions(mockRow, mockColumn);
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void getValueWithInvalidColumnThrowsIndexOutOfBoundsException() {
-
-    Column mockColumn = mock(Column.class);
+  @Test
+  public void getValueWithNullColumn() {
 
     Row mockRow = mock(Row.class);
 
-    View mockView = mock(View.class);
+    doReturn(2).when(mockRow).index();
+    doCallRealMethod().when(mockRow).getValue(ArgumentMatchers.<Column<?>>any());
 
-    when(mockColumn.getName()).thenReturn("TestColumn");
-    when(mockRow.getValue(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockRow.getValue(anyString())).thenCallRealMethod();
-    when(mockRow.getValue(ArgumentMatchers.<Column>any())).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(anyString())).thenReturn(-1);
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockRow.getValue((Column<?>) null))
+      .withMessage("[null] is not a Column in this Row [2]")
+      .withNoCause();
 
-    try {
-      mockRow.getValue(mockColumn);
-    }
-    catch (IndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockColumn, times(1)).getName();
-      verify(mockRow, times(1)).getValue(eq(-1));
-      verify(mockRow, times(1)).getValue(eq("TestColumn"));
-      verify(mockRow, times(1)).getView();
-      verify(mockView, times(1)).indexOf(eq("TestColumn"));
-    }
+    verify(mockRow, times(1)).getValue(isNull(Column.class));
+    verify(mockRow, times(1)).index();
+    verifyNoMoreInteractions(mockRow);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void getValueWithNullColumnThrowsIllegalArgumentException() {
+  @Test
+  public void getViewIsEmpty() {
 
     Row mockRow = mock(Row.class);
 
-    when(mockRow.getValue(ArgumentMatchers.<Column>any())).thenCallRealMethod();
+    doCallRealMethod().when(mockRow).getView();
 
-    try {
-      mockRow.getValue((Column) null);
-    }
-    catch (IllegalArgumentException expected) {
+    Optional<View> view = mockRow.getView();
 
-      assertThat(expected).hasMessage("[null] is not a valid Column in this Row");
-      assertThat(expected).hasNoCause();
+    assertThat(view).isNotNull();
+    assertThat(view).isNotPresent();
 
-      throw expected;
-    }
-    finally {
-      verify(mockRow, never()).getValue(anyString());
-    }
+    verify(mockRow).getView();
+    verifyNoMoreInteractions(mockRow);
   }
 
   @Test
@@ -260,207 +239,124 @@ public class RowUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockRow.setValue(anyInt(), any())).thenReturn("currentValue");
-    when(mockRow.setValue(anyString(), any())).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(anyString())).thenReturn(1);
+    doCallRealMethod().when(mockRow).setValue(anyString(), any());
+    doReturn(Optional.of(mockView)).when(mockRow).getView();
+    doReturn(4).when(mockView).indexOf(anyString());
+    doReturn("CurrentValue").when(mockRow).setValue(eq(4), any());
 
-    assertThat(mockRow.setValue("TestColumn", "newValue")).isEqualTo("currentValue");
+    assertThat(mockRow.setValue("TestColumn", "NewValue")).isEqualTo("CurrentValue");
 
+    verify(mockRow, times(1)).setValue(eq("TestColumn"), eq("NewValue"));
     verify(mockRow, times(1)).getView();
-    verify(mockRow, times(1)).setValue(eq(1), eq("newValue"));
     verify(mockView, times(1)).indexOf(eq("TestColumn"));
+    verify(mockRow, times(1)).setValue(eq(4), eq("NewValue"));
+    verifyNoMoreInteractions(mockRow, mockView);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void setValueWithColumnNameWhenViewIsNullThrowsIllegalStateException() {
+  @Test
+  public void setValueWithColumnNameWhenViewIsNull() {
 
     Row mockRow = mock(Row.class);
 
-    when(mockRow.getView()).thenReturn(Optional.empty());
-    when(mockRow.setValue(anyString(), any())).thenCallRealMethod();
+    doCallRealMethod().when(mockRow).setValue(anyString(), any());
+    doReturn(Optional.empty()).when(mockRow).getView();
+    doReturn(5).when(mockRow).index();
 
-    try {
-      mockRow.setValue("TestColumn", "test");
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> mockRow.setValue("MockColumn", "test"))
+      .withMessage("Row [5] is not associated with a View")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("This Row is not associated with a View");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, never()).setValue(anyInt(), any());
-    }
+    verify(mockRow, times(1)).setValue(eq("MockColumn"), eq("test"));
+    verify(mockRow, times(1)).getView();
+    verify(mockRow, times(1)).index();
+    verifyNoMoreInteractions(mockRow);
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void setValueWithInvalidColumnNameThrowsIndexOutOfBoundsException() {
-
-    Row mockRow = mock(Row.class);
-
-    View mockView = mock(View.class);
-
-    when(mockRow.setValue(anyString(), any())).thenCallRealMethod();
-    when(mockRow.setValue(anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(anyString())).thenReturn(-1);
-
-    try {
-      mockRow.setValue("TestColumn", "test");
-    }
-    catch (IllegalStateException expected) {
-
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).setValue(eq(-1), eq("test"));
-      verify(mockView, times(1)).indexOf(eq("TestColumn"));
-    }
-  }
-
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void setValueWithNullColumnNameThrowsIndexOutOfBoundsException() {
+  @Test
+  public void setValueWithColumnNameForInvalidNonExistingColumn() {
 
     Row mockRow = mock(Row.class);
 
     View mockView = mock(View.class);
 
-    when(mockRow.setValue(ArgumentMatchers.<String>any(), any())).thenCallRealMethod();
-    when(mockRow.setValue(anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(ArgumentMatchers.<String>any())).thenReturn(-1);
+    doCallRealMethod().when(mockRow).setValue(anyString(), any());
+    doReturn(Optional.of(mockView)).when(mockRow).getView();
+    doReturn(-1).when(mockView).indexOf(anyString());
+    doReturn(8).when(mockRow).index();
 
-    try {
-      mockRow.setValue((String) null, "test");
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalStateException()
+      .isThrownBy(() -> mockRow.setValue("InvalidNonExistingColumn", "test"))
+      .withMessage("Row [8] is not associated with a View")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).setValue(eq(-1), eq("test"));
-      verify(mockView, times(1)).indexOf(ArgumentMatchers.<String>isNull());
-    }
+    verify(mockRow, times(1)).setValue(eq("InvalidNonExistingColumn"), eq("test"));
+    verify(mockRow, times(1)).getView();
+    verify(mockView, times(1)).indexOf(eq("InvalidNonExistingColumn"));
+    verify(mockRow, times(1)).index();
+    verifyNoMoreInteractions(mockRow, mockView);
   }
 
   @Test
   public void setValueWithColumn() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Row mockRow = mock(Row.class);
 
-    View mockView = mock(View.class);
+    doCallRealMethod().when(mockRow).setValue(any(Column.class), any());
+    doReturn("TestColumn").when(mockColumn).getName();
+    doReturn("OldValue").when(mockRow).setValue(eq("TestColumn"), any());
 
-    when(mockColumn.getName()).thenReturn("TestColumn");
-    when(mockRow.setValue(anyInt(), any())).thenReturn("currentValue");
-    when(mockRow.setValue(anyString(), any())).thenCallRealMethod();
-    when(mockRow.setValue(any(Column.class), any())).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(anyString())).thenReturn(1);
+    assertThat(mockRow.setValue(mockColumn, "NewValue")).isEqualTo("OldValue");
 
-    assertThat(mockRow.setValue(mockColumn, "newValue")).isEqualTo("currentValue");
-
+    verify(mockRow, times(1)).setValue(eq(mockColumn), eq("NewValue"));
     verify(mockColumn, times(1)).getName();
-    verify(mockRow, times(1)).getView();
-    verify(mockRow, times(1)).setValue(eq(1), eq("newValue"));
-    verify(mockRow, times(1)).setValue(eq("TestColumn"), eq("newValue"));
-    verify(mockView, times(1)).indexOf(eq("TestColumn"));
+    verify(mockRow, times(1)).setValue(eq("TestColumn"), eq("NewValue"));
+    verifyNoMoreInteractions(mockColumn, mockRow);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void setValueWithColumnWhenViewIsNullThrowsIllegalStateException() {
-
-    Column mockColumn = mock(Column.class);
+  @Test
+  public void setValueWithNullColumn() {
 
     Row mockRow = mock(Row.class);
 
-    when(mockColumn.getName()).thenReturn("TestColumn");
-    when(mockRow.getView()).thenReturn(Optional.empty());
-    when(mockRow.setValue(anyString(), any())).thenCallRealMethod();
-    when(mockRow.setValue(any(Column.class), any())).thenCallRealMethod();
+    doCallRealMethod().when(mockRow).setValue(ArgumentMatchers.<Column<?>>any(), any());
 
-    try {
-      mockRow.setValue(mockColumn, "test");
-    }
-    catch (IllegalStateException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockRow.setValue((Column<?>) null, "test"))
+      .withMessage("[null] is not a Column in this Row")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("This Row is not associated with a View");
-      assertThat(expected).hasNoCause();
+    verify(mockRow, times(1)).setValue(isNull(Column.class), eq("test"));
+    verifyNoMoreInteractions(mockRow);
+  }
 
-      throw expected;
-    }
-    finally {
+  @Test
+  @SuppressWarnings("unchecked")
+  public void setValueWithInvalidNoNamedColumn() {
+
+    Column<?> mockColumn = mock(Column.class);
+
+    Row mockRow = mock(Row.class);
+
+    doCallRealMethod().when(mockRow).setValue(ArgumentMatchers.<Column<?>>any(), any());
+
+    Arrays.asList("  ", "", null).forEach(columnName -> {
+
+      doReturn(columnName).when(mockColumn).getName();
+
+      assertThatIllegalArgumentException()
+        .isThrownBy(() -> mockRow.setValue(mockColumn, "test"))
+        .withMessage("[%s] is not a Column in this Row", mockColumn)
+        .withNoCause();
+
       verify(mockColumn, times(1)).getName();
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).setValue(eq("TestColumn"), eq("test"));
-    }
-  }
+      reset(mockColumn);
+    });
 
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void setValueWithInvalidColumnThrowsIndexOutOfBoundsException() {
-
-    Column mockColumn = mock(Column.class);
-
-    Row mockRow = mock(Row.class);
-
-    View mockView = mock(View.class);
-
-    when(mockColumn.getName()).thenReturn("TestColumn");
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockRow.setValue(anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockRow.setValue(anyString(), any())).thenCallRealMethod();
-    when(mockRow.setValue(any(Column.class), any())).thenCallRealMethod();
-    when(mockView.indexOf(anyString())).thenReturn(-1);
-
-    try {
-      mockRow.setValue(mockColumn, "test");
-    }
-    catch (IndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockColumn, times(1)).getName();
-      verify(mockRow, times(1)).getView();
-      verify(mockRow, times(1)).setValue(eq("TestColumn"), eq("test"));
-      verify(mockRow, times(1)).setValue(eq(-1), eq("test"));
-      verify(mockView, times(1)).indexOf(eq("TestColumn"));
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void setValueWithNullColumnThrowsIllegalArgumentException() {
-
-    Row mockRow = mock(Row.class);
-
-    when(mockRow.setValue(ArgumentMatchers.<Column>any(), any())).thenCallRealMethod();
-
-    try {
-      mockRow.setValue((Column) null, "test");
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("[null] is not a valid Column in this Row");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    verify(mockRow, never()).setValue(anyString(), any());
+    verify(mockRow, times(3)).setValue(eq(mockColumn), eq("test"));
+    verifyNoMoreInteractions(mockColumn, mockRow);
   }
 
   @Test
@@ -470,14 +366,16 @@ public class RowUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockRow.index()).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.of(mockView));
-    when(mockView.indexOf(any(Row.class))).thenReturn(2);
+    doCallRealMethod().when(mockRow).index();
+    doReturn(Optional.of(mockView)).when(mockRow).getView();
+    doReturn(2).when(mockView).indexOf(any(Row.class));
 
     assertThat(mockRow.index()).isEqualTo(2);
 
+    verify(mockRow, times(1)).index();
     verify(mockRow, times(1)).getView();
     verify(mockView, times(1)).indexOf(eq(mockRow));
+    verifyNoMoreInteractions(mockRow, mockView);
   }
 
   @Test
@@ -485,11 +383,13 @@ public class RowUnitTests {
 
     Row mockRow = mock(Row.class);
 
-    when(mockRow.index()).thenCallRealMethod();
-    when(mockRow.getView()).thenReturn(Optional.empty());
+    doCallRealMethod().when(mockRow).index();
+    doReturn(Optional.empty()).when(mockRow).getView();
 
     assertThat(mockRow.index()).isEqualTo(-1);
 
+    verify(mockRow, times(1)).index();
     verify(mockRow, times(1)).getView();
+    verifyNoMoreInteractions(mockRow);
   }
 }
