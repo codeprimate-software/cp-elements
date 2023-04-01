@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Integers;
+import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
 
@@ -143,7 +144,7 @@ public interface Row {
    * in this {@link Row}.
    * @param columnName {@link String} containing the {@literal name} of the {@link Column}.
    * @param value {@link Object value} to set for the given {@link String named} {@link Column} in this {@link Row}.
-   * @return the current {@link Object value} for the {@link String named} {@link Column}.
+   * @return the current {@link Object value} for the {@link String named} {@link Column} in this {@link Row}.
    * @throws IllegalStateException if this {@link Row} is not associated with a {@link View}.
    * @throws IndexOutOfBoundsException if the {@link Integer column index} is out of bounds.
    * @see org.cp.elements.data.struct.tabular.View#indexOf(String)
@@ -154,8 +155,9 @@ public interface Row {
 
     return getView()
       .map(view -> view.indexOf(columnName))
+      .filter(index -> index > -1)
       .map(index -> this.setValue(index, value))
-      .orElseThrow(() -> newIllegalStateException("This Row [%d] is not associated with a View", index()));
+      .orElseThrow(() -> newIllegalStateException("Row [%d] is not associated with a View", index()));
   }
 
   /**
@@ -175,6 +177,7 @@ public interface Row {
 
     return Optional.ofNullable(column)
       .map(Column::getName)
+      .filter(StringUtils::hasText)
       .map(columnName -> this.setValue(columnName, value))
       .orElseThrow(() -> newIllegalArgumentException("[%s] is not a Column in this Row", column));
   }
