@@ -17,10 +17,12 @@ package org.cp.elements.data.struct.tabular;
 
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalArgumentException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIndexOutOfBoundsException;
 
 import java.lang.reflect.Constructor;
 import java.util.Optional;
 
+import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Integers;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -48,8 +50,18 @@ public interface Row {
    * @return the {@link Object value} stored in the {@link Column} at the given {@link Integer column index}
    * in this {@link Row}.
    * @throws IndexOutOfBoundsException if the given {@link Integer column index} is out of bounds.
+   * The {@link Integer column index} must be greater than equal to {@literal 0}.
+   * @see #values()
    */
-  <T> T getValue(int columnIndex);
+  @SuppressWarnings("unchecked")
+  default @Nullable <T> T getValue(int columnIndex) {
+
+    Assert.isTrue(columnIndex > -1,
+      newIndexOutOfBoundsException("Column index [%1$d] for Row [%2$d] must be greater than equal to 0",
+        columnIndex, index()));
+
+    return (T) values()[columnIndex];
+  }
 
   /**
    * Returns the {@link Object value} for the given {@link String named} {@link Column} in this {@link Row}.
@@ -94,7 +106,7 @@ public interface Row {
     return Optional.ofNullable(column)
       .map(Column::getName)
       .<T>map(this::getValue)
-      .orElseThrow(() -> newIllegalArgumentException("[%s] is not a Column in this Row", column));
+      .orElseThrow(() -> newIllegalArgumentException("[%s] is not a Column in this Row [%d]", column, index()));
   }
 
   /**
