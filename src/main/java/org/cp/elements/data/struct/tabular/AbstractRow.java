@@ -16,17 +16,17 @@
 package org.cp.elements.data.struct.tabular;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMappingException;
-import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Optional;
 
+import org.cp.elements.beans.model.BeanAdapter;
+import org.cp.elements.beans.model.BeanModel;
+import org.cp.elements.beans.model.Property;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
@@ -43,16 +43,22 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings("unused")
 public abstract class AbstractRow implements Row {
 
+  protected static final String ROW_TO_STRING = "Row %d";
+
   /**
    * Constructs a new {@link AbstractRow} initialized with given array of {@link Object values}
    * used as {@link Object values} for each {@link Column} of the new {@link AbstractRow}.
    *
+   * The new {@link AbstractRow} is backed by the given array of {@link Object values}. The array is not copied.
+   *
    * @param values array of {@link Object values} used as {@link Object values} for each {@link Column}
    * of the new {@link AbstractRow}.
    * @return a new {@link AbstractRow} initialized with the given array of {@link Object values}.
+   * @see org.cp.elements.data.struct.tabular.Row#setValue(int, Object)
+   * @see org.cp.elements.data.struct.tabular.Row#values()
    */
   @NullSafe
-  public static AbstractRow of(Object[] values) {
+  public static @NotNull AbstractRow of(@NotNull Object[] values) {
 
     Object[] rowValues = ArrayUtils.nullSafeArray(values);
 
@@ -60,17 +66,11 @@ public abstract class AbstractRow implements Row {
 
       @Override
       @SuppressWarnings("unchecked")
-      public <T> T getValue(int columnIndex) {
-        return (T) rowValues[columnIndex];
-      }
-
-      @Override
-      @SuppressWarnings("unchecked")
-      public <T> T setValue(int columnIndex, T value) {
+      public <T> T setValue(int columnIndex, T newValue) {
 
         T currentValue = (T) rowValues[columnIndex];
 
-        rowValues[columnIndex] = value;
+        rowValues[columnIndex] = newValue;
 
         return currentValue;
       }
@@ -84,89 +84,86 @@ public abstract class AbstractRow implements Row {
 
   private View view;
 
-  /**
-   * Sets the {@link View} to which this {@link Row} is associated.
-   *
-   * @param view {@link View} containing this {@link Row}.
-   * @see org.cp.elements.data.struct.tabular.View
-   * @see #getView()
-   */
-  public void setView(View view) {
-    this.view = view;
-  }
-
-  /**
-   * Returns an {@link Optional} {@link View} to which this {@link Row} is associated.
-   *
-   * @return an {@link Optional} {@link View} containing this {@link Row}.
-   * @see org.cp.elements.data.struct.tabular.View
-   * @see java.util.Optional
-   */
   @Override
   public Optional<View> getView() {
     return Optional.ofNullable(this.view);
   }
 
   /**
-   * Maps the {@link Object values} of this {@link Row} to the given {@link Object}.
+   * Sets the {@link View} containing this {@link Row}.
    *
-   * The {@link Class type} must have a default, public no argument {@link Constructor}.
-   *
-   * @param <T> {@link Class type} of the {@link Object} to map with the {@link Object value} from this {@link Row}.
-   * @param type {@link Class type} of the {@link Object} to map with the {@link Object values} from this {@link Row}.
-   * @return the {@link Object} populated with the {@link Object values} of this {@link Row}.
-   * @see java.lang.Class
+   * @param view {@link View} containing this {@link Row}.
+   * @see org.cp.elements.data.struct.tabular.View
+   * @see #getView()
    */
+  public void setView(@Nullable View view) {
+    this.view = view;
+  }
+
   @Override
-  public <T> T map(Class<T> type) {
+  public @NotNull <T> T map(@NotNull Class<T> type) {
 
-    Assert.notNull(type, "Class type of the object to map is required");
+    Assert.notNull(type, "Class type of the object to map from this Row [%d] is required", index());
 
-    return getView().map(view -> {
+    try {
 
-      try {
+      T instance = type.newInstance();
 
-        BeanInfo beanInfo = Introspector.getBeanInfo(type);
+      BeanAdapter instanceBean = BeanAdapter.from(instance);
+      BeanModel instanceModel = instanceBean.getModel();
 
-        T instance = type.newInstance();
+      instanceModel.getProperties().stream()
+        .filter(Property::isWritable)
+        .forEach(property -> {
 
-        Arrays.stream(beanInfo.getPropertyDescriptors()).forEach(propertyDescriptor ->
-          Optional.ofNullable(propertyDescriptor.getWriteMethod()).ifPresent(writeMethod -> {
+          // TODO: Handle property to column mapping.
+          // TODO: Handle column value to property type conversion.
+          String columnName = property.getName();
 
-            String propertyName = propertyDescriptor.getName();
+          property.setValue(getValue(columnName));
+        });
 
-            this.view.getColumn(propertyName).ifPresent(column -> {
-              Object value = getValue(column);
-              ObjectUtils.invoke(instance, writeMethod, ArrayUtils.asArray(value), Void.class);
-            });
-          }));
+      return instance;
+    }
+    catch (Exception cause) {
+      throw newMappingException(cause, "Failed to map object of type [%s] with values from this Row [%d]",
+        type.getName(), index());
+    }
+  }
 
-        return instance;
-      }
-      catch (Exception cause) {
-        throw newMappingException(cause, "Failed to map object of type [%s] with values from this Row [%s]",
-          type.getName(), this);
-      }
-    })
-    .orElseThrow(() -> newIllegalStateException("This Row [%s] is not associated with a View", this));
+  @Override
+  public @NotNull Row store(@NotNull Object target) {
+
+    Assert.notNull(target, "Object to map to this Row [%d] is required", index());
+
+    BeanAdapter targetBean = BeanAdapter.from(target);
+    BeanModel targetModel = targetBean.getModel();
+
+    targetModel.getProperties().stream()
+      .filter(Property::isReadable)
+      .forEach(property -> {
+
+        // TODO: Handle property to column mapping.
+        // TODO: Handle property value to column type conversion.
+        String columnName = property.getName();
+
+        setValue(columnName, property.getValue());
+      });
+
+    return this;
   }
 
   /**
    * Returns a {@link String} representation of this {@link Row}.
    *
    * @return a {@link String} describing this {@link Row}.
-   * @see java.lang.String
+   * @see java.lang.Object#toString()
    */
   @Override
-  public String toString() {
-    return String.format("Row %d", index());
+  public @NotNull String toString() {
+    return String.format(ROW_TO_STRING, index());
   }
 
-  /**
-   * Returns the {@link Object values} of this {@link Row} in an array.
-   *
-   * @return the {@link Object values} of this {@link Row} in an array.
-   */
   @Override
   public Object[] values() {
     return ObjectUtils.EMPTY_OBJECT_ARRAY;

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -24,17 +24,19 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.junit.Test;
+
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.reflect.MethodInvocationException;
-import org.junit.Test;
 
 import lombok.Data;
 import lombok.Getter;
@@ -42,7 +44,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Unit tests for {@link AbstractRow}.
+ * Unit Tests for {@link AbstractRow}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -50,7 +52,7 @@ import lombok.Setter;
  * @see org.cp.elements.data.struct.tabular.AbstractRow
  * @since 1.0.0
  */
-public class AbstractRowTests {
+public class AbstractRowUnitTests {
 
   @Test
   public void ofValuesReturnsRowOfValues() {
@@ -66,9 +68,21 @@ public class AbstractRowTests {
       assertThat(row.<Object>getValue(index)).isEqualTo(values[index]);
     }
 
+    assertThat(values[1]).isEqualTo('X');
     assertThat(row.<Object>getValue(1)).isEqualTo('X');
     assertThat(row.setValue(1, 'Y')).isEqualTo('X');
     assertThat(row.<Object>getValue(1)).isEqualTo('Y');
+    assertThat(values[1]).isEqualTo('Y');
+  }
+
+  @Test
+  public void ofEmptyValuesReturnsEmptyRow() {
+
+    AbstractRow row = AbstractRow.of(null);
+
+    assertThat(row).isNotNull();
+    assertThat(row.values()).isNotNull();
+    assertThat(row.values()).isEmpty();
   }
 
   @Test
@@ -86,17 +100,37 @@ public class AbstractRowTests {
 
     AbstractRow row = new TestRow();
 
-    View mockView = mock(View.class);
+    View mockViewOne = mock(View.class);
+    View mockViewTwo = mock(View.class);
 
-    assertThat(row.getView().isPresent()).isFalse();
+    assertThat(row.getView()).isNotPresent();
 
-    row.setView(mockView);
+    row.setView(mockViewOne);
 
-    assertThat(row.getView().orElse(null)).isEqualTo(mockView);
+    assertThat(row.getView()).isPresent();
+    assertThat(row.getView().orElse(null)).isSameAs(mockViewOne);
+
+    row.setView(mockViewTwo);
+
+    assertThat(row.getView()).isPresent();
+    assertThat(row.getView().orElse(null)).isSameAs(mockViewTwo);
 
     row.setView(null);
 
-    assertThat(row.getView().isPresent()).isFalse();
+    assertThat(row.getView()).isNotPresent();
+
+    verifyNoInteractions(mockViewOne, mockViewTwo);
+  }
+
+  @Test
+  public void getViewReturnsEmptyByDefault() {
+
+    AbstractRow row = new TestRow();
+
+    Optional<View> view = row.getView();
+
+    assertThat(view).isNotNull();
+    assertThat(view).isNotPresent();
   }
 
   @Test(expected = MappingException.class)
@@ -281,16 +315,11 @@ public class AbstractRowTests {
     assertThat(values).isEmpty();
   }
 
-  private static class TestRow extends AbstractRow {
-
-    @Override
-    public <T> T getValue(int columnIndex) {
-      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
-    }
+  static class TestRow extends AbstractRow {
 
     @Override
     public <T> T setValue(int columnIndex, T value) {
-      throw new UnsupportedOperationException(Constants.NOT_IMPLEMENTED);
+      throw newUnsupportedOperationException(Constants.NOT_IMPLEMENTED);
     }
   }
 
@@ -316,7 +345,7 @@ public class AbstractRowTests {
   private static class FemalePerson {
 
     @Getter
-    private Gender gender = Gender.FEMALE;
+    private final Gender gender = Gender.FEMALE;
 
     @Getter @Setter
     private LocalDateTime birthDate;
