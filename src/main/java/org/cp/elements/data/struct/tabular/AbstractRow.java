@@ -142,19 +142,27 @@ public abstract class AbstractRow implements Row {
 
     Assert.notNull(target, "Object to map to this Row [%d] is required", index());
 
-    BeanAdapter targetBean = BeanAdapter.from(target);
-    BeanModel targetModel = targetBean.getModel();
+    getView()
+      .map(view -> {
 
-    targetModel.getProperties().stream()
-      .filter(Property::isReadable)
-      .forEach(property -> {
+        BeanAdapter targetBean = BeanAdapter.from(target);
+        BeanModel targetModel = targetBean.getModel();
 
-        // TODO: Handle property to column mapping.
-        // TODO: Handle property value to column type conversion.
-        String columnName = property.getName();
+        targetModel.getProperties().stream()
+          .filter(Property::isReadable)
+          .forEach(property -> {
 
-        setValue(columnName, property.getValue());
-      });
+            // TODO: Handle bean property to table column mapping.
+            // TODO: Handle bean property value to table column type conversions.
+            // TODO: Handle missing bean properties for non-nullable table columns.
+            view.getColumn(property.getName())
+              .ifPresent(column -> setValue(column, property.getValue()));
+          });
+
+        return target;
+
+      })
+      .orElseThrow(() -> newIllegalStateException("Row [%d] is not associated with a View", index()));
 
     return this;
   }

@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
@@ -70,6 +71,16 @@ public class AbstractRowUnitTests {
     assertThat(person).isNotNull();
     assertThat(person.getGender()).isEqualTo(expectedGender);
     assertThat(person.getName()).isEqualTo(expectedName);
+  }
+
+  private static Person newPerson(String name, Gender gender) {
+
+    Person person = new Person();
+
+    person.setName(name);
+    person.setGender(gender);
+
+    return person;
   }
 
   @Test
@@ -314,6 +325,82 @@ public class AbstractRowUnitTests {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
+  public void storePersonToTable() {
+
+    View mockView = mock(View.class);
+
+    Column<Gender> mockGenderColumn = mock(Column.class);
+    Column<Gender> mockNameColumn = mock(Column.class);
+
+    AbstractRow row = spy(TestRow.class);
+
+    doReturn(Optional.of(mockGenderColumn)).when(mockView).getColumn(eq("gender"));
+    doReturn(Optional.of(mockNameColumn)).when(mockView).getColumn(eq("name"));
+    doReturn(128).when(mockView).indexOf(eq(row));
+    doReturn(Optional.of(mockView)).when(row).getView();
+    doReturn(null).when(row).setValue(eq(mockNameColumn), any());
+    doReturn(null).when(row).setValue(eq(mockGenderColumn), any());
+
+    Person jonDoe = newPerson("Jon Doe", Gender.MALE);
+
+    row.store(jonDoe);
+
+    verify(mockView, times(1)).indexOf(eq(row));
+    verify(mockView, times(1)).getColumn(eq("gender"));
+    verify(mockView, times(1)).getColumn(eq("name"));
+    verify(row, times(1)).store(eq(jonDoe));
+    verify(row, times(1)).index();
+    verify(row, times(2)).getView();
+    verify(row, times(1)).setValue(eq(mockGenderColumn), eq(jonDoe.getGender()));
+    verify(row, times(1)).setValue(eq(mockNameColumn), eq(jonDoe.getName()));
+    verifyNoMoreInteractions(mockView, row);
+    verifyNoInteractions(mockGenderColumn, mockNameColumn);
+  }
+
+  @Test
+  public void storeNullObjectThrowsIllegalArgumentException() {
+
+    AbstractRow row = spy(TestRow.class);
+
+    View mockView = mock(View.class);
+
+    doReturn(256).when(mockView).indexOf(eq(row));
+    doReturn(Optional.of(mockView)).when(row).getView();
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> row.store(null))
+      .withMessage("Object to map to this Row [256] is required")
+      .withNoCause();
+
+    verify(row, times(1)).store(isNull());
+    verify(row, times(1)).index();
+    verify(row, times(1)).getView();
+    verify(mockView, times(1)).indexOf(eq(row));
+    verifyNoMoreInteractions(mockView, row);
+  }
+
+  @Test
+  public void storeWithNoViewThrowsIllegalStateException() {
+
+    Object target = new Object();
+
+    AbstractRow row = spy(TestRow.class);
+
+    doReturn(Optional.empty()).when(row).getView();
+
+    assertThatIllegalStateException()
+      .isThrownBy(() -> row.store(target))
+      .withMessage("Row [-1] is not associated with a View")
+      .withNoCause();
+
+    verify(row, times(1)).store(eq(target));
+    verify(row, times(2)).index();
+    verify(row, times(3)).getView();
+    verifyNoMoreInteractions(row);
+  }
+
+  @Test
   public void toStringIsCorrect() {
 
     AbstractRow row = spy(new TestRow());
@@ -323,6 +410,7 @@ public class AbstractRowUnitTests {
     assertThat(row.toString()).isEqualTo("Row 4");
 
     verify(row, times(1)).index();
+    verifyNoMoreInteractions(row);
   }
 
   @Test
