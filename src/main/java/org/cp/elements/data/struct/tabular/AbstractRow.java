@@ -16,6 +16,7 @@
 package org.cp.elements.data.struct.tabular;
 
 import static org.cp.elements.lang.ElementsExceptionsFactory.newMappingException;
+import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateException;
 
 import java.util.Optional;
 
@@ -105,30 +106,35 @@ public abstract class AbstractRow implements Row {
 
     Assert.notNull(type, "Class type of the object to map from this Row [%d] is required", index());
 
-    try {
+    return getView()
+      .map(view -> {
 
-      T instance = type.newInstance();
+        try {
 
-      BeanAdapter instanceBean = BeanAdapter.from(instance);
-      BeanModel instanceModel = instanceBean.getModel();
+          T instance = type.newInstance();
 
-      instanceModel.getProperties().stream()
-        .filter(Property::isWritable)
-        .forEach(property -> {
+          BeanAdapter instanceBean = BeanAdapter.from(instance);
+          BeanModel instanceModel = instanceBean.getModel();
 
-          // TODO: Handle property to column mapping.
-          // TODO: Handle column value to property type conversion.
-          String columnName = property.getName();
+          instanceModel.getProperties().stream()
+            .filter(Property::isWritable)
+            .forEach(property -> {
 
-          property.setValue(getValue(columnName));
-        });
+              // TODO: Handle bean property to table column mapping.
+              // TODO: Handle non-present table columns for bean properties.
+              // TODO: Handle table column value to bean property type conversions.
+              view.getColumn(property.getName())
+                .ifPresent(column -> property.setValue(getValue(column)));
+            });
 
-      return instance;
-    }
-    catch (Exception cause) {
-      throw newMappingException(cause, "Failed to map object of type [%s] with values from this Row [%d]",
-        type.getName(), index());
-    }
+          return instance;
+        }
+        catch (Exception cause) {
+          throw newMappingException(cause, "Failed to map object of type [%s] with values from this Row [%d]",
+            type.getName(), index());
+        }
+      })
+      .orElseThrow(() -> newIllegalStateException("Row [%d] is not associated with a View", index()));
   }
 
   @Override
