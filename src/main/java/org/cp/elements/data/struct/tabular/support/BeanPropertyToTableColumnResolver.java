@@ -15,11 +15,14 @@
  */
 package org.cp.elements.data.struct.tabular.support;
 
+import java.util.Optional;
+
 import org.cp.elements.beans.Bean;
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Table;
 import org.cp.elements.data.struct.tabular.View;
+import org.cp.elements.text.FormatUtils;
 
 /**
  * Interface defining a contract for resolving a {@link Table} or {@link View} {@link Column} for a given,
@@ -38,13 +41,31 @@ import org.cp.elements.data.struct.tabular.View;
 public interface BeanPropertyToTableColumnResolver {
 
   /**
+   * Requires a {@link Table} {@link Column} to be resolvable from the given {@link Bean} {@link Property}.
+   *
+   * @param beanProperty {@link Bean} {@link Property} used to resolve the {@link Table} {@link Column}.
+   * @return the {@link Table} {@link Column} resolved from the given {@link Bean} {@link Property}.
+   * @throws ColumnNotFoundException if a {@link Table} {@link Column} cannot be resolved from
+   * the given {@link Bean} {@link Property}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see org.cp.elements.beans.model.Property
+   * @see #resolve(Property)
+   */
+  default Column<?> require(Property beanProperty) {
+    return this.resolve(beanProperty)
+      .orElseThrow(() -> new ColumnNotFoundException(
+        FormatUtils.format("Table column for bean property [%s] was not found", beanProperty)));
+  }
+
+  /**
    * Resolves a {@link Table} {@link Column} from an given, required {@link Bean} {@link Property}.
    *
    * @param beanProperty {@link Bean} {@link Property} to resolve into a {@link Table} {@link Column}.
    * @return the resolved {@link Table} {@link Column} from the given, required {@link Bean} {@link Property}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see org.cp.elements.beans.model.Property
+   * @see java.util.Optional
    */
-  Column<?> resolve(Property beanProperty);
+  Optional<Column<?>> resolve(Property beanProperty);
 
 }
