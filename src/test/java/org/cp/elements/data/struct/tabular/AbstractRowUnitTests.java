@@ -38,6 +38,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.mapping.MappingException;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Constants;
@@ -172,6 +173,7 @@ public class AbstractRowUnitTests {
     AbstractRow row = spy(new TestRow());
 
     doReturn(Optional.of(mockView)).when(row).getView();
+    doReturn(true).when(mockView).contains(eq("value"));
     doReturn(Optional.of(mockValueColumn)).when(mockView).getColumn(eq("value"));
     doReturn("test").when(row).getValue(eq(mockValueColumn));
     doReturn(2).when(row).index();
@@ -187,9 +189,12 @@ public class AbstractRowUnitTests {
       .withNoCause();
 
     verify(row, times(1)).map(eq(ExplodingType.class));
-    verify(row, times(1)).getView();
+    verify(row, times(2)).getView();
+    verify(row, times(1)).beanPropertyToTableColumnResolver();
     verify(row, times(1)).getValue(eq(mockValueColumn));
+    verify(row, times(1)).postProcess(any(Property.class), eq("test"));
     verify(row, times(2)).index();
+    verify(mockView, times(1)).contains(eq("value"));
     verify(mockView, times(1)).getColumn(eq("value"));
     verifyNoMoreInteractions(row, mockView);
     verifyNoInteractions(mockValueColumn);
@@ -266,6 +271,8 @@ public class AbstractRowUnitTests {
 
     AbstractRow row = spy(new TestRow());
 
+    doReturn(true).when(mockView).contains(eq("gender"));
+    doReturn(true).when(mockView).contains(eq("name"));
     doReturn(Optional.of(mockGenderColumn)).when(mockView).getColumn(eq("gender"));
     doReturn(Optional.of(mockNameColumn)).when(mockView).getColumn(eq("name"));
     doReturn(Optional.ofNullable(mockView)).when(row).getView();
@@ -279,13 +286,18 @@ public class AbstractRowUnitTests {
 
     verify(row, times(1)).map(eq(FemalePerson.class));
     verify(row, times(1)).index();
-    verify(row, times(1)).getView();
+    verify(row, times(3)).getView();
+    verify(row, times(2)).beanPropertyToTableColumnResolver();
     verify(row, times(1)).getValue(eq(mockNameColumn));
+    verify(row, times(1)).postProcess(any(Property.class), eq("Jane Doe"));
     verify(row, never()).getValue(eq(mockGenderColumn));
     verify(row, never()).getValue(eq("birthDate"));
+    verify(mockView, times(1)).contains(eq("name"));
+    verify(mockView, never()).contains(eq("gender"));
+    verify(mockView, times(1)).contains(eq("birthDate"));
     verify(mockView, times(1)).getColumn(eq("name"));
     verify(mockView, never()).getColumn(eq("gender"));
-    verify(mockView, times(1)).getColumn(eq("birthDate"));
+    verify(mockView, never()).getColumn(eq("birthDate"));
     verifyNoMoreInteractions(row, mockView);
     verifyNoInteractions(mockGenderColumn, mockNameColumn);
   }
@@ -301,6 +313,8 @@ public class AbstractRowUnitTests {
 
     AbstractRow row = spy(new TestRow());
 
+    doReturn(true).when(mockView).contains(eq("gender"));
+    doReturn(true).when(mockView).contains(eq("name"));
     doReturn(Optional.of(mockGenderColumn)).when(mockView).getColumn(eq("gender"));
     doReturn(Optional.of(mockNameColumn)).when(mockView).getColumn(eq("name"));
     doReturn(64).when(mockView).indexOf(eq(row));
@@ -312,14 +326,19 @@ public class AbstractRowUnitTests {
 
     assertPerson(jonDoe, "Jon Doe", Gender.MALE);
 
+    verify(row, times(1)).map(eq(Person.class));
+    verify(row, times(4)).getView();
+    verify(row, times(2)).beanPropertyToTableColumnResolver();
+    verify(row, times(1)).getValue(eq(mockGenderColumn));
+    verify(row, times(1)).getValue(eq(mockNameColumn));
+    verify(row, times(1)).postProcess(any(Property.class), eq("Jon Doe"));
+    verify(row, times(1)).postProcess(any(Property.class), eq(Gender.MALE));
+    verify(row, times(1)).index();
+    verify(mockView, times(1)).contains(eq("gender"));
+    verify(mockView, times(1)).contains(eq("name"));
     verify(mockView, times(1)).getColumn(eq("gender"));
     verify(mockView, times(1)).getColumn(eq("name"));
     verify(mockView, times(1)).indexOf(eq(row));
-    verify(row, times(1)).map(eq(Person.class));
-    verify(row, times(2)).getView();
-    verify(row, times(1)).getValue(eq(mockGenderColumn));
-    verify(row, times(1)).getValue(eq(mockNameColumn));
-    verify(row, times(1)).index();
     verifyNoMoreInteractions(mockView, row);
     verifyNoInteractions(mockGenderColumn, mockNameColumn);
   }
@@ -335,6 +354,8 @@ public class AbstractRowUnitTests {
 
     AbstractRow row = spy(TestRow.class);
 
+    doReturn(true).when(mockView).contains(eq("gender"));
+    doReturn(true).when(mockView).contains(eq("name"));
     doReturn(Optional.of(mockGenderColumn)).when(mockView).getColumn(eq("gender"));
     doReturn(Optional.of(mockNameColumn)).when(mockView).getColumn(eq("name"));
     doReturn(128).when(mockView).indexOf(eq(row));
@@ -346,14 +367,19 @@ public class AbstractRowUnitTests {
 
     row.store(jonDoe);
 
-    verify(mockView, times(1)).indexOf(eq(row));
-    verify(mockView, times(1)).getColumn(eq("gender"));
-    verify(mockView, times(1)).getColumn(eq("name"));
     verify(row, times(1)).store(eq(jonDoe));
     verify(row, times(1)).index();
-    verify(row, times(2)).getView();
+    verify(row, times(4)).getView();
+    verify(row, times(2)).beanPropertyToTableColumnResolver();
     verify(row, times(1)).setValue(eq(mockGenderColumn), eq(jonDoe.getGender()));
     verify(row, times(1)).setValue(eq(mockNameColumn), eq(jonDoe.getName()));
+    verify(row, times(1)).postProcess(eq(mockNameColumn), eq("Jon Doe"));
+    verify(row, times(1)).postProcess(eq(mockGenderColumn), eq(Gender.MALE));
+    verify(mockView, times(1)).contains(eq("gender"));
+    verify(mockView, times(1)).contains(eq("name"));
+    verify(mockView, times(1)).getColumn(eq("gender"));
+    verify(mockView, times(1)).getColumn(eq("name"));
+    verify(mockView, times(1)).indexOf(eq(row));
     verifyNoMoreInteractions(mockView, row);
     verifyNoInteractions(mockGenderColumn, mockNameColumn);
   }

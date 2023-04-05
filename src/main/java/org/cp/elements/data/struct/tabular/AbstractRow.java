@@ -20,9 +20,11 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newIllegalStateExcep
 
 import java.util.Optional;
 
+import org.cp.elements.beans.Bean;
 import org.cp.elements.beans.model.BeanAdapter;
 import org.cp.elements.beans.model.BeanModel;
 import org.cp.elements.beans.model.Property;
+import org.cp.elements.data.struct.tabular.support.BeanPropertyToTableColumnResolver;
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
@@ -101,6 +103,28 @@ public abstract class AbstractRow implements Row {
     this.view = view;
   }
 
+  /**
+   * Returns a reference to the configured {@link BeanPropertyToTableColumnResolver} to resolve
+   * the {@link Table} {@link Column} for a given {@link Bean} {@link Property}.
+   *
+   * @return a reference tot he configured {@link BeanPropertyToTableColumnResolver}.
+   * @see org.cp.elements.data.struct.tabular.support.BeanPropertyToTableColumnResolver
+   */
+  @SuppressWarnings("all")
+  protected BeanPropertyToTableColumnResolver beanPropertyToTableColumnResolver() {
+
+    return property -> {
+
+      String propertyName = property.getName();
+      String columnName = propertyName;
+
+      return getView()
+        .filter(view -> view.contains(columnName))
+        .flatMap(view -> view.getColumn(columnName))
+        .map(Column.class::cast);
+    };
+  }
+
   @Override
   public @NotNull <T> T map(@NotNull Class<T> type) {
 
@@ -120,11 +144,17 @@ public abstract class AbstractRow implements Row {
             .filter(Property::isWritable)
             .forEach(property -> {
 
-              // TODO: Handle bean property to table column mapping.
-              // TODO: Handle non-present table columns for bean properties.
-              // TODO: Handle table column value to bean property type conversions.
-              view.getColumn(property.getName())
-                .ifPresent(column -> property.setValue(getValue(column)));
+              // TODO: Handle non-existing bean properties for table columns.
+              // TODO: Handle non-existing table columns for bean properties.
+              beanPropertyToTableColumnResolver()
+                .resolve(property)
+                .ifPresent(column -> {
+
+                  Object columnValue = getValue(column);
+                  Object postProcessedColumnValue = postProcess(property, columnValue);
+
+                  property.setValue(postProcessedColumnValue);
+                });
             });
 
           return instance;
@@ -135,6 +165,34 @@ public abstract class AbstractRow implements Row {
         }
       })
       .orElseThrow(() -> newIllegalStateException("Row [%d] is not associated with a View", index()));
+  }
+
+  /**
+   * Post processes the {@link Object value} accessed from the {@link Column} with respect to the given,
+   * required {@link Property}.
+   *
+   * @param beanProperty {@link Bean} {@link Property} used to process the {@link Column} {@link Object value}.
+   * @param columnValue {@link Object value} retrieved from the {@link Table} {@link Column}.
+   * @return the processed {@link Column} {@link Object value}.
+   * @see org.cp.elements.beans.model.Property
+   */
+  protected @Nullable Object postProcess(@NotNull Property beanProperty, @Nullable Object columnValue) {
+    // TODO: Handle table column value to bean property type conversions.
+    return columnValue;
+  }
+
+  /**
+   * Post processes the {@link Object value} accessed from the {@link Bean} {@link Property} with respect to
+   * the given, required {@link Table} {@link Column}.
+   *
+   * @param column {@link Table} {@link Column} used to process the {@link Bean} {@link Property} {@link Object value}.
+   * @param propertyValue {@link Object value} retrieved from the {@link Bean} {@link Property}.
+   * @return the processed {@link Column} {@link Object value}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   */
+  protected @Nullable Object postProcess(@NotNull Column<?> column, @Nullable Object propertyValue) {
+    // TODO: Handle bean property value to table column type conversions.
+    return propertyValue;
   }
 
   @Override
@@ -152,11 +210,17 @@ public abstract class AbstractRow implements Row {
           .filter(Property::isReadable)
           .forEach(property -> {
 
-            // TODO: Handle bean property to table column mapping.
-            // TODO: Handle bean property value to table column type conversions.
             // TODO: Handle missing bean properties for non-nullable table columns.
-            view.getColumn(property.getName())
-              .ifPresent(column -> setValue(column, property.getValue()));
+            // TODO: Handle non-existing table columns for bean properties.
+            beanPropertyToTableColumnResolver()
+              .resolve(property)
+              .ifPresent(column -> {
+
+                Object propertyValue = property.getValue();
+                Object postProcessedPropertyValue = postProcess(column, propertyValue);
+
+                setValue(column, postProcessedPropertyValue);
+              });
           });
 
         return target;
