@@ -144,8 +144,8 @@ public abstract class AbstractRow implements Row {
             .filter(Property::isWritable)
             .forEach(property -> {
 
-              // TODO: Handle non-existing bean properties for table columns.
-              // TODO: Handle non-existing table columns for bean properties.
+              // TODO: Handle missing bean properties for non-nullable table columns.
+              // TODO: Handle non-existing table columns for required bean properties.
               beanPropertyToTableColumnResolver()
                 .resolve(property)
                 .ifPresent(column -> {
@@ -211,7 +211,7 @@ public abstract class AbstractRow implements Row {
           .forEach(property -> {
 
             // TODO: Handle missing bean properties for non-nullable table columns.
-            // TODO: Handle non-existing table columns for bean properties.
+            // TODO: Handle non-existing table columns for required bean properties.
             beanPropertyToTableColumnResolver()
               .resolve(property)
               .ifPresent(column -> {
