@@ -76,7 +76,22 @@ public interface Table extends View {
    * @see #removeColumn(String)
    * @see #remove(Column)
    */
-  boolean removeColumn(int index);
+  default boolean removeColumn(int index) {
+
+    int columnIndex = 0;
+
+    for (Iterator<Column<?>> columnIterator = columns().iterator(); columnIterator.hasNext(); ) {
+
+      columnIterator.next();
+
+      if (columnIndex++ == index) {
+        columnIterator.remove();
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   /**
    * Removes the {@link Column} with the given {@link String name} from this {@link Table}.
