@@ -20,21 +20,31 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.cp.elements.lang.StringUtils;
 import org.junit.Test;
+
+import org.cp.elements.lang.Integers;
+import org.cp.elements.lang.StringUtils;
+
 import org.mockito.ArgumentMatchers;
+import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link Table}.
@@ -45,114 +55,191 @@ import org.mockito.ArgumentMatchers;
  * @see org.cp.elements.data.struct.tabular.Table
  * @since 1.0.0
  */
-public class TableTests {
+public class TableUnitTests {
+
+  private Column<?> mockColumn(String name) {
+
+    Column<?> mockColumn = mock(Column.class, withSettings().strictness(Strictness.LENIENT).name(name));
+
+    doReturn(name).when(mockColumn).getName();
+
+    return mockColumn;
+  }
+
+  @Test
+  public void removeColumnAtIndexReturnsTrue() {
+
+    Column<?> A = mockColumn("A");
+    Column<?> B = mockColumn("B");
+    Column<?> C = mockColumn("C");
+
+    List<Column<?>> columns = new ArrayList<>(Arrays.asList(A, B, C));
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeColumn(anyInt());
+    doReturn(columns).when(mockTable).columns();
+
+    assertThat(columns).containsExactly(A, B, C);
+    assertThat(mockTable.removeColumn(1)).isTrue();
+    assertThat(columns).containsExactly(A, C);
+
+    verify(mockTable, times(1)).removeColumn(eq(1));
+    verify(mockTable, times(1)).columns();
+    verifyNoMoreInteractions(mockTable);
+  }
+
+  @Test
+  public void removeColumnAtOverflowIndexReturnsFalse() {
+
+    Column<?> A = mockColumn("A");
+    Column<?> B = mockColumn("B");
+    Column<?> C = mockColumn("C");
+
+    List<Column<?>> columns = new ArrayList<>(Arrays.asList(A, B, C));
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeColumn(anyInt());
+    doReturn(columns).when(mockTable).columns();
+
+    assertThat(columns).containsExactly(A, B, C);
+    assertThat(mockTable.removeColumn(3)).isFalse();
+    assertThat(columns).containsExactly(A, B, C);
+
+    verify(mockTable, times(1)).removeColumn(eq(3));
+    verify(mockTable, times(1)).columns();
+    verifyNoMoreInteractions(mockTable);
+  }
+
+  @Test
+  public void removeColumnAtUnderflowIndexReturnsFalse() {
+
+    Column<?> A = mockColumn("A");
+    Column<?> B = mockColumn("B");
+    Column<?> C = mockColumn("C");
+
+    List<Column<?>> columns = new ArrayList<>(Arrays.asList(A, B, C));
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeColumn(anyInt());
+    doReturn(columns).when(mockTable).columns();
+
+    assertThat(columns).containsExactly(A, B, C);
+    assertThat(mockTable.removeColumn(-1)).isFalse();
+    assertThat(columns).containsExactly(A, B, C);
+
+    verify(mockTable, times(1)).removeColumn(eq(-1));
+    verify(mockTable, times(1)).columns();
+    verifyNoMoreInteractions(mockTable);
+  }
 
   @Test
   public void removeColumnByNameRemovesColumnAtIndexReturnsTrue() {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(anyString())).thenReturn(2);
-    when(mockTable.removeColumn(anyInt())).thenReturn(true);
-    when(mockTable.removeColumn(anyString())).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).removeColumn(anyString());
+    doReturn(2).when(mockTable).indexOf(anyString());
+    doReturn(true).when(mockTable).removeColumn(anyInt());
 
-    assertThat(mockTable.removeColumn("TestColumn")).isTrue();
+    assertThat(mockTable.removeColumn("MockColumn")).isTrue();
 
-    verify(mockTable, times(1)).indexOf(eq("TestColumn"));
+    verify(mockTable, times(1)).removeColumn(eq("MockColumn"));
+    verify(mockTable, times(1)).indexOf(eq("MockColumn"));
     verify(mockTable, times(1)).removeColumn(eq(2));
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
-  public void removeColumnByBlankNameReturnsFalse() {
-    testRemoveColumnByInvalidNameReturnsFalse("  ");
-  }
+  public void removeColumnByInvalidNameReturnsFalse() {
 
-  @Test
-  public void removeColumnByEmptyNameReturnsFalse() {
-    testRemoveColumnByInvalidNameReturnsFalse("");
+    Table mockTable = mock(Table.class);
+
+    Arrays.asList("  ", "", null).forEach(columnName -> {
+
+      doCallRealMethod().when(mockTable).removeColumn(eq(columnName));
+      doReturn(Integers.MINUS_ONE).when(mockTable).indexOf(eq(columnName));
+
+      assertThat(mockTable.removeColumn(columnName)).isFalse();
+
+      verify(mockTable, times(1)).removeColumn(eq(columnName));
+      verify(mockTable, times(1)).indexOf(eq(columnName));
+      verify(mockTable, never()).removeColumn(anyInt());
+      reset(mockTable);
+    });
+
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
   public void removeColumnByNonExistingNameReturnsFalse() {
-    testRemoveColumnByInvalidNameReturnsFalse("NonExistingColumn");
-  }
-
-  @Test
-  public void removeColumnByNullNameReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(ArgumentMatchers.<String>any())).thenReturn(-1);
-    when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.removeColumn(any())).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).removeColumn(anyString());
+    doReturn(-1).when(mockTable).indexOf(anyString());
 
-    assertThat(mockTable.removeColumn(null)).isFalse();
+    assertThat(mockTable.removeColumn("NonExistingColumn")).isFalse();
 
-    verify(mockTable, times(1)).indexOf(ArgumentMatchers.<String>isNull());
+    verify(mockTable, times(1)).removeColumn(eq("NonExistingColumn"));
+    verify(mockTable, times(1)).indexOf(eq("NonExistingColumn"));
     verify(mockTable, never()).removeColumn(anyInt());
-  }
-
-  private void testRemoveColumnByInvalidNameReturnsFalse(String columnName) {
-
-    Table mockTable = mock(Table.class);
-
-    when(mockTable.indexOf(anyString())).thenReturn(-1);
-    when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.removeColumn(anyString())).thenCallRealMethod();
-
-    assertThat(mockTable.removeColumn(columnName)).isFalse();
-
-    verify(mockTable, times(1)).indexOf(eq(columnName));
-    verify(mockTable, never()).removeColumn(anyInt());
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
   public void removeColumnRemovesColumnAtIndexReturnsTrue() {
 
-    Column<?> mockColumn = mock(Column.class);
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(any(Column.class))).thenReturn(2);
-    when(mockTable.removeColumn(anyInt())).thenReturn(true);
-    when(mockTable.remove(any(Column.class))).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).remove(any(Column.class));
+    doReturn(2).when(mockTable).indexOf(any(Column.class));
+    doReturn(true).when(mockTable).removeColumn(anyInt());
 
     assertThat(mockTable.remove(mockColumn)).isTrue();
 
+    verify(mockTable, times(1)).remove(eq(mockColumn));
     verify(mockTable, times(1)).indexOf(eq(mockColumn));
     verify(mockTable, times(1)).removeColumn(eq(2));
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
   public void removeNonExistingColumnReturnsFalse() {
 
-    Column<?> mockColumn = mock(Column.class);
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(any(Column.class))).thenReturn(-1);
-    when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.remove(any(Column.class))).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).remove(any(Column.class));
+    doReturn(Integers.MINUS_ONE).when(mockTable).indexOf(any(Column.class));
 
     assertThat(mockTable.remove(mockColumn)).isFalse();
 
+    verify(mockTable, times(1)).remove(eq(mockColumn));
     verify(mockTable, times(1)).indexOf(eq(mockColumn));
-    verify(mockTable, never()).removeColumn(eq(-1));
+    verify(mockTable, never()).removeColumn(anyInt());
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
-  public void removeNullColumnReturnsFalse() {
+  public void removeNullColumnIsNullSafeReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(ArgumentMatchers.<Column<?>>any())).thenReturn(-1);
-    when(mockTable.removeColumn(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.remove(ArgumentMatchers.<Column<?>>any())).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).remove(ArgumentMatchers.<Column<?>>any());
+    doReturn(Integers.MINUS_ONE).when(mockTable).indexOf(ArgumentMatchers.<Column<?>>any());
 
     assertThat(mockTable.remove((Column<?>) null)).isFalse();
 
-    verify(mockTable, times(1)).indexOf(ArgumentMatchers.<Column<?>>isNull());
+    verify(mockTable, times(1)).remove(isNull(Column.class));
+    verify(mockTable, times(1)).indexOf(isNull(Column.class));
     verify(mockTable, never()).removeColumn(anyInt());
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
@@ -280,12 +367,15 @@ public class TableTests {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.remove(ArgumentMatchers.<Row>any())).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).remove(ArgumentMatchers.<Row>any());
+    doReturn(Integers.MINUS_ONE).when(mockTable).indexOf(ArgumentMatchers.<Row>any());
 
     assertThat(mockTable.remove((Row) null)).isFalse();
 
-    verify(mockTable, never()).indexOf(ArgumentMatchers.<Row>any());
+    verify(mockTable, times(1)).remove(isNull(Row.class));
+    verify(mockTable, times(1)).indexOf(isNull(Row.class));
     verify(mockTable, never()).removeRow(anyInt());
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
