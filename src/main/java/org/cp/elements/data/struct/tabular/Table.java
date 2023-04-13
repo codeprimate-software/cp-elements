@@ -66,6 +66,25 @@ public interface Table extends View {
   boolean add(Row row);
 
   /**
+   * Removes the given {@link Column} from this {@link Table}.
+   *
+   * @param column {@link Column} to remove.
+   * @return a boolean value indicating whether the given {@link Column}
+   * was successfully removed from this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Column
+   * @see #removeColumn(String)
+   * @see #removeColumn(int)
+   * @see #indexOf(Column)
+   */
+  @NullSafe
+  default boolean remove(@NotNull Column column) {
+
+    int columnIndex = indexOf(column);
+
+    return columnIndex > Integers.MINUS_ONE && removeColumn(columnIndex);
+  }
+
+  /**
    * Removes the {@link Column} at the given {@link Integer index} from this {@link Table}.
    *
    * @param index {@link Integer value} specifying the {@literal index} of the {@link Column} to remove.
@@ -112,25 +131,6 @@ public interface Table extends View {
   }
 
   /**
-   * Removes the given {@link Column} from this {@link Table}.
-   *
-   * @param column {@link Column} to remove.
-   * @return a boolean value indicating whether the given {@link Column}
-   * was successfully removed from this {@link Table}.
-   * @see org.cp.elements.data.struct.tabular.Column
-   * @see #removeColumn(String)
-   * @see #removeColumn(int)
-   * @see #indexOf(Column)
-   */
-  @NullSafe
-  default boolean remove(@NotNull Column column) {
-
-    int columnIndex = indexOf(column);
-
-    return columnIndex > Integers.MINUS_ONE && removeColumn(columnIndex);
-  }
-
-  /**
    * Removes the given {@link Row} from this {@link Table}.
    *
    * @param row {@link Row} to remove.
@@ -159,7 +159,22 @@ public interface Table extends View {
    * @see #removeRows(Predicate)
    * @see #remove(Row)
    */
-  boolean removeRow(int index);
+  default boolean removeRow(int index) {
+
+    int rowIndex = 0;
+
+    for (Iterator<Row> rowIterator = this.iterator(); rowIterator.hasNext(); ) {
+
+      rowIterator.next();
+
+      if (rowIndex++ == index) {
+        rowIterator.remove();
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   /**
    * Removes all {@link Row Rows} from this {@link Table} matching the given {@link Predicate}.
