@@ -20,7 +20,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -253,21 +255,18 @@ public class TableUnitTests {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.rows()).thenReturn(rows);
-
-    when(mockTable.remove(any(Row.class)))
-      .thenAnswer(invocation -> rows.remove(invocation.<Row>getArgument(0)));
-
-    when(mockTable.removeRows(any(Predicate.class))).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).removeRows(any(Predicate.class));
+    doReturn(rows).when(mockTable).rows();
+    doAnswer(invocation ->  rows.remove(invocation.<Row>getArgument(0))).when(mockTable).remove(any(Row.class));
 
     assertThat(rows).hasSize(2);
     assertThat(mockTable.removeRows(row -> true)).isTrue();
     assertThat(rows).describedAs(rows.toString()).isEmpty();
 
+    verify(mockTable, times(1)).removeRows(isA(Predicate.class));
     verify(mockTable, times(1)).rows();
     verify(mockTable, never()).remove(ArgumentMatchers.<Row>any());
-    verifyNoInteractions(mockRowOne);
-    verifyNoInteractions(mockRowTwo);
+    verifyNoInteractions(mockRowOne, mockRowTwo);
   }
 
   @Test
