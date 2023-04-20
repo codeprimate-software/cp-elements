@@ -16,6 +16,7 @@
 package org.cp.elements.data.struct.tabular;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -58,6 +59,11 @@ import org.mockito.quality.Strictness;
  * @since 1.0.0
  */
 public class TableUnitTests {
+
+  @SuppressWarnings("unchecked")
+  private static <T> List<T> listOf(T... elements) {
+    return new ArrayList<>(Arrays.asList(elements));
+  }
 
   private Column<?> mockColumn(String name) {
 
@@ -248,24 +254,63 @@ public class TableUnitTests {
   @SuppressWarnings("unchecked")
   public void removeAllRowsReturnsTrue() {
 
+    Predicate<Row> mockPredicate = mock(Predicate.class);
+
     Row mockRowOne = mock(Row.class, "Mock Row One");
     Row mockRowTwo = mock(Row.class, "Mock Row Two");
 
-    List<Row> rows = new ArrayList<>(Arrays.asList(mockRowOne, mockRowTwo));
+    List<Row> rows = listOf(mockRowOne, mockRowTwo);
 
     Table mockTable = mock(Table.class);
 
     doCallRealMethod().when(mockTable).removeRows(any(Predicate.class));
     doReturn(rows).when(mockTable).rows();
     doAnswer(invocation ->  rows.remove(invocation.<Row>getArgument(0))).when(mockTable).remove(any(Row.class));
+    doReturn(true).when(mockPredicate).test(any(Row.class));
 
     assertThat(rows).hasSize(2);
-    assertThat(mockTable.removeRows(row -> true)).isTrue();
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+    assertThat(mockTable.removeRows(mockPredicate)).isTrue();
     assertThat(rows).describedAs(rows.toString()).isEmpty();
 
     verify(mockTable, times(1)).removeRows(isA(Predicate.class));
     verify(mockTable, times(1)).rows();
     verify(mockTable, never()).remove(ArgumentMatchers.<Row>any());
+    verify(mockPredicate, times(1)).test(eq(mockRowOne));
+    verify(mockPredicate, times(1)).test(eq(mockRowTwo));
+    verifyNoMoreInteractions(mockTable, mockPredicate);
+    verifyNoInteractions(mockRowOne, mockRowTwo);
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void removeNoRowsReturnsFalse() {
+
+    Predicate<Row> mockPredicate = mock(Predicate.class);
+
+    Row mockRowOne = mock(Row.class, "Mock Row One");
+    Row mockRowTwo = mock(Row.class, "Mock Row Two");
+
+    List<Row> rows = listOf(mockRowOne, mockRowTwo);
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeRows(any(Predicate.class));
+    doReturn(rows).when(mockTable).rows();
+    doReturn(false).when(mockPredicate).test(any());
+
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+    assertThat(mockTable.removeRows(mockPredicate)).isFalse();
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+
+    verify(mockTable, times(1)).removeRows(eq(mockPredicate));
+    verify(mockTable, times(1)).rows();
+    verify(mockTable, never()).remove(any(Row.class));
+    verify(mockPredicate, times(1)).test(eq(mockRowOne));
+    verify(mockPredicate, times(1)).test(eq(mockRowTwo));
+    verifyNoMoreInteractions(mockTable, mockPredicate);
     verifyNoInteractions(mockRowOne, mockRowTwo);
   }
 
@@ -278,53 +323,46 @@ public class TableUnitTests {
     Row mockRowOne = mock(Row.class, "Mock Row One");
     Row mockRowTwo = mock(Row.class, "Mock Row Two");
 
-    List<Row> rows = new ArrayList<>(Arrays.asList(mockRowOne, mockRowTwo));
+    List<Row> rows = listOf(mockRowOne, mockRowTwo);
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.rows()).thenReturn(rows);
-
-    when(mockTable.remove(any(Row.class)))
-      .thenAnswer(invocation -> rows.remove(invocation.<Row>getArgument(0)));
-
-    when(mockTable.removeRows(any(Predicate.class))).thenCallRealMethod();
-
-    when(mockPredicate.test(any(Row.class))).thenReturn(true).thenReturn(false);
+    doCallRealMethod().when(mockTable).removeRows(any(Predicate.class));
+    doReturn(rows).when(mockTable).rows();
+    doAnswer(invocation -> rows.remove(invocation.<Row>getArgument(0))).when(mockTable).remove(any(Row.class));
+    doReturn(true).doReturn(false).when(mockPredicate).test(any(Row.class));
 
     assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
     assertThat(mockTable.removeRows(mockPredicate)).isTrue();
     assertThat(rows).describedAs(rows.toString()).hasSize(1);
     assertThat(rows).containsExactly(mockRowTwo);
 
-    verify(mockPredicate, times(1)).test(eq(mockRowOne));
-    verify(mockPredicate, times(1)).test(eq(mockRowTwo));
+    verify(mockTable, times(1)).removeRows(eq(mockPredicate));
     verify(mockTable, times(1)).rows();
     verify(mockTable, never()).remove(ArgumentMatchers.<Row>any());
-    verifyNoInteractions(mockRowOne);
-    verifyNoInteractions(mockRowTwo);
+    verify(mockPredicate, times(1)).test(eq(mockRowOne));
+    verify(mockPredicate, times(1)).test(eq(mockRowTwo));
+    verifyNoMoreInteractions(mockTable, mockPredicate);
+    verifyNoInteractions(mockRowOne, mockRowTwo);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void removeRowsWithNullPredicateThrowsIllegalArgumentException() {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.removeRows(any())).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).removeRows(any());
 
-    try {
-      mockTable.removeRows(null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> mockTable.removeRows(null))
+      .withMessage("Predicate is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Predicate is required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockTable, never()).rows();
-      verify(mockTable, never()).remove(any(Row.class));
-    }
+    verify(mockTable, times(1)).removeRows(isNull());
+    verify(mockTable, never()).rows();
+    verify(mockTable, never()).remove(any(Row.class));
+    verifyNoMoreInteractions(mockTable);
   }
 
   @Test
@@ -334,14 +372,17 @@ public class TableUnitTests {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(any(Row.class))).thenReturn(1);
-    when(mockTable.removeRow(anyInt())).thenReturn(true);
-    when(mockTable.remove(any(Row.class))).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).remove(any(Row.class));
+    doReturn(2).when(mockTable).indexOf(any(Row.class));
+    doReturn(true).when(mockTable).removeRow(anyInt());
 
     assertThat(mockTable.remove(mockRow)).isTrue();
 
+    verify(mockTable, times(1)).remove(eq(mockRow));
     verify(mockTable, times(1)).indexOf(eq(mockRow));
-    verify(mockTable, times(1)).removeRow(eq(1));
+    verify(mockTable, times(1)).removeRow(eq(2));
+    verifyNoMoreInteractions(mockTable);
+    verifyNoInteractions(mockRow);
   }
 
   @Test
@@ -351,18 +392,20 @@ public class TableUnitTests {
 
     Table mockTable = mock(Table.class);
 
-    when(mockTable.indexOf(any(Row.class))).thenReturn(-1);
-    when(mockTable.removeRow(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.remove(any(Row.class))).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).remove(any(Row.class));
+    doReturn(Integers.MINUS_ONE).when(mockTable).indexOf(any(Row.class));
 
     assertThat(mockTable.remove(mockRow)).isFalse();
 
+    verify(mockTable, times(1)).remove(eq(mockRow));
     verify(mockTable, times(1)).indexOf(eq(mockRow));
     verify(mockTable, never()).removeRow(anyInt());
+    verifyNoMoreInteractions(mockTable);
+    verifyNoInteractions(mockRow);
   }
 
   @Test
-  public void removeNullRowReturnsFalse() {
+  public void removeNullRowIsNullSafeReturnsFalse() {
 
     Table mockTable = mock(Table.class);
 
@@ -374,6 +417,81 @@ public class TableUnitTests {
     verify(mockTable, times(1)).remove(isNull(Row.class));
     verify(mockTable, times(1)).indexOf(isNull(Row.class));
     verify(mockTable, never()).removeRow(anyInt());
+    verifyNoMoreInteractions(mockTable);
+  }
+
+  @Test
+  public void removeRowAtIndexReturnsTrue() {
+
+    Row mockRowOne = mock(Row.class, "Mock Row One");
+    Row mockRowTwo = mock(Row.class, "Mock Row Two");
+
+    List<Row> rows = listOf(mockRowOne, mockRowTwo);
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeRow(anyInt());
+    doReturn(rows.iterator()).when(mockTable).iterator();
+
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+    assertThat(mockTable.removeRow(1)).isTrue();
+    assertThat(rows).hasSize(1);
+    assertThat(rows).containsExactly(mockRowOne);
+
+    verify(mockTable, times(1)).removeRow(eq(1));
+    verify(mockTable, times(1)).iterator();
+    verifyNoInteractions(mockRowOne, mockRowTwo);
+    verifyNoMoreInteractions(mockTable);
+  }
+
+  @Test
+  public void removeRowAtOverflowIndexReturnsFalse() {
+
+    Row mockRowOne = mock(Row.class, "Mock Row One");
+    Row mockRowTwo = mock(Row.class, "Mock Row Two");
+
+    List<Row> rows = listOf(mockRowOne, mockRowTwo);
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeRow(anyInt());
+    doReturn(rows.iterator()).when(mockTable).iterator();
+
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+    assertThat(mockTable.removeRow(2)).isFalse();
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+
+    verify(mockTable, times(1)).removeRow(eq(2));
+    verify(mockTable, times(1)).iterator();
+    verifyNoInteractions(mockRowOne, mockRowTwo);
+    verifyNoMoreInteractions(mockTable);
+  }
+
+  @Test
+  public void removeRowAtUnderflowIndexReturnsFalse() {
+
+    Row mockRowOne = mock(Row.class, "Mock Row One");
+    Row mockRowTwo = mock(Row.class, "Mock Row Two");
+
+    List<Row> rows = listOf(mockRowOne, mockRowTwo);
+
+    Table mockTable = mock(Table.class);
+
+    doCallRealMethod().when(mockTable).removeRow(anyInt());
+    doReturn(rows.iterator()).when(mockTable).iterator();
+
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+    assertThat(mockTable.removeRow(-1)).isFalse();
+    assertThat(rows).hasSize(2);
+    assertThat(rows).containsExactly(mockRowOne, mockRowTwo);
+
+    verify(mockTable, times(1)).removeRow(eq(-1));
+    verify(mockTable, times(1)).iterator();
+    verifyNoInteractions(mockRowOne, mockRowTwo);
     verifyNoMoreInteractions(mockTable);
   }
 
