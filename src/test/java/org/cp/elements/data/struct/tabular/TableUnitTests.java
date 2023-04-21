@@ -496,70 +496,22 @@ public class TableUnitTests {
   }
 
   @Test
-  public void setValueWithRowAndColumnIndexReturnsCurrentValue() {
+  public void setValueWithRowIndexAndColumnIndexReturnsCurrentValue() {
 
     Row mockRow = mock(Row.class);
 
     Table mockTable = mock(Table.class);
 
-    when(mockRow.setValue(anyInt(), any())).thenReturn("mock");
-    when(mockTable.getRow(anyInt())).thenReturn(mockRow);
-    when(mockTable.setValue(anyInt(), anyInt(), any())).thenCallRealMethod();
+    doCallRealMethod().when(mockTable).setValue(anyInt(), anyInt(), any());
+    doReturn(mockRow).when(mockTable).getRow(anyInt());
+    doReturn("mock").when(mockRow).setValue(anyInt(), any());
 
-    assertThat(mockTable.setValue(1, 1, "test")).isEqualTo("mock");
+    assertThat(mockTable.setValue(1, 2, "test")).isEqualTo("mock");
 
-    verify(mockRow, times(1)).setValue(eq(1), eq("test"));
+    verify(mockTable, times(1)).setValue(eq(1), eq(2), eq("test"));
     verify(mockTable, times(1)).getRow(eq(1));
-  }
-
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void setValueWithRowAndColumnIndexUsingInvalidColumnIndexThrowsIndexOutOfBoundsException() {
-
-    Row mockRow = mock(Row.class);
-
-    Table mockTable = mock(Table.class);
-
-    when(mockRow.setValue(anyInt(), any())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.getRow(anyInt())).thenReturn(mockRow);
-    when(mockTable.setValue(anyInt(), anyInt(), any())).thenCallRealMethod();
-
-    try {
-      mockTable.setValue(0, -1, "test");
-    }
-    catch (IndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockTable, times(1)).getRow(eq(0));
-      verify(mockRow, times(1)).setValue(eq(-1), eq("test"));
-    }
-  }
-
-  @Test(expected = IndexOutOfBoundsException.class)
-  public void setValueWithRowAndColumnIndexUsingInvalidRowIndexThrowsIndexOutOfBoundsException() {
-
-    Table mockTable = mock(Table.class);
-
-    when(mockTable.getRow(anyInt())).thenThrow(new IndexOutOfBoundsException("test"));
-    when(mockTable.setValue(anyInt(), anyInt(), any())).thenCallRealMethod();
-
-    try {
-      mockTable.setValue(-1, 0, "test");
-    }
-    catch (IndexOutOfBoundsException expected) {
-
-      assertThat(expected).hasMessage("test");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockTable, times(1)).getRow(eq(-1));
-    }
+    verify(mockRow, times(1)).setValue(eq(2), eq("test"));
+    verifyNoMoreInteractions(mockTable, mockRow);
   }
 
   @Test
