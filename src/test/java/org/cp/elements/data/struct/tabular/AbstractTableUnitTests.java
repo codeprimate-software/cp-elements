@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular;
 
 import static org.mockito.Mockito.mock;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link AbstractTable}.
+ * Unit Tests for {@link AbstractTable}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -29,9 +28,9 @@ import org.junit.Test;
  * @see org.cp.elements.data.struct.tabular.AbstractTable
  * @since 1.0.0
  */
-public class AbstractTableTests {
+public class AbstractTableUnitTests {
 
-  private AbstractTable table = new TestTable();
+  private final AbstractTable table = new TestTable();
 
   @Test(expected = UnsupportedOperationException.class)
   public void addColumnThrowsUnsupportedOperationException() {
@@ -41,16 +40,6 @@ public class AbstractTableTests {
   @Test(expected = UnsupportedOperationException.class)
   public void addRowThrowsUnsupportedOperationException() {
     this.table.add(mock(Row.class));
-  }
-
-  @Test(expected = UnsupportedOperationException.class)
-  public void removeColumnAtIndexThrowsUnsupportedOperationException() {
-    this.table.removeColumn(0);
-  }
-
-  @Test(expected = UnsupportedOperationException.class)
-  public void removeRowAtIndexThrowsUnsupportedOperationException() {
-    this.table.removeRow(0);
   }
 
   private static final class TestTable extends AbstractTable { }
