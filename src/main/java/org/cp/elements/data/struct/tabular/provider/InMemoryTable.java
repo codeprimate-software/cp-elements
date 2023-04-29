@@ -161,7 +161,7 @@ public class InMemoryTable extends AbstractTable {
    * @see #getColumns()
    */
   @Override
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "all" })
   public boolean add(@NotNull Column column) {
 
     if (getColumns().add(newColumn(validateColumn(column)))) {

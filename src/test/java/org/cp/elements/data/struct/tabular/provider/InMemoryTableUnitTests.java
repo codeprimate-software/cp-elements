@@ -217,7 +217,7 @@ public class InMemoryTableUnitTests {
   }
 
   @Test
-  @SuppressWarnings("all")
+  @SuppressWarnings({ "unchecked", "all" })
   public void addColumnIsSuccessful() {
 
     Column mockColumnOne = mockColumn("ONE");
