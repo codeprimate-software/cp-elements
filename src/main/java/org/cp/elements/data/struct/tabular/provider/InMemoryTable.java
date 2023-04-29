@@ -345,6 +345,33 @@ public class InMemoryTable extends AbstractTable {
     public final void setView(View view) {
       throw newUnsupportedOperationException("The View for this Column [%s] cannot be changed", getName());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+
+      if (obj == this) {
+        return true;
+      }
+
+      if (!(obj instanceof Column)) {
+        return false;
+      }
+
+      Column<?> that = (Column<?>) obj;
+
+      return ObjectUtils.equals(this.getName(), that.getName())
+        && ObjectUtils.isNullOrEqualTo(that.getView().orElse(null), this.getView().orElse(null));
+    }
+
+    @Override
+    public int hashCode() {
+      return ObjectUtils.hashCodeOf(this.getName(), this.getView().orElse(null));
+    }
+
+    @Override
+    public String toString() {
+      return getName();
+    }
   }
 
   /**
