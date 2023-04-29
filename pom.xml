@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.codeprimate</groupId>
     <artifactId>cp-core</artifactId>
-    <version>1.14.0</version>
+    <version>1.15.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>cp-elements</artifactId>
@@ -81,7 +81,6 @@
     <java-module-name>codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
-    <mockito.version>4.11.0</mockito.version>
   </properties>
 
   <build>
