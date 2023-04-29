@@ -17,8 +17,13 @@ package org.cp.elements.data.struct.tabular.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIndexOutOfBoundsException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -26,14 +31,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.withSettings;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.junit.Test;
 
@@ -41,6 +47,7 @@ import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.util.stream.StreamUtils;
 
+import org.mockito.ArgumentMatchers;
 import org.mockito.quality.Strictness;
 
 /**
@@ -65,8 +72,25 @@ public class InMemoryTableUnitTests {
 
     doReturn(name).when(mockColumn).getName();
     doReturn(Object.class).when(mockColumn).getType();
+    doReturn(Optional.of(name)).when(mockColumn).getAlias();
+    doReturn(Optional.empty()).when(mockColumn).getDefaultValue();
+    doReturn(Optional.of(String.format("Mock Column [%s]", name))).when(mockColumn).getDescription();
+    doReturn(Optional.empty()).when(mockColumn).getView();
 
     return mockColumn;
+  }
+
+  private void verifyMockColumnInteractions(Column<?>... mockColumns) {
+
+    Arrays.stream(mockColumns).forEach(mockColumn -> {
+      verify(mockColumn, atLeastOnce()).getName();
+      verify(mockColumn, times(1)).getType();
+      verify(mockColumn, times(1)).getAlias();
+      verify(mockColumn, times(1)).getDefaultValue();
+      verify(mockColumn, times(1)).getDescription();
+      //verify(mockColumn).getView();
+      verifyNoMoreInteractions(mockColumn);
+    });
   }
 
   @Test
@@ -78,7 +102,9 @@ public class InMemoryTableUnitTests {
     InMemoryTable table = new InMemoryTable(mockColumnOne, mockColumnTwo);
 
     assertThat(table).isNotNull();
-    assertThat(table.rows()).isEmpty();
+    assertThat(table).isEmpty();
+    assertThat(table.getColumns()).containsExactly(mockColumnOne, mockColumnTwo);
+    assertThat(table.getRows()).isEmpty();
 
     AtomicInteger index = new AtomicInteger(0);
 
@@ -87,8 +113,8 @@ public class InMemoryTableUnitTests {
       assertThat(column.getName())
         .isEqualTo(Arrays.asList(mockColumnOne, mockColumnTwo).get(index.getAndIncrement()).getName());
 
+      assertThat(column.getView()).isPresent();
       assertThat(column.getView().orElse(null)).isEqualTo(table);
-
     });
 
     assertThat(index.get()).isEqualTo(2);
@@ -122,7 +148,14 @@ public class InMemoryTableUnitTests {
 
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList()))
+    assertThat(table.getColumns()).containsExactly(mockColumnOne, mockColumnTwo);
+    assertThat(table.getRows()).isEmpty();
+
+    assertThat(table.getColumns().stream()
+      .filter(column -> column.getView().isPresent()
+        && column.getView().orElse(null).equals(table))
+      .map(Column::getName)
+      .collect(Collectors.toList()))
       .containsExactly("ONE", "TWO");
   }
 
@@ -154,7 +187,12 @@ public class InMemoryTableUnitTests {
 
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
+    assertThat(table.getColumns()).containsExactly(mockColumnOne, mockColumnTwo);
+    assertThat(table.getRows()).isEmpty();
+
     assertThat(table.getColumns().stream()
+      .filter(column -> column.getView().isPresent()
+        && column.getView().orElse(null).equals(table))
       .map(Column::getName)
       .collect(Collectors.toList()))
       .containsExactly("ONE", "TWO");
@@ -193,27 +231,46 @@ public class InMemoryTableUnitTests {
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumnOne));
 
-    assertThat(table).isNotNull();
-
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
-    assertThat(table).hasSize(2);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList())).containsExactly("ONE");
-    assertThat(table.add(mockColumnTwo)).isTrue();
+    assertThat(table).isNotNull();
+    assertThat(table.getColumns()).containsExactly(mockColumnOne);
+    assertThat(table.getRows()).containsExactly(mockRowOne, mockRowTwo);
+
     assertThat(table.getColumns().stream()
+      //.filter(column -> column.getView().isPresent() && column.getView().orElse(null).equals(table))
+      .map(Column::getName)
+      .collect(Collectors.toList()))
+      .containsExactly("ONE");
+
+    assertThat(table.add(mockColumnTwo)).isTrue();
+
+    assertThat(table.getColumns().stream()
+      //.filter(column -> column.getView().isPresent() && column.getView().orElse(null).equals(table))
       .map(Column::getName)
       .collect(Collectors.toList()))
       .containsExactly("ONE", "TWO");
 
-    verify(mockRowOne, times(1)).addColumn();
-    verify(mockRowTwo, times(1)).addColumn();
+    Arrays.asList(mockRowOne, mockRowTwo).forEach(mockRow -> {
+      verify(mockRow, times(1)).addColumn();
+    });
+
+    verify(table, times(1)).add(eq(mockColumnTwo));
+    verify(table, times(1)).validateColumn(eq(mockColumnTwo));
+    verify(table, times(1)).newColumn(eq(mockColumnTwo));
+    verify(table, times(4)).getColumns();
+    verify(table, times(1)).iterator();
+    verify(table, times(1)).rows();
+    verify(table, times(2)).getRows();
+    verify(mockColumnOne, atLeastOnce()).getView();
+    verifyMockColumnInteractions(mockColumnOne, mockColumnTwo);
+    verifyNoMoreInteractions(table, mockRowOne, mockRowTwo);
   }
 
-  @SuppressWarnings("all")
-  @Test(expected = IllegalArgumentException.class)
-  public void addInvalidColumnThrowsIllegalArgumentException() {
+  @Test
+  public void addNullColumnThrowsIllegalArgumentException() {
 
-    Column mockColumnOne = mockColumn("ONE");
+    Column<?> mockColumnOne = mockColumn("ONE");
 
     InMemoryTable.InMemoryRow mockRowOne = mock(InMemoryTable.InMemoryRow.class);
     InMemoryTable.InMemoryRow mockRowTwo = mock(InMemoryTable.InMemoryRow.class);
@@ -223,36 +280,35 @@ public class InMemoryTableUnitTests {
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumnOne));
 
-    assertThat(table).isNotNull();
-
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
-    assertThat(table).hasSize(2);
+    assertThat(table).isNotNull();
+    assertThat(table.getColumns()).containsExactly(mockColumnOne);
+    assertThat(table.getRows()).containsExactly(mockRowOne, mockRowTwo);
+
     assertThat(table.getColumns().stream()
       .map(Column::getName)
       .collect(Collectors.toList()))
       .containsExactly("ONE");
 
-    try {
-      table.add((Column) null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> table.add((Column<?>) null))
+      .withMessage("Column is required")
+        .withNoCause();
 
-      assertThat(expected).hasMessage("Column is required");
-      assertThat(expected).hasNoCause();
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toList()))
+      .containsExactly("ONE");
 
-      throw expected;
-    }
-    finally {
-
-      assertThat(table.getColumns().stream()
-        .map(Column::getName)
-        .collect(Collectors.toList()))
-        .containsExactly("ONE");
-
-      verify(mockRowOne, never()).addColumn();
-      verify(mockRowTwo, never()).addColumn();
-    }
+    verify(table, times(1)).add(ArgumentMatchers.<Column<?>>isNull());
+    verify(table, times(4)).getColumns();
+    verify(table, times(1)).getRows();
+    verify(table, times(1)).validateColumn(isNull());
+    verify(mockColumnOne, times(4)).getView();
+    verifyMockColumnInteractions(mockColumnOne);
+    verifyNoInteractions(mockRowOne, mockRowTwo);
+    verifyNoMoreInteractions(table);
   }
 
   @Test
@@ -263,62 +319,83 @@ public class InMemoryTableUnitTests {
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
     assertThat(table).isNotNull();
-    assertThat(table).hasSize(0);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
+    assertThat(table.getColumns()).containsExactly(mockColumn);
+    assertThat(table.getRows()).isEmpty();
+
+    assertThat(table.getColumns().stream()
+      .filter(column -> column.getView().isPresent() && column.getView().orElse(null).equals(table))
+      .map(Column::getName)
+      .collect(Collectors.toSet()))
       .containsExactly("MockColumn");
 
     Row mockRow = mock(Row.class);
 
-    when(mockRow.getValue(eq(0))).thenReturn("test");
+    doReturn("test").when(mockRow).getValue(eq(0));
 
     assertThat(table.add(mockRow)).isTrue();
-    assertThat(table).hasSize(1);
+
+    assertThat(table.getColumns()).containsExactly(mockColumn);
+    assertThat(table.getRows()).hasSize(1);
     assertThat(table.getRow(0).<String>getValue(mockColumn)).isEqualTo("test");
 
+    verify(mockColumn, atLeastOnce()).getView();
     verify(mockRow, times(1)).getValue(eq(0));
+    verifyMockColumnInteractions(mockColumn);
+    verifyNoMoreInteractions(mockRow);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void addInvalidRowThrowsIllegalArgumentException() {
+  @Test
+  public void addNullRowThrowsIllegalArgumentException() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
     assertThat(table).isNotNull();
-    assertThat(table).hasSize(0);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
+    assertThat(table.getColumns()).containsExactly(mockColumn);
+    assertThat(table.getRows()).isEmpty();
+
+    assertThat(table.getColumns().stream()
+      .filter(column -> column.getView().isPresent() && column.getView().orElse(null).equals(table))
+      .map(Column::getName)
+      .collect(Collectors.toSet()))
       .containsExactly("MockColumn");
 
-    try {
-      table.add((Row) null);
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> table.add((Row) null))
+      .withMessage("Row is required")
+      .withNoCause();
 
-      assertThat(expected).hasMessage("Row is required");
-      assertThat(expected).hasNoCause();
+    assertThat(table.getColumns()).containsExactly(mockColumn);
+    assertThat(table).hasSize(0);
 
-      throw expected;
-    }
-    finally {
-      assertThat(table).hasSize(0);
-    }
+    verify(mockColumn, atLeastOnce()).getView();
+    verifyMockColumnInteractions(mockColumn);
   }
 
   @Test
   public void columnsReturnsTableColumns() {
 
-    Column<?> mockColumnOne = mockColumn("One");
-    Column<?> mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("ONE");
+    Column<?> mockColumnTwo = mockColumn("TWO");
 
     InMemoryTable table = InMemoryTable.of(mockColumnOne, mockColumnTwo);
 
     assertThat(table).isNotNull();
+    assertThat(table.getColumns()).containsExactly(mockColumnOne, mockColumnTwo);
+    assertThat(table).isEmpty();
 
-    assertThat(StreamSupport.stream(table.columns().spliterator(), false)
+    InMemoryTable tableSpy = spy(table);
+
+    assertThat(StreamUtils.stream(tableSpy.columns())
+      .filter(column -> column.getView().isPresent() && column.getView().orElse(null).equals(table))
       .map(Column::getName)
       .collect(Collectors.toSet()))
-      .containsExactly("One", "Two");
+      .containsExactly("ONE", "TWO");
+
+    verify(tableSpy, times(1)).columns();
+    verify(tableSpy, times(1)).getColumns();
+    verifyNoMoreInteractions(tableSpy);
   }
 
   @Test
@@ -328,9 +405,8 @@ public class InMemoryTableUnitTests {
 
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
+    assertThat(table).isEmpty();
     assertThat(table).isNotNull();
-    assertThat(table).isEmpty();
-    assertThat(table).isEmpty();
   }
 
   @Test
@@ -344,21 +420,23 @@ public class InMemoryTableUnitTests {
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumn));
 
-    assertThat(table).isNotNull();
-
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
+    assertThat(table).isNotNull();
     assertThat(table).containsExactly(mockRowOne, mockRowTwo);
 
+    verify(table, times(1)).iterator();
+    verify(table, times(1)).rows();
     verify(table, times(1)).getRows();
+    verify(table, times(1)).spliterator();
+    verifyNoMoreInteractions(table);
   }
 
   @Test
-  @SuppressWarnings("all")
   public void removeColumnIsSuccessful() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("ONE");
+    Column<?> mockColumnTwo = mockColumn("TWO");
 
     InMemoryTable.InMemoryRow mockRowOne = mock(InMemoryTable.InMemoryRow.class);
     InMemoryTable.InMemoryRow mockRowTwo = mock(InMemoryTable.InMemoryRow.class);
@@ -368,27 +446,39 @@ public class InMemoryTableUnitTests {
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumnOne, mockColumnTwo));
 
-    assertThat(table).isNotNull();
-
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
+    assertThat(table).isNotNull();
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toSet()))
+      .containsExactly("ONE", "TWO");
     assertThat(table).hasSize(2);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
-      .containsExactly("One", "Two");
-    assertThat(table.removeColumn(0)).isTrue();
-    assertThat(table).hasSize(2);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
-      .containsExactly("Two");
 
+    assertThat(table.removeColumn(0)).isTrue();
+
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toSet()))
+      .containsExactly("TWO");
+    assertThat(table).hasSize(2);
+
+    verify(table, times(1)).removeColumn(eq(0));
+    verify(table, times(3)).getColumns();
+    verify(table, times(3)).iterator();
+    verify(table, times(3)).rows();
+    verify(table, times(3)).getRows();
+    verify(table, times(2)).spliterator();
     verify(mockRowOne, times(1)).removeColumn(eq(0));
     verify(mockRowTwo, times(1)).removeColumn(eq(0));
+    verifyMockColumnInteractions(mockColumnOne, mockColumnTwo);
+    verifyNoMoreInteractions(table, mockRowOne, mockRowTwo);
   }
 
-  @SuppressWarnings("all")
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void removeInvalidColumnThrowsIndexOutOfBoundsException() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     InMemoryTable.InMemoryRow mockRowOne = mock(InMemoryTable.InMemoryRow.class);
     InMemoryTable.InMemoryRow mockRowTwo = mock(InMemoryTable.InMemoryRow.class);
@@ -398,26 +488,36 @@ public class InMemoryTableUnitTests {
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumn));
 
-    assertThat(table).isNotNull();
-
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
+    assertThat(table).isNotNull();
     assertThat(table).hasSize(2);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
+
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toSet()))
       .containsExactly("MockColumn");
 
-    try {
-      table.removeColumn(1);
-    }
-    finally {
+    assertThatIndexOutOfBoundsException()
+      .isThrownBy(() -> table.removeColumn(1))
+      .withNoCause();
 
-      assertThat(table).hasSize(2);
-      assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toSet()))
-        .containsExactly("MockColumn");
+    assertThat(table).hasSize(2);
 
-      verify(mockRowOne, never()).removeColumn(anyInt());
-      verify(mockRowTwo, never()).removeColumn(anyInt());
-    }
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toSet()))
+      .containsExactly("MockColumn");
+
+    verify(table, times(1)).removeColumn(eq(1));
+    verify(table, times(3)).getColumns();
+    verify(table, times(2)).iterator();
+    verify(table, times(2)).rows();
+    verify(table, times(2)).getRows();
+    verify(table, times(2)).spliterator();
+    verify(mockRowOne, never()).removeColumn(anyInt());
+    verify(mockRowTwo, never()).removeColumn(anyInt());
+    verifyNoMoreInteractions(table, mockRowOne, mockRowTwo);
   }
 
   @Test
@@ -430,14 +530,20 @@ public class InMemoryTableUnitTests {
     InMemoryTable table = InMemoryTable.of(mockColumn);
 
     assertThat(table).isNotNull();
+    assertThat(table.getColumns()).containsExactly(mockColumn);
     assertThat(table).isEmpty();
     assertThat(table.getRows().add(mockRow)).isTrue();
     assertThat(table).hasSize(1);
     assertThat(table.removeRow(0)).isTrue();
+    assertThat(table.getColumns()).containsExactly(mockColumn);
     assertThat(table).isEmpty();
+
+    verify(mockColumn, atLeastOnce()).getView();
+    verifyMockColumnInteractions(mockColumn);
+    verifyNoInteractions(mockRow);
   }
 
-  @Test(expected = IndexOutOfBoundsException.class)
+  @Test
   public void removeInvalidRowThrowsIndexOutOfBoundsException() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
@@ -447,27 +553,29 @@ public class InMemoryTableUnitTests {
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
 
-    table.removeRow(0);
+    assertThatIndexOutOfBoundsException()
+      .isThrownBy(() -> table.removeRow(0))
+      .withNoCause();
   }
 
   @Test
-  @SuppressWarnings("all")
   public void rowsReturnsTableRows() {
 
-    Column mockColumn = mockColumn("MockColumn");
+    Column<?> mockColumn = mockColumn("MockColumn");
 
     Row mockRowOne = mock(Row.class);
     Row mockRowTwo = mock(Row.class);
 
     InMemoryTable table = spy(InMemoryTable.of(mockColumn));
 
-    assertThat(table).isNotNull();
-
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
+    assertThat(table).isNotNull();
     assertThat(table.rows()).containsExactly(mockRowOne, mockRowTwo);
 
+    verify(table, times(1)).rows();
     verify(table, times(1)).getRows();
+    verifyNoMoreInteractions(table);
   }
 
   @Test
@@ -480,5 +588,100 @@ public class InMemoryTableUnitTests {
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
     assertThat(table.rows()).isEmpty();
+
+    verify(table, times(2)).rows();
+    verify(table, times(2)).getRows();
+    verify(table, times(1)).iterator();
+    verifyNoMoreInteractions(table);
+  }
+
+  @Test
+  public void validateNonNullColumn() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    doCallRealMethod().when(table).validateColumn(any());
+
+    Column<?> mockColumn = mockColumn("MockColun");
+
+    assertThat(table.validateColumn(mockColumn)).isSameAs(mockColumn);
+
+    verify(table, times(1)).validateColumn(eq(mockColumn));
+    verifyNoMoreInteractions(table);
+    verifyNoInteractions(mockColumn);
+  }
+
+  @Test
+  public void validateNullColumn() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    doCallRealMethod().when(table).validateColumn(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> table.validateColumn(null))
+      .withMessage("Column is required")
+      .withNoCause();
+
+    verify(table, times(1)).validateColumn(isNull());
+    verifyNoMoreInteractions(table);
+  }
+
+  @Test
+  public void validateNonNullRow() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    doCallRealMethod().when(table).validateRow(any());
+
+    Row mockRow= mock(Row.class);
+
+    assertThat(table.validateRow(mockRow)).isSameAs(mockRow);
+
+    verify(table, times(1)).validateRow(eq(mockRow));
+    verifyNoMoreInteractions(table);
+    verifyNoInteractions(mockRow);
+  }
+
+  @Test
+  public void validateNullRow() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    doCallRealMethod().when(table).validateRow(any());
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> table.validateRow(null))
+      .withMessage("Row is required")
+      .withNoCause();
+
+    verify(table, times(1)).validateRow(isNull());
+    verifyNoMoreInteractions(table);
+  }
+
+  @Test
+  public void validateNonNullValue() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    doCallRealMethod().when(table).validateValue(any());
+
+    assertThat(table.validateValue("test")).isEqualTo("test");
+
+    verify(table, times(1)).validateValue(eq("test"));
+    verifyNoMoreInteractions(table);
+  }
+
+  @Test
+  public void validateNullValue() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    doCallRealMethod().when(table).validateValue(any());
+
+    assertThat(table.validateValue(null)).isNull();
+
+    verify(table, times(1)).validateValue(isNull());
+    verifyNoMoreInteractions(table);
   }
 }
