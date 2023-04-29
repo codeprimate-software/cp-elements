@@ -34,17 +34,23 @@ import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.data.struct.tabular.Table;
 import org.cp.elements.data.struct.tabular.View;
 import org.cp.elements.lang.Assert;
+import org.cp.elements.lang.ObjectUtils;
+import org.cp.elements.lang.annotation.NotNull;
+import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.util.ArrayUtils;
 
 /**
- * The {@link InMemoryTable} class is an implementation of the {@link Table} interface
- * implementing a tabular data structure and storing data in the JVM Heap.
+ * Implementation of the {@link Table} interface implementing a tabular data structure and storing data in the JVM Heap.
  *
- * @author John J. Blum
+ * The {@link InMemoryTable} is an ordered collection of {@link Column Columns} and {@link Row Rows} along with
+ * a data set populating the {@literal table}.
+ *
+ * @author John Blum
  * @see java.util.List
  * @see org.cp.elements.data.struct.tabular.AbstractColumn
  * @see org.cp.elements.data.struct.tabular.AbstractRow
  * @see org.cp.elements.data.struct.tabular.AbstractTable
+ * @see org.cp.elements.data.struct.tabular.AbstractView
  * @see org.cp.elements.data.struct.tabular.Column
  * @see org.cp.elements.data.struct.tabular.Row
  * @see org.cp.elements.data.struct.tabular.Table
@@ -54,35 +60,41 @@ import org.cp.elements.util.ArrayUtils;
 @SuppressWarnings({ "rawtypes", "unused" })
 public class InMemoryTable extends AbstractTable {
 
-  private final List<Column> columns;
+  protected static final int DEFAULT_ROW_COUNT = 100;
+
+  private final List<Column<?>> columns;
   private final List<Row> rows;
 
   /**
    * Factory method used to construct a new instance of {@link InMemoryTable} initialized with
-   * the given array of {@link Column columns}.
+   * the given, required array of {@link Column Columns}.
    *
-   * @param columns {@link Column Columns} defining the structure of the {@link Table}.
-   * @return a new instance of {@link InMemoryTable} initialized with {@link Column Columns}.
-   * @throws IllegalArgumentException if {@link Column Columns} are {@literal null} or empty.
+   * @param columns array of {@link Column Columns} defining the structure of the {@link Table}.
+   * @return a new {@link InMemoryTable} initialized with the given, required {@link Column Columns}
+   * used to define the structure of the {@link Table}.
+   * @throws IllegalArgumentException if the given array of {@link Column Columns} is {@literal null}
+   * or {@literal empty}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see #InMemoryTable(Column[])
    */
-  public static InMemoryTable of(Column... columns) {
+  public static @NotNull InMemoryTable of(@NotNull Column... columns) {
     return new InMemoryTable(columns);
   }
 
   /**
    * Factory method used to construct a new instance of {@link InMemoryTable} initialized with
-   * the given {@literal Iterable} of {@link Column columns}.
+   * the given, required {@literal Iterable} of {@link Column Columns}.
    *
-   * @param columns {@link Column Columns} defining the structure of the {@link Table}.
-   * @return a new instance of {@link InMemoryTable} initialized with {@link Column Columns}.
-   * @throws IllegalArgumentException if {@link Column Columns} are {@literal null} or empty.
+   * @param columns {@link Iterable} of {@link Column Columns} defining the structure of the {@link Table}.
+   * @return a new {@link InMemoryTable} initialized with the given, required {@link Column Columns}
+   * used to define the structure of the {@link Table}.
+   * @throws IllegalArgumentException if given {@link Iterable} of {@link Column Columns} is {@literal null}
+   * or {@literal empty}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see #InMemoryTable(Column[])
    * @see java.lang.Iterable
    */
-  public static InMemoryTable of(Iterable<Column> columns) {
+  public static @NotNull InMemoryTable of(@NotNull Iterable<Column> columns) {
 
     Assert.notNull(columns, "Columns are required");
 
@@ -92,24 +104,25 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Constructs a new instance of {@link InMemoryTable} initialized with the given array of {@link Column Columns}
-   * defining the {@link Table} structure.
+   * Constructs a new instance of {@link InMemoryTable} initialized with the given, required
+   * array of {@link Column Columns} defining the structure for this {@link Table}.
    *
-   * @param columns array of {@link Column Columns} defining the structure of this {@link Table}.
-   * @throws IllegalArgumentException if the array of {@link Column Columns} are {@literal null} or empty.
+   * @param columns array of {@link Column Columns} defining the structure for this {@link Table}.
+   * @throws IllegalArgumentException if the given array of {@link Column Columns} is {@literal null}
+   * or {@literal empty}.
    * @see org.cp.elements.data.struct.tabular.Column
    */
   @SuppressWarnings("unchecked")
-  public InMemoryTable(Column... columns) {
+  public InMemoryTable(@NotNull Column... columns) {
 
     Assert.notEmpty(columns, "Columns are required");
 
-    List<? extends Column> inMemoryColumns = (List<? extends Column>) Arrays.stream(columns)
+    List<Column> inMemoryColumns = (List<Column>) Arrays.stream(columns)
       .map(InMemoryColumn::new)
       .collect(Collectors.toList());
 
-    this.columns = new CopyOnWriteArrayList<>(inMemoryColumns);
-    this.rows = Collections.synchronizedList(new ArrayList<>());
+    this.columns = new CopyOnWriteArrayList(inMemoryColumns);
+    this.rows = Collections.synchronizedList(new ArrayList<>(DEFAULT_ROW_COUNT));
   }
 
   /**
@@ -119,7 +132,7 @@ public class InMemoryTable extends AbstractTable {
    * @see org.cp.elements.data.struct.tabular.Column
    * @see java.util.List
    */
-  protected List<Column> getColumns() {
+  protected List<Column<?>> getColumns() {
     return this.columns;
   }
 
@@ -146,7 +159,7 @@ public class InMemoryTable extends AbstractTable {
    */
   @Override
   @SuppressWarnings("all")
-  public boolean add(Column column) {
+  public boolean add(@NotNull Column column) {
 
     if (getColumns().add(validateColumn(column))) {
       for (Row row : this) {
@@ -169,42 +182,45 @@ public class InMemoryTable extends AbstractTable {
    * @see org.cp.elements.data.struct.tabular.Row
    */
   @Override
-  public boolean add(Row row) {
+  public boolean add(@NotNull Row row) {
     return getRows().add(newRow(validateRow(row)));
   }
 
   /**
    * Constructs a new instance of {@link InMemoryTable.InMemoryRow} initialized with
-   * a copy of the existing {@link Row}.
+   * a copy of the existing, required {@link Row}.
    *
-   * @param <T> {@link Class sub-type} of the {@link Row}.
-   * @param row {@link Row} to copy.
-   * @return a new instance of {@link InMemoryRow}.
+   * @param <T> concrete {@link Class type} of the {@link Row}; returns {@link InMemoryRow}.
+   * @param row {@link Row} to copy; must not be {@literal null}.
+   * @return a new {@link InMemoryRow}.
+   * @throws IllegalArgumentException if the given {@link Row} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow
    * @see org.cp.elements.data.struct.tabular.Row
    */
   @SuppressWarnings("unchecked")
-  protected <T extends Row> T newRow(Row row) {
+  protected @NotNull <T extends Row> T newRow(@NotNull Row row) {
     return (T) new InMemoryRow(row);
   }
 
   /**
-   * Iterates over the {@link Column Columns} in this {@link Table}.
+   * Returns an {@link Iterable} over the {@link Column Columns} in this {@link Table}.
    *
-   * @return an unmodifiable, {@link Iterable} object over the {@link Column Columns} in this {@link Table}.
+   * @return an unmodifiable {@link Iterable} over the {@link Column Columns} in this {@link Table}.
    * @see org.cp.elements.data.struct.tabular.Column
    * @see java.lang.Iterable
-   * @see #rows()
+   * @see #getColumns()
    */
   @Override
-  public Iterable<Column> columns() {
+  public Iterable<Column<?>> columns() {
     return Collections.unmodifiableList(getColumns());
   }
 
   /**
    * Returns an {@literal Iterator} over the {@link Row Rows} in this {@link Table}.
    *
-   * @return an {@literal Iterator} over the {@link Row Rows} in this {@link Table}.
+   * @return an unmodifiable {@literal Iterator} over the {@link Row Rows} in this {@link Table}.
+   * @see org.cp.elements.data.struct.tabular.Row
+   * @see java.util.Iterator
    * @see #rows()
    */
   @Override
@@ -248,12 +264,12 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Iterates over the {@link Row Rows} in this {@link Table}.
+   * Returns an {@link Iterable} over the {@link Row Rows} in this {@link Table}.
    *
-   * @return an unmodifiable, {@link Iterable} object over the {@link Row Rows} in this {@link Table}.
+   * @return an unmodifiable {@link Iterable} over the {@link Row Rows} in this {@link Table}.
    * @see org.cp.elements.data.struct.tabular.Row
    * @see java.lang.Iterable
-   * @see #columns()
+   * @see #getRows()
    */
   @Override
   public Iterable<Row> rows() {
@@ -263,47 +279,60 @@ public class InMemoryTable extends AbstractTable {
   /**
    * Validates the given {@link Column}.
    *
+   * By default, the {@link Column} must not be {@literal null}.
+   *
    * @param column {@link Column} to validate.
    * @return the given {@link Column}.
-   * @throws IllegalArgumentException if the {@link Column} is {@literal null}.
+   * @throws IllegalArgumentException if the given {@link Column} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Column
    */
-  protected Column validateColumn(Column column) {
-
-    Assert.notNull(column, "Column is required");
-
-    return column;
+  protected @NotNull Column validateColumn(@NotNull Column column) {
+    return ObjectUtils.requireObject(column, "Column is required");
   }
 
   /**
    * Validates the given {@link Row}.
    *
+   * By default, the {@link Row} must not be {@literal null}.
+   *
    * @param row {@link Row} to validate.
    * @return the given {@link Row}.
-   * @throws IllegalArgumentException if the {@link Row} is {@literal null}.
+   * @throws IllegalArgumentException if the given {@link Row} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Row
    */
-  protected Row validateRow(Row row) {
-
-    Assert.notNull(row, "Row is required");
-
-    return row;
+  protected @NotNull Row validateRow(@NotNull Row row) {
+    return ObjectUtils.requireObject(row, "Row is required");
   }
 
   /**
-   * Validates the given {@link Object value} to insert into this {@link Table}.
+   * Validates the given {@link Object value} to be inserted into this {@link Table}.
    *
-   * @param value {@link Object} value to evaluate.
+   * @param value {@link Object value} to evaluate.
    * @return the given {@link Object value}.
    * @see java.lang.Object
    */
-  protected Object validateValue(Object value) {
+  protected @Nullable Object validateValue(@Nullable Object value) {
     return value;
   }
 
+  /**
+   * Implementation of the {@link Column} interface modeling an {@literal in-memory column}
+   * for an {@link InMemoryTable}.
+   *
+   * @param <T> {@link Class type} of {@link Object values} stored in this {@link Column}.
+   * @see org.cp.elements.data.struct.tabular.AbstractColumn
+   * @see org.cp.elements.data.struct.tabular.Column
+   */
   protected class InMemoryColumn<T> extends AbstractColumn<T> {
 
-    protected InMemoryColumn(Column<T> column) {
+    /**
+     * Constructs a new instance of {@link InMemoryColumn} copied from the existing, required {@link Column}.
+     *
+     * @param column {@link Column} to copy; must not be {@literal null}.
+     * @throws IllegalArgumentException if the given {@link Column} to copy is {@literal null}.
+     * @see org.cp.elements.data.struct.tabular.Column
+     */
+    protected InMemoryColumn(@NotNull Column<T> column) {
       super(column);
     }
 
@@ -318,11 +347,26 @@ public class InMemoryTable extends AbstractTable {
     }
   }
 
+  /**
+   * Implementation of the {@link Row} interface modeling an {@literal in-memory row} for an {@link InMemoryTable}.
+   *
+   * @see org.cp.elements.data.struct.tabular.AbstractRow
+   * @see org.cp.elements.data.struct.tabular.Row
+   */
   protected class InMemoryRow extends AbstractRow {
 
     private volatile Object[] values;
 
-    protected InMemoryRow(Row row) {
+    /**
+     * Constructs a new instance of {@link InMemoryRow} copied from the existing, required {@link Row}.
+     *
+     * @param row {@link Row} to copy; must not be {@literal null}.
+     * @throws IllegalArgumentException if the given {@link Row} to copy is {@literal null}.
+     * @see org.cp.elements.data.struct.tabular.Row
+     */
+    protected InMemoryRow(@NotNull Row row) {
+
+      Assert.notNull(row, "Row is required");
 
       int columnSize = InMemoryTable.this.getColumns().size();
 
@@ -335,13 +379,13 @@ public class InMemoryTable extends AbstractTable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T getValue(int columnIndex) {
+    public @Nullable <T> T getValue(int columnIndex) {
       return (T) this.values[columnIndex];
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T setValue(int columnIndex, T value) {
+    public @Nullable <T> T setValue(int columnIndex, @Nullable T value) {
 
       Object currentValue = this.values[columnIndex];
 

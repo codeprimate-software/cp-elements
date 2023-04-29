@@ -16,6 +16,7 @@
 package org.cp.elements.data.struct.tabular.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,9 +35,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.junit.Test;
+
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Row;
-import org.junit.Test;
+import org.cp.elements.util.stream.StreamUtils;
+
+import org.mockito.quality.Strictness;
 
 /**
  * Unit Tests for {@link InMemoryTable}.
@@ -50,25 +56,24 @@ import org.junit.Test;
  * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow
  * @since 1.0.0
  */
-public class InMemoryTableTests {
+public class InMemoryTableUnitTests {
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @SuppressWarnings({ "unchecked" })
   private <T> Column<T> mockColumn(String name) {
 
-    Column<T> mockColumn = mock(Column.class, name);
+    Column<T> mockColumn = mock(Column.class, withSettings().strictness(Strictness.LENIENT).name(name));
 
-    when(mockColumn.getName()).thenReturn(name);
-    when(mockColumn.getType()).thenReturn((Class) Object.class);
+    doReturn(name).when(mockColumn).getName();
+    doReturn(Object.class).when(mockColumn).getType();
 
     return mockColumn;
   }
 
   @Test
-  @SuppressWarnings("unchecked")
-  public void constructNewInMemoryTableIsSuccessful() {
+  public void constructNewInMemoryTable() {
 
-    Column<?> mockColumnOne = mockColumn("One");
-    Column<?> mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("ONE");
+    Column<?> mockColumnTwo = mockColumn("TWO");
 
     InMemoryTable table = new InMemoryTable(mockColumnOne, mockColumnTwo);
 
@@ -77,7 +82,7 @@ public class InMemoryTableTests {
 
     AtomicInteger index = new AtomicInteger(0);
 
-    StreamSupport.stream(table.columns().spliterator(), false).forEach(column -> {
+    StreamUtils.stream(table.columns()).forEach(column -> {
 
       assertThat(column.getName())
         .isEqualTo(Arrays.asList(mockColumnOne, mockColumnTwo).get(index.getAndIncrement()).getName());
@@ -89,131 +94,96 @@ public class InMemoryTableTests {
     assertThat(index.get()).isEqualTo(2);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructNewInMemoryTableWithEmptyColumnsThrowsIllegalArgumentException() {
 
-    try {
-      new InMemoryTable();
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Columns are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(InMemoryTable::new)
+      .withMessage("Columns are required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void constructNewInMemoryTableWithNullColumnsThrowsIllegalArgumentException() {
 
-    try {
-      new InMemoryTable((Column<?>[]) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Columns are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> new InMemoryTable((Column<?>[]) null))
+      .withMessage("Columns are required")
+      .withNoCause();
   }
 
   @Test
   public void ofColumnArray() {
 
-    Column<?> mockColumnOne = mockColumn("One");
-    Column<?> mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("ONE");
+    Column<?> mockColumnTwo = mockColumn("TWO");
 
     InMemoryTable table = InMemoryTable.of(mockColumnOne, mockColumnTwo);
 
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
     assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList()))
-      .containsExactly("One", "Two");
+      .containsExactly("ONE", "TWO");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofEmptyColumnArrayThrowsIllegalArgumentException() {
 
-    try {
-      InMemoryTable.of();
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Columns are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(InMemoryTable::of)
+      .withMessage("Columns are required")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofNullColumnArrayThrowsIllegalArgumentException() {
 
-    try {
-      InMemoryTable.of((Column<?>[]) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Columns are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> InMemoryTable.of((Column<?>[]) null))
+      .withMessage("Columns are required")
+      .withNoCause();
   }
 
   @Test
   public void ofIterableColumns() {
 
-    Column<?> mockColumnOne = mockColumn("One");
-    Column<?> mockColumnTwo = mockColumn("Two");
+    Column<?> mockColumnOne = mockColumn("ONE");
+    Column<?> mockColumnTwo = mockColumn("TWO");
 
     InMemoryTable table = InMemoryTable.of(Arrays.asList(mockColumnOne, mockColumnTwo));
 
     assertThat(table).isNotNull();
     assertThat(table).isEmpty();
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList()))
-      .containsExactly("One", "Two");
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toList()))
+      .containsExactly("ONE", "TWO");
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofEmptyIterableColumnsThrowsIllegalArgumentException() {
 
-    try {
-      InMemoryTable.of(Collections.emptyList());
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Columns are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> InMemoryTable.of(Collections.emptyList()))
+      .withMessage("Columns are required")
+      .withNoCause();
   }
 
-  @SuppressWarnings("rawtypes")
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void ofNullIterableColumnsThrowsIllegalArgumentException() {
 
-    try {
-      InMemoryTable.of((Iterable<Column>) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("Columns are required");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> InMemoryTable.of((Iterable<Column<?>>) null))
+      .withMessage("Columns are required")
+      .withNoCause();
   }
 
   @Test
   @SuppressWarnings("all")
   public void addColumnIsSuccessful() {
 
-    Column mockColumnOne = mockColumn("One");
-    Column mockColumnTwo = mockColumn("Two");
+    Column mockColumnOne = mockColumn("ONE");
+    Column mockColumnTwo = mockColumn("TWO");
 
     InMemoryTable.InMemoryRow mockRowOne = mock(InMemoryTable.InMemoryRow.class);
     InMemoryTable.InMemoryRow mockRowTwo = mock(InMemoryTable.InMemoryRow.class);
@@ -228,10 +198,12 @@ public class InMemoryTableTests {
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
     assertThat(table).hasSize(2);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList())).containsExactly("One");
+    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList())).containsExactly("ONE");
     assertThat(table.add(mockColumnTwo)).isTrue();
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList()))
-      .containsExactly("One", "Two");
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toList()))
+      .containsExactly("ONE", "TWO");
 
     verify(mockRowOne, times(1)).addColumn();
     verify(mockRowTwo, times(1)).addColumn();
@@ -241,7 +213,7 @@ public class InMemoryTableTests {
   @Test(expected = IllegalArgumentException.class)
   public void addInvalidColumnThrowsIllegalArgumentException() {
 
-    Column mockColumnOne = mockColumn("One");
+    Column mockColumnOne = mockColumn("ONE");
 
     InMemoryTable.InMemoryRow mockRowOne = mock(InMemoryTable.InMemoryRow.class);
     InMemoryTable.InMemoryRow mockRowTwo = mock(InMemoryTable.InMemoryRow.class);
@@ -256,7 +228,10 @@ public class InMemoryTableTests {
     doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(table).getRows();
 
     assertThat(table).hasSize(2);
-    assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList())).containsExactly("One");
+    assertThat(table.getColumns().stream()
+      .map(Column::getName)
+      .collect(Collectors.toList()))
+      .containsExactly("ONE");
 
     try {
       table.add((Column) null);
@@ -270,7 +245,10 @@ public class InMemoryTableTests {
     }
     finally {
 
-      assertThat(table.getColumns().stream().map(Column::getName).collect(Collectors.toList())).containsExactly("One");
+      assertThat(table.getColumns().stream()
+        .map(Column::getName)
+        .collect(Collectors.toList()))
+        .containsExactly("ONE");
 
       verify(mockRowOne, never()).addColumn();
       verify(mockRowTwo, never()).addColumn();
