@@ -379,13 +379,13 @@ public class InMemoryTable extends AbstractTable {
 
     @Override
     @SuppressWarnings("unchecked")
-    public @Nullable <T> T getValue(int columnIndex) {
+    public synchronized @Nullable <T> T getValue(int columnIndex) {
       return (T) this.values[columnIndex];
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public @Nullable <T> T setValue(int columnIndex, @Nullable T value) {
+    public synchronized @Nullable <T> T setValue(int columnIndex, @Nullable T value) {
 
       Object currentValue = this.values[columnIndex];
 
