@@ -150,18 +150,21 @@ public class InMemoryTable extends AbstractTable {
   /**
    * Adds a new {@link Column} to this {@link Table}.
    *
-   * @param column {@link Column} to add.
-   * @return a boolean value indicating whether the {@link Column} addition
-   * successfully modified the structure of this {@link Table}.
-   * @throws IllegalArgumentException if {@link Column} is {@literal null}.
+   * @param column {@link Column} to add; must not able {@literal null}.
+   * @return a boolean value indicating whether the given {@link Column}
+   * was successfully added and modified the structure of this {@link Table}.
+   * @throws IllegalArgumentException if the given {@link Column} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow#addColumn()
    * @see org.cp.elements.data.struct.tabular.Column
+   * @see #validateColumn(Column)
+   * @see #newColumn(Column)
+   * @see #getColumns()
    */
   @Override
   @SuppressWarnings("all")
   public boolean add(@NotNull Column column) {
 
-    if (getColumns().add(validateColumn(column))) {
+    if (getColumns().add(newColumn(validateColumn(column)))) {
       for (Row row : this) {
         ((InMemoryRow) row).addColumn();
       }
@@ -173,13 +176,33 @@ public class InMemoryTable extends AbstractTable {
   }
 
   /**
-   * Adds the given {@link Row} to the end of this {@link Table}.
+   * Constructs a new instance of {@link InMemoryTable.InMemoryColumn} initialized with
+   * a copy of the existing, required {@link Column}.
    *
-   * @param row {@link Row} to add.
+   * @param <T> concrete {@link Class type} of the {@link Column}; returns {@link InMemoryColumn}.
+   * @param <TYPE> {@link Class type} of {@link Object values} stored in the {@link Column}.
+   * @param column {@link Column} to copy; must not be {@literal null}.
+   * @return a new {@link InMemoryColumn}.
+   * @throws IllegalArgumentException if the given {@link Column} is {@literal null}.
+   * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryColumn
+   * @see org.cp.elements.data.struct.tabular.Column
+   */
+  @SuppressWarnings("unchecked")
+  protected <TYPE, T extends Column<TYPE>> T newColumn(@NotNull Column<TYPE> column) {
+    return (T) new InMemoryColumn<>(column);
+  }
+
+  /**
+   * Adds the given, required {@link Row} to the end of this {@link Table}.
+   *
+   * @param row {@link Row} to add; must not be {@literal null}.
    * @return a boolean value indicating whether the given {@link Row}
    * was successfully added to this {@link Table}.
-   * @throws IllegalArgumentException if {@link Row} is {@literal null}.
+   * @throws IllegalArgumentException if the given {@link Row} is {@literal null}.
    * @see org.cp.elements.data.struct.tabular.Row
+   * @see #validateRow(Row)
+   * @see #newRow(Row)
+   * @see #getRows()
    */
   @Override
   public boolean add(@NotNull Row row) {
@@ -231,10 +254,12 @@ public class InMemoryTable extends AbstractTable {
   /**
    * Removes the {@link Column} at the given {@link Integer index} from this {@link Table}.
    *
-   * @param index {@link Integer} value indicating the index of the {@link Column} to remove.
-   * @return a boolean value if the {@link Column} was successfully removed.
-   * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Column} index
+   * @param index {@link Integer value} specifying the {@literal index} of the {@link Column} to remove.
+   * @return a boolean value if the {@link Column} at {@link Integer index} was successfully removed.
+   * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Column} {@literal index}
    * in this {@link Table}
+   * @see org.cp.elements.data.struct.tabular.provider.InMemoryTable.InMemoryRow#removeColumn(int)
+   * @see #getColumns()
    */
   @Override
   public boolean removeColumn(int index) {
@@ -253,10 +278,11 @@ public class InMemoryTable extends AbstractTable {
   /**
    * Removes the {@link Row} at the given {@link Integer index} from this {@link Table}.
    *
-   * @param index {@link Integer} value indicating the index of the {@link Row} to remove.
+   * @param index {@link Integer value} specifying the {@literal index} of the {@link Row} to remove.
    * @return a boolean value if the {@link Row} was successfully removed.
-   * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Row} index
+   * @throws IndexOutOfBoundsException if the {@link Integer index} is not a valid {@link Row} {@literal index}
    * in this {@link Table}
+   * @see #getRows()
    */
   @Override
   public boolean removeRow(int index) {
