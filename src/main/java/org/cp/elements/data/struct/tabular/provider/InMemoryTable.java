@@ -118,7 +118,7 @@ public class InMemoryTable extends AbstractTable {
     Assert.notEmpty(columns, "Columns are required");
 
     List<Column> inMemoryColumns = (List<Column>) Arrays.stream(columns)
-      .map(InMemoryColumn::new)
+      .map(this::newColumn)
       .collect(Collectors.toList());
 
     this.columns = new CopyOnWriteArrayList(inMemoryColumns);
