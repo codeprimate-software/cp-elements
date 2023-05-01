@@ -18,12 +18,16 @@ package org.cp.elements.data.struct.tabular.provider;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOperationException;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -113,7 +117,7 @@ public class InMemoryColumnUnitTests {
   }
 
   @Test
-  public void setViewThrowsUnSupportedOperationException() {
+  public void setViewThrowsUnsupportedOperationException() {
 
     Column<?> mockColumn = mockColumn("MockColumn");
 
@@ -139,5 +143,109 @@ public class InMemoryColumnUnitTests {
     assertThat(column.getView().orElse(null)).isEqualTo(table);
 
     verifyNoInteractions(table, mockView);
+  }
+
+  @Test
+  public void equalsForEqualNamedColumns() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    Column<?> mockColumn = mockColumn("MockColumn");
+    Column<?> column = table.new InMemoryColumn<>(mockColumn);
+
+    assertThat(column).isNotNull();
+    assertThat(column.getView()).isPresent();
+    assertThat(column).isEqualTo(mockColumn);
+
+    verify(mockColumn, atLeastOnce()).getName();
+  }
+
+  @Test
+  public void equalsForEqualViewedColumns() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    Column<?> mockColumn = mockColumn("MockColumn");
+
+    doReturn(Optional.of(table)).when(mockColumn).getView();
+
+    Column<?> column = table.new InMemoryColumn<>(mockColumn);
+
+    assertThat(column).isNotNull();
+    assertThat(column.getView()).isPresent();
+    assertThat(column).isEqualTo(mockColumn);
+
+    verify(mockColumn, atLeastOnce()).getName();
+  }
+
+  @Test
+  public void equalsForUnequalNamedColumns() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    Column<?> mockColumnOne = mockColumn("MockColumn");
+    Column<?> mockColumnTwo = mockColumn("TestColumn");
+    Column<?> column = table.new InMemoryColumn<>(mockColumnOne);
+
+    assertThat(column).isNotNull();
+    assertThat(column.getView()).isPresent();
+    assertThat(column).isNotEqualTo(mockColumnTwo);
+
+    verify(mockColumnOne, atLeastOnce()).getName();
+    verify(mockColumnOne, never()).getView();
+    verify(mockColumnTwo, atLeastOnce()).getName();
+    verify(mockColumnTwo, never()).getView();
+  }
+
+  @Test
+  public void equalsForUnequalViewedColumns() {
+
+    View mockView = mock(View.class);
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    Column<?> mockColumn = mockColumn("MockColumn");
+
+    doReturn(Optional.of(mockView)).when(mockColumn).getView();
+
+    Column<?> column = table.new InMemoryColumn<>(mockColumn);
+
+    assertThat(column).isNotNull();
+    assertThat(column.getView()).isPresent();
+    assertThat(column).isNotEqualTo(mockColumn);
+
+    verify(mockColumn, atLeastOnce()).getName();
+    verify(mockColumn, times(1)).getView();
+  }
+
+  @Test
+  public void hashCodeIsNotZero() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    Column<?> mockColumn = mockColumn("MockColumn");
+    Column<?> column = table.new InMemoryColumn<>(mockColumn);
+
+    assertThat(column).isNotNull();
+    assertThat(column.getName()).isEqualTo("MockColumn");
+    assertThat(column.getView()).isPresent();
+    assertThat(column.getView().orElse(null)).isEqualTo(table);
+
+    int hashCode = column.hashCode();
+
+    assertThat(hashCode).isNotZero();
+    assertThat(column.hashCode()).isEqualTo(hashCode);
+  }
+
+  @Test
+  public void toStringEqualsName() {
+
+    InMemoryTable table = mock(InMemoryTable.class);
+
+    Column<?> mockColumn = mockColumn("MockColumn");
+    Column<?> column = table.new InMemoryColumn<>(mockColumn);
+
+    assertThat(column).isNotNull();
+    assertThat(column.getName()).isEqualTo("MockColumn");
+    assertThat(column.toString()).isEqualTo("MockColumn");
   }
 }
