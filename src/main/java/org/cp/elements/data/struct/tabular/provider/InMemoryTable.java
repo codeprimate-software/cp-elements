@@ -421,13 +421,17 @@ public class InMemoryTable extends AbstractTable {
 
       Assert.notNull(row, "Row is required");
 
-      int columnSize = InMemoryTable.this.getColumns().size();
+      int columnSize = getColumnSize(InMemoryTable.this);
 
       this.values = new Object[columnSize];
 
       for (int index = 0; index < columnSize; index++) {
         this.values[index] = validateValue(row.getValue(index));
       }
+    }
+
+    int getColumnSize(@NotNull InMemoryTable table) {
+      return table.getColumns().size();
     }
 
     @Override
@@ -459,7 +463,7 @@ public class InMemoryTable extends AbstractTable {
 
     synchronized void addColumn() {
 
-      int columnsSize = InMemoryTable.this.getColumns().size();
+      int columnsSize = getColumnSize(InMemoryTable.this);
       int valuesLength = this.values.length;
 
       if (valuesLength < columnsSize) {
