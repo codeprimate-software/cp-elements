@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.data.struct.tabular.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,14 +33,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
+import org.junit.Test;
+
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Row;
 import org.cp.elements.data.struct.tabular.View;
 import org.cp.elements.util.CollectionUtils;
-import org.junit.Test;
 
 /**
- * Unit tests for {@link Query}.
+ * Unit Tests for {@link Query}.
  *
  * @author John Blum
  * @see org.junit.Test
@@ -49,13 +49,13 @@ import org.junit.Test;
  * @see org.cp.elements.data.struct.tabular.query.Query
  * @since 1.0.0
  */
-public class QueryTests {
+public class QueryUnitTests {
 
   @Test
   public void querySelectArrayOfColumnsReturnsColumns() {
 
-    Column mockColumnOne = mock(Column.class);
-    Column mockColumnTwo = mock(Column.class);
+    Column<?> mockColumnOne = mock(Column.class);
+    Column<?> mockColumnTwo = mock(Column.class);
 
     Query query = Query.select(mockColumnOne, mockColumnTwo);
 
@@ -66,7 +66,7 @@ public class QueryTests {
   @Test
   public void querySelectedColumnReturnsColumn() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Query query = Query.select(mockColumn);
 
@@ -77,8 +77,8 @@ public class QueryTests {
   @Test
   public void querySelectIterableOfColumnsReturnsColumns() {
 
-    Column mockColumnOne = mock(Column.class);
-    Column mockColumnTwo = mock(Column.class);
+    Column<?> mockColumnOne = mock(Column.class);
+    Column<?> mockColumnTwo = mock(Column.class);
 
     Query query = Query.select(CollectionUtils.asSet(mockColumnOne, mockColumnTwo));
 
@@ -105,7 +105,7 @@ public class QueryTests {
   public void queryWithNullArrayOfColumnsThrowsIllegalArgumentException() {
 
     try {
-      Query.select((Column[]) null);
+      Query.select((Column<?>[]) null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -120,7 +120,7 @@ public class QueryTests {
   public void queryWithNullIterableOfColumnsThrowsIllegalArgumentException() {
 
     try {
-      Query.select((Iterable<Column>) null);
+      Query.select((Iterable<Column<?>>) null);
     }
     catch (IllegalArgumentException expected) {
 
@@ -134,8 +134,8 @@ public class QueryTests {
   @Test
   public void querySelectedColumnsFromView() {
 
-    Column mockColumnOne = mock(Column.class);
-    Column mockColumnTwo = mock(Column.class);
+    Column<?> mockColumnOne = mock(Column.class);
+    Column<?> mockColumnTwo = mock(Column.class);
 
     View mockView = mock(View.class);
 
@@ -153,7 +153,7 @@ public class QueryTests {
   @SuppressWarnings("unchecked")
   public void querySelectedColumnsFromViewWherePredicateOrderedByComparator() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Comparator<Row> mockComparator = mock(Comparator.class);
 
@@ -206,7 +206,7 @@ public class QueryTests {
   @Test
   public void queryExecuteReturnsAllRowsWithSelectedColumn() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Row mockRowOne = mock(Row.class);
     Row mockRowTwo = mock(Row.class);
@@ -240,7 +240,7 @@ public class QueryTests {
   @SuppressWarnings("unchecked")
   public void queryExecuteReturnsSelectRowsWithSelectedColumn() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     Comparator<Row> mockComparator = mock(Comparator.class);
 
@@ -302,8 +302,8 @@ public class QueryTests {
   @Test(expected = IllegalArgumentException.class)
   public void queryExecuteWithInvalidProjectionThrowsIllegalArgumentException() {
 
-    Column mockColumnOne = mock(Column.class);
-    Column mockColumnTwo = mock(Column.class);
+    Column<?> mockColumnOne = mock(Column.class);
+    Column<?> mockColumnTwo = mock(Column.class);
 
     View mockFrom = mock(View.class);
 
@@ -366,7 +366,7 @@ public class QueryTests {
   @Test
   public void queryToString() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
     View mockView = mock(View.class);
 
@@ -387,9 +387,9 @@ public class QueryTests {
   @SuppressWarnings("unchecked")
   public void queryWithOrderToString() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
-    Comparator mockComparator = mock(Comparator.class);
+    Comparator<Row> mockComparator = mock(Comparator.class);
 
     View mockView = mock(View.class);
 
@@ -413,9 +413,9 @@ public class QueryTests {
   @SuppressWarnings("unchecked")
   public void queryWithPredicateToString() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
-    Predicate mockPredicate = mock(Predicate.class);
+    Predicate<Row> mockPredicate = mock(Predicate.class);
 
     View mockView = mock(View.class);
 
@@ -439,11 +439,11 @@ public class QueryTests {
   @SuppressWarnings("unchecked")
   public void queryWithPredicateOrderedByToString() {
 
-    Column mockColumn = mock(Column.class);
+    Column<?> mockColumn = mock(Column.class);
 
-    Comparator mockComparator = mock(Comparator.class);
+    Comparator<Row> mockComparator = mock(Comparator.class);
 
-    Predicate mockPredicate = mock(Predicate.class);
+    Predicate<Row> mockPredicate = mock(Predicate.class);
 
     View mockView = mock(View.class);
 
