@@ -59,16 +59,6 @@ public class Query implements Runnable {
   protected static final String WHERE_CLAUSE = " WHERE %s";
   protected static final String ORDER_BY_CLAUSE = " ORDER BY %s";
 
-  private final AtomicReference<View> resultSet = new AtomicReference<>();
-
-  private Comparator<Row> orderBy;
-
-  private final List<Column<?>> projection;
-
-  private Predicate<Row> predicate;
-
-  private View from;
-
   /**
    * Factory method used to define a {@link Query} with the {@literal selected} {@link Column Columns}.
    *
@@ -97,6 +87,16 @@ public class Query implements Runnable {
   public static @NotNull Query select(Iterable<Column<?>> columns) {
     return new Query(CollectionUtils.asList(columns));
   }
+
+  private final AtomicReference<View> resultSet = new AtomicReference<>();
+
+  private Comparator<Row> orderBy;
+
+  private final List<Column<?>> projection;
+
+  private Predicate<Row> predicate;
+
+  private View from;
 
   /**
    * Constructs a new {@link Query} initialized with the {@link List} of {@literal selected} {@link Column Columns}

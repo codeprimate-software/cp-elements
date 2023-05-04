@@ -16,6 +16,8 @@
 package org.cp.elements.data.struct.tabular.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
@@ -25,8 +27,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,6 +63,8 @@ public class QueryUnitTests {
 
     assertThat(query).isNotNull();
     assertThat(query.getProjection()).containsExactly(mockColumnOne, mockColumnTwo);
+
+    verifyNoInteractions(mockColumnOne, mockColumnTwo);
   }
 
   @Test
@@ -72,6 +76,8 @@ public class QueryUnitTests {
 
     assertThat(query).isNotNull();
     assertThat(query.getProjection()).containsExactly(mockColumn);
+
+    verifyNoInteractions(mockColumn);
   }
 
   @Test
@@ -80,55 +86,61 @@ public class QueryUnitTests {
     Column<?> mockColumnOne = mock(Column.class);
     Column<?> mockColumnTwo = mock(Column.class);
 
-    Query query = Query.select(CollectionUtils.asSet(mockColumnOne, mockColumnTwo));
+    Query query = Query.select(CollectionUtils.asList(mockColumnOne, mockColumnTwo));
 
     assertThat(query).isNotNull();
-    assertThat(query.getProjection()).containsExactlyInAnyOrder(mockColumnOne, mockColumnTwo);
+    assertThat(query.getProjection()).containsExactly(mockColumnOne, mockColumnTwo);
+
+    verifyNoInteractions(mockColumnOne, mockColumnTwo);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void queryWithNoColumnsThrowsIllegalArgumentException() {
+  @Test
+  public void querySingleColumnReturnsColumn() {
 
-    try {
-      Query.select();
-    }
-    catch (IllegalArgumentException expected) {
+    Column<?> mockColumn = mock(Column.class);
 
-      assertThat(expected).hasMessage("The projection must contain columns");
-      assertThat(expected).hasNoCause();
+    Query query = Query.select(Collections.singleton(mockColumn));
 
-      throw expected;
-    }
+    assertThat(query).isNotNull();
+    assertThat(query.getProjection()).containsExactly(mockColumn);
+
+    verifyNoInteractions(mockColumn);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
+  public void queryWithEmptyArrayOfColumnsThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(Query::select)
+      .withMessage("The projection must contain columns")
+      .withNoCause();
+  }
+
+  @Test
+  public void queryWithEmptyIterableOfColumnsThrowsIllegalArgumentException() {
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Query.select(CollectionUtils.emptyIterable()))
+      .withMessage("The projection must contain columns")
+      .withNoCause();
+  }
+
+  @Test
   public void queryWithNullArrayOfColumnsThrowsIllegalArgumentException() {
 
-    try {
-      Query.select((Column<?>[]) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The projection must contain columns");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Query.select((Column<?>[]) null))
+      .withMessage("The projection must contain columns")
+      .withNoCause();
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void queryWithNullIterableOfColumnsThrowsIllegalArgumentException() {
 
-    try {
-      Query.select((Iterable<Column<?>>) null);
-    }
-    catch (IllegalArgumentException expected) {
-
-      assertThat(expected).hasMessage("The projection must contain columns");
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Query.select((Iterable<Column<?>>) null))
+      .withMessage("The projection must contain columns")
+      .withNoCause();
   }
 
   @Test
@@ -143,10 +155,12 @@ public class QueryUnitTests {
       .from(mockView);
 
     assertThat(query).isNotNull();
-    assertThat(query.getProjection()).containsExactly(mockColumnOne, mockColumnTwo);
+    assertThat(query.getSelection()).containsExactly(mockColumnOne, mockColumnTwo);
     assertThat(query.getFrom()).isEqualTo(mockView);
-    assertThat(query.getPredicate().orElse(null)).isNull();
-    assertThat(query.getOrderBy().orElse(null)).isNull();
+    assertThat(query.getPredicate()).isNotPresent();
+    assertThat(query.getOrderBy()).isNotPresent();
+
+    verifyNoInteractions(mockColumnOne, mockColumnTwo, mockView);
   }
 
   @Test
@@ -167,40 +181,53 @@ public class QueryUnitTests {
       .orderBy(mockComparator);
 
     assertThat(query).isNotNull();
-    assertThat(query.getProjection()).containsExactly(mockColumn);
+    assertThat(query.getSelection()).containsExactly(mockColumn);
     assertThat(query.getFrom()).isEqualTo(mockView);
     assertThat(query.getPredicate().orElse(null)).isEqualTo(mockPredicate);
     assertThat(query.getOrderBy().orElse(null)).isEqualTo(mockComparator);
+
+    verifyNoInteractions(mockColumn, mockComparator, mockPredicate, mockView);
   }
 
-  @Test(expected = IllegalStateException.class)
-  public void querySelectedColumnsFromNullViewThrowsIllegalStateException() {
+  @Test
+  public void querySelectedColumnsFromNoViewThrowsIllegalStateException() {
 
-    try {
-      Query.select(mock(Column.class)).getFrom();
-    }
-    catch (IllegalStateException expected) {
+    Column<?> mockColumn = mock(Column.class);
 
-      assertThat(expected).hasMessage("From clause is required");
-      assertThat(expected).hasNoCause();
+    assertThatIllegalStateException()
+      .isThrownBy(() -> Query.select(mockColumn).getFrom())
+      .withMessage("From clause is required")
+      .withNoCause();
 
-      throw expected;
-    }
+    verifyNoInteractions(mockColumn);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void querySelectedColumnsWithNullViewThrowsIllegalArgumentException() {
 
-    try {
-      Query.select(mock(Column.class)).from(null);
-    }
-    catch (IllegalArgumentException expected) {
+    Column<?> mockColumn = mock(Column.class);
 
-      assertThat(expected).hasMessage("View is required");
-      assertThat(expected).hasNoCause();
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> Query.select(mockColumn).from(null))
+      .withMessage("View is required")
+      .withNoCause();
 
-      throw expected;
-    }
+    verifyNoInteractions(mockColumn);
+  }
+
+  @Test
+  public void queryGetSelectionCallsGetProjection() {
+
+    Column<?> mockColumn = mock(Column.class);
+
+    Query query = spy(Query.select(mockColumn));
+
+    assertThat(query).isNotNull();
+    assertThat(query.getSelection()).containsExactly(mockColumn);
+
+    verify(query, times(1)).getSelection();
+    verify(query, times(1)).getProjection();
+    verifyNoMoreInteractions(query);
   }
 
   @Test
@@ -213,17 +240,16 @@ public class QueryUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockView.contains(any(Column.class))).thenReturn(true);
-    when(mockView.rows()).thenReturn(Arrays.asList(mockRowOne, mockRowTwo));
+    doReturn(true).when(mockView).contains(any(Column.class));
+    doReturn(Arrays.asList(mockRowOne, mockRowTwo)).when(mockView).rows();
 
-    Query query = Query.select(mockColumn)
-      .from(mockView);
+    Query query = Query.select(mockColumn).from(mockView);
 
     assertThat(query).isNotNull();
     assertThat(query.getFrom()).isEqualTo(mockView);
     assertThat(query.getProjection()).containsExactly(mockColumn);
-    assertThat(query.getPredicate().orElse(null)).isNull();
-    assertThat(query.getOrderBy().orElse(null)).isNull();
+    assertThat(query.getPredicate()).isNotPresent();
+    assertThat(query.getOrderBy()).isNotPresent();
 
     View resultSet = query.execute();
 
@@ -234,11 +260,12 @@ public class QueryUnitTests {
     verify(mockView, times(1)).contains(eq(mockColumn));
     verify(mockView, times(1)).rows();
     verifyNoMoreInteractions(mockView);
+    verifyNoInteractions(mockColumn);
   }
 
   @Test
   @SuppressWarnings("unchecked")
-  public void queryExecuteReturnsSelectRowsWithSelectedColumn() {
+  public void queryExecuteReturnsSelectRowsOrderedWithSelectedColumn() {
 
     Column<?> mockColumn = mock(Column.class);
 
@@ -252,10 +279,11 @@ public class QueryUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockView.contains(any(Column.class))).thenReturn(true);
-    when(mockView.rows()).thenReturn(Arrays.asList(mockRowOne, mockRowTwo, mockRowThree));
-    when(mockPredicate.test(any(Row.class))).thenReturn(true).thenReturn(false).thenReturn(true);
-    when(mockComparator.compare(eq(mockRowOne), eq(mockRowThree))).thenReturn(-1);
+    doReturn(true).when(mockView).contains(any(Column.class));
+    doReturn(Arrays.asList(mockRowOne, mockRowTwo, mockRowThree)).when(mockView).rows();
+    doReturn(true).doReturn(false).doReturn(true)
+      .when(mockPredicate).test(any(Row.class));
+    doReturn(-1).when(mockComparator).compare(eq(mockRowOne), eq(mockRowThree));
 
     Query query = Query.select(mockColumn)
       .from(mockView)
@@ -282,24 +310,23 @@ public class QueryUnitTests {
     verify(mockPredicate, times(1)).test(eq(mockRowThree));
     verify(mockComparator, times(1)).compare(isA(Row.class), isA(Row.class));
     verifyNoMoreInteractions(mockView);
+    verifyNoInteractions(mockColumn);
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void queryExecuteWithNullFromClauseThrowsIllegalStateException() {
 
-    try {
-      Query.select(mock(Column.class)).execute();
-    }
-    catch (IllegalStateException expected) {
+    Column<?> mockColumn = mock(Column.class);
 
-      assertThat(expected).hasMessage("From clause is required");
-      assertThat(expected).hasNoCause();
+    assertThatIllegalStateException()
+      .isThrownBy(() -> Query.select(mock(Column.class)).execute())
+      .withMessage("From clause is required")
+      .withNoCause();
 
-      throw expected;
-    }
+    verifyNoInteractions(mockColumn);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void queryExecuteWithInvalidProjectionThrowsIllegalArgumentException() {
 
     Column<?> mockColumnOne = mock(Column.class);
@@ -307,60 +334,63 @@ public class QueryUnitTests {
 
     View mockFrom = mock(View.class);
 
-    when(mockColumnOne.toString()).thenReturn("MockColumnOne");
-    when(mockColumnTwo.toString()).thenReturn("MockColumnTwo");
-    when(mockFrom.columns()).thenReturn(Collections.singletonList(mockColumnOne));
-    when(mockFrom.contains(eq(mockColumnOne))).thenReturn(true);
-    when(mockFrom.contains(eq(mockColumnTwo))).thenReturn(false);
+    doReturn("MockColumnOne").when(mockColumnOne).toString();
+    doReturn("MockColumnTwo").when(mockColumnTwo).toString();
+    doReturn(Collections.singletonList(mockColumnOne)).when(mockFrom).columns();
+    doReturn(true).when(mockFrom).contains(eq(mockColumnOne));
+    doReturn(false).when(mockFrom).contains(eq(mockColumnTwo));
 
-    Query query = Query.select(mockColumnOne, mockColumnTwo)
-      .from(mockFrom);
+    Query query = Query.select(mockColumnOne, mockColumnTwo).from(mockFrom);
 
     assertThat(query).isNotNull();
     assertThat(query.getProjection()).containsExactly(mockColumnOne, mockColumnTwo);
     assertThat(query.getFrom()).isEqualTo(mockFrom);
 
-    try {
-      query.execute();
-    }
-    catch (IllegalArgumentException expected) {
+    assertThatIllegalArgumentException()
+      .isThrownBy(query::execute)
+      .withMessage("The View of Columns [MockColumnOne] does not contain all the selected,"
+        + " or projected Columns [MockColumnOne, MockColumnTwo]")
+      .withNoCause();
 
-      assertThat(expected)
-        .hasMessage("The View of Columns [MockColumnOne] does not contain all the selected, or projected Columns [MockColumnOne, MockColumnTwo]");
-
-      assertThat(expected).hasNoCause();
-
-      throw expected;
-    }
-    finally {
-      verify(mockFrom, times(1)).contains(eq(mockColumnOne));
-      verify(mockFrom, times(1)).contains(eq(mockColumnTwo));
-      verify(mockFrom, times(1)).columns();
-    }
+    verify(mockFrom, times(1)).contains(eq(mockColumnOne));
+    verify(mockFrom, times(1)).contains(eq(mockColumnTwo));
+    verify(mockFrom, times(1)).columns();
+    verifyNoInteractions(mockColumnOne, mockColumnTwo);
+    verifyNoMoreInteractions(mockFrom);
   }
 
   @Test
   public void queryResultsCallsRun() {
 
-    Query query = spy(Query.select(mock(Column.class)));
+    Column<?> mockColumn = mock(Column.class);
+
+    Query query = spy(Query.select(mockColumn));
 
     doNothing().when(query).run();
 
     assertThat(query.results()).isNull();
 
+    verify(query, times(1)).results();
     verify(query, times(1)).run();
+    verifyNoMoreInteractions(query);
+    verifyNoInteractions(mockColumn);
   }
 
   @Test
   public void queryRunCallsExecute() {
 
-    Query query = spy(Query.select(mock(Column.class)));
+    Column<?> mockColumn = mock(Column.class);
+
+    Query query = spy(Query.select(mockColumn));
 
     doReturn(null).when(query).execute();
 
     query.run();
 
+    verify(query, times(1)).run();
     verify(query, times(1)).execute();
+    verifyNoInteractions(mockColumn);
+    verifyNoMoreInteractions(query);
   }
 
   @Test
@@ -370,17 +400,21 @@ public class QueryUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockColumn.toString()).thenReturn("MockColumn");
-    when(mockView.getName()).thenReturn("MockView");
+    doReturn("MockColumn").when(mockColumn).toString();
+    doReturn("MockView").when(mockView).getName();
 
     Query query = Query.select(mockColumn).from(mockView);
 
     assertThat(query).isNotNull();
     assertThat(query.getProjection()).containsExactly(mockColumn);
     assertThat(query.getFrom()).isEqualTo(mockView);
-    assertThat(query.getPredicate().orElse(null)).isNull();
-    assertThat(query.getOrderBy().orElse(null)).isNull();
+    assertThat(query.getPredicate()).isNotPresent();
+    assertThat(query.getOrderBy()).isNotPresent();
     assertThat(query.toString()).isEqualTo("SELECT [MockColumn] FROM MockView");
+
+    verify(mockView, times(1)).getName();
+    verifyNoMoreInteractions(mockView);
+    verifyNoInteractions(mockColumn);
   }
 
   @Test
@@ -393,9 +427,9 @@ public class QueryUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockColumn.toString()).thenReturn("name");
-    when(mockComparator.toString()).thenReturn("age DESC");
-    when(mockView.getName()).thenReturn("People");
+    doReturn("name").when(mockColumn).toString();
+    doReturn("age DESC").when(mockComparator).toString();
+    doReturn("People").when(mockView).getName();
 
     Query query = Query.select(mockColumn)
       .from(mockView)
@@ -404,9 +438,13 @@ public class QueryUnitTests {
     assertThat(query).isNotNull();
     assertThat(query.getProjection()).containsExactly(mockColumn);
     assertThat(query.getFrom()).isEqualTo(mockView);
-    assertThat(query.getPredicate().orElse(null)).isNull();
+    assertThat(query.getPredicate()).isNotPresent();
     assertThat(query.getOrderBy().orElse(null)).isEqualTo(mockComparator);
     assertThat(query.toString()).isEqualTo("SELECT [name] FROM People ORDER BY age DESC");
+
+    verify(mockView, times(1)).getName();
+    verifyNoInteractions(mockColumn, mockComparator);
+    verifyNoMoreInteractions(mockView);
   }
 
   @Test
@@ -419,9 +457,9 @@ public class QueryUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockColumn.toString()).thenReturn("name");
-    when(mockPredicate.toString()).thenReturn("age >= 21");
-    when(mockView.getName()).thenReturn("People");
+    doReturn("name").when(mockColumn).toString();
+    doReturn("age >= 21").when(mockPredicate).toString();
+    doReturn("People").when(mockView).getName();
 
     Query query = Query.select(mockColumn)
       .from(mockView)
@@ -431,8 +469,12 @@ public class QueryUnitTests {
     assertThat(query.getProjection()).containsExactly(mockColumn);
     assertThat(query.getFrom()).isEqualTo(mockView);
     assertThat(query.getPredicate().orElse(null)).isEqualTo(mockPredicate);
-    assertThat(query.getOrderBy().orElse(null)).isNull();
+    assertThat(query.getOrderBy()).isNotPresent();
     assertThat(query.toString()).isEqualTo("SELECT [name] FROM People WHERE age >= 21");
+
+    verify(mockView, times(1)).getName();
+    verifyNoInteractions(mockColumn, mockPredicate);
+    verifyNoMoreInteractions(mockView);
   }
 
   @Test
@@ -447,10 +489,10 @@ public class QueryUnitTests {
 
     View mockView = mock(View.class);
 
-    when(mockColumn.toString()).thenReturn("name");
-    when(mockComparator.toString()).thenReturn("birthDate ASC");
-    when(mockPredicate.toString()).thenReturn("gender = FEMALE");
-    when(mockView.getName()).thenReturn("People");
+    doReturn("name").when(mockColumn).toString();
+    doReturn("birthDate ASC").when(mockComparator).toString();
+    doReturn("gender = FEMALE").when(mockPredicate).toString();
+    doReturn("People").when(mockView).getName();
 
     Query query = Query.select(mockColumn)
       .from(mockView)
@@ -458,10 +500,14 @@ public class QueryUnitTests {
       .orderBy(mockComparator);
 
     assertThat(query).isNotNull();
-    assertThat(query.getProjection()).containsExactly(mockColumn);
+    assertThat(query.getSelection()).containsExactly(mockColumn);
     assertThat(query.getFrom()).isEqualTo(mockView);
     assertThat(query.getPredicate().orElse(null)).isEqualTo(mockPredicate);
     assertThat(query.getOrderBy().orElse(null)).isEqualTo(mockComparator);
     assertThat(query.toString()).isEqualTo("SELECT [name] FROM People WHERE gender = FEMALE ORDER BY birthDate ASC");
+
+    verify(mockView, times(1)).getName();
+    verifyNoInteractions(mockColumn, mockComparator, mockPredicate);
+    verifyNoMoreInteractions(mockView);
   }
 }
