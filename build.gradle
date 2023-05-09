@@ -43,7 +43,7 @@ dependencies {
 }
 
 jar {
-  baseName = "$rootProject.name"
+  archiveBaseName = "$rootProject.name"
   version = "$version"
   manifest {
     attributes('Main-Class' : 'org.cp.elements.ElementsVersion')
