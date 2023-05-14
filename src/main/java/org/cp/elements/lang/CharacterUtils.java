@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
+import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
+
 /**
- * The CharacterUtils class provides utility methods for working with Characters.
+ * Abstract utility class providing methods for processing {@link Character Characters}.
  *
  * @author John J. Blum
  * @see java.lang.Character
@@ -27,53 +29,68 @@ package org.cp.elements.lang;
 public abstract class CharacterUtils {
 
   /**
-   * Determines whether the specified Character is blank.  A Character is blank if it is one of the whitespace
-   * characters or is the null character/char value '\0'.
+   * Determines whether the given {@link Character} is {@link Character#isWhitespace(char) blank}.
    *
-   * @param value the Character being evaluated as blank.
-   * @return a boolean value indicating whether the specified Character is blank.
+   * A {@link Character} is considered {@literal blank} if it is one of the whitespace
+   * characters or is the {@literal null} character/char value {@literal '\0'}.
+   *
+   * @param value {@link Character} to evaluate.
+   * @return a boolean value indicating whether the given {@literal Character}
+   * is {@link Character#isWhitespace(char) blank}.
    * @see java.lang.Character#isWhitespace(char)
+   * @see java.lang.Character
    * @see #valueOf(Character)
    */
-  public static boolean isBlank(final Character value) {
-    final char chr = valueOf(value);
-    return (chr == '\0' || Character.isWhitespace(chr));
+  @NullSafe
+  public static boolean isBlank(@Nullable Character value) {
+    char chr = valueOf(value);
+    return chr == '\0' || Character.isWhitespace(chr);
   }
 
   /**
-   * Determines whether the specified Character is a digit, a character value in the range of (0..9).
+   * Determines whether the given {@link Character} is a {@link Character#isDigit(char) digit},
+   * a character value in the range of {@literal (0..9)}.
    *
-   * @param value the Character being evaluated as a digit.
-   * @return a boolean value indicating whether the specified Character is a digit.
+   * @param value {@link Character} to evaluate.
+   * @return a boolean value indicating whether the given {@link Character}
+   * is a {@link Character#isDigit(char) digit}.
    * @see java.lang.Character#isDigit(char)
+   * @see java.lang.Character
    * @see #valueOf(Character)
    */
-  public static boolean isDigit(final Character value) {
+  @NullSafe
+  public static boolean isDigit(@Nullable Character value) {
     return Character.isDigit(valueOf(value));
   }
 
   /**
-   * Determines whether the specified Character is a letter, a character value in the range of (a..z) case-insensitive.
+   * Determines whether the given {@link Character} is a {@link Character#isLetter(char) letter},
+   * a character value in the range of {@literal (a..z)} case-insensitive.
    *
-   * @param value the Character being evaluated as a letter.
-   * @return a boolean value indicating whether the specified Character is a letter.
+   * @param value {@link Character} being evaluated.
+   * @return a boolean value indicating whether the given {@link Character}
+   * is a {@link Character#isLetter(char) letter}.
    * @see java.lang.Character#isLetter(char)
+   * @see java.lang.Character
    * @see #valueOf(Character)
    */
-  public static boolean isLetter(final Character value) {
+  @NullSafe
+  public static boolean isLetter(@Nullable Character value) {
     return Character.isLetter(valueOf(value));
   }
 
   /**
-   * Gets the char primitive value for the specified Character wrapper object, handling null values by returning
-   * the null char value '\0'.
+   * Gets the char primitive value for the given {@link Character} wrapper object.
    *
-   * @param value the Character to convert into an equivalent primitive char value.
-   * @return a primitive char value for the specified Character, or '\0' for null.
+   * Handles {@literal null} values by returning the {@literal null} char value {@literal '\0'}.
+   *
+   * @param value {@link Character} to convert into an equivalent primitive char value.
+   * @return a primitive char value for the given {@link Character},
+   * or {@literal '\0'} for {@literal null}.
    * @see java.lang.Character
    */
-  public static char valueOf(final Character value) {
-    return (value == null ? '\0' : value);
+  @NullSafe
+  public static char valueOf(@Nullable Character value) {
+    return value != null ? value : '\0';
   }
-
 }
