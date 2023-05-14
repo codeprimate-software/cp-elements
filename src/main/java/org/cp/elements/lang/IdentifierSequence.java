@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.cp.elements.lang;
 
 import java.util.Optional;
 
 import org.cp.elements.lang.annotation.NullSafe;
+import org.cp.elements.lang.annotation.Nullable;
 
 /**
- * The {@link IdentifierSequence} interface defines a contract for implementing objects to generate
- * unique identifiers (IDs) to uniquely identify some object or entity.
+ * Java {@link FunctionalInterface} defining a contract for implementing objects
+ * used to generate unique identifiers (IDs) for uniquely identify some {@link Object} or {@literal entity}.
  *
  * @author John J. Blum
- * @param <T> is a {@link Comparable} class type of the identifying value.
+ * @param <T> {@link Comparable} {@link Class type} of the {@literal identifying value}.
  * @see java.lang.Comparable
  * @see java.lang.FunctionalInterface
  * @see org.cp.elements.lang.Identifiable
@@ -36,22 +36,23 @@ import org.cp.elements.lang.annotation.NullSafe;
 public interface IdentifierSequence<T extends Comparable<T>> {
 
   /**
-   * Generates the next unique ID in sequence.
+   * Generates the next {@link T unique ID} in sequence.
    *
-   * @return the next unique ID of class type T in the sequence.
+   * @return the next {@link T unique ID} of {@link Class type T} in the sequence.
    */
   T nextId();
 
   /**
-   * Sets the identifier of the given {@link Identifiable} object is not set.
+   * Sets the {@link T identifier} for the given {@link Identifiable object} if not set.
    *
-   * @param <S> {@link Class} type of the {@link Identifiable} object.
-   * @param identifiable {@link Identifiable} object to identify (set the ID).
+   * @param <S> {@link Class type} of {@link Identifiable object}.
+   * @param identifiable {@link Identifiable object} to identify (set the ID).
    * @return the given {@link Identifiable} object.
    * @see org.cp.elements.lang.Identifiable
+   * @see #nextId()
    */
   @NullSafe
-  default <S extends Identifiable<T>> S identify(S identifiable) {
+  default @Nullable <S extends Identifiable<T>> S identify(@Nullable S identifiable) {
 
     return Optional.ofNullable(identifiable)
       .filter(Identifiable::isNew)
