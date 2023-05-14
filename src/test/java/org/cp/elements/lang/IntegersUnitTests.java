@@ -124,6 +124,37 @@ public class IntegersUnitTests {
   }
 
   @Test
+  public void minusTwoIsNotMinusOne() {
+    assertThat(Integers.isMinusOne(-2)).isFalse();
+  }
+
+  @Test
+  public void minusOneIsMinusOne() {
+    assertThat(Integers.isMinusOne(-1)).isTrue();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void nullIsNotMinusOneIsNullSafe() {
+    assertThat(Integers.isMinusOne(null)).isFalse();
+  }
+
+  @Test
+  public void oneIsNotMinusOne() {
+    assertThat(Integers.isMinusOne(1)).isFalse();
+  }
+
+  @Test
+  public void twoIsNotMinusOne() {
+    assertThat(Integers.isMinusOne(2)).isFalse();
+  }
+
+  @Test
+  public void zeroIsNotMinusOne() {
+    assertThat(Integers.isMinusOne(0)).isFalse();
+  }
+
+  @Test
   public void minusOneIsNotOne() {
     assertThat(Integers.isOne(-1)).isFalse();
   }

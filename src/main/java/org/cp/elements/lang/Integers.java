@@ -105,6 +105,18 @@ public abstract class Integers {
   }
 
   /**
+   * Null-safe method used to determine whether the given {@link Integer value} is equal to {@literal -1}.
+   *
+   * @param value {@link Integer value} to evaluate.
+   * @return a boolean valued indicating whether the given {@link Integer value} is equal to {@literal -1}.
+   * @see java.lang.Integer
+   */
+  @NullSafe
+  public static boolean isMinusOne(@Nullable Integer value) {
+    return MINUS_ONE.equals(value);
+  }
+
+  /**
    * Null-safe method used to determine whether the given {@link Integer value} is equal to {@literal 1}.
    *
    * @param value {@link Integer value} to evaluate.
