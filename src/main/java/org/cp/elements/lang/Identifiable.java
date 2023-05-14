@@ -18,30 +18,24 @@ package org.cp.elements.lang;
 import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperationException;
 
 /**
- * The {@link Identifiable} interface defines a contract for uniquely identifying {@link Object objects}
+ * Java {@link FunctionalInterface} defining a contract for uniquely identifying {@link Object objects}
  * of a given {@link Class type}.
  *
  * @author John J. Blum
- * @param <ID> {@link Comparable} {@link Class type} of the identifier.
+ * @param <ID> {@link Comparable} {@link Class type} of the {@link Object identifier}.
  * @see java.lang.Comparable
+ * @see org.cp.elements.lang.ImmutableIdentifiable
  * @since 1.0.0
  */
 @SuppressWarnings("unused")
 @FunctionalInterface
-public interface Identifiable<ID extends Comparable<ID>> {
+public interface Identifiable<ID extends Comparable<ID>> extends ImmutableIdentifiable<ID> {
 
   /**
-   * Returns the identifier uniquely identifying {@literal this} {@link Object}.
+   * Sets the {@link ID identifier} uniquely identifying {@literal this} {@link Object}.
    *
-   * @return the value uniquely identifying {@literal this} {@link Object}.
-   * @see #setId(Comparable)
-   */
-  ID getId();
-
-  /**
-   * Sets the identifier uniquely identifying {@literal this} {@link Object}.
-   *
-   * @param id value of {@link Class type ID} assigned as {@literal this} {@link Object Object's} unique identifier.
+   * @param id {@link ID value} of {@link Class type ID} assigned as {@literal this} {@link Object Object's}
+   * unique identifier.
    * @throws UnsupportedOperationException by default.
    * @see #getId()
    */
