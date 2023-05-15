@@ -26,6 +26,7 @@ loading services by name.
 * Reviewed and refactored all Elements Tabular Data Structure (Table) interfaces and classes
 in the org.cp.elements.data.struct.tabular package.
 * Upgrades to Codeprimate Core 1.15.0.
+* Upgrades to FreeFair Gradle Plugin 8.0.1.
 * Upgrades to Gradle 8.1.1.
 
 
