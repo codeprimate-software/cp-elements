@@ -3,7 +3,34 @@ Codeprimate Elements changelog.txt
 https://github.com/codeprimate-software/cp-elements/blob/master/changelog.txt
 
 
-1.0.1 (GA) - 2023-February-02
+1.0.2 (SR2) - 2023-May-15
+-------------------------
+Release Codeprimate Elements 1.0.2, second patch (maintenance) release of 1.0 GA!
+
+* Built on Oracle Java (JDK) 8; 1.8.0_362.
+* Builds and supports Codeprimate Elements on Java 8, Java 11, Java 14, Java 17 and Java 18.
+* Builds and supports Codeprimate Elements on Gradle 8.1.1.
+* Adds notInterrupted() assertion (method) to the o.c.elements.lang.Assert class.
+* Adds -1 (MINUS_ONE) constant to the o.c.elements.lang.Integers class.
+* Adds isMinusOne(:Integer) method to the o.c.elements.lang.Integers class.
+* Defines the BeanPropertyToTableColumnResolver interface in the o.c.elements.data.struct.tabular.support package
+* Defines the ImmutableIdentifiable interface in the org.cp.elements.lang package.
+to support Bean Property to Table Column mappings in the Elements' Tabular Data Structure.
+* Edit Java across the APIs in the codebase.
+* Refactored o.c.elements.lang.Identifiable interface to extends the ImmutableIdentifiable interface.
+* Refactored o.c.elements.service.loader.ServiceLoaderSupport.getServiceInstance(..) method to support
+loading services by name.
+* Replaces use of java.util.stream.StreamSupport with o.c.elements.util.stream.StreamUtils across the codebase.
+* Reviewed and refactored the org.cp.elements.lang.CharacterUtils clas.
+* Reviewed and refactored the org.cp.elements.lang.IdentifierSequence interface.
+* Reviewed and refactored all Elements Tabular Data Structure (Table) interfaces and classes
+in the org.cp.elements.data.struct.tabular package.
+* Upgrades to Codeprimate Core 1.15.0.
+* Upgrades to Gradle 8.1.1.
+
+
+
+1.0.1 (SR1) - 2023-February-02
 -----------------------------
 Release Codeprimate Elements 1.0.1, first patch (maintenance) release of the 1.0 GA!
 
@@ -29,10 +56,10 @@ java.util.function.Supplier to introduce caching behavior.
 * Refactors the accept(:Visitor) method of the Visitable interface to be null-safe.
 * Refactors the Rule interface and AbstractRule class in the org.cp.elements.biz.rules package.
 * Removed the unnecessary use of deprecated MockitoMatchers.
-* Reviewed and refactor the org.cp.elements.lang.LogicUtils class.
-* Reviewed and refactor the org.cp.elements.lang.MathUtils class.
-* Reviewed and refactor the org.cp.elements.lang.NumberUtils class.
-* Reviewed and refactor the org.cp.elements.util.ComparatorResultBuilder class.
+* Reviewed and refactored the org.cp.elements.lang.LogicUtils class.
+* Reviewed and refactored the org.cp.elements.lang.MathUtils class.
+* Reviewed and refactored the org.cp.elements.lang.NumberUtils class.
+* Reviewed and refactored the org.cp.elements.util.ComparatorResultBuilder class.
 * Upgrades to Codeprimate Core 1.14.0.
 * Upgrades to Maven 3.8.7.
 
