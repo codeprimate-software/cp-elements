@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.FileFilter;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.lang.LogicalOperator;
@@ -43,7 +43,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner

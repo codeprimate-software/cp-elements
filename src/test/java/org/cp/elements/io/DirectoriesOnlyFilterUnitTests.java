@@ -26,7 +26,7 @@ import static org.mockito.Mockito.withSettings;
 
 import java.io.File;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -41,7 +41,7 @@ import org.mockito.quality.Strictness;
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.DirectoriesOnlyFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite

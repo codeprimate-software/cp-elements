@@ -40,7 +40,7 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.time.Instant;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.AbstractBean.StateChangeCallback;
 import org.cp.elements.beans.event.ChangeEvent;
@@ -61,7 +61,7 @@ import org.mockito.stubbing.Answer;
  * Unit Tests for {@link AbstractBean}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.AbstractBean
  * @since 1.0.0

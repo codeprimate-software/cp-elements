@@ -21,14 +21,14 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link FunctionToConverterAdapter}.
  *
  * @author John Blum
  * @see java.util.function.Function
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.support.FunctionToConverterAdapter
  * @since 1.0.0

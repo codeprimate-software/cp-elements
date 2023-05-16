@@ -26,14 +26,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link PredicateToFilterAdapter}.
  *
  * @author John Blum
  * @see java.util.function.Predicate
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Filter
  * @since 1.0.0

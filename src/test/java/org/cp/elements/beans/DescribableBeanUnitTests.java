@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.beans.BeanDescriptor;
 import java.beans.BeanInfo;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link DescribableBean}.
@@ -35,7 +35,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.beans.BeanDescriptor
  * @see java.beans.BeanInfo
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see DescribableBean
  * @since 1.0.0

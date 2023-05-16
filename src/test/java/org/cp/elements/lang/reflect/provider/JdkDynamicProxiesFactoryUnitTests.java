@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Identifiable;
@@ -38,7 +38,7 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link JdkDynamicProxiesFactory}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory
  * @since 1.0.0
  */

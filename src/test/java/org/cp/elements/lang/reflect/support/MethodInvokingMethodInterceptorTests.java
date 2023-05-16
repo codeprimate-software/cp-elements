@@ -26,7 +26,7 @@ import java.time.Month;
 import java.time.Period;
 
 import org.cp.elements.lang.reflect.MethodInvocation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author John Blum
  * @see java.lang.reflect.Method
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see lombok
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.MethodInvocation

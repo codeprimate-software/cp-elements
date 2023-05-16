@@ -24,14 +24,14 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import java.util.Arrays;
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link PropertiesSetter}.
  *
  * @author John J. Blum
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.PropertiesSetter
  * @since 1.0.0

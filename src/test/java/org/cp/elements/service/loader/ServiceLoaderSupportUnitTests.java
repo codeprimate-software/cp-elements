@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.awt.Point;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.service.ServiceUnavailableException;
@@ -47,7 +47,7 @@ import org.cp.elements.service.loader.provider.TomTomGeocodingService;
  * Unit Tests for {@link ServiceLoaderSupport}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.service.loader.ServiceLoaderSupport
  * @since 1.0.0

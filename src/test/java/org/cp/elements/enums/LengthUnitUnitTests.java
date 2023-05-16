@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.MathUtils;
 import org.cp.elements.lang.StringUtils;
@@ -30,7 +30,7 @@ import org.cp.elements.lang.StringUtils;
  * Unit Tests for {@link LengthUnit}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.enums.LengthUnit
  * @since 1.0.0
  */

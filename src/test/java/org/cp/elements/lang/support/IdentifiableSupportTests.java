@@ -18,13 +18,13 @@ package org.cp.elements.lang.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link IdentifiableSupport}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see IdentifiableSupport
  * @since 1.0.0
  */

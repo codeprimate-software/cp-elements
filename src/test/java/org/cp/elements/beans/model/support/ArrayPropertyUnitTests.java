@@ -31,13 +31,13 @@ import java.beans.PropertyDescriptor;
 import org.cp.elements.beans.model.BeanModel;
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.security.model.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ArrayProperty}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.support.ArrayProperty
  * @since 1.0.0

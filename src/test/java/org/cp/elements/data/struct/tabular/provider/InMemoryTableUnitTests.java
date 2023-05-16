@@ -41,7 +41,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Row;
@@ -54,7 +54,7 @@ import org.mockito.quality.Strictness;
  * Unit Tests for {@link InMemoryTable}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.Column
  * @see org.cp.elements.data.struct.tabular.Row

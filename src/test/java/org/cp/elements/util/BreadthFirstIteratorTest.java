@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The BreadthFirstIteratorTest class is a test suite of test cases testing the contract and functionality
@@ -37,7 +37,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.util.Iterator
  * @see org.cp.elements.util.BreadthFirstIterator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unchecked")

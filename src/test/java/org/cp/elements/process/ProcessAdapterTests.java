@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.context.env.Environment;
@@ -83,7 +83,7 @@ import edu.umd.cs.mtc.TestFramework;
  *
  * @author John Blum
  * @see java.lang.Process
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

@@ -34,7 +34,7 @@ import java.util.List;
 
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.reflect.MethodNotFoundException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -43,7 +43,7 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit tests for {@link AbstractSearcher}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.search.AbstractSearcher
  * @see org.cp.elements.util.search.Searcher

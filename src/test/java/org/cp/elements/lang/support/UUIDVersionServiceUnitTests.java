@@ -22,7 +22,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.VersionService;
 
@@ -31,7 +31,7 @@ import org.cp.elements.lang.VersionService;
  *
  * @author John Blum
  * @see java.util.UUID
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.support.UUIDVersionService
  * @since 1.0.0
  */

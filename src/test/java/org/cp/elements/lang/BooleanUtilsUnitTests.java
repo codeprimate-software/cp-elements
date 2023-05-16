@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link BooleanUtils}.
@@ -27,7 +27,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.lang.Boolean
  * @see java.util.concurrent.atomic.AtomicBoolean
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.BooleanUtils
  * @since 1.0.0
  */

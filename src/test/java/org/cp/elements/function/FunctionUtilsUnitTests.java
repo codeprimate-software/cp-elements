@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.security.model.User;
 
@@ -45,7 +45,7 @@ import org.cp.elements.security.model.User;
  * @see java.util.function.Function
  * @see java.util.function.Predicate
  * @see java.util.function.Supplier
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.function.FunctionUtils
  * @since 1.0.0

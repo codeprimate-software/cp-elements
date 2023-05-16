@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -29,7 +29,7 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit Tests for {@link SimpleIdentifierSequence}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.IdentifierSequence
  * @see org.cp.elements.lang.support.SimpleIdentifierSequence
  * @see edu.umd.cs.mtc.MultithreadedTestCase

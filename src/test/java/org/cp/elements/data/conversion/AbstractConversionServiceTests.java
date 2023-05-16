@@ -33,13 +33,13 @@ import org.cp.elements.data.conversion.converters.NumberConverter;
 import org.cp.elements.data.conversion.converters.StringConverter;
 import org.cp.elements.enums.Gender;
 import org.cp.elements.enums.Race;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link AbstractConversionService}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.AbstractConversionService
  * @since 1.0.0

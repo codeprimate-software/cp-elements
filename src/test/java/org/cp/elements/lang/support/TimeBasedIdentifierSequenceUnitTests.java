@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -30,7 +30,7 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit Tests for {@link TimeBasedIdentifierSequence}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.IdentifierSequence
  * @see org.cp.elements.lang.support.TimeBasedIdentifierSequence
  * @see edu.umd.cs.mtc.MultithreadedTestCase

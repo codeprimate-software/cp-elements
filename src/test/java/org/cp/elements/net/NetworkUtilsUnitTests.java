@@ -30,7 +30,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
 
@@ -42,7 +42,7 @@ import org.assertj.core.api.InstanceOfAssertFactories;
  * @see java.net.ServerSocket
  * @see java.net.Socket
  * @see java.net.SocketAddress
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.net.NetworkUtils
  * @since 1.0.0

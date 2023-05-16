@@ -18,14 +18,14 @@ package org.cp.elements.data.conversion.converters;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link BooleanConverter}.
  *
  * @author John Blum
  * @see java.lang.Boolean
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.BooleanConverter
  * @since 1.0.0
  */

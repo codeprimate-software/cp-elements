@@ -26,13 +26,13 @@ import java.time.ZonedDateTime;
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.annotation.NotNull;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link AuditableSupport}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.support.AuditableSupport
  * @since 1.0.0
  */

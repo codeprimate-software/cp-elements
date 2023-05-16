@@ -21,7 +21,7 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatUnsupportedOper
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableOperation;
 
@@ -29,7 +29,7 @@ import org.cp.elements.lang.ThrowableOperation;
  * Unit Tests for {@link AbstractCache}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.caching.AbstractCache
  * @since 1.0.0
  */

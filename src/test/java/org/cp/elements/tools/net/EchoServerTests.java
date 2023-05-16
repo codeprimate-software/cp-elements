@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 
 import org.cp.elements.test.annotation.SubjectUnderTest;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -65,7 +65,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @see java.util.concurrent.ExecutorService
  * @see org.cp.elements.test.annotation.SubjectUnderTest
  * @see org.cp.elements.tools.net.EchoServer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

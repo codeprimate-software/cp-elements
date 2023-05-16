@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.FilteringTransformer;
@@ -43,7 +43,7 @@ import org.cp.elements.lang.NumberUtils;
  * @author John J. Blum
  * @see java.util.Collections
  * @see java.util.Map
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.MapUtils
  * @since 1.0.0
  */

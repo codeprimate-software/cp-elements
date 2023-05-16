@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -40,7 +40,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.RegexFileFilter
  * @since 1.0.0

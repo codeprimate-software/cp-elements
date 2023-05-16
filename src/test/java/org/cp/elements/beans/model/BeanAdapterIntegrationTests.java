@@ -18,7 +18,7 @@ package org.cp.elements.beans.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cp.elements.security.model.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,7 +30,7 @@ import lombok.ToString;
  * Integration Tests for {@link BeanAdapter}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.BeanAdapter
  * @since 1.0.0
  */

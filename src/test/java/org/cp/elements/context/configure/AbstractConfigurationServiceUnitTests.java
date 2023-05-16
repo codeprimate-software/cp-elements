@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.AbstractConfigurationService.ConfigurationPropertiesInterfaceMethodInterceptor;
 import org.cp.elements.context.container.DependencyInjection;
@@ -50,7 +50,7 @@ import org.cp.elements.util.ArrayUtils;
  * Unit Tests for {@link AbstractConfigurationService}
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
  * @see org.cp.elements.context.configure.Configuration

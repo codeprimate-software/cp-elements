@@ -22,13 +22,13 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.cp.elements.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link WeightUnit}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.enums.WeightUnit
  * @since 1.0.0
  */

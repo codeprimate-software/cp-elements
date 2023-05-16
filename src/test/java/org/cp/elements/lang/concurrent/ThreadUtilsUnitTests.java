@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.lang.Condition;
@@ -49,7 +49,7 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit Tests for {@link ThreadUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

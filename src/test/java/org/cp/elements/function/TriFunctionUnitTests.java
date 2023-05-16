@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.time.Instant;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.security.model.User;
@@ -46,7 +46,7 @@ import lombok.ToString;
  * Unit Tests for {@link TriFunction}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.function.TriFunction
  * @since 1.0.0

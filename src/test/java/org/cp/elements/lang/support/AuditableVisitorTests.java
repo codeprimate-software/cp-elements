@@ -35,7 +35,7 @@ import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -44,7 +44,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * Unit Tests for {@link AuditableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Auditable

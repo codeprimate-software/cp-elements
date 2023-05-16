@@ -21,13 +21,13 @@ import static org.mockito.Mockito.mock;
 
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.lang.Transformer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ComposableTransformer}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Transformer
  * @see org.cp.elements.lang.support.ComposableTransformer

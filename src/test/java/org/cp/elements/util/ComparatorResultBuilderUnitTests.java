@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Comparator;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ComparatorResultBuilder}.
@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.lang.Comparable
  * @see java.util.Comparator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.ComparatorResultBuilder
  * @since 1.0.0
  */

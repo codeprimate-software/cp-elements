@@ -29,7 +29,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.StreamSupport;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
@@ -39,7 +39,7 @@ import org.cp.elements.context.configure.Configuration;
  *
  * @author John J. Blum
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.AbstractConfiguration
  * @see org.cp.elements.context.configure.Configuration

@@ -21,14 +21,14 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link PropertiesUtils}.
  *
  * @author John Blum
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.PropertiesUtils
  * @since 1.0.0

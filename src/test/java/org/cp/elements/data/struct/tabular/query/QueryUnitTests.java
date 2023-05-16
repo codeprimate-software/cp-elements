@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.struct.tabular.Column;
 import org.cp.elements.data.struct.tabular.Row;
@@ -46,7 +46,7 @@ import org.cp.elements.util.CollectionUtils;
  * Unit Tests for {@link Query}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.query.Query
  * @since 1.0.0

@@ -21,13 +21,13 @@ import static org.mockito.Mockito.mock;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.lang.annotation.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link IsModifiedVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor

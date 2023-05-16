@@ -27,13 +27,13 @@ import java.beans.PropertyChangeEvent;
 import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.lang.ImmutableObjectException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ObjectEffectivelyImmutableVetoableChangeListener}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.event.support.ObjectEffectivelyImmutableVetoableChangeListener
  * @since 1.0.0

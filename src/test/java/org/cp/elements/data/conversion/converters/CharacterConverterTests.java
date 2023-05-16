@@ -20,14 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link CharacterConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Character
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.CharacterConverter
  * @since 1.0.0
  */

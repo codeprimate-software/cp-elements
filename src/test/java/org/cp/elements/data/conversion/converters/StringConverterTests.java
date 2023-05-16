@@ -22,14 +22,14 @@ import java.util.Date;
 
 import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.Identifiable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link StringConverter}.
  *
  * @author John J. Blum
  * @see java.lang.String
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.StringConverter
  * @since 1.0.0
  */

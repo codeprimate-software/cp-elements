@@ -23,14 +23,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.cp.elements.lang.annotation.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ChangeRecorder}.
  *
  * @author John J. Blum
  * @see java.beans.PropertyChangeEvent
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.event.ChangeRecorder
  * @since 1.0.0
  */

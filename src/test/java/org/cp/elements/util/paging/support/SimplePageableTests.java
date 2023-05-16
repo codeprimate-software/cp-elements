@@ -35,13 +35,13 @@ import java.util.NoSuchElementException;
 
 import org.cp.elements.util.paging.Page;
 import org.cp.elements.util.paging.PageNotFoundException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SimplePageable}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.paging.support.SimplePageable
  * @since 1.0.0

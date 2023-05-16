@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Initable;
 import org.cp.elements.lang.ObjectUtils;
@@ -39,7 +39,7 @@ import org.cp.elements.lang.Visitable;
  * Unit Tests for {@link InitableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Initable
  * @see org.cp.elements.lang.ParameterizedInitable
  * @see org.cp.elements.lang.Visitable

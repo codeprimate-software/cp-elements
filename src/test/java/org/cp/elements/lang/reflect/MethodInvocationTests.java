@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Period;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.test.TestUtils;
 
@@ -37,7 +37,7 @@ import org.cp.elements.test.TestUtils;
  * @author John Blum
  * @see java.lang.reflect.Method
  * @see java.time.LocalDate
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.MethodInvocation
  * @since 1.0.0

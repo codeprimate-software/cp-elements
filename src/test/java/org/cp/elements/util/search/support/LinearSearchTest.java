@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.cp.elements.util.search.AbstractMatcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The LinearSearchTest class is a test suite class testing the contract and functionality of the LinearSearch class.
@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see org.cp.elements.util.search.AbstractMatcher
  * @see org.cp.elements.util.search.support.LinearSearch
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 public class LinearSearchTest {

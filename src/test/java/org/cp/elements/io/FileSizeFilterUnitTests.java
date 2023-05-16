@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.io.File;
 import java.io.FileFilter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -36,7 +36,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileSizeFilter
  * @since 1.0.0

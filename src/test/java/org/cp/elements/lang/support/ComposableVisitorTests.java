@@ -31,14 +31,14 @@ import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.lang.Visitor;
 import org.cp.elements.util.CollectionUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ComposableVisitor}.
  *
  * @author John J. Blum
  * @see org.junit.Rule
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Visitable
  * @see org.cp.elements.lang.Visitor

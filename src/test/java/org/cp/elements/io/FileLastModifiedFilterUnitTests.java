@@ -28,7 +28,7 @@ import java.io.FileFilter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.RelationalOperator;
 import org.cp.elements.lang.annotation.NotNull;
@@ -40,7 +40,7 @@ import org.cp.elements.time.Month;
  * @author John J. Blum
  * @see java.io.File
  * @see java.io.FileFilter
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileLastModifiedFilter
  * @since 1.0.0

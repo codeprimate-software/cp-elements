@@ -34,7 +34,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
@@ -45,7 +45,7 @@ import org.cp.elements.util.SystemException;
  * Unit Tests for {@link ZipUtils}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.zip.ZipUtils

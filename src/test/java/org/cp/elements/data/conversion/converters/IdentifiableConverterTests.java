@@ -24,14 +24,14 @@ import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.factory.ObjectFactory;
 import org.cp.elements.lang.factory.provider.PrototypeObjectFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link IdentifiableConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Long
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.IdentifiableConverter
  * @see org.cp.elements.lang.Identifiable
  * @since 1.0.0

@@ -23,13 +23,13 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.cp.elements.beans.event.ChangeRecorder;
 import org.cp.elements.lang.Visitable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ClearDirtyStateVisitor}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.support.ClearDirtyStateVisitor
  * @since 1.0.0

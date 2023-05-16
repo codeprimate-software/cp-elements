@@ -32,7 +32,7 @@ import static org.mockito.Mockito.withSettings;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -45,7 +45,7 @@ import org.mockito.quality.Strictness;
  * @author John Blum
  * @see java.io.InputStream
  * @see java.nio.ByteBuffer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.nio.ByteBufferInputStream
  * @since 1.0.0

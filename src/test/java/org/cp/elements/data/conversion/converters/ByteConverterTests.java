@@ -24,14 +24,14 @@ import java.util.Date;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.enums.Gender;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ByteConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Byte
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.ByteConverter
  * @since 1.0.0
  */

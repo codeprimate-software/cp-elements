@@ -20,7 +20,7 @@ import static org.cp.elements.lang.ThrowableAssertions.assertThatThrowableOfType
 
 import java.beans.VetoableChangeListener;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.AbstractBean;
 import org.cp.elements.lang.ImmutableObjectException;
@@ -38,7 +38,7 @@ import lombok.ToString;
  * Integration Tests for {@link ObjectEffectivelyImmutableVetoableChangeListener}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.AbstractBean
  * @see org.cp.elements.beans.event.support.ObjectEffectivelyImmutableVetoableChangeListener
  * @see org.cp.elements.lang.ImmutableObjectException

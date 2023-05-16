@@ -19,14 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link TimeUnitComparator}.
  *
  * @author John J. Blum
  * @see java.util.concurrent.TimeUnit
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.concurrent.TimeUnitComparator
  * @since 1.0.0
  */

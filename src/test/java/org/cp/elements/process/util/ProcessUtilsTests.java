@@ -37,14 +37,14 @@ import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.test.annotation.IntegrationTest;
 import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ProcessUtils}.
  *
  * @author John J. Blum
  * @see java.lang.Process
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.process.util.ProcessUtils
  * @see org.cp.elements.test.TestUtils

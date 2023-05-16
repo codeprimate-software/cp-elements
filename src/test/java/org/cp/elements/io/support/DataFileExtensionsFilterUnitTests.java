@@ -23,7 +23,7 @@ import org.cp.elements.test.annotation.SubjectUnderTest;
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.io.support.AbstractFileExtensionFilterTests
  * @see org.cp.elements.io.support.DataFileExtensionsFilter
  * @since 1.0.0

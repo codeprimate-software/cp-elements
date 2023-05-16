@@ -24,7 +24,7 @@ import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.serialization.DeserializationException;
 import org.cp.elements.data.serialization.SerializationException;
@@ -42,7 +42,7 @@ import lombok.ToString;
  * @author John Blum
  * @see java.io.Serializable
  * @see java.nio.ByteBuffer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.serialization.provider.JavaSerializationSerializer
  * @since 1.0.0
  */

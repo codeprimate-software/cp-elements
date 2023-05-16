@@ -40,7 +40,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.struct.tabular.query.Query;
 
@@ -50,7 +50,7 @@ import org.mockito.ArgumentMatchers;
  * Unit Tests for {@link View}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.View
  * @since 1.0.0

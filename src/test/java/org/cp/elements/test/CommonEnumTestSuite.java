@@ -22,7 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.cp.elements.lang.ThrowableUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The CommonEnumTestSuite class is a abstract test suite containing test cases and functionality common to all
@@ -30,7 +30,7 @@ import org.junit.Test;
  *
  * @author John J. Blum
  * @see java.lang.Enum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 @SuppressWarnings("unused")

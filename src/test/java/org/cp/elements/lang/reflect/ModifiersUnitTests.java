@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Modifiers}.
@@ -38,7 +38,7 @@ import org.junit.Test;
  * @see java.lang.reflect.Member
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.Modifiers
  * @since 1.0.0

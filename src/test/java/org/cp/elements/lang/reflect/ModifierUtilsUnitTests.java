@@ -26,7 +26,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -41,7 +41,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @see java.lang.reflect.Member
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

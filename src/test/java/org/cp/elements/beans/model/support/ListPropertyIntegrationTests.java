@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 
@@ -32,7 +32,7 @@ import lombok.Getter;
  *
  * @author John Blum
  * @see java.util.List
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.support.ListProperty
  * @since 1.0.0
  */

@@ -24,7 +24,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.security.model.User;
@@ -40,7 +40,7 @@ import lombok.ToString;
  * Unit Tests for {@link SimpleTypeConversions}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.provider.SimpleTypeConversions
  * @since 1.0.0
  */

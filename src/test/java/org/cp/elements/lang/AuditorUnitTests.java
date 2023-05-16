@@ -37,7 +37,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.mockito.ArgumentMatchers;
 import org.mockito.quality.Strictness;
@@ -46,7 +46,7 @@ import org.mockito.quality.Strictness;
  * Unit Tests for {@link Auditor}
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Auditable
  * @see org.cp.elements.lang.Auditor

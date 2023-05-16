@@ -24,13 +24,13 @@ import java.io.ObjectOutputStream;
 import java.util.Calendar;
 
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ValueHolder}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.ValueHolder
  * @see org.cp.elements.test.TestUtils
  * @since 1.0.0

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.util.ArrayUtils;
 
@@ -32,7 +32,7 @@ import org.cp.elements.util.ArrayUtils;
  * Unit Tests for {@link AbstractView}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.AbstractView
  * @since 1.0.0

@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link NullSafeOperations}.
@@ -39,7 +39,7 @@ import org.junit.Test;
  * @see java.util.function.Consumer
  * @see java.util.function.Function
  * @see java.util.function.Supplier
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.NullSafeOperations
  * @since 1.0.0

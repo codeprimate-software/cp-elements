@@ -28,13 +28,13 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.net.NetworkUtils;
 import org.cp.elements.process.ProcessAdapter;
 import org.cp.elements.tools.net.EchoServer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for {@link ProcessBuilderProcessExecutor}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.process.support.ProcessBuilderProcessExecutor
  * @since 1.0.0
  */

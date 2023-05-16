@@ -36,7 +36,7 @@ import org.cp.elements.data.conversion.ConversionService;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.ArrayUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -47,7 +47,7 @@ import org.mockito.stubbing.Answer;
  *
  * @author John J. Blum
  * @see java.lang.reflect.Constructor
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
  * @see org.mockito.junit.MockitoJUnitRunner

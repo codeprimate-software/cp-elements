@@ -30,13 +30,13 @@ import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for {@link JavaProcessExecutor} testing the Java Class execution functionality.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.process.ProcessAdapter
  * @see org.cp.elements.process.java.JavaProcessExecutor
  * @see org.cp.elements.tools.net.EchoClient

@@ -39,13 +39,13 @@ import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.Executable;
 import org.cp.elements.process.EmbeddedProcessExecutionException;
 import org.cp.elements.util.ArrayUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link EmbeddedJavaProcessExecutor}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.process.java.EmbeddedJavaProcessExecutor

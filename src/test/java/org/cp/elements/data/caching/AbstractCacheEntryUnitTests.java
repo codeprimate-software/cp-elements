@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.caching.AbstractCache.AbstractEntry;
 import org.cp.elements.data.caching.AbstractCache.AttachedCacheEntry;
@@ -41,7 +41,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * Unit Tests for {@link AbstractCache.AbstractEntry}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.caching.AbstractCache.AbstractEntry
  * @since 1.0.0

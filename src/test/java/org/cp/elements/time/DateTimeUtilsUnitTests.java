@@ -23,7 +23,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.test.TestUtils;
 
@@ -32,7 +32,7 @@ import org.cp.elements.test.TestUtils;
  *
  * @author John J. Blum
  * @see java.util.Calendar
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.test.TestUtils
  * @see org.cp.elements.time.DateTimeUtils
  * @since 1.0.0

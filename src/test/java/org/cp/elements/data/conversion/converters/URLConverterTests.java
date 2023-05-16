@@ -23,7 +23,7 @@ import java.net.URI;
 import java.net.URL;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link URLConverter}.
@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.net.URI
  * @see java.net.URL
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.URLConverter
  * @since 1.0.0
  */

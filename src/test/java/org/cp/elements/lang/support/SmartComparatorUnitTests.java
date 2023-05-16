@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.Nameable;
@@ -53,7 +53,7 @@ import lombok.ToString;
  *
  * @author John Blum
  * @see java.util.Comparator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.support.SmartComparator
  * @since 1.0.0

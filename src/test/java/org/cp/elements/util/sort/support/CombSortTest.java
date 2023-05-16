@@ -24,7 +24,7 @@ import org.cp.elements.util.sort.Sorter;
  * @author John J. Blum
  * @see org.cp.elements.util.sort.support.CombSort
  * @see org.cp.elements.util.sort.support.CommonSortTestSuite
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 public class CombSortTest extends CommonSortTestSuite {

@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The CollectionExtensionsTest class is a test suite of test cases testing the contract and functionality
@@ -34,7 +34,7 @@ import org.junit.Test;
  * @see java.util.List
  * @see java.util.Set
  * @see org.cp.elements.util.CollectionExtensions
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 public class CollectionExtensionsTest {

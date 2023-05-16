@@ -24,14 +24,14 @@ import java.nio.ByteBuffer;
 
 import org.cp.elements.lang.NumberUtils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link BufferUtils}.
  *
  * @author John Blum
  * @see java.nio.ByteBuffer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.nio.BufferUtils
  * @since 1.0.0

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.VersionService;
 
@@ -30,7 +30,7 @@ import org.cp.elements.lang.VersionService;
  *
  * @author John Blum
  * @see java.util.concurrent.atomic.AtomicLong
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.support.SimpleVersionService
  * @since 1.0.0
  */

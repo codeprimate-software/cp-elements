@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +29,7 @@ import lombok.Setter;
  * Integration Tests for {@link ArrayProperty}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.support.ArrayProperty
  * @since 1.0.0
  */

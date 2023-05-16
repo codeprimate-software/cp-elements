@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.stubbing.Answer;
 
@@ -44,7 +44,7 @@ import org.mockito.stubbing.Answer;
  * Unit Tests for {@link ChangeSupport}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.mockito.Spy
  * @see org.cp.elements.beans.event.ChangeSupport

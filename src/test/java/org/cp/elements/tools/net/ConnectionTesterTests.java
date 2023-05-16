@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ConnectionTester}.
@@ -46,7 +46,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.net.Socket
  * @see java.net.SocketAddress
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy

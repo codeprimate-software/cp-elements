@@ -35,14 +35,14 @@ import org.cp.elements.beans.model.support.ListProperty;
 import org.cp.elements.beans.model.support.MapProperty;
 import org.cp.elements.beans.model.support.SortedSetProperty;
 import org.cp.elements.security.model.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link AbstractPropertyFactory}.
  *
  * @author John Blum
  * @see java.beans.PropertyDescriptor
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.AbstractPropertyFactory
  * @since 1.0.0
  */

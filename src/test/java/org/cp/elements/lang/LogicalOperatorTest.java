@@ -24,13 +24,13 @@ import static org.mockito.Mockito.when;
 
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link LogicalOperator}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.LogicalOperator
  * @since 1.0.0
  */

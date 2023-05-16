@@ -32,7 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.support.SmartComparator;
 import org.cp.elements.lang.support.SmartComparator.ComparableComparator;
@@ -50,7 +50,7 @@ import lombok.ToString;
  *
  * @author John J. Blum
  * @see java.util.Comparator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see edu.umd.cs.mtc.MultithreadedTestCase

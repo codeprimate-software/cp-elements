@@ -31,14 +31,14 @@ import java.util.List;
 
 import org.cp.elements.util.paging.Page;
 import org.cp.elements.util.paging.PageNotFoundException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SimplePageable.SimplePage}.
  *
  * @author John Blum
  * @see java.util.List
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.paging.Page
  * @see org.cp.elements.util.paging.support.SimplePageable

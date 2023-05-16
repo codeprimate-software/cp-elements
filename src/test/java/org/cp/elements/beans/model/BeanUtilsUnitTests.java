@@ -36,7 +36,7 @@ import org.cp.elements.beans.model.support.ArrayProperty;
 import org.cp.elements.process.AbstractBaseProcess;
 import org.cp.elements.security.model.User;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -52,7 +52,7 @@ import lombok.ToString;
  * @see java.beans.BeanDescriptor
  * @see java.beans.BeanInfo
  * @see java.beans.PropertyDescriptor
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.BeanUtils
  * @since 1.0.0

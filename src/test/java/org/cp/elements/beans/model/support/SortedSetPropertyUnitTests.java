@@ -38,7 +38,7 @@ import org.cp.elements.beans.model.BeanModel;
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.util.CollectionUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link SortedSetProperty}.
@@ -46,7 +46,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.beans.PropertyDescriptor
  * @see java.util.SortedSet
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.BeanModel
  * @see org.cp.elements.beans.model.Property

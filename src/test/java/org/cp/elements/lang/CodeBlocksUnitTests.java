@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.mockito.InOrder;
 
@@ -43,7 +43,7 @@ import org.mockito.InOrder;
  * @author John Blum
  * @see java.util.function.Function
  * @see java.util.function.Predicate
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.CodeBlocks
  * @since 1.0.0

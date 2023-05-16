@@ -29,7 +29,7 @@ import java.util.Comparator;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.Mock;
@@ -41,7 +41,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @author John J. Blum
  * @see java.io.File
  * @see java.util.Comparator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner

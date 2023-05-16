@@ -85,7 +85,7 @@ import static org.cp.elements.lang.ElementsExceptionsFactory.newUnhandledMethodI
 import static org.cp.elements.lang.ElementsExceptionsFactory.newUserException;
 import static org.cp.elements.lang.ElementsExceptionsFactory.newWriteOnlyException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.beans.BeansException;
@@ -151,7 +151,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * Unit Tests for {@link ElementsExceptionsFactory}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

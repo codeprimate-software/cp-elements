@@ -21,13 +21,13 @@ import static org.mockito.Mockito.mock;
 import org.cp.elements.test.TestUtils;
 import org.cp.elements.util.search.support.BinarySearch;
 import org.cp.elements.util.search.support.LinearSearch;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link SearcherFactory}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.search.SearcherFactory
  * @see org.cp.elements.util.search.support.BinarySearch

@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.support.AbstractVersionedObject;
 
@@ -35,7 +35,7 @@ import org.cp.elements.lang.support.AbstractVersionedObject;
  * Unit Tests for {@link VersionService}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Versioned
  * @see org.cp.elements.lang.VersionService

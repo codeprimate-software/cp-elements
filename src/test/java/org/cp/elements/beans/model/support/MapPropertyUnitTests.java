@@ -33,7 +33,7 @@ import java.util.TreeMap;
 import org.cp.elements.beans.model.BeanModel;
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.struct.KeyValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link MapProperty}.
@@ -41,7 +41,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.beans.PropertyDescriptor
  * @see java.util.Map
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.support.MapProperty
  * @since 1.0.0

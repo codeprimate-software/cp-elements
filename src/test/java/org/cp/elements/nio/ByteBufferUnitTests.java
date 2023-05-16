@@ -20,14 +20,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for Java's {@link ByteBuffer}.
  *
  * @author John Blum
  * @see java.nio.ByteBuffer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 public class ByteBufferUnitTests {

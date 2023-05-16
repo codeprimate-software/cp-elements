@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.util.stream.StreamUtils;
 
@@ -28,7 +28,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * Unit Tests for {@link StringBasedKeyValue}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.struct.StringBasedKeyValue
  * @since 1.0.0
  */

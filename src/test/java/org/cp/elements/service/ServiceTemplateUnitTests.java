@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.context.configure.ConfigurationService;
@@ -56,7 +56,7 @@ import org.assertj.core.api.InstanceOfAssertFactories;
  * Unit Tests for {@link ServiceTemplate}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.service.ServiceTemplate
  * @since 1.0.0

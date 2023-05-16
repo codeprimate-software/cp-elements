@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 
@@ -34,7 +34,7 @@ import org.cp.elements.lang.Constants;
  * @author John Blum
  * @see java.util.Map
  * @see java.util.Optional
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.SimpleKeyValue
  * @since 1.0.0

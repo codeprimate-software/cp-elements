@@ -35,7 +35,7 @@ import org.cp.elements.enums.Gender;
 import org.cp.elements.lang.AssertionException;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 
 import lombok.Data;
@@ -48,7 +48,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author John J. Blum
  * @see java.util.logging.Logger
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.support.HashCodeBuilder
  * @since 1.0.0

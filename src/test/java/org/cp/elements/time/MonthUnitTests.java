@@ -24,13 +24,13 @@ import java.util.function.Function;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Month}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see java.time.Month
  * @see java.util.Calendar
  * @see org.cp.elements.time.Month

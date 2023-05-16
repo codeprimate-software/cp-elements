@@ -25,7 +25,7 @@ import java.util.function.Function;
 
 import org.cp.elements.function.FunctionUtils;
 import org.cp.elements.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Weekday}.
@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.time.DayOfWeek
  * @see java.util.Calendar
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.time.Weekday
  * @since 1.0.0
  */

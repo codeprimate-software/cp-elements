@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileUtils;
 import org.cp.elements.lang.StringUtils;
@@ -55,7 +55,7 @@ import org.mockito.ArgumentMatchers;
  * @author John Blum
  * @see java.util.Map
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.context.env.Environment
  * @since 1.0.0
  */

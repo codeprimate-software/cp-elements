@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 
 import org.cp.elements.io.FileSystemUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -38,7 +38,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @author John J. Blum
  * @see java.lang.Process
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

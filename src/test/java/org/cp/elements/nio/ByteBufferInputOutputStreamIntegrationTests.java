@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import org.cp.elements.security.model.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,7 +44,7 @@ import lombok.ToString;
  * @see java.io.InputStream
  * @see java.io.OutputStream
  * @see java.nio.ByteBuffer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.nio.ByteBufferInputStream
  * @see org.cp.elements.nio.ByteBufferOutputStream
  * @since 1.0.0

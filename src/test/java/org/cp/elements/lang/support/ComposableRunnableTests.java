@@ -21,14 +21,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.cp.elements.util.ArrayUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ComposableRunnable}.
  *
  * @author John J. Blum
  * @see java.lang.Runnable
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.support.ComposableRunnable
  * @since 1.0.0

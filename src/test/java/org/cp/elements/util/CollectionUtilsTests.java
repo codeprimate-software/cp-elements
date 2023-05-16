@@ -39,7 +39,7 @@ import org.cp.elements.lang.FilteringTransformer;
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link CollectionUtils}.
@@ -54,7 +54,7 @@ import org.junit.Test;
  * @see java.util.List
  * @see java.util.Set
  * @see org.junit.Rule
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.CollectionUtils
  * @since 1.0.0
  */

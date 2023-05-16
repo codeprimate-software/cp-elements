@@ -26,7 +26,7 @@ import java.util.TreeSet;
 
 import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 
@@ -34,7 +34,7 @@ import lombok.Getter;
  * Integration Tests for {@link SortedSetProperty}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.support.SortedSetProperty
  * @since 1.0.0
  */

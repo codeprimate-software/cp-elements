@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import org.cp.elements.lang.Filter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test suite of test cases testing the contract and functionality of the {@link FilterBuilder} class.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Filter
  * @see org.cp.elements.lang.support.FilterBuilder
  * @since 1.0.0

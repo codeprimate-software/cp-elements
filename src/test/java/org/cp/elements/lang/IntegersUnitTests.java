@@ -17,14 +17,14 @@ package org.cp.elements.lang;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Integers}.
  *
  * @author John Blum
  * @see java.lang.Integer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Integers
  * @since 1.0.0
  */

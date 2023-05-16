@@ -22,14 +22,14 @@ import static org.mockito.Mockito.verify;
 
 import org.cp.elements.lang.Interruptable;
 import org.cp.elements.lang.Visitable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The InterruptableVisitorTest class is a test suite of test cases testing the contract and functionality
  * of the InterruptableVisitor class.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.support.InterruptableVisitor
  * @since 1.0.0

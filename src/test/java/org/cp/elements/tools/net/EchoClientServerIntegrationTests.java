@@ -24,13 +24,13 @@ import org.cp.elements.net.NetworkUtils;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for {@link EchoClient} and {@link EchoServer}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.net.NetworkUtils
  * @see org.cp.elements.tools.net.EchoClient
  * @see org.cp.elements.tools.net.EchoServer

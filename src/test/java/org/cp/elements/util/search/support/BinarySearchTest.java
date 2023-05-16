@@ -19,13 +19,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.cp.elements.util.search.AbstractMatcher;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link BinarySearch}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.search.AbstractMatcher
  * @see org.cp.elements.util.search.support.BinarySearch
  * @since 1.0.0

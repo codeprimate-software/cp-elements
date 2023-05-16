@@ -22,14 +22,14 @@ import static org.assertj.core.data.Offset.offset;
 import java.math.BigInteger;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link MathUtils}.
  *
  * @author John J. Blum
  * @see java.math.BigInteger
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.MathUtils
  * @since 1.0.0
  */

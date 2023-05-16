@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -52,7 +52,7 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit Tests for {@link Assert}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Assert
  * @version 1.0.0

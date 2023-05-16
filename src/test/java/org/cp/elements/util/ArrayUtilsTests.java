@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Assert;
 import org.cp.elements.lang.Filter;
@@ -52,7 +52,7 @@ import lombok.RequiredArgsConstructor;
  * @see java.util.Enumeration
  * @see java.util.Iterator
  * @see java.util.List
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.ArrayUtils
  * @since 1.0.0
  */

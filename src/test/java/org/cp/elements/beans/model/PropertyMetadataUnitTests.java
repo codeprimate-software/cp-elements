@@ -36,7 +36,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.lang.annotation.Transient;
 import org.cp.elements.util.stream.StreamUtils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -49,7 +49,7 @@ import lombok.ToString;
  *
  * @author John Blum
  * @see java.lang.annotation.Annotation
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.Property
  * @since 1.0.0

@@ -22,14 +22,14 @@ import java.time.Month;
 
 import org.cp.elements.lang.Version.Qualifier;
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link Version} and {@link Version.Qualifier}.
  *
  * @author John Blum
  * @see org.junit.Rule
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Version
  * @see org.cp.elements.lang.Version.Qualifier
  * @since 1.0.0

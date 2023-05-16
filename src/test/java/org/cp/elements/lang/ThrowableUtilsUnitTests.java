@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -33,7 +33,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John J. Blum
  * @see java.lang.Error
  * @see java.lang.Throwable
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ThrowableUtils
  * @since 1.0.0

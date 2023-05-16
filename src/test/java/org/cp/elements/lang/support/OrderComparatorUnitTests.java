@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Ordered;
 import org.cp.elements.lang.annotation.Order;
@@ -29,7 +29,7 @@ import org.cp.elements.lang.annotation.Order;
  *
  * @author John Blum
  * @see java.util.Comparator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.Ordered
  * @see org.cp.elements.lang.annotation.Order
  * @see org.cp.elements.lang.support.OrderComparator

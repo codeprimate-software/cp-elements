@@ -28,13 +28,13 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ObjectUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ObjectUtils
  * @since 1.0.0

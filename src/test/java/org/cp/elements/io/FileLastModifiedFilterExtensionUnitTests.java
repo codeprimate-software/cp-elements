@@ -31,7 +31,7 @@ import java.time.Month;
 import java.time.Year;
 import java.time.ZoneId;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -42,7 +42,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * @see java.io.File
  * @see java.io.FileFilter
  * @see java.time.LocalTime
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.FileLastModifiedFilterExtension
  * @since 1.0.0

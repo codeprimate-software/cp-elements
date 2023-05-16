@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.NumberUtils;
 import org.cp.elements.util.ArrayUtils;
@@ -45,7 +45,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.util.Enumeration
  * @see java.util.Iterator
  * @see java.util.stream.Stream
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.stream.StreamUtils
  * @since 1.0.0

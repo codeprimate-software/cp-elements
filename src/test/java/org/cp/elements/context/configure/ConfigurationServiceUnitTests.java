@@ -37,7 +37,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.annotation.ActiveProfiles;
 import org.cp.elements.util.ArrayUtils;
@@ -53,7 +53,7 @@ import lombok.ToString;
  * Unit Tests for {@link ConfigurationService}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.ConfigurationService

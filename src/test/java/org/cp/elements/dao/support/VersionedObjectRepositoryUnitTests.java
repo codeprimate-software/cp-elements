@@ -32,7 +32,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Versioned;
 import org.cp.elements.lang.annotation.NotNull;
@@ -44,7 +44,7 @@ import org.mockito.ArgumentMatchers;
  * Unit Tests for {@link VersionedObjectRepository}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.dao.support.VersionedObjectRepository
  * @see org.cp.elements.lang.Versioned

@@ -29,7 +29,7 @@ import org.cp.elements.beans.model.support.MapProperty;
 import org.cp.elements.beans.model.support.SortedSetProperty;
 import org.cp.elements.security.model.User;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +38,7 @@ import lombok.Setter;
  * Integration Tests for {@link Properties}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.Properties
  * @since 1.0.0
  */

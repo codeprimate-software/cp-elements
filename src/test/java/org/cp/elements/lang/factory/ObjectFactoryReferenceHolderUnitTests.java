@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import org.cp.elements.test.TestUtils;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import edu.umd.cs.mtc.MultithreadedTestCase;
 import edu.umd.cs.mtc.TestFramework;
@@ -30,7 +30,7 @@ import edu.umd.cs.mtc.TestFramework;
  * Unit Tests for {@link ObjectFactoryReferenceHolderUnitTests}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.factory.ObjectFactoryReferenceHolder
  * @see org.cp.elements.test.TestUtils

@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.mockito.ArgumentMatchers;
 
@@ -39,7 +39,7 @@ import org.mockito.ArgumentMatchers;
  * Unit Tests for {@link Auditable}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Auditable
  * @since 1.0.0

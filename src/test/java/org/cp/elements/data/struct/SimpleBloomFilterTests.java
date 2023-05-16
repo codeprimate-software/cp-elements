@@ -21,13 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Random;
 
 import org.cp.elements.lang.NumberUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SimpleBloomFilter}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.struct.SimpleBloomFilter
  * @since 1.0.0
  */

@@ -40,7 +40,7 @@ import java.util.function.Predicate;
 
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.util.CollectionUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
@@ -56,7 +56,7 @@ import lombok.ToString;
  * Unit Tests for {@link DaoTemplate}
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner
  * @see org.cp.elements.dao.DaoTemplate

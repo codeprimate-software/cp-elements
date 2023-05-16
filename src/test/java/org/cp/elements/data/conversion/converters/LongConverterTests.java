@@ -25,14 +25,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link LongConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Long
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.LongConverter
  * @since 1.0.0
  */

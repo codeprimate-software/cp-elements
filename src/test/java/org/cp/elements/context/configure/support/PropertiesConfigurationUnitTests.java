@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.StreamSupport;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.AbstractConfiguration;
 import org.cp.elements.context.configure.Configuration;
@@ -36,7 +36,7 @@ import org.cp.elements.context.configure.Configuration;
  * @author John J. Blum
  * @see java.io.File
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.context.configure.AbstractConfiguration
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.PropertiesConfiguration

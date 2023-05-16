@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.io.FileUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link AbstractBaseProcess}.
@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.io.File
  * @see java.lang.Process
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see AbstractBaseProcess
  * @since 1.0.0
  */

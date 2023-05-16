@@ -31,7 +31,7 @@ import java.util.Arrays;
 
 import org.cp.elements.lang.Constants;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link AbstractPropertyChangeListener}.
@@ -39,7 +39,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.beans.PropertyChangeEvent
  * @see java.beans.PropertyChangeListener
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.event.AbstractPropertyChangeListener
  * @since 1.0.0

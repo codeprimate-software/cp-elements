@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.Configurable;
@@ -43,7 +43,7 @@ import org.cp.elements.lang.factory.ObjectFactoryReferenceHolder;
  * Unit Tests for {@link PrototypeObjectFactory}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.factory.provider.PrototypeObjectFactory
  * @since 1.0.0

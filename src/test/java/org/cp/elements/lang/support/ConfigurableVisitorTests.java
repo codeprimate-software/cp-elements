@@ -24,13 +24,13 @@ import org.cp.elements.context.configure.Configuration;
 import org.cp.elements.lang.Configurable;
 import org.cp.elements.lang.Visitable;
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ConfigurableVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.lang.Configurable

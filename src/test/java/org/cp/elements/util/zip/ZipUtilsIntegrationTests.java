@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
@@ -30,7 +30,7 @@ import org.cp.elements.test.annotation.IntegrationTest;
  * Integration Tests for {@link ZipUtils}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.zip.ZipUtils
  * @since 1.0.0
  */

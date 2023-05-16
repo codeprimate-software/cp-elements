@@ -37,7 +37,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.test.annotation.SubjectUnderTest;
@@ -58,7 +58,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @author John Blum
  * @see java.util.Map
  * @see java.util.concurrent.ConcurrentMap
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.Spy

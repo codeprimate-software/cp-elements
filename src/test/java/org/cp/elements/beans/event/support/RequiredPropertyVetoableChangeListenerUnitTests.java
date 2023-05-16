@@ -29,7 +29,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.time.Instant;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.PropertyNotFoundException;
 import org.cp.elements.beans.PropertyNotSetException;
@@ -53,7 +53,7 @@ import lombok.ToString;
  * @author John Blum
  * @see java.beans.PropertyChangeEvent
  * @see java.beans.VetoableChangeListener
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.event.support.RequiredPropertyVetoableChangeListener
  * @since 1.0.0

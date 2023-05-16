@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.configure.ConfigurationService;
 import org.cp.elements.context.configure.ConfigurationServiceAware;
@@ -37,7 +37,7 @@ import org.cp.elements.lang.factory.ObjectFactoryAware;
  * Unit Tests for {@link Syringe}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.container.DependencyInjection
  * @see org.cp.elements.context.container.provider.Syringe

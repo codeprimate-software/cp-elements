@@ -25,14 +25,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link NumberConverter}.
  *
  * @author John J. Blum
  * @see java.lang.Number
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.NumberConverter
  * @since 1.0.0
  */

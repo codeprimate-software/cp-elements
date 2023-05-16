@@ -22,14 +22,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.cp.elements.data.conversion.ConversionException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link BigIntegerConverter}.
  *
  * @author John J. Blum
  * @see java.math.BigInteger
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.BigIntegerConverter
  * @since 1.0.0
  */

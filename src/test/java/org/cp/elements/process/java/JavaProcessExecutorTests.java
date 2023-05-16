@@ -32,7 +32,7 @@ import java.io.IOException;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.process.ProcessAdapter;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -42,7 +42,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @author John Blum
  * @see java.io.File
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

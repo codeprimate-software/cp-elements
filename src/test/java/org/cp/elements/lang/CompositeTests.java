@@ -26,14 +26,14 @@ import java.util.Collections;
 import java.util.stream.StreamSupport;
 
 import org.cp.elements.util.ArrayUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link Composite}.
  *
  * @author John Blum
  * @see org.junit.Rule
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Composite
  * @since 1.0.0

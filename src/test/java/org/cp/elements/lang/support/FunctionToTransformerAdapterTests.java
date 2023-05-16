@@ -22,14 +22,14 @@ import static org.mockito.Mockito.mock;
 import java.util.function.Function;
 
 import org.cp.elements.lang.Transformer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link FunctionToTransformerAdapter}.
  *
  * @author John Blum
  * @see java.util.function.Function
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Transformer
  * @see org.cp.elements.lang.support.FunctionToTransformerAdapter

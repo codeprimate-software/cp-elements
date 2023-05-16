@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import org.cp.elements.util.ArrayUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link ByteBufferOutputStream}.
@@ -36,7 +36,7 @@ import org.junit.Test;
  * @author John Blum
  * @see java.io.OutputStream
  * @see java.nio.ByteBuffer
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.nio.ByteBufferOutputStream
  * @since 1.0.0

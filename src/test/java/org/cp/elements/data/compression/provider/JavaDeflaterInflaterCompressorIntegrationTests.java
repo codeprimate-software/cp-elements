@@ -19,13 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.zip.Deflater;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration Tests for {@link JavaDeflaterInflaterCompressor}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.compression.provider.JavaDeflaterInflaterCompressor
  * @since 1.0.0
  */

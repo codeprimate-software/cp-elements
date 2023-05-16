@@ -30,14 +30,14 @@ import java.util.Date;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link DateConverter}.
  *
  * @author John J. Blum
  * @see java.util.Date
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.conversion.converters.DateConverter
  * @since 1.0.0
  */

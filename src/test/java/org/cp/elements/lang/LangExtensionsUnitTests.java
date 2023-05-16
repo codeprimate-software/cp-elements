@@ -55,7 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.lang.LangExtensions.Given;
@@ -73,7 +73,7 @@ import lombok.RequiredArgsConstructor;
  * Unit Tests for {@link LangExtensions}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.LangExtensions
  * @see org.cp.elements.test.TestUtils

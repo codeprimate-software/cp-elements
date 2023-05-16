@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.lang.Identifiable;
@@ -38,7 +38,7 @@ import org.cp.elements.test.annotation.SubjectUnderTest;
  * Unit Tests for {@link ReadOnlyCache}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.caching.support.ReadOnlyCache
  * @since 1.0.0
  */

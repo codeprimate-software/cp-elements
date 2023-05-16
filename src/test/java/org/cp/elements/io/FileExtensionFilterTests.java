@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -36,7 +36,7 @@ import org.cp.elements.util.stream.StreamUtils;
  *
  * @author John J. Blum
  * @see java.io.File
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.io.FileExtensionFilter
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @since 1.0.0

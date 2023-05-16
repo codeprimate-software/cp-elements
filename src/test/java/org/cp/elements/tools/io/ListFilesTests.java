@@ -35,13 +35,13 @@ import java.io.File;
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.StringUtils;
 import org.cp.elements.test.AbstractBaseTestSuite;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link ListFiles}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Spy
  * @see org.cp.elements.tools.io.ListFiles
  * @since 1.0.0

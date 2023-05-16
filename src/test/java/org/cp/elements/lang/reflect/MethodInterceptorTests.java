@@ -25,7 +25,7 @@ import java.time.Period;
 import java.util.Optional;
 
 import org.cp.elements.lang.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.NoArgsConstructor;
 
@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
  *
  * @author John Blum
  * @see java.lang.reflect.Method
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see lombok
  * @see org.cp.elements.lang.reflect.MethodInterceptor
  * @see org.cp.elements.lang.reflect.MethodInvocation

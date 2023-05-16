@@ -25,13 +25,13 @@ import static org.mockito.Mockito.verify;
 import org.cp.elements.lang.Identifiable;
 import org.cp.elements.lang.IdentifierSequence;
 import org.cp.elements.lang.Visitable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link SetIdentityVisitor}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Identifiable
  * @see org.cp.elements.lang.IdentifierSequence

@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.annotation.NotNull;
@@ -40,7 +40,7 @@ import org.mockito.ArgumentMatchers;
  * Unit Tests for {@link AbstractConverterRegistry}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.AbstractConverterRegistry
  * @since 1.0.0

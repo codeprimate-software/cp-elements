@@ -22,13 +22,13 @@ import static org.mockito.Mockito.verify;
 
 import org.cp.elements.lang.Destroyable;
 import org.cp.elements.lang.Visitable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test suite of test cases testing the contract and functionality of the {@link DestroyableVisitor} class.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.Destroyable
  * @see org.cp.elements.lang.Visitable

@@ -43,7 +43,7 @@ import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.annotation.Profile;
 import org.cp.elements.context.configure.AbstractConfiguration.AbstractConfigurationDescriptor;
@@ -68,7 +68,7 @@ import org.cp.elements.util.ArrayUtils;
  *
  * @author John J. Blum
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.AbstractConfiguration

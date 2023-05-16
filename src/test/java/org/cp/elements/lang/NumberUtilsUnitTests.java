@@ -23,7 +23,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link NumberUtils}.
@@ -31,7 +31,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.math.BigDecimal
  * @see java.math.BigInteger
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.NumberUtils
  * @since 1.0.0
  */

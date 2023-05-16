@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 import org.cp.elements.data.conversion.ConversionException;
 import org.cp.elements.data.conversion.Converter;
 import org.cp.elements.enums.Gender;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -37,7 +37,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @author John Blum
  * @see java.beans.PropertyEditor
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.Converter

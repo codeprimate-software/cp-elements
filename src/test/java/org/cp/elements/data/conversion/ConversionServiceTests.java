@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 import org.cp.elements.lang.Registry;
@@ -39,7 +39,7 @@ import org.cp.elements.lang.Registry;
  * Unit Tests for {@link ConversionService}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.ConversionService
  * @since 1.0.0

@@ -40,7 +40,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.util.ArrayUtils;
 
@@ -48,7 +48,7 @@ import org.cp.elements.util.ArrayUtils;
  * Unit Tests for {@link StringUtils}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.StringUtils
  * @since 1.0.0

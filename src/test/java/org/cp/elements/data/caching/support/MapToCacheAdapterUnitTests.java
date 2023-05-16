@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.test.annotation.IntegrationTest;
@@ -47,7 +47,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  *
  * @author John Blum
  * @see java.util.Map
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner

@@ -55,7 +55,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.Id;
 import org.cp.elements.lang.reflect.ConstructorNotFoundException;
@@ -82,7 +82,7 @@ import lombok.ToString;
  * @see java.lang.reflect.Modifier
  * @see java.lang.reflect.ParameterizedType
  * @see java.lang.reflect.TypeVariable
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.ClassUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite

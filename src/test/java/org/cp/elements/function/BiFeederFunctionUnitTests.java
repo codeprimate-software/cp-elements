@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.function.BiFunction;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 /**
@@ -35,7 +35,7 @@ import org.mockito.ArgumentMatchers;
  *
  * @author John Blum
  * @see java.util.function.BiFunction
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.function.BiFeederFunction
  * @since 1.0.0
  */

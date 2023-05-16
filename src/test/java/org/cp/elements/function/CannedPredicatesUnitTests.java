@@ -19,14 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link CannedPredicates}.
  *
  * @author John Blum
  * @see java.util.function.Predicate
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.function.CannedPredicates
  * @since 1.0.0
  */

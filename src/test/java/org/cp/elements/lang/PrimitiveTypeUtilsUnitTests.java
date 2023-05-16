@@ -22,13 +22,13 @@ import java.math.BigInteger;
 import java.util.function.Function;
 
 import org.cp.elements.security.model.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link PrimitiveTypeUtils}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.PrimitiveTypeUtils
  * @since 1.0.0
  */

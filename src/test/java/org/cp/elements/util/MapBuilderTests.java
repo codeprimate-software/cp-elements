@@ -23,14 +23,14 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link MapBuilder}.
  *
  * @author John Blum
  * @see java.util.Map
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.MapBuilder
  * @since 1.0.0
  */

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import java.util.Iterator;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.reflect.provider.JdkDynamicProxiesFactory;
 import org.cp.elements.util.ArrayUtils;
@@ -42,7 +42,7 @@ import lombok.ToString;
  * Unit Tests for {@link ProxyService}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @see org.cp.elements.lang.reflect.ProxyService

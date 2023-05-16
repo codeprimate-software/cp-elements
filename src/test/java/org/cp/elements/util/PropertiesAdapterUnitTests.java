@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.data.conversion.ConversionException;
@@ -58,7 +58,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * @author John J. Blum
  * @see java.util.Map
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner

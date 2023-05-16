@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link SqlType}.
@@ -28,7 +28,7 @@ import org.junit.Test;
  * @author John J. Blum
  * @see java.sql.Types
  * @see org.cp.elements.jdbc.SqlType
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 public class SqlTypesTest {

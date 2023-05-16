@@ -26,7 +26,7 @@ import java.lang.reflect.Field;
 
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.annotation.NotNull;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,7 +38,7 @@ import lombok.ToString;
  *
  * @author John Blum
  * @see java.lang.reflect.Field
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.model.Property
  * @see org.cp.elements.beans.model.PropertyNameFieldResolver

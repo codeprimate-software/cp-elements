@@ -41,7 +41,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.lang.Sourced;
@@ -56,7 +56,7 @@ import org.assertj.core.api.InstanceOfAssertFactories;
  * Unit Tests for {@link CacheToMapAdapter}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.caching.support.CacheToMapAdapter
  * @since 1.0.0

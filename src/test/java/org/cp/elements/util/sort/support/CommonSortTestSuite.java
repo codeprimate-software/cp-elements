@@ -28,7 +28,7 @@ import org.cp.elements.util.sort.AbstractSorter;
 import org.cp.elements.util.sort.Sorter;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The {@link CommonSortTestSuite} class is an abstract base class encapsulating test functionality and logic
@@ -39,7 +39,7 @@ import org.junit.Test;
  *
  * @author John J. Blum
  * @see java.util.Random
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.sort.AbstractSorter
  * @see org.cp.elements.util.sort.Sorter
  * @since 1.0.0

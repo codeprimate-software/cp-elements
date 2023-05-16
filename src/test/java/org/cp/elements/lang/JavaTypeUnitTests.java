@@ -23,7 +23,7 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,7 +34,7 @@ import lombok.ToString;
  * Unit Tests for {@link JavaType}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.JavaType
  * @since 1.0.0
  */

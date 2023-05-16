@@ -33,13 +33,13 @@ import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for the {@link EmbeddedJavaProcessExecutor}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.process.java.EmbeddedJavaProcessExecutor
  * @since 1.0.0
  */

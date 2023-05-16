@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ObjectUtils;
 import org.cp.elements.lang.Orderable;
@@ -35,7 +35,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * @author John J. Blum
  * @see java.lang.Comparable
  * @see java.util.Comparator
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.support.OrderableComparator
  * @since 1.0.0
  */

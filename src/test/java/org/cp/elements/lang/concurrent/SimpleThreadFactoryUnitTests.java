@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 import org.cp.elements.lang.ThrowableUtils;
 import org.cp.elements.test.TestUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -48,7 +48,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * Unit Tests for {@link SimpleThreadFactory}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner

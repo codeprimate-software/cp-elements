@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Properties;
 import java.util.function.Supplier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.annotation.Required;
 import org.cp.elements.context.configure.annotation.ConfigurationProperties;
@@ -34,7 +34,7 @@ import org.cp.elements.util.PropertiesBuilder;
  *
  * @author John Blum
  * @see java.util.Properties
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.context.configure.AbstractConfigurationService
  * @see org.cp.elements.context.configure.annotation.ConfigurationProperties
  * @see org.cp.elements.context.configure.support.PropertiesConfiguration

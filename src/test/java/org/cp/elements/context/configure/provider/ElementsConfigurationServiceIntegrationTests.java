@@ -17,7 +17,7 @@ package org.cp.elements.context.configure.provider;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.annotation.ActiveProfiles;
 
@@ -25,7 +25,7 @@ import org.cp.elements.context.annotation.ActiveProfiles;
  * Integration Tests for {@link ElementsConfigurationService}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.context.configure.provider.ElementsConfigurationService
  * @since 1.0.0
  */

@@ -35,7 +35,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.mockito.quality.Strictness;
 
@@ -44,7 +44,7 @@ import org.mockito.quality.Strictness;
  *
  * @author John Blum
  * @see java.util.Map
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.caching.Cache
  * @see org.cp.elements.data.caching.Cache.Entry

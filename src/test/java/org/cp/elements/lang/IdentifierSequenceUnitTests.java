@@ -29,7 +29,7 @@ import static org.mockito.Mockito.withSettings;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 import org.cp.elements.lang.annotation.Nullable;
@@ -42,7 +42,7 @@ import lombok.NonNull;
  * Unit Tests for the {@link IdentifierSequence}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.IdentifierSequence

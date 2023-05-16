@@ -42,7 +42,7 @@ import java.util.logging.Level;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileSystemUtils;
 import org.cp.elements.lang.NumberUtils;
@@ -62,7 +62,7 @@ import lombok.RequiredArgsConstructor;
  * @see java.lang.reflect.Field
  * @see java.lang.reflect.Method
  * @see java.lang.reflect.Modifier
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.reflect.ReflectionUtils
  * @see org.cp.elements.test.AbstractBaseTestSuite
  * @see org.cp.elements.test.TestUtils

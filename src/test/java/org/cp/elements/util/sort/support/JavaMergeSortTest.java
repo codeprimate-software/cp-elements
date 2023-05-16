@@ -24,14 +24,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.cp.elements.util.sort.Sorter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The JavaMergeSortTest class is a test suite of test cases testing the contract and functionality
  * of the JavaMergeSort class and Java's modified Merge Sort algorithm.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.util.sort.Sorter
  * @see org.cp.elements.util.sort.support.CommonSortTestSuite
  * @see org.cp.elements.util.sort.support.JavaMergeSort

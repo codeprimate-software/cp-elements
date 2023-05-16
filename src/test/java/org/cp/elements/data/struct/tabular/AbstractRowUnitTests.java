@@ -36,7 +36,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.mapping.MappingException;
@@ -53,7 +53,7 @@ import lombok.Setter;
  * Unit Tests for {@link AbstractRow}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.AbstractRow
  * @since 1.0.0

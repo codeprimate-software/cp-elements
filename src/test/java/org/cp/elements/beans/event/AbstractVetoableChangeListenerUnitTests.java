@@ -31,7 +31,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.util.Arrays;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.IllegalPropertyValueException;
 import org.cp.elements.lang.Constants;
@@ -43,7 +43,7 @@ import org.cp.elements.lang.ThrowableOperation;
  * @author John Blum
  * @see java.beans.PropertyChangeEvent
  * @see java.beans.VetoableChangeListener
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.event.AbstractVetoableChangeListener
  * @since 1.0.0

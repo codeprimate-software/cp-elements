@@ -17,7 +17,7 @@ package org.cp.elements.net.protocols.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.dao.CrudOperation;
 
@@ -25,7 +25,7 @@ import org.cp.elements.dao.CrudOperation;
  * Unit Tests for {@link HttpMethod}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.net.protocols.http.HttpMethod
  * @since 1.0.0
  */

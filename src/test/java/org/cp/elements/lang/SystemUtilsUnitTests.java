@@ -30,7 +30,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.util.ArrayUtils;
 
@@ -42,7 +42,7 @@ import org.cp.elements.util.ArrayUtils;
  * @see java.lang.management.ManagementFactory
  * @see java.lang.management.OperatingSystemMXBean
  * @see java.lang.management.RuntimeMXBean
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.SystemUtils
  * @since 1.0.0
  */

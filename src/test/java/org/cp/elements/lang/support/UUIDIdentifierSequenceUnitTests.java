@@ -21,13 +21,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link UUIDIdentifierSequence}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.IdentifierSequence
  * @see org.cp.elements.lang.support.UUIDIdentifierSequence
  * @since 1.0.0

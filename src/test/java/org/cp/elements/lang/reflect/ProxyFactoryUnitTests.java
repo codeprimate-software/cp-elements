@@ -21,7 +21,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.io.Serializable;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Auditable;
 import org.cp.elements.lang.Describable;
@@ -38,7 +38,7 @@ import lombok.ToString;
  * Unit Tests for {@link ProxyFactory}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.lang.reflect.ProxyFactory
  * @since 1.0.0

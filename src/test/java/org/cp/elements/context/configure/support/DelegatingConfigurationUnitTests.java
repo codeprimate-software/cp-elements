@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.context.annotation.Profile;
 import org.cp.elements.context.configure.Configuration;
@@ -41,7 +41,7 @@ import org.cp.elements.util.ArrayUtils;
  * Unit Tests for {@link DelegatingConfiguration}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.context.configure.Configuration
  * @see org.cp.elements.context.configure.support.DelegatingConfiguration

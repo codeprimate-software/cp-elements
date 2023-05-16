@@ -35,7 +35,7 @@ import java.util.List;
 
 import org.cp.elements.lang.Constants;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 
 /**
@@ -43,7 +43,7 @@ import org.mockito.ArgumentMatchers;
  *
  * @author John Blum
  * @see java.beans.PropertyChangeEvent
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.beans.event.AbstractListener
  * @since 1.0.0

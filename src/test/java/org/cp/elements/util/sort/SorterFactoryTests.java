@@ -27,13 +27,13 @@ import org.cp.elements.util.sort.support.MergeSort;
 import org.cp.elements.util.sort.support.QuickSort;
 import org.cp.elements.util.sort.support.SelectionSort;
 import org.cp.elements.util.sort.support.ShellSort;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link SorterFactory}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.util.sort.SorterFactory
  * @see org.cp.elements.util.sort.SortType

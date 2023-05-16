@@ -42,7 +42,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.PatternSyntaxException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.ThrowableAssertions.AssertThatThrowableExpression;
 import org.cp.elements.lang.ThrowableAssertions.ThrowableSource;
@@ -67,7 +67,7 @@ import lombok.ToString;
  *
  * @author John Blum
  * @see org.assertj.core.api.Assertions
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.lang.ThrowableAssertions
  * @since 1.0.0
  */

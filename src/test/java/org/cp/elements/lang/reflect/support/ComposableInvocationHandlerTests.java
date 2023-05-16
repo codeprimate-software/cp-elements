@@ -30,7 +30,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 import org.cp.elements.lang.reflect.UnhandledMethodInvocationException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -44,7 +44,7 @@ import lombok.RequiredArgsConstructor;
  *
  * @author John Blum
  * @see org.junit.Rule
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see lombok
  * @see org.mockito.Mock

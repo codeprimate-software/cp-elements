@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.annotation.NotNull;
 
@@ -36,7 +36,7 @@ import org.cp.elements.lang.annotation.NotNull;
  * Unit Tests for {@link AbstractConverter}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.AbstractConverter
  * @since 1.0.0

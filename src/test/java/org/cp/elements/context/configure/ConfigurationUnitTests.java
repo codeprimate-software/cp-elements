@@ -37,7 +37,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import org.cp.elements.context.annotation.Profile;
@@ -55,7 +55,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * Unit Tests for {@link Configuration}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mock
  * @see org.mockito.Mockito
  * @see org.mockito.junit.MockitoJUnitRunner

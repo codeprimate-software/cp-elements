@@ -28,7 +28,7 @@ import org.cp.elements.lang.Nameable;
 import org.cp.elements.lang.ThrowableOperation;
 import org.cp.elements.lang.annotation.NotNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,7 +41,7 @@ import lombok.ToString;
  * @author John Blum
  * @see java.beans.PropertyChangeEvent
  * @see java.beans.VetoableChangeListener
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.AbstractBean
  * @see org.cp.elements.beans.event.support.RequiredPropertyVetoableChangeListener
  * @since 1.0.0

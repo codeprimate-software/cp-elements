@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.function.Function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Constants;
 
@@ -46,7 +46,7 @@ import org.mockito.ArgumentMatchers;
  *
  * @author John Blum
  * @see java.util.function.Function
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.conversion.Converter
  * @since 1.0.0

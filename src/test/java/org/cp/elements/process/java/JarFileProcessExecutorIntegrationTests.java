@@ -40,13 +40,13 @@ import org.cp.elements.tools.net.EchoClient;
 import org.cp.elements.tools.net.EchoServer;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Integration tests for {@link JavaProcessExecutor} testing the JAR execution functionality.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.process.ProcessAdapter
  * @see org.cp.elements.process.java.JavaProcessExecutor
  * @see org.cp.elements.test.AbstractBaseTestSuite

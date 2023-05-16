@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.data.struct.tabular.Column;
@@ -38,7 +38,7 @@ import org.cp.elements.data.struct.tabular.Column;
  * Unit Tests for {@link BeanPropertyToTableColumnResolver}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.support.BeanPropertyToTableColumnResolver
  * @see org.cp.elements.data.struct.tabular.Column

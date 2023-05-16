@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.io.FileExtensionFilter;
 import org.cp.elements.lang.annotation.NotNull;
@@ -31,7 +31,7 @@ import org.cp.elements.lang.annotation.NotNull;
  *
  * @author John Blum
  * @see java.io.File
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.io.FileExtensionFilter
  * @since 1.0.0
  */

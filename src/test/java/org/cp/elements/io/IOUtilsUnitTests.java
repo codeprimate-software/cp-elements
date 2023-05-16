@@ -43,7 +43,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.test.annotation.IntegrationTest;
 
@@ -59,7 +59,7 @@ import lombok.ToString;
  * @see java.io.Closeable
  * @see java.io.InputStream
  * @see java.io.OutputStream
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.io.IOUtils
  * @see org.cp.elements.test.annotation.IntegrationTest

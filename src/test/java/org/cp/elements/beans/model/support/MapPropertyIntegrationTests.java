@@ -22,7 +22,7 @@ import java.util.Map;
 import org.cp.elements.beans.model.BeanUtils;
 import org.cp.elements.beans.model.Property;
 import org.cp.elements.util.MapBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import lombok.Getter;
 
@@ -32,7 +32,7 @@ import lombok.Getter;
  * @author John Blum
  * @see java.beans.PropertyDescriptor
  * @see java.util.Map
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.beans.model.support.MapProperty
  * @since 1.0.0
  */

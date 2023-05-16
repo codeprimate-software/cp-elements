@@ -19,7 +19,7 @@ package org.cp.elements.util.search;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * The SearchTypeTest class is a test suite of test cases testing the contract and functionality of the SearchType
@@ -27,7 +27,7 @@ import org.junit.Test;
  *
  * @author John J. Blum
  * @see org.cp.elements.util.search.SearchType
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @since 1.0.0
  */
 public class SearchTypeTest {

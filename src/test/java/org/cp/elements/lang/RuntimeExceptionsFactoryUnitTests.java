@@ -28,7 +28,7 @@ import static org.cp.elements.lang.RuntimeExceptionsFactory.newUnsupportedOperat
 
 import java.util.NoSuchElementException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -37,7 +37,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * Unit Tests for {@link RuntimeExceptionsFactory}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock
  * @see org.mockito.Mockito

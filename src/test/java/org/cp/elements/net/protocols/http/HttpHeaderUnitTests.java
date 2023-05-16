@@ -17,13 +17,13 @@ package org.cp.elements.net.protocols.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit Tests for {@link HttpHeader}.
  *
  * @author John J. Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.net.protocols.http.HttpHeader
  * @since 1.0.0
  */

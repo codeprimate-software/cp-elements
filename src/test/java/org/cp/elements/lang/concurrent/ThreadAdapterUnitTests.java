@@ -45,7 +45,7 @@ import org.cp.elements.lang.annotation.Nullable;
 import org.cp.elements.test.TestUtils;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -61,7 +61,7 @@ import edu.umd.cs.mtc.TestFramework;
  * @author John J. Blum
  * @see java.lang.Thread
  * @see org.junit.Rule
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.junit.rules.Timeout
  * @see org.junit.runner.RunWith
  * @see org.mockito.Mock

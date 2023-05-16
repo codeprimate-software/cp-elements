@@ -40,7 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.lang.Integers;
 
@@ -51,7 +51,7 @@ import org.mockito.quality.Strictness;
  * Unit Tests for {@link Table}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.mockito.Mockito
  * @see org.cp.elements.data.struct.tabular.Table
  * @since 1.0.0

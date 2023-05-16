@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.cp.elements.data.caching.Cache;
 import org.cp.elements.lang.StringUtils;
@@ -37,7 +37,7 @@ import org.cp.elements.util.stream.StreamUtils;
  * Integration Tests for {@link ConcurrentMapCache}.
  *
  * @author John Blum
- * @see org.junit.Test
+ * @see org.junit.jupiter.api.Test
  * @see org.cp.elements.data.caching.provider.ConcurrentMapCache
  * @since 1.0.0
  */
