@@ -283,7 +283,7 @@ public interface View extends Iterable<Row>, Nameable<String> {
   }
 
   /**
-   * Determines the {@link Integer# index} of the given {@link Column} in this {@link View} if present.
+   * Determines the {@link Integer index} of the given {@link Column} in this {@link View} if present.
    *
    * The first {@link Column} is at {@link Integer index} {@literal 0}.
    *
