@@ -837,7 +837,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
       Assert.notNull(cacheEntry, "Cache.Entry to copy is required");
 
-      return new Entry<KEY, VALUE>() {
+      return new Entry<>() {
 
         private final VALUE cacheEntryValue = cacheEntry.getValue();
 
@@ -884,7 +884,7 @@ public interface Cache<KEY extends Comparable<KEY>, VALUE>
 
       Assert.notNull(mapEntry, "Map.Entry to convert is required");
 
-      return new Entry<KEY, VALUE>() {
+      return new Entry<>() {
 
         private final VALUE mapEntryValue = mapEntry.getValue();
 
