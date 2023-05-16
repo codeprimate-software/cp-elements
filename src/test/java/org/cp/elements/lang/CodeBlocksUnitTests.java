@@ -34,6 +34,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.junit.Test;
+
 import org.mockito.InOrder;
 
 /**
@@ -179,11 +180,11 @@ public class CodeBlocksUnitTests {
 
     Function<Throwable, RuntimeException> catchBlock = mock(Function.class);
 
-    doReturn("test").when(operation).run(any());
+    doReturn("test").when(operation).run(any(Object[].class));
 
     assertThat(CodeBlocks.tryCatch(operation, catchBlock)).isEqualTo("test");
 
-    verify(operation, times(1)).run(any());
+    verify(operation, times(1)).run(any(Object[].class));
     verifyNoMoreInteractions(operation);
     verifyNoInteractions(catchBlock);
   }
@@ -195,7 +196,7 @@ public class CodeBlocksUnitTests {
 
     Function<Throwable, RuntimeException> catchBlock = mock(Function.class);
 
-    doThrow(new TestException("test")).when(operation).run(any());
+    doThrow(new TestException("test")).when(operation).run(any(Object[].class));
 
     doAnswer(invocation -> {
       throw new IllegalArgumentException(invocation.getArgument(0, Throwable.class).getMessage());
@@ -215,7 +216,7 @@ public class CodeBlocksUnitTests {
 
       InOrder order = inOrder(operation, catchBlock);
 
-      order.verify(operation, times(1)).run(any());
+      order.verify(operation, times(1)).run(any(Object[].class));
       order.verify(catchBlock, times(1)).apply(isA(TestException.class));
 
       verifyNoMoreInteractions(operation, catchBlock);
@@ -231,7 +232,7 @@ public class CodeBlocksUnitTests {
 
     Function<Throwable, RuntimeException> catchBlock = mock(Function.class);
 
-    doThrow(new TestError("test")).when(operation).run(any());
+    doThrow(new TestError("test")).when(operation).run(any(Object[].class));
 
     doAnswer(invocation -> {
       throw new IllegalStateException(invocation.getArgument(0, Throwable.class).getMessage());
@@ -251,7 +252,7 @@ public class CodeBlocksUnitTests {
 
       InOrder order = inOrder(operation, catchBlock, finallyBlock);
 
-      order.verify(operation, times(1)).run(any());
+      order.verify(operation, times(1)).run(any(Object[].class));
       order.verify(catchBlock, times(1)).apply(isA(TestError.class));
       order.verify(finallyBlock, times(1)).run();
 
@@ -330,13 +331,13 @@ public class CodeBlocksUnitTests {
 
     ThrowableOperation<Object> operation = mock(ThrowableOperation.class);
 
-    doReturn("test").when(operation).run(any());
+    doReturn("test").when(operation).run(any(Object[].class));
 
     Function<Throwable, Object> catchBlock = mock(Function.class);
 
     CodeBlocks.tryHandle(operation, catchBlock);
 
-    verify(operation, times(1)).run(any());
+    verify(operation, times(1)).run(any(Object[].class));
     verifyNoMoreInteractions(operation);
     verifyNoInteractions(catchBlock);
   }
@@ -348,7 +349,7 @@ public class CodeBlocksUnitTests {
 
     Function<Throwable, Object> catchBlock = mock(Function.class);
 
-    doThrow(new TestException("test")).when(operation).run(any());
+    doThrow(new TestException("test")).when(operation).run(any(Object[].class));
 
     doAnswer(invocation -> {
       throw new IllegalArgumentException(invocation.getArgument(0, Throwable.class).getMessage());
@@ -368,7 +369,7 @@ public class CodeBlocksUnitTests {
 
       InOrder order = inOrder(operation, catchBlock);
 
-      order.verify(operation, times(1)).run(any());
+      order.verify(operation, times(1)).run(any(Object[].class));
       order.verify(catchBlock, times(1)).apply(isA(TestException.class));
 
       verifyNoMoreInteractions(operation, catchBlock);
@@ -384,7 +385,7 @@ public class CodeBlocksUnitTests {
 
     Function<Throwable, Object> catchBlock = mock(Function.class);
 
-    doThrow(new TestError("test")).when(operation).run(any());
+    doThrow(new TestError("test")).when(operation).run(any(Object[].class));
 
     doAnswer(invocation -> {
       throw new IllegalStateException(invocation.getArgument(0, Throwable.class).getMessage());
@@ -404,7 +405,7 @@ public class CodeBlocksUnitTests {
 
       InOrder order = inOrder(operation, catchBlock, finallyBlock);
 
-      order.verify(operation, times(1)).run(any());
+      order.verify(operation, times(1)).run(any(Object[].class));
       order.verify(catchBlock, times(1)).apply(isA(TestError.class));
       order.verify(finallyBlock, times(1)).run();
 
