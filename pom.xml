@@ -81,6 +81,7 @@
     <java-module-name>codeprimate.elements</java-module-name>
     <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
     <maven-changelog-plugin.version>2.3</maven-changelog-plugin.version>
+    <mockito.version>4.11.0</mockito.version>
   </properties>
 
   <build>
@@ -108,6 +109,15 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-inline</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <profiles>
     <profile>
